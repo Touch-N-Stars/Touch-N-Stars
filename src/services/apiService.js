@@ -1462,7 +1462,7 @@ const apiService = {
           binning,
           gain,
           offset,
-          filter,
+          filterId: filter,
           brightness,
         },
       });
@@ -1498,7 +1498,7 @@ const apiService = {
           binning,
           gain,
           offset,
-          filter,
+          filterId: filter,
           exposureTime,
         },
       });
@@ -1533,7 +1533,7 @@ const apiService = {
           binning,
           gain,
           offset,
-          filter,
+          filterId: filter,
         },
       });
       return response.data;
