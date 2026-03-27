@@ -9,7 +9,7 @@ const mockState = {
   isConnected: true,
   apiVersion: '2.2.12.0',
   tnsPluginVersion: '1.2.0.0',
-  apiPort: 5000,
+  apiPort: 8000,
   equipment: {
     camera: { connected: true },
     mount: { connected: true },
@@ -307,6 +307,11 @@ const mockApiService = {
             PlateSolveSettings: {
               Gain: 120,
               ExposureTime: 5,
+            },
+            ImageFileSettings: {
+              FilePattern: '$TARGET_$FILTER_$EXPOSURE',
+              FileType: 'TIFF',
+              FilePath: 'C:\\Users\\User\\Pictures\\NINA',
             },
           },
         };
@@ -882,7 +887,108 @@ const mockApiService = {
       makeLog(3, 'Mock: Mount tracking'),
     ];
   },
+
+  // mock data for file service
+   async getFileDevices() {
+    await delay(100);
+    return [
+      { name: 'Root', path: '/' },
+      { name: 'ASTRO-USB', path: '/media/ASTRO-USB' },
+    ];
+  },
+ 
+  async listFileDirectories(path) {
+    await delay(150);
+ 
+    const fs = {
+      '/': [
+        { name: 'home', path: '/home' },
+        { name: 'media', path: '/media' },
+        { name: 'mnt', path: '/mnt' },
+        { name: 'opt', path: '/opt' },
+      ],
+      '/home': [
+        { name: 'user', path: '/home/user' },
+      ],
+      '/home/user': [
+        { name: 'Documents', path: '/home/user/Documents' },
+        { name: 'Pictures', path: '/home/user/Pictures' },
+        { name: 'NINA', path: '/home/user/NINA' },
+      ],
+      '/home/user/Documents': [
+        { name: 'Sequences', path: '/home/user/Documents/Sequences' },
+        { name: 'Logs', path: '/home/user/Documents/Logs' },
+      ],
+      '/home/user/Pictures': [
+        { name: 'Astrophotos', path: '/home/user/Pictures/Astrophotos' },
+        { name: 'Flats', path: '/home/user/Pictures/Flats' },
+        { name: 'Darks', path: '/home/user/Pictures/Darks' },
+      ],
+      '/home/user/Pictures/Astrophotos': [
+        { name: 'M31', path: '/home/user/Pictures/Astrophotos/M31' },
+        { name: 'M42', path: '/home/user/Pictures/Astrophotos/M42' },
+        { name: 'NGC7000', path: '/home/user/Pictures/Astrophotos/NGC7000' },
+      ],
+      '/home/user/NINA': [
+        { name: 'Images', path: '/home/user/NINA/Images' },
+        { name: 'Sequences', path: '/home/user/NINA/Sequences' },
+        { name: 'Plugins', path: '/home/user/NINA/Plugins' },
+      ],
+      '/home/user/NINA/Images': [
+        { name: 'Light', path: '/home/user/NINA/Images/Light' },
+        { name: 'Dark', path: '/home/user/NINA/Images/Dark' },
+        { name: 'Flat', path: '/home/user/NINA/Images/Flat' },
+        { name: 'Bias', path: '/home/user/NINA/Images/Bias' },
+      ],
+      '/media': [
+        { name: 'ASTRO-USB', path: '/media/ASTRO-USB' },
+      ],
+      '/media/ASTRO-USB': [
+        { name: 'NINA', path: '/media/ASTRO-USB/NINA' },
+        { name: 'Backup', path: '/media/ASTRO-USB/Backup' },
+      ],
+      '/media/ASTRO-USB/NINA': [
+        { name: 'Images', path: '/media/ASTRO-USB/NINA/Images' },
+        { name: 'Sequences', path: '/media/ASTRO-USB/NINA/Sequences' },
+      ],
+      '/media/ASTRO-USB/NINA/Images': [
+        { name: 'Light', path: '/media/ASTRO-USB/NINA/Images/Light' },
+        { name: 'Dark', path: '/media/ASTRO-USB/NINA/Images/Dark' },
+        { name: 'Flat', path: '/media/ASTRO-USB/NINA/Images/Flat' },
+      ],
+      '/media/ASTRO-USB/Backup': [
+        { name: '2024-01', path: '/media/ASTRO-USB/Backup/2024-01' },
+        { name: '2024-02', path: '/media/ASTRO-USB/Backup/2024-02' },
+      ],
+      '/mnt': [],
+      '/opt': [],
+    };
+ 
+    // Dynamisch angelegte Ordner aus mockState berücksichtigen
+    const dynamic = mockState.createdDirs?.[path] || [];
+    const base = fs[path] ?? [];
+    return [...base, ...dynamic];
+  },
+ 
+  async createFileDirectory(path, name) {
+    await delay(200);
+ 
+    // Neu angelegten Ordner im mockState merken damit er beim nächsten listFileDirectories auftaucht
+    if (!mockState.createdDirs) mockState.createdDirs = {};
+    if (!mockState.createdDirs[path]) mockState.createdDirs[path] = [];
+ 
+    const newEntry = { name, path: `${path}/${name}` };
+ 
+    // Doppelte verhindern
+    const exists = mockState.createdDirs[path].some((e) => e.name === name);
+    if (exists) throw new Error('Directory already exists');
+ 
+    mockState.createdDirs[path].push(newEntry);
+    return newEntry;
+  },
 };
+
+
 
 // Export mock state for testing/manipulation
 export { mockState };

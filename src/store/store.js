@@ -115,6 +115,7 @@ export const apiStore = defineStore('store', {
     filterNr: null,
     showAfGraph: true,
     imageData: null,
+    imageSavePath: null,
     isLoadingImage: false,
     captureRunning: false,
     rotatorMechanicalPosition: 0,
@@ -708,12 +709,24 @@ export const apiStore = defineStore('store', {
 
         if (profileInfoResponse && profileInfoResponse.Response) {
           this.profileInfo = profileInfoResponse.Response;
+          this.imageSavePath = this.profileInfo?.ImageFileSettings?.FilePath || null;
           this.getExistingEquipment(this.profileInfo);
         } else {
           console.error('Error in profile API response:', profileInfoResponse?.Error);
         }
       } catch (error) {
         console.error('Error fetching profile information:', error);
+      }
+    },
+
+    async setImageSavePath(path) {
+      try {
+        await apiService.profileChangeValue('ImageFileSettings-FilePath', path);
+
+        this.imageSavePath = path;
+      } catch (e) {
+        console.error('Failed to set image save path', e);
+        throw e;
       }
     },
 

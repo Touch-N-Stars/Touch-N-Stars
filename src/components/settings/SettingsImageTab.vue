@@ -21,6 +21,16 @@
       </div>
     </div>
 
+    <!-- Image File Path -->
+    <div
+      v-if="store.isBackendReachable"
+      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+    >
+      <h3 class="font-bold text-base text-cyan-400">Image File Path</h3>
+
+      <setImgFilePath />
+    </div>
+
     <!-- File Name Pattern -->
     <div
       v-if="store.isBackendReachable"
@@ -45,6 +55,7 @@ import setImgDebayernHfr from '@/components/settings/setImgDebayernHfr.vue';
 import setImgUnlinkedStrech from '@/components/settings/setImgUnlinkedStrech.vue';
 import setImgMaxDimension from '@/components/settings/setImgMaxDimension.vue';
 import setImgFileType from '@/components/settings/setImgFileType.vue';
+import setImgFilePath from '@/components/settings/setImgFilePath.vue';
 import FilePatternBuilder from '@/components/settings/image/FilePatternBuilder.vue';
 
 const store = apiStore();

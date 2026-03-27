@@ -733,6 +733,47 @@ const apiService = {
     }
   },
 
+  // api to get filesystem paths for image save path selection in settings
+  async getFileDevices(timeout = DEFAULT_TIMEOUT) {
+    try {
+      const { PLUGINSERVER_URL } = getUrls();
+      const response = await axios.get(`${PLUGINSERVER_URL}/api/files/devices`, { timeout });
+      return response.data;
+    } catch (error) {
+      console.error('getFileDevices error:', error);
+      return [];
+    }
+  },
+
+  async listFileDirectories(path, timeout = DEFAULT_TIMEOUT) {
+    try {
+      const { PLUGINSERVER_URL } = getUrls();
+      const response = await axios.get(`${PLUGINSERVER_URL}/api/files/list`, {
+        params: { path },
+        timeout,
+      });
+      return response.data;
+    } catch (error) {
+      console.error('listFileDirectories error:', error);
+      throw error;
+    }
+  },
+
+  async createFileDirectory(path, name, timeout = DEFAULT_TIMEOUT) {
+    try {
+      const { PLUGINSERVER_URL } = getUrls();
+      const response = await axios.post(
+        `${PLUGINSERVER_URL}/api/files/create-dir`,
+        { path, name },
+        { timeout }
+      );
+      return response.data;
+    } catch (error) {
+      console.error('createFileDirectory error:', error);
+      throw error;
+    }
+  },
+
   // Profil Switch
   async profileSwitch(profileid) {
     try {
@@ -1657,6 +1698,11 @@ const apiService = {
     // profileAction('show?active=true') exists already
     const res = await this.profileAction('show?active=true');
     return res?.Response ?? res;
+  },
+
+  // save image save path
+  async setImageSavePath(path) {
+    return await this.profileChangeValue('ImageFileSettings-FilePath', path);
   },
 
   async getAstrometrySettings() {
