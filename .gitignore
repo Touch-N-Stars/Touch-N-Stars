@@ -37,3 +37,5 @@ src/plugins/pluginRegistry.js
 public/whats-new.json
 nul
 /.vs/Touch-N-Stars.slnx
+package-lock.json
+.env

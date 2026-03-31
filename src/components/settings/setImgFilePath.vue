@@ -7,16 +7,16 @@
           v-model="path"
           type="text"
           readonly
-          placeholder="Kein Pfad gewählt"
+          :placeholder="$t('components.settings.imageSavePath.placeholder')"
           class="flex-1 px-3 py-2 bg-gray-700/50 border border-gray-600 rounded text-sm text-gray-200 placeholder-gray-500"
         />
 
         <button
           @click="showBrowser = true"
           class="px-3 py-2 bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded text-sm text-gray-200 transition-colors"
-          title="Pfad auswählen"
+          :title="$t('components.settings.imageSavePath.selectTitle')"
         >
-          …
+          �
         </button>
 
         <button
@@ -24,10 +24,11 @@
           :disabled="!path || saving"
           class="px-3 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 disabled:cursor-not-allowed rounded text-sm text-white transition-colors"
         >
-          <span v-if="saving">…</span>
-          <span v-else>Speichern</span>
+          <span v-if="saving">{{ $t('components.settings.imageSavePath.saving') }}</span>
+          <span v-else>{{ $t('components.settings.imageSavePath.save') }}</span>
         </button>
       </div>
+
       <p v-if="isDirty" class="text-xs text-amber-400 flex items-center gap-1 pt-2">
         <svg
           class="w-3.5 h-3.5 shrink-0"
@@ -40,7 +41,7 @@
             d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
           />
         </svg>
-        Pfad geändert - bitte auf Speichern drücken um die Änderung zu übernehmen.
+        {{ $t('components.settings.imageSavePath.dirtyHint') }}
       </p>
     </div>
 
@@ -56,10 +57,12 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import FileBrowser from './fileBrowser.vue';
 
+const { t } = useI18n();
 const store = apiStore();
 const toast = useToastStore();
 
@@ -77,14 +80,12 @@ onMounted(() => {
   originalPath.value = path.value;
 });
 
-// Called when user confirms a path in the FileBrowser
 function onPathSelected(selectedPath) {
   path.value = selectedPath;
   isDirty.value = selectedPath !== originalPath.value;
   statusMsg.value = '';
 }
 
-// Save path via NINA profile API
 async function savePath() {
   if (!path.value) return;
   saving.value = true;
@@ -94,15 +95,19 @@ async function savePath() {
     originalPath.value = path.value;
     isDirty.value = false;
     statusOk.value = true;
-    statusMsg.value = `Pfad gespeichert: ${path.value}`;
-    toast.showToast({ type: 'success', title: 'Pfad gespeichert', message: path.value });
+    statusMsg.value = `${t('components.settings.imageSavePath.savedMsg')} ${path.value}`;
+    toast.showToast({
+      type: 'success',
+      title: t('components.settings.imageSavePath.toastTitle'),
+      message: path.value,
+    });
   } catch (e) {
     statusOk.value = false;
-    statusMsg.value = 'Fehler beim Speichern des Pfads.';
+    statusMsg.value = t('components.settings.imageSavePath.errorMsg');
     toast.showToast({
       type: 'error',
-      title: 'Fehler',
-      message: 'Pfad konnte nicht gespeichert werden.',
+      title: t('components.settings.imageSavePath.toastErrorTitle'),
+      message: t('components.settings.imageSavePath.toastErrorMsg'),
       autoClose: false,
     });
   } finally {
