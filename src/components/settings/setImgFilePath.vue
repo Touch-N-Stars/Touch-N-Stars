@@ -16,7 +16,7 @@
           class="px-3 py-2 bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded text-sm text-gray-200 transition-colors"
           :title="$t('components.settings.imageSavePath.selectTitle')"
         >
-          �
+          ...
         </button>
 
         <button
