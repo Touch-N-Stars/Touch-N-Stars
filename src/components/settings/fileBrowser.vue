@@ -12,12 +12,14 @@
         <div
           class="flex items-center justify-between px-4 py-3.5 border-b border-[#2e3650] shrink-0"
         >
-          <span class="text-sm font-semibold text-slate-200 tracking-wide">Speicherort wählen</span>
+          <span class="text-sm font-semibold text-slate-200 tracking-wide">{{
+            $t('components.settings.imageSavePath.selectTitle')
+          }}</span>
           <button
             class="text-slate-500 text-sm px-2 py-1 rounded hover:text-slate-200 hover:bg-[#2e3650] transition-colors cursor-pointer bg-transparent border-none"
             @click="cancel"
           >
-            ✕
+            ?
           </button>
         </div>
 
@@ -34,10 +36,34 @@
             "
             @click="selectDevice(device)"
           >
-            <span class="text-sm">{{ device.path === '/' ? '💾' : '🔌' }}</span>
+            <svg
+              v-if="device.path === '/'"
+              class="w-3.5 h-3.5 shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="2" />
+              <line x1="12" y1="2" x2="12" y2="22" />
+              <circle cx="6" cy="12" r="1.5" fill="currentColor" stroke="none" />
+            </svg>
+            <svg
+              v-else
+              class="w-3.5 h-3.5 shrink-0"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="7" y="2" width="10" height="6" rx="1" />
+              <path d="M5 8h14l1 13H4L5 8z" />
+            </svg>
             {{ device.name }}
           </button>
-          <div v-if="devicesLoading" class="text-slate-500 text-xs self-center">Lade…</div>
+          <div v-if="devicesLoading" class="text-slate-500 text-xs self-center">
+            {{ $t('components.settings.imageSavePath.loading') }}
+          </div>
         </div>
 
         <!-- Breadcrumb -->
@@ -70,7 +96,7 @@
             <span
               class="w-4 h-4 border-2 border-[#2e3650] border-t-cyan-700 rounded-full animate-spin shrink-0"
             ></span>
-            <span>Lade Verzeichnisse…</span>
+            <span>{{ $t('components.settings.imageSavePath.loadingDirs') }}</span>
           </div>
           <div
             v-else-if="listError"
@@ -82,7 +108,7 @@
             v-else-if="entries.length === 0"
             class="flex items-center justify-center min-h-[140px] text-slate-600 text-sm italic"
           >
-            Keine Unterordner vorhanden
+            {{ $t('components.settings.imageSavePath.noSubfolders') }}
           </div>
           <ul v-else class="list-none m-0 py-1.5">
             <li
@@ -97,9 +123,21 @@
               @click="selectEntry(entry)"
               @dblclick="navigateTo(entry.path)"
             >
-              <span class="text-sm shrink-0">📁</span>
+              <svg
+                class="w-4 h-4 shrink-0 text-slate-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"
+                />
+              </svg>
               <span class="flex-1 text-[0.85rem] text-slate-200 truncate">{{ entry.name }}</span>
-              <span class="text-[0.7rem] text-slate-600 shrink-0">Doppelklick zum Öffnen</span>
+              <span class="text-[0.7rem] text-slate-600 shrink-0">{{
+                $t('components.settings.imageSavePath.dblClickHint')
+              }}</span>
             </li>
           </ul>
         </div>
@@ -111,7 +149,7 @@
             ref="folderInput"
             v-model="newFolderName"
             class="flex-1 bg-[#0f1420] border border-[#2e3650] focus:border-cyan-700 rounded-md text-slate-200 text-xs px-2.5 py-1.5 outline-none transition-colors"
-            placeholder="Ordnername…"
+            :placeholder="$t('components.settings.imageSavePath.folderPlaceholder')"
             @keydown.enter="confirmNewFolder"
             @keydown.escape="cancelNewFolder"
           />
@@ -120,7 +158,7 @@
             class="px-3 py-1.5 rounded-md border border-[#2e3650] bg-transparent text-slate-400 text-xs cursor-pointer hover:bg-[#2e3650] hover:text-slate-200 transition-all"
             @click="startNewFolder"
           >
-            + Neuer Ordner
+            {{ $t('components.settings.imageSavePath.newFolder') }}
           </button>
           <template v-else>
             <button
@@ -128,13 +166,13 @@
               :disabled="!newFolderName.trim()"
               @click="confirmNewFolder"
             >
-              Erstellen
+              {{ $t('components.settings.imageSavePath.create') }}
             </button>
             <button
               class="px-3 py-1.5 rounded-md border border-[#2e3650] bg-transparent text-slate-400 text-xs cursor-pointer hover:bg-[#2e3650] hover:text-slate-200 transition-all"
               @click="cancelNewFolder"
             >
-              Abbrechen
+              {{ $t('common.cancel') }}
             </button>
           </template>
         </div>
@@ -143,9 +181,11 @@
         <div
           class="flex items-center gap-2 px-4 py-2 bg-[#0f1420] border-t border-[#2e3650] shrink-0 min-h-9"
         >
-          <span class="text-xs text-slate-600 whitespace-nowrap shrink-0">Gewählter Pfad:</span>
+          <span class="text-xs text-slate-600 whitespace-nowrap shrink-0">{{
+            $t('components.settings.imageSavePath.selectedPath')
+          }}</span>
           <span class="text-[0.78rem] text-slate-400 font-mono truncate">{{
-            selectedPath || '—'
+            selectedPath || '�'
           }}</span>
         </div>
 
@@ -155,14 +195,14 @@
             class="px-3.5 py-1.5 rounded-md border border-[#2e3650] bg-transparent text-slate-400 text-xs cursor-pointer hover:bg-[#2e3650] hover:text-slate-200 transition-all"
             @click="cancel"
           >
-            Abbrechen
+            {{ $t('common.cancel') }}
           </button>
           <button
             class="px-3.5 py-1.5 rounded-md border border-transparent bg-cyan-700 text-white font-medium text-xs cursor-pointer hover:bg-cyan-600 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             :disabled="!selectedPath"
             @click="confirm"
           >
-            Übernehmen
+            {{ $t('common.confirm') }}
           </button>
         </div>
       </div>
@@ -172,7 +212,10 @@
 
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';  // ? erg�nzen
 import apiService from '@/services/apiService';
+
+const { t } = useI18n();  // ? erg�nzen
 
 const props = defineProps({
   modelValue: {
@@ -187,8 +230,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'select']);
 
-// ─── State ───────────────────────────────────────────────────────────────────
-
+// State
 const isOpen = computed(() => props.modelValue);
 
 const devices = ref([]);
@@ -206,8 +248,7 @@ const creatingFolder = ref(false);
 const newFolderName = ref('');
 const folderInput = ref(null);
 
-// ─── Breadcrumbs ─────────────────────────────────────────────────────────────
-
+// Breadcrumbs
 const breadcrumbs = computed(() => {
   if (!currentPath.value || !currentRoot.value) return [];
 
@@ -229,25 +270,32 @@ const breadcrumbs = computed(() => {
   return crumbs;
 });
 
-// ─── Watchers ────────────────────────────────────────────────────────────────
-
+// Watchers
 watch(isOpen, async (val) => {
   if (val) {
     await loadDevices();
     if (props.initialPath) {
-      selectedPath.value = props.initialPath;
+      const matchingDevice = devices.value
+        .filter((d) => props.initialPath.startsWith(d.path))
+        .sort((a, b) => b.path.length - a.path.length)[0];
+
+      if (matchingDevice) {
+        currentRoot.value = matchingDevice.path;
+      }
+      await navigateTo(props.initialPath);
     }
   }
 });
 
-// ─── API Calls ───────────────────────────────────────────────────────────────
-
+// API Calls
 async function loadDevices() {
   devicesLoading.value = true;
   try {
     const result = await apiService.getFileDevices();
-    devices.value = result || [];
-    if (devices.value.length > 0) {
+    devices.value = (result || []).filter(
+      (d) => d && typeof d.name === 'string' && d.name.trim() !== '' && typeof d.path === 'string'
+    );
+    if (devices.value.length > 0 && !props.initialPath) {
       await selectDevice(devices.value[0]);
     }
   } catch (e) {
@@ -270,9 +318,11 @@ async function navigateTo(path) {
   entries.value = [];
   try {
     const result = await apiService.listFileDirectories(path);
-    entries.value = result || [];
+    entries.value = (result || []).filter(
+      (e) => e && typeof e.name === 'string' && e.name.trim() !== '' && typeof e.path === 'string'
+    );
   } catch (e) {
-    listError.value = 'Fehler beim Laden des Verzeichnisses.';
+    listError.value = t('components.settings.imageSavePath.dirLoadError');
   } finally {
     listLoading.value = false;
   }
@@ -282,8 +332,7 @@ function selectEntry(entry) {
   selectedPath.value = entry.path;
 }
 
-// ─── New Folder ───────────────────────────────────────────────────────────────
-
+// New Folder
 function startNewFolder() {
   creatingFolder.value = true;
   newFolderName.value = '';
@@ -310,8 +359,7 @@ function cancelNewFolder() {
   newFolderName.value = '';
 }
 
-// ─── Dialog Actions ──────────────────────────────────────────────────────────
-
+// Dialog Actions
 function confirm() {
   emit('select', selectedPath.value);
   emit('update:modelValue', false);
