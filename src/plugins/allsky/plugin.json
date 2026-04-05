@@ -1,0 +1,9 @@
+{
+  "id": "allsky",
+  "name": "Allsky",
+  "description": "Used to display an image from an Allsky camera",
+  "version": "1.0.0",
+  "author": "Dirk Morlak",
+  "defaultEnabled": false,
+  "enabled": true
+}
