@@ -83,10 +83,12 @@ export const useWebcamStore = defineStore('webcamStore', {
         return;
       }
 
-      // Generate new timestamp-based URL to bypass cache
+      // Generate new timestamp-based URL to bypass cache, routed through backend proxy
       const timestamp = new Date().getTime();
       const separator = this.snapshotUrl.includes('?') ? '&' : '?';
-      const newImageUrl = `${this.snapshotUrl}${separator}t=${timestamp}`;
+      const timedUrl = `${this.snapshotUrl}${separator}t=${timestamp}`;
+      const proxyBase = `${window.location.protocol}//${window.location.host}/api/proxy`;
+      const newImageUrl = `${proxyBase}?url=${encodeURIComponent(timedUrl)}`;
 
       if (this.currentImageUrl) {
         // Preload next image for seamless transition
