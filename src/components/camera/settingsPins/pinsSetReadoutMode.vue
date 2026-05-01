@@ -82,7 +82,10 @@ async function setReadoutModeSnap() {
     const response = await apiService.cameraAction(
       `set-setting?settingName=ReadoutModeForSnapImages&newValue=${readoutModeSnap.value}`
     );
-    await apiService.profileChangeValue('CameraSettings-ReadoutModeForSnapImages', readoutModeSnap.value);
+    await apiService.profileChangeValue(
+      'CameraSettings-ReadoutModeForSnapImages',
+      readoutModeSnap.value
+    );
     console.log('[setReadoutMode] ', response);
   } catch (error) {
     console.log('Error while setting readoutMode');
