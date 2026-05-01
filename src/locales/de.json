@@ -3931,7 +3931,7 @@
       "showSkyThumbnails": "Himmelsminiaturansichten anzeigen",
       "showStarCountCV": "Star Count-Lebenslauf anzeigen",
       "showTsProgressBars": "TS-Fortschrittsbalken anzeigen",
-      "smtpPort": "Hafen",
+      "smtpPort": "smtp Port",
       "smtpServer": "SMTP-Server",
       "smtpSsl": "Verwenden Sie TLS/SSL",
       "testDiscord": "Testnachricht senden",
