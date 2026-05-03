@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Modalità Fullwell alta",
       "LEDLights": "GUIDATO",
       "LowNoiseMode": "Modalità Ultra",
+      "BadPixelCorrection": "Correzione pixel difettosi",
+      "BadPixelCorrectionThreshold": "Soglia pixel difettosi",
       "dewHeaterStrength": "Forza del riscaldatore di rugiada",
       "tab_camera": "Fotocamera",
       "tab_cooler": "Raffreddamento",

@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Hoge Fullwell-modus",
       "LEDLights": "LED",
       "LowNoiseMode": "Ultra-modus",
+      "BadPixelCorrection": "Slechte pixel correctie",
+      "BadPixelCorrectionThreshold": "Slechte pixel drempel",
       "dewHeaterStrength": "Sterkte van de dauwverwarmer",
       "tab_camera": "Camera",
       "tab_cooler": "Koeling",

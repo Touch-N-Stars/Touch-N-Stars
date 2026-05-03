@@ -1217,6 +1217,8 @@
       "readout_mode_image": "Auslesemodus Sequenz",
       "readout_mode_snap": "Auslesemodus Schnappschuss",
       "LowNoiseMode": "Ultra Mode",
+      "BadPixelCorrection": "Hot-Pixel Korrektur",
+      "BadPixelCorrectionThreshold": "Hot-Pixel Schwellwert",
       "HighFullwellMode": "High Fullwell Mode",
       "BinAverageEnabled": "Binning averages pixels",
       "LEDLights": "LED",

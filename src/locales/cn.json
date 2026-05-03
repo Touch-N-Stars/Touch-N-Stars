@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "高满井模式",
       "LEDLights": "引领",
       "LowNoiseMode": "超级模式",
+      "BadPixelCorrection": "坏点校正",
+      "BadPixelCorrectionThreshold": "坏点阈值",
       "dewHeaterStrength": "露水加热器强度",
       "tab_camera": "相机",
       "tab_cooler": "冷却",
