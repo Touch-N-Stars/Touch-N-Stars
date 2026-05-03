@@ -1185,6 +1185,8 @@
       "readout_mode_image": "読み出しモード: シーケンス",
       "readout_mode_snap": "読み出しモード: スナップショット",
       "LowNoiseMode": "ウルトラモード",
+      "BadPixelCorrection": "不良ピクセル補正",
+      "BadPixelCorrectionThreshold": "不良ピクセル閾値",
       "HighFullwellMode": "ハイフルウェルモード",
       "BinAverageEnabled": "ビニングでピクセルを平均化",
       "LEDLights": "LED",

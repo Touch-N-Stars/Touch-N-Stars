@@ -1222,6 +1222,8 @@
       "readout_mode_image": "Readout Mode Sequence",
       "readout_mode_snap": "Readout Mode Snapshot",
       "LowNoiseMode": "Ultra Mode",
+      "BadPixelCorrection": "Bad Pixel Correction",
+      "BadPixelCorrectionThreshold": "Bad Pixel Threshold",
       "HighFullwellMode": "High Fullwell Mode",
       "BinAverageEnabled": "Binning averages pixels",
       "LEDLights": "LED",
