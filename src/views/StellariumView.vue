@@ -114,9 +114,9 @@ import stellariumCredits from '@/components/stellarium/stellariumCredits.vue';
 import SelectedObject from '@/components/stellarium/SelectedObject.vue';
 import stellariumSettings from '@/components/stellarium/stellariumSettings.vue';
 import stellariumClock from '@/components/stellarium/stellariumClock.vue';
-import StellariumViewDirection from '@/components/stellarium/StellariumViewDirection.vue';
 import StellariumFovFrame from '@/components/stellarium/StellariumFovFrame.vue';
 import StellariumFovRotation from '@/components/stellarium/StellariumFovRotation.vue';
+import StellariumViewDirection from '@/components/stellarium/StellariumViewDirection.vue';
 import { timeSync } from '@/utils/timeSync';
 import { utcToMJD } from '@/utils/utils';
 
