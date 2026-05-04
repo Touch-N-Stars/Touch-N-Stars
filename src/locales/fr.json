@@ -1803,7 +1803,16 @@
       "pluginsTitle": "Plugins PINS",
       "pluginsUninstall": "Désinstaller",
       "pluginsUninstalling": "Désinstallation...",
-      "pluginsVersion": "Version"
+      "pluginsVersion": "Version",
+      "indiInstallModalAssetName": "Nom de l'actif",
+      "indiInstallModalDriverPackage": "Pilote/Package",
+      "indiInstallModalInstall": "Installer",
+      "indiInstallModalInstalling": "Installation...",
+      "indiInstallModalLabel": "Étiquette",
+      "indiInstallModalSuccessCompleted": "Installation terminée pour {label}.",
+      "indiInstallModalSuccessStarted": "L'installation a démarré pour {label}.",
+      "indiInstallModalTitle": "Installer le pilote INDI",
+      "indiInstallModalType": "Taper"
     },
     "bahtifocus": {
       "title": "Analyseur de masque Bahtinov",

@@ -1803,7 +1803,16 @@
       "pluginsTitle": "PINS プラグイン",
       "pluginsUninstall": "アンインストール",
       "pluginsUninstalling": "アンインストール中...",
-      "pluginsVersion": "バージョン"
+      "pluginsVersion": "バージョン",
+      "indiInstallModalAssetName": "アセット名",
+      "indiInstallModalDriverPackage": "ドライバー/パッケージ",
+      "indiInstallModalInstall": "インストール",
+      "indiInstallModalInstalling": "インストール中...",
+      "indiInstallModalLabel": "ラベル",
+      "indiInstallModalSuccessCompleted": "{label} のインストールが完了しました。",
+      "indiInstallModalSuccessStarted": "{label} のインストールが開始されました。",
+      "indiInstallModalTitle": "INDIドライバーをインストールする",
+      "indiInstallModalType": "タイプ"
     },
     "bahtifocus": {
       "title": "バーティノフマスク・アナライザー",

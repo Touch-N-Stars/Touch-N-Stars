@@ -1803,7 +1803,16 @@
       "pluginsTitle": "PINS-plug-ins",
       "pluginsUninstall": "Verwijderen",
       "pluginsUninstalling": "Verwijderen...",
-      "pluginsVersion": "Versie"
+      "pluginsVersion": "Versie",
+      "indiInstallModalAssetName": "Naam van item",
+      "indiInstallModalDriverPackage": "Bestuurder/pakket",
+      "indiInstallModalInstall": "Installeren",
+      "indiInstallModalInstalling": "Installeren...",
+      "indiInstallModalLabel": "Label",
+      "indiInstallModalSuccessCompleted": "Installatie voltooid voor {label}.",
+      "indiInstallModalSuccessStarted": "Installatie gestart voor {label}.",
+      "indiInstallModalTitle": "Installeer het INDI-stuurprogramma",
+      "indiInstallModalType": "Type"
     },
     "bahtifocus": {
       "title": "Bahtinov Masker Analyse",

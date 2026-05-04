@@ -83,7 +83,7 @@
               @open-updates="showUpdatesModal = true"
               @refresh="loadIndi3rdpartyDrivers"
               @search="loadIndi3rdpartyDrivers"
-              @install="installIndi3rdpartyDriver"
+              @install="openIndi3rdpartyInstallModal"
               @plugins-refresh="loadPinsPlugins"
               @plugin-install="installPinsPlugin"
               @plugin-uninstall="uninstallPinsPlugin"
@@ -91,6 +91,15 @@
               @update:selected-asset="selectedIndi3rdpartyAsset = $event"
             />
           </template>
+
+          <PinsIndiInstallConfirmModal
+            :show="showIndi3rdpartyInstallModal"
+            :selected-item="selectedIndi3rdpartyDriver"
+            :installing="isIndi3rdpartyInstalling"
+            :error-message="indi3rdpartyInstallError"
+            @close="closeIndi3rdpartyInstallModal"
+            @confirm="installIndi3rdpartyDriver"
+          />
 
           <template v-if="activeTab === 'upgrade'">
             <PinsUpgradeTab
@@ -235,6 +244,7 @@ import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/store/settingsStore';
 import { usePinsStore } from '../store/pinsStore';
 import { apiStore } from '@/store/store';
+import { useToastStore } from '@/store/toastStore';
 import axios from 'axios';
 import SubNav from '@/components/SubNav.vue';
 import Modal from '@/components/helpers/Modal.vue';
@@ -242,13 +252,20 @@ import PinsNetworkTab from '../components/tabs/PinsNetworkTab.vue';
 import PinsServicesTab from '../components/tabs/PinsServicesTab.vue';
 import PinsSoftwareTab from '../components/tabs/PinsSoftwareTab.vue';
 import PinsUpgradeTab from '../components/tabs/PinsUpgradeTab.vue';
+import PinsIndiInstallConfirmModal from '../components/PinsIndiInstallConfirmModal.vue';
 import { usePinsWifiInterfaces } from '../composables/usePinsWifiInterfaces';
 import { usePinsUpgradeTracker } from '../composables/usePinsUpgradeTracker';
+import {
+  buildIndiInstallPayload,
+  extractIndiInstallErrorDetail,
+  parseIndiInstallJobId,
+} from '../composables/indiInstallUtils';
 
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const store = apiStore();
 const pinsStore = usePinsStore();
+const toastStore = useToastStore();
 
 const sambaEnabled = ref(false);
 const phd2Enabled = ref(false);
@@ -272,6 +289,8 @@ const pinsPluginsBusyPackage = ref('');
 const dhcpClients = ref([]);
 const isDhcpClientsLoading = ref(false);
 const selectedIndi3rdpartyAsset = ref('');
+const showIndi3rdpartyInstallModal = ref(false);
+const indi3rdpartyInstallError = ref('');
 const activeTab = ref('network');
 const {
   stationaryMode,
@@ -296,6 +315,13 @@ const TOKEN = 'zZDqJ3IKeFaIZqG2JIFvsxzA5E48GC2gyGVagHFZqC0OMtgoupUDZCPhQDYKm35d'
 const availableUpdatePackages = computed(() => {
   const packages = updatesCheckResult.value?.packages || [];
   return packages.filter((pkg) => pkg.updateAvailable);
+});
+
+const selectedIndi3rdpartyDriver = computed(() => {
+  return (
+    indi3rdpartyDrivers.value.find((pkg) => pkg.assetName === selectedIndi3rdpartyAsset.value) ||
+    null
+  );
 });
 
 const pinsNavItems = computed(() => [
@@ -428,12 +454,44 @@ async function loadIndi3rdpartyDrivers() {
   }
 }
 
-async function installIndi3rdpartyDriver() {
+function openIndi3rdpartyInstallModal() {
   if (
     status.value === 'Running' ||
     isIndi3rdpartyInstalling.value ||
-    !selectedIndi3rdpartyAsset.value
+    !selectedIndi3rdpartyAsset.value ||
+    !selectedIndi3rdpartyDriver.value
   ) {
+    return;
+  }
+
+  indi3rdpartyInstallError.value = '';
+  showIndi3rdpartyInstallModal.value = true;
+}
+
+function closeIndi3rdpartyInstallModal() {
+  if (isIndi3rdpartyInstalling.value) {
+    return;
+  }
+
+  showIndi3rdpartyInstallModal.value = false;
+  indi3rdpartyInstallError.value = '';
+}
+
+async function installIndi3rdpartyDriver(formInput) {
+  if (
+    status.value === 'Running' ||
+    isIndi3rdpartyInstalling.value ||
+    !selectedIndi3rdpartyAsset.value ||
+    !selectedIndi3rdpartyDriver.value
+  ) {
+    return;
+  }
+
+  let payload;
+  try {
+    payload = buildIndiInstallPayload(selectedIndi3rdpartyDriver.value, formInput || {});
+  } catch (error) {
+    indi3rdpartyInstallError.value = error.message;
     return;
   }
 
@@ -449,18 +507,17 @@ async function installIndi3rdpartyDriver() {
   appendLog(t('plugins.pins.logs.init', { ip }));
   appendLog(
     t('plugins.pins.logs.indi3rdpartyInstallStart', {
-      assetName: selectedIndi3rdpartyAsset.value,
+      assetName: payload.assetName,
     })
   );
 
+  indi3rdpartyInstallError.value = '';
   isIndi3rdpartyInstalling.value = true;
   try {
     const directAxios = axios.create({ headers: {} });
     const response = await directAxios.post(
       `http://${ip}:${PORT}/packages/indi3rdparty/install`,
-      {
-        assetName: selectedIndi3rdpartyAsset.value,
-      },
+      payload,
       {
         headers: {
           Authorization: `Bearer ${TOKEN}`,
@@ -471,13 +528,17 @@ async function installIndi3rdpartyDriver() {
     );
 
     const data = response.data;
-    let returnedJobId;
+    const returnedJobId = parseIndiInstallJobId(data);
 
-    if (data && typeof data === 'object' && data.jobId) {
-      returnedJobId = data.jobId;
-    } else if (typeof data === 'string' || typeof data === 'number') {
-      returnedJobId = data;
-    }
+    closeIndi3rdpartyInstallModal();
+    toastStore.showToast({
+      type: 'success',
+      title: t('plugins.pins.indiInstallModalTitle'),
+      message: returnedJobId
+        ? t('plugins.pins.indiInstallModalSuccessStarted', { label: payload.label })
+        : t('plugins.pins.indiInstallModalSuccessCompleted', { label: payload.label }),
+      autoClose: true,
+    });
 
     if (returnedJobId) {
       jobId.value = returnedJobId;
@@ -495,8 +556,10 @@ async function installIndi3rdpartyDriver() {
     await loadIndi3rdpartyDrivers();
   } catch (error) {
     console.error(error);
+    const errorDetail = extractIndiInstallErrorDetail(error);
+    indi3rdpartyInstallError.value = errorDetail;
     status.value = 'Failed';
-    appendLog(t('plugins.pins.logs.indi3rdpartyInstallFailed', { message: error.message }));
+    appendLog(t('plugins.pins.logs.indi3rdpartyInstallFailed', { message: errorDetail }));
 
     if (error.response) {
       appendLog(
