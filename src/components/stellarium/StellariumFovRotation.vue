@@ -6,10 +6,7 @@
       class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md"
       :title="$t('components.framing.fovSettings.rotationAngle')"
     >
-      <div class="relative flex items-center justify-center w-7 h-7">
-        <ArrowPathIcon class="w-7 h-7 absolute text-cyan-300" />
-        <CameraIcon class="w-3 h-3 text-white" />
-      </div>
+      <CameraFramingIcon class="w-7 h-7 text-cyan-300" camera-class="text-white" />
     </button>
     <div
       v-else
@@ -67,7 +64,8 @@
 
 <script setup>
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
-import { ArrowPathIcon, XMarkIcon, CameraIcon } from '@heroicons/vue/24/outline';
+import { XMarkIcon } from '@heroicons/vue/24/outline';
+import CameraFramingIcon from '@/components/icons/CameraFramingIcon.vue';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
 import { useStellariumStore } from '@/store/stellariumStore';
