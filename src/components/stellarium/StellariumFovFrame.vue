@@ -6,6 +6,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { apiStore } from '@/store/store';
 import { useStellariumStore } from '@/store/stellariumStore';
+import { useFramingStore } from '@/store/framingStore';
 import {
   computeCameraFovDeg,
   buildFovPolygonGeoJSON,
@@ -14,6 +15,7 @@ import {
 
 const store = apiStore();
 const stellariumStore = useStellariumStore();
+const framingStore = useFramingStore();
 
 const fovLayer = ref(null);
 const viewFov = ref(null);
@@ -35,8 +37,7 @@ const cameraFov = computed(() => {
 });
 
 const rotationDeg = computed(() => {
-  if (!store.rotatorInfo?.Connected) return 0;
-  return Number(store.rotatorInfo?.MechanicalPosition ?? 0);
+  return Number(framingStore.rotationAngle ?? 0);
 });
 
 function updateViewFov() {
@@ -63,6 +64,7 @@ function updateViewFov() {
   }
   lastViewRa = raDeg;
   lastViewDec = decDeg;
+  console.log('[StellariumFovFrame] applying rotationDeg =', rotationDeg.value);
   viewFov.value.data = buildFovPolygonGeoJSON({
     raDeg,
     decDeg,

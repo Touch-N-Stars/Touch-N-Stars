@@ -88,8 +88,10 @@ export function buildFovPolygonGeoJSON({
     [-halfX, halfY],
   ];
 
-  const cosR = Math.cos(rotationDeg * D2R);
-  const sinR = Math.sin(rotationDeg * D2R);
+  // Position angle convention (matches NINA plate-solve PositionAngle):
+  // 0° = top of frame toward celestial north, increasing toward east.
+  const cosR = Math.cos(-rotationDeg * D2R);
+  const sinR = Math.sin(-rotationDeg * D2R);
 
   const ring = cornersLocal.map(([dx, dy]) => {
     const dxr = dx * cosR - dy * sinR;
