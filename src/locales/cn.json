@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "轮廓和安装坐标不同。",
       "timeSync": {
-        "backendTime": "后端UTC",
+        "backendTime": "服务器时间",
         "mountNotConnected": "安装未连接",
-        "mountTime": "安装UTC",
+        "mountTime": "赤道仪时间",
         "notSupported": "驱动程序不支持",
         "syncLabel": "同步挂载时间",
         "syncLabelInfo": "启用后，点击「立即同步」将短暂断开并重新连接赤道仪，以便 NINA 将当前时间传输给它。",
@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "高满井模式",
       "LEDLights": "引领",
       "LowNoiseMode": "超级模式",
+      "BadPixelCorrection": "坏点校正",
+      "BadPixelCorrectionThreshold": "坏点阈值",
       "dewHeaterStrength": "露水加热器强度",
       "tab_camera": "相机",
       "tab_cooler": "冷却",
@@ -1801,7 +1803,16 @@
       "pluginsTitle": "PINS Plugins",
       "pluginsUninstall": "Uninstall",
       "pluginsUninstalling": "Uninstalling...",
-      "pluginsVersion": "Version"
+      "pluginsVersion": "Version",
+      "indiInstallModalAssetName": "Asset Name",
+      "indiInstallModalDriverPackage": "Driver/Package",
+      "indiInstallModalInstall": "Install",
+      "indiInstallModalInstalling": "Installing...",
+      "indiInstallModalLabel": "Label",
+      "indiInstallModalSuccessCompleted": "Installation completed for {label}.",
+      "indiInstallModalSuccessStarted": "Installation started for {label}.",
+      "indiInstallModalTitle": "Install INDI Driver",
+      "indiInstallModalType": "Type"
     },
     "bahtifocus": {
       "title": "Bahtinov掩模分析仪",

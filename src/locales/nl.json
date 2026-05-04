@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "Profiel- en montagecoördinaten verschillen.",
       "timeSync": {
-        "backendTime": "Back-end UTC",
+        "backendTime": "Servertijd",
         "mountNotConnected": "Mount niet aangesloten",
-        "mountTime": "Monteer UTC",
+        "mountTime": "Montagetijd",
         "notSupported": "Niet ondersteund door stuurprogramma",
         "syncLabel": "Synchroniseer de tijd om te mounten",
         "syncLabelInfo": "Indien ingeschakeld wordt bij het klikken op \"Nu synchroniseren\" de montuur kort verbroken en opnieuw verbonden zodat NINA de huidige tijd kan overdragen.",
@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Hoge Fullwell-modus",
       "LEDLights": "LED",
       "LowNoiseMode": "Ultra-modus",
+      "BadPixelCorrection": "Slechte pixel correctie",
+      "BadPixelCorrectionThreshold": "Slechte pixel drempel",
       "dewHeaterStrength": "Sterkte van de dauwverwarmer",
       "tab_camera": "Camera",
       "tab_cooler": "Koeling",
@@ -1801,7 +1803,16 @@
       "pluginsTitle": "PINS-plug-ins",
       "pluginsUninstall": "Verwijderen",
       "pluginsUninstalling": "Verwijderen...",
-      "pluginsVersion": "Versie"
+      "pluginsVersion": "Versie",
+      "indiInstallModalAssetName": "Naam van item",
+      "indiInstallModalDriverPackage": "Bestuurder/pakket",
+      "indiInstallModalInstall": "Installeren",
+      "indiInstallModalInstalling": "Installeren...",
+      "indiInstallModalLabel": "Label",
+      "indiInstallModalSuccessCompleted": "Installatie voltooid voor {label}.",
+      "indiInstallModalSuccessStarted": "Installatie gestart voor {label}.",
+      "indiInstallModalTitle": "Installeer het INDI-stuurprogramma",
+      "indiInstallModalType": "Type"
     },
     "bahtifocus": {
       "title": "Bahtinov Masker Analyse",

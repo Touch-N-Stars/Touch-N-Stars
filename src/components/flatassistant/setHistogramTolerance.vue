@@ -11,10 +11,11 @@
   />
 </template>
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { apiStore } from '@/store/store';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
+import apiService from '@/services/apiService';
 
 const store = apiStore();
 const flatsStore = useFlatassistantStore();
@@ -25,6 +26,14 @@ const meanTolerancePercentage = computed({
     flatsStore.meanTolerance = value / 100;
   },
 });
+
+watch(
+  () => flatsStore.meanTolerance,
+  async (newValue) => {
+    if (!newValue) return;
+    await apiService.profileChangeValue('FlatWizardSettings-HistogramTolerance', newValue);
+  }
+);
 
 onMounted(() => {
   flatsStore.meanTolerance = store.profileInfo?.FlatWizardSettings?.HistogramTolerance ?? 0;

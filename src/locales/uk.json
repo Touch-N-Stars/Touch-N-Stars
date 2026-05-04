@@ -303,8 +303,8 @@
       "coordsMismatchWarning": "Координати профілю та монтування відрізняються.",
       "timeSync": {
         "title": "Синхронізація часу",
-        "backendTime": "UTC сервера",
-        "mountTime": "UTC монтування",
+        "backendTime": "Час сервера",
+        "mountTime": "Час монтування",
         "syncLabel": "Синхронізувати час з монтуванням",
         "syncLabelInfo": "Якщо увімкнено, натискання кнопки «Синхронізувати зараз» короткочасно від'єднає та знову підключить монтування, щоб NINA могла передати поточний час.",
         "mountNotConnected": "Монтування не підключено",
@@ -1157,6 +1157,8 @@
       "readout_mode_snap": "Режим зчитування знімка",
       "dewHeaterStrength": "Потужність обігрівача від роси",
       "LowNoiseMode": "Режим Ultra",
+      "BadPixelCorrection": "Корекція битих пікселів",
+      "BadPixelCorrectionThreshold": "Поріг битих пікселів",
       "HighFullwellMode": "Режим High Fullwell",
       "BinAverageEnabled": "Бінінг усереднює пікселі",
       "LEDLights": "LED",
@@ -2642,7 +2644,16 @@
       "pluginsTitle": "Плагіни PINS",
       "pluginsUninstall": "Видалити",
       "pluginsUninstalling": "Видалення...",
-      "pluginsVersion": "Версія"
+      "pluginsVersion": "Версія",
+      "indiInstallModalAssetName": "Назва активу",
+      "indiInstallModalDriverPackage": "Драйвер/пакет",
+      "indiInstallModalInstall": "встановити",
+      "indiInstallModalInstalling": "Встановлення...",
+      "indiInstallModalLabel": "Мітка",
+      "indiInstallModalSuccessCompleted": "Встановлення для {label} завершено.",
+      "indiInstallModalSuccessStarted": "Розпочато встановлення для {label}.",
+      "indiInstallModalTitle": "Встановіть драйвер INDI",
+      "indiInstallModalType": "Тип"
     },
     "narrowband": {
       "title": "Калькулятор фільтрів",

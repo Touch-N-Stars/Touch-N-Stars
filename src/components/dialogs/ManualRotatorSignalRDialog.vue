@@ -123,7 +123,7 @@ const currentPositionRaw = computed(() => {
 });
 
 const targetPositionRaw = computed(() => {
-  return content.value.TargetPosition || content.value.AbsTargetPosition || '0';
+  return content.value.AbsTargetPosition ?? content.value.TargetPosition ?? '0';
 });
 
 const rotationAmountRaw = computed(() => {
@@ -179,10 +179,15 @@ const formatNumber = (val) => {
   return num.toFixed(2);
 };
 
+// NINA can send target positions outside 0–360° (e.g. 448°); WPF normalizes there.
+const normalize360 = (val) => ((val % 360) + 360) % 360;
+
 const currentAngle = computed(() => parseCultureInvariantNumber(currentPositionRaw.value));
-const targetAngle = computed(() => parseCultureInvariantNumber(targetPositionRaw.value));
+const targetAngle = computed(() =>
+  normalize360(parseCultureInvariantNumber(targetPositionRaw.value))
+);
 const currentPosition = computed(() => formatNumber(currentPositionRaw.value));
-const targetPosition = computed(() => formatNumber(targetPositionRaw.value));
+const targetPosition = computed(() => targetAngle.value.toFixed(2));
 const rotationAmount = computed(() => formatNumber(rotationAmountRaw.value));
 
 function getRotationArc(currentAngle, targetAngle) {

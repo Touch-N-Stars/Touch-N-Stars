@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "As coordenadas de perfil e montagem são diferentes.",
       "timeSync": {
-        "backendTime": "Back-end UTC",
+        "backendTime": "Hora do servidor",
         "mountNotConnected": "Montagem não conectada",
-        "mountTime": "Montar UTC",
+        "mountTime": "Hora da montagem",
         "notSupported": "Não suportado pelo driver",
         "syncLabel": "Sincronize o tempo para montar",
         "syncLabelInfo": "Quando ativado, clicar em \"Sincronizar agora\" desconectará e reconectará brevemente a montagem para que o NINA possa transferir a hora atual.",
@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Modo Fullwell alto",
       "LEDLights": "LIDERADO",
       "LowNoiseMode": "Modo Ultra",
+      "BadPixelCorrection": "Correção de pixels defeituosos",
+      "BadPixelCorrectionThreshold": "Limite de pixels defeituosos",
       "dewHeaterStrength": "Força do aquecedor de orvalho",
       "tab_camera": "Câmera",
       "tab_cooler": "Resfriamento",
@@ -1801,7 +1803,16 @@
       "pluginsTitle": "Plug-ins PINS",
       "pluginsUninstall": "Desinstalar",
       "pluginsUninstalling": "Desinstalando...",
-      "pluginsVersion": "Versão"
+      "pluginsVersion": "Versão",
+      "indiInstallModalAssetName": "Nome do ativo",
+      "indiInstallModalDriverPackage": "Motorista/Pacote",
+      "indiInstallModalInstall": "Instalar",
+      "indiInstallModalInstalling": "Instalando...",
+      "indiInstallModalLabel": "Rótulo",
+      "indiInstallModalSuccessCompleted": "Instalação concluída para {label}.",
+      "indiInstallModalSuccessStarted": "A instalação de {label} foi iniciada.",
+      "indiInstallModalTitle": "Instale o driver INDI",
+      "indiInstallModalType": "Tipo"
     },
     "bahtifocus": {
       "title": "Analisador de máscara Bahtinov",

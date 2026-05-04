@@ -11,10 +11,11 @@
   />
 </template>
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, watch } from 'vue';
 import { apiStore } from '@/store/store';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
+import apiService from '@/services/apiService';
 
 const store = apiStore();
 const flatsStore = useFlatassistantStore();
@@ -25,6 +26,14 @@ const histogramMeanPercentage = computed({
     flatsStore.histogramMean = value / 100;
   },
 });
+
+watch(
+  () => flatsStore.histogramMean,
+  async (newValue) => {
+    if (!newValue) return;
+    await apiService.profileChangeValue('FlatWizardSettings-HistogramMeanTarget', newValue);
+  }
+);
 
 onMounted(() => {
   flatsStore.histogramMean = store.profileInfo?.FlatWizardSettings?.HistogramMeanTarget ?? 0;

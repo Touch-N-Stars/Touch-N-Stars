@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "Souřadnice profilu a montáže se liší.",
       "timeSync": {
-        "backendTime": "Backend UTC",
+        "backendTime": "Čas serveru",
         "mountNotConnected": "Montáž není připojena",
-        "mountTime": "Namontujte UTC",
+        "mountTime": "Čas montáže",
         "notSupported": "Není podporováno ovladačem",
         "syncLabel": "Synchronizujte čas pro připojení",
         "syncLabelInfo": "Pokud je tato možnost povolena, kliknutím na \"Synchronizovat nyní\" se montáž krátce odpojí a znovu připojí, aby NINA mohla přenést aktuální čas.",
@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Vysoký režim Fullwell",
       "LEDLights": "LED",
       "LowNoiseMode": "Ultra režim",
+      "BadPixelCorrection": "Korekce vadných pixelů",
+      "BadPixelCorrectionThreshold": "Práh vadných pixelů",
       "dewHeaterStrength": "Síla ohřívače rosy",
       "tab_camera": "Kamera",
       "tab_cooler": "Chlazení",
@@ -1801,7 +1803,16 @@
       "pluginsTitle": "PINS Plugins",
       "pluginsUninstall": "Uninstall",
       "pluginsUninstalling": "Uninstalling...",
-      "pluginsVersion": "Version"
+      "pluginsVersion": "Version",
+      "indiInstallModalAssetName": "Asset Name",
+      "indiInstallModalDriverPackage": "Driver/Package",
+      "indiInstallModalInstall": "Install",
+      "indiInstallModalInstalling": "Installing...",
+      "indiInstallModalLabel": "Label",
+      "indiInstallModalSuccessCompleted": "Installation completed for {label}.",
+      "indiInstallModalSuccessStarted": "Installation started for {label}.",
+      "indiInstallModalTitle": "Install INDI Driver",
+      "indiInstallModalType": "Type"
     },
     "bahtifocus": {
       "title": "Bahtinovův analyzátor masky",
