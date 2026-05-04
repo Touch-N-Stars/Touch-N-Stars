@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useFavTargetStore } from '@/store/favTargetsStore';
 import { HeartIcon } from '@heroicons/vue/24/outline';
 import { useI18n } from 'vue-i18n';
@@ -65,6 +65,10 @@ const props = defineProps({
 
 const showModal = ref(false);
 const nameInput = ref(props.name);
+
+watch(showModal, (isOpen) => {
+  if (isOpen) nameInput.value = props.name;
+});
 
 const isMosaic = computed(() => props.mosaicCols > 1 || props.mosaicRows > 1);
 
