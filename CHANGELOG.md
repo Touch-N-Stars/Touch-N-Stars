@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Equipment: INDI driver selection for dome and safety monitor
 - Flatassistant: Stop tracking after slew to zenith
 - Plugin: Add filebrowser
+- Stellarium: Add Camera FOV
 
 ### Changed
 - Plate Solve: Use the NINA-style toolbar icon in the shared image viewer
