@@ -531,7 +531,7 @@ onMounted(() => {
     tppaStore.isConnected = isConnected.value;
 
     // Automatische Wiederverbindung wenn Verbindung geschlossen wurde
-    if (status === 'Geschlossen') {
+    if (status === 'Closed') {
       console.log('connection closed, trying to reconnect in 2 seconds');
       setTimeout(() => {
         if (!isConnected.value) {
@@ -591,7 +591,12 @@ onMounted(() => {
     formatMessage(message);
   });
 
-  websocketService.connect();
+  if (websocketService.isOpen()) {
+    isConnected.value = true;
+    tppaStore.isConnected = true;
+  } else {
+    websocketService.connect();
+  }
 });
 
 onBeforeUnmount(() => {
@@ -600,7 +605,6 @@ onBeforeUnmount(() => {
   }
   websocketService.setStatusCallback(null);
   websocketService.setMessageCallback(null);
-  websocketService.disconnect();
 });
 </script>
 
