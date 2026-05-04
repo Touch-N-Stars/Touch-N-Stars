@@ -1157,6 +1157,8 @@
       "readout_mode_snap": "Режим зчитування знімка",
       "dewHeaterStrength": "Потужність обігрівача від роси",
       "LowNoiseMode": "Режим Ultra",
+      "BadPixelCorrection": "Корекція битих пікселів",
+      "BadPixelCorrectionThreshold": "Поріг битих пікселів",
       "HighFullwellMode": "Режим High Fullwell",
       "BinAverageEnabled": "Бінінг усереднює пікселі",
       "LEDLights": "LED",

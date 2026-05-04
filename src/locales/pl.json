@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Wysoki tryb Fullwell",
       "LEDLights": "PROWADZONY",
       "LowNoiseMode": "Tryb ultra",
+      "BadPixelCorrection": "Korekcja martwych pikseli",
+      "BadPixelCorrectionThreshold": "Próg martwych pikseli",
       "dewHeaterStrength": "Siła podgrzewacza rosy",
       "tab_camera": "Kamera",
       "tab_cooler": "Chłodzenie",

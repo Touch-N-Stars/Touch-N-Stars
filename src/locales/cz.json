@@ -1180,6 +1180,8 @@
       "HighFullwellMode": "Vysoký režim Fullwell",
       "LEDLights": "LED",
       "LowNoiseMode": "Ultra režim",
+      "BadPixelCorrection": "Korekce vadných pixelů",
+      "BadPixelCorrectionThreshold": "Práh vadných pixelů",
       "dewHeaterStrength": "Síla ohřívače rosy",
       "tab_camera": "Kamera",
       "tab_cooler": "Chlazení",

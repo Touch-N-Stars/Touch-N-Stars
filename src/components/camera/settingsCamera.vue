@@ -87,6 +87,9 @@
       <pinsSetReadoutMode v-else />
     </div>
     <pinsSetLowNoiseMode v-if="store.isPINS && cameraStore.cameraSettings.HasLowNoiseMode" />
+    <pinsSetBadPixelCorrection
+      v-if="store.isPINS && cameraStore.cameraSettings?.BadPixelCorrection !== undefined"
+    />
     <pinsSetHighFullwellMode v-if="store.isPINS && cameraStore.cameraSettings.HasHighFullwell" />
     <pinsSetLEDLights v-if="store.isPINS && cameraStore.cameraSettings.CanSetLEDLights" />
     <div v-if="store.cameraInfo.CanSetUSBLimit" class="w-full">
@@ -108,6 +111,7 @@ import setReadoutMode from '@/components/camera/setReadoutMode.vue';
 import setCameraUsbLimit from './setCameraUsbLimit.vue';
 import pinsSetCameraUsbLimit from './settingsPins/pinsSetCameraUsbLimit.vue';
 import pinsSetLowNoiseMode from './settingsPins/pinsSetLowNoiseMode.vue';
+import pinsSetBadPixelCorrection from './settingsPins/pinsSetBadPixelCorrection.vue';
 import pinsSetHighFullwellMode from './settingsPins/pinsSetHighFullwellMode.vue';
 import pinsSetBinAverageEnabled from './settingsPins/pinsSetBinAverageEnabled.vue';
 import pinsSetLEDLights from './settingsPins/pinsSetLEDLights.vue';
