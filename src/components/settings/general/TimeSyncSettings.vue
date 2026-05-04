@@ -32,7 +32,11 @@
       <div class="bg-gray-900/60 rounded p-2">
         <div class="text-gray-400 mb-1">{{ $t('components.settings.timeSync.backendTime') }}</div>
         <div class="text-gray-100 font-mono">
-          {{ timeInfo.backendUtc ? new Date(timeInfo.backendUtc).toLocaleString(undefined, { timeZoneName: 'short' }) : '—' }}
+          {{
+            timeInfo.backendUtc
+              ? new Date(timeInfo.backendUtc).toLocaleString(undefined, { timeZoneName: 'short' })
+              : '—'
+          }}
         </div>
       </div>
       <div class="bg-gray-900/60 rounded p-2">
@@ -50,7 +54,13 @@
       <div class="bg-gray-900/60 rounded p-2">
         <div class="text-gray-400 mb-1">{{ $t('plugins.pins.deviceTime') }}</div>
         <div class="text-gray-100 font-mono">
-          {{ pinsDeviceTimestamp ? new Date(pinsDeviceTimestamp * 1000).toLocaleString(undefined, { timeZoneName: 'short' }) : '—' }}
+          {{
+            pinsDeviceTimestamp
+              ? new Date(pinsDeviceTimestamp * 1000).toLocaleString(undefined, {
+                  timeZoneName: 'short',
+                })
+              : '—'
+          }}
         </div>
       </div>
     </div>
