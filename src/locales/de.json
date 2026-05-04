@@ -398,7 +398,7 @@
       },
       "coordsMismatchWarning": "Profil- und Montierungskoordinaten unterscheiden sich.",
       "timeSync": {
-        "backendTime": "Backend UTC",
+        "backendTime": "Backend Zeit",
         "mountNotConnected": "Montierung nicht verbunden",
         "mountTime": "Uhrzeit der Montierung",
         "notSupported": "Wird vom Treiber nicht unterstützt",

@@ -32,7 +32,7 @@
       <div class="bg-gray-900/60 rounded p-2">
         <div class="text-gray-400 mb-1">{{ $t('components.settings.timeSync.backendTime') }}</div>
         <div class="text-gray-100 font-mono">
-          {{ timeInfo.backendUtc ? new Date(timeInfo.backendUtc).toUTCString() : '—' }}
+          {{ timeInfo.backendUtc ? new Date(timeInfo.backendUtc).toLocaleString(undefined, { timeZoneName: 'short' }) : '—' }}
         </div>
       </div>
       <div class="bg-gray-900/60 rounded p-2">
@@ -41,16 +41,16 @@
           {{ $t('components.settings.timeSync.mountNotConnected') }}
         </div>
         <div v-else-if="timeInfo.mountUtc" class="text-gray-100 font-mono">
-          {{ new Date(timeInfo.mountUtc).toUTCString() }}
+          {{ new Date(timeInfo.mountUtc).toLocaleString(undefined, { timeZoneName: 'short' }) }}
         </div>
         <div v-else class="text-gray-500 italic">
           {{ $t('components.settings.timeSync.notSupported') }}
         </div>
       </div>
       <div class="bg-gray-900/60 rounded p-2">
-        <div class="text-gray-400 mb-1">{{ $t('plugins.pins.deviceTime') }} (UTC)</div>
+        <div class="text-gray-400 mb-1">{{ $t('plugins.pins.deviceTime') }}</div>
         <div class="text-gray-100 font-mono">
-          {{ pinsDeviceTimestamp ? new Date(pinsDeviceTimestamp * 1000).toUTCString() : '—' }}
+          {{ pinsDeviceTimestamp ? new Date(pinsDeviceTimestamp * 1000).toLocaleString(undefined, { timeZoneName: 'short' }) : '—' }}
         </div>
       </div>
     </div>
