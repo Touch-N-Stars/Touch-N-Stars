@@ -113,26 +113,26 @@
           </p>
         </div>
 
-        <div
-          class="border-t border-gray-700 px-4 py-3 sm:px-5 flex flex-col-reverse sm:flex-row sm:justify-end gap-2"
-        >
-          <button
-            type="button"
-            class="default-button-gray w-full sm:w-auto"
-            :disabled="installing"
-            @click="closeModal"
-          >
-            {{ $t('common.cancel') }}
-          </button>
-          <button
-            type="button"
-            class="default-button-cyan w-full sm:w-auto disabled:opacity-50"
-            :disabled="installing || !validation.isValid"
-            @click="submit"
-          >
-            <span v-if="installing">{{ t('plugins.pins.indiInstallModalInstalling') }}</span>
-            <span v-else>{{ t('plugins.pins.indiInstallModalInstall') }}</span>
-          </button>
+        <div class="border-t border-gray-700 px-4 py-3 sm:px-5">
+          <div class="grid grid-cols-2 gap-3 w-full sm:min-w-[18rem]">
+            <button
+              type="button"
+              class="default-button-gray w-full inline-flex items-center justify-center text-center"
+              :disabled="installing"
+              @click="closeModal"
+            >
+              {{ $t('common.cancel') }}
+            </button>
+            <button
+              type="button"
+              class="default-button-cyan w-full inline-flex items-center justify-center text-center disabled:opacity-50"
+              :disabled="installing || !validation.isValid"
+              @click="submit"
+            >
+              <span v-if="installing">{{ t('plugins.pins.indiInstallModalInstalling') }}</span>
+              <span v-else>{{ t('plugins.pins.indiInstallModalInstall') }}</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -205,6 +205,8 @@ function submit() {
   if (props.installing || !validation.value.isValid) {
     return;
   }
+
+  emit('close');
 
   emit('confirm', {
     type: validation.value.normalizedType,
