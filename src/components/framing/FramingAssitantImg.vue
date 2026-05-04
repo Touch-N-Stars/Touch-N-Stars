@@ -353,24 +353,55 @@ watch(
   () => framingStore.fov,
   async (newFov, oldFov) => {
     if (cameraFovX.value > 0 && newFov !== oldFov) {
-      // Kamera-Box-Größe neu berechnen
+      // Kamera-Box-Größe und Skala neu berechnen
       updateCameraBoxSize();
 
-      // Bounding Box in der Mitte positionieren (Mosaik oder einzelne Kamera)
-      if (framingStore.isMosaicMode) {
-        const { w, h } = mosaicTotalSize();
-        x.value = framingStore.containerWidth / 2 - w / 2;
-        y.value = framingStore.containerHeight / 2 - h / 2;
-      } else {
-        x.value = framingStore.containerWidth / 2 - framingStore.camWidth / 2;
-        y.value = framingStore.containerHeight / 2 - framingStore.camHeight / 2;
+      // Effektive Abmessungen (Mosaikgitter oder einzelne Kamera)
+      const effectiveW = framingStore.isMosaicMode ? mosaicTotalSize().w : framingStore.camWidth;
+      const effectiveH = framingStore.isMosaicMode ? mosaicTotalSize().h : framingStore.camHeight;
+
+      // Pixelposition aus aktuellem RA/DEC + neuer Skala neu berechnen.
+      // So bleibt das Rechteck auf demselben Himmelsausschnitt; nur seine
+      // Größe (und damit die Bildschirm-Position relativ zum Container) ändert sich.
+      let cosDec = Math.cos((baseDec * Math.PI) / 180);
+      if (Math.abs(cosDec) < 1e-8) cosDec = 1e-8;
+      const deltaX = ((baseRA - framingStore.RAangle) * cosDec) / scaleDegPerPixel.value;
+      const deltaY = (framingStore.DECangle - baseDec) / scaleDegPerPixel.value;
+      const targetCenterX = framingStore.containerWidth / 2 + deltaX;
+      const targetCenterY = framingStore.containerHeight / 2 - deltaY;
+      x.value = targetCenterX - effectiveW / 2;
+      y.value = targetCenterY - effectiveH / 2;
+
+      // Wenn das Rechteck durch den FOV-Wechsel aus dem Container heraus
+      // wandert (z.B. starkes Hineinzoomen nach vorherigem Drag), klemmen.
+      let clamped = false;
+      if (x.value < 0) {
+        x.value = 0;
+        clamped = true;
+      }
+      if (y.value < 0) {
+        y.value = 0;
+        clamped = true;
+      }
+      if (x.value > framingStore.containerWidth - effectiveW) {
+        x.value = framingStore.containerWidth - effectiveW;
+        clamped = true;
+      }
+      if (y.value > framingStore.containerHeight - effectiveH) {
+        y.value = framingStore.containerHeight - effectiveH;
+        clamped = true;
       }
 
       // Position im Store speichern (absolut und relativ)
       framingStore.cameraX = x.value;
       framingStore.cameraY = y.value;
-      framingStore.cameraRelativeX = 0.5;
-      framingStore.cameraRelativeY = 0.5;
+      framingStore.cameraRelativeX = (x.value + effectiveW / 2) / framingStore.containerWidth;
+      framingStore.cameraRelativeY = (y.value + effectiveH / 2) / framingStore.containerHeight;
+
+      // Nach Klemmen RA/DEC aktualisieren, damit Position und Koordinaten konsistent bleiben
+      if (clamped) {
+        calculateRaDec();
+      }
 
       // Nur Hintergrundbild neu laden (mit Debounce)
       debouncedImageReload();
@@ -560,8 +591,12 @@ function onRotate(e) {
 
 async function getTargetPic() {
   try {
-    const ra = framingStore.RAangle;
-    const dec = framingStore.DECangle;
+    // Bild bleibt auf dem Ursprungs-Target zentriert (baseRA/baseDec) — nicht
+    // auf der per Drag verschobenen RAangle/DECangle. Sonst würde das Bild bei
+    // FOV-/Resize-Reloads mitspringen und das Kamera-Rechteck wäre plötzlich
+    // an einer anderen Stelle als zuvor.
+    const ra = baseRA;
+    const dec = baseDec;
     const width = framingStore.containerWidth;
     const height = framingStore.containerHeight;
     const fov = framingStore.fov;
