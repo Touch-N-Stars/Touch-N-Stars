@@ -27,10 +27,9 @@ const cameraStore = useCameraStore();
 const dewHeaterStrength = ref(9);
 
 const dewHeaterOptions = computed(() => {
-  const min = cameraStore.cameraSettings.MinDewHeaterStrength;
-  const max = cameraStore.cameraSettings.MaxDewHeaterStrength;
-  if (Number.isFinite(min) && Number.isFinite(max) && max >= min) {
-    return Array.from({ length: max - min + 1 }, (_, i) => min + i);
+  const max = cameraStore.cameraSettings?.MaxDewHeaterStrength;
+  if (Number.isFinite(max) && max >= 0) {
+    return Array.from({ length: max + 1 }, (_, i) => i);
   }
   return Array.from({ length: 11 }, (_, i) => i * 10);
 });
