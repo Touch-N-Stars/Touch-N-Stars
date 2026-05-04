@@ -22,7 +22,13 @@ class WebSocketService {
     this.messageCallback = callback;
   }
 
+  isOpen() {
+    return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
+  }
+
   connect() {
+    this.shouldReconnect = true;
+
     const settingsStore = useSettingsStore();
     const store = apiStore();
     const backendPort = store.apiPort;
