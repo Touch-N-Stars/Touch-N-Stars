@@ -33,6 +33,8 @@
         </button>
       </div>
 
+      <getImageRotation />
+
       <div class="text-xs font-mono text-gray-400 leading-tight">
         <div>RA: {{ raString || '—' }}</div>
         <div>Dec: {{ decString || '—' }}</div>
@@ -75,6 +77,7 @@ import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ButtonSlewCenterRotate from '@/components/mount/ButtonSlewCenterRotate.vue';
 import setSequenceTarget from '@/components/framing/setSequenceTarget.vue';
 import SaveFavTargets from '@/components/favTargets/SaveFavTargets.vue';
+import getImageRotation from '@/components/framing/getImageRotation.vue';
 
 const store = apiStore();
 const framingStore = useFramingStore();
