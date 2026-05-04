@@ -29,6 +29,15 @@
       "
     />
 
+    <!-- Camera FOV Rotation Control -->
+    <StellariumFovRotation
+      v-if="
+        stellariumStore.stel &&
+        store.cameraInfo.Connected &&
+        store.profileInfo?.TelescopeSettings?.FocalLength
+      "
+    />
+
     <!-- Overlay für das Suchfeld -->
     <div
       v-if="isSearchVisible"
@@ -107,6 +116,7 @@ import stellariumSettings from '@/components/stellarium/stellariumSettings.vue';
 import stellariumClock from '@/components/stellarium/stellariumClock.vue';
 import StellariumViewDirection from '@/components/stellarium/StellariumViewDirection.vue';
 import StellariumFovFrame from '@/components/stellarium/StellariumFovFrame.vue';
+import StellariumFovRotation from '@/components/stellarium/StellariumFovRotation.vue';
 import { timeSync } from '@/utils/timeSync';
 import { utcToMJD } from '@/utils/utils';
 

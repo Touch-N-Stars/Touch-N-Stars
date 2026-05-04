@@ -64,7 +64,6 @@ function updateViewFov() {
   }
   lastViewRa = raDeg;
   lastViewDec = decDeg;
-  console.log('[StellariumFovFrame] applying rotationDeg =', rotationDeg.value);
   viewFov.value.data = buildFovPolygonGeoJSON({
     raDeg,
     decDeg,
