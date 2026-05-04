@@ -148,8 +148,7 @@ onBeforeUnmount(() => {
 });
 
 const positionClasses = computed(() => ({
-  'top-3 right-3': !isLandscape.value && !expanded.value,
-  'top-16 right-3': !isLandscape.value && expanded.value,
-  'top-3 right-20': isLandscape.value,
+  'top-40 right-3': !isLandscape.value,
+  'top-16 right-6': isLandscape.value,
 }));
 </script>
