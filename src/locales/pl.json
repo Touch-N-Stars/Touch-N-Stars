@@ -1803,7 +1803,16 @@
       "pluginsTitle": "Wtyczki PINS",
       "pluginsUninstall": "Odinstaluj",
       "pluginsUninstalling": "Odinstalowywanie...",
-      "pluginsVersion": "Wersja"
+      "pluginsVersion": "Wersja",
+      "indiInstallModalAssetName": "Nazwa zasobu",
+      "indiInstallModalDriverPackage": "Sterownik/pakiet",
+      "indiInstallModalInstall": "Zainstalować",
+      "indiInstallModalInstalling": "Instaluję...",
+      "indiInstallModalLabel": "Etykieta",
+      "indiInstallModalSuccessCompleted": "Instalacja dla {label} została ukończona.",
+      "indiInstallModalSuccessStarted": "Rozpoczęto instalację dla {label}.",
+      "indiInstallModalTitle": "Zainstaluj sterownik INDI",
+      "indiInstallModalType": "Typ"
     },
     "bahtifocus": {
       "title": "Analizator maski Bahtinowa",

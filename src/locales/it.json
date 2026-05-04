@@ -1803,7 +1803,16 @@
       "pluginsTitle": "Plugin PIN",
       "pluginsUninstall": "Disinstallare",
       "pluginsUninstalling": "Disinstallazione...",
-      "pluginsVersion": "Versione"
+      "pluginsVersion": "Versione",
+      "indiInstallModalAssetName": "Nome della risorsa",
+      "indiInstallModalDriverPackage": "Autista/Pacchetto",
+      "indiInstallModalInstall": "Installare",
+      "indiInstallModalInstalling": "Installazione...",
+      "indiInstallModalLabel": "Etichetta",
+      "indiInstallModalSuccessCompleted": "Installazione completata per {label}.",
+      "indiInstallModalSuccessStarted": "L'installazione è iniziata per {label}.",
+      "indiInstallModalTitle": "Installa il driver INDI",
+      "indiInstallModalType": "Tipo"
     },
     "bahtifocus": {
       "title": "Analizzatore di maschere Bahtinov",

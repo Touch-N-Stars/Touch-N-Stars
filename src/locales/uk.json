@@ -2644,7 +2644,16 @@
       "pluginsTitle": "Плагіни PINS",
       "pluginsUninstall": "Видалити",
       "pluginsUninstalling": "Видалення...",
-      "pluginsVersion": "Версія"
+      "pluginsVersion": "Версія",
+      "indiInstallModalAssetName": "Назва активу",
+      "indiInstallModalDriverPackage": "Драйвер/пакет",
+      "indiInstallModalInstall": "встановити",
+      "indiInstallModalInstalling": "Встановлення...",
+      "indiInstallModalLabel": "Мітка",
+      "indiInstallModalSuccessCompleted": "Встановлення для {label} завершено.",
+      "indiInstallModalSuccessStarted": "Розпочато встановлення для {label}.",
+      "indiInstallModalTitle": "Встановіть драйвер INDI",
+      "indiInstallModalType": "Тип"
     },
     "narrowband": {
       "title": "Калькулятор фільтрів",

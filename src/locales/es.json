@@ -1803,7 +1803,16 @@
       "pluginsTitle": "Complementos de PIN",
       "pluginsUninstall": "Desinstalar",
       "pluginsUninstalling": "Desinstalando...",
-      "pluginsVersion": "Versión"
+      "pluginsVersion": "Versión",
+      "indiInstallModalAssetName": "Nombre del activo",
+      "indiInstallModalDriverPackage": "Conductor/Paquete",
+      "indiInstallModalInstall": "Instalar",
+      "indiInstallModalInstalling": "Instalando...",
+      "indiInstallModalLabel": "Etiqueta",
+      "indiInstallModalSuccessCompleted": "Instalación completada para {label}.",
+      "indiInstallModalSuccessStarted": "La instalación comenzó para {label}.",
+      "indiInstallModalTitle": "Instalar el controlador INDI",
+      "indiInstallModalType": "Tipo"
     },
     "bahtifocus": {
       "title": "Analizador de máscaras de Bahtinov",
