@@ -21,22 +21,10 @@
     />
 
     <!-- Camera FOV Frame Overlay -->
-    <StellariumFovFrame
-      v-if="
-        stellariumStore.stel &&
-        store.cameraInfo.Connected &&
-        store.profileInfo?.TelescopeSettings?.FocalLength
-      "
-    />
+    <StellariumFovFrame v-if="showFovFrame" />
 
     <!-- Camera FOV Rotation Control + View-Center Actions -->
-    <StellariumFovRotation
-      v-if="
-        stellariumStore.stel &&
-        store.cameraInfo.Connected &&
-        store.profileInfo?.TelescopeSettings?.FocalLength
-      "
-    />
+    <StellariumFovRotation v-if="showFovFrame" />
 
     <!-- Overlay für das Suchfeld -->
     <div
@@ -92,8 +80,8 @@
       <stellariumClock v-if="stellariumStore.stel" />
     </div>
 
-    <!-- View Direction Display -->
-    <StellariumViewDirection v-if="stellariumStore.stel" />
+    <!-- View Direction Display (hidden when camera FOV frame is rendered) -->
+    <StellariumViewDirection v-if="stellariumStore.stel && !showFovFrame" />
   </div>
 </template>
 
@@ -142,6 +130,13 @@ const containerClasses = computed(() => ({
   'stellarium-portrait': !isLandscape.value,
   'stellarium-landscape': isLandscape.value,
 }));
+
+const showFovFrame = computed(
+  () =>
+    !!stellariumStore.stel &&
+    !!store.cameraInfo.Connected &&
+    !!store.profileInfo?.TelescopeSettings?.FocalLength
+);
 
 // Controls positioning classes
 const controlsClasses = computed(() => ({
