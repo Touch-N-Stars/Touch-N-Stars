@@ -279,7 +279,7 @@ onMounted(async () => {
           console.log('Stellarium initialized with server time:', serverTime.toISOString());
 
           // Zeitgeschwindigkeit auf 1 setzen
-          stel.core.time_speed = 1;
+          stel.core.time_speed = 0;
 
           // Speichere Stellarium für späteren Zugriff
           stellariumStore.stel = stel;
