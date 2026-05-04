@@ -150,6 +150,7 @@ export const apiStore = defineStore('store', {
     minimumTnsPluginVersion: '1.2.0.0',
     currentApiVersion: null,
     currentTnsPluginVersion: null,
+    currentPinsVersion: null,
     isApiVersionNewerOrEqual: false,
     isTnsPluginVersionNewerOrEqual: false,
     mount: {
@@ -609,6 +610,7 @@ export const apiStore = defineStore('store', {
       this.afTimestampLastStart = null;
       this.currentApiVersion = null;
       this.currentTnsPluginVersion = null;
+      this.currentPinsVersion = null;
 
       // Disconnect Channel WebSocket when backend is not reachable
       if (websocketChannelService.isWebSocketConnected()) {
@@ -1030,9 +1032,11 @@ export const apiStore = defineStore('store', {
       }
       if (pinsVersion && pinsVersion.Response) {
         this.isPINS = true;
+        this.currentPinsVersion = pinsVersion.Response;
         console.log('[API Store] PINS detected, version:', pinsVersion.Response);
       } else {
         this.isPINS = false;
+        this.currentPinsVersion = null;
         console.log('[API Store] No PINS endpoint — assuming NINA');
       }
       this.isPinsCheckDone = true;
