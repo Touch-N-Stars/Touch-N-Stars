@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "Le coordinate del profilo e della montatura differiscono.",
       "timeSync": {
-        "backendTime": "Back-end UTC",
+        "backendTime": "Ora del server",
         "mountNotConnected": "Montatura non connessa",
-        "mountTime": "Monte UTC",
+        "mountTime": "Ora della montatura",
         "notSupported": "Non supportato dal driver",
         "syncLabel": "Sincronizza il tempo per montare",
         "syncLabelInfo": "Se abilitato, facendo clic su \"Sincronizza ora\" la montatura verrà brevemente disconnessa e riconnessa in modo che NINA possa trasferirle l'ora corrente.",

@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "Współrzędne profilu i mocowania różnią się.",
       "timeSync": {
-        "backendTime": "Zaplecze UTC",
+        "backendTime": "Czas serwera",
         "mountNotConnected": "Uchwyt nie jest podłączony",
-        "mountTime": "Zamontuj UTC",
+        "mountTime": "Czas montażu",
         "notSupported": "Nieobsługiwane przez sterownik",
         "syncLabel": "Czas synchronizacji podczas montażu",
         "syncLabelInfo": "Po włączeniu kliknięcie przycisku \"Synchronizuj teraz\" spowoduje krótkie rozłączenie i ponowne połączenie montażu, aby NINA mogła przesłać aktualny czas.",

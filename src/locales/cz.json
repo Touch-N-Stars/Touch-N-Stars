@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "Souřadnice profilu a montáže se liší.",
       "timeSync": {
-        "backendTime": "Backend UTC",
+        "backendTime": "Čas serveru",
         "mountNotConnected": "Montáž není připojena",
-        "mountTime": "Namontujte UTC",
+        "mountTime": "Čas montáže",
         "notSupported": "Není podporováno ovladačem",
         "syncLabel": "Synchronizujte čas pro připojení",
         "syncLabelInfo": "Pokud je tato možnost povolena, kliknutím na \"Synchronizovat nyní\" se montáž krátce odpojí a znovu připojí, aby NINA mohla přenést aktuální čas.",

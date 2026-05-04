@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "Profiel- en montagecoördinaten verschillen.",
       "timeSync": {
-        "backendTime": "Back-end UTC",
+        "backendTime": "Servertijd",
         "mountNotConnected": "Mount niet aangesloten",
-        "mountTime": "Monteer UTC",
+        "mountTime": "Montagetijd",
         "notSupported": "Niet ondersteund door stuurprogramma",
         "syncLabel": "Synchroniseer de tijd om te mounten",
         "syncLabelInfo": "Indien ingeschakeld wordt bij het klikken op \"Nu synchroniseren\" de montuur kort verbroken en opnieuw verbonden zodat NINA de huidige tijd kan overdragen.",

@@ -326,9 +326,9 @@
       },
       "coordsMismatchWarning": "轮廓和安装坐标不同。",
       "timeSync": {
-        "backendTime": "后端UTC",
+        "backendTime": "服务器时间",
         "mountNotConnected": "安装未连接",
-        "mountTime": "安装UTC",
+        "mountTime": "赤道仪时间",
         "notSupported": "驱动程序不支持",
         "syncLabel": "同步挂载时间",
         "syncLabelInfo": "启用后，点击「立即同步」将短暂断开并重新连接赤道仪，以便 NINA 将当前时间传输给它。",

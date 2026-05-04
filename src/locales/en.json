@@ -237,8 +237,8 @@
       "coordsMismatchWarning": "Profile and mount coordinates differ.",
       "timeSync": {
         "title": "Time Synchronisation",
-        "backendTime": "Backend UTC",
-        "mountTime": "Mount UTC",
+        "backendTime": "Backend Time",
+        "mountTime": "Mount Time",
         "syncLabel": "Sync time to mount",
         "syncLabelInfo": "When enabled, clicking \"Sync Now\" will briefly disconnect and reconnect the mount so that NINA can transfer the current time to it.",
         "mountNotConnected": "Mount not connected",
