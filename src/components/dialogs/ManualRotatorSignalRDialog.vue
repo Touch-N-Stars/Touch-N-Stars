@@ -184,7 +184,7 @@ const normalize360 = (val) => ((val % 360) + 360) % 360;
 
 const currentAngle = computed(() => parseCultureInvariantNumber(currentPositionRaw.value));
 const targetAngle = computed(() =>
-  normalize360(parseCultureInvariantNumber(targetPositionRaw.value)),
+  normalize360(parseCultureInvariantNumber(targetPositionRaw.value))
 );
 const currentPosition = computed(() => formatNumber(currentPositionRaw.value));
 const targetPosition = computed(() => targetAngle.value.toFixed(2));
