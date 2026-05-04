@@ -71,7 +71,7 @@ async function setReadoutModeImage() {
     const response = await apiService.cameraAction(
       `set-setting?settingName=ReadoutModeForNormalImages&newValue=${readoutModeImage.value}`
     );
-    console.log('[setReadoutMode] ', response);
+    console.log('[pinsSetReadoutMode] ', response);
   } catch (error) {
     console.log('Error while setting readoutMode');
   }
@@ -79,16 +79,17 @@ async function setReadoutModeImage() {
 
 async function setReadoutModeSnap() {
   try {
-    const response = await apiService.cameraAction(
+    const cameraResponse = await apiService.cameraAction(
       `set-setting?settingName=ReadoutModeForSnapImages&newValue=${readoutModeSnap.value}`
     );
-    await apiService.profileChangeValue(
+    console.log('[pinsSetReadoutMode Camera] ', cameraResponse);
+    const profileResponse = await apiService.profileChangeValue(
       'CameraSettings-ReadoutModeForSnapImages',
       readoutModeSnap.value
     );
-    console.log('[setReadoutMode] ', response);
+    console.log('[pinsSetReadoutMode Profile] ', profileResponse);
   } catch (error) {
-    console.log('Error while setting readoutMode');
+    console.log('[pinsSetReadoutMode] Error while setting readoutMode', error);
   }
 }
 </script>
