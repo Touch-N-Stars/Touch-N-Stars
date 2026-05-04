@@ -29,7 +29,7 @@
       "
     />
 
-    <!-- Camera FOV Rotation Control -->
+    <!-- Camera FOV Rotation Control + View-Center Actions -->
     <StellariumFovRotation
       v-if="
         stellariumStore.stel &&
