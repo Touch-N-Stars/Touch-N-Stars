@@ -1,13 +1,25 @@
 <template>
-  <button
+  <div
     :class="buttonClasses"
-    class="fixed bg-black bg-opacity-80 p-2 rounded-full text-gray-200 font-mono transition-all duration-200 shadow-md z-10"
+    class="fixed flex items-center gap-2 z-10"
     style="bottom: calc(env(safe-area-inset-bottom, 0px) + 48px)"
-    @click="toggleDateTimeControls"
   >
-    <p class="text-center">{{ formattedTime }}</p>
-    <p class="text-xs text-center">{{ formattedDate }}</p>
-  </button>
+    <button
+      @click="togglePlayPause"
+      class="bg-black bg-opacity-80 p-2 rounded-full text-gray-200 transition-all duration-200 shadow-md"
+      :title="isPaused ? 'Play' : 'Pause'"
+    >
+      <PlayIcon v-if="isPaused" class="w-6 h-6" />
+      <PauseIcon v-else class="w-6 h-6" />
+    </button>
+    <button
+      class="bg-black bg-opacity-80 p-2 rounded-full text-gray-200 font-mono transition-all duration-200 shadow-md"
+      @click="toggleDateTimeControls"
+    >
+      <p class="text-center">{{ formattedTime }}</p>
+      <p class="text-xs text-center">{{ formattedDate }}</p>
+    </button>
+  </div>
 
   <Modal :show="isDateTimeVisible" @close="isDateTimeVisible = false" zIndex="z-40">
     <template #header>
@@ -126,6 +138,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch, onBeforeUnmount } from 'vue';
+import { PlayIcon, PauseIcon } from '@heroicons/vue/24/outline';
 import { useStellariumStore } from '@/store/stellariumStore';
 import { mjdToUTC, utcToMJD } from '@/utils/utils.js';
 import { useOrientation } from '@/composables/useOrientation';
@@ -138,7 +151,8 @@ const formattedDate = ref('');
 const isDateTimeVisible = ref(false);
 const dateValue = ref(formatDateForInput(new Date()));
 const timeValue = ref(formatTimeForInput(new Date()));
-const timeSpeed = ref(1);
+const timeSpeed = ref(0);
+const isPaused = ref(true);
 let animationFrameId = null;
 
 // Check if in landscape mode
@@ -312,16 +326,25 @@ function updateTimeSpeed(event) {
 // Watch for changes in time speed
 watch(timeSpeed, (newValue) => {
   if (!stellariumStore.stel) return;
+  if (isPaused.value) return;
 
   const speed = Math.pow(2, Number(newValue));
   stellariumStore.stel.core.time_speed = speed;
   console.log('Time speed set to:', speed);
 });
 
+function togglePlayPause() {
+  if (!stellariumStore.stel) return;
+  isPaused.value = !isPaused.value;
+  stellariumStore.stel.core.time_speed = isPaused.value ? 0 : Math.pow(2, Number(timeSpeed.value));
+}
+
 onMounted(() => {
   resetToCurrentTime();
   updateTime();
-  timeSpeed.value = 0; // ini
+  if (stellariumStore.stel) {
+    isPaused.value = stellariumStore.stel.core.time_speed === 0;
+  }
 });
 
 onBeforeUnmount(() => {

@@ -1,38 +1,12 @@
 <template>
-  <!-- Framing symbol in the center -->
-  <div class="framing-container" @click="openFramingModal">
-    <!-- Rectangle around crosshair -->
-    <div class="crosshair-rectangle"></div>
+  <!-- Crosshair in the center -->
+  <div class="framing-container">
     <!-- Vertical line -->
     <div class="crosshair-line vertical"></div>
     <!-- Horizontal line -->
     <div class="crosshair-line horizontal"></div>
     <!-- Center dot -->
     <div class="crosshair-dot"></div>
-    <!-- SVG framing symbol overlay -->
-    <svg viewBox="0 0 100 100" class="framing-icon">
-      <!-- First rectangle (straight) -->
-      <rect
-        x="60"
-        y="30"
-        width="25"
-        height="13"
-        fill="none"
-        stroke="rgba(255, 255, 255, 0.6)"
-        stroke-width="1.5"
-      />
-      <!-- Second rectangle (rotated, overlapped) -->
-      <rect
-        x="62"
-        y="28"
-        width="25"
-        height="13"
-        fill="none"
-        stroke="rgba(6, 182, 212, 0.7)"
-        stroke-width="1.5"
-        transform="rotate(15 75 35)"
-      />
-    </svg>
   </div>
 
   <!-- Coordinates below crosshair -->
@@ -44,20 +18,13 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import { useRouter } from 'vue-router';
 import { useStellariumStore } from '@/store/stellariumStore';
-import { useFramingStore } from '@/store/framingStore';
 import { degreesToHMS, degreesToDMS, rad2deg } from '@/utils/utils';
 
 const stellariumStore = useStellariumStore();
-const framingStore = useFramingStore();
-const router = useRouter();
 const formattedRA = ref('--:--:--');
 const formattedDec = ref('+--:--:--');
-const formattedRADeg = ref('0.00');
-const formattedDecDeg = ref('0.00');
 
-// Koordinaten-Offset (in Grad) für Justierung
 let animationFrameId = null;
 
 function updateViewDirection() {
@@ -66,44 +33,21 @@ function updateViewDirection() {
   try {
     const stel = stellariumStore.stel;
     const obs = stel.observer;
-
-    // Get the center of the view - forward direction is [0, 0, -1] in VIEW frame
     const viewVec = [0, 0, -1];
-
-    // Convert from VIEW to CIRS frame
     const cirsVec = stel.convertFrame(obs, 'VIEW', 'ICRF', viewVec);
-
-    // Convert to spherical coordinates (RA/Dec)
     const radec = stel.c2s(cirsVec);
 
     let raDeg = rad2deg(radec[0]);
     const decDeg = rad2deg(radec[1]);
-
-    // Normalize RA to 0-360 range
     raDeg = ((raDeg % 360) + 360) % 360;
 
     formattedRA.value = degreesToHMS(raDeg);
     formattedDec.value = degreesToDMS(decDeg);
-    formattedRADeg.value = raDeg.toString();
-    formattedDecDeg.value = decDeg.toString();
   } catch (error) {
     console.error('Error updating view direction:', error);
   }
 
   animationFrameId = requestAnimationFrame(updateViewDirection);
-}
-
-function openFramingModal() {
-  framingStore.RAangle = parseFloat(formattedRADeg.value);
-  framingStore.DECangle = parseFloat(formattedDecDeg.value);
-  framingStore.RAangleString = formattedRA.value;
-  framingStore.DECangleString = formattedDec.value;
-  framingStore.selectedItem = {
-    Name: 'Stellarium View',
-    RA: formattedRADeg.value,
-    Dec: formattedDecDeg.value,
-  };
-  router.push('/framing');
 }
 
 onMounted(() => {
@@ -118,7 +62,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* Framing symbol styles */
 .framing-container {
   position: fixed;
   top: calc(50% - 15px);
@@ -127,17 +70,6 @@ onBeforeUnmount(() => {
   z-index: 1;
   width: 100px;
   height: 100px;
-  cursor: pointer;
-}
-
-.crosshair-rectangle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 60px;
-  height: 45px;
-  transform: translate(-50%, -50%);
-  border: 1px dashed rgba(255, 255, 255, 0.5);
   pointer-events: none;
 }
 
@@ -173,22 +105,12 @@ onBeforeUnmount(() => {
   transform: translate(-50%, -50%);
 }
 
-.framing-icon {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.4));
-}
-
 @media (orientation: landscape) {
   .framing-container {
     left: calc(50% + 4rem);
   }
 }
 
-/* Coordinates display */
 .coordinates-display {
   position: fixed;
   top: calc(50% + 20px);
@@ -211,10 +133,5 @@ onBeforeUnmount(() => {
   .coordinates-display {
     left: calc(50% + 4rem);
   }
-}
-
-/* Ensure proper touch handling */
-.touch-manipulation {
-  touch-action: manipulation;
 }
 </style>

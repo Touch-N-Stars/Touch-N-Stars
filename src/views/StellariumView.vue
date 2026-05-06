@@ -20,6 +20,12 @@
       :isSearchVisible="isSearchVisible"
     />
 
+    <!-- Camera FOV Frame Overlay -->
+    <StellariumFovFrame v-if="showFovFrame" />
+
+    <!-- Camera FOV Rotation Control + View-Center Actions -->
+    <StellariumFovRotation v-if="showFovFrame" />
+
     <!-- Overlay für das Suchfeld -->
     <div
       v-if="isSearchVisible"
@@ -74,8 +80,8 @@
       <stellariumClock v-if="stellariumStore.stel" />
     </div>
 
-    <!-- View Direction Display -->
-    <StellariumViewDirection v-if="stellariumStore.stel" />
+    <!-- View Direction Display (hidden when camera FOV frame is rendered) -->
+    <StellariumViewDirection v-if="stellariumStore.stel && !showFovFrame" />
   </div>
 </template>
 
@@ -96,6 +102,8 @@ import stellariumCredits from '@/components/stellarium/stellariumCredits.vue';
 import SelectedObject from '@/components/stellarium/SelectedObject.vue';
 import stellariumSettings from '@/components/stellarium/stellariumSettings.vue';
 import stellariumClock from '@/components/stellarium/stellariumClock.vue';
+import StellariumFovFrame from '@/components/stellarium/StellariumFovFrame.vue';
+import StellariumFovRotation from '@/components/stellarium/StellariumFovRotation.vue';
 import StellariumViewDirection from '@/components/stellarium/StellariumViewDirection.vue';
 import { timeSync } from '@/utils/timeSync';
 import { utcToMJD } from '@/utils/utils';
@@ -122,6 +130,13 @@ const containerClasses = computed(() => ({
   'stellarium-portrait': !isLandscape.value,
   'stellarium-landscape': isLandscape.value,
 }));
+
+const showFovFrame = computed(
+  () =>
+    !!stellariumStore.stel &&
+    !!store.cameraInfo.Connected &&
+    !!store.profileInfo?.TelescopeSettings?.FocalLength
+);
 
 // Controls positioning classes
 const controlsClasses = computed(() => ({
@@ -259,7 +274,7 @@ onMounted(async () => {
           console.log('Stellarium initialized with server time:', serverTime.toISOString());
 
           // Zeitgeschwindigkeit auf 1 setzen
-          stel.core.time_speed = 1;
+          stel.core.time_speed = 0;
 
           // Speichere Stellarium für späteren Zugriff
           stellariumStore.stel = stel;
