@@ -54,13 +54,7 @@
       <div class="bg-gray-900/60 rounded p-2">
         <div class="text-gray-400 mb-1">{{ $t('plugins.pins.deviceTime') }}</div>
         <div class="text-gray-100 font-mono">
-          {{
-            pinsDeviceTimestamp
-              ? new Date(pinsDeviceTimestamp * 1000).toLocaleString(undefined, {
-                  timeZoneName: 'short',
-                })
-              : '—'
-          }}
+          {{ formatPinsDeviceTime() }}
         </div>
       </div>
     </div>
@@ -135,7 +129,7 @@ const settingsStore = useSettingsStore();
 
 const timeSyncLoading = ref(false);
 const pinsTimeActionLoading = ref(false);
-const pinsDeviceTimestamp = ref(null);
+const pinsDeviceTime = ref(null);
 const timeInfo = ref({
   backendUtc: null,
   mountUtc: null,
@@ -145,6 +139,71 @@ const timeInfo = ref({
 
 function getPinsIp() {
   return settingsStore.connection.ip || window.location.hostname;
+}
+
+function pad2(value) {
+  return String(value).padStart(2, '0');
+}
+
+function formatDateTimeWithOffset(date) {
+  const year = date.getFullYear();
+  const month = pad2(date.getMonth() + 1);
+  const day = pad2(date.getDate());
+  const hours = pad2(date.getHours());
+  const minutes = pad2(date.getMinutes());
+  const seconds = pad2(date.getSeconds());
+
+  const offsetMinutesTotal = -date.getTimezoneOffset();
+  const sign = offsetMinutesTotal >= 0 ? '+' : '-';
+  const offsetHours = pad2(Math.floor(Math.abs(offsetMinutesTotal) / 60));
+  const offsetMinutes = pad2(Math.abs(offsetMinutesTotal) % 60);
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
+}
+
+function getDeviceDateTimePayload() {
+  const now = new Date();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+  return {
+    dateTime: formatDateTimeWithOffset(now),
+    timezone,
+  };
+}
+
+function parsePinsTimeToSeconds(deviceTime) {
+  if (!deviceTime) return null;
+
+  if (typeof deviceTime.timestamp === 'number') {
+    return deviceTime.timestamp;
+  }
+
+  if (typeof deviceTime.dateTime === 'string') {
+    const parsed = new Date(deviceTime.dateTime);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.getTime() / 1000;
+    }
+  }
+
+  return null;
+}
+
+function formatPinsDeviceTime() {
+  if (!pinsDeviceTime.value) return '—';
+
+  if (typeof pinsDeviceTime.value.dateTime === 'string') {
+    const parsed = new Date(pinsDeviceTime.value.dateTime);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toLocaleString(undefined, { timeZoneName: 'short' });
+    }
+  }
+
+  if (typeof pinsDeviceTime.value.timestamp === 'number') {
+    return new Date(pinsDeviceTime.value.timestamp * 1000).toLocaleString(undefined, {
+      timeZoneName: 'short',
+    });
+  }
+
+  return '—';
 }
 
 async function fetchPinsDeviceTime() {
@@ -159,40 +218,41 @@ async function fetchPinsDeviceTime() {
     timeout: 5000,
   });
 
-  return response?.data?.timestamp ?? null;
+  return response?.data ?? null;
 }
 
-async function syncPinsSystemTime(remoteTimestamp, force = false) {
+async function syncPinsSystemTime(remoteTime, force = false) {
   const ip = getPinsIp();
-  if (!ip || !remoteTimestamp) return;
+  if (!ip || !remoteTime) return;
 
-  const localTime = Date.now() / 1000;
-  const diff = Math.abs(remoteTimestamp - localTime);
-  if (!force && diff <= 5) return;
+  const remoteTimeSeconds = parsePinsTimeToSeconds(remoteTime);
+  const localTimeSeconds = Date.now() / 1000;
+  if (remoteTimeSeconds !== null) {
+    const diff = Math.abs(remoteTimeSeconds - localTimeSeconds);
+    if (!force && diff <= 5) return;
+  }
+
+  const payload = getDeviceDateTimePayload();
 
   const directAxios = axios.create({ headers: {} });
-  await directAxios.post(
-    `http://${ip}:${PINS_PORT}/system/time`,
-    { timestamp: localTime },
-    {
-      headers: {
-        Authorization: `Bearer ${PINS_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      timeout: 5000,
-    }
-  );
+  await directAxios.post(`http://${ip}:${PINS_PORT}/system/time`, payload, {
+    headers: {
+      Authorization: `Bearer ${PINS_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    timeout: 5000,
+  });
 
-  pinsDeviceTimestamp.value = localTime;
+  pinsDeviceTime.value = payload;
 }
 
 async function loadPinsTimeInfo() {
   try {
-    const timestamp = await fetchPinsDeviceTime();
-    pinsDeviceTimestamp.value = timestamp;
+    const remoteTime = await fetchPinsDeviceTime();
+    pinsDeviceTime.value = remoteTime;
 
-    if (timestamp && pinsStore.timeSyncEnabled) {
-      await syncPinsSystemTime(timestamp, false);
+    if (remoteTime && pinsStore.timeSyncEnabled) {
+      await syncPinsSystemTime(remoteTime, false);
     }
   } catch (e) {
     console.error('Failed to load PINS device time:', e);
@@ -232,9 +292,9 @@ const togglePinsTimeSync = async (value) => {
 const manualPinsTimeSync = async () => {
   pinsTimeActionLoading.value = true;
   try {
-    const timestamp = await fetchPinsDeviceTime();
-    pinsDeviceTimestamp.value = timestamp;
-    await syncPinsSystemTime(timestamp, true);
+    const remoteTime = await fetchPinsDeviceTime();
+    pinsDeviceTime.value = remoteTime;
+    await syncPinsSystemTime(remoteTime, true);
 
     if (timeInfo.value.timeSyncEnabled && store.mountInfo.Connected) {
       await apiService.mountAction('disconnect');
