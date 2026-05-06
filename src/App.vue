@@ -330,6 +330,7 @@ import {
   fetchChangelogWhatsNew,
   isNativePlatform,
 } from '@/services/updateService';
+import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 
 const store = apiStore();
 const settingsStore = useSettingsStore();
@@ -354,12 +355,13 @@ async function checkPinsTimeMismatch() {
       headers: { Authorization: `Bearer ${PINS_TOKEN}` },
       timeout: 5000,
     });
-    if (response.data && response.data.timestamp) {
+    const deviceTimestamp = parsePinsTimeToSeconds(response.data);
+    if (deviceTimestamp !== null) {
       const clientTimestamp = Date.now() / 1000;
-      const diff = Math.abs(response.data.timestamp - clientTimestamp);
+      const diff = Math.abs(deviceTimestamp - clientTimestamp);
       if (diff > 60) {
         timeWarningClientTime.value = new Date(clientTimestamp * 1000).toLocaleTimeString();
-        timeWarningDeviceTime.value = new Date(response.data.timestamp * 1000).toLocaleTimeString();
+        timeWarningDeviceTime.value = new Date(deviceTimestamp * 1000).toLocaleTimeString();
         showTimeWarningModal.value = true;
       }
     }
@@ -373,17 +375,14 @@ async function syncPinsTimeToClient() {
   if (!ip) return;
   try {
     const directAxios = axios.create({ headers: {} });
-    await directAxios.post(
-      `http://${ip}:${PINS_PORT}/system/time`,
-      { timestamp: Date.now() / 1000 },
-      {
-        headers: {
-          Authorization: `Bearer ${PINS_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 5000,
-      }
-    );
+    const payload = getDeviceDateTimePayload();
+    await directAxios.post(`http://${ip}:${PINS_PORT}/system/time`, payload, {
+      headers: {
+        Authorization: `Bearer ${PINS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      timeout: 5000,
+    });
   } catch (e) {
     console.warn('[TimeWarning] Could not set PINS time:', e.message);
   }

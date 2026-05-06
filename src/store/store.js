@@ -21,6 +21,7 @@ import { useDialogStore } from '@/store/dialogStore';
 import { useLogStore } from '@/store/logStore';
 import websocketMountControlService from '@/services/websocketMountControl';
 import websocketTppaService from '@/services/websocketTppa';
+import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 
 export const apiStore = defineStore('store', {
   state: () => ({
@@ -1060,8 +1061,13 @@ export const apiStore = defineStore('store', {
 
       const clientTime = new Date();
       const clientTimestamp = clientTime.getTime() / 1000; // Seconds
-      const serverTimestamp = serverTime.timestamp;
-      const serverIso = serverTime.iso;
+      const serverTimestamp = parsePinsTimeToSeconds(serverTime);
+      if (serverTimestamp === null) {
+        console.warn('[Time Sync] Could not parse server time payload:', serverTime);
+        return;
+      }
+      const serverIso =
+        serverTime.iso || serverTime.dateTime || new Date(serverTimestamp * 1000).toISOString();
 
       console.log(`[Time Sync] Client: ${clientTime.toISOString()} (${clientTimestamp})`);
       console.log(`[Time Sync] Server: ${serverIso} (${serverTimestamp})`);
@@ -1072,7 +1078,7 @@ export const apiStore = defineStore('store', {
       // If difference is more than 5 seconds, sync it
       if (diff > 5) {
         console.log('[Time Sync] Difference too large, updating server time...');
-        const success = await apiPinsService.setSystemTime(clientTimestamp);
+        const success = await apiPinsService.setSystemTime(getDeviceDateTimePayload(clientTime));
         if (success) {
           console.log('[Time Sync] Server time updated successfully.');
         } else {

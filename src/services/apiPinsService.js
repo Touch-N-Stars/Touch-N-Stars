@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
+import { getDeviceDateTimePayload } from '@/utils/pinsTimeUtils';
 
 const PINS_PORT = 8000;
 const PINS_TOKEN = 'zZDqJ3IKeFaIZqG2JIFvsxzA5E48GC2gyGVagHFZqC0OMtgoupUDZCPhQDYKm35d';
@@ -62,17 +63,18 @@ export default {
   async setSystemTime(timestamp) {
     const { PINS_SYSTEM_URL } = getUrls();
     try {
-      await axios.post(
-        `${PINS_SYSTEM_URL}/system/time`,
-        { timestamp },
-        {
-          headers: {
-            Authorization: `Bearer ${PINS_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          timeout: 5000,
-        }
-      );
+      const payload =
+        typeof timestamp === 'number'
+          ? getDeviceDateTimePayload(new Date(timestamp * 1000))
+          : timestamp;
+
+      await axios.post(`${PINS_SYSTEM_URL}/system/time`, payload, {
+        headers: {
+          Authorization: `Bearer ${PINS_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        timeout: 5000,
+      });
       return true;
     } catch (error) {
       console.error('Failed to set system time:', error);

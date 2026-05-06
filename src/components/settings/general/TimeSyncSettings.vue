@@ -119,6 +119,11 @@ import ToggleButton from '@/components/helpers/toggleButton.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import apiService from '@/services/apiService';
 import axios from 'axios';
+import {
+  formatPinsTimeForDisplay,
+  getDeviceDateTimePayload,
+  parsePinsTimeToSeconds,
+} from '@/utils/pinsTimeUtils';
 
 const PINS_PORT = 8000;
 const PINS_TOKEN = 'zZDqJ3IKeFaIZqG2JIFvsxzA5E48GC2gyGVagHFZqC0OMtgoupUDZCPhQDYKm35d';
@@ -141,69 +146,8 @@ function getPinsIp() {
   return settingsStore.connection.ip || window.location.hostname;
 }
 
-function pad2(value) {
-  return String(value).padStart(2, '0');
-}
-
-function formatDateTimeWithOffset(date) {
-  const year = date.getFullYear();
-  const month = pad2(date.getMonth() + 1);
-  const day = pad2(date.getDate());
-  const hours = pad2(date.getHours());
-  const minutes = pad2(date.getMinutes());
-  const seconds = pad2(date.getSeconds());
-
-  const offsetMinutesTotal = -date.getTimezoneOffset();
-  const sign = offsetMinutesTotal >= 0 ? '+' : '-';
-  const offsetHours = pad2(Math.floor(Math.abs(offsetMinutesTotal) / 60));
-  const offsetMinutes = pad2(Math.abs(offsetMinutesTotal) % 60);
-
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}${sign}${offsetHours}:${offsetMinutes}`;
-}
-
-function getDeviceDateTimePayload() {
-  const now = new Date();
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
-  return {
-    dateTime: formatDateTimeWithOffset(now),
-    timezone,
-  };
-}
-
-function parsePinsTimeToSeconds(deviceTime) {
-  if (!deviceTime) return null;
-
-  if (typeof deviceTime.timestamp === 'number') {
-    return deviceTime.timestamp;
-  }
-
-  if (typeof deviceTime.dateTime === 'string') {
-    const parsed = new Date(deviceTime.dateTime);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.getTime() / 1000;
-    }
-  }
-
-  return null;
-}
-
 function formatPinsDeviceTime() {
-  if (!pinsDeviceTime.value) return '—';
-
-  if (typeof pinsDeviceTime.value.dateTime === 'string') {
-    const parsed = new Date(pinsDeviceTime.value.dateTime);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toLocaleString(undefined, { timeZoneName: 'short' });
-    }
-  }
-
-  if (typeof pinsDeviceTime.value.timestamp === 'number') {
-    return new Date(pinsDeviceTime.value.timestamp * 1000).toLocaleString(undefined, {
-      timeZoneName: 'short',
-    });
-  }
-
-  return '—';
+  return formatPinsTimeForDisplay(pinsDeviceTime.value);
 }
 
 async function fetchPinsDeviceTime() {
