@@ -5,6 +5,7 @@ node_modules
 /server/build
 /server/static
 .claude
+CLAUDE.md
 
 # hrz
 *.hrz

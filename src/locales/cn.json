@@ -16,7 +16,9 @@
     "connecting": "正在连接…",
     "refresh": "刷新",
     "creating": "创造……",
-    "help": "帮助"
+    "help": "帮助",
+    "expand": "展开",
+    "collapse": "收起"
   },
   "general": {
     "cancel": "取消",

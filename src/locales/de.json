@@ -16,7 +16,9 @@
     "connecting": "Verbinden…",
     "refresh": "Aktualisieren",
     "creating": "Erstellen…",
-    "help": "Hilfe"
+    "help": "Hilfe",
+    "expand": "Erweitern",
+    "collapse": "Minimieren"
   },
   "general": {
     "cancel": "Abbrechen",

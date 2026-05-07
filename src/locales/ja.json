@@ -16,7 +16,9 @@
     "scanning": "スキャン中…",
     "connecting": "接続中…",
     "refresh": "更新",
-    "help": "ヘルプ"
+    "help": "ヘルプ",
+    "expand": "展開",
+    "collapse": "折りたたむ"
   },
   "general": {
     "cancel": "キャンセル",

@@ -16,7 +16,9 @@
     "scanning": "Scanning…",
     "connecting": "Connecting…",
     "refresh": "Refresh",
-    "help": "Help"
+    "help": "Help",
+    "expand": "Expand",
+    "collapse": "Collapse"
   },
   "general": {
     "cancel": "Cancel",

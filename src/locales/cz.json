@@ -16,7 +16,9 @@
     "connecting": "Spojovací…",
     "refresh": "Obnovit",
     "creating": "Vytváření…",
-    "help": "Pomoc"
+    "help": "Pomoc",
+    "expand": "Rozbalit",
+    "collapse": "Sbalit"
   },
   "general": {
     "cancel": "Zrušit",

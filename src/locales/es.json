@@ -16,7 +16,9 @@
     "connecting": "Conectando…",
     "refresh": "Refrescar",
     "creating": "Creando…",
-    "help": "Ayuda"
+    "help": "Ayuda",
+    "expand": "Expandir",
+    "collapse": "Contraer"
   },
   "general": {
     "cancel": "Cancelar",

@@ -24,49 +24,61 @@
           inputId="stellarium-fov-rotation"
           wrapperClass="w-full"
         />
-        <button
-          @click="expanded = false"
-          class="p-1 text-gray-300 hover:text-white shrink-0"
-          :title="$t('common.close')"
-        >
-          <XMarkIcon class="w-5 h-5" />
-        </button>
+        <div class="flex items-center gap-1 shrink-0">
+          <button
+            @click="rotationOnly = !rotationOnly"
+            class="p-1 text-gray-300 hover:text-white"
+            :title="rotationOnly ? $t('common.expand') : $t('common.collapse')"
+          >
+            <ChevronUpIcon v-if="!rotationOnly" class="w-5 h-5" />
+            <ChevronDownIcon v-else class="w-5 h-5" />
+          </button>
+          <button
+            @click="expanded = false"
+            class="p-1 text-gray-300 hover:text-white"
+            :title="$t('common.close')"
+          >
+            <XMarkIcon class="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      <getImageRotation />
+      <template v-if="!rotationOnly">
+        <getImageRotation />
 
-      <div class="text-xs font-mono text-gray-400 leading-tight">
-        <div>RA: {{ raString || '—' }}</div>
-        <div>Dec: {{ decString || '—' }}</div>
-      </div>
+        <div class="text-xs font-mono text-gray-400 leading-tight">
+          <div>RA: {{ raString || '—' }}</div>
+          <div>Dec: {{ decString || '—' }}</div>
+        </div>
 
-      <input v-model="targetName" type="text" placeholder="Target name" class="default-input" />
+        <input v-model="targetName" type="text" placeholder="Target name" class="default-input" />
 
-      <ButtonSlewCenterRotate :raAngle="raDeg" :decAngle="decDeg" :disabled="!hasMount" />
+        <ButtonSlewCenterRotate :raAngle="raDeg" :decAngle="decDeg" :disabled="!hasMount" />
 
-      <setSequenceTarget
-        class="w-full"
-        :raAngle="raDeg"
-        :decAngle="decDeg"
-        :name="effectiveTargetName"
-      />
+        <setSequenceTarget
+          class="w-full"
+          :raAngle="raDeg"
+          :decAngle="decDeg"
+          :name="effectiveTargetName"
+        />
 
-      <SaveFavTargets
-        :name="effectiveTargetName"
-        :ra="raDeg"
-        :dec="decDeg"
-        :ra-string="raString"
-        :dec-string="decString"
-        :rotation="rotationModel"
-        :show-label="true"
-      />
+        <SaveFavTargets
+          :name="effectiveTargetName"
+          :ra="raDeg"
+          :dec="decDeg"
+          :ra-string="raString"
+          :dec-string="decString"
+          :rotation="rotationModel"
+          :show-label="true"
+        />
+      </template>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
-import { XMarkIcon } from '@heroicons/vue/24/outline';
+import { XMarkIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/24/outline';
 import CameraFramingIcon from '@/components/icons/CameraFramingIcon.vue';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
@@ -85,6 +97,7 @@ const stellariumStore = useStellariumStore();
 const { isLandscape } = useOrientation();
 
 const expanded = ref(false);
+const rotationOnly = ref(false);
 const raDeg = ref(0);
 const decDeg = ref(0);
 const raString = ref('');
