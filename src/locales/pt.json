@@ -1305,7 +1305,9 @@
         "Speed": "Velocidade",
         "TurboMode": "Modo Turbo",
         "commandFailed": "Comando não suportado por este dispositivo",
-        "deviceSpecific": "Configurações do dispositivo"
+        "deviceSpecific": "Configurações do dispositivo",
+        "SlotNum": "Número de slots",
+        "slotNumDefault": "Padrão"
       },
       "indi": {
         "settings": "Configurações da roda de filtros"

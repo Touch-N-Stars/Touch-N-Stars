@@ -1305,7 +1305,9 @@
         "Speed": "Rychlost",
         "TurboMode": "Turbo režim",
         "commandFailed": "Příkaz není tímto zařízením podporován",
-        "deviceSpecific": "Nastavení zařízení"
+        "deviceSpecific": "Nastavení zařízení",
+        "SlotNum": "Počet slotů",
+        "slotNumDefault": "Výchozí"
       },
       "indi": {
         "settings": "Nastavení filtračního kola"

@@ -1305,7 +1305,9 @@
         "Speed": "Vitesse",
         "TurboMode": "Mode Turbo",
         "commandFailed": "Commande non prise en charge par cet appareil",
-        "deviceSpecific": "Paramètres de l'appareil"
+        "deviceSpecific": "Paramètres de l'appareil",
+        "SlotNum": "Nombre de positions",
+        "slotNumDefault": "Par défaut"
       },
       "indi": {
         "settings": "Paramètres de la roue à filtres"

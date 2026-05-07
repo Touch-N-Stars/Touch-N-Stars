@@ -1345,7 +1345,9 @@
         "Speed": "Geschwindigkeit",
         "TurboMode": "Turbo-Modus",
         "commandFailed": "Befehl wird von diesem Gerät nicht unterstützt",
-        "deviceSpecific": "Geräteeinstellungen"
+        "deviceSpecific": "Geräteeinstellungen",
+        "SlotNum": "Anzahl Slots",
+        "slotNumDefault": "Standard"
       },
       "indi": {
         "settings": "Filter Wheel Settings"

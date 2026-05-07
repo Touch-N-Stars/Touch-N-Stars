@@ -1305,7 +1305,9 @@
         "Speed": "Snelheid",
         "TurboMode": "Turbo-modus",
         "commandFailed": "Commando wordt niet ondersteund door dit apparaat",
-        "deviceSpecific": "Apparaatinstellingen"
+        "deviceSpecific": "Apparaatinstellingen",
+        "SlotNum": "Aantal slots",
+        "slotNumDefault": "Standaard"
       },
       "indi": {
         "settings": "Filterwielinstellingen"
