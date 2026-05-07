@@ -10,6 +10,7 @@ export const useImagetStore = defineStore('imageStore', {
     captureStatsFull: null,
     isImageFetching: false,
     isSequenceImageFetching: false,
+    pendingFetch: false,
     lastImage: {
       index: 0,
       quality: 0,
@@ -35,6 +36,10 @@ export const useImagetStore = defineStore('imageStore', {
 
     async getImage() {
       if (this.isImageFetching) {
+        console.log(
+          '[ImageStore] getImage: skip — fetch in progress, queueing pending re-fetch'
+        );
+        this.pendingFetch = true;
         return;
       }
       const settingsStore = useSettingsStore();
@@ -68,6 +73,12 @@ export const useImagetStore = defineStore('imageStore', {
         const imageResponse = await apiService.getImagePrepared(quality, resize, scale);
 
         console.log('[ImageStore] Image fetched from API', imageResponse.data);
+        console.log(
+          '[ImageStore] getImage: response type =',
+          imageResponse?.data?.type,
+          'size =',
+          imageResponse?.data?.size
+        );
 
         if (imageResponse && imageResponse.data.type !== 'application/json') {
           if (this.imageData) {
@@ -78,6 +89,10 @@ export const useImagetStore = defineStore('imageStore', {
           }
           this.imageData = URL.createObjectURL(imageResponse.data);
           await this.validateImage(this.imageData);
+        } else {
+          console.log(
+            '[ImageStore] getImage: response is JSON (no image yet on backend), imageData unchanged'
+          );
         }
       } catch (error) {
         console.error('[ImageStore] Error fetching information:', error);
@@ -89,6 +104,11 @@ export const useImagetStore = defineStore('imageStore', {
           await new Promise((resolve) => setTimeout(resolve, minDuration - elapsedTime));
         }
         this.isImageFetching = false;
+        if (this.pendingFetch) {
+          console.log('[ImageStore] getImage: pending fetch triggered, re-running');
+          this.pendingFetch = false;
+          this.getImage();
+        }
       }
     },
 
@@ -293,6 +313,7 @@ export const useImagetStore = defineStore('imageStore', {
       this.imageData = null;
       this.isImageFetching = false;
       this.isSequenceImageFetching = false;
+      this.pendingFetch = false;
       this.lastImage.index = 0;
       this.lastImage.image = null;
       console.log('[ImageStore] Clearing image cache');

@@ -632,6 +632,7 @@ watch([showHistogram, () => imageStore.imageData], ([panelOpen, imageData]) => {
 
 // Load image on mount if imageData is empty
 onMounted(async () => {
+  console.log('[CameraPage] mounted, imageData =', !!imageStore.imageData);
   if (!imageStore.imageData) {
     await imageStore.getImage();
   }
