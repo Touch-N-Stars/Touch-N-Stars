@@ -299,7 +299,7 @@
     </template>
     <template #body>
       <div class="flex flex-col gap-2">
-        <SettingsFilterWheelSlotNum />
+        <SettingsFilterWheelSlotNum :selectedDevice="selectedFilterDevice" :selectedDeviceObj="selectedFilterObj" />
         <SettingsAlpacaDirect
           v-if="isAlpacaDirect(selectedFilterObj)"
           deviceType="filterwheel"

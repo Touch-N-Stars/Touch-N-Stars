@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div
+    v-if="isVisible"
+    class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg"
+  >
     <div class="flex flex-row items-center justify-between w-full">
       <label for="slotNum" class="text-xs md:text-sm text-gray-200 mr-2">
         {{ $t('components.filterwheel.settings.SlotNum') }}
@@ -19,13 +22,26 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+
+const props = defineProps({
+  selectedDevice: { type: String, default: '' },
+  selectedDeviceObj: { type: Object, default: null },
+});
 
 const store = apiStore();
 const slotNum = ref(-1);
 const statusClass = ref('');
+
+const isVisible = computed(() => {
+  if (props.selectedDeviceObj?.Category === 'ASCOM Alpaca') return false;
+  const deviceName = props.selectedDevice.toLowerCase();
+  const driverInfo = store.filterInfo?.DriverInfo?.toLowerCase() || '';
+  const category = store.filterInfo?.Category?.toLowerCase() || '';
+  return !(deviceName.includes('indi') || driverInfo.includes('indi') || category.includes('indi'));
+});
 
 onMounted(async () => {
   await store.fetchProfilInfos();
