@@ -56,7 +56,7 @@
         </div>
 
         <!-- Start / Targets / End containers -->
-        <div class="space-y-3">
+        <div class="space-y-3 mt-3">
           <div
             v-for="(container, idx) in store.containers"
             :key="container.Id ?? idx"
