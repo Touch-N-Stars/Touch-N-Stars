@@ -54,7 +54,7 @@
       <div class="bg-gray-900/60 rounded p-2">
         <div class="text-gray-400 mb-1">{{ $t('plugins.pins.deviceTime') }}</div>
         <div class="text-gray-100 font-mono">
-          {{ formatPinsDeviceTime() }}
+          {{ clientTime }}
         </div>
       </div>
     </div>
@@ -120,7 +120,6 @@ import InfoModal from '@/components/helpers/infoModal.vue';
 import apiService from '@/services/apiService';
 import axios from 'axios';
 import {
-  formatPinsTimeForDisplay,
   getDeviceDateTimePayload,
   parsePinsTimeToSeconds,
 } from '@/utils/pinsTimeUtils';
@@ -135,6 +134,7 @@ const settingsStore = useSettingsStore();
 const timeSyncLoading = ref(false);
 const pinsTimeActionLoading = ref(false);
 const pinsDeviceTime = ref(null);
+const clientTime = ref('—');
 const timeInfo = ref({
   backendUtc: null,
   mountUtc: null,
@@ -146,9 +146,6 @@ function getPinsIp() {
   return settingsStore.connection.ip || window.location.hostname;
 }
 
-function formatPinsDeviceTime() {
-  return formatPinsTimeForDisplay(pinsDeviceTime.value);
-}
 
 async function fetchPinsDeviceTime() {
   const ip = getPinsIp();
@@ -206,6 +203,7 @@ async function loadPinsTimeInfo() {
 const loadTimeInfo = async () => {
   if (!store.isBackendReachable) return;
   timeSyncLoading.value = true;
+  clientTime.value = new Date().toLocaleString(undefined, { timeZoneName: 'short' });
   try {
     const data = await apiService.getTnsTime();
     if (data) timeInfo.value = data;
