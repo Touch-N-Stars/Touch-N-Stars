@@ -1350,7 +1350,9 @@
         "TurboMode": "Turbo Mode",
         "Autorun": "Autorun",
         "Calibrate": "Calibrate",
-        "commandFailed": "Command not supported by this device"
+        "commandFailed": "Command not supported by this device",
+        "SlotNum": "Number of Slots",
+        "slotNumDefault": "Default"
       },
       "indi": {
         "settings": "Filter Wheel Settings"

@@ -1305,7 +1305,9 @@
         "Speed": "速度",
         "TurboMode": "涡轮模式",
         "commandFailed": "该设备不支持命令",
-        "deviceSpecific": "设备设置"
+        "deviceSpecific": "设备设置",
+        "SlotNum": "插槽数量",
+        "slotNumDefault": "默认"
       },
       "indi": {
         "settings": "滤镜轮设置"

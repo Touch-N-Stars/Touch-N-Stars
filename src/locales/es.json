@@ -1305,7 +1305,9 @@
         "Speed": "Velocidad",
         "TurboMode": "Modo turbo",
         "commandFailed": "Comando no soportado por este dispositivo",
-        "deviceSpecific": "Configuración del dispositivo"
+        "deviceSpecific": "Configuración del dispositivo",
+        "SlotNum": "Número de ranuras",
+        "slotNumDefault": "Predeterminado"
       },
       "indi": {
         "settings": "Configuración de la rueda de filtros"

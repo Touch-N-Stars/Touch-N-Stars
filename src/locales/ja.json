@@ -1313,7 +1313,9 @@
         "TurboMode": "ターボモード",
         "Autorun": "自動実行",
         "Calibrate": "キャリブレーション",
-        "commandFailed": "このデバイスでサポートされていないコマンドです"
+        "commandFailed": "このデバイスでサポートされていないコマンドです",
+        "SlotNum": "スロット数",
+        "slotNumDefault": "デフォルト"
       },
       "indi": {
         "settings": "フィルターホイール設定"

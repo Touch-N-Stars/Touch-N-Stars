@@ -239,7 +239,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this.availableTriggers.length) return;
       try {
         const res = await apiService.sequenceFetchTriggerTypes();
-        this.availableTriggers = Array.isArray(res) ? res : (res?.Items ?? res?.Response ?? []);
+        const allTriggers = Array.isArray(res) ? res : (res?.Items ?? res?.Response ?? []);
+        this.availableTriggers = allTriggers.filter(
+          (t) =>
+            t.FullTypeName !== 'NINA.Sequencer.Trigger.MeridianFlip.ProgrammableMeridianFlipTrigger'
+        );
       } catch (e) {
         console.error('sequenceFetchTriggerTypes:', e);
       }

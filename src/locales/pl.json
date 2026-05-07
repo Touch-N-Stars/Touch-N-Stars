@@ -1305,7 +1305,9 @@
         "Speed": "Prędkość",
         "TurboMode": "Tryb Turbo",
         "commandFailed": "Polecenie nie jest obsługiwane przez to urządzenie",
-        "deviceSpecific": "Ustawienia urządzenia"
+        "deviceSpecific": "Ustawienia urządzenia",
+        "SlotNum": "Liczba slotów",
+        "slotNumDefault": "Domyślny"
       },
       "indi": {
         "settings": "Ustawienia koła filtrującego"

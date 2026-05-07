@@ -298,17 +298,20 @@
       <h2 class="text-2xl font-semibold">{{ $t('components.filterwheel.indi.settings') }}</h2>
     </template>
     <template #body>
-      <SettingsAlpacaDirect
-        v-if="isAlpacaDirect(selectedFilterObj)"
-        deviceType="filterwheel"
-        :selectedDevice="selectedFilterDevice"
-        :deviceId="selectedFilterObj?.Id"
-      />
-      <SettingsSerialConnection
-        v-else
-        equipmentType="filterwheel"
-        :selectedDevice="selectedFilterDevice"
-      />
+      <div class="flex flex-col gap-2">
+        <SettingsFilterWheelSlotNum :selectedDevice="selectedFilterDevice" :selectedDeviceObj="selectedFilterObj" />
+        <SettingsAlpacaDirect
+          v-if="isAlpacaDirect(selectedFilterObj)"
+          deviceType="filterwheel"
+          :selectedDevice="selectedFilterDevice"
+          :deviceId="selectedFilterObj?.Id"
+        />
+        <SettingsSerialConnection
+          v-else
+          equipmentType="filterwheel"
+          :selectedDevice="selectedFilterDevice"
+        />
+      </div>
     </template>
   </Modal>
 
@@ -375,6 +378,7 @@ import settingsGuiderConnect from '@/components/guider/settingsGuiderConnect.vue
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsWeather from '@/components/equipment/SettingsWeather.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
+import SettingsFilterWheelSlotNum from '@/components/equipment/SettingsFilterWheelSlotNum.vue';
 import { checkMountConnectionPermission } from '@/utils/locationSyncUtils';
 
 const { t } = useI18n();
