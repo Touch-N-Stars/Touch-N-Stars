@@ -16,7 +16,9 @@
     "connecting": "De liaison…",
     "refresh": "Rafraîchir",
     "creating": "Création…",
-    "help": "Aide"
+    "help": "Aide",
+    "expand": "Développer",
+    "collapse": "Réduire"
   },
   "general": {
     "cancel": "Annuler",

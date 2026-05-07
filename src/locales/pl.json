@@ -16,7 +16,9 @@
     "connecting": "Złączony…",
     "refresh": "Odświeżać",
     "creating": "Tworzenie…",
-    "help": "Pomoc"
+    "help": "Pomoc",
+    "expand": "Rozwiń",
+    "collapse": "Zwiń"
   },
   "general": {
     "cancel": "Anuluj",
