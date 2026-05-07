@@ -15,7 +15,7 @@
         :class="statusClass"
       >
         <option :value="-1">{{ $t('components.filterwheel.settings.slotNumDefault') }}</option>
-        <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+        <option v-for="n in [5,7,8]" :key="n" :value="n">{{ n }}</option>
       </select>
     </div>
   </div>
