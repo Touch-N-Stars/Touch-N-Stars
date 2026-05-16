@@ -1,0 +1,10 @@
+{
+  "id": "orbitals",
+  "name": "Orbitals",
+  "description": "Track comets, asteroids, and other solar system objects. Load orbital elements from MPC or JPL and slew NINA to any object in real time.",
+  "version": "1.0.0",
+  "author": "Florin Dumitrescu",
+  "defaultEnabled": false,
+  "enabled": true,
+  "isPins": false
+}
