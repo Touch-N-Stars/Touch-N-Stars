@@ -204,7 +204,7 @@ export const usePluginStore = defineStore('pluginStore', {
       {
         key: 'plugin-store',
         storage: localStorage,
-        paths: ['plugins', 'isInitialized'],
+        paths: ['plugins'],
       },
     ],
   },
