@@ -20,14 +20,22 @@ const RUNTIME_FIELDS = [
 ];
 
 export const useSequenceV2Store = defineStore('sequenceV2Store', {
-  state: () => ({
-    data: [],
-    loaded: false,
-    intervalId: null,
-    availableItems: [],
-    availableTriggers: [],
-    availableConditions: [],
-  }),
+  state: () => {
+    let orbitalItems = {};
+    try {
+      orbitalItems = JSON.parse(localStorage.getItem('tns-orbital-items') ?? '{}');
+    } catch {}
+    return {
+      data: [],
+      loaded: false,
+      intervalId: null,
+      availableItems: [],
+      availableTriggers: [],
+      availableConditions: [],
+      pendingOrbitalPick: null,
+      orbitalItems,
+    };
+  },
   getters: {
     globalTriggers: (s) => s.data[0]?.GlobalTriggers ?? [],
     containers: (s) => s.data.slice(1),
@@ -173,6 +181,10 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceRemove:', e);
       }
+      if (this.orbitalItems[id]) {
+        delete this.orbitalItems[id];
+        this._saveOrbitalItems();
+      }
       await this.loadCurrent();
       await this.fetchStatusUpdate();
     },
@@ -229,7 +241,15 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this.availableItems.length) return;
       try {
         const res = await apiService.sequenceFetchItemTypes();
-        this.availableItems = Array.isArray(res) ? res : (res?.Items ?? res?.Response ?? []);
+        const items = Array.isArray(res) ? res : (res?.Items ?? res?.Response ?? []);
+        if (!items.find((x) => x.FullTypeName === 'TNS.Orbitals.OrbitalObjectTarget')) {
+          items.push({
+            FullTypeName: 'TNS.Orbitals.OrbitalObjectTarget',
+            Name: 'Orbital Object Target',
+            Category: '* Instruction Set *',
+          });
+        }
+        this.availableItems = items;
       } catch (e) {
         console.error('sequenceFetchItemTypes:', e);
       }
@@ -309,6 +329,63 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       }
       await this.loadCurrent();
       await this.fetchStatusUpdate();
+    },
+
+    setOrbitalItem(id, data) {
+      this.orbitalItems[id] = { ...this.orbitalItems[id], ...data };
+      this._saveOrbitalItems();
+    },
+
+    _saveOrbitalItems() {
+      localStorage.setItem('tns-orbital-items', JSON.stringify(this.orbitalItems));
+    },
+
+    cancelOrbitalPick() {
+      this.pendingOrbitalPick = null;
+    },
+
+    async addOrbitalItem(targetId, insertAfter, name, raDeg, decDeg, orbType = 1, orbObj = null) {
+      const DSO_CONTAINER = 'NINA.Sequencer.Container.DeepSkyObjectContainer';
+      const beforeIds = this._collectAllIds(this.data);
+
+      try {
+        await apiService.sequenceAddItem(targetId, DSO_CONTAINER, insertAfter);
+      } catch (e) {
+        console.error('addOrbitalItem:', e);
+        this.pendingOrbitalPick = null;
+        return;
+      }
+
+      await this.loadCurrent();
+
+      const afterIds = this._collectAllIds(this.data);
+      let newId = null;
+      for (const id of afterIds) {
+        if (!beforeIds.has(id)) {
+          newId = id;
+          break;
+        }
+      }
+
+      if (newId) {
+        this.orbitalItems[newId] = { name, orbType, orbObj };
+        this._saveOrbitalItems();
+        await this.setDsoTarget(newId, name, raDeg, decDeg, 0);
+      } else {
+        await this.fetchStatusUpdate();
+      }
+
+      this.pendingOrbitalPick = null;
+    },
+
+    _collectAllIds(items, result = new Set()) {
+      for (const item of items ?? []) {
+        if (item.Id) result.add(item.Id);
+        this._collectAllIds(item.Items, result);
+        this._collectAllIds(item.Triggers, result);
+        this._collectAllIds(item.Conditions, result);
+      }
+      return result;
     },
 
     async setDsoTarget(id, name, raDeg, decDeg, rotation) {

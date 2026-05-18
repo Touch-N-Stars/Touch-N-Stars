@@ -1269,6 +1269,18 @@ const apiService = {
     }
   },
 
+  async postProfileHorizon(hrzText) {
+    try {
+      const { BASE_URL } = getUrls();
+      const response = await axios.post(`${BASE_URL}/profile/horizon`, hrzText, {
+        headers: { 'Content-Type': 'text/plain' },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   //-------------------------------------  application ---------------------------------------
   async applicatioTabSwitch(tab) {
     try {

@@ -97,6 +97,42 @@ const actionTemplates = {
       color: 'bg-purple-500',
     },
     {
+      id: 'orbital-target',
+      name: 'Orbital Object Target',
+      icon: 'comet',
+      description: 'Target a comet, asteroid or minor planet by orbital elements',
+      parameters: {
+        targetName: {
+          type: 'text',
+          default: '',
+          label: 'Object Name',
+          tooltip: 'Name of the orbital object',
+        },
+        ra: {
+          type: 'text',
+          default: '00:00:00',
+          label: 'Right Ascension (computed)',
+          tooltip: 'RA computed from orbital elements at selection time',
+        },
+        dec: {
+          type: 'text',
+          default: '+00:00:00',
+          label: 'Declination (computed)',
+          tooltip: 'Dec computed from orbital elements at selection time',
+        },
+        positionAngle: {
+          type: 'number',
+          default: 0,
+          min: -360,
+          max: 360,
+          step: 0.1,
+          label: 'Position Angle (°)',
+          tooltip: 'Camera rotation angle',
+        },
+      },
+      color: 'bg-amber-500',
+    },
+    {
       id: 'slew-to-target',
       name: 'Slew to Target',
       icon: 'cursor-arrow-rays',
@@ -370,6 +406,42 @@ export const useSequenceStore = defineStore('sequence', () => {
           color: 'bg-purple-500',
         },
         {
+          id: 'orbital-target',
+          name: 'Orbital Object Target',
+          icon: 'comet',
+          description: 'Target a comet, asteroid or minor planet by orbital elements',
+          parameters: {
+            targetName: {
+              type: 'text',
+              default: '',
+              label: 'Object Name',
+              tooltip: 'Name of the orbital object',
+            },
+            ra: {
+              type: 'text',
+              default: '00:00:00',
+              label: 'Right Ascension (computed)',
+              tooltip: 'RA computed from orbital elements at selection time',
+            },
+            dec: {
+              type: 'text',
+              default: '+00:00:00',
+              label: 'Declination (computed)',
+              tooltip: 'Dec computed from orbital elements at selection time',
+            },
+            positionAngle: {
+              type: 'number',
+              default: 0,
+              min: -360,
+              max: 360,
+              step: 0.1,
+              label: 'Position Angle (°)',
+              tooltip: 'Camera rotation angle',
+            },
+          },
+          color: 'bg-amber-500',
+        },
+        {
           id: 'slew-to-target',
           name: t('plugins.sequenceCreator.actions.slewToTarget.name'),
           icon: 'cursor-arrow-rays',
@@ -542,7 +614,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   const sequenceIsValid = computed(() => {
     // At minimum, we need target settings and at least one smart exposure in target container
     const hasTargetSettings = targetSequence.value.some(
-      (action) => action.type === 'target-settings'
+      (action) => action.type === 'target-settings' || action.type === 'orbital-target'
     );
     const hasSmartExposure = targetSequence.value.some(
       (action) => action.type === 'smart-exposure'
@@ -756,7 +828,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     let currentGroup = [];
 
     actions.forEach((action) => {
-      if (action.type === 'target-settings' && currentGroup.length > 0) {
+      if ((action.type === 'target-settings' || action.type === 'orbital-target') && currentGroup.length > 0) {
         // Start new group
         targetGroups.push(currentGroup);
         currentGroup = [action];
@@ -915,10 +987,12 @@ export const useSequenceStore = defineStore('sequence', () => {
   function createTargetSequenceContainer(actions, generateId, parentId) {
     const dsoContainerId = generateId();
 
-    // Find target-settings action to extract coordinates
-    const targetSettingsAction = actions.find((action) => action.type === 'target-settings');
+    // Find target-settings or orbital-target action to extract coordinates
+    const targetSettingsAction = actions.find(
+      (action) => action.type === 'target-settings' || action.type === 'orbital-target'
+    );
 
-    // Parse RA and Dec coordinates from target-settings
+    // Parse RA and Dec coordinates from target-settings / orbital-target
     let raHours = 0,
       raMinutes = 0,
       raSeconds = 0.0;
@@ -1007,7 +1081,9 @@ export const useSequenceStore = defineStore('sequence', () => {
       positionAngle = targetData.positionAngle;
     } else {
       // Fallback to parsing from actions (legacy support)
-      const targetSettingsAction = actions.find((action) => action.type === 'target-settings');
+      const targetSettingsAction = actions.find(
+        (action) => action.type === 'target-settings' || action.type === 'orbital-target'
+      );
       if (targetSettingsAction && targetSettingsAction.parameters) {
         if (targetSettingsAction.parameters.targetName?.value) {
           targetName = targetSettingsAction.parameters.targetName.value;
@@ -1090,11 +1166,12 @@ export const useSequenceStore = defineStore('sequence', () => {
       Attempts: 1,
     };
 
-    // Process actions for this specific target (EXCLUDE target-settings as it's already used for coordinates)
+    // Process actions for this specific target (EXCLUDE target-settings/orbital-target as already used for coordinates)
     const preSlewActions = actions.filter(
       (action) =>
         action.type !== 'smart-exposure' &&
         action.type !== 'target-settings' &&
+        action.type !== 'orbital-target' &&
         action.type !== 'run-autofocus'
     );
     const autofocusActions = actions.filter((action) => action.type === 'run-autofocus');
@@ -1386,8 +1463,8 @@ export const useSequenceStore = defineStore('sequence', () => {
     let ninaType;
     let additionalProperties = {};
 
-    // Handle target-settings - convert to SlewScopeToRaDec
-    if (action.type === 'target-settings') {
+    // Handle target-settings / orbital-target - convert to SlewScopeToRaDec
+    if (action.type === 'target-settings' || action.type === 'orbital-target') {
       ninaType = 'NINA.Sequencer.SequenceItem.Telescope.SlewScopeToRaDec, NINA.Sequencer';
       additionalProperties.Inherited = false;
       additionalProperties.Coordinates = {
@@ -1483,6 +1560,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     // Add specific properties based on action type
     switch (action.type) {
       case 'target-settings':
+      case 'orbital-target':
         // Properties already set above
         break;
       case 'cool-camera':

@@ -188,6 +188,20 @@ export const ITEM_COMPONENTS = {
   'Orbuculum.Instructions.LoopWhileNextTargetHourAngle': OrbuculumNextTargetHourAngleItem,
   'NINA.Plugin.NightSummary.Sequencer.NightSummaryInstruction': GenericItem,
   'NINA.Plugin.NightSummary.Sequencer.NightSummaryEndInstruction': GenericItem,
+  'TNS.Orbitals.OrbitalObjectTarget': GenericItem,
+  'NINA.Joko.Plugin.Orbitals.SequenceItems.OrbitalObjectContainer, NINA.Joko.Plugin.Orbitals':
+    DeepSkyObjectContainerItem,
+  'NINA.Joko.Plugin.Orbitals.SequenceItems.SetTelescopeShiftRate, NINA.Joko.Plugin.Orbitals':
+    GenericItem,
+  'NINA.Joko.Plugin.Orbitals.SequenceItems.SetGuiderShiftRate, NINA.Joko.Plugin.Orbitals':
+    GenericItem,
+  'NINA.Joko.Plugin.Orbitals.SequenceItems.SetTelescopeShiftRateTrigger, NINA.Joko.Plugin.Orbitals':
+    GenericItem,
+  'NINA.Joko.Plugin.Orbitals.SequenceItems.SetGuiderShiftRateTrigger, NINA.Joko.Plugin.Orbitals':
+    GenericItem,
 };
 
 export { GenericItem };
+
+export const ORBITAL_TYPE = 'TNS.Orbitals.OrbitalObjectTarget';
+

@@ -1,14 +1,11 @@
+// Inspired by HorizonCreator by Christian Palm (MPL 2.0). No code copied.
+
 import { markRaw, h } from 'vue';
-import OrbitalsView from './views/OrbitalsView.vue';
+import HorizonCreatorView from './views/HorizonCreatorView.vue';
 import { usePluginStore } from '@/store/pluginStore';
 import metadata from './plugin.json';
 
-// Inspired by NINA.Joko.Plugin.Orbitals by George Hilios (ghilios), MPL 2.0.
-// Orbital mechanics implemented independently from Meeus, Astronomical Algorithms.
-// Data sources: MPC (minorplanetcenter.net) and JPL (ssd.jpl.nasa.gov) public catalogs.
-
-// Icon: comet with tail
-const OrbitalsIcon = markRaw({
+const HorizonCreatorIcon = markRaw({
   render() {
     return h(
       'svg',
@@ -22,10 +19,8 @@ const OrbitalsIcon = markRaw({
         'stroke-linejoin': 'round',
       },
       [
-        h('circle', { cx: '16', cy: '8', r: '3' }),
-        h('path', { d: 'M13.5 10.5 3 20' }),
-        h('path', { d: 'M12 6 4 4' }),
-        h('path', { d: 'M18 12l2 8' }),
+        h('path', { d: 'M3 17 L7 11 L11 14 L15 8 L19 12 L21 10' }),
+        h('line', { x1: '2', y1: '17', x2: '22', y2: '17' }),
       ]
     );
   },
@@ -56,13 +51,13 @@ export default {
       pluginPath = `/plugin${next}`;
     }
 
-    router.addRoute({ path: pluginPath, component: OrbitalsView, meta: { requiresSetup: true } });
+    router.addRoute({ path: pluginPath, component: HorizonCreatorView, meta: { requiresSetup: true } });
 
     if (currentPlugin?.enabled) {
       pluginStore.addNavigationItem({
         pluginId: metadata.id,
         path: pluginPath,
-        icon: OrbitalsIcon,
+        icon: HorizonCreatorIcon,
         title: metadata.name,
       });
     }

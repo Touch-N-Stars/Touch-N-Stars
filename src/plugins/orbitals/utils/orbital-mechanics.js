@@ -192,3 +192,17 @@ export function formatDec(deg) {
   const ss = Math.round(((abs - dd) * 60 - mm) * 60);
   return `${sign}${String(dd).padStart(2, '0')}° ${String(mm).padStart(2, '0')}' ${String(ss < 60 ? ss : 59).padStart(2, '0')}"`;
 }
+
+// Returns RA and Dec motion rates in arcsec/min, sampled 60 s apart.
+export function calcShiftRates(el, date) {
+  const p1 = calcRaDec(el, date);
+  const p2 = calcRaDec(el, new Date(date.getTime() + 60_000));
+  if (!p1 || !p2) return null;
+  let dRA = p2.ra - p1.ra;
+  if (dRA > 180) dRA -= 360;
+  if (dRA < -180) dRA += 360;
+  return {
+    raRate:  (dRA * 3600) / 60,
+    decRate: ((p2.dec - p1.dec) * 3600) / 60,
+  };
+}

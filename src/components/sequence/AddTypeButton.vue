@@ -189,6 +189,12 @@ async function select(t) {
 
   open.value = false;
   emit('open-change', false);
+
+  if (t.FullTypeName === 'TNS.Orbitals.OrbitalObjectTarget') {
+    store.pendingOrbitalPick = { targetId: props.targetId, insertAfter: props.insertAfter };
+    return;
+  }
+
   if (props.mode === 'item') await store.addItem(props.targetId, t.FullTypeName, props.insertAfter);
   if (props.mode === 'trigger')
     await store.addTrigger(props.targetId, t.FullTypeName, props.insertAfter);

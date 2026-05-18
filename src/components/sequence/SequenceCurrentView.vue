@@ -3,6 +3,7 @@
     <Teleport to="body">
       <ControlSequence />
     </Teleport>
+    <OrbitalPickerModal />
 
     <!-- Loading -->
     <div v-if="!store.loaded" class="flex items-center justify-center py-12 text-slate-400">
@@ -141,6 +142,7 @@ import { useSequenceStore } from '@/store/sequenceStore';
 import SequenceItem from './SequenceItem.vue';
 import AddTypeButton from './AddTypeButton.vue';
 import ControlSequence from './controlSequence.vue';
+import OrbitalPickerModal from './OrbitalPickerModal.vue';
 
 const store = useSequenceV2Store();
 const sequenceStore = useSequenceStore();

@@ -202,6 +202,19 @@
           </div>
         </div>
 
+        <!-- Special handling for orbital-target action -->
+        <div v-if="action.type === 'orbital-target'" class="mb-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Search orbital object
+            </label>
+            <OrbitalTargetSearch @target-selected="handleTargetSelected" />
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Position is computed at selection time. Use Recalculate before running the sequence.
+            </p>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             v-for="(param, key) in action.parameters"
@@ -389,6 +402,7 @@ import { useI18n } from 'vue-i18n';
 import { useSequenceStore } from '../stores/sequenceStore';
 import { apiStore } from '@/store/store';
 import TargetSearch from './TargetSearch.vue';
+import OrbitalTargetSearch from './OrbitalTargetSearch.vue';
 import { LinkIcon, CameraIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import SequenceIcons from './SequenceIcons.vue';
 import Modal from '@/components/helpers/Modal.vue';

@@ -57,6 +57,20 @@
           </div>
         </div>
 
+        <!-- Special handling for orbital-target action -->
+        <div v-if="action.type === 'orbital-target'" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Search orbital object
+            </label>
+            <OrbitalTargetSearch @target-selected="handleTargetSelected" />
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Position is computed at selection time and stored as static RA/Dec for NINA.
+              Use Recalculate to refresh before running the sequence.
+            </p>
+          </div>
+        </div>
+
         <div v-for="(param, key) in action.parameters" :key="key">
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             {{ formatParameterName(key) }}
@@ -212,6 +226,7 @@
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TargetSearch from './TargetSearch.vue';
+import OrbitalTargetSearch from './OrbitalTargetSearch.vue';
 
 const { t } = useI18n();
 

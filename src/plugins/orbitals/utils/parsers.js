@@ -1,5 +1,6 @@
 // Parsers for MPC and JPL orbital element files.
-// Formats exactly as used by NINA.Joko.Plugin.Orbitals / ghilios.
+// Data formats are public standards published by MPC and JPL.
+// Column layout verified against the MPC published format spec.
 import { ymdfToJD } from './orbital-mechanics.js';
 
 // ── MPC CometEls.txt ──────────────────────────────────────────────────────────
@@ -123,15 +124,15 @@ export function parseJPLComets(text) {
     return line.substring(s, s + w).trim();
   }
 
-  // Find column index by scanning header for keyword
+  // Find column index by scanning header for keyword.
+  // Single-char keywords use exact match to avoid false positives ('e' in 'name', 'q' in 'epoch').
   function findCol(keyword) {
     for (let c = 0; c < colStarts.length; c++) {
-      if (
-        headerLine
-          .substring(colStarts[c], colStarts[c] + widths[c])
-          .toLowerCase()
-          .includes(keyword)
-      )
+      const cell = headerLine
+        .substring(colStarts[c], colStarts[c] + widths[c])
+        .trim()
+        .toLowerCase();
+      if (keyword.length === 1 ? cell === keyword : cell.includes(keyword))
         return c;
     }
     return -1;
@@ -217,20 +218,21 @@ function parseJPLAsteroidLines(lines, hasNumber) {
     return line.substring(colStarts[colIdx], colStarts[colIdx] + widths[colIdx]).trim();
   }
 
+  // Single-char keywords use exact match to avoid false positives ('a' in 'name', 'm' in 'num', 'h' in 'epoch').
   function findCol(keyword) {
     for (let c = 0; c < colStarts.length; c++) {
-      if (
-        headerLine
-          .substring(colStarts[c], colStarts[c] + (widths[c] || 10))
-          .toLowerCase()
-          .includes(keyword)
-      )
+      const cell = headerLine
+        .substring(colStarts[c], colStarts[c] + (widths[c] || 10))
+        .trim()
+        .toLowerCase();
+      if (keyword.length === 1 ? cell === keyword : cell.includes(keyword))
         return c;
     }
     return -1;
   }
 
   const nameCol = hasNumber ? 1 : 0;
+  const numCol  = 0; // only meaningful when hasNumber
   const colEpoch = findCol('epoch');
   const colA = findCol('a');
   const colE = findCol('e');
@@ -248,7 +250,8 @@ function parseJPLAsteroidLines(lines, hasNumber) {
     const line = lines[li];
     if (!line || line.trim() === '') continue;
 
-    const name = jplField(line, nameCol);
+    const rawName = jplField(line, nameCol);
+    const name = hasNumber ? `${jplField(line, numCol)} ${rawName}`.trim() : rawName;
     const epochMJD = parseFloat(jplField(line, colEpoch));
     const a = parseFloat(jplField(line, colA));
     const e = parseFloat(jplField(line, colE));

@@ -243,6 +243,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { ITEM_COMPONENTS, GenericItem } from './items/index.js';
+import OrbitalObjectContainerItem from './items/OrbitalObjectContainerItem.vue';
 
 const NO_ADD_TYPES = new Set(['NINA.Sequencer.SequenceItem.Imaging.SmartExposure']);
 const NO_EXPAND_TYPES = new Set([
@@ -332,7 +333,10 @@ const dsoTarget = computed(() => {
   const decAbs = (co.DecDegrees ?? 0) + (co.DecMinutes ?? 0) / 60 + (co.DecSeconds ?? 0) / 3600;
   return { RA: raH * 15, Dec: co.NegativeDec ? -decAbs : decAbs };
 });
-const typeComponent = computed(() => ITEM_COMPONENTS[props.item.FullTypeName] ?? GenericItem);
+const typeComponent = computed(() => {
+  if (store.orbitalItems[props.item.Id]) return OrbitalObjectContainerItem;
+  return ITEM_COMPONENTS[props.item.FullTypeName] ?? GenericItem;
+});
 
 const DEPTH_BORDERS = [
   'border-l-2 border-l-blue-500/60',
