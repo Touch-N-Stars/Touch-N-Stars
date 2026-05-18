@@ -208,30 +208,30 @@
           <button
             @mousedown="startJog('north')" @mouseup="stopJog" @mouseleave="stopJog"
             @touchstart.prevent="startJog('north')" @touchend.prevent="stopJog" @touchcancel.prevent="stopJog"
-            :disabled="!mountConnected || !wsConnected" class="dpad-btn"
+            :disabled="!mountConnected" class="dpad-btn"
             :class="jogging === 'north' ? 'bg-cyan-700' : ''"
           >▲</button>
           <div />
           <button
             @mousedown="startJog('west')" @mouseup="stopJog" @mouseleave="stopJog"
             @touchstart.prevent="startJog('west')" @touchend.prevent="stopJog" @touchcancel.prevent="stopJog"
-            :disabled="!mountConnected || !wsConnected" class="dpad-btn"
+            :disabled="!mountConnected" class="dpad-btn"
             :class="jogging === 'west' ? 'bg-cyan-700' : ''"
           >◄</button>
-          <button @click="stopJog" :disabled="!wsConnected"
+          <button @click="stopJog" :disabled="!mountConnected"
             class="w-12 h-12 bg-gray-800 hover:bg-gray-700 rounded text-xs text-gray-400 disabled:opacity-40"
           >■</button>
           <button
             @mousedown="startJog('east')" @mouseup="stopJog" @mouseleave="stopJog"
             @touchstart.prevent="startJog('east')" @touchend.prevent="stopJog" @touchcancel.prevent="stopJog"
-            :disabled="!mountConnected || !wsConnected" class="dpad-btn"
+            :disabled="!mountConnected" class="dpad-btn"
             :class="jogging === 'east' ? 'bg-cyan-700' : ''"
           >►</button>
           <div />
           <button
             @mousedown="startJog('south')" @mouseup="stopJog" @mouseleave="stopJog"
             @touchstart.prevent="startJog('south')" @touchend.prevent="stopJog" @touchcancel.prevent="stopJog"
-            :disabled="!mountConnected || !wsConnected" class="dpad-btn"
+            :disabled="!mountConnected" class="dpad-btn"
             :class="jogging === 'south' ? 'bg-cyan-700' : ''"
           >▼</button>
           <div />
@@ -261,18 +261,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onBeforeUnmount } from 'vue';
 import { apiStore } from '@/store/store';
-import { useMountStore } from '@/store/mountStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useHorizonStore } from '../store/horizonStore';
-import { interpolateHorizon } from '../utils/horizon-utils';
+import { altAzToRaDec, mjdToLST, interpolateHorizon } from '../utils/horizon-utils';
 import apiService from '@/services/apiService';
-import websocketMountControl from '@/services/websocketMountControl';
 import setSlewRatePins from '@/components/mount/setSlewRatePins.vue';
 
 const store = apiStore();
-const mountStore = useMountStore();
 const settingsStore = useSettingsStore();
 const horizonStore = useHorizonStore();
 
@@ -284,6 +281,7 @@ const MAX_R = 130;
 const D2R = Math.PI / 180;
 
 const jogging = ref('');
+const slewBusy = ref(false);
 const savingToNina = ref(false);
 const ninaSaveStatus = ref('');
 const ninaSaveOk = ref(true);
@@ -292,7 +290,6 @@ const ninaSaveOk = ref(true);
 const chartSize = 280;
 
 const mountConnected = computed(() => store.mountInfo?.Connected);
-const wsConnected = computed(() => mountStore.wsIsConnected);
 const mountAlt = computed(() => store.mountInfo?.Altitude ?? null);
 const mountAz = computed(() => store.mountInfo?.Azimuth ?? 0);
 
@@ -381,24 +378,42 @@ function addPoint() {
 let commandInterval = null;
 let failsafeTimeout = null;
 
+async function doJogStep(direction) {
+  if (slewBusy.value || !mountConnected.value || mountAlt.value == null) return;
+
+  let alt = mountAlt.value;
+  let az = mountAz.value;
+  const step = settingsStore.mount.slewRate;
+
+  switch (direction) {
+    case 'north': alt = Math.min(89, alt + step); break;
+    case 'south': alt = Math.max(-30, alt - step); break;
+    case 'east':  az  = (az + step + 360) % 360;  break;
+    case 'west':  az  = (az - step + 360) % 360;  break;
+  }
+
+  const latRad = (store.profileInfo?.AstrometrySettings?.Latitude  ?? 0) * D2R;
+  const lonRad = (store.profileInfo?.AstrometrySettings?.Longitude ?? 0) * D2R;
+  const nowJD  = Date.now() / 86400000 + 2440587.5;
+  const lst    = mjdToLST(nowJD - 2400000.5, lonRad);
+  const { raDeg, decDeg } = altAzToRaDec(alt, az, latRad, lst);
+
+  slewBusy.value = true;
+  try {
+    await apiService.slewAndCenter(raDeg, decDeg, false, false, 0);
+  } catch (e) {
+    console.error('Horizon jog error:', e);
+  } finally {
+    slewBusy.value = false;
+  }
+}
+
 function startJog(direction) {
-  if (!mountStore.wsIsConnected) return;
+  if (!mountConnected.value) return;
   if (commandInterval) clearInterval(commandInterval);
   jogging.value = direction;
-
-  const send = () => {
-    if (!websocketMountControl.socket || websocketMountControl.socket.readyState !== 1) {
-      stopJog();
-      return;
-    }
-    websocketMountControl.socket.send(
-      JSON.stringify({ direction, rate: settingsStore.mount.slewRate })
-    );
-  };
-
-  send();
-  commandInterval = setInterval(send, 800);
-
+  doJogStep(direction);
+  commandInterval = setInterval(() => doJogStep(direction), 800);
   if (failsafeTimeout) clearTimeout(failsafeTimeout);
   failsafeTimeout = setTimeout(() => stopJog(), 30000);
 }
@@ -406,17 +421,8 @@ function startJog(direction) {
 function stopJog() {
   if (commandInterval) { clearInterval(commandInterval); commandInterval = null; }
   if (failsafeTimeout) { clearTimeout(failsafeTimeout); failsafeTimeout = null; }
-
-  if (
-    jogging.value &&
-    websocketMountControl.socket &&
-    websocketMountControl.socket.readyState === 1
-  ) {
-    websocketMountControl.socket.send(
-      JSON.stringify({ direction: jogging.value, rate: 0 })
-    );
-  }
   jogging.value = '';
+  slewBusy.value = false;
 }
 
 async function saveToNina() {
@@ -435,24 +441,8 @@ async function saveToNina() {
   }
 }
 
-onMounted(() => {
-  websocketMountControl.setStatusCallback((status) => {
-    if (status === 'connected') mountStore.wsIsConnected = true;
-  });
-  websocketMountControl.connect();
-
-  const emergencyStop = () => { if (jogging.value) stopJog(); };
-  document.addEventListener('visibilitychange', emergencyStop);
-  window.addEventListener('blur', emergencyStop);
-});
-
 onBeforeUnmount(() => {
-  if (jogging.value) stopJog();
-  if (commandInterval) clearInterval(commandInterval);
-  if (failsafeTimeout) clearTimeout(failsafeTimeout);
-  websocketMountControl.setStatusCallback(null);
-  websocketMountControl.disconnect();
-  mountStore.wsIsConnected = false;
+  stopJog();
 });
 
 function saveHrz() {
