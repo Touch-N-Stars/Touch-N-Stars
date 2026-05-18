@@ -4,7 +4,7 @@
   "description": "Build a custom horizon by slewing your mount to horizon points. Saves NINA .hrz files and overlays the horizon on the Stellarium view.",
   "version": "1.0.0",
   "author": "Florin Dumitrescu",
-  "defaultEnabled": false,
+  "defaultEnabled": true,
   "enabled": true,
   "isPins": false
 }
