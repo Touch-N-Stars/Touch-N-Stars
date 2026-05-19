@@ -1271,14 +1271,47 @@ const apiService = {
 
   async postProfileHorizon(hrzText) {
     try {
-      const { BASE_URL } = getUrls();
-      const response = await axios.post(`${BASE_URL}/profile/horizon`, hrzText, {
+      const { PLUGINSERVER_URL } = getUrls();
+      const response = await axios.post(`${PLUGINSERVER_URL}/api/profile/horizon`, hrzText, {
         headers: { 'Content-Type': 'text/plain' },
       });
       return response.data;
     } catch (error) {
       throw error;
     }
+  },
+
+  async getProfileHorizon() {
+    const { BASE_URL } = getUrls();
+    const response = await axios.get(`${BASE_URL}/profile/horizon`);
+    // Returns { Response: { Azimuths: [...], Altitudes: [...] } }
+    const { Azimuths, Altitudes } = response.data.Response;
+    if (!Azimuths || !Altitudes || Azimuths.length === 0) return [];
+    return Azimuths.map((az, i) => ({ az, alt: Altitudes[i] }));
+  },
+
+  async setGuiderShiftRate(raDegreesPerHour, decDegreesPerHour) {
+    const { PLUGINSERVER_URL } = getUrls();
+    const response = await axios.put(`${PLUGINSERVER_URL}/api/equipment/guider/shiftrate`, {
+      raDegreesPerHour,
+      decDegreesPerHour,
+    });
+    return response.data;
+  },
+
+  async stopGuiderShifting() {
+    const { PLUGINSERVER_URL } = getUrls();
+    const response = await axios.delete(`${PLUGINSERVER_URL}/api/equipment/guider/shiftrate`);
+    return response.data;
+  },
+
+  async setMountTrackingRate(raDegreesPerHour, decDegreesPerHour) {
+    const { PLUGINSERVER_URL } = getUrls();
+    const response = await axios.put(`${PLUGINSERVER_URL}/api/equipment/mount/trackingrate`, {
+      raDegreesPerHour,
+      decDegreesPerHour,
+    });
+    return response.data;
   },
 
   //-------------------------------------  application ---------------------------------------

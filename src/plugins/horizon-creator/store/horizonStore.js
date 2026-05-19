@@ -16,6 +16,13 @@ export const useHorizonStore = defineStore('horizonStore', {
         this._save();
       }
     },
+    removePoint(point) {
+      const idx = this.points.findIndex((p) => p.az === point.az && p.alt === point.alt);
+      if (idx !== -1) {
+        this.points = this.points.filter((_, i) => i !== idx);
+        this._save();
+      }
+    },
     clearPoints() {
       this.points = [];
       this._save();

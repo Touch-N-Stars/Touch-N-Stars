@@ -32,6 +32,7 @@
         <p v-if="driftRaStr || driftDecStr" class="text-xs text-gray-500">
           Drift RA {{ driftRaStr }}″/min · Dec {{ driftDecStr }}″/min
         </p>
+        <p v-if="shiftStatus" :class="shiftError ? 'text-yellow-400' : 'text-green-400'" class="text-xs">{{ shiftStatus }}</p>
         <p v-if="calcError" class="text-xs text-red-400">{{ calcError }}</p>
       </div>
 
@@ -48,6 +49,7 @@ import ItemShell from './ItemShell.vue';
 import OrbitalTargetSearch from '@/plugins/sequence-creator/components/OrbitalTargetSearch.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { calcRaDec } from '@/plugins/orbitals/utils/orbital-mechanics.js';
+import apiService from '@/services/apiService';
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -56,6 +58,8 @@ const props = defineProps({
 const store = useSequenceV2Store();
 const recalculating = ref(false);
 const calcError = ref('');
+const shiftStatus = ref('');
+const shiftError = ref(false);
 const computedAt = ref('');
 const driftRaStr = ref('');
 const driftDecStr = ref('');
@@ -134,6 +138,8 @@ function computeDrift(obj, raDeg, decDeg) {
 // ── Core compute ──────────────────────────────────────────────────────────────
 async function computeAndApply(obj, name) {
   calcError.value = '';
+  shiftStatus.value = '';
+  shiftError.value = false;
   const now = new Date();
   const pos = calcRaDec(obj, now);
   if (!pos) {
@@ -144,6 +150,28 @@ async function computeAndApply(obj, name) {
   localDecDeg.value = pos.dec;
   computedAt.value = now.toLocaleTimeString();
   computeDrift(obj, pos.ra, pos.dec);
+
+  // Raw coordinate rates in deg/hr for guider and mount APIs
+  const p2 = calcRaDec(obj, new Date(now.getTime() + 60000));
+  if (p2) {
+    const raRateDegPerHr = ((p2.ra - pos.ra + 540) % 360 - 180) * 60;
+    const decRateDegPerHr = (p2.dec - pos.dec) * 60;
+    const results = await Promise.allSettled([
+      apiService.setGuiderShiftRate(raRateDegPerHr, decRateDegPerHr),
+      apiService.setMountTrackingRate(raRateDegPerHr, decRateDegPerHr),
+    ]);
+    const failed = results.filter(r => r.status === 'rejected' || r.value?.success === false);
+    if (failed.length === 0) {
+      shiftStatus.value = 'Shift rate applied';
+    } else if (failed.length < results.length) {
+      shiftStatus.value = 'Shift rate partially applied';
+      shiftError.value = true;
+    } else {
+      shiftStatus.value = 'Shift rate not applied — guider/mount not connected';
+      shiftError.value = true;
+    }
+  }
+
   await store.setDsoTarget(props.item.Id, name, pos.ra, pos.dec, 0);
 }
 

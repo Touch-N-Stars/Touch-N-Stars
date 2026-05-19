@@ -293,8 +293,7 @@ onMounted(async () => {
           stel.core.observer.utc = mjd;
           console.log('Stellarium initialized with server time:', serverTime.toISOString());
 
-          // Zeitgeschwindigkeit auf 1 setzen
-          stel.core.time_speed = 0;
+          stel.core.time_speed = 1;
 
           // Speichere Stellarium für späteren Zugriff
           stellariumStore.stel = stel;
