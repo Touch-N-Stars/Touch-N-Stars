@@ -330,8 +330,8 @@ const dsoTarget = computed(() => {
   const co = t.InputCoordinates;
   if (!co) return null;
   const raH = (co.RAHours ?? 0) + (co.RAMinutes ?? 0) / 60 + (co.RASeconds ?? 0) / 3600;
-  const decAbs = (co.DecDegrees ?? 0) + (co.DecMinutes ?? 0) / 60 + (co.DecSeconds ?? 0) / 3600;
-  return { RA: raH * 15, Dec: co.NegativeDec ? -decAbs : decAbs };
+  const decAbs = Math.abs(co.DecDegrees ?? 0) + (co.DecMinutes ?? 0) / 60 + (co.DecSeconds ?? 0) / 3600;
+  return { RA: raH * 15, Dec: (co.NegativeDec || (co.DecDegrees ?? 0) < 0) ? -decAbs : decAbs };
 });
 const typeComponent = computed(() => {
   if (store.orbitalItems[props.item.Id]) return OrbitalObjectContainerItem;

@@ -1125,7 +1125,7 @@ function getTargetForSkyChart(target) {
   const decSeconds = coords.DecSeconds || 0;
   let decDegrees = degrees + decMinutes / 60 + decSeconds / 3600;
 
-  if (coords.NegativeDec) {
+  if (coords.NegativeDec || (coords.DecDegrees ?? 0) < 0) {
     decDegrees = -decDegrees;
   }
   return {

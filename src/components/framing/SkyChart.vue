@@ -106,7 +106,7 @@ function interpolateHorizon(azimuth) {
 }
 
 const altitudeData = computed(() => {
-  if (!props.target?.RA || !props.target?.Dec) return [];
+  if (props.target?.RA == null || props.target?.Dec == null) return [];
 
   const points = [];
   const steps = 96; // 24h * 4 (alle 15 Minuten)
