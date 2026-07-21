@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App5.2.0-beta3] - unreleased
+## [App5.2.0-beta3] - 2026-07-21
 ### Added
 - Equipment (PINS): Connect button now doubles as a cancel button while a connection attempt is in progress
 - Guiding: PHD2 live image can now be zoomed and panned (pinch, mouse wheel, double-tap) like the camera image, with lock position, guiding cross and secondary star overlays tracking correctly, plus a reset-zoom button
@@ -14,9 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sequence Creator: Toolbar buttons (undo/redo, save, library, clear, send to NINA) restyled to match the app-wide design system
 
 ### Fixed
+- Sequence: Sequence control buttons no longer get covered when a status bar panel (progress, camera/mount/filter info, guider graph) is opened - they now shift up above it automatically
 - Sequence Creator: Camera offset field was limited to -100..100, now allows the full 0-10000 range
 - Sequence Creator: Cool Camera action sent -10°C to NINA instead of the configured target temperature when it was set to 0°C
 - Sequence Creator: Actions added to a sequence before a template's min/max/step was changed no longer keep showing stale bounds - they now pick up the current limits
+- Sequence Creator: "Wait if Sun/Moon Altitude" always showed 0.0° and never showed the expected time - now shows the actual current altitude and expected time
+- Sequence Creator: "Moon Altitude" condition was missing the current altitude display that its Sun Altitude counterpart already had
 
 ## [App5.2.0-beta2] - 2026-07-19
 ### Changed
