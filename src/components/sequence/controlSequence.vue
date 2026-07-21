@@ -1,12 +1,12 @@
 <template>
   <div
     :class="[
-      'fixed flex flex-wrap gap-2 z-10',
+      'fixed flex flex-wrap gap-2 z-10 transition-[bottom] duration-300',
       isLandscape
         ? 'left-(--nav-offset) max-w-[calc(100vw-var(--nav-offset))]'
         : 'left-3 max-w-[calc(100vw-0.75rem)]',
     ]"
-    style="bottom: var(--above-statusbar)"
+    style="bottom: calc(var(--above-statusbar) + var(--status-panel-height))"
   >
     <button
       :class="[

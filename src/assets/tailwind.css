@@ -49,6 +49,11 @@
   --statusbar-height: 3.5rem;
   --above-statusbar: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height) + 0.75rem);
 
+  /* Height of whichever status-bar panel (progress, camera/mount/filter info,
+     guider graph) is currently open, kept in sync by StatusBar.vue. Overlays
+     anchored to --above-statusbar add this to stay above the open panel. */
+  --status-panel-height: 0px;
+
   /* Stage layout: the content sheet sits inset inside the bar frame. */
   --stage-inset: 6px; /* frame rails left/right of the stage */
   --stage-radius: 16px;
@@ -125,8 +130,13 @@
    can @apply the shared tns-btn / tns-input base. */
 
 @utility tns-btn {
+  /* overflow-hidden + break-words are the global safety net: a label can never
+     visibly spill its button. break-words (overflow-wrap) breaks even a long
+     single word; line-clamp is intentionally NOT used because it sets
+     display:-webkit-box and would break the flex icon+text layout. */
   @apply flex items-center justify-center gap-2
     min-h-touch min-w-touch w-full px-4
+    overflow-hidden break-words
     rounded-control text-sm font-semibold leading-tight text-center
     transition-all duration-150 ease-out
     active:scale-[0.97]
@@ -146,10 +156,11 @@
     hover:bg-surface-2 disabled:hover:bg-surface-3;
 }
 
-/* Danger: destructive/stopping actions ONLY (park, stop, abort) — outlined so red stays a signal */
+/* Danger: destructive/stopping actions ONLY (park, stop, abort) — solid backing so the
+   red border/text stays legible over any page background, image, or overlay. */
 @utility tns-btn-danger {
-  @apply tns-btn bg-transparent border border-status-danger/50 text-status-danger
-    hover:bg-status-danger/10 disabled:hover:bg-transparent;
+  @apply tns-btn bg-surface-3 border border-status-danger/50 text-status-danger
+    hover:bg-status-danger/15 disabled:hover:bg-surface-3;
 }
 
 /* Ghost: icon-only actions on top of images/overlays */

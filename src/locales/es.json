@@ -312,6 +312,18 @@
         "Threshold": "Tolerancia de apuntado (arcmin)",
         "RotationTolerance": "Tolerancia de rotación (°)",
         "MaxObjects": "Máximo núm de objetos",
+        "help": {
+          "ExposureTime": "Tiempo de exposición, en segundos, usado para las imágenes tomadas por el resolutor de placas. Exposiciones más largas capturan más estrellas, lo que ayuda a resolver campos débiles o con pocas estrellas, pero ralentiza cada intento de resolución.",
+          "Gain": "Ganancia de la cámara usada para las exposiciones de resolución de placas. Déjalo vacío para usar la ganancia predeterminada de la cámara.",
+          "ASTAPLocation": "Ruta al ejecutable de ASTAP (astap.exe) en el sistema donde se ejecuta NINA. Necesario para la resolución de placas local con ASTAP.",
+          "SearchRadius": "Radio en grados alrededor de las coordenadas objetivo en el que el resolutor busca al intentar una resolución ciega (blind solve). Un radio mayor aumenta el tiempo de resolución, pero ayuda cuando la posición inicial de la montura es menos precisa.",
+          "Threshold": "Desviación máxima permitida, en minutos de arco, entre la posición resuelta y el objetivo durante Slew & Center. Si la resolución se desvía más que esto, se activa otro ciclo de slew-and-solve.",
+          "RotationTolerance": "Desviación de rotación máxima permitida, en grados, entre la orientación de la imagen resuelta y la orientación objetivo durante Center & Rotate. Si se supera, el rotador se ajusta y el fotograma se vuelve a resolver.",
+          "MaxObjects": "Número máximo de estrellas que usa el resolutor de placas para la coincidencia. Valores más bajos resuelven más rápido pero pueden reducir la precisión en campos con pocas estrellas; valores más altos mejoran la fiabilidad a costa de la velocidad.",
+          "NumberOfAttempts": "Número máximo de reintentos que realiza el resolutor de placas tras una resolución fallida antes de rendirse.",
+          "ReattemptDelay": "Retraso, en minutos, antes de que el resolutor de placas inicie un nuevo intento tras una resolución fallida.",
+          "BlindFailoverEnabled": "Si una resolución de placas normal falla, recurrir automáticamente a una resolución ciega (blind solve, sin coordenadas iniciales) en lugar de abortar."
+        },
         "NumberOfAttempts": "Número de intentos",
         "ReattemptDelay": "Intervalo entre intentos (min)",
         "BlindFailoverEnabled": "Habilitar astrometría ciega en los fallos",

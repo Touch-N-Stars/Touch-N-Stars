@@ -9,12 +9,14 @@
       </h3>
       <SettingInput
         labelKey="components.settings.plate_solver.ExposureTime"
+        helpKey="components.settings.plate_solver.help.ExposureTime"
         settingKey="PlateSolveSettings-ExposureTime"
         :modelValue="store.profileInfo.PlateSolveSettings.ExposureTime"
         :max="600"
       />
       <SettingInput
         labelKey="components.settings.plate_solver.Gain"
+        helpKey="components.settings.plate_solver.help.Gain"
         settingKey="PlateSolveSettings-Gain"
         :modelValue="store.profileInfo.PlateSolveSettings.Gain"
         :modelDefaultValue="store.profileInfo.CameraSettings.Gain"
@@ -22,9 +24,16 @@
         :max="600"
       />
       <div class="flex flex-row items-center justify-between w-full">
-        <label for="astapLocation" class="text-xs sm:text-sm text-gray-200">
-          {{ $t('components.settings.plate_solver.ASTAPLocation') }}
-        </label>
+        <span class="flex items-center gap-1">
+          <label for="astapLocation" class="text-xs sm:text-sm text-gray-200">
+            {{ $t('components.settings.plate_solver.ASTAPLocation') }}
+          </label>
+          <InfoModal
+            :title="$t('components.settings.plate_solver.ASTAPLocation')"
+            :message="$t('components.settings.plate_solver.help.ASTAPLocation')"
+            size="w-4 h-4"
+          />
+        </span>
         <input
           id="astapLocation"
           v-model="astapLocation"
@@ -50,20 +59,23 @@
       </h3>
       <SettingInput
         labelKey="components.settings.plate_solver.SearchRadius"
+        helpKey="components.settings.plate_solver.help.SearchRadius"
         settingKey="PlateSolveSettings-SearchRadius"
         :modelValue="store.profileInfo.PlateSolveSettings.SearchRadius"
         :max="360"
       />
       <SettingInput
         labelKey="components.settings.plate_solver.Threshold"
+        helpKey="components.settings.plate_solver.help.Threshold"
         settingKey="PlateSolveSettings-Threshold"
         :modelValue="store.profileInfo.PlateSolveSettings.Threshold"
         :min="0"
         :max="999"
-        step="1"
+        step="0.01"
       />
       <SettingInput
         labelKey="components.settings.plate_solver.RotationTolerance"
+        helpKey="components.settings.plate_solver.help.RotationTolerance"
         settingKey="PlateSolveSettings-RotationTolerance"
         :modelValue="store.profileInfo.PlateSolveSettings.RotationTolerance"
         :min="0"
@@ -72,6 +84,7 @@
       />
       <SettingInput
         labelKey="components.settings.plate_solver.MaxObjects"
+        helpKey="components.settings.plate_solver.help.MaxObjects"
         settingKey="PlateSolveSettings-MaxObjects"
         :modelValue="store.profileInfo.PlateSolveSettings.MaxObjects"
         :max="9999"
@@ -87,18 +100,21 @@
       </h3>
       <SettingInput
         labelKey="components.settings.plate_solver.NumberOfAttempts"
+        helpKey="components.settings.plate_solver.help.NumberOfAttempts"
         settingKey="PlateSolveSettings-NumberOfAttempts"
         :modelValue="store.profileInfo.PlateSolveSettings.NumberOfAttempts"
         :max="100"
       />
       <SettingInput
         labelKey="components.settings.plate_solver.ReattemptDelay"
+        helpKey="components.settings.plate_solver.help.ReattemptDelay"
         settingKey="PlateSolveSettings-ReattemptDelay"
         :modelValue="store.profileInfo.PlateSolveSettings.ReattemptDelay"
         :max="3600"
       />
       <ProfileToggle
         labelKey="components.settings.plate_solver.BlindFailoverEnabled"
+        helpKey="components.settings.plate_solver.help.BlindFailoverEnabled"
         settingKey="PlateSolveSettings-BlindFailoverEnabled"
       />
     </div>
@@ -110,6 +126,7 @@ import { ref, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
+import InfoModal from '@/components/helpers/infoModal.vue';
 import SetPlateSolverFilterPins from './SetPlateSolverFilterPins.vue';
 import SetPlateSolverAstapDatabasePins from './SetPlateSolverAstapDatabasePins.vue';
 import apiService from '@/services/apiService';

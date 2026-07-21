@@ -1,29 +1,32 @@
 <template>
+  <!-- px-2!/text-xs! override the base tns-btn px-4/text-sm so the labels fit on
+       one line in the cramped 5-button row; ! is required because Tailwind
+       sorts px-4/text-sm after px-2/text-xs so the base would otherwise win. -->
   <button
     v-if="store.mountInfo.CanSetTrackingEnabled"
     @click="setTrackingMode(0)"
-    class="tns-btn-secondary"
+    class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Sidereal' }"
   >
     {{ $t('components.mount.control.siderial') }}
   </button>
   <button
     @click="setTrackingMode(1)"
-    class="tns-btn-secondary"
+    class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Lunar' }"
   >
     Lunar
   </button>
   <button
     @click="setTrackingMode(2)"
-    class="tns-btn-secondary"
+    class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Solar' }"
   >
     Solar
   </button>
   <button
     @click="setTrackingMode(3)"
-    class="tns-btn-secondary"
+    class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'King' }"
   >
     King

@@ -4,6 +4,9 @@
       <span class="text-xs text-slate-400 font-mono">
         {{ comparatorLabel }} {{ item.Offset }}°
       </span>
+      <span v-if="item.CurrentAltitude !== undefined" class="text-xs text-slate-500 font-mono ml-1">
+        ({{ item.CurrentAltitude?.toFixed(1) }}°)
+      </span>
       <span v-if="item.ExpectedTime" class="text-xs text-amber-400/80 font-mono ml-2">
         ⏱ {{ item.ExpectedTime }}
       </span>

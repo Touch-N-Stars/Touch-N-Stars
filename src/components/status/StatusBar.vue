@@ -140,6 +140,7 @@
     <LogModal v-if="showLogModal" @close="showLogModal = false" />
     <!-- Guidegraph -->
     <div
+      ref="guiderPanelRef"
       class="bg-gray-800/95 border-t border-cyan-700"
       :class="guiderGraphClasses"
       style="bottom: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height))"
@@ -152,6 +153,7 @@
     </div>
 
     <div
+      ref="cameraPanelRef"
       class="bg-gray-800/95 border-t border-cyan-700"
       :class="guiderGraphClasses"
       style="bottom: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height))"
@@ -161,6 +163,7 @@
     </div>
 
     <div
+      ref="mountPanelRef"
       class="bg-gray-800/95 border-t border-cyan-700"
       :class="guiderGraphClasses"
       style="bottom: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height))"
@@ -170,6 +173,7 @@
     </div>
 
     <div
+      ref="filterPanelRef"
       class="bg-gray-800/95 border-t border-cyan-700"
       :class="guiderGraphClasses"
       style="bottom: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height))"
@@ -180,6 +184,7 @@
 
     <div
       v-if="store.isPINS"
+      ref="progressPanelRef"
       class="bg-gray-800/95 border-t border-cyan-700"
       :class="guiderGraphClasses"
       style="bottom: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height))"
@@ -192,7 +197,8 @@
 
 <script setup>
 import { apiStore } from '@/store/store';
-import { ref, computed } from 'vue';
+import { ref, computed, watchEffect } from 'vue';
+import { useElementSize } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
 import WeatherModal from '../WeatherModal.vue';
 import LogModal from './LogModal.vue';
@@ -387,6 +393,38 @@ const guiderGraphClasses = computed(() => ({
   'fixed left-0 w-full': !isLandscape.value,
   'fixed left-(--nav-width) right-0': isLandscape.value,
 }));
+
+// Track the height of whichever status-bar panel is currently open, so other
+// fixed-positioned overlays (e.g. controlSequence) can offset themselves above it.
+const guiderPanelRef = ref(null);
+const cameraPanelRef = ref(null);
+const mountPanelRef = ref(null);
+const filterPanelRef = ref(null);
+const progressPanelRef = ref(null);
+
+const { height: guiderPanelHeight } = useElementSize(guiderPanelRef);
+const { height: cameraPanelHeight } = useElementSize(cameraPanelRef);
+const { height: mountPanelHeight } = useElementSize(mountPanelRef);
+const { height: filterPanelHeight } = useElementSize(filterPanelRef);
+const { height: progressPanelHeight } = useElementSize(progressPanelRef);
+
+// Only the visible panel (v-show) reports a non-zero height, so the max is the active one.
+const activeStatusPanelHeight = computed(() =>
+  Math.max(
+    guiderPanelHeight.value,
+    cameraPanelHeight.value,
+    mountPanelHeight.value,
+    filterPanelHeight.value,
+    progressPanelHeight.value
+  )
+);
+
+watchEffect(() => {
+  document.documentElement.style.setProperty(
+    '--status-panel-height',
+    `${activeStatusPanelHeight.value}px`
+  );
+});
 
 function handleWeatherClick(event) {
   tapLight();
