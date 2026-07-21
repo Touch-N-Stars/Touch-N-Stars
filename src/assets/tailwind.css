@@ -49,6 +49,11 @@
   --statusbar-height: 3.5rem;
   --above-statusbar: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height) + 0.75rem);
 
+  /* Height of whichever status-bar panel (progress, camera/mount/filter info,
+     guider graph) is currently open, kept in sync by StatusBar.vue. Overlays
+     anchored to --above-statusbar add this to stay above the open panel. */
+  --status-panel-height: 0px;
+
   /* Stage layout: the content sheet sits inset inside the bar frame. */
   --stage-inset: 6px; /* frame rails left/right of the stage */
   --stage-radius: 16px;
