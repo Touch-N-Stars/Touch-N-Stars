@@ -209,7 +209,6 @@ import apiService from '@/services/apiService';
 import { useCameraStore } from '@/store/cameraStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useSequenceStore } from '@/store/sequenceStore';
-import { useGuiderStore } from '@/store/guiderStore';
 import { apiStore } from '@/store/store';
 import { ArrowPathIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
@@ -222,7 +221,6 @@ const { tapLight, tapMedium } = useHaptics();
 const cameraStore = useCameraStore();
 const settingsStore = useSettingsStore();
 const sequenceStore = useSequenceStore();
-const guiderStore = useGuiderStore();
 const store = apiStore();
 const openSettings = ref(false);
 const showDropdown = ref(false);
@@ -310,14 +308,13 @@ const gapClasses = computed(() => {
 });
 
 // Container dynamic styles.
-// Anchored to --above-statusbar (bar height + safe area) so the action bar
-// tracks the status bar height; the guider graph adds its own panel height.
+// Anchored to --above-statusbar (bar height + safe area); --status-panel-height
+// adds the height of whichever status bar panel (progress, camera/mount/filter
+// info, guider graph) is currently open, so the action bar never gets covered.
 const containerStyle = computed(() => {
-  const baseBottom = guiderStore.showGuiderGraph
-    ? 'calc(var(--above-statusbar) + 15.25rem)'
-    : 'var(--above-statusbar)';
-
-  return !isLandscape.value ? { bottom: baseBottom } : {};
+  return !isLandscape.value
+    ? { bottom: 'calc(var(--above-statusbar) + var(--status-panel-height))' }
+    : {};
 });
 
 // Responsive button sizes — never below the 48px touch target
