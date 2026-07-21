@@ -125,8 +125,13 @@
    can @apply the shared tns-btn / tns-input base. */
 
 @utility tns-btn {
+  /* overflow-hidden + break-words are the global safety net: a label can never
+     visibly spill its button. break-words (overflow-wrap) breaks even a long
+     single word; line-clamp is intentionally NOT used because it sets
+     display:-webkit-box and would break the flex icon+text layout. */
   @apply flex items-center justify-center gap-2
     min-h-touch min-w-touch w-full px-4
+    overflow-hidden break-words
     rounded-control text-sm font-semibold leading-tight text-center
     transition-all duration-150 ease-out
     active:scale-[0.97]

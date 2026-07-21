@@ -12,7 +12,10 @@
     <p class="text-xs">{{ $t('components.mount.control.trackingMode') }}</p>
     <div class="grow ml-2 h-[1px] bg-line-strong"></div>
   </div>
-  <div class="flex gap-x-2 mt-2">
+  <!-- Auto-fit grid: fits as many >=4rem buttons per row as the card allows and
+       wraps the rest to the next row, so the five tracking buttons never spill
+       over the card edge on narrow screens. Each cell keeps a >=48px tap size. -->
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(4rem,1fr))] gap-2 mt-2">
     <ButtonTrackingMode />
     <ButtonTrackingStop />
   </div>
