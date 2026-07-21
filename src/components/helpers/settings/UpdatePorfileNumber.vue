@@ -4,6 +4,7 @@
       v-model="value"
       :label="$t(`${labelKey}`)"
       :labelKey="labelKey"
+      :helpMessage="helpKey ? $t(`${helpKey}`) : ''"
       :min="min"
       :max="max"
       :step="step"
@@ -24,6 +25,10 @@ const props = defineProps({
   labelKey: {
     type: String,
     required: true,
+  },
+  helpKey: {
+    type: String,
+    default: '',
   },
   settingKey: {
     type: String,
