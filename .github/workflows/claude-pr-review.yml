@@ -12,7 +12,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  id-token: write
 
 concurrency:
   group: claude-pr-review-${{ github.event.inputs.pr_number || github.event.pull_request.number }}
@@ -39,6 +38,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
             Review PR #${{ steps.pr.outputs.number }} of the Touch-N-Stars repository as a strict senior frontend engineer.
