@@ -1,0 +1,63 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to review"
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: claude-pr-review-${{ github.event.inputs.pr_number || github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    if: github.event_name == 'workflow_dispatch' || (github.event.pull_request.draft == false && github.event.pull_request.head.repo.fork == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve PR number
+        id: pr
+        run: echo "number=${{ github.event.inputs.pr_number || github.event.pull_request.number }}" >> "$GITHUB_OUTPUT"
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Review PR #${{ steps.pr.outputs.number }} of the Touch-N-Stars repository as a strict senior frontend engineer.
+
+            Use `gh pr diff ${{ steps.pr.outputs.number }}` to get the diff, and post your findings with
+            `gh pr comment ${{ steps.pr.outputs.number }} --body "..."` once you are done. Do not comment more than once.
+
+            Project context:
+            - Touch-N-Stars is a mobile-first Vue 3 + Vite web interface for controlling N.I.N.A (Nighttime Imaging 'N' Astronomy).
+            - It communicates with N.I.N.A via the Advanced API (https://github.com/christian-photo/ninaAPI), typically on port 1888, API V2.
+            - This is hardware-adjacent software: some actions can move real astronomical equipment, start exposures, or change device state. Be conservative and safety-aware.
+
+            Review priorities:
+            - Validate that user actions map to the correct N.I.N.A API calls.
+            - Preserve safety and sequencing for equipment operations (no hidden behavior changes).
+            - Flag regressions in connection/reconnection handling, status polling, and error messaging.
+            - Focus on correctness, regressions, security, and test gaps.
+            - Treat translation/i18n and formatting changes separately from functional behavior.
+            - Do not repeat style-only findings already covered by lint/format CI gates unless they cause functional risk.
+
+            Return concise, actionable findings grouped by severity as a single PR review comment.
+          track_progress: false
