@@ -16,8 +16,8 @@
       <button
         :class="
           store.focuserInfo.IsMoving
-            ? 'tns-btn-danger max-w-52 whitespace-nowrap'
-            : 'tns-btn-primary max-w-52 whitespace-nowrap'
+            ? 'tns-btn-danger w-auto shrink-0 whitespace-nowrap'
+            : 'tns-btn-primary w-auto shrink-0 whitespace-nowrap'
         "
         @click="store.focuserInfo.IsMoving ? stopFocuser() : moveFocuser()"
       >
