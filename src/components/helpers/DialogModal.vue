@@ -3,8 +3,10 @@
     :show="showDialog"
     :zIndex="'z-[80]'"
     @close="handleClose"
+    @restore="toggleMinimize"
     :closeOnBackdropClick="false"
     :isMinimized="isMinimized"
+    :title="currentDialog?.Title || 'Dialog'"
   >
     <template #header>
       <div class="flex justify-between items-center w-full">
