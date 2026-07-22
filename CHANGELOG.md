@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- Dialog: Minimized dialogs are now a small, draggable chip anchored above the status bar instead of a fixed 300px box that permanently covered the bottom-right corner
+
 ## [App5.2.0-beta3] - 2026-07-21
 ### Added
 - Equipment (PINS): Connect button now doubles as a cancel button while a connection attempt is in progress

@@ -52,7 +52,7 @@
         class="flex items-center gap-2 py-2 pl-3 pr-2 bg-gradient-to-br from-gray-950 bg-gray-800 rounded-full shadow-lg cursor-move select-none touch-none max-w-[220px]"
       >
         <button
-          @click="emit('restore')"
+          @click="handleChipRestore"
           class="flex-1 min-w-0 text-left text-sm font-semibold text-gray-100 truncate"
         >
           {{ title || 'Dialog' }}
@@ -124,6 +124,12 @@ const DEFAULT_CHIP_BOTTOM = 'calc(var(--above-statusbar) + var(--status-panel-he
 const chipPosition = ref({ bottom: DEFAULT_CHIP_BOTTOM, right: '16px' });
 const isDragging = ref(false);
 let offset = { x: 0, y: 0 };
+let dragStart = { x: 0, y: 0 };
+let hasMoved = false;
+// Drag ends with the pointer still over the title button, so the browser fires a
+// synthetic click there even after a real drag — this flag tells the click handler
+// to ignore that one click instead of restoring the dialog.
+let suppressNextClick = false;
 
 function getEventCoordinates(e) {
   if (e.touches) {
@@ -134,7 +140,9 @@ function getEventCoordinates(e) {
 
 function startDrag(e) {
   isDragging.value = true;
+  hasMoved = false;
   const { x, y } = getEventCoordinates(e);
+  dragStart = { x, y };
 
   const rect = chipElement.value.getBoundingClientRect();
   offset.x = x - rect.left;
@@ -153,6 +161,9 @@ function onDrag(e) {
   e.preventDefault();
 
   const { x, y } = getEventCoordinates(e);
+  if (Math.abs(x - dragStart.x) > 3 || Math.abs(y - dragStart.y) > 3) {
+    hasMoved = true;
+  }
   const newLeft = x - offset.x;
   const newTop = y - offset.y;
 
@@ -168,10 +179,19 @@ function onDrag(e) {
 
 function stopDrag() {
   isDragging.value = false;
+  suppressNextClick = hasMoved;
   window.removeEventListener('mousemove', onDrag);
   window.removeEventListener('mouseup', stopDrag);
   window.removeEventListener('touchmove', onDrag);
   window.removeEventListener('touchend', stopDrag);
+}
+
+function handleChipRestore() {
+  if (suppressNextClick) {
+    suppressNextClick = false;
+    return;
+  }
+  emit('restore');
 }
 
 watch(
