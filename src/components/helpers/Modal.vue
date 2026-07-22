@@ -40,36 +40,37 @@
     </div>
 
     <!-- Minimized chip (nur wenn minimiert) -->
-    <div
-      v-if="show && isMinimized"
-      ref="chipElement"
-      :class="['shadow-2xl', zIndexClass]"
-      :style="{ position: 'absolute', ...chipPosition }"
-      @mousedown="startDrag"
-      @touchstart="startDrag"
-    >
+    <div v-if="show && isMinimized" class="fixed inset-0 pointer-events-none" :class="zIndexClass">
       <div
-        class="flex items-center gap-2 py-2 pl-3 pr-2 bg-gradient-to-br from-gray-950 bg-gray-800 rounded-full shadow-lg cursor-move select-none touch-none max-w-[220px]"
+        ref="chipElement"
+        class="shadow-2xl pointer-events-auto"
+        :style="{ position: 'absolute', ...chipPosition }"
+        @mousedown="startDrag"
+        @touchstart="startDrag"
       >
-        <button
-          @click="handleChipRestore"
-          class="flex-1 min-w-0 text-left text-sm font-semibold text-gray-100 truncate"
+        <div
+          class="flex items-center gap-2 py-2 pl-3 pr-2 bg-gradient-to-br from-gray-950 bg-gray-800 rounded-full shadow-lg cursor-move select-none touch-none max-w-[220px]"
         >
-          {{ title || 'Dialog' }}
-        </button>
-        <button
-          v-if="!disableClose"
-          @click.stop="handleClose"
-          class="w-6 h-6 shrink-0 flex items-center justify-center text-gray-400 hover:text-gray-200"
-        >
-          <XMarkIcon class="w-4 h-4" />
-        </button>
+          <button
+            @click="handleChipRestore"
+            class="flex-1 min-w-0 text-left text-sm font-semibold text-gray-100 truncate"
+          >
+            {{ title || 'Dialog' }}
+          </button>
+          <button
+            v-if="!disableClose"
+            @click.stop="handleClose"
+            class="w-6 h-6 shrink-0 flex items-center justify-center text-gray-400 hover:text-gray-200"
+          >
+            <XMarkIcon class="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   </teleport>
 </template>
 <script setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({
@@ -157,7 +158,7 @@ function startDrag(e) {
 }
 
 function onDrag(e) {
-  if (!isDragging.value) return;
+  if (!isDragging.value || !chipElement.value) return;
   e.preventDefault();
 
   const { x, y } = getEventCoordinates(e);
@@ -185,6 +186,8 @@ function stopDrag() {
   window.removeEventListener('touchmove', onDrag);
   window.removeEventListener('touchend', stopDrag);
 }
+
+onBeforeUnmount(stopDrag);
 
 function handleChipRestore() {
   if (suppressNextClick) {
