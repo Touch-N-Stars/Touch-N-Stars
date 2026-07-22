@@ -1,6 +1,6 @@
 <template>
   <div
-    class="focus-page"
+    class="focus-page min-h-screen"
     :style="
       (imageStore.imageData && store.focuserAfInfo.autofocus_running) || !delayShowGraph
         ? `background-image: url(${imageStore.imageData}); background-size: cover; background-position: center; background-repeat: no-repeat;`

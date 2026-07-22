@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mount-page"
+    class="mount-page min-h-screen"
     :style="
       imageStore.imageData && store.mount.currentTab === 'showTppa' && tppaStore.isRunning
         ? `background-image: url(${imageStore.imageData}); background-size: cover; background-position: center; background-repeat: no-repeat;`
