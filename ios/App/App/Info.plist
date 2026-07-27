@@ -20,36 +20,7 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_touchnstars._tcp.</string>
-	</array>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Discover Touch-N-Stars instances on your local network.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Sync current coordinates to the mount</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Sync current coordinates to the mount</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Save captured images to your photo library in the TouchNStars album</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access photo library to save captured images</string>
-	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -74,5 +45,34 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+		<string>Sync current coordinates to the mount</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<string>Sync current coordinates to the mount</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+		<string>Save captured images to your photo library in the TouchNStars album</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+		<string>Access photo library to save captured images</string>
+	<key>NSLocalNetworkUsageDescription</key>
+		<string>Discover Touch-N-Stars instances on your local network.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_touchnstars._tcp.</string>
+	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+		<true/>
+	<key>UIFileSharingEnabled</key>
+		<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+			<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+			<true/>
+		<key>NSAllowsLocalNetworking</key>
+			<true/>
+	</dict>
 </dict>
 </plist>
