@@ -1852,7 +1852,19 @@
         "help_stop_tracking_when_done": "When enabled, the mount will stop tracking after polar alignment is finished. Disable if you want your mount to continue tracking.",
         "help_settle_time": "When using automated adjustments, specifies the amount of time in seconds to wait after each movement.",
         "help_auto_pause": "Automatic pause setting for the polar alignment procedure.",
-        "help_log_error": "When enabled, a log file will be created with the polar alignment error adjustments and continuous errors after each adjustment."
+        "help_log_error": "When enabled, a log file will be created with the polar alignment error adjustments and continuous errors after each adjustment.",
+        "alignment_system": "Alignment System",
+        "selected_alignment_system": "Correction System",
+        "system_none": "None (manual)",
+        "oat_settings": "OAT Motor Settings",
+        "oat_device_name": "INDI Device Name",
+        "oat_auto_adjust": "Automated Adjustments",
+        "oat_settle_time": "Settle Time (s)",
+        "oat_x_gear_ratio": "AZ Gear Ratio",
+        "oat_y_gear_ratio": "ALT Gear Ratio",
+        "oat_x_backlash": "AZ Backlash (arcmin)",
+        "oat_reverse_az": "Reverse Azimuth",
+        "oat_reverse_alt": "Reverse Altitude"
       },
       "error_modal": {},
       "tppa": "TPPA"
