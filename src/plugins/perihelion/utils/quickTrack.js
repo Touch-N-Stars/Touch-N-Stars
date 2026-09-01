@@ -28,3 +28,18 @@ export async function startQuickTrack(target) {
     return { ok: false, message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion' };
   }
 }
+
+/**
+ * Undoes what Quick Track did: back to sidereal tracking, and stops any guider shift.
+ * @returns {Promise<{ ok: boolean, message: string }>}
+ */
+export async function stopQuickTrack() {
+  const { PERIHELION_URL } = getUrls();
+  try {
+    const response = await axios.post(`${PERIHELION_URL}/stop`);
+    const body = response.data;
+    return { ok: !!body?.Success, message: body?.Message ?? 'No response message' };
+  } catch (error) {
+    return { ok: false, message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion' };
+  }
+}
