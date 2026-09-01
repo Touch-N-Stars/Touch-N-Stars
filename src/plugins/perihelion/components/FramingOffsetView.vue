@@ -87,7 +87,11 @@ function computeFovOverlay() {
 
 function centerOnTarget() {
   if (!viewer) return;
-  viewer.setView({ center: { raDeg: props.raHours * 15, decDeg: props.decDeg }, fovDeg: 1.5 });
+  // frame is required -- setView's own coordinate validation (toAtlasCoordinates) throws
+  // without one. J2000 matches how the rest of this app treats NINA-sourced RA/Dec (e.g.
+  // atlasSelectionToFraming's own coordinateFrame: 'J2000'), and Perihelion's own values are
+  // J2000 too (NINA.Astrometry.InputCoordinates).
+  viewer.setView({ center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' }, fovDeg: 1.5 });
   const fovOverlay = computeFovOverlay();
   if (fovOverlay) viewer.setFieldOfView(fovOverlay);
   hasOffset.value = false;
