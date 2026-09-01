@@ -117,10 +117,20 @@ function resetFraming() {
 }
 
 onMounted(() => {
+  // ninaObserverToAtlas throws if AstrometrySettings isn't loaded/valid yet (same underlying
+  // data PerihelionView.vue's own hasLocation guard already checks for the altitude card) --
+  // check first with a clear message rather than letting that throw fall into the generic
+  // catch below.
+  const settings = store.profileInfo?.AstrometrySettings;
+  if (![settings?.Latitude, settings?.Longitude].every(Number.isFinite)) {
+    errorMessage.value = "No observer location set in this profile's Astrometry settings.";
+    return;
+  }
+
   try {
     viewer = createCelestiaAtlasViewer({
       container: viewerContainer.value,
-      observer: ninaObserverToAtlas(store.profileInfo?.AstrometrySettings ?? {}),
+      observer: ninaObserverToAtlas(settings),
       utcMs: Date.now(),
       onError: (error) => {
         console.warn('[Perihelion] Framing view sky-survey error:', error.message);
@@ -141,8 +151,11 @@ onMounted(() => {
     centerOnTarget();
     ready.value = true;
   } catch (error) {
-    errorMessage.value = 'Sky view unavailable';
-    console.warn('[Perihelion] Could not start framing view:', error.message);
+    // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
+    // and showing the real message here means a real failure can be diagnosed from a screenshot
+    // rather than needing someone to open devtools.
+    errorMessage.value = `Sky view unavailable: ${error.message}`;
+    console.warn('[Perihelion] Could not start framing view:', error);
   }
 });
 
