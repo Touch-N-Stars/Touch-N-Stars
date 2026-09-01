@@ -51,7 +51,7 @@
  * since this framing preview is a convenience feature that's fine requiring a connection, not
  * something the core tracking math depends on.
  */
-import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
 import { apiStore } from '@/store/store';
 import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
@@ -123,7 +123,7 @@ function resetFraming() {
   emit('offset', null);
 }
 
-onMounted(() => {
+onMounted(async () => {
   // ninaObserverToAtlas throws if AstrometrySettings isn't loaded/valid yet (same underlying
   // data PerihelionView.vue's own hasLocation guard already checks for the altitude card) --
   // check first with a clear message rather than letting that throw fall into the generic
@@ -135,6 +135,12 @@ onMounted(() => {
   }
 
   try {
+    // CelestiaAtlasView.vue's own onMounted awaits a tick before constructing its viewer, for
+    // the same reason this needs to too: this component mounts as part of a tab switch, so the
+    // container can still be zero-sized (no layout pass done yet) at the instant onMounted
+    // fires. A canvas/WebGL renderer measuring a zero-sized container doesn't throw -- it just
+    // renders nothing, which is exactly what showed up here (ready with no error, blank canvas).
+    await nextTick();
     viewer = createCelestiaAtlasViewer({
       container: viewerContainer.value,
       observer: ninaObserverToAtlas(settings),
@@ -156,6 +162,7 @@ onMounted(() => {
       comets: true,
     });
     centerOnTarget();
+    viewer.resize();
     ready.value = true;
   } catch (error) {
     // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
