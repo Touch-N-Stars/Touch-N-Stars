@@ -28,6 +28,24 @@
           <span class="text-[11px] text-content-faint">Sorted by brightness</span>
         </div>
 
+        <div v-if="filter !== 'Asteroid'" class="flex items-center gap-2 text-[11px] text-content-faint">
+          <span>Comets {{ syncStatusLabel }}</span>
+          <span class="flex-1"></span>
+          <button
+            class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
+            :disabled="syncing"
+            @click="onSyncComets"
+          >
+            {{ syncing ? 'Syncing…' : 'Sync Now' }}
+          </button>
+        </div>
+        <p v-if="filter !== 'Asteroid' && syncMessage" class="text-[11px]" :class="syncMessage.ok ? 'text-status-ok' : 'text-status-danger'">
+          {{ syncMessage.text }}
+        </p>
+        <p v-if="filter === 'Asteroid'" class="text-[11px] text-content-faint">
+          {{ asteroidCount }} asteroids — a fixed list, updated via plugin releases rather than synced.
+        </p>
+
         <p v-if="objectsLoading" class="text-sm text-content-muted">Loading…</p>
         <p v-else-if="objectsError" class="text-sm text-status-danger">{{ objectsError }}</p>
         <p v-else-if="filteredObjects.length === 0" class="text-sm text-content-faint italic">
@@ -46,7 +64,7 @@
               class="w-9 h-9 rounded-chip flex items-center justify-center shrink-0"
               :class="o.objectType === 'Comet' ? 'bg-violet-400/15' : 'bg-surface-3'"
             >
-              <CometIcon v-if="o.objectType === 'Comet'" />
+              <CometIcon v-if="o.objectType === 'Comet'" :id="o.id" />
               <AsteroidIcon v-else />
             </div>
             <div class="flex flex-col gap-0.5 min-w-0 flex-1">
@@ -74,7 +92,7 @@
               class="w-10 h-10 rounded-card flex items-center justify-center shrink-0"
               :class="selected.objectType === 'Comet' ? 'bg-violet-400/15' : 'bg-surface-3'"
             >
-              <CometIcon v-if="selected.objectType === 'Comet'" :size="20" />
+              <CometIcon v-if="selected.objectType === 'Comet'" :size="20" :id="'selected-' + selected.id" />
               <AsteroidIcon v-else :size="20" />
             </div>
             <div class="flex flex-col gap-0.5 min-w-0">
@@ -98,6 +116,19 @@
                 {{ selected.magnitude != null ? selected.magnitude.toFixed(1) : '—' }}
               </span>
             </div>
+          </div>
+
+          <div v-if="cometActivity" class="tns-card">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="tns-stat-label flex-1">Observed Brightness</span>
+              <span class="text-xs font-bold text-accent">mag {{ cometActivity.recentAverageMagnitude.toFixed(1) }}</span>
+            </div>
+            <p class="text-[11px] leading-relaxed text-content-muted">
+              Real observer reports (COBS), average of the last
+              {{ Math.min(cometActivity.observationCount, 5) }} —
+              vs. mag {{ selected.magnitude != null ? selected.magnitude.toFixed(1) : '—' }} predicted from
+              orbital elements alone. Last reported {{ relativeTime(cometActivity.mostRecentDateUtc) }}.
+            </p>
           </div>
 
           <div class="tns-card">
@@ -278,6 +309,8 @@
             <p class="text-[11px] leading-relaxed text-content-faint">
               <strong class="text-content-muted">Add to Sequence</strong> builds a slew + track +
               imaging sequence and loads it into NINA's sequencer for you to review and start.
+            </p>
+            <p class="text-[11px] leading-relaxed text-content-faint">
               <strong class="text-content-muted">Quick Track</strong> sets the mount's rate
               directly right now — for manual or visual use, not a substitute for a real imaging
               sequence.
@@ -306,23 +339,44 @@ import apiService from '@/services/apiService';
 import { raDecToAltAz } from '@/utils/utils';
 import { fetchBrowseObjects } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
+import { fetchSyncStatus, syncComets } from '../utils/syncComets';
+import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { usePerihelionStore } from '../store/perihelionStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
 import SkyChart from '@/components/framing/SkyChart.vue';
 
+// Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
+// tapered-tail-into-glowing-coma shape, not an independent redesign. That component uses
+// stop-color="currentColor" resolved from the CSS `color` property, but this file's icons set
+// an explicit stroke="#hex" instead (see AsteroidIcon below) rather than relying on inherited
+// `color` -- so the hex is baked directly into the gradient stops here instead of copying
+// currentColor verbatim, which would have silently resolved to whatever text color happens to
+// be inherited rather than violet. `id` must be unique per rendered instance (a comet's own
+// list-row id works well) since two instances sharing one gradient id is invalid SVG, same
+// concern OryxAstro's own component solves with Vue's useId().
 const CometIcon = {
-  props: { size: { type: Number, default: 16 } },
+  props: { size: { type: Number, default: 16 }, id: { type: String, default: 'default' } },
   render() {
+    const uid = this.id;
     return h(
       'svg',
-      { width: this.size, height: this.size, viewBox: '0 0 24 24', fill: 'none', stroke: '#a78bfa', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' },
+      { width: this.size, height: this.size, viewBox: '0 0 24 24', fill: 'none', stroke: '#a78bfa', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' },
       [
-        h('circle', { cx: 9, cy: 9, r: 2.6 }),
-        h('path', { d: 'M11 11l10 10' }),
-        h('path', { d: 'M13.5 13.5l5-1.2' }),
-        h('path', { d: 'M13.5 13.5l1.2 5' }),
+        h('defs', {}, [
+          h('linearGradient', { id: `comet-tail-${uid}`, x1: 17, y1: 7, x2: 4, y2: 17, gradientUnits: 'userSpaceOnUse' }, [
+            h('stop', { offset: '0%', 'stop-color': '#a78bfa', 'stop-opacity': '0.9' }),
+            h('stop', { offset: '100%', 'stop-color': '#a78bfa', 'stop-opacity': '0' }),
+          ]),
+          h('radialGradient', { id: `comet-coma-${uid}` }, [
+            h('stop', { offset: '0%', 'stop-color': '#a78bfa', 'stop-opacity': '1' }),
+            h('stop', { offset: '100%', 'stop-color': '#a78bfa', 'stop-opacity': '0' }),
+          ]),
+        ]),
+        h('path', { stroke: `url(#comet-tail-${uid})`, d: 'M17 7 C13 11, 8 14, 4 16.5', 'stroke-width': 4.5 }),
+        h('circle', { cx: 17, cy: 7, r: 6, fill: `url(#comet-coma-${uid})`, stroke: 'none' }),
+        h('circle', { cx: 17, cy: 7, r: 2.5, fill: '#a78bfa', stroke: 'none' }),
       ]
     );
   },
@@ -389,6 +443,35 @@ async function loadObjects() {
 }
 onMounted(loadObjects);
 
+// --- Comet data sync (on-disk cache on the plugin side, see CometOrbits.cs) ---
+const cometsLastSyncedUtc = ref(null);
+const syncing = ref(false);
+const syncMessage = ref(null);
+
+async function loadSyncStatus() {
+  try {
+    cometsLastSyncedUtc.value = await fetchSyncStatus();
+  } catch {
+    // Not worth surfacing an error just for the status line -- the Sync Now button and any
+    // comet-fetch error elsewhere in the panel already cover the cases that actually matter.
+  }
+}
+onMounted(loadSyncStatus);
+
+const syncStatusLabel = computed(() =>
+  cometsLastSyncedUtc.value ? `synced ${relativeTime(cometsLastSyncedUtc.value)}` : 'never synced'
+);
+
+async function onSyncComets() {
+  syncing.value = true;
+  syncMessage.value = null;
+  const result = await syncComets();
+  syncMessage.value = { ok: result.ok, text: result.message };
+  if (result.lastSyncedUtc) cometsLastSyncedUtc.value = result.lastSyncedUtc;
+  syncing.value = false;
+  if (result.ok) await loadObjects();
+}
+
 const filteredObjects = computed(() => {
   let list = objects.value;
   if (filter.value !== 'all') list = list.filter((o) => o.objectType === filter.value);
@@ -398,6 +481,10 @@ const filteredObjects = computed(() => {
   }
   return list;
 });
+
+// Computed rather than hardcoded so the "N asteroids" note below never silently goes stale if
+// the embedded list in AsteroidOrbits.cs ever changes.
+const asteroidCount = computed(() => objects.value.filter((o) => o.objectType === 'Asteroid').length);
 
 const selected = computed(() => objects.value.find((o) => o.id === selectedId.value) ?? null);
 
@@ -412,6 +499,15 @@ function formatDecDeg(decDeg) {
   const d = Math.floor(abs);
   const m = (abs - d) * 60;
   return `${sign}${d}° ${m.toFixed(0)}′`;
+}
+
+/** "3h ago" / "just now" -- shared by the comet-sync status line and the COBS activity note. */
+function relativeTime(date) {
+  const seconds = (Date.now() - date.getTime()) / 1000;
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
 }
 
 // --- Position & Path ---
@@ -443,6 +539,24 @@ async function loadPath() {
 }
 watch([activeTab, selected], ([tab]) => {
   if (tab === 'position' && selected.value) loadPath();
+});
+
+// --- Observed brightness (COBS) -- comet-only cross-check against the predicted magnitude ---
+const cometActivity = ref(null);
+async function loadCometActivity() {
+  if (!selected.value || selected.value.objectType !== 'Comet') {
+    cometActivity.value = null;
+    return;
+  }
+  try {
+    const result = await fetchCometActivity(selected.value.name);
+    cometActivity.value = result.available ? result : null;
+  } catch {
+    cometActivity.value = null;
+  }
+}
+watch([activeTab, selected], ([tab]) => {
+  if (tab === 'position' && selected.value) loadCometActivity();
 });
 
 // --- Track ---
