@@ -53,7 +53,9 @@ function decDegToNinaFields(decDeg) {
  * @param {number} target.raHours - current position, decimal hours (for the GoTo/plate-solve slew; Perihelion computes its own live rate independently at Execute() time).
  * @param {number} target.decDeg - current position, decimal degrees.
  * @param {boolean} target.guiding - also add SetPerihelionGuiderShiftRate after StartGuiding.
- * @param {{ filterName: string, exposureSeconds: number, frameCount: number }} target.exposure
+ * @param {boolean} target.meridianFlip - add a MeridianFlipTrigger to the sequence's global triggers.
+ * @param {number|null} target.autofocusMinutes - add an AutofocusAfterTimeTrigger with this interval (minutes) to the target's own triggers; omit/null to skip it entirely.
+ * @param {{ filterName: string|null, exposureSeconds: number, frameCount: number }} target.exposure - filterName null/empty means "don't touch the filter wheel" (leaves whatever's currently selected); any other value must be a real name from the connected wheel's AvailableFilters.
  * @returns {object} a full NINA SequenceRootContainer, ready for sequenceApi.sequenceLoadJson(JSON.stringify(root)).
  */
 export function buildPerihelionSequence(target) {
@@ -123,6 +125,18 @@ export function buildPerihelionSequence(target) {
     });
   }
 
+  function ninaMeridianFlipTrigger(parentId) {
+    // No configurable fields of its own -- reads timing/behavior from the profile's own
+    // MeridianFlipSettings, same as when added through NINA's own sequencer UI.
+    return leafItem('NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger, NINA.Sequencer', parentId);
+  }
+
+  function ninaAutofocusAfterTimeTrigger(parentId, minutes) {
+    return leafItem('NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTimeTrigger, NINA.Sequencer', parentId, {
+      Amount: minutes,
+    });
+  }
+
   function ninaSwitchFilter(parentId, filterName) {
     return leafItem('NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter, NINA.Sequencer', parentId, {
       Filter: null,
@@ -149,7 +163,10 @@ export function buildPerihelionSequence(target) {
       { $id: nextId(), $type: 'NINA.Sequencer.Conditions.LoopCondition, NINA.Sequencer', CompletedIterations: 0, Iterations: frameCount, Parent: ref(id) },
     ];
     const items = [];
-    if (filterName && filterName !== 'No Filter (Clear)') items.push(ninaSwitchFilter(id, filterName));
+    // filterName is a real name from the connected wheel's own AvailableFilters (see this
+    // file's own param docs) -- null/empty is the only case that means "leave the wheel alone",
+    // there's no magic string standing in for a real filter position any more.
+    if (filterName) items.push(ninaSwitchFilter(id, filterName));
     items.push(ninaTakeExposure(id, exposureSeconds));
     return finishContainer(id, 'NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer', loopName, parentId, conditions, items, []);
   }
@@ -179,6 +196,8 @@ export function buildPerihelionSequence(target) {
     }
     items.push(buildTargetImagingInstructions(id));
 
+    const triggers = target.autofocusMinutes ? [ninaAutofocusAfterTimeTrigger(id, target.autofocusMinutes)] : [];
+
     return {
       $id: id,
       $type: 'NINA.Sequencer.Container.DeepSkyObjectContainer, NINA.Sequencer',
@@ -194,7 +213,7 @@ export function buildPerihelionSequence(target) {
       Conditions: conditionsColl([]),
       IsExpanded: true,
       Items: itemsColl(items),
-      Triggers: triggersColl([]),
+      Triggers: triggersColl(triggers),
       Parent: ref(parentId),
       ErrorBehavior: 0,
       Attempts: 1,
@@ -212,5 +231,10 @@ export function buildPerihelionSequence(target) {
   const endId = nextId();
   const endContainer = finishContainer(endId, 'NINA.Sequencer.Container.EndAreaContainer, NINA.Sequencer', 'End', rootId, [], [], []);
 
-  return finishContainer(rootId, 'NINA.Sequencer.Container.SequenceRootContainer, NINA.Sequencer', `Perihelion - ${target.targetName}`, null, [], [startContainer, targetAreaContainer, endContainer], []);
+  // MeridianFlipTrigger is added here, at the root's own global-triggers collection (the
+  // "Global Trigger" section shown at the top of the sequence, separate from the per-target
+  // Triggers) -- correct place for it, since it applies mount-wide, not just to this one target.
+  const globalTriggers = target.meridianFlip ? [ninaMeridianFlipTrigger(rootId)] : [];
+
+  return finishContainer(rootId, 'NINA.Sequencer.Container.SequenceRootContainer, NINA.Sequencer', `Perihelion - ${target.targetName}`, null, [], [startContainer, targetAreaContainer, endContainer], globalTriggers);
 }

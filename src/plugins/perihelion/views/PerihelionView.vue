@@ -105,15 +105,20 @@
               <span class="tns-stat-label flex-1">Tonight's Altitude</span>
               <span v-if="altAz" class="text-xs font-bold text-accent">
                 {{ altAz.altitude.toFixed(0) }}° {{ altAz.altitude >= 0 ? 'above horizon' : 'below horizon' }}
+                · Az {{ altAz.azimuth.toFixed(0) }}°
               </span>
             </div>
             <p v-if="!hasLocation" class="text-xs text-content-faint">
               No observer location set in this profile's Astrometry settings.
             </p>
-            <p v-else class="text-xs text-content-muted">
-              Azimuth {{ altAz.azimuth.toFixed(0) }}°. Computed from this profile's own site
-              location — the same generic RA/Dec→Alt/Az transform used elsewhere in the app, not
-              something specific to comets/asteroids.
+            <SkyChart
+              v-else
+              :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
+              :coordinates="{ latitude: store.profileInfo.AstrometrySettings.Latitude, longitude: store.profileInfo.AstrometrySettings.Longitude }"
+            />
+            <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
+              Uses {{ selected.name }}'s position right now for the whole night — real for a
+              star, a slight approximation for a moving object, close enough for a transit curve.
             </p>
           </div>
 
@@ -176,11 +181,10 @@
               <label class="block">
                 <span class="block text-[10px] text-content-faint mb-1">Filter — from connected wheel</span>
                 <select v-model="exposureFilter" class="tns-select">
-                  <option>No Filter (Clear)</option>
-                  <option>L</option>
-                  <option>UV/IR Cut</option>
-                  <option>Ha</option>
-                  <option>OIII</option>
+                  <option value="">Don't change filter</option>
+                  <option v-for="f in store.filterInfo?.AvailableFilters ?? []" :key="f.Name" :value="f.Name">
+                    {{ f.Name }}
+                  </option>
                 </select>
               </label>
               <div class="flex gap-2">
@@ -217,6 +221,52 @@
                   ></span>
                 </span>
               </button>
+
+              <button
+                class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
+                @click="meridianFlip = !meridianFlip"
+              >
+                <div class="flex flex-col gap-0.5 min-w-0 flex-1">
+                  <span class="text-sm font-semibold text-content">Include meridian flip trigger</span>
+                  <span class="text-[11px] text-content-muted leading-tight">
+                    Recommended on a GEM mount for anything running past the meridian.
+                  </span>
+                </div>
+                <span
+                  class="relative inline-flex h-[22px] w-10 shrink-0 items-center rounded-full transition-colors"
+                  :class="meridianFlip ? 'bg-accent/35' : 'bg-surface-3'"
+                >
+                  <span
+                    class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
+                    :class="meridianFlip ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                  ></span>
+                </span>
+              </button>
+
+              <button
+                class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
+                @click="autofocus = !autofocus"
+              >
+                <div class="flex flex-col gap-0.5 min-w-0 flex-1">
+                  <span class="text-sm font-semibold text-content">Include autofocus trigger</span>
+                  <span class="text-[11px] text-content-muted leading-tight">
+                    Refocuses on a timer during the imaging loop.
+                  </span>
+                </div>
+                <span
+                  class="relative inline-flex h-[22px] w-10 shrink-0 items-center rounded-full transition-colors"
+                  :class="autofocus ? 'bg-accent/35' : 'bg-surface-3'"
+                >
+                  <span
+                    class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
+                    :class="autofocus ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                  ></span>
+                </span>
+              </button>
+              <label v-if="autofocus" class="block pb-1">
+                <span class="block text-[10px] text-content-faint mb-1">Every (minutes)</span>
+                <input v-model.number="autofocusMinutes" type="number" min="1" class="tns-input" />
+              </label>
             </div>
 
             <button class="tns-btn-primary" :disabled="actionBusy" @click="onAddToSequence">
@@ -227,7 +277,7 @@
             </button>
             <p class="text-[11px] leading-relaxed text-content-faint">
               <strong class="text-content-muted">Add to Sequence</strong> builds a slew + track +
-              imaging sequence and hands it to NINA to run.
+              imaging sequence and loads it into NINA's sequencer for you to review and start.
               <strong class="text-content-muted">Quick Track</strong> sets the mount's rate
               directly right now — for manual or visual use, not a substitute for a real imaging
               sequence.
@@ -249,6 +299,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, h } from 'vue';
+import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
@@ -257,7 +308,9 @@ import { fetchBrowseObjects } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
+import { usePerihelionStore } from '../store/perihelionStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
+import SkyChart from '@/components/framing/SkyChart.vue';
 
 const CometIcon = {
   props: { size: { type: Number, default: 16 } },
@@ -286,26 +339,41 @@ const AsteroidIcon = {
 };
 
 const store = apiStore();
+const perihelionStore = usePerihelionStore();
+// Persisted across leaving/re-entering this tab (see perihelionStore.js's own doc comment for
+// why plain local refs don't survive that) -- everything else below stays a local ref, since
+// it's either re-fetched cheaply (objects, path) or purely transient UI feedback (actionStatus,
+// actionBusy).
+const {
+  activeTab,
+  selectedId,
+  filter,
+  searchQuery,
+  exposureFilter,
+  exposureSeconds,
+  frameCount,
+  guiding,
+  meridianFlip,
+  autofocus,
+  autofocusMinutes,
+  trackingMode,
+} = storeToRefs(perihelionStore);
 
 const tabItems = [
   { name: 'Browse', value: 'browse' },
   { name: 'Position & Path', value: 'position' },
   { name: 'Track', value: 'track' },
 ];
-const activeTab = ref('browse');
 
 // --- Browse ---
 const objects = ref([]);
 const objectsLoading = ref(false);
 const objectsError = ref(null);
-const searchQuery = ref('');
-const filter = ref('all');
 const filterOptions = [
   { label: 'All', value: 'all' },
   { label: 'Comets', value: 'Comet' },
   { label: 'Asteroids', value: 'Asteroid' },
 ];
-const selectedId = ref(null);
 
 async function loadObjects() {
   objectsLoading.value = true;
@@ -378,11 +446,7 @@ watch([activeTab, selected], ([tab]) => {
 });
 
 // --- Track ---
-const trackingMode = ref('idle'); // 'idle' | 'quick' | 'sequence'
-const guiding = ref(true);
-const exposureFilter = ref('No Filter (Clear)');
-const exposureSeconds = ref(30);
-const frameCount = ref(60);
+// trackingMode: 'idle' | 'quick' | 'sequence' -- lives in perihelionStore, see above.
 const actionBusy = ref(false);
 const actionStatus = ref(null);
 
@@ -403,15 +467,19 @@ async function onAddToSequence() {
     raHours: selected.value.raHours,
     decDeg: selected.value.decDeg,
     guiding: guiding.value,
+    meridianFlip: meridianFlip.value,
+    autofocusMinutes: autofocus.value ? autofocusMinutes.value : null,
     exposure: {
-      filterName: exposureFilter.value,
+      filterName: exposureFilter.value || null,
       exposureSeconds: exposureSeconds.value,
       frameCount: frameCount.value,
     },
   });
   actionStatus.value = result;
   actionBusy.value = false;
-  if (result.ok) trackingMode.value = 'sequence';
+  // Deliberately stays 'idle' even on success -- Add to Sequence only loads the sequence, it
+  // doesn't start it (see sendPerihelionSequence's own doc comment), so there's nothing here
+  // for a "Stop Sequence" button to stop yet.
 }
 
 async function onQuickTrack() {
