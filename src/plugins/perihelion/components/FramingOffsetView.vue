@@ -55,6 +55,7 @@ import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
 import { apiStore } from '@/store/store';
 import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
+import { ATLAS_POSITION_ANGLE_CONVENTION } from '@/integrations/celestiaAtlas/positionAngle';
 
 const props = defineProps({
   raHours: { type: Number, required: true },
@@ -79,7 +80,9 @@ function computeFovOverlay() {
       sensorWidthPx: Number(profile?.FramingAssistantSettings?.CameraWidth),
       sensorHeightPx: Number(profile?.FramingAssistantSettings?.CameraHeight),
     });
-    return { widthDeg: fov.widthDeg, heightDeg: fov.heightDeg, rotationDeg: 0 };
+    // rotationConvention is required by setFieldOfView's own validation -- matches
+    // CelestiaAtlasView.vue's own identical FOV overlay call.
+    return { widthDeg: fov.widthDeg, heightDeg: fov.heightDeg, rotationDeg: 0, rotationConvention: ATLAS_POSITION_ANGLE_CONVENTION };
   } catch {
     return null;
   }
