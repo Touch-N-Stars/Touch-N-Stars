@@ -172,6 +172,24 @@
               a single exposure.
             </p>
           </div>
+
+          <div class="tns-card">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="tns-stat-label flex-1">Framing</span>
+              <span v-if="framingOffset" class="text-[11px] text-accent font-semibold">Offset set</span>
+            </div>
+            <FramingOffsetView
+              :key="selected.id"
+              :ra-hours="selected.raHours"
+              :dec-deg="selected.decDeg"
+              :target-name="selected.name"
+              @offset="framingOffset = $event"
+            />
+            <p class="text-[11px] leading-relaxed text-content-muted mt-2">
+              Real sky imagery, centered on {{ selected.name }}'s actual position right now. Pan
+              to compose the shot, then capture the offset for Add to Sequence.
+            </p>
+          </div>
         </template>
       </template>
 
@@ -345,6 +363,7 @@ import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { usePerihelionStore } from '../store/perihelionStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
+import FramingOffsetView from '../components/FramingOffsetView.vue';
 import SkyChart from '@/components/framing/SkyChart.vue';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
@@ -559,6 +578,16 @@ watch([activeTab, selected], ([tab]) => {
   if (tab === 'position' && selected.value) loadCometActivity();
 });
 
+// --- Framing offset -- see FramingOffsetView.vue's own doc comment for the mechanism.
+// null means "no offset, center exactly on the object's true position" (the default).
+const framingOffset = ref(null);
+watch(selected, () => {
+  // An offset captured for one object has no meaning for a different one -- reset rather than
+  // silently carry it over. FramingOffsetView itself remounts fresh on selection change (it's
+  // keyed by selected.id) but doesn't know to tell this parent to clear its own last value.
+  framingOffset.value = null;
+});
+
 // --- Track ---
 // trackingMode: 'idle' | 'quick' | 'sequence' -- lives in perihelionStore, see above.
 const actionBusy = ref(false);
@@ -583,6 +612,7 @@ async function onAddToSequence() {
     guiding: guiding.value,
     meridianFlip: meridianFlip.value,
     autofocusMinutes: autofocus.value ? autofocusMinutes.value : null,
+    frameOffset: framingOffset.value,
     exposure: {
       filterName: exposureFilter.value || null,
       exposureSeconds: exposureSeconds.value,

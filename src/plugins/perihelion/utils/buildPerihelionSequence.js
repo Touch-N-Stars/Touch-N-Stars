@@ -55,6 +55,7 @@ function decDegToNinaFields(decDeg) {
  * @param {boolean} target.guiding - also add SetPerihelionGuiderShiftRate after StartGuiding.
  * @param {boolean} target.meridianFlip - add a MeridianFlipTrigger to the sequence's global triggers.
  * @param {number|null} target.autofocusMinutes - add an AutofocusAfterTimeTrigger with this interval (minutes) to the target's own triggers; omit/null to skip it entirely.
+ * @param {{ raDeg: number, decDeg: number }|null} target.frameOffset - shifts only the GoTo/CenterAndRotate slew target (see FramingOffsetView.vue); null/omitted centers exactly on raHours/decDeg as usual.
  * @param {{ filterName: string|null, exposureSeconds: number, frameCount: number }} target.exposure - filterName null/empty means "don't touch the filter wheel" (leaves whatever's currently selected); any other value must be a real name from the connected wheel's AvailableFilters.
  * @returns {object} a full NINA SequenceRootContainer, ready for sequenceApi.sequenceLoadJson(JSON.stringify(root)).
  */
@@ -189,7 +190,18 @@ export function buildPerihelionSequence(target) {
       InputCoordinates: coordinatesNode(ra, dec),
     };
 
-    const items = [ninaCenterAndRotate(id, coordinatesNode(ra, dec)), ninaSetPerihelionTrackingRate(id)];
+    // frameOffset (from FramingOffsetView.vue's "Use this framing" capture) shifts only the
+    // actual GoTo/slew target -- targetObj's own InputCoordinates above stays at the object's
+    // true position, so NINA's own sequencer UI still correctly identifies what this container
+    // tracks. SetPerihelionTrackingRate is untouched either way: its rate computation looks up
+    // the object by TargetName and depends on the object's own real motion, not on where the
+    // mount is centered, which is exactly what lets a one-time offset (captured once at export
+    // time, rather than continuously re-anchored the way Orbitals' own live-relative offset
+    // works) hold for the whole session -- the custom tracking rate keeps whatever framing
+    // choice was made here fixed in the same way it already keeps the true position fixed.
+    const slewRa = target.frameOffset ? raHoursToNinaFields(target.frameOffset.raDeg / 15) : ra;
+    const slewDec = target.frameOffset ? decDegToNinaFields(target.frameOffset.decDeg) : dec;
+    const items = [ninaCenterAndRotate(id, coordinatesNode(slewRa, slewDec)), ninaSetPerihelionTrackingRate(id)];
     if (target.guiding) {
       items.push(ninaStartGuiding(id));
       items.push(ninaSetPerihelionGuiderShiftRate(id));
