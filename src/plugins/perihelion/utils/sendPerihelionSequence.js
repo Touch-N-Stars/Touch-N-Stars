@@ -30,5 +30,7 @@ function describeError(error, fallback) {
   // (e.g. "Sequence is not initialized", "Sequence is already running") -- surface that
   // message directly when present, since it's usually more actionable than a generic one.
   const apiMessage = error?.response?.data?.Error;
-  return apiMessage ? `${fallback}: ${apiMessage}` : `${fallback}: ${error?.message ?? 'unknown error'}`;
+  return apiMessage
+    ? `${fallback}: ${apiMessage}`
+    : `${fallback}: ${error?.message ?? 'unknown error'}`;
 }

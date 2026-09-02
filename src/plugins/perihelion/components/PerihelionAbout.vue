@@ -18,8 +18,8 @@
         <section>
           <h4 class="mb-1 text-base font-semibold text-content">Perihelion</h4>
           <p>
-            Non-sidereal tracking for comets and asteroids -- sets a mount's custom RA/Dec rate
-            live from current orbital elements, computed in-process with no external service.
+            Non-sidereal tracking for comets and asteroids -- sets a mount's custom RA/Dec rate live
+            from current orbital elements, computed in-process with no external service.
           </p>
           <a
             class="break-all text-accent hover:underline"
@@ -34,19 +34,19 @@
         <section>
           <h4 class="mb-1 text-base font-semibold text-content">Data sources</h4>
           <p>
-            Comet orbital elements come from the IAU Minor Planet Center, cached on-disk and
-            synced on demand. Observed brightness cross-checks come from COBS (Comet
-            OBServation database) where available. The orbital mechanics itself is built on
-            CosineKitty.AstronomyEngine, the same engine (kept in version lockstep) OryxAstro's
-            own website uses for its sky-events planner.
+            Comet orbital elements come from the IAU Minor Planet Center, cached on-disk and synced
+            on demand. Observed brightness cross-checks come from COBS (Comet OBServation database)
+            where available. The orbital mechanics itself is built on CosineKitty.AstronomyEngine,
+            the same engine (kept in version lockstep) OryxAstro's own website uses for its
+            sky-events planner.
           </p>
         </section>
 
         <section>
           <h4 class="mb-1 text-base font-semibold text-content">OryxAstro</h4>
           <p>
-            Perihelion is built by OryxAstro, whose website's own Deep Sky / Solar System
-            Planner can send a tracking sequence for a comet or asteroid directly to PINS.
+            Perihelion is built by OryxAstro, whose website's own Deep Sky / Solar System Planner
+            can send a tracking sequence for a comet or asteroid directly to PINS.
           </p>
           <a
             class="break-all text-accent hover:underline"

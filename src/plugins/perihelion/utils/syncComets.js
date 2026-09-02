@@ -28,7 +28,9 @@ export async function syncComets() {
     return {
       ok: response.data.Success,
       message: response.data.Message,
-      lastSyncedUtc: response.data.CometsLastSyncedUtc ? new Date(response.data.CometsLastSyncedUtc) : null,
+      lastSyncedUtc: response.data.CometsLastSyncedUtc
+        ? new Date(response.data.CometsLastSyncedUtc)
+        : null,
     };
   } catch (error) {
     return { ok: false, message: error?.message ?? 'Sync failed', lastSyncedUtc: null };

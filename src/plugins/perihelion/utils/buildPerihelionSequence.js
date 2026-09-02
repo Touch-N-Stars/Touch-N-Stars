@@ -29,7 +29,7 @@ const SEQUENTIAL_STRATEGY = {
 
 /** Decimal hours -> NINA's {RAHours, RAMinutes, RASeconds} sexagesimal fields. */
 function raHoursToNinaFields(raHours) {
-  const totalSeconds = Math.round(((raHours % 24) + 24) % 24 * 3600 * 1000) / 1000;
+  const totalSeconds = Math.round((((raHours % 24) + 24) % 24) * 3600 * 1000) / 1000;
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -64,9 +64,21 @@ export function buildPerihelionSequence(target) {
   const nextId = () => String(idCounter++);
   const ref = (id) => ({ $ref: id });
 
-  const itemsColl = (values) => ({ $id: nextId(), $type: OBSERVABLE_ITEM_COLLECTION, $values: values });
-  const conditionsColl = (values) => ({ $id: nextId(), $type: OBSERVABLE_CONDITION_COLLECTION, $values: values });
-  const triggersColl = (values) => ({ $id: nextId(), $type: OBSERVABLE_TRIGGER_COLLECTION, $values: values });
+  const itemsColl = (values) => ({
+    $id: nextId(),
+    $type: OBSERVABLE_ITEM_COLLECTION,
+    $values: values,
+  });
+  const conditionsColl = (values) => ({
+    $id: nextId(),
+    $type: OBSERVABLE_CONDITION_COLLECTION,
+    $values: values,
+  });
+  const triggersColl = (values) => ({
+    $id: nextId(),
+    $type: OBSERVABLE_TRIGGER_COLLECTION,
+    $values: values,
+  });
 
   function finishContainer(id, type, name, parentId, conditions, items, triggers) {
     return {
@@ -85,11 +97,23 @@ export function buildPerihelionSequence(target) {
   }
 
   function leafItem(type, parentId, extraFields = {}) {
-    return { $id: nextId(), $type: type, ...extraFields, Parent: ref(parentId), ErrorBehavior: 0, Attempts: 1 };
+    return {
+      $id: nextId(),
+      $type: type,
+      ...extraFields,
+      Parent: ref(parentId),
+      ErrorBehavior: 0,
+      Attempts: 1,
+    };
   }
 
   function coordinatesNode(ra, dec) {
-    return { $id: nextId(), $type: 'NINA.Astrometry.InputCoordinates, NINA.Astrometry', ...ra, ...dec };
+    return {
+      $id: nextId(),
+      $type: 'NINA.Astrometry.InputCoordinates, NINA.Astrometry',
+      ...ra,
+      ...dec,
+    };
   }
 
   function ninaUnparkScope(parentId) {
@@ -97,11 +121,15 @@ export function buildPerihelionSequence(target) {
   }
 
   function ninaCenterAndRotate(parentId, coordinates) {
-    return leafItem('NINA.Sequencer.SequenceItem.Platesolving.CenterAndRotate, NINA.Sequencer', parentId, {
-      PositionAngle: 0,
-      Inherited: true,
-      Coordinates: coordinates,
-    });
+    return leafItem(
+      'NINA.Sequencer.SequenceItem.Platesolving.CenterAndRotate, NINA.Sequencer',
+      parentId,
+      {
+        PositionAngle: 0,
+        Inherited: true,
+        Coordinates: coordinates,
+      }
+    );
   }
 
   const perihelionObjectType = target.objectType === 'comet' ? 'Comet' : 'Asteroid';
@@ -129,20 +157,31 @@ export function buildPerihelionSequence(target) {
   function ninaMeridianFlipTrigger(parentId) {
     // No configurable fields of its own -- reads timing/behavior from the profile's own
     // MeridianFlipSettings, same as when added through NINA's own sequencer UI.
-    return leafItem('NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger, NINA.Sequencer', parentId);
+    return leafItem(
+      'NINA.Sequencer.Trigger.MeridianFlip.MeridianFlipTrigger, NINA.Sequencer',
+      parentId
+    );
   }
 
   function ninaAutofocusAfterTimeTrigger(parentId, minutes) {
-    return leafItem('NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTimeTrigger, NINA.Sequencer', parentId, {
-      Amount: minutes,
-    });
+    return leafItem(
+      'NINA.Sequencer.Trigger.Autofocus.AutofocusAfterTimeTrigger, NINA.Sequencer',
+      parentId,
+      {
+        Amount: minutes,
+      }
+    );
   }
 
   function ninaSwitchFilter(parentId, filterName) {
-    return leafItem('NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter, NINA.Sequencer', parentId, {
-      Filter: null,
-      ComboBoxText: filterName,
-    });
+    return leafItem(
+      'NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter, NINA.Sequencer',
+      parentId,
+      {
+        Filter: null,
+        ComboBoxText: filterName,
+      }
+    );
   }
 
   function ninaTakeExposure(parentId, exposureSeconds) {
@@ -150,7 +189,12 @@ export function buildPerihelionSequence(target) {
       ExposureTime: exposureSeconds,
       Gain: -1,
       Offset: -1,
-      Binning: { $id: nextId(), $type: 'NINA.Core.Model.Equipment.BinningMode, NINA.Core', X: 1, Y: 1 },
+      Binning: {
+        $id: nextId(),
+        $type: 'NINA.Core.Model.Equipment.BinningMode, NINA.Core',
+        X: 1,
+        Y: 1,
+      },
       ImageType: 'LIGHT',
       ExposureCount: 0,
     });
@@ -159,9 +203,17 @@ export function buildPerihelionSequence(target) {
   function buildFilterLoop(parentId) {
     const id = nextId();
     const { filterName, exposureSeconds, frameCount } = target.exposure;
-    const loopName = filterName ? `${filterName} x ${exposureSeconds}s` : `Exposure Loop - ${target.targetName}`;
+    const loopName = filterName
+      ? `${filterName} x ${exposureSeconds}s`
+      : `Exposure Loop - ${target.targetName}`;
     const conditions = [
-      { $id: nextId(), $type: 'NINA.Sequencer.Conditions.LoopCondition, NINA.Sequencer', CompletedIterations: 0, Iterations: frameCount, Parent: ref(id) },
+      {
+        $id: nextId(),
+        $type: 'NINA.Sequencer.Conditions.LoopCondition, NINA.Sequencer',
+        CompletedIterations: 0,
+        Iterations: frameCount,
+        Parent: ref(id),
+      },
     ];
     const items = [];
     // filterName is a real name from the connected wheel's own AvailableFilters (see this
@@ -169,12 +221,28 @@ export function buildPerihelionSequence(target) {
     // there's no magic string standing in for a real filter position any more.
     if (filterName) items.push(ninaSwitchFilter(id, filterName));
     items.push(ninaTakeExposure(id, exposureSeconds));
-    return finishContainer(id, 'NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer', loopName, parentId, conditions, items, []);
+    return finishContainer(
+      id,
+      'NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer',
+      loopName,
+      parentId,
+      conditions,
+      items,
+      []
+    );
   }
 
   function buildTargetImagingInstructions(parentId) {
     const id = nextId();
-    return finishContainer(id, 'NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer', 'Target Imaging Instructions', parentId, [], [buildFilterLoop(id)], []);
+    return finishContainer(
+      id,
+      'NINA.Sequencer.Container.SequentialContainer, NINA.Sequencer',
+      'Target Imaging Instructions',
+      parentId,
+      [],
+      [buildFilterLoop(id)],
+      []
+    );
   }
 
   function buildDeepSkyObjectContainer(parentId) {
@@ -201,14 +269,19 @@ export function buildPerihelionSequence(target) {
     // choice was made here fixed in the same way it already keeps the true position fixed.
     const slewRa = target.frameOffset ? raHoursToNinaFields(target.frameOffset.raDeg / 15) : ra;
     const slewDec = target.frameOffset ? decDegToNinaFields(target.frameOffset.decDeg) : dec;
-    const items = [ninaCenterAndRotate(id, coordinatesNode(slewRa, slewDec)), ninaSetPerihelionTrackingRate(id)];
+    const items = [
+      ninaCenterAndRotate(id, coordinatesNode(slewRa, slewDec)),
+      ninaSetPerihelionTrackingRate(id),
+    ];
     if (target.guiding) {
       items.push(ninaStartGuiding(id));
       items.push(ninaSetPerihelionGuiderShiftRate(id));
     }
     items.push(buildTargetImagingInstructions(id));
 
-    const triggers = target.autofocusMinutes ? [ninaAutofocusAfterTimeTrigger(id, target.autofocusMinutes)] : [];
+    const triggers = target.autofocusMinutes
+      ? [ninaAutofocusAfterTimeTrigger(id, target.autofocusMinutes)]
+      : [];
 
     return {
       $id: id,
@@ -217,7 +290,8 @@ export function buildPerihelionSequence(target) {
       ExposureInfoListExpanded: false,
       ExposureInfoList: {
         $id: nextId(),
-        $type: 'NINA.Core.Utility.AsyncObservableCollection`1[[NINA.Sequencer.Utility.ExposureInfo, NINA.Sequencer]], NINA.Core',
+        $type:
+          'NINA.Core.Utility.AsyncObservableCollection`1[[NINA.Sequencer.Utility.ExposureInfo, NINA.Sequencer]], NINA.Core',
         $values: [],
       },
       Strategy: SEQUENTIAL_STRATEGY,
@@ -235,18 +309,50 @@ export function buildPerihelionSequence(target) {
   const rootId = nextId();
 
   const startId = nextId();
-  const startContainer = finishContainer(startId, 'NINA.Sequencer.Container.StartAreaContainer, NINA.Sequencer', 'Start', rootId, [], [ninaUnparkScope(startId)], []);
+  const startContainer = finishContainer(
+    startId,
+    'NINA.Sequencer.Container.StartAreaContainer, NINA.Sequencer',
+    'Start',
+    rootId,
+    [],
+    [ninaUnparkScope(startId)],
+    []
+  );
 
   const targetAreaId = nextId();
-  const targetAreaContainer = finishContainer(targetAreaId, 'NINA.Sequencer.Container.TargetAreaContainer, NINA.Sequencer', 'Targets', rootId, [], [buildDeepSkyObjectContainer(targetAreaId)], []);
+  const targetAreaContainer = finishContainer(
+    targetAreaId,
+    'NINA.Sequencer.Container.TargetAreaContainer, NINA.Sequencer',
+    'Targets',
+    rootId,
+    [],
+    [buildDeepSkyObjectContainer(targetAreaId)],
+    []
+  );
 
   const endId = nextId();
-  const endContainer = finishContainer(endId, 'NINA.Sequencer.Container.EndAreaContainer, NINA.Sequencer', 'End', rootId, [], [], []);
+  const endContainer = finishContainer(
+    endId,
+    'NINA.Sequencer.Container.EndAreaContainer, NINA.Sequencer',
+    'End',
+    rootId,
+    [],
+    [],
+    []
+  );
 
   // MeridianFlipTrigger is added here, at the root's own global-triggers collection (the
   // "Global Trigger" section shown at the top of the sequence, separate from the per-target
   // Triggers) -- correct place for it, since it applies mount-wide, not just to this one target.
   const globalTriggers = target.meridianFlip ? [ninaMeridianFlipTrigger(rootId)] : [];
 
-  return finishContainer(rootId, 'NINA.Sequencer.Container.SequenceRootContainer, NINA.Sequencer', `Perihelion - ${target.targetName}`, null, [], [startContainer, targetAreaContainer, endContainer], globalTriggers);
+  return finishContainer(
+    rootId,
+    'NINA.Sequencer.Container.SequenceRootContainer, NINA.Sequencer',
+    `Perihelion - ${target.targetName}`,
+    null,
+    [],
+    [startContainer, targetAreaContainer, endContainer],
+    globalTriggers
+  );
 }

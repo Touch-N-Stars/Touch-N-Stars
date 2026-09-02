@@ -11,10 +11,14 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchCometActivity(targetName) {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/objects/activity`, { params: { targetName } });
+  const response = await axios.get(`${PERIHELION_URL}/objects/activity`, {
+    params: { targetName },
+  });
   return {
     available: response.data.Available,
-    mostRecentDateUtc: response.data.MostRecentDateUtc ? new Date(response.data.MostRecentDateUtc) : null,
+    mostRecentDateUtc: response.data.MostRecentDateUtc
+      ? new Date(response.data.MostRecentDateUtc)
+      : null,
     mostRecentMagnitude: response.data.MostRecentMagnitude,
     recentAverageMagnitude: response.data.RecentAverageMagnitude,
     observationCount: response.data.ObservationCount,
