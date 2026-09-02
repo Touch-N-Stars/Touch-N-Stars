@@ -211,6 +211,7 @@
               :ra-hours="selected.raHours"
               :dec-deg="selected.decDeg"
               :target-name="selected.name"
+              :object-type="selected.objectType"
               @offset="framingOffset = $event"
             />
             <p class="text-[11px] leading-relaxed text-content-muted mt-2">

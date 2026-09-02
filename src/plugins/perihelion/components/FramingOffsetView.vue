@@ -2,6 +2,7 @@
   <div class="flex flex-col gap-2">
     <div class="relative rounded-chip overflow-hidden bg-surface-2 h-72 md:h-96 lg:h-[570px]">
       <div ref="viewerContainer" class="absolute inset-0" />
+      <canvas ref="pathCanvas" class="absolute inset-0 pointer-events-none"></canvas>
       <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
         {{ errorMessage }}
       </p>
@@ -9,9 +10,15 @@
         Loading sky view…
       </div>
       <template v-else>
-        <span class="absolute top-2 left-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80">
-          Pan to frame
-        </span>
+        <div class="absolute top-2 left-2 flex items-center gap-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80">
+          <span>Pan to frame</span>
+          <span v-if="pathPoints.length" class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Path
+          </span>
+          <span v-if="pathPoints.length" class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tonight
+          </span>
+        </div>
         <div class="absolute top-2 right-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80 text-right tabular-nums">
           <div>RA {{ formatRaHours(currentCenter.raHours) }}</div>
           <div>Dec {{ formatDecDeg(currentCenter.decDeg) }}</div>
@@ -85,11 +92,13 @@ import { createDssSkySurveySource, resolveCelestiaAtlasDataBaseUrl } from '@/int
 // uses -- sharing it is deliberate: it represents the camera's real physical rotation, a fact
 // about the rig, not a per-view preference).
 import getImageRotation from '@/components/framing/getImageRotation.vue';
+import { fetchPath } from '../utils/fetchPath';
 
 const props = defineProps({
   raHours: { type: Number, required: true },
   decDeg: { type: Number, required: true },
   targetName: { type: String, required: true },
+  objectType: { type: String, required: true },
 });
 const emit = defineEmits(['offset']);
 
@@ -111,6 +120,7 @@ function atlasDataBaseUrl() {
   });
 }
 const viewerContainer = ref(null);
+const pathCanvas = ref(null);
 const ready = ref(false);
 const hasOffset = ref(false);
 const errorMessage = ref('');
@@ -118,6 +128,7 @@ const errorMessage = ref('');
 // polling) so the RA/Dec overlay tracks panning in real time. Starts at the object's own true
 // position, matching where centerOnTarget() points the view before any panning happens.
 const currentCenter = ref({ raHours: props.raHours, decDeg: props.decDeg });
+const pathPoints = ref([]); // [{ date, raHours, decDeg }], from fetchPath -- comet-only in practice
 let viewer = null;
 
 // Small local formatters rather than importing PerihelionView.vue's own versions -- those are
@@ -134,6 +145,81 @@ function formatDecDeg(decDeg) {
   const d = Math.floor(abs);
   const m = (abs - d) * 60;
   return `${sign}${d}° ${m.toFixed(0)}′`;
+}
+
+// --- Orbital path overlay ---
+// Standard gnomonic (tangent-plane) projection: given the view's own center RA/Dec and an
+// arbitrary target RA/Dec, returns the target's tangent-plane offset in RADIANS from the center.
+// This is the same category of math FovFramingPreview.vue's own tangentFromWorld solves; best
+// understanding as of writing this, pending confirmation from that component's own author on
+// exact sign/orientation conventions -- flagged as the one part of this feature most likely to
+// need a calibration pass once seen rendered, same as the FOV overlay itself needed.
+const DEG2RAD = Math.PI / 180;
+function tangentPlaneOffset(raDeg, decDeg, centerRaDeg, centerDecDeg) {
+  const ra = raDeg * DEG2RAD;
+  const dec = decDeg * DEG2RAD;
+  const ra0 = centerRaDeg * DEG2RAD;
+  const dec0 = centerDecDeg * DEG2RAD;
+  const dRa = ra - ra0;
+  const cosc = Math.sin(dec0) * Math.sin(dec) + Math.cos(dec0) * Math.cos(dec) * Math.cos(dRa);
+  const xi = (Math.cos(dec) * Math.sin(dRa)) / cosc;
+  const eta = (Math.cos(dec0) * Math.sin(dec) - Math.sin(dec0) * Math.cos(dec) * Math.cos(dRa)) / cosc;
+  return { xi, eta };
+}
+
+async function loadPath() {
+  try {
+    pathPoints.value = await fetchPath({ objectType: props.objectType, targetName: props.targetName });
+  } catch {
+    pathPoints.value = [];
+  }
+  drawPath();
+}
+
+function drawPath() {
+  const canvas = pathCanvas.value;
+  if (!canvas || !viewer || pathPoints.value.length === 0) return;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (width === 0 || height === 0) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const backingWidth = Math.max(1, Math.round(width * dpr));
+  const backingHeight = Math.max(1, Math.round(height * dpr));
+  if (canvas.width !== backingWidth) canvas.width = backingWidth;
+  if (canvas.height !== backingHeight) canvas.height = backingHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+
+  const view = viewer.getView();
+  const centerRaDeg = view.center.raDeg;
+  const centerDecDeg = view.center.decDeg;
+  // fovDeg is treated as the frame's horizontal extent -- matches how centerOnTarget() itself
+  // sets fovDeg (derived from the FOV box's own widthDeg/heightDeg), and pixels-per-radian is
+  // calibrated against the canvas's actual pixel width for that same horizontal extent.
+  const pixelsPerRadian = width / (view.fovDeg * DEG2RAD);
+
+  const screenPoints = pathPoints.value.map((p) => {
+    const { xi, eta } = tangentPlaneOffset(p.raHours * 15, p.decDeg, centerRaDeg, centerDecDeg);
+    return {
+      x: width / 2 + xi * pixelsPerRadian,
+      // eta increases toward celestial north (up); screen Y increases downward, hence the flip.
+      y: height / 2 - eta * pixelsPerRadian,
+    };
+  });
+
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  screenPoints.forEach((pt, i) => (i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)));
+  ctx.stroke();
+
+  screenPoints.forEach((pt, i) => {
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, i === 0 ? 3.5 : 2, 0, 2 * Math.PI);
+    ctx.fillStyle = i === 0 ? '#22d3ee' : '#a78bfa';
+    ctx.fill();
+  });
 }
 
 function computeFovOverlay() {
@@ -184,6 +270,7 @@ function centerOnTarget() {
   // should read the true position immediately on (re)center, not whatever it happened to show
   // before.
   currentCenter.value = { raHours: props.raHours, decDeg: props.decDeg };
+  drawPath();
 
   // Bonus only, not required for correctness: if this object happens to already be in the
   // viewer's own bundled catalog, select/focus it for a native marker and label. A miss here
@@ -234,6 +321,7 @@ onMounted(async () => {
       skySurveySource: createDssSkySurveySource(atlasDataBaseUrl()),
       onViewChange: (viewState) => {
         currentCenter.value = { raHours: viewState.center.raDeg / 15, decDeg: viewState.center.decDeg };
+        drawPath();
       },
       onError: (error) => {
         console.warn('[Perihelion] Framing view sky-survey error:', error.message);
@@ -268,6 +356,7 @@ onMounted(async () => {
     // with no error but nothing ever actually rendering.
     viewer.resume();
     ready.value = true;
+    await loadPath();
   } catch (error) {
     // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
     // and showing the real message here means a real failure can be diagnosed from a screenshot
