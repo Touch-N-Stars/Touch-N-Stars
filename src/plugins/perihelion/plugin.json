@@ -4,6 +4,6 @@
   "description": "Comet and asteroid non-sidereal tracking, computed on-device.",
   "version": "0.1.0",
   "author": "OryxAstro",
-  "defaultEnabled": false,
+  "defaultEnabled": true,
   "enabled": true
 }

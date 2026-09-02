@@ -298,11 +298,9 @@
                 :dec-deg="selected.decDeg"
                 :target-name="selected.name"
                 :object-type="selected.objectType"
+                :initial-offset="framingOffset"
                 @offset="framingOffset = $event"
               />
-              <p class="text-[11px] leading-relaxed text-content-muted mt-2">
-                {{ t('perihelion.position.framingDescription', { name: selected.name }) }}
-              </p>
             </div>
           </template>
         </template>
@@ -569,15 +567,42 @@
                 }}
               </button>
               <div class="flex gap-2">
-                <button
-                  class="tns-btn-secondary flex-1"
-                  :disabled="actionBusy"
-                  @click="onSlewAndCenter"
+                <div
+                  class="flex-1 flex items-stretch border border-line-strong rounded-control overflow-hidden"
                 >
-                  {{
-                    actionBusy ? t('perihelion.track.working') : t('perihelion.track.slewAndCenter')
-                  }}
-                </button>
+                  <button
+                    class="flex-1 min-h-touch px-3 text-sm font-semibold text-content bg-surface-3 hover:bg-surface-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface-3 transition-colors duration-150"
+                    :disabled="actionBusy"
+                    @click="onSlewAndCenter"
+                  >
+                    {{
+                      actionBusy
+                        ? t('perihelion.track.working')
+                        : t('perihelion.track.slewAndCenter')
+                    }}
+                  </button>
+                  <button
+                    class="px-3 min-w-touch flex items-center justify-center border-l border-line-strong bg-surface-3 hover:bg-surface-2 text-content-muted hover:text-content disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+                    :disabled="actionBusy"
+                    :title="t('components.settings.title')"
+                    @click="showSlewSettingsModal = true"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
                 <button
                   class="tns-btn-secondary flex-1"
                   :disabled="actionBusy"
@@ -588,6 +613,63 @@
                   }}
                 </button>
               </div>
+
+              <Modal
+                :show="showSlewSettingsModal"
+                @close="showSlewSettingsModal = false"
+                :zIndex="'z-[60]'"
+              >
+                <template #header>
+                  <h2 class="text-xl font-bold">{{ t('components.settings.title') }}</h2>
+                </template>
+                <template #body>
+                  <div class="space-y-4">
+                    <div
+                      class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600/30"
+                    >
+                      <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+                        <span class="text-sm font-medium">{{
+                          t('components.framing.useCenter')
+                        }}</span>
+                      </div>
+                      <div class="ml-6">
+                        <toggleButton
+                          @click="toggleUseCenter"
+                          :status-value="settingsStore.mount.useCenter"
+                        />
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600/30"
+                    >
+                      <div class="flex items-center gap-3">
+                        <div class="w-2 h-2 rounded-full bg-purple-400"></div>
+                        <span class="text-sm font-medium">{{
+                          t('components.framing.useRotate')
+                        }}</span>
+                      </div>
+                      <div class="ml-6">
+                        <toggleButton
+                          @click="toggleUseRotate"
+                          :status-value="settingsStore.mount.useRotate"
+                          :disabled="!store.rotatorInfo.Connected"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="border-t border-gray-600/30 pt-4">
+                      <SettingInput
+                        labelKey="components.mount.settings.telescope_settle_time"
+                        settingKey="TelescopeSettings-SettleTime"
+                        :modelValue="store.profileInfo.TelescopeSettings.SettleTime"
+                        :max="600"
+                      />
+                    </div>
+                  </div>
+                </template>
+              </Modal>
               <p class="text-[11px] leading-relaxed text-content-faint">
                 <strong class="text-content-muted">{{
                   t('perihelion.track.addToSequence')
@@ -643,10 +725,19 @@ import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { fetchQuickTrackStatus } from '../utils/fetchQuickTrackStatus';
 import { usePerihelionStore } from '../store/perihelionStore';
 import { useFramingStore } from '@/store/framingStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
 import FramingOffsetView from '../components/FramingOffsetView.vue';
 import PerihelionAbout from '../components/PerihelionAbout.vue';
 import SkyChart from '@/components/framing/SkyChart.vue';
+// Same Center/Rotate toggle + settle-time modal as ButtonSlewCenterRotate.vue's own gear icon
+// (the app-wide Slew & Center control) -- reusing the pieces rather than that whole component,
+// since it calls framingStore.slewAndCenterRotate() which only console.errors on failure; this
+// view's own onSlewAndCenter() keeps calling apiService.slewAndCenter() directly so a real
+// failure still surfaces in actionStatus like every other Track-tab action here.
+import Modal from '@/components/helpers/Modal.vue';
+import toggleButton from '@/components/helpers/toggleButton.vue';
+import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
 // tapered-tail-into-glowing-coma shape, not an independent redesign. That component uses
@@ -730,6 +821,8 @@ const { t } = useI18n();
 const store = apiStore();
 const framingStore = useFramingStore();
 const perihelionStore = usePerihelionStore();
+const settingsStore = useSettingsStore();
+const showSlewSettingsModal = ref(false);
 // Persisted across leaving/re-entering this tab (see perihelionStore.js's own doc comment for
 // why plain local refs don't survive that) -- everything else below stays a local ref, since
 // it's either re-fetched cheaply (objects, path) or purely transient UI feedback (actionStatus,
@@ -939,11 +1032,20 @@ watch([activeTab, selected], ([tab]) => {
 // null means "no offset, center exactly on the object's true position" (the default).
 // framingOffset itself now lives in perihelionStore (see its own comment) so it survives
 // leaving and re-entering this tab, same as guiding/autoReapply/etc. already did.
-watch(selected, () => {
-  // An offset captured for one object has no meaning for a different one -- reset rather than
-  // silently carry it over. FramingOffsetView itself remounts fresh on selection change (it's
-  // keyed by selected.id) but doesn't know to tell this parent to clear its own last value.
-  framingOffset.value = null;
+watch(selected, (newVal, oldVal) => {
+  // Only a genuine re-selection (a different object while one was already selected) should
+  // drop the offset -- an offset captured for one object has no meaning for a different one.
+  // Plain `watch(selected, ...)` without this guard also fired on the very same object simply
+  // *reappearing*: objects.value starts empty on every fresh mount of this view (no
+  // <KeepAlive> on the app's router-view, so navigating away and back tears this component
+  // down entirely), so `selected` goes null -> (same, persisted) object the instant
+  // loadObjects() resolves -- indistinguishable from a real change without checking ids, and
+  // this watcher's callback runs before FramingOffsetView (freshly mounting at the same
+  // moment) ever gets to read its restored initialOffset prop, silently discarding it on every
+  // single return to this tab.
+  if (oldVal && newVal && oldVal.id !== newVal.id) {
+    framingOffset.value = null;
+  }
 });
 
 // --- Track ---
@@ -1056,6 +1158,16 @@ async function onAddToSequence() {
 // by observationplaner's own Slew/Slew+Center buttons) -- no new backend code needed at all,
 // and reuses framingStore.rotationAngle so it also applies whatever rotation was set or
 // determined-from-camera on the Position & Path tab's own Framing card.
+function toggleUseCenter() {
+  settingsStore.mount.useCenter = !settingsStore.mount.useCenter;
+  settingsStore.saveMountSettings();
+}
+
+function toggleUseRotate() {
+  settingsStore.mount.useRotate = !settingsStore.mount.useRotate;
+  settingsStore.saveMountSettings();
+}
+
 async function onSlewAndCenter() {
   if (!selected.value) return;
   actionBusy.value = true;
@@ -1064,8 +1176,8 @@ async function onSlewAndCenter() {
     const response = await apiService.slewAndCenter(
       selected.value.raHours * 15,
       selected.value.decDeg,
-      true,
-      true,
+      settingsStore.mount.useCenter,
+      settingsStore.mount.useRotate && store.rotatorInfo.Connected,
       framingStore.rotationAngle
     );
     actionStatus.value = {

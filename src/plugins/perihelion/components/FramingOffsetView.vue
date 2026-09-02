@@ -71,9 +71,44 @@
         <button class="tns-btn-primary flex-1" @click="captureFraming">
           {{ t('perihelion.framing.useFraming') }}
         </button>
-        <button v-if="hasOffset" class="tns-btn-secondary flex-1" @click="resetFraming">
+        <button v-if="hasOffset" class="tns-btn-danger flex-1" @click="resetFraming">
           {{ t('perihelion.framing.reset') }}
         </button>
+      </div>
+    </div>
+
+    <!--
+      Lives here, not as a caption in PerihelionView.vue (where it used to be) -- that left it
+      visually orphaned under whichever control happened to render last in the row above, since
+      it was a separate paragraph the parent laid out independently of these buttons. One
+      compact strip, one line per control, icons echoing each button's own -- short enough not
+      to add real scroll height even stacked on mobile.
+    -->
+    <div v-if="ready" class="rounded-chip bg-surface-2/60 border border-line-strong/50 p-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div class="flex items-start gap-2">
+          <ArrowPathIcon class="w-4 h-4 mt-0.5 text-accent shrink-0" />
+          <p class="text-[11px] leading-snug text-content-muted">
+            <span class="font-semibold text-content">{{ t('perihelion.framing.rotation') }}:</span>
+            {{ t('perihelion.framing.rotationHelp') }}
+          </p>
+        </div>
+        <div class="flex items-start gap-2 sm:justify-center">
+          <PhotoIcon class="w-4 h-4 mt-0.5 text-accent shrink-0" />
+          <p class="text-[11px] leading-snug text-content-muted sm:text-center">
+            <span class="font-semibold text-content"
+              >{{ t('perihelion.framing.useFraming') }}:</span
+            >
+            {{ t('perihelion.framing.useFramingHelp') }}
+          </p>
+        </div>
+        <div class="flex items-start gap-2 sm:justify-end">
+          <XCircleIcon class="w-4 h-4 mt-0.5 text-status-danger shrink-0" />
+          <p class="text-[11px] leading-snug text-content-muted sm:text-right">
+            <span class="font-semibold text-content">{{ t('perihelion.framing.reset') }}:</span>
+            {{ t('perihelion.framing.resetHelp') }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -112,6 +147,7 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
 import { Capacitor } from '@capacitor/core';
+import { ArrowPathIcon, PhotoIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useFramingStore } from '@/store/framingStore';
@@ -135,6 +171,14 @@ const props = defineProps({
   decDeg: { type: Number, required: true },
   targetName: { type: String, required: true },
   objectType: { type: String, required: true },
+  // { raDeg, decDeg } | null -- a previously captured offset (perihelionStore.framingOffset)
+  // to restore on mount. The offset value itself already survives leaving Perihelion's view
+  // entirely and coming back (it lives in the Pinia store, not this component), but without
+  // this prop the view had no way to know about it and always centered fresh on the raw
+  // target, silently discarding the pan and the "Reset" button's own local hasOffset state --
+  // looking exactly like the offset had been lost even though Add to Sequence would still have
+  // used the right value underneath.
+  initialOffset: { type: Object, default: null },
 });
 const emit = defineEmits(['offset']);
 
@@ -294,7 +338,12 @@ function updateFovRotation() {
 }
 watch(() => framingStore.rotationAngle, updateFovRotation);
 
-function centerOnTarget() {
+// overrideCenter: { raDeg, decDeg } | null -- when given (only from restoring initialOffset on
+// mount), centers on that captured offset instead of the object's raw position and marks
+// hasOffset true, so a restored offset looks identical to one just captured by hand. Every
+// other caller (Reset, the live-props watcher) omits it, which still means "recenter on the
+// real target, offset forgotten" exactly as before.
+function centerOnTarget(overrideCenter = null) {
   if (!viewer) return;
   // The view's own zoom level has to scale with the camera's real FOV, not a fixed guess -- a
   // hardcoded 1.5deg view against a camera whose actual field is wider than that means the FOV
@@ -305,20 +354,22 @@ function centerOnTarget() {
   const fovOverlay = computeFovOverlay();
   const viewFovDeg = fovOverlay ? Math.max(fovOverlay.widthDeg, fovOverlay.heightDeg) * 3 : 1.5;
 
+  const center = overrideCenter ?? { raDeg: props.raHours * 15, decDeg: props.decDeg };
+
   // frame is required -- setView's own coordinate validation (toAtlasCoordinates) throws
   // without one. J2000 matches how the rest of this app treats NINA-sourced RA/Dec (e.g.
   // atlasSelectionToFraming's own coordinateFrame: 'J2000'), and Perihelion's own values are
   // J2000 too (NINA.Astrometry.InputCoordinates).
   viewer.setView({
-    center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' },
+    center: { raDeg: center.raDeg, decDeg: center.decDeg, frame: 'J2000' },
     fovDeg: viewFovDeg,
   });
   if (fovOverlay) viewer.setFieldOfView(fovOverlay);
-  hasOffset.value = false;
+  hasOffset.value = Boolean(overrideCenter);
   // Explicit, not just relying on onViewChange firing for a programmatic setView -- the overlay
   // should read the true position immediately on (re)center, not whatever it happened to show
   // before.
-  currentCenter.value = { raHours: props.raHours, decDeg: props.decDeg };
+  currentCenter.value = { raHours: center.raDeg / 15, decDeg: center.decDeg };
   drawPath();
 
   // Bonus only, not required for correctness: if this object happens to already be in the
@@ -342,6 +393,11 @@ function captureFraming() {
 
 function resetFraming() {
   centerOnTarget();
+  // framingStore.rotationAngle is shared app-wide (the same field getImageRotation.vue writes
+  // to and CelestiaAtlasView.vue's own FOV overlay reads) -- zeroing it here is a deliberate
+  // part of "reset this framing entirely", not scoped to just this view's own pan, so it also
+  // resets whatever rotation another framing view is currently showing.
+  framingStore.rotationAngle = 0;
   emit('offset', null);
 }
 
@@ -388,6 +444,12 @@ onMounted(async () => {
     // almost certainly why 0 degrees still showed up tilted. Rotation for framing/rotator
     // purposes needs to be fixed relative to the sky, not the horizon.
     viewer.setCoordinateMode('equatorial');
+    // hideBelowHorizon/horizon/atmosphere all default to the library's own "what's up right
+    // now" live-sky assumptions -- wrong for this view, whose whole point is framing an object
+    // for later tonight or a future night, not just the current instant. Left on, a target
+    // currently below the horizon (very common when planning ahead) rendered a plain black
+    // canvas here even though the sky imagery itself loaded fine -- same root mismatch that
+    // already justified overriding setCoordinateMode above.
     viewer.setDisplayOptions({
       grid: false,
       azimuthalGrid: false,
@@ -399,8 +461,11 @@ onMounted(async () => {
       cardinals: false,
       skySurvey: true,
       comets: true,
+      horizon: false,
+      hideBelowHorizon: false,
+      atmosphere: false,
     });
-    centerOnTarget();
+    centerOnTarget(props.initialOffset);
     viewer.resize();
     // CelestiaAtlasView.vue always calls this as part of its own startup sequence (inside
     // updateVisibility()) -- a freshly constructed viewer apparently starts paused, and nothing

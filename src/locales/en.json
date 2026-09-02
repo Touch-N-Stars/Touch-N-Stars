@@ -5253,8 +5253,7 @@
       "pathLegendTonight": "Tonight",
       "pathDescription": "Real path against the fixed stars — while tracking, {name} stays centered in-frame all night; this shows motion night to night, not movement within a single exposure.",
       "framingTitle": "Framing",
-      "offsetSet": "Offset set",
-      "framingDescription": "Real sky imagery, centered on {name}'s actual position right now. Pan to compose the shot, then capture the offset for Add to Sequence."
+      "offsetSet": "Offset set"
     },
     "track": {
       "step": "Track it",
@@ -5275,7 +5274,7 @@
       "lastAttemptFailed": "Last attempt failed: {error}",
       "imagingPlan": "Imaging Plan",
       "forAddToSequenceOnly": "for Add to Sequence only",
-      "filterLabel": "Filter — from connected wheel",
+      "filterLabel": "Filter — from Filter Wheel",
       "dontChangeFilter": "Don't change filter",
       "exposureLabel": "Exposure (s)",
       "framesLabel": "Frames",
@@ -5317,8 +5316,11 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotation",
+      "rotationHelp": "Matches the frame box to your camera's real rotation.",
       "useFraming": "Use this Framing",
+      "useFramingHelp": "Saves this pan (e.g. off-center for a tail) as the sequence's offset.",
       "reset": "Reset",
+      "resetHelp": "Clears the offset, recenters, and resets rotation to 0°.",
       "noLocation": "No observer location set in this profile's Astrometry settings.",
       "unavailable": "Sky view unavailable: {error}"
     },

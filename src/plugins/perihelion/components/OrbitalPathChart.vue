@@ -49,20 +49,52 @@
         opacity="0.6"
       />
       <circle v-if="plotted.length" :cx="plotted[0].x" :cy="plotted[0].y" r="3" fill="#22d3ee" />
+
+      <!--
+        Short leader (point -> dot -> gap -> text) for each endpoint's date, routed away from
+        the direction the curve continues (so it doesn't run along/through the path line itself)
+        and nudged clear of the scale bar's row when it would otherwise land there. The gap
+        between the dot and the text keeps the connector from reading as touching the letters.
+      -->
+      <line
+        v-if="startGeom"
+        :x1="plotted[0].x"
+        :y1="plotted[0].y"
+        :x2="startGeom.dot.x"
+        :y2="startGeom.dot.y"
+        stroke="#64748b"
+        stroke-width="1"
+        stroke-dasharray="2,2"
+        opacity="0.6"
+      />
+      <circle v-if="startGeom" :cx="startGeom.dot.x" :cy="startGeom.dot.y" r="1.5" fill="#64748b" />
       <text
-        v-if="plotted.length"
+        v-if="startGeom"
         :x="plotted[0].x + labelDx(plotted[0].x)"
-        :y="height - 6"
+        :y="startGeom.textY"
         font-size="8"
         fill="#64748b"
         :text-anchor="labelAnchor(plotted[0].x)"
       >
         {{ points[0]?.date }}
       </text>
+
+      <line
+        v-if="endGeom"
+        :x1="plotted[plotted.length - 1].x"
+        :y1="plotted[plotted.length - 1].y"
+        :x2="endGeom.dot.x"
+        :y2="endGeom.dot.y"
+        stroke="#64748b"
+        stroke-width="1"
+        stroke-dasharray="2,2"
+        opacity="0.6"
+      />
+      <circle v-if="endGeom" :cx="endGeom.dot.x" :cy="endGeom.dot.y" r="1.5" fill="#64748b" />
       <text
-        v-if="plotted.length"
+        v-if="endGeom"
         :x="plotted[plotted.length - 1].x + labelDx(plotted[plotted.length - 1].x)"
-        :y="12"
+        :y="endGeom.textY"
         font-size="8"
         fill="#64748b"
         :text-anchor="labelAnchor(plotted[plotted.length - 1].x)"
@@ -72,41 +104,43 @@
 
       <!--
         Scale bar: a real angular reference for the line's own length, not a coordinate grid.
-        Pinned inside the plot rectangle's own bottom-left corner (not the outer padding margin,
-        where the date labels live) so it can't collide with either date label regardless of
-        which end of the path happens to land near which edge.
+        Sits inside the plot rectangle's own bottom row (not the outer padding margin, where the
+        date labels live), on whichever horizontal side (see scaleBarSide) has more clearance
+        from the whole path -- a fixed bottom-left position, and later a version that only
+        checked the start point, both still collided whenever the curve swung close to that
+        corner somewhere other than its very first point.
       -->
       <g v-if="scaleBar">
         <line
-          :x1="padding"
+          :x1="scaleBarX1"
           :y1="height - padding - 6"
-          :x2="padding + scaleBar.px"
+          :x2="scaleBarX2"
           :y2="height - padding - 6"
           stroke="#94a3b8"
           stroke-width="1.5"
         />
         <line
-          :x1="padding"
+          :x1="scaleBarX1"
           :y1="height - padding - 9"
-          :x2="padding"
+          :x2="scaleBarX1"
           :y2="height - padding - 3"
           stroke="#94a3b8"
           stroke-width="1.5"
         />
         <line
-          :x1="padding + scaleBar.px"
+          :x1="scaleBarX2"
           :y1="height - padding - 9"
-          :x2="padding + scaleBar.px"
+          :x2="scaleBarX2"
           :y2="height - padding - 3"
           stroke="#94a3b8"
           stroke-width="1.5"
         />
         <text
-          :x="padding"
+          :x="scaleBarSide === 'left' ? scaleBarX1 : scaleBarX2"
           :y="height - padding - 11"
           font-size="8"
           fill="#94a3b8"
-          text-anchor="start"
+          :text-anchor="scaleBarSide === 'left' ? 'start' : 'end'"
         >
           {{ scaleBar.label }}
         </text>
@@ -182,9 +216,10 @@ const gridX = [1, 2, 3].map((i) => padding + (i / 4) * (width - 2 * padding));
 const gridY = [1, 2, 3].map((i) => padding + (i / 4) * (height - 2 * padding));
 
 // Date labels sit at the path's own endpoints, which are near the chart's left/right edges by
-// construction -- anchoring them "middle" (centered on the point) pushes half the text past the
-// SVG boundary. Anchoring away from whichever edge the point is nearest keeps the label inside
-// the box regardless of which endpoint (first or last) happens to fall on which side.
+// construction (RA is stretched to fill the box) -- anchoring them "middle" (centered on the
+// point) pushes half the text past the SVG boundary. Anchoring away from whichever edge the
+// point is nearest keeps the label inside the box regardless of which endpoint (first or last)
+// happens to fall on which side.
 function labelAnchor(x) {
   return x < width / 2 ? 'start' : 'end';
 }
@@ -269,5 +304,74 @@ const scaleBar = computed(() => {
   const px = chosen.deg / degPerPx;
   if (!Number.isFinite(px) || px < 4) return null;
   return { px, label: chosen.label };
+});
+
+// Bottom row, but on whichever horizontal side the start point (usually "tonight", so often
+// near one end of the box already) ISN'T -- avoids the bar sitting on top of the path/start
+// marker, which a fixed bottom-left position used to do whenever that point landed there.
+// Checks clearance from the WHOLE path, not just the start point -- a curved/non-monotonic
+// path can swing close to either bottom corner at some point other than its very first one, and
+// choosing a side based on the start point alone still collided whenever that happened.
+const scaleBarSide = computed(() => {
+  if (!plotted.value.length || !scaleBar.value) return 'left';
+  const barY = height - padding - 6;
+  const boxes = {
+    left: { x1: padding, x2: padding + scaleBar.value.px },
+    right: { x1: width - padding - scaleBar.value.px, x2: width - padding },
+  };
+  function minDistance(box) {
+    let min = Infinity;
+    for (const p of plotted.value) {
+      const dx = p.x < box.x1 ? box.x1 - p.x : p.x > box.x2 ? p.x - box.x2 : 0;
+      min = Math.min(min, Math.hypot(dx, p.y - barY));
+    }
+    return min;
+  }
+  return minDistance(boxes.left) >= minDistance(boxes.right) ? 'left' : 'right';
+});
+const scaleBarX1 = computed(() =>
+  scaleBarSide.value === 'left' ? padding : width - padding - (scaleBar.value?.px ?? 0)
+);
+const scaleBarX2 = computed(() =>
+  scaleBarSide.value === 'left' ? padding + (scaleBar.value?.px ?? 0) : width - padding
+);
+
+// Endpoint date-label geometry: a short leader (point -> dot -> gap -> text), vertical-only so
+// it never runs diagonally across the chart. Direction is chosen away from the curve's own
+// local direction (the neighboring point one step along the path) rather than a fixed top/
+// bottom row, so the leader doesn't run along/through the path line itself; a path that dips or
+// curves back no longer produces a label stranded far from its own point.
+const LEADER_DOT_DIST = 8;
+const LABEL_TEXT_DIST = 16;
+
+function endpointGeometry(point, neighbor) {
+  let dir;
+  const dy = neighbor ? point.y - neighbor.y : 0;
+  dir = Math.abs(dy) > 0.01 ? Math.sign(dy) : point.y < height / 2 ? 1 : -1;
+
+  // Nudge away from the scale bar's row/column if this direction would land the text there.
+  if (scaleBar.value) {
+    const barY = height - padding - 6;
+    const labelX = point.x + labelDx(point.x);
+    const nearBarRow = Math.abs(point.y + dir * LABEL_TEXT_DIST - barY) < 12;
+    const nearBarCol =
+      scaleBarSide.value === 'left'
+        ? labelX < scaleBarX2.value + 10
+        : labelX > scaleBarX1.value - 10;
+    if (nearBarRow && nearBarCol) dir = -dir;
+  }
+
+  return {
+    dot: { x: point.x, y: point.y + dir * LEADER_DOT_DIST },
+    textY: point.y + dir * LABEL_TEXT_DIST,
+  };
+}
+
+const startGeom = computed(() =>
+  plotted.value.length ? endpointGeometry(plotted.value[0], plotted.value[1]) : null
+);
+const endGeom = computed(() => {
+  const n = plotted.value.length;
+  return n >= 2 ? endpointGeometry(plotted.value[n - 1], plotted.value[n - 2]) : null;
 });
 </script>
