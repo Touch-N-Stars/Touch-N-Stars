@@ -1,30 +1,46 @@
 <template>
-  <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 570px">
-    <div ref="viewerContainer" class="absolute inset-0" />
-    <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
-      {{ errorMessage }}
-    </p>
-    <div v-else-if="!ready" class="absolute inset-0 flex items-center justify-center text-xs text-content-faint">
-      Loading sky view…
+  <div class="flex flex-col gap-2">
+    <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 570px">
+      <div ref="viewerContainer" class="absolute inset-0" />
+      <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
+        {{ errorMessage }}
+      </p>
+      <div v-else-if="!ready" class="absolute inset-0 flex items-center justify-center text-xs text-content-faint">
+        Loading sky view…
+      </div>
+      <template v-else>
+        <button
+          class="absolute bottom-2 right-2 px-2 py-1 rounded-chip text-[11px] font-semibold bg-accent text-white shadow"
+          @click="captureFraming"
+        >
+          Use this framing
+        </button>
+        <button
+          v-if="hasOffset"
+          class="absolute bottom-2 left-2 px-2 py-1 rounded-chip text-[11px] font-semibold bg-surface-3 text-content-muted shadow"
+          @click="resetFraming"
+        >
+          Reset
+        </button>
+        <span class="absolute top-2 left-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80">
+          Pan to frame, then capture
+        </span>
+      </template>
     </div>
-    <template v-else>
-      <button
-        class="absolute bottom-2 right-2 px-2 py-1 rounded-chip text-[11px] font-semibold bg-accent text-white shadow"
-        @click="captureFraming"
-      >
-        Use this framing
-      </button>
-      <button
-        v-if="hasOffset"
-        class="absolute bottom-2 left-2 px-2 py-1 rounded-chip text-[11px] font-semibold bg-surface-3 text-content-muted shadow"
-        @click="resetFraming"
-      >
-        Reset
-      </button>
-      <span class="absolute top-2 left-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80">
-        Pan to frame, then capture
-      </span>
-    </template>
+
+    <div v-if="ready" class="flex items-center gap-2">
+      <span class="text-[11px] text-content-faint shrink-0">Rotation</span>
+      <input
+        v-model.number="framingStore.rotationAngle"
+        type="range"
+        min="0"
+        max="360"
+        step="1"
+        class="flex-1 accent-accent"
+      />
+      <span class="text-[11px] tabular-nums text-content-muted w-10 text-right shrink-0">{{ framingStore.rotationAngle }}°</span>
+    </div>
+    <getImageRotation v-if="ready" />
   </div>
 </template>
 
@@ -62,9 +78,17 @@ import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalyp
 import { Capacitor } from '@capacitor/core';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useFramingStore } from '@/store/framingStore';
 import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
 import { ATLAS_POSITION_ANGLE_CONVENTION } from '@/integrations/celestiaAtlas/positionAngle';
 import { createDssSkySurveySource, resolveCelestiaAtlasDataBaseUrl } from '@/integrations/celestiaAtlas/offlineSkySurvey';
+// Reused as-is, not reimplemented -- already does exactly what's needed: reads gain/exposure
+// straight from the profile's own PlateSolveSettings, runs a real exposure + plate solve, and
+// writes the result to framingStore.rotationAngle (the same shared field this view's own
+// rotation slider reads/writes, and the one CelestiaAtlasView.vue's own FOV overlay already
+// uses -- sharing it is deliberate: it represents the camera's real physical rotation, a fact
+// about the rig, not a per-view preference).
+import getImageRotation from '@/components/framing/getImageRotation.vue';
 
 const props = defineProps({
   raHours: { type: Number, required: true },
@@ -75,6 +99,7 @@ const emit = defineEmits(['offset']);
 
 const store = apiStore();
 const settingsStore = useSettingsStore();
+const framingStore = useFramingStore();
 
 // Same pattern as CelestiaAtlasView.vue's own atlasDataBaseUrl() -- deliberately NOT the
 // library's online default (unlike this component's first version): nothing in this app has
@@ -106,11 +131,20 @@ function computeFovOverlay() {
     });
     // rotationConvention is required by setFieldOfView's own validation -- matches
     // CelestiaAtlasView.vue's own identical FOV overlay call.
-    return { widthDeg: fov.widthDeg, heightDeg: fov.heightDeg, rotationDeg: 0, rotationConvention: ATLAS_POSITION_ANGLE_CONVENTION };
+    return { widthDeg: fov.widthDeg, heightDeg: fov.heightDeg, rotationDeg: Number(framingStore.rotationAngle ?? 0), rotationConvention: ATLAS_POSITION_ANGLE_CONVENTION };
   } catch {
     return null;
   }
 }
+
+// Rotation-only update -- deliberately does NOT call setView, so dragging the slider or running
+// "Determine rotation from camera" doesn't also reset any pan offset the user has already made.
+function updateFovRotation() {
+  if (!viewer || !ready.value) return;
+  const fovOverlay = computeFovOverlay();
+  if (fovOverlay) viewer.setFieldOfView(fovOverlay);
+}
+watch(() => framingStore.rotationAngle, updateFovRotation);
 
 function centerOnTarget() {
   if (!viewer) return;
