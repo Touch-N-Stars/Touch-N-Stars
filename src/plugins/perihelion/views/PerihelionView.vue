@@ -272,9 +272,11 @@
           <div class="tns-card">
             <div class="flex items-center gap-2 mb-2">
               <span class="tns-stat-label flex-1">{{ t('perihelion.position.framingTitle') }}</span>
-              <span v-if="framingOffset" class="text-[11px] text-accent font-semibold">{{
-                t('perihelion.position.offsetSet')
-              }}</span>
+              <span
+                v-if="framingOffset"
+                class="px-2 py-0.5 rounded-full text-[11px] font-semibold border border-accent/40 bg-accent/10 text-accent"
+                >{{ t('perihelion.position.offsetSet') }}</span
+              >
             </div>
             <FramingOffsetView
               :key="selected.id"
@@ -534,12 +536,27 @@
             <button class="tns-btn-primary" :disabled="actionBusy" @click="onAddToSequence">
               {{ actionBusy ? t('perihelion.track.working') : t('perihelion.track.addToSequence') }}
             </button>
-            <button class="tns-btn-secondary" :disabled="actionBusy" @click="onQuickTrack">
-              {{ actionBusy ? t('perihelion.track.working') : t('perihelion.track.quickTrack') }}
-            </button>
+            <div class="flex gap-2">
+              <button
+                class="tns-btn-secondary flex-1"
+                :disabled="actionBusy"
+                @click="onSlewAndCenter"
+              >
+                {{
+                  actionBusy ? t('perihelion.track.working') : t('perihelion.track.slewAndCenter')
+                }}
+              </button>
+              <button class="tns-btn-secondary flex-1" :disabled="actionBusy" @click="onQuickTrack">
+                {{ actionBusy ? t('perihelion.track.working') : t('perihelion.track.quickTrack') }}
+              </button>
+            </div>
             <p class="text-[11px] leading-relaxed text-content-faint">
               <strong class="text-content-muted">{{ t('perihelion.track.addToSequence') }}</strong>
               {{ t('perihelion.track.addToSequenceDescriptionRest') }}
+            </p>
+            <p class="text-[11px] leading-relaxed text-content-faint">
+              <strong class="text-content-muted">{{ t('perihelion.track.slewAndCenter') }}</strong>
+              {{ t('perihelion.track.slewAndCenterDescriptionRest') }}
             </p>
             <p class="text-[11px] leading-relaxed text-content-faint">
               <strong class="text-content-muted">{{ t('perihelion.track.quickTrack') }}</strong>
@@ -582,6 +599,7 @@ import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { fetchQuickTrackStatus } from '../utils/fetchQuickTrackStatus';
 import { usePerihelionStore } from '../store/perihelionStore';
+import { useFramingStore } from '@/store/framingStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
 import FramingOffsetView from '../components/FramingOffsetView.vue';
 import PerihelionAbout from '../components/PerihelionAbout.vue';
@@ -667,6 +685,7 @@ const AsteroidIcon = {
 
 const { t } = useI18n();
 const store = apiStore();
+const framingStore = useFramingStore();
 const perihelionStore = usePerihelionStore();
 // Persisted across leaving/re-entering this tab (see perihelionStore.js's own doc comment for
 // why plain local refs don't survive that) -- everything else below stays a local ref, since
@@ -960,6 +979,39 @@ async function onAddToSequence() {
   // Deliberately stays 'idle' even on success -- Add to Sequence only loads the sequence, it
   // doesn't start it (see sendPerihelionSequence's own doc comment), so there's nothing here
   // for a "Stop Sequence" button to stop yet.
+}
+
+// Deliberately calls apiService.slewAndCenter() directly rather than framingStore's own
+// slewAndCenterRotate() wrapper -- that wrapper only console.errors on failure and surfaces
+// nothing to the caller, which doesn't match how every other Track-tab action here reports a
+// real actionStatus. Reuses ninaAPI's existing GET /equipment/mount/slew route (already proven
+// by observationplaner's own Slew/Slew+Center buttons) -- no new backend code needed at all,
+// and reuses framingStore.rotationAngle so it also applies whatever rotation was set or
+// determined-from-camera on the Position & Path tab's own Framing card.
+async function onSlewAndCenter() {
+  if (!selected.value) return;
+  actionBusy.value = true;
+  actionStatus.value = null;
+  try {
+    const response = await apiService.slewAndCenter(
+      selected.value.raHours * 15,
+      selected.value.decDeg,
+      true,
+      true,
+      framingStore.rotationAngle
+    );
+    actionStatus.value = {
+      ok: true,
+      message: response?.Response ?? t('perihelion.track.slewAndCenterDone'),
+    };
+  } catch (error) {
+    actionStatus.value = {
+      ok: false,
+      message:
+        error?.response?.data?.Error ?? error?.message ?? t('perihelion.track.slewAndCenterFailed'),
+    };
+  }
+  actionBusy.value = false;
 }
 
 async function onQuickTrack() {

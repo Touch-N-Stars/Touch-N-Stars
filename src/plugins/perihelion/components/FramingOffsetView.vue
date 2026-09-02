@@ -56,15 +56,25 @@
         >{{ framingStore.rotationAngle }}°</span
       >
     </div>
-    <getImageRotation v-if="ready" />
-
-    <div v-if="ready" class="flex gap-2">
-      <button class="tns-btn-primary flex-1" @click="captureFraming">
-        {{ t('perihelion.framing.useFraming') }}
-      </button>
-      <button v-if="hasOffset" class="tns-btn-secondary flex-1" @click="resetFraming">
-        {{ t('perihelion.framing.reset') }}
-      </button>
+    <!--
+      Side by side from md up, not two full-width stacked blocks -- on a wide viewport the sky
+      image above naturally fills the width, but these are discrete actions, not sliders, so
+      they don't benefit from stretching that wide too; it just reads as oversized with too
+      little vertical rhythm relative to their own width. Unchanged (stacked, full width) below
+      md, where that's still the right call.
+    -->
+    <div v-if="ready" class="flex flex-col md:flex-row gap-3">
+      <div class="md:flex-1">
+        <getImageRotation />
+      </div>
+      <div class="flex gap-2 md:flex-1">
+        <button class="tns-btn-primary flex-1" @click="captureFraming">
+          {{ t('perihelion.framing.useFraming') }}
+        </button>
+        <button v-if="hasOffset" class="tns-btn-secondary flex-1" @click="resetFraming">
+          {{ t('perihelion.framing.reset') }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
