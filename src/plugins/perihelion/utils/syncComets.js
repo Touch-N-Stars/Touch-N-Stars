@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18n from '@/i18n';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -33,6 +34,10 @@ export async function syncComets() {
         : null,
     };
   } catch (error) {
-    return { ok: false, message: error?.message ?? 'Sync failed', lastSyncedUtc: null };
+    return {
+      ok: false,
+      message: error?.message ?? i18n.global.t('perihelion.status.syncFailed'),
+      lastSyncedUtc: null,
+    };
   }
 }

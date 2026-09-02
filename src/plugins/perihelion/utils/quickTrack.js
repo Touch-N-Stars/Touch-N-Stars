@@ -1,4 +1,5 @@
 import axios from 'axios';
+import i18n from '@/i18n';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -28,11 +29,17 @@ export async function startQuickTrack(target) {
       AutoReapplyMinutes: target.autoReapplyMinutes || null,
     });
     const body = response.data;
-    return { ok: !!body?.Success, message: body?.Message ?? 'No response message' };
+    return {
+      ok: !!body?.Success,
+      message: body?.Message ?? i18n.global.t('perihelion.status.noResponse'),
+    };
   } catch (error) {
     return {
       ok: false,
-      message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion',
+      message:
+        error?.response?.data?.Message ??
+        error?.message ??
+        i18n.global.t('perihelion.status.unreachable'),
     };
   }
 }
@@ -46,11 +53,17 @@ export async function stopQuickTrack() {
   try {
     const response = await axios.post(`${PERIHELION_URL}/stop`);
     const body = response.data;
-    return { ok: !!body?.Success, message: body?.Message ?? 'No response message' };
+    return {
+      ok: !!body?.Success,
+      message: body?.Message ?? i18n.global.t('perihelion.status.noResponse'),
+    };
   } catch (error) {
     return {
       ok: false,
-      message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion',
+      message:
+        error?.response?.data?.Message ??
+        error?.message ??
+        i18n.global.t('perihelion.status.unreachable'),
     };
   }
 }

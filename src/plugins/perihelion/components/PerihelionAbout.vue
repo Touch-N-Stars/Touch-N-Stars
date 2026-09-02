@@ -2,8 +2,8 @@
   <button
     class="w-8 h-8 rounded-full border border-accent/40 bg-surface-2 flex items-center justify-center shrink-0"
     type="button"
-    title="About Perihelion"
-    aria-label="About Perihelion"
+    :title="t('perihelion.about.buttonTitle')"
+    :aria-label="t('perihelion.about.buttonTitle')"
     @click="aboutVisible = true"
   >
     <InformationCircleIcon class="w-5 h-5 text-accent" />
@@ -11,15 +11,16 @@
 
   <Modal :show="aboutVisible" max-width="max-w-xl" zIndex="z-40" @close="aboutVisible = false">
     <template #header>
-      <h3>About Perihelion</h3>
+      <h3>{{ t('perihelion.about.heading') }}</h3>
     </template>
     <template #body>
       <div class="w-full space-y-4 text-sm leading-6 text-content-muted">
         <section>
-          <h4 class="mb-1 text-base font-semibold text-content">Perihelion</h4>
+          <h4 class="mb-1 text-base font-semibold text-content">
+            {{ t('perihelion.about.sectionTitle') }}
+          </h4>
           <p>
-            Non-sidereal tracking for comets and asteroids -- sets a mount's custom RA/Dec rate live
-            from current orbital elements, computed in-process with no external service.
+            {{ t('perihelion.about.description') }}
           </p>
           <a
             class="break-all text-accent hover:underline"
@@ -32,21 +33,20 @@
         </section>
 
         <section>
-          <h4 class="mb-1 text-base font-semibold text-content">Data sources</h4>
+          <h4 class="mb-1 text-base font-semibold text-content">
+            {{ t('perihelion.about.dataSourcesTitle') }}
+          </h4>
           <p>
-            Comet orbital elements come from the IAU Minor Planet Center, cached on-disk and synced
-            on demand. Observed brightness cross-checks come from COBS (Comet OBServation database)
-            where available. The orbital mechanics itself is built on CosineKitty.AstronomyEngine,
-            the same engine (kept in version lockstep) OryxAstro's own website uses for its
-            sky-events planner.
+            {{ t('perihelion.about.dataSourcesDescription') }}
           </p>
         </section>
 
         <section>
-          <h4 class="mb-1 text-base font-semibold text-content">OryxAstro</h4>
+          <h4 class="mb-1 text-base font-semibold text-content">
+            {{ t('perihelion.about.oryxAstroTitle') }}
+          </h4>
           <p>
-            Perihelion is built by OryxAstro, whose website's own Deep Sky / Solar System Planner
-            can send a tracking sequence for a comet or asteroid directly to PINS.
+            {{ t('perihelion.about.oryxAstroDescription') }}
           </p>
           <a
             class="break-all text-accent hover:underline"
@@ -59,8 +59,10 @@
         </section>
 
         <section>
-          <h4 class="mb-1 text-base font-semibold text-content">License</h4>
-          <p>GPL-3.0-or-later -- see the repository for the full text.</p>
+          <h4 class="mb-1 text-base font-semibold text-content">
+            {{ t('perihelion.about.licenseTitle') }}
+          </h4>
+          <p>{{ t('perihelion.about.licenseText') }}</p>
         </section>
       </div>
     </template>
@@ -69,8 +71,10 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { InformationCircleIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 
+const { t } = useI18n();
 const aboutVisible = ref(false);
 </script>

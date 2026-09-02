@@ -13,31 +13,37 @@
         v-else-if="!ready"
         class="absolute inset-0 flex items-center justify-center text-xs text-content-faint"
       >
-        Loading sky view…
+        {{ t('perihelion.framing.loading') }}
       </div>
       <template v-else>
         <div
           class="absolute top-2 left-2 flex items-center gap-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80"
         >
-          <span>Pan to frame</span>
+          <span>{{ t('perihelion.framing.panToFrame') }}</span>
           <span v-if="pathPoints.length" class="flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Path
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span
+            >{{ t('perihelion.framing.path') }}
           </span>
           <span v-if="pathPoints.length" class="flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tonight
+            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span
+            >{{ t('perihelion.framing.tonight') }}
           </span>
         </div>
         <div
           class="absolute top-2 right-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80 text-right tabular-nums"
         >
-          <div>RA {{ formatRaHours(currentCenter.raHours) }}</div>
-          <div>Dec {{ formatDecDeg(currentCenter.decDeg) }}</div>
+          <div>
+            {{ t('perihelion.framing.raLabel') }} {{ formatRaHours(currentCenter.raHours) }}
+          </div>
+          <div>{{ t('perihelion.framing.decLabel') }} {{ formatDecDeg(currentCenter.decDeg) }}</div>
         </div>
       </template>
     </div>
 
     <div v-if="ready" class="flex items-center gap-2">
-      <span class="text-[11px] text-content-faint shrink-0">Rotation</span>
+      <span class="text-[11px] text-content-faint shrink-0">{{
+        t('perihelion.framing.rotation')
+      }}</span>
       <input
         v-model.number="framingStore.rotationAngle"
         type="range"
@@ -53,8 +59,12 @@
     <getImageRotation v-if="ready" />
 
     <div v-if="ready" class="flex gap-2">
-      <button class="tns-btn-primary flex-1" @click="captureFraming">Use this Framing</button>
-      <button v-if="hasOffset" class="tns-btn-secondary flex-1" @click="resetFraming">Reset</button>
+      <button class="tns-btn-primary flex-1" @click="captureFraming">
+        {{ t('perihelion.framing.useFraming') }}
+      </button>
+      <button v-if="hasOffset" class="tns-btn-secondary flex-1" @click="resetFraming">
+        {{ t('perihelion.framing.reset') }}
+      </button>
     </div>
   </div>
 </template>
@@ -89,6 +99,7 @@
  * order 3-4).
  */
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
 import { Capacitor } from '@capacitor/core';
 import { apiStore } from '@/store/store';
@@ -117,6 +128,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['offset']);
 
+const { t } = useI18n();
 const store = apiStore();
 const settingsStore = useSettingsStore();
 const framingStore = useFramingStore();
@@ -330,7 +342,7 @@ onMounted(async () => {
   // catch below.
   const settings = store.profileInfo?.AstrometrySettings;
   if (![settings?.Latitude, settings?.Longitude].every(Number.isFinite)) {
-    errorMessage.value = "No observer location set in this profile's Astrometry settings.";
+    errorMessage.value = t('perihelion.framing.noLocation');
     return;
   }
 
@@ -391,7 +403,7 @@ onMounted(async () => {
     // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
     // and showing the real message here means a real failure can be diagnosed from a screenshot
     // rather than needing someone to open devtools.
-    errorMessage.value = `Sky view unavailable: ${error.message}`;
+    errorMessage.value = t('perihelion.framing.unavailable', { error: error.message });
     console.warn('[Perihelion] Could not start framing view:', error);
   }
 });

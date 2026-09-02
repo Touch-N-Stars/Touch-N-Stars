@@ -29,9 +29,11 @@
             </svg>
           </div>
           <div class="min-w-0 flex-1">
-            <h1 class="text-lg font-bold text-content leading-tight">Perihelion</h1>
+            <h1 class="text-lg font-bold text-content leading-tight">
+              {{ t('perihelion.title') }}
+            </h1>
             <p class="text-[11px] text-content-muted leading-snug">
-              Non-sidereal tracking for comets & asteroids — live orbital data, offline-durable.
+              {{ t('perihelion.subtitle') }}
             </p>
           </div>
           <PerihelionAbout />
@@ -42,13 +44,13 @@
             class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0"
             >1</span
           >
-          <span class="text-xs font-semibold text-content">Pick a comet or asteroid to track</span>
+          <span class="text-xs font-semibold text-content">{{ t('perihelion.browse.step') }}</span>
         </div>
 
         <input
           v-model="searchQuery"
           type="text"
-          placeholder="Search comets & asteroids…"
+          :placeholder="t('perihelion.browse.searchPlaceholder')"
           class="tns-input"
         />
 
@@ -67,21 +69,23 @@
             {{ f.label }}
           </button>
           <span class="flex-1"></span>
-          <span class="text-[11px] text-content-faint">Sorted by brightness</span>
+          <span class="text-[11px] text-content-faint">{{
+            t('perihelion.browse.sortedByBrightness')
+          }}</span>
         </div>
 
         <div
           v-if="filter !== 'Asteroid'"
           class="flex items-center gap-2 text-[11px] text-content-faint"
         >
-          <span>Comets {{ syncStatusLabel }}</span>
+          <span>{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}</span>
           <span class="flex-1"></span>
           <button
             class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
             :disabled="syncing"
             @click="onSyncComets"
           >
-            {{ syncing ? 'Syncing…' : 'Sync Now' }}
+            {{ syncing ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow') }}
           </button>
         </div>
         <p
@@ -92,14 +96,15 @@
           {{ syncMessage.text }}
         </p>
         <p v-if="filter === 'Asteroid'" class="text-[11px] text-content-faint">
-          {{ asteroidCount }} asteroids — a fixed list, updated via plugin releases rather than
-          synced.
+          {{ t('perihelion.browse.asteroidCount', { count: asteroidCount }) }}
         </p>
 
-        <p v-if="objectsLoading" class="text-sm text-content-muted">Loading…</p>
+        <p v-if="objectsLoading" class="text-sm text-content-muted">
+          {{ t('perihelion.browse.loading') }}
+        </p>
         <p v-else-if="objectsError" class="text-sm text-status-danger">{{ objectsError }}</p>
         <p v-else-if="filteredObjects.length === 0" class="text-sm text-content-faint italic">
-          No objects match.
+          {{ t('perihelion.browse.noMatch') }}
         </p>
 
         <div class="space-y-2">
@@ -125,9 +130,9 @@
               <span class="text-[15px] font-bold tabular-nums text-content">
                 {{ o.magnitude != null ? o.magnitude.toFixed(1) : '—' }}
               </span>
-              <span class="text-[9px] font-bold uppercase tracking-wide text-content-faint"
-                >mag</span
-              >
+              <span class="text-[9px] font-bold uppercase tracking-wide text-content-faint">{{
+                t('perihelion.browse.mag')
+              }}</span>
             </div>
           </button>
         </div>
@@ -136,7 +141,7 @@
       <!-- ===================== POSITION & PATH ===================== -->
       <template v-else-if="activeTab === 'position'">
         <p v-if="!selected" class="text-sm text-content-faint italic">
-          Pick an object on the Browse tab first.
+          {{ t('perihelion.position.pickFirst') }}
         </p>
         <template v-else>
           <div class="flex items-center gap-2">
@@ -144,9 +149,9 @@
               class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0"
               >2</span
             >
-            <span class="text-xs font-semibold text-content"
-              >Review its position & compose the framing</span
-            >
+            <span class="text-xs font-semibold text-content">{{
+              t('perihelion.position.step')
+            }}</span>
           </div>
 
           <div class="flex items-center gap-3">
@@ -169,19 +174,19 @@
 
           <div class="grid grid-cols-3 gap-2">
             <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-              <span class="tns-stat-label">RA</span>
+              <span class="tns-stat-label">{{ t('perihelion.position.ra') }}</span>
               <span class="text-[15px] font-bold tabular-nums text-content">{{
                 formatRaHours(selected.raHours)
               }}</span>
             </div>
             <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-              <span class="tns-stat-label">DEC</span>
+              <span class="tns-stat-label">{{ t('perihelion.position.dec') }}</span>
               <span class="text-[15px] font-bold tabular-nums text-content">{{
                 formatDecDeg(selected.decDeg)
               }}</span>
             </div>
             <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-              <span class="tns-stat-label">MAG</span>
+              <span class="tns-stat-label">{{ t('perihelion.position.mag') }}</span>
               <span class="text-[15px] font-bold tabular-nums text-content">
                 {{ selected.magnitude != null ? selected.magnitude.toFixed(1) : '—' }}
               </span>
@@ -190,32 +195,43 @@
 
           <div v-if="cometActivity" class="tns-card">
             <div class="flex items-center gap-2 mb-1">
-              <span class="tns-stat-label flex-1">Observed Brightness</span>
+              <span class="tns-stat-label flex-1">{{
+                t('perihelion.position.observedBrightness')
+              }}</span>
               <span class="text-xs font-bold text-accent"
-                >mag {{ cometActivity.recentAverageMagnitude.toFixed(1) }}</span
+                >{{ t('perihelion.browse.mag') }}
+                {{ cometActivity.recentAverageMagnitude.toFixed(1) }}</span
               >
             </div>
             <p class="text-[11px] leading-relaxed text-content-muted">
-              Real observer reports (COBS), average of the last
-              {{ Math.min(cometActivity.observationCount, 5) }} — vs. mag
-              {{ selected.magnitude != null ? selected.magnitude.toFixed(1) : '—' }} predicted from
-              orbital elements alone. Last reported
-              {{ relativeTime(cometActivity.mostRecentDateUtc) }}.
+              {{
+                t('perihelion.position.observedBrightnessDescription', {
+                  count: Math.min(cometActivity.observationCount, 5),
+                  predicted: selected.magnitude != null ? selected.magnitude.toFixed(1) : '—',
+                  when: relativeTime(cometActivity.mostRecentDateUtc),
+                })
+              }}
             </p>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div class="tns-card">
               <div class="flex items-center gap-2 mb-2">
-                <span class="tns-stat-label flex-1">Tonight's Altitude</span>
+                <span class="tns-stat-label flex-1">{{
+                  t('perihelion.position.altitudeTitle')
+                }}</span>
                 <span v-if="altAz" class="text-xs font-bold text-accent">
                   {{ altAz.altitude.toFixed(0) }}°
-                  {{ altAz.altitude >= 0 ? 'above horizon' : 'below horizon' }} · Az
-                  {{ altAz.azimuth.toFixed(0) }}°
+                  {{
+                    altAz.altitude >= 0
+                      ? t('perihelion.position.aboveHorizon')
+                      : t('perihelion.position.belowHorizon')
+                  }}
+                  · Az {{ altAz.azimuth.toFixed(0) }}°
                 </span>
               </div>
               <p v-if="!hasLocation" class="text-xs text-content-faint">
-                No observer location set in this profile's Astrometry settings.
+                {{ t('perihelion.position.noLocation') }}
               </p>
               <SkyChart
                 v-else
@@ -226,38 +242,39 @@
                 }"
               />
               <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
-                Uses {{ selected.name }}'s position right now for the whole night — real for a star,
-                a slight approximation for a moving object, close enough for a transit curve.
+                {{ t('perihelion.position.altitudeDescription', { name: selected.name }) }}
               </p>
             </div>
 
             <div class="tns-card">
               <div class="flex items-center gap-3 mb-2">
-                <span class="tns-stat-label flex-1">10-Night Path</span>
+                <span class="tns-stat-label flex-1">{{ t('perihelion.position.pathTitle') }}</span>
                 <span class="flex items-center gap-1 text-[11px] text-content-muted">
-                  <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Path
+                  <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span
+                  >{{ t('perihelion.position.pathLegendPath') }}
                 </span>
                 <span class="flex items-center gap-1 text-[11px] text-content-muted">
-                  <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tonight
+                  <span class="w-1.5 h-1.5 rounded-full bg-accent"></span
+                  >{{ t('perihelion.position.pathLegendTonight') }}
                 </span>
               </div>
-              <p v-if="pathLoading" class="text-xs text-content-muted">Loading…</p>
+              <p v-if="pathLoading" class="text-xs text-content-muted">
+                {{ t('perihelion.browse.loading') }}
+              </p>
               <p v-else-if="pathError" class="text-xs text-status-danger">{{ pathError }}</p>
               <OrbitalPathChart v-else-if="path.length" :points="path" />
               <p class="text-[11px] leading-relaxed text-content-muted mt-2">
-                Real path against the fixed stars — while tracking, {{ selected.name }} stays
-                centered in-frame all night; this shows motion night to night, not movement within a
-                single exposure.
+                {{ t('perihelion.position.pathDescription', { name: selected.name }) }}
               </p>
             </div>
           </div>
 
           <div class="tns-card">
             <div class="flex items-center gap-2 mb-2">
-              <span class="tns-stat-label flex-1">Framing</span>
-              <span v-if="framingOffset" class="text-[11px] text-accent font-semibold"
-                >Offset set</span
-              >
+              <span class="tns-stat-label flex-1">{{ t('perihelion.position.framingTitle') }}</span>
+              <span v-if="framingOffset" class="text-[11px] text-accent font-semibold">{{
+                t('perihelion.position.offsetSet')
+              }}</span>
             </div>
             <FramingOffsetView
               :key="selected.id"
@@ -268,8 +285,7 @@
               @offset="framingOffset = $event"
             />
             <p class="text-[11px] leading-relaxed text-content-muted mt-2">
-              Real sky imagery, centered on {{ selected.name }}'s actual position right now. Pan to
-              compose the shot, then capture the offset for Add to Sequence.
+              {{ t('perihelion.position.framingDescription', { name: selected.name }) }}
             </p>
           </div>
         </template>
@@ -278,7 +294,7 @@
       <!-- ===================== TRACK ===================== -->
       <template v-else>
         <p v-if="!selected" class="text-sm text-content-faint italic">
-          Pick an object on the Browse tab first.
+          {{ t('perihelion.track.pickFirst') }}
         </p>
         <template v-else>
           <div class="flex items-center gap-2">
@@ -286,11 +302,11 @@
               class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0"
               >3</span
             >
-            <span class="text-xs font-semibold text-content">Track it</span>
+            <span class="text-xs font-semibold text-content">{{ t('perihelion.track.step') }}</span>
           </div>
 
           <div class="tns-card flex flex-col gap-2">
-            <span class="tns-stat-label">Status</span>
+            <span class="tns-stat-label">{{ t('perihelion.track.status') }}</span>
             <div class="flex items-center gap-2">
               <span
                 class="tns-dot"
@@ -313,41 +329,47 @@
             class="tns-card flex flex-col gap-1.5"
           >
             <div class="flex items-center justify-between">
-              <span class="tns-stat-label">Live Status</span>
-              <span class="text-[10px] text-content-faint"
-                >from the plugin itself, not just this page</span
-              >
+              <span class="tns-stat-label">{{ t('perihelion.track.liveStatus') }}</span>
+              <span class="text-[10px] text-content-faint">{{
+                t('perihelion.track.liveStatusSubtitle')
+              }}</span>
             </div>
             <p
               v-if="quickTrackStatus.lastRaArcsecPerSec != null"
               class="text-xs text-content-muted tabular-nums"
             >
-              Applied rate — RA {{ quickTrackStatus.lastRaArcsecPerSec.toFixed(4) }}″/s · Dec
-              {{ quickTrackStatus.lastDecArcsecPerSec.toFixed(4) }}″/s
+              {{
+                t('perihelion.track.appliedRate', {
+                  ra: quickTrackStatus.lastRaArcsecPerSec.toFixed(4),
+                  dec: quickTrackStatus.lastDecArcsecPerSec.toFixed(4),
+                })
+              }}
             </p>
             <p class="text-xs text-content-muted">
-              <span v-if="elapsedSinceStarted != null">Tracking for {{ elapsedSinceStarted }}</span>
+              <span v-if="elapsedSinceStarted != null">{{
+                t('perihelion.track.trackingFor', { duration: elapsedSinceStarted })
+              }}</span>
               <span v-if="elapsedSinceApplied != null">
-                · Applied {{ elapsedSinceApplied }} ago</span
+                {{ t('perihelion.track.appliedAgo', { duration: elapsedSinceApplied }) }}</span
               >
             </p>
             <p
               v-if="quickTrackStatus.autoReapplyMinutes && nextReapplyIn != null"
               class="text-xs text-content-muted"
             >
-              Next re-apply in ~{{ nextReapplyIn }}
+              {{ t('perihelion.track.nextReapply', { duration: nextReapplyIn }) }}
             </p>
             <p class="text-xs text-content-muted">
-              Guider shift:
+              {{ t('perihelion.track.guiderShift') }}
               <span :class="quickTrackStatus.guiding ? 'text-status-ok' : 'text-content-faint'">{{
-                quickTrackStatus.guiding ? 'on' : 'off'
+                quickTrackStatus.guiding ? t('perihelion.track.on') : t('perihelion.track.off')
               }}</span>
             </p>
             <p
               v-if="!quickTrackStatus.lastApplySucceeded && quickTrackStatus.lastError"
               class="text-xs text-status-danger"
             >
-              Last attempt failed: {{ quickTrackStatus.lastError }}
+              {{ t('perihelion.track.lastAttemptFailed', { error: quickTrackStatus.lastError }) }}
             </p>
           </div>
 
@@ -364,15 +386,17 @@
           <div v-if="trackingMode === 'idle'" class="flex flex-col gap-3">
             <div class="tns-card flex flex-col gap-2">
               <div class="flex items-center gap-2 mb-1">
-                <span class="tns-stat-label flex-1">Imaging Plan</span>
-                <span class="text-[10px] text-content-faint">for Add to Sequence only</span>
+                <span class="tns-stat-label flex-1">{{ t('perihelion.track.imagingPlan') }}</span>
+                <span class="text-[10px] text-content-faint">{{
+                  t('perihelion.track.forAddToSequenceOnly')
+                }}</span>
               </div>
               <label class="block">
-                <span class="block text-[10px] text-content-faint mb-1"
-                  >Filter — from connected wheel</span
-                >
+                <span class="block text-[10px] text-content-faint mb-1">{{
+                  t('perihelion.track.filterLabel')
+                }}</span>
                 <select v-model="exposureFilter" class="tns-select">
-                  <option value="">Don't change filter</option>
+                  <option value="">{{ t('perihelion.track.dontChangeFilter') }}</option>
                   <option
                     v-for="f in store.filterInfo?.AvailableFilters ?? []"
                     :key="f.Name"
@@ -384,26 +408,32 @@
               </label>
               <div class="flex gap-2">
                 <label class="flex-1">
-                  <span class="block text-[10px] text-content-faint mb-1">Exposure (s)</span>
+                  <span class="block text-[10px] text-content-faint mb-1">{{
+                    t('perihelion.track.exposureLabel')
+                  }}</span>
                   <input v-model.number="exposureSeconds" type="number" min="1" class="tns-input" />
                 </label>
                 <label class="flex-1">
-                  <span class="block text-[10px] text-content-faint mb-1">Frames</span>
+                  <span class="block text-[10px] text-content-faint mb-1">{{
+                    t('perihelion.track.framesLabel')
+                  }}</span>
                   <input v-model.number="frameCount" type="number" min="1" class="tns-input" />
                 </label>
               </div>
             </div>
 
             <div class="tns-card flex flex-col">
-              <span class="tns-stat-label mb-2">Before You Start</span>
+              <span class="tns-stat-label mb-2">{{ t('perihelion.track.beforeYouStart') }}</span>
               <button
                 class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
                 @click="guiding = !guiding"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-content">Include guider shift rate</span>
+                  <span class="text-sm font-semibold text-content">{{
+                    t('perihelion.track.guidingToggleTitle')
+                  }}</span>
                   <span class="text-[11px] text-content-muted leading-tight">
-                    Needed if you guide — otherwise it fights this drift.
+                    {{ t('perihelion.track.guidingToggleDescription') }}
                   </span>
                 </div>
                 <span
@@ -424,12 +454,11 @@
                 @click="autoReapply = !autoReapply"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-content"
-                    >Auto re-apply every {{ AUTO_REAPPLY_MINUTES }} min</span
-                  >
+                  <span class="text-sm font-semibold text-content">{{
+                    t('perihelion.track.autoReapplyToggleTitle', { minutes: AUTO_REAPPLY_MINUTES })
+                  }}</span>
                   <span class="text-[11px] text-content-muted leading-tight">
-                    Quick Track only — recomputes and re-sends the rate on a timer, so a long
-                    unattended session stays accurate as the object's true rate drifts.
+                    {{ t('perihelion.track.autoReapplyToggleDescription') }}
                   </span>
                 </div>
                 <span
@@ -450,11 +479,11 @@
                 @click="meridianFlip = !meridianFlip"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-content"
-                    >Include meridian flip trigger</span
-                  >
+                  <span class="text-sm font-semibold text-content">{{
+                    t('perihelion.track.meridianFlipToggleTitle')
+                  }}</span>
                   <span class="text-[11px] text-content-muted leading-tight">
-                    Recommended on a GEM mount for anything running past the meridian.
+                    {{ t('perihelion.track.meridianFlipToggleDescription') }}
                   </span>
                 </div>
                 <span
@@ -475,9 +504,11 @@
                 @click="autofocus = !autofocus"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-content">Include autofocus trigger</span>
+                  <span class="text-sm font-semibold text-content">{{
+                    t('perihelion.track.autofocusToggleTitle')
+                  }}</span>
                   <span class="text-[11px] text-content-muted leading-tight">
-                    Refocuses on a timer during the imaging loop.
+                    {{ t('perihelion.track.autofocusToggleDescription') }}
                   </span>
                 </div>
                 <span
@@ -493,39 +524,41 @@
                 </span>
               </button>
               <label v-if="autofocus" class="block pb-1">
-                <span class="block text-[10px] text-content-faint mb-1">Every (minutes)</span>
+                <span class="block text-[10px] text-content-faint mb-1">{{
+                  t('perihelion.track.autofocusEveryLabel')
+                }}</span>
                 <input v-model.number="autofocusMinutes" type="number" min="1" class="tns-input" />
               </label>
             </div>
 
             <button class="tns-btn-primary" :disabled="actionBusy" @click="onAddToSequence">
-              {{ actionBusy ? 'Working…' : 'Add to Sequence' }}
+              {{ actionBusy ? t('perihelion.track.working') : t('perihelion.track.addToSequence') }}
             </button>
             <button class="tns-btn-secondary" :disabled="actionBusy" @click="onQuickTrack">
-              {{ actionBusy ? 'Working…' : 'Quick Track' }}
+              {{ actionBusy ? t('perihelion.track.working') : t('perihelion.track.quickTrack') }}
             </button>
             <p class="text-[11px] leading-relaxed text-content-faint">
-              <strong class="text-content-muted">Add to Sequence</strong> builds a slew + track +
-              imaging sequence and loads it into NINA's sequencer for you to review and start.
+              <strong class="text-content-muted">{{ t('perihelion.track.addToSequence') }}</strong>
+              {{ t('perihelion.track.addToSequenceDescriptionRest') }}
             </p>
             <p class="text-[11px] leading-relaxed text-content-faint">
-              <strong class="text-content-muted">Quick Track</strong> sets the mount's rate directly
-              right now — for manual or visual use, not a substitute for a real imaging sequence.
+              <strong class="text-content-muted">{{ t('perihelion.track.quickTrack') }}</strong>
+              {{ t('perihelion.track.quickTrackDescriptionRest') }}
             </p>
           </div>
 
           <button v-else class="tns-btn-danger" :disabled="actionBusy" @click="onStop">
-            {{ actionBusy ? 'Working…' : stopButtonLabel }}
+            {{ actionBusy ? t('perihelion.track.working') : stopButtonLabel }}
           </button>
           <p
             v-if="trackingMode === 'quick' && autoReapply"
             class="text-[11px] text-content-faint text-center"
           >
-            Auto re-applying every {{ AUTO_REAPPLY_MINUTES }} min
+            {{ t('perihelion.track.autoReapplyingFooter', { minutes: AUTO_REAPPLY_MINUTES }) }}
           </p>
 
           <p class="text-[11px] leading-relaxed text-content-faint text-center">
-            Computed on-device from live orbital elements — works without an internet connection.
+            {{ t('perihelion.track.footer') }}
           </p>
         </template>
       </template>
@@ -535,6 +568,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, h } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
@@ -631,6 +665,7 @@ const AsteroidIcon = {
   },
 };
 
+const { t } = useI18n();
 const store = apiStore();
 const perihelionStore = usePerihelionStore();
 // Persisted across leaving/re-entering this tab (see perihelionStore.js's own doc comment for
@@ -655,11 +690,13 @@ const {
 
 const AUTO_REAPPLY_MINUTES = 15;
 
-const tabItems = [
-  { name: 'Browse', value: 'browse' },
-  { name: 'Position & Path', value: 'position' },
-  { name: 'Track', value: 'track' },
-];
+// computed, not a plain array -- SubNav renders item.name directly with no i18n resolution of
+// its own, so this has to stay reactive to a locale switch itself.
+const tabItems = computed(() => [
+  { name: t('perihelion.tabs.browse'), value: 'browse' },
+  { name: t('perihelion.tabs.position'), value: 'position' },
+  { name: t('perihelion.tabs.track'), value: 'track' },
+]);
 
 // --- Browse ---
 const objects = ref([]);
@@ -701,7 +738,9 @@ async function loadSyncStatus() {
 onMounted(loadSyncStatus);
 
 const syncStatusLabel = computed(() =>
-  cometsLastSyncedUtc.value ? `synced ${relativeTime(cometsLastSyncedUtc.value)}` : 'never synced'
+  cometsLastSyncedUtc.value
+    ? t('perihelion.browse.syncedAgo', { when: relativeTime(cometsLastSyncedUtc.value) })
+    : t('perihelion.browse.neverSynced')
 );
 
 async function onSyncComets() {
@@ -748,10 +787,12 @@ function formatDecDeg(decDeg) {
 /** "3h ago" / "just now" -- shared by the comet-sync status line and the COBS activity note. */
 function relativeTime(date) {
   const seconds = (Date.now() - date.getTime()) / 1000;
-  if (seconds < 60) return 'just now';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return `${Math.floor(seconds / 86400)}d ago`;
+  if (seconds < 60) return t('perihelion.relativeTime.justNow');
+  if (seconds < 3600)
+    return t('perihelion.relativeTime.minutesAgo', { n: Math.floor(seconds / 60) });
+  if (seconds < 86400)
+    return t('perihelion.relativeTime.hoursAgo', { n: Math.floor(seconds / 3600) });
+  return t('perihelion.relativeTime.daysAgo', { n: Math.floor(seconds / 86400) });
 }
 
 // --- Position & Path ---
@@ -822,12 +863,14 @@ const actionBusy = ref(false);
 const actionStatus = ref(null);
 
 const statusLabel = computed(() => {
-  if (trackingMode.value === 'sequence') return 'Sequence Running';
-  if (trackingMode.value === 'quick') return 'Quick Tracking';
-  return 'Idle';
+  if (trackingMode.value === 'sequence') return t('perihelion.track.statusSequence');
+  if (trackingMode.value === 'quick') return t('perihelion.track.statusQuick');
+  return t('perihelion.track.statusIdle');
 });
 const stopButtonLabel = computed(() =>
-  trackingMode.value === 'sequence' ? 'Stop Sequence' : 'Stop Quick Track'
+  trackingMode.value === 'sequence'
+    ? t('perihelion.track.stopSequence')
+    : t('perihelion.track.stopQuickTrack')
 );
 
 // --- Live Quick Track status -- polls Perihelion's own /status route rather than trusting

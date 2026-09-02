@@ -118,6 +118,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
   points: { type: Array, required: true }, // [{ date, raHours, decDeg }]
@@ -218,7 +221,11 @@ const driftSummary = computed(() => {
   if (totalDeg == null || props.points.length < 2) return '';
   const nights = props.points.length - 1;
   const perNightDeg = totalDeg / nights;
-  return `${formatDeg(totalDeg)} total drift over ${nights} nights (~${formatDeg(perNightDeg)}/night)`;
+  return t('perihelion.path.driftSummary', {
+    total: formatDeg(totalDeg),
+    nights,
+    perNight: formatDeg(perNightDeg),
+  });
 });
 
 // Bar length in px for a "nice" round angular value, derived from the actual pixel distance

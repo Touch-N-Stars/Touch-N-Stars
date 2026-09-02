@@ -1,4 +1,5 @@
 import apiService from '@/services/apiService';
+import i18n from '@/i18n';
 import { buildPerihelionSequence } from './buildPerihelionSequence';
 
 /**
@@ -19,10 +20,13 @@ export async function sendPerihelionSequence(target) {
   try {
     await apiService.sequenceLoadJson(JSON.stringify(root));
   } catch (error) {
-    return { ok: false, message: describeError(error, 'Could not load the sequence') };
+    return {
+      ok: false,
+      message: describeError(error, i18n.global.t('perihelion.status.sequenceLoadFailed')),
+    };
   }
 
-  return { ok: true, message: 'Sequence loaded — review and start it in the sequencer' };
+  return { ok: true, message: i18n.global.t('perihelion.status.sequenceLoaded') };
 }
 
 function describeError(error, fallback) {
@@ -32,5 +36,5 @@ function describeError(error, fallback) {
   const apiMessage = error?.response?.data?.Error;
   return apiMessage
     ? `${fallback}: ${apiMessage}`
-    : `${fallback}: ${error?.message ?? 'unknown error'}`;
+    : `${fallback}: ${error?.message ?? i18n.global.t('perihelion.status.unknownError')}`;
 }
