@@ -31,5 +31,13 @@ export const usePerihelionStore = defineStore('perihelion', {
     // watcher in PerihelionView.vue that always did this -- an offset captured for one object
     // has no meaning for a different one.
     framingOffset: null,
+    // null = not checked yet, true/false = the result of a real GET /perihelion/api/status call
+    // on mount. Perihelion's own backend is a separate standalone server, not reachable via
+    // ninaAPI's own aggregator, so this can't use nightsummaryStore.js's own
+    // apiService.nightsummary.getStatus() pattern directly -- but the intent is identical:
+    // without this, anyone with the Touch-N-Stars panel but not the Perihelion NINA plugin
+    // installed (including real Windows NINA users, if this panel ever lands upstream) would
+    // just see confusing connection-refused errors instead of a clear "not installed" message.
+    pluginInstalled: null,
   }),
 });

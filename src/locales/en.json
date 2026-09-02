@@ -5332,7 +5332,8 @@
       "sequenceLoadFailed": "Could not load the sequence",
       "sequenceLoaded": "Sequence loaded — review and start it in the sequencer",
       "unknownError": "unknown error"
-    }
+    },
+    "notDetected": "Perihelion plugin not detected. Install the Perihelion NINA plugin to use this page."
   },
   "indi": {
     "config": {
