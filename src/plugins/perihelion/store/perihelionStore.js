@@ -16,6 +16,10 @@ export const usePerihelionStore = defineStore('perihelion', {
     meridianFlip: true,
     autofocus: false,
     autofocusMinutes: 30,
+    // Quick Track only (not Add to Sequence -- a sequence just runs SetPerihelionTrackingRate
+    // once at that point in the sequence, there's no ongoing loop to re-apply on). Fixed at 15
+    // min per the original design, not a configurable interval.
+    autoReapply: false,
     // Reflects what's actually running on the mount, not just this view's own lifetime -- if
     // Quick Track is active and the user navigates away and back, the Track tab should still
     // show it running rather than resetting to Idle.

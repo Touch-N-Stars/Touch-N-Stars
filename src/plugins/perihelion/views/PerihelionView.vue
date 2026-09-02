@@ -309,6 +309,28 @@
 
               <button
                 class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
+                @click="autoReapply = !autoReapply"
+              >
+                <div class="flex flex-col gap-0.5 min-w-0 flex-1">
+                  <span class="text-sm font-semibold text-content">Auto re-apply every {{ AUTO_REAPPLY_MINUTES }} min</span>
+                  <span class="text-[11px] text-content-muted leading-tight">
+                    Quick Track only — recomputes and re-sends the rate on a timer, so a long
+                    unattended session stays accurate as the object's true rate drifts.
+                  </span>
+                </div>
+                <span
+                  class="relative inline-flex h-[22px] w-10 shrink-0 items-center rounded-full transition-colors"
+                  :class="autoReapply ? 'bg-accent/35' : 'bg-surface-3'"
+                >
+                  <span
+                    class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
+                    :class="autoReapply ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                  ></span>
+                </span>
+              </button>
+
+              <button
+                class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
                 @click="meridianFlip = !meridianFlip"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
@@ -374,6 +396,9 @@
           <button v-else class="tns-btn-danger" :disabled="actionBusy" @click="onStop">
             {{ actionBusy ? 'Working…' : stopButtonLabel }}
           </button>
+          <p v-if="trackingMode === 'quick' && autoReapply" class="text-[11px] text-content-faint text-center">
+            Auto re-applying every {{ AUTO_REAPPLY_MINUTES }} min
+          </p>
 
           <p class="text-[11px] leading-relaxed text-content-faint text-center">
             Computed on-device from live orbital elements — works without an internet connection.
@@ -466,8 +491,11 @@ const {
   meridianFlip,
   autofocus,
   autofocusMinutes,
+  autoReapply,
   trackingMode,
 } = storeToRefs(perihelionStore);
+
+const AUTO_REAPPLY_MINUTES = 15;
 
 const tabItems = [
   { name: 'Browse', value: 'browse' },
@@ -671,6 +699,7 @@ async function onQuickTrack() {
     objectType: selected.value.objectType.toLowerCase(),
     targetName: selected.value.name,
     guiding: guiding.value,
+    autoReapplyMinutes: autoReapply.value ? AUTO_REAPPLY_MINUTES : null,
   });
   actionStatus.value = result;
   actionBusy.value = false;
