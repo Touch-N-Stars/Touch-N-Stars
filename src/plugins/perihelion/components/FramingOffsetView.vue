@@ -239,6 +239,15 @@ onMounted(async () => {
         console.warn('[Perihelion] Framing view sky-survey error:', error.message);
       },
     });
+    // Equatorial, not horizontal (unlike CelestiaAtlasView.vue's own choice, which is about
+    // live Alt/Az sky-browsing from the observer's current location -- the right call there,
+    // wrong one here). In horizontal mode "up" on screen tracks the local zenith, which rotates
+    // relative to celestial north as sidereal time advances -- so a fixed rotationDeg (measured
+    // "from celestial north", per FieldOfViewOverlay's own rotationConvention) would land at a
+    // different screen angle depending on what time it happens to be, not a stable one. This is
+    // almost certainly why 0 degrees still showed up tilted. Rotation for framing/rotator
+    // purposes needs to be fixed relative to the sky, not the horizon.
+    viewer.setCoordinateMode('equatorial');
     viewer.setDisplayOptions({
       grid: false,
       azimuthalGrid: false,
