@@ -5301,7 +5301,10 @@
       "framingTitle": "Inquadratura",
       "offsetSet": "Scostamento impostato",
       "observedLatest": "Ultima {mag}",
-      "observedAverage": "Media {mag}"
+      "observedAverage": "Media {mag}",
+      "altitudePeak": "Raggiunge {deg}° verso le {time}",
+      "framingCapturedPrompt": "Inquadratura acquisita — pronto per l'inseguimento.",
+      "goToTrack": "Vai a Insegui"
     },
     "track": {
       "step": "Inseguilo",

@@ -5296,7 +5296,10 @@
       "framingTitle": "Rámování",
       "offsetSet": "Posun nastaven",
       "observedLatest": "Poslední {mag}",
-      "observedAverage": "Prům. {mag}"
+      "observedAverage": "Prům. {mag}",
+      "altitudePeak": "Vrchol {deg}° kolem {time}",
+      "framingCapturedPrompt": "Rámování zachyceno — připraveno ke sledování.",
+      "goToTrack": "Přejít na Sledovat"
     },
     "track": {
       "step": "Sledovat jej",

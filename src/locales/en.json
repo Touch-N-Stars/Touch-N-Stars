@@ -5261,12 +5261,15 @@
       "belowHorizon": "below horizon",
       "noLocation": "No observer location set in this profile's Astrometry settings.",
       "altitudeDescription": "Uses {name}'s position right now for the whole night — real for a star, a slight approximation for a moving object, close enough for a transit curve.",
+      "altitudePeak": "Peaks at {deg}° around {time}",
       "pathTitle": "10-Night Path",
       "pathLegendPath": "Path",
       "pathLegendTonight": "Tonight",
       "pathDescription": "Real path against the fixed stars — while tracking, {name} stays centered in-frame all night; this shows motion night to night, not movement within a single exposure.",
       "framingTitle": "Framing",
-      "offsetSet": "Offset set"
+      "offsetSet": "Offset set",
+      "framingCapturedPrompt": "Framing captured — ready to track.",
+      "goToTrack": "Go to Track"
     },
     "track": {
       "step": "Track it",

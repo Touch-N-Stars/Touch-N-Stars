@@ -5296,7 +5296,10 @@
       "framingTitle": "Kadrowanie",
       "offsetSet": "Przesunięcie ustawione",
       "observedLatest": "Ostatnia {mag}",
-      "observedAverage": "Śr. {mag}"
+      "observedAverage": "Śr. {mag}",
+      "altitudePeak": "Szczyt {deg}° około {time}",
+      "framingCapturedPrompt": "Kadr zapisany — gotowe do śledzenia.",
+      "goToTrack": "Przejdź do Śledź"
     },
     "track": {
       "step": "Śledź go",

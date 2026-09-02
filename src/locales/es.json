@@ -5301,7 +5301,10 @@
       "framingTitle": "Encuadre",
       "offsetSet": "Desplazamiento definido",
       "observedLatest": "Última {mag}",
-      "observedAverage": "Media {mag}"
+      "observedAverage": "Media {mag}",
+      "altitudePeak": "Alcanza {deg}° hacia las {time}",
+      "framingCapturedPrompt": "Encuadre capturado — listo para seguir.",
+      "goToTrack": "Ir a Seguir"
     },
     "track": {
       "step": "Seguirlo",

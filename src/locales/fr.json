@@ -5301,7 +5301,10 @@
       "framingTitle": "Cadrage",
       "offsetSet": "Décalage défini",
       "observedLatest": "Dernier {mag}",
-      "observedAverage": "Moy. {mag}"
+      "observedAverage": "Moy. {mag}",
+      "altitudePeak": "Culmine à {deg}° vers {time}",
+      "framingCapturedPrompt": "Cadrage capturé — prêt à suivre.",
+      "goToTrack": "Aller à Suivre"
     },
     "track": {
       "step": "Le suivre",

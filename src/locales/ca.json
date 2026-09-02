@@ -5296,7 +5296,10 @@
       "framingTitle": "Enquadrament",
       "offsetSet": "Desplaçament definit",
       "observedLatest": "Última {mag}",
-      "observedAverage": "Mitjana {mag}"
+      "observedAverage": "Mitjana {mag}",
+      "altitudePeak": "Arriba a {deg}° cap a les {time}",
+      "framingCapturedPrompt": "Enquadrament capturat — a punt per seguir.",
+      "goToTrack": "Vés a Segueix"
     },
     "track": {
       "step": "Segueix-lo",

@@ -5296,7 +5296,10 @@
       "framingTitle": "Кадрування",
       "offsetSet": "Зсув встановлено",
       "observedLatest": "Остання {mag}",
-      "observedAverage": "Сер. {mag}"
+      "observedAverage": "Сер. {mag}",
+      "altitudePeak": "Пік {deg}° близько {time}",
+      "framingCapturedPrompt": "Кадрування захоплено — готово до ведення.",
+      "goToTrack": "Перейти до Ведення"
     },
     "track": {
       "step": "Вести його",

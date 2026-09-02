@@ -28,6 +28,12 @@ const props = defineProps({
   },
 });
 
+// The highest point on the same +/-12h curve this chart already draws -- emitted rather than
+// duplicated, so a caller (e.g. Perihelion's own altitude card) can show "currently low, but
+// climbing to X" instead of just the instantaneous altitude, without re-deriving the curve
+// itself a second time.
+const emit = defineEmits(['peak-altitude']);
+
 const canvasRef = ref(null);
 let chartInstance = null;
 let timeUpdateInterval = null;
@@ -134,6 +140,16 @@ const altitudeData = computed(() => {
 
   return points;
 });
+
+const peakAltitudePoint = computed(() => {
+  if (altitudeData.value.length === 0) return null;
+  return altitudeData.value.reduce((best, p) => (p.altitude > best.altitude ? p : best));
+});
+watch(
+  peakAltitudePoint,
+  (p) => emit('peak-altitude', p ? { altitude: p.altitude, label: p.label } : null),
+  { immediate: true }
+);
 
 const horizonAltitudes = computed(() => {
   if (!props.target?.RA || !props.target?.Dec || horizonData.value.length === 0) return [];

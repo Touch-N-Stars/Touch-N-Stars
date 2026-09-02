@@ -283,6 +283,18 @@
                     · Az {{ altAz.azimuth.toFixed(0) }}°
                   </span>
                 </div>
+                <p
+                  v-if="tonightsPeakAltitude"
+                  class="text-[11px] font-semibold mb-2 -mt-1"
+                  :class="altitudeColorClass(tonightsPeakAltitude.altitude)"
+                >
+                  {{
+                    t('perihelion.position.altitudePeak', {
+                      deg: tonightsPeakAltitude.altitude.toFixed(0),
+                      time: tonightsPeakAltitude.label,
+                    })
+                  }}
+                </p>
                 <p v-if="!hasLocation" class="text-xs text-content-faint">
                   {{ t('perihelion.position.noLocation') }}
                 </p>
@@ -293,6 +305,7 @@
                     latitude: store.profileInfo.AstrometrySettings.Latitude,
                     longitude: store.profileInfo.AstrometrySettings.Longitude,
                   }"
+                  @peak-altitude="tonightsPeakAltitude = $event"
                 />
                 <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
                   {{ t('perihelion.position.altitudeDescription', { name: selected.name }) }}
@@ -342,8 +355,23 @@
                 :target-name="selected.name"
                 :object-type="selected.objectType"
                 :initial-offset="framingOffset"
-                @offset="framingOffset = $event"
+                @offset="onFramingOffset"
               />
+              <div
+                v-if="showFramingCapturedPrompt"
+                class="flex items-center gap-2 mt-2 p-2 rounded-chip bg-accent/10 border border-accent/30"
+              >
+                <CheckCircleIcon class="w-4 h-4 text-accent shrink-0" />
+                <span class="flex-1 text-[11px] text-content-muted">{{
+                  t('perihelion.position.framingCapturedPrompt')
+                }}</span>
+                <button
+                  class="shrink-0 px-2 py-1 rounded-chip text-[11px] font-semibold text-accent border border-accent/30 hover:bg-accent/10 cursor-pointer"
+                  @click="goToTrackFromFraming"
+                >
+                  {{ t('perihelion.position.goToTrack') }}
+                </button>
+              </div>
             </div>
           </template>
         </template>
@@ -814,7 +842,7 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
-import { EyeIcon, InformationCircleIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, InformationCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
 // tapered-tail-into-glowing-coma shape, not an independent redesign. That component uses
@@ -1153,6 +1181,9 @@ const altAz = computed(() => {
   // raDecToAltAz (src/utils/utils.js) expects RA in degrees; Perihelion returns decimal hours.
   return raDecToAltAz(selected.value.raHours * 15, selected.value.decDeg, s.Latitude, s.Longitude);
 });
+// { altitude, label } | null -- from SkyChart's own peak-altitude emit, so "currently low" and
+// "climbing to a good altitude tonight" aren't indistinguishable in the same red/amber badge.
+const tonightsPeakAltitude = ref(null);
 
 const path = ref([]);
 const pathLoading = ref(false);
@@ -1221,8 +1252,22 @@ watch(selected, (newVal, oldVal) => {
   // single return to this tab.
   if (oldVal && newVal && oldVal.id !== newVal.id) {
     framingOffset.value = null;
+    showFramingCapturedPrompt.value = false;
   }
 });
+
+// Confirmation shown after "Use this Framing" instead of forcibly navigating to Track --
+// captures the offset like before, but leaves the choice of when to move on to the user (they
+// may still want to check Tonight's Altitude / 10-Night Path on this same tab first).
+const showFramingCapturedPrompt = ref(false);
+function onFramingOffset(offset) {
+  framingOffset.value = offset;
+  showFramingCapturedPrompt.value = offset != null;
+}
+function goToTrackFromFraming() {
+  showFramingCapturedPrompt.value = false;
+  activeTab.value = 'track';
+}
 
 // --- Track ---
 // trackingMode: 'idle' | 'quick' | 'sequence' -- lives in perihelionStore, see above.

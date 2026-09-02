@@ -5301,7 +5301,10 @@
       "framingTitle": "Framing",
       "offsetSet": "Versatz gesetzt",
       "observedLatest": "Aktuell {mag}",
-      "observedAverage": "Ø {mag}"
+      "observedAverage": "Ø {mag}",
+      "altitudePeak": "Erreicht max. {deg}° gegen {time}",
+      "framingCapturedPrompt": "Framing erfasst — bereit zum Nachführen.",
+      "goToTrack": "Zu Nachführen"
     },
     "track": {
       "step": "Nachführen",
