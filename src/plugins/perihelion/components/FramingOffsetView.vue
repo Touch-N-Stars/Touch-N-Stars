@@ -9,22 +9,13 @@
         Loading sky view…
       </div>
       <template v-else>
-        <button
-          class="absolute bottom-2 right-2 px-2 py-1 rounded-chip text-[11px] font-semibold bg-accent text-white shadow"
-          @click="captureFraming"
-        >
-          Use this framing
-        </button>
-        <button
-          v-if="hasOffset"
-          class="absolute bottom-2 left-2 px-2 py-1 rounded-chip text-[11px] font-semibold bg-surface-3 text-content-muted shadow"
-          @click="resetFraming"
-        >
-          Reset
-        </button>
         <span class="absolute top-2 left-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80">
-          Pan to frame, then capture
+          Pan to frame
         </span>
+        <div class="absolute top-2 right-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80 text-right tabular-nums">
+          <div>RA {{ formatRaHours(currentCenter.raHours) }}</div>
+          <div>Dec {{ formatDecDeg(currentCenter.decDeg) }}</div>
+        </div>
       </template>
     </div>
 
@@ -41,6 +32,11 @@
       <span class="text-[11px] tabular-nums text-content-muted w-10 text-right shrink-0">{{ framingStore.rotationAngle }}°</span>
     </div>
     <getImageRotation v-if="ready" />
+
+    <div v-if="ready" class="flex gap-2">
+      <button class="tns-btn-primary flex-1" @click="captureFraming">Use this Framing</button>
+      <button v-if="hasOffset" class="tns-btn-secondary" @click="resetFraming">Reset</button>
+    </div>
   </div>
 </template>
 
@@ -118,7 +114,27 @@ const viewerContainer = ref(null);
 const ready = ref(false);
 const hasOffset = ref(false);
 const errorMessage = ref('');
+// Wherever the view is currently centered -- updated live via onViewChange (an event, not
+// polling) so the RA/Dec overlay tracks panning in real time. Starts at the object's own true
+// position, matching where centerOnTarget() points the view before any panning happens.
+const currentCenter = ref({ raHours: props.raHours, decDeg: props.decDeg });
 let viewer = null;
+
+// Small local formatters rather than importing PerihelionView.vue's own versions -- those are
+// plain local function declarations there, not exported, and duplicating two three-line
+// formatters is cheaper than refactoring that file just to share them.
+function formatRaHours(raHours) {
+  const h = Math.floor(raHours);
+  const m = (raHours - h) * 60;
+  return `${h}h ${m.toFixed(1)}m`;
+}
+function formatDecDeg(decDeg) {
+  const sign = decDeg < 0 ? '-' : '+';
+  const abs = Math.abs(decDeg);
+  const d = Math.floor(abs);
+  const m = (abs - d) * 60;
+  return `${sign}${d}° ${m.toFixed(0)}′`;
+}
 
 function computeFovOverlay() {
   const profile = store.profileInfo;
@@ -164,6 +180,10 @@ function centerOnTarget() {
   viewer.setView({ center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' }, fovDeg: viewFovDeg });
   if (fovOverlay) viewer.setFieldOfView(fovOverlay);
   hasOffset.value = false;
+  // Explicit, not just relying on onViewChange firing for a programmatic setView -- the overlay
+  // should read the true position immediately on (re)center, not whatever it happened to show
+  // before.
+  currentCenter.value = { raHours: props.raHours, decDeg: props.decDeg };
 
   // Bonus only, not required for correctness: if this object happens to already be in the
   // viewer's own bundled catalog, select/focus it for a native marker and label. A miss here
@@ -212,6 +232,9 @@ onMounted(async () => {
       observer: ninaObserverToAtlas(settings),
       utcMs: Date.now(),
       skySurveySource: createDssSkySurveySource(atlasDataBaseUrl()),
+      onViewChange: (viewState) => {
+        currentCenter.value = { raHours: viewState.center.raDeg / 15, decDeg: viewState.center.decDeg };
+      },
       onError: (error) => {
         console.warn('[Perihelion] Framing view sky-survey error:', error.message);
       },
