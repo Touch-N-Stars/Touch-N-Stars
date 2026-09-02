@@ -14,12 +14,18 @@
               <circle cx="5" cy="19" r="2" />
             </svg>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <h1 class="text-lg font-bold text-content leading-tight">Perihelion</h1>
             <p class="text-[11px] text-content-muted leading-snug">
               Non-sidereal tracking for comets & asteroids — live orbital data, offline-durable.
             </p>
           </div>
+          <PerihelionAbout />
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0">1</span>
+          <span class="text-xs font-semibold text-content">Pick a comet or asteroid to track</span>
         </div>
 
         <input
@@ -104,6 +110,11 @@
           Pick an object on the Browse tab first.
         </p>
         <template v-else>
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0">2</span>
+            <span class="text-xs font-semibold text-content">Review its position & compose the framing</span>
+          </div>
+
           <div class="flex items-center gap-3">
             <div
               class="w-10 h-10 rounded-card flex items-center justify-center shrink-0"
@@ -216,6 +227,11 @@
           Pick an object on the Browse tab first.
         </p>
         <template v-else>
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0">3</span>
+            <span class="text-xs font-semibold text-content">Track it</span>
+          </div>
+
           <div class="tns-card flex flex-col gap-2">
             <span class="tns-stat-label">Status</span>
             <div class="flex items-center gap-2">
@@ -381,6 +397,7 @@ import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { usePerihelionStore } from '../store/perihelionStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
 import FramingOffsetView from '../components/FramingOffsetView.vue';
+import PerihelionAbout from '../components/PerihelionAbout.vue';
 import SkyChart from '@/components/framing/SkyChart.vue';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
