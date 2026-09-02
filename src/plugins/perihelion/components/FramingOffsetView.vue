@@ -188,6 +188,11 @@ onMounted(async () => {
     });
     centerOnTarget();
     viewer.resize();
+    // CelestiaAtlasView.vue always calls this as part of its own startup sequence (inside
+    // updateVisibility()) -- a freshly constructed viewer apparently starts paused, and nothing
+    // else in this component's own code was ever un-pausing it, which fully explains "ready"
+    // with no error but nothing ever actually rendering.
+    viewer.resume();
     ready.value = true;
   } catch (error) {
     // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
@@ -199,6 +204,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  viewer?.pause();
   viewer?.destroy();
   viewer = null;
 });
