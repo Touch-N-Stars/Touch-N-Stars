@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Perihelion plugin: comet/asteroid non-sidereal tracking, computed live from real orbital elements, works without an internet connection in the field. Browse tab searches comets and asteroids by brightness with an offline-durable local cache; Position & Path shows tonight's altitude, a 10-night motion path with a real angular scale bar and drift readout, and a live framing view centered on the object's real position with the camera's actual field of view overlaid; Track offers Quick Track for immediate manual tracking (optionally re-applying the rate every 15 minutes so a long session stays accurate as the object's true rate drifts) and Add to Sequence to build a full Advanced Sequencer container (unpark, center, track, guide, imaging loop, optional meridian-flip and autofocus triggers). Predicted magnitude is cross-checked against real observer-reported brightness (COBS) where available.
+
+### Fixed
+- Perihelion: the framing view's path/"Tonight" overlay rendered in the wrong place because its canvas element defaulted to the browser's 300x150 fallback size instead of filling its container — a CSS quirk specific to `<canvas>`/`<img>`/`<video>` elements, where `position: absolute; inset: 0` alone doesn't stretch them the way it does a normal element. Also fixed a related white-screen-on-pinch-zoom issue on mobile (same root cause).
+- Perihelion: the 10-night path chart's start/end date labels could overflow the card at either edge; also added a real angular scale bar and a total/per-night drift readout so the chart carries more than a bare line between two dates.
+
 ## [App6.2.0] - 2026-08-27
 
 Summary of all changes since 6.1.2 (released in beta1-beta9, see below for the individual beta releases).

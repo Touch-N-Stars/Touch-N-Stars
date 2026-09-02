@@ -3,14 +3,22 @@
     <div class="relative rounded-chip overflow-hidden bg-surface-2 h-72 md:h-96 lg:h-[570px]">
       <div ref="viewerContainer" class="absolute inset-0" />
       <canvas ref="pathCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-      <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
+      <p
+        v-if="errorMessage"
+        class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center"
+      >
         {{ errorMessage }}
       </p>
-      <div v-else-if="!ready" class="absolute inset-0 flex items-center justify-center text-xs text-content-faint">
+      <div
+        v-else-if="!ready"
+        class="absolute inset-0 flex items-center justify-center text-xs text-content-faint"
+      >
         Loading sky view…
       </div>
       <template v-else>
-        <div class="absolute top-2 left-2 flex items-center gap-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80">
+        <div
+          class="absolute top-2 left-2 flex items-center gap-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80"
+        >
           <span>Pan to frame</span>
           <span v-if="pathPoints.length" class="flex items-center gap-1">
             <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Path
@@ -19,7 +27,9 @@
             <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tonight
           </span>
         </div>
-        <div class="absolute top-2 right-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80 text-right tabular-nums">
+        <div
+          class="absolute top-2 right-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80 text-right tabular-nums"
+        >
           <div>RA {{ formatRaHours(currentCenter.raHours) }}</div>
           <div>Dec {{ formatDecDeg(currentCenter.decDeg) }}</div>
         </div>
@@ -36,7 +46,9 @@
         step="1"
         class="flex-1 accent-accent"
       />
-      <span class="text-[11px] tabular-nums text-content-muted w-10 text-right shrink-0">{{ framingStore.rotationAngle }}°</span>
+      <span class="text-[11px] tabular-nums text-content-muted w-10 text-right shrink-0"
+        >{{ framingStore.rotationAngle }}°</span
+      >
     </div>
     <getImageRotation v-if="ready" />
 
@@ -84,7 +96,10 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { useFramingStore } from '@/store/framingStore';
 import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
 import { ATLAS_POSITION_ANGLE_CONVENTION } from '@/integrations/celestiaAtlas/positionAngle';
-import { createDssSkySurveySource, resolveCelestiaAtlasDataBaseUrl } from '@/integrations/celestiaAtlas/offlineSkySurvey';
+import {
+  createDssSkySurveySource,
+  resolveCelestiaAtlasDataBaseUrl,
+} from '@/integrations/celestiaAtlas/offlineSkySurvey';
 // Reused as-is, not reimplemented -- already does exactly what's needed: reads gain/exposure
 // straight from the profile's own PlateSolveSettings, runs a real exposure + plate solve, and
 // writes the result to framingStore.rotationAngle (the same shared field this view's own
@@ -163,13 +178,17 @@ function tangentPlaneOffset(raDeg, decDeg, centerRaDeg, centerDecDeg) {
   const dRa = ra - ra0;
   const cosc = Math.sin(dec0) * Math.sin(dec) + Math.cos(dec0) * Math.cos(dec) * Math.cos(dRa);
   const xi = (Math.cos(dec) * Math.sin(dRa)) / cosc;
-  const eta = (Math.cos(dec0) * Math.sin(dec) - Math.sin(dec0) * Math.cos(dec) * Math.cos(dRa)) / cosc;
+  const eta =
+    (Math.cos(dec0) * Math.sin(dec) - Math.sin(dec0) * Math.cos(dec) * Math.cos(dRa)) / cosc;
   return { xi, eta };
 }
 
 async function loadPath() {
   try {
-    pathPoints.value = await fetchPath({ objectType: props.objectType, targetName: props.targetName });
+    pathPoints.value = await fetchPath({
+      objectType: props.objectType,
+      targetName: props.targetName,
+    });
   } catch {
     pathPoints.value = [];
   }
@@ -233,7 +252,12 @@ function computeFovOverlay() {
     });
     // rotationConvention is required by setFieldOfView's own validation -- matches
     // CelestiaAtlasView.vue's own identical FOV overlay call.
-    return { widthDeg: fov.widthDeg, heightDeg: fov.heightDeg, rotationDeg: Number(framingStore.rotationAngle ?? 0), rotationConvention: ATLAS_POSITION_ANGLE_CONVENTION };
+    return {
+      widthDeg: fov.widthDeg,
+      heightDeg: fov.heightDeg,
+      rotationDeg: Number(framingStore.rotationAngle ?? 0),
+      rotationConvention: ATLAS_POSITION_ANGLE_CONVENTION,
+    };
   } catch {
     return null;
   }
@@ -263,7 +287,10 @@ function centerOnTarget() {
   // without one. J2000 matches how the rest of this app treats NINA-sourced RA/Dec (e.g.
   // atlasSelectionToFraming's own coordinateFrame: 'J2000'), and Perihelion's own values are
   // J2000 too (NINA.Astrometry.InputCoordinates).
-  viewer.setView({ center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' }, fovDeg: viewFovDeg });
+  viewer.setView({
+    center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' },
+    fovDeg: viewFovDeg,
+  });
   if (fovOverlay) viewer.setFieldOfView(fovOverlay);
   hasOffset.value = false;
   // Explicit, not just relying on onViewChange firing for a programmatic setView -- the overlay
@@ -320,7 +347,10 @@ onMounted(async () => {
       utcMs: Date.now(),
       skySurveySource: createDssSkySurveySource(atlasDataBaseUrl()),
       onViewChange: (viewState) => {
-        currentCenter.value = { raHours: viewState.center.raDeg / 15, decDeg: viewState.center.decDeg };
+        currentCenter.value = {
+          raHours: viewState.center.raDeg / 15,
+          decDeg: viewState.center.decDeg,
+        };
         drawPath();
       },
       onError: (error) => {

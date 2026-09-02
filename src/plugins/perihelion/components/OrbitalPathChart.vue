@@ -29,16 +29,25 @@
         opacity="0.4"
       />
 
-      <path :d="pathD" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linecap="round" opacity="0.85" />
-      <circle
-        v-for="(p, i) in plotted"
-        :key="i"
-        :cx="p.x"
-        :cy="p.y"
-        r="1.6"
-        fill="#a78bfa"
+      <path
+        :d="pathD"
+        fill="none"
+        stroke="#a78bfa"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        opacity="0.85"
       />
-      <circle v-if="plotted.length" :cx="plotted[0].x" :cy="plotted[0].y" r="5" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.6" />
+      <circle v-for="(p, i) in plotted" :key="i" :cx="p.x" :cy="p.y" r="1.6" fill="#a78bfa" />
+      <circle
+        v-if="plotted.length"
+        :cx="plotted[0].x"
+        :cy="plotted[0].y"
+        r="5"
+        fill="none"
+        stroke="#22d3ee"
+        stroke-width="1.5"
+        opacity="0.6"
+      />
       <circle v-if="plotted.length" :cx="plotted[0].x" :cy="plotted[0].y" r="3" fill="#22d3ee" />
       <text
         v-if="plotted.length"
@@ -68,8 +77,22 @@
         which end of the path happens to land near which edge.
       -->
       <g v-if="scaleBar">
-        <line :x1="padding" :y1="height - padding - 6" :x2="padding + scaleBar.px" :y2="height - padding - 6" stroke="#94a3b8" stroke-width="1.5" />
-        <line :x1="padding" :y1="height - padding - 9" :x2="padding" :y2="height - padding - 3" stroke="#94a3b8" stroke-width="1.5" />
+        <line
+          :x1="padding"
+          :y1="height - padding - 6"
+          :x2="padding + scaleBar.px"
+          :y2="height - padding - 6"
+          stroke="#94a3b8"
+          stroke-width="1.5"
+        />
+        <line
+          :x1="padding"
+          :y1="height - padding - 9"
+          :x2="padding"
+          :y2="height - padding - 3"
+          stroke="#94a3b8"
+          stroke-width="1.5"
+        />
         <line
           :x1="padding + scaleBar.px"
           :y1="height - padding - 9"
@@ -78,7 +101,15 @@
           stroke="#94a3b8"
           stroke-width="1.5"
         />
-        <text :x="padding" :y="height - padding - 11" font-size="8" fill="#94a3b8" text-anchor="start">{{ scaleBar.label }}</text>
+        <text
+          :x="padding"
+          :y="height - padding - 11"
+          font-size="8"
+          fill="#94a3b8"
+          text-anchor="start"
+        >
+          {{ scaleBar.label }}
+        </text>
       </g>
     </svg>
     <p v-if="driftSummary" class="mt-1 text-[11px] text-content-faint">{{ driftSummary }}</p>
@@ -137,7 +168,9 @@ const plotted = computed(() => {
 
 const pathD = computed(() => {
   if (plotted.value.length < 2) return '';
-  return plotted.value.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  return plotted.value
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`)
+    .join(' ');
 });
 
 // A few faint interior gridlines -- purely a visual proportion aid (is the line steep? does it
@@ -197,11 +230,11 @@ const NICE_DEG_STEPS = [
   { deg: 5 / 3600, label: '5″' },
   { deg: 10 / 3600, label: '10″' },
   { deg: 30 / 3600, label: '30″' },
-  { deg: 1 / 60, label: "1′" },
-  { deg: 2 / 60, label: "2′" },
-  { deg: 5 / 60, label: "5′" },
-  { deg: 10 / 60, label: "10′" },
-  { deg: 30 / 60, label: "30′" },
+  { deg: 1 / 60, label: '1′' },
+  { deg: 2 / 60, label: '2′' },
+  { deg: 5 / 60, label: '5′' },
+  { deg: 10 / 60, label: '10′' },
+  { deg: 30 / 60, label: '30′' },
   { deg: 1, label: '1°' },
   { deg: 2, label: '2°' },
   { deg: 5, label: '5°' },

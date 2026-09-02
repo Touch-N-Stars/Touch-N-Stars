@@ -30,7 +30,10 @@ export async function startQuickTrack(target) {
     const body = response.data;
     return { ok: !!body?.Success, message: body?.Message ?? 'No response message' };
   } catch (error) {
-    return { ok: false, message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion' };
+    return {
+      ok: false,
+      message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion',
+    };
   }
 }
 
@@ -45,6 +48,9 @@ export async function stopQuickTrack() {
     const body = response.data;
     return { ok: !!body?.Success, message: body?.Message ?? 'No response message' };
   } catch (error) {
-    return { ok: false, message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion' };
+    return {
+      ok: false,
+      message: error?.response?.data?.Message ?? error?.message ?? 'Could not reach Perihelion',
+    };
   }
 }

@@ -6,9 +6,23 @@
       <!-- ===================== BROWSE ===================== -->
       <template v-if="activeTab === 'browse'">
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-chip bg-violet-400/15 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.341 6.484A10 10 0 0 1 10.266 21.85m-6.607-4.334A10 10 0 0 1 13.74 2.152" />
+          <div
+            class="w-11 h-11 rounded-chip bg-violet-400/15 flex items-center justify-center shrink-0"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#a78bfa"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20.341 6.484A10 10 0 0 1 10.266 21.85m-6.607-4.334A10 10 0 0 1 13.74 2.152"
+              />
               <circle cx="12" cy="12" r="3" />
               <circle cx="19" cy="5" r="2" />
               <circle cx="5" cy="19" r="2" />
@@ -24,7 +38,10 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <span class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0">1</span>
+          <span
+            class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0"
+            >1</span
+          >
           <span class="text-xs font-semibold text-content">Pick a comet or asteroid to track</span>
         </div>
 
@@ -40,9 +57,11 @@
             v-for="f in filterOptions"
             :key="f.value"
             class="shrink-0 px-3 py-1.5 rounded-chip text-xs font-semibold cursor-pointer transition-colors"
-            :class="filter === f.value
-              ? 'bg-accent/10 border border-accent/40 text-accent'
-              : 'bg-transparent border border-line text-content-muted hover:bg-surface-2'"
+            :class="
+              filter === f.value
+                ? 'bg-accent/10 border border-accent/40 text-accent'
+                : 'bg-transparent border border-line text-content-muted hover:bg-surface-2'
+            "
             @click="filter = f.value"
           >
             {{ f.label }}
@@ -51,7 +70,10 @@
           <span class="text-[11px] text-content-faint">Sorted by brightness</span>
         </div>
 
-        <div v-if="filter !== 'Asteroid'" class="flex items-center gap-2 text-[11px] text-content-faint">
+        <div
+          v-if="filter !== 'Asteroid'"
+          class="flex items-center gap-2 text-[11px] text-content-faint"
+        >
           <span>Comets {{ syncStatusLabel }}</span>
           <span class="flex-1"></span>
           <button
@@ -62,11 +84,16 @@
             {{ syncing ? 'Syncing…' : 'Sync Now' }}
           </button>
         </div>
-        <p v-if="filter !== 'Asteroid' && syncMessage" class="text-[11px]" :class="syncMessage.ok ? 'text-status-ok' : 'text-status-danger'">
+        <p
+          v-if="filter !== 'Asteroid' && syncMessage"
+          class="text-[11px]"
+          :class="syncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
+        >
           {{ syncMessage.text }}
         </p>
         <p v-if="filter === 'Asteroid'" class="text-[11px] text-content-faint">
-          {{ asteroidCount }} asteroids — a fixed list, updated via plugin releases rather than synced.
+          {{ asteroidCount }} asteroids — a fixed list, updated via plugin releases rather than
+          synced.
         </p>
 
         <p v-if="objectsLoading" class="text-sm text-content-muted">Loading…</p>
@@ -98,7 +125,9 @@
               <span class="text-[15px] font-bold tabular-nums text-content">
                 {{ o.magnitude != null ? o.magnitude.toFixed(1) : '—' }}
               </span>
-              <span class="text-[9px] font-bold uppercase tracking-wide text-content-faint">mag</span>
+              <span class="text-[9px] font-bold uppercase tracking-wide text-content-faint"
+                >mag</span
+              >
             </div>
           </button>
         </div>
@@ -111,8 +140,13 @@
         </p>
         <template v-else>
           <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0">2</span>
-            <span class="text-xs font-semibold text-content">Review its position & compose the framing</span>
+            <span
+              class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0"
+              >2</span
+            >
+            <span class="text-xs font-semibold text-content"
+              >Review its position & compose the framing</span
+            >
           </div>
 
           <div class="flex items-center gap-3">
@@ -120,7 +154,11 @@
               class="w-10 h-10 rounded-card flex items-center justify-center shrink-0"
               :class="selected.objectType === 'Comet' ? 'bg-violet-400/15' : 'bg-surface-3'"
             >
-              <CometIcon v-if="selected.objectType === 'Comet'" :size="20" :id="'selected-' + selected.id" />
+              <CometIcon
+                v-if="selected.objectType === 'Comet'"
+                :size="20"
+                :id="'selected-' + selected.id"
+              />
               <AsteroidIcon v-else :size="20" />
             </div>
             <div class="flex flex-col gap-0.5 min-w-0">
@@ -132,11 +170,15 @@
           <div class="grid grid-cols-3 gap-2">
             <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
               <span class="tns-stat-label">RA</span>
-              <span class="text-[15px] font-bold tabular-nums text-content">{{ formatRaHours(selected.raHours) }}</span>
+              <span class="text-[15px] font-bold tabular-nums text-content">{{
+                formatRaHours(selected.raHours)
+              }}</span>
             </div>
             <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
               <span class="tns-stat-label">DEC</span>
-              <span class="text-[15px] font-bold tabular-nums text-content">{{ formatDecDeg(selected.decDeg) }}</span>
+              <span class="text-[15px] font-bold tabular-nums text-content">{{
+                formatDecDeg(selected.decDeg)
+              }}</span>
             </div>
             <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
               <span class="tns-stat-label">MAG</span>
@@ -149,13 +191,16 @@
           <div v-if="cometActivity" class="tns-card">
             <div class="flex items-center gap-2 mb-1">
               <span class="tns-stat-label flex-1">Observed Brightness</span>
-              <span class="text-xs font-bold text-accent">mag {{ cometActivity.recentAverageMagnitude.toFixed(1) }}</span>
+              <span class="text-xs font-bold text-accent"
+                >mag {{ cometActivity.recentAverageMagnitude.toFixed(1) }}</span
+              >
             </div>
             <p class="text-[11px] leading-relaxed text-content-muted">
               Real observer reports (COBS), average of the last
-              {{ Math.min(cometActivity.observationCount, 5) }} —
-              vs. mag {{ selected.magnitude != null ? selected.magnitude.toFixed(1) : '—' }} predicted from
-              orbital elements alone. Last reported {{ relativeTime(cometActivity.mostRecentDateUtc) }}.
+              {{ Math.min(cometActivity.observationCount, 5) }} — vs. mag
+              {{ selected.magnitude != null ? selected.magnitude.toFixed(1) : '—' }} predicted from
+              orbital elements alone. Last reported
+              {{ relativeTime(cometActivity.mostRecentDateUtc) }}.
             </p>
           </div>
 
@@ -164,8 +209,9 @@
               <div class="flex items-center gap-2 mb-2">
                 <span class="tns-stat-label flex-1">Tonight's Altitude</span>
                 <span v-if="altAz" class="text-xs font-bold text-accent">
-                  {{ altAz.altitude.toFixed(0) }}° {{ altAz.altitude >= 0 ? 'above horizon' : 'below horizon' }}
-                  · Az {{ altAz.azimuth.toFixed(0) }}°
+                  {{ altAz.altitude.toFixed(0) }}°
+                  {{ altAz.altitude >= 0 ? 'above horizon' : 'below horizon' }} · Az
+                  {{ altAz.azimuth.toFixed(0) }}°
                 </span>
               </div>
               <p v-if="!hasLocation" class="text-xs text-content-faint">
@@ -174,11 +220,14 @@
               <SkyChart
                 v-else
                 :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
-                :coordinates="{ latitude: store.profileInfo.AstrometrySettings.Latitude, longitude: store.profileInfo.AstrometrySettings.Longitude }"
+                :coordinates="{
+                  latitude: store.profileInfo.AstrometrySettings.Latitude,
+                  longitude: store.profileInfo.AstrometrySettings.Longitude,
+                }"
               />
               <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
-                Uses {{ selected.name }}'s position right now for the whole night — real for a
-                star, a slight approximation for a moving object, close enough for a transit curve.
+                Uses {{ selected.name }}'s position right now for the whole night — real for a star,
+                a slight approximation for a moving object, close enough for a transit curve.
               </p>
             </div>
 
@@ -197,8 +246,8 @@
               <OrbitalPathChart v-else-if="path.length" :points="path" />
               <p class="text-[11px] leading-relaxed text-content-muted mt-2">
                 Real path against the fixed stars — while tracking, {{ selected.name }} stays
-                centered in-frame all night; this shows motion night to night, not movement within
-                a single exposure.
+                centered in-frame all night; this shows motion night to night, not movement within a
+                single exposure.
               </p>
             </div>
           </div>
@@ -206,7 +255,9 @@
           <div class="tns-card">
             <div class="flex items-center gap-2 mb-2">
               <span class="tns-stat-label flex-1">Framing</span>
-              <span v-if="framingOffset" class="text-[11px] text-accent font-semibold">Offset set</span>
+              <span v-if="framingOffset" class="text-[11px] text-accent font-semibold"
+                >Offset set</span
+              >
             </div>
             <FramingOffsetView
               :key="selected.id"
@@ -217,8 +268,8 @@
               @offset="framingOffset = $event"
             />
             <p class="text-[11px] leading-relaxed text-content-muted mt-2">
-              Real sky imagery, centered on {{ selected.name }}'s actual position right now. Pan
-              to compose the shot, then capture the offset for Add to Sequence.
+              Real sky imagery, centered on {{ selected.name }}'s actual position right now. Pan to
+              compose the shot, then capture the offset for Add to Sequence.
             </p>
           </div>
         </template>
@@ -231,14 +282,20 @@
         </p>
         <template v-else>
           <div class="flex items-center gap-2">
-            <span class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0">3</span>
+            <span
+              class="w-6 h-6 rounded-full border-2 border-accent flex items-center justify-center text-xs font-bold text-accent shrink-0"
+              >3</span
+            >
             <span class="text-xs font-semibold text-content">Track it</span>
           </div>
 
           <div class="tns-card flex flex-col gap-2">
             <span class="tns-stat-label">Status</span>
             <div class="flex items-center gap-2">
-              <span class="tns-dot" :class="trackingMode !== 'idle' ? 'bg-status-ok' : 'bg-content-faint'"></span>
+              <span
+                class="tns-dot"
+                :class="trackingMode !== 'idle' ? 'bg-status-ok' : 'bg-content-faint'"
+              ></span>
               <span
                 class="text-xl font-bold"
                 :class="trackingMode !== 'idle' ? 'text-status-ok' : 'text-content-muted'"
@@ -251,30 +308,54 @@
             </span>
           </div>
 
-          <div v-if="trackingMode === 'quick' && quickTrackStatus" class="tns-card flex flex-col gap-1.5">
+          <div
+            v-if="trackingMode === 'quick' && quickTrackStatus"
+            class="tns-card flex flex-col gap-1.5"
+          >
             <div class="flex items-center justify-between">
               <span class="tns-stat-label">Live Status</span>
-              <span class="text-[10px] text-content-faint">from the plugin itself, not just this page</span>
+              <span class="text-[10px] text-content-faint"
+                >from the plugin itself, not just this page</span
+              >
             </div>
-            <p v-if="quickTrackStatus.lastRaArcsecPerSec != null" class="text-xs text-content-muted tabular-nums">
-              Applied rate — RA {{ quickTrackStatus.lastRaArcsecPerSec.toFixed(4) }}″/s · Dec {{ quickTrackStatus.lastDecArcsecPerSec.toFixed(4) }}″/s
+            <p
+              v-if="quickTrackStatus.lastRaArcsecPerSec != null"
+              class="text-xs text-content-muted tabular-nums"
+            >
+              Applied rate — RA {{ quickTrackStatus.lastRaArcsecPerSec.toFixed(4) }}″/s · Dec
+              {{ quickTrackStatus.lastDecArcsecPerSec.toFixed(4) }}″/s
             </p>
             <p class="text-xs text-content-muted">
               <span v-if="elapsedSinceStarted != null">Tracking for {{ elapsedSinceStarted }}</span>
-              <span v-if="elapsedSinceApplied != null"> · Applied {{ elapsedSinceApplied }} ago</span>
+              <span v-if="elapsedSinceApplied != null">
+                · Applied {{ elapsedSinceApplied }} ago</span
+              >
             </p>
-            <p v-if="quickTrackStatus.autoReapplyMinutes && nextReapplyIn != null" class="text-xs text-content-muted">
+            <p
+              v-if="quickTrackStatus.autoReapplyMinutes && nextReapplyIn != null"
+              class="text-xs text-content-muted"
+            >
               Next re-apply in ~{{ nextReapplyIn }}
             </p>
             <p class="text-xs text-content-muted">
-              Guider shift: <span :class="quickTrackStatus.guiding ? 'text-status-ok' : 'text-content-faint'">{{ quickTrackStatus.guiding ? 'on' : 'off' }}</span>
+              Guider shift:
+              <span :class="quickTrackStatus.guiding ? 'text-status-ok' : 'text-content-faint'">{{
+                quickTrackStatus.guiding ? 'on' : 'off'
+              }}</span>
             </p>
-            <p v-if="!quickTrackStatus.lastApplySucceeded && quickTrackStatus.lastError" class="text-xs text-status-danger">
+            <p
+              v-if="!quickTrackStatus.lastApplySucceeded && quickTrackStatus.lastError"
+              class="text-xs text-status-danger"
+            >
               Last attempt failed: {{ quickTrackStatus.lastError }}
             </p>
           </div>
 
-          <div v-if="actionStatus" class="tns-card" :class="actionStatus.ok ? 'border-status-ok/40' : 'border-status-danger/40'">
+          <div
+            v-if="actionStatus"
+            class="tns-card"
+            :class="actionStatus.ok ? 'border-status-ok/40' : 'border-status-danger/40'"
+          >
             <p class="text-xs" :class="actionStatus.ok ? 'text-status-ok' : 'text-status-danger'">
               {{ actionStatus.message }}
             </p>
@@ -287,10 +368,16 @@
                 <span class="text-[10px] text-content-faint">for Add to Sequence only</span>
               </div>
               <label class="block">
-                <span class="block text-[10px] text-content-faint mb-1">Filter — from connected wheel</span>
+                <span class="block text-[10px] text-content-faint mb-1"
+                  >Filter — from connected wheel</span
+                >
                 <select v-model="exposureFilter" class="tns-select">
                   <option value="">Don't change filter</option>
-                  <option v-for="f in store.filterInfo?.AvailableFilters ?? []" :key="f.Name" :value="f.Name">
+                  <option
+                    v-for="f in store.filterInfo?.AvailableFilters ?? []"
+                    :key="f.Name"
+                    :value="f.Name"
+                  >
                     {{ f.Name }}
                   </option>
                 </select>
@@ -325,7 +412,9 @@
                 >
                   <span
                     class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
-                    :class="guiding ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                    :class="
+                      guiding ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'
+                    "
                   ></span>
                 </span>
               </button>
@@ -335,7 +424,9 @@
                 @click="autoReapply = !autoReapply"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-content">Auto re-apply every {{ AUTO_REAPPLY_MINUTES }} min</span>
+                  <span class="text-sm font-semibold text-content"
+                    >Auto re-apply every {{ AUTO_REAPPLY_MINUTES }} min</span
+                  >
                   <span class="text-[11px] text-content-muted leading-tight">
                     Quick Track only — recomputes and re-sends the rate on a timer, so a long
                     unattended session stays accurate as the object's true rate drifts.
@@ -347,7 +438,9 @@
                 >
                   <span
                     class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
-                    :class="autoReapply ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                    :class="
+                      autoReapply ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'
+                    "
                   ></span>
                 </span>
               </button>
@@ -357,7 +450,9 @@
                 @click="meridianFlip = !meridianFlip"
               >
                 <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                  <span class="text-sm font-semibold text-content">Include meridian flip trigger</span>
+                  <span class="text-sm font-semibold text-content"
+                    >Include meridian flip trigger</span
+                  >
                   <span class="text-[11px] text-content-muted leading-tight">
                     Recommended on a GEM mount for anything running past the meridian.
                   </span>
@@ -368,7 +463,9 @@
                 >
                   <span
                     class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
-                    :class="meridianFlip ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                    :class="
+                      meridianFlip ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'
+                    "
                   ></span>
                 </span>
               </button>
@@ -389,7 +486,9 @@
                 >
                   <span
                     class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
-                    :class="autofocus ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'"
+                    :class="
+                      autofocus ? 'translate-x-5 bg-accent' : 'translate-x-0.5 bg-content-muted'
+                    "
                   ></span>
                 </span>
               </button>
@@ -410,16 +509,18 @@
               imaging sequence and loads it into NINA's sequencer for you to review and start.
             </p>
             <p class="text-[11px] leading-relaxed text-content-faint">
-              <strong class="text-content-muted">Quick Track</strong> sets the mount's rate
-              directly right now — for manual or visual use, not a substitute for a real imaging
-              sequence.
+              <strong class="text-content-muted">Quick Track</strong> sets the mount's rate directly
+              right now — for manual or visual use, not a substitute for a real imaging sequence.
             </p>
           </div>
 
           <button v-else class="tns-btn-danger" :disabled="actionBusy" @click="onStop">
             {{ actionBusy ? 'Working…' : stopButtonLabel }}
           </button>
-          <p v-if="trackingMode === 'quick' && autoReapply" class="text-[11px] text-content-faint text-center">
+          <p
+            v-if="trackingMode === 'quick' && autoReapply"
+            class="text-[11px] text-content-faint text-center"
+          >
             Auto re-applying every {{ AUTO_REAPPLY_MINUTES }} min
           </p>
 
@@ -467,19 +568,43 @@ const CometIcon = {
     const uid = this.id;
     return h(
       'svg',
-      { width: this.size, height: this.size, viewBox: '0 0 24 24', fill: 'none', stroke: '#a78bfa', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' },
+      {
+        width: this.size,
+        height: this.size,
+        viewBox: '0 0 24 24',
+        fill: 'none',
+        stroke: '#a78bfa',
+        'stroke-width': 2,
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+      },
       [
         h('defs', {}, [
-          h('linearGradient', { id: `comet-tail-${uid}`, x1: 17, y1: 7, x2: 4, y2: 17, gradientUnits: 'userSpaceOnUse' }, [
-            h('stop', { offset: '0%', 'stop-color': '#a78bfa', 'stop-opacity': '0.9' }),
-            h('stop', { offset: '100%', 'stop-color': '#a78bfa', 'stop-opacity': '0' }),
-          ]),
+          h(
+            'linearGradient',
+            {
+              id: `comet-tail-${uid}`,
+              x1: 17,
+              y1: 7,
+              x2: 4,
+              y2: 17,
+              gradientUnits: 'userSpaceOnUse',
+            },
+            [
+              h('stop', { offset: '0%', 'stop-color': '#a78bfa', 'stop-opacity': '0.9' }),
+              h('stop', { offset: '100%', 'stop-color': '#a78bfa', 'stop-opacity': '0' }),
+            ]
+          ),
           h('radialGradient', { id: `comet-coma-${uid}` }, [
             h('stop', { offset: '0%', 'stop-color': '#a78bfa', 'stop-opacity': '1' }),
             h('stop', { offset: '100%', 'stop-color': '#a78bfa', 'stop-opacity': '0' }),
           ]),
         ]),
-        h('path', { stroke: `url(#comet-tail-${uid})`, d: 'M17 7 C13 11, 8 14, 4 16.5', 'stroke-width': 4.5 }),
+        h('path', {
+          stroke: `url(#comet-tail-${uid})`,
+          d: 'M17 7 C13 11, 8 14, 4 16.5',
+          'stroke-width': 4.5,
+        }),
         h('circle', { cx: 17, cy: 7, r: 6, fill: `url(#comet-coma-${uid})`, stroke: 'none' }),
         h('circle', { cx: 17, cy: 7, r: 2.5, fill: '#a78bfa', stroke: 'none' }),
       ]
@@ -491,7 +616,16 @@ const AsteroidIcon = {
   render() {
     return h(
       'svg',
-      { width: this.size, height: this.size, viewBox: '0 0 24 24', fill: 'none', stroke: '#8fa3bf', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' },
+      {
+        width: this.size,
+        height: this.size,
+        viewBox: '0 0 24 24',
+        fill: 'none',
+        stroke: '#8fa3bf',
+        'stroke-width': 1.8,
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+      },
       [h('path', { d: 'M9 3.5l6 1.3 4 4.6-1 6.4-5.2 4.7-6.4-1.6L4 13z' })]
     );
   },
@@ -592,7 +726,9 @@ const filteredObjects = computed(() => {
 
 // Computed rather than hardcoded so the "N asteroids" note below never silently goes stale if
 // the embedded list in AsteroidOrbits.cs ever changes.
-const asteroidCount = computed(() => objects.value.filter((o) => o.objectType === 'Asteroid').length);
+const asteroidCount = computed(
+  () => objects.value.filter((o) => o.objectType === 'Asteroid').length
+);
 
 const selected = computed(() => objects.value.find((o) => o.id === selectedId.value) ?? null);
 
@@ -638,7 +774,10 @@ async function loadPath() {
   pathLoading.value = true;
   pathError.value = null;
   try {
-    path.value = await fetchPath({ objectType: selected.value.objectType, targetName: selected.value.name });
+    path.value = await fetchPath({
+      objectType: selected.value.objectType,
+      targetName: selected.value.name,
+    });
   } catch (error) {
     pathError.value = error?.response?.data?.Message ?? error?.message ?? 'Could not load path';
   } finally {
@@ -687,7 +826,9 @@ const statusLabel = computed(() => {
   if (trackingMode.value === 'quick') return 'Quick Tracking';
   return 'Idle';
 });
-const stopButtonLabel = computed(() => (trackingMode.value === 'sequence' ? 'Stop Sequence' : 'Stop Quick Track'));
+const stopButtonLabel = computed(() =>
+  trackingMode.value === 'sequence' ? 'Stop Sequence' : 'Stop Quick Track'
+);
 
 // --- Live Quick Track status -- polls Perihelion's own /status route rather than trusting
 // stale local state, so e.g. a silently-failing auto-reapply tick is actually visible.
@@ -795,8 +936,13 @@ async function onStop() {
   actionBusy.value = true;
   actionStatus.value = null;
   const result =
-    trackingMode.value === 'sequence' ? await apiService.sequenceAction('stop') : await stopQuickTrack();
-  actionStatus.value = { ok: !!(result?.Success ?? result?.ok), message: result?.Message ?? result?.message ?? 'Stopped' };
+    trackingMode.value === 'sequence'
+      ? await apiService.sequenceAction('stop')
+      : await stopQuickTrack();
+  actionStatus.value = {
+    ok: !!(result?.Success ?? result?.ok),
+    message: result?.Message ?? result?.message ?? 'Stopped',
+  };
   actionBusy.value = false;
   trackingMode.value = 'idle';
 }
