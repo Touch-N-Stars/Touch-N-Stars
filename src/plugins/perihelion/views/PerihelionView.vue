@@ -89,13 +89,6 @@
                 <option value="name">{{ t('perihelion.browse.sortName') }}</option>
               </select>
             </label>
-            <button
-              class="text-content-faint hover:text-content-muted shrink-0"
-              :aria-label="t('perihelion.browse.observedTooltip')"
-              @click="showObservedMagLegend = true"
-            >
-              <InformationCircleIcon class="w-4 h-4" />
-            </button>
           </div>
 
           <div
@@ -104,6 +97,13 @@
           >
             <span>{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}</span>
             <span class="flex-1"></span>
+            <button
+              class="text-content-faint hover:text-content-muted shrink-0"
+              :aria-label="t('perihelion.browse.observedTooltip')"
+              @click="showObservedMagLegend = true"
+            >
+              <InformationCircleIcon class="w-4 h-4" />
+            </button>
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
               :disabled="syncing"
