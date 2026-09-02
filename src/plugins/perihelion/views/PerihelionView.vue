@@ -273,7 +273,7 @@
                   <span class="tns-stat-label flex-1">{{
                     t('perihelion.position.altitudeTitle')
                   }}</span>
-                  <span v-if="altAz" class="text-xs font-bold text-accent">
+                  <span v-if="altAz" class="text-xs font-bold" :class="altitudeColorClass(altAz.altitude)">
                     {{ altAz.altitude.toFixed(0) }}°
                     {{
                       altAz.altitude >= 0
@@ -1061,6 +1061,17 @@ function magDiffColorClass(predictedMag, observedMag) {
 // Plain text color for the Position & Path card's inline Latest/Avg values (no pill there).
 function magDiffTextClass(predictedMag, observedMag) {
   return TEXT_CLASS_BY_TIER[magDiffTier(predictedMag, observedMag)];
+}
+
+// Below horizon or very low (under the atmosphere/local-obstruction danger zone) -> red; a
+// usable but not great altitude -> amber; comfortably clear of the horizon -> green. 15deg
+// matches the altitude limit amateur setups commonly use as a cutoff for atmospheric extinction
+// and local obstructions (trees, buildings); 30deg is a common "comfortably imageable" line.
+// Both are reasonable defaults, not a value read from the profile's own horizon settings.
+function altitudeColorClass(altitudeDeg) {
+  if (altitudeDeg < 15) return TEXT_CLASS_BY_TIER.danger;
+  if (altitudeDeg < 30) return TEXT_CLASS_BY_TIER.warn;
+  return TEXT_CLASS_BY_TIER.ok;
 }
 
 function sortObjects(list) {
