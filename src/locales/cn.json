@@ -5269,7 +5269,7 @@
       "loading": "加载中…",
       "noMatch": "没有匹配的天体。",
       "mag": "星等",
-      "observedTooltip": "观测者报告的真实亮度（COBS）— 在爆发期间可能与预测星等不同。"
+      "observedTooltip": "观测者报告的真实亮度（COBS）与预测星等对比 — 绿色：比预测更亮，琥珀色/红色：比预测更暗。"
     },
     "position": {
       "step": "查看位置并构图",

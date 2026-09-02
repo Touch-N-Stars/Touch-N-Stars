@@ -5274,7 +5274,7 @@
       "loading": "Lädt…",
       "noMatch": "Keine Treffer.",
       "mag": "mag",
-      "observedTooltip": "Reale, von Beobachtern gemeldete Helligkeit (COBS) — kann während eines Ausbruchs von der vorhergesagten Mag abweichen."
+      "observedTooltip": "Reale, von Beobachtern gemeldete Helligkeit (COBS) vs. vorhergesagte Mag — grün: heller als vorhergesagt, gelb/rot: schwächer."
     },
     "position": {
       "step": "Position prüfen & Bildausschnitt festlegen",

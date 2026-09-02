@@ -5269,7 +5269,7 @@
       "loading": "Načítání…",
       "noMatch": "Žádné odpovídající objekty.",
       "mag": "mag",
-      "observedTooltip": "Skutečná jasnost hlášená pozorovateli (COBS) — se může během výbuchu aktivity lišit od předpovězené magnitudy."
+      "observedTooltip": "Skutečná jasnost hlášená pozorovateli (COBS) oproti předpovězené magnitudě — zelená: jasnější, než se předpokládalo, žlutá/červená: slabší."
     },
     "position": {
       "step": "Zkontrolujte pozici a nastavte rámování",

@@ -5274,7 +5274,7 @@
       "loading": "Caricamento…",
       "noMatch": "Nessun oggetto corrisponde.",
       "mag": "mag",
-      "observedTooltip": "Luminosità reale segnalata dagli osservatori (COBS) — può differire dalla magnitudine prevista durante un'esplosione di attività."
+      "observedTooltip": "Luminosità reale segnalata dagli osservatori (COBS) rispetto alla magnitudine prevista — verde: più luminosa del previsto, ambra/rosso: più debole."
     },
     "position": {
       "step": "Controlla la posizione e componi l'inquadratura",

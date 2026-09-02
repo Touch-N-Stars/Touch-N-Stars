@@ -962,11 +962,18 @@ async function onSyncComets() {
 // are verified real examples several magnitudes off) -- flagged in the warning color rather
 // than the same quiet accent used when the two roughly agree, so a genuinely surprising comet
 // stands out in the list without needing to open it first.
-const OBSERVED_MAG_SURPRISE_THRESHOLD = 1;
+// Magnitude is a reverse scale (lower number = brighter), so "observed differs from predicted"
+// isn't one kind of surprise -- it's two opposite ones. Brighter-than-predicted (diff very
+// negative) is a genuinely exciting outburst, worth flagging as good news, not a warning;
+// fainter-than-predicted (diff positive) means the comet is underperforming the model, which is
+// the "something to be aware of" direction amber/red are actually for. 10P/Tempel's real case
+// (predicted 13.3, observed 7.9, diff -5.4) should read as a bright-green highlight, not amber.
 function observedMagBadgeClass(o) {
-  if (o.magnitude != null && Math.abs(o.magnitude - o.observedMagnitude) >= OBSERVED_MAG_SURPRISE_THRESHOLD) {
-    return 'bg-status-warn/10 border-status-warn/40 text-status-warn';
-  }
+  if (o.magnitude == null) return 'bg-accent/10 border-accent/30 text-accent';
+  const diff = o.observedMagnitude - o.magnitude; // negative = brighter than predicted
+  if (diff <= -1) return 'bg-status-ok/10 border-status-ok/40 text-status-ok';
+  if (diff >= 3) return 'bg-status-danger/10 border-status-danger/40 text-status-danger';
+  if (diff >= 1) return 'bg-status-warn/10 border-status-warn/40 text-status-warn';
   return 'bg-accent/10 border-accent/30 text-accent';
 }
 

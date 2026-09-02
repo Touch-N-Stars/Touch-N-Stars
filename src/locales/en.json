@@ -5239,7 +5239,7 @@
       "loading": "Loading…",
       "noMatch": "No objects match.",
       "mag": "mag",
-      "observedTooltip": "Real observer-reported brightness (COBS) — can differ from the predicted Mag during an outburst."
+      "observedTooltip": "Real observer-reported brightness (COBS) vs. predicted Mag — green: brighter than predicted, amber/red: fainter."
     },
     "position": {
       "step": "Review its position & compose the framing",

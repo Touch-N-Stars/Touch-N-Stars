@@ -5274,7 +5274,7 @@
       "loading": "Chargement…",
       "noMatch": "Aucun objet ne correspond.",
       "mag": "mag",
-      "observedTooltip": "Luminosité réelle rapportée par des observateurs (COBS) — peut différer de la magnitude prévue lors d'un sursaut."
+      "observedTooltip": "Luminosité réelle rapportée par des observateurs (COBS) vs. magnitude prévue — vert : plus brillant que prévu, orange/rouge : plus faible."
     },
     "position": {
       "step": "Vérifier la position & composer le cadrage",

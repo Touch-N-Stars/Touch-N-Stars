@@ -5269,7 +5269,7 @@
       "loading": "Laden…",
       "noMatch": "Geen objecten gevonden.",
       "mag": "mag",
-      "observedTooltip": "Echte, door waarnemers gemelde helderheid (COBS) — kan tijdens een uitbarsting afwijken van de voorspelde magnitude."
+      "observedTooltip": "Echte, door waarnemers gemelde helderheid (COBS) t.o.v. voorspelde magnitude — groen: helderder dan voorspeld, geel/rood: zwakker."
     },
     "position": {
       "step": "Controleer de positie & stel het beeldveld samen",

@@ -5269,7 +5269,7 @@
       "loading": "Carregant…",
       "noMatch": "Cap objecte coincideix.",
       "mag": "mag",
-      "observedTooltip": "Brillantor real informada per observadors (COBS) — pot diferir de la magnitud prevista durant un esclat d'activitat."
+      "observedTooltip": "Brillantor real informada per observadors (COBS) vs. magnitud prevista — verd: més brillant del previst, ambre/vermell: més feble."
     },
     "position": {
       "step": "Revisa la posició i compon l'enquadrament",

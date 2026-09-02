@@ -5269,7 +5269,7 @@
       "loading": "Ładowanie…",
       "noMatch": "Brak pasujących obiektów.",
       "mag": "mag",
-      "observedTooltip": "Rzeczywista jasność zgłoszona przez obserwatorów (COBS) — może różnić się od przewidywanej wielkości gwiazdowej podczas wybuchu aktywności."
+      "observedTooltip": "Rzeczywista jasność zgłoszona przez obserwatorów (COBS) w porównaniu z przewidywaną wielkością gwiazdową — zielony: jaśniejsza niż przewidywano, bursztynowy/czerwony: słabsza."
     },
     "position": {
       "step": "Sprawdź pozycję i skomponuj kadr",

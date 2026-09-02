@@ -5274,7 +5274,7 @@
       "loading": "Carregando…",
       "noMatch": "Nenhum objeto corresponde.",
       "mag": "mag",
-      "observedTooltip": "Brilho real relatado por observadores (COBS) — pode diferir da magnitude prevista durante uma explosão de atividade."
+      "observedTooltip": "Brilho real relatado por observadores (COBS) vs. magnitude prevista — verde: mais brilhante que o previsto, âmbar/vermelho: mais fraco."
     },
     "position": {
       "step": "Revise a posição e componha o enquadramento",

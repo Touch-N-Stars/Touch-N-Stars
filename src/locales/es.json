@@ -5274,7 +5274,7 @@
       "loading": "Cargando…",
       "noMatch": "Ningún objeto coincide.",
       "mag": "mag",
-      "observedTooltip": "Brillo real reportado por observadores (COBS) — puede diferir de la magnitud prevista durante un estallido."
+      "observedTooltip": "Brillo real reportado por observadores (COBS) frente a la magnitud prevista — verde: más brillante de lo previsto, ámbar/rojo: más débil."
     },
     "position": {
       "step": "Revisa su posición y compón el encuadre",
