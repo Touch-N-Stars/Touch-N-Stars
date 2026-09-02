@@ -45,17 +45,26 @@
  * Deliberately omits the star/DSO catalog data (unlike CelestiaAtlasView.vue, which dynamically
  * imports several large embedded datasets) -- this view only needs photographic imagery plus the
  * FOV overlay, not a browsable atlas, so skipping the heavy catalog imports keeps this cheap to
- * mount. Also deliberately does NOT pass skySurveySource: omitting it lets the library fall back
- * to its own default (the online DSS2 Color HiPS), rather than createDssSkySurveySource()'s own
- * offline-bundled variant (HiPS order 3-4 only -- coarse, chosen there for offline reliability),
- * since this framing preview is a convenience feature that's fine requiring a connection, not
- * something the core tracking math depends on.
+ * mount.
+ *
+ * Uses the same createDssSkySurveySource(atlasDataBaseUrl()) as CelestiaAtlasView.vue, not the
+ * library's own online default. First version of this component omitted skySurveySource
+ * entirely on the theory that the online source (higher resolution) would just work -- it
+ * rendered nothing at all, even with internet confirmed available. Nothing else in this app has
+ * ever actually exercised that path (CelestiaAtlasView.vue always explicitly overrides it with
+ * this same offline-bundled source), so it's untested in this app's real deployment environment
+ * for reasons never diagnosed -- rather than debug an unproven path further, using the one this
+ * app already demonstrably renders with is the safer choice, even at lower resolution (HiPS
+ * order 3-4).
  */
 import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
+import { Capacitor } from '@capacitor/core';
 import { apiStore } from '@/store/store';
+import { useSettingsStore } from '@/store/settingsStore';
 import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
 import { ATLAS_POSITION_ANGLE_CONVENTION } from '@/integrations/celestiaAtlas/positionAngle';
+import { createDssSkySurveySource, resolveCelestiaAtlasDataBaseUrl } from '@/integrations/celestiaAtlas/offlineSkySurvey';
 
 const props = defineProps({
   raHours: { type: Number, required: true },
@@ -65,6 +74,21 @@ const props = defineProps({
 const emit = defineEmits(['offset']);
 
 const store = apiStore();
+const settingsStore = useSettingsStore();
+
+// Same pattern as CelestiaAtlasView.vue's own atlasDataBaseUrl() -- deliberately NOT the
+// library's online default (unlike this component's first version): nothing in this app has
+// ever actually exercised that path, since the main Celestia Atlas view always explicitly
+// overrides it with this same offline-bundled source. Lower resolution (HiPS order 3-4), but
+// proven to actually render in this app's real deployment environment.
+function atlasDataBaseUrl() {
+  return resolveCelestiaAtlasDataBaseUrl({
+    native: Capacitor.isNativePlatform(),
+    protocol: settingsStore.backendProtocol || 'http',
+    host: settingsStore.connection.ip,
+    port: settingsStore.connection.port,
+  });
+}
 const viewerContainer = ref(null);
 const ready = ref(false);
 const hasOffset = ref(false);
@@ -145,6 +169,7 @@ onMounted(async () => {
       container: viewerContainer.value,
       observer: ninaObserverToAtlas(settings),
       utcMs: Date.now(),
+      skySurveySource: createDssSkySurveySource(atlasDataBaseUrl()),
       onError: (error) => {
         console.warn('[Perihelion] Framing view sky-survey error:', error.message);
       },
