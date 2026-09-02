@@ -145,9 +145,26 @@ const peakAltitudePoint = computed(() => {
   if (altitudeData.value.length === 0) return null;
   return altitudeData.value.reduce((best, p) => (p.altitude > best.altitude ? p : best));
 });
+// Real bug caught on real hardware: the parent passes :target/:coordinates as inline object
+// literals, so it hands down a brand-new object reference on every one of its own re-renders
+// even when RA/Dec/lat/lon haven't actually changed. Without this guard, that alone was enough
+// to re-trigger altitudeData -> peakAltitudePoint -> this watcher -> re-emit -> the parent
+// setting state from the emit -> another parent re-render -> a new object reference again --
+// an unbounded reactive loop that pegs the CPU and makes the whole page unresponsive, not a
+// crash. Comparing against the last value actually emitted breaks the cycle at its source,
+// without needing the parent to change its own (very common, otherwise harmless) prop pattern.
+let lastEmittedPeak = null;
 watch(
   peakAltitudePoint,
-  (p) => emit('peak-altitude', p ? { altitude: p.altitude, label: p.label } : null),
+  (p) => {
+    const next = p ? { altitude: p.altitude, label: p.label } : null;
+    const unchanged =
+      next === lastEmittedPeak ||
+      (next && lastEmittedPeak && next.altitude === lastEmittedPeak.altitude && next.label === lastEmittedPeak.label);
+    if (unchanged) return;
+    lastEmittedPeak = next;
+    emit('peak-altitude', next);
+  },
   { immediate: true }
 );
 
