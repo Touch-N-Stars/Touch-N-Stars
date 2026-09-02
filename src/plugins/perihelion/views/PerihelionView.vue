@@ -159,46 +159,48 @@
             </p>
           </div>
 
-          <div class="tns-card">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="tns-stat-label flex-1">Tonight's Altitude</span>
-              <span v-if="altAz" class="text-xs font-bold text-accent">
-                {{ altAz.altitude.toFixed(0) }}° {{ altAz.altitude >= 0 ? 'above horizon' : 'below horizon' }}
-                · Az {{ altAz.azimuth.toFixed(0) }}°
-              </span>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="tns-card">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="tns-stat-label flex-1">Tonight's Altitude</span>
+                <span v-if="altAz" class="text-xs font-bold text-accent">
+                  {{ altAz.altitude.toFixed(0) }}° {{ altAz.altitude >= 0 ? 'above horizon' : 'below horizon' }}
+                  · Az {{ altAz.azimuth.toFixed(0) }}°
+                </span>
+              </div>
+              <p v-if="!hasLocation" class="text-xs text-content-faint">
+                No observer location set in this profile's Astrometry settings.
+              </p>
+              <SkyChart
+                v-else
+                :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
+                :coordinates="{ latitude: store.profileInfo.AstrometrySettings.Latitude, longitude: store.profileInfo.AstrometrySettings.Longitude }"
+              />
+              <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
+                Uses {{ selected.name }}'s position right now for the whole night — real for a
+                star, a slight approximation for a moving object, close enough for a transit curve.
+              </p>
             </div>
-            <p v-if="!hasLocation" class="text-xs text-content-faint">
-              No observer location set in this profile's Astrometry settings.
-            </p>
-            <SkyChart
-              v-else
-              :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
-              :coordinates="{ latitude: store.profileInfo.AstrometrySettings.Latitude, longitude: store.profileInfo.AstrometrySettings.Longitude }"
-            />
-            <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
-              Uses {{ selected.name }}'s position right now for the whole night — real for a
-              star, a slight approximation for a moving object, close enough for a transit curve.
-            </p>
-          </div>
 
-          <div class="tns-card">
-            <div class="flex items-center gap-3 mb-2">
-              <span class="tns-stat-label flex-1">10-Night Path</span>
-              <span class="flex items-center gap-1 text-[11px] text-content-muted">
-                <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Path
-              </span>
-              <span class="flex items-center gap-1 text-[11px] text-content-muted">
-                <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tonight
-              </span>
+            <div class="tns-card">
+              <div class="flex items-center gap-3 mb-2">
+                <span class="tns-stat-label flex-1">10-Night Path</span>
+                <span class="flex items-center gap-1 text-[11px] text-content-muted">
+                  <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span>Path
+                </span>
+                <span class="flex items-center gap-1 text-[11px] text-content-muted">
+                  <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Tonight
+                </span>
+              </div>
+              <p v-if="pathLoading" class="text-xs text-content-muted">Loading…</p>
+              <p v-else-if="pathError" class="text-xs text-status-danger">{{ pathError }}</p>
+              <OrbitalPathChart v-else-if="path.length" :points="path" />
+              <p class="text-[11px] leading-relaxed text-content-muted mt-2">
+                Real path against the fixed stars — while tracking, {{ selected.name }} stays
+                centered in-frame all night; this shows motion night to night, not movement within
+                a single exposure.
+              </p>
             </div>
-            <p v-if="pathLoading" class="text-xs text-content-muted">Loading…</p>
-            <p v-else-if="pathError" class="text-xs text-status-danger">{{ pathError }}</p>
-            <OrbitalPathChart v-else-if="path.length" :points="path" />
-            <p class="text-[11px] leading-relaxed text-content-muted mt-2">
-              Real path against the fixed stars — while tracking, {{ selected.name }} stays
-              centered in-frame all night; this shows motion night to night, not movement within
-              a single exposure.
-            </p>
           </div>
 
           <div class="tns-card">

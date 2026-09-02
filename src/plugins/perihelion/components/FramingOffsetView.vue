@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-2">
     <div class="relative rounded-chip overflow-hidden bg-surface-2 h-72 md:h-96 lg:h-[570px]">
       <div ref="viewerContainer" class="absolute inset-0" />
-      <canvas ref="pathCanvas" class="absolute inset-0 pointer-events-none"></canvas>
+      <canvas ref="pathCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
       <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
         {{ errorMessage }}
       </p>
