@@ -5269,7 +5269,12 @@
       "loading": "Načítání…",
       "noMatch": "Žádné odpovídající objekty.",
       "mag": "mag",
-      "observedTooltip": "Skutečná jasnost hlášená pozorovateli (COBS) oproti předpovězené magnitudě — zelená: jasnější, než se předpokládalo, žlutá/červená: slabší."
+      "observedTooltip": "Skutečná jasnost hlášená pozorovateli (COBS) oproti předpovězené magnitudě — zelená: jasnější, než se předpokládalo, žlutá/červená: slabší.",
+      "observedLegendTitle": "Pozorovaná vs. Předpovězená",
+      "observedLegendBrighter": "Zelená — jasnější, než se předpokládalo (skutečný výbuch aktivity)",
+      "observedLegendNormal": "Tyrkysová — přibližně odpovídá předpovědi",
+      "observedLegendFainter": "Žlutá — znatelně slabší, než se předpokládalo",
+      "observedLegendMuchFainter": "Červená — mnohem slabší, než se předpokládalo"
     },
     "position": {
       "step": "Zkontrolujte pozici a nastavte rámování",
@@ -5290,7 +5295,8 @@
       "pathDescription": "Skutečná dráha na pozadí stálic — během sledování zůstává {name} centrován ve snímku celou noc; toto ukazuje pohyb noc od noci, ne v rámci jedné expozice.",
       "framingTitle": "Rámování",
       "offsetSet": "Posun nastaven",
-      "observedBrightnessValues": "Poslední {latest} · Prům. {average}"
+      "observedLatest": "Poslední {mag}",
+      "observedAverage": "Prům. {mag}"
     },
     "track": {
       "step": "Sledovat jej",

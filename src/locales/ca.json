@@ -5269,7 +5269,12 @@
       "loading": "Carregant…",
       "noMatch": "Cap objecte coincideix.",
       "mag": "mag",
-      "observedTooltip": "Brillantor real informada per observadors (COBS) vs. magnitud prevista — verd: més brillant del previst, ambre/vermell: més feble."
+      "observedTooltip": "Brillantor real informada per observadors (COBS) vs. magnitud prevista — verd: més brillant del previst, ambre/vermell: més feble.",
+      "observedLegendTitle": "Observat vs. Previst",
+      "observedLegendBrighter": "Verd — més brillant del previst (un esclat real)",
+      "observedLegendNormal": "Turquesa — coincideix aproximadament amb la predicció",
+      "observedLegendFainter": "Ambre — notablement més feble del previst",
+      "observedLegendMuchFainter": "Vermell — molt més feble del previst"
     },
     "position": {
       "step": "Revisa la posició i compon l'enquadrament",
@@ -5290,7 +5295,8 @@
       "pathDescription": "Trajectòria real sobre el fons d'estrelles fixes — mentre se segueix, {name} roman centrat a l'enquadrament tota la nit; això mostra el moviment nit a nit, no dins d'una sola exposició.",
       "framingTitle": "Enquadrament",
       "offsetSet": "Desplaçament definit",
-      "observedBrightnessValues": "Última {latest} · Mitjana {average}"
+      "observedLatest": "Última {mag}",
+      "observedAverage": "Mitjana {mag}"
     },
     "track": {
       "step": "Segueix-lo",

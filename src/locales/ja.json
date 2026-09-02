@@ -5269,7 +5269,12 @@
       "loading": "読み込み中…",
       "noMatch": "一致する天体がありません。",
       "mag": "等級",
-      "observedTooltip": "観測者による実際の報告輝度（COBS）対 予測等級 — 緑: 予測より明るい、黄/赤: 予測より暗い。"
+      "observedTooltip": "観測者による実際の報告輝度（COBS）対 予測等級 — 緑: 予測より明るい、黄/赤: 予測より暗い。",
+      "observedLegendTitle": "観測値 対 予測値",
+      "observedLegendBrighter": "緑 — 予測より明るい（実際のアウトバースト）",
+      "observedLegendNormal": "ティール — 予測とほぼ一致",
+      "observedLegendFainter": "黄 — 予測よりかなり暗い",
+      "observedLegendMuchFainter": "赤 — 予測よりはるかに暗い"
     },
     "position": {
       "step": "位置を確認し構図を決める",
@@ -5290,7 +5295,8 @@
       "pathDescription": "恒星を背景にした実際の経路 — 追尾中は{name}が一晩中フレーム中央に留まります。これは1回の露光内ではなく、夜ごとの動きを示すものです。",
       "framingTitle": "フレーミング",
       "offsetSet": "オフセット設定済み",
-      "observedBrightnessValues": "最新 {latest}・平均 {average}"
+      "observedLatest": "最新 {mag}",
+      "observedAverage": "平均 {mag}"
     },
     "track": {
       "step": "追尾する",

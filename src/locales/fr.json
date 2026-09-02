@@ -5274,7 +5274,12 @@
       "loading": "Chargement…",
       "noMatch": "Aucun objet ne correspond.",
       "mag": "mag",
-      "observedTooltip": "Luminosité réelle rapportée par des observateurs (COBS) vs. magnitude prévue — vert : plus brillant que prévu, orange/rouge : plus faible."
+      "observedTooltip": "Luminosité réelle rapportée par des observateurs (COBS) vs. magnitude prévue — vert : plus brillant que prévu, orange/rouge : plus faible.",
+      "observedLegendTitle": "Observé vs. Prévu",
+      "observedLegendBrighter": "Vert — plus brillant que prévu (un vrai sursaut)",
+      "observedLegendNormal": "Turquoise — correspond à peu près à la prévision",
+      "observedLegendFainter": "Orange — nettement plus faible que prévu",
+      "observedLegendMuchFainter": "Rouge — beaucoup plus faible que prévu"
     },
     "position": {
       "step": "Vérifier la position & composer le cadrage",
@@ -5295,7 +5300,8 @@
       "pathDescription": "Trajectoire réelle sur fond d'étoiles fixes — pendant le suivi, {name} reste centré dans le cadre toute la nuit ; ceci montre le déplacement nuit après nuit, pas le mouvement au sein d'une seule pose.",
       "framingTitle": "Cadrage",
       "offsetSet": "Décalage défini",
-      "observedBrightnessValues": "Dernier {latest} · Moy. {average}"
+      "observedLatest": "Dernier {mag}",
+      "observedAverage": "Moy. {mag}"
     },
     "track": {
       "step": "Le suivre",

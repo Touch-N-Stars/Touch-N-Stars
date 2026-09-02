@@ -5269,7 +5269,12 @@
       "loading": "加载中…",
       "noMatch": "没有匹配的天体。",
       "mag": "星等",
-      "observedTooltip": "观测者报告的真实亮度（COBS）与预测星等对比 — 绿色：比预测更亮，琥珀色/红色：比预测更暗。"
+      "observedTooltip": "观测者报告的真实亮度（COBS）与预测星等对比 — 绿色：比预测更亮，琥珀色/红色：比预测更暗。",
+      "observedLegendTitle": "观测值 对 预测值",
+      "observedLegendBrighter": "绿色 — 比预测更亮（真实的爆发活动）",
+      "observedLegendNormal": "青色 — 大致符合预测",
+      "observedLegendFainter": "琥珀色 — 明显比预测暗",
+      "observedLegendMuchFainter": "红色 — 比预测暗得多"
     },
     "position": {
       "step": "查看位置并构图",
@@ -5290,7 +5295,8 @@
       "pathDescription": "相对于恒星背景的真实轨迹 — 跟踪期间 {name} 整晚都保持在画面中央；这显示的是逐夜的移动，而不是单次曝光内的移动。",
       "framingTitle": "构图",
       "offsetSet": "已设置偏移",
-      "observedBrightnessValues": "最新 {latest} · 平均 {average}"
+      "observedLatest": "最新 {mag}",
+      "observedAverage": "平均 {mag}"
     },
     "track": {
       "step": "跟踪它",

@@ -5274,7 +5274,12 @@
       "loading": "Caricamento…",
       "noMatch": "Nessun oggetto corrisponde.",
       "mag": "mag",
-      "observedTooltip": "Luminosità reale segnalata dagli osservatori (COBS) rispetto alla magnitudine prevista — verde: più luminosa del previsto, ambra/rosso: più debole."
+      "observedTooltip": "Luminosità reale segnalata dagli osservatori (COBS) rispetto alla magnitudine prevista — verde: più luminosa del previsto, ambra/rosso: più debole.",
+      "observedLegendTitle": "Osservata vs. Prevista",
+      "observedLegendBrighter": "Verde — più luminosa del previsto (una vera esplosione di attività)",
+      "observedLegendNormal": "Turchese — corrisponde più o meno alla previsione",
+      "observedLegendFainter": "Ambra — notevolmente più debole del previsto",
+      "observedLegendMuchFainter": "Rosso — molto più debole del previsto"
     },
     "position": {
       "step": "Controlla la posizione e componi l'inquadratura",
@@ -5295,7 +5300,8 @@
       "pathDescription": "Percorso reale sullo sfondo di stelle fisse — durante l'inseguimento, {name} resta centrato nell'inquadratura tutta la notte; questo mostra il moto notte per notte, non all'interno di una singola posa.",
       "framingTitle": "Inquadratura",
       "offsetSet": "Scostamento impostato",
-      "observedBrightnessValues": "Ultima {latest} · Media {average}"
+      "observedLatest": "Ultima {mag}",
+      "observedAverage": "Media {mag}"
     },
     "track": {
       "step": "Inseguilo",

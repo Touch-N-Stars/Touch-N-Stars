@@ -5274,7 +5274,12 @@
       "loading": "Lädt…",
       "noMatch": "Keine Treffer.",
       "mag": "mag",
-      "observedTooltip": "Reale, von Beobachtern gemeldete Helligkeit (COBS) vs. vorhergesagte Mag — grün: heller als vorhergesagt, gelb/rot: schwächer."
+      "observedTooltip": "Reale, von Beobachtern gemeldete Helligkeit (COBS) vs. vorhergesagte Mag — grün: heller als vorhergesagt, gelb/rot: schwächer.",
+      "observedLegendTitle": "Beobachtet vs. Vorhergesagt",
+      "observedLegendBrighter": "Grün — heller als vorhergesagt (ein echter Ausbruch)",
+      "observedLegendNormal": "Türkis — entspricht ungefähr der Vorhersage",
+      "observedLegendFainter": "Gelb — deutlich schwächer als vorhergesagt",
+      "observedLegendMuchFainter": "Rot — viel schwächer als vorhergesagt"
     },
     "position": {
       "step": "Position prüfen & Bildausschnitt festlegen",
@@ -5295,7 +5300,8 @@
       "pathDescription": "Reale Bahn vor dem Fixsternhintergrund — {name} bleibt beim Nachführen die ganze Nacht im Bild; das hier zeigt die Bewegung von Nacht zu Nacht, nicht innerhalb einer Belichtung.",
       "framingTitle": "Framing",
       "offsetSet": "Versatz gesetzt",
-      "observedBrightnessValues": "Aktuell {latest} · Ø {average}"
+      "observedLatest": "Aktuell {mag}",
+      "observedAverage": "Ø {mag}"
     },
     "track": {
       "step": "Nachführen",

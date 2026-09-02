@@ -5239,7 +5239,12 @@
       "loading": "Loading…",
       "noMatch": "No objects match.",
       "mag": "mag",
-      "observedTooltip": "Real observer-reported brightness (COBS) vs. predicted Mag — green: brighter than predicted, amber/red: fainter."
+      "observedTooltip": "Real observer-reported brightness (COBS) vs. predicted Mag — green: brighter than predicted, amber/red: fainter.",
+      "observedLegendTitle": "Observed vs. Predicted",
+      "observedLegendBrighter": "Green — brighter than predicted (a real outburst)",
+      "observedLegendNormal": "Teal — roughly matches the prediction",
+      "observedLegendFainter": "Amber — noticeably fainter than predicted",
+      "observedLegendMuchFainter": "Red — much fainter than predicted"
     },
     "position": {
       "step": "Review its position & compose the framing",
@@ -5248,7 +5253,8 @@
       "dec": "DEC",
       "mag": "MAG",
       "observedBrightness": "Observed Brightness",
-      "observedBrightnessValues": "Latest {latest} · Avg {average}",
+      "observedLatest": "Latest {mag}",
+      "observedAverage": "Avg {mag}",
       "observedBrightnessDescription": "Real observer reports (COBS), average of the last {count} — vs. mag {predicted} predicted from orbital elements alone. Last reported {when}.",
       "altitudeTitle": "Tonight's Altitude",
       "aboveHorizon": "above horizon",

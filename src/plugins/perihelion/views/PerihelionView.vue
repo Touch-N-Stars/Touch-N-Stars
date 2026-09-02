@@ -89,6 +89,13 @@
                 <option value="name">{{ t('perihelion.browse.sortName') }}</option>
               </select>
             </label>
+            <button
+              class="text-content-faint hover:text-content-muted shrink-0"
+              :aria-label="t('perihelion.browse.observedTooltip')"
+              @click="showObservedMagLegend = true"
+            >
+              <InformationCircleIcon class="w-4 h-4" />
+            </button>
           </div>
 
           <div
@@ -153,8 +160,7 @@
                 <span
                   v-if="o.observedMagnitude != null"
                   class="flex items-center gap-0.5 text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-full border"
-                  :class="observedMagBadgeClass(o)"
-                  :title="t('perihelion.browse.observedTooltip')"
+                  :class="magDiffColorClass(o.magnitude, o.observedMagnitude)"
                 >
                   <EyeIcon class="w-3 h-3" />
                   {{ o.observedMagnitude.toFixed(1) }}
@@ -224,12 +230,31 @@
                 <span class="tns-stat-label flex-1">{{
                   t('perihelion.position.observedBrightness')
                 }}</span>
-                <span class="text-xs font-bold text-accent tabular-nums">{{
-                  t('perihelion.position.observedBrightnessValues', {
-                    latest: cometActivity.mostRecentMagnitude.toFixed(1),
-                    average: cometActivity.recentAverageMagnitude.toFixed(1),
-                  })
-                }}</span>
+                <button
+                  class="text-content-faint hover:text-content-muted shrink-0"
+                  :aria-label="t('perihelion.browse.observedTooltip')"
+                  @click="showObservedMagLegend = true"
+                >
+                  <InformationCircleIcon class="w-4 h-4" />
+                </button>
+                <span
+                  class="text-xs font-bold tabular-nums"
+                  :class="magDiffTextClass(selected.magnitude, cometActivity.mostRecentMagnitude)"
+                  >{{
+                    t('perihelion.position.observedLatest', {
+                      mag: cometActivity.mostRecentMagnitude.toFixed(1),
+                    })
+                  }}</span
+                >
+                <span
+                  class="text-xs font-bold tabular-nums"
+                  :class="magDiffTextClass(selected.magnitude, cometActivity.recentAverageMagnitude)"
+                  >{{
+                    t('perihelion.position.observedAverage', {
+                      mag: cometActivity.recentAverageMagnitude.toFixed(1),
+                    })
+                  }}</span
+                >
               </div>
               <p class="text-[11px] leading-relaxed text-content-muted">
                 {{
@@ -722,6 +747,39 @@
           </template>
         </template>
       </div>
+
+      <!-- Shared across Browse and Position & Path -- a native title tooltip doesn't work on
+           touch, so this is a tap-to-open explanation instead, matching the InformationCircleIcon
+           + Modal pattern already used elsewhere in the app (e.g. PatternEditorCore.vue). -->
+      <Modal
+        :show="showObservedMagLegend"
+        @close="showObservedMagLegend = false"
+        :zIndex="'z-[60]'"
+      >
+        <template #header>
+          <h2 class="text-xl font-bold">{{ t('perihelion.browse.observedLegendTitle') }}</h2>
+        </template>
+        <template #body>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-status-ok shrink-0"></span>
+              <span>{{ t('perihelion.browse.observedLegendBrighter') }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-accent shrink-0"></span>
+              <span>{{ t('perihelion.browse.observedLegendNormal') }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-status-warn shrink-0"></span>
+              <span>{{ t('perihelion.browse.observedLegendFainter') }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-status-danger shrink-0"></span>
+              <span>{{ t('perihelion.browse.observedLegendMuchFainter') }}</span>
+            </div>
+          </div>
+        </template>
+      </Modal>
     </template>
   </div>
 </template>
@@ -756,7 +814,7 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, InformationCircleIcon } from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
 // tapered-tail-into-glowing-coma shape, not an independent redesign. That component uses
@@ -962,19 +1020,47 @@ async function onSyncComets() {
 // are verified real examples several magnitudes off) -- flagged in the warning color rather
 // than the same quiet accent used when the two roughly agree, so a genuinely surprising comet
 // stands out in the list without needing to open it first.
+const showObservedMagLegend = ref(false);
+
 // Magnitude is a reverse scale (lower number = brighter), so "observed differs from predicted"
 // isn't one kind of surprise -- it's two opposite ones. Brighter-than-predicted (diff very
 // negative) is a genuinely exciting outburst, worth flagging as good news, not a warning;
 // fainter-than-predicted (diff positive) means the comet is underperforming the model, which is
 // the "something to be aware of" direction amber/red are actually for. 10P/Tempel's real case
 // (predicted 13.3, observed 7.9, diff -5.4) should read as a bright-green highlight, not amber.
-function observedMagBadgeClass(o) {
-  if (o.magnitude == null) return 'bg-accent/10 border-accent/30 text-accent';
-  const diff = o.observedMagnitude - o.magnitude; // negative = brighter than predicted
-  if (diff <= -1) return 'bg-status-ok/10 border-status-ok/40 text-status-ok';
-  if (diff >= 3) return 'bg-status-danger/10 border-status-danger/40 text-status-danger';
-  if (diff >= 1) return 'bg-status-warn/10 border-status-warn/40 text-status-warn';
-  return 'bg-accent/10 border-accent/30 text-accent';
+// Shared by the Browse list badge and the Position & Path card's Latest/Avg values, each of
+// which compares its own observed number against the same predicted magnitude independently --
+// Latest and Avg can legitimately land in different tiers.
+function magDiffTier(predictedMag, observedMag) {
+  if (predictedMag == null || observedMag == null) return 'accent';
+  const diff = observedMag - predictedMag; // negative = brighter than predicted
+  if (diff <= -1) return 'ok';
+  if (diff >= 3) return 'danger';
+  if (diff >= 1) return 'warn';
+  return 'accent';
+}
+// Full literal class strings per tier -- NOT built via template-literal interpolation (e.g.
+// `bg-status-${tier}/10`), which Tailwind's JIT scanner can't see since it only picks up
+// complete, literal class names actually present in the source, not runtime-assembled ones.
+const PILL_CLASS_BY_TIER = {
+  accent: 'bg-accent/10 border-accent/30 text-accent',
+  ok: 'bg-status-ok/10 border-status-ok/40 text-status-ok',
+  warn: 'bg-status-warn/10 border-status-warn/40 text-status-warn',
+  danger: 'bg-status-danger/10 border-status-danger/40 text-status-danger',
+};
+const TEXT_CLASS_BY_TIER = {
+  accent: 'text-accent',
+  ok: 'text-status-ok',
+  warn: 'text-status-warn',
+  danger: 'text-status-danger',
+};
+// Full pill styling for the Browse list's compact badge.
+function magDiffColorClass(predictedMag, observedMag) {
+  return PILL_CLASS_BY_TIER[magDiffTier(predictedMag, observedMag)];
+}
+// Plain text color for the Position & Path card's inline Latest/Avg values (no pill there).
+function magDiffTextClass(predictedMag, observedMag) {
+  return TEXT_CLASS_BY_TIER[magDiffTier(predictedMag, observedMag)];
 }
 
 function sortObjects(list) {

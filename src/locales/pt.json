@@ -5274,7 +5274,12 @@
       "loading": "Carregando…",
       "noMatch": "Nenhum objeto corresponde.",
       "mag": "mag",
-      "observedTooltip": "Brilho real relatado por observadores (COBS) vs. magnitude prevista — verde: mais brilhante que o previsto, âmbar/vermelho: mais fraco."
+      "observedTooltip": "Brilho real relatado por observadores (COBS) vs. magnitude prevista — verde: mais brilhante que o previsto, âmbar/vermelho: mais fraco.",
+      "observedLegendTitle": "Observado vs. Previsto",
+      "observedLegendBrighter": "Verde — mais brilhante que o previsto (uma explosão real)",
+      "observedLegendNormal": "Turquesa — corresponde aproximadamente à previsão",
+      "observedLegendFainter": "Âmbar — visivelmente mais fraco que o previsto",
+      "observedLegendMuchFainter": "Vermelho — muito mais fraco que o previsto"
     },
     "position": {
       "step": "Revise a posição e componha o enquadramento",
@@ -5295,7 +5300,8 @@
       "pathDescription": "Trajetória real contra o fundo de estrelas fixas — durante o rastreamento, {name} permanece centralizado no quadro a noite toda; isso mostra o movimento noite a noite, não dentro de uma única exposição.",
       "framingTitle": "Enquadramento",
       "offsetSet": "Deslocamento definido",
-      "observedBrightnessValues": "Última {latest} · Média {average}"
+      "observedLatest": "Última {mag}",
+      "observedAverage": "Média {mag}"
     },
     "track": {
       "step": "Rastrear",

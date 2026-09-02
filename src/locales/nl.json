@@ -5269,7 +5269,12 @@
       "loading": "Laden…",
       "noMatch": "Geen objecten gevonden.",
       "mag": "mag",
-      "observedTooltip": "Echte, door waarnemers gemelde helderheid (COBS) t.o.v. voorspelde magnitude — groen: helderder dan voorspeld, geel/rood: zwakker."
+      "observedTooltip": "Echte, door waarnemers gemelde helderheid (COBS) t.o.v. voorspelde magnitude — groen: helderder dan voorspeld, geel/rood: zwakker.",
+      "observedLegendTitle": "Waargenomen vs. Voorspeld",
+      "observedLegendBrighter": "Groen — helderder dan voorspeld (een echte uitbarsting)",
+      "observedLegendNormal": "Turquoise — komt ongeveer overeen met de voorspelling",
+      "observedLegendFainter": "Geel — merkbaar zwakker dan voorspeld",
+      "observedLegendMuchFainter": "Rood — veel zwakker dan voorspeld"
     },
     "position": {
       "step": "Controleer de positie & stel het beeldveld samen",
@@ -5290,7 +5295,8 @@
       "pathDescription": "Echte baan tegen de vaste sterrenachtergrond — tijdens het navolgen blijft {name} de hele nacht gecentreerd in beeld; dit toont de beweging nacht na nacht, niet binnen één belichting.",
       "framingTitle": "Beeldveld",
       "offsetSet": "Verschuiving ingesteld",
-      "observedBrightnessValues": "Laatste {latest} · Gem. {average}"
+      "observedLatest": "Laatste {mag}",
+      "observedAverage": "Gem. {mag}"
     },
     "track": {
       "step": "Volg het",
