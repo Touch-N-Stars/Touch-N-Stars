@@ -150,6 +150,15 @@
                 <span class="text-[9px] font-bold uppercase tracking-wide text-content-faint">{{
                   t('perihelion.browse.mag')
                 }}</span>
+                <span
+                  v-if="o.observedMagnitude != null"
+                  class="flex items-center gap-0.5 text-[11px] font-semibold tabular-nums px-1.5 py-0.5 rounded-full border"
+                  :class="observedMagBadgeClass(o)"
+                  :title="t('perihelion.browse.observedTooltip')"
+                >
+                  <EyeIcon class="w-3 h-3" />
+                  {{ o.observedMagnitude.toFixed(1) }}
+                </span>
               </div>
             </button>
           </div>
@@ -215,10 +224,12 @@
                 <span class="tns-stat-label flex-1">{{
                   t('perihelion.position.observedBrightness')
                 }}</span>
-                <span class="text-xs font-bold text-accent"
-                  >{{ t('perihelion.browse.mag') }}
-                  {{ cometActivity.recentAverageMagnitude.toFixed(1) }}</span
-                >
+                <span class="text-xs font-bold text-accent tabular-nums">{{
+                  t('perihelion.position.observedBrightnessValues', {
+                    latest: cometActivity.mostRecentMagnitude.toFixed(1),
+                    average: cometActivity.recentAverageMagnitude.toFixed(1),
+                  })
+                }}</span>
               </div>
               <p class="text-[11px] leading-relaxed text-content-muted">
                 {{
@@ -745,6 +756,7 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import { EyeIcon } from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
 // tapered-tail-into-glowing-coma shape, not an independent redesign. That component uses
@@ -945,6 +957,19 @@ async function onSyncComets() {
   if (result.ok) await loadObjects();
 }
 
+// A 1+ magnitude gap between predicted and observed is exactly the "predicted model doesn't
+// know about a real outburst" case this badge exists to surface (10P/Tempel and 220P/McNaught
+// are verified real examples several magnitudes off) -- flagged in the warning color rather
+// than the same quiet accent used when the two roughly agree, so a genuinely surprising comet
+// stands out in the list without needing to open it first.
+const OBSERVED_MAG_SURPRISE_THRESHOLD = 1;
+function observedMagBadgeClass(o) {
+  if (o.magnitude != null && Math.abs(o.magnitude - o.observedMagnitude) >= OBSERVED_MAG_SURPRISE_THRESHOLD) {
+    return 'bg-status-warn/10 border-status-warn/40 text-status-warn';
+  }
+  return 'bg-accent/10 border-accent/30 text-accent';
+}
+
 function sortObjects(list) {
   const arr = [...list];
   if (sortMode.value === 'name') {
@@ -1049,15 +1074,25 @@ watch([activeTab, selected], ([tab]) => {
 
 // --- Observed brightness (COBS) -- comet-only cross-check against the predicted magnitude ---
 const cometActivity = ref(null);
+// Guards against a stale response overwriting a newer one: navigating away from the Position &
+// Path tab and back (or switching comets) before an in-flight fetch resolves used to let that
+// older response land last and silently replace the correct, more recent one -- looked exactly
+// like the observed-brightness value randomly changing or disagreeing with cobs.si, when it was
+// really just showing a response for an earlier moment/selection.
+let cometActivityRequestId = 0;
 async function loadCometActivity() {
   if (!selected.value || selected.value.objectType !== 'Comet') {
     cometActivity.value = null;
     return;
   }
+  const requestId = ++cometActivityRequestId;
+  const targetName = selected.value.name;
   try {
-    const result = await fetchCometActivity(selected.value.name);
+    const result = await fetchCometActivity(targetName);
+    if (requestId !== cometActivityRequestId) return; // a newer request has since started
     cometActivity.value = result.available ? result : null;
   } catch {
+    if (requestId !== cometActivityRequestId) return;
     cometActivity.value = null;
   }
 }

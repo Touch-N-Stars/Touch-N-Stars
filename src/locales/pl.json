@@ -5268,7 +5268,8 @@
       "asteroidCount": "{count} planetoid — stała lista, aktualizowana wraz z wydaniami wtyczki, a nie synchronizowana.",
       "loading": "Ładowanie…",
       "noMatch": "Brak pasujących obiektów.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Rzeczywista jasność zgłoszona przez obserwatorów (COBS) — może różnić się od przewidywanej wielkości gwiazdowej podczas wybuchu aktywności."
     },
     "position": {
       "step": "Sprawdź pozycję i skomponuj kadr",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "Dziś w nocy",
       "pathDescription": "Rzeczywista trasa na tle gwiazd stałych — podczas śledzenia {name} pozostaje wycentrowany w kadrze przez całą noc; to pokazuje ruch noc po nocy, a nie w obrębie jednej ekspozycji.",
       "framingTitle": "Kadrowanie",
-      "offsetSet": "Przesunięcie ustawione"
+      "offsetSet": "Przesunięcie ustawione",
+      "observedBrightnessValues": "Ostatnia {latest} · Śr. {average}"
     },
     "track": {
       "step": "Śledź go",

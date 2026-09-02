@@ -5273,7 +5273,8 @@
       "asteroidCount": "{count} Asteroiden — eine feste Liste, aktualisiert per Plugin-Release statt Synchronisierung.",
       "loading": "Lädt…",
       "noMatch": "Keine Treffer.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Reale, von Beobachtern gemeldete Helligkeit (COBS) — kann während eines Ausbruchs von der vorhergesagten Mag abweichen."
     },
     "position": {
       "step": "Position prüfen & Bildausschnitt festlegen",
@@ -5293,7 +5294,8 @@
       "pathLegendTonight": "Heute Nacht",
       "pathDescription": "Reale Bahn vor dem Fixsternhintergrund — {name} bleibt beim Nachführen die ganze Nacht im Bild; das hier zeigt die Bewegung von Nacht zu Nacht, nicht innerhalb einer Belichtung.",
       "framingTitle": "Framing",
-      "offsetSet": "Versatz gesetzt"
+      "offsetSet": "Versatz gesetzt",
+      "observedBrightnessValues": "Aktuell {latest} · Ø {average}"
     },
     "track": {
       "step": "Nachführen",

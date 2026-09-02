@@ -5268,7 +5268,8 @@
       "asteroidCount": "소행성 {count}개 — 동기화가 아니라 플러그인 릴리스로 갱신되는 고정 목록입니다.",
       "loading": "불러오는 중…",
       "noMatch": "일치하는 천체가 없습니다.",
-      "mag": "등급"
+      "mag": "등급",
+      "observedTooltip": "관측자가 실제로 보고한 밝기(COBS) — 폭발적 활동 중에는 예측 등급과 다를 수 있습니다."
     },
     "position": {
       "step": "위치를 확인하고 구도를 설정하세요",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "오늘 밤",
       "pathDescription": "고정된 별을 배경으로 한 실제 경로 — 추적 중에는 {name}이(가) 밤새 프레임 중앙에 유지됩니다. 이는 단일 노출 내가 아니라 밤마다의 움직임을 보여줍니다.",
       "framingTitle": "프레이밍",
-      "offsetSet": "오프셋 설정됨"
+      "offsetSet": "오프셋 설정됨",
+      "observedBrightnessValues": "최신 {latest} · 평균 {average}"
     },
     "track": {
       "step": "추적하기",

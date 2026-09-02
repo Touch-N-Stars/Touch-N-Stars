@@ -5273,7 +5273,8 @@
       "asteroidCount": "{count} asteroidi — un elenco fisso, aggiornato tramite le versioni del plugin anziché sincronizzato.",
       "loading": "Caricamento…",
       "noMatch": "Nessun oggetto corrisponde.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Luminosità reale segnalata dagli osservatori (COBS) — può differire dalla magnitudine prevista durante un'esplosione di attività."
     },
     "position": {
       "step": "Controlla la posizione e componi l'inquadratura",
@@ -5293,7 +5294,8 @@
       "pathLegendTonight": "Stanotte",
       "pathDescription": "Percorso reale sullo sfondo di stelle fisse — durante l'inseguimento, {name} resta centrato nell'inquadratura tutta la notte; questo mostra il moto notte per notte, non all'interno di una singola posa.",
       "framingTitle": "Inquadratura",
-      "offsetSet": "Scostamento impostato"
+      "offsetSet": "Scostamento impostato",
+      "observedBrightnessValues": "Ultima {latest} · Media {average}"
     },
     "track": {
       "step": "Inseguilo",

@@ -5273,7 +5273,8 @@
       "asteroidCount": "{count} astéroïdes — une liste fixe, mise à jour via les versions du plugin plutôt que synchronisée.",
       "loading": "Chargement…",
       "noMatch": "Aucun objet ne correspond.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Luminosité réelle rapportée par des observateurs (COBS) — peut différer de la magnitude prévue lors d'un sursaut."
     },
     "position": {
       "step": "Vérifier la position & composer le cadrage",
@@ -5293,7 +5294,8 @@
       "pathLegendTonight": "Ce soir",
       "pathDescription": "Trajectoire réelle sur fond d'étoiles fixes — pendant le suivi, {name} reste centré dans le cadre toute la nuit ; ceci montre le déplacement nuit après nuit, pas le mouvement au sein d'une seule pose.",
       "framingTitle": "Cadrage",
-      "offsetSet": "Décalage défini"
+      "offsetSet": "Décalage défini",
+      "observedBrightnessValues": "Dernier {latest} · Moy. {average}"
     },
     "track": {
       "step": "Le suivre",

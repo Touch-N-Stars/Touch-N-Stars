@@ -5238,7 +5238,8 @@
       "asteroidCount": "{count} asteroids — a fixed list, updated via plugin releases rather than synced.",
       "loading": "Loading…",
       "noMatch": "No objects match.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Real observer-reported brightness (COBS) — can differ from the predicted Mag during an outburst."
     },
     "position": {
       "step": "Review its position & compose the framing",
@@ -5247,6 +5248,7 @@
       "dec": "DEC",
       "mag": "MAG",
       "observedBrightness": "Observed Brightness",
+      "observedBrightnessValues": "Latest {latest} · Avg {average}",
       "observedBrightnessDescription": "Real observer reports (COBS), average of the last {count} — vs. mag {predicted} predicted from orbital elements alone. Last reported {when}.",
       "altitudeTitle": "Tonight's Altitude",
       "aboveHorizon": "above horizon",

@@ -5268,7 +5268,8 @@
       "asteroidCount": "{count}個の小惑星 — 同期ではなくプラグインのリリースで更新される固定リストです。",
       "loading": "読み込み中…",
       "noMatch": "一致する天体がありません。",
-      "mag": "等級"
+      "mag": "等級",
+      "observedTooltip": "観測者による実際の報告輝度（COBS）— アウトバースト中は予測等級と異なる場合があります。"
     },
     "position": {
       "step": "位置を確認し構図を決める",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "今夜",
       "pathDescription": "恒星を背景にした実際の経路 — 追尾中は{name}が一晩中フレーム中央に留まります。これは1回の露光内ではなく、夜ごとの動きを示すものです。",
       "framingTitle": "フレーミング",
-      "offsetSet": "オフセット設定済み"
+      "offsetSet": "オフセット設定済み",
+      "observedBrightnessValues": "最新 {latest}・平均 {average}"
     },
     "track": {
       "step": "追尾する",

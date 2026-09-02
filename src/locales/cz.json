@@ -5268,7 +5268,8 @@
       "asteroidCount": "{count} planetek — pevný seznam, aktualizovaný verzemi pluginu, nikoli synchronizací.",
       "loading": "Načítání…",
       "noMatch": "Žádné odpovídající objekty.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Skutečná jasnost hlášená pozorovateli (COBS) — se může během výbuchu aktivity lišit od předpovězené magnitudy."
     },
     "position": {
       "step": "Zkontrolujte pozici a nastavte rámování",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "Dnes v noci",
       "pathDescription": "Skutečná dráha na pozadí stálic — během sledování zůstává {name} centrován ve snímku celou noc; toto ukazuje pohyb noc od noci, ne v rámci jedné expozice.",
       "framingTitle": "Rámování",
-      "offsetSet": "Posun nastaven"
+      "offsetSet": "Posun nastaven",
+      "observedBrightnessValues": "Poslední {latest} · Prům. {average}"
     },
     "track": {
       "step": "Sledovat jej",

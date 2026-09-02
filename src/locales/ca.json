@@ -5268,7 +5268,8 @@
       "asteroidCount": "{count} asteroides — una llista fixa, actualitzada mitjançant versions del connector en lloc de sincronitzar-se.",
       "loading": "Carregant…",
       "noMatch": "Cap objecte coincideix.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Brillantor real informada per observadors (COBS) — pot diferir de la magnitud prevista durant un esclat d'activitat."
     },
     "position": {
       "step": "Revisa la posició i compon l'enquadrament",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "Aquesta nit",
       "pathDescription": "Trajectòria real sobre el fons d'estrelles fixes — mentre se segueix, {name} roman centrat a l'enquadrament tota la nit; això mostra el moviment nit a nit, no dins d'una sola exposició.",
       "framingTitle": "Enquadrament",
-      "offsetSet": "Desplaçament definit"
+      "offsetSet": "Desplaçament definit",
+      "observedBrightnessValues": "Última {latest} · Mitjana {average}"
     },
     "track": {
       "step": "Segueix-lo",

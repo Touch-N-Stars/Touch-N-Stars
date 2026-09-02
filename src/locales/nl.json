@@ -5268,7 +5268,8 @@
       "asteroidCount": "{count} asteroïden — een vaste lijst, bijgewerkt via plugin-releases in plaats van gesynchroniseerd.",
       "loading": "Laden…",
       "noMatch": "Geen objecten gevonden.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Echte, door waarnemers gemelde helderheid (COBS) — kan tijdens een uitbarsting afwijken van de voorspelde magnitude."
     },
     "position": {
       "step": "Controleer de positie & stel het beeldveld samen",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "Vannacht",
       "pathDescription": "Echte baan tegen de vaste sterrenachtergrond — tijdens het navolgen blijft {name} de hele nacht gecentreerd in beeld; dit toont de beweging nacht na nacht, niet binnen één belichting.",
       "framingTitle": "Beeldveld",
-      "offsetSet": "Verschuiving ingesteld"
+      "offsetSet": "Verschuiving ingesteld",
+      "observedBrightnessValues": "Laatste {latest} · Gem. {average}"
     },
     "track": {
       "step": "Volg het",

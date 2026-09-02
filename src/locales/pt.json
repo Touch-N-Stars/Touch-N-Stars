@@ -5273,7 +5273,8 @@
       "asteroidCount": "{count} asteroides — uma lista fixa, atualizada via versões do plugin em vez de sincronizada.",
       "loading": "Carregando…",
       "noMatch": "Nenhum objeto corresponde.",
-      "mag": "mag"
+      "mag": "mag",
+      "observedTooltip": "Brilho real relatado por observadores (COBS) — pode diferir da magnitude prevista durante uma explosão de atividade."
     },
     "position": {
       "step": "Revise a posição e componha o enquadramento",
@@ -5293,7 +5294,8 @@
       "pathLegendTonight": "Esta noite",
       "pathDescription": "Trajetória real contra o fundo de estrelas fixas — durante o rastreamento, {name} permanece centralizado no quadro a noite toda; isso mostra o movimento noite a noite, não dentro de uma única exposição.",
       "framingTitle": "Enquadramento",
-      "offsetSet": "Deslocamento definido"
+      "offsetSet": "Deslocamento definido",
+      "observedBrightnessValues": "Última {latest} · Média {average}"
     },
     "track": {
       "step": "Rastrear",

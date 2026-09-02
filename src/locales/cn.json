@@ -5268,7 +5268,8 @@
       "asteroidCount": "{count} 颗小行星 — 固定列表，通过插件版本更新，而非同步获取。",
       "loading": "加载中…",
       "noMatch": "没有匹配的天体。",
-      "mag": "星等"
+      "mag": "星等",
+      "observedTooltip": "观测者报告的真实亮度（COBS）— 在爆发期间可能与预测星等不同。"
     },
     "position": {
       "step": "查看位置并构图",
@@ -5288,7 +5289,8 @@
       "pathLegendTonight": "今晚",
       "pathDescription": "相对于恒星背景的真实轨迹 — 跟踪期间 {name} 整晚都保持在画面中央；这显示的是逐夜的移动，而不是单次曝光内的移动。",
       "framingTitle": "构图",
-      "offsetSet": "已设置偏移"
+      "offsetSet": "已设置偏移",
+      "observedBrightnessValues": "最新 {latest} · 平均 {average}"
     },
     "track": {
       "step": "跟踪它",
