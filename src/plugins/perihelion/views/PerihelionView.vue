@@ -251,6 +251,29 @@
             </span>
           </div>
 
+          <div v-if="trackingMode === 'quick' && quickTrackStatus" class="tns-card flex flex-col gap-1.5">
+            <div class="flex items-center justify-between">
+              <span class="tns-stat-label">Live Status</span>
+              <span class="text-[10px] text-content-faint">from the plugin itself, not just this page</span>
+            </div>
+            <p v-if="quickTrackStatus.lastRaArcsecPerSec != null" class="text-xs text-content-muted tabular-nums">
+              Applied rate — RA {{ quickTrackStatus.lastRaArcsecPerSec.toFixed(4) }}″/s · Dec {{ quickTrackStatus.lastDecArcsecPerSec.toFixed(4) }}″/s
+            </p>
+            <p class="text-xs text-content-muted">
+              <span v-if="elapsedSinceStarted != null">Tracking for {{ elapsedSinceStarted }}</span>
+              <span v-if="elapsedSinceApplied != null"> · Applied {{ elapsedSinceApplied }} ago</span>
+            </p>
+            <p v-if="quickTrackStatus.autoReapplyMinutes && nextReapplyIn != null" class="text-xs text-content-muted">
+              Next re-apply in ~{{ nextReapplyIn }}
+            </p>
+            <p class="text-xs text-content-muted">
+              Guider shift: <span :class="quickTrackStatus.guiding ? 'text-status-ok' : 'text-content-faint'">{{ quickTrackStatus.guiding ? 'on' : 'off' }}</span>
+            </p>
+            <p v-if="!quickTrackStatus.lastApplySucceeded && quickTrackStatus.lastError" class="text-xs text-status-danger">
+              Last attempt failed: {{ quickTrackStatus.lastError }}
+            </p>
+          </div>
+
           <div v-if="actionStatus" class="tns-card" :class="actionStatus.ok ? 'border-status-ok/40' : 'border-status-danger/40'">
             <p class="text-xs" :class="actionStatus.ok ? 'text-status-ok' : 'text-status-danger'">
               {{ actionStatus.message }}
@@ -410,7 +433,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, h } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, h } from 'vue';
 import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
@@ -422,6 +445,7 @@ import { fetchSyncStatus, syncComets } from '../utils/syncComets';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
+import { fetchQuickTrackStatus } from '../utils/fetchQuickTrackStatus';
 import { usePerihelionStore } from '../store/perihelionStore';
 import OrbitalPathChart from '../components/OrbitalPathChart.vue';
 import FramingOffsetView from '../components/FramingOffsetView.vue';
@@ -664,6 +688,67 @@ const statusLabel = computed(() => {
   return 'Idle';
 });
 const stopButtonLabel = computed(() => (trackingMode.value === 'sequence' ? 'Stop Sequence' : 'Stop Quick Track'));
+
+// --- Live Quick Track status -- polls Perihelion's own /status route rather than trusting
+// stale local state, so e.g. a silently-failing auto-reapply tick is actually visible.
+const quickTrackStatus = ref(null);
+const now = ref(Date.now());
+let statusPollHandle = null;
+
+async function pollQuickTrackStatus() {
+  try {
+    quickTrackStatus.value = await fetchQuickTrackStatus();
+  } catch {
+    // Leave the last known value in place on a transient fetch error -- clearing it would make
+    // a one-off network blip look identical to tracking actually having stopped.
+  }
+  now.value = Date.now();
+}
+
+watch(
+  trackingMode,
+  (mode) => {
+    if (statusPollHandle) {
+      clearInterval(statusPollHandle);
+      statusPollHandle = null;
+    }
+    if (mode === 'quick') {
+      pollQuickTrackStatus();
+      statusPollHandle = setInterval(pollQuickTrackStatus, 10000);
+    } else {
+      quickTrackStatus.value = null;
+    }
+  },
+  { immediate: true }
+);
+onUnmounted(() => {
+  if (statusPollHandle) clearInterval(statusPollHandle);
+});
+
+/** Coarse duration ("3m", "1h 05m") without a directional suffix -- caller supplies "for"/"in ~". */
+function formatDuration(ms) {
+  const seconds = Math.max(0, ms) / 1000;
+  if (seconds < 60) return 'under a minute';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+  return `${Math.floor(seconds / 3600)}h ${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}m`;
+}
+
+const elapsedSinceStarted = computed(() => {
+  const startedUtc = quickTrackStatus.value?.startedUtc;
+  if (!startedUtc) return null;
+  return formatDuration(now.value - new Date(startedUtc).getTime());
+});
+const elapsedSinceApplied = computed(() => {
+  const lastAppliedUtc = quickTrackStatus.value?.lastAppliedUtc;
+  if (!lastAppliedUtc) return null;
+  return relativeTime(new Date(lastAppliedUtc));
+});
+const nextReapplyIn = computed(() => {
+  const s = quickTrackStatus.value;
+  if (!s?.autoReapplyMinutes || !s.lastAppliedUtc) return null;
+  const nextAtMs = new Date(s.lastAppliedUtc).getTime() + s.autoReapplyMinutes * 60000;
+  return formatDuration(nextAtMs - now.value);
+});
 
 async function onAddToSequence() {
   if (!selected.value) return;
