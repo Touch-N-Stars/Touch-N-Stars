@@ -1,5 +1,5 @@
 <template>
-  <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 280px">
+  <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 440px">
     <div ref="viewerContainer" class="absolute inset-0" />
     <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
       {{ errorMessage }}
