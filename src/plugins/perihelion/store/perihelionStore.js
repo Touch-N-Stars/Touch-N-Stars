@@ -8,6 +8,10 @@ export const usePerihelionStore = defineStore('perihelion', {
     activeTab: 'browse',
     selectedId: null,
     filter: 'all',
+    // 'brightness' | 'name' -- within the "all" filter, comets are always listed before
+    // asteroids regardless of this (see PerihelionView.vue's own filteredObjects comment for
+    // why), this only controls the ordering within each of those two groups.
+    sortMode: 'brightness',
     searchQuery: '',
     exposureFilter: '',
     exposureSeconds: 30,

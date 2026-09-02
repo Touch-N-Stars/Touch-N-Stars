@@ -336,24 +336,25 @@ const scaleBarX2 = computed(() =>
   scaleBarSide.value === 'left' ? padding + (scaleBar.value?.px ?? 0) : width - padding
 );
 
-// Endpoint date-label geometry: a short leader (point -> dot -> gap -> text), vertical-only so
-// it never runs diagonally across the chart. Direction is chosen away from the curve's own
-// local direction (the neighboring point one step along the path) rather than a fixed top/
-// bottom row, so the leader doesn't run along/through the path line itself; a path that dips or
-// curves back no longer produces a label stranded far from its own point.
-const LEADER_DOT_DIST = 8;
-const LABEL_TEXT_DIST = 16;
+// Endpoint date-label geometry: a straight vertical leader from the actual point up/down to a
+// dot LEVEL WITH the date text (same y as the text, not a separate stop partway there) -- it
+// never runs diagonally across the chart, so it can't be mistaken for path data. Direction is
+// chosen away from the curve's own local direction (the neighboring point one step along the
+// path) rather than a fixed top/bottom row, so the leader doesn't run along/through the path
+// line itself; a path that dips or curves back no longer produces a label stranded far from its
+// own point.
+const LEADER_DIST = 16;
 
 function endpointGeometry(point, neighbor) {
   let dir;
   const dy = neighbor ? point.y - neighbor.y : 0;
   dir = Math.abs(dy) > 0.01 ? Math.sign(dy) : point.y < height / 2 ? 1 : -1;
 
-  // Nudge away from the scale bar's row/column if this direction would land the text there.
+  // Nudge away from the scale bar's row/column if this direction would land the label there.
   if (scaleBar.value) {
     const barY = height - padding - 6;
     const labelX = point.x + labelDx(point.x);
-    const nearBarRow = Math.abs(point.y + dir * LABEL_TEXT_DIST - barY) < 12;
+    const nearBarRow = Math.abs(point.y + dir * LEADER_DIST - barY) < 12;
     const nearBarCol =
       scaleBarSide.value === 'left'
         ? labelX < scaleBarX2.value + 10
@@ -361,9 +362,10 @@ function endpointGeometry(point, neighbor) {
     if (nearBarRow && nearBarCol) dir = -dir;
   }
 
+  const textY = point.y + dir * LEADER_DIST;
   return {
-    dot: { x: point.x, y: point.y + dir * LEADER_DOT_DIST },
-    textY: point.y + dir * LABEL_TEXT_DIST,
+    dot: { x: point.x, y: textY },
+    textY,
   };
 }
 

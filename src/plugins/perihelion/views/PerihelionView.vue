@@ -76,12 +76,19 @@
               "
               @click="filter = f.value"
             >
-              {{ f.label }}
+              {{ t(f.labelKey) }}
             </button>
             <span class="flex-1"></span>
-            <span class="text-[11px] text-content-faint">{{
-              t('perihelion.browse.sortedByBrightness')
-            }}</span>
+            <label class="flex items-center gap-1.5 text-[11px] text-content-faint shrink-0">
+              {{ t('perihelion.browse.sortBy') }}
+              <select
+                v-model="sortMode"
+                class="bg-transparent border border-line rounded-chip text-content-muted px-1.5 py-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-accent/50"
+              >
+                <option value="brightness">{{ t('perihelion.browse.sortBrightness') }}</option>
+                <option value="name">{{ t('perihelion.browse.sortName') }}</option>
+              </select>
+            </label>
           </div>
 
           <div
@@ -831,6 +838,7 @@ const {
   activeTab,
   selectedId,
   filter,
+  sortMode,
   searchQuery,
   exposureFilter,
   exposureSeconds,
@@ -874,10 +882,13 @@ const tabItems = computed(() => [
 const objects = ref([]);
 const objectsLoading = ref(false);
 const objectsError = ref(null);
+// Stores the key, not the resolved string -- t(f.labelKey) is called in the template itself
+// (unlike SubNav's tabItems, which bakes the resolved string into the array and so needs that
+// array to be a computed instead), so a plain array here already reacts to a locale switch.
 const filterOptions = [
-  { label: 'All', value: 'all' },
-  { label: 'Comets', value: 'Comet' },
-  { label: 'Asteroids', value: 'Asteroid' },
+  { labelKey: 'perihelion.browse.filterAll', value: 'all' },
+  { labelKey: 'perihelion.browse.filterComets', value: 'Comet' },
+  { labelKey: 'perihelion.browse.filterAsteroids', value: 'Asteroid' },
 ];
 
 async function loadObjects() {
@@ -934,6 +945,21 @@ async function onSyncComets() {
   if (result.ok) await loadObjects();
 }
 
+function sortObjects(list) {
+  const arr = [...list];
+  if (sortMode.value === 'name') {
+    arr.sort((a, b) => a.name.localeCompare(b.name));
+  } else {
+    // Nulls (no magnitude available) sort last regardless of direction.
+    arr.sort((a, b) => {
+      if (a.magnitude == null) return b.magnitude == null ? 0 : 1;
+      if (b.magnitude == null) return -1;
+      return a.magnitude - b.magnitude;
+    });
+  }
+  return arr;
+}
+
 const filteredObjects = computed(() => {
   let list = objects.value;
   if (filter.value !== 'all') list = list.filter((o) => o.objectType === filter.value);
@@ -941,7 +967,18 @@ const filteredObjects = computed(() => {
     const q = searchQuery.value.trim().toLowerCase();
     list = list.filter((o) => o.name.toLowerCase().includes(q));
   }
-  return list;
+  // On the combined "all" view, comets are grouped before asteroids rather than interleaved by
+  // raw magnitude -- a comet's magnitude is a TOTAL brightness over its whole diffuse coma, not
+  // a point source the way an asteroid's is, so a straight numeric sort across both overstates
+  // how directly comparable they really are. Grouping avoids that false precision, and comets
+  // first also matches that most people using this panel are after comets specifically.
+  if (filter.value === 'all') {
+    return [
+      ...sortObjects(list.filter((o) => o.objectType === 'Comet')),
+      ...sortObjects(list.filter((o) => o.objectType === 'Asteroid')),
+    ];
+  }
+  return sortObjects(list);
 });
 
 // Computed rather than hardcoded so the "N asteroids" note below never silently goes stale if

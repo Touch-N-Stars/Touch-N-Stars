@@ -5224,7 +5224,12 @@
     "browse": {
       "step": "Pick a comet or asteroid to track",
       "searchPlaceholder": "Search comets & asteroids…",
-      "sortedByBrightness": "Sorted by brightness",
+      "filterAll": "All",
+      "filterComets": "Comets",
+      "filterAsteroids": "Asteroids",
+      "sortBy": "Sort by",
+      "sortBrightness": "Brightness",
+      "sortName": "Name",
       "cometsStatus": "Comets {status}",
       "syncedAgo": "synced {when}",
       "neverSynced": "never synced",
