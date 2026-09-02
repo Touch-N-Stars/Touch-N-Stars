@@ -216,3 +216,13 @@ watch(
   }
 );
 </script>
+
+<style scoped>
+/* Matches CelestiaAtlasView.vue's own override -- the library renders this credit banner by
+   default, but the app-wide view already hides it, so showing it only here would be an
+   inconsistency rather than added compliance (wherever this app satisfies DSS/CDS attribution,
+   it already does so consistently without this). */
+:deep(.celestia-atlas-survey-credit) {
+  display: none !important;
+}
+</style>
