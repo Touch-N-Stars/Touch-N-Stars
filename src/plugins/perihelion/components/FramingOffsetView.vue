@@ -1,5 +1,5 @@
 <template>
-  <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 440px">
+  <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 570px">
     <div ref="viewerContainer" class="absolute inset-0" />
     <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
       {{ errorMessage }}
@@ -114,12 +114,20 @@ function computeFovOverlay() {
 
 function centerOnTarget() {
   if (!viewer) return;
+  // The view's own zoom level has to scale with the camera's real FOV, not a fixed guess -- a
+  // hardcoded 1.5deg view against a camera whose actual field is wider than that means the FOV
+  // box ends up bigger than the whole visible view, so you're zoomed into the middle of it with
+  // no edge ever in frame (exactly what happened before this fix). 3x the box's longer side
+  // leaves comfortable margin to actually see and pan around it; 1.5deg is just the fallback
+  // when no camera FOV is available at all (nothing connected yet).
+  const fovOverlay = computeFovOverlay();
+  const viewFovDeg = fovOverlay ? Math.max(fovOverlay.widthDeg, fovOverlay.heightDeg) * 3 : 1.5;
+
   // frame is required -- setView's own coordinate validation (toAtlasCoordinates) throws
   // without one. J2000 matches how the rest of this app treats NINA-sourced RA/Dec (e.g.
   // atlasSelectionToFraming's own coordinateFrame: 'J2000'), and Perihelion's own values are
   // J2000 too (NINA.Astrometry.InputCoordinates).
-  viewer.setView({ center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' }, fovDeg: 1.5 });
-  const fovOverlay = computeFovOverlay();
+  viewer.setView({ center: { raDeg: props.raHours * 15, decDeg: props.decDeg, frame: 'J2000' }, fovDeg: viewFovDeg });
   if (fovOverlay) viewer.setFieldOfView(fovOverlay);
   hasOffset.value = false;
 
