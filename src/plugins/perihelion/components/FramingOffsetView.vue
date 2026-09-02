@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-2">
-    <div class="relative rounded-chip overflow-hidden bg-surface-2" style="height: 570px">
+    <div class="relative rounded-chip overflow-hidden bg-surface-2 h-72 md:h-96 lg:h-[570px]">
       <div ref="viewerContainer" class="absolute inset-0" />
       <p v-if="errorMessage" class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center">
         {{ errorMessage }}
@@ -35,7 +35,7 @@
 
     <div v-if="ready" class="flex gap-2">
       <button class="tns-btn-primary flex-1" @click="captureFraming">Use this Framing</button>
-      <button v-if="hasOffset" class="tns-btn-secondary" @click="resetFraming">Reset</button>
+      <button v-if="hasOffset" class="tns-btn-secondary flex-1" @click="resetFraming">Reset</button>
     </div>
   </div>
 </template>

@@ -5,6 +5,23 @@
     <div class="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
       <!-- ===================== BROWSE ===================== -->
       <template v-if="activeTab === 'browse'">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-chip bg-violet-400/15 flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.341 6.484A10 10 0 0 1 10.266 21.85m-6.607-4.334A10 10 0 0 1 13.74 2.152" />
+              <circle cx="12" cy="12" r="3" />
+              <circle cx="19" cy="5" r="2" />
+              <circle cx="5" cy="19" r="2" />
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <h1 class="text-lg font-bold text-content leading-tight">Perihelion</h1>
+            <p class="text-[11px] text-content-muted leading-snug">
+              Non-sidereal tracking for comets & asteroids — live orbital data, offline-durable.
+            </p>
+          </div>
+        </div>
+
         <input
           v-model="searchQuery"
           type="text"
