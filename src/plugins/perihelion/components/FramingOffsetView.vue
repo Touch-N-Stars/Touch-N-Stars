@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-3">
     <div class="relative rounded-chip overflow-hidden bg-surface-2 h-72 md:h-96 lg:h-[570px]">
       <div ref="viewerContainer" class="absolute inset-0" />
       <canvas ref="pathCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>

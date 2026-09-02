@@ -24,5 +24,12 @@ export const usePerihelionStore = defineStore('perihelion', {
     // Quick Track is active and the user navigates away and back, the Track tab should still
     // show it running rather than resetting to Idle.
     trackingMode: 'idle',
+    // { raDeg, decDeg } | null -- captured once via FramingOffsetView's "Use this Framing".
+    // Was a plain component-local ref() until it was noticed that navigating away from the
+    // Perihelion tab and back (no <KeepAlive>, see this store's own header comment) silently
+    // lost it, forcing the offset to be re-applied. Reset to null on target change by the same
+    // watcher in PerihelionView.vue that always did this -- an offset captured for one object
+    // has no meaning for a different one.
+    framingOffset: null,
   }),
 });

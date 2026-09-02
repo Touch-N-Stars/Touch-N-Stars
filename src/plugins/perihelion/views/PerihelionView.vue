@@ -686,6 +686,7 @@ const {
   autofocusMinutes,
   autoReapply,
   trackingMode,
+  framingOffset,
 } = storeToRefs(perihelionStore);
 
 const AUTO_REAPPLY_MINUTES = 15;
@@ -849,7 +850,8 @@ watch([activeTab, selected], ([tab]) => {
 
 // --- Framing offset -- see FramingOffsetView.vue's own doc comment for the mechanism.
 // null means "no offset, center exactly on the object's true position" (the default).
-const framingOffset = ref(null);
+// framingOffset itself now lives in perihelionStore (see its own comment) so it survives
+// leaving and re-entering this tab, same as guiding/autoReapply/etc. already did.
 watch(selected, () => {
   // An offset captured for one object has no meaning for a different one -- reset rather than
   // silently carry it over. FramingOffsetView itself remounts fresh on selection change (it's
