@@ -390,6 +390,20 @@ export default {
     return this._simpleGetRequest(`${API_URL}phd2/camera/ids`);
   },
 
+  // TPPA/OAT (OpenAstroTech polar alignment) plugin settings
+  getTppaOatOptions() {
+    const { API_URL } = getUrls();
+    return this._simpleGetRequest(`${API_URL}tppa/oat/options`);
+  },
+  postTppaOatOptions(options) {
+    const { API_URL } = getUrls();
+    return this._simplePostRequest(`${API_URL}tppa/oat/options`, options);
+  },
+  postTppaOatReset() {
+    const { API_URL } = getUrls();
+    return this._simplePostRequest(`${API_URL}tppa/oat/reset`, {});
+  },
+
   getPHD2CameraGain() {
     const { API_URL } = getUrls();
     return this._simpleGetRequest(`${API_URL}phd2/camera/gain`);

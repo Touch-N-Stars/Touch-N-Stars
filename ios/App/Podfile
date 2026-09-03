@@ -32,4 +32,15 @@ end
 
 post_install do |installer|
   assertDeploymentTarget(installer)
+
+  # Pods are statically embedded into the App target's own signed binary — they don't need
+  # (and, for a personal/free-tier Apple ID without access to the upstream team, can't get)
+  # their own independent code signing identity. Without this, Xcode may try to sign
+  # individual pod targets against whatever team ID it last saw, causing spurious
+  # "No signing certificate" errors unrelated to the main App target's signing.
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+    end
+  end
 end
