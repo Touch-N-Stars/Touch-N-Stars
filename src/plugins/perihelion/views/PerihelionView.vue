@@ -97,7 +97,6 @@
           >
             <span
               >{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
-              <span class="text-content-faint">·</span>
               {{ cobsStatusLabel }}</span
             >
             <span class="flex-1"></span>
