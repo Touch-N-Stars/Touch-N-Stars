@@ -253,11 +253,9 @@
                 class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                 @click="showMoreDetails = !showMoreDetails"
               >
-                <ChevronRightIcon
-                  class="w-4 h-4 shrink-0 text-content-faint transition-transform duration-200"
-                  :class="{ 'rotate-90': showMoreDetails }"
-                />
                 <span class="tns-stat-label flex-1">{{ t('perihelion.position.moreDetails') }}</span>
+                <ChevronUpIcon v-if="showMoreDetails" class="w-4 h-4 shrink-0 text-content-faint" />
+                <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
               </button>
               <div v-if="showMoreDetails" class="p-3 pt-0 flex flex-col gap-2">
                 <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
@@ -989,7 +987,8 @@ import {
   InformationCircleIcon,
   CheckCircleIcon,
   ArrowDownTrayIcon,
-  ChevronRightIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
 } from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
