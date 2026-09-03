@@ -64,6 +64,23 @@
             class="tns-input"
           />
 
+          <div v-if="filter !== 'Asteroid'" class="flex items-center gap-2">
+            <button
+              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-content-muted border border-line hover:bg-surface-2 disabled:opacity-50 cursor-pointer"
+              :disabled="refreshingCobs"
+              @click="onRefreshCobs"
+            >
+              {{ refreshingCobs ? t('perihelion.browse.refreshingCobs') : t('perihelion.browse.refreshCobs') }}
+            </button>
+            <button
+              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
+              :disabled="syncing"
+              @click="onSyncComets"
+            >
+              {{ syncing ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow') }}
+            </button>
+          </div>
+
           <div class="flex items-center gap-2">
             <button
               v-for="f in filterOptions"
@@ -89,6 +106,14 @@
                 <option value="name">{{ t('perihelion.browse.sortName') }}</option>
               </select>
             </label>
+            <button
+              v-if="filter !== 'Asteroid'"
+              class="text-content-faint hover:text-content-muted shrink-0"
+              :aria-label="t('perihelion.browse.observedTooltip')"
+              @click="showObservedMagLegend = true"
+            >
+              <InformationCircleIcon class="w-4 h-4" />
+            </button>
           </div>
 
           <div
@@ -100,28 +125,6 @@
               <span class="text-content-faint">·</span>
               {{ cobsStatusLabel }}</span
             >
-            <span class="flex-1"></span>
-            <button
-              class="text-content-faint hover:text-content-muted shrink-0"
-              :aria-label="t('perihelion.browse.observedTooltip')"
-              @click="showObservedMagLegend = true"
-            >
-              <InformationCircleIcon class="w-4 h-4" />
-            </button>
-            <button
-              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-content-muted border border-line hover:bg-surface-2 disabled:opacity-50 cursor-pointer"
-              :disabled="refreshingCobs"
-              @click="onRefreshCobs"
-            >
-              {{ refreshingCobs ? t('perihelion.browse.refreshingCobs') : t('perihelion.browse.refreshCobs') }}
-            </button>
-            <button
-              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
-              :disabled="syncing"
-              @click="onSyncComets"
-            >
-              {{ syncing ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow') }}
-            </button>
           </div>
           <p
             v-if="filter !== 'Asteroid' && syncMessage"
