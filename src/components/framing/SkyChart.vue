@@ -148,12 +148,65 @@ const altitudeData = computed(() => {
 // in the window qualifies (never rises during any dark period in range, or there's no
 // astronomical night at all in this +/-12h span -- e.g. far-north summer), there's no real peak
 // to report, and the caller shows "no peak in dark window" rather than a misleading number.
-const peakAltitudePoint = computed(() => {
+// TEMPORARY debug instrumentation (2026-09-03) -- a real, reproducible-even-in-incognito bug
+// report showed an altitude reading exceeding the hard 90-|lat-dec| geometric ceiling for the
+// object/site combination, which every standalone reproduction of this exact formula fails to
+// reproduce. Capturing the raw inputs and the unconstrained max alongside the dark-window max so
+// the next real report shows exactly what this component is actually working with, instead of
+// guessing further. Remove once the real cause is found.
+const peakDebugInfo = computed(() => {
   if (props.target?.RA == null || props.target?.Dec == null) return null;
   const steps = 96;
-  let best = null;
+  let unconstrainedBest = null;
   for (let i = 0; i <= steps; i++) {
     const time = new Date(baseTime.value.getTime() + i * 15 * 60 * 1000);
+    const alt = calculateAltitude(
+      props.target.RA,
+      props.target.Dec,
+      props.coordinates.latitude,
+      props.coordinates.longitude,
+      time
+    );
+    if (!unconstrainedBest || alt > unconstrainedBest.altitude) {
+      unconstrainedBest = { altitude: alt, label: `${time.getHours()}:${String(time.getMinutes()).padStart(2, '0')}` };
+    }
+  }
+  return {
+    lat: props.coordinates.latitude,
+    lon: props.coordinates.longitude,
+    ra: props.target.RA,
+    dec: props.target.Dec,
+    baseTime: baseTime.value.toISOString(),
+    geometricCeiling: 90 - Math.abs(props.coordinates.latitude - props.target.Dec),
+    unconstrainedMax: unconstrainedBest,
+  };
+});
+
+const peakAltitudePoint = computed(() => {
+  if (props.target?.RA == null || props.target?.Dec == null) return null;
+  // This deliberately does NOT reuse the chart's own baseTime grid (a fixed +/-12h window
+  // centered on "now"). Two bugs found here, both from that coupling:
+  // (1) the forward half of a +/-12h window straddles last night's dark period (already over)
+  //     as well as tonight's (still ahead) -- without excluding elapsed time, this happily
+  //     reported last night's peak (e.g. "Peaks at 2:15" while it's already midday) whenever it
+  //     was higher than tonight's.
+  // (2) excluding elapsed time from that SAME fixed window then broke the opposite way: when
+  //     "now" is in the morning, "now + 12h" lands in the early evening -- right around when
+  //     astronomical twilight even starts -- so the window's future half never reaches deep
+  //     enough into the coming night to find any of it, and EVERY object reported "not visible"
+  //     even with an obviously-usable peak later that night.
+  // A rolling 24h-from-now window, independent of the chart's own fixed display range, is the
+  // only thing that guarantees the very next dark period is actually inside the search range
+  // regardless of what time of day "now" happens to be.
+  // Reads baseTime.value purely to stay a reactive dependency, so this recomputes on the same
+  // 15-minute interval that already refreshes baseTime for the chart -- the value itself isn't
+  // used below, "now" is computed fresh from the actual clock instead.
+  void baseTime.value;
+  const now = new Date(timeSync.getServerTime());
+  const steps = 96; // 24h from now, in 15-minute steps
+  let best = null;
+  for (let i = 0; i <= steps; i++) {
+    const time = new Date(now.getTime() + i * 15 * 60 * 1000);
     const sunAlt = calculateSunAltitude(props.coordinates.latitude, props.coordinates.longitude, time);
     if (sunAlt >= -18) continue;
     const alt = calculateAltitude(
@@ -170,6 +223,24 @@ const peakAltitudePoint = computed(() => {
   }
   return best;
 });
+// Same unstable-prop-reference hazard as the peak-altitude watcher below: peakDebugInfo returns
+// a brand-new object every time it re-evaluates, so emitting unconditionally on every change was
+// itself an unbounded reactive loop (computed -> emit -> parent state update -> parent re-render
+// -> new inline :target/:coordinates object literals -> computed re-evaluates -> emit again).
+// Comparing the actual values before emitting breaks the cycle, same fix as below.
+let lastEmittedDebugKey = null;
+watch(
+  peakDebugInfo,
+  (d) => {
+    const key = d
+      ? `${d.lat}|${d.lon}|${d.ra}|${d.dec}|${d.baseTime}|${d.unconstrainedMax?.altitude}|${d.unconstrainedMax?.label}`
+      : null;
+    if (key === lastEmittedDebugKey) return;
+    lastEmittedDebugKey = key;
+    emit('peak-debug', d);
+  },
+  { immediate: true }
+);
 // Real bug caught on real hardware: the parent passes :target/:coordinates as inline object
 // literals, so it hands down a brand-new object reference on every one of its own re-renders
 // even when RA/Dec/lat/lon haven't actually changed. Without this guard, that alone was enough

@@ -312,10 +312,28 @@
                     longitude: store.profileInfo.AstrometrySettings.Longitude,
                   }"
                   @peak-altitude="tonightsPeakAltitude = $event"
+                  @peak-debug="peakDebugInfo = $event"
                 />
                 <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
                   {{ t('perihelion.position.altitudeDescription', { name: selected.name }) }}
                 </p>
+                <!-- TEMPORARY debug panel (2026-09-03) -- remove once the impossible-peak bug is
+                     confirmed fixed. Shows exactly what SkyChart is computing from, plus the
+                     currently-selected object's own name/id/RA/Dec for cross-checking staleness. -->
+                <div
+                  v-if="peakDebugInfo"
+                  class="mt-2 rounded border border-amber-500/40 bg-amber-500/10 p-2 text-[10px] font-mono leading-relaxed text-amber-200 break-all"
+                >
+                  <div class="font-bold mb-1">DEBUG (temporary)</div>
+                  <div>selected: {{ selected?.name }} (id={{ selected?.id }})</div>
+                  <div>selected RA/Dec (deg): {{ (selected?.raHours * 15).toFixed(4) }} / {{ selected?.decDeg?.toFixed(4) }}</div>
+                  <div>chart target RA/Dec (deg): {{ peakDebugInfo.ra?.toFixed(4) }} / {{ peakDebugInfo.dec?.toFixed(4) }}</div>
+                  <div>lat/lon: {{ peakDebugInfo.lat?.toFixed(4) }} / {{ peakDebugInfo.lon?.toFixed(4) }}</div>
+                  <div>geometric ceiling: {{ peakDebugInfo.geometricCeiling?.toFixed(2) }}°</div>
+                  <div>unconstrained max (whole window): {{ peakDebugInfo.unconstrainedMax?.altitude?.toFixed(2) }}° @ {{ peakDebugInfo.unconstrainedMax?.label }}</div>
+                  <div>baseTime (now-12h): {{ peakDebugInfo.baseTime }}</div>
+                  <div>reported peak: {{ tonightsPeakAltitude?.altitude?.toFixed(2) }}° @ {{ tonightsPeakAltitude?.label }}</div>
+                </div>
               </div>
 
               <div class="tns-card">
@@ -1190,6 +1208,11 @@ const altAz = computed(() => {
 // { altitude, label } | null -- from SkyChart's own peak-altitude emit, so "currently low" and
 // "climbing to a good altitude tonight" aren't indistinguishable in the same red/amber badge.
 const tonightsPeakAltitude = ref(null);
+// TEMPORARY debug instrumentation (2026-09-03) -- see SkyChart.vue's own peak-debug comment.
+// Screenshotting this alongside the object's own name/RA/Dec (from `selected`, not from the
+// debug payload) is what actually catches a props-staleness mismatch, if that's the real cause
+// of the previously-reported impossible ceiling-violating values. Remove once resolved.
+const peakDebugInfo = ref(null);
 
 const path = ref([]);
 const pathLoading = ref(false);
