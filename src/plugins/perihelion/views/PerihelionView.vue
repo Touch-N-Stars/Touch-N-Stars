@@ -706,8 +706,11 @@
                 }}
               </button>
               <div class="flex gap-2">
+                <!-- flex-[3]/flex-[2] (not flex-1 each) -- "Slew & Center" plus its gear button
+                     needs more room than "Quick Track" alone to fit its own label on one line at
+                     typical mobile widths; an even 50/50 split wrapped it to two lines. -->
                 <div
-                  class="flex-1 flex items-stretch border border-line-strong rounded-control overflow-hidden"
+                  class="flex-[3] flex items-stretch border border-line-strong rounded-control overflow-hidden"
                 >
                   <button
                     class="flex-1 min-h-touch px-3 text-sm font-semibold text-content bg-surface-3 hover:bg-surface-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-surface-3 transition-colors duration-150"
@@ -743,7 +746,7 @@
                   </button>
                 </div>
                 <button
-                  class="tns-btn-secondary flex-1"
+                  class="tns-btn-secondary flex-[2]"
                   :disabled="actionBusy"
                   @click="onQuickTrack"
                 >
