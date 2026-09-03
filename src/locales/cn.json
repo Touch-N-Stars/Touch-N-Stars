@@ -5373,8 +5373,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "旋转",
-      "resetRotation": "重置旋转",
-      "resetPositionLink": "重置位置",
       "rotationHelp": "使取景框与相机的实际旋转角度一致。",
       "useFraming": "使用此构图",
       "useFramingHelp": "将此次平移（例如为拍到彗尾而偏离中心）保存为序列的偏移量。",

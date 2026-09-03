@@ -5373,8 +5373,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotació",
-      "resetRotation": "Restableix la rotació",
-      "resetPositionLink": "Restableix la posició",
       "rotationHelp": "Ajusta el marc a la rotació real de la teva càmera.",
       "useFraming": "Usa Aquest Enquadrament",
       "useFramingHelp": "Desa aquest desplaçament (p. ex. descentrat per a una cua) com el desplaçament de la seqüència.",

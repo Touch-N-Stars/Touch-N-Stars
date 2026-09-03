@@ -5373,8 +5373,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotace",
-      "resetRotation": "Obnovit rotaci",
-      "resetPositionLink": "Obnovit pozici",
       "rotationHelp": "Přizpůsobí rámeček skutečné rotaci vaší kamery.",
       "useFraming": "Použít Toto Rámování",
       "useFramingHelp": "Uloží tento posun (např. mimo střed kvůli ohonu) jako posun sekvence.",

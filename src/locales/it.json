@@ -5378,8 +5378,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotazione",
-      "resetRotation": "Ripristina rotazione",
-      "resetPositionLink": "Ripristina posizione",
       "rotationHelp": "Allinea il riquadro alla rotazione reale della tua camera.",
       "useFraming": "Usa questa inquadratura",
       "useFramingHelp": "Salva questo spostamento (es. decentrato per una coda) come scostamento della sequenza.",

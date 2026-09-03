@@ -5373,8 +5373,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "회전",
-      "resetRotation": "회전 재설정",
-      "resetPositionLink": "위치 재설정",
       "rotationHelp": "프레임 박스를 카메라의 실제 회전에 맞춥니다.",
       "useFraming": "이 프레이밍 사용",
       "useFramingHelp": "이 이동(예: 꼬리를 위해 중앙에서 벗어남)을 시퀀스의 오프셋으로 저장합니다.",

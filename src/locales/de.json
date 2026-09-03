@@ -5378,8 +5378,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotation",
-      "resetRotation": "Rotation zurücksetzen",
-      "resetPositionLink": "Position zurücksetzen",
       "rotationHelp": "Passt den Rahmen an die tatsächliche Rotation deiner Kamera an.",
       "useFraming": "Framing übernehmen",
       "useFramingHelp": "Speichert diesen Ausschnitt (z. B. außermittig für einen Schweif) als Versatz der Sequenz.",

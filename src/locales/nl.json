@@ -5373,8 +5373,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotatie",
-      "resetRotation": "Rotatie resetten",
-      "resetPositionLink": "Positie resetten",
       "rotationHelp": "Past het beeldkader aan de werkelijke rotatie van je camera aan.",
       "useFraming": "Dit beeldveld gebruiken",
       "useFramingHelp": "Slaat deze pan (bijv. buiten het midden voor een staart) op als verschuiving van de sequentie.",

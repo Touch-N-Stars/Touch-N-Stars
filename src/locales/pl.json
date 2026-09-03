@@ -5373,8 +5373,6 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotacja",
-      "resetRotation": "Resetuj obrót",
-      "resetPositionLink": "Resetuj pozycję",
       "rotationHelp": "Dopasowuje ramkę kadru do rzeczywistej rotacji Twojej kamery.",
       "useFraming": "Użyj Tego Kadru",
       "useFramingHelp": "Zapisuje to przesunięcie (np. poza środkiem dla warkocza) jako przesunięcie sekwencji.",
