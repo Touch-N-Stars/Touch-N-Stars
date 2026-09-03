@@ -5300,7 +5300,7 @@
       "altitudePeak": "最大{deg}° ~ {time}",
       "framingCapturedPrompt": "フレーミングを取得しました — 追尾準備完了。",
       "goToTrack": "追尾へ移動",
-      "noPeakInDarkWindow": "暗夜時間帯にピークなし"
+      "noPeakInDarkWindow": "暗夜時間帯には見えません"
     },
     "track": {
       "step": "追尾する",

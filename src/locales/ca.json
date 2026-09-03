@@ -5300,7 +5300,7 @@
       "altitudePeak": "Arriba a {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadrament capturat — a punt per seguir.",
       "goToTrack": "Vés a Segueix",
-      "noPeakInDarkWindow": "Cap pic dins la finestra fosca"
+      "noPeakInDarkWindow": "No visible dins la finestra fosca"
     },
     "track": {
       "step": "Segueix-lo",

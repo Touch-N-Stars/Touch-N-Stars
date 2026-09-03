@@ -5300,7 +5300,7 @@
       "altitudePeak": "Szczyt {deg}° ~ {time}",
       "framingCapturedPrompt": "Kadr zapisany — gotowe do śledzenia.",
       "goToTrack": "Przejdź do Śledź",
-      "noPeakInDarkWindow": "Brak szczytu w oknie ciemności"
+      "noPeakInDarkWindow": "Niewidoczna w oknie ciemności"
     },
     "track": {
       "step": "Śledź go",

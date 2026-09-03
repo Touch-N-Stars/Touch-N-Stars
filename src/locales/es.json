@@ -5305,7 +5305,7 @@
       "altitudePeak": "Alcanza {deg}° ~ {time}",
       "framingCapturedPrompt": "Encuadre capturado — listo para seguir.",
       "goToTrack": "Ir a Seguir",
-      "noPeakInDarkWindow": "Sin pico dentro de la ventana oscura"
+      "noPeakInDarkWindow": "No visible en la ventana oscura"
     },
     "track": {
       "step": "Seguirlo",

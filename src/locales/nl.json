@@ -5300,7 +5300,7 @@
       "altitudePeak": "Bereikt max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Beeldveld vastgelegd — klaar om te volgen.",
       "goToTrack": "Naar Navolgen",
-      "noPeakInDarkWindow": "Geen piek binnen het donkere venster"
+      "noPeakInDarkWindow": "Niet zichtbaar binnen het donkere venster"
     },
     "track": {
       "step": "Volg het",

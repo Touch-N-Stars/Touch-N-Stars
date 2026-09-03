@@ -5300,7 +5300,7 @@
       "altitudePeak": "Пік {deg}° ~ {time}",
       "framingCapturedPrompt": "Кадрування захоплено — готово до ведення.",
       "goToTrack": "Перейти до Ведення",
-      "noPeakInDarkWindow": "Немає піку в темному вікні"
+      "noPeakInDarkWindow": "Не видно в темному вікні"
     },
     "track": {
       "step": "Вести його",

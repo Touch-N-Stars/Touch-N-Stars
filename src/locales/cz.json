@@ -5300,7 +5300,7 @@
       "altitudePeak": "Vrchol {deg}° ~ {time}",
       "framingCapturedPrompt": "Rámování zachyceno — připraveno ke sledování.",
       "goToTrack": "Přejít na Sledovat",
-      "noPeakInDarkWindow": "Žádný vrchol v tmavém okně"
+      "noPeakInDarkWindow": "Nezviditelná v tmavém okně"
     },
     "track": {
       "step": "Sledovat jej",

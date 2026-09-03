@@ -5305,7 +5305,7 @@
       "altitudePeak": "Atinge {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadramento capturado — pronto para rastrear.",
       "goToTrack": "Ir para Rastrear",
-      "noPeakInDarkWindow": "Sem pico na janela escura"
+      "noPeakInDarkWindow": "Não visível na janela escura"
     },
     "track": {
       "step": "Rastrear",

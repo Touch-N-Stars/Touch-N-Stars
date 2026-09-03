@@ -5305,7 +5305,7 @@
       "altitudePeak": "Erreicht max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Framing erfasst — bereit zum Nachführen.",
       "goToTrack": "Zu Nachführen",
-      "noPeakInDarkWindow": "Kein Höchststand im Dunkelfenster"
+      "noPeakInDarkWindow": "Im Dunkelfenster nicht sichtbar"
     },
     "track": {
       "step": "Nachführen",
