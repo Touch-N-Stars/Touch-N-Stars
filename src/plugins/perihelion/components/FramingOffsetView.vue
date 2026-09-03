@@ -305,6 +305,34 @@ function drawPath() {
     ctx.fillStyle = i === 0 ? '#22d3ee' : '#a78bfa';
     ctx.fill();
   });
+
+  // Name tag next to the "Tonight" point -- replaces the native Celestia catalog label removed
+  // from centerOnTarget() (it disagreed with Perihelion's own live position for well-known
+  // periodic comets); anchored to our own point instead, so it's always correct. Same
+  // semi-transparent pill styling as the panToFrame/RA-Dec overlays above (bg-black/50,
+  // text-white/80), just canvas-drawn since this label's position is dynamic.
+  if (screenPoints.length) {
+    const tonight = screenPoints[0];
+    const labelPad = 4;
+    const labelGap = 8;
+    const boxHeight = 16;
+    ctx.font = '11px sans-serif';
+    const textWidth = ctx.measureText(props.targetName).width;
+    const boxWidth = textWidth + labelPad * 2;
+    // Default to the right of the dot, flipping to the left only if there isn't room before the
+    // canvas edge -- matches where Celestia's own former label used to sit.
+    const onRight = tonight.x + labelGap + boxWidth <= width;
+    const boxX = onRight ? tonight.x + labelGap : tonight.x - labelGap - boxWidth;
+    // Clamped vertically so the label can't run off the top/bottom edge when the point is near
+    // either one.
+    const boxY = Math.min(Math.max(tonight.y - boxHeight / 2, 0), height - boxHeight);
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(props.targetName, boxX + labelPad, boxY + boxHeight / 2);
+  }
 }
 
 function computeFovOverlay() {
