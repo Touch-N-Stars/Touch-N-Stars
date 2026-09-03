@@ -243,44 +243,93 @@
               </div>
             </div>
 
-            <!-- Real, if lower-priority, facts a user might want alongside the above -- same
-                 style as the RA/Dec/Mag row, not a separate card, since these are the same kind
-                 of "quick glance" data. Alt/Az needs a real site (hasLocation); Sun/Earth
-                 distance and solar elongation are free from the object's own already-computed
-                 heliocentric/geocentric vectors (see OrbitalTracking.BrowseObject's own
-                 comment), so those always show regardless of location. -->
-            <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
-              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-                <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
-                <span class="text-[15px] font-bold tabular-nums text-content">{{
-                  altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
-                }}</span>
-              </div>
-              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-                <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
-                <span class="text-[15px] font-bold tabular-nums text-content">{{
-                  altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
-                }}</span>
-              </div>
-            </div>
-            <div class="grid grid-cols-3 gap-2">
-              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-                <span class="tns-stat-label">{{ t('perihelion.position.sunDistance') }}</span>
-                <span class="text-[15px] font-bold tabular-nums text-content"
-                  >{{ selected.sunDistanceAu.toFixed(2) }} au</span
-                >
-              </div>
-              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-                <span class="tns-stat-label">{{ t('perihelion.position.earthDistance') }}</span>
-                <span class="text-[15px] font-bold tabular-nums text-content"
-                  >{{ selected.earthDistanceAu.toFixed(2) }} au</span
-                >
-              </div>
-              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
-                <span class="tns-stat-label">{{ t('perihelion.position.solarElongation') }}</span>
-                <span class="text-[15px] font-bold tabular-nums text-content"
-                  >{{ selected.solarElongationDeg.toFixed(0) }}°</span
-                >
+            <!-- Real, if lower-priority, facts a user might want alongside the above -- collapsed
+                 by default so they don't add permanent scroll weight to an already-busy tab.
+                 Alt/Az needs a real site (hasLocation); Sun/Earth distance, solar elongation and
+                 constellation are free from the object's own already-computed geocentric
+                 position (see OrbitalTracking.BrowseObject's own comments), so those always show
+                 regardless of location. Perihelion date is comet-only. -->
+            <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden">
+              <button
+                class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
+                @click="showMoreDetails = !showMoreDetails"
+              >
+                <ChevronRightIcon
+                  class="w-4 h-4 shrink-0 text-content-faint transition-transform duration-200"
+                  :class="{ 'rotate-90': showMoreDetails }"
+                />
+                <span class="tns-stat-label flex-1">{{ t('perihelion.position.moreDetails') }}</span>
+              </button>
+              <div v-if="showMoreDetails" class="p-3 pt-0 flex flex-col gap-2">
+                <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
+                  <div
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
+                    <span class="text-[15px] font-bold tabular-nums text-content">{{
+                      altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
+                    }}</span>
+                  </div>
+                  <div
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
+                    <span class="text-[15px] font-bold tabular-nums text-content">{{
+                      altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
+                    }}</span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{ t('perihelion.position.sunDistance') }}</span>
+                    <span class="text-[15px] font-bold tabular-nums text-content"
+                      >{{ selected.sunDistanceAu.toFixed(2) }} au</span
+                    >
+                  </div>
+                  <div
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{
+                      t('perihelion.position.earthDistance')
+                    }}</span>
+                    <span class="text-[15px] font-bold tabular-nums text-content"
+                      >{{ selected.earthDistanceAu.toFixed(2) }} au</span
+                    >
+                  </div>
+                  <div
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{
+                      t('perihelion.position.solarElongation')
+                    }}</span>
+                    <span class="text-[15px] font-bold tabular-nums text-content"
+                      >{{ selected.solarElongationDeg.toFixed(0) }}°</span
+                    >
+                  </div>
+                </div>
+                <div class="grid gap-2" :class="selected.perihelionDateUtc ? 'grid-cols-2' : ''">
+                  <div
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{ t('perihelion.position.constellation') }}</span>
+                    <span class="text-[15px] font-bold text-content">{{
+                      selected.constellationName
+                    }}</span>
+                  </div>
+                  <div
+                    v-if="selected.perihelionDateUtc"
+                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
+                  >
+                    <span class="tns-stat-label">{{
+                      t('perihelion.position.perihelionDate')
+                    }}</span>
+                    <span class="text-[15px] font-bold tabular-nums text-content">{{
+                      formatPerihelionDate(selected.perihelionDateUtc)
+                    }}</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -941,6 +990,7 @@ import {
   InformationCircleIcon,
   CheckCircleIcon,
   ArrowDownTrayIcon,
+  ChevronRightIcon,
 } from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
@@ -1222,6 +1272,11 @@ async function onRefreshCobs() {
 // stands out in the list without needing to open it first.
 const showObservedMagLegend = ref(false);
 
+// Collapsed by default -- Alt/Az, Sun/Earth distance, elongation, constellation, and perihelion
+// date are real facts someone might want, but stacking them onto an already-busy tab as
+// permanently-visible rows was worse than tucking them behind one disclosure.
+const showMoreDetails = ref(false);
+
 // Magnitude is a reverse scale (lower number = brighter), so "observed differs from predicted"
 // isn't one kind of surprise -- it's two opposite ones. Brighter-than-predicted (diff very
 // negative) is a genuinely exciting outburst, worth flagging as good news, not a warning;
@@ -1329,6 +1384,13 @@ function formatDecDeg(decDeg) {
   const d = Math.floor(abs);
   const m = (abs - d) * 60;
   return `${sign}${d}° ${m.toFixed(0)}′`;
+}
+
+// Absolute, not relative (relativeTime() below reads oddly for a date that can be months in the
+// future or the past for a long-period comet) -- yyyy-MM-dd, same convention the 10-Night Path
+// chart's own date labels already use.
+function formatPerihelionDate(date) {
+  return date.toISOString().slice(0, 10);
 }
 
 /** "3h ago" / "just now" -- shared by the comet-sync status line and the COBS activity note. */
