@@ -249,16 +249,23 @@ watch(
 // an unbounded reactive loop that pegs the CPU and makes the whole page unresponsive, not a
 // crash. Comparing against the last value actually emitted breaks the cycle at its source,
 // without needing the parent to change its own (very common, otherwise harmless) prop pattern.
-let lastEmittedPeak = null;
+// Real bug found on real hardware, separate from the reactive-loop guard this comment used to
+// describe alone: comparing only the OUTPUT (altitude+label) against the last emission means
+// that if a genuinely different object's true peak ever happens to numerically match whatever
+// was last emitted for a PREVIOUS object, this guard wrongly calls it "unchanged" and never
+// re-emits -- leaving the displayed peak stuck on the old object's value even though
+// peakAltitudePoint itself recomputed correctly. peakDebugInfo's own dedup key (above) already
+// includes the target's RA/Dec for exactly this reason; folding the same target identity into
+// this key guarantees a real object change always forces a fresh emit, regardless of whether the
+// two objects' peak values happen to coincide.
+let lastEmittedPeakKey = null;
 watch(
   peakAltitudePoint,
   (p) => {
     const next = p ? { altitude: p.altitude, label: p.label } : null;
-    const unchanged =
-      next === lastEmittedPeak ||
-      (next && lastEmittedPeak && next.altitude === lastEmittedPeak.altitude && next.label === lastEmittedPeak.label);
-    if (unchanged) return;
-    lastEmittedPeak = next;
+    const key = `${props.target?.RA}|${props.target?.Dec}|${next?.altitude}|${next?.label}`;
+    if (key === lastEmittedPeakKey) return;
+    lastEmittedPeakKey = key;
     emit('peak-altitude', next);
   },
   { immediate: true }

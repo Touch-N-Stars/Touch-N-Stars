@@ -306,7 +306,6 @@
                 </p>
                 <SkyChart
                   v-else
-                  :key="selected.id"
                   :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
                   :coordinates="{
                     latitude: store.profileInfo.AstrometrySettings.Latitude,
