@@ -432,7 +432,7 @@
                       t('perihelion.position.framingCapturedPrompt')
                     }}</span>
                     <button
-                      class="tns-btn-primary w-auto shrink-0 px-4"
+                      class="tns-btn w-auto shrink-0 px-4 bg-status-ok text-white hover:brightness-110"
                       @click="goToTrackFromFraming"
                     >
                       {{ t('perihelion.position.goToTrack') }}
