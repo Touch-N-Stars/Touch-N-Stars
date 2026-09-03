@@ -96,8 +96,7 @@
             class="flex items-center gap-2 text-[11px] text-content-faint"
           >
             <span
-              ><span class="text-content-faint">·</span>
-              {{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
+              >{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
               <span class="text-content-faint">·</span>
               {{ cobsStatusLabel }}</span
             >
