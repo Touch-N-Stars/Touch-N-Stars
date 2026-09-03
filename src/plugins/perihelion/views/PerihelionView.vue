@@ -91,12 +91,16 @@
             </label>
           </div>
 
-          <div v-if="filter !== 'Asteroid'" class="text-[11px] text-content-faint">
-            {{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
-            <span class="text-content-faint">·</span>
-            {{ cobsStatusLabel }}
-          </div>
-          <div v-if="filter !== 'Asteroid'" class="flex items-center gap-2">
+          <div
+            v-if="filter !== 'Asteroid'"
+            class="flex items-center gap-2 text-[11px] text-content-faint"
+          >
+            <span
+              >{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
+              <span class="text-content-faint">·</span>
+              {{ cobsStatusLabel }}</span
+            >
+            <span class="flex-1"></span>
             <button
               class="text-content-faint hover:text-content-muted shrink-0"
               :aria-label="t('perihelion.browse.observedTooltip')"
@@ -104,7 +108,6 @@
             >
               <InformationCircleIcon class="w-4 h-4" />
             </button>
-            <span class="flex-1"></span>
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-content-muted border border-line hover:bg-surface-2 disabled:opacity-50 cursor-pointer"
               :disabled="refreshingCobs"
