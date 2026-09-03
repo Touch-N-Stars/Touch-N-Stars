@@ -77,6 +77,11 @@
       </div>
     </div>
 
+    <!-- Lets the parent (PerihelionView.vue) place its own "Framing captured" confirmation
+         right after the action buttons above, ahead of the icon/help strip below, without this
+         component needing to know anything about that prompt's own state. -->
+    <slot name="after-actions" />
+
     <!--
       Lives here, not as a caption in PerihelionView.vue (where it used to be) -- that left it
       visually orphaned under whichever control happened to render last in the row above, since

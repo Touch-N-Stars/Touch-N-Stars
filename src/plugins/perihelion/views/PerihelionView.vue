@@ -421,19 +421,25 @@
                 :object-type="selected.objectType"
                 :initial-offset="framingOffset"
                 @offset="onFramingOffset"
-              />
-              <div
-                v-if="showFramingCapturedPrompt"
-                class="flex items-center gap-3 mt-3 p-3 rounded-chip bg-accent/10 border border-accent/30"
               >
-                <CheckCircleIcon class="w-5 h-5 text-accent shrink-0" />
-                <span class="flex-1 text-sm text-content-muted">{{
-                  t('perihelion.position.framingCapturedPrompt')
-                }}</span>
-                <button class="tns-btn-primary w-auto shrink-0 px-4" @click="goToTrackFromFraming">
-                  {{ t('perihelion.position.goToTrack') }}
-                </button>
-              </div>
+                <template #after-actions>
+                  <div
+                    v-if="showFramingCapturedPrompt"
+                    class="flex items-center gap-3 p-3 rounded-chip bg-accent/10 border border-accent/30"
+                  >
+                    <CheckCircleIcon class="w-5 h-5 text-accent shrink-0" />
+                    <span class="flex-1 text-sm text-content-muted">{{
+                      t('perihelion.position.framingCapturedPrompt')
+                    }}</span>
+                    <button
+                      class="tns-btn-primary w-auto shrink-0 px-4"
+                      @click="goToTrackFromFraming"
+                    >
+                      {{ t('perihelion.position.goToTrack') }}
+                    </button>
+                  </div>
+                </template>
+              </FramingOffsetView>
             </div>
           </template>
         </template>
