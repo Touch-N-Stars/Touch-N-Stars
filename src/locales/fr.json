@@ -5378,6 +5378,8 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotation",
+      "resetRotation": "Réinitialiser la rotation",
+      "resetPositionLink": "Réinitialiser la position",
       "rotationHelp": "Aligne le cadre sur la rotation réelle de votre caméra.",
       "useFraming": "Utiliser ce cadrage",
       "useFramingHelp": "Enregistre ce cadrage (par ex. décentré pour une queue) comme décalage de la séquence.",

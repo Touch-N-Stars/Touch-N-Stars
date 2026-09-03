@@ -5373,6 +5373,8 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "回転",
+      "resetRotation": "回転をリセット",
+      "resetPositionLink": "位置をリセット",
       "rotationHelp": "フレーム枠をカメラの実際の回転角に合わせます。",
       "useFraming": "このフレーミングを使用",
       "useFramingHelp": "このパン位置（例: 尾のために中心をずらす）をシーケンスのオフセットとして保存します。",

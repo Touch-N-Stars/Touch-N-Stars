@@ -40,21 +40,37 @@
       </template>
     </div>
 
-    <div v-if="ready" class="flex items-center gap-2">
-      <span class="text-[11px] text-content-faint shrink-0">{{
-        t('perihelion.framing.rotation')
-      }}</span>
-      <input
-        v-model.number="framingStore.rotationAngle"
-        type="range"
-        min="0"
-        max="360"
-        step="1"
-        class="flex-1 accent-accent"
-      />
-      <span class="text-[11px] tabular-nums text-content-muted w-10 text-right shrink-0"
-        >{{ framingStore.rotationAngle }}°</span
+    <div v-if="ready" class="flex items-center justify-between gap-3 min-h-touch">
+      <div class="flex items-center gap-2 flex-1">
+        <ArrowPathIcon class="w-4 h-4 text-content-faint shrink-0" />
+        <input
+          v-model.number="framingStore.rotationAngle"
+          type="range"
+          min="0"
+          max="359"
+          class="flex-1 perihelion-rotation-slider"
+        />
+        <span class="w-10 text-right text-content-muted tabular-nums text-[11px] shrink-0"
+          >{{ framingStore.rotationAngle }}°</span
+        >
+        <button
+          v-if="framingStore.rotationAngle !== 0"
+          type="button"
+          :title="t('perihelion.framing.resetRotation')"
+          class="text-accent hover:brightness-110 transition-all cursor-pointer shrink-0"
+          @click="framingStore.rotationAngle = 0"
+        >
+          <ArrowUturnLeftIcon class="w-4 h-4" />
+        </button>
+      </div>
+      <button
+        v-if="hasOffset"
+        type="button"
+        class="text-[11px] font-semibold text-accent hover:brightness-110 transition-all cursor-pointer whitespace-nowrap shrink-0"
+        @click="resetFramePosition"
       >
+        {{ t('perihelion.framing.resetPositionLink') }}
+      </button>
     </div>
     <!--
       Side by side from md up, not two full-width stacked blocks -- on a wide viewport the sky
@@ -154,7 +170,12 @@ import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
 import { Capacitor } from '@capacitor/core';
-import { ArrowPathIcon, PhotoIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+import {
+  ArrowPathIcon,
+  ArrowUturnLeftIcon,
+  PhotoIcon,
+  XCircleIcon,
+} from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useFramingStore } from '@/store/framingStore';
@@ -445,6 +466,16 @@ function resetFraming() {
   emit('offset', null);
 }
 
+// Position-only counterpart to resetFraming() above -- matches the website's own
+// FovFramingPreview.vue resetFramePosition(), which also only clears the pan offset and
+// deliberately leaves rotation untouched. Surfaced as its own inline "Reset position" link next
+// to the rotation slider (shown only once there's actually an offset to clear), separate from
+// the full Reset button below, which still resets both together.
+function resetFramePosition() {
+  centerOnTarget();
+  emit('offset', null);
+}
+
 onMounted(async () => {
   // ninaObserverToAtlas throws if AstrometrySettings isn't loaded/valid yet (same underlying
   // data PerihelionView.vue's own hasLocation guard already checks for the altitude card) --
@@ -555,5 +586,46 @@ watch(
    it already does so consistently without this). */
 :deep(.celestia-atlas-survey-credit) {
   display: none !important;
+}
+
+/* Matches the website's own FovFramingPreview.vue rotation slider styling. Every iOS browser
+   (Chrome included -- Apple requires WebKit under the hood) renders a default range thumb as a
+   thin sliver with a tiny touch target, unlike Android Chrome's larger built-in thumb -- a real,
+   reported "rotation slider doesn't respond to touch on iPad, in Chrome or Safari" bug there,
+   while a phone and desktop both worked fine with the native thumb. A generously-sized custom
+   thumb replaces the OS default instead of relying on it. */
+.perihelion-rotation-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 24px;
+  background: transparent;
+  touch-action: manipulation;
+}
+.perihelion-rotation-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.perihelion-rotation-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -8px;
+  border-radius: 9999px;
+  background: #22d3ee;
+  cursor: pointer;
+}
+.perihelion-rotation-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.perihelion-rotation-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 9999px;
+  background: #22d3ee;
+  cursor: pointer;
 }
 </style>

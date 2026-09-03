@@ -5343,6 +5343,8 @@
       "raLabel": "RA",
       "decLabel": "Dec",
       "rotation": "Rotation",
+      "resetRotation": "Reset rotation",
+      "resetPositionLink": "Reset position",
       "rotationHelp": "Matches the frame box to your camera's real rotation.",
       "useFraming": "Use this Framing",
       "useFramingHelp": "Saves this pan (e.g. off-center for a tail) as the sequence's offset.",
