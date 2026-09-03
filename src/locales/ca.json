@@ -5299,7 +5299,8 @@
       "observedAverage": "Mitjana {mag}",
       "altitudePeak": "Arriba a {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadrament capturat — a punt per seguir.",
-      "goToTrack": "Vés a Segueix"
+      "goToTrack": "Vés a Segueix",
+      "noPeakInDarkWindow": "Cap pic dins la finestra fosca"
     },
     "track": {
       "step": "Segueix-lo",

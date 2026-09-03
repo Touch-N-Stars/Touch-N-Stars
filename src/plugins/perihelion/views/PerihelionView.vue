@@ -290,15 +290,20 @@
                   <span :class="altitudeColorClass(altAz.altitude)"
                     >Az {{ altAz.azimuth.toFixed(0) }}°</span
                   >
-                  <template v-if="tonightsPeakAltitude">
-                    <span class="text-content-faint">·</span>
-                    <span :class="altitudeColorClass(tonightsPeakAltitude.altitude)">{{
+                  <span class="text-content-faint">·</span>
+                  <span
+                    v-if="tonightsPeakAltitude"
+                    :class="altitudeColorClass(tonightsPeakAltitude.altitude)"
+                    >{{
                       t('perihelion.position.altitudePeak', {
                         deg: tonightsPeakAltitude.altitude.toFixed(0),
                         time: tonightsPeakAltitude.label,
                       })
-                    }}</span>
-                  </template>
+                    }}</span
+                  >
+                  <span v-else class="text-status-danger">{{
+                    t('perihelion.position.noPeakInDarkWindow')
+                  }}</span>
                 </div>
                 <p v-if="!hasLocation" class="text-xs text-content-faint">
                   {{ t('perihelion.position.noLocation') }}

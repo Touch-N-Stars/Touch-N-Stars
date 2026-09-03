@@ -5304,7 +5304,8 @@
       "observedAverage": "Moy. {mag}",
       "altitudePeak": "Culmine à {deg}° ~ {time}",
       "framingCapturedPrompt": "Cadrage capturé — prêt à suivre.",
-      "goToTrack": "Aller à Suivre"
+      "goToTrack": "Aller à Suivre",
+      "noPeakInDarkWindow": "Aucun pic dans la fenêtre d'obscurité"
     },
     "track": {
       "step": "Le suivre",

@@ -5304,7 +5304,8 @@
       "observedAverage": "Média {mag}",
       "altitudePeak": "Atinge {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadramento capturado — pronto para rastrear.",
-      "goToTrack": "Ir para Rastrear"
+      "goToTrack": "Ir para Rastrear",
+      "noPeakInDarkWindow": "Sem pico na janela escura"
     },
     "track": {
       "step": "Rastrear",

@@ -5299,7 +5299,8 @@
       "observedAverage": "Gem. {mag}",
       "altitudePeak": "Bereikt max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Beeldveld vastgelegd — klaar om te volgen.",
-      "goToTrack": "Naar Navolgen"
+      "goToTrack": "Naar Navolgen",
+      "noPeakInDarkWindow": "Geen piek binnen het donkere venster"
     },
     "track": {
       "step": "Volg het",

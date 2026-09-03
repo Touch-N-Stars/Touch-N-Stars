@@ -5299,7 +5299,8 @@
       "observedAverage": "Сер. {mag}",
       "altitudePeak": "Пік {deg}° ~ {time}",
       "framingCapturedPrompt": "Кадрування захоплено — готово до ведення.",
-      "goToTrack": "Перейти до Ведення"
+      "goToTrack": "Перейти до Ведення",
+      "noPeakInDarkWindow": "Немає піку в темному вікні"
     },
     "track": {
       "step": "Вести його",

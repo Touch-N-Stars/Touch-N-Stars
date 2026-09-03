@@ -141,9 +141,34 @@ const altitudeData = computed(() => {
   return points;
 });
 
+// Real bug: the max over the WHOLE +/-12h curve routinely lands in broad daylight, which is
+// useless for "when should I actually image this" -- a "peak" the object reaches at noon isn't
+// reachable at all. Constrained to astronomical night (sun below -18deg, the same threshold the
+// chart's own darkest shaded band already uses) and to genuinely above the horizon; if nothing
+// in the window qualifies (never rises during any dark period in range, or there's no
+// astronomical night at all in this +/-12h span -- e.g. far-north summer), there's no real peak
+// to report, and the caller shows "no peak in dark window" rather than a misleading number.
 const peakAltitudePoint = computed(() => {
-  if (altitudeData.value.length === 0) return null;
-  return altitudeData.value.reduce((best, p) => (p.altitude > best.altitude ? p : best));
+  if (props.target?.RA == null || props.target?.Dec == null) return null;
+  const steps = 96;
+  let best = null;
+  for (let i = 0; i <= steps; i++) {
+    const time = new Date(baseTime.value.getTime() + i * 15 * 60 * 1000);
+    const sunAlt = calculateSunAltitude(props.coordinates.latitude, props.coordinates.longitude, time);
+    if (sunAlt >= -18) continue;
+    const alt = calculateAltitude(
+      props.target.RA,
+      props.target.Dec,
+      props.coordinates.latitude,
+      props.coordinates.longitude,
+      time
+    );
+    if (alt < 0) continue;
+    if (!best || alt > best.altitude) {
+      best = { altitude: alt, label: `${time.getHours()}:${String(time.getMinutes()).padStart(2, '0')}` };
+    }
+  }
+  return best;
 });
 // Real bug caught on real hardware: the parent passes :target/:coordinates as inline object
 // literals, so it hands down a brand-new object reference on every one of its own re-renders

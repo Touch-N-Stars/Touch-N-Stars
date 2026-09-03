@@ -5299,7 +5299,8 @@
       "observedAverage": "平均 {mag}",
       "altitudePeak": "最高 {deg}° ~ {time}",
       "framingCapturedPrompt": "构图已捕获 — 可以开始跟踪。",
-      "goToTrack": "前往跟踪"
+      "goToTrack": "前往跟踪",
+      "noPeakInDarkWindow": "黑夜时段内无峰值"
     },
     "track": {
       "step": "跟踪它",

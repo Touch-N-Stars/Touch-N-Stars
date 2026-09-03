@@ -5304,7 +5304,8 @@
       "observedAverage": "Media {mag}",
       "altitudePeak": "Raggiunge {deg}° ~ {time}",
       "framingCapturedPrompt": "Inquadratura acquisita — pronto per l'inseguimento.",
-      "goToTrack": "Vai a Insegui"
+      "goToTrack": "Vai a Insegui",
+      "noPeakInDarkWindow": "Nessun picco nella finestra di buio"
     },
     "track": {
       "step": "Inseguilo",

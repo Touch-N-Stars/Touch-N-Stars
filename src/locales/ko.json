@@ -5299,7 +5299,8 @@
       "observedAverage": "평균 {mag}",
       "altitudePeak": "최대 {deg}° ~ {time}",
       "framingCapturedPrompt": "프레이밍이 캡처됨 — 추적 준비 완료.",
-      "goToTrack": "추적으로 이동"
+      "goToTrack": "추적으로 이동",
+      "noPeakInDarkWindow": "어두운 시간대에 정점 없음"
     },
     "track": {
       "step": "추적하기",

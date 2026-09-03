@@ -5299,7 +5299,8 @@
       "observedAverage": "Prům. {mag}",
       "altitudePeak": "Vrchol {deg}° ~ {time}",
       "framingCapturedPrompt": "Rámování zachyceno — připraveno ke sledování.",
-      "goToTrack": "Přejít na Sledovat"
+      "goToTrack": "Přejít na Sledovat",
+      "noPeakInDarkWindow": "Žádný vrchol v tmavém okně"
     },
     "track": {
       "step": "Sledovat jej",

@@ -5304,7 +5304,8 @@
       "observedAverage": "Media {mag}",
       "altitudePeak": "Alcanza {deg}° ~ {time}",
       "framingCapturedPrompt": "Encuadre capturado — listo para seguir.",
-      "goToTrack": "Ir a Seguir"
+      "goToTrack": "Ir a Seguir",
+      "noPeakInDarkWindow": "Sin pico dentro de la ventana oscura"
     },
     "track": {
       "step": "Seguirlo",

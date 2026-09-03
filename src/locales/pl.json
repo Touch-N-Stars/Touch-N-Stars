@@ -5299,7 +5299,8 @@
       "observedAverage": "Śr. {mag}",
       "altitudePeak": "Szczyt {deg}° ~ {time}",
       "framingCapturedPrompt": "Kadr zapisany — gotowe do śledzenia.",
-      "goToTrack": "Przejdź do Śledź"
+      "goToTrack": "Przejdź do Śledź",
+      "noPeakInDarkWindow": "Brak szczytu w oknie ciemności"
     },
     "track": {
       "step": "Śledź go",
