@@ -1019,11 +1019,46 @@ async function loadObjects() {
   try {
     objects.value = await fetchBrowseObjects();
     if (!selectedId.value && objects.value.length) selectedId.value = objects.value[0].id;
+    fillCobsInBackground();
   } catch (error) {
     objectsError.value = error?.message ?? 'Could not load objects from Perihelion';
   } finally {
     objectsLoading.value = false;
   }
+}
+
+// Real hardware feedback: waiting on COBS before the Browse list could render at all was felt
+// as "the page is slow" even when the per-comet cache was warm, and much worse cold (14-16s
+// measured on real hardware for 14 comets). /objects now returns predicted-magnitude-only data
+// instantly (see OrbitalTracking.ListBrowseObjectsAsync's own includeCobs doc comment); this
+// fills in real observed-brightness badges afterward, one comet at a time, mutating the same
+// reactive objects already in objects.value so each badge just pops in as its own request
+// resolves rather than blocking the whole list. cobsFillToken guards against a stale sweep (from
+// a previous loadObjects()/tab switch) writing into whatever's currently displayed after a newer
+// load has already replaced objects.value with a new array.
+let cobsFillToken = 0;
+async function fillCobsInBackground() {
+  const token = ++cobsFillToken;
+  const comets = objects.value.filter((o) => o.objectType === 'Comet');
+  const concurrency = 6;
+  let nextIndex = 0;
+  async function worker() {
+    while (nextIndex < comets.length) {
+      if (cobsFillToken !== token) return;
+      const comet = comets[nextIndex++];
+      try {
+        const activity = await fetchCometActivity(comet.name);
+        if (cobsFillToken !== token) return;
+        if (activity.available) {
+          comet.observedMagnitude = activity.mostRecentMagnitude;
+          comet.observedAverageMagnitude = activity.recentAverageMagnitude;
+        }
+      } catch {
+        // Leave predicted-only -- same "no cross-check available" fallback as before.
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, worker));
 }
 // --- Comet data sync (on-disk cache on the plugin side, see CometOrbits.cs) ---
 const cometsLastSyncedUtc = ref(null);
@@ -1087,6 +1122,10 @@ const cobsRefreshMessage = ref(null);
 async function onRefreshCobs() {
   refreshingCobs.value = true;
   cobsRefreshMessage.value = null;
+  // Invalidate any in-flight ambient background fill (fillCobsInBackground) -- its per-comet
+  // requests are for the OLD cache state and could otherwise land after this explicit refresh
+  // and stomp its fresher results with stale ones.
+  cobsFillToken++;
   try {
     objects.value = await refreshCobs();
     cobsRefreshMessage.value = { ok: true, text: t('perihelion.browse.cobsRefreshed') };
@@ -1263,6 +1302,14 @@ async function loadPath() {
 }
 watch([activeTab, selected], ([tab]) => {
   if (tab === 'position' && selected.value) loadPath();
+});
+
+// Real hardware feedback: Browse/Position & Path/Track are tabs within this one component, not
+// separate routes, so the router-level scrollBehavior fix (src/router/index.js) never fires for
+// switching between them -- a scrolled-down Browse list left Position & Path (or Track) opening
+// already scrolled down too. Reset explicitly on every tab switch instead.
+watch(activeTab, () => {
+  window.scrollTo({ top: 0 });
 });
 
 // --- Observed brightness (COBS) -- comet-only cross-check against the predicted magnitude ---

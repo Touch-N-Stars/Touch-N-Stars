@@ -25,6 +25,14 @@ function mapBrowseObjects(data) {
  * the same Pi, so there's no internet-round-trip reason to duplicate the orbital math a second
  * time in a second language (see CLAUDE.md's "Quick Track" architecture section).
  *
+ * observedMagnitude/observedAverageMagnitude come back null here even for comets COBS has real
+ * data for -- real hardware feedback showed waiting on COBS at all before the list could render
+ * felt slow (14-16s measured for 14 comets on a cold cache), so this now returns predicted-only
+ * data instantly, and PerihelionView's own fillCobsInBackground() fills in real observed-
+ * brightness badges afterward, one comet at a time via GET /objects/activity (fetchCometActivity),
+ * so they pop in without blocking the initial render. refreshCobs() below is the only call that
+ * still returns real COBS data inline, since blocking IS the point of that explicit action.
+ *
  * @returns {Promise<Array<{ id: string, name: string, objectType: 'Comet'|'Asteroid', magnitude: number|null, observedMagnitude: number|null, observedAverageMagnitude: number|null, raHours: number, decDeg: number }>>}
  */
 export async function fetchBrowseObjects() {
