@@ -424,16 +424,13 @@
               />
               <div
                 v-if="showFramingCapturedPrompt"
-                class="flex items-center gap-2 mt-2 p-2 rounded-chip bg-accent/10 border border-accent/30"
+                class="flex items-center gap-3 mt-3 p-3 rounded-chip bg-accent/10 border border-accent/30"
               >
-                <CheckCircleIcon class="w-4 h-4 text-accent shrink-0" />
-                <span class="flex-1 text-[11px] text-content-muted">{{
+                <CheckCircleIcon class="w-5 h-5 text-accent shrink-0" />
+                <span class="flex-1 text-sm text-content-muted">{{
                   t('perihelion.position.framingCapturedPrompt')
                 }}</span>
-                <button
-                  class="shrink-0 px-2 py-1 rounded-chip text-[11px] font-semibold text-accent border border-accent/30 hover:bg-accent/10 cursor-pointer"
-                  @click="goToTrackFromFraming"
-                >
+                <button class="tns-btn-primary w-auto shrink-0 px-4" @click="goToTrackFromFraming">
                   {{ t('perihelion.position.goToTrack') }}
                 </button>
               </div>
