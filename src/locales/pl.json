@@ -5355,9 +5355,9 @@
       "slewAndCenterFailed": "Obrót + wyśrodkowanie nieudane",
       "quickTrack": "Quick Track",
       "working": "Przetwarzanie…",
-      "addToSequenceDescriptionRest": "tworzy sekwencję obrotu, śledzenia i rejestracji oraz ładuje ją do sekwencera NINA, abyś mógł ją sprawdzić i uruchomić.",
+      "addToSequenceDescriptionRest": "tworzy sekwencję obrotu, śledzenia i rejestracji oraz ładuje ją do sekwencera PINS, abyś mógł ją sprawdzić i uruchomić.",
       "downloadSequence": "Pobierz sekwencję",
-      "downloadSequenceDescriptionRest": "zapisuje tę samą sekwencję jako plik zamiast wczytywać ją do NINA -- do przejrzenia lub zaimportowania później.",
+      "downloadSequenceDescriptionRest": "zapisuje tę samą sekwencję jako plik zamiast wczytywać ją do PINS -- do przejrzenia lub zaimportowania później.",
       "quickTrackDescriptionRest": "od razu ustawia prędkość montażu — do użytku ręcznego lub wizualnego, nie zastępuje prawdziwej sekwencji rejestracji.",
       "stopSequence": "Zatrzymaj Sekwencję",
       "stopQuickTrack": "Zatrzymaj Quick Track",
@@ -5397,6 +5397,6 @@
       "sequenceLoaded": "Sekwencja załadowana — sprawdź i uruchom ją w sekwencerze",
       "unknownError": "nieznany błąd"
     },
-    "notDetected": "Nie wykryto wtyczki Perihelion. Zainstaluj wtyczkę Perihelion NINA, aby korzystać z tej strony."
+    "notDetected": "Nie wykryto wtyczki Perihelion. Zainstaluj wtyczkę Perihelion, aby korzystać z tej strony."
   }
 }

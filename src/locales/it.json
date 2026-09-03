@@ -5360,9 +5360,9 @@
       "slewAndCenterFailed": "Spostamento + centratura falliti",
       "quickTrack": "Quick Track",
       "working": "In corso…",
-      "addToSequenceDescriptionRest": "crea una sequenza di spostamento, inseguimento e acquisizione e la carica nel sequencer di NINA perché tu la riveda e la avvii.",
+      "addToSequenceDescriptionRest": "crea una sequenza di spostamento, inseguimento e acquisizione e la carica nel sequencer di PINS perché tu la riveda e la avvii.",
       "downloadSequence": "Scarica sequenza",
-      "downloadSequenceDescriptionRest": "salva la stessa sequenza come file invece di caricarla in NINA -- da rivedere o importare in seguito.",
+      "downloadSequenceDescriptionRest": "salva la stessa sequenza come file invece di caricarla in PINS -- da rivedere o importare in seguito.",
       "quickTrackDescriptionRest": "imposta subito la velocità della montatura — per uso manuale o visuale, non sostituisce una vera sequenza di acquisizione.",
       "stopSequence": "Ferma sequenza",
       "stopQuickTrack": "Ferma Quick Track",
@@ -5402,6 +5402,6 @@
       "sequenceLoaded": "Sequenza caricata — controllala e avviala nel sequencer",
       "unknownError": "errore sconosciuto"
     },
-    "notDetected": "Plugin Perihelion non rilevato. Installa il plugin NINA Perihelion per usare questa pagina."
+    "notDetected": "Plugin Perihelion non rilevato. Installa il plugin Perihelion per usare questa pagina."
   }
 }

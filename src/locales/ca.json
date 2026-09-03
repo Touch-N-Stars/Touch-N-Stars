@@ -5355,9 +5355,9 @@
       "slewAndCenterFailed": "Ha fallat el desplaçament + centratge",
       "quickTrack": "Quick Track",
       "working": "Processant…",
-      "addToSequenceDescriptionRest": "crea una seqüència de desplaçament, seguiment i captura, i la carrega al seqüenciador de NINA perquè la revisis i la iniciïs.",
+      "addToSequenceDescriptionRest": "crea una seqüència de desplaçament, seguiment i captura, i la carrega al seqüenciador de PINS perquè la revisis i la iniciïs.",
       "downloadSequence": "Descarrega la seqüència",
-      "downloadSequenceDescriptionRest": "desa la mateixa seqüència com a fitxer en lloc de carregar-la a NINA -- per revisar-la o importar-la més tard.",
+      "downloadSequenceDescriptionRest": "desa la mateixa seqüència com a fitxer en lloc de carregar-la a PINS -- per revisar-la o importar-la més tard.",
       "quickTrackDescriptionRest": "ajusta la velocitat de la muntura directament ara mateix — per a ús manual o visual, no substitueix una seqüència de captura real.",
       "stopSequence": "Atura la Seqüència",
       "stopQuickTrack": "Atura Quick Track",
@@ -5397,6 +5397,6 @@
       "sequenceLoaded": "Seqüència carregada — revisa-la i inicia-la al seqüenciador",
       "unknownError": "error desconegut"
     },
-    "notDetected": "No s'ha detectat el connector Perihelion. Instal·la el connector NINA de Perihelion per fer servir aquesta pàgina."
+    "notDetected": "No s'ha detectat el connector Perihelion. Instal·la el connector Perihelion per fer servir aquesta pàgina."
   }
 }

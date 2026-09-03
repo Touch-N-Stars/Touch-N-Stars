@@ -5360,9 +5360,9 @@
       "slewAndCenterFailed": "Schwenken + Zentrieren fehlgeschlagen",
       "quickTrack": "Quick Track",
       "working": "Arbeitet…",
-      "addToSequenceDescriptionRest": "erstellt eine Schwenk-, Nachführ- und Aufnahmesequenz und lädt sie in NINAs Sequenzer zur Prüfung und zum Start.",
+      "addToSequenceDescriptionRest": "erstellt eine Schwenk-, Nachführ- und Aufnahmesequenz und lädt sie in PINS' Sequenzer zur Prüfung und zum Start.",
       "downloadSequence": "Sequenz herunterladen",
-      "downloadSequenceDescriptionRest": "speichert dieselbe Sequenz als Datei, statt sie in NINA zu laden -- zum späteren Prüfen oder Importieren.",
+      "downloadSequenceDescriptionRest": "speichert dieselbe Sequenz als Datei, statt sie in PINS zu laden -- zum späteren Prüfen oder Importieren.",
       "quickTrackDescriptionRest": "setzt die Rate der Montierung sofort direkt — für manuelle oder visuelle Nutzung, kein Ersatz für eine echte Aufnahmesequenz.",
       "stopSequence": "Sequenz stoppen",
       "stopQuickTrack": "Quick Track stoppen",
@@ -5402,6 +5402,6 @@
       "sequenceLoaded": "Sequenz geladen — im Sequenzer prüfen und starten",
       "unknownError": "unbekannter Fehler"
     },
-    "notDetected": "Perihelion-Plugin nicht gefunden. Installiere das Perihelion-NINA-Plugin, um diese Seite zu nutzen."
+    "notDetected": "Perihelion-Plugin nicht gefunden. Installiere das Perihelion-Plugin, um diese Seite zu nutzen."
   }
 }

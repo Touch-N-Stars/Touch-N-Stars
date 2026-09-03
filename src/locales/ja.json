@@ -5355,9 +5355,9 @@
       "slewAndCenterFailed": "導入＋中心合わせに失敗しました",
       "quickTrack": "Quick Track",
       "working": "処理中…",
-      "addToSequenceDescriptionRest": "導入・追尾・撮影のシーケンスを作成し、確認・開始できるようNINAのシーケンサーに読み込みます。",
+      "addToSequenceDescriptionRest": "導入・追尾・撮影のシーケンスを作成し、確認・開始できるようPINSのシーケンサーに読み込みます。",
       "downloadSequence": "シーケンスをダウンロード",
-      "downloadSequenceDescriptionRest": "NINAに読み込む代わりに同じシーケンスをファイルとして保存します -- 後で確認またはインポートするため。",
+      "downloadSequenceDescriptionRest": "PINSに読み込む代わりに同じシーケンスをファイルとして保存します -- 後で確認またはインポートするため。",
       "quickTrackDescriptionRest": "マウントのレートを今すぐ直接設定します — 手動・目視観測用で、実際の撮影シーケンスの代わりにはなりません。",
       "stopSequence": "シーケンスを停止",
       "stopQuickTrack": "Quick Trackを停止",
@@ -5397,6 +5397,6 @@
       "sequenceLoaded": "シーケンスを読み込みました — シーケンサーで確認して開始してください",
       "unknownError": "不明なエラー"
     },
-    "notDetected": "Perihelionプラグインが検出されません。このページを使用するにはPerihelion NINAプラグインをインストールしてください。"
+    "notDetected": "Perihelionプラグインが検出されません。このページを使用するにはPerihelionプラグインをインストールしてください。"
   }
 }
