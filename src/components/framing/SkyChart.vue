@@ -198,11 +198,18 @@ const peakAltitudePoint = computed(() => {
   // A rolling 24h-from-now window, independent of the chart's own fixed display range, is the
   // only thing that guarantees the very next dark period is actually inside the search range
   // regardless of what time of day "now" happens to be.
-  // Reads baseTime.value purely to stay a reactive dependency, so this recomputes on the same
-  // 15-minute interval that already refreshes baseTime for the chart -- the value itself isn't
-  // used below, "now" is computed fresh from the actual clock instead.
-  void baseTime.value;
-  const now = new Date(timeSync.getServerTime());
+  // Real bug found on real hardware, severe: this used to call timeSync.getServerTime() fresh
+  // on every evaluation. Since real time keeps advancing, that made the computed altitude a
+  // slightly different float on every single re-evaluation -- even ones triggered by nothing
+  // more than the parent's own unstable inline :target/:coordinates object literals (harmless
+  // on their own). That defeated the emit-dedup guard below entirely (the key never matched
+  // twice) and reopened the exact unbounded reactive loop it exists to prevent: computed -> emit
+  // -> parent state update -> re-render -> new prop objects -> recompute with a marginally newer
+  // "now" -> emit again, forever. baseTime is deliberately "now" throttled to the same
+  // 15-minute cadence the chart itself already refreshes on (baseTime = now - 12h, so + 12h
+  // recovers "now" at that same throttled granularity) -- idempotent across any number of
+  // re-renders within that window, which is what makes the dedup guard actually work.
+  const now = new Date(baseTime.value.getTime() + 12 * 60 * 60 * 1000);
   const steps = 96; // 24h from now, in 15-minute steps
   let best = null;
   for (let i = 0; i <= steps; i++) {
