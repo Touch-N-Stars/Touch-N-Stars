@@ -287,10 +287,6 @@
                     }}
                   </span>
                   <span class="text-content-faint">·</span>
-                  <span :class="altitudeColorClass(altAz.altitude)"
-                    >Az {{ altAz.azimuth.toFixed(0) }}°</span
-                  >
-                  <span class="text-content-faint">·</span>
                   <span
                     v-if="tonightsPeakAltitude"
                     :class="altitudeColorClass(tonightsPeakAltitude.altitude)"
