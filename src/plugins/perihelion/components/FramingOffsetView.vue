@@ -308,30 +308,50 @@ function drawPath() {
 
   // Name tag next to the "Tonight" point -- replaces the native Celestia catalog label removed
   // from centerOnTarget() (it disagreed with Perihelion's own live position for well-known
-  // periodic comets); anchored to our own point instead, so it's always correct. Same
-  // semi-transparent pill styling as the panToFrame/RA-Dec overlays above (bg-black/50,
-  // text-white/80), just canvas-drawn since this label's position is dynamic.
+  // periodic comets); anchored to our own point instead, so it's always correct. Same font and
+  // semi-transparent pill treatment as the panToFrame/RA-Dec overlays above (bg-black/50,
+  // text-white/80, normal weight, Tailwind's own default sans stack), just canvas-drawn since
+  // this label's position is dynamic.
   if (screenPoints.length) {
     const tonight = screenPoints[0];
-    const labelPad = 4;
+    const labelPad = 5;
     const labelGap = 8;
-    const boxHeight = 16;
-    ctx.font = '11px sans-serif';
+    const boxHeight = 17;
+    const radius = 4;
+    ctx.font =
+      '400 11px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
     const textWidth = ctx.measureText(props.targetName).width;
     const boxWidth = textWidth + labelPad * 2;
-    // Default to the right of the dot, flipping to the left only if there isn't room before the
-    // canvas edge -- matches where Celestia's own former label used to sit.
-    const onRight = tonight.x + labelGap + boxWidth <= width;
+
+    // Side away from wherever the path actually continues from tonight, so the label never runs
+    // alongside/through the path line itself -- same reasoning as OrbitalPathChart's own
+    // endpointGeometry(). Falls back to the former fixed "prefer right" rule when there's only
+    // one point (no path to avoid).
+    const next = screenPoints[1];
+    const pathGoesRight = next ? next.x > tonight.x : false;
+    let onRight = !pathGoesRight;
+    // Canvas-edge safety net: flip only if the preferred side genuinely doesn't fit.
+    if (onRight && tonight.x + labelGap + boxWidth > width) onRight = false;
+    else if (!onRight && tonight.x - labelGap - boxWidth < 0) onRight = true;
+
     const boxX = onRight ? tonight.x + labelGap : tonight.x - labelGap - boxWidth;
     // Clamped vertically so the label can't run off the top/bottom edge when the point is near
     // either one.
     const boxY = Math.min(Math.max(tonight.y - boxHeight / 2, 0), height - boxHeight);
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+    ctx.beginPath();
+    ctx.moveTo(boxX + radius, boxY);
+    ctx.arcTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + boxHeight, radius);
+    ctx.arcTo(boxX + boxWidth, boxY + boxHeight, boxX, boxY + boxHeight, radius);
+    ctx.arcTo(boxX, boxY + boxHeight, boxX, boxY, radius);
+    ctx.arcTo(boxX, boxY, boxX + boxWidth, boxY, radius);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
     ctx.textBaseline = 'middle';
-    ctx.fillText(props.targetName, boxX + labelPad, boxY + boxHeight / 2);
+    ctx.fillText(props.targetName, boxX + labelPad, boxY + boxHeight / 2 + 0.5);
   }
 }
 
