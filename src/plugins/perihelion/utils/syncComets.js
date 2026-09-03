@@ -3,16 +3,24 @@ import i18n from '@/i18n';
 import { getUrls } from '@/services/api/core';
 
 /**
- * When comet elements were last actually fetched from MPC -- null if never synced. Backs the
- * Browse tab's "last synced: X ago" indicator, matching NINA Orbitals' own per-object-type
- * download screen (see CometOrbits.cs's own on-disk cache for the plugin-side half of this).
+ * When comet elements were last actually fetched from MPC, and when the explicit "Refresh COBS"
+ * action last completed a full sweep -- either null if never done. Backs the Browse tab's
+ * combined "Comets synced X ago · COBS refreshed X ago" status line (see CometOrbits.cs's and
+ * CometActivity.cs's own on-disk caches for the plugin-side half of this).
  *
- * @returns {Promise<Date | null>}
+ * @returns {Promise<{ cometsLastSyncedUtc: Date | null, cobsLastRefreshedUtc: Date | null }>}
  */
 export async function fetchSyncStatus() {
   const { PERIHELION_URL } = getUrls();
   const response = await axios.get(`${PERIHELION_URL}/sync/status`);
-  return response.data.CometsLastSyncedUtc ? new Date(response.data.CometsLastSyncedUtc) : null;
+  return {
+    cometsLastSyncedUtc: response.data.CometsLastSyncedUtc
+      ? new Date(response.data.CometsLastSyncedUtc)
+      : null,
+    cobsLastRefreshedUtc: response.data.CobsLastRefreshedUtc
+      ? new Date(response.data.CobsLastRefreshedUtc)
+      : null,
+  };
 }
 
 /**

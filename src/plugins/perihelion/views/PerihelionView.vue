@@ -91,18 +91,26 @@
             </label>
           </div>
 
-          <div
-            v-if="filter !== 'Asteroid'"
-            class="flex items-center gap-2 text-[11px] text-content-faint"
-          >
-            <span>{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}</span>
-            <span class="flex-1"></span>
+          <div v-if="filter !== 'Asteroid'" class="text-[11px] text-content-faint">
+            {{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
+            <span class="text-content-faint">·</span>
+            {{ cobsStatusLabel }}
+          </div>
+          <div v-if="filter !== 'Asteroid'" class="flex items-center gap-2">
             <button
               class="text-content-faint hover:text-content-muted shrink-0"
               :aria-label="t('perihelion.browse.observedTooltip')"
               @click="showObservedMagLegend = true"
             >
               <InformationCircleIcon class="w-4 h-4" />
+            </button>
+            <span class="flex-1"></span>
+            <button
+              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-content-muted border border-line hover:bg-surface-2 disabled:opacity-50 cursor-pointer"
+              :disabled="refreshingCobs"
+              @click="onRefreshCobs"
+            >
+              {{ refreshingCobs ? t('perihelion.browse.refreshingCobs') : t('perihelion.browse.refreshCobs') }}
             </button>
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
@@ -118,6 +126,13 @@
             :class="syncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
           >
             {{ syncMessage.text }}
+          </p>
+          <p
+            v-if="filter !== 'Asteroid' && cobsRefreshMessage"
+            class="text-[11px]"
+            :class="cobsRefreshMessage.ok ? 'text-status-ok' : 'text-status-danger'"
+          >
+            {{ cobsRefreshMessage.text }}
           </p>
           <p v-if="filter === 'Asteroid'" class="text-[11px] text-content-faint">
             {{ t('perihelion.browse.asteroidCount', { count: asteroidCount }) }}
@@ -826,7 +841,7 @@ import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import { raDecToAltAz } from '@/utils/utils';
-import { fetchBrowseObjects } from '../utils/fetchBrowseObjects';
+import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { fetchSyncStatus, syncComets } from '../utils/syncComets';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
@@ -1009,15 +1024,19 @@ async function loadObjects() {
 }
 // --- Comet data sync (on-disk cache on the plugin side, see CometOrbits.cs) ---
 const cometsLastSyncedUtc = ref(null);
+const cobsLastRefreshedUtc = ref(null);
 const syncing = ref(false);
 const syncMessage = ref(null);
 
 async function loadSyncStatus() {
   try {
-    cometsLastSyncedUtc.value = await fetchSyncStatus();
+    const status = await fetchSyncStatus();
+    cometsLastSyncedUtc.value = status.cometsLastSyncedUtc;
+    cobsLastRefreshedUtc.value = status.cobsLastRefreshedUtc;
   } catch {
-    // Not worth surfacing an error just for the status line -- the Sync Now button and any
-    // comet-fetch error elsewhere in the panel already cover the cases that actually matter.
+    // Not worth surfacing an error just for the status line -- the Sync Now/Refresh COBS
+    // buttons and any comet-fetch error elsewhere in the panel already cover the cases that
+    // actually matter.
   }
 }
 
@@ -1039,6 +1058,12 @@ const syncStatusLabel = computed(() =>
     : t('perihelion.browse.neverSynced')
 );
 
+const cobsStatusLabel = computed(() =>
+  cobsLastRefreshedUtc.value
+    ? t('perihelion.browse.cobsRefreshedAgo', { when: relativeTime(cobsLastRefreshedUtc.value) })
+    : t('perihelion.browse.cobsNeverRefreshed')
+);
+
 async function onSyncComets() {
   syncing.value = true;
   syncMessage.value = null;
@@ -1047,6 +1072,30 @@ async function onSyncComets() {
   if (result.lastSyncedUtc) cometsLastSyncedUtc.value = result.lastSyncedUtc;
   syncing.value = false;
   if (result.ok) await loadObjects();
+}
+
+// --- COBS refresh -- deliberately separate from Sync Now (comet elements), see
+// fetchBrowseObjects.js's own refreshCobs() doc comment for why. Replaces objects.value
+// directly from the response rather than re-calling loadObjects(), since the plugin already
+// returns the full, freshly-refreshed list -- no need for a second round trip.
+const refreshingCobs = ref(false);
+const cobsRefreshMessage = ref(null);
+
+async function onRefreshCobs() {
+  refreshingCobs.value = true;
+  cobsRefreshMessage.value = null;
+  try {
+    objects.value = await refreshCobs();
+    cobsRefreshMessage.value = { ok: true, text: t('perihelion.browse.cobsRefreshed') };
+    await loadSyncStatus();
+  } catch (error) {
+    cobsRefreshMessage.value = {
+      ok: false,
+      text: error?.message ?? t('perihelion.status.syncFailed'),
+    };
+  } finally {
+    refreshingCobs.value = false;
+  }
 }
 
 // A 1+ magnitude gap between predicted and observed is exactly the "predicted model doesn't
