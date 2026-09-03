@@ -306,6 +306,7 @@
                 </p>
                 <SkyChart
                   v-else
+                  :key="selected.id"
                   :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
                   :coordinates="{
                     latitude: store.profileInfo.AstrometrySettings.Latitude,
@@ -1282,6 +1283,17 @@ watch(selected, (newVal, oldVal) => {
   if (oldVal && newVal && oldVal.id !== newVal.id) {
     framingOffset.value = null;
     showFramingCapturedPrompt.value = false;
+    // Real bug found on real hardware: SkyChart's own peak-altitude dedup guard is a plain
+    // closure variable scoped to ITS component instance, meant to survive re-renders of the
+    // SAME object (breaking an unstable-prop-reference reactive loop -- see SkyChart.vue's own
+    // comment on that watcher). Without the :key="selected.id" above, switching objects reused
+    // that same instance, so its guard treated a genuinely different object's peak as just
+    // another re-render and could suppress the new emit outright, leaving this card showing the
+    // PREVIOUS object's peak value. The :key now forces a fresh SkyChart per object (fresh
+    // guard state too), but resetting these here as well avoids a stale flash in the gap before
+    // the new instance's first emit lands.
+    tonightsPeakAltitude.value = null;
+    peakDebugInfo.value = null;
   }
 });
 
