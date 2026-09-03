@@ -243,6 +243,47 @@
               </div>
             </div>
 
+            <!-- Real, if lower-priority, facts a user might want alongside the above -- same
+                 style as the RA/Dec/Mag row, not a separate card, since these are the same kind
+                 of "quick glance" data. Alt/Az needs a real site (hasLocation); Sun/Earth
+                 distance and solar elongation are free from the object's own already-computed
+                 heliocentric/geocentric vectors (see OrbitalTracking.BrowseObject's own
+                 comment), so those always show regardless of location. -->
+            <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
+                }}</span>
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
+                }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.sunDistance') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content"
+                  >{{ selected.sunDistanceAu.toFixed(2) }} au</span
+                >
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.earthDistance') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content"
+                  >{{ selected.earthDistanceAu.toFixed(2) }} au</span
+                >
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.solarElongation') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content"
+                  >{{ selected.solarElongationDeg.toFixed(0) }}°</span
+                >
+              </div>
+            </div>
+
             <div v-if="cometActivity" class="tns-card">
               <div class="flex items-center gap-2 mb-1">
                 <span class="tns-stat-label flex-1">{{
@@ -843,7 +884,7 @@ import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
-import { raDecToAltAz } from '@/utils/utils';
+import { raDecToAltAz, wait } from '@/utils/utils';
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { fetchSyncStatus, syncComets } from '../utils/syncComets';
@@ -1498,11 +1539,28 @@ function toggleUseRotate() {
   settingsStore.saveMountSettings();
 }
 
+// Real hardware report: on an OnStep mount (and ASCOM/INDI mounts generally), a parked mount
+// refuses to slew at all -- Slew and Center did nothing with no clear explanation. Same
+// check-then-unpark-then-settle pattern as the app-wide ButtonSlewCenterRotate.vue's own
+// unparkMount(), not reused directly since that component swallows failures into a console.log
+// with nothing surfaced to the caller (same reason onSlewAndCenter below doesn't call
+// framingStore.slewAndCenterRotate() either -- see its own doc comment). The 2s wait gives the
+// mount time to physically release its park position before the slew command follows.
+async function unparkMountIfNeeded() {
+  if (!store.mountInfo.AtPark) return;
+  const response = await apiService.mountAction('unpark');
+  if (!response?.Success) {
+    throw new Error(t('components.mount.control.errors.unpark'));
+  }
+  await wait(2000);
+}
+
 async function onSlewAndCenter() {
   if (!selected.value) return;
   actionBusy.value = true;
   actionStatus.value = null;
   try {
+    await unparkMountIfNeeded();
     const response = await apiService.slewAndCenter(
       selected.value.raHours * 15,
       selected.value.decDeg,
