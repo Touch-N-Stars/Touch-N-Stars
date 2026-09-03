@@ -5353,6 +5353,8 @@
       "quickTrack": "快速跟踪",
       "working": "处理中…",
       "addToSequenceDescriptionRest": "创建一个转动、跟踪与拍摄序列，并将其加载到 NINA 的序列编辑器中，供你查看并启动。",
+      "downloadSequence": "下载序列",
+      "downloadSequenceDescriptionRest": "将相同的序列保存为文件，而不是加载到 NINA 中 -- 供以后查看或导入。",
       "quickTrackDescriptionRest": "立即直接设置赤道仪速率 — 供手动或目视使用，不能替代真正的拍摄序列。",
       "stopSequence": "停止序列",
       "stopQuickTrack": "停止快速跟踪",

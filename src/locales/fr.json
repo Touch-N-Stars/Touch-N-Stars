@@ -5358,6 +5358,8 @@
       "quickTrack": "Suivi rapide",
       "working": "En cours…",
       "addToSequenceDescriptionRest": "crée une séquence de déplacement, suivi et acquisition, et la charge dans le séquenceur de NINA pour que vous la vérifiiez et la lanciez.",
+      "downloadSequence": "Télécharger la séquence",
+      "downloadSequenceDescriptionRest": "enregistre la même séquence dans un fichier au lieu de la charger dans NINA -- pour la revoir ou l'importer plus tard.",
       "quickTrackDescriptionRest": "règle immédiatement la vitesse de la monture — pour un usage manuel ou visuel, ne remplace pas une vraie séquence d'acquisition.",
       "stopSequence": "Arrêter la séquence",
       "stopQuickTrack": "Arrêter le suivi rapide",

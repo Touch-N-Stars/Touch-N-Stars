@@ -5353,6 +5353,8 @@
       "quickTrack": "Quick Track",
       "working": "Probíhá…",
       "addToSequenceDescriptionRest": "vytvoří sekvenci přejetí, sledování a snímkování a načte ji do sekvenceru NINA, abyste ji zkontrolovali a spustili.",
+      "downloadSequence": "Stáhnout sekvenci",
+      "downloadSequenceDescriptionRest": "uloží stejnou sekvenci jako soubor místo jejího načtení do NINA -- pro pozdější kontrolu nebo import.",
       "quickTrackDescriptionRest": "nastaví rychlost montáže okamžitě přímo teď — pro ruční nebo vizuální použití, nenahrazuje skutečnou snímkovací sekvenci.",
       "stopSequence": "Zastavit Sekvenci",
       "stopQuickTrack": "Zastavit Quick Track",

@@ -5353,6 +5353,8 @@
       "quickTrack": "Quick Track",
       "working": "처리 중…",
       "addToSequenceDescriptionRest": "슬루, 추적, 촬영 시퀀스를 만들어 검토하고 시작할 수 있도록 NINA 시퀀서에 불러옵니다.",
+      "downloadSequence": "시퀀스 다운로드",
+      "downloadSequenceDescriptionRest": "NINA에 불러오는 대신 동일한 시퀀스를 파일로 저장합니다 -- 나중에 검토하거나 가져오기 위함입니다.",
       "quickTrackDescriptionRest": "지금 바로 마운트 속도를 직접 설정합니다 — 수동 또는 시각 관측용이며, 실제 촬영 시퀀스를 대체하지 않습니다.",
       "stopSequence": "시퀀스 중지",
       "stopQuickTrack": "Quick Track 중지",

@@ -700,11 +700,27 @@
                 </label>
               </div>
 
-              <button class="tns-btn-primary" :disabled="actionBusy" @click="onAddToSequence">
-                {{
-                  actionBusy ? t('perihelion.track.working') : t('perihelion.track.addToSequence')
-                }}
-              </button>
+              <div class="flex gap-2">
+                <button
+                  class="tns-btn-primary flex-1"
+                  :disabled="actionBusy"
+                  @click="onAddToSequence"
+                >
+                  {{
+                    actionBusy
+                      ? t('perihelion.track.working')
+                      : t('perihelion.track.addToSequence')
+                  }}
+                </button>
+                <button
+                  class="shrink-0 min-h-touch min-w-touch flex items-center justify-center rounded-full border border-line-strong text-content-muted hover:bg-surface-2 hover:text-content disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150"
+                  :disabled="actionBusy"
+                  :title="t('perihelion.track.downloadSequence')"
+                  @click="onDownloadSequence"
+                >
+                  <ArrowDownTrayIcon class="w-5 h-5" />
+                </button>
+              </div>
               <div class="flex gap-2">
                 <!-- flex-[3]/flex-[2] (not flex-1 each) -- "Slew & Center" plus its gear button
                      needs more room than "Quick Track" alone to fit its own label on one line at
@@ -820,6 +836,12 @@
               </p>
               <p class="text-[11px] leading-relaxed text-content-faint">
                 <strong class="text-content-muted">{{
+                  t('perihelion.track.downloadSequence')
+                }}</strong>
+                {{ t('perihelion.track.downloadSequenceDescriptionRest') }}
+              </p>
+              <p class="text-[11px] leading-relaxed text-content-faint">
+                <strong class="text-content-muted">{{
                   t('perihelion.track.slewAndCenter')
                 }}</strong>
                 {{ t('perihelion.track.slewAndCenterDescriptionRest') }}
@@ -896,6 +918,7 @@ import { fetchPath } from '../utils/fetchPath';
 import { fetchSyncStatus, syncComets } from '../utils/syncComets';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
+import { buildPerihelionSequence } from '../utils/buildPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { fetchQuickTrackStatus } from '../utils/fetchQuickTrackStatus';
 import { usePerihelionStore } from '../store/perihelionStore';
@@ -913,7 +936,12 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
-import { EyeIcon, InformationCircleIcon, CheckCircleIcon } from '@heroicons/vue/24/outline';
+import {
+  EyeIcon,
+  InformationCircleIcon,
+  CheckCircleIcon,
+  ArrowDownTrayIcon,
+} from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
 // tapered-tail-into-glowing-coma shape, not an independent redesign. That component uses
@@ -1502,11 +1530,11 @@ const nextReapplyIn = computed(() => {
   return formatDuration(nextAtMs - now.value);
 });
 
-async function onAddToSequence() {
-  if (!selected.value) return;
-  actionBusy.value = true;
-  actionStatus.value = null;
-  const result = await sendPerihelionSequence({
+// Shared by onAddToSequence (loads it live into NINA) and onDownloadSequence (saves the exact
+// same JSON as a file) -- both send the identical target shape to buildPerihelionSequence, so
+// there's exactly one place that has to stay in sync with its own param docs.
+function buildSequenceTarget() {
+  return {
     objectType: selected.value.objectType.toLowerCase(),
     targetName: selected.value.name,
     raHours: selected.value.raHours,
@@ -1520,12 +1548,37 @@ async function onAddToSequence() {
       exposureSeconds: exposureSeconds.value,
       frameCount: frameCount.value,
     },
-  });
+  };
+}
+
+async function onAddToSequence() {
+  if (!selected.value) return;
+  actionBusy.value = true;
+  actionStatus.value = null;
+  const result = await sendPerihelionSequence(buildSequenceTarget());
   actionStatus.value = result;
   actionBusy.value = false;
   // Deliberately stays 'idle' even on success -- Add to Sequence only loads the sequence, it
   // doesn't start it (see sendPerihelionSequence's own doc comment), so there's nothing here
   // for a "Stop Sequence" button to stop yet.
+}
+
+// Lighter-weight alternative to Add to Sequence for someone who doesn't want it loaded straight
+// into NINA -- same buildPerihelionSequence() JSON, saved as a file instead of POSTed. Carries
+// the exact same "today's position baked in" property Add to Sequence already has, so no new
+// staleness risk versus that existing action. Comet/asteroid names can contain "/" (e.g.
+// "220P/McNaught"), which would otherwise be read as a path separator in the filename.
+function onDownloadSequence() {
+  if (!selected.value) return;
+  const root = buildPerihelionSequence(buildSequenceTarget());
+  const safeName = selected.value.name.replace(/[/\\?%*:|"<>]/g, '-');
+  const blob = new Blob([JSON.stringify(root, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${safeName}-sequence.json`;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 // Deliberately calls apiService.slewAndCenter() directly rather than framingStore's own

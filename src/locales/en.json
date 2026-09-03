@@ -5323,6 +5323,8 @@
       "quickTrack": "Quick Track",
       "working": "Working…",
       "addToSequenceDescriptionRest": "builds a slew + track + imaging sequence and loads it into NINA's sequencer for you to review and start.",
+      "downloadSequence": "Download sequence",
+      "downloadSequenceDescriptionRest": "saves the same sequence as a file instead of loading it into NINA -- for reviewing or importing later.",
       "quickTrackDescriptionRest": "sets the mount's rate directly right now — for manual or visual use, not a substitute for a real imaging sequence.",
       "stopSequence": "Stop Sequence",
       "stopQuickTrack": "Stop Quick Track",
