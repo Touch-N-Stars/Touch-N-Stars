@@ -477,7 +477,14 @@ onMounted(async () => {
       labels: true,
       cardinals: false,
       skySurvey: true,
-      comets: true,
+      // Real hardware report: this rendered Celestia's ENTIRE bundled comet catalog as
+      // boxes+labels across the whole visible field, not just the object being framed -- every
+      // one of those positions comes from Celestia's own (possibly stale/different-epoch)
+      // orbital elements, the exact same mismatch that justified removing centerOnTarget()'s own
+      // single-object viewer.search()/select() call. This view's own doc comment already states
+      // the design intent: rely entirely on Perihelion's own computed position, never the
+      // viewer's bundled catalog.
+      comets: false,
       horizon: false,
       hideBelowHorizon: false,
       atmosphere: false,
