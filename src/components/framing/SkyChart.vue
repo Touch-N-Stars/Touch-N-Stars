@@ -148,40 +148,6 @@ const altitudeData = computed(() => {
 // in the window qualifies (never rises during any dark period in range, or there's no
 // astronomical night at all in this +/-12h span -- e.g. far-north summer), there's no real peak
 // to report, and the caller shows "no peak in dark window" rather than a misleading number.
-// TEMPORARY debug instrumentation (2026-09-03) -- a real, reproducible-even-in-incognito bug
-// report showed an altitude reading exceeding the hard 90-|lat-dec| geometric ceiling for the
-// object/site combination, which every standalone reproduction of this exact formula fails to
-// reproduce. Capturing the raw inputs and the unconstrained max alongside the dark-window max so
-// the next real report shows exactly what this component is actually working with, instead of
-// guessing further. Remove once the real cause is found.
-const peakDebugInfo = computed(() => {
-  if (props.target?.RA == null || props.target?.Dec == null) return null;
-  const steps = 96;
-  let unconstrainedBest = null;
-  for (let i = 0; i <= steps; i++) {
-    const time = new Date(baseTime.value.getTime() + i * 15 * 60 * 1000);
-    const alt = calculateAltitude(
-      props.target.RA,
-      props.target.Dec,
-      props.coordinates.latitude,
-      props.coordinates.longitude,
-      time
-    );
-    if (!unconstrainedBest || alt > unconstrainedBest.altitude) {
-      unconstrainedBest = { altitude: alt, label: `${time.getHours()}:${String(time.getMinutes()).padStart(2, '0')}` };
-    }
-  }
-  return {
-    lat: props.coordinates.latitude,
-    lon: props.coordinates.longitude,
-    ra: props.target.RA,
-    dec: props.target.Dec,
-    baseTime: baseTime.value.toISOString(),
-    geometricCeiling: 90 - Math.abs(props.coordinates.latitude - props.target.Dec),
-    unconstrainedMax: unconstrainedBest,
-  };
-});
-
 const peakAltitudePoint = computed(() => {
   if (props.target?.RA == null || props.target?.Dec == null) return null;
   // This deliberately does NOT reuse the chart's own baseTime grid (a fixed +/-12h window
@@ -230,41 +196,19 @@ const peakAltitudePoint = computed(() => {
   }
   return best;
 });
-// Same unstable-prop-reference hazard as the peak-altitude watcher below: peakDebugInfo returns
-// a brand-new object every time it re-evaluates, so emitting unconditionally on every change was
-// itself an unbounded reactive loop (computed -> emit -> parent state update -> parent re-render
-// -> new inline :target/:coordinates object literals -> computed re-evaluates -> emit again).
-// Comparing the actual values before emitting breaks the cycle, same fix as below.
-let lastEmittedDebugKey = null;
-watch(
-  peakDebugInfo,
-  (d) => {
-    const key = d
-      ? `${d.lat}|${d.lon}|${d.ra}|${d.dec}|${d.baseTime}|${d.unconstrainedMax?.altitude}|${d.unconstrainedMax?.label}`
-      : null;
-    if (key === lastEmittedDebugKey) return;
-    lastEmittedDebugKey = key;
-    emit('peak-debug', d);
-  },
-  { immediate: true }
-);
-// Real bug caught on real hardware: the parent passes :target/:coordinates as inline object
-// literals, so it hands down a brand-new object reference on every one of its own re-renders
-// even when RA/Dec/lat/lon haven't actually changed. Without this guard, that alone was enough
-// to re-trigger altitudeData -> peakAltitudePoint -> this watcher -> re-emit -> the parent
-// setting state from the emit -> another parent re-render -> a new object reference again --
-// an unbounded reactive loop that pegs the CPU and makes the whole page unresponsive, not a
-// crash. Comparing against the last value actually emitted breaks the cycle at its source,
-// without needing the parent to change its own (very common, otherwise harmless) prop pattern.
-// Real bug found on real hardware, separate from the reactive-loop guard this comment used to
-// describe alone: comparing only the OUTPUT (altitude+label) against the last emission means
-// that if a genuinely different object's true peak ever happens to numerically match whatever
-// was last emitted for a PREVIOUS object, this guard wrongly calls it "unchanged" and never
-// re-emits -- leaving the displayed peak stuck on the old object's value even though
-// peakAltitudePoint itself recomputed correctly. peakDebugInfo's own dedup key (above) already
-// includes the target's RA/Dec for exactly this reason; folding the same target identity into
-// this key guarantees a real object change always forces a fresh emit, regardless of whether the
-// two objects' peak values happen to coincide.
+// Two real bugs found on real hardware, both fixed by this guard:
+// (1) the parent passes :target/:coordinates as inline object literals, handing down a brand-new
+//     object reference on every one of its own re-renders even when RA/Dec/lat/lon haven't
+//     actually changed. Emitting unconditionally on every recompute was an unbounded reactive
+//     loop: computed -> emit -> parent state update -> re-render -> new object reference again ->
+//     recompute -> emit again -- pegs the CPU and makes the whole page unresponsive, not a crash.
+// (2) comparing only the OUTPUT (altitude+label) against the last emission -- without the target
+//     identity below -- meant that if a genuinely different object's true peak ever happened to
+//     numerically match whatever was last emitted for a PREVIOUS object, the guard wrongly called
+//     it "unchanged" and never re-emitted, leaving the displayed peak stuck on the old object's
+//     value even though peakAltitudePoint itself had recomputed correctly. Folding the target's
+//     RA/Dec into the key guarantees a real object change always forces a fresh emit, regardless
+//     of whether two objects' peak values happen to coincide.
 let lastEmittedPeakKey = null;
 watch(
   peakAltitudePoint,

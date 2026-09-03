@@ -312,28 +312,10 @@
                     longitude: store.profileInfo.AstrometrySettings.Longitude,
                   }"
                   @peak-altitude="tonightsPeakAltitude = $event"
-                  @peak-debug="peakDebugInfo = $event"
                 />
                 <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
                   {{ t('perihelion.position.altitudeDescription', { name: selected.name }) }}
                 </p>
-                <!-- TEMPORARY debug panel (2026-09-03) -- remove once the impossible-peak bug is
-                     confirmed fixed. Shows exactly what SkyChart is computing from, plus the
-                     currently-selected object's own name/id/RA/Dec for cross-checking staleness. -->
-                <div
-                  v-if="peakDebugInfo"
-                  class="mt-2 rounded border border-amber-500/40 bg-amber-500/10 p-2 text-[10px] font-mono leading-relaxed text-amber-200 break-all"
-                >
-                  <div class="font-bold mb-1">DEBUG (temporary)</div>
-                  <div>selected: {{ selected?.name }} (id={{ selected?.id }})</div>
-                  <div>selected RA/Dec (deg): {{ (selected?.raHours * 15).toFixed(4) }} / {{ selected?.decDeg?.toFixed(4) }}</div>
-                  <div>chart target RA/Dec (deg): {{ peakDebugInfo.ra?.toFixed(4) }} / {{ peakDebugInfo.dec?.toFixed(4) }}</div>
-                  <div>lat/lon: {{ peakDebugInfo.lat?.toFixed(4) }} / {{ peakDebugInfo.lon?.toFixed(4) }}</div>
-                  <div>geometric ceiling: {{ peakDebugInfo.geometricCeiling?.toFixed(2) }}°</div>
-                  <div>unconstrained max (whole window): {{ peakDebugInfo.unconstrainedMax?.altitude?.toFixed(2) }}° @ {{ peakDebugInfo.unconstrainedMax?.label }}</div>
-                  <div>baseTime (now-12h): {{ peakDebugInfo.baseTime }}</div>
-                  <div>reported peak: {{ tonightsPeakAltitude?.altitude?.toFixed(2) }}° @ {{ tonightsPeakAltitude?.label }}</div>
-                </div>
               </div>
 
               <div class="tns-card">
@@ -1208,11 +1190,6 @@ const altAz = computed(() => {
 // { altitude, label } | null -- from SkyChart's own peak-altitude emit, so "currently low" and
 // "climbing to a good altitude tonight" aren't indistinguishable in the same red/amber badge.
 const tonightsPeakAltitude = ref(null);
-// TEMPORARY debug instrumentation (2026-09-03) -- see SkyChart.vue's own peak-debug comment.
-// Screenshotting this alongside the object's own name/RA/Dec (from `selected`, not from the
-// debug payload) is what actually catches a props-staleness mismatch, if that's the real cause
-// of the previously-reported impossible ceiling-violating values. Remove once resolved.
-const peakDebugInfo = ref(null);
 
 const path = ref([]);
 const pathLoading = ref(false);
@@ -1282,17 +1259,10 @@ watch(selected, (newVal, oldVal) => {
   if (oldVal && newVal && oldVal.id !== newVal.id) {
     framingOffset.value = null;
     showFramingCapturedPrompt.value = false;
-    // Real bug found on real hardware: SkyChart's own peak-altitude dedup guard is a plain
-    // closure variable scoped to ITS component instance, meant to survive re-renders of the
-    // SAME object (breaking an unstable-prop-reference reactive loop -- see SkyChart.vue's own
-    // comment on that watcher). Without the :key="selected.id" above, switching objects reused
-    // that same instance, so its guard treated a genuinely different object's peak as just
-    // another re-render and could suppress the new emit outright, leaving this card showing the
-    // PREVIOUS object's peak value. The :key now forces a fresh SkyChart per object (fresh
-    // guard state too), but resetting these here as well avoids a stale flash in the gap before
-    // the new instance's first emit lands.
+    // SkyChart's own peak-altitude emit is target-identity-aware (see its own dedup-guard
+    // comment), so it always re-emits on a genuine object switch -- this reset just avoids a
+    // stale flash of the previous object's peak in the gap before that fresh emit lands.
     tonightsPeakAltitude.value = null;
-    peakDebugInfo.value = null;
   }
 });
 
