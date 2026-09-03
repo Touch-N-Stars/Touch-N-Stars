@@ -371,17 +371,6 @@ function centerOnTarget(overrideCenter = null) {
   // before.
   currentCenter.value = { raHours: center.raDeg / 15, decDeg: center.decDeg };
   drawPath();
-
-  // Bonus only, not required for correctness: if this object happens to already be in the
-  // viewer's own bundled catalog, select/focus it for a native marker and label. A miss here
-  // (new/uncommon object, or a name-format mismatch) is expected and harmless -- the view is
-  // already correctly centered from Perihelion's own data regardless.
-  try {
-    const results = viewer.search(props.targetName);
-    if (results?.[0]) viewer.select(results[0]);
-  } catch {
-    // Ignored -- see comment above.
-  }
 }
 
 function captureFraming() {

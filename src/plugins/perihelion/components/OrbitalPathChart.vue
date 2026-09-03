@@ -50,6 +50,33 @@
       />
       <circle v-if="plotted.length" :cx="plotted[0].x" :cy="plotted[0].y" r="3" fill="#22d3ee" />
 
+      <!-- Ring around whichever point is currently selected, for feedback that the tap/click
+           landed and which point its info row (below the chart) actually refers to. -->
+      <circle
+        v-if="selectedIndex != null"
+        :cx="plotted[selectedIndex].x"
+        :cy="plotted[selectedIndex].y"
+        r="5.5"
+        fill="none"
+        stroke="#facc15"
+        stroke-width="1.5"
+      />
+
+      <!-- Invisible, larger hit targets -- the visible dots above (r=1.6, or 3 for "Tonight")
+           are too small to reliably tap on a phone. A real gap this filled: there was previously
+           no way to read a path point's actual date/RA/Dec at all, hover or otherwise. -->
+      <circle
+        v-for="(p, i) in plotted"
+        :key="'hit' + i"
+        :cx="p.x"
+        :cy="p.y"
+        r="9"
+        fill="transparent"
+        class="cursor-pointer"
+        @click="selectedIndex = selectedIndex === i ? null : i"
+      />
+
+
       <!--
         Short leader (point -> dot -> gap -> text) for each endpoint's date, routed away from
         the direction the curve continues (so it doesn't run along/through the path line itself)
@@ -147,11 +174,15 @@
       </g>
     </svg>
     <p v-if="driftSummary" class="mt-1 text-[11px] text-content-faint">{{ driftSummary }}</p>
+    <p v-if="selectedPoint" class="mt-1 text-[11px] text-content-muted">
+      {{ selectedPoint.date }} — RA {{ formatRaHours(selectedPoint.raHours) }}, Dec
+      {{ formatDecDeg(selectedPoint.decDeg) }}
+    </p>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -159,6 +190,28 @@ const { t } = useI18n();
 const props = defineProps({
   points: { type: Array, required: true }, // [{ date, raHours, decDeg }]
 });
+
+// Real gap this fills: there was previously no way to read a path point's actual date/RA/Dec at
+// all -- the dots were purely visual, no hover or tap did anything. Tap/click toggles selection
+// (works identically on mobile and desktop, unlike a native title tooltip); the info row below
+// the chart avoids floating-tooltip positioning math entirely.
+const selectedIndex = ref(null);
+const selectedPoint = computed(() =>
+  selectedIndex.value != null ? props.points[selectedIndex.value] : null
+);
+
+function formatRaHours(raHours) {
+  const h = Math.floor(raHours);
+  const m = (raHours - h) * 60;
+  return `${h}h ${m.toFixed(1)}m`;
+}
+function formatDecDeg(decDeg) {
+  const sign = decDeg < 0 ? '-' : '+';
+  const abs = Math.abs(decDeg);
+  const d = Math.floor(abs);
+  const m = (abs - d) * 60;
+  return `${sign}${d}° ${m.toFixed(0)}′`;
+}
 
 const width = 320;
 const height = 150;
