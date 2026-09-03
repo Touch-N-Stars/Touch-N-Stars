@@ -86,15 +86,22 @@
     -->
     <div v-if="ready" class="rounded-chip bg-surface-2/60 border border-line-strong/50 p-3">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-        <div class="flex items-start gap-2">
-          <ArrowPathIcon class="w-4 h-4 mt-0.5 text-accent shrink-0" />
+        <!--
+          items-start (+ the icon's own small top nudge) matters on mobile, where this text can
+          wrap to two lines and the icon should align with the first line's cap-height, not the
+          middle of the whole wrapped block. Once each row is definitely single-line (sm+, same
+          breakpoint the 3-column grid itself switches on), items-center reads as properly level
+          instead -- the icon and the nudge no longer need to compensate for anything.
+        -->
+        <div class="flex items-start sm:items-center gap-2">
+          <ArrowPathIcon class="w-4 h-4 mt-0.5 sm:mt-0 text-accent shrink-0" />
           <p class="text-[11px] leading-snug text-content-muted">
             <span class="font-semibold text-content">{{ t('perihelion.framing.rotation') }}:</span>
             {{ t('perihelion.framing.rotationHelp') }}
           </p>
         </div>
-        <div class="flex items-start gap-2 sm:justify-center">
-          <PhotoIcon class="w-4 h-4 mt-0.5 text-accent shrink-0" />
+        <div class="flex items-start sm:items-center gap-2 sm:justify-center">
+          <PhotoIcon class="w-4 h-4 mt-0.5 sm:mt-0 text-accent shrink-0" />
           <p class="text-[11px] leading-snug text-content-muted sm:text-center">
             <span class="font-semibold text-content"
               >{{ t('perihelion.framing.useFraming') }}:</span
@@ -102,8 +109,8 @@
             {{ t('perihelion.framing.useFramingHelp') }}
           </p>
         </div>
-        <div class="flex items-start gap-2 sm:justify-end">
-          <XCircleIcon class="w-4 h-4 mt-0.5 text-status-danger shrink-0" />
+        <div class="flex items-start sm:items-center gap-2 sm:justify-end">
+          <XCircleIcon class="w-4 h-4 mt-0.5 sm:mt-0 text-status-danger shrink-0" />
           <p class="text-[11px] leading-snug text-content-muted sm:text-right">
             <span class="font-semibold text-content">{{ t('perihelion.framing.reset') }}:</span>
             {{ t('perihelion.framing.resetHelp') }}
