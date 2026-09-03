@@ -273,28 +273,33 @@
                   <span class="tns-stat-label flex-1">{{
                     t('perihelion.position.altitudeTitle')
                   }}</span>
-                  <span v-if="altAz" class="text-xs font-bold" :class="altitudeColorClass(altAz.altitude)">
-                    {{ altAz.altitude.toFixed(0) }}°
-                    {{
-                      altAz.altitude >= 0
-                        ? t('perihelion.position.aboveHorizon')
-                        : t('perihelion.position.belowHorizon')
-                    }}
-                    · Az {{ altAz.azimuth.toFixed(0) }}°
+                  <span
+                    v-if="altAz"
+                    class="flex flex-wrap items-baseline justify-end gap-x-1 text-xs font-bold"
+                  >
+                    <span :class="altitudeColorClass(altAz.altitude)">
+                      {{ altAz.altitude.toFixed(0) }}°
+                      {{
+                        altAz.altitude >= 0
+                          ? t('perihelion.position.aboveHorizon')
+                          : t('perihelion.position.belowHorizon')
+                      }}
+                    </span>
+                    <span class="text-content-faint">·</span>
+                    <span :class="altitudeColorClass(altAz.altitude)"
+                      >Az {{ altAz.azimuth.toFixed(0) }}°</span
+                    >
+                    <template v-if="tonightsPeakAltitude">
+                      <span class="text-content-faint">·</span>
+                      <span :class="altitudeColorClass(tonightsPeakAltitude.altitude)">{{
+                        t('perihelion.position.altitudePeak', {
+                          deg: tonightsPeakAltitude.altitude.toFixed(0),
+                          time: tonightsPeakAltitude.label,
+                        })
+                      }}</span>
+                    </template>
                   </span>
                 </div>
-                <p
-                  v-if="tonightsPeakAltitude"
-                  class="text-[11px] font-semibold mb-2 -mt-1"
-                  :class="altitudeColorClass(tonightsPeakAltitude.altitude)"
-                >
-                  {{
-                    t('perihelion.position.altitudePeak', {
-                      deg: tonightsPeakAltitude.altitude.toFixed(0),
-                      time: tonightsPeakAltitude.label,
-                    })
-                  }}
-                </p>
                 <p v-if="!hasLocation" class="text-xs text-content-faint">
                   {{ t('perihelion.position.noLocation') }}
                 </p>

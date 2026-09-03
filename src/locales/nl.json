@@ -5297,7 +5297,7 @@
       "offsetSet": "Verschuiving ingesteld",
       "observedLatest": "Laatste {mag}",
       "observedAverage": "Gem. {mag}",
-      "altitudePeak": "Bereikt max. {deg}° rond {time}",
+      "altitudePeak": "Bereikt max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Beeldveld vastgelegd — klaar om te volgen.",
       "goToTrack": "Naar Navolgen"
     },

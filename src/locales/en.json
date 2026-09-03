@@ -5261,7 +5261,7 @@
       "belowHorizon": "below horizon",
       "noLocation": "No observer location set in this profile's Astrometry settings.",
       "altitudeDescription": "Uses {name}'s position right now for the whole night — real for a star, a slight approximation for a moving object, close enough for a transit curve.",
-      "altitudePeak": "Peaks at {deg}° around {time}",
+      "altitudePeak": "Peaks at {deg}° ~ {time}",
       "pathTitle": "10-Night Path",
       "pathLegendPath": "Path",
       "pathLegendTonight": "Tonight",

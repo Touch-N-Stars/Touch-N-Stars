@@ -5297,7 +5297,7 @@
       "offsetSet": "Desplaçament definit",
       "observedLatest": "Última {mag}",
       "observedAverage": "Mitjana {mag}",
-      "altitudePeak": "Arriba a {deg}° cap a les {time}",
+      "altitudePeak": "Arriba a {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadrament capturat — a punt per seguir.",
       "goToTrack": "Vés a Segueix"
     },

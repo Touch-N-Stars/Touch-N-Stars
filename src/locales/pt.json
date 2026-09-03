@@ -5302,7 +5302,7 @@
       "offsetSet": "Deslocamento definido",
       "observedLatest": "Última {mag}",
       "observedAverage": "Média {mag}",
-      "altitudePeak": "Atinge {deg}° por volta de {time}",
+      "altitudePeak": "Atinge {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadramento capturado — pronto para rastrear.",
       "goToTrack": "Ir para Rastrear"
     },

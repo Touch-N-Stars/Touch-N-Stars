@@ -5297,7 +5297,7 @@
       "offsetSet": "オフセット設定済み",
       "observedLatest": "最新 {mag}",
       "observedAverage": "平均 {mag}",
-      "altitudePeak": "{time}頃に最大{deg}°に達する",
+      "altitudePeak": "最大{deg}° ~ {time}",
       "framingCapturedPrompt": "フレーミングを取得しました — 追尾準備完了。",
       "goToTrack": "追尾へ移動"
     },

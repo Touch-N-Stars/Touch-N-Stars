@@ -5302,7 +5302,7 @@
       "offsetSet": "Décalage défini",
       "observedLatest": "Dernier {mag}",
       "observedAverage": "Moy. {mag}",
-      "altitudePeak": "Culmine à {deg}° vers {time}",
+      "altitudePeak": "Culmine à {deg}° ~ {time}",
       "framingCapturedPrompt": "Cadrage capturé — prêt à suivre.",
       "goToTrack": "Aller à Suivre"
     },

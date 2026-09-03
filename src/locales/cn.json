@@ -5297,7 +5297,7 @@
       "offsetSet": "已设置偏移",
       "observedLatest": "最新 {mag}",
       "observedAverage": "平均 {mag}",
-      "altitudePeak": "约在 {time} 达到最高 {deg}°",
+      "altitudePeak": "最高 {deg}° ~ {time}",
       "framingCapturedPrompt": "构图已捕获 — 可以开始跟踪。",
       "goToTrack": "前往跟踪"
     },

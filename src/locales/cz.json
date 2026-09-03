@@ -5297,7 +5297,7 @@
       "offsetSet": "Posun nastaven",
       "observedLatest": "Poslední {mag}",
       "observedAverage": "Prům. {mag}",
-      "altitudePeak": "Vrchol {deg}° kolem {time}",
+      "altitudePeak": "Vrchol {deg}° ~ {time}",
       "framingCapturedPrompt": "Rámování zachyceno — připraveno ke sledování.",
       "goToTrack": "Přejít na Sledovat"
     },

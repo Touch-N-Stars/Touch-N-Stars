@@ -5302,7 +5302,7 @@
       "offsetSet": "Versatz gesetzt",
       "observedLatest": "Aktuell {mag}",
       "observedAverage": "Ø {mag}",
-      "altitudePeak": "Erreicht max. {deg}° gegen {time}",
+      "altitudePeak": "Erreicht max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Framing erfasst — bereit zum Nachführen.",
       "goToTrack": "Zu Nachführen"
     },
