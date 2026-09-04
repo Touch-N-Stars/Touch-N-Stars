@@ -4,6 +4,11 @@ import axios from 'axios';
 import { getActivePinia } from 'pinia';
 import { PINS_PORT, DEFAULT_PINS_DAEMON_API_TOKEN } from '../pinsConfig';
 
+// Perihelion's own standalone server (see PerihelionApiServer.DefaultPort on the plugin side) --
+// a separate port from ninaAPI's /v2/api, since Quick Track deliberately bypasses the sequencer
+// entirely rather than going through ninaAPI. Keep these two values in sync.
+const PERIHELION_PORT = 1899;
+
 let settingsStore;
 let store;
 
@@ -46,6 +51,7 @@ const getBaseUrl = () => {
     targetpic: `${protocol}://${host}:${port}/api/targetpic`,
     pluginServer: `${protocol}://${host}:${port}`,
     pinsDaemon: `${protocol}://${host}:${PINS_PORT}`,
+    perihelion: `${protocol}://${host}:${PERIHELION_PORT}/perihelion/api`,
   };
 };
 
@@ -57,6 +63,7 @@ export const getUrls = () => {
     TARGETPIC_URL: urls.targetpic,
     PLUGINSERVER_URL: urls.pluginServer,
     PINSDAEMON_URL: urls.pinsDaemon,
+    PERIHELION_URL: urls.perihelion,
   };
 };
 

@@ -42,6 +42,12 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  // Without this, Vue Router leaves scroll position exactly where it was on every navigation --
+  // switching pages/plugins on a long, scrolled-down page landed the next page scrolled down too,
+  // not at its own top.
+  scrollBehavior() {
+    return { top: 0 };
+  },
 });
 
 const NAV_ITEM_ROUTES = {
