@@ -5343,6 +5343,7 @@
       "off": "desativado",
       "lastAttemptFailed": "Última tentativa falhou: {error}",
       "belowHorizonWarning": "{name} está atualmente abaixo do horizonte.",
+      "daytimeWarning": "Atualmente é dia no seu local — ainda não há nada para ver ou guiar.",
       "mountMismatchTitle": "Montagem fora do alvo",
       "mountMismatchBody": "A sua montagem está apontada a cerca de {deg}° de {name}. O que pretende fazer?",
       "slewThenTrack": "Apontar e centrar, depois rastrear",

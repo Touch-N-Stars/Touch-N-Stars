@@ -5338,6 +5338,7 @@
       "off": "desactivat",
       "lastAttemptFailed": "Darrer intent fallit: {error}",
       "belowHorizonWarning": "{name} és actualment sota l'horitzó.",
+      "daytimeWarning": "Actualment és de dia a la teva ubicació — encara no hi ha res a veure ni a guiar.",
       "mountMismatchTitle": "La muntura no és a l'objectiu",
       "mountMismatchBody": "La muntura apunta a uns {deg}° de {name}. Què vols fer?",
       "slewThenTrack": "Apunta i centra, després segueix",

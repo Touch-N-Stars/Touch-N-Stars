@@ -10,6 +10,7 @@ import { useI18n } from 'vue-i18n';
 import { Chart, registerables } from 'chart.js';
 import apiService from '@/services/apiService';
 import { timeSync } from '@/utils/timeSync';
+import { toJulian, calculateSunAltitude } from '@/utils/utils';
 
 Chart.register(...registerables);
 
@@ -26,6 +27,18 @@ const props = defineProps({
     type: Object, // { latitude, longitude }
     required: true,
   },
+  // Opt-in, defaults false so every other existing consumer of this shared component (target
+  // search, sequence item previews, observationplaner) keeps its current "now always sits at
+  // the chart's own center" behavior unless it deliberately asks for this instead. Real hardware
+  // feedback: a blind +/-12h-from-now window pushes the dark region hard against one edge (or
+  // splits it across both) whenever "now" isn't already near the middle of the night -- which is
+  // most of the time, since most sessions with this open aren't started at local midnight. NINA's
+  // own convention (and most planning tools') windows around the night itself instead, so the
+  // dark period stays intact and readable regardless of what time it currently is.
+  centerOnNight: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // The highest point on the same +/-12h curve this chart already draws -- emitted rather than
@@ -33,23 +46,41 @@ const props = defineProps({
 // climbing to X" instead of just the instantaneous altitude, without re-deriving the curve
 // itself a second time. rise-set is the horizon-crossing counterpart -- see riseSetPoint's own
 // comment.
-const emit = defineEmits(['peak-altitude', 'rise-set']);
+const emit = defineEmits(['peak-altitude', 'rise-set', 'darkness-changed']);
 
 const canvasRef = ref(null);
 let chartInstance = null;
 let timeUpdateInterval = null;
 
-function computeBaseTime() {
-  const now = new Date(timeSync.getServerTime());
-  return new Date(now.getTime() - 12 * 60 * 60 * 1000);
+// The actual, throttled clock -- refreshed on the same 15-minute interval the chart itself has
+// always redrawn on, but now a distinct value from baseTime below, which is a DISPLAY anchor
+// that can differ from "now" in centerOnNight mode. peakAltitudePoint/riseSetPoint read this
+// directly rather than reconstructing "now" from baseTime the way they used to (baseTime + 12h
+// only ever equaled real "now" back when the window was always +/-12h-from-now specifically --
+// centerOnNight breaks that equivalence entirely, so those computeds need their own real anchor
+// now, not a value that means something different depending on this prop).
+const liveNow = ref(new Date(timeSync.getServerTime()));
+
+// Midnight nearest to `date` in wall-clock terms -- whichever of "today's own midnight" (the
+// night that started yesterday evening and is ending this morning) or "tomorrow's midnight"
+// (the night starting this evening) is closer in absolute time. This is what centerOnNight
+// actually centers the display window on: close enough to the true middle of whichever
+// astronomical night is most relevant right now, without needing a real sun-altitude scan just
+// to find dusk/dawn -- local clock midnight is a fine approximation for windowing purposes (the
+// darkness shading itself is still computed properly via calculateSunAltitude regardless).
+function nearestMidnight(date) {
+  const startOfToday = new Date(date);
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTomorrow = new Date(startOfToday.getTime() + 24 * 60 * 60 * 1000);
+  const sinceToday = date.getTime() - startOfToday.getTime();
+  const untilTomorrow = startOfTomorrow.getTime() - date.getTime();
+  return sinceToday <= untilTomorrow ? startOfToday : startOfTomorrow;
 }
 
-const baseTime = ref(computeBaseTime());
-
-// UTC-basiertes Julianisches Datum
-function toJulian(date) {
-  return date.getTime() / 86400000 + 2440587.5;
-}
+const baseTime = computed(() => {
+  const anchor = props.centerOnNight ? nearestMidnight(liveNow.value) : liveNow.value;
+  return new Date(anchor.getTime() - 12 * 60 * 60 * 1000);
+});
 
 function calculateAltitude(raDeg, decDeg, observerLat, observerLon, date) {
   const latRad = (observerLat * Math.PI) / 180;
@@ -118,6 +149,17 @@ function interpolateHorizon(azimuth) {
   return 0;
 }
 
+// Where "now" actually falls within the displayed window, as a step index (0..96) -- used to
+// draw the vertical "now" marker. Used to be hardcoded to the array's own midpoint, which was
+// only ever correct because the window itself was always exactly +/-12h-from-now; centerOnNight
+// can put "now" anywhere in the window (e.g. near an edge at local midday), so this has to be
+// computed from where the two actually are relative to each other, not assumed.
+const nowIndexInWindow = computed(() => {
+  const stepMs = 15 * 60 * 1000;
+  const idx = Math.round((liveNow.value.getTime() - baseTime.value.getTime()) / stepMs);
+  return Math.max(0, Math.min(96, idx));
+});
+
 const altitudeData = computed(() => {
   if (props.target?.RA == null || props.target?.Dec == null) return [];
 
@@ -172,11 +214,13 @@ const peakAltitudePoint = computed(() => {
   // on their own). That defeated the emit-dedup guard below entirely (the key never matched
   // twice) and reopened the exact unbounded reactive loop it exists to prevent: computed -> emit
   // -> parent state update -> re-render -> new prop objects -> recompute with a marginally newer
-  // "now" -> emit again, forever. baseTime is deliberately "now" throttled to the same
-  // 15-minute cadence the chart itself already refreshes on (baseTime = now - 12h, so + 12h
-  // recovers "now" at that same throttled granularity) -- idempotent across any number of
-  // re-renders within that window, which is what makes the dedup guard actually work.
-  const now = new Date(baseTime.value.getTime() + 12 * 60 * 60 * 1000);
+  // "now" -> emit again, forever. liveNow is deliberately throttled to the same 15-minute cadence
+  // the chart itself already refreshes on, idempotent across any number of re-renders within that
+  // window -- which is what makes the dedup guard actually work. Reads liveNow directly rather
+  // than reconstructing "now" from baseTime (baseTime + 12h) the way this used to -- that
+  // reconstruction only worked because the window used to always BE +/-12h-from-now; centerOnNight
+  // breaks that equivalence, so this needs its own real anchor regardless of that prop.
+  const now = liveNow.value;
   const steps = 96; // 24h from now, in 15-minute steps
   let best = null;
   for (let i = 0; i <= steps; i++) {
@@ -223,18 +267,40 @@ watch(
   { immediate: true }
 );
 
+// Whether it's currently astronomical night (same -18deg threshold peakAltitudePoint's own dark
+// window already uses) -- doesn't depend on props.target at all, only site + the throttled
+// liveNow, so a plain value dedup is enough here (no target-identity concern like the two
+// watchers above: there's no "coincidentally matches a different object's stale value" hazard
+// when the value was never target-specific to begin with).
+const isCurrentlyDark = computed(
+  () => calculateSunAltitude(props.coordinates.latitude, props.coordinates.longitude, liveNow.value) < -18
+);
+let lastEmittedDarkness = null;
+watch(
+  isCurrentlyDark,
+  (dark) => {
+    if (dark === lastEmittedDarkness) return;
+    lastEmittedDarkness = dark;
+    emit('darkness-changed', dark);
+  },
+  { immediate: true }
+);
+
 // Rise/set times -- same rolling 24h-from-now window as peakAltitudePoint above, and the same
-// throttled "now" derived from baseTime rather than the live clock (see that computed's own
-// comment for why calling the clock directly here defeated the emit-dedup guard and reopened an
-// unbounded reactive loop -- exact same hazard applies to any computed a parent's own unstable
-// prop references can re-trigger). Circumpolar/never-rises are reported explicitly rather than
+// throttled liveNow rather than the live clock directly (see that computed's own comment for why
+// calling the clock directly here defeated the emit-dedup guard and reopened an unbounded
+// reactive loop -- exact same hazard applies to any computed a parent's own unstable prop
+// references can re-trigger). Circumpolar/never-rises are reported explicitly rather than
 // as null rise+set, since "no crossing found" is ambiguous between those two very different
 // cases otherwise. Already-above-horizon deliberately doesn't look for the rise that already
 // happened -- only the next set -- rather than chasing a second rise later in the same 24h
 // window, which would be more than a simple status line needs.
 const riseSetPoint = computed(() => {
   if (props.target?.RA == null || props.target?.Dec == null) return null;
-  const now = new Date(baseTime.value.getTime() + 12 * 60 * 60 * 1000);
+  // liveNow directly, not baseTime + 12h -- see peakAltitudePoint's own comment on this same
+  // change; that reconstruction only worked while the window was always +/-12h-from-now, and
+  // centerOnNight breaks that equivalence.
+  const now = liveNow.value;
   const steps = 96; // 24h from now, in 15-minute steps
   const stepMs = 15 * 60 * 1000;
 
@@ -361,10 +427,7 @@ function createChart() {
         },
         {
           type: 'bar',
-          data: altitudeData.value.map((_, i) => {
-            const mid = Math.floor(altitudeData.value.length / 2);
-            return i === mid ? 90 : 0;
-          }),
+          data: altitudeData.value.map((_, i) => (i === nowIndexInWindow.value ? 90 : 0)),
           backgroundColor: 'rgba(6, 182, 212,1)',
           borderWidth: 0,
           barPercentage: 0.1,
@@ -402,10 +465,9 @@ function updateChart() {
   chartInstance.data.datasets[1].data = horizonAltitudes.value;
   chartInstance.data.datasets[2].data = getDarknessFill(-12);
   chartInstance.data.datasets[3].data = getDarknessFill(-18);
-  chartInstance.data.datasets[4].data = altitudeData.value.map((_, i) => {
-    const mid = Math.floor(altitudeData.value.length / 2);
-    return i === mid ? 90 : 0;
-  });
+  chartInstance.data.datasets[4].data = altitudeData.value.map((_, i) =>
+    i === nowIndexInWindow.value ? 90 : 0
+  );
 
   chartInstance.update();
 }
@@ -439,45 +501,6 @@ async function loadCustomHorizont() {
   }
 }
 
-function calculateSunAltitude(observerLat, observerLon, date) {
-  const daysSinceJ2000 = toJulian(date) - 2451545.0;
-  const meanLongitude = (280.46 + 0.9856474 * daysSinceJ2000) % 360;
-  const meanAnomaly = (357.528 + 0.9856003 * daysSinceJ2000) % 360;
-
-  const eclipticLongitude =
-    meanLongitude +
-    1.915 * Math.sin((meanAnomaly * Math.PI) / 180) +
-    0.02 * Math.sin((2 * meanAnomaly * Math.PI) / 180);
-  const epsilon = 23.439 - 0.0000004 * daysSinceJ2000;
-  const ra =
-    (Math.atan2(
-      Math.cos((epsilon * Math.PI) / 180) * Math.sin((eclipticLongitude * Math.PI) / 180),
-      Math.cos((eclipticLongitude * Math.PI) / 180)
-    ) *
-      180) /
-    Math.PI;
-  const dec =
-    (Math.asin(
-      Math.sin((epsilon * Math.PI) / 180) * Math.sin((eclipticLongitude * Math.PI) / 180)
-    ) *
-      180) /
-    Math.PI;
-
-  const GMST = 18.697374558 + 24.06570982441908 * daysSinceJ2000;
-  let LMST = (GMST + observerLon / 15) % 24;
-  if (LMST < 0) LMST += 24;
-  const hourAngle = (LMST * 15 - ra + 360) % 360;
-
-  const haRad = (hourAngle * Math.PI) / 180;
-  const latRad = (observerLat * Math.PI) / 180;
-  const decRad = (dec * Math.PI) / 180;
-
-  const alt = Math.asin(
-    Math.sin(latRad) * Math.sin(decRad) + Math.cos(latRad) * Math.cos(decRad) * Math.cos(haRad)
-  );
-  return (alt * 180) / Math.PI;
-}
-
 function getDarknessFill(thresholdDeg = -18) {
   const fill = [];
   const steps = 96;
@@ -500,7 +523,7 @@ onMounted(async () => {
   createChart();
   timeUpdateInterval = setInterval(
     () => {
-      baseTime.value = computeBaseTime();
+      liveNow.value = new Date(timeSync.getServerTime());
     },
     15 * 60 * 1000
   );

@@ -5343,6 +5343,7 @@
       "off": "désactivé",
       "lastAttemptFailed": "Dernière tentative échouée : {error}",
       "belowHorizonWarning": "{name} est actuellement sous l'horizon.",
+      "daytimeWarning": "Il fait actuellement jour sur votre site — il n'y a encore rien à voir ni à guider.",
       "mountMismatchTitle": "Monture pas sur la cible",
       "mountMismatchBody": "Votre monture pointe à environ {deg}° de {name}. Que souhaitez-vous faire ?",
       "slewThenTrack": "Pointer et centrer, puis suivre",

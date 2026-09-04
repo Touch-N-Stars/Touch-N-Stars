@@ -411,6 +411,7 @@
                 </p>
                 <SkyChart
                   v-else
+                  center-on-night
                   :target="{ RA: selected.raHours * 15, Dec: selected.decDeg }"
                   :coordinates="{
                     latitude: store.profileInfo.AstrometrySettings.Latitude,
@@ -542,6 +543,20 @@
               <ExclamationTriangleIcon class="w-5 h-5 text-status-warn shrink-0 mt-0.5" />
               <span class="flex-1 text-sm text-content">{{
                 t('perihelion.track.belowHorizonWarning', { name: selected.name })
+              }}</span>
+            </div>
+
+            <!-- Same advisory pattern as the below-horizon warning above, and for the same
+                 reason (Add to Sequence is exempt; this is only about tracking right now). A
+                 fast mover above the horizon in broad daylight can still be pointed at
+                 correctly, but there's nothing to see and nothing to guide on. -->
+            <div
+              v-if="trackingMode === 'idle' && isCurrentlyDark === false"
+              class="flex items-start gap-2 p-3 rounded-chip bg-status-warn/10 border border-status-warn/40"
+            >
+              <ExclamationTriangleIcon class="w-5 h-5 text-status-warn shrink-0 mt-0.5" />
+              <span class="flex-1 text-sm text-content">{{
+                t('perihelion.track.daytimeWarning')
               }}</span>
             </div>
 
@@ -1056,7 +1071,8 @@ import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
-import { raDecToAltAz, wait } from '@/utils/utils';
+import { raDecToAltAz, wait, calculateSunAltitude } from '@/utils/utils';
+import { timeSync } from '@/utils/timeSync';
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { fetchSyncStatus, syncComets } from '../utils/syncComets';
@@ -1335,6 +1351,8 @@ onMounted(async () => {
     loadSyncStatus();
     await restoreActiveQuickTrackSession();
   }
+  updateIsCurrentlyDark();
+  darknessCheckHandle = setInterval(updateIsCurrentlyDark, 60000);
 });
 
 const syncStatusLabel = computed(() =>
@@ -1557,6 +1575,23 @@ const altAz = computed(() => {
   // raDecToAltAz (src/utils/utils.js) expects RA in degrees; Perihelion returns decimal hours.
   return raDecToAltAz(selected.value.raHours * 15, selected.value.decDeg, s.Latitude, s.Longitude);
 });
+// Whether it's currently astronomically dark (sun below -18deg) at the configured site --
+// deliberately its own independent, always-running check rather than reusing SkyChart's own
+// darkness-changed emit, since that component only exists while the Position & Path tab is
+// mounted (v-if/v-else-if between tabs) and would go stale the moment the user switches to
+// Track for a long Quick Track session. null until the first tick or if location is unknown.
+const isCurrentlyDark = ref(null);
+let darknessCheckHandle = null;
+function updateIsCurrentlyDark() {
+  if (!hasLocation.value) {
+    isCurrentlyDark.value = null;
+    return;
+  }
+  const s = store.profileInfo.AstrometrySettings;
+  const now = new Date(timeSync.getServerTime());
+  isCurrentlyDark.value = calculateSunAltitude(s.Latitude, s.Longitude, now) < -18;
+}
+
 // { altitude, label } | null -- from SkyChart's own peak-altitude emit, so "currently low" and
 // "climbing to a good altitude tonight" aren't indistinguishable in the same red/amber badge.
 const tonightsPeakAltitude = ref(null);
@@ -1739,6 +1774,7 @@ watch(
 );
 onUnmounted(() => {
   if (statusPollHandle) clearInterval(statusPollHandle);
+  if (darknessCheckHandle) clearInterval(darknessCheckHandle);
 });
 
 /** Coarse duration ("3m", "1h 05m") without a directional suffix -- caller supplies "for"/"in ~". */

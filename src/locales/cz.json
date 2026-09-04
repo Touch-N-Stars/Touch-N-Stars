@@ -5338,6 +5338,7 @@
       "off": "vypnuto",
       "lastAttemptFailed": "Poslední pokus selhal: {error}",
       "belowHorizonWarning": "{name} je momentálně pod obzorem.",
+      "daytimeWarning": "Na vašem stanovišti je nyní den — zatím není nic vidět ani na čem navádět.",
       "mountMismatchTitle": "Montáž není na cíli",
       "mountMismatchBody": "Vaše montáž míří přibližně {deg}° od {name}. Co chcete udělat?",
       "slewThenTrack": "Najet a vycentrovat, poté sledovat",

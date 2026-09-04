@@ -5308,6 +5308,7 @@
       "off": "off",
       "lastAttemptFailed": "Last attempt failed: {error}",
       "belowHorizonWarning": "{name} is currently below the horizon.",
+      "daytimeWarning": "It's currently daytime at your site — there's nothing to see or guide on yet.",
       "mountMismatchTitle": "Mount not on target",
       "mountMismatchBody": "Your mount is pointed about {deg}° away from {name}. What would you like to do?",
       "slewThenTrack": "Slew & Center, then Track",

@@ -5338,6 +5338,7 @@
       "off": "uit",
       "lastAttemptFailed": "Laatste poging mislukt: {error}",
       "belowHorizonWarning": "{name} staat momenteel onder de horizon.",
+      "daytimeWarning": "Het is momenteel dag op je locatie — er is nog niets te zien of om op te guiden.",
       "mountMismatchTitle": "Montering niet op doel",
       "mountMismatchBody": "Je montering wijst ongeveer {deg}° van {name} af. Wat wil je doen?",
       "slewThenTrack": "Slew & centreer, en volg dan",

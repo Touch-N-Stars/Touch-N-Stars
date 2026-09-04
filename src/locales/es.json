@@ -5343,6 +5343,7 @@
       "off": "desactivado",
       "lastAttemptFailed": "Último intento fallido: {error}",
       "belowHorizonWarning": "{name} está actualmente bajo el horizonte.",
+      "daytimeWarning": "Actualmente es de día en tu ubicación — todavía no hay nada que ver ni guiar.",
       "mountMismatchTitle": "La montura no está en el objetivo",
       "mountMismatchBody": "Tu montura apunta a unos {deg}° de {name}. ¿Qué te gustaría hacer?",
       "slewThenTrack": "Apuntar y centrar, luego seguir",

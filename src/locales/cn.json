@@ -5338,6 +5338,7 @@
       "off": "关闭",
       "lastAttemptFailed": "上次尝试失败：{error}",
       "belowHorizonWarning": "{name} 目前在地平线以下。",
+      "daytimeWarning": "您所在地当前是白天 — 目前还没有可观测或可导星的目标。",
       "mountMismatchTitle": "赤道仪未对准目标",
       "mountMismatchBody": "您的赤道仪当前指向与 {name} 相差约 {deg}°。您想怎么做？",
       "slewThenTrack": "转向并居中，然后跟踪",

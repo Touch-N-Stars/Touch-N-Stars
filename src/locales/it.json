@@ -5343,6 +5343,7 @@
       "off": "disattivo",
       "lastAttemptFailed": "Ultimo tentativo fallito: {error}",
       "belowHorizonWarning": "{name} è attualmente sotto l'orizzonte.",
+      "daytimeWarning": "Attualmente è giorno nella tua postazione — non c'è ancora nulla da vedere o su cui guidare.",
       "mountMismatchTitle": "Montatura non sul target",
       "mountMismatchBody": "La montatura punta a circa {deg}° da {name}. Cosa vuoi fare?",
       "slewThenTrack": "Punta e centra, poi insegui",

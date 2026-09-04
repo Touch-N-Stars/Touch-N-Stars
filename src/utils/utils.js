@@ -208,3 +208,52 @@ export function altAzToRaDec(altitude, azimuth, latitude, longitude) {
 
   return { ra, dec };
 }
+
+// UTC-based Julian date.
+export function toJulian(date) {
+  return date.getTime() / 86400000 + 2440587.5;
+}
+
+/**
+ * Low-precision solar altitude for a given observer/time, used to gate "is it dark enough to
+ * track" warnings. Not for rise/set-grade precision -- good to well under a degree, which is
+ * all a +/-18deg astronomical-twilight threshold needs.
+ */
+export function calculateSunAltitude(observerLat, observerLon, date) {
+  const daysSinceJ2000 = toJulian(date) - 2451545.0;
+  const meanLongitude = (280.46 + 0.9856474 * daysSinceJ2000) % 360;
+  const meanAnomaly = (357.528 + 0.9856003 * daysSinceJ2000) % 360;
+
+  const eclipticLongitude =
+    meanLongitude +
+    1.915 * Math.sin((meanAnomaly * Math.PI) / 180) +
+    0.02 * Math.sin((2 * meanAnomaly * Math.PI) / 180);
+  const epsilon = 23.439 - 0.0000004 * daysSinceJ2000;
+  const ra =
+    (Math.atan2(
+      Math.cos((epsilon * Math.PI) / 180) * Math.sin((eclipticLongitude * Math.PI) / 180),
+      Math.cos((eclipticLongitude * Math.PI) / 180)
+    ) *
+      180) /
+    Math.PI;
+  const dec =
+    (Math.asin(
+      Math.sin((epsilon * Math.PI) / 180) * Math.sin((eclipticLongitude * Math.PI) / 180)
+    ) *
+      180) /
+    Math.PI;
+
+  const GMST = 18.697374558 + 24.06570982441908 * daysSinceJ2000;
+  let LMST = (GMST + observerLon / 15) % 24;
+  if (LMST < 0) LMST += 24;
+
+  const hourAngle = (LMST * 15 - ra + 360) % 360;
+  const haRad = (hourAngle * Math.PI) / 180;
+  const latRad = (observerLat * Math.PI) / 180;
+  const decRad = (dec * Math.PI) / 180;
+
+  const alt = Math.asin(
+    Math.sin(latRad) * Math.sin(decRad) + Math.cos(latRad) * Math.cos(decRad) * Math.cos(haRad)
+  );
+  return (alt * 180) / Math.PI;
+}

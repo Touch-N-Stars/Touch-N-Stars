@@ -5343,6 +5343,7 @@
       "off": "aus",
       "lastAttemptFailed": "Letzter Versuch fehlgeschlagen: {error}",
       "belowHorizonWarning": "{name} steht derzeit unter dem Horizont.",
+      "daytimeWarning": "An Ihrem Standort ist es gerade Tag — es gibt noch nichts zu sehen oder zum Guiden.",
       "mountMismatchTitle": "Montierung nicht auf dem Ziel",
       "mountMismatchBody": "Ihre Montierung zeigt etwa {deg}° von {name} entfernt. Was möchten Sie tun?",
       "slewThenTrack": "Schwenken & Zentrieren, dann verfolgen",
