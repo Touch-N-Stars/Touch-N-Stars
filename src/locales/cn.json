@@ -5358,11 +5358,12 @@
       "addToSequenceDescriptionRest": "创建一个转动、跟踪与拍摄序列，并将其加载到 PINS 的序列编辑器中，供你查看并启动。",
       "downloadSequence": "下载序列",
       "downloadSequenceDescriptionRest": "将相同的序列保存为文件，而不是加载到 PINS 中 -- 供以后查看或导入。",
-      "quickTrackDescriptionRest": "立即直接设置赤道仪速率 — 供手动或目视使用，不能替代真正的拍摄序列。",
+      "quickTrackDescriptionRest": "立即直接设置赤道仪的速率 — 供手动或目视使用，不能替代真正的拍摄序列。如果赤道仪报告已到达中天翻转极限，Quick Track 会自动停止，因为它没有序列触发器来替你执行翻转。",
       "stopSequence": "停止序列",
       "stopQuickTrack": "停止快速跟踪",
       "autoReapplyingFooter": "每 {minutes} 分钟自动重新应用",
-      "footer": "在设备本地根据实时轨道根数计算 — 无需互联网连接即可工作。"
+      "footer": "在设备本地根据实时轨道根数计算 — 无需互联网连接即可工作。",
+      "dismiss": "关闭"
     },
     "relativeTime": {
       "justNow": "刚刚",

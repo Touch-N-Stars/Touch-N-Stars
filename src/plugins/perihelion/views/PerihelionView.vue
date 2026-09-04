@@ -506,6 +506,27 @@
               }}</span>
             </div>
 
+            <!-- Real safety concern, not a generic error toast: Quick Track has no sequence of
+                 its own, so this is currently the ONLY thing that stops it before a GEM mount's
+                 OTA/counterweight swings into the tripod or pier past the meridian. Deliberately
+                 not folded into the quieter actionStatus/lastError text elsewhere on this tab --
+                 stays visible until dismissed, independent of whatever tab/state the user is on
+                 when it happens. -->
+            <div
+              v-if="quickTrackStoppedReason"
+              class="flex items-start gap-2 p-3 rounded-chip bg-status-danger/10 border border-status-danger/40"
+            >
+              <ExclamationTriangleIcon class="w-5 h-5 text-status-danger shrink-0 mt-0.5" />
+              <span class="flex-1 text-sm text-content">{{ quickTrackStoppedReason }}</span>
+              <button
+                class="shrink-0 text-content-faint hover:text-content-muted cursor-pointer"
+                :aria-label="t('perihelion.track.dismiss')"
+                @click="quickTrackStoppedReason = null"
+              >
+                <XMarkIcon class="w-4 h-4" />
+              </button>
+            </div>
+
             <div class="tns-card flex flex-col gap-2">
               <span class="tns-stat-label">{{ t('perihelion.track.status') }}</span>
               <div class="flex items-center gap-2">
@@ -989,6 +1010,8 @@ import {
   ArrowDownTrayIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ExclamationTriangleIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline';
 
 // Matches OryxAstro's own comet category glyph (AstroCategoryIcon.vue) exactly -- same
@@ -1535,9 +1558,23 @@ const quickTrackStatus = ref(null);
 const now = ref(Date.now());
 let statusPollHandle = null;
 
+// Survives independently of quickTrackStatus/trackingMode being reset below -- real safety
+// concern: Quick Track has no sequence of its own, so nothing else stops it from tracking a
+// German Equatorial Mount past the meridian (see the Perihelion repo's QuickTrackReapply.
+// CheckMeridian for the actual mechanics/why this stops rather than auto-flips). Without
+// capturing the reason into its own ref first, the trackingMode watcher below would wipe
+// quickTrackStatus (and the reason with it) the same tick this detects the stop, and the user
+// would just see the session silently end with no explanation.
+const quickTrackStoppedReason = ref(null);
+
 async function pollQuickTrackStatus() {
   try {
-    quickTrackStatus.value = await fetchQuickTrackStatus();
+    const status = await fetchQuickTrackStatus();
+    if (quickTrackStatus.value?.active && !status.active && status.stopReason) {
+      quickTrackStoppedReason.value = status.stopReason;
+      trackingMode.value = 'idle';
+    }
+    quickTrackStatus.value = status;
   } catch {
     // Leave the last known value in place on a transient fetch error -- clearing it would make
     // a one-off network blip look identical to tracking actually having stopped.
@@ -1705,6 +1742,7 @@ async function onQuickTrack() {
   if (!selected.value) return;
   actionBusy.value = true;
   actionStatus.value = null;
+  quickTrackStoppedReason.value = null;
   const result = await startQuickTrack({
     objectType: selected.value.objectType.toLowerCase(),
     targetName: selected.value.name,

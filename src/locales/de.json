@@ -5363,11 +5363,12 @@
       "addToSequenceDescriptionRest": "erstellt eine Schwenk-, Nachführ- und Aufnahmesequenz und lädt sie in PINS' Sequenzer zur Prüfung und zum Start.",
       "downloadSequence": "Sequenz herunterladen",
       "downloadSequenceDescriptionRest": "speichert dieselbe Sequenz als Datei, statt sie in PINS zu laden -- zum späteren Prüfen oder Importieren.",
-      "quickTrackDescriptionRest": "setzt die Rate der Montierung sofort direkt — für manuelle oder visuelle Nutzung, kein Ersatz für eine echte Aufnahmesequenz.",
+      "quickTrackDescriptionRest": "stellt die Nachführrate der Montierung sofort direkt ein — für manuellen oder visuellen Gebrauch, kein Ersatz für eine echte Aufnahmesequenz. Stoppt sich selbst automatisch, sobald die Montierung meldet, dass das Meridian-Flip-Limit erreicht ist, da Quick Track keinen Sequenz-Trigger zum Flippen hat.",
       "stopSequence": "Sequenz stoppen",
       "stopQuickTrack": "Quick Track stoppen",
       "autoReapplyingFooter": "Automatische Erneuerung alle {minutes} Min.",
-      "footer": "Direkt im Plugin aus aktuellen Bahnelementen berechnet — funktioniert ohne Internetverbindung."
+      "footer": "Direkt im Plugin aus aktuellen Bahnelementen berechnet — funktioniert ohne Internetverbindung.",
+      "dismiss": "Schließen"
     },
     "relativeTime": {
       "justNow": "gerade eben",

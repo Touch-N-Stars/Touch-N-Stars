@@ -5363,11 +5363,12 @@
       "addToSequenceDescriptionRest": "crée une séquence de déplacement, suivi et acquisition, et la charge dans le séquenceur de PINS pour que vous la vérifiiez et la lanciez.",
       "downloadSequence": "Télécharger la séquence",
       "downloadSequenceDescriptionRest": "enregistre la même séquence dans un fichier au lieu de la charger dans PINS -- pour la revoir ou l'importer plus tard.",
-      "quickTrackDescriptionRest": "règle immédiatement la vitesse de la monture — pour un usage manuel ou visuel, ne remplace pas une vraie séquence d'acquisition.",
+      "quickTrackDescriptionRest": "règle directement la vitesse de la monture, tout de suite — pour un usage manuel ou visuel, pas un substitut à une vraie séquence d'acquisition. S'arrête automatiquement si votre monture signale avoir atteint la limite de retournement au méridien, car Quick Track n'a pas de déclencheur de séquence pour le faire à votre place.",
       "stopSequence": "Arrêter la séquence",
       "stopQuickTrack": "Arrêter le suivi rapide",
       "autoReapplyingFooter": "Réapplication automatique toutes les {minutes} min",
-      "footer": "Calculé localement à partir des éléments orbitaux en direct — fonctionne sans connexion internet."
+      "footer": "Calculé localement à partir des éléments orbitaux en direct — fonctionne sans connexion internet.",
+      "dismiss": "Ignorer"
     },
     "relativeTime": {
       "justNow": "à l'instant",

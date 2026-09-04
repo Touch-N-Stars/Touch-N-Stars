@@ -5363,11 +5363,12 @@
       "addToSequenceDescriptionRest": "cria uma sequência de movimento, rastreamento e captura e a carrega no sequenciador do PINS para você revisar e iniciar.",
       "downloadSequence": "Descarregar sequência",
       "downloadSequenceDescriptionRest": "guarda a mesma sequência como ficheiro em vez de a carregar no PINS -- para rever ou importar mais tarde.",
-      "quickTrackDescriptionRest": "define a taxa da montagem diretamente agora — para uso manual ou visual, não substitui uma sequência de captura real.",
+      "quickTrackDescriptionRest": "define a taxa da montagem diretamente agora — para uso manual ou visual, não um substituto de uma sequência de captura real. Para-se automaticamente se a sua montagem indicar que atingiu o limite de inversão no meridiano, já que o Quick Track não tem um gatilho de sequência para o fazer por si.",
       "stopSequence": "Parar Sequência",
       "stopQuickTrack": "Parar Quick Track",
       "autoReapplyingFooter": "Reaplicando automaticamente a cada {minutes} min",
-      "footer": "Calculado no dispositivo a partir de elementos orbitais em tempo real — funciona sem conexão à internet."
+      "footer": "Calculado no dispositivo a partir de elementos orbitais em tempo real — funciona sem conexão à internet.",
+      "dismiss": "Dispensar"
     },
     "relativeTime": {
       "justNow": "agora mesmo",

@@ -5358,11 +5358,12 @@
       "addToSequenceDescriptionRest": "crea una seqüència de desplaçament, seguiment i captura, i la carrega al seqüenciador de PINS perquè la revisis i la iniciïs.",
       "downloadSequence": "Descarrega la seqüència",
       "downloadSequenceDescriptionRest": "desa la mateixa seqüència com a fitxer en lloc de carregar-la a PINS -- per revisar-la o importar-la més tard.",
-      "quickTrackDescriptionRest": "ajusta la velocitat de la muntura directament ara mateix — per a ús manual o visual, no substitueix una seqüència de captura real.",
+      "quickTrackDescriptionRest": "estableix la velocitat de la muntura directament ara mateix — per a ús manual o visual, no un substitut d'una seqüència de captura real. S'atura automàticament si la muntura indica que ha arribat al límit de gir al meridià, ja que Quick Track no té cap disparador de seqüència que ho faci per tu.",
       "stopSequence": "Atura la Seqüència",
       "stopQuickTrack": "Atura Quick Track",
       "autoReapplyingFooter": "Reaplicant automàticament cada {minutes} min",
-      "footer": "Calculat al dispositiu a partir d'elements orbitals en directe — funciona sense connexió a internet."
+      "footer": "Calculat al dispositiu a partir d'elements orbitals en directe — funciona sense connexió a internet.",
+      "dismiss": "Descarta"
     },
     "relativeTime": {
       "justNow": "ara mateix",

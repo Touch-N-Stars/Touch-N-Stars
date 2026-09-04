@@ -5363,11 +5363,12 @@
       "addToSequenceDescriptionRest": "crea una sequenza di spostamento, inseguimento e acquisizione e la carica nel sequencer di PINS perché tu la riveda e la avvii.",
       "downloadSequence": "Scarica sequenza",
       "downloadSequenceDescriptionRest": "salva la stessa sequenza come file invece di caricarla in PINS -- da rivedere o importare in seguito.",
-      "quickTrackDescriptionRest": "imposta subito la velocità della montatura — per uso manuale o visuale, non sostituisce una vera sequenza di acquisizione.",
+      "quickTrackDescriptionRest": "imposta subito la velocità della montatura direttamente — per uso manuale o visuale, non un sostituto di una vera sequenza di acquisizione. Si arresta automaticamente se la montatura segnala di aver raggiunto il limite di ribaltamento al meridiano, poiché Quick Track non ha un trigger di sequenza che lo faccia al posto tuo.",
       "stopSequence": "Ferma sequenza",
       "stopQuickTrack": "Ferma Quick Track",
       "autoReapplyingFooter": "Riapplicazione automatica ogni {minutes} min",
-      "footer": "Calcolato sul dispositivo dagli elementi orbitali in tempo reale — funziona senza connessione internet."
+      "footer": "Calcolato sul dispositivo dagli elementi orbitali in tempo reale — funziona senza connessione internet.",
+      "dismiss": "Ignora"
     },
     "relativeTime": {
       "justNow": "proprio ora",

@@ -5328,11 +5328,12 @@
       "addToSequenceDescriptionRest": "builds a slew + track + imaging sequence and loads it into PINS's sequencer for you to review and start.",
       "downloadSequence": "Download sequence",
       "downloadSequenceDescriptionRest": "saves the same sequence as a file instead of loading it into PINS -- for reviewing or importing later.",
-      "quickTrackDescriptionRest": "sets the mount's rate directly right now — for manual or visual use, not a substitute for a real imaging sequence.",
+      "quickTrackDescriptionRest": "sets the mount's rate directly right now — for manual or visual use, not a substitute for a real imaging sequence. Stops itself automatically if your mount reports it's reached the meridian flip limit, since Quick Track has no sequence trigger to flip it for you.",
       "stopSequence": "Stop Sequence",
       "stopQuickTrack": "Stop Quick Track",
       "autoReapplyingFooter": "Auto re-applying every {minutes} min",
-      "footer": "Computed on-device from live orbital elements — works without an internet connection."
+      "footer": "Computed on-device from live orbital elements — works without an internet connection.",
+      "dismiss": "Dismiss"
     },
     "relativeTime": {
       "justNow": "just now",

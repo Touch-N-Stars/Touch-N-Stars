@@ -5358,11 +5358,12 @@
       "addToSequenceDescriptionRest": "bouwt een slew-, navolg- en opnamesequentie en laadt deze in de sequencer van PINS zodat jij hem kunt controleren en starten.",
       "downloadSequence": "Sequentie downloaden",
       "downloadSequenceDescriptionRest": "slaat dezelfde sequentie op als bestand in plaats van deze in PINS te laden -- om later te bekijken of te importeren.",
-      "quickTrackDescriptionRest": "stelt de snelheid van de montering nu meteen in — voor handmatig of visueel gebruik, geen vervanging voor een echte opnamesequentie.",
+      "quickTrackDescriptionRest": "stelt de snelheid van de montering direct nu in — voor handmatig of visueel gebruik, geen vervanging voor een echte opnamesequentie. Stopt zichzelf automatisch als je montering aangeeft de meridiaanflip-limiet te hebben bereikt, omdat Quick Track geen sequentie-trigger heeft om dat voor je te doen.",
       "stopSequence": "Sequentie stoppen",
       "stopQuickTrack": "Quick Track stoppen",
       "autoReapplyingFooter": "Automatisch herhalen elke {minutes} min",
-      "footer": "Op het apparaat berekend uit live baanelementen — werkt zonder internetverbinding."
+      "footer": "Op het apparaat berekend uit live baanelementen — werkt zonder internetverbinding.",
+      "dismiss": "Sluiten"
     },
     "relativeTime": {
       "justNow": "zojuist",

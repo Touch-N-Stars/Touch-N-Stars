@@ -5358,11 +5358,12 @@
       "addToSequenceDescriptionRest": "tworzy sekwencję obrotu, śledzenia i rejestracji oraz ładuje ją do sekwencera PINS, abyś mógł ją sprawdzić i uruchomić.",
       "downloadSequence": "Pobierz sekwencję",
       "downloadSequenceDescriptionRest": "zapisuje tę samą sekwencję jako plik zamiast wczytywać ją do PINS -- do przejrzenia lub zaimportowania później.",
-      "quickTrackDescriptionRest": "od razu ustawia prędkość montażu — do użytku ręcznego lub wizualnego, nie zastępuje prawdziwej sekwencji rejestracji.",
+      "quickTrackDescriptionRest": "ustawia szybkość montażu bezpośrednio, od razu — do użytku ręcznego lub wizualnego, nie zastępuje prawdziwej sekwencji rejestracji. Zatrzymuje się automatycznie, gdy montaż zgłosi osiągnięcie limitu przerzutu przez południk, ponieważ Quick Track nie ma wyzwalacza sekwencji, który zrobiłby to za ciebie.",
       "stopSequence": "Zatrzymaj Sekwencję",
       "stopQuickTrack": "Zatrzymaj Quick Track",
       "autoReapplyingFooter": "Automatyczne odświeżanie co {minutes} min",
-      "footer": "Obliczane na urządzeniu na podstawie elementów orbitalnych na żywo — działa bez połączenia z internetem."
+      "footer": "Obliczane na urządzeniu na podstawie elementów orbitalnych na żywo — działa bez połączenia z internetem.",
+      "dismiss": "Zamknij"
     },
     "relativeTime": {
       "justNow": "przed chwilą",

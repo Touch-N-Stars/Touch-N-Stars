@@ -5358,11 +5358,12 @@
       "addToSequenceDescriptionRest": "導入・追尾・撮影のシーケンスを作成し、確認・開始できるようPINSのシーケンサーに読み込みます。",
       "downloadSequence": "シーケンスをダウンロード",
       "downloadSequenceDescriptionRest": "PINSに読み込む代わりに同じシーケンスをファイルとして保存します -- 後で確認またはインポートするため。",
-      "quickTrackDescriptionRest": "マウントのレートを今すぐ直接設定します — 手動・目視観測用で、実際の撮影シーケンスの代わりにはなりません。",
+      "quickTrackDescriptionRest": "今すぐマウントのレートを直接設定します — 手動・目視観測用で、本格的な撮影シーケンスの代わりにはなりません。マウントが子午線反転の限界に達したと報告すると自動的に停止します。Quick Trackにはそれを代行するシーケンストリガーがないためです。",
       "stopSequence": "シーケンスを停止",
       "stopQuickTrack": "Quick Trackを停止",
       "autoReapplyingFooter": "{minutes}分ごとに自動再適用中",
-      "footer": "デバイス上でリアルタイムの軌道要素から計算 — インターネット接続なしで動作します。"
+      "footer": "デバイス上でリアルタイムの軌道要素から計算 — インターネット接続なしで動作します。",
+      "dismiss": "閉じる"
     },
     "relativeTime": {
       "justNow": "たった今",

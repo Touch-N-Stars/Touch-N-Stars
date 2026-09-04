@@ -19,6 +19,7 @@ import { getUrls } from '@/services/api/core';
  *   lastDecArcsecPerSec: number|null,
  *   lastApplySucceeded: boolean,
  *   lastError: string|null,
+ *   stopReason: string|null,
  * }>}
  */
 export async function fetchQuickTrackStatus() {
@@ -37,5 +38,8 @@ export async function fetchQuickTrackStatus() {
     lastDecArcsecPerSec: body.LastDecArcsecPerSec ?? null,
     lastApplySucceeded: !!body.LastApplySucceeded,
     lastError: body.LastError ?? null,
+    // Null for a plain manual stop -- set when Quick Track stopped itself, in particular the
+    // meridian safety cutoff (see the Perihelion repo's QuickTrackReapply.CheckMeridian).
+    stopReason: body.StopReason ?? null,
   };
 }
