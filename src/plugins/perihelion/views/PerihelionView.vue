@@ -570,9 +570,11 @@
               <p class="text-xs text-content-muted">
                 <span v-if="elapsedSinceStarted != null">{{
                   t('perihelion.track.trackingFor', { duration: elapsedSinceStarted })
-                }}</span>
-                <span v-if="elapsedSinceApplied != null">
-                  {{ t('perihelion.track.appliedAgo', { duration: elapsedSinceApplied }) }}</span
+                }}</span
+                ><span v-if="elapsedSinceApplied != null"
+                  >&nbsp;{{
+                    t('perihelion.track.appliedAgo', { duration: elapsedSinceApplied })
+                  }}</span
                 >
               </p>
               <p
@@ -586,6 +588,25 @@
                 <span :class="quickTrackStatus.guiding ? 'text-status-ok' : 'text-content-faint'">{{
                   quickTrackStatus.guiding ? t('perihelion.track.on') : t('perihelion.track.off')
                 }}</span>
+              </p>
+              <!-- Only when the Browse/Position tab's own selection still matches what Quick
+                   Track is actually tracking -- quickTrackStatus.targetName is the authoritative
+                   tracked object and can outlive the user navigating to a different one, so altAz
+                   (computed from `selected`, not from the tracked target) would otherwise show a
+                   DIFFERENT object's altitude under "Live Status" without anything saying so. -->
+              <p
+                v-if="altAz && selected?.name === quickTrackStatus.targetName"
+                class="text-xs text-content-muted"
+              >
+                {{ t('perihelion.track.currentAltitude') }}
+                <span :class="altitudeColorClass(altAz.altitude)"
+                  >{{ altAz.altitude.toFixed(0) }}°
+                  {{
+                    altAz.altitude >= 0
+                      ? t('perihelion.position.aboveHorizon')
+                      : t('perihelion.position.belowHorizon')
+                  }}</span
+                >
               </p>
               <p
                 v-if="!quickTrackStatus.lastApplySucceeded && quickTrackStatus.lastError"
