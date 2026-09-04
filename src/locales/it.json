@@ -5318,7 +5318,11 @@
       "altitudePeak": "Raggiunge {deg}° ~ {time}",
       "framingCapturedPrompt": "Inquadratura acquisita — pronto per l'inseguimento.",
       "goToTrack": "Vai a Insegui",
-      "noPeakInDarkWindow": "Non visibile nella finestra di buio"
+      "noPeakInDarkWindow": "Non visibile nella finestra di buio",
+      "risesAt": "Sorge {time}",
+      "setsAt": "Tramonta {time}",
+      "circumpolar": "Circumpolare — non tramonta mai",
+      "doesNotRise": "Non sorge stanotte"
     },
     "track": {
       "step": "Inseguilo",

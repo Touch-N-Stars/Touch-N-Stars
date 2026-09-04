@@ -5313,7 +5313,11 @@
       "altitudePeak": "Szczyt {deg}° ~ {time}",
       "framingCapturedPrompt": "Kadr zapisany — gotowe do śledzenia.",
       "goToTrack": "Przejdź do Śledź",
-      "noPeakInDarkWindow": "Niewidoczna w oknie ciemności"
+      "noPeakInDarkWindow": "Niewidoczna w oknie ciemności",
+      "risesAt": "Wschód {time}",
+      "setsAt": "Zachód {time}",
+      "circumpolar": "Okołobiegunowy — nigdy nie zachodzi",
+      "doesNotRise": "Nie wschodzi dziś w nocy"
     },
     "track": {
       "step": "Śledź go",

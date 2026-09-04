@@ -417,7 +417,27 @@
                     longitude: store.profileInfo.AstrometrySettings.Longitude,
                   }"
                   @peak-altitude="tonightsPeakAltitude = $event"
+                  @rise-set="riseSetInfo = $event"
                 />
+                <p v-if="riseSetInfo" class="text-[11px] text-content-faint mt-2">
+                  <template v-if="riseSetInfo.circumpolar">{{
+                    t('perihelion.position.circumpolar')
+                  }}</template>
+                  <template v-else-if="riseSetInfo.neverRises">{{
+                    t('perihelion.position.doesNotRise')
+                  }}</template>
+                  <template v-else>
+                    <span v-if="riseSetInfo.rise">{{
+                      t('perihelion.position.risesAt', { time: riseSetInfo.rise })
+                    }}</span>
+                    <span v-if="riseSetInfo.rise && riseSetInfo.set" class="text-content-faint"
+                      >·</span
+                    >
+                    <span v-if="riseSetInfo.set">{{
+                      t('perihelion.position.setsAt', { time: riseSetInfo.set })
+                    }}</span>
+                  </template>
+                </p>
                 <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
                   {{ t('perihelion.position.altitudeDescription', { name: selected.name }) }}
                 </p>
@@ -1556,6 +1576,8 @@ const altAz = computed(() => {
 // { altitude, label } | null -- from SkyChart's own peak-altitude emit, so "currently low" and
 // "climbing to a good altitude tonight" aren't indistinguishable in the same red/amber badge.
 const tonightsPeakAltitude = ref(null);
+// { circumpolar, neverRises, rise, set } | null -- from SkyChart's own rise-set emit.
+const riseSetInfo = ref(null);
 
 const path = ref([]);
 const pathLoading = ref(false);
@@ -1633,10 +1655,11 @@ watch(selected, (newVal, oldVal) => {
   if (oldVal && newVal && oldVal.id !== newVal.id) {
     framingOffset.value = null;
     showFramingCapturedPrompt.value = false;
-    // SkyChart's own peak-altitude emit is target-identity-aware (see its own dedup-guard
-    // comment), so it always re-emits on a genuine object switch -- this reset just avoids a
-    // stale flash of the previous object's peak in the gap before that fresh emit lands.
+    // SkyChart's own peak-altitude/rise-set emits are both target-identity-aware (see their own
+    // dedup-guard comments), so they always re-emit on a genuine object switch -- these resets
+    // just avoid a stale flash of the previous object's values in the gap before that lands.
     tonightsPeakAltitude.value = null;
+    riseSetInfo.value = null;
   }
 });
 

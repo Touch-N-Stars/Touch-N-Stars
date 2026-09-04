@@ -5313,7 +5313,11 @@
       "altitudePeak": "Vrchol {deg}° ~ {time}",
       "framingCapturedPrompt": "Rámování zachyceno — připraveno ke sledování.",
       "goToTrack": "Přejít na Sledovat",
-      "noPeakInDarkWindow": "Nezviditelná v tmavém okně"
+      "noPeakInDarkWindow": "Nezviditelná v tmavém okně",
+      "risesAt": "Východ {time}",
+      "setsAt": "Západ {time}",
+      "circumpolar": "Cirkumpolární — nikdy nezapadá",
+      "doesNotRise": "Dnes v noci nevychází"
     },
     "track": {
       "step": "Sledovat jej",

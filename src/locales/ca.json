@@ -5313,7 +5313,11 @@
       "altitudePeak": "Arriba a {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadrament capturat — a punt per seguir.",
       "goToTrack": "Vés a Segueix",
-      "noPeakInDarkWindow": "No visible dins la finestra fosca"
+      "noPeakInDarkWindow": "No visible dins la finestra fosca",
+      "risesAt": "Surt {time}",
+      "setsAt": "Es pon {time}",
+      "circumpolar": "Circumpolar — mai es pon",
+      "doesNotRise": "No surt aquesta nit"
     },
     "track": {
       "step": "Segueix-lo",

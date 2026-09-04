@@ -5318,7 +5318,11 @@
       "altitudePeak": "Erreicht max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Framing erfasst — bereit zum Nachführen.",
       "goToTrack": "Zu Nachführen",
-      "noPeakInDarkWindow": "Im Dunkelfenster nicht sichtbar"
+      "noPeakInDarkWindow": "Im Dunkelfenster nicht sichtbar",
+      "risesAt": "Aufgang {time}",
+      "setsAt": "Untergang {time}",
+      "circumpolar": "Zirkumpolar — geht nie unter",
+      "doesNotRise": "Geht heute Nacht nicht auf"
     },
     "track": {
       "step": "Nachführen",

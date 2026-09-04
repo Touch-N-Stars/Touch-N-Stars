@@ -5313,7 +5313,11 @@
       "altitudePeak": "最大{deg}° ~ {time}",
       "framingCapturedPrompt": "フレーミングを取得しました — 追尾準備完了。",
       "goToTrack": "追尾へ移動",
-      "noPeakInDarkWindow": "暗夜時間帯には見えません"
+      "noPeakInDarkWindow": "暗夜時間帯には見えません",
+      "risesAt": "出：{time}",
+      "setsAt": "没：{time}",
+      "circumpolar": "周極— 沈まない",
+      "doesNotRise": "今夜は昇らない"
     },
     "track": {
       "step": "追尾する",

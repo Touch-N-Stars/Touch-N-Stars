@@ -5313,7 +5313,11 @@
       "altitudePeak": "Bereikt max. {deg}° ~ {time}",
       "framingCapturedPrompt": "Beeldveld vastgelegd — klaar om te volgen.",
       "goToTrack": "Naar Navolgen",
-      "noPeakInDarkWindow": "Niet zichtbaar binnen het donkere venster"
+      "noPeakInDarkWindow": "Niet zichtbaar binnen het donkere venster",
+      "risesAt": "Komt op {time}",
+      "setsAt": "Gaat onder {time}",
+      "circumpolar": "Circumpolair — gaat nooit onder",
+      "doesNotRise": "Komt vannacht niet op"
     },
     "track": {
       "step": "Volg het",

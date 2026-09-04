@@ -31,8 +31,9 @@ const props = defineProps({
 // The highest point on the same +/-12h curve this chart already draws -- emitted rather than
 // duplicated, so a caller (e.g. Perihelion's own altitude card) can show "currently low, but
 // climbing to X" instead of just the instantaneous altitude, without re-deriving the curve
-// itself a second time.
-const emit = defineEmits(['peak-altitude']);
+// itself a second time. rise-set is the horizon-crossing counterpart -- see riseSetPoint's own
+// comment.
+const emit = defineEmits(['peak-altitude', 'rise-set']);
 
 const canvasRef = ref(null);
 let chartInstance = null;
@@ -218,6 +219,74 @@ watch(
     if (key === lastEmittedPeakKey) return;
     lastEmittedPeakKey = key;
     emit('peak-altitude', next);
+  },
+  { immediate: true }
+);
+
+// Rise/set times -- same rolling 24h-from-now window as peakAltitudePoint above, and the same
+// throttled "now" derived from baseTime rather than the live clock (see that computed's own
+// comment for why calling the clock directly here defeated the emit-dedup guard and reopened an
+// unbounded reactive loop -- exact same hazard applies to any computed a parent's own unstable
+// prop references can re-trigger). Circumpolar/never-rises are reported explicitly rather than
+// as null rise+set, since "no crossing found" is ambiguous between those two very different
+// cases otherwise. Already-above-horizon deliberately doesn't look for the rise that already
+// happened -- only the next set -- rather than chasing a second rise later in the same 24h
+// window, which would be more than a simple status line needs.
+const riseSetPoint = computed(() => {
+  if (props.target?.RA == null || props.target?.Dec == null) return null;
+  const now = new Date(baseTime.value.getTime() + 12 * 60 * 60 * 1000);
+  const steps = 96; // 24h from now, in 15-minute steps
+  const stepMs = 15 * 60 * 1000;
+
+  function altAt(i) {
+    const time = new Date(now.getTime() + i * stepMs);
+    return calculateAltitude(
+      props.target.RA,
+      props.target.Dec,
+      props.coordinates.latitude,
+      props.coordinates.longitude,
+      time
+    );
+  }
+  function labelAt(fractionalStep) {
+    const time = new Date(now.getTime() + fractionalStep * stepMs);
+    return `${time.getHours()}:${String(time.getMinutes()).padStart(2, '0')}`;
+  }
+
+  const alts = [];
+  for (let i = 0; i <= steps; i++) alts.push(altAt(i));
+
+  if (alts.every((a) => a >= 0)) return { circumpolar: true, neverRises: false, rise: null, set: null };
+  if (alts.every((a) => a < 0)) return { circumpolar: false, neverRises: true, rise: null, set: null };
+
+  const alreadyUp = alts[0] >= 0;
+  let rise = null;
+  let set = null;
+  for (let i = 1; i <= steps; i++) {
+    const prev = alts[i - 1];
+    const curr = alts[i];
+    if (!alreadyUp && rise == null && prev < 0 && curr >= 0) {
+      // Linear-interpolate the actual crossing point between these two samples, rather than
+      // just labeling whichever 15-minute sample happened to land on the right side of zero.
+      const frac = -prev / (curr - prev);
+      rise = labelAt(i - 1 + frac);
+    }
+    if ((alreadyUp || rise != null) && set == null && prev >= 0 && curr < 0) {
+      const frac = prev / (prev - curr);
+      set = labelAt(i - 1 + frac);
+    }
+    if (set != null && (alreadyUp || rise != null)) break;
+  }
+  return { circumpolar: false, neverRises: false, rise, set };
+});
+let lastEmittedRiseSetKey = null;
+watch(
+  riseSetPoint,
+  (r) => {
+    const key = `${props.target?.RA}|${props.target?.Dec}|${JSON.stringify(r)}`;
+    if (key === lastEmittedRiseSetKey) return;
+    lastEmittedRiseSetKey = key;
+    emit('rise-set', r);
   },
   { immediate: true }
 );

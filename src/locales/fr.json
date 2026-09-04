@@ -5318,7 +5318,11 @@
       "altitudePeak": "Culmine à {deg}° ~ {time}",
       "framingCapturedPrompt": "Cadrage capturé — prêt à suivre.",
       "goToTrack": "Aller à Suivre",
-      "noPeakInDarkWindow": "Non visible dans la fenêtre d'obscurité"
+      "noPeakInDarkWindow": "Non visible dans la fenêtre d'obscurité",
+      "risesAt": "Lever {time}",
+      "setsAt": "Coucher {time}",
+      "circumpolar": "Circumpolaire — ne se couche jamais",
+      "doesNotRise": "Ne se lève pas cette nuit"
     },
     "track": {
       "step": "Le suivre",

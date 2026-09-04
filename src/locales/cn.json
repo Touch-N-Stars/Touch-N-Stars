@@ -5313,7 +5313,11 @@
       "altitudePeak": "最高 {deg}° ~ {time}",
       "framingCapturedPrompt": "构图已捕获 — 可以开始跟踪。",
       "goToTrack": "前往跟踪",
-      "noPeakInDarkWindow": "黑夜时段内不可见"
+      "noPeakInDarkWindow": "黑夜时段内不可见",
+      "risesAt": "升起 {time}",
+      "setsAt": "落下 {time}",
+      "circumpolar": "拱极星 — 永不落下",
+      "doesNotRise": "今晚不升起"
     },
     "track": {
       "step": "跟踪它",

@@ -5318,7 +5318,11 @@
       "altitudePeak": "Atinge {deg}° ~ {time}",
       "framingCapturedPrompt": "Enquadramento capturado — pronto para rastrear.",
       "goToTrack": "Ir para Rastrear",
-      "noPeakInDarkWindow": "Não visível na janela escura"
+      "noPeakInDarkWindow": "Não visível na janela escura",
+      "risesAt": "Nasce {time}",
+      "setsAt": "Põe-se {time}",
+      "circumpolar": "Circumpolar — nunca se põe",
+      "doesNotRise": "Não nasce esta noite"
     },
     "track": {
       "step": "Rastrear",

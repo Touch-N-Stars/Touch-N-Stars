@@ -5313,7 +5313,11 @@
       "altitudePeak": "Пік {deg}° ~ {time}",
       "framingCapturedPrompt": "Кадрування захоплено — готово до ведення.",
       "goToTrack": "Перейти до Ведення",
-      "noPeakInDarkWindow": "Не видно в темному вікні"
+      "noPeakInDarkWindow": "Не видно в темному вікні",
+      "risesAt": "Схід {time}",
+      "setsAt": "Захід {time}",
+      "circumpolar": "Навколополярний — ніколи не заходить",
+      "doesNotRise": "Не сходить цієї ночі"
     },
     "track": {
       "step": "Вести його",
