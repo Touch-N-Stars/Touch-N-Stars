@@ -5505,7 +5505,7 @@
       "stopSequence": "Atura la Seqüència",
       "stopQuickTrack": "Atura Quick Track",
       "autoReapplyingFooter": "Reaplicant automàticament cada {minutes} min",
-      "footer": "Calculat al dispositiu a partir d'elements orbitals en directe — funciona sense connexió a internet.",
+      "footer": "Calculat al dispositiu a partir d'elements orbitals en directe — els asteroides no necessiten internet; els cometes se sincronitzen periòdicament i després funcionen sense connexió.",
       "dismiss": "Descarta"
     },
     "relativeTime": {

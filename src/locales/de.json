@@ -5510,7 +5510,7 @@
       "stopSequence": "Sequenz stoppen",
       "stopQuickTrack": "Quick Track stoppen",
       "autoReapplyingFooter": "Automatische Erneuerung alle {minutes} Min.",
-      "footer": "Direkt im Plugin aus aktuellen Bahnelementen berechnet — funktioniert ohne Internetverbindung.",
+      "footer": "Direkt im Plugin aus aktuellen Bahnelementen berechnet — Asteroiden benötigen kein Internet; Kometen synchronisieren sich regelmäßig und funktionieren danach offline.",
       "dismiss": "Schließen"
     },
     "relativeTime": {

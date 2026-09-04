@@ -5470,7 +5470,7 @@
       "stopSequence": "Stop Sequence",
       "stopQuickTrack": "Stop Quick Track",
       "autoReapplyingFooter": "Auto re-applying every {minutes} min",
-      "footer": "Computed on-device from live orbital elements — works without an internet connection.",
+      "footer": "Computed on-device from live orbital elements — asteroids need no internet; comets sync periodically, then work offline.",
       "dismiss": "Dismiss"
     },
     "relativeTime": {

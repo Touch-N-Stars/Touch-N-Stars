@@ -5505,7 +5505,7 @@
       "stopSequence": "시퀀스 중지",
       "stopQuickTrack": "Quick Track 중지",
       "autoReapplyingFooter": "{minutes}분마다 자동 재적용 중",
-      "footer": "실시간 궤도 요소로부터 기기에서 직접 계산 — 인터넷 연결 없이도 작동합니다.",
+      "footer": "실시간 궤도 요소로부터 기기에서 직접 계산 — 소행성은 인터넷이 필요 없으며, 혜성은 주기적으로 동기화된 후 오프라인으로 작동합니다.",
       "dismiss": "닫기"
     },
     "relativeTime": {

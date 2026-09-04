@@ -5505,7 +5505,7 @@
       "stopSequence": "Zastavit Sekvenci",
       "stopQuickTrack": "Zastavit Quick Track",
       "autoReapplyingFooter": "Automatické obnovování každých {minutes} min",
-      "footer": "Počítáno přímo v zařízení ze živých drahových elementů — funguje bez připojení k internetu.",
+      "footer": "Počítáno přímo v zařízení ze živých drahových elementů — planetky nepotřebují internet; kométy se pravidelně synchronizují a pak fungují offline.",
       "dismiss": "Zavřít"
     },
     "relativeTime": {

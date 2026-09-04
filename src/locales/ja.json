@@ -5505,7 +5505,7 @@
       "stopSequence": "シーケンスを停止",
       "stopQuickTrack": "Quick Trackを停止",
       "autoReapplyingFooter": "{minutes}分ごとに自動再適用中",
-      "footer": "デバイス上でリアルタイムの軌道要素から計算 — インターネット接続なしで動作します。",
+      "footer": "デバイス上でリアルタイムの軌道要素から計算 — 小惑星はインターネット不要、彗星は定期的に同期した後オフラインで動作します。",
       "dismiss": "閉じる"
     },
     "relativeTime": {
