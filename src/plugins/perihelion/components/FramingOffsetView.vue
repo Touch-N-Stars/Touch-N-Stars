@@ -1,0 +1,564 @@
+<template>
+  <div class="flex flex-col gap-3">
+    <div class="relative rounded-chip overflow-hidden bg-surface-2 h-72 md:h-96 lg:h-[570px]">
+      <div ref="viewerContainer" class="absolute inset-0" />
+      <canvas ref="pathCanvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+      <p
+        v-if="errorMessage"
+        class="absolute inset-0 flex items-center justify-center p-4 text-xs text-content-faint text-center"
+      >
+        {{ errorMessage }}
+      </p>
+      <div
+        v-else-if="!ready"
+        class="absolute inset-0 flex items-center justify-center text-xs text-content-faint"
+      >
+        {{ t('perihelion.framing.loading') }}
+      </div>
+      <template v-else>
+        <div
+          class="absolute top-2 left-2 flex items-center gap-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80"
+        >
+          <span>{{ t('perihelion.framing.panToFrame') }}</span>
+          <span v-if="pathPoints.length" class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-violet-400"></span
+            >{{ t('perihelion.framing.path') }}
+          </span>
+          <span v-if="pathPoints.length" class="flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span
+            >{{ t('perihelion.framing.tonight') }}
+          </span>
+        </div>
+        <div
+          class="absolute top-2 right-2 px-2 py-1 rounded-chip text-[10px] bg-black/50 text-white/80 text-right tabular-nums"
+        >
+          <div>
+            {{ t('perihelion.framing.raLabel') }} {{ formatRaHours(currentCenter.raHours) }}
+          </div>
+          <div>{{ t('perihelion.framing.decLabel') }} {{ formatDecDeg(currentCenter.decDeg) }}</div>
+        </div>
+      </template>
+    </div>
+
+    <div v-if="ready" class="flex items-center gap-2">
+      <span class="text-[11px] text-content-faint shrink-0">{{
+        t('perihelion.framing.rotation')
+      }}</span>
+      <input
+        v-model.number="framingStore.rotationAngle"
+        type="range"
+        min="0"
+        max="360"
+        step="1"
+        class="flex-1 accent-accent"
+      />
+      <span class="text-[11px] tabular-nums text-content-muted w-10 text-right shrink-0"
+        >{{ framingStore.rotationAngle }}°</span
+      >
+    </div>
+    <!--
+      Side by side from md up, not two full-width stacked blocks -- on a wide viewport the sky
+      image above naturally fills the width, but these are discrete actions, not sliders, so
+      they don't benefit from stretching that wide too; it just reads as oversized with too
+      little vertical rhythm relative to their own width. Unchanged (stacked, full width) below
+      md, where that's still the right call.
+    -->
+    <div v-if="ready" class="flex flex-col md:flex-row gap-3">
+      <div class="md:flex-1">
+        <getImageRotation />
+      </div>
+      <div class="flex gap-2 md:flex-1">
+        <button class="tns-btn-primary flex-1" @click="captureFraming">
+          {{ t('perihelion.framing.useFraming') }}
+        </button>
+        <button v-if="hasOffset" class="tns-btn-danger flex-1" @click="resetFraming">
+          {{ t('perihelion.framing.reset') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Lets the parent (PerihelionView.vue) place its own "Framing captured" confirmation
+         right after the action buttons above, ahead of the icon/help strip below, without this
+         component needing to know anything about that prompt's own state. -->
+    <slot name="after-actions" />
+
+    <!--
+      Lives here, not as a caption in PerihelionView.vue (where it used to be) -- that left it
+      visually orphaned under whichever control happened to render last in the row above, since
+      it was a separate paragraph the parent laid out independently of these buttons. One
+      compact strip, one line per control, icons echoing each button's own -- short enough not
+      to add real scroll height even stacked on mobile.
+    -->
+    <div v-if="ready" class="rounded-chip bg-surface-2/60 border border-line-strong/50 p-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <!--
+          items-start (+ the icon's own small top nudge) matters on mobile, where this text can
+          wrap to two lines and the icon should align with the first line's cap-height, not the
+          middle of the whole wrapped block. Once each row is definitely single-line (sm+, same
+          breakpoint the 3-column grid itself switches on), items-center reads as properly level
+          instead -- the icon and the nudge no longer need to compensate for anything.
+        -->
+        <div class="flex items-start sm:items-center gap-2">
+          <ArrowPathIcon class="w-4 h-4 mt-0.5 sm:mt-0 text-accent shrink-0" />
+          <p class="text-[11px] leading-snug text-content-muted">
+            <span class="font-semibold text-content">{{ t('perihelion.framing.rotation') }}:</span>
+            {{ t('perihelion.framing.rotationHelp') }}
+          </p>
+        </div>
+        <div class="flex items-start sm:items-center gap-2 sm:justify-center">
+          <PhotoIcon class="w-4 h-4 mt-0.5 sm:mt-0 text-accent shrink-0" />
+          <p class="text-[11px] leading-snug text-content-muted sm:text-center">
+            <span class="font-semibold text-content"
+              >{{ t('perihelion.framing.useFraming') }}:</span
+            >
+            {{ t('perihelion.framing.useFramingHelp') }}
+          </p>
+        </div>
+        <div class="flex items-start sm:items-center gap-2 sm:justify-end">
+          <XCircleIcon class="w-4 h-4 mt-0.5 sm:mt-0 text-status-danger shrink-0" />
+          <p class="text-[11px] leading-snug text-content-muted sm:text-right">
+            <span class="font-semibold text-content">{{ t('perihelion.framing.reset') }}:</span>
+            {{ t('perihelion.framing.resetHelp') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+/**
+ * A small, separately-scoped Celestia Atlas viewer instance for framing -- deliberately NOT the
+ * app-wide fixed-position one (store.showSkyAtlas / CelestiaAtlasView.vue), which is a global
+ * overlay unrelated to any one plugin's own panel. createCelestiaAtlasViewer() is a plain
+ * factory taking a container element, so nothing stops a second, independent instance here.
+ *
+ * Centers on Perihelion's OWN computed RA/Dec (the raHours/decDeg props) rather than trusting
+ * the viewer's own bundled comet catalog -- confirmed there's no way to register custom comet
+ * elements with the viewer instance at all (getCometObjects() is a standalone utility, separate
+ * from CelestiaAtlasViewer's own interface), so a moving object not already in that bundled
+ * catalog would otherwise show up in the wrong place or not at all. Centering ourselves sidesteps
+ * that gap entirely and is correct either way.
+ *
+ * Deliberately omits the star/DSO catalog data (unlike CelestiaAtlasView.vue, which dynamically
+ * imports several large embedded datasets) -- this view only needs photographic imagery plus the
+ * FOV overlay, not a browsable atlas, so skipping the heavy catalog imports keeps this cheap to
+ * mount.
+ *
+ * Uses the same createDssSkySurveySource(atlasDataBaseUrl()) as CelestiaAtlasView.vue, not the
+ * library's own online default. First version of this component omitted skySurveySource
+ * entirely on the theory that the online source (higher resolution) would just work -- it
+ * rendered nothing at all, even with internet confirmed available. Nothing else in this app has
+ * ever actually exercised that path (CelestiaAtlasView.vue always explicitly overrides it with
+ * this same offline-bundled source), so it's untested in this app's real deployment environment
+ * for reasons never diagnosed -- rather than debug an unproven path further, using the one this
+ * app already demonstrably renders with is the safer choice, even at lower resolution (HiPS
+ * order 3-4).
+ */
+import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { createCelestiaAtlasViewer, calculateCameraFieldOfView } from '@acocalypso/celestia-atlas';
+import { Capacitor } from '@capacitor/core';
+import { ArrowPathIcon, PhotoIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+import { apiStore } from '@/store/store';
+import { useSettingsStore } from '@/store/settingsStore';
+import { useFramingStore } from '@/store/framingStore';
+import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
+import { ATLAS_POSITION_ANGLE_CONVENTION } from '@/integrations/celestiaAtlas/positionAngle';
+import {
+  createDssSkySurveySource,
+  resolveCelestiaAtlasDataBaseUrl,
+} from '@/integrations/celestiaAtlas/offlineSkySurvey';
+// Reused as-is, not reimplemented -- already does exactly what's needed: reads gain/exposure
+// straight from the profile's own PlateSolveSettings, runs a real exposure + plate solve, and
+// writes the result to framingStore.rotationAngle (the same shared field this view's own
+// rotation slider reads/writes, and the one CelestiaAtlasView.vue's own FOV overlay already
+// uses -- sharing it is deliberate: it represents the camera's real physical rotation, a fact
+// about the rig, not a per-view preference).
+import getImageRotation from '@/components/framing/getImageRotation.vue';
+import { fetchPath } from '../utils/fetchPath';
+
+const props = defineProps({
+  raHours: { type: Number, required: true },
+  decDeg: { type: Number, required: true },
+  targetName: { type: String, required: true },
+  objectType: { type: String, required: true },
+  // { raDeg, decDeg } | null -- a previously captured offset (perihelionStore.framingOffset)
+  // to restore on mount. The offset value itself already survives leaving Perihelion's view
+  // entirely and coming back (it lives in the Pinia store, not this component), but without
+  // this prop the view had no way to know about it and always centered fresh on the raw
+  // target, silently discarding the pan and the "Reset" button's own local hasOffset state --
+  // looking exactly like the offset had been lost even though Add to Sequence would still have
+  // used the right value underneath.
+  initialOffset: { type: Object, default: null },
+});
+const emit = defineEmits(['offset']);
+
+const { t } = useI18n();
+const store = apiStore();
+const settingsStore = useSettingsStore();
+const framingStore = useFramingStore();
+
+// Same pattern as CelestiaAtlasView.vue's own atlasDataBaseUrl() -- deliberately NOT the
+// library's online default (unlike this component's first version): nothing in this app has
+// ever actually exercised that path, since the main Celestia Atlas view always explicitly
+// overrides it with this same offline-bundled source. Lower resolution (HiPS order 3-4), but
+// proven to actually render in this app's real deployment environment.
+function atlasDataBaseUrl() {
+  return resolveCelestiaAtlasDataBaseUrl({
+    native: Capacitor.isNativePlatform(),
+    protocol: settingsStore.backendProtocol || 'http',
+    host: settingsStore.connection.ip,
+    port: settingsStore.connection.port,
+  });
+}
+const viewerContainer = ref(null);
+const pathCanvas = ref(null);
+const ready = ref(false);
+const hasOffset = ref(false);
+const errorMessage = ref('');
+// Wherever the view is currently centered -- updated live via onViewChange (an event, not
+// polling) so the RA/Dec overlay tracks panning in real time. Starts at the object's own true
+// position, matching where centerOnTarget() points the view before any panning happens.
+const currentCenter = ref({ raHours: props.raHours, decDeg: props.decDeg });
+const pathPoints = ref([]); // [{ date, raHours, decDeg }], from fetchPath -- comet-only in practice
+let viewer = null;
+
+// Small local formatters rather than importing PerihelionView.vue's own versions -- those are
+// plain local function declarations there, not exported, and duplicating two three-line
+// formatters is cheaper than refactoring that file just to share them.
+function formatRaHours(raHours) {
+  const h = Math.floor(raHours);
+  const m = (raHours - h) * 60;
+  return `${h}h ${m.toFixed(1)}m`;
+}
+function formatDecDeg(decDeg) {
+  const sign = decDeg < 0 ? '-' : '+';
+  const abs = Math.abs(decDeg);
+  const d = Math.floor(abs);
+  const m = (abs - d) * 60;
+  return `${sign}${d}° ${m.toFixed(0)}′`;
+}
+
+// --- Orbital path overlay ---
+// Standard gnomonic (tangent-plane) projection: given the view's own center RA/Dec and an
+// arbitrary target RA/Dec, returns the target's tangent-plane offset in RADIANS from the center.
+// This is the same category of math FovFramingPreview.vue's own tangentFromWorld solves; best
+// understanding as of writing this, pending confirmation from that component's own author on
+// exact sign/orientation conventions -- flagged as the one part of this feature most likely to
+// need a calibration pass once seen rendered, same as the FOV overlay itself needed.
+const DEG2RAD = Math.PI / 180;
+function tangentPlaneOffset(raDeg, decDeg, centerRaDeg, centerDecDeg) {
+  const ra = raDeg * DEG2RAD;
+  const dec = decDeg * DEG2RAD;
+  const ra0 = centerRaDeg * DEG2RAD;
+  const dec0 = centerDecDeg * DEG2RAD;
+  const dRa = ra - ra0;
+  const cosc = Math.sin(dec0) * Math.sin(dec) + Math.cos(dec0) * Math.cos(dec) * Math.cos(dRa);
+  const xi = (Math.cos(dec) * Math.sin(dRa)) / cosc;
+  const eta =
+    (Math.cos(dec0) * Math.sin(dec) - Math.sin(dec0) * Math.cos(dec) * Math.cos(dRa)) / cosc;
+  return { xi, eta };
+}
+
+async function loadPath() {
+  try {
+    pathPoints.value = await fetchPath({
+      objectType: props.objectType,
+      targetName: props.targetName,
+    });
+  } catch {
+    pathPoints.value = [];
+  }
+  drawPath();
+}
+
+function drawPath() {
+  const canvas = pathCanvas.value;
+  if (!canvas || !viewer || pathPoints.value.length === 0) return;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (width === 0 || height === 0) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const backingWidth = Math.max(1, Math.round(width * dpr));
+  const backingHeight = Math.max(1, Math.round(height * dpr));
+  if (canvas.width !== backingWidth) canvas.width = backingWidth;
+  if (canvas.height !== backingHeight) canvas.height = backingHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+
+  const view = viewer.getView();
+  const centerRaDeg = view.center.raDeg;
+  const centerDecDeg = view.center.decDeg;
+  // fovDeg is treated as the frame's horizontal extent -- matches how centerOnTarget() itself
+  // sets fovDeg (derived from the FOV box's own widthDeg/heightDeg), and pixels-per-radian is
+  // calibrated against the canvas's actual pixel width for that same horizontal extent.
+  const pixelsPerRadian = width / (view.fovDeg * DEG2RAD);
+
+  const screenPoints = pathPoints.value.map((p) => {
+    const { xi, eta } = tangentPlaneOffset(p.raHours * 15, p.decDeg, centerRaDeg, centerDecDeg);
+    return {
+      x: width / 2 + xi * pixelsPerRadian,
+      // eta increases toward celestial north (up); screen Y increases downward, hence the flip.
+      y: height / 2 - eta * pixelsPerRadian,
+    };
+  });
+
+  ctx.strokeStyle = '#a78bfa';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  screenPoints.forEach((pt, i) => (i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)));
+  ctx.stroke();
+
+  screenPoints.forEach((pt, i) => {
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, i === 0 ? 3.5 : 2, 0, 2 * Math.PI);
+    ctx.fillStyle = i === 0 ? '#22d3ee' : '#a78bfa';
+    ctx.fill();
+  });
+
+  // Name tag next to the "Tonight" point -- replaces the native Celestia catalog label removed
+  // from centerOnTarget() (it disagreed with Perihelion's own live position for well-known
+  // periodic comets); anchored to our own point instead, so it's always correct. Same font and
+  // semi-transparent pill treatment as the panToFrame/RA-Dec overlays above (bg-black/50,
+  // text-white/80, normal weight, Tailwind's own default sans stack), just canvas-drawn since
+  // this label's position is dynamic.
+  if (screenPoints.length) {
+    const tonight = screenPoints[0];
+    const labelPad = 5;
+    const labelGap = 8;
+    const boxHeight = 17;
+    const radius = 4;
+    ctx.font =
+      '400 11px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+    const textWidth = ctx.measureText(props.targetName).width;
+    const boxWidth = textWidth + labelPad * 2;
+
+    // Side away from wherever the path actually continues from tonight, so the label never runs
+    // alongside/through the path line itself -- same reasoning as OrbitalPathChart's own
+    // endpointGeometry(). Falls back to the former fixed "prefer right" rule when there's only
+    // one point (no path to avoid).
+    const next = screenPoints[1];
+    const pathGoesRight = next ? next.x > tonight.x : false;
+    let onRight = !pathGoesRight;
+    // Canvas-edge safety net: flip only if the preferred side genuinely doesn't fit.
+    if (onRight && tonight.x + labelGap + boxWidth > width) onRight = false;
+    else if (!onRight && tonight.x - labelGap - boxWidth < 0) onRight = true;
+
+    const boxX = onRight ? tonight.x + labelGap : tonight.x - labelGap - boxWidth;
+    // Clamped vertically so the label can't run off the top/bottom edge when the point is near
+    // either one.
+    const boxY = Math.min(Math.max(tonight.y - boxHeight / 2, 0), height - boxHeight);
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+    ctx.beginPath();
+    ctx.moveTo(boxX + radius, boxY);
+    ctx.arcTo(boxX + boxWidth, boxY, boxX + boxWidth, boxY + boxHeight, radius);
+    ctx.arcTo(boxX + boxWidth, boxY + boxHeight, boxX, boxY + boxHeight, radius);
+    ctx.arcTo(boxX, boxY + boxHeight, boxX, boxY, radius);
+    ctx.arcTo(boxX, boxY, boxX + boxWidth, boxY, radius);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(props.targetName, boxX + labelPad, boxY + boxHeight / 2 + 0.5);
+  }
+}
+
+function computeFovOverlay() {
+  const profile = store.profileInfo;
+  try {
+    const fov = calculateCameraFieldOfView({
+      pixelSizeMicrons: Number(profile?.CameraSettings?.PixelSize),
+      focalLengthMm: Number(profile?.TelescopeSettings?.FocalLength),
+      sensorWidthPx: Number(profile?.FramingAssistantSettings?.CameraWidth),
+      sensorHeightPx: Number(profile?.FramingAssistantSettings?.CameraHeight),
+    });
+    // rotationConvention is required by setFieldOfView's own validation -- matches
+    // CelestiaAtlasView.vue's own identical FOV overlay call.
+    return {
+      widthDeg: fov.widthDeg,
+      heightDeg: fov.heightDeg,
+      rotationDeg: Number(framingStore.rotationAngle ?? 0),
+      rotationConvention: ATLAS_POSITION_ANGLE_CONVENTION,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Rotation-only update -- deliberately does NOT call setView, so dragging the slider or running
+// "Determine rotation from camera" doesn't also reset any pan offset the user has already made.
+function updateFovRotation() {
+  if (!viewer || !ready.value) return;
+  const fovOverlay = computeFovOverlay();
+  if (fovOverlay) viewer.setFieldOfView(fovOverlay);
+}
+watch(() => framingStore.rotationAngle, updateFovRotation);
+
+// overrideCenter: { raDeg, decDeg } | null -- when given (only from restoring initialOffset on
+// mount), centers on that captured offset instead of the object's raw position and marks
+// hasOffset true, so a restored offset looks identical to one just captured by hand. Every
+// other caller (Reset, the live-props watcher) omits it, which still means "recenter on the
+// real target, offset forgotten" exactly as before.
+function centerOnTarget(overrideCenter = null) {
+  if (!viewer) return;
+  // The view's own zoom level has to scale with the camera's real FOV, not a fixed guess -- a
+  // hardcoded 1.5deg view against a camera whose actual field is wider than that means the FOV
+  // box ends up bigger than the whole visible view, so you're zoomed into the middle of it with
+  // no edge ever in frame (exactly what happened before this fix). 3x the box's longer side
+  // leaves comfortable margin to actually see and pan around it; 1.5deg is just the fallback
+  // when no camera FOV is available at all (nothing connected yet).
+  const fovOverlay = computeFovOverlay();
+  const viewFovDeg = fovOverlay ? Math.max(fovOverlay.widthDeg, fovOverlay.heightDeg) * 3 : 1.5;
+
+  const center = overrideCenter ?? { raDeg: props.raHours * 15, decDeg: props.decDeg };
+
+  // frame is required -- setView's own coordinate validation (toAtlasCoordinates) throws
+  // without one. J2000 matches how the rest of this app treats NINA-sourced RA/Dec (e.g.
+  // atlasSelectionToFraming's own coordinateFrame: 'J2000'), and Perihelion's own values are
+  // J2000 too (NINA.Astrometry.InputCoordinates).
+  viewer.setView({
+    center: { raDeg: center.raDeg, decDeg: center.decDeg, frame: 'J2000' },
+    fovDeg: viewFovDeg,
+  });
+  if (fovOverlay) viewer.setFieldOfView(fovOverlay);
+  hasOffset.value = Boolean(overrideCenter);
+  // Explicit, not just relying on onViewChange firing for a programmatic setView -- the overlay
+  // should read the true position immediately on (re)center, not whatever it happened to show
+  // before.
+  currentCenter.value = { raHours: center.raDeg / 15, decDeg: center.decDeg };
+  drawPath();
+}
+
+function captureFraming() {
+  if (!viewer) return;
+  const center = viewer.getView().center;
+  emit('offset', { raDeg: center.raDeg, decDeg: center.decDeg });
+  hasOffset.value = true;
+}
+
+function resetFraming() {
+  centerOnTarget();
+  // framingStore.rotationAngle is shared app-wide (the same field getImageRotation.vue writes
+  // to and CelestiaAtlasView.vue's own FOV overlay reads) -- zeroing it here is a deliberate
+  // part of "reset this framing entirely", not scoped to just this view's own pan, so it also
+  // resets whatever rotation another framing view is currently showing.
+  framingStore.rotationAngle = 0;
+  emit('offset', null);
+}
+
+onMounted(async () => {
+  // ninaObserverToAtlas throws if AstrometrySettings isn't loaded/valid yet (same underlying
+  // data PerihelionView.vue's own hasLocation guard already checks for the altitude card) --
+  // check first with a clear message rather than letting that throw fall into the generic
+  // catch below.
+  const settings = store.profileInfo?.AstrometrySettings;
+  if (![settings?.Latitude, settings?.Longitude].every(Number.isFinite)) {
+    errorMessage.value = t('perihelion.framing.noLocation');
+    return;
+  }
+
+  try {
+    // CelestiaAtlasView.vue's own onMounted awaits a tick before constructing its viewer, for
+    // the same reason this needs to too: this component mounts as part of a tab switch, so the
+    // container can still be zero-sized (no layout pass done yet) at the instant onMounted
+    // fires. A canvas/WebGL renderer measuring a zero-sized container doesn't throw -- it just
+    // renders nothing, which is exactly what showed up here (ready with no error, blank canvas).
+    await nextTick();
+    viewer = createCelestiaAtlasViewer({
+      container: viewerContainer.value,
+      observer: ninaObserverToAtlas(settings),
+      utcMs: Date.now(),
+      skySurveySource: createDssSkySurveySource(atlasDataBaseUrl()),
+      onViewChange: (viewState) => {
+        currentCenter.value = {
+          raHours: viewState.center.raDeg / 15,
+          decDeg: viewState.center.decDeg,
+        };
+        drawPath();
+      },
+      onError: (error) => {
+        console.warn('[Perihelion] Framing view sky-survey error:', error.message);
+      },
+    });
+    // Equatorial, not horizontal (unlike CelestiaAtlasView.vue's own choice, which is about
+    // live Alt/Az sky-browsing from the observer's current location -- the right call there,
+    // wrong one here). In horizontal mode "up" on screen tracks the local zenith, which rotates
+    // relative to celestial north as sidereal time advances -- so a fixed rotationDeg (measured
+    // "from celestial north", per FieldOfViewOverlay's own rotationConvention) would land at a
+    // different screen angle depending on what time it happens to be, not a stable one. This is
+    // almost certainly why 0 degrees still showed up tilted. Rotation for framing/rotator
+    // purposes needs to be fixed relative to the sky, not the horizon.
+    viewer.setCoordinateMode('equatorial');
+    // hideBelowHorizon/horizon/atmosphere all default to the library's own "what's up right
+    // now" live-sky assumptions -- wrong for this view, whose whole point is framing an object
+    // for later tonight or a future night, not just the current instant. Left on, a target
+    // currently below the horizon (very common when planning ahead) rendered a plain black
+    // canvas here even though the sky imagery itself loaded fine -- same root mismatch that
+    // already justified overriding setCoordinateMode above.
+    viewer.setDisplayOptions({
+      grid: false,
+      azimuthalGrid: false,
+      meridian: false,
+      ecliptic: false,
+      constellations: false,
+      deepSkyObjects: false,
+      labels: true,
+      cardinals: false,
+      skySurvey: true,
+      // Real hardware report: this rendered Celestia's ENTIRE bundled comet catalog as
+      // boxes+labels across the whole visible field, not just the object being framed -- every
+      // one of those positions comes from Celestia's own (possibly stale/different-epoch)
+      // orbital elements, the exact same mismatch that justified removing centerOnTarget()'s own
+      // single-object viewer.search()/select() call. This view's own doc comment already states
+      // the design intent: rely entirely on Perihelion's own computed position, never the
+      // viewer's bundled catalog.
+      comets: false,
+      horizon: false,
+      hideBelowHorizon: false,
+      atmosphere: false,
+    });
+    centerOnTarget(props.initialOffset);
+    viewer.resize();
+    // CelestiaAtlasView.vue always calls this as part of its own startup sequence (inside
+    // updateVisibility()) -- a freshly constructed viewer apparently starts paused, and nothing
+    // else in this component's own code was ever un-pausing it, which fully explains "ready"
+    // with no error but nothing ever actually rendering.
+    viewer.resume();
+    ready.value = true;
+    await loadPath();
+  } catch (error) {
+    // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
+    // and showing the real message here means a real failure can be diagnosed from a screenshot
+    // rather than needing someone to open devtools.
+    errorMessage.value = t('perihelion.framing.unavailable', { error: error.message });
+    console.warn('[Perihelion] Could not start framing view:', error);
+  }
+});
+
+onBeforeUnmount(() => {
+  viewer?.pause();
+  viewer?.destroy();
+  viewer = null;
+});
+
+watch(
+  () => [props.raHours, props.decDeg, props.targetName],
+  () => {
+    if (ready.value) centerOnTarget();
+  }
+);
+</script>
+
+<style scoped>
+/* Matches CelestiaAtlasView.vue's own override -- the library renders this credit banner by
+   default, but the app-wide view already hides it, so showing it only here would be an
+   inconsistency rather than added compliance (wherever this app satisfies DSS/CDS attribution,
+   it already does so consistently without this). */
+:deep(.celestia-atlas-survey-credit) {
+  display: none !important;
+}
+</style>
