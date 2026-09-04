@@ -647,6 +647,14 @@
               >
                 {{ t('perihelion.track.lastAttemptFailed', { error: quickTrackStatus.lastError }) }}
               </p>
+              <!-- Deliberately a separate, warn-colored line rather than folding into
+                   lastAttemptFailed above -- guidingError is independent of whether the mount's
+                   own tracking rate was applied (it usually was, even when this is set), so
+                   showing it in the same red "attempt failed" styling would misreport a working
+                   Quick Track session as broken. -->
+              <p v-if="quickTrackStatus.guidingError" class="text-xs text-status-warn">
+                {{ t('perihelion.track.guidingFailed', { error: quickTrackStatus.guidingError }) }}
+              </p>
             </div>
 
             <div
@@ -842,6 +850,14 @@
                   <ArrowDownTrayIcon class="w-5 h-5" />
                 </button>
               </div>
+              <!-- Explicit label rather than relying on row separation alone to imply the
+                   grouping -- real user feedback (the same "not obvious this is Quick-Track-
+                   only" confusion that prompted the warning banner above) was that it wasn't
+                   clear these two buttons are both part of Quick Track, distinct from Add to
+                   Sequence above. -->
+              <span class="text-[10px] font-semibold uppercase tracking-wide text-content-faint">{{
+                t('perihelion.track.quickTrackGroupLabel')
+              }}</span>
               <div class="flex gap-2">
                 <!-- flex-[3]/flex-[2] (not flex-1 each) -- "Slew & Center" plus its gear button
                      needs more room than "Quick Track" alone to fit its own label on one line at

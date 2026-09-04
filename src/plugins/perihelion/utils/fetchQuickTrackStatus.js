@@ -20,6 +20,7 @@ import { getUrls } from '@/services/api/core';
  *   lastApplySucceeded: boolean,
  *   lastError: string|null,
  *   stopReason: string|null,
+ *   guidingError: string|null,
  * }>}
  */
 export async function fetchQuickTrackStatus() {
@@ -41,5 +42,9 @@ export async function fetchQuickTrackStatus() {
     // Null for a plain manual stop -- set when Quick Track stopped itself, in particular the
     // meridian safety cutoff (see the Perihelion repo's QuickTrackReapply.CheckMeridian).
     stopReason: body.StopReason ?? null,
+    // Independent of lastApplySucceeded/lastError -- a guiding hiccup (no PHD2, no lock star)
+    // doesn't make the mount's own tracking-rate application read as failed. Null when guiding
+    // is off, or its last attempt succeeded.
+    guidingError: body.GuidingError ?? null,
   };
 }
