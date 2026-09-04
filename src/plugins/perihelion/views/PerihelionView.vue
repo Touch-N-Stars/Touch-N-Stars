@@ -533,31 +533,31 @@
             </div>
 
             <!-- Advisory, not blocking -- Add to Sequence is deliberately exempt (planning ahead
-                 for something that rises later tonight is normal and fine), this only shows
-                 while idle since it's about an action you're about to take right now, and the
-                 mount's own configured horizon limit (if any) is still the real backstop. -->
+                 for something that rises later tonight, or that isn't up yet, is normal and
+                 fine), this only shows while idle since it's about an action you're about to
+                 take right now, and the mount's own configured horizon limit (if any) is still
+                 the real backstop. Merged into one quieter banner (was two separate full-strength
+                 amber boxes, which read as more alarming/stacked-up than either warning alone
+                 warrants) with an explicit "Quick Track only" label -- real user feedback was
+                 that it wasn't obvious these didn't also apply to Add to Sequence. -->
             <div
-              v-if="trackingMode === 'idle' && altAz && altAz.altitude < 0"
-              class="flex items-start gap-2 p-3 rounded-chip bg-status-warn/10 border border-status-warn/40"
+              v-if="
+                trackingMode === 'idle' && ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)
+              "
+              class="flex flex-col gap-1 p-2.5 rounded-chip bg-status-warn/5 border border-status-warn/20"
             >
-              <ExclamationTriangleIcon class="w-5 h-5 text-status-warn shrink-0 mt-0.5" />
-              <span class="flex-1 text-sm text-content">{{
-                t('perihelion.track.belowHorizonWarning', { name: selected.name })
-              }}</span>
-            </div>
-
-            <!-- Same advisory pattern as the below-horizon warning above, and for the same
-                 reason (Add to Sequence is exempt; this is only about tracking right now). A
-                 fast mover above the horizon in broad daylight can still be pointed at
-                 correctly, but there's nothing to see and nothing to guide on. -->
-            <div
-              v-if="trackingMode === 'idle' && isCurrentlyDark === false"
-              class="flex items-start gap-2 p-3 rounded-chip bg-status-warn/10 border border-status-warn/40"
-            >
-              <ExclamationTriangleIcon class="w-5 h-5 text-status-warn shrink-0 mt-0.5" />
-              <span class="flex-1 text-sm text-content">{{
-                t('perihelion.track.daytimeWarning')
-              }}</span>
+              <div class="flex items-center gap-1.5">
+                <ExclamationTriangleIcon class="w-3.5 h-3.5 text-status-warn shrink-0" />
+                <span class="text-[10px] font-semibold uppercase tracking-wide text-status-warn/80">{{
+                  t('perihelion.track.quickTrackOnly')
+                }}</span>
+              </div>
+              <p v-if="altAz && altAz.altitude < 0" class="text-xs text-content-muted pl-5">
+                {{ t('perihelion.track.belowHorizonWarning', { name: selected.name }) }}
+              </p>
+              <p v-if="isCurrentlyDark === false" class="text-xs text-content-muted pl-5">
+                {{ t('perihelion.track.daytimeWarning') }}
+              </p>
             </div>
 
             <div class="tns-card flex flex-col gap-2">

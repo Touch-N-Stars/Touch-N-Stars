@@ -5337,6 +5337,7 @@
       "on": "开启",
       "off": "关闭",
       "lastAttemptFailed": "上次尝试失败：{error}",
+      "quickTrackOnly": "仅限 Quick Track — 不适用于添加到序列",
       "belowHorizonWarning": "{name} 目前在地平线以下。",
       "daytimeWarning": "您所在地当前是白天 — 目前还没有可观测或可导星的目标。",
       "mountMismatchTitle": "赤道仪未对准目标",

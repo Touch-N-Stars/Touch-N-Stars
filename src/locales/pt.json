@@ -5342,6 +5342,7 @@
       "on": "ativado",
       "off": "desativado",
       "lastAttemptFailed": "Última tentativa falhou: {error}",
+      "quickTrackOnly": "Apenas Quick Track — não Adicionar à sequência",
       "belowHorizonWarning": "{name} está atualmente abaixo do horizonte.",
       "daytimeWarning": "Atualmente é dia no seu local — ainda não há nada para ver ou guiar.",
       "mountMismatchTitle": "Montagem fora do alvo",

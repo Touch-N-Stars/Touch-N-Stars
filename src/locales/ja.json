@@ -5337,6 +5337,7 @@
       "on": "オン",
       "off": "オフ",
       "lastAttemptFailed": "前回の試行が失敗しました: {error}",
+      "quickTrackOnly": "Quick Trackのみ — シーケンスに追加には適用されません",
       "belowHorizonWarning": "{name}は現在地平線の下にあります。",
       "daytimeWarning": "現在、観測地は昼間です — まだ見えるものもガイドできるものもありません。",
       "mountMismatchTitle": "マウントがターゲットを向いていません",

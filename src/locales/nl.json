@@ -5337,6 +5337,7 @@
       "on": "aan",
       "off": "uit",
       "lastAttemptFailed": "Laatste poging mislukt: {error}",
+      "quickTrackOnly": "Alleen Quick Track — niet Toevoegen aan sequentie",
       "belowHorizonWarning": "{name} staat momenteel onder de horizon.",
       "daytimeWarning": "Het is momenteel dag op je locatie — er is nog niets te zien of om op te guiden.",
       "mountMismatchTitle": "Montering niet op doel",

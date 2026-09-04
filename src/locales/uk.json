@@ -5337,6 +5337,7 @@
       "on": "увімк.",
       "off": "вимк.",
       "lastAttemptFailed": "Остання спроба невдала: {error}",
+      "quickTrackOnly": "Лише Quick Track — не стосується Додати до послідовності",
       "belowHorizonWarning": "{name} наразі під горизонтом.",
       "daytimeWarning": "Наразі у вашому місці спостереження день — поки що нема на що дивитись чи гідувати.",
       "mountMismatchTitle": "Монтування не на цілі",

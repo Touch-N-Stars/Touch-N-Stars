@@ -5337,6 +5337,7 @@
       "on": "activat",
       "off": "desactivat",
       "lastAttemptFailed": "Darrer intent fallit: {error}",
+      "quickTrackOnly": "Només Quick Track — no Afegir a la seqüència",
       "belowHorizonWarning": "{name} és actualment sota l'horitzó.",
       "daytimeWarning": "Actualment és de dia a la teva ubicació — encara no hi ha res a veure ni a guiar.",
       "mountMismatchTitle": "La muntura no és a l'objectiu",
