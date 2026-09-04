@@ -28,6 +28,11 @@ export const usePerihelionStore = defineStore('perihelion', {
     // Quick Track is active and the user navigates away and back, the Track tab should still
     // show it running rather than resetting to Idle.
     trackingMode: 'idle',
+    // 'quick' | 'sequence' -- which action the Track tab's idle-state configuration (warnings,
+    // toggles, Imaging Plan card, button row) is currently scoped to. Distinct from trackingMode
+    // above (what's actually running): this is what the user is about to do, not what's already
+    // happening. Persisted for the same reason as everything else in this store.
+    actionMode: 'quick',
     // { raDeg, decDeg } | null -- captured once via FramingOffsetView's "Use this Framing".
     // Was a plain component-local ref() until it was noticed that navigating away from the
     // Perihelion tab and back (no <KeepAlive>, see this store's own header comment) silently

@@ -532,34 +532,6 @@
               </button>
             </div>
 
-            <!-- Advisory, not blocking -- Add to Sequence is deliberately exempt (planning ahead
-                 for something that rises later tonight, or that isn't up yet, is normal and
-                 fine), this only shows while idle since it's about an action you're about to
-                 take right now, and the mount's own configured horizon limit (if any) is still
-                 the real backstop. Merged into one quieter banner (was two separate full-strength
-                 amber boxes, which read as more alarming/stacked-up than either warning alone
-                 warrants) with an explicit "Quick Track only" label -- real user feedback was
-                 that it wasn't obvious these didn't also apply to Add to Sequence. -->
-            <div
-              v-if="
-                trackingMode === 'idle' && ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)
-              "
-              class="flex flex-col gap-1 p-2.5 rounded-chip bg-status-warn/5 border border-status-warn/20"
-            >
-              <div class="flex items-center gap-1.5">
-                <ExclamationTriangleIcon class="w-3.5 h-3.5 text-status-warn shrink-0" />
-                <span class="text-[10px] font-semibold uppercase tracking-wide text-status-warn/80">{{
-                  t('perihelion.track.quickTrackOnly')
-                }}</span>
-              </div>
-              <p v-if="altAz && altAz.altitude < 0" class="text-xs text-content-muted pl-5">
-                {{ t('perihelion.track.belowHorizonWarning', { name: selected.name }) }}
-              </p>
-              <p v-if="isCurrentlyDark === false" class="text-xs text-content-muted pl-5">
-                {{ t('perihelion.track.daytimeWarning') }}
-              </p>
-            </div>
-
             <div class="tns-card flex flex-col gap-2">
               <span class="tns-stat-label">{{ t('perihelion.track.status') }}</span>
               <div class="flex items-center gap-2">
@@ -577,6 +549,41 @@
               <span v-if="trackingMode !== 'idle'" class="text-xs text-content-muted">
                 {{ selected.name }} · {{ selected.objectType }}
               </span>
+            </div>
+
+            <!-- Which action the rest of this tab is currently configured for -- gates the
+                 warnings, toggles, Imaging Plan card, and button row below so only what's
+                 actually relevant to the chosen action shows, rather than every option for
+                 both actions being visible together (the earlier layout, which needed "for
+                 Quick Track only"/"for Add to Sequence only" qualifiers scattered throughout
+                 just to compensate). Only meaningful while idle -- once something is actually
+                 running, trackingMode's own state drives the view instead. -->
+            <div
+              v-if="trackingMode === 'idle'"
+              class="flex gap-2 p-1 rounded-control bg-surface-2 border border-line-strong"
+            >
+              <button
+                class="flex-1 min-h-touch rounded-chip text-sm font-semibold cursor-pointer transition-colors"
+                :class="
+                  actionMode === 'quick'
+                    ? 'bg-accent/15 border border-accent/40 text-accent'
+                    : 'border border-transparent text-content-muted hover:bg-surface-3'
+                "
+                @click="actionMode = 'quick'"
+              >
+                {{ t('perihelion.track.quickTrack') }}
+              </button>
+              <button
+                class="flex-1 min-h-touch rounded-chip text-sm font-semibold cursor-pointer transition-colors"
+                :class="
+                  actionMode === 'sequence'
+                    ? 'bg-accent/15 border border-accent/40 text-accent'
+                    : 'border border-transparent text-content-muted hover:bg-surface-3'
+                "
+                @click="actionMode = 'sequence'"
+              >
+                {{ t('perihelion.track.addToSequence') }}
+              </button>
             </div>
 
             <div
@@ -668,13 +675,28 @@
             </div>
 
             <div v-if="trackingMode === 'idle'" class="flex flex-col gap-3">
-              <div class="tns-card flex flex-col gap-2">
-                <div class="flex items-center gap-2 mb-1">
-                  <span class="tns-stat-label flex-1">{{ t('perihelion.track.imagingPlan') }}</span>
-                  <span class="text-[10px] text-content-faint">{{
-                    t('perihelion.track.forAddToSequenceOnly')
-                  }}</span>
+              <!-- Advisory, not blocking -- only relevant to Quick Track (Add to Sequence is
+                   fine planning ahead for something that rises later tonight, or that isn't up
+                   yet). No qualifier label needed here the way an earlier version needed one --
+                   the mode selector above already establishes that this warning is scoped to
+                   Quick Track, since it only renders while that mode is selected. -->
+              <div
+                v-if="actionMode === 'quick' && ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)"
+                class="flex items-start gap-2 p-2.5 rounded-chip bg-status-warn/5 border border-status-warn/20"
+              >
+                <ExclamationTriangleIcon class="w-4 h-4 text-status-warn shrink-0 mt-0.5" />
+                <div class="flex flex-col gap-1">
+                  <p v-if="altAz && altAz.altitude < 0" class="text-xs text-content-muted">
+                    {{ t('perihelion.track.belowHorizonWarning', { name: selected.name }) }}
+                  </p>
+                  <p v-if="isCurrentlyDark === false" class="text-xs text-content-muted">
+                    {{ t('perihelion.track.daytimeWarning') }}
+                  </p>
                 </div>
+              </div>
+
+              <div v-if="actionMode === 'sequence'" class="tns-card flex flex-col gap-2">
+                <span class="tns-stat-label">{{ t('perihelion.track.imagingPlan') }}</span>
                 <label class="block">
                   <span class="block text-[10px] text-content-faint mb-1">{{
                     t('perihelion.track.filterLabel')
@@ -739,6 +761,7 @@
                 </button>
 
                 <button
+                  v-if="actionMode === 'quick'"
                   class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
                   @click="autoReapply = !autoReapply"
                 >
@@ -766,6 +789,7 @@
                 </button>
 
                 <button
+                  v-if="actionMode === 'sequence'"
                   class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
                   @click="meridianFlip = !meridianFlip"
                 >
@@ -793,6 +817,7 @@
                 </button>
 
                 <button
+                  v-if="actionMode === 'sequence'"
                   class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
                   @click="autofocus = !autofocus"
                 >
@@ -816,7 +841,7 @@
                     ></span>
                   </span>
                 </button>
-                <label v-if="autofocus" class="block pb-1">
+                <label v-if="actionMode === 'sequence' && autofocus" class="block pb-1">
                   <span class="block text-[10px] text-content-faint mb-1">{{
                     t('perihelion.track.autofocusEveryLabel')
                   }}</span>
@@ -829,7 +854,7 @@
                 </label>
               </div>
 
-              <div class="flex gap-2">
+              <div v-if="actionMode === 'sequence'" class="flex gap-2">
                 <button
                   class="tns-btn-primary flex-1"
                   :disabled="actionBusy"
@@ -850,15 +875,7 @@
                   <ArrowDownTrayIcon class="w-5 h-5" />
                 </button>
               </div>
-              <!-- Explicit label rather than relying on row separation alone to imply the
-                   grouping -- real user feedback (the same "not obvious this is Quick-Track-
-                   only" confusion that prompted the warning banner above) was that it wasn't
-                   clear these two buttons are both part of Quick Track, distinct from Add to
-                   Sequence above. -->
-              <span class="text-[10px] font-semibold uppercase tracking-wide text-content-faint">{{
-                t('perihelion.track.quickTrackGroupLabel')
-              }}</span>
-              <div class="flex gap-2">
+              <div v-if="actionMode === 'quick'" class="flex gap-2">
                 <!-- flex-[3]/flex-[2] (not flex-1 each) -- "Slew & Center" plus its gear button
                      needs more room than "Quick Track" alone to fit its own label on one line at
                      typical mobile widths; an even 50/50 split wrapped it to two lines. -->
@@ -1244,6 +1261,7 @@ const {
   autofocusMinutes,
   autoReapply,
   trackingMode,
+  actionMode,
   framingOffset,
   pluginInstalled,
 } = storeToRefs(perihelionStore);
@@ -1367,6 +1385,9 @@ async function restoreActiveQuickTrackSession() {
     const match = objects.value.find((o) => o.name === status.targetName);
     if (match) selectedId.value = match.id;
     trackingMode.value = 'quick';
+    // So the mode selector already reads "Quick Track" (rather than whatever was last
+    // selected before a page reload) once trackingMode reverts to idle after Stop.
+    actionMode.value = 'quick';
     activeTab.value = 'track';
   } catch {
     // No worse than before this fix existed -- Quick Track just won't visibly restore itself
