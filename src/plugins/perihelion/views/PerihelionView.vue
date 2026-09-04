@@ -1003,28 +1003,46 @@
                   </div>
                 </template>
               </Modal>
-              <p class="text-[11px] leading-relaxed text-content-faint">
-                <strong class="text-content-muted">{{
-                  t('perihelion.track.addToSequence')
-                }}</strong>
-                {{ t('perihelion.track.addToSequenceDescriptionRest') }}
-              </p>
-              <p class="text-[11px] leading-relaxed text-content-faint">
-                <strong class="text-content-muted">{{
-                  t('perihelion.track.downloadSequence')
-                }}</strong>
-                {{ t('perihelion.track.downloadSequenceDescriptionRest') }}
-              </p>
-              <p class="text-[11px] leading-relaxed text-content-faint">
-                <strong class="text-content-muted">{{
-                  t('perihelion.track.slewAndCenter')
-                }}</strong>
-                {{ t('perihelion.track.slewAndCenterDescriptionRest') }}
-              </p>
-              <p class="text-[11px] leading-relaxed text-content-faint">
-                <strong class="text-content-muted">{{ t('perihelion.track.quickTrack') }}</strong>
-                {{ t('perihelion.track.quickTrackDescriptionRest') }}
-              </p>
+              <!-- Collapsed by default -- same disclosure pattern as Position & Path's own More
+                   Details card. This used to be four always-visible paragraphs permanently
+                   taking up space at the bottom of the tab; real feedback was that it read as
+                   clutter for anyone past their first few uses. -->
+              <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden">
+                <button
+                  class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
+                  @click="showHowItWorks = !showHowItWorks"
+                >
+                  <span class="tns-stat-label flex-1">{{ t('perihelion.track.howItWorks') }}</span>
+                  <ChevronUpIcon v-if="showHowItWorks" class="w-4 h-4 shrink-0 text-content-faint" />
+                  <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
+                </button>
+                <div v-if="showHowItWorks" class="p-3 pt-0 flex flex-col gap-2">
+                  <p class="text-[11px] leading-relaxed text-content-faint">
+                    <strong class="text-content-muted">{{
+                      t('perihelion.track.addToSequence')
+                    }}</strong>
+                    {{ t('perihelion.track.addToSequenceDescriptionRest') }}
+                  </p>
+                  <p class="text-[11px] leading-relaxed text-content-faint">
+                    <strong class="text-content-muted">{{
+                      t('perihelion.track.downloadSequence')
+                    }}</strong>
+                    {{ t('perihelion.track.downloadSequenceDescriptionRest') }}
+                  </p>
+                  <p class="text-[11px] leading-relaxed text-content-faint">
+                    <strong class="text-content-muted">{{
+                      t('perihelion.track.slewAndCenter')
+                    }}</strong>
+                    {{ t('perihelion.track.slewAndCenterDescriptionRest') }}
+                  </p>
+                  <p class="text-[11px] leading-relaxed text-content-faint">
+                    <strong class="text-content-muted">{{
+                      t('perihelion.track.quickTrack')
+                    }}</strong>
+                    {{ t('perihelion.track.quickTrackDescriptionRest') }}
+                  </p>
+                </div>
+              </div>
             </div>
 
             <button v-else class="tns-btn-danger" :disabled="actionBusy" @click="onStop">
@@ -1432,6 +1450,11 @@ const showObservedMagLegend = ref(false);
 // date are real facts someone might want, but stacking them onto an already-busy tab as
 // permanently-visible rows was worse than tucking them behind one disclosure.
 const showMoreDetails = ref(false);
+
+// Collapsed by default, same reasoning as showMoreDetails above -- what each Track tab button
+// actually does is worth explaining, but not as four paragraphs permanently sitting below them
+// on every visit.
+const showHowItWorks = ref(false);
 
 // Magnitude is a reverse scale (lower number = brighter), so "observed differs from predicted"
 // isn't one kind of surprise -- it's two opposite ones. Brighter-than-predicted (diff very

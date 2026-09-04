@@ -5374,6 +5374,7 @@
       "slewAndCenterFailed": "Schwenken + Zentrieren fehlgeschlagen",
       "quickTrack": "Quick Track",
       "working": "Arbeitet…",
+      "howItWorks": "So funktioniert es",
       "addToSequenceDescriptionRest": "erstellt eine Schwenk-, Nachführ- und Aufnahmesequenz und lädt sie in PINS' Sequenzer zur Prüfung und zum Start.",
       "downloadSequence": "Sequenz herunterladen",
       "downloadSequenceDescriptionRest": "speichert dieselbe Sequenz als Datei, statt sie in PINS zu laden -- zum späteren Prüfen oder Importieren.",

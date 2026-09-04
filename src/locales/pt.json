@@ -5374,6 +5374,7 @@
       "slewAndCenterFailed": "Falha ao mover + centralizar",
       "quickTrack": "Quick Track",
       "working": "Processando…",
+      "howItWorks": "Como funciona",
       "addToSequenceDescriptionRest": "cria uma sequência de movimento, rastreamento e captura e a carrega no sequenciador do PINS para você revisar e iniciar.",
       "downloadSequence": "Descarregar sequência",
       "downloadSequenceDescriptionRest": "guarda a mesma sequência como ficheiro em vez de a carregar no PINS -- para rever ou importar mais tarde.",

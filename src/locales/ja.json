@@ -5369,6 +5369,7 @@
       "slewAndCenterFailed": "導入＋中心合わせに失敗しました",
       "quickTrack": "Quick Track",
       "working": "処理中…",
+      "howItWorks": "使い方",
       "addToSequenceDescriptionRest": "導入・追尾・撮影のシーケンスを作成し、確認・開始できるようPINSのシーケンサーに読み込みます。",
       "downloadSequence": "シーケンスをダウンロード",
       "downloadSequenceDescriptionRest": "PINSに読み込む代わりに同じシーケンスをファイルとして保存します -- 後で確認またはインポートするため。",

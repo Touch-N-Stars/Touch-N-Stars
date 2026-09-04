@@ -5374,6 +5374,7 @@
       "slewAndCenterFailed": "Fallo al desplazar + centrar",
       "quickTrack": "Seguimiento rápido",
       "working": "Procesando…",
+      "howItWorks": "Cómo funciona",
       "addToSequenceDescriptionRest": "crea una secuencia de desplazamiento, seguimiento y captura, y la carga en el secuenciador de PINS para que la revises y la inicies.",
       "downloadSequence": "Descargar secuencia",
       "downloadSequenceDescriptionRest": "guarda la misma secuencia como archivo en lugar de cargarla en PINS -- para revisarla o importarla más tarde.",

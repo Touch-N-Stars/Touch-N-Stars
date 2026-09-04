@@ -5339,6 +5339,7 @@
       "slewAndCenterFailed": "Slew + center failed",
       "quickTrack": "Quick Track",
       "working": "Working…",
+      "howItWorks": "How It Works",
       "addToSequenceDescriptionRest": "builds a slew + track + imaging sequence and loads it into PINS's sequencer for you to review and start.",
       "downloadSequence": "Download sequence",
       "downloadSequenceDescriptionRest": "saves the same sequence as a file instead of loading it into PINS -- for reviewing or importing later.",

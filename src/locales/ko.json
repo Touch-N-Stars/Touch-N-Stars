@@ -5369,6 +5369,7 @@
       "slewAndCenterFailed": "슬루 + 중앙 정렬 실패",
       "quickTrack": "Quick Track",
       "working": "처리 중…",
+      "howItWorks": "작동 방식",
       "addToSequenceDescriptionRest": "슬루, 추적, 촬영 시퀀스를 만들어 검토하고 시작할 수 있도록 PINS 시퀀서에 불러옵니다.",
       "downloadSequence": "시퀀스 다운로드",
       "downloadSequenceDescriptionRest": "PINS에 불러오는 대신 동일한 시퀀스를 파일로 저장합니다 -- 나중에 검토하거나 가져오기 위함입니다.",

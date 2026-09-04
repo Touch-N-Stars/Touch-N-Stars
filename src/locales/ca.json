@@ -5369,6 +5369,7 @@
       "slewAndCenterFailed": "Ha fallat el desplaçament + centratge",
       "quickTrack": "Quick Track",
       "working": "Processant…",
+      "howItWorks": "Com funciona",
       "addToSequenceDescriptionRest": "crea una seqüència de desplaçament, seguiment i captura, i la carrega al seqüenciador de PINS perquè la revisis i la iniciïs.",
       "downloadSequence": "Descarrega la seqüència",
       "downloadSequenceDescriptionRest": "desa la mateixa seqüència com a fitxer en lloc de carregar-la a PINS -- per revisar-la o importar-la més tard.",
