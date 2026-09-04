@@ -5546,6 +5546,7 @@
       "sequenceLoaded": "Sequenza caricata — controllala e avviala nel sequencer",
       "unknownError": "errore sconosciuto"
     },
-    "notDetected": "Plugin Perihelion non rilevato. Installa il plugin Perihelion per usare questa pagina."
+    "notDetected": "Plugin Perihelion non rilevato. Installa il plugin Perihelion per usare questa pagina.",
+    "notSupportedOnNina": "Perihelion attualmente supporta solo PINS, non Windows NINA."
   }
 }

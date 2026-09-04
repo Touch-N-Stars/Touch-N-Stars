@@ -5546,6 +5546,7 @@
       "sequenceLoaded": "Secuencia cargada — revísala e inícala en el secuenciador",
       "unknownError": "error desconocido"
     },
-    "notDetected": "No se detectó el plugin Perihelion. Instala el plugin Perihelion para usar esta página."
+    "notDetected": "No se detectó el plugin Perihelion. Instala el plugin Perihelion para usar esta página.",
+    "notSupportedOnNina": "Perihelion actualmente solo es compatible con PINS, no con Windows NINA."
   }
 }

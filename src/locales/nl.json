@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "Sequentie geladen — controleer en start hem in de sequencer",
       "unknownError": "onbekende fout"
     },
-    "notDetected": "Perihelion-plugin niet gevonden. Installeer de Perihelion-plugin om deze pagina te gebruiken."
+    "notDetected": "Perihelion-plugin niet gevonden. Installeer de Perihelion-plugin om deze pagina te gebruiken.",
+    "notSupportedOnNina": "Perihelion ondersteunt momenteel alleen PINS, niet Windows NINA."
   }
 }

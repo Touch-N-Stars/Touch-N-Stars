@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "Послідовність завантажено — перевірте та запустіть у секвенсорі",
       "unknownError": "невідома помилка"
     },
-    "notDetected": "Плагін Perihelion не виявлено. Встановіть плагін Perihelion, щоб користуватися цією сторінкою."
+    "notDetected": "Плагін Perihelion не виявлено. Встановіть плагін Perihelion, щоб користуватися цією сторінкою.",
+    "notSupportedOnNina": "Perihelion наразі підтримує лише PINS, а не Windows NINA."
   }
 }

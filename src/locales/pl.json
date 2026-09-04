@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "Sekwencja załadowana — sprawdź i uruchom ją w sekwencerze",
       "unknownError": "nieznany błąd"
     },
-    "notDetected": "Nie wykryto wtyczki Perihelion. Zainstaluj wtyczkę Perihelion, aby korzystać z tej strony."
+    "notDetected": "Nie wykryto wtyczki Perihelion. Zainstaluj wtyczkę Perihelion, aby korzystać z tej strony.",
+    "notSupportedOnNina": "Perihelion obecnie obsługuje tylko PINS, a nie Windows NINA."
   }
 }

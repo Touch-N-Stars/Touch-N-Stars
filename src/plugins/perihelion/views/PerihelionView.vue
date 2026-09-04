@@ -1,10 +1,19 @@
 <template>
   <div class="flex flex-col h-full min-h-0">
     <!-- Not the Perihelion NINA plugin's own tracking failing -- the whole HTTP server it's
-         supposed to be talking to isn't reachable at all, so nothing below would work anyway. -->
+         supposed to be talking to isn't reachable at all, so nothing below would work anyway.
+         Real Windows NINA is a genuinely different case from "PINS user forgot to install it":
+         Perihelion is compiled against PINS' own forked/retargeted NINA assemblies, not the
+         officially published NINA SDK, so it isn't just "not yet built for Windows" -- it can
+         never be installed there as-is. "Install the plugin" would be actively misleading for
+         those users, same reasoning already established for isPINS-gated messaging elsewhere
+         (see logfile-collector.vue/nightsummary.vue for the precedent). -->
     <div v-if="pluginInstalled === false" class="p-4">
       <div class="tns-card text-center">
-        <p class="text-sm text-content-faint">{{ t('perihelion.notDetected') }}</p>
+        <p v-if="!store.isPINS" class="text-sm text-content-faint">{{
+          t('perihelion.notSupportedOnNina')
+        }}</p>
+        <p v-else class="text-sm text-content-faint">{{ t('perihelion.notDetected') }}</p>
       </div>
     </div>
     <template v-else-if="pluginInstalled === true">

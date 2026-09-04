@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "Seqüència carregada — revisa-la i inicia-la al seqüenciador",
       "unknownError": "error desconegut"
     },
-    "notDetected": "No s'ha detectat el connector Perihelion. Instal·la el connector Perihelion per fer servir aquesta pàgina."
+    "notDetected": "No s'ha detectat el connector Perihelion. Instal·la el connector Perihelion per fer servir aquesta pàgina.",
+    "notSupportedOnNina": "Perihelion actualment només és compatible amb PINS, no amb Windows NINA."
   }
 }

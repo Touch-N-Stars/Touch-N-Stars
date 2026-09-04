@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "Sekvence načtena — zkontrolujte a spusťte ji v sekvenceru",
       "unknownError": "neznámá chyba"
     },
-    "notDetected": "Plugin Perihelion nebyl nalezen. Pro použití této stránky nainstalujte plugin Perihelion."
+    "notDetected": "Plugin Perihelion nebyl nalezen. Pro použití této stránky nainstalujte plugin Perihelion.",
+    "notSupportedOnNina": "Perihelion aktuálně podporuje pouze PINS, nikoli Windows NINA."
   }
 }

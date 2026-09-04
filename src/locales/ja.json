@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "シーケンスを読み込みました — シーケンサーで確認して開始してください",
       "unknownError": "不明なエラー"
     },
-    "notDetected": "Perihelionプラグインが検出されません。このページを使用するにはPerihelionプラグインをインストールしてください。"
+    "notDetected": "Perihelionプラグインが検出されません。このページを使用するにはPerihelionプラグインをインストールしてください。",
+    "notSupportedOnNina": "Perihelionは現在PINSのみ対応しており、Windows NINAには対応していません。"
   }
 }

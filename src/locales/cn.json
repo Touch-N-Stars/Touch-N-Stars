@@ -5541,6 +5541,7 @@
       "sequenceLoaded": "序列已加载 — 请在序列编辑器中检查并启动",
       "unknownError": "未知错误"
     },
-    "notDetected": "未检测到 Perihelion 插件。请安装 Perihelion 插件以使用此页面。"
+    "notDetected": "未检测到 Perihelion 插件。请安装 Perihelion 插件以使用此页面。",
+    "notSupportedOnNina": "Perihelion 目前仅支持 PINS，不支持 Windows NINA。"
   }
 }
