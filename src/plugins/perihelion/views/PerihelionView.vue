@@ -419,24 +419,8 @@
                   @peak-altitude="tonightsPeakAltitude = $event"
                   @rise-set="riseSetInfo = $event"
                 />
-                <p v-if="riseSetInfo" class="text-[11px] text-content-faint mt-2">
-                  <template v-if="riseSetInfo.circumpolar">{{
-                    t('perihelion.position.circumpolar')
-                  }}</template>
-                  <template v-else-if="riseSetInfo.neverRises">{{
-                    t('perihelion.position.doesNotRise')
-                  }}</template>
-                  <template v-else>
-                    <span v-if="riseSetInfo.rise">{{
-                      t('perihelion.position.risesAt', { time: riseSetInfo.rise })
-                    }}</span>
-                    <span v-if="riseSetInfo.rise && riseSetInfo.set" class="text-content-faint"
-                      >·</span
-                    >
-                    <span v-if="riseSetInfo.set">{{
-                      t('perihelion.position.setsAt', { time: riseSetInfo.set })
-                    }}</span>
-                  </template>
+                <p v-if="riseSetLabel" class="text-[11px] text-content-faint mt-2">
+                  {{ riseSetLabel }}
                 </p>
                 <p v-if="hasLocation" class="text-[11px] leading-relaxed text-content-faint mt-2">
                   {{ t('perihelion.position.altitudeDescription', { name: selected.name }) }}
@@ -1578,6 +1562,21 @@ const altAz = computed(() => {
 const tonightsPeakAltitude = ref(null);
 // { circumpolar, neverRises, rise, set } | null -- from SkyChart's own rise-set emit.
 const riseSetInfo = ref(null);
+// A single combined string, not several adjacent template <span>s -- Vue's whitespace-condense
+// mode collapses whitespace-only text nodes BETWEEN elements (same real bug already found and
+// fixed once this session in the Quick Track status card's "Tracking for X· Applied Y ago ago"),
+// so multiple sibling spans here rendered as "Rises 22:46·Sets 12:16" with no spaces around the
+// dot at all. Building the whole string in script sidesteps that class of bug entirely.
+const riseSetLabel = computed(() => {
+  const r = riseSetInfo.value;
+  if (!r) return null;
+  if (r.circumpolar) return t('perihelion.position.circumpolar');
+  if (r.neverRises) return t('perihelion.position.doesNotRise');
+  const parts = [];
+  if (r.rise) parts.push(t('perihelion.position.risesAt', { time: r.rise }));
+  if (r.set) parts.push(t('perihelion.position.setsAt', { time: r.set }));
+  return parts.length ? parts.join(' · ') : null;
+});
 
 const path = ref([]);
 const pathLoading = ref(false);
