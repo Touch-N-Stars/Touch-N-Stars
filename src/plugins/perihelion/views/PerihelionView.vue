@@ -930,6 +930,44 @@
                   </div>
                 </template>
               </Modal>
+              <Modal
+                :show="showMountMismatchModal"
+                @close="showMountMismatchModal = false"
+                :zIndex="'z-[60]'"
+              >
+                <template #header>
+                  <h2 class="text-xl font-bold">{{ t('perihelion.track.mountMismatchTitle') }}</h2>
+                </template>
+                <template #body>
+                  <div v-if="mountMismatchInfo" class="space-y-4 w-full">
+                    <p class="text-sm text-content-muted">
+                      {{
+                        t('perihelion.track.mountMismatchBody', {
+                          name: mountMismatchInfo.name,
+                          deg: mountMismatchInfo.deg,
+                        })
+                      }}
+                    </p>
+                    <div class="flex flex-col gap-2">
+                      <button
+                        class="tns-btn-primary"
+                        @click="onMountMismatchSlewThenTrack"
+                      >
+                        {{ t('perihelion.track.slewThenTrack') }}
+                      </button>
+                      <button class="tns-btn-secondary" @click="onMountMismatchContinueAnyway">
+                        {{ t('perihelion.track.continueAnyway') }}
+                      </button>
+                      <button
+                        class="tns-btn-secondary"
+                        @click="showMountMismatchModal = false"
+                      >
+                        {{ t('common.cancel') }}
+                      </button>
+                    </div>
+                  </div>
+                </template>
+              </Modal>
               <p class="text-[11px] leading-relaxed text-content-faint">
                 <strong class="text-content-muted">{{
                   t('perihelion.track.addToSequence')
@@ -1815,6 +1853,34 @@ async function onSlewAndCenter() {
     };
   }
   actionBusy.value = false;
+  // Only consumed by the mount-mismatch dialog's own "Slew & Center, then track" action below --
+  // every existing caller (the plain button) already ignores a function's return value, so this
+  // is a safe addition, not a behavior change for them.
+  return actionStatus.value?.ok ?? false;
+}
+
+// Real gap: Quick Track only applies a tracking RATE, it never slews -- if the mount is pointed
+// somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the wrong thing), the
+// session runs "successfully" the whole time while silently tracking empty sky at the correct
+// rate for the wrong patch of it. Split from onQuickTrack itself so the mount-mismatch dialog's
+// "Continue anyway" and "Slew & Center, then track" actions can both reach the actual tracking
+// call without duplicating it.
+const showMountMismatchModal = ref(false);
+const mountMismatchInfo = ref(null); // { name, deg } | null
+
+async function startQuickTrackNow() {
+  actionBusy.value = true;
+  actionStatus.value = null;
+  quickTrackStoppedReason.value = null;
+  const result = await startQuickTrack({
+    objectType: selected.value.objectType.toLowerCase(),
+    targetName: selected.value.name,
+    guiding: guiding.value,
+    autoReapplyMinutes: autoReapply.value ? AUTO_REAPPLY_MINUTES : null,
+  });
+  actionStatus.value = result;
+  actionBusy.value = false;
+  if (result.ok) trackingMode.value = 'quick';
 }
 
 async function onQuickTrack() {
@@ -1828,30 +1894,27 @@ async function onQuickTrack() {
       selected.value.raHours * 15,
       selected.value.decDeg
     );
-    if (
-      separationDeg > MOUNT_MISMATCH_THRESHOLD_DEG &&
-      !window.confirm(
-        t('perihelion.track.mountMismatchConfirm', {
-          name: selected.value.name,
-          deg: separationDeg.toFixed(1),
-        })
-      )
-    ) {
+    if (separationDeg > MOUNT_MISMATCH_THRESHOLD_DEG) {
+      mountMismatchInfo.value = { name: selected.value.name, deg: separationDeg.toFixed(1) };
+      showMountMismatchModal.value = true;
       return;
     }
   }
-  actionBusy.value = true;
-  actionStatus.value = null;
-  quickTrackStoppedReason.value = null;
-  const result = await startQuickTrack({
-    objectType: selected.value.objectType.toLowerCase(),
-    targetName: selected.value.name,
-    guiding: guiding.value,
-    autoReapplyMinutes: autoReapply.value ? AUTO_REAPPLY_MINUTES : null,
-  });
-  actionStatus.value = result;
-  actionBusy.value = false;
-  if (result.ok) trackingMode.value = 'quick';
+  await startQuickTrackNow();
+}
+
+function onMountMismatchContinueAnyway() {
+  showMountMismatchModal.value = false;
+  startQuickTrackNow();
+}
+
+async function onMountMismatchSlewThenTrack() {
+  showMountMismatchModal.value = false;
+  const slewOk = await onSlewAndCenter();
+  // A failed slew already left its own reason in actionStatus (onSlewAndCenter's own catch
+  // block sets it) -- surfacing that as-is and NOT starting Quick Track on top of a slew that
+  // didn't actually happen is the whole point of chaining these rather than firing both blindly.
+  if (slewOk) await startQuickTrackNow();
 }
 
 async function onStop() {
