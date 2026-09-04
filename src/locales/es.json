@@ -5343,7 +5343,7 @@
       "off": "desactivado",
       "lastAttemptFailed": "Último intento fallido: {error}",
       "guidingFailed": "El seguimiento está activo, pero no se pudo iniciar el guiado: {error}",
-      "quickTrackOnly": "Solo Quick Track — no Añadir a la secuencia",
+      "quickTrackOnly": "Solo para Quick Track",
       "belowHorizonWarning": "{name} está actualmente bajo el horizonte.",
       "daytimeWarning": "Actualmente es de día en tu ubicación — todavía no hay nada que ver ni guiar.",
       "mountMismatchTitle": "La montura no está en el objetivo",

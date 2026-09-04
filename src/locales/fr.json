@@ -5343,7 +5343,7 @@
       "off": "désactivé",
       "lastAttemptFailed": "Dernière tentative échouée : {error}",
       "guidingFailed": "Le suivi fonctionne, mais le guidage n'a pas pu démarrer : {error}",
-      "quickTrackOnly": "Quick Track uniquement — pas Ajouter à la séquence",
+      "quickTrackOnly": "Uniquement pour Quick Track",
       "belowHorizonWarning": "{name} est actuellement sous l'horizon.",
       "daytimeWarning": "Il fait actuellement jour sur votre site — il n'y a encore rien à voir ni à guider.",
       "mountMismatchTitle": "Monture pas sur la cible",

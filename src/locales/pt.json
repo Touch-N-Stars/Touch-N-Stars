@@ -5343,7 +5343,7 @@
       "off": "desativado",
       "lastAttemptFailed": "Última tentativa falhou: {error}",
       "guidingFailed": "O rastreio está a funcionar, mas não foi possível iniciar o guiamento: {error}",
-      "quickTrackOnly": "Apenas Quick Track — não Adicionar à sequência",
+      "quickTrackOnly": "Apenas para Quick Track",
       "belowHorizonWarning": "{name} está atualmente abaixo do horizonte.",
       "daytimeWarning": "Atualmente é dia no seu local — ainda não há nada para ver ou guiar.",
       "mountMismatchTitle": "Montagem fora do alvo",

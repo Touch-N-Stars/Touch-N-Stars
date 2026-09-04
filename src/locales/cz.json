@@ -5338,7 +5338,7 @@
       "off": "vypnuto",
       "lastAttemptFailed": "Poslední pokus selhal: {error}",
       "guidingFailed": "Sledování běží, ale navádění se nepodařilo spustit: {error}",
-      "quickTrackOnly": "Pouze Quick Track — netýká se Přidat do sekvence",
+      "quickTrackOnly": "Pouze pro Quick Track",
       "belowHorizonWarning": "{name} je momentálně pod obzorem.",
       "daytimeWarning": "Na vašem stanovišti je nyní den — zatím není nic vidět ani na čem navádět.",
       "mountMismatchTitle": "Montáž není na cíli",

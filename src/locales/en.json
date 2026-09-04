@@ -5308,7 +5308,7 @@
       "off": "off",
       "lastAttemptFailed": "Last attempt failed: {error}",
       "guidingFailed": "Tracking is running, but guiding could not be started: {error}",
-      "quickTrackOnly": "Quick Track only — not Add to Sequence",
+      "quickTrackOnly": "For Quick Track only",
       "belowHorizonWarning": "{name} is currently below the horizon.",
       "daytimeWarning": "It's currently daytime at your site — there's nothing to see or guide on yet.",
       "mountMismatchTitle": "Mount not on target",

@@ -5343,7 +5343,7 @@
       "off": "disattivo",
       "lastAttemptFailed": "Ultimo tentativo fallito: {error}",
       "guidingFailed": "Il tracking è attivo, ma non è stato possibile avviare il guiding: {error}",
-      "quickTrackOnly": "Solo Quick Track — non Aggiungi alla sequenza",
+      "quickTrackOnly": "Solo per Quick Track",
       "belowHorizonWarning": "{name} è attualmente sotto l'orizzonte.",
       "daytimeWarning": "Attualmente è giorno nella tua postazione — non c'è ancora nulla da vedere o su cui guidare.",
       "mountMismatchTitle": "Montatura non sul target",

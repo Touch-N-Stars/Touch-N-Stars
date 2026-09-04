@@ -5343,7 +5343,7 @@
       "off": "aus",
       "lastAttemptFailed": "Letzter Versuch fehlgeschlagen: {error}",
       "guidingFailed": "Tracking läuft, aber Guiding konnte nicht gestartet werden: {error}",
-      "quickTrackOnly": "Nur Quick Track — nicht bei Zur Sequenz hinzufügen",
+      "quickTrackOnly": "Nur für Quick Track",
       "belowHorizonWarning": "{name} steht derzeit unter dem Horizont.",
       "daytimeWarning": "An Ihrem Standort ist es gerade Tag — es gibt noch nichts zu sehen oder zum Guiden.",
       "mountMismatchTitle": "Montierung nicht auf dem Ziel",

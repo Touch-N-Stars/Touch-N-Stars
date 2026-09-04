@@ -5338,7 +5338,7 @@
       "off": "вимк.",
       "lastAttemptFailed": "Остання спроба невдала: {error}",
       "guidingFailed": "Стеження працює, але не вдалося запустити гідування: {error}",
-      "quickTrackOnly": "Лише Quick Track — не стосується Додати до послідовності",
+      "quickTrackOnly": "Лише для Quick Track",
       "belowHorizonWarning": "{name} наразі під горизонтом.",
       "daytimeWarning": "Наразі у вашому місці спостереження день — поки що нема на що дивитись чи гідувати.",
       "mountMismatchTitle": "Монтування не на цілі",

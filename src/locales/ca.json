@@ -5338,7 +5338,7 @@
       "off": "desactivat",
       "lastAttemptFailed": "Darrer intent fallit: {error}",
       "guidingFailed": "El seguiment funciona, però no s'ha pogut iniciar el guiatge: {error}",
-      "quickTrackOnly": "Només Quick Track — no Afegir a la seqüència",
+      "quickTrackOnly": "Només per a Quick Track",
       "belowHorizonWarning": "{name} és actualment sota l'horitzó.",
       "daytimeWarning": "Actualment és de dia a la teva ubicació — encara no hi ha res a veure ni a guiar.",
       "mountMismatchTitle": "La muntura no és a l'objectiu",
