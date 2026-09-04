@@ -1245,6 +1245,29 @@ async function loadSyncStatus() {
   }
 }
 
+// Real hardware report: a plain browser refresh (not just leaving/re-entering the tab within
+// the app, which perihelionStore's own trackingMode already survives fine) wiped the whole
+// Pinia store back to its initial state, including trackingMode -- so a genuinely still-running
+// Quick Track session (the backend timer keeps going regardless of any browser tab, by design)
+// looked completely stopped after a reload even though the mount was still being driven. The
+// backend's own GET /status is already the authoritative source of truth for this; the frontend
+// just never checked it on load. Looks up the tracked object by name in the just-loaded list so
+// selectedId/currentAltitude line up too, not just the bare "Quick Tracking" label -- and jumps
+// straight to the Track tab, since that's what a "wait, is this still running?" reload wants.
+async function restoreActiveQuickTrackSession() {
+  try {
+    const status = await fetchQuickTrackStatus();
+    if (!status.active) return;
+    const match = objects.value.find((o) => o.name === status.targetName);
+    if (match) selectedId.value = match.id;
+    trackingMode.value = 'quick';
+    activeTab.value = 'track';
+  } catch {
+    // No worse than before this fix existed -- Quick Track just won't visibly restore itself
+    // this one time, same as every reload used to behave.
+  }
+}
+
 // checkPluginInstalled() has to resolve first -- a single combined onMounted rather than two
 // separate ones, since otherwise loadObjects/loadSyncStatus could fire (and needlessly fail)
 // before pluginInstalled is known, or run right alongside the "not detected" check instead of
@@ -1252,8 +1275,9 @@ async function loadSyncStatus() {
 onMounted(async () => {
   await checkPluginInstalled();
   if (pluginInstalled.value) {
-    loadObjects();
+    await loadObjects();
     loadSyncStatus();
+    await restoreActiveQuickTrackSession();
   }
 });
 
