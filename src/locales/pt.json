@@ -5338,6 +5338,8 @@
       "on": "ativado",
       "off": "desativado",
       "lastAttemptFailed": "Última tentativa falhou: {error}",
+      "belowHorizonWarning": "{name} está atualmente abaixo do horizonte.",
+      "mountMismatchConfirm": "A sua montagem está apontada a cerca de {deg}° de {name}. Continuar com o Quick Track mesmo assim?",
       "imagingPlan": "Plano de captura",
       "forAddToSequenceOnly": "apenas para \"Adicionar à Sequência\"",
       "filterLabel": "Filtro — da roda de filtros",

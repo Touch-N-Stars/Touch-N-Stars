@@ -5333,6 +5333,8 @@
       "on": "aan",
       "off": "uit",
       "lastAttemptFailed": "Laatste poging mislukt: {error}",
+      "belowHorizonWarning": "{name} staat momenteel onder de horizon.",
+      "mountMismatchConfirm": "Je montering wijst ongeveer {deg}° van {name} af. Toch doorgaan met Quick Track?",
       "imagingPlan": "Opnameplan",
       "forAddToSequenceOnly": "alleen voor \"Toevoegen aan Sequentie\"",
       "filterLabel": "Filter — van het filterwiel",

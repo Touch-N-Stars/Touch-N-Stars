@@ -5333,6 +5333,8 @@
       "on": "켜짐",
       "off": "꺼짐",
       "lastAttemptFailed": "마지막 시도 실패: {error}",
+      "belowHorizonWarning": "{name}은(는) 현재 지평선 아래에 있습니다.",
+      "mountMismatchConfirm": "마운트가 {name}에서 약 {deg}° 떨어진 곳을 향하고 있습니다. 그래도 Quick Track을 계속하시겠습니까?",
       "imagingPlan": "촬영 계획",
       "forAddToSequenceOnly": "「시퀀스에 추가」 전용",
       "filterLabel": "필터 — 필터휠에서 가져옴",

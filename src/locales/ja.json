@@ -5333,6 +5333,8 @@
       "on": "オン",
       "off": "オフ",
       "lastAttemptFailed": "前回の試行が失敗しました: {error}",
+      "belowHorizonWarning": "{name}は現在地平線の下にあります。",
+      "mountMismatchConfirm": "マウントは{name}から約{deg}°離れた方向を向いています。それでもQuick Trackを続けますか？",
       "imagingPlan": "撮影プラン",
       "forAddToSequenceOnly": "「シーケンスに追加」専用",
       "filterLabel": "フィルター — フィルターホイールから取得",

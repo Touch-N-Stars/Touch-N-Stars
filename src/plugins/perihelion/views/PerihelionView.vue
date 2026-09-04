@@ -527,6 +527,20 @@
               </button>
             </div>
 
+            <!-- Advisory, not blocking -- Add to Sequence is deliberately exempt (planning ahead
+                 for something that rises later tonight is normal and fine), this only shows
+                 while idle since it's about an action you're about to take right now, and the
+                 mount's own configured horizon limit (if any) is still the real backstop. -->
+            <div
+              v-if="trackingMode === 'idle' && altAz && altAz.altitude < 0"
+              class="flex items-start gap-2 p-3 rounded-chip bg-status-warn/10 border border-status-warn/40"
+            >
+              <ExclamationTriangleIcon class="w-5 h-5 text-status-warn shrink-0 mt-0.5" />
+              <span class="flex-1 text-sm text-content">{{
+                t('perihelion.track.belowHorizonWarning', { name: selected.name })
+              }}</span>
+            </div>
+
             <div class="tns-card flex flex-col gap-2">
               <span class="tns-stat-label">{{ t('perihelion.track.status') }}</span>
               <div class="flex items-center gap-2">
@@ -1395,6 +1409,26 @@ function altitudeColorClass(altitudeDeg) {
   return TEXT_CLASS_BY_TIER.ok;
 }
 
+// Standard spherical law of cosines -- great-circle angular separation in degrees between two
+// RA/Dec points (both in degrees here; callers convert hours*15 themselves).
+function angularSeparationDeg(ra1Deg, dec1Deg, ra2Deg, dec2Deg) {
+  const rad = Math.PI / 180;
+  const d1 = dec1Deg * rad;
+  const d2 = dec2Deg * rad;
+  const dRa = (ra1Deg - ra2Deg) * rad;
+  let cosSep = Math.sin(d1) * Math.sin(d2) + Math.cos(d1) * Math.cos(d2) * Math.cos(dRa);
+  cosSep = Math.max(-1, Math.min(1, cosSep));
+  return Math.acos(cosSep) / rad;
+}
+
+// Real gap: Quick Track just applies a tracking RATE, it never slews -- if the mount is actually
+// pointed somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the wrong thing),
+// the session runs "successfully" the whole time while silently tracking empty sky at the
+// correct rate for the wrong patch. 2deg is comfortably larger than any real imaging FOV or
+// normal pointing-model residual, so it only fires when the mount clearly isn't on this target
+// at all, not for ordinary plate-solve-scale error.
+const MOUNT_MISMATCH_THRESHOLD_DEG = 2;
+
 function sortObjects(list) {
   const arr = [...list];
   if (sortMode.value === 'name') {
@@ -1785,6 +1819,27 @@ async function onSlewAndCenter() {
 
 async function onQuickTrack() {
   if (!selected.value) return;
+  // Only checkable when the mount is actually connected and reporting a real position -- skips
+  // silently otherwise rather than blocking on something Quick Track can't verify either way.
+  if (store.mountInfo.Connected) {
+    const separationDeg = angularSeparationDeg(
+      store.mountInfo.RightAscension * 15,
+      store.mountInfo.Declination,
+      selected.value.raHours * 15,
+      selected.value.decDeg
+    );
+    if (
+      separationDeg > MOUNT_MISMATCH_THRESHOLD_DEG &&
+      !window.confirm(
+        t('perihelion.track.mountMismatchConfirm', {
+          name: selected.value.name,
+          deg: separationDeg.toFixed(1),
+        })
+      )
+    ) {
+      return;
+    }
+  }
   actionBusy.value = true;
   actionStatus.value = null;
   quickTrackStoppedReason.value = null;

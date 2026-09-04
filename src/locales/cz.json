@@ -5333,6 +5333,8 @@
       "on": "zapnuto",
       "off": "vypnuto",
       "lastAttemptFailed": "Poslední pokus selhal: {error}",
+      "belowHorizonWarning": "{name} je momentálně pod obzorem.",
+      "mountMismatchConfirm": "Vaše montáž míří přibližně {deg}° od {name}. Přesto pokračovat v Quick Track?",
       "imagingPlan": "Plán Snímkování",
       "forAddToSequenceOnly": "pouze pro „Přidat do Sekvence“",
       "filterLabel": "Filtr — z filtrového kola",

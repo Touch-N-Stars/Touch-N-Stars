@@ -5338,6 +5338,8 @@
       "on": "activado",
       "off": "desactivado",
       "lastAttemptFailed": "Último intento fallido: {error}",
+      "belowHorizonWarning": "{name} está actualmente bajo el horizonte.",
+      "mountMismatchConfirm": "Tu montura apunta a unos {deg}° de {name}. ¿Continuar con Quick Track de todos modos?",
       "imagingPlan": "Plan de captura",
       "forAddToSequenceOnly": "solo para «Añadir a la secuencia»",
       "filterLabel": "Filtro — de la rueda de filtros",

@@ -5333,6 +5333,8 @@
       "on": "activat",
       "off": "desactivat",
       "lastAttemptFailed": "Darrer intent fallit: {error}",
+      "belowHorizonWarning": "{name} és actualment sota l'horitzó.",
+      "mountMismatchConfirm": "La muntura apunta a uns {deg}° de {name}. Vols continuar amb Quick Track igualment?",
       "imagingPlan": "Pla de captura",
       "forAddToSequenceOnly": "només per a «Afegeix a la Seqüència»",
       "filterLabel": "Filtre — de la roda de filtres",

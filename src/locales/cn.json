@@ -5333,6 +5333,8 @@
       "on": "开启",
       "off": "关闭",
       "lastAttemptFailed": "上次尝试失败：{error}",
+      "belowHorizonWarning": "{name} 目前在地平线以下。",
+      "mountMismatchConfirm": "您的赤道仪当前指向与 {name} 相差约 {deg}°。是否仍要继续 Quick Track？",
       "imagingPlan": "拍摄计划",
       "forAddToSequenceOnly": "仅用于「添加到序列」",
       "filterLabel": "滤镜 — 来自滤镜轮",

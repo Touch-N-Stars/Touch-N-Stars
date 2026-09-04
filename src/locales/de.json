@@ -5338,6 +5338,8 @@
       "on": "ein",
       "off": "aus",
       "lastAttemptFailed": "Letzter Versuch fehlgeschlagen: {error}",
+      "belowHorizonWarning": "{name} steht derzeit unter dem Horizont.",
+      "mountMismatchConfirm": "Ihre Montierung zeigt etwa {deg}° von {name} entfernt. Quick Track trotzdem starten?",
       "imagingPlan": "Aufnahmeplan",
       "forAddToSequenceOnly": "nur für „Zur Sequenz hinzufügen“",
       "filterLabel": "Filter — vom Filterrad",

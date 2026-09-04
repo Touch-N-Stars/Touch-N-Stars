@@ -5333,6 +5333,8 @@
       "on": "увімк.",
       "off": "вимк.",
       "lastAttemptFailed": "Остання спроба невдала: {error}",
+      "belowHorizonWarning": "{name} наразі під горизонтом.",
+      "mountMismatchConfirm": "Ваше монтування спрямоване приблизно на {deg}° від {name}. Продовжити Quick Track попри це?",
       "imagingPlan": "План Зйомки",
       "forAddToSequenceOnly": "лише для «Додати до Послідовності»",
       "filterLabel": "Фільтр — з колеса фільтрів",

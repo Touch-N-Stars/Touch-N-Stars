@@ -5338,6 +5338,8 @@
       "on": "attivo",
       "off": "disattivo",
       "lastAttemptFailed": "Ultimo tentativo fallito: {error}",
+      "belowHorizonWarning": "{name} è attualmente sotto l'orizzonte.",
+      "mountMismatchConfirm": "La montatura punta a circa {deg}° da {name}. Continuare comunque con Quick Track?",
       "imagingPlan": "Piano di acquisizione",
       "forAddToSequenceOnly": "solo per «Aggiungi alla sequenza»",
       "filterLabel": "Filtro — dalla ruota portafiltri",
