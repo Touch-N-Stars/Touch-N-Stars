@@ -76,7 +76,6 @@
         @click="selectedIndex = selectedIndex === i ? null : i"
       />
 
-
       <!--
         Short leader (point -> dot -> gap -> text) for each endpoint's date, routed away from
         the direction the curve continues (so it doesn't run along/through the path line itself)

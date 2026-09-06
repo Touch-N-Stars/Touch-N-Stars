@@ -10,9 +10,9 @@
          (see logfile-collector.vue/nightsummary.vue for the precedent). -->
     <div v-if="pluginInstalled === false" class="p-4">
       <div class="tns-card text-center">
-        <p v-if="!store.isPINS" class="text-sm text-content-faint">{{
-          t('perihelion.notSupportedOnNina')
-        }}</p>
+        <p v-if="!store.isPINS" class="text-sm text-content-faint">
+          {{ t('perihelion.notSupportedOnNina') }}
+        </p>
         <p v-else class="text-sm text-content-faint">{{ t('perihelion.notDetected') }}</p>
       </div>
     </div>
@@ -121,7 +121,11 @@
               :disabled="refreshingCobs"
               @click="onRefreshCobs"
             >
-              {{ refreshingCobs ? t('perihelion.browse.refreshingCobs') : t('perihelion.browse.refreshCobs') }}
+              {{
+                refreshingCobs
+                  ? t('perihelion.browse.refreshingCobs')
+                  : t('perihelion.browse.refreshCobs')
+              }}
             </button>
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
@@ -262,7 +266,9 @@
                 class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                 @click="showMoreDetails = !showMoreDetails"
               >
-                <span class="tns-stat-label flex-1">{{ t('perihelion.position.moreDetails') }}</span>
+                <span class="tns-stat-label flex-1">{{
+                  t('perihelion.position.moreDetails')
+                }}</span>
                 <ChevronUpIcon v-if="showMoreDetails" class="w-4 h-4 shrink-0 text-content-faint" />
                 <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
               </button>
@@ -297,9 +303,7 @@
                   <div
                     class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
                   >
-                    <span class="tns-stat-label">{{
-                      t('perihelion.position.earthDistance')
-                    }}</span>
+                    <span class="tns-stat-label">{{ t('perihelion.position.earthDistance') }}</span>
                     <span class="text-[15px] font-bold tabular-nums text-content"
                       >{{ selected.earthDistanceAu.toFixed(2) }} au</span
                     >
@@ -362,7 +366,9 @@
                 >
                 <span
                   class="text-xs font-bold tabular-nums"
-                  :class="magDiffTextClass(selected.magnitude, cometActivity.recentAverageMagnitude)"
+                  :class="
+                    magDiffTextClass(selected.magnitude, cometActivity.recentAverageMagnitude)
+                  "
                   >{{
                     t('perihelion.position.observedAverage', {
                       mag: cometActivity.recentAverageMagnitude.toFixed(1),
@@ -695,7 +701,10 @@
                    the mode selector above already establishes that this warning is scoped to
                    Quick Track, since it only renders while that mode is selected. -->
               <div
-                v-if="actionMode === 'quick' && ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)"
+                v-if="
+                  actionMode === 'quick' &&
+                  ((altAz && altAz.altitude < 0) || isCurrentlyDark === false)
+                "
                 class="flex items-start gap-2 p-2.5 rounded-chip bg-status-warn/5 border border-status-warn/20"
               >
                 <ExclamationTriangleIcon class="w-4 h-4 text-status-warn shrink-0 mt-0.5" />
@@ -875,9 +884,7 @@
                   @click="onAddToSequence"
                 >
                   {{
-                    actionBusy
-                      ? t('perihelion.track.working')
-                      : t('perihelion.track.addToSequence')
+                    actionBusy ? t('perihelion.track.working') : t('perihelion.track.addToSequence')
                   }}
                 </button>
                 <button
@@ -1015,19 +1022,13 @@
                       }}
                     </p>
                     <div class="flex flex-col gap-2">
-                      <button
-                        class="tns-btn-primary"
-                        @click="onMountMismatchSlewThenTrack"
-                      >
+                      <button class="tns-btn-primary" @click="onMountMismatchSlewThenTrack">
                         {{ t('perihelion.track.slewThenTrack') }}
                       </button>
                       <button class="tns-btn-secondary" @click="onMountMismatchContinueAnyway">
                         {{ t('perihelion.track.continueAnyway') }}
                       </button>
-                      <button
-                        class="tns-btn-secondary"
-                        @click="showMountMismatchModal = false"
-                      >
+                      <button class="tns-btn-secondary" @click="showMountMismatchModal = false">
                         {{ t('common.cancel') }}
                       </button>
                     </div>
@@ -1038,13 +1039,18 @@
                    Details card. This used to be four always-visible paragraphs permanently
                    taking up space at the bottom of the tab; real feedback was that it read as
                    clutter for anyone past their first few uses. -->
-              <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden">
+              <div
+                class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden"
+              >
                 <button
                   class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                   @click="showHowItWorks = !showHowItWorks"
                 >
                   <span class="tns-stat-label flex-1">{{ t('perihelion.track.howItWorks') }}</span>
-                  <ChevronUpIcon v-if="showHowItWorks" class="w-4 h-4 shrink-0 text-content-faint" />
+                  <ChevronUpIcon
+                    v-if="showHowItWorks"
+                    class="w-4 h-4 shrink-0 text-content-faint"
+                  />
                   <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
                 </button>
                 <div v-if="showHowItWorks" class="p-3 pt-0 flex flex-col gap-2">
@@ -1544,7 +1550,6 @@ function altitudeColorClass(altitudeDeg) {
   return TEXT_CLASS_BY_TIER.ok;
 }
 
-
 // Real gap: Quick Track just applies a tracking RATE, it never slews -- if the mount is actually
 // pointed somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the wrong thing),
 // the session runs "successfully" the whole time while silently tracking empty sky at the
@@ -1700,8 +1705,10 @@ function computeRiseSet(now, raDeg, decDeg, latDeg, lonDeg) {
   const alts = [];
   for (let i = 0; i <= SEARCH_STEPS; i++) alts.push(altAt(i));
 
-  if (alts.every((a) => a >= 0)) return { circumpolar: true, neverRises: false, rise: null, set: null };
-  if (alts.every((a) => a < 0)) return { circumpolar: false, neverRises: true, rise: null, set: null };
+  if (alts.every((a) => a >= 0))
+    return { circumpolar: true, neverRises: false, rise: null, set: null };
+  if (alts.every((a) => a < 0))
+    return { circumpolar: false, neverRises: true, rise: null, set: null };
 
   const alreadyUp = alts[0] >= 0;
   let rise = null;
