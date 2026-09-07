@@ -5,7 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+
+## [App6.3.0-beta4] - 2026-09-07
 
 ### Added
 - Perihelion plugin: comet/asteroid non-sidereal tracking, computed live from real orbital elements. Asteroid orbits are stable enough to ship as a fixed list needing no internet at all; comet elements are fetched from MPC and refreshed automatically (or on demand via Sync Now), then cached to disk so tracking keeps working offline between syncs. Browse tab searches comets and asteroids by brightness; Position & Path shows tonight's altitude, a 10-night motion path with a real angular scale bar and drift readout, and a live framing view centered on the object's real position with the camera's actual field of view overlaid; Track offers Quick Track for immediate manual tracking (optionally re-applying the rate every 15 minutes so a long session stays accurate as the object's true rate drifts) and Add to Sequence to build a full Advanced Sequencer container (unpark, center, track, guide, imaging loop, optional meridian-flip and autofocus triggers). Predicted magnitude is cross-checked against real observer-reported brightness (COBS) where available.
