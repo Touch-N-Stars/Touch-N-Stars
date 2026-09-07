@@ -5448,7 +5448,15 @@
       "risesAt": "Surt {time}",
       "setsAt": "Es pon {time}",
       "circumpolar": "Circumpolar — mai es pon",
-      "doesNotRise": "No surt aquesta nit"
+      "doesNotRise": "No surt aquesta nit",
+      "rate": "VELOCITAT (AR/DEC)",
+      "maxExposure": "EXPOSICIÓ MÀXIMA",
+      "maxExposureTitle": "Què és l'Exposició Màxima?",
+      "maxExposureTooltip": "Què significa Exposició Màxima?",
+      "maxExposureExplanation": "Els cometes es mouen respecte a les estrelles de fons. Quick Track fa que la muntura segueixi el ritme propi del cometa, de manera que són les estrelles les que es desplacen dins de cada subexposició en lloc del cometa -- un cop aquest desplaçament supera aproximadament 1 píxel, les estrelles comencen a allargar-se, cosa que es tradueix en estrelles lleugerament ovalades i menys detall un cop apilat. Aquest número és la durada d'exposició a la qual s'arriba a aquest desplaçament d'1 píxel, calculat a partir del ritme angular real del cometa i l'escala de la teva càmera (mida de píxel i distància focal).",
+      "maxExposureCaveat": "És només un límit de seguiment — no té en compte el fons del cel, la contaminació lumínica ni el filtre. Amb un filtre de banda ampla (UV/IR-cut) en un lloc més lluminós, la lluentor del cel sol limitar la durada real de l'exposició molt abans que aquest número.",
+      "rateUnavailable": "Configura la mida de píxel de la càmera i la distància focal del telescopi en aquest perfil per veure l'exposició màxima.",
+      "rateError": "No s'ha pogut carregar la velocitat de seguiment: {error}"
     },
     "track": {
       "step": "Segueix-lo",

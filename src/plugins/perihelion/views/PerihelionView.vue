@@ -255,12 +255,79 @@
               </div>
             </div>
 
+            <!-- Promoted out of "More Details" and always visible, 2026-09-06 (real user
+                 feedback: Alt, Rate and Max Exposure are actionable "should I image this right
+                 now / for how long" facts, not occasional reference lookups like Sun/Earth
+                 distance or constellation below -- worth the extra screen space). Az rides along
+                 with Alt since they're the same fetch and a natural pair; Rate rides along with
+                 Max Exposure for the same reason (and because seeing the raw rate next to the
+                 derived ceiling makes where that number came from legible). -->
+            <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
+                }}</span>
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
+                }}</span>
+              </div>
+            </div>
+            <!-- Rate/max exposure, from GET /objects/rate (loadRate()). -->
+            <div v-if="rate" class="grid grid-cols-2 gap-2">
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label flex items-center gap-1">
+                  {{ t('perihelion.position.maxExposure') }}
+                  <!-- Real user question, 2026-09-06, after seeing a much bigger number than
+                       they'd actually shoot (617s for a Bortle 6 site with a broadband UV/IR-cut
+                       filter): Max Exposure is a TRACKING ceiling only -- no idea about sky
+                       background, light pollution, or the filter, so it's very often NOT the
+                       real limit on sub length. Modal, not a tooltip or inline caveat text -- a
+                       native title tooltip doesn't work on touch, matching the InformationCircleIcon
+                       + Modal pattern already used above for observedTooltip. -->
+                  <button
+                    class="text-content-faint hover:text-content-muted shrink-0"
+                    :aria-label="t('perihelion.position.maxExposureTooltip')"
+                    @click="showMaxExposureLegend = true"
+                  >
+                    <InformationCircleIcon class="w-3.5 h-3.5" />
+                  </button>
+                </span>
+                <span class="text-[15px] font-bold tabular-nums text-content">{{
+                  rate.maxExposureSeconds != null ? `${rate.maxExposureSeconds.toFixed(1)} s` : '—'
+                }}</span>
+              </div>
+              <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
+                <span class="tns-stat-label">{{ t('perihelion.position.rate') }}</span>
+                <span class="text-[13px] font-bold tabular-nums text-content"
+                  >{{ rate.raArcsecPerSec.toFixed(4) }}″/s /
+                  {{ rate.decArcsecPerSec.toFixed(4) }}″/s</span
+                >
+              </div>
+            </div>
+            <p
+              v-if="rate && rate.maxExposureSeconds == null"
+              class="text-[11px] text-content-faint px-1"
+            >
+              {{ t('perihelion.position.rateUnavailable') }}
+            </p>
+            <!-- Distinct from rateUnavailable above -- that's an expected, informational state
+                 (camera/telescope not configured); this is an actual fetch failure, so it needs
+                 its own visible line rather than just letting the whole rate block disappear
+                 indistinguishably from "still loading". -->
+            <p v-if="!rate && rateError" class="text-xs text-status-warn px-1">
+              {{ t('perihelion.position.rateError', { error: rateError }) }}
+            </p>
+
             <!-- Real, if lower-priority, facts a user might want alongside the above -- collapsed
                  by default so they don't add permanent scroll weight to an already-busy tab.
-                 Alt/Az needs a real site (hasLocation); Sun/Earth distance, solar elongation and
-                 constellation are free from the object's own already-computed geocentric
-                 position (see OrbitalTracking.BrowseObject's own comments), so those always show
-                 regardless of location. Perihelion date is comet-only. -->
+                 Sun/Earth distance, solar elongation and constellation are free from the object's
+                 own already-computed geocentric position (see OrbitalTracking.BrowseObject's own
+                 comments), so those always show regardless of location. Perihelion date is
+                 comet-only. -->
             <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden">
               <button
                 class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
@@ -273,24 +340,6 @@
                 <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
               </button>
               <div v-if="showMoreDetails" class="p-3 pt-0 flex flex-col gap-2">
-                <div v-if="hasLocation" class="grid grid-cols-2 gap-2">
-                  <div
-                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
-                  >
-                    <span class="tns-stat-label">{{ t('perihelion.position.alt') }}</span>
-                    <span class="text-[15px] font-bold tabular-nums text-content">{{
-                      altAz ? `${altAz.altitude.toFixed(0)}°` : '—'
-                    }}</span>
-                  </div>
-                  <div
-                    class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
-                  >
-                    <span class="tns-stat-label">{{ t('perihelion.position.az') }}</span>
-                    <span class="text-[15px] font-bold tabular-nums text-content">{{
-                      altAz ? `${altAz.azimuth.toFixed(0)}°` : '—'
-                    }}</span>
-                  </div>
-                </div>
                 <div class="grid grid-cols-3 gap-2">
                   <div
                     class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5"
@@ -1131,6 +1180,22 @@
           </div>
         </template>
       </Modal>
+
+      <Modal
+        :show="showMaxExposureLegend"
+        @close="showMaxExposureLegend = false"
+        :zIndex="'z-[60]'"
+      >
+        <template #header>
+          <h2 class="text-xl font-bold">{{ t('perihelion.position.maxExposureTitle') }}</h2>
+        </template>
+        <template #body>
+          <div class="space-y-3 text-sm">
+            <p>{{ t('perihelion.position.maxExposureExplanation') }}</p>
+            <p class="text-content-muted">{{ t('perihelion.position.maxExposureCaveat') }}</p>
+          </div>
+        </template>
+      </Modal>
     </template>
   </div>
 </template>
@@ -1147,6 +1212,7 @@ import { timeSync } from '@/utils/timeSync';
 import { equatorialToAltAz, getSunAltitudeDeg, angularSeparationDeg } from '@/utils/astronomy';
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
+import { fetchRate } from '../utils/fetchRate';
 import { fetchSyncStatus, syncComets } from '../utils/syncComets';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
@@ -1487,6 +1553,7 @@ async function onRefreshCobs() {
 // than the same quiet accent used when the two roughly agree, so a genuinely surprising comet
 // stands out in the list without needing to open it first.
 const showObservedMagLegend = ref(false);
+const showMaxExposureLegend = ref(false);
 
 // Collapsed by default -- Alt/Az, Sun/Earth distance, elongation, constellation, and perihelion
 // date are real facts someone might want, but stacking them onto an already-busy tab as
@@ -1821,8 +1888,35 @@ async function loadCometActivity() {
     cometActivity.value = null;
   }
 }
+// --- Rate / max exposure -- same request-id guard as loadCometActivity above, for the same
+// reason (switching comets or leaving/re-entering this tab before an in-flight fetch resolves).
+const rate = ref(null);
+const rateError = ref(null);
+let rateRequestId = 0;
+async function loadRate() {
+  if (!selected.value) {
+    rate.value = null;
+    return;
+  }
+  const requestId = ++rateRequestId;
+  rateError.value = null;
+  try {
+    const result = await fetchRate({
+      objectType: selected.value.objectType,
+      targetName: selected.value.name,
+    });
+    if (requestId !== rateRequestId) return; // a newer request has since started
+    rate.value = result;
+  } catch (error) {
+    if (requestId !== rateRequestId) return;
+    rate.value = null;
+    rateError.value = error?.response?.data?.Message ?? error?.message ?? 'Could not load rate';
+  }
+}
 watch([activeTab, selected], ([tab]) => {
-  if (tab === 'position' && selected.value) loadCometActivity();
+  if (tab !== 'position' || !selected.value) return;
+  loadCometActivity();
+  loadRate();
 });
 
 // --- Framing offset -- see FramingOffsetView.vue's own doc comment for the mechanism.

@@ -5453,7 +5453,15 @@
       "risesAt": "Nasce {time}",
       "setsAt": "Põe-se {time}",
       "circumpolar": "Circumpolar — nunca se põe",
-      "doesNotRise": "Não nasce esta noite"
+      "doesNotRise": "Não nasce esta noite",
+      "rate": "TAXA (AR/DEC)",
+      "maxExposure": "EXPOSIÇÃO MÁX.",
+      "maxExposureTitle": "O que é a exposição máxima?",
+      "maxExposureTooltip": "O que significa exposição máxima?",
+      "maxExposureExplanation": "Os cometas movem-se em relação às estrelas de fundo. O Quick Track faz a montagem seguir à velocidade própria do cometa, pelo que são as estrelas que derivam dentro de cada sub-exposição em vez do cometa -- assim que essa deriva ultrapassa cerca de 1 pixel, as estrelas começam a alongar-se, o que se traduz em estrelas ligeiramente ovais e detalhe mais suave após o empilhamento. Este número é a duração de exposição à qual essa deriva de 1 pixel é atingida, com base na velocidade angular real do cometa e na escala da sua câmara (tamanho do pixel e distância focal).",
+      "maxExposureCaveat": "É apenas um limite de seguimento -- não tem em conta o fundo do céu, a poluição luminosa ou o filtro. Com um filtro de banda larga (UV/IR-cut) num local mais luminoso, o brilho do céu costuma limitar a duração real da exposição bem antes deste número.",
+      "rateUnavailable": "Defina o tamanho do pixel da câmara e a distância focal do telescópio neste perfil para ver a exposição máxima.",
+      "rateError": "Não foi possível carregar a taxa de seguimento: {error}"
     },
     "track": {
       "step": "Rastrear",

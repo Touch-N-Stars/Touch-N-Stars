@@ -5453,7 +5453,15 @@
       "risesAt": "Aufgang {time}",
       "setsAt": "Untergang {time}",
       "circumpolar": "Zirkumpolar — geht nie unter",
-      "doesNotRise": "Geht heute Nacht nicht auf"
+      "doesNotRise": "Geht heute Nacht nicht auf",
+      "rate": "RATE (RA/DEK)",
+      "maxExposure": "MAX. BELICHTUNG",
+      "maxExposureTitle": "Was ist die maximale Belichtungszeit?",
+      "maxExposureTooltip": "Was bedeutet maximale Belichtungszeit?",
+      "maxExposureExplanation": "Kometen bewegen sich relativ zu den Hintergrundsternen. Quick Track lässt die Montierung mit der Eigengeschwindigkeit des Kometen nachführen, wodurch sich innerhalb jeder Aufnahme die Sterne statt des Kometen verschieben -- sobald diese Verschiebung etwa 1 Pixel überschreitet, beginnen die Sterne sich zu verlängern, was sich nach dem Stacken als leicht eiförmige Sterne und weichere Details zeigt. Diese Zahl ist die Belichtungszeit, bei der diese Verschiebung um 1 Pixel erreicht wird, basierend auf der tatsächlichen Winkelgeschwindigkeit des Kometen und dem Abbildungsmaßstab deiner Kamera (Pixelgröße und Brennweite).",
+      "maxExposureCaveat": "Dies ist nur eine Nachführgrenze -- sie berücksichtigt weder Himmelshintergrund, Lichtverschmutzung noch den verwendeten Filter. Bei einem Breitbandfilter (UV/IR-Sperrfilter) an einem helleren Standort begrenzt meist die Himmelsaufhellung die tatsächliche Belichtungszeit schon deutlich vor Erreichen dieser Zahl.",
+      "rateUnavailable": "Lege in diesem Profil eine Pixelgröße der Kamera und eine Brennweite des Teleskops fest, um die maximale Belichtungszeit zu sehen.",
+      "rateError": "Nachführrate konnte nicht geladen werden: {error}"
     },
     "track": {
       "step": "Nachführen",

@@ -5453,7 +5453,15 @@
       "risesAt": "Sorge {time}",
       "setsAt": "Tramonta {time}",
       "circumpolar": "Circumpolare — non tramonta mai",
-      "doesNotRise": "Non sorge stanotte"
+      "doesNotRise": "Non sorge stanotte",
+      "rate": "VELOCITÀ (AR/DEC)",
+      "maxExposure": "ESP. MASSIMA",
+      "maxExposureTitle": "Cos'è l'esposizione massima?",
+      "maxExposureTooltip": "Cosa significa esposizione massima?",
+      "maxExposureExplanation": "Le comete si muovono rispetto alle stelle di sfondo. Quick Track fa inseguire la montatura alla velocità propria della cometa, quindi sono le stelle a derivare in ogni posa invece della cometa -- una volta che questa deriva supera circa 1 pixel, le stelle iniziano ad allungarsi, il che si traduce in stelle leggermente ovali e dettagli più morbidi dopo lo stacking. Questo numero è la durata di posa alla quale si raggiunge quella deriva di 1 pixel, basata sulla velocità angolare reale della cometa e sulla scala della tua fotocamera (dimensione del pixel e lunghezza focale).",
+      "maxExposureCaveat": "È solo un limite di inseguimento -- non tiene conto dello sfondo del cielo, dell'inquinamento luminoso o del filtro. Con un filtro a banda larga (UV/IR-cut) in un sito più luminoso, il chiarore del cielo di solito limita la durata reale della posa ben prima di questo numero.",
+      "rateUnavailable": "Imposta la dimensione del pixel della fotocamera e la lunghezza focale del telescopio in questo profilo per vedere l'esposizione massima.",
+      "rateError": "Impossibile caricare la velocità di inseguimento: {error}"
     },
     "track": {
       "step": "Inseguilo",

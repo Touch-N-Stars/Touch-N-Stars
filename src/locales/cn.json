@@ -5448,7 +5448,15 @@
       "risesAt": "升起 {time}",
       "setsAt": "落下 {time}",
       "circumpolar": "拱极星 — 永不落下",
-      "doesNotRise": "今晚不升起"
+      "doesNotRise": "今晚不升起",
+      "rate": "速率（赤经/赤纬）",
+      "maxExposure": "最大曝光",
+      "maxExposureTitle": "什么是最大曝光？",
+      "maxExposureTooltip": "最大曝光是什么意思？",
+      "maxExposureExplanation": "彗星相对于背景恒星在移动。Quick Track 让赤道仪按彗星自身的速率跟踪，因此在每张子曝光中漂移的是恒星而不是彗星——一旦这种漂移超过约1个像素，恒星就会开始拉长，叠加后表现为略呈椭圆形的恒星和更柔和的细节。此数值就是达到这1像素漂移所对应的曝光时长，基于彗星的真实角速率和你相机的像元比例（像元尺寸和焦距）计算得出。",
+      "maxExposureCaveat": "这只是一个跟踪上限——它不了解天空背景、光污染或滤镜情况。在较亮的地点使用宽带（UV/IR-cut）滤镜时，天光通常会在达到这个数值之前就先限制了实际单张曝光时长。",
+      "rateUnavailable": "在此配置文件中设置相机像元尺寸和望远镜焦距以查看最大曝光。",
+      "rateError": "无法加载跟踪速率：{error}"
     },
     "track": {
       "step": "跟踪它",
