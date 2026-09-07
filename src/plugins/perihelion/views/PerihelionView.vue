@@ -303,11 +303,15 @@
               <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
                 <span class="tns-stat-label">{{ t('perihelion.position.rate') }}</span>
                 <span class="text-[13px] font-bold tabular-nums text-content"
-                  >{{ rate.raArcsecPerSec.toFixed(4) }}″/s / {{ rate.decArcsecPerSec.toFixed(4) }}″/s</span
+                  >{{ rate.raArcsecPerSec.toFixed(4) }}″/s /
+                  {{ rate.decArcsecPerSec.toFixed(4) }}″/s</span
                 >
               </div>
             </div>
-            <p v-if="rate && rate.maxExposureSeconds == null" class="text-[11px] text-content-faint px-1">
+            <p
+              v-if="rate && rate.maxExposureSeconds == null"
+              class="text-[11px] text-content-faint px-1"
+            >
               {{ t('perihelion.position.rateUnavailable') }}
             </p>
             <!-- Distinct from rateUnavailable above -- that's an expected, informational state
