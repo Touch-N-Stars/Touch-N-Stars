@@ -149,8 +149,31 @@
           >
             {{ cobsRefreshMessage.text }}
           </p>
-          <p v-if="filter === 'Asteroid'" class="text-[11px] text-content-faint">
-            {{ t('perihelion.browse.asteroidCount', { count: asteroidCount }) }}
+          <div
+            v-if="filter === 'Asteroid'"
+            class="flex items-center gap-2 text-[11px] text-content-faint"
+          >
+            <span
+              >{{ t('perihelion.browse.asteroidCount', { count: asteroidCount }) }} ·
+              {{ asteroidSyncStatusLabel }}</span
+            >
+            <span class="flex-1"></span>
+            <button
+              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
+              :disabled="syncingAsteroids"
+              @click="onSyncAsteroids"
+            >
+              {{
+                syncingAsteroids ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow')
+              }}
+            </button>
+          </div>
+          <p
+            v-if="filter === 'Asteroid' && asteroidSyncMessage"
+            class="text-[11px]"
+            :class="asteroidSyncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
+          >
+            {{ asteroidSyncMessage.text }}
           </p>
 
           <p v-if="objectsLoading" class="text-sm text-content-muted">
@@ -177,7 +200,26 @@
                 <AsteroidIcon v-else />
               </div>
               <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                <span class="text-sm font-bold text-content truncate">{{ o.name }}</span>
+                <span class="flex items-center gap-1 min-w-0">
+                  <span class="text-sm font-bold text-content truncate">{{ o.name }}</span>
+                  <!-- Epoch-staleness badge -- see fetchBrowseObjects.js's own isEpochStale
+                       comment. A shared modal (not per-row text) keeps a dense list from getting
+                       cluttered; tap-to-open rather than a native title tooltip, same reasoning
+                       as the ObservedMag legend above. A <span role="button">, not a real
+                       <button> -- this whole row is already a <button>, and nesting one inside
+                       another is invalid HTML. -->
+                  <span
+                    v-if="o.isEpochStale"
+                    role="button"
+                    tabindex="0"
+                    class="text-status-warn shrink-0 cursor-pointer"
+                    :aria-label="t('perihelion.browse.epochStaleTooltip')"
+                    @click.stop="showEpochStaleLegend = true"
+                    @keydown.enter.stop="showEpochStaleLegend = true"
+                  >
+                    <ExclamationTriangleIcon class="w-3.5 h-3.5" />
+                  </span>
+                </span>
                 <span class="text-[11px] text-content-muted">{{ o.objectType }}</span>
               </div>
               <div class="flex flex-col items-end gap-0.5 shrink-0">
@@ -1196,6 +1238,18 @@
           </div>
         </template>
       </Modal>
+
+      <Modal :show="showEpochStaleLegend" @close="showEpochStaleLegend = false" :zIndex="'z-[60]'">
+        <template #header>
+          <h2 class="text-xl font-bold">{{ t('perihelion.browse.epochStaleLegendTitle') }}</h2>
+        </template>
+        <template #body>
+          <div class="space-y-3 text-sm">
+            <p>{{ t('perihelion.browse.epochStaleLegendExplanation') }}</p>
+            <p class="text-content-muted">{{ t('perihelion.browse.epochStaleLegendCaveat') }}</p>
+          </div>
+        </template>
+      </Modal>
     </template>
   </div>
 </template>
@@ -1213,7 +1267,7 @@ import { equatorialToAltAz, getSunAltitudeDeg, angularSeparationDeg } from '@/ut
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { fetchRate } from '../utils/fetchRate';
-import { fetchSyncStatus, syncComets } from '../utils/syncComets';
+import { fetchSyncStatus, syncComets, syncAsteroids } from '../utils/syncComets';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { buildPerihelionSequence } from '../utils/buildPerihelionSequence';
@@ -1438,16 +1492,21 @@ async function fillCobsInBackground() {
   }
   await Promise.all(Array.from({ length: concurrency }, worker));
 }
-// --- Comet data sync (on-disk cache on the plugin side, see CometOrbits.cs) ---
+// --- Comet/asteroid data sync (on-disk caches on the plugin side, see CometOrbits.cs and
+// AsteroidOrbits.cs) ---
 const cometsLastSyncedUtc = ref(null);
+const asteroidsLastSyncedUtc = ref(null);
 const cobsLastRefreshedUtc = ref(null);
 const syncing = ref(false);
 const syncMessage = ref(null);
+const syncingAsteroids = ref(false);
+const asteroidSyncMessage = ref(null);
 
 async function loadSyncStatus() {
   try {
     const status = await fetchSyncStatus();
     cometsLastSyncedUtc.value = status.cometsLastSyncedUtc;
+    asteroidsLastSyncedUtc.value = status.asteroidsLastSyncedUtc;
     cobsLastRefreshedUtc.value = status.cobsLastRefreshedUtc;
   } catch {
     // Not worth surfacing an error just for the status line -- the Sync Now/Refresh COBS
@@ -1519,6 +1578,22 @@ async function onSyncComets() {
   if (result.ok) await loadObjects();
 }
 
+const asteroidSyncStatusLabel = computed(() =>
+  asteroidsLastSyncedUtc.value
+    ? t('perihelion.browse.syncedAgo', { when: relativeTime(asteroidsLastSyncedUtc.value) })
+    : t('perihelion.browse.neverSynced')
+);
+
+async function onSyncAsteroids() {
+  syncingAsteroids.value = true;
+  asteroidSyncMessage.value = null;
+  const result = await syncAsteroids();
+  asteroidSyncMessage.value = { ok: result.ok, text: result.message };
+  if (result.lastSyncedUtc) asteroidsLastSyncedUtc.value = result.lastSyncedUtc;
+  syncingAsteroids.value = false;
+  if (result.ok) await loadObjects();
+}
+
 // --- COBS refresh -- deliberately separate from Sync Now (comet elements), see
 // fetchBrowseObjects.js's own refreshCobs() doc comment for why. Replaces objects.value
 // directly from the response rather than re-calling loadObjects(), since the plugin already
@@ -1554,6 +1629,7 @@ async function onRefreshCobs() {
 // stands out in the list without needing to open it first.
 const showObservedMagLegend = ref(false);
 const showMaxExposureLegend = ref(false);
+const showEpochStaleLegend = ref(false);
 
 // Collapsed by default -- Alt/Az, Sun/Earth distance, elongation, constellation, and perihelion
 // date are real facts someone might want, but stacking them onto an already-busy tab as
