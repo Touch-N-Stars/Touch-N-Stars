@@ -104,7 +104,7 @@
             v-if="filter !== 'Asteroid'"
             class="flex items-center gap-2 text-[11px] text-content-faint"
           >
-            <span v-if="filter === 'All'">
+            <span v-if="filter === 'all'">
               {{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }} ·
               {{ t('perihelion.browse.asteroidsStatus', { status: asteroidSyncStatusLabel }) }}
               {{ cobsStatusLabel }}
@@ -137,11 +137,11 @@
                  it while viewing "All" only ever synced comets, silently. -->
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
-              :disabled="filter === 'All' ? syncingAll : syncing"
-              @click="filter === 'All' ? onSyncAll() : onSyncComets()"
+              :disabled="filter === 'all' ? syncingAll : syncing"
+              @click="filter === 'all' ? onSyncAll() : onSyncComets()"
             >
               {{
-                (filter === 'All' ? syncingAll : syncing)
+                (filter === 'all' ? syncingAll : syncing)
                   ? t('perihelion.browse.syncing')
                   : t('perihelion.browse.syncNow')
               }}
@@ -155,7 +155,7 @@
             {{ syncMessage.text }}
           </p>
           <p
-            v-if="filter === 'All' && allSyncMessage"
+            v-if="filter === 'all' && allSyncMessage"
             class="text-[11px]"
             :class="allSyncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
           >
