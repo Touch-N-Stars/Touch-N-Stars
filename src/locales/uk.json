@@ -5392,6 +5392,8 @@
       "sortBrightness": "Яскравістю",
       "sortName": "Назвою",
       "cometsStatus": "Комети {status}",
+      "asteroidsStatus": "Астероїди {status}",
+      "allSynced": "Елементи комет і астероїдів синхронізовано",
       "syncedAgo": "синхронізовано {when}",
       "neverSynced": "ніколи не синхронізовано",
       "syncNow": "Синхронізувати зараз",

@@ -5392,6 +5392,8 @@
       "sortBrightness": "亮度",
       "sortName": "名称",
       "cometsStatus": "彗星 {status}",
+      "asteroidsStatus": "小行星 {status}",
+      "allSynced": "彗星和小行星要素已同步",
       "syncedAgo": "已同步 {when}",
       "neverSynced": "从未同步",
       "syncNow": "立即同步",

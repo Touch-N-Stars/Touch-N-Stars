@@ -5392,6 +5392,8 @@
       "sortBrightness": "Helderheid",
       "sortName": "Naam",
       "cometsStatus": "Kometen {status}",
+      "asteroidsStatus": "Asteroïden {status}",
+      "allSynced": "Komeet- en asteroïde-elementen gesynchroniseerd",
       "syncedAgo": "gesynchroniseerd {when}",
       "neverSynced": "nooit gesynchroniseerd",
       "syncNow": "Nu synchroniseren",

@@ -5397,6 +5397,8 @@
       "sortBrightness": "Brillo",
       "sortName": "Nombre",
       "cometsStatus": "Cometas {status}",
+      "asteroidsStatus": "Asteroides {status}",
+      "allSynced": "Elementos de cometas y asteroides sincronizados",
       "syncedAgo": "sincronizado {when}",
       "neverSynced": "nunca sincronizado",
       "syncNow": "Sincronizar ahora",

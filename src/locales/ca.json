@@ -5392,6 +5392,8 @@
       "sortBrightness": "Brillantor",
       "sortName": "Nom",
       "cometsStatus": "Cometes {status}",
+      "asteroidsStatus": "Asteroides {status}",
+      "allSynced": "Elements de cometes i asteroides sincronitzats",
       "syncedAgo": "sincronitzat {when}",
       "neverSynced": "mai sincronitzat",
       "syncNow": "Sincronitza ara",

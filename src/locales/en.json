@@ -5357,6 +5357,8 @@
       "sortBrightness": "Brightness",
       "sortName": "Name",
       "cometsStatus": "Comets {status}",
+      "asteroidsStatus": "Asteroids {status}",
+      "allSynced": "Comet and asteroid elements synced",
       "syncedAgo": "synced {when}",
       "neverSynced": "never synced",
       "syncNow": "Sync Now",

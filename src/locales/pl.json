@@ -5392,6 +5392,8 @@
       "sortBrightness": "Jasność",
       "sortName": "Nazwa",
       "cometsStatus": "Komety {status}",
+      "asteroidsStatus": "Planetoidy {status}",
+      "allSynced": "Zsynchronizowano elementy komet i planetoid",
       "syncedAgo": "zsynchronizowano {when}",
       "neverSynced": "nigdy nie zsynchronizowano",
       "syncNow": "Synchronizuj teraz",

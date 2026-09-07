@@ -5392,6 +5392,8 @@
       "sortBrightness": "明るさ",
       "sortName": "名前",
       "cometsStatus": "彗星 {status}",
+      "asteroidsStatus": "小惑星 {status}",
+      "allSynced": "彗星と小惑星の要素を同期しました",
       "syncedAgo": "同期: {when}",
       "neverSynced": "未同期",
       "syncNow": "今すぐ同期",

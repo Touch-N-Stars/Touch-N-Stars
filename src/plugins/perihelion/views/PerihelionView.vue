@@ -104,7 +104,12 @@
             v-if="filter !== 'Asteroid'"
             class="flex items-center gap-2 text-[11px] text-content-faint"
           >
-            <span
+            <span v-if="filter === 'All'">
+              {{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }} ·
+              {{ t('perihelion.browse.asteroidsStatus', { status: asteroidSyncStatusLabel }) }}
+              {{ cobsStatusLabel }}
+            </span>
+            <span v-else
               >{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
               {{ cobsStatusLabel }}</span
             >
@@ -127,20 +132,34 @@
                   : t('perihelion.browse.refreshCobs')
               }}
             </button>
+            <!-- "All" syncs both comets and asteroids together -- a single-type-only Sync Now
+                 under the combined view was real user-reported confusion (2026-09-07): clicking
+                 it while viewing "All" only ever synced comets, silently. -->
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
-              :disabled="syncing"
-              @click="onSyncComets"
+              :disabled="filter === 'All' ? syncingAll : syncing"
+              @click="filter === 'All' ? onSyncAll() : onSyncComets()"
             >
-              {{ syncing ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow') }}
+              {{
+                (filter === 'All' ? syncingAll : syncing)
+                  ? t('perihelion.browse.syncing')
+                  : t('perihelion.browse.syncNow')
+              }}
             </button>
           </div>
           <p
-            v-if="filter !== 'Asteroid' && syncMessage"
+            v-if="filter === 'Comet' && syncMessage"
             class="text-[11px]"
             :class="syncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
           >
             {{ syncMessage.text }}
+          </p>
+          <p
+            v-if="filter === 'All' && allSyncMessage"
+            class="text-[11px]"
+            :class="allSyncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
+          >
+            {{ allSyncMessage.text }}
           </p>
           <p
             v-if="filter !== 'Asteroid' && cobsRefreshMessage"
@@ -1592,6 +1611,33 @@ async function onSyncAsteroids() {
   if (result.lastSyncedUtc) asteroidsLastSyncedUtc.value = result.lastSyncedUtc;
   syncingAsteroids.value = false;
   if (result.ok) await loadObjects();
+}
+
+// "Sync Now" under the combined "All" filter -- syncs both data sources together rather than
+// only comets, which is what the single onSyncComets button used to do here silently.
+const syncingAll = ref(false);
+const allSyncMessage = ref(null);
+
+async function onSyncAll() {
+  syncingAll.value = true;
+  allSyncMessage.value = null;
+  const [cometResult, asteroidResult] = await Promise.all([syncComets(), syncAsteroids()]);
+  if (cometResult.lastSyncedUtc) cometsLastSyncedUtc.value = cometResult.lastSyncedUtc;
+  if (asteroidResult.lastSyncedUtc) asteroidsLastSyncedUtc.value = asteroidResult.lastSyncedUtc;
+  const ok = cometResult.ok && asteroidResult.ok;
+  allSyncMessage.value = {
+    ok,
+    text: ok
+      ? t('perihelion.browse.allSynced')
+      : [
+          cometResult.ok ? null : cometResult.message,
+          asteroidResult.ok ? null : asteroidResult.message,
+        ]
+          .filter(Boolean)
+          .join(' · '),
+  };
+  syncingAll.value = false;
+  if (cometResult.ok || asteroidResult.ok) await loadObjects();
 }
 
 // --- COBS refresh -- deliberately separate from Sync Now (comet elements), see

@@ -5392,6 +5392,8 @@
       "sortBrightness": "Jasnosti",
       "sortName": "Názvu",
       "cometsStatus": "Komety {status}",
+      "asteroidsStatus": "Planetky {status}",
+      "allSynced": "Prvky komet a planetek synchronizovány",
       "syncedAgo": "synchronizováno {when}",
       "neverSynced": "nikdy nesynchronizováno",
       "syncNow": "Synchronizovat nyní",

@@ -5392,6 +5392,8 @@
       "sortBrightness": "밝기",
       "sortName": "이름",
       "cometsStatus": "혜성 {status}",
+      "asteroidsStatus": "소행성 {status}",
+      "allSynced": "혜성과 소행성 요소가 동기화되었습니다",
       "syncedAgo": "{when} 동기화됨",
       "neverSynced": "동기화된 적 없음",
       "syncNow": "지금 동기화",
