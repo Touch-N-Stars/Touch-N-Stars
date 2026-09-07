@@ -5448,7 +5448,15 @@
       "risesAt": "Východ {time}",
       "setsAt": "Západ {time}",
       "circumpolar": "Cirkumpolární — nikdy nezapadá",
-      "doesNotRise": "Dnes v noci nevychází"
+      "doesNotRise": "Dnes v noci nevychází",
+      "rate": "RYCHLOST (RA/DEC)",
+      "maxExposure": "MAX. EXPOZICE",
+      "maxExposureTitle": "Co je maximální expozice?",
+      "maxExposureTooltip": "Co znamená maximální expozice?",
+      "maxExposureExplanation": "Komety se pohybují vůči hvězdám v pozadí. Quick Track sleduje montáž rychlostí komety, takže během každého snímku se posouvají hvězdy místo komety -- jakmile tento posun překročí zhruba 1 pixel, hvězdy se začnou protahovat, což se po sesazení projeví jako mírně vejčité hvězdy a měkčí detaily. Toto číslo je délka expozice, při které je dosaženo tohoto posunu o 1 pixel, na základě skutečné úhlové rychlosti komety a měřítka vašeho fotoaparátu (velikost pixelu a ohnisková vzdálenost).",
+      "maxExposureCaveat": "Jedná se pouze o limit sledování -- nebere v úvahu pozadí oblohy, světelné znečištění ani filtr. Při širokopásmovém filtru (UV/IR-cut) na jasnější lokalitě obvykle omezí skutečnou délku snímku svit oblohy dříve, než toto číslo.",
+      "rateUnavailable": "Nastavte velikost pixelu fotoaparátu a ohniskovou vzdálenost dalekohledu v tomto profilu, aby se zobrazila maximální expozice.",
+      "rateError": "Nepodařilo se načíst rychlost sledování: {error}"
     },
     "track": {
       "step": "Sledovat jej",

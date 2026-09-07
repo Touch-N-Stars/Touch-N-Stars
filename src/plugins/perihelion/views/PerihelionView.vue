@@ -276,13 +276,7 @@
                 }}</span>
               </div>
             </div>
-            <!-- Rate/max exposure -- same numbers and formula the native Windows panel's own
-                 Position section already shows on load (RateText/MaxExposureText); real gap
-                 noticed by the user, 2026-09-05, since TNS previously only ever surfaced a
-                 rate AFTER Quick Track was already running. rate itself comes from a
-                 dedicated GET /objects/rate call (loadRate(), fired alongside loadPath() when
-                 this tab is opened for a selection) -- null while that's still in flight or
-                 failed, so nothing renders here until it resolves. -->
+            <!-- Rate/max exposure, from GET /objects/rate (loadRate()). -->
             <div v-if="rate" class="grid grid-cols-2 gap-2">
               <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
                 <span class="tns-stat-label flex items-center gap-1">
@@ -309,12 +303,19 @@
               <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
                 <span class="tns-stat-label">{{ t('perihelion.position.rate') }}</span>
                 <span class="text-[13px] font-bold tabular-nums text-content"
-                  >{{ rate.raArcsecPerSec.toFixed(4) }}″ / {{ rate.decArcsecPerSec.toFixed(4) }}″/s</span
+                  >{{ rate.raArcsecPerSec.toFixed(4) }}″/s / {{ rate.decArcsecPerSec.toFixed(4) }}″/s</span
                 >
               </div>
             </div>
             <p v-if="rate && rate.maxExposureSeconds == null" class="text-[11px] text-content-faint px-1">
               {{ t('perihelion.position.rateUnavailable') }}
+            </p>
+            <!-- Distinct from rateUnavailable above -- that's an expected, informational state
+                 (camera/telescope not configured); this is an actual fetch failure, so it needs
+                 its own visible line rather than just letting the whole rate block disappear
+                 indistinguishably from "still loading". -->
+            <p v-if="!rate && rateError" class="text-xs text-status-warn px-1">
+              {{ t('perihelion.position.rateError', { error: rateError }) }}
             </p>
 
             <!-- Real, if lower-priority, facts a user might want alongside the above -- collapsed
@@ -1883,15 +1884,8 @@ async function loadCometActivity() {
     cometActivity.value = null;
   }
 }
-watch([activeTab, selected], ([tab]) => {
-  if (tab === 'position' && selected.value) loadCometActivity();
-});
-
-// --- Rate / max exposure -- real gap noticed by the user, 2026-09-05: the native Windows panel
-// shows this in its own Position section right after loading a target (RateText/MaxExposureText),
-// but TNS only ever surfaced a rate AFTER Quick Track was already running (via /status). Same
-// request-id guard as loadCometActivity, for the same reason (switching comets or leaving/
-// re-entering this tab before an in-flight fetch resolves).
+// --- Rate / max exposure -- same request-id guard as loadCometActivity above, for the same
+// reason (switching comets or leaving/re-entering this tab before an in-flight fetch resolves).
 const rate = ref(null);
 const rateError = ref(null);
 let rateRequestId = 0;
@@ -1916,7 +1910,9 @@ async function loadRate() {
   }
 }
 watch([activeTab, selected], ([tab]) => {
-  if (tab === 'position' && selected.value) loadRate();
+  if (tab !== 'position' || !selected.value) return;
+  loadCometActivity();
+  loadRate();
 });
 
 // --- Framing offset -- see FramingOffsetView.vue's own doc comment for the mechanism.

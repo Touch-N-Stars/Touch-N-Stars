@@ -5448,7 +5448,15 @@
       "risesAt": "Wschód {time}",
       "setsAt": "Zachód {time}",
       "circumpolar": "Okołobiegunowy — nigdy nie zachodzi",
-      "doesNotRise": "Nie wschodzi dziś w nocy"
+      "doesNotRise": "Nie wschodzi dziś w nocy",
+      "rate": "PRĘDKOŚĆ (RA/DEC)",
+      "maxExposure": "MAKS. EKSPOZYCJA",
+      "maxExposureTitle": "Czym jest maksymalna ekspozycja?",
+      "maxExposureTooltip": "Co oznacza maksymalna ekspozycja?",
+      "maxExposureExplanation": "Komety poruszają się względem gwiazd w tle. Quick Track sprawia, że montaż podąża z własną prędkością komety, więc to gwiazdy przesuwają się w każdej klatce, a nie kometa -- gdy to przesunięcie przekroczy około 1 piksel, gwiazdy zaczynają się wydłużać, co po stackowaniu objawia się lekko owalnymi gwiazdami i mniej ostrymi szczegółami. Ta liczba to czas ekspozycji, przy którym osiągane jest przesunięcie o 1 piksel, na podstawie rzeczywistej prędkości kątowej komety i skali twojego aparatu (rozmiar piksela i ogniskowa).",
+      "maxExposureCaveat": "To tylko limit śledzenia -- nie uwzględnia tła nieba, zanieczyszczenia świetlnego ani filtra. Przy filtrze szerokopasmowym (UV/IR-cut) w jaśniejszej lokalizacji poświata nieba zwykle ogranicza rzeczywisty czas ekspozycji dużo wcześniej niż ta liczba.",
+      "rateUnavailable": "Ustaw rozmiar piksela aparatu i ogniskową teleskopu w tym profilu, aby zobaczyć maksymalną ekspozycję.",
+      "rateError": "Nie udało się wczytać prędkości śledzenia: {error}"
     },
     "track": {
       "step": "Śledź go",
