@@ -53,6 +53,10 @@
       <CelestiaAtlasSettings
         :catalog-object-types="catalogFacets.objectTypes"
         :catalogue-groups="catalogFacets.catalogueGroups"
+        :comet-refresh-state="cometRefreshState"
+        :comet-refresh-count="cometRefreshCount"
+        :comet-refresh-error="cometRefreshError"
+        @refresh-comets="refreshCometData"
       />
     </div>
     <div v-if="ready" class="celestia-atlas-clock">
@@ -149,6 +153,12 @@ import { useHorizonStore } from '@/plugins/horizon-creator/store/horizonStore';
 import { interpolateHorizon } from '@/plugins/horizon-creator/utils/horizon-utils';
 import { isAppBackgrounded } from '@/utils/appLifecycle';
 import { resolveLandscapeSource } from '@/store/utils/celestiaAtlasLandscapeSource';
+import apiService from '@/services/apiService';
+import {
+  downloadLiveCometCatalog,
+  loadCachedCometCatalog,
+  saveCachedCometCatalog,
+} from '@/integrations/celestiaAtlas/cometCatalog';
 import AtlasFovRotation from '@/components/celestiaAtlas/AtlasFovRotation.vue';
 import CelestiaAtlasSettings from '@/components/celestiaAtlas/CelestiaAtlasSettings.vue';
 import CelestiaAtlasAbout from '@/components/celestiaAtlas/CelestiaAtlasAbout.vue';
@@ -182,6 +192,9 @@ const clockPanelVisible = ref(false);
 const clockDate = ref('');
 const clockTime = ref('');
 const clockSpeedPower = ref(0);
+const cometRefreshState = ref('idle');
+const cometRefreshCount = ref(0);
+const cometRefreshError = ref('');
 let viewer = null;
 let viewSaveTimer = null;
 let pendingViewState = null;
@@ -529,6 +542,23 @@ function hideSelectedTargetDetails() {
   selectedTarget.value = null;
 }
 
+async function refreshCometData() {
+  if (!viewer || cometRefreshState.value === 'loading') return;
+  cometRefreshState.value = 'loading';
+  cometRefreshError.value = '';
+  try {
+    const payload = await downloadLiveCometCatalog(apiService.proxyRequest);
+    viewer.setCometElements(payload.objects);
+    saveCachedCometCatalog(payload);
+    if (searchQuery.value.trim()) searchResults.value = viewer.search(searchQuery.value);
+    cometRefreshState.value = 'success';
+    cometRefreshCount.value = payload.meta.objectCount;
+  } catch (error) {
+    cometRefreshState.value = 'error';
+    cometRefreshError.value = error instanceof Error ? error.message : String(error);
+  }
+}
+
 function updateVisibility() {
   if (!viewer) return;
   if (store.showSkyAtlas && !document.hidden && !isAppBackgrounded.value) {
@@ -645,6 +675,7 @@ onMounted(async () => {
     });
     catalogFacets.value = buildAtlasCatalogFacets(catalog);
     synchronizeCatalogFilterSettings();
+    const cachedCometCatalog = loadCachedCometCatalog();
     viewer = createCelestiaAtlasViewer({
       container: viewerContainer.value,
       observer: ninaObserverToAtlas(store.profileInfo.AstrometrySettings),
@@ -652,6 +683,7 @@ onMounted(async () => {
       catalog,
       stars,
       constellations,
+      ...(cachedCometCatalog ? { cometElements: cachedCometCatalog.objects } : {}),
       milkyWayPanoramaUrl: null,
       skySurveySource: createDssSkySurveySource(atlasDataBaseUrl()),
       onSelect: (target) => {

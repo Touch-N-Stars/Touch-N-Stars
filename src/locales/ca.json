@@ -2164,7 +2164,13 @@
         "no_allsky": "Sense allsky",
         "folder_name_label": "nomCarpeta",
         "service_url_label": "urlServei",
-        "landscape_list_load_failed": "No s'han pogut carregar els paisatges."
+        "landscape_list_load_failed": "No s'han pogut carregar els paisatges.",
+        "comet_data_title": "Dades dels cometes",
+        "comet_data_hint": "Baixa els elements orbitals més recents de la versió de Celestia Atlas.",
+        "refresh_comet_data": "Actualitza",
+        "refreshing_comet_data": "S'està actualitzant…",
+        "comet_data_updated": "S'han actualitzat {count} cometes.",
+        "comet_data_failed": "Ha fallat l'actualització: {message}"
       }
     },
     "profile": {

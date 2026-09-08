@@ -1,6 +1,6 @@
 {
   "name": "touch-n-stars",
-  "version": "6.3.0-beta4",
+  "version": "6.3.1-beta1",
   "private": true,
   "type": "module",
   "engines": {
@@ -40,7 +40,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@acocalypso/celestia-atlas": "git+https://github.com/acocalypso/celestia_atlas.git#ef52c7ea920191d45fe0da4711dd3b1cc9220c18",
+    "@acocalypso/celestia-atlas": "git+https://github.com/acocalypso/celestia_atlas.git#573330b03688ca041c4c2adee3de39ac94ec2399",
     "@acovanconis/capacitor-mdns": "0.0.4",
     "@capacitor-community/keep-awake": "8.0.1",
     "@capacitor-community/media": "9.1.0",

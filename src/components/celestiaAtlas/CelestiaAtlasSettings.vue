@@ -18,6 +18,49 @@
       <!-- Settings Container with conditional grid layout -->
       <div :class="settingsContainerClasses">
         <div
+          class="grid min-h-24 w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-lg border border-gray-500 p-3 col-span-full"
+        >
+          <div class="min-w-0 max-w-full">
+            <div class="block break-words whitespace-normal text-gray-300">
+              {{ $t('components.celestiaAtlas.settings.comet_data_title') }}
+            </div>
+            <p class="mt-1 max-w-full break-words whitespace-normal text-xs text-gray-400">
+              <template v-if="cometRefreshState === 'success'">
+                {{
+                  $t('components.celestiaAtlas.settings.comet_data_updated', {
+                    count: cometRefreshCount,
+                  })
+                }}
+              </template>
+              <template v-else-if="cometRefreshState === 'error'">
+                {{
+                  $t('components.celestiaAtlas.settings.comet_data_failed', {
+                    message: cometRefreshError,
+                  })
+                }}
+              </template>
+              <template v-else>
+                {{ $t('components.celestiaAtlas.settings.comet_data_hint') }}
+              </template>
+            </p>
+          </div>
+          <button
+            class="tns-btn-primary min-h-11 shrink-0 disabled:opacity-60"
+            type="button"
+            :disabled="cometRefreshState === 'loading'"
+            @click="$emit('refresh-comets')"
+          >
+            {{
+              $t(
+                cometRefreshState === 'loading'
+                  ? 'components.celestiaAtlas.settings.refreshing_comet_data'
+                  : 'components.celestiaAtlas.settings.refresh_comet_data'
+              )
+            }}
+          </button>
+        </div>
+
+        <div
           class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
         >
           <label for="constellationsLinesVisible" class="text-gray-400">
@@ -427,7 +470,20 @@ defineProps({
     type: Array,
     default: () => [],
   },
+  cometRefreshState: {
+    type: String,
+    default: 'idle',
+  },
+  cometRefreshCount: {
+    type: Number,
+    default: 0,
+  },
+  cometRefreshError: {
+    type: String,
+    default: '',
+  },
 });
+defineEmits(['refresh-comets']);
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const settingsVisible = ref(false);
