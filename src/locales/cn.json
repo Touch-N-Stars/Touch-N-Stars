@@ -5506,7 +5506,7 @@
       "quickTrack": "快速跟踪",
       "working": "处理中…",
       "howItWorks": "工作原理",
-      "mountCompatibility": "赤道仪兼容性",
+      "quickTrackSettings": "快速跟踪设置",
       "eqmodToggleTitle": "EQMOD 赤经速率校正",
       "eqmodToggleDescription": "EQMOD（无论是 Windows 的 ASCOM 驱动，还是已独立确认存在同样问题的 INDI 自身的 EQMod 驱动）会将赤经跟踪速率读取为原始角秒/秒，而非 NINA 实际发送的值，若不校正，跟踪速度会慢约 15 倍。仅当您的赤道仪通过 EQMOD 驱动时才启用此项。",
       "eqmodDetectedHint": "{name} 看起来是 EQMOD 驱动 — 您可能需要启用此项。",

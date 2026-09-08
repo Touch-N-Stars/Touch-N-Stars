@@ -5506,7 +5506,7 @@
       "quickTrack": "Quick Track",
       "working": "Processant…",
       "howItWorks": "Com funciona",
-      "mountCompatibility": "Compatibilitat de la muntura",
+      "quickTrackSettings": "Configuració de Quick Track",
       "eqmodToggleTitle": "Correcció de la taxa d'AR per a EQMOD",
       "eqmodToggleDescription": "EQMOD — tant el controlador ASCOM de Windows com el controlador EQMod independent d'INDI, confirmat per separat — llegeix la taxa de seguiment en AR com a arcsec/s bruts en lloc del que realment envia NINA, cosa que fa que el seguiment sigui unes 15 vegades massa lent sense aquesta correcció. Activa-ho només si la teva muntura funciona mitjançant EQMOD.",
       "eqmodDetectedHint": "{name} sembla un controlador EQMOD — probablement voldràs activar-ho.",

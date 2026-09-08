@@ -5506,7 +5506,7 @@
       "quickTrack": "Quick Track",
       "working": "処理中…",
       "howItWorks": "使い方",
-      "mountCompatibility": "マウント互換性",
+      "quickTrackSettings": "クイックトラック設定",
       "eqmodToggleTitle": "EQMOD RAレート補正",
       "eqmodToggleDescription": "EQMOD（WindowsのASCOMドライバーと、それとは別に確認されたINDI独自のEQModドライバーの両方）は、NINAが実際に送信する値ではなく、RA追尾レートを生のarcsec/秒として読み取るため、補正しないと追尾が約15倍遅くなります。マウントがEQMOD経由で制御されている場合のみ有効にしてください。",
       "eqmodDetectedHint": "{name} はEQMODドライバーのようです — おそらく有効にした方がよいでしょう。",

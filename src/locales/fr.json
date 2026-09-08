@@ -5511,7 +5511,7 @@
       "quickTrack": "Suivi rapide",
       "working": "En cours…",
       "howItWorks": "Comment ça marche",
-      "mountCompatibility": "Compatibilité de la monture",
+      "quickTrackSettings": "Paramètres du suivi rapide",
       "eqmodToggleTitle": "Correction du taux AD pour EQMOD",
       "eqmodToggleDescription": "EQMOD — à la fois le pilote ASCOM Windows et le pilote EQMod distinct d'INDI, confirmé indépendamment — lit le taux de suivi en AD en arcsec/s brutes plutôt que ce que NINA envoie réellement, ce qui rend le suivi environ 15 fois trop lent sans correction. À activer uniquement si votre monture est pilotée via EQMOD.",
       "eqmodDetectedHint": "{name} ressemble à un pilote EQMOD — vous voudrez probablement l'activer.",

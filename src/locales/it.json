@@ -5511,7 +5511,7 @@
       "quickTrack": "Quick Track",
       "working": "In corso…",
       "howItWorks": "Come funziona",
-      "mountCompatibility": "Compatibilità della montatura",
+      "quickTrackSettings": "Impostazioni Quick Track",
       "eqmodToggleTitle": "Correzione tasso AR per EQMOD",
       "eqmodToggleDescription": "EQMOD — sia il driver ASCOM di Windows sia il driver EQMod indipendente di INDI, confermato separatamente — legge il tasso di inseguimento in AR come arcsec/s grezzi anziché ciò che NINA invia realmente, rendendo l'inseguimento circa 15 volte più lento senza questa correzione. Attivalo solo se la montatura è pilotata tramite EQMOD.",
       "eqmodDetectedHint": "{name} sembra un driver EQMOD — probabilmente vorrai attivarlo.",

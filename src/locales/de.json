@@ -5511,7 +5511,7 @@
       "quickTrack": "Quick Track",
       "working": "Arbeitet…",
       "howItWorks": "So funktioniert es",
-      "mountCompatibility": "Mount-Kompatibilität",
+      "quickTrackSettings": "Quick Track-Einstellungen",
       "eqmodToggleTitle": "EQMOD-RA-Ratenkorrektur",
       "eqmodToggleDescription": "EQMOD — sowohl der Windows-ASCOM-Treiber als auch INDIs eigener, unabhängiger EQMod-Treiber — liest die RA-Nachführrate als reine Bogensekunden/Sekunde statt der von NINA selbst gesendeten Werte, wodurch die Nachführung ohne Korrektur etwa 15-mal zu langsam ausfällt. Nur aktivieren, wenn die Montierung über EQMOD gesteuert wird.",
       "eqmodDetectedHint": "{name} sieht nach einem EQMOD-Treiber aus — das sollte wahrscheinlich aktiviert sein.",

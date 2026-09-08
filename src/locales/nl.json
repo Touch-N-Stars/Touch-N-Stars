@@ -5506,7 +5506,7 @@
       "quickTrack": "Quick Track",
       "working": "Bezig…",
       "howItWorks": "Hoe het werkt",
-      "mountCompatibility": "Montuurcompatibiliteit",
+      "quickTrackSettings": "Quick Track-instellingen",
       "eqmodToggleTitle": "EQMOD RA-snelheidscorrectie",
       "eqmodToggleDescription": "EQMOD — zowel de Windows ASCOM-driver als INDI's eigen, onafhankelijke EQMod-driver, apart bevestigd — leest de RA-volgsnelheid als ruwe boogseconden/seconde in plaats van wat NINA zelf verstuurt, waardoor het volgen ongeveer 15x te langzaam uitvalt zonder correctie. Alleen inschakelen als je montuur via EQMOD wordt aangestuurd.",
       "eqmodDetectedHint": "{name} lijkt een EQMOD-driver te zijn — je wilt dit waarschijnlijk inschakelen.",

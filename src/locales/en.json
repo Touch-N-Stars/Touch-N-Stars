@@ -5471,7 +5471,7 @@
       "quickTrack": "Quick Track",
       "working": "Working…",
       "howItWorks": "How It Works",
-      "mountCompatibility": "Mount Compatibility",
+      "quickTrackSettings": "Quick Track Settings",
       "eqmodToggleTitle": "EQMOD RA Rate Correction",
       "eqmodToggleDescription": "EQMOD — both the Windows ASCOM driver and INDI's own separate EQMod driver, confirmed independently — reads the RA tracking rate as raw arcsec/sec rather than what NINA itself sends, which makes tracking come out about 15× too slow unless corrected. Only enable this if your mount is driven through EQMOD.",
       "eqmodDetectedHint": "{name} looks like an EQMOD driver — you probably want this enabled.",

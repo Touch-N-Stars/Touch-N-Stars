@@ -5506,7 +5506,7 @@
       "quickTrack": "Quick Track",
       "working": "Przetwarzanie…",
       "howItWorks": "Jak to działa",
-      "mountCompatibility": "Kompatybilność montażu",
+      "quickTrackSettings": "Ustawienia Quick Track",
       "eqmodToggleTitle": "Korekta szybkości RA dla EQMOD",
       "eqmodToggleDescription": "EQMOD — zarówno sterownik ASCOM dla Windows, jak i niezależny sterownik EQMod dla INDI, potwierdzone osobno — odczytuje szybkość nadążania RA jako surowe arcsek/s zamiast wartości faktycznie wysyłanej przez NINA, przez co nadążanie jest około 15 razy za wolne bez tej korekty. Włącz tylko wtedy, gdy montaż jest sterowany przez EQMOD.",
       "eqmodDetectedHint": "{name} wygląda na sterownik EQMOD — prawdopodobnie warto to włączyć.",

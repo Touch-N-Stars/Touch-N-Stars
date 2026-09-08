@@ -1170,8 +1170,12 @@
 
               <!-- Same collapsed-by-default disclosure pattern as How This Works above -- these
                    are set-once-and-forget mount preferences, not something most users need to
-                   see every visit. -->
+                   see every visit. Scoped to actionMode === 'quick': its only content
+                   (reapplyIntervalSeconds) only affects QuickTrackReapply on the backend, not
+                   Add to Sequence's own separate, hardcoded 30s tracking-refresh loop -- showing
+                   it under Add to Sequence edited a setting with zero effect there. -->
               <div
+                v-if="actionMode === 'quick'"
                 class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden mt-2"
               >
                 <button
@@ -1179,7 +1183,7 @@
                   @click="showMountSettings = !showMountSettings"
                 >
                   <span class="tns-stat-label flex-1">{{
-                    t('perihelion.track.mountCompatibility')
+                    t('perihelion.track.quickTrackSettings')
                   }}</span>
                   <ChevronUpIcon
                     v-if="showMountSettings"
