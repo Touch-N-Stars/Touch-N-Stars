@@ -2159,7 +2159,13 @@
         "no_allsky": "Kein Allsky",
         "folder_name_label": "Ordnername",
         "service_url_label": "Service-URL",
-        "landscape_list_load_failed": "Landschaften konnten nicht geladen werden."
+        "landscape_list_load_failed": "Landschaften konnten nicht geladen werden.",
+        "comet_data_title": "Kometendaten",
+        "comet_data_hint": "Lädt die neuesten Bahnelemente aus dem Celestia-Atlas-Release herunter.",
+        "refresh_comet_data": "Aktualisieren",
+        "refreshing_comet_data": "Wird aktualisiert…",
+        "comet_data_updated": "{count} Kometen aktualisiert.",
+        "comet_data_failed": "Aktualisierung fehlgeschlagen: {message}"
       }
     },
     "profile": {

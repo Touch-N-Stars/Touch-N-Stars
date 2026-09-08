@@ -45,6 +45,12 @@ The host supplies:
 - landscape, horizon, display, magnitude, type, and catalogue filters;
 - selected-target actions and Framing Assistant cache previews.
 
+The Atlas settings dialog also exposes a manual comet refresh. Touch'N'Stars downloads
+the `comets.json` asset from Atlas's rolling `comet-data-live` GitHub release
+through the selected plugin server's `/api/proxy` endpoint (avoiding browser
+CORS restrictions), validates the release envelope, replaces the viewer's
+runtime orbital elements, and caches the last valid payload for offline reuse.
+
 ## Catalogue and naming contract
 
 Touch'N'Stars composes the package's normalized base catalogue with the A66 and

@@ -2164,7 +2164,13 @@
         "no_allsky": "No allsky",
         "folder_name_label": "folderName",
         "service_url_label": "serviceUrl",
-        "landscape_list_load_failed": "Failed to load landscapes."
+        "landscape_list_load_failed": "Failed to load landscapes.",
+        "comet_data_title": "Comet data",
+        "comet_data_hint": "Download the latest orbital elements from the Celestia Atlas release.",
+        "refresh_comet_data": "Refresh",
+        "refreshing_comet_data": "Refreshing…",
+        "comet_data_updated": "Updated {count} comets.",
+        "comet_data_failed": "Update failed: {message}"
       }
     },
     "profile": {
