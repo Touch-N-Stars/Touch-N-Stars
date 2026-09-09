@@ -5465,7 +5465,7 @@
       "maxExposure": "MAKS. EKSPOZYCJA",
       "maxExposureTitle": "Czym jest maksymalna ekspozycja?",
       "maxExposureTooltip": "Co oznacza maksymalna ekspozycja?",
-      "maxExposureExplanation": "Komety poruszają się względem gwiazd w tle. Quick Track sprawia, że montaż podąża z własną prędkością komety, więc to gwiazdy przesuwają się w każdej klatce, a nie kometa -- gdy to przesunięcie przekroczy około 1 piksel, gwiazdy zaczynają się wydłużać, co po stackowaniu objawia się lekko owalnymi gwiazdami i mniej ostrymi szczegółami. Ta liczba to czas ekspozycji, przy którym osiągane jest przesunięcie o 1 piksel, na podstawie rzeczywistej prędkości kątowej komety i skali twojego aparatu (rozmiar piksela i ogniskowa).",
+      "maxExposureExplanation": "Komety poruszają się względem gwiazd w tle. Gdy montaż podąża z własną prędkością komety -- za pomocą Quick Track lub pętli ekspozycji Add to Sequence -- to gwiazdy przesuwają się w każdej klatce, a nie kometa; gdy to przesunięcie przekroczy około 1 piksel, gwiazdy zaczynają się wydłużać, co po stackowaniu objawia się lekko owalnymi gwiazdami i mniej ostrymi szczegółami. Ta liczba to czas ekspozycji, przy którym osiągane jest przesunięcie o 1 piksel, na podstawie rzeczywistej prędkości kątowej komety i skali twojego aparatu (rozmiar piksela i ogniskowa).",
       "maxExposureCaveat": "To tylko limit śledzenia -- nie uwzględnia tła nieba, zanieczyszczenia świetlnego ani filtra. Przy filtrze szerokopasmowym (UV/IR-cut) w jaśniejszej lokalizacji poświata nieba zwykle ogranicza rzeczywisty czas ekspozycji dużo wcześniej niż ta liczba.",
       "rateUnavailable": "Ustaw rozmiar piksela aparatu i ogniskową teleskopu w tym profilu, aby zobaczyć maksymalną ekspozycję.",
       "rateError": "Nie udało się wczytać prędkości śledzenia: {error}"
@@ -5518,7 +5518,7 @@
       "quickTrack": "Quick Track",
       "working": "Przetwarzanie…",
       "howItWorks": "Jak to działa",
-      "quickTrackSettings": "Ustawienia Quick Track",
+      "reapplyIntervalSection": "Interwał ponownego zastosowania",
       "eqmodToggleTitle": "Korekta szybkości RA dla EQMOD",
       "eqmodToggleDescription": "EQMOD — zarówno sterownik ASCOM dla Windows, jak i niezależny sterownik EQMod dla INDI, potwierdzone osobno — odczytuje szybkość nadążania RA jako surowe arcsek/s zamiast wartości faktycznie wysyłanej przez NINA, przez co nadążanie jest około 15 razy za wolne bez tej korekty. Włącz tylko wtedy, gdy montaż jest sterowany przez EQMOD.",
       "eqmodDetectedHint": "{name} wygląda na sterownik EQMOD — prawdopodobnie warto to włączyć.",

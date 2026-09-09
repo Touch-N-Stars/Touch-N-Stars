@@ -5470,7 +5470,7 @@
       "maxExposure": "EXPOSICIÓN MÁX.",
       "maxExposureTitle": "¿Qué es la exposición máxima?",
       "maxExposureTooltip": "¿Qué significa exposición máxima?",
-      "maxExposureExplanation": "Los cometas se mueven respecto a las estrellas de fondo. Quick Track hace que la montura siga la velocidad propia del cometa, por lo que son las estrellas las que se desplazan dentro de cada toma en lugar del cometa -- una vez que ese desplazamiento supera aproximadamente 1 píxel, las estrellas empiezan a alargarse, lo que se traduce en estrellas ligeramente ovaladas y detalle más suave al apilar. Este número es la duración de exposición a la que se alcanza ese desplazamiento de 1 píxel, según la velocidad angular real del cometa y la escala de tu cámara (tamaño de píxel y distancia focal).",
+      "maxExposureExplanation": "Los cometas se mueven respecto a las estrellas de fondo. Hacer que la montura siga la velocidad propia del cometa -- ya sea con Quick Track o con un bucle de exposición de Add to Sequence -- hace que sean las estrellas las que se desplazan dentro de cada toma en lugar del cometa; una vez que ese desplazamiento supera aproximadamente 1 píxel, las estrellas empiezan a alargarse, lo que se traduce en estrellas ligeramente ovaladas y detalle más suave al apilar. Este número es la duración de exposición a la que se alcanza ese desplazamiento de 1 píxel, según la velocidad angular real del cometa y la escala de tu cámara (tamaño de píxel y distancia focal).",
       "maxExposureCaveat": "Es solo un límite de seguimiento -- no tiene en cuenta el fondo del cielo, la contaminación lumínica ni el filtro. Con un filtro de banda ancha (UV/IR-cut) en un lugar más luminoso, el brillo del cielo suele limitar la duración real de la toma mucho antes que este número.",
       "rateUnavailable": "Configura el tamaño de píxel de la cámara y la distancia focal del telescopio en este perfil para ver la exposición máxima.",
       "rateError": "No se pudo cargar la tasa de seguimiento: {error}"
@@ -5523,7 +5523,7 @@
       "quickTrack": "Seguimiento rápido",
       "working": "Procesando…",
       "howItWorks": "Cómo funciona",
-      "quickTrackSettings": "Ajustes de seguimiento rápido",
+      "reapplyIntervalSection": "Intervalo de reaplicación",
       "eqmodToggleTitle": "Corrección de tasa AR para EQMOD",
       "eqmodToggleDescription": "EQMOD — tanto el controlador ASCOM de Windows como el controlador EQMod independiente de INDI, confirmado por separado — interpreta la tasa de seguimiento en AR como arcsec/s en bruto en lugar de lo que NINA realmente envía, lo que hace que el seguimiento sea unas 15 veces más lento sin esta corrección. Actívalo solo si tu montura funciona a través de EQMOD.",
       "eqmodDetectedHint": "{name} parece un controlador EQMOD — probablemente quieras activarlo.",

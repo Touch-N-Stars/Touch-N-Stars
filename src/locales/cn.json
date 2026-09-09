@@ -5465,7 +5465,7 @@
       "maxExposure": "最大曝光",
       "maxExposureTitle": "什么是最大曝光？",
       "maxExposureTooltip": "最大曝光是什么意思？",
-      "maxExposureExplanation": "彗星相对于背景恒星在移动。Quick Track 让赤道仪按彗星自身的速率跟踪，因此在每张子曝光中漂移的是恒星而不是彗星——一旦这种漂移超过约1个像素，恒星就会开始拉长，叠加后表现为略呈椭圆形的恒星和更柔和的细节。此数值就是达到这1像素漂移所对应的曝光时长，基于彗星的真实角速率和你相机的像元比例（像元尺寸和焦距）计算得出。",
+      "maxExposureExplanation": "彗星相对于背景恒星在移动。无论是通过 Quick Track 还是 Add to Sequence 的曝光循环，让赤道仪按彗星自身的速率跟踪，都意味着在每张子曝光中漂移的是恒星而不是彗星——一旦这种漂移超过约1个像素，恒星就会开始拉长，叠加后表现为略呈椭圆形的恒星和更柔和的细节。此数值就是达到这1像素漂移所对应的曝光时长，基于彗星的真实角速率和你相机的像元比例（像元尺寸和焦距）计算得出。",
       "maxExposureCaveat": "这只是一个跟踪上限——它不了解天空背景、光污染或滤镜情况。在较亮的地点使用宽带（UV/IR-cut）滤镜时，天光通常会在达到这个数值之前就先限制了实际单张曝光时长。",
       "rateUnavailable": "在此配置文件中设置相机像元尺寸和望远镜焦距以查看最大曝光。",
       "rateError": "无法加载跟踪速率：{error}"
@@ -5518,7 +5518,7 @@
       "quickTrack": "快速跟踪",
       "working": "处理中…",
       "howItWorks": "工作原理",
-      "quickTrackSettings": "快速跟踪设置",
+      "reapplyIntervalSection": "重新应用间隔",
       "eqmodToggleTitle": "EQMOD 赤经速率校正",
       "eqmodToggleDescription": "EQMOD（无论是 Windows 的 ASCOM 驱动，还是已独立确认存在同样问题的 INDI 自身的 EQMod 驱动）会将赤经跟踪速率读取为原始角秒/秒，而非 NINA 实际发送的值，若不校正，跟踪速度会慢约 15 倍。仅当您的赤道仪通过 EQMOD 驱动时才启用此项。",
       "eqmodDetectedHint": "{name} 看起来是 EQMOD 驱动 — 您可能需要启用此项。",

@@ -1230,21 +1230,19 @@
               </div>
 
               <!-- Same collapsed-by-default disclosure pattern as How This Works above -- these
-                   are set-once-and-forget mount preferences, not something most users need to
-                   see every visit. Scoped to actionMode === 'quick': its only content
-                   (reapplyIntervalSeconds) only affects QuickTrackReapply on the backend, not
-                   Add to Sequence's own separate, hardcoded 30s tracking-refresh loop -- showing
-                   it under Add to Sequence edited a setting with zero effect there. -->
-              <div
-                v-if="actionMode === 'quick'"
-                class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden mt-2"
-              >
+                   are set-once-and-forget preferences, not something most users need to see
+                   every visit. Not scoped to a single actionMode: the same reapply interval now
+                   governs both Quick Track's own reapply timer AND Add to Sequence's
+                   PerihelionReapplyTrigger (added to every built sequence, see
+                   buildPerihelionSequence.js), so it needs to stay visible/editable in both
+                   modes. -->
+              <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden mt-2">
                 <button
                   class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                   @click="showMountSettings = !showMountSettings"
                 >
                   <span class="tns-stat-label flex-1">{{
-                    t('perihelion.track.quickTrackSettings')
+                    t('perihelion.track.reapplyIntervalSection')
                   }}</span>
                   <ChevronUpIcon
                     v-if="showMountSettings"

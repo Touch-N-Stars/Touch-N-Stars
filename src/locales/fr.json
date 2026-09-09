@@ -5470,7 +5470,7 @@
       "maxExposure": "EXPO. MAX",
       "maxExposureTitle": "Qu'est-ce que l'exposition maximale ?",
       "maxExposureTooltip": "Que signifie exposition maximale ?",
-      "maxExposureExplanation": "Les comètes se déplacent par rapport aux étoiles d'arrière-plan. Quick Track fait suivre la monture à la vitesse propre de la comète, ce sont donc les étoiles qui dérivent dans chaque pose au lieu de la comète -- une fois cette dérive supérieure à environ 1 pixel, les étoiles commencent à s'allonger, ce qui se traduit par des étoiles légèrement ovales et un détail plus doux après empilement. Ce nombre est la durée de pose à laquelle cette dérive d'1 pixel est atteinte, en fonction de la vitesse angulaire réelle de la comète et de l'échelle de votre caméra (taille de pixel et focale).",
+      "maxExposureExplanation": "Les comètes se déplacent par rapport aux étoiles d'arrière-plan. Faire suivre la monture à la vitesse propre de la comète -- via Quick Track ou une boucle d'exposition Add to Sequence -- fait que ce sont les étoiles qui dérivent dans chaque pose au lieu de la comète ; une fois cette dérive supérieure à environ 1 pixel, les étoiles commencent à s'allonger, ce qui se traduit par des étoiles légèrement ovales et un détail plus doux après empilement. Ce nombre est la durée de pose à laquelle cette dérive d'1 pixel est atteinte, en fonction de la vitesse angulaire réelle de la comète et de l'échelle de votre caméra (taille de pixel et focale).",
       "maxExposureCaveat": "C'est uniquement une limite de suivi -- elle ne tient pas compte du fond de ciel, de la pollution lumineuse ni du filtre. Avec un filtre large bande (UV/IR-cut) sur un site plus lumineux, la lueur du ciel limite généralement la durée réelle de pose bien avant ce chiffre.",
       "rateUnavailable": "Définissez la taille de pixel de la caméra et la focale du télescope dans ce profil pour voir l'exposition maximale.",
       "rateError": "Impossible de charger la vitesse de suivi : {error}"
@@ -5523,7 +5523,7 @@
       "quickTrack": "Suivi rapide",
       "working": "En cours…",
       "howItWorks": "Comment ça marche",
-      "quickTrackSettings": "Paramètres du suivi rapide",
+      "reapplyIntervalSection": "Intervalle de réapplication",
       "eqmodToggleTitle": "Correction du taux AD pour EQMOD",
       "eqmodToggleDescription": "EQMOD — à la fois le pilote ASCOM Windows et le pilote EQMod distinct d'INDI, confirmé indépendamment — lit le taux de suivi en AD en arcsec/s brutes plutôt que ce que NINA envoie réellement, ce qui rend le suivi environ 15 fois trop lent sans correction. À activer uniquement si votre monture est pilotée via EQMOD.",
       "eqmodDetectedHint": "{name} ressemble à un pilote EQMOD — vous voudrez probablement l'activer.",

@@ -5470,7 +5470,7 @@
       "maxExposure": "MAX. BELICHTUNG",
       "maxExposureTitle": "Was ist die maximale Belichtungszeit?",
       "maxExposureTooltip": "Was bedeutet maximale Belichtungszeit?",
-      "maxExposureExplanation": "Kometen bewegen sich relativ zu den Hintergrundsternen. Quick Track lässt die Montierung mit der Eigengeschwindigkeit des Kometen nachführen, wodurch sich innerhalb jeder Aufnahme die Sterne statt des Kometen verschieben -- sobald diese Verschiebung etwa 1 Pixel überschreitet, beginnen die Sterne sich zu verlängern, was sich nach dem Stacken als leicht eiförmige Sterne und weichere Details zeigt. Diese Zahl ist die Belichtungszeit, bei der diese Verschiebung um 1 Pixel erreicht wird, basierend auf der tatsächlichen Winkelgeschwindigkeit des Kometen und dem Abbildungsmaßstab deiner Kamera (Pixelgröße und Brennweite).",
+      "maxExposureExplanation": "Kometen bewegen sich relativ zu den Hintergrundsternen. Wird die Montierung mit der Eigengeschwindigkeit des Kometen nachgeführt -- egal ob über Quick Track oder eine Add-to-Sequence-Belichtungsschleife --, verschieben sich innerhalb jeder Aufnahme die Sterne statt des Kometen; sobald diese Verschiebung etwa 1 Pixel überschreitet, beginnen die Sterne sich zu verlängern, was sich nach dem Stacken als leicht eiförmige Sterne und weichere Details zeigt. Diese Zahl ist die Belichtungszeit, bei der diese Verschiebung um 1 Pixel erreicht wird, basierend auf der tatsächlichen Winkelgeschwindigkeit des Kometen und dem Abbildungsmaßstab deiner Kamera (Pixelgröße und Brennweite).",
       "maxExposureCaveat": "Dies ist nur eine Nachführgrenze -- sie berücksichtigt weder Himmelshintergrund, Lichtverschmutzung noch den verwendeten Filter. Bei einem Breitbandfilter (UV/IR-Sperrfilter) an einem helleren Standort begrenzt meist die Himmelsaufhellung die tatsächliche Belichtungszeit schon deutlich vor Erreichen dieser Zahl.",
       "rateUnavailable": "Lege in diesem Profil eine Pixelgröße der Kamera und eine Brennweite des Teleskops fest, um die maximale Belichtungszeit zu sehen.",
       "rateError": "Nachführrate konnte nicht geladen werden: {error}"
@@ -5523,7 +5523,7 @@
       "quickTrack": "Quick Track",
       "working": "Arbeitet…",
       "howItWorks": "So funktioniert es",
-      "quickTrackSettings": "Quick Track-Einstellungen",
+      "reapplyIntervalSection": "Wiederholungsintervall",
       "eqmodToggleTitle": "EQMOD-RA-Ratenkorrektur",
       "eqmodToggleDescription": "EQMOD — sowohl der Windows-ASCOM-Treiber als auch INDIs eigener, unabhängiger EQMod-Treiber — liest die RA-Nachführrate als reine Bogensekunden/Sekunde statt der von NINA selbst gesendeten Werte, wodurch die Nachführung ohne Korrektur etwa 15-mal zu langsam ausfällt. Nur aktivieren, wenn die Montierung über EQMOD gesteuert wird.",
       "eqmodDetectedHint": "{name} sieht nach einem EQMOD-Treiber aus — das sollte wahrscheinlich aktiviert sein.",

@@ -5465,7 +5465,7 @@
       "maxExposure": "MAX. BELICHTING",
       "maxExposureTitle": "Wat is maximale belichting?",
       "maxExposureTooltip": "Wat betekent maximale belichting?",
-      "maxExposureExplanation": "Kometen bewegen ten opzichte van de achtergrondsterren. Quick Track laat de montering volgen op de eigen snelheid van de komeet, waardoor het de sterren zijn die binnen elke opname verschuiven in plaats van de komeet -- zodra die verschuiving ongeveer 1 pixel overschrijdt, beginnen sterren te rekken, wat zich na stacken uit als licht eivormige sterren en zachtere details. Dit getal is de belichtingsduur waarbij die verschuiving van 1 pixel wordt bereikt, gebaseerd op de werkelijke hoeksnelheid van de komeet en de schaal van je camera (pixelgrootte en brandpuntsafstand).",
+      "maxExposureExplanation": "Kometen bewegen ten opzichte van de achtergrondsterren. De montering laten volgen op de eigen snelheid van de komeet -- via Quick Track of een Add to Sequence-belichtingslus -- betekent dat het de sterren zijn die binnen elke opname verschuiven in plaats van de komeet; zodra die verschuiving ongeveer 1 pixel overschrijdt, beginnen sterren te rekken, wat zich na stacken uit als licht eivormige sterren en zachtere details. Dit getal is de belichtingsduur waarbij die verschuiving van 1 pixel wordt bereikt, gebaseerd op de werkelijke hoeksnelheid van de komeet en de schaal van je camera (pixelgrootte en brandpuntsafstand).",
       "maxExposureCaveat": "Het is uitsluitend een volglimiet -- er wordt geen rekening gehouden met achtergrondlicht, lichtvervuiling of je filter. Met een breedbandfilter (UV/IR-cut) op een lichtere locatie beperkt de hemelgloed meestal de werkelijke opnameduur al ruim voordat dit getal wordt bereikt.",
       "rateUnavailable": "Stel een pixelgrootte van de camera en brandpuntsafstand van de telescoop in dit profiel in om de maximale belichting te zien.",
       "rateError": "Kon volgsnelheid niet laden: {error}"
@@ -5518,7 +5518,7 @@
       "quickTrack": "Quick Track",
       "working": "Bezig…",
       "howItWorks": "Hoe het werkt",
-      "quickTrackSettings": "Quick Track-instellingen",
+      "reapplyIntervalSection": "Herhalingsinterval",
       "eqmodToggleTitle": "EQMOD RA-snelheidscorrectie",
       "eqmodToggleDescription": "EQMOD — zowel de Windows ASCOM-driver als INDI's eigen, onafhankelijke EQMod-driver, apart bevestigd — leest de RA-volgsnelheid als ruwe boogseconden/seconde in plaats van wat NINA zelf verstuurt, waardoor het volgen ongeveer 15x te langzaam uitvalt zonder correctie. Alleen inschakelen als je montuur via EQMOD wordt aangestuurd.",
       "eqmodDetectedHint": "{name} lijkt een EQMOD-driver te zijn — je wilt dit waarschijnlijk inschakelen.",

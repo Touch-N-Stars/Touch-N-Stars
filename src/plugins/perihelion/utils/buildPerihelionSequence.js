@@ -173,6 +173,16 @@ export function buildPerihelionSequence(target) {
     );
   }
 
+  // No configurable fields of its own -- finds its sibling SetPerihelionTrackingRate in this
+  // same container at runtime and re-executes it on the shared reapply interval (same setting
+  // Quick Track's own reapply timer reads). Unconditional, unlike autofocus/meridian flip:
+  // periodically recomputing a tracking rate has no session cost the way those two do, so no
+  // toggle is needed. Mirrors PerihelionSequenceBuilder.cs's own unconditional
+  // dso.Add(factory.GetTrigger<PerihelionReapplyTrigger>()) on the Windows native panel.
+  function ninaPerihelionReapplyTrigger(parentId) {
+    return leafItem('Perihelion.SequenceItems.PerihelionReapplyTrigger, Perihelion', parentId);
+  }
+
   function ninaSwitchFilter(parentId, filterName) {
     return leafItem(
       'NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter, NINA.Sequencer',
@@ -279,9 +289,10 @@ export function buildPerihelionSequence(target) {
     }
     items.push(buildTargetImagingInstructions(id));
 
-    const triggers = target.autofocusMinutes
-      ? [ninaAutofocusAfterTimeTrigger(id, target.autofocusMinutes)]
-      : [];
+    const triggers = [ninaPerihelionReapplyTrigger(id)];
+    if (target.autofocusMinutes) {
+      triggers.push(ninaAutofocusAfterTimeTrigger(id, target.autofocusMinutes));
+    }
 
     return {
       $id: id,
