@@ -264,9 +264,9 @@ export function buildPerihelionSequence(target) {
     // tracks. SetPerihelionTrackingRate is untouched either way: its rate computation looks up
     // the object by TargetName and depends on the object's own real motion, not on where the
     // mount is centered, which is exactly what lets a one-time offset (captured once at export
-    // time, rather than continuously re-anchored the way Orbitals' own live-relative offset
-    // works) hold for the whole session -- the custom tracking rate keeps whatever framing
-    // choice was made here fixed in the same way it already keeps the true position fixed.
+    // time, rather than continuously re-anchored to the live position) hold for the whole
+    // session -- the custom tracking rate keeps whatever framing choice was made here fixed in
+    // the same way it already keeps the true position fixed.
     const slewRa = target.frameOffset ? raHoursToNinaFields(target.frameOffset.raDeg / 15) : ra;
     const slewDec = target.frameOffset ? decDegToNinaFields(target.frameOffset.decDeg) : dec;
     const items = [

@@ -104,7 +104,12 @@
             v-if="filter !== 'Asteroid'"
             class="flex items-center gap-2 text-[11px] text-content-faint"
           >
-            <span
+            <span v-if="filter === 'all'">
+              {{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }} ·
+              {{ t('perihelion.browse.asteroidsStatus', { status: asteroidSyncStatusLabel }) }}
+              {{ cobsStatusLabel }}
+            </span>
+            <span v-else
               >{{ t('perihelion.browse.cometsStatus', { status: syncStatusLabel }) }}
               {{ cobsStatusLabel }}</span
             >
@@ -127,20 +132,34 @@
                   : t('perihelion.browse.refreshCobs')
               }}
             </button>
+            <!-- "All" syncs both comets and asteroids together -- a single-type-only Sync Now
+                 under the combined view was real user-reported confusion (2026-09-07): clicking
+                 it while viewing "All" only ever synced comets, silently. -->
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
-              :disabled="syncing"
-              @click="onSyncComets"
+              :disabled="filter === 'all' ? syncingAll : syncing"
+              @click="filter === 'all' ? onSyncAll() : onSyncComets()"
             >
-              {{ syncing ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow') }}
+              {{
+                (filter === 'all' ? syncingAll : syncing)
+                  ? t('perihelion.browse.syncing')
+                  : t('perihelion.browse.syncNow')
+              }}
             </button>
           </div>
           <p
-            v-if="filter !== 'Asteroid' && syncMessage"
+            v-if="filter === 'Comet' && syncMessage"
             class="text-[11px]"
             :class="syncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
           >
             {{ syncMessage.text }}
+          </p>
+          <p
+            v-if="filter === 'all' && allSyncMessage"
+            class="text-[11px]"
+            :class="allSyncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
+          >
+            {{ allSyncMessage.text }}
           </p>
           <p
             v-if="filter !== 'Asteroid' && cobsRefreshMessage"
@@ -149,8 +168,31 @@
           >
             {{ cobsRefreshMessage.text }}
           </p>
-          <p v-if="filter === 'Asteroid'" class="text-[11px] text-content-faint">
-            {{ t('perihelion.browse.asteroidCount', { count: asteroidCount }) }}
+          <div
+            v-if="filter === 'Asteroid'"
+            class="flex items-center gap-2 text-[11px] text-content-faint"
+          >
+            <span
+              >{{ t('perihelion.browse.asteroidCount', { count: asteroidCount }) }} ·
+              {{ asteroidSyncStatusLabel }}</span
+            >
+            <span class="flex-1"></span>
+            <button
+              class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
+              :disabled="syncingAsteroids"
+              @click="onSyncAsteroids"
+            >
+              {{
+                syncingAsteroids ? t('perihelion.browse.syncing') : t('perihelion.browse.syncNow')
+              }}
+            </button>
+          </div>
+          <p
+            v-if="filter === 'Asteroid' && asteroidSyncMessage"
+            class="text-[11px]"
+            :class="asteroidSyncMessage.ok ? 'text-status-ok' : 'text-status-danger'"
+          >
+            {{ asteroidSyncMessage.text }}
           </p>
 
           <p v-if="objectsLoading" class="text-sm text-content-muted">
@@ -177,7 +219,26 @@
                 <AsteroidIcon v-else />
               </div>
               <div class="flex flex-col gap-0.5 min-w-0 flex-1">
-                <span class="text-sm font-bold text-content truncate">{{ o.name }}</span>
+                <span class="flex items-center gap-1 min-w-0">
+                  <span class="text-sm font-bold text-content truncate">{{ o.name }}</span>
+                  <!-- Epoch-staleness badge -- see fetchBrowseObjects.js's own isEpochStale
+                       comment. A shared modal (not per-row text) keeps a dense list from getting
+                       cluttered; tap-to-open rather than a native title tooltip, same reasoning
+                       as the ObservedMag legend above. A <span role="button">, not a real
+                       <button> -- this whole row is already a <button>, and nesting one inside
+                       another is invalid HTML. -->
+                  <span
+                    v-if="o.isEpochStale"
+                    role="button"
+                    tabindex="0"
+                    class="text-status-warn shrink-0 cursor-pointer"
+                    :aria-label="t('perihelion.browse.epochStaleTooltip')"
+                    @click.stop="showEpochStaleLegend = true"
+                    @keydown.enter.stop="showEpochStaleLegend = true"
+                  >
+                    <ExclamationTriangleIcon class="w-3.5 h-3.5" />
+                  </span>
+                </span>
                 <span class="text-[11px] text-content-muted">{{ o.objectType }}</span>
               </div>
               <div class="flex flex-col items-end gap-0.5 shrink-0">
@@ -1283,6 +1344,18 @@
           </div>
         </template>
       </Modal>
+
+      <Modal :show="showEpochStaleLegend" @close="showEpochStaleLegend = false" :zIndex="'z-[60]'">
+        <template #header>
+          <h2 class="text-xl font-bold">{{ t('perihelion.browse.epochStaleLegendTitle') }}</h2>
+        </template>
+        <template #body>
+          <div class="space-y-3 text-sm">
+            <p>{{ t('perihelion.browse.epochStaleLegendExplanation') }}</p>
+            <p class="text-content-muted">{{ t('perihelion.browse.epochStaleLegendCaveat') }}</p>
+          </div>
+        </template>
+      </Modal>
     </template>
   </div>
 </template>
@@ -1300,7 +1373,7 @@ import { equatorialToAltAz, getSunAltitudeDeg, angularSeparationDeg } from '@/ut
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { fetchRate } from '../utils/fetchRate';
-import { fetchSyncStatus, syncComets } from '../utils/syncComets';
+import { fetchSyncStatus, syncComets, syncAsteroids } from '../utils/syncComets';
 import { fetchSettings, saveSettings } from '../utils/fetchSettings';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
@@ -1584,16 +1657,21 @@ async function fillCobsInBackground() {
   }
   await Promise.all(Array.from({ length: concurrency }, worker));
 }
-// --- Comet data sync (on-disk cache on the plugin side, see CometOrbits.cs) ---
+// --- Comet/asteroid data sync (on-disk caches on the plugin side, see CometOrbits.cs and
+// AsteroidOrbits.cs) ---
 const cometsLastSyncedUtc = ref(null);
+const asteroidsLastSyncedUtc = ref(null);
 const cobsLastRefreshedUtc = ref(null);
 const syncing = ref(false);
 const syncMessage = ref(null);
+const syncingAsteroids = ref(false);
+const asteroidSyncMessage = ref(null);
 
 async function loadSyncStatus() {
   try {
     const status = await fetchSyncStatus();
     cometsLastSyncedUtc.value = status.cometsLastSyncedUtc;
+    asteroidsLastSyncedUtc.value = status.asteroidsLastSyncedUtc;
     cobsLastRefreshedUtc.value = status.cobsLastRefreshedUtc;
   } catch {
     // Not worth surfacing an error just for the status line -- the Sync Now/Refresh COBS
@@ -1666,6 +1744,49 @@ async function onSyncComets() {
   if (result.ok) await loadObjects();
 }
 
+const asteroidSyncStatusLabel = computed(() =>
+  asteroidsLastSyncedUtc.value
+    ? t('perihelion.browse.syncedAgo', { when: relativeTime(asteroidsLastSyncedUtc.value) })
+    : t('perihelion.browse.neverSynced')
+);
+
+async function onSyncAsteroids() {
+  syncingAsteroids.value = true;
+  asteroidSyncMessage.value = null;
+  const result = await syncAsteroids();
+  asteroidSyncMessage.value = { ok: result.ok, text: result.message };
+  if (result.lastSyncedUtc) asteroidsLastSyncedUtc.value = result.lastSyncedUtc;
+  syncingAsteroids.value = false;
+  if (result.ok) await loadObjects();
+}
+
+// "Sync Now" under the combined "All" filter -- syncs both data sources together rather than
+// only comets, which is what the single onSyncComets button used to do here silently.
+const syncingAll = ref(false);
+const allSyncMessage = ref(null);
+
+async function onSyncAll() {
+  syncingAll.value = true;
+  allSyncMessage.value = null;
+  const [cometResult, asteroidResult] = await Promise.all([syncComets(), syncAsteroids()]);
+  if (cometResult.lastSyncedUtc) cometsLastSyncedUtc.value = cometResult.lastSyncedUtc;
+  if (asteroidResult.lastSyncedUtc) asteroidsLastSyncedUtc.value = asteroidResult.lastSyncedUtc;
+  const ok = cometResult.ok && asteroidResult.ok;
+  allSyncMessage.value = {
+    ok,
+    text: ok
+      ? t('perihelion.browse.allSynced')
+      : [
+          cometResult.ok ? null : cometResult.message,
+          asteroidResult.ok ? null : asteroidResult.message,
+        ]
+          .filter(Boolean)
+          .join(' · '),
+  };
+  syncingAll.value = false;
+  if (cometResult.ok || asteroidResult.ok) await loadObjects();
+}
+
 // --- COBS refresh -- deliberately separate from Sync Now (comet elements), see
 // fetchBrowseObjects.js's own refreshCobs() doc comment for why. Replaces objects.value
 // directly from the response rather than re-calling loadObjects(), since the plugin already
@@ -1701,6 +1822,7 @@ async function onRefreshCobs() {
 // stands out in the list without needing to open it first.
 const showObservedMagLegend = ref(false);
 const showMaxExposureLegend = ref(false);
+const showEpochStaleLegend = ref(false);
 
 // Collapsed by default -- Alt/Az, Sun/Earth distance, elongation, constellation, and perihelion
 // date are real facts someone might want, but stacking them onto an already-busy tab as
