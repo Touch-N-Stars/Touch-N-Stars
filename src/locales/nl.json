@@ -5448,7 +5448,7 @@
       "pathTitle": "10-Nachten-Baan",
       "pathLegendPath": "Baan",
       "pathLegendTonight": "Vannacht",
-      "pathDescription": "Echte baan tegen de vaste sterrenachtergrond — tijdens het navolgen blijft {name} de hele nacht gecentreerd in beeld; dit toont de beweging nacht na nacht, niet binnen één belichting.",
+      "pathDescription": "Echte baan tegen de vaste sterrenachtergrond — tijdens het navolgen blijft {name} de hele nacht gecentreerd in beeld; dit toont de beweging nacht na nacht, niet binnen één belichting. Beide assen worden onafhankelijk van elkaar uitgerekt om deze grafiek te vullen, waardoor een kleine verandering op de ene as groter kan lijken dan die werkelijk is ten opzichte van de andere.",
       "framingTitle": "Beeldveld",
       "offsetSet": "Verschuiving ingesteld",
       "observedLatest": "Laatste {mag}",

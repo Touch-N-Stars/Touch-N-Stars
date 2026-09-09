@@ -5453,7 +5453,7 @@
       "pathTitle": "Trayectoria de 10 noches",
       "pathLegendPath": "Trayectoria",
       "pathLegendTonight": "Esta noche",
-      "pathDescription": "Trayectoria real sobre el fondo de estrellas fijas — mientras se sigue, {name} permanece centrado en el encuadre toda la noche; esto muestra el movimiento noche a noche, no dentro de una sola exposición.",
+      "pathDescription": "Trayectoria real sobre el fondo de estrellas fijas — mientras se sigue, {name} permanece centrado en el encuadre toda la noche; esto muestra el movimiento noche a noche, no dentro de una sola exposición. Los dos ejes se estiran de forma independiente para llenar este gráfico, por lo que un cambio pequeño en uno puede parecer mayor de lo que realmente es en comparación con el otro.",
       "framingTitle": "Encuadre",
       "offsetSet": "Desplazamiento definido",
       "observedLatest": "Última {mag}",

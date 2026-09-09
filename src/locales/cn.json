@@ -5448,7 +5448,7 @@
       "pathTitle": "10 夜轨迹",
       "pathLegendPath": "轨迹",
       "pathLegendTonight": "今晚",
-      "pathDescription": "相对于恒星背景的真实轨迹 — 跟踪期间 {name} 整晚都保持在画面中央；这显示的是逐夜的移动，而不是单次曝光内的移动。",
+      "pathDescription": "相对于恒星背景的真实轨迹 — 跟踪期间 {name} 整晚都保持在画面中央；这显示的是逐夜的移动，而不是单次曝光内的移动。 两个坐标轴各自独立拉伸以填满此图表，因此其中一个轴上的微小变化相对另一个轴看起来可能会被放大。",
       "framingTitle": "构图",
       "offsetSet": "已设置偏移",
       "observedLatest": "最新 {mag}",

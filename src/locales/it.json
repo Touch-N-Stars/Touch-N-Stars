@@ -5453,7 +5453,7 @@
       "pathTitle": "Percorso di 10 notti",
       "pathLegendPath": "Percorso",
       "pathLegendTonight": "Stanotte",
-      "pathDescription": "Percorso reale sullo sfondo di stelle fisse — durante l'inseguimento, {name} resta centrato nell'inquadratura tutta la notte; questo mostra il moto notte per notte, non all'interno di una singola posa.",
+      "pathDescription": "Percorso reale sullo sfondo di stelle fisse — durante l'inseguimento, {name} resta centrato nell'inquadratura tutta la notte; questo mostra il moto notte per notte, non all'interno di una singola posa. I due assi vengono allungati in modo indipendente per riempire questo grafico, quindi un piccolo cambiamento su uno può sembrare più grande di quanto sia realmente rispetto all'altro.",
       "framingTitle": "Inquadratura",
       "offsetSet": "Scostamento impostato",
       "observedLatest": "Ultima {mag}",

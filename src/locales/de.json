@@ -5453,7 +5453,7 @@
       "pathTitle": "10-Nächte-Bahn",
       "pathLegendPath": "Bahn",
       "pathLegendTonight": "Heute Nacht",
-      "pathDescription": "Reale Bahn vor dem Fixsternhintergrund — {name} bleibt beim Nachführen die ganze Nacht im Bild; das hier zeigt die Bewegung von Nacht zu Nacht, nicht innerhalb einer Belichtung.",
+      "pathDescription": "Reale Bahn vor dem Fixsternhintergrund — {name} bleibt beim Nachführen die ganze Nacht im Bild; das hier zeigt die Bewegung von Nacht zu Nacht, nicht innerhalb einer Belichtung. Beide Achsen werden unabhängig voneinander gestreckt, um dieses Diagramm zu füllen, wodurch eine kleine Änderung auf einer Achse im Vergleich zur anderen größer wirken kann, als sie tatsächlich ist.",
       "framingTitle": "Framing",
       "offsetSet": "Versatz gesetzt",
       "observedLatest": "Aktuell {mag}",

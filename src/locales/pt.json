@@ -5453,7 +5453,7 @@
       "pathTitle": "Trajetória de 10 Noites",
       "pathLegendPath": "Trajetória",
       "pathLegendTonight": "Esta noite",
-      "pathDescription": "Trajetória real contra o fundo de estrelas fixas — durante o rastreamento, {name} permanece centralizado no quadro a noite toda; isso mostra o movimento noite a noite, não dentro de uma única exposição.",
+      "pathDescription": "Trajetória real contra o fundo de estrelas fixas — durante o rastreamento, {name} permanece centralizado no quadro a noite toda; isso mostra o movimento noite a noite, não dentro de uma única exposição. Os dois eixos são esticados de forma independente para preencher este gráfico, pelo que uma pequena alteração num deles pode parecer maior do que realmente é em comparação com o outro.",
       "framingTitle": "Enquadramento",
       "offsetSet": "Deslocamento definido",
       "observedLatest": "Última {mag}",

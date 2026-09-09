@@ -5448,7 +5448,7 @@
       "pathTitle": "Trajectòria de 10 Nits",
       "pathLegendPath": "Trajectòria",
       "pathLegendTonight": "Aquesta nit",
-      "pathDescription": "Trajectòria real sobre el fons d'estrelles fixes — mentre se segueix, {name} roman centrat a l'enquadrament tota la nit; això mostra el moviment nit a nit, no dins d'una sola exposició.",
+      "pathDescription": "Trajectòria real sobre el fons d'estrelles fixes — mentre se segueix, {name} roman centrat a l'enquadrament tota la nit; això mostra el moviment nit a nit, no dins d'una sola exposició. Els dos eixos s'estiren de manera independent per omplir aquest gràfic, de manera que un canvi petit en un pot semblar més gran del que realment és en comparació amb l'altre.",
       "framingTitle": "Enquadrament",
       "offsetSet": "Desplaçament definit",
       "observedLatest": "Última {mag}",

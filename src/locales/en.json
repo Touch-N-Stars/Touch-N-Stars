@@ -5429,7 +5429,7 @@
       "pathTitle": "10-Night Path",
       "pathLegendPath": "Path",
       "pathLegendTonight": "Tonight",
-      "pathDescription": "Real path against the fixed stars — while tracking, {name} stays centered in-frame all night; this shows motion night to night, not movement within a single exposure.",
+      "pathDescription": "Real path against the fixed stars — while tracking, {name} stays centered in-frame all night; this shows motion night to night, not movement within a single exposure. The two axes are stretched independently to fill this chart, so a small change in one can look bigger than it really is next to the other.",
       "framingTitle": "Framing",
       "offsetSet": "Offset set",
       "framingCapturedPrompt": "Framing captured — ready to track.",

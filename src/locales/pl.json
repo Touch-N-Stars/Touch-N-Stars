@@ -5448,7 +5448,7 @@
       "pathTitle": "Trasa na 10 Nocy",
       "pathLegendPath": "Trasa",
       "pathLegendTonight": "Dziś w nocy",
-      "pathDescription": "Rzeczywista trasa na tle gwiazd stałych — podczas śledzenia {name} pozostaje wycentrowany w kadrze przez całą noc; to pokazuje ruch noc po nocy, a nie w obrębie jednej ekspozycji.",
+      "pathDescription": "Rzeczywista trasa na tle gwiazd stałych — podczas śledzenia {name} pozostaje wycentrowany w kadrze przez całą noc; to pokazuje ruch noc po nocy, a nie w obrębie jednej ekspozycji. Obie osie są rozciągane niezależnie, aby wypełnić ten wykres, więc niewielka zmiana na jednej z nich może wydawać się większa, niż faktycznie jest, w porównaniu z drugą.",
       "framingTitle": "Kadrowanie",
       "offsetSet": "Przesunięcie ustawione",
       "observedLatest": "Ostatnia {mag}",

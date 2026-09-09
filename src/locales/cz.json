@@ -5448,7 +5448,7 @@
       "pathTitle": "Dráha na 10 Nocí",
       "pathLegendPath": "Dráha",
       "pathLegendTonight": "Dnes v noci",
-      "pathDescription": "Skutečná dráha na pozadí stálic — během sledování zůstává {name} centrován ve snímku celou noc; toto ukazuje pohyb noc od noci, ne v rámci jedné expozice.",
+      "pathDescription": "Skutečná dráha na pozadí stálic — během sledování zůstává {name} centrován ve snímku celou noc; toto ukazuje pohyb noc od noci, ne v rámci jedné expozice. Obě osy jsou nezávisle roztaženy, aby vyplnily tento graf, takže malá změna na jedné z nich může vypadat větší, než ve skutečnosti je, ve srovnání s druhou.",
       "framingTitle": "Rámování",
       "offsetSet": "Posun nastaven",
       "observedLatest": "Poslední {mag}",
