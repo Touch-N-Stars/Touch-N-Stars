@@ -168,7 +168,33 @@ test('keeps mobile Atlas controls touch-sized and above the shared status bar', 
   assert.match(settings, /grid-cols-\[minmax\(0,1fr\)_auto\]/);
   assert.match(settings, /grid min-h-24/);
   assert.match(settings, /break-words whitespace-normal/);
+  assert.match(settings, /@click="\$emit\('refresh-comets'\)"/);
+  assert.match(settings, /cometRefreshState === 'loading'/);
+  assert.match(view, /@refresh-comets="refreshCometData"/);
+  assert.doesNotMatch(view, /aria-label="Refresh comet data"/);
   assert.match(view, /@media \(max-width: 390px\)[\s\S]*var\(--spacing-touch\)/);
+});
+
+test('localizes the contextual comet refresh settings for every supported locale', async () => {
+  const localeDirectory = new URL('../../../locales/', import.meta.url);
+  const localeFiles = (await readdir(localeDirectory)).filter((name) => name.endsWith('.json'));
+  const requiredKeys = [
+    'comet_data_title',
+    'comet_data_hint',
+    'refresh_comet_data',
+    'refreshing_comet_data',
+    'comet_data_updated',
+    'comet_data_failed',
+  ];
+  for (const localeFile of localeFiles) {
+    const locale = JSON.parse(await readFile(new URL(localeFile, localeDirectory), 'utf8'));
+    const messages = locale.components.celestiaAtlas.settings;
+    for (const key of requiredKeys) {
+      assert.ok(messages[key]?.trim(), `${localeFile} is missing ${key}`);
+    }
+    assert.match(messages.comet_data_updated, /\{count\}/);
+    assert.match(messages.comet_data_failed, /\{message\}/);
+  }
 });
 
 test('defers Atlas resources until first open and guards late async initialization', async () => {

@@ -893,6 +893,44 @@
                   </span>
                 </button>
 
+                <!-- Not collapsed like "Mount Compatibility" below -- missing this one silently
+                     mistracks in RA by ~15x for anyone on EQMOD, unlike How This Works/reapply
+                     interval, where missing them costs nothing. likelyEqmodMount surfaces a
+                     direct suggestion from the connected mount's own driver name rather than
+                     relying on the user already knowing to look for this. -->
+                <button
+                  class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
+                  @click="onToggleEqmodCorrection"
+                >
+                  <div class="flex flex-col gap-0.5 min-w-0 flex-1">
+                    <span class="text-sm font-semibold text-content">{{
+                      t('perihelion.track.eqmodToggleTitle')
+                    }}</span>
+                    <span class="text-[11px] text-content-muted leading-tight">
+                      {{ t('perihelion.track.eqmodToggleDescription') }}
+                    </span>
+                    <span
+                      v-if="likelyEqmodMount && !eqmodRaRateCorrection"
+                      class="text-[11px] text-status-warn leading-tight mt-0.5"
+                    >
+                      {{ t('perihelion.track.eqmodDetectedHint', { name: store.mountInfo.Name }) }}
+                    </span>
+                  </div>
+                  <span
+                    class="relative inline-flex h-[22px] w-10 shrink-0 items-center rounded-full transition-colors"
+                    :class="eqmodRaRateCorrection ? 'bg-accent/35' : 'bg-surface-3'"
+                  >
+                    <span
+                      class="inline-block h-[18px] w-[18px] transform rounded-full transition-transform"
+                      :class="
+                        eqmodRaRateCorrection
+                          ? 'translate-x-5 bg-accent'
+                          : 'translate-x-0.5 bg-content-muted'
+                      "
+                    ></span>
+                  </span>
+                </button>
+
                 <button
                   v-if="actionMode === 'quick'"
                   class="flex items-center justify-between gap-3 py-2 cursor-pointer text-left"
@@ -901,7 +939,7 @@
                   <div class="flex flex-col gap-0.5 min-w-0 flex-1">
                     <span class="text-sm font-semibold text-content">{{
                       t('perihelion.track.autoReapplyToggleTitle', {
-                        minutes: AUTO_REAPPLY_MINUTES,
+                        minutes: autoReapplyMinutes,
                       })
                     }}</span>
                     <span class="text-[11px] text-content-muted leading-tight">
@@ -1190,6 +1228,55 @@
                   </p>
                 </div>
               </div>
+
+              <!-- Same collapsed-by-default disclosure pattern as How This Works above -- these
+                   are set-once-and-forget mount preferences, not something most users need to
+                   see every visit. Scoped to actionMode === 'quick': its only content
+                   (reapplyIntervalSeconds) only affects QuickTrackReapply on the backend, not
+                   Add to Sequence's own separate, hardcoded 30s tracking-refresh loop -- showing
+                   it under Add to Sequence edited a setting with zero effect there. -->
+              <div
+                v-if="actionMode === 'quick'"
+                class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden mt-2"
+              >
+                <button
+                  class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
+                  @click="showMountSettings = !showMountSettings"
+                >
+                  <span class="tns-stat-label flex-1">{{
+                    t('perihelion.track.quickTrackSettings')
+                  }}</span>
+                  <ChevronUpIcon
+                    v-if="showMountSettings"
+                    class="w-4 h-4 shrink-0 text-content-faint"
+                  />
+                  <ChevronDownIcon v-else class="w-4 h-4 shrink-0 text-content-faint" />
+                </button>
+                <div v-if="showMountSettings" class="p-3 pt-0 flex flex-col gap-3">
+                  <div class="flex items-center justify-between gap-3 py-1">
+                    <div class="flex flex-col gap-0.5 min-w-0 flex-1">
+                      <span class="text-sm font-semibold text-content">{{
+                        t('perihelion.track.reapplyIntervalTitle')
+                      }}</span>
+                      <span class="text-[11px] text-content-muted leading-tight">
+                        {{ t('perihelion.track.reapplyIntervalDescription') }}
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                      <input
+                        type="number"
+                        min="1"
+                        v-model.number="reapplyIntervalSecondsInput"
+                        @change="onSaveReapplyInterval"
+                        class="w-16 bg-surface-3 border border-line rounded-chip text-content text-sm text-right px-2 py-1 focus:outline-none focus:ring-1 focus:ring-accent/50"
+                      />
+                      <span class="text-[11px] text-content-faint">{{
+                        t('perihelion.track.secondsUnit')
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <button v-else class="tns-btn-danger" :disabled="actionBusy" @click="onStop">
@@ -1199,7 +1286,7 @@
               v-if="trackingMode === 'quick' && autoReapply"
               class="text-[11px] text-content-faint text-center"
             >
-              {{ t('perihelion.track.autoReapplyingFooter', { minutes: AUTO_REAPPLY_MINUTES }) }}
+              {{ t('perihelion.track.autoReapplyingFooter', { minutes: autoReapplyMinutes }) }}
             </p>
 
             <p class="text-[11px] leading-relaxed text-content-faint text-center">
@@ -1287,6 +1374,7 @@ import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
 import { fetchRate } from '../utils/fetchRate';
 import { fetchSyncStatus, syncComets, syncAsteroids } from '../utils/syncComets';
+import { fetchSettings, saveSettings } from '../utils/fetchSettings';
 import { fetchCometActivity } from '../utils/fetchCometActivity';
 import { sendPerihelionSequence } from '../utils/sendPerihelionSequence';
 import { buildPerihelionSequence } from '../utils/buildPerihelionSequence';
@@ -1426,7 +1514,65 @@ const {
   pluginInstalled,
 } = storeToRefs(perihelionStore);
 
-const AUTO_REAPPLY_MINUTES = 15;
+// Mount Compatibility settings (EqmodRaRateCorrection, QuickTrackReapplyIntervalSeconds) --
+// persisted on the plugin side via PluginOptionsAccessor, same as Port, but reachable here
+// through Perihelion's own API since PINS has no settings UI of its own to expose them through
+// (see the Windows-only Options page for that platform's equivalent). autoReapplyMinutes is
+// derived from the fetched seconds value, matching QuickTrackReapply's own minutes-only timer
+// on the backend -- whole-minute rounding is an accepted precision loss for values that don't
+// divide evenly by 60.
+const showMountSettings = ref(false);
+const eqmodRaRateCorrection = ref(false);
+const reapplyIntervalSeconds = ref(900);
+const reapplyIntervalSecondsInput = ref(900);
+const autoReapplyMinutes = computed(() =>
+  Math.max(1, Math.round(reapplyIntervalSeconds.value / 60))
+);
+
+// EQMOD's own real ASCOM driver registers itself under a name containing "EQMOD" (e.g. "EQMOD
+// ASCOM HEQ5/6") -- store.mountInfo already carries the full NINA TelescopeInfo shape (Name,
+// Description, DriverInfo all included), populated by ninaAPI's own /equipment/telescope/info
+// route, so this needs no new API call of its own. Checking all three fields rather than just
+// Name in case a particular ASCOM/INDI bridge surfaces it in Description or DriverInfo instead.
+const likelyEqmodMount = computed(() => {
+  const info = store.mountInfo;
+  if (!info?.Connected) return false;
+  const haystack = `${info.Name ?? ''} ${info.Description ?? ''} ${info.DriverInfo ?? ''}`;
+  return /eqmod/i.test(haystack);
+});
+
+async function loadMountSettings() {
+  try {
+    const settings = await fetchSettings();
+    eqmodRaRateCorrection.value = settings.eqmodRaRateCorrection;
+    reapplyIntervalSeconds.value = settings.quickTrackReapplyIntervalSeconds;
+    reapplyIntervalSecondsInput.value = settings.quickTrackReapplyIntervalSeconds;
+  } catch {
+    // Keep the defaults (EQMOD off, 900s) -- same "don't block the rest of the panel over one
+    // failed fetch" reasoning as loadSyncStatus().
+  }
+}
+
+async function onToggleEqmodCorrection() {
+  const next = !eqmodRaRateCorrection.value;
+  eqmodRaRateCorrection.value = next; // optimistic -- this is a plain on/off, not worth a spinner
+  const ok = await saveSettings({
+    eqmodRaRateCorrection: next,
+    quickTrackReapplyIntervalSeconds: reapplyIntervalSeconds.value,
+  });
+  if (!ok) eqmodRaRateCorrection.value = !next; // revert on failure
+}
+
+async function onSaveReapplyInterval() {
+  const seconds = Math.max(1, Math.round(reapplyIntervalSecondsInput.value) || 900);
+  reapplyIntervalSecondsInput.value = seconds;
+  const ok = await saveSettings({
+    eqmodRaRateCorrection: eqmodRaRateCorrection.value,
+    quickTrackReapplyIntervalSeconds: seconds,
+  });
+  if (ok) reapplyIntervalSeconds.value = seconds;
+  else reapplyIntervalSecondsInput.value = reapplyIntervalSeconds.value; // revert on failure
+}
 
 // Perihelion's own backend is a separate standalone HTTP server, not something ninaAPI knows
 // about -- GET /status happens to already exist (it also backs the Live Status card), so it
@@ -1569,6 +1715,7 @@ onMounted(async () => {
   if (pluginInstalled.value) {
     await loadObjects();
     loadSyncStatus();
+    loadMountSettings();
     await restoreActiveQuickTrackSession();
   }
   updatePositionDerivedState();
@@ -2303,7 +2450,7 @@ async function startQuickTrackNow() {
     objectType: selected.value.objectType.toLowerCase(),
     targetName: selected.value.name,
     guiding: guiding.value,
-    autoReapplyMinutes: autoReapply.value ? AUTO_REAPPLY_MINUTES : null,
+    autoReapplyMinutes: autoReapply.value ? autoReapplyMinutes.value : null,
   });
   actionStatus.value = result;
   actionBusy.value = false;
