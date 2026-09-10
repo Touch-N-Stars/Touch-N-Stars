@@ -417,7 +417,9 @@ export default {
       bottomLeftZ,
       bottomRightZ,
       outerRadius,
-      dontOffsetToZero
+      dontOffsetToZero,
+      screwCount,
+      shiftToNonNegative
     ) {
       try {
         const { API_URL } = getUrls();
@@ -437,6 +439,16 @@ export default {
         // Include dontOffsetToZero flag if provided (for manual tilters)
         if (dontOffsetToZero !== undefined && dontOffsetToZero !== null) {
           requestBody.dontOffsetToZero = dontOffsetToZero;
+        }
+
+        // Include screw count if provided (3-screw or 4-screw plate)
+        if (screwCount !== undefined && screwCount !== null) {
+          requestBody.screwCount = screwCount;
+        }
+
+        // Include shiftToNonNegative if provided (report travel from fully seated screws)
+        if (shiftToNonNegative !== undefined && shiftToNonNegative !== null) {
+          requestBody.shiftToNonNegative = shiftToNonNegative;
         }
 
         const response = await axios.post(

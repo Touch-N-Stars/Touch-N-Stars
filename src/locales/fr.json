@@ -3786,7 +3786,14 @@
         "actuatorVisualizationLabel": "Actionneurs avec rayon {radius} mm • Rotation du capteur {rotation}° • Vue de dessus",
         "calculatingPositions": "Calculateur...",
         "applyingPositions": "Candidature...",
-        "savingConfiguration": "Économie..."
+        "savingConfiguration": "Économie...",
+        "fourScrewHint": "Ajustez les vis opposées par paire (desserrez l'une, serrez l'autre) afin que la plaque ne puisse pas se coincer.",
+        "screwCountFour": "4 vis (une par coin)",
+        "screwCountThree": "3 vis (équilatérales)",
+        "shiftToNonNegative": "Les vis commencent à être complètement en place",
+        "shiftToNonNegativeDescription": "Les rapports partent du bas, donc chaque valeur est positive. \nDécochez pour afficher les ajustements signés à partir de la position actuelle.",
+        "tilterScrewCount": "Vis d'inclinaison",
+        "tilterScrewCountDescription": "Les plaques à 3 vis utilisent une disposition équilatérale, les plaques à 4 vis une vis par coin du capteur"
       },
       "common": {
         "error": "Erreur:",

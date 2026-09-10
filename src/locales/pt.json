@@ -3786,7 +3786,14 @@
         "actuatorVisualizationLabel": "Atuadores com raio de {radius} mm • Rotação do sensor {rotation}° • Vista superior",
         "calculatingPositions": "Calculando...",
         "applyingPositions": "Aplicando...",
-        "savingConfiguration": "Salvando..."
+        "savingConfiguration": "Salvando...",
+        "fourScrewHint": "Ajuste os parafusos opostos como um par (solte um, aperte o outro) para que a placa não possa prender",
+        "screwCountFour": "4 parafusos (um por canto)",
+        "screwCountThree": "3 parafusos (equiláteros)",
+        "shiftToNonNegative": "Os parafusos começam totalmente assentados",
+        "shiftToNonNegativeDescription": "Os relatórios viajam de baixo para cima, então cada valor é positivo. \nDesmarque para mostrar os ajustes assinados da posição atual.",
+        "tilterScrewCount": "Parafusos de inclinação",
+        "tilterScrewCountDescription": "Placas de 3 parafusos usam um layout equilátero, placas de 4 parafusos, um parafuso por canto do sensor"
       },
       "common": {
         "error": "Erro:",

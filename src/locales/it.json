@@ -3786,7 +3786,14 @@
         "actuatorVisualizationLabel": "Attuatori con raggio {radius} mm • Rotazione sensore {rotation}° • Vista dall'alto",
         "calculatingPositions": "Calcolo...",
         "applyingPositions": "Applicazione...",
-        "savingConfiguration": "Risparmio..."
+        "savingConfiguration": "Risparmio...",
+        "fourScrewHint": "Regolare le viti opposte in coppia (allentarne una, serrare l'altra) in modo che la placca non possa bloccarsi",
+        "screwCountFour": "4 viti (una per angolo)",
+        "screwCountThree": "3 viti (equilatero)",
+        "shiftToNonNegative": "Le viti iniziano completamente in sede",
+        "shiftToNonNegativeDescription": "I report viaggiano dal punto più basso, quindi ogni valore è positivo. \nDeseleziona per mostrare gli aggiustamenti firmati dalla posizione corrente.",
+        "tilterScrewCount": "Viti del ribaltatore",
+        "tilterScrewCountDescription": "Le piastre a 3 viti utilizzano una disposizione equilatera, le piastre a 4 viti utilizzano una vite per angolo del sensore"
       },
       "common": {
         "error": "Errore:",

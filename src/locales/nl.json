@@ -3786,7 +3786,14 @@
         "actuatorVisualizationLabel": "Actuators met een straal van {radius} mm • Rotatie van de sensor {rotation}° • Bovenaanzicht",
         "calculatingPositions": "Berekenen...",
         "applyingPositions": "Toepassen...",
-        "savingConfiguration": "Besparing..."
+        "savingConfiguration": "Besparing...",
+        "fourScrewHint": "Stel de tegenoverliggende schroeven als een paar af (maak de ene los, draai de andere vast) zodat de plaat niet kan vastlopen",
+        "screwCountFour": "4 schroeven (één per hoek)",
+        "screwCountThree": "3 schroeven (gelijkzijdig)",
+        "shiftToNonNegative": "Schroeven beginnen volledig op hun plaats",
+        "shiftToNonNegativeDescription": "Rapporten reizen vanaf het dieptepunt, dus elke waarde is positief. \nHaal het vinkje weg om ondertekende aanpassingen vanaf de huidige positie weer te geven.",
+        "tilterScrewCount": "Kantelschroeven",
+        "tilterScrewCountDescription": "Platen met 3 schroeven gebruiken een gelijkzijdige indeling, platen met 4 schroeven één schroef per sensorhoek"
       },
       "common": {
         "error": "Fout:",
@@ -4276,7 +4283,12 @@
         "credentials": "Als uw camera een gebruikersnaam en wachtwoord vereist, neemt u de inloggegevens rechtstreeks in de URL op:",
         "credentialsNote": "De backend-proxy verwerkt de authenticatie automatisch: de inloggegevens in de URL werken met zowel basis- als digest-authenticatie (bijv. Hikvision).",
         "credentialsTitle": "Met wachtwoord beveiligde camera's",
-        "exampleLabels": ["Algemene IP-camera", "ONVIF-camera", "As-camera", "Hikvision-camera"],
+        "exampleLabels": [
+          "Algemene IP-camera",
+          "ONVIF-camera",
+          "As-camera",
+          "Hikvision-camera"
+        ],
         "examplesTitle": "Voorbeelden",
         "proxyOptions": [
           "Proxy (standaard): De afbeelding wordt opgehaald door de NINA-backend en doorgestuurd naar de browser. \nVereist voor lokale netwerkcamera's met inloggegevens of CORS-beperkingen. \nIets langzamer bij toegang via VPN.",

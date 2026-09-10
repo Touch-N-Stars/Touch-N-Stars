@@ -3902,7 +3902,14 @@
         "actuatorVisualizationLabel": "Actuators at {radius} mm radius • Sensor rotation {rotation}° • Top view",
         "calculatingPositions": "Calculating...",
         "applyingPositions": "Applying...",
-        "savingConfiguration": "Saving..."
+        "savingConfiguration": "Saving...",
+        "fourScrewHint": "Passen Sie die gegenüberliegenden Schrauben paarweise an (eine lösen, die andere festziehen), damit sich die Platte nicht verklemmen kann",
+        "screwCountFour": "4 Schrauben (eine pro Ecke)",
+        "screwCountThree": "3 Schrauben (gleichseitig)",
+        "shiftToNonNegative": "Die Schrauben sitzen vollständig fest",
+        "shiftToNonNegativeDescription": "Die Berichte gehen von der Talsohle aus, daher ist jeder Wert positiv. \nDeaktivieren Sie das Kontrollkästchen, um signierte Anpassungen ab der aktuellen Position anzuzeigen.",
+        "tilterScrewCount": "Kippschrauben",
+        "tilterScrewCountDescription": "Platten mit 3 Schrauben verwenden eine gleichseitige Anordnung, Platten mit 4 Schrauben eine Schraube pro Sensorecke"
       },
       "common": {
         "error": "Fehler:",

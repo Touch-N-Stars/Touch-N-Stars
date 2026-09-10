@@ -2960,7 +2960,12 @@
         "title": "스냅샷 URL 도움말",
         "what": "스냅샷 URL은 IP 카메라의 단일 이미지로 바로 연결되는 링크입니다. URL은 HTML 페이지나 동영상 스트림이 아니라 JPEG 또는 PNG 이미지를 직접 반환해야 합니다.",
         "examplesTitle": "예시",
-        "exampleLabels": ["일반 IP 카메라", "ONVIF 카메라", "Axis 카메라", "Hikvision 카메라"],
+        "exampleLabels": [
+          "일반 IP 카메라",
+          "ONVIF 카메라",
+          "Axis 카메라",
+          "Hikvision 카메라"
+        ],
         "credentialsTitle": "비밀번호로 보호된 카메라",
         "credentials": "카메라에 사용자 이름과 비밀번호가 필요한 경우, 인증 정보를 URL에 직접 포함하세요:",
         "credentialsNote": "백엔드 프록시가 인증을 자동으로 처리합니다 — URL의 인증 정보는 Basic 및 Digest 인증 모두에서 동작합니다 (예: Hikvision).",
@@ -3897,7 +3902,14 @@
         "actuatorVisualizationLabel": "반지름 {radius} mm의 액추에이터 • 센서 회전 {rotation}° • 위에서 본 모습",
         "calculatingPositions": "계산 중...",
         "applyingPositions": "적용 중...",
-        "savingConfiguration": "저장 중..."
+        "savingConfiguration": "저장 중...",
+        "fourScrewHint": "플레이트가 묶이지 않도록 반대쪽 나사를 한 쌍으로 조정(하나는 풀고 다른 하나는 조임)",
+        "screwCountFour": "나사 4개(모서리당 1개)",
+        "screwCountThree": "나사 3개(등변)",
+        "shiftToNonNegative": "나사가 완전히 장착되기 시작합니다.",
+        "shiftToNonNegativeDescription": "보고서는 바닥을 기준으로 이동하므로 모든 값이 양수입니다. \n현재 위치에서 서명된 조정 사항을 표시하려면 선택을 취소합니다.",
+        "tilterScrewCount": "틸터 나사",
+        "tilterScrewCountDescription": "3-나사 플레이트는 등변 레이아웃을 사용하고, 4-나사 플레이트는 센서 모서리당 1개의 나사를 사용합니다."
       },
       "common": {
         "error": "오류:",

@@ -430,165 +430,55 @@
                 <circle cx="170" cy="170" r="2" fill="#9ca3af" />
               </g>
 
-              <!-- Actuators (screws) positioned on outer ring at radius 160 -->
-              <!-- P1 at 210° (top-left, 120° from P2) -->
-              <g>
-                <circle
-                  :cx="170 + 160 * Math.cos((210 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((210 * Math.PI) / 180)"
-                  r="12"
-                  fill="#60a5fa"
-                  opacity="0.2"
-                  stroke="#60a5fa"
-                  stroke-width="2"
-                />
-                <circle
-                  :cx="170 + 160 * Math.cos((210 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((210 * Math.PI) / 180)"
-                  r="7"
-                  fill="none"
-                  stroke="#60a5fa"
-                  stroke-width="2"
-                />
-                <circle
-                  :cx="170 + 160 * Math.cos((210 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((210 * Math.PI) / 180)"
-                  r="2"
-                  fill="#60a5fa"
-                />
-                <line
-                  :x1="170 + 160 * Math.cos((210 * Math.PI) / 180)"
-                  :y1="170 + 160 * Math.sin((210 * Math.PI) / 180) - 7"
-                  :x2="170 + 160 * Math.cos((210 * Math.PI) / 180)"
-                  :y2="170 + 160 * Math.sin((210 * Math.PI) / 180) + 7"
-                  stroke="#60a5fa"
-                  stroke-width="1.5"
-                />
-                <line
-                  :x1="170 + 160 * Math.cos((210 * Math.PI) / 180) - 7"
-                  :y1="170 + 160 * Math.sin((210 * Math.PI) / 180)"
-                  :x2="170 + 160 * Math.cos((210 * Math.PI) / 180) + 7"
-                  :y2="170 + 160 * Math.sin((210 * Math.PI) / 180)"
-                  stroke="#60a5fa"
-                  stroke-width="1.5"
-                />
-              </g>
-              <text
-                :x="170 + 160 * Math.cos((210 * Math.PI) / 180) + 30"
-                :y="170 + 160 * Math.sin((210 * Math.PI) / 180) + 14"
-                text-anchor="middle"
-                fill="#93c5fd"
-                font-weight="bold"
-                font-size="13"
-              >
-                P1
-              </text>
-
-              <!-- P2 at 90° (bottom) -->
-              <g>
-                <circle
-                  :cx="170 + 160 * Math.cos((90 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((90 * Math.PI) / 180)"
-                  r="12"
-                  fill="#4ade80"
-                  opacity="0.2"
-                  stroke="#4ade80"
-                  stroke-width="2"
-                />
-                <circle
-                  :cx="170 + 160 * Math.cos((90 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((90 * Math.PI) / 180)"
-                  r="7"
-                  fill="none"
-                  stroke="#4ade80"
-                  stroke-width="2"
-                />
-                <circle
-                  :cx="170 + 160 * Math.cos((90 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((90 * Math.PI) / 180)"
-                  r="2"
-                  fill="#4ade80"
-                />
-                <line
-                  :x1="170 + 160 * Math.cos((90 * Math.PI) / 180)"
-                  :y1="170 + 160 * Math.sin((90 * Math.PI) / 180) - 7"
-                  :x2="170 + 160 * Math.cos((90 * Math.PI) / 180)"
-                  :y2="170 + 160 * Math.sin((90 * Math.PI) / 180) + 7"
-                  stroke="#4ade80"
-                  stroke-width="1.5"
-                />
-                <line
-                  :x1="170 + 160 * Math.cos((90 * Math.PI) / 180) - 7"
-                  :y1="170 + 160 * Math.sin((90 * Math.PI) / 180)"
-                  :x2="170 + 160 * Math.cos((90 * Math.PI) / 180) + 7"
-                  :y2="170 + 160 * Math.sin((90 * Math.PI) / 180)"
-                  stroke="#4ade80"
-                  stroke-width="1.5"
-                />
-              </g>
-              <text
-                :x="170 + 160 * Math.cos((90 * Math.PI) / 180)"
-                :y="170 + 160 * Math.sin((90 * Math.PI) / 180) - 20"
-                text-anchor="middle"
-                fill="#86efac"
-                font-weight="bold"
-                font-size="13"
-              >
-                P2
-              </text>
-
-              <!-- P3 at 330° (top-right, 120° from P2) -->
-              <g>
-                <circle
-                  :cx="170 + 160 * Math.cos((330 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((330 * Math.PI) / 180)"
-                  r="12"
-                  fill="#fb923c"
-                  opacity="0.2"
-                  stroke="#fb923c"
-                  stroke-width="2"
-                />
-                <circle
-                  :cx="170 + 160 * Math.cos((330 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((330 * Math.PI) / 180)"
-                  r="7"
-                  fill="none"
-                  stroke="#fb923c"
-                  stroke-width="2"
-                />
-                <circle
-                  :cx="170 + 160 * Math.cos((330 * Math.PI) / 180)"
-                  :cy="170 + 160 * Math.sin((330 * Math.PI) / 180)"
-                  r="2"
-                  fill="#fb923c"
-                />
-                <line
-                  :x1="170 + 160 * Math.cos((330 * Math.PI) / 180)"
-                  :y1="170 + 160 * Math.sin((330 * Math.PI) / 180) - 7"
-                  :x2="170 + 160 * Math.cos((330 * Math.PI) / 180)"
-                  :y2="170 + 160 * Math.sin((330 * Math.PI) / 180) + 7"
-                  stroke="#fb923c"
-                  stroke-width="1.5"
-                />
-                <line
-                  :x1="170 + 160 * Math.cos((330 * Math.PI) / 180) - 7"
-                  :y1="170 + 160 * Math.sin((330 * Math.PI) / 180)"
-                  :x2="170 + 160 * Math.cos((330 * Math.PI) / 180) + 7"
-                  :y2="170 + 160 * Math.sin((330 * Math.PI) / 180)"
-                  stroke="#fb923c"
-                  stroke-width="1.5"
-                />
-              </g>
-              <text
-                :x="170 + 160 * Math.cos((330 * Math.PI) / 180) - 30"
-                :y="170 + 160 * Math.sin((330 * Math.PI) / 180) + 14"
-                text-anchor="middle"
-                fill="#fed7aa"
-                font-weight="bold"
-                font-size="13"
-              >
-                P3
-              </text>
+              <!-- Actuators (screws) positioned on the outer ring -->
+              <template v-for="screw in actuators" :key="screw.label">
+                <g>
+                  <circle
+                    :cx="screw.cx"
+                    :cy="screw.cy"
+                    r="12"
+                    :fill="screw.fill"
+                    opacity="0.2"
+                    :stroke="screw.fill"
+                    stroke-width="2"
+                  />
+                  <circle
+                    :cx="screw.cx"
+                    :cy="screw.cy"
+                    r="7"
+                    fill="none"
+                    :stroke="screw.fill"
+                    stroke-width="2"
+                  />
+                  <circle :cx="screw.cx" :cy="screw.cy" r="2" :fill="screw.fill" />
+                  <line
+                    :x1="screw.cx"
+                    :y1="screw.cy - 7"
+                    :x2="screw.cx"
+                    :y2="screw.cy + 7"
+                    :stroke="screw.fill"
+                    stroke-width="1.5"
+                  />
+                  <line
+                    :x1="screw.cx - 7"
+                    :y1="screw.cy"
+                    :x2="screw.cx + 7"
+                    :y2="screw.cy"
+                    :stroke="screw.fill"
+                    stroke-width="1.5"
+                  />
+                </g>
+                <text
+                  :x="screw.labelX"
+                  :y="screw.labelY"
+                  text-anchor="middle"
+                  :fill="screw.textFill"
+                  font-weight="bold"
+                  font-size="13"
+                >
+                  {{ screw.label }}
+                </text>
+              </template>
             </svg>
           </div>
         </div>
@@ -600,6 +490,10 @@
               rotation: (Number(sensorConfig.SensorRotation) || 0).toFixed(1),
             })
           }}
+        </p>
+
+        <p v-if="screwCount === 4" class="text-xs text-amber-300/80 text-center">
+          {{ $t('plugins.hocusfocus.tilter.fourScrewHint') }}
         </p>
       </div>
     </div>
@@ -727,6 +621,30 @@
             placeholder="e.g., 0.35"
           />
         </div>
+
+        <!-- Tilter Screw Count (only for manual tilter) -->
+        <div v-if="shouldShowManualTilterUI()" class="flex flex-col gap-2">
+          <label class="text-xs text-gray-400">{{
+            $t('plugins.hocusfocus.tilter.tilterScrewCount')
+          }}</label>
+          <div
+            v-if="!isSensorConfigEditing"
+            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
+          >
+            {{ screwCountLabel }}
+          </div>
+          <select
+            v-else
+            v-model.number="sensorConfig.TilterScrewCount"
+            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
+          >
+            <option :value="3">{{ $t('plugins.hocusfocus.tilter.screwCountThree') }}</option>
+            <option :value="4">{{ $t('plugins.hocusfocus.tilter.screwCountFour') }}</option>
+          </select>
+          <p class="text-xs text-gray-500">
+            {{ $t('plugins.hocusfocus.tilter.tilterScrewCountDescription') }}
+          </p>
+        </div>
       </div>
 
       <!-- Save Button (only show when editing) -->
@@ -801,6 +719,23 @@
         </div>
       </div>
 
+      <!-- Screw travel reference (manual tilters only) -->
+      <div v-if="shouldShowManualTilterUI()" class="mt-4">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            v-model="shiftToNonNegative"
+            type="checkbox"
+            class="rounded border-gray-600 text-cyan-500 focus:ring-cyan-500"
+          />
+          <span class="text-gray-300 text-sm">{{
+            $t('plugins.hocusfocus.tilter.shiftToNonNegative')
+          }}</span>
+        </label>
+        <p class="text-xs text-gray-500 mt-1">
+          {{ $t('plugins.hocusfocus.tilter.shiftToNonNegativeDescription') }}
+        </p>
+      </div>
+
       <!-- Calculate Button -->
       <div class="flex justify-start gap-2 mt-4">
         <button
@@ -840,18 +775,17 @@
         <p class="text-green-400 text-sm font-semibold mb-2">
           {{ $t('plugins.hocusfocus.tilter.calculatedPositions') }}:
         </p>
-        <div class="grid grid-cols-3 gap-2 text-xs text-green-300">
-          <div>
+        <div
+          class="grid gap-2 text-xs text-green-300"
+          :class="calculatedScrews.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
+        >
+          <div v-for="screw in calculatedScrews" :key="screw.label">
             <div>
-              P1: {{ calculatedPositions.Position1?.toFixed(3) }} mm<span
-                v-if="
-                  shouldShowManualTilterUI() &&
-                  calculatedPositions.RawPosition1 !== null &&
-                  calculatedPositions.RawPosition1 !== undefined
-                "
+              {{ screw.label }}: {{ screw.position?.toFixed(3) }} mm<span
+                v-if="shouldShowManualTilterUI() && screw.raw !== null && screw.showRaw"
                 class="text-gray-400 text-xs"
               >
-                [calc: {{ calculatedPositions.RawPosition1?.toFixed(3) }} mm]</span
+                [calc: {{ screw.raw?.toFixed(3) }} mm]</span
               >
             </div>
             <div
@@ -862,57 +796,7 @@
               "
               class="text-green-400 mt-1 font-semibold"
             >
-              {{ (calculatedPositions.Position1 / sensorConfig.TilterThreadPitch).toFixed(2) }}
-              turns
-            </div>
-          </div>
-          <div>
-            <div>
-              P2: {{ calculatedPositions.Position2?.toFixed(3) }} mm<span
-                v-if="
-                  shouldShowManualTilterUI() &&
-                  calculatedPositions.RawPosition2 !== null &&
-                  calculatedPositions.RawPosition2 !== undefined
-                "
-                class="text-gray-400 text-xs"
-              >
-                [calc: {{ calculatedPositions.RawPosition2?.toFixed(3) }} mm]</span
-              >
-            </div>
-            <div
-              v-if="
-                shouldShowManualTilterUI() &&
-                typeof sensorConfig.TilterThreadPitch === 'number' &&
-                sensorConfig.TilterThreadPitch > 0
-              "
-              class="text-green-400 mt-1 font-semibold"
-            >
-              {{ (calculatedPositions.Position2 / sensorConfig.TilterThreadPitch).toFixed(2) }}
-              turns
-            </div>
-          </div>
-          <div>
-            <div>
-              P3: {{ calculatedPositions.Position3?.toFixed(3) }} mm<span
-                v-if="
-                  shouldShowManualTilterUI() &&
-                  calculatedPositions.RawPosition3 !== null &&
-                  calculatedPositions.RawPosition3 !== undefined
-                "
-                class="text-gray-400 text-xs"
-              >
-                [calc: {{ calculatedPositions.RawPosition3?.toFixed(3) }} mm]</span
-              >
-            </div>
-            <div
-              v-if="
-                shouldShowManualTilterUI() &&
-                typeof sensorConfig.TilterThreadPitch === 'number' &&
-                sensorConfig.TilterThreadPitch > 0
-              "
-              class="text-green-400 mt-1 font-semibold"
-            >
-              {{ (calculatedPositions.Position3 / sensorConfig.TilterThreadPitch).toFixed(2) }}
+              {{ (screw.position / sensorConfig.TilterThreadPitch).toFixed(2) }}
               turns
             </div>
           </div>
@@ -999,9 +883,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { usePolling } from '@/composables/usePolling';
 import apiService from '@/services/apiService';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const devices = ref([]);
 const selectedDeviceId = ref('');
@@ -1030,7 +917,55 @@ const sensorConfig = ref({
   SensorRotation: 0,
   TilterOuterRadius: 60,
   TilterThreadPitch: 0,
+  TilterScrewCount: 3,
 });
+
+// Screw ring radius in SVG units (the visualization is drawn at a fixed scale)
+const RING_RADIUS = 160;
+
+// Screw layouts, mirroring TilterService.GetScrewPositions on the backend.
+// Angles are in SVG screen space (y grows downward), so screen_y = -math_y.
+// 3 screws: equilateral plate (P1 upper left, P2 bottom, P3 upper right).
+// 4 screws: one screw on each diagonal, under a sensor corner.
+const SCREW_LAYOUTS = {
+  3: [
+    { label: 'P1', angle: 210, fill: '#60a5fa', textFill: '#93c5fd' },
+    { label: 'P2', angle: 90, fill: '#4ade80', textFill: '#86efac' },
+    { label: 'P3', angle: 330, fill: '#fb923c', textFill: '#fed7aa' },
+  ],
+  4: [
+    { label: 'TL', angle: 315, fill: '#60a5fa', textFill: '#93c5fd' },
+    { label: 'TR', angle: 225, fill: '#4ade80', textFill: '#86efac' },
+    { label: 'BL', angle: 45, fill: '#fb923c', textFill: '#fed7aa' },
+    { label: 'BR', angle: 135, fill: '#c084fc', textFill: '#e9d5ff' },
+  ],
+};
+
+const screwCount = computed(() => (Number(sensorConfig.value.TilterScrewCount) === 4 ? 4 : 3));
+
+const screwCountLabel = computed(() =>
+  screwCount.value === 4
+    ? t('plugins.hocusfocus.tilter.screwCountFour')
+    : t('plugins.hocusfocus.tilter.screwCountThree')
+);
+
+// Screw markers for the geometry visualization, laid out on the outer ring.
+// Labels are pulled back towards the centre so they stay inside the viewBox.
+const actuators = computed(() =>
+  SCREW_LAYOUTS[screwCount.value].map((screw) => {
+    const radians = (screw.angle * Math.PI) / 180;
+    const cx = 170 + RING_RADIUS * Math.cos(radians);
+    const cy = 170 + RING_RADIUS * Math.sin(radians);
+    return {
+      ...screw,
+      cx,
+      cy,
+      labelX: cx - 28 * Math.cos(radians),
+      labelY: cy - 28 * Math.sin(radians) + 5,
+    };
+  })
+);
+
 const isSensorConfigEditing = ref(false);
 const isSavingSensorConfig = ref(false);
 const sensorConfigError = ref('');
@@ -1054,7 +989,28 @@ const isCalculatingTiltPlane = ref(false);
 const isApplyingPositions = ref(false);
 const applyTiltPlaneError = ref('');
 const aberrationInspectorAvailable = ref(false);
+// Manual tilters are adjusted from fully seated screws, so travel is reported as
+// non-negative by default; unchecking reports signed adjustments instead.
+const shiftToNonNegative = ref(true);
 const isFetchingAberration = ref(false);
+
+// Calculated positions flattened into per-screw rows for display
+const calculatedScrews = computed(() => {
+  const result = calculatedPositions.value;
+  if (!result) return [];
+  const layout = SCREW_LAYOUTS[result.ScrewCount === 4 ? 4 : 3];
+  return layout.map((screw, index) => {
+    const position = result[`Position${index + 1}`];
+    const raw = result[`RawPosition${index + 1}`];
+    return {
+      label: screw.label,
+      position,
+      raw,
+      // With the shift disabled the reported value is the raw one, so don't print it twice
+      showRaw: raw !== undefined && raw !== null && Math.abs(raw - position) > 1e-9,
+    };
+  });
+});
 
 // Computed property to detect if selected device is manual tilter
 const isSelectedManualTilter = () => selectedDeviceId.value === '-1';
@@ -1105,6 +1061,16 @@ onMounted(async () => {
     }
   }
 
+  // Restore the screw travel reference choice
+  const savedShift = localStorage.getItem('tilterShiftToNonNegative');
+  if (savedShift !== null) {
+    try {
+      shiftToNonNegative.value = JSON.parse(savedShift) !== false;
+    } catch (e) {
+      console.error('Error parsing saved screw travel reference:', e);
+    }
+  }
+
   // Load sensor configuration
   await loadSensorConfiguration();
 
@@ -1149,6 +1115,11 @@ watch(
   },
   { deep: true }
 );
+
+// Persist the screw travel reference choice
+watch(shiftToNonNegative, (newValue) => {
+  localStorage.setItem('tilterShiftToNonNegative', JSON.stringify(newValue));
+});
 
 async function loadDevices() {
   try {
@@ -1223,20 +1194,12 @@ async function connect() {
     isConnecting.value = true;
     errorMessage.value = '';
 
-    // Handle manual tilter - no actual connection needed
+    // Handle manual tilter - no actual connection needed.
+    // Radius, thread pitch and screw count come from the server-side sensor
+    // configuration, which is loaded on mount.
     if (isSelectedManualTilter()) {
       isConnected.value = true;
       localStorage.setItem('tilterIsConnected', 'true');
-      // Load manual tilter outer radius from localStorage
-      const savedRadius = localStorage.getItem('manualTilterOuterRadius');
-      if (savedRadius) {
-        manualTilterOuterRadius.value = parseFloat(savedRadius);
-      }
-      // Load manual tilter thread pitch from localStorage
-      const savedPitch = localStorage.getItem('manualTilterThreadPitch');
-      if (savedPitch) {
-        manualTilterThreadPitch.value = parseFloat(savedPitch);
-      }
       return;
     }
 
@@ -1359,6 +1322,7 @@ async function loadSensorConfiguration() {
         SensorRotation: response.SensorRotation,
         TilterOuterRadius: response.TilterOuterRadius ?? 60,
         TilterThreadPitch: response.TilterThreadPitch ?? 0,
+        TilterScrewCount: response.TilterScrewCount === 4 ? 4 : 3,
       };
       console.log('Sensor configuration loaded:', sensorConfig.value);
     }
@@ -1400,6 +1364,7 @@ async function saveSensorConfiguration() {
       sensorRotation: rotation,
       tilterOuterRadius: sensorConfig.value.TilterOuterRadius,
       tilterThreadPitch: sensorConfig.value.TilterThreadPitch,
+      tilterScrewCount: screwCount.value,
     });
 
     if (response.Error) {
@@ -1551,6 +1516,8 @@ async function calculateTiltPlane() {
       deviceId: deviceId,
       usingManualTilterMode: shouldShowManualTilterUI(),
       outerRadius: outerRadius,
+      screwCount: shouldShowManualTilterUI() ? screwCount.value : 3,
+      shiftToNonNegative: shouldShowManualTilterUI() ? shiftToNonNegative.value : true,
       cornerValues: {
         topLeftZ: applyTiltPlane.value.topLeftZ,
         topRightZ: applyTiltPlane.value.topRightZ,
@@ -1566,7 +1533,11 @@ async function calculateTiltPlane() {
       applyTiltPlane.value.bottomLeftZ,
       applyTiltPlane.value.bottomRightZ,
       outerRadius,
-      shouldShowManualTilterUI() ? true : undefined // Skip offset to 0 for manual tilters
+      shouldShowManualTilterUI() ? true : undefined, // Skip offset to 0 for manual tilters
+      // ETA hardware is always a 3-screw plate; only manual tilters may be 4-screw
+      shouldShowManualTilterUI() ? screwCount.value : 3,
+      // Real hardware always needs non-negative positions
+      shouldShowManualTilterUI() ? shiftToNonNegative.value : true
     );
 
     if (response.Error) {

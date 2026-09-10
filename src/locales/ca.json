@@ -3051,7 +3051,12 @@
         "title": "Ajuda sobre la URL d'instantània",
         "what": "Una URL d'instantània és un enllaç directe a una sola imatge de la teva càmera IP. La URL ha de retornar una imatge JPEG o PNG directament, no una pàgina HTML ni un flux de vídeo.",
         "examplesTitle": "Exemples",
-        "exampleLabels": ["Càmera IP genèrica", "Càmera ONVIF", "Càmera Axis", "Càmera Hikvision"],
+        "exampleLabels": [
+          "Càmera IP genèrica",
+          "Càmera ONVIF",
+          "Càmera Axis",
+          "Càmera Hikvision"
+        ],
         "credentialsTitle": "Càmeres protegides per contrasenya",
         "credentials": "Si la teva càmera requereix nom d'usuari i contrasenya, inclou les credencials directament a la URL:",
         "credentialsNote": "El proxy del backend gestiona l'autenticació automàticament: les credencials a la URL funcionen amb autenticació Basic i Digest (p. ex., Hikvision).",
@@ -3988,7 +3993,14 @@
         "actuatorVisualizationLabel": "Actuadors a {radius} mm de radi • Rotació del sensor {rotation}° • Vista superior",
         "calculatingPositions": "Calculant...",
         "applyingPositions": "Aplicant...",
-        "savingConfiguration": "Desant..."
+        "savingConfiguration": "Desant...",
+        "fourScrewHint": "Ajusteu els cargols oposats com a parell (afluixeu-ne un, apreteu l'altre) perquè la placa no s'enganxi",
+        "screwCountFour": "4 cargols (un per cantonada)",
+        "screwCountThree": "3 cargols (equilàters)",
+        "shiftToNonNegative": "Els cargols comencen completament asseguts",
+        "shiftToNonNegativeDescription": "Els informes viatgen des del fons, de manera que tots els valors són positius. \nDesmarqueu per mostrar els ajustos signats de la posició actual.",
+        "tilterScrewCount": "Cargols d'inclinació",
+        "tilterScrewCountDescription": "Les plaques de 3 cargols utilitzen un disseny equilàter, les plaques de 4 cargols un cargol per cantonada del sensor"
       },
       "common": {
         "error": "Error:",
