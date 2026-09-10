@@ -3786,7 +3786,14 @@
         "actuatorVisualizationLabel": "Siłowniki o promieniu {radius} mm • Obrót czujnika {rotation}° • Widok z góry",
         "calculatingPositions": "Obliczenie...",
         "applyingPositions": "Stosowanie...",
-        "savingConfiguration": "Oszczędność..."
+        "savingConfiguration": "Oszczędność...",
+        "fourScrewHint": "Wyreguluj przeciwne śruby parami (poluzuj jedną, dokręć drugą), aby płytka nie mogła się zakleszczyć",
+        "screwCountFour": "4 śruby (po jednej na narożnik)",
+        "screwCountThree": "3 śruby (równoboczne)",
+        "shiftToNonNegative": "Śruby zaczynają się od pełnego osadzenia",
+        "shiftToNonNegativeDescription": "Raporty pochodzą od najniższych wartości, więc każda wartość jest dodatnia. \nUsuń zaznaczenie, aby wyświetlić podpisane korekty z bieżącej pozycji.",
+        "tilterScrewCount": "Śruby przechylne",
+        "tilterScrewCountDescription": "Płyty 3-śrubowe wykorzystują układ równoboczny, płyty 4-śrubowe po jednej śrubie na narożnik czujnika"
       },
       "common": {
         "error": "Błąd:",
@@ -4276,7 +4283,12 @@
         "credentials": "Jeśli kamera wymaga nazwy użytkownika i hasła, podaj dane uwierzytelniające bezpośrednio w adresie URL:",
         "credentialsNote": "Serwer proxy zaplecza obsługuje uwierzytelnianie automatycznie — dane uwierzytelniające w adresie URL działają zarówno z uwierzytelnianiem podstawowym, jak i szyfrowanym (np. Hikvision).",
         "credentialsTitle": "Kamery chronione hasłem",
-        "exampleLabels": ["Typowa kamera IP", "Kamera ONVIF", "Kamera osiowa", "Kamera Hikvision"],
+        "exampleLabels": [
+          "Typowa kamera IP",
+          "Kamera ONVIF",
+          "Kamera osiowa",
+          "Kamera Hikvision"
+        ],
         "examplesTitle": "Przykłady",
         "proxyOptions": [
           "Proxy (domyślnie): Obraz jest pobierany przez backend NINA i przesyłany do przeglądarki. \nWymagane w przypadku kamer sieci lokalnej z poświadczeniami lub ograniczeniami CORS. \nNieco wolniejszy w przypadku dostępu przez VPN.",

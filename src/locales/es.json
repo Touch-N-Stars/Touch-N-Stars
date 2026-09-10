@@ -3786,7 +3786,14 @@
         "actuatorVisualizationLabel": "Actuadores con un radio de {radius} mm • Rotación del sensor {rotation}° • Vista superior",
         "calculatingPositions": "Calculador...",
         "applyingPositions": "Aplicando...",
-        "savingConfiguration": "Guardando..."
+        "savingConfiguration": "Guardando...",
+        "fourScrewHint": "Ajuste los tornillos opuestos como un par (afloje uno, apriete el otro) para que la placa no se pueda atascar.",
+        "screwCountFour": "4 tornillos (uno por esquina)",
+        "screwCountThree": "3 tornillos (equiláteros)",
+        "shiftToNonNegative": "Los tornillos comienzan completamente asentados.",
+        "shiftToNonNegativeDescription": "Los informes viajan desde el punto más bajo, por lo que cada valor es positivo. \nDesmarque para mostrar los ajustes firmados desde la posición actual.",
+        "tilterScrewCount": "Tornillos de inclinación",
+        "tilterScrewCountDescription": "Las placas de 3 tornillos utilizan un diseño equilátero, las placas de 4 tornillos, un tornillo por esquina del sensor"
       },
       "common": {
         "error": "Error:",

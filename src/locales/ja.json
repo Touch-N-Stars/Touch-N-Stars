@@ -2960,7 +2960,12 @@
         "title": "スナップショットURLのヘルプ",
         "what": "スナップショットURLは、IPカメラの単一画像への直接リンクです。このURLはJPEGまたはPNG画像を直接返す必要があります（HTMLページやビデオストリームは不可）。",
         "examplesTitle": "例",
-        "exampleLabels": ["汎用IPカメラ", "ONVIFカメラ", "軸カメラ", "ハイクビジョンカメラ"],
+        "exampleLabels": [
+          "汎用IPカメラ",
+          "ONVIFカメラ",
+          "軸カメラ",
+          "ハイクビジョンカメラ"
+        ],
         "credentialsTitle": "パスワード保護されたカメラ",
         "credentials": "カメラにユーザー名とパスワードが必要な場合は、URLに認証情報を直接含めてください：",
         "credentialsNote": "バックエンドプロキシが認証を自動的に処理します。URLの認証情報はBasic認証とDigest認証（例：Hikvision）の両方で動作します。",
@@ -3897,7 +3902,14 @@
         "actuatorVisualizationLabel": "アクチュエーター {radius}mm 半径 • センサー回転 {rotation}° • 上面図",
         "calculatingPositions": "計算中...",
         "applyingPositions": "適用中...",
-        "savingConfiguration": "保存中..."
+        "savingConfiguration": "保存中...",
+        "fourScrewHint": "プレートが固着しないように、向かい合うネジを 1 組として調整します (1 つを緩め、もう 1 つを締めます)。",
+        "screwCountFour": "ネジ 4 本 (各コーナーに 1 本)",
+        "screwCountThree": "ネジ3本（等辺）",
+        "shiftToNonNegative": "ネジが完全に固定され始めます",
+        "shiftToNonNegativeDescription": "レポートは底値から移動するため、すべての値は正になります。\n現在の位置からの署名付き調整を表示するには、チェックを外します。",
+        "tilterScrewCount": "ティルターネジ",
+        "tilterScrewCountDescription": "3 ネジ プレートは等辺レイアウトを使用し、4 ネジ プレートはセンサーのコーナーごとに 1 本のネジを使用します。"
       },
       "common": {
         "error": "エラー：",
