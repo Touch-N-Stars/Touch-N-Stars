@@ -548,6 +548,10 @@
         "title": "Retorno tátil",
         "description": "Vibração breve ao pressionar botões"
       },
+      "sequenceAutoLock": {
+        "title": "Bloquear os controlos da sequência ao iniciar",
+        "description": "Bloqueia automaticamente os controlos da sequência quando uma sequência inicia. O desbloqueio continua manual."
+      },
       "beta": {
         "title": "Canal de atualização beta"
       },
@@ -796,6 +800,7 @@
       "download": "Baixar"
     },
     "sequence": {
+      "title": "Sequência",
       "stats": "Estatísticas",
       "noSequenceLoaded": "Nenhuma sequência carregada",
       "noSequenceData": "Nenhum dado disponível",

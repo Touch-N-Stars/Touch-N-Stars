@@ -618,6 +618,10 @@
         "title": "Haptisches Feedback",
         "description": "Kurze Vibration beim Drücken von Tasten"
       },
+      "sequenceAutoLock": {
+        "title": "Sequenz-Steuerung beim Start sperren",
+        "description": "Sperrt die Sequenz-Steuerung automatisch, sobald eine Sequenz startet. Das Entsperren bleibt manuell."
+      },
       "beta": {
         "title": "Beta-Update-Kanal"
       },
@@ -837,6 +841,7 @@
       "download": "Herunterladen"
     },
     "sequence": {
+      "title": "Sequenz",
       "stats": "Statistiken",
       "noSequenceLoaded": "Keine Sequenz geladen",
       "noSequenceData": "noch keine Daten verfügbar",

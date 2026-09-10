@@ -548,6 +548,10 @@
         "title": "Haptische feedback",
         "description": "Korte trilling bij het indrukken van knoppen"
       },
+      "sequenceAutoLock": {
+        "title": "Sequentiebediening vergrendelen bij start",
+        "description": "Vergrendelt de sequentiebediening automatisch wanneer een sequentie start. Ontgrendelen blijft handmatig."
+      },
       "beta": {
         "title": "Beta Update Kanaal"
       },
@@ -796,6 +800,7 @@
       "download": "Downloaden"
     },
     "sequence": {
+      "title": "Sequentie",
       "stats": "Statistieken",
       "noSequenceLoaded": "Geen sequentie geladen",
       "noSequenceData": "Nog geen Data aanwezig",
@@ -4283,12 +4288,7 @@
         "credentials": "Als uw camera een gebruikersnaam en wachtwoord vereist, neemt u de inloggegevens rechtstreeks in de URL op:",
         "credentialsNote": "De backend-proxy verwerkt de authenticatie automatisch: de inloggegevens in de URL werken met zowel basis- als digest-authenticatie (bijv. Hikvision).",
         "credentialsTitle": "Met wachtwoord beveiligde camera's",
-        "exampleLabels": [
-          "Algemene IP-camera",
-          "ONVIF-camera",
-          "As-camera",
-          "Hikvision-camera"
-        ],
+        "exampleLabels": ["Algemene IP-camera", "ONVIF-camera", "As-camera", "Hikvision-camera"],
         "examplesTitle": "Voorbeelden",
         "proxyOptions": [
           "Proxy (standaard): De afbeelding wordt opgehaald door de NINA-backend en doorgestuurd naar de browser. \nVereist voor lokale netwerkcamera's met inloggegevens of CORS-beperkingen. \nIets langzamer bij toegang via VPN.",

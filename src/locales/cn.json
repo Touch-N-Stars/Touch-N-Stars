@@ -548,6 +548,10 @@
         "title": "触觉反馈",
         "description": "按下按钮时短暂震动"
       },
+      "sequenceAutoLock": {
+        "title": "序列启动时锁定控件",
+        "description": "序列开始时自动锁定序列控件。解锁仍需手动操作。"
+      },
       "beta": {
         "title": "测试版更新通道"
       },
@@ -796,6 +800,7 @@
       "download": "下载"
     },
     "sequence": {
+      "title": "序列",
       "stats": "统计",
       "noSequenceLoaded": "未加载序列",
       "noSequenceData": "尚无数据",
@@ -4283,12 +4288,7 @@
         "credentials": "If your camera requires a username and password, include the credentials directly in the URL:",
         "credentialsNote": "The backend proxy handles authentication automatically — credentials in the URL work with both Basic and Digest authentication (e.g. Hikvision).",
         "credentialsTitle": "Password-protected cameras",
-        "exampleLabels": [
-          "Generic IP camera",
-          "ONVIF camera",
-          "Axis camera",
-          "Hikvision camera"
-        ],
+        "exampleLabels": ["Generic IP camera", "ONVIF camera", "Axis camera", "Hikvision camera"],
         "examplesTitle": "Examples",
         "proxyOptions": [
           "Proxy (default): The image is fetched by the NINA backend and forwarded to the browser. Required for local network cameras with credentials or CORS restrictions. Slightly slower when accessed over VPN.",

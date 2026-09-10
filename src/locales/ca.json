@@ -631,6 +631,10 @@
         "title": "Retorn hàptic",
         "description": "Vibració breu en prémer els botons"
       },
+      "sequenceAutoLock": {
+        "title": "Bloqueja els controls de seqüència en iniciar",
+        "description": "Bloqueja automàticament els controls de seqüència quan comença una seqüència. El desbloqueig continua sent manual."
+      },
       "beta": {
         "title": "Canal d'actualització beta"
       },
@@ -837,6 +841,7 @@
       "download": "Descarrega"
     },
     "sequence": {
+      "title": "Seqüència",
       "stats": "Estadístiques",
       "noSequenceLoaded": "Cap seqüència carregada",
       "noSequenceData": "Encara no hi ha dades disponibles",
@@ -3051,12 +3056,7 @@
         "title": "Ajuda sobre la URL d'instantània",
         "what": "Una URL d'instantània és un enllaç directe a una sola imatge de la teva càmera IP. La URL ha de retornar una imatge JPEG o PNG directament, no una pàgina HTML ni un flux de vídeo.",
         "examplesTitle": "Exemples",
-        "exampleLabels": [
-          "Càmera IP genèrica",
-          "Càmera ONVIF",
-          "Càmera Axis",
-          "Càmera Hikvision"
-        ],
+        "exampleLabels": ["Càmera IP genèrica", "Càmera ONVIF", "Càmera Axis", "Càmera Hikvision"],
         "credentialsTitle": "Càmeres protegides per contrasenya",
         "credentials": "Si la teva càmera requereix nom d'usuari i contrasenya, inclou les credencials directament a la URL:",
         "credentialsNote": "El proxy del backend gestiona l'autenticació automàticament: les credencials a la URL funcionen amb autenticació Basic i Digest (p. ex., Hikvision).",

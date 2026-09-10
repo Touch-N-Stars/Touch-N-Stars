@@ -631,6 +631,10 @@
         "title": "Haptic Feedback",
         "description": "Short vibration when pressing buttons"
       },
+      "sequenceAutoLock": {
+        "title": "Lock Sequence Controls on Start",
+        "description": "Locks the sequence controls automatically when a sequence starts. Unlocking stays manual."
+      },
       "beta": {
         "title": "Beta Update Channel"
       },
@@ -837,6 +841,7 @@
       "download": "Download"
     },
     "sequence": {
+      "title": "Sequence",
       "stats": "Stats",
       "noSequenceLoaded": "No sequence loaded",
       "noSequenceData": "No data available yet",

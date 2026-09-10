@@ -12,6 +12,12 @@ export const useSequenceStore = defineStore('sequenceStore', {
     sequenceLoading: false,
     sequenceRunning: false,
     sequenceControlsLocked: false,
+    autoLockControlsOnStart: false,
+    // Last run state a successful poll actually proved; null = never observed.
+    lastConfirmedSequenceRunning: null,
+    // Active tab of the V2 sequence page. Kept in the store because App.vue
+    // remounts the router-view on every orientation change.
+    currentTab: 'showSequence',
     sequenceEdit: false,
     sequenceIsEditable: true,
     targetName: '',
@@ -50,6 +56,32 @@ export const useSequenceStore = defineStore('sequenceStore', {
 
       this.sequenceRunning = isRunning;
     },
+    // Records a run state that a successful poll actually proved, and auto-locks
+    // the controls on a confirmed start.
+    //
+    // Only the poll's success path may call this. `sequenceRunning` alone is not
+    // enough: clearAllStates() forces it to false on every connection loss, a
+    // single failed request does the same, and the start button sets it to true
+    // optimistically before the backend has agreed. Reacting to those would
+    // re-lock controls the user deliberately released, or lock after a start
+    // that never happened - and since the lock never releases by itself, the
+    // user would have to undo it by hand every time.
+    //
+    // A null previous value means we have never observed a run state (fresh app
+    // start), so there is no transition to react to - that is what keeps a
+    // reload during a running sequence from restoring a released lock.
+    confirmSequenceRunning(isRunning) {
+      const previouslyConfirmed = this.lastConfirmedSequenceRunning;
+      this.lastConfirmedSequenceRunning = isRunning;
+
+      const isConfirmedStart = isRunning && previouslyConfirmed === false;
+      if (isConfirmedStart && this.autoLockControlsOnStart && !this.sequenceControlsLocked) {
+        this.setSequenceControlsLocked(true);
+      }
+
+      this.setSequenceRunning(isRunning);
+    },
+
     setSequenceControlsLocked(isLocked) {
       this.sequenceControlsLocked = !!isLocked;
 
@@ -77,6 +109,31 @@ export const useSequenceStore = defineStore('sequenceStore', {
         await apiService.updateSetting(
           'sequence_controls_locked',
           String(this.sequenceControlsLocked)
+        );
+      }
+    },
+
+    setAutoLockControlsOnStart(enabled) {
+      this.autoLockControlsOnStart = !!enabled;
+      this.saveAutoLockControlsOnStart();
+    },
+
+    async loadAutoLockControlsOnStart() {
+      const response = await apiService.getSetting('sequence_auto_lock_on_start');
+      if (response?.Response?.Value !== undefined) {
+        this.autoLockControlsOnStart = response.Response.Value === 'true';
+      }
+    },
+
+    async saveAutoLockControlsOnStart() {
+      const res = await apiService.createSetting({
+        Key: 'sequence_auto_lock_on_start',
+        Value: String(this.autoLockControlsOnStart),
+      });
+      if (res?.StatusCode === 409) {
+        await apiService.updateSetting(
+          'sequence_auto_lock_on_start',
+          String(this.autoLockControlsOnStart)
         );
       }
     },
@@ -243,7 +300,7 @@ export const useSequenceStore = defineStore('sequenceStore', {
         if (isEmptySequence) {
           this.sequenceInfo = [];
           this.sequenceIsLoaded = false;
-          this.setSequenceRunning(false);
+          this.confirmSequenceRunning(false);
           this.targetName = '';
           this.runningItems = [];
           this.runningConditions = [];
@@ -313,7 +370,7 @@ export const useSequenceStore = defineStore('sequenceStore', {
         }
 
         // Update sequence running state (this will trigger notification if state changed)
-        this.setSequenceRunning(isRunning || false);
+        this.confirmSequenceRunning(isRunning || false);
       } else {
         this.sequenceIsLoaded = false;
         this.setSequenceRunning(false);
