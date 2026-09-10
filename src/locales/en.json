@@ -4054,6 +4054,7 @@
         "screwCountThree": "3 screws (equilateral)",
         "screwCountFour": "4 screws (one per corner)",
         "fourScrewHint": "Adjust opposing screws as a pair (loosen one, tighten the other) so the plate cannot bind",
+        "fourScrewApplyUnsupported": "Applying to a device is only supported for 3-screw tilters",
         "shiftToNonNegative": "Screws start fully seated",
         "shiftToNonNegativeDescription": "Reports travel from bottomed-out, so every value is positive. Uncheck to show signed adjustments from the current position.",
         "applyTiltPlane": "Apply Tilt Plane",
