@@ -9,6 +9,16 @@
       <canvas ref="rmsGraph"></canvas>
       <button
         v-if="store.isPINS"
+        @click="clearGraph"
+        :disabled="isClearing"
+        :title="$t('components.guider.clearGraph')"
+        :aria-label="$t('components.guider.clearGraph')"
+        class="absolute top-0 right-7 p-1 text-gray-400 hover:text-white disabled:opacity-50"
+      >
+        <TrashIcon class="w-5 h-5" />
+      </button>
+      <button
+        v-if="store.isPINS"
         @click="showSettings = !showSettings"
         class="absolute top-0 right-0 p-1 text-gray-400 hover:text-white"
       >
@@ -29,7 +39,7 @@ import { useI18n } from 'vue-i18n';
 import { useToastStore } from '@/store/toastStore';
 import { apiStore } from '@/store/store';
 import Phd2GraphSettings from './PHD2/pins/Phd2GraphSettings.vue';
-import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
+import { Cog6ToothIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const { t } = useI18n();
 const guiderStore = useGuiderStore();
@@ -38,7 +48,31 @@ const store = apiStore();
 const isLoading = ref(true);
 const rmsGraph = ref(null);
 const showSettings = ref(false);
+const isClearing = ref(false);
 let chart = null;
+
+async function clearGraph() {
+  const confirmed = await toastStore.showConfirmation(
+    t('components.guider.clearGraph'),
+    t('components.guider.clearGraphConfirm'),
+    t('components.guider.clearGraph'),
+    t('common.cancel')
+  );
+  if (!confirmed) return;
+
+  isClearing.value = true;
+  try {
+    await guiderStore.clearGraph();
+  } catch {
+    toastStore.showToast({
+      type: 'error',
+      title: t('components.guider.clearGraph'),
+      message: t('components.guider.clearGraphError'),
+    });
+  } finally {
+    isClearing.value = false;
+  }
+}
 
 const initGraph = () => {
   const size = guiderStore.chartInfo.HistorySize;

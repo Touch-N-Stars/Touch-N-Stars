@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Sequence: New Settings tab on the sequence page, with an option to lock the sequence controls automatically when a sequence starts. Unlocking stays manual.
+- Guiding (PINS): Button in the guider graph to clear the guide step history.
 
 ## [App6.3.1-beta2] - 2026-09-10
 

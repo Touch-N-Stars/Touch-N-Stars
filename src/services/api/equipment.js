@@ -200,7 +200,8 @@ export default {
   /* commands:
       - info
       - clear-calibration
-      - graph                 */
+      - graph
+      - graph/clear           */
 
   guiderAction(action) {
     const { BASE_URL } = getUrls();
@@ -210,6 +211,12 @@ export default {
   guiderCancelConnect() {
     const { BASE_URL } = getUrls();
     return simpleGetRequest(`${BASE_URL}/equipment/guider/cancel-connect`);
+  },
+
+  // PINS only: not available in the official ninaAPI build.
+  guiderClearGraph() {
+    const { BASE_URL } = getUrls();
+    return simpleGetRequest(`${BASE_URL}/equipment/guider/graph/clear`);
   },
 
   async guiderStart(calibrate) {

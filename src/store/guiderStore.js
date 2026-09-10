@@ -174,6 +174,20 @@ export const useGuiderStore = defineStore('guiderStore', {
       }
     },
 
+    // PINS only: the official ninaAPI build has no graph/clear route.
+    async clearGraph() {
+      const store = apiStore();
+      if (!store.isPINS) return;
+      try {
+        await apiService.guiderClearGraph();
+        // Refresh immediately so the chart empties without waiting for the 1s poll tick.
+        await this.fetchGraphInfos();
+      } catch (error) {
+        console.error('Error clearing the guider graph:', error);
+        throw error;
+      }
+    },
+
     async fetchPhd2Infos() {
       if (this.isFetchingPhd2Infos) {
         return;
