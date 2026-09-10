@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [App6.3.1-beta2] - 2026-09-10
 
+### Added
+
+- Settings: New option to lock the sequence controls automatically when a sequence starts. Unlocking stays manual.
+
 ### Changed
 
 - Update Perihelion plugin. Thanks @OryxAstro 

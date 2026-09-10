@@ -631,6 +631,10 @@
         "title": "Retorn hàptic",
         "description": "Vibració breu en prémer els botons"
       },
+      "sequenceAutoLock": {
+        "title": "Bloqueja els controls de seqüència en iniciar",
+        "description": "Bloqueja automàticament els controls de seqüència quan comença una seqüència. El desbloqueig continua sent manual."
+      },
       "beta": {
         "title": "Canal d'actualització beta"
       },
@@ -837,6 +841,7 @@
       "download": "Descarrega"
     },
     "sequence": {
+      "title": "Seqüència",
       "stats": "Estadístiques",
       "noSequenceLoaded": "Cap seqüència carregada",
       "noSequenceData": "Encara no hi ha dades disponibles",

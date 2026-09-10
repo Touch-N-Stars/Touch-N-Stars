@@ -242,6 +242,7 @@ export const useSettingsStore = defineStore('settings', {
         this.loadStatusBarSettings(),
         this.loadSharedRigUiSettings(),
         sequenceStore.loadSequenceControlsLocked(),
+        sequenceStore.loadAutoLockControlsOnStart(),
         tppaStore.loadTppaSettings(),
       ]);
     },

@@ -548,6 +548,10 @@
         "title": "Wibracje dotykowe",
         "description": "Krótka wibracja przy naciśnięciu przycisków"
       },
+      "sequenceAutoLock": {
+        "title": "Blokuj sterowanie sekwencją przy starcie",
+        "description": "Automatycznie blokuje sterowanie sekwencją po jej uruchomieniu. Odblokowanie pozostaje ręczne."
+      },
       "beta": {
         "title": "Kanał aktualizacji beta"
       },
@@ -796,6 +800,7 @@
       "download": "Pobierz"
     },
     "sequence": {
+      "title": "Sekwencja",
       "stats": "Statystyki",
       "noSequenceLoaded": "Nie załadowano sekwencji",
       "noSequenceData": "Brak dostępnych danych",

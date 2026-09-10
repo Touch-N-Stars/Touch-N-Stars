@@ -12,6 +12,8 @@ export const useSequenceStore = defineStore('sequenceStore', {
     sequenceLoading: false,
     sequenceRunning: false,
     sequenceControlsLocked: false,
+    autoLockControlsOnStart: false,
+    sequenceRunningInitialized: false,
     sequenceEdit: false,
     sequenceIsEditable: true,
     targetName: '',
@@ -35,12 +37,25 @@ export const useSequenceStore = defineStore('sequenceStore', {
       this.sequenceLoading = !!isLoading;
     },
     setSequenceRunning(isRunning) {
+      // The very first status sync after startup only learns the state that was
+      // already there - it is not a start we should react to.
+      const isInitialSync = !this.sequenceRunningInitialized;
+      this.sequenceRunningInitialized = true;
+
       // Check if the sequence state has changed
       if (this.sequenceRunning !== isRunning) {
         // If the sequence is now running and it wasn't before, it has started
         if (isRunning && !this.sequenceRunning) {
           // ensure image names are retained for new run
           this.imageTargetNames = { ...this.imageTargetNames };
+
+          // Auto-lock the sequence controls so an accidental touch cannot modify a
+          // running sequence. This never unlocks - that stays a manual action.
+          // Skipped on the initial sync, otherwise reloading the app during a run
+          // would restore a lock the user had deliberately released.
+          if (this.autoLockControlsOnStart && !this.sequenceControlsLocked && !isInitialSync) {
+            this.setSequenceControlsLocked(true);
+          }
         }
         // If the sequence is no longer running and it was before, it has completed
         else if (!isRunning && this.sequenceRunning) {
@@ -77,6 +92,31 @@ export const useSequenceStore = defineStore('sequenceStore', {
         await apiService.updateSetting(
           'sequence_controls_locked',
           String(this.sequenceControlsLocked)
+        );
+      }
+    },
+
+    setAutoLockControlsOnStart(enabled) {
+      this.autoLockControlsOnStart = !!enabled;
+      this.saveAutoLockControlsOnStart();
+    },
+
+    async loadAutoLockControlsOnStart() {
+      const response = await apiService.getSetting('sequence_auto_lock_on_start');
+      if (response?.Response?.Value !== undefined) {
+        this.autoLockControlsOnStart = response.Response.Value === 'true';
+      }
+    },
+
+    async saveAutoLockControlsOnStart() {
+      const res = await apiService.createSetting({
+        Key: 'sequence_auto_lock_on_start',
+        Value: String(this.autoLockControlsOnStart),
+      });
+      if (res?.StatusCode === 409) {
+        await apiService.updateSetting(
+          'sequence_auto_lock_on_start',
+          String(this.autoLockControlsOnStart)
         );
       }
     },

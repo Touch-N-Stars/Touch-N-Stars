@@ -548,6 +548,10 @@
         "title": "Haptická odezva",
         "description": "Krátká vibrace při stisknutí tlačítek"
       },
+      "sequenceAutoLock": {
+        "title": "Zamknout ovládání sekvence při startu",
+        "description": "Při spuštění sekvence se ovládání sekvence automaticky zamkne. Odemknutí zůstává manuální."
+      },
       "beta": {
         "title": "Beta aktualizační kanál"
       },
@@ -796,6 +800,7 @@
       "download": "Stáhnout"
     },
     "sequence": {
+      "title": "Sekvence",
       "stats": "Statistiky",
       "noSequenceLoaded": "Žádná načtená sekvence",
       "noSequenceData": "zatím nejsou k dispozici žádná data",

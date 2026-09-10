@@ -548,6 +548,10 @@
         "title": "Respuesta háptica",
         "description": "Vibración breve al pulsar los botones"
       },
+      "sequenceAutoLock": {
+        "title": "Bloquear los controles de secuencia al iniciar",
+        "description": "Bloquea automáticamente los controles de secuencia cuando comienza una secuencia. El desbloqueo sigue siendo manual."
+      },
       "beta": {
         "title": "Canal de actualización beta"
       },
@@ -796,6 +800,7 @@
       "download": "Descargar"
     },
     "sequence": {
+      "title": "Secuencia",
       "stats": "Estadísticas",
       "noSequenceLoaded": "No hay sequencia cargada",
       "noSequenceData": "No hay datos disponibles",

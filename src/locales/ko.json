@@ -631,6 +631,10 @@
         "title": "햅틱 피드백",
         "description": "버튼을 누를 때 짧게 진동"
       },
+      "sequenceAutoLock": {
+        "title": "시퀀스 시작 시 컨트롤 잠금",
+        "description": "시퀀스가 시작되면 시퀀스 컨트롤을 자동으로 잠급니다. 잠금 해제는 수동으로 유지됩니다."
+      },
       "beta": {
         "title": "베타 업데이트 채널"
       },
@@ -837,6 +841,7 @@
       "download": "다운로드"
     },
     "sequence": {
+      "title": "시퀀스",
       "stats": "통계",
       "noSequenceLoaded": "불러온 시퀀스 없음",
       "noSequenceData": "아직 사용 가능한 데이터가 없습니다",

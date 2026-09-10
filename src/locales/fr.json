@@ -548,6 +548,10 @@
         "title": "Retour haptique",
         "description": "Brève vibration lors de l'appui sur les boutons"
       },
+      "sequenceAutoLock": {
+        "title": "Verrouiller les contrôles de séquence au démarrage",
+        "description": "Verrouille automatiquement les contrôles de séquence au démarrage d'une séquence. Le déverrouillage reste manuel."
+      },
       "beta": {
         "title": "Canal de mise à jour bêta"
       },
@@ -796,6 +800,7 @@
       "download": "Télécharger"
     },
     "sequence": {
+      "title": "Séquence",
       "stats": "Statistiques",
       "noSequenceLoaded": "Aucune séquence chargée",
       "noSequenceData": "Aucune donnée disponible",

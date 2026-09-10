@@ -599,6 +599,10 @@
         "title": "触覚フィードバック",
         "description": "ボタンを押したときに短く振動します"
       },
+      "sequenceAutoLock": {
+        "title": "シーケンス開始時に操作をロック",
+        "description": "シーケンスの開始時にシーケンス操作を自動でロックします。ロック解除は手動のままです。"
+      },
       "beta": {
         "title": "ベータ版アップデート・チャンネル"
       },
@@ -805,6 +809,7 @@
       "download": "ダウンロード"
     },
     "sequence": {
+      "title": "シーケンス",
       "stats": "統計",
       "noSequenceLoaded": "シーケンスが読み込まれていません",
       "noSequenceData": "利用可能なデータがまだありません",

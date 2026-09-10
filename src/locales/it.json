@@ -548,6 +548,10 @@
         "title": "Feedback aptico",
         "description": "Breve vibrazione alla pressione dei pulsanti"
       },
+      "sequenceAutoLock": {
+        "title": "Blocca i controlli della sequenza all'avvio",
+        "description": "Blocca automaticamente i controlli della sequenza quando una sequenza si avvia. Lo sblocco resta manuale."
+      },
       "beta": {
         "title": "Canale di aggiornamento beta"
       },
@@ -796,6 +800,7 @@
       "download": "Scarica"
     },
     "sequence": {
+      "title": "Sequenza",
       "stats": "Statistiche",
       "noSequenceLoaded": "Nessuna sequenza caricata",
       "noSequenceData": "Nessun dato disponibile",
