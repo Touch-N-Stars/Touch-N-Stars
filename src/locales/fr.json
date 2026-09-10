@@ -1256,6 +1256,9 @@
         "reverse_axis": "Direction des axes",
         "slewRateDriverControlled": "Le taux de balayage est contrôlé par le pilote",
         "slewRateUnavailable": "Connectez un support pour ajuster la vitesse de balayage",
+        "parkedNotice": "La monture est parquée — déparquez-la pour changer le mode de suivi",
+        "parkedShort": "Monture parquée",
+        "parkedHint": "Déparquez la monture pour la déplacer manuellement",
         "confirmParkMessage": "Parquer la monture ? Cela arrête le suivi et déplace la monture vers sa position de repos.",
         "confirmParkTitle": "Parquer la monture"
       },

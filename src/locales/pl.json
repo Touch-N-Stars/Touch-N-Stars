@@ -1256,6 +1256,9 @@
         "reverse_axis": "Kierunek osi",
         "slewRateDriverControlled": "Szybkość narastania jest kontrolowana przez sterownik",
         "slewRateUnavailable": "Podłącz uchwyt, aby wyregulować prędkość narastania",
+        "parkedNotice": "Montaż jest zaparkowany — odparkuj, aby zmienić tryb śledzenia",
+        "parkedShort": "Montaż jest zaparkowany",
+        "parkedHint": "Odparkuj montaż, aby poruszać nim ręcznie",
         "confirmParkMessage": "Zaparkować montaż? Spowoduje to zatrzymanie śledzenia i przesunięcie montażu do pozycji parkowania.",
         "confirmParkTitle": "Zaparkuj montaż"
       },

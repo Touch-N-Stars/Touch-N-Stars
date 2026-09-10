@@ -5,11 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App6.3.1-beta3] - unreleased 
+## [App6.3.1-beta3] - 2026-09-10 
 
 ### Added
 - Sequence: New Settings tab on the sequence page, with an option to lock the sequence controls automatically when a sequence starts. Unlocking stays manual.
 - Guiding (PINS): Button in the guider graph to clear the guide step history.
+
+### Changed
+- Mount: Tracking mode and manual control are locked while the mount is parked, with an unpark button in the hint.
+
+### Fixed
+- Mount: Manual slew works right after connecting on PINS mounts that need the slew rate to be sent explicitly (e.g. ZWO AM3/AM5).
 
 ## [App6.3.1-beta2] - 2026-09-10
 

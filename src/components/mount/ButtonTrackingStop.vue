@@ -2,6 +2,7 @@
   <button
     v-if="store.mountInfo.CanSetTrackingEnabled"
     @click="setTrackingMode(4)"
+    :disabled="store.mountIsParked"
     class="tns-btn-danger"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Stopped' }"
   >
@@ -20,6 +21,8 @@ const { t } = useI18n();
 
 async function setTrackingMode(mode) {
   //0=Siderial, 1=Lunar, 2=Solar, 3=King, 4=Stopped
+  // The mount can be parked between render and click (e.g. by a running sequence).
+  if (store.mountIsParked) return;
   try {
     const response = await apiService.setTrackingMode(mode);
     if (!response.Success) return;

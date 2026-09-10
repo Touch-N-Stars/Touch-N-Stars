@@ -1288,6 +1288,9 @@
         "slewRate": "Velocitat de desplaçament",
         "slewRateDriverControlled": "La velocitat de desplaçament la controla el controlador",
         "slewRateUnavailable": "Connecta una muntura per ajustar la velocitat de desplaçament",
+        "parkedNotice": "La muntura està aparcada — desaparca-la per canviar el mode de seguiment",
+        "parkedShort": "Muntura aparcada",
+        "parkedHint": "Desaparca la muntura per moure-la manualment",
         "siderial": "Sideral",
         "sync_coordinates_to_mount": "Sincronitza coordenades amb la muntura",
         "errors": {

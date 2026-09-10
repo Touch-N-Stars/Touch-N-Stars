@@ -1297,6 +1297,9 @@
         "reverse_axis": "축 방향",
         "slewRateDriverControlled": "슬루율은 드라이버에 의해 제어됩니다.",
         "slewRateUnavailable": "슬루율을 조정하려면 마운트를 연결하세요.",
+        "parkedNotice": "마운트가 파킹되어 있습니다 — 추적 모드를 변경하려면 파킹을 해제하세요",
+        "parkedShort": "마운트 파킹됨",
+        "parkedHint": "수동으로 움직이려면 파킹을 해제하세요",
         "confirmParkMessage": "마운트를 파킹하시겠습니까? 추적이 중지되고 마운트가 파킹 위치로 이동합니다.",
         "confirmParkTitle": "마운트 파킹"
       },

@@ -1256,6 +1256,9 @@
         "reverse_axis": "Asrichting",
         "slewRateDriverControlled": "De zwenksnelheid wordt geregeld door de bestuurder",
         "slewRateUnavailable": "Sluit een steun aan om de zwenksnelheid aan te passen",
+        "parkedNotice": "Montering is geparkeerd — uitparkeren om de volgmodus te wijzigen",
+        "parkedShort": "Montering is geparkeerd",
+        "parkedHint": "Parkeer de montering uit om handmatig te bewegen",
         "confirmParkMessage": "Montering parkeren? Dit stopt het volgen en beweegt de montering naar de parkeerpositie.",
         "confirmParkTitle": "Montering parkeren"
       },

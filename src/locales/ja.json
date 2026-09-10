@@ -1265,6 +1265,9 @@
         "reverse_axis": "軸方向",
         "slewRateDriverControlled": "スルーレートはドライバーによって制御されます",
         "slewRateUnavailable": "マウントを接続してスルーレートを調整する",
+        "parkedNotice": "赤道儀はパーク中です — 追尾モードを変更するにはアンパークしてください",
+        "parkedShort": "赤道儀はパーク中です",
+        "parkedHint": "手動で動かすにはアンパークしてください",
         "confirmParkMessage": "赤道儀をパークしますか？ 追尾を停止し、赤道儀をパーク位置へ移動します。",
         "confirmParkTitle": "赤道儀をパーク"
       },

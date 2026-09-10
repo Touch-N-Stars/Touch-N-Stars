@@ -1256,6 +1256,9 @@
         "reverse_axis": "Směr os",
         "slewRateDriverControlled": "Slew rate is controlled by the driver",
         "slewRateUnavailable": "Connect a mount to adjust the slew rate",
+        "parkedNotice": "Montáž je zaparkovaná — pro změnu režimu sledování ji odparkujte",
+        "parkedShort": "Montáž je zaparkovaná",
+        "parkedHint": "Pro ruční pohyb montáž odparkujte",
         "confirmParkMessage": "Zaparkovat montáž? Tím se zastaví sledování a montáž se přesune do parkovací polohy.",
         "confirmParkTitle": "Zaparkovat montáž"
       },

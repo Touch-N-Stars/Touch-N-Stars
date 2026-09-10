@@ -1256,6 +1256,9 @@
         "reverse_axis": "Direzione assi",
         "slewRateDriverControlled": "La velocità di rotazione è controllata dal conducente",
         "slewRateUnavailable": "Collegare una montatura per regolare la velocità di rotazione",
+        "parkedNotice": "La montatura è parcheggiata — rimuovi il parcheggio per cambiare l'inseguimento",
+        "parkedShort": "Montatura parcheggiata",
+        "parkedHint": "Rimuovi il parcheggio per muovere la montatura manualmente",
         "confirmParkMessage": "Parcheggiare la montatura? Questo interrompe l'inseguimento e sposta la montatura nella sua posizione di parcheggio.",
         "confirmParkTitle": "Parcheggia montatura"
       },

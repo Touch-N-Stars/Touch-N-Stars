@@ -215,6 +215,11 @@ export const apiStore = defineStore('store', {
     // finished. AtPark rules out a running slew, so AtPark wins.
     mountIsSlewing: (state) => Boolean(state.mountInfo.Slewing) && !state.mountInfo.AtPark,
 
+    // A parked mount rejects tracking changes and axis moves. AtPark is only meaningful
+    // while the mount is connected; on disconnect mountInfo is reset to
+    // { Connected: false, TrackingMode: null } and AtPark is undefined.
+    mountIsParked: (state) => Boolean(state.mountInfo.Connected && state.mountInfo.AtPark),
+
     // The guider only counts as running while it actually guides or calibrates.
     // Every other PHD2 app state (Stopped, Looping, Selected, Paused, LostLock)
     // still allows changing settings.
