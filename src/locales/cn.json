@@ -3796,6 +3796,7 @@
         "applyingPositions": "正在申请...",
         "savingConfiguration": "保存...",
         "fourScrewHint": "Adjust opposing screws as a pair (loosen one, tighten the other) so the plate cannot bind",
+        "fourScrewApplyUnsupported": "仅 3 螺丝倾斜器支持应用到设备",
         "screwCountFour": "4 screws (one per corner)",
         "screwCountThree": "3 screws (equilateral)",
         "shiftToNonNegative": "Screws start fully seated",

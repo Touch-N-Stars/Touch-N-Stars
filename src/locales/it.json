@@ -3796,6 +3796,7 @@
         "applyingPositions": "Applicazione...",
         "savingConfiguration": "Risparmio...",
         "fourScrewHint": "Regolare le viti opposte in coppia (allentarne una, serrare l'altra) in modo che la placca non possa bloccarsi",
+        "fourScrewApplyUnsupported": "L'applicazione al dispositivo è supportata solo per ribaltatori a 3 viti",
         "screwCountFour": "4 viti (una per angolo)",
         "screwCountThree": "3 viti (equilatero)",
         "shiftToNonNegative": "Le viti iniziano completamente in sede",

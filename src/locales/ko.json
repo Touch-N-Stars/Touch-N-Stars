@@ -3907,6 +3907,7 @@
         "applyingPositions": "적용 중...",
         "savingConfiguration": "저장 중...",
         "fourScrewHint": "플레이트가 묶이지 않도록 반대쪽 나사를 한 쌍으로 조정(하나는 풀고 다른 하나는 조임)",
+        "fourScrewApplyUnsupported": "장치에 적용은 나사 3개 틸터에서만 지원됩니다",
         "screwCountFour": "나사 4개(모서리당 1개)",
         "screwCountThree": "나사 3개(등변)",
         "shiftToNonNegative": "나사가 완전히 장착되기 시작합니다.",

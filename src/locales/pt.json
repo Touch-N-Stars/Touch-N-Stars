@@ -3796,6 +3796,7 @@
         "applyingPositions": "Aplicando...",
         "savingConfiguration": "Salvando...",
         "fourScrewHint": "Ajuste os parafusos opostos como um par (solte um, aperte o outro) para que a placa não possa prender",
+        "fourScrewApplyUnsupported": "Aplicar ao dispositivo só é suportado para inclinadores de 3 parafusos",
         "screwCountFour": "4 parafusos (um por canto)",
         "screwCountThree": "3 parafusos (equiláteros)",
         "shiftToNonNegative": "Os parafusos começam totalmente assentados",

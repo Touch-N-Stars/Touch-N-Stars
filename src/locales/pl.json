@@ -3796,6 +3796,7 @@
         "applyingPositions": "Stosowanie...",
         "savingConfiguration": "Oszczędność...",
         "fourScrewHint": "Wyreguluj przeciwne śruby parami (poluzuj jedną, dokręć drugą), aby płytka nie mogła się zakleszczyć",
+        "fourScrewApplyUnsupported": "Zastosowanie na urządzeniu jest obsługiwane tylko dla tilterów z 3 śrubami",
         "screwCountFour": "4 śruby (po jednej na narożnik)",
         "screwCountThree": "3 śruby (równoboczne)",
         "shiftToNonNegative": "Śruby zaczynają się od pełnego osadzenia",

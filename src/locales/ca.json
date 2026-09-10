@@ -3998,6 +3998,7 @@
         "applyingPositions": "Aplicant...",
         "savingConfiguration": "Desant...",
         "fourScrewHint": "Ajusteu els cargols oposats com a parell (afluixeu-ne un, apreteu l'altre) perquè la placa no s'enganxi",
+        "fourScrewApplyUnsupported": "Aplicar-ho a un dispositiu només s'admet per a inclinadors de 3 cargols",
         "screwCountFour": "4 cargols (un per cantonada)",
         "screwCountThree": "3 cargols (equilàters)",
         "shiftToNonNegative": "Els cargols comencen completament asseguts",

@@ -3796,6 +3796,7 @@
         "applyingPositions": "Aplicando...",
         "savingConfiguration": "Guardando...",
         "fourScrewHint": "Ajuste los tornillos opuestos como un par (afloje uno, apriete el otro) para que la placa no se pueda atascar.",
+        "fourScrewApplyUnsupported": "Aplicar al dispositivo solo es compatible con inclinadores de 3 tornillos",
         "screwCountFour": "4 tornillos (uno por esquina)",
         "screwCountThree": "3 tornillos (equiláteros)",
         "shiftToNonNegative": "Los tornillos comienzan completamente asentados.",

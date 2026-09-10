@@ -3907,6 +3907,7 @@
         "applyingPositions": "適用中...",
         "savingConfiguration": "保存中...",
         "fourScrewHint": "プレートが固着しないように、向かい合うネジを 1 組として調整します (1 つを緩め、もう 1 つを締めます)。",
+        "fourScrewApplyUnsupported": "デバイスへの適用は 3 本ネジのティルターのみ対応しています",
         "screwCountFour": "ネジ 4 本 (各コーナーに 1 本)",
         "screwCountThree": "ネジ3本（等辺）",
         "shiftToNonNegative": "ネジが完全に固定され始めます",

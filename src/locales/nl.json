@@ -3796,6 +3796,7 @@
         "applyingPositions": "Toepassen...",
         "savingConfiguration": "Besparing...",
         "fourScrewHint": "Stel de tegenoverliggende schroeven als een paar af (maak de ene los, draai de andere vast) zodat de plaat niet kan vastlopen",
+        "fourScrewApplyUnsupported": "Toepassen op een apparaat wordt alleen ondersteund voor tilters met 3 schroeven",
         "screwCountFour": "4 schroeven (één per hoek)",
         "screwCountThree": "3 schroeven (gelijkzijdig)",
         "shiftToNonNegative": "Schroeven beginnen volledig op hun plaats",

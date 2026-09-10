@@ -3912,6 +3912,7 @@
         "applyingPositions": "Applying...",
         "savingConfiguration": "Saving...",
         "fourScrewHint": "Passen Sie die gegenüberliegenden Schrauben paarweise an (eine lösen, die andere festziehen), damit sich die Platte nicht verklemmen kann",
+        "fourScrewApplyUnsupported": "Das Anwenden auf ein Gerät wird nur für Tilter mit 3 Schrauben unterstützt",
         "screwCountFour": "4 Schrauben (eine pro Ecke)",
         "screwCountThree": "3 Schrauben (gleichseitig)",
         "shiftToNonNegative": "Die Schrauben sitzen vollständig fest",
