@@ -1,90 +1,116 @@
 <template>
   <div class="relative">
-    <div
-      class="grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 place-items-center w-48 sm:w-64 mx-auto move-axis-grid"
-    >
-      <!-- Obere Reihe (Nord) -->
-      <div></div>
-      <button
-        @mousedown="sendCommand('north')"
-        @mouseup="sendStop"
-        @mouseleave="sendStop"
-        @touchstart.prevent="handleTouchStart('north', $event)"
-        @touchend.prevent="handleTouchEnd"
-        @touchcancel.prevent="handleTouchEnd"
-        @blur="sendStop"
-        @contextmenu.prevent
-        class="btn"
-        :class="mountStore.lastDirection === 'north' ? 'glow-green' : ''"
+    <!-- Own positioning context for the parked overlay, so it covers the direction pad
+         only and leaves the slew rate control below it usable. -->
+    <div class="relative">
+      <div
+        class="grid grid-cols-3 gap-2 sm:gap-4 p-2 sm:p-4 place-items-center w-48 sm:w-64 mx-auto move-axis-grid"
       >
-        <ArrowUpCircleIcon
-          :class="mountStore.lastDirection === 'north' ? 'text-green-500' : 'text-gray-400'"
-          class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-        />
-      </button>
-      <div></div>
+        <!-- Obere Reihe (Nord) -->
+        <div></div>
+        <button
+          :disabled="store.mountIsParked"
+          @mousedown="sendCommand('north')"
+          @mouseup="sendStop"
+          @mouseleave="sendStop"
+          @touchstart.prevent="handleTouchStart('north', $event)"
+          @touchend.prevent="handleTouchEnd"
+          @touchcancel.prevent="handleTouchEnd"
+          @blur="sendStop"
+          @contextmenu.prevent
+          class="btn"
+          :class="mountStore.lastDirection === 'north' ? 'glow-green' : ''"
+        >
+          <ArrowUpCircleIcon
+            :class="mountStore.lastDirection === 'north' ? 'text-green-500' : 'text-gray-400'"
+            class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
+          />
+        </button>
+        <div></div>
 
-      <!-- Mittlere Reihe (West, Stop, Ost) -->
-      <button
-        @mousedown="sendCommand('west')"
-        @mouseup="sendStop"
-        @mouseleave="sendStop"
-        @touchstart.prevent="handleTouchStart('west', $event)"
-        @touchend.prevent="handleTouchEnd"
-        @touchcancel.prevent="handleTouchEnd"
-        @blur="sendStop"
-        @contextmenu.prevent
-        class="btn"
-        :class="mountStore.lastDirection === 'west' ? 'glow-green' : ''"
-      >
-        <ArrowLeftCircleIcon
-          :class="mountStore.lastDirection === 'west' ? 'text-green-500' : 'text-gray-400'"
-          class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-        />
-      </button>
-      <button @click="sendStop" class="btn btn-stop" :disabled="!mountStore.wsIsConnected">
-        <StopCircleIcon
-          class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-          :class="mountStore.lastDirection === '' ? 'text-red-500' : 'text-gray-400'"
-        />
-      </button>
-      <button
-        @mousedown="sendCommand('east')"
-        @mouseup="sendStop"
-        @mouseleave="sendStop"
-        @touchstart.prevent="handleTouchStart('east', $event)"
-        @touchend.prevent="handleTouchEnd"
-        @touchcancel.prevent="handleTouchEnd"
-        @blur="sendStop"
-        @contextmenu.prevent
-        class="btn"
-        :class="mountStore.lastDirection === 'east' ? 'glow-green' : ''"
-      >
-        <ArrowRightCircleIcon
-          :class="mountStore.lastDirection === 'east' ? 'text-green-500' : 'text-gray-400'"
-          class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-        />
-      </button>
+        <!-- Mittlere Reihe (West, Stop, Ost) -->
+        <button
+          :disabled="store.mountIsParked"
+          @mousedown="sendCommand('west')"
+          @mouseup="sendStop"
+          @mouseleave="sendStop"
+          @touchstart.prevent="handleTouchStart('west', $event)"
+          @touchend.prevent="handleTouchEnd"
+          @touchcancel.prevent="handleTouchEnd"
+          @blur="sendStop"
+          @contextmenu.prevent
+          class="btn"
+          :class="mountStore.lastDirection === 'west' ? 'glow-green' : ''"
+        >
+          <ArrowLeftCircleIcon
+            :class="mountStore.lastDirection === 'west' ? 'text-green-500' : 'text-gray-400'"
+            class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
+          />
+        </button>
+        <!-- Deliberately not disabled while parked: an emergency stop must always get through. -->
+        <button @click="sendStop" class="btn btn-stop" :disabled="!mountStore.wsIsConnected">
+          <StopCircleIcon
+            class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
+            :class="mountStore.lastDirection === '' ? 'text-red-500' : 'text-gray-400'"
+          />
+        </button>
+        <button
+          :disabled="store.mountIsParked"
+          @mousedown="sendCommand('east')"
+          @mouseup="sendStop"
+          @mouseleave="sendStop"
+          @touchstart.prevent="handleTouchStart('east', $event)"
+          @touchend.prevent="handleTouchEnd"
+          @touchcancel.prevent="handleTouchEnd"
+          @blur="sendStop"
+          @contextmenu.prevent
+          class="btn"
+          :class="mountStore.lastDirection === 'east' ? 'glow-green' : ''"
+        >
+          <ArrowRightCircleIcon
+            :class="mountStore.lastDirection === 'east' ? 'text-green-500' : 'text-gray-400'"
+            class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
+          />
+        </button>
 
-      <!-- Untere Reihe (Süd) -->
-      <div></div>
-      <button
-        @mousedown="sendCommand('south')"
-        @mouseup="sendStop"
-        @mouseleave="sendStop"
-        @touchstart.prevent="handleTouchStart('south', $event)"
-        @touchend.prevent="handleTouchEnd"
-        @touchcancel.prevent="handleTouchEnd"
-        @blur="sendStop"
-        @contextmenu.prevent
-        class="btn"
-        :class="mountStore.lastDirection === 'south' ? 'glow-green' : ''"
+        <!-- Untere Reihe (Süd) -->
+        <div></div>
+        <button
+          :disabled="store.mountIsParked"
+          @mousedown="sendCommand('south')"
+          @mouseup="sendStop"
+          @mouseleave="sendStop"
+          @touchstart.prevent="handleTouchStart('south', $event)"
+          @touchend.prevent="handleTouchEnd"
+          @touchcancel.prevent="handleTouchEnd"
+          @blur="sendStop"
+          @contextmenu.prevent
+          class="btn"
+          :class="mountStore.lastDirection === 'south' ? 'glow-green' : ''"
+        >
+          <ArrowDownCircleIcon
+            :class="mountStore.lastDirection === 'south' ? 'text-green-500' : 'text-gray-400'"
+            class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
+          />
+        </button>
+      </div>
+      <!-- Parked Overlay. Only while the socket is up, so it never competes with the
+           connecting overlay below, which keeps its z-50 precedence on the outer container. -->
+      <div
+        v-if="store.mountIsParked && mountStore.wsIsConnected"
+        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40"
       >
-        <ArrowDownCircleIcon
-          :class="mountStore.lastDirection === 'south' ? 'text-green-500' : 'text-gray-400'"
-          class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-        />
-      </button>
+        <div class="flex flex-col items-center gap-2 text-center px-3">
+          <LockClosedIcon class="w-7 h-7 text-status-warn" />
+          <p class="text-sm text-content">{{ $t('components.mount.control.parkedShort') }}</p>
+          <p class="text-xs text-content-faint">
+            {{ $t('components.mount.control.parkedHint') }}
+          </p>
+          <!-- w-auto! overrides the w-full from the tns-btn base, which would stretch the
+               button across the whole pad. -->
+          <ButtonUnpark class="w-auto! px-4! py-1.5! text-xs! mt-1" />
+        </div>
+      </div>
     </div>
     <div
       class="flex flex-col bg-gray-900/80 w-full border border-gray-300 p-1 sm:p-2 mt-1 rounded-xl gap-1"
@@ -113,12 +139,14 @@ import { useMountStore } from '@/store/mountStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import SetSlewRate from './settings/setSlewRate.vue';
 import setSlewRatePins from './setSlewRatePins.vue';
+import ButtonUnpark from '@/components/mount/ButtonUnpark.vue';
 import {
   ArrowRightCircleIcon,
   ArrowLeftCircleIcon,
   ArrowDownCircleIcon,
   ArrowUpCircleIcon,
   StopCircleIcon,
+  LockClosedIcon,
 } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 
@@ -136,6 +164,11 @@ const sendCommand = (direction) => {
     return;
   }
 
+  if (store.mountIsParked) {
+    console.warn('Mount is parked, ignoring move command.');
+    return;
+  }
+
   // Stop a still-running interval before starting a new one
   if (commandInterval) {
     clearInterval(commandInterval);
@@ -150,6 +183,14 @@ const sendCommand = (direction) => {
       console.error('WebSocket lost during command.');
       clearInterval(commandInterval);
       commandInterval = null;
+      return;
+    }
+
+    // A sequence can park the mount while a button is still held down. Without this the
+    // repeat would keep firing into the void until the 30s failsafe.
+    if (store.mountIsParked) {
+      console.warn('Mount parked during command, stopping.');
+      sendStop();
       return;
     }
 

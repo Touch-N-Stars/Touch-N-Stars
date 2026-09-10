@@ -1288,6 +1288,9 @@
         "slewRate": "Slew rate",
         "slewRateDriverControlled": "Slew rate is controlled by the driver",
         "slewRateUnavailable": "Connect a mount to adjust the slew rate",
+        "parkedNotice": "Mount is parked — unpark it to change the tracking mode",
+        "parkedShort": "Mount is parked",
+        "parkedHint": "Unpark the mount to move it manually",
         "siderial": "Sidereal",
         "sync_coordinates_to_mount": "Sync coordinates with mount",
         "errors": {

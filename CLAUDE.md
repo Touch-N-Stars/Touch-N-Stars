@@ -85,6 +85,15 @@ Use the `tns-*` utilities from `src/assets/tailwind.css` (`tns-card`, `tns-btn-p
 `tns-btn-secondary`, `tns-input`, `tns-select`, `min-h-touch`), not the legacy raw
 gray/cyan palette still present in older screens.
 
+The `tns-btn` base carries **`w-full`** (only `tns-btn-ghost` opts out with `w-auto`). That is
+right for a button that owns its row, but a `tns-btn-*` dropped into a flex row next to other
+content claims the whole width and refuses to shrink — the neighbouring text gets squeezed into
+a one-word-per-line column instead. Reusing an existing button component in a new layout is the
+usual way to hit this. Fix at the call site with **`w-auto!`**; the `!` is required because
+Tailwind sorts `w-full` after `w-auto`, so the base would otherwise win. `shrink-0` does not
+help — it makes it worse. Same trap for the base `px-4`/`text-sm` when a button has to fit a
+cramped row: override with `px-2! text-xs!` (see `ButtonTrackingMode.vue`).
+
 Haptics: a global click listener (`src/services/globalHaptics.js`) taps every control that
 actually does something - `<button>`, `[role=button]`, checkboxes/radios and navbar entries.
 Clickable rows and cards, labels, plain links and `<select>` stay silent. Do **not** call

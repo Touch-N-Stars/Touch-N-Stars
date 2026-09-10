@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Sequence: New Settings tab on the sequence page, with an option to lock the sequence controls automatically when a sequence starts. Unlocking stays manual.
 
+### Changed
+- Mount: Tracking mode and manual control are locked while the mount is parked, with an unpark button in the hint.
+
 ## [App6.3.1-beta2] - 2026-09-10
 
 ### Changed

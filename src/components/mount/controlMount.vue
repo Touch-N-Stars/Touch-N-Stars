@@ -12,6 +12,9 @@
     <p class="text-xs">{{ $t('components.mount.control.trackingMode') }}</p>
     <div class="grow ml-2 h-[1px] bg-line-strong"></div>
   </div>
+  <!-- Renders itself only while the mount is parked; the manual control below has its
+       own overlay, so one notice per page is enough. -->
+  <MountParkedNotice class="mt-2" />
   <!-- Auto-fit grid: fits as many >=4rem buttons per row as the card allows and
        wraps the rest to the next row, so the five tracking buttons never spill
        over the card edge on narrow screens. Each cell keeps a >=48px tap size. -->
@@ -59,5 +62,6 @@ import ButtonPark from '@/components/mount/ButtonPark.vue';
 import ButtonSlewStop from '@/components/mount//ButtonSlewStop.vue';
 import ButtonTrackingMode from '@/components/mount/ButtonTrackingMode.vue';
 import ButtonTrackingStop from '@/components/mount/ButtonTrackingStop.vue';
+import MountParkedNotice from '@/components/mount/MountParkedNotice.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 </script>

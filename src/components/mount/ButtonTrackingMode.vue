@@ -5,6 +5,7 @@
   <button
     v-if="store.mountInfo.CanSetTrackingEnabled"
     @click="setTrackingMode(0)"
+    :disabled="store.mountIsParked"
     class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Sidereal' }"
   >
@@ -12,6 +13,7 @@
   </button>
   <button
     @click="setTrackingMode(1)"
+    :disabled="store.mountIsParked"
     class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Lunar' }"
   >
@@ -19,6 +21,7 @@
   </button>
   <button
     @click="setTrackingMode(2)"
+    :disabled="store.mountIsParked"
     class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'Solar' }"
   >
@@ -26,6 +29,7 @@
   </button>
   <button
     @click="setTrackingMode(3)"
+    :disabled="store.mountIsParked"
     class="tns-btn-secondary px-2! text-xs!"
     :class="{ 'border-accent': store.mountInfo.TrackingMode === 'King' }"
   >
@@ -43,6 +47,8 @@ const { t } = useI18n();
 
 async function setTrackingMode(mode) {
   //0=Sidereal, 1=Lunar, 2=Solar, 3=King, 5=Stopped
+  // The mount can be parked between render and click (e.g. by a running sequence).
+  if (store.mountIsParked) return;
   try {
     const response = await apiService.setTrackingMode(mode);
     if (!response.Success) return;
