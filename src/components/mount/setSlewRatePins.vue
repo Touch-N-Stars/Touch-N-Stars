@@ -148,10 +148,12 @@ async function loadCapability() {
       const stored = settingsStore.mount.slewRateIndex;
       const idx = selected >= 0 ? selected : stored;
       discreteIndex.value = Math.min(Math.max(0, idx ?? 0), Math.max(0, cap.Options.length - 1));
+      assertRateOnDriver({ index: discreteIndex.value });
     } else if (kind.value === 'continuous') {
       const stored = settingsStore.mount.slewRate;
       const v = cap.CurrentValue ?? stored ?? cap.Min;
       continuousValue.value = Math.min(Math.max(cap.Min, v), cap.Max);
+      assertRateOnDriver({ value: continuousValue.value });
     }
   } catch {
     // 404 / network: mount not connected — show the unavailable hint.
@@ -174,6 +176,16 @@ function onContinuousInput(event) {
   settingsStore.mount.slewRate = value;
   settingsStore.saveMountSettings();
   postRate({ value });
+}
+
+// Some INDI drivers (confirmed: ZWO AM3/AM5) only push the rate to the mount once they
+// receive a TELESCOPE_SLEW_RATE write. In PINS mode the move command carries the direction
+// only, so without this the mount does not move until the user has touched the slider once.
+// Re-asserting the rate the driver already reports is a no-op for every other driver.
+function assertRateOnDriver(selection) {
+  apiService
+    .setMountSlewRate(selection)
+    .catch((e) => console.error('setMountSlewRate (initial assert) failed', e));
 }
 
 function postRate(selection) {

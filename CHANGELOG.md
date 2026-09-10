@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Mount: Tracking mode and manual control are locked while the mount is parked, with an unpark button in the hint.
 
+### Fixed
+- Mount: Manual slew works right after connecting on PINS mounts that need the slew rate to be sent explicitly (e.g. ZWO AM3/AM5).
+
 ## [App6.3.1-beta2] - 2026-09-10
 
 ### Changed
