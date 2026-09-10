@@ -622,8 +622,11 @@
           />
         </div>
 
-        <!-- Tilter Screw Count (only for manual tilter) -->
-        <div v-if="shouldShowManualTilterUI()" class="flex flex-col gap-2">
+        <!-- Tilter Screw Count (manual tilter, backends that support it) -->
+        <div
+          v-if="shouldShowManualTilterUI() && backendSupportsScrewCount"
+          class="flex flex-col gap-2"
+        >
           <label class="text-xs text-gray-400">{{
             $t('plugins.hocusfocus.tilter.tilterScrewCount')
           }}</label>
@@ -941,7 +944,14 @@ const SCREW_LAYOUTS = {
   ],
 };
 
-const screwCount = computed(() => (Number(sensorConfig.value.TilterScrewCount) === 4 ? 4 : 3));
+// Whether the backend understands the screw-count contract. Plugin versions older than the
+// 4-screw support ignore `screwCount` and always compute a 3-screw solution, so the option
+// stays hidden there rather than showing silently wrong guidance for a 4-screw plate.
+const backendSupportsScrewCount = ref(false);
+
+const screwCount = computed(() =>
+  backendSupportsScrewCount.value && Number(sensorConfig.value.TilterScrewCount) === 4 ? 4 : 3
+);
 
 const screwCountLabel = computed(() =>
   screwCount.value === 4
@@ -1324,6 +1334,8 @@ async function loadSensorConfiguration() {
         TilterThreadPitch: response.TilterThreadPitch ?? 0,
         TilterScrewCount: response.TilterScrewCount === 4 ? 4 : 3,
       };
+      backendSupportsScrewCount.value =
+        response.TilterScrewCount !== undefined && response.TilterScrewCount !== null;
       console.log('Sensor configuration loaded:', sensorConfig.value);
     }
   } catch (error) {
@@ -1562,6 +1574,14 @@ async function applyCalculatedPositions() {
   try {
     if (!calculatedPositions.value) {
       applyTiltPlaneError.value = 'No calculated positions available';
+      return;
+    }
+
+    // 4-screw plates are manual-only and this path drives exactly three actuators.
+    // Unreachable today (the Apply button is hidden in manual mode), but stated explicitly
+    // so a future change to the visibility rules cannot move 3 of 4 screws and report success.
+    if (calculatedPositions.value.ScrewCount === 4) {
+      applyTiltPlaneError.value = t('plugins.hocusfocus.tilter.fourScrewApplyUnsupported');
       return;
     }
 
