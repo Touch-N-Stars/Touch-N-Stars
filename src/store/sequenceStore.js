@@ -13,7 +13,8 @@ export const useSequenceStore = defineStore('sequenceStore', {
     sequenceRunning: false,
     sequenceControlsLocked: false,
     autoLockControlsOnStart: false,
-    sequenceRunningInitialized: false,
+    // Last run state a successful poll actually proved; null = never observed.
+    lastConfirmedSequenceRunning: null,
     sequenceEdit: false,
     sequenceIsEditable: true,
     targetName: '',
@@ -37,25 +38,12 @@ export const useSequenceStore = defineStore('sequenceStore', {
       this.sequenceLoading = !!isLoading;
     },
     setSequenceRunning(isRunning) {
-      // The very first status sync after startup only learns the state that was
-      // already there - it is not a start we should react to.
-      const isInitialSync = !this.sequenceRunningInitialized;
-      this.sequenceRunningInitialized = true;
-
       // Check if the sequence state has changed
       if (this.sequenceRunning !== isRunning) {
         // If the sequence is now running and it wasn't before, it has started
         if (isRunning && !this.sequenceRunning) {
           // ensure image names are retained for new run
           this.imageTargetNames = { ...this.imageTargetNames };
-
-          // Auto-lock the sequence controls so an accidental touch cannot modify a
-          // running sequence. This never unlocks - that stays a manual action.
-          // Skipped on the initial sync, otherwise reloading the app during a run
-          // would restore a lock the user had deliberately released.
-          if (this.autoLockControlsOnStart && !this.sequenceControlsLocked && !isInitialSync) {
-            this.setSequenceControlsLocked(true);
-          }
         }
         // If the sequence is no longer running and it was before, it has completed
         else if (!isRunning && this.sequenceRunning) {
@@ -65,6 +53,32 @@ export const useSequenceStore = defineStore('sequenceStore', {
 
       this.sequenceRunning = isRunning;
     },
+    // Records a run state that a successful poll actually proved, and auto-locks
+    // the controls on a confirmed start.
+    //
+    // Only the poll's success path may call this. `sequenceRunning` alone is not
+    // enough: clearAllStates() forces it to false on every connection loss, a
+    // single failed request does the same, and the start button sets it to true
+    // optimistically before the backend has agreed. Reacting to those would
+    // re-lock controls the user deliberately released, or lock after a start
+    // that never happened - and since the lock never releases by itself, the
+    // user would have to undo it by hand every time.
+    //
+    // A null previous value means we have never observed a run state (fresh app
+    // start), so there is no transition to react to - that is what keeps a
+    // reload during a running sequence from restoring a released lock.
+    confirmSequenceRunning(isRunning) {
+      const previouslyConfirmed = this.lastConfirmedSequenceRunning;
+      this.lastConfirmedSequenceRunning = isRunning;
+
+      const isConfirmedStart = isRunning && previouslyConfirmed === false;
+      if (isConfirmedStart && this.autoLockControlsOnStart && !this.sequenceControlsLocked) {
+        this.setSequenceControlsLocked(true);
+      }
+
+      this.setSequenceRunning(isRunning);
+    },
+
     setSequenceControlsLocked(isLocked) {
       this.sequenceControlsLocked = !!isLocked;
 
@@ -283,7 +297,7 @@ export const useSequenceStore = defineStore('sequenceStore', {
         if (isEmptySequence) {
           this.sequenceInfo = [];
           this.sequenceIsLoaded = false;
-          this.setSequenceRunning(false);
+          this.confirmSequenceRunning(false);
           this.targetName = '';
           this.runningItems = [];
           this.runningConditions = [];
@@ -353,7 +367,7 @@ export const useSequenceStore = defineStore('sequenceStore', {
         }
 
         // Update sequence running state (this will trigger notification if state changed)
-        this.setSequenceRunning(isRunning || false);
+        this.confirmSequenceRunning(isRunning || false);
       } else {
         this.sequenceIsLoaded = false;
         this.setSequenceRunning(false);
