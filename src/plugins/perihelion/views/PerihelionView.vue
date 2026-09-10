@@ -1236,7 +1236,9 @@
                    PerihelionReapplyTrigger (added to every built sequence, see
                    buildPerihelionSequence.js), so it needs to stay visible/editable in both
                    modes. -->
-              <div class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden mt-2">
+              <div
+                class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden mt-2"
+              >
                 <button
                   class="flex items-center gap-2 w-full px-3 py-2 text-left cursor-pointer"
                   @click="showMountSettings = !showMountSettings"
