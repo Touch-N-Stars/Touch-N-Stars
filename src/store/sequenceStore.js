@@ -15,6 +15,9 @@ export const useSequenceStore = defineStore('sequenceStore', {
     autoLockControlsOnStart: false,
     // Last run state a successful poll actually proved; null = never observed.
     lastConfirmedSequenceRunning: null,
+    // Active tab of the V2 sequence page. Kept in the store because App.vue
+    // remounts the router-view on every orientation change.
+    currentTab: 'showSequence',
     sequenceEdit: false,
     sequenceIsEditable: true,
     targetName: '',
