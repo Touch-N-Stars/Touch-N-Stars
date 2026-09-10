@@ -167,6 +167,7 @@
   ],
   "guiderAction": "function",
   "guiderCancelConnect": "function",
+  "guiderClearGraph": "function",
   "guiderStart": "function",
   "haltLensControl": "function",
   "hocusfocus": [
