@@ -28,6 +28,20 @@ npm run test:run
 needs Node ≥ 22.15 (`registerHooks`) — below that every test file fails at module
 instantiation, which looks alarming but says nothing about the code.
 
+## PINS is NINA, forked to Linux
+
+Not a separate headless backend. The same NINA runs there, so **everything the NINA
+side offers exists in PINS mode too** - the Advanced API on `/v2/api`, the Touch'N'Stars
+plugin server, equipment devices, the whole `/v2/api/equipment/*` surface. The PINS
+daemon on port 8000 is *additional*, and only for host/system concerns (Wi-Fi, timezone,
+keyboard layout, updates).
+
+The HLD's phrase "PINS/headless mode with additional daemon APIs" is easy to misread as
+"PINS has no NINA". It does. Never design a PINS fallback around the assumption that
+`/v2/api` is unavailable there - the correct question is almost always whether a *device*
+is connected, not which runtime mode is active (see the feature-detect rule in
+`.claude/skills/api-endpoint/SKILL.md`).
+
 ## Polling is mandatory
 
 NINA's `/v2/socket` WebSocket does **not** deliver every equipment/state change. The 2s HTTP
