@@ -1288,6 +1288,9 @@
         "slewRate": "Velocitat de desplaçament",
         "slewRateDriverControlled": "La velocitat de desplaçament la controla el controlador",
         "slewRateUnavailable": "Connecta una muntura per ajustar la velocitat de desplaçament",
+        "parkedNotice": "La muntura està aparcada — desaparca-la per canviar el mode de seguiment",
+        "parkedShort": "Muntura aparcada",
+        "parkedHint": "Desaparca la muntura per moure-la manualment",
         "siderial": "Sideral",
         "sync_coordinates_to_mount": "Sincronitza coordenades amb la muntura",
         "errors": {
@@ -3995,6 +3998,7 @@
         "applyingPositions": "Aplicant...",
         "savingConfiguration": "Desant...",
         "fourScrewHint": "Ajusteu els cargols oposats com a parell (afluixeu-ne un, apreteu l'altre) perquè la placa no s'enganxi",
+        "fourScrewApplyUnsupported": "Aplicar a un dispositiu només és compatible amb tilters de 3 cargols",
         "screwCountFour": "4 cargols (un per cantonada)",
         "screwCountThree": "3 cargols (equilàters)",
         "shiftToNonNegative": "Els cargols comencen completament asseguts",

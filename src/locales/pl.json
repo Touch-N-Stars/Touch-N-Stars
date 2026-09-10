@@ -1256,6 +1256,9 @@
         "reverse_axis": "Kierunek osi",
         "slewRateDriverControlled": "Szybkość narastania jest kontrolowana przez sterownik",
         "slewRateUnavailable": "Podłącz uchwyt, aby wyregulować prędkość narastania",
+        "parkedNotice": "Montaż jest zaparkowany — odparkuj, aby zmienić tryb śledzenia",
+        "parkedShort": "Montaż jest zaparkowany",
+        "parkedHint": "Odparkuj montaż, aby poruszać nim ręcznie",
         "confirmParkMessage": "Zaparkować montaż? Spowoduje to zatrzymanie śledzenia i przesunięcie montażu do pozycji parkowania.",
         "confirmParkTitle": "Zaparkuj montaż"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "Stosowanie...",
         "savingConfiguration": "Oszczędność...",
         "fourScrewHint": "Wyreguluj przeciwne śruby parami (poluzuj jedną, dokręć drugą), aby płytka nie mogła się zakleszczyć",
+        "fourScrewApplyUnsupported": "Zastosowanie na urządzeniu jest obsługiwane tylko dla tilterów 3-śrubowych",
         "screwCountFour": "4 śruby (po jednej na narożnik)",
         "screwCountThree": "3 śruby (równoboczne)",
         "shiftToNonNegative": "Śruby zaczynają się od pełnego osadzenia",

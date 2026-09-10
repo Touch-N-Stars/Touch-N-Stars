@@ -1256,6 +1256,9 @@
         "reverse_axis": "Direzione assi",
         "slewRateDriverControlled": "La velocità di rotazione è controllata dal conducente",
         "slewRateUnavailable": "Collegare una montatura per regolare la velocità di rotazione",
+        "parkedNotice": "La montatura è parcheggiata — rimuovi il parcheggio per cambiare l'inseguimento",
+        "parkedShort": "Montatura parcheggiata",
+        "parkedHint": "Rimuovi il parcheggio per muovere la montatura manualmente",
         "confirmParkMessage": "Parcheggiare la montatura? Questo interrompe l'inseguimento e sposta la montatura nella sua posizione di parcheggio.",
         "confirmParkTitle": "Parcheggia montatura"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "Applicazione...",
         "savingConfiguration": "Risparmio...",
         "fourScrewHint": "Regolare le viti opposte in coppia (allentarne una, serrare l'altra) in modo che la placca non possa bloccarsi",
+        "fourScrewApplyUnsupported": "L'applicazione a un dispositivo è supportata solo per tilter a 3 viti",
         "screwCountFour": "4 viti (una per angolo)",
         "screwCountThree": "3 viti (equilatero)",
         "shiftToNonNegative": "Le viti iniziano completamente in sede",

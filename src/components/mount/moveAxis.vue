@@ -98,9 +98,11 @@
            connecting overlay below, which keeps its z-50 precedence on the outer container. -->
       <div
         v-if="store.mountIsParked && mountStore.wsIsConnected"
-        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40"
+        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40 pointer-events-none"
       >
-        <div class="flex flex-col items-center gap-2 text-center px-3">
+        <!-- The backdrop stays click-through so the always-enabled stop button below it
+             keeps working; the direction buttons underneath are disabled anyway. -->
+        <div class="flex flex-col items-center gap-2 text-center px-3 pointer-events-auto">
           <LockClosedIcon class="w-7 h-7 text-status-warn" />
           <p class="text-sm text-content">{{ $t('components.mount.control.parkedShort') }}</p>
           <p class="text-xs text-content-faint">

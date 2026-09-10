@@ -1256,6 +1256,9 @@
         "reverse_axis": "Direction des axes",
         "slewRateDriverControlled": "Le taux de balayage est contrôlé par le pilote",
         "slewRateUnavailable": "Connectez un support pour ajuster la vitesse de balayage",
+        "parkedNotice": "La monture est parquée — déparquez-la pour changer le mode de suivi",
+        "parkedShort": "Monture parquée",
+        "parkedHint": "Déparquez la monture pour la déplacer manuellement",
         "confirmParkMessage": "Parquer la monture ? Cela arrête le suivi et déplace la monture vers sa position de repos.",
         "confirmParkTitle": "Parquer la monture"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "Candidature...",
         "savingConfiguration": "Économie...",
         "fourScrewHint": "Ajustez les vis opposées par paire (desserrez l'une, serrez l'autre) afin que la plaque ne puisse pas se coincer.",
+        "fourScrewApplyUnsupported": "L'application à un appareil n'est prise en charge que pour les tilters à 3 vis",
         "screwCountFour": "4 vis (une par coin)",
         "screwCountThree": "3 vis (équilatérales)",
         "shiftToNonNegative": "Les vis commencent à être complètement en place",

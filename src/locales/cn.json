@@ -1256,6 +1256,9 @@
         "reverse_axis": "轴向方向",
         "slewRateDriverControlled": "Slew rate is controlled by the driver",
         "slewRateUnavailable": "Connect a mount to adjust the slew rate",
+        "parkedNotice": "赤道仪已停靠 — 解除停靠后才能更改跟踪模式",
+        "parkedShort": "赤道仪已停靠",
+        "parkedHint": "解除停靠后才能手动移动赤道仪",
         "confirmParkMessage": "停靠赤道仪？这将停止跟踪并将赤道仪移动到停靠位置。",
         "confirmParkTitle": "停靠赤道仪"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "正在申请...",
         "savingConfiguration": "保存...",
         "fourScrewHint": "Adjust opposing screws as a pair (loosen one, tighten the other) so the plate cannot bind",
+        "fourScrewApplyUnsupported": "仅支持将结果应用到 3 螺丝调平器",
         "screwCountFour": "4 screws (one per corner)",
         "screwCountThree": "3 screws (equilateral)",
         "shiftToNonNegative": "Screws start fully seated",

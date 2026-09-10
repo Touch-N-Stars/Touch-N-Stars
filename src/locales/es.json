@@ -1256,6 +1256,9 @@
         "reverse_axis": "Dirección de ejes",
         "slewRateDriverControlled": "La velocidad de giro la controla el conductor",
         "slewRateUnavailable": "Conecte un soporte para ajustar la velocidad de giro",
+        "parkedNotice": "La montura está aparcada — desaparca para cambiar el modo de seguimiento",
+        "parkedShort": "Montura aparcada",
+        "parkedHint": "Desaparca la montura para moverla manualmente",
         "confirmParkMessage": "¿Aparcar la montura? Esto detiene el seguimiento y mueve la montura a su posición de aparcamiento.",
         "confirmParkTitle": "Aparcar montura"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "Aplicando...",
         "savingConfiguration": "Guardando...",
         "fourScrewHint": "Ajuste los tornillos opuestos como un par (afloje uno, apriete el otro) para que la placa no se pueda atascar.",
+        "fourScrewApplyUnsupported": "Aplicar a un dispositivo solo es compatible con tilters de 3 tornillos",
         "screwCountFour": "4 tornillos (uno por esquina)",
         "screwCountThree": "3 tornillos (equiláteros)",
         "shiftToNonNegative": "Los tornillos comienzan completamente asentados.",

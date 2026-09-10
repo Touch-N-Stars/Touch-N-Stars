@@ -1256,6 +1256,9 @@
         "reverse_axis": "Asrichting",
         "slewRateDriverControlled": "De zwenksnelheid wordt geregeld door de bestuurder",
         "slewRateUnavailable": "Sluit een steun aan om de zwenksnelheid aan te passen",
+        "parkedNotice": "Montering is geparkeerd — uitparkeren om de volgmodus te wijzigen",
+        "parkedShort": "Montering is geparkeerd",
+        "parkedHint": "Parkeer de montering uit om handmatig te bewegen",
         "confirmParkMessage": "Montering parkeren? Dit stopt het volgen en beweegt de montering naar de parkeerpositie.",
         "confirmParkTitle": "Montering parkeren"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "Toepassen...",
         "savingConfiguration": "Besparing...",
         "fourScrewHint": "Stel de tegenoverliggende schroeven als een paar af (maak de ene los, draai de andere vast) zodat de plaat niet kan vastlopen",
+        "fourScrewApplyUnsupported": "Toepassen op een apparaat wordt alleen ondersteund voor tilters met 3 schroeven",
         "screwCountFour": "4 schroeven (één per hoek)",
         "screwCountThree": "3 schroeven (gelijkzijdig)",
         "shiftToNonNegative": "Schroeven beginnen volledig op hun plaats",

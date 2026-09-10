@@ -1256,6 +1256,9 @@
         "reverse_axis": "Směr os",
         "slewRateDriverControlled": "Slew rate is controlled by the driver",
         "slewRateUnavailable": "Connect a mount to adjust the slew rate",
+        "parkedNotice": "Montáž je zaparkovaná — pro změnu režimu sledování ji odparkujte",
+        "parkedShort": "Montáž je zaparkovaná",
+        "parkedHint": "Pro ruční pohyb montáž odparkujte",
         "confirmParkMessage": "Zaparkovat montáž? Tím se zastaví sledování a montáž se přesune do parkovací polohy.",
         "confirmParkTitle": "Zaparkovat montáž"
       },
@@ -3793,6 +3796,7 @@
         "applyingPositions": "Aplikace...",
         "savingConfiguration": "Ukládání...",
         "fourScrewHint": "Adjust opposing screws as a pair (loosen one, tighten the other) so the plate cannot bind",
+        "fourScrewApplyUnsupported": "Použití na zařízení je podporováno pouze u tilterů se 3 šrouby",
         "screwCountFour": "4 screws (one per corner)",
         "screwCountThree": "3 screws (equilateral)",
         "shiftToNonNegative": "Screws start fully seated",

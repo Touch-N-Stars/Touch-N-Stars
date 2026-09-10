@@ -1297,6 +1297,9 @@
         "reverse_axis": "Achsenrichtung",
         "slewRateDriverControlled": "Die Anstiegsgeschwindigkeit wird vom Treiber gesteuert",
         "slewRateUnavailable": "Schließen Sie eine Halterung an, um die Anstiegsgeschwindigkeit anzupassen",
+        "parkedNotice": "Montierung ist geparkt — zum Ändern der Nachführung ausparken",
+        "parkedShort": "Montierung ist geparkt",
+        "parkedHint": "Zum manuellen Bewegen die Montierung ausparken",
         "confirmParkMessage": "Montierung parken? Dies stoppt die Nachführung und bewegt die Montierung in die Parkposition.",
         "confirmParkTitle": "Montierung parken"
       },
@@ -3909,6 +3912,7 @@
         "applyingPositions": "Applying...",
         "savingConfiguration": "Saving...",
         "fourScrewHint": "Passen Sie die gegenüberliegenden Schrauben paarweise an (eine lösen, die andere festziehen), damit sich die Platte nicht verklemmen kann",
+        "fourScrewApplyUnsupported": "Das Anwenden auf ein Gerät ist nur bei 3-Schrauben-Tiltern möglich",
         "screwCountFour": "4 Schrauben (eine pro Ecke)",
         "screwCountThree": "3 Schrauben (gleichseitig)",
         "shiftToNonNegative": "Die Schrauben sitzen vollständig fest",

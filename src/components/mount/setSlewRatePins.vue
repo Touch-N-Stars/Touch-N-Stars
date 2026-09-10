@@ -93,6 +93,10 @@ const discreteIndex = ref(0);
 const continuousValue = ref(0);
 
 let postTimer = null;
+// Guards the capability GET against a slider input that lands while it is in flight:
+// loadCapability() drops its own response once activeLoad no longer matches its id.
+let loadSeq = 0;
+let activeLoad = 0;
 
 const options = computed(() => capability.value?.Options ?? []);
 const continuousStep = computed(() => capability.value?.Step || 0.1);
@@ -132,8 +136,14 @@ const currentLabel = computed(() => {
 });
 
 async function loadCapability() {
+  const loadId = ++loadSeq;
+  activeLoad = loadId;
   try {
     const data = await apiService.getMountSlewRates();
+    // The user picked a rate while this GET was in flight (or a newer load started):
+    // their choice owns the slider now, so the stale response must neither reset it
+    // nor write the old rate back to the driver.
+    if (activeLoad !== loadId) return;
     if (!data?.Success || !data.Response) {
       kind.value = 'none';
       return;
@@ -156,6 +166,7 @@ async function loadCapability() {
       assertRateOnDriver({ value: continuousValue.value });
     }
   } catch {
+    if (activeLoad !== loadId) return;
     // 404 / network: mount not connected — show the unavailable hint.
     kind.value = 'none';
     capability.value = { Kind: 'None', Options: [], Min: 0, Max: 0, Step: 0, Unit: '°/s' };
@@ -189,6 +200,8 @@ function assertRateOnDriver(selection) {
 }
 
 function postRate(selection) {
+  // A running capability GET must not overwrite what the user just selected.
+  activeLoad = 0;
   // Debounce so dragging the slider doesn't flood the driver with switch changes.
   if (postTimer) clearTimeout(postTimer);
   postTimer = setTimeout(() => {

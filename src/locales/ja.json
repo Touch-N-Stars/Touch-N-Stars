@@ -1265,6 +1265,9 @@
         "reverse_axis": "軸方向",
         "slewRateDriverControlled": "スルーレートはドライバーによって制御されます",
         "slewRateUnavailable": "マウントを接続してスルーレートを調整する",
+        "parkedNotice": "赤道儀はパーク中です — 追尾モードを変更するにはアンパークしてください",
+        "parkedShort": "赤道儀はパーク中です",
+        "parkedHint": "手動で動かすにはアンパークしてください",
         "confirmParkMessage": "赤道儀をパークしますか？ 追尾を停止し、赤道儀をパーク位置へ移動します。",
         "confirmParkTitle": "赤道儀をパーク"
       },
@@ -3904,6 +3907,7 @@
         "applyingPositions": "適用中...",
         "savingConfiguration": "保存中...",
         "fourScrewHint": "プレートが固着しないように、向かい合うネジを 1 組として調整します (1 つを緩め、もう 1 つを締めます)。",
+        "fourScrewApplyUnsupported": "デバイスへの適用は3ネジ式ティルターのみ対応しています",
         "screwCountFour": "ネジ 4 本 (各コーナーに 1 本)",
         "screwCountThree": "ネジ3本（等辺）",
         "shiftToNonNegative": "ネジが完全に固定され始めます",
