@@ -314,6 +314,146 @@
       </div>
     </div>
 
+    <!-- Alignment System Section -->
+    <div class="border border-gray-500 p-2 rounded-lg">
+      <h4 class="text-gray-200 text-sm font-semibold mb-2">
+        {{ $t('components.tppa.pins_settings.alignment_system') }}
+      </h4>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between w-full">
+          <label class="text-gray-300 text-sm">{{
+            $t('components.tppa.pins_settings.selected_alignment_system')
+          }}</label>
+          <select
+            v-model="options.SelectedPolarAlignmentSystem"
+            class="bg-slate-700 border border-slate-500 rounded px-2 py-1 text-xs text-gray-200"
+            @change="
+              updateOption('SelectedPolarAlignmentSystem', options.SelectedPolarAlignmentSystem)
+            "
+          >
+            <option value="None">
+              {{ $t('components.tppa.pins_settings.system_none') }}
+            </option>
+            <option value="UPAS">UPAS</option>
+            <option value="OAPA">OAPA</option>
+            <option value="OAT">OAT (OpenAstroTech)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- OAT Settings Section -->
+    <div
+      v-if="options.SelectedPolarAlignmentSystem === 'OAT'"
+      class="border border-cyan-700 p-2 rounded-lg"
+    >
+      <h4 class="text-cyan-300 text-sm font-semibold mb-2">
+        {{ $t('components.tppa.pins_settings.oat_settings') }}
+      </h4>
+      <div class="space-y-2">
+        <!-- Device Name -->
+        <div class="flex items-center justify-between w-full gap-2">
+          <label class="text-gray-300 text-sm flex-shrink-0">{{
+            $t('components.tppa.pins_settings.oat_device_name')
+          }}</label>
+          <input
+            v-model="options.OATDeviceName"
+            type="text"
+            class="bg-slate-700 border border-slate-500 rounded px-2 py-1 text-xs text-gray-200 w-48"
+            @change="updateOption('OATDeviceName', options.OATDeviceName)"
+          />
+        </div>
+
+        <!-- Automated Adjustments -->
+        <div class="flex items-center justify-between w-full">
+          <label class="text-gray-300 text-sm">{{
+            $t('components.tppa.pins_settings.oat_auto_adjust')
+          }}</label>
+          <toggleButton
+            :status-value="options.OATDoAutomatedAdjustments"
+            @click="toggleOATDoAutomatedAdjustments"
+            class="pr-3 pl-3"
+          />
+        </div>
+
+        <!-- Settle Time -->
+        <NumberInputPicker
+          v-model="options.OATSettleTime"
+          :label="$t('components.tppa.pins_settings.oat_settle_time')"
+          labelKey="components.tppa.pins_settings.oat_settle_time"
+          :min="0"
+          :max="60"
+          :step="0.5"
+          :decimalPlaces="1"
+          inputId="oat-settle-time"
+          @change="updateOption('OATSettleTime', options.OATSettleTime)"
+        />
+
+        <!-- X Gear Ratio (AZ) -->
+        <NumberInputPicker
+          v-model="options.OATXGearRatio"
+          :label="$t('components.tppa.pins_settings.oat_x_gear_ratio')"
+          labelKey="components.tppa.pins_settings.oat_x_gear_ratio"
+          :min="0.01"
+          :max="100"
+          :step="0.01"
+          :decimalPlaces="2"
+          inputId="oat-x-gear-ratio"
+          @change="updateOption('OATXGearRatio', options.OATXGearRatio)"
+        />
+
+        <!-- Y Gear Ratio (ALT) -->
+        <NumberInputPicker
+          v-model="options.OATYGearRatio"
+          :label="$t('components.tppa.pins_settings.oat_y_gear_ratio')"
+          labelKey="components.tppa.pins_settings.oat_y_gear_ratio"
+          :min="0.01"
+          :max="100"
+          :step="0.01"
+          :decimalPlaces="2"
+          inputId="oat-y-gear-ratio"
+          @change="updateOption('OATYGearRatio', options.OATYGearRatio)"
+        />
+
+        <!-- X Backlash (AZ) -->
+        <NumberInputPicker
+          v-model="options.OATXBacklashCompensation"
+          :label="$t('components.tppa.pins_settings.oat_x_backlash')"
+          labelKey="components.tppa.pins_settings.oat_x_backlash"
+          :min="-60"
+          :max="60"
+          :step="0.1"
+          :decimalPlaces="1"
+          inputId="oat-x-backlash"
+          @change="updateOption('OATXBacklashCompensation', options.OATXBacklashCompensation)"
+        />
+
+        <!-- Reverse AZ -->
+        <div class="flex items-center justify-between w-full">
+          <label class="text-gray-300 text-sm">{{
+            $t('components.tppa.pins_settings.oat_reverse_az')
+          }}</label>
+          <toggleButton
+            :status-value="options.OATReverseAzimuth"
+            @click="toggleOATReverseAzimuth"
+            class="pr-3 pl-3"
+          />
+        </div>
+
+        <!-- Reverse ALT -->
+        <div class="flex items-center justify-between w-full">
+          <label class="text-gray-300 text-sm">{{
+            $t('components.tppa.pins_settings.oat_reverse_alt')
+          }}</label>
+          <toggleButton
+            :status-value="options.OATReverseAltitude"
+            @click="toggleOATReverseAltitude"
+            class="pr-3 pl-3"
+          />
+        </div>
+      </div>
+    </div>
+
     <!-- Behavior Section -->
     <div class="border border-gray-500 p-2 rounded-lg">
       <h4 class="text-gray-200 text-sm font-semibold mb-2">
@@ -432,7 +572,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import apiService from '@/services/apiService';
+import apiPinsService from '@/services/apiPinsService';
 import { useTppaStore } from '@/store/tppaStore';
 import { apiStore } from '@/store/store';
 import toggleButton from '../helpers/toggleButton.vue';
@@ -457,11 +597,22 @@ const options = ref({
   AutomatedAdjustmentSettleTime: 2,
   AutoPause: false,
   LogError: false,
+  // Alignment system
+  SelectedPolarAlignmentSystem: 'None',
+  // OAT
+  OATDeviceName: 'LX200 OpenAstroTech',
+  OATDoAutomatedAdjustments: false,
+  OATSettleTime: 2.0,
+  OATXGearRatio: 1.0,
+  OATYGearRatio: 1.0,
+  OATXBacklashCompensation: 0.0,
+  OATReverseAzimuth: false,
+  OATReverseAltitude: false,
 });
 
 onMounted(async () => {
   try {
-    const data = await apiService.getTppaOptions();
+    const data = await apiPinsService.getTppaOatOptions();
     if (data?.Success && data.Options) {
       for (const [key, entry] of Object.entries(data.Options)) {
         options.value[key] = entry.Value;
@@ -476,7 +627,7 @@ onMounted(async () => {
 
 async function updateOption(key, value) {
   try {
-    await apiService.postTppaOptions({ [key]: value });
+    await apiPinsService.postTppaOatOptions({ [key]: value });
   } catch (error) {
     console.error(`Error updating option ${key}:`, error);
   }
@@ -507,10 +658,25 @@ function toggleLogError() {
   updateOption('LogError', options.value.LogError);
 }
 
+function toggleOATDoAutomatedAdjustments() {
+  options.value.OATDoAutomatedAdjustments = !options.value.OATDoAutomatedAdjustments;
+  updateOption('OATDoAutomatedAdjustments', options.value.OATDoAutomatedAdjustments);
+}
+
+function toggleOATReverseAzimuth() {
+  options.value.OATReverseAzimuth = !options.value.OATReverseAzimuth;
+  updateOption('OATReverseAzimuth', options.value.OATReverseAzimuth);
+}
+
+function toggleOATReverseAltitude() {
+  options.value.OATReverseAltitude = !options.value.OATReverseAltitude;
+  updateOption('OATReverseAltitude', options.value.OATReverseAltitude);
+}
+
 async function reset() {
   try {
-    await apiService.postTppaReset();
-    const data = await apiService.getTppaOptions();
+    await apiPinsService.postTppaOatReset();
+    const data = await apiPinsService.getTppaOatOptions();
     if (data?.Success && data.Options) {
       for (const [key, entry] of Object.entries(data.Options)) {
         options.value[key] = entry.Value;
