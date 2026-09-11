@@ -24,6 +24,7 @@
         ref="unlockButtonRef"
         type="button"
         class="unlock-button min-h-touch min-w-touch relative flex items-center justify-center rounded-full border border-line-strong bg-surface-1/90 text-content shadow-lg"
+        :class="{ 'unlock-button-holding': isHolding }"
         data-haptic="none"
         :aria-label="t('plugins.screenLock.unlock')"
         @pointerdown.stop="startPointerHold"
@@ -48,7 +49,13 @@
             d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
           />
         </svg>
-        <LockClosedIcon class="w-6 h-6" :class="progress > 0 ? 'text-accent' : 'text-content'" />
+        <LockClosedIcon
+          class="transition-[width,height] duration-150"
+          :class="[
+            isHolding ? 'w-12 h-12' : 'w-6 h-6',
+            progress > 0 ? 'text-accent' : 'text-content',
+          ]"
+        />
       </button>
     </div>
   </div>
@@ -79,7 +86,9 @@ const unlockButtonRef = ref(null);
 let hintTimeoutId = null;
 let backButtonListenerHandle = null;
 let heldPointerId = null;
-let isHolding = false;
+// Reactive: the template grows the button while a hold is running so the
+// progress ring is readable under the finger.
+const isHolding = ref(false);
 
 const holdTimer = createHoldTimer({
   durationMs: UNLOCK_HOLD_SECONDS * 1000,
@@ -119,20 +128,20 @@ function handlePointerEnd(event) {
 // keyboard-only desktop would have no way out at all. Enter/Space auto-repeat
 // while held down, hence the isHolding guard.
 function startKeyHold() {
-  if (isHolding) return;
+  if (isHolding.value) return;
   beginHold();
 }
 
 function beginHold() {
-  isHolding = true;
+  isHolding.value = true;
   void tapLight();
   hideHint();
   holdTimer.start();
 }
 
 function endHold() {
-  if (!isHolding) return;
-  isHolding = false;
+  if (!isHolding.value) return;
+  isHolding.value = false;
   if (heldPointerId !== null) {
     unlockButtonRef.value?.releasePointerCapture?.(heldPointerId);
     heldPointerId = null;
@@ -231,6 +240,17 @@ onBeforeUnmount(async () => {
   height: var(--spacing-touch);
   touch-action: none;
   -webkit-touch-callout: none;
+  transition:
+    width 0.15s ease,
+    height 0.15s ease;
+}
+
+/* Grows to twice the touch target while held: the finger covers most of a
+   48 px button, so the progress ring is only readable at the larger size. The
+   anchor is bottom-aligned, so the growth goes upward, away from the status bar. */
+.unlock-button-holding {
+  width: calc(var(--spacing-touch) * 3);
+  height: calc(var(--spacing-touch) * 3);
 }
 
 .hint-enter-active,
