@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getUrls } from '@/services/api/core';
 
 /**
- * Fetches the object's real path against the fixed stars for the next `days` nights, from
+ * Fetches the object's path against the fixed stars for the next `days` nights, from
  * Perihelion's GET /objects/path route (OrbitalTracking.ComputeOrbitalPathAsync).
  *
  * @param {{ objectType: 'Comet'|'Asteroid', targetName: string }} target

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getUrls } from '@/services/api/core';
 
 /**
- * Live state of whatever Quick Track session is currently running -- in particular the real
+ * Live state of whatever Quick Track session is currently running -- in particular the
  * RA/Dec rate last computed and sent, not just whether a toggle was on when the session started.
  * Lets the Track tab show ground truth instead of trusting stale local state, and is the
  * unambiguous way to confirm the mount actually received a comet-specific rate.
@@ -12,7 +12,7 @@ import { getUrls } from '@/services/api/core';
  *   objectType: string|null,
  *   targetName: string|null,
  *   guiding: boolean,
- *   autoReapplyMinutes: number|null,
+ *   autoReapplySeconds: number|null,
  *   startedUtc: string|null,
  *   lastAppliedUtc: string|null,
  *   lastRaArcsecPerSec: number|null,
@@ -32,7 +32,7 @@ export async function fetchQuickTrackStatus() {
     objectType: body.ObjectType ?? null,
     targetName: body.TargetName ?? null,
     guiding: !!body.Guiding,
-    autoReapplyMinutes: body.AutoReapplyMinutes ?? null,
+    autoReapplySeconds: body.AutoReapplySeconds ?? null,
     startedUtc: body.StartedUtc ?? null,
     lastAppliedUtc: body.LastAppliedUtc ?? null,
     lastRaArcsecPerSec: body.LastRaArcsecPerSec ?? null,

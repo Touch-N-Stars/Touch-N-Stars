@@ -9,7 +9,7 @@ function mapBrowseObjects(data) {
     magnitude: o.Magnitude,
     // Comet-only, both null for an asteroid or a comet COBS has no reports for -- see
     // OrbitalTracking.BrowseObject's own comment for why the predicted Magnitude above can be
-    // badly wrong during a real outburst, which is exactly why this rides along in the same
+    // badly wrong during an outburst, which is exactly why this rides along in the same
     // list response rather than needing a second per-object fetch.
     observedMagnitude: o.ObservedMagnitude,
     observedAverageMagnitude: o.ObservedAverageMagnitude,
@@ -40,13 +40,13 @@ function mapBrowseObjects(data) {
  * the same Pi, so there's no internet-round-trip reason to duplicate the orbital math a second
  * time in a second language (see CLAUDE.md's "Quick Track" architecture section).
  *
- * observedMagnitude/observedAverageMagnitude come back null here even for comets COBS has real
- * data for -- real hardware feedback showed waiting on COBS at all before the list could render
- * felt slow (14-16s measured for 14 comets on a cold cache), so this now returns predicted-only
- * data instantly, and PerihelionView's own fillCobsInBackground() fills in real observed-
- * brightness badges afterward, one comet at a time via GET /objects/activity (fetchCometActivity),
- * so they pop in without blocking the initial render. refreshCobs() below is the only call that
- * still returns real COBS data inline, since blocking IS the point of that explicit action.
+ * observedMagnitude/observedAverageMagnitude come back null here even for comets COBS has
+ * data for -- waiting on COBS at all before the list could render measured at 14-16s for 14
+ * comets on a cold cache, too slow, so this now returns predicted-only data instantly, and
+ * PerihelionView's own fillCobsInBackground() fills in observed-brightness badges afterward,
+ * one comet at a time via GET /objects/activity (fetchCometActivity), so they pop in without
+ * blocking the initial render. refreshCobs() below is the only call that still returns COBS
+ * data inline, since blocking IS the point of that explicit action.
  *
  * @returns {Promise<Array<{ id: string, name: string, objectType: 'Comet'|'Asteroid', magnitude: number|null, observedMagnitude: number|null, observedAverageMagnitude: number|null, raHours: number, decDeg: number, sunDistanceAu: number, earthDistanceAu: number, solarElongationDeg: number, constellationName: string, perihelionDateUtc: Date|null, epochAgeDays: number, isEpochStale: boolean }>>}
  */
@@ -60,7 +60,7 @@ export async function fetchBrowseObjects() {
  * Explicit "Refresh COBS" action -- bypasses CometActivity's own 2h TTL on the plugin side for
  * every comet in the list, unlike the passive fetchBrowseObjects() above which is happy with a
  * disk-loaded or still-fresh cache. Same response shape, so the caller can just replace its
- * object list from this directly. This is a real several-seconds-to-tens-of-seconds round trip
+ * object list from this directly. This is a several-seconds-to-tens-of-seconds round trip
  * (one COBS lookup per comet, throttled) -- deliberately a separate, user-initiated action
  * rather than something that rides along with Sync Now (comet elements), which is a single fast
  * MPC file fetch. See CLAUDE.md/OrbitalTracking.ListBrowseObjectsAsync's own forceRefreshCobs

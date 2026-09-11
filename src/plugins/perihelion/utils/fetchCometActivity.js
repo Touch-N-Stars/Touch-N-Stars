@@ -2,8 +2,8 @@ import axios from 'axios';
 import { getUrls } from '@/services/api/core';
 
 /**
- * Real, observer-reported "last seen" brightness for a comet -- a cross-check against the
- * predicted magnitude already shown elsewhere (see CometActivity.cs's own doc comment for real
+ * Observer-reported "last seen" brightness for a comet -- a cross-check against the
+ * predicted magnitude already shown elsewhere (see CometActivity.cs's own doc comment for
  * verified cases where the two disagreed by 4+ magnitudes during an outburst). Comet-only;
  * don't call this for an asteroid.
  *
