@@ -175,8 +175,13 @@
           <GuiderStats v-if="store.guiderInfo.Connected" />
         </div>
       </div>
-      <div v-show="statusBarStore.isPanelOpen('camera')">
-        <infoCamera class="p-5" />
+      <div v-show="statusBarStore.isPanelOpen('camera')" class="p-5 flex flex-col gap-3">
+        <infoCamera />
+        <settingsCameraCooler
+          v-if="store.cameraInfo.CanSetTemperature"
+          compact
+          class="sm:max-w-sm"
+        />
       </div>
       <div v-show="statusBarStore.isPanelOpen('mount')">
         <infoMount class="p-5" />
@@ -222,6 +227,7 @@ import { useCameraStore } from '@/store/cameraStore';
 import { useStatusBarStore } from '@/store/statusBarStore';
 import { useOrientation } from '@/composables/useOrientation';
 import infoCamera from '../camera/infoCamera.vue';
+import settingsCameraCooler from '../camera/settingsCameraCooler.vue';
 import infoMount from '../mount/infoMount.vue';
 import InfoFilterwheel from '../filterwheel/InfoFilterwheel.vue';
 import changeFilter from '../filterwheel/changeFilter.vue';

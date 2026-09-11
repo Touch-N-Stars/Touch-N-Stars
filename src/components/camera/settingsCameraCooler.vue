@@ -1,9 +1,14 @@
 <template>
   <div class="flex flex-col items-center gap-2">
     <div v-if="store.cameraInfo.CanSetTemperature" class="w-full">
-      <div class="flex flex-col border border-slate-600/40 p-3 rounded-lg min-w-36">
-        <!-- Cooler status indicator, driven by the central cameraStore.coolingState -->
+      <div
+        class="flex flex-col min-w-36"
+        :class="{ 'border border-slate-600/40 p-3 rounded-lg': !compact }"
+      >
+        <!-- Cooler status indicator, driven by the central cameraStore.coolingState.
+             Compact mode leaves it out: the status bar panel shows the state next to it. -->
         <div
+          v-if="!compact"
           class="flex items-center justify-center gap-2 px-3 py-2 mb-3 rounded-lg"
           :class="{
             'bg-slate-700/40': coolingState === 'off',
@@ -28,7 +33,7 @@
           </span>
         </div>
 
-        <div class="border-t border-slate-600/40 mb-3"></div>
+        <div v-if="!compact" class="border-t border-slate-600/40 mb-3"></div>
 
         <div class="flex flex-col justify-between sm:flex-row gap-2">
           <NumberInputPicker
@@ -47,6 +52,7 @@
           />
 
           <NumberInputPicker
+            v-if="!compact"
             class="border border-line-strong p-1 md:p-2 rounded-control"
             v-model="store.profileInfo.CameraSettings.CoolingDuration"
             :label="$t('components.camera.cooling_time')"
@@ -62,7 +68,7 @@
           />
         </div>
 
-        <div class="flex flex-col justify-between sm:flex-row gap-2 mt-2">
+        <div v-if="!compact" class="flex flex-col justify-between sm:flex-row gap-2 mt-2">
           <NumberInputPicker
             class="border border-line-strong p-1 md:p-2 rounded-control"
             v-model="store.profileInfo.CameraSettings.WarmingDuration"
@@ -78,10 +84,10 @@
           />
         </div>
 
-        <div class="border-t border-slate-600/40 my-4"></div>
+        <div v-if="!compact" class="border-t border-slate-600/40 my-4"></div>
 
         <!-- Action buttons like NINA: the running action turns into a cancel button -->
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2" :class="{ 'mt-2': compact }">
           <button
             @click="onCoolDown"
             :disabled="coolBtnDisabled"
@@ -152,7 +158,7 @@
         </div>
       </div>
     </div>
-    <div v-if="store.cameraInfo.HasDewHeater" class="w-full">
+    <div v-if="store.cameraInfo.HasDewHeater && !compact" class="w-full">
       <div class="flex flex-col border border-slate-600/40 p-3 rounded-lg">
         <div
           class="flex items-center justify-between border border-line-strong p-1 md:p-2 rounded-control"
@@ -181,6 +187,11 @@ import apiService from '@/services/apiService';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import pinsSetDewHeaterStrength from './settingsPins/pinsSetDewHeaterStrength.vue';
+
+// Compact (status bar panel): target temperature and the two buttons only.
+const { compact } = defineProps({
+  compact: { type: Boolean, default: false },
+});
 
 const store = apiStore();
 const cameraStore = useCameraStore();
