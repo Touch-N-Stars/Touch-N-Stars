@@ -181,8 +181,9 @@
       <div v-show="statusBarStore.isPanelOpen('mount')">
         <infoMount class="p-5" />
       </div>
-      <div v-show="statusBarStore.isPanelOpen('filter')">
-        <InfoFilterwheel class="p-5" />
+      <div v-show="statusBarStore.isPanelOpen('filter')" class="p-5 flex flex-col gap-3">
+        <InfoFilterwheel />
+        <changeFilter class="sm:max-w-xs" />
       </div>
       <div
         v-show="statusBarStore.isPanelOpen('switch')"
@@ -223,6 +224,7 @@ import { useOrientation } from '@/composables/useOrientation';
 import infoCamera from '../camera/infoCamera.vue';
 import infoMount from '../mount/infoMount.vue';
 import InfoFilterwheel from '../filterwheel/InfoFilterwheel.vue';
+import changeFilter from '../filterwheel/changeFilter.vue';
 import infoProgress from './infoProgress.vue';
 import ControlSwitch from '../switch/ControlSwitch.vue';
 import InfoSwitch from '../switch/InfoSwitch.vue';
