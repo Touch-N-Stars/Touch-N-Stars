@@ -27,7 +27,6 @@ export const useCameraStore = defineStore('cameraStore', () => {
   const readoutMode = ref(0);
   const containerSize = ref(100);
   const slewModal = ref(false);
-  const showCameraInfo = ref(false); // eslint-disable-line no-unused-vars
   let countdownSessionId = 0; // Unique ID for each countdown session
   const cameraSettings = ref();
 

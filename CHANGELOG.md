@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Status bar: New Switch chip that shows how many ports are on and opens the switch controls from any page, so powering the equipment no longer needs a detour to the Switch tab.
+
 ### Fixed
 - Camera: The cooler status no longer shows Warming up right after starting a cool-down and no longer flips back to Off or At target temp after starting a cool-down, warm-up or cancel; warm-ups started at the target and holds after a cancel are shown correctly on Windows NINA too.
 

@@ -24,6 +24,7 @@ const DEFAULT_STATUSBAR_ORDER = [
   'guider',
   'mount',
   'filter',
+  'switch',
   'weather',
   'safety',
   'progress',

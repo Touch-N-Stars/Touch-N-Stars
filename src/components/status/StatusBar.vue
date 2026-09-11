@@ -35,7 +35,7 @@
     <button
       v-if="store.cameraInfo.Connected && !isStatusItemHidden('camera')"
       class="tns-status-seg"
-      :class="segClass(cameraState, cameraStore.showCameraInfo)"
+      :class="segClass(cameraState, statusBarStore.isPanelOpen('camera'))"
       :style="{ order: getStatusOrder('camera') }"
       @click="handleCameraClickWithVisit"
     >
@@ -49,7 +49,7 @@
     <button
       v-if="store.filterInfo.Connected && !isStatusItemHidden('filter')"
       class="tns-status-seg"
-      :class="segClass('idle', filterStore.showFilterwheelInfo)"
+      :class="segClass('idle', statusBarStore.isPanelOpen('filter'))"
       :style="{ order: getStatusOrder('filter') }"
       @click="handleFilterClickWithVisit"
     >
@@ -61,11 +61,25 @@
         }}</span>
       </span>
     </button>
+    <!--Switch-->
+    <button
+      v-if="store.switchInfo.Connected && !isStatusItemHidden('switch')"
+      class="tns-status-seg"
+      :class="segClass(switchState, statusBarStore.isPanelOpen('switch'))"
+      :style="{ order: getStatusOrder('switch') }"
+      @click="handleSwitchClickWithVisit"
+    >
+      <span class="chip-label">{{ t('components.statusBar.labels.switch') }}</span>
+      <span class="chip-value-line">
+        <span class="tns-dot" :class="dotClass(switchState)"></span>
+        <span class="chip-value">{{ switchValue }}</span>
+      </span>
+    </button>
     <!--Mount-->
     <button
       v-if="store.mountInfo.Connected && !isStatusItemHidden('mount')"
       class="tns-status-seg"
-      :class="segClass(mountState, mountStore.showMountInfo)"
+      :class="segClass(mountState, statusBarStore.isPanelOpen('mount'))"
       :style="{ order: getStatusOrder('mount') }"
       @click="handleMountClickWithVisit"
     >
@@ -83,7 +97,7 @@
     <button
       v-if="store.guiderInfo.Connected && !isStatusItemHidden('guider')"
       class="tns-status-seg"
-      :class="segClass(guiderState, guiderStore.showGuiderGraph)"
+      :class="segClass(guiderState, statusBarStore.isPanelOpen('guider'))"
       :style="{ order: getStatusOrder('guider') }"
       @click="handleGuiderClickWithVisit"
     >
@@ -110,7 +124,7 @@
     <button
       v-if="store.isPINS && !isStatusItemHidden('progress')"
       class="tns-status-seg"
-      :class="segClass('idle', showProgress)"
+      :class="segClass('idle', statusBarStore.isPanelOpen('progress'))"
       :style="{ order: getStatusOrder('progress') }"
       @click.stop.prevent="handleProgressClick"
     >
@@ -152,33 +166,41 @@
 
     <!-- Log modal -->
     <LogModal v-if="showLogModal" @close="showLogModal = false" />
-    <!-- Guidegraph -->
-    <div ref="guiderPanelRef" :class="statusPanelClasses" v-show="guiderStore.showGuiderGraph">
-      <GuiderGraph />
-      <div class="flex gap-2 ml-6 mb-2 overflow-x-auto scrollbar-hide">
-        <GuiderStats v-if="store.guiderInfo.Connected" />
+    <!-- Docked panels. All stay mounted (v-show): the guider graph keeps its
+         chart instance, the others are cheap and switch without a flash. -->
+    <div ref="panelRef" :class="statusPanelClasses" v-show="statusBarStore.activePanel">
+      <div v-show="statusBarStore.isPanelOpen('guider')">
+        <GuiderGraph />
+        <div class="flex gap-2 ml-6 mb-2 overflow-x-auto scrollbar-hide">
+          <GuiderStats v-if="store.guiderInfo.Connected" />
+        </div>
       </div>
-    </div>
-
-    <div ref="cameraPanelRef" :class="statusPanelClasses" v-show="cameraStore.showCameraInfo">
-      <infoCamera class="p-5" />
-    </div>
-
-    <div ref="mountPanelRef" :class="statusPanelClasses" v-show="mountStore.showMountInfo">
-      <infoMount class="p-5" />
-    </div>
-
-    <div ref="filterPanelRef" :class="statusPanelClasses" v-show="filterStore.showFilterwheelInfo">
-      <InfoFilterwheel class="p-5" />
-    </div>
-
-    <div
-      v-if="store.isPINS"
-      ref="progressPanelRef"
-      :class="statusPanelClasses"
-      v-show="showProgress"
-    >
-      <infoProgress class="" />
+      <div v-show="statusBarStore.isPanelOpen('camera')">
+        <infoCamera class="p-5" />
+      </div>
+      <div v-show="statusBarStore.isPanelOpen('mount')">
+        <infoMount class="p-5" />
+      </div>
+      <div v-show="statusBarStore.isPanelOpen('filter')">
+        <InfoFilterwheel class="p-5" />
+      </div>
+      <div
+        v-show="statusBarStore.isPanelOpen('switch')"
+        class="p-5 flex flex-col gap-3 max-h-[50vh] overflow-y-auto"
+      >
+        <div
+          v-if="store.switchInfo.ReadonlySwitches?.length"
+          class="grid gap-2 grid-cols-2 lg:grid-cols-3"
+        >
+          <InfoSwitch />
+        </div>
+        <div class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <ControlSwitch />
+        </div>
+      </div>
+      <div v-if="store.isPINS" v-show="statusBarStore.isPanelOpen('progress')">
+        <infoProgress />
+      </div>
     </div>
   </div>
 </template>
@@ -196,13 +218,14 @@ import GuiderStats from '../guider/GuiderStats.vue';
 import { useGuiderStore } from '@/store/guiderStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useCameraStore } from '@/store/cameraStore';
-import { useMountStore } from '@/store/mountStore';
-import { useFilterStore } from '@/store/filterStore';
+import { useStatusBarStore } from '@/store/statusBarStore';
 import { useOrientation } from '@/composables/useOrientation';
 import infoCamera from '../camera/infoCamera.vue';
 import infoMount from '../mount/infoMount.vue';
 import InfoFilterwheel from '../filterwheel/InfoFilterwheel.vue';
 import infoProgress from './infoProgress.vue';
+import ControlSwitch from '../switch/ControlSwitch.vue';
+import InfoSwitch from '../switch/InfoSwitch.vue';
 import { usePluginStore } from '@/store/pluginStore';
 import { LockOpenIcon } from '@heroicons/vue/24/outline';
 
@@ -211,12 +234,10 @@ const store = apiStore();
 const showWeatherModal = ref(false);
 const showLogModal = ref(false);
 const showInstanceSwitcher = ref(false);
-const showProgress = ref(false);
 const guiderStore = useGuiderStore();
 const settingsStore = useSettingsStore();
 const cameraStore = useCameraStore();
-const mountStore = useMountStore();
-const filterStore = useFilterStore();
+const statusBarStore = useStatusBarStore();
 const pluginStore = usePluginStore();
 const isScreenLockPluginEnabled = computed(
   () => pluginStore.plugins.find((plugin) => plugin.id === 'screen-lock')?.enabled === true
@@ -240,22 +261,27 @@ const markStatusBarAsVisited = () => {
 };
 
 const handleCameraClickWithVisit = () => {
-  handleCameraClick();
+  statusBarStore.togglePanel('camera');
   markStatusBarAsVisited();
 };
 
 const handleFilterClickWithVisit = () => {
-  handleFilterClick();
+  statusBarStore.togglePanel('filter');
+  markStatusBarAsVisited();
+};
+
+const handleSwitchClickWithVisit = () => {
+  statusBarStore.togglePanel('switch');
   markStatusBarAsVisited();
 };
 
 const handleMountClickWithVisit = () => {
-  handleMountClick();
+  statusBarStore.togglePanel('mount');
   markStatusBarAsVisited();
 };
 
 const handleGuiderClickWithVisit = () => {
-  handleGuiderClick();
+  statusBarStore.togglePanel('guider');
   markStatusBarAsVisited();
 };
 
@@ -368,6 +394,15 @@ const mountValue = computed(() => {
   return t('components.statusBar.mount.tracking');
 });
 
+// Powered ports vs. all writable ports; PWM/dimmer outputs count as on above zero.
+const switchOnCount = computed(
+  () => (store.switchInfo.WritableSwitches ?? []).filter((s) => s.Value > 0).length
+);
+const switchValue = computed(
+  () => `${switchOnCount.value}/${store.switchInfo.WritableSwitches?.length ?? 0}`
+);
+const switchState = computed(() => (switchOnCount.value > 0 ? 'ok' : 'idle'));
+
 const weatherValue = computed(() => {
   const temp = formatNumber(store.weatherInfo.Temperature, 1) ?? '--';
   const clouds = formatNumber(store.weatherInfo.CloudCover, 0);
@@ -398,30 +433,11 @@ const statusPanelClasses = computed(() => ({
   'left-[calc(var(--nav-width)+var(--stage-inset))]': isLandscape.value,
 }));
 
-// Track the height of whichever status-bar panel is currently open, so other
-// fixed-positioned overlays (e.g. controlSequence) can offset themselves above it.
-const guiderPanelRef = ref(null);
-const cameraPanelRef = ref(null);
-const mountPanelRef = ref(null);
-const filterPanelRef = ref(null);
-const progressPanelRef = ref(null);
-
-const { height: guiderPanelHeight } = useElementSize(guiderPanelRef);
-const { height: cameraPanelHeight } = useElementSize(cameraPanelRef);
-const { height: mountPanelHeight } = useElementSize(mountPanelRef);
-const { height: filterPanelHeight } = useElementSize(filterPanelRef);
-const { height: progressPanelHeight } = useElementSize(progressPanelRef);
-
-// Only the visible panel (v-show) reports a non-zero height, so the max is the active one.
-const activeStatusPanelHeight = computed(() =>
-  Math.max(
-    guiderPanelHeight.value,
-    cameraPanelHeight.value,
-    mountPanelHeight.value,
-    filterPanelHeight.value,
-    progressPanelHeight.value
-  )
-);
+// Track the height of the open status-bar panel, so other fixed-positioned
+// overlays (e.g. controlSequence) can offset themselves above it. The wrapper
+// is hidden (height 0) while no panel is open.
+const panelRef = ref(null);
+const { height: activeStatusPanelHeight } = useElementSize(panelRef);
 
 watchEffect(() => {
   document.documentElement.style.setProperty(
@@ -442,54 +458,8 @@ function handleLogClick(event) {
   event.preventDefault();
 }
 
-function handleCameraClick() {
-  cameraStore.showCameraInfo = !cameraStore.showCameraInfo;
-  if (cameraStore.showCameraInfo) {
-    guiderStore.showGuiderGraph = false;
-    mountStore.showMountInfo = false;
-    filterStore.showFilterwheelInfo = false;
-    showProgress.value = false;
-  }
-}
-
-function handleGuiderClick() {
-  guiderStore.showGuiderGraph = !guiderStore.showGuiderGraph;
-  if (guiderStore.showGuiderGraph) {
-    cameraStore.showCameraInfo = false;
-    mountStore.showMountInfo = false;
-    filterStore.showFilterwheelInfo = false;
-    showProgress.value = false;
-  }
-}
-
-function handleMountClick() {
-  mountStore.showMountInfo = !mountStore.showMountInfo;
-  if (mountStore.showMountInfo) {
-    cameraStore.showCameraInfo = false;
-    guiderStore.showGuiderGraph = false;
-    filterStore.showFilterwheelInfo = false;
-    showProgress.value = false;
-  }
-}
-
-function handleFilterClick() {
-  filterStore.showFilterwheelInfo = !filterStore.showFilterwheelInfo;
-  if (filterStore.showFilterwheelInfo) {
-    cameraStore.showCameraInfo = false;
-    guiderStore.showGuiderGraph = false;
-    mountStore.showMountInfo = false;
-    showProgress.value = false;
-  }
-}
-
 function handleProgressClick() {
-  showProgress.value = !showProgress.value;
-  if (showProgress.value) {
-    cameraStore.showCameraInfo = false;
-    guiderStore.showGuiderGraph = false;
-    mountStore.showMountInfo = false;
-    filterStore.showFilterwheelInfo = false;
-  }
+  statusBarStore.togglePanel('progress');
 }
 </script>
 
