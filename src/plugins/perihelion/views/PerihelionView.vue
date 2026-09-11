@@ -748,7 +748,7 @@
                 >
               </p>
               <p
-                v-if="quickTrackStatus.autoReapplyMinutes && nextReapplyIn != null"
+                v-if="quickTrackStatus.autoReapplySeconds && nextReapplyIn != null"
                 class="text-xs text-content-muted"
               >
                 {{ t('perihelion.track.nextReapply', { duration: nextReapplyIn }) }}
@@ -938,9 +938,7 @@
                 >
                   <div class="flex flex-col gap-0.5 min-w-0 flex-1">
                     <span class="text-sm font-semibold text-content">{{
-                      t('perihelion.track.autoReapplyToggleTitle', {
-                        minutes: autoReapplyMinutes,
-                      })
+                      autoReapplyToggleTitle
                     }}</span>
                     <span class="text-[11px] text-content-muted leading-tight">
                       {{ t('perihelion.track.autoReapplyToggleDescription') }}
@@ -1286,7 +1284,7 @@
               v-if="trackingMode === 'quick' && autoReapply"
               class="text-[11px] text-content-faint text-center"
             >
-              {{ t('perihelion.track.autoReapplyingFooter', { minutes: autoReapplyMinutes }) }}
+              {{ autoReapplyingFooter }}
             </p>
 
             <p class="text-[11px] leading-relaxed text-content-faint text-center">
@@ -1517,17 +1515,29 @@ const {
 // Mount Compatibility settings (EqmodRaRateCorrection, QuickTrackReapplyIntervalSeconds) --
 // persisted on the plugin side via PluginOptionsAccessor, same as Port, but reachable here
 // through Perihelion's own API since PINS has no settings UI of its own to expose them through
-// (see the Windows-only Options page for that platform's equivalent). autoReapplyMinutes is
-// derived from the fetched seconds value, matching QuickTrackReapply's own minutes-only timer
-// on the backend -- whole-minute rounding is an accepted precision loss for values that don't
-// divide evenly by 60.
+// (see the Windows-only Options page for that platform's equivalent).
 const showMountSettings = ref(false);
 const eqmodRaRateCorrection = ref(false);
 const reapplyIntervalSeconds = ref(900);
 const reapplyIntervalSecondsInput = ref(900);
-const autoReapplyMinutes = computed(() =>
-  Math.max(1, Math.round(reapplyIntervalSeconds.value / 60))
-);
+
+// Below 60s, shown as "N sec" (English-only string -- see autoReapplyToggleTitleSeconds/
+// autoReapplyingFooterSeconds in en.json, not translated into the other 13 locales like the
+// whole-minute strings are) rather than rounding into a misleading "0 min"/"1 min" the way a
+// naive minutes conversion would -- this is the whole reason QuickTrackReapply's own timer and
+// wire contract were changed to work in seconds instead of whole minutes.
+const autoReapplyToggleTitle = computed(() => {
+  const secs = reapplyIntervalSeconds.value;
+  return secs < 60
+    ? t('perihelion.track.autoReapplyToggleTitleSeconds', { seconds: secs })
+    : t('perihelion.track.autoReapplyToggleTitle', { minutes: Math.round(secs / 60) });
+});
+const autoReapplyingFooter = computed(() => {
+  const secs = reapplyIntervalSeconds.value;
+  return secs < 60
+    ? t('perihelion.track.autoReapplyingFooterSeconds', { seconds: secs })
+    : t('perihelion.track.autoReapplyingFooter', { minutes: Math.round(secs / 60) });
+});
 
 // EQMOD's own real ASCOM driver registers itself under a name containing "EQMOD" (e.g. "EQMOD
 // ASCOM HEQ5/6") -- store.mountInfo already carries the full NINA TelescopeInfo shape (Name,
@@ -1564,7 +1574,9 @@ async function onToggleEqmodCorrection() {
 }
 
 async function onSaveReapplyInterval() {
-  const seconds = Math.max(1, Math.round(reapplyIntervalSecondsInput.value) || 900);
+  // 5s floor matches PerihelionPlugin.MinReapplyIntervalSeconds on the backend -- clamping here
+  // too avoids the input briefly showing a value the backend would silently raise on save.
+  const seconds = Math.max(5, Math.round(reapplyIntervalSecondsInput.value) || 900);
   reapplyIntervalSecondsInput.value = seconds;
   const ok = await saveSettings({
     eqmodRaRateCorrection: eqmodRaRateCorrection.value,
@@ -2293,10 +2305,12 @@ onUnmounted(() => {
   if (positionDerivedStateHandle) clearInterval(positionDerivedStateHandle);
 });
 
-/** Coarse duration ("3m", "1h 05m") without a directional suffix -- caller supplies "for"/"in ~". */
+/** Coarse duration ("45s", "3m", "1h 05m") without a directional suffix -- caller supplies
+ * "for"/"in ~". Sub-minute shown in seconds, not rounded into a misleading "under a minute" --
+ * matters now that the reapply interval itself can genuinely be under a minute. */
 function formatDuration(ms) {
   const seconds = Math.max(0, ms) / 1000;
-  if (seconds < 60) return 'under a minute';
+  if (seconds < 60) return `${Math.round(seconds)}s`;
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
   return `${Math.floor(seconds / 3600)}h ${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}m`;
 }
@@ -2313,8 +2327,8 @@ const elapsedSinceApplied = computed(() => {
 });
 const nextReapplyIn = computed(() => {
   const s = quickTrackStatus.value;
-  if (!s?.autoReapplyMinutes || !s.lastAppliedUtc) return null;
-  const nextAtMs = new Date(s.lastAppliedUtc).getTime() + s.autoReapplyMinutes * 60000;
+  if (!s?.autoReapplySeconds || !s.lastAppliedUtc) return null;
+  const nextAtMs = new Date(s.lastAppliedUtc).getTime() + s.autoReapplySeconds * 1000;
   return formatDuration(nextAtMs - now.value);
 });
 
@@ -2450,7 +2464,7 @@ async function startQuickTrackNow() {
     objectType: selected.value.objectType.toLowerCase(),
     targetName: selected.value.name,
     guiding: guiding.value,
-    autoReapplyMinutes: autoReapply.value ? autoReapplyMinutes.value : null,
+    autoReapplyIntervalSeconds: autoReapply.value ? reapplyIntervalSeconds.value : null,
   });
   actionStatus.value = result;
   actionBusy.value = false;
