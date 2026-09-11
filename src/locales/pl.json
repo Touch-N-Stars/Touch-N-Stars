@@ -5532,7 +5532,7 @@
       "stopSequence": "Zatrzymaj Sekwencję",
       "stopQuickTrack": "Zatrzymaj Quick Track",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "Obliczane na urządzeniu na podstawie elementów orbitalnych na żywo — planetoidy nie potrzebują internetu; komety synchronizują się okresowo, a potem działają offline.",
+      "footer": "Obliczane na urządzeniu na podstawie elementów orbitalnych na żywo — komety i planetoidy synchronizują się okresowo, a potem działają offline.",
       "dismiss": "Zamknij"
     },
     "relativeTime": {

@@ -5537,7 +5537,7 @@
       "stopSequence": "Ferma sequenza",
       "stopQuickTrack": "Ferma Quick Track",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "Calcolato sul dispositivo dagli elementi orbitali in tempo reale — gli asteroidi non necessitano di internet; le comete si sincronizzano periodicamente e poi funzionano offline.",
+      "footer": "Calcolato sul dispositivo dagli elementi orbitali in tempo reale — comete e asteroidi si sincronizzano entrambi periodicamente e poi funzionano offline.",
       "dismiss": "Ignora"
     },
     "relativeTime": {

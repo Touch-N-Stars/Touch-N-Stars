@@ -5537,7 +5537,7 @@
       "stopSequence": "Arrêter la séquence",
       "stopQuickTrack": "Arrêter le suivi rapide",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "Calculé localement à partir des éléments orbitaux en direct — les astéroïdes n'ont besoin d'aucune connexion internet ; les comètes se synchronisent périodiquement, puis fonctionnent hors ligne.",
+      "footer": "Calculé localement à partir des éléments orbitaux en direct — comètes et astéroïdes se synchronisent tous deux périodiquement, puis fonctionnent hors ligne.",
       "dismiss": "Ignorer"
     },
     "relativeTime": {

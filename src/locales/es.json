@@ -5537,7 +5537,7 @@
       "stopSequence": "Detener secuencia",
       "stopQuickTrack": "Detener seguimiento rápido",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "Calculado en el dispositivo a partir de elementos orbitales en vivo — los asteroides no necesitan internet; los cometas se sincronizan periódicamente y luego funcionan sin conexión.",
+      "footer": "Calculado en el dispositivo a partir de elementos orbitales en vivo — tanto los cometas como los asteroides se sincronizan periódicamente y luego funcionan sin conexión.",
       "dismiss": "Descartar"
     },
     "relativeTime": {

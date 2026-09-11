@@ -5532,7 +5532,7 @@
       "stopSequence": "Sequentie stoppen",
       "stopQuickTrack": "Quick Track stoppen",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "Op het apparaat berekend uit live baanelementen — asteroïden hebben geen internet nodig; kometen synchroniseren periodiek en werken daarna offline.",
+      "footer": "Op het apparaat berekend uit live baanelementen — kometen en asteroïden synchroniseren beide periodiek en werken daarna offline.",
       "dismiss": "Sluiten"
     },
     "relativeTime": {

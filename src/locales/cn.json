@@ -5532,7 +5532,7 @@
       "stopSequence": "停止序列",
       "stopQuickTrack": "停止快速跟踪",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "在设备本地根据实时轨道根数计算 — 小行星无需互联网；彗星会定期同步，之后可离线工作。",
+      "footer": "在设备本地根据实时轨道根数计算 — 彗星和小行星都会定期同步，之后可离线工作。",
       "dismiss": "关闭"
     },
     "relativeTime": {

@@ -5532,7 +5532,7 @@
       "stopSequence": "Zastavit Sekvenci",
       "stopQuickTrack": "Zastavit Quick Track",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
-      "footer": "Počítáno přímo v zařízení ze živých drahových elementů — planetky nepotřebují internet; kométy se pravidelně synchronizují a pak fungují offline.",
+      "footer": "Počítáno přímo v zařízení ze živých drahových elementů — komety i planetky se pravidelně synchronizují a pak fungují offline.",
       "dismiss": "Zavřít"
     },
     "relativeTime": {
