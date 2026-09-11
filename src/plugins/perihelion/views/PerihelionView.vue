@@ -2,7 +2,7 @@
   <div class="flex flex-col h-full min-h-0">
     <!-- Not the Perihelion NINA plugin's own tracking failing -- the whole HTTP server it's
          supposed to be talking to isn't reachable at all, so nothing below would work anyway.
-         Real Windows NINA is a genuinely different case from "PINS user forgot to install it":
+         Windows NINA is a genuinely different case from "PINS user forgot to install it":
          Perihelion is compiled against PINS' own forked/retargeted NINA assemblies, not the
          officially published NINA SDK, so it isn't just "not yet built for Windows" -- it can
          never be installed there as-is. "Install the plugin" would be actively misleading for
@@ -133,8 +133,8 @@
               }}
             </button>
             <!-- "All" syncs both comets and asteroids together -- a single-type-only Sync Now
-                 under the combined view was real user-reported confusion (2026-09-07): clicking
-                 it while viewing "All" only ever synced comets, silently. -->
+                 under the combined view was confusing: clicking it while viewing "All" only
+                 ever synced comets, silently. -->
             <button
               class="shrink-0 px-2 py-1 rounded-chip font-semibold text-accent border border-accent/30 hover:bg-accent/10 disabled:opacity-50 cursor-pointer"
               :disabled="filter === 'all' ? syncingAll : syncing"
@@ -224,7 +224,7 @@
                   <!-- Epoch-staleness badge -- see fetchBrowseObjects.js's own isEpochStale
                        comment. A shared modal (not per-row text) keeps a dense list from getting
                        cluttered; tap-to-open rather than a native title tooltip, same reasoning
-                       as the ObservedMag legend above. A <span role="button">, not a real
+                       as the ObservedMag legend above. A <span role="button">, not an actual
                        <button> -- this whole row is already a <button>, and nesting one inside
                        another is invalid HTML. -->
                   <span
@@ -316,10 +316,10 @@
               </div>
             </div>
 
-            <!-- Promoted out of "More Details" and always visible, 2026-09-06 (real user
-                 feedback: Alt, Rate and Max Exposure are actionable "should I image this right
-                 now / for how long" facts, not occasional reference lookups like Sun/Earth
-                 distance or constellation below -- worth the extra screen space). Az rides along
+            <!-- Promoted out of "More Details" and always visible -- Alt, Rate and Max Exposure
+                 are actionable "should I image this right now / for how long" facts, not
+                 occasional reference lookups like Sun/Earth distance or constellation below --
+                 worth the extra screen space. Az rides along
                  with Alt since they're the same fetch and a natural pair; Rate rides along with
                  Max Exposure for the same reason (and because seeing the raw rate next to the
                  derived ceiling makes where that number came from legible). -->
@@ -342,11 +342,11 @@
               <div class="bg-surface-2 rounded-chip px-3 py-2 flex flex-col justify-center gap-0.5">
                 <span class="tns-stat-label flex items-center gap-1">
                   {{ t('perihelion.position.maxExposure') }}
-                  <!-- Real user question, 2026-09-06, after seeing a much bigger number than
-                       they'd actually shoot (617s for a Bortle 6 site with a broadband UV/IR-cut
-                       filter): Max Exposure is a TRACKING ceiling only -- no idea about sky
+                  <!-- Max Exposure is a TRACKING ceiling only -- no idea about sky
                        background, light pollution, or the filter, so it's very often NOT the
-                       real limit on sub length. Modal, not a tooltip or inline caveat text -- a
+                       actual limit on sub length (e.g. a broadband UV/IR-cut filter at a
+                       light-polluted site will usually cap sub length well before this number
+                       does). Modal, not a tooltip or inline caveat text -- a
                        native title tooltip doesn't work on touch, matching the InformationCircleIcon
                        + Modal pattern already used above for observedTooltip. -->
                   <button
@@ -383,7 +383,7 @@
               {{ t('perihelion.position.rateError', { error: rateError }) }}
             </p>
 
-            <!-- Real, if lower-priority, facts a user might want alongside the above -- collapsed
+            <!-- Lower-priority facts a user might still want alongside the above -- collapsed
                  by default so they don't add permanent scroll weight to an already-busy tab.
                  Sun/Earth distance, solar elongation and constellation are free from the object's
                  own already-computed geocentric position (see OrbitalTracking.BrowseObject's own
@@ -641,7 +641,7 @@
               }}</span>
             </div>
 
-            <!-- Real safety concern, not a generic error toast: Quick Track has no sequence of
+            <!-- A genuine safety concern, not a generic error toast: Quick Track has no sequence of
                  its own, so this is currently the ONLY thing that stops it before a GEM mount's
                  OTA/counterweight swings into the tripod or pier past the meridian. Deliberately
                  not folded into the quieter actionStatus/lastError text elsewhere on this tab --
@@ -1183,8 +1183,8 @@
               </Modal>
               <!-- Collapsed by default -- same disclosure pattern as Position & Path's own More
                    Details card. This used to be four always-visible paragraphs permanently
-                   taking up space at the bottom of the tab; real feedback was that it read as
-                   clutter for anyone past their first few uses. -->
+                   taking up space at the bottom of the tab, reading as clutter for anyone past
+                   their first few uses. -->
               <div
                 class="rounded-chip bg-surface-2/60 border border-line-strong/50 overflow-hidden"
               >
@@ -1388,7 +1388,7 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 // Same Center/Rotate toggle + settle-time modal as ButtonSlewCenterRotate.vue's own gear icon
 // (the app-wide Slew & Center control) -- reusing the pieces rather than that whole component,
 // since it calls framingStore.slewAndCenterRotate() which only console.errors on failure; this
-// view's own onSlewAndCenter() keeps calling apiService.slewAndCenter() directly so a real
+// view's own onSlewAndCenter() keeps calling apiService.slewAndCenter() directly so a
 // failure still surfaces in actionStatus like every other Track-tab action here.
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
@@ -1539,7 +1539,7 @@ const autoReapplyingFooter = computed(() => {
     : t('perihelion.track.autoReapplyingFooter', { minutes: Math.round(secs / 60) });
 });
 
-// EQMOD's own real ASCOM driver registers itself under a name containing "EQMOD" (e.g. "EQMOD
+// EQMOD's own ASCOM driver registers itself under a name containing "EQMOD" (e.g. "EQMOD
 // ASCOM HEQ5/6") -- store.mountInfo already carries the full NINA TelescopeInfo shape (Name,
 // Description, DriverInfo all included), populated by ninaAPI's own /equipment/telescope/info
 // route, so this needs no new API call of its own. Checking all three fields rather than just
@@ -1636,11 +1636,11 @@ async function loadObjects() {
   }
 }
 
-// Real hardware feedback: waiting on COBS before the Browse list could render at all was felt
-// as "the page is slow" even when the per-comet cache was warm, and much worse cold (14-16s
-// measured on real hardware for 14 comets). /objects now returns predicted-magnitude-only data
-// instantly (see OrbitalTracking.ListBrowseObjectsAsync's own includeCobs doc comment); this
-// fills in real observed-brightness badges afterward, one comet at a time, mutating the same
+// Waiting on COBS before the Browse list could render at all was felt as "the page is slow"
+// even when the per-comet cache was warm, and much worse cold (14-16s measured for 14 comets).
+// /objects now returns predicted-magnitude-only data instantly (see
+// OrbitalTracking.ListBrowseObjectsAsync's own includeCobs doc comment); this
+// fills in observed-brightness badges afterward, one comet at a time, mutating the same
 // reactive objects already in objects.value so each badge just pops in as its own request
 // resolves rather than blocking the whole list. cobsFillToken guards against a stale sweep (from
 // a previous loadObjects()/tab switch) writing into whatever's currently displayed after a newer
@@ -1692,7 +1692,7 @@ async function loadSyncStatus() {
   }
 }
 
-// Real hardware report: a plain browser refresh (not just leaving/re-entering the tab within
+// A plain browser refresh (not just leaving/re-entering the tab within
 // the app, which perihelionStore's own trackingMode already survives fine) wiped the whole
 // Pinia store back to its initial state, including trackingMode -- so a genuinely still-running
 // Quick Track session (the backend timer keeps going regardless of any browser tab, by design)
@@ -1828,8 +1828,8 @@ async function onRefreshCobs() {
 }
 
 // A 1+ magnitude gap between predicted and observed is exactly the "predicted model doesn't
-// know about a real outburst" case this badge exists to surface (10P/Tempel and 220P/McNaught
-// are verified real examples several magnitudes off) -- flagged in the warning color rather
+// know about an outburst" case this badge exists to surface (10P/Tempel and 220P/McNaught
+// are verified examples several magnitudes off) -- flagged in the warning color rather
 // than the same quiet accent used when the two roughly agree, so a genuinely surprising comet
 // stands out in the list without needing to open it first.
 const showObservedMagLegend = ref(false);
@@ -1837,7 +1837,7 @@ const showMaxExposureLegend = ref(false);
 const showEpochStaleLegend = ref(false);
 
 // Collapsed by default -- Alt/Az, Sun/Earth distance, elongation, constellation, and perihelion
-// date are real facts someone might want, but stacking them onto an already-busy tab as
+// date are facts someone might want, but stacking them onto an already-busy tab as
 // permanently-visible rows was worse than tucking them behind one disclosure.
 const showMoreDetails = ref(false);
 
@@ -1850,7 +1850,7 @@ const showHowItWorks = ref(false);
 // isn't one kind of surprise -- it's two opposite ones. Brighter-than-predicted (diff very
 // negative) is a genuinely exciting outburst, worth flagging as good news, not a warning;
 // fainter-than-predicted (diff positive) means the comet is underperforming the model, which is
-// the "something to be aware of" direction amber/red are actually for. 10P/Tempel's real case
+// the "something to be aware of" direction amber/red are actually for. 10P/Tempel's own case
 // (predicted 13.3, observed 7.9, diff -5.4) should read as a bright-green highlight, not amber.
 // Shared by the Browse list badge and the Position & Path card's Latest/Avg values, each of
 // which compares its own observed number against the same predicted magnitude independently --
@@ -1898,10 +1898,10 @@ function altitudeColorClass(altitudeDeg) {
   return TEXT_CLASS_BY_TIER.ok;
 }
 
-// Real gap: Quick Track just applies a tracking RATE, it never slews -- if the mount is actually
-// pointed somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the wrong thing),
-// the session runs "successfully" the whole time while silently tracking empty sky at the
-// correct rate for the wrong patch. 2deg is comfortably larger than any real imaging FOV or
+// A genuine gap: Quick Track just applies a tracking RATE, it never slews -- if the mount is
+// actually pointed somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the
+// wrong thing), the session runs "successfully" the whole time while silently tracking empty
+// sky at the correct rate for the wrong patch. 2deg is comfortably larger than any imaging FOV or
 // normal pointing-model residual, so it only fires when the mount clearly isn't on this target
 // at all, not for ordinary plate-solve-scale error.
 const MOUNT_MISMATCH_THRESHOLD_DEG = 2;
@@ -2005,12 +2005,12 @@ const tonightsPeakAltitude = ref(null);
 const riseSetInfo = ref(null);
 let positionDerivedStateHandle = null;
 
-// Real observatory apps (and SkyChart's own pre-rewrite peakAltitudePoint/riseSetPoint, which
+// Observatory apps (and SkyChart's own pre-rewrite peakAltitudePoint/riseSetPoint, which
 // this ports from -- see PR description for why SkyChart itself no longer exposes these as
 // emits) need a rolling 24h-from-now window here, not the chart's own fixed display range: a
 // window anchored to a fixed clock time can straddle last night's already-over dark period, or
 // fail to reach deep enough into the coming night depending what time of day "now" happens to
-// be, and either way ends up reporting a peak/rise-set that isn't actually the next real one.
+// be, and either way ends up reporting a peak/rise-set that isn't actually the next one.
 const SEARCH_STEPS = 96; // 24h from now, in 15-minute steps
 const SEARCH_STEP_MS = 15 * 60 * 1000;
 
@@ -2100,8 +2100,8 @@ function updatePositionDerivedState() {
   riseSetInfo.value = computeRiseSet(now, raDeg, decDeg, s.Latitude, s.Longitude);
 }
 // A single combined string, not several adjacent template <span>s -- Vue's whitespace-condense
-// mode collapses whitespace-only text nodes BETWEEN elements (same real bug already found and
-// fixed once this session in the Quick Track status card's "Tracking for X· Applied Y ago ago"),
+// mode collapses whitespace-only text nodes BETWEEN elements (the same bug class already found
+// and fixed once elsewhere, in the Quick Track status card's "Tracking for X· Applied Y ago"),
 // so multiple sibling spans here rendered as "Rises 22:46·Sets 12:16" with no spaces around the
 // dot at all. Building the whole string in script sidesteps that class of bug entirely.
 const riseSetLabel = computed(() => {
@@ -2137,7 +2137,7 @@ watch([activeTab, selected], ([tab]) => {
   if (tab === 'position' && selected.value) loadPath();
 });
 
-// Real hardware feedback: Browse/Position & Path/Track are tabs within this one component, not
+// Browse/Position & Path/Track are tabs within this one component, not
 // separate routes, so the router-level scrollBehavior fix (src/router/index.js) never fires for
 // switching between them -- a scrolled-down Browse list left Position & Path (or Track) opening
 // already scrolled down too. Reset explicitly on every tab switch instead.
@@ -2211,7 +2211,7 @@ watch(selected, (newVal, oldVal) => {
   // *reappearing*: objects.value starts empty on every fresh mount of this view (no
   // <KeepAlive> on the app's router-view, so navigating away and back tears this component
   // down entirely), so `selected` goes null -> (same, persisted) object the instant
-  // loadObjects() resolves -- indistinguishable from a real change without checking ids, and
+  // loadObjects() resolves -- indistinguishable from a genuine change without checking ids, and
   // this watcher's callback runs before FramingOffsetView (freshly mounting at the same
   // moment) ever gets to read its restored initialOffset prop, silently discarding it on every
   // single return to this tab.
@@ -2260,7 +2260,7 @@ const quickTrackStatus = ref(null);
 const now = ref(Date.now());
 let statusPollHandle = null;
 
-// Survives independently of quickTrackStatus/trackingMode being reset below -- real safety
+// Survives independently of quickTrackStatus/trackingMode being reset below -- a genuine safety
 // concern: Quick Track has no sequence of its own, so nothing else stops it from tracking a
 // German Equatorial Mount past the meridian (see the Perihelion repo's QuickTrackReapply.
 // CheckMeridian for the actual mechanics/why this stops rather than auto-flips). Without
@@ -2385,8 +2385,8 @@ function onDownloadSequence() {
 
 // Deliberately calls apiService.slewAndCenter() directly rather than framingStore's own
 // slewAndCenterRotate() wrapper -- that wrapper only console.errors on failure and surfaces
-// nothing to the caller, which doesn't match how every other Track-tab action here reports a
-// real actionStatus. Reuses ninaAPI's existing GET /equipment/mount/slew route (already proven
+// nothing to the caller, which doesn't match how every other Track-tab action here reports
+// actionStatus. Reuses ninaAPI's existing GET /equipment/mount/slew route (already proven
 // by observationplaner's own Slew/Slew+Center buttons) -- no new backend code needed at all,
 // and reuses framingStore.rotationAngle so it also applies whatever rotation was set or
 // determined-from-camera on the Position & Path tab's own Framing card.
@@ -2400,7 +2400,7 @@ function toggleUseRotate() {
   settingsStore.saveMountSettings();
 }
 
-// Real hardware report: on an OnStep mount (and ASCOM/INDI mounts generally), a parked mount
+// On an OnStep mount (and ASCOM/INDI mounts generally), a parked mount
 // refuses to slew at all -- Slew and Center did nothing with no clear explanation. Same
 // check-then-unpark-then-settle pattern as the app-wide ButtonSlewCenterRotate.vue's own
 // unparkMount(), not reused directly since that component swallows failures into a console.log
@@ -2447,8 +2447,8 @@ async function onSlewAndCenter() {
   return actionStatus.value?.ok ?? false;
 }
 
-// Real gap: Quick Track only applies a tracking RATE, it never slews -- if the mount is pointed
-// somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the wrong thing), the
+// A genuine gap: Quick Track only applies a tracking RATE, it never slews -- if the mount is
+// pointed somewhere else entirely (Slew & Center skipped, a bad sync, GoTo to the wrong thing), the
 // session runs "successfully" the whole time while silently tracking empty sky at the correct
 // rate for the wrong patch of it. Split from onQuickTrack itself so the mount-mismatch dialog's
 // "Continue anyway" and "Slew & Center, then track" actions can both reach the actual tracking
@@ -2473,7 +2473,7 @@ async function startQuickTrackNow() {
 
 async function onQuickTrack() {
   if (!selected.value) return;
-  // Only checkable when the mount is actually connected and reporting a real position -- skips
+  // Only checkable when the mount is actually connected and reporting a position -- skips
   // silently otherwise rather than blocking on something Quick Track can't verify either way.
   if (store.mountInfo.Connected) {
     const separationDeg = angularSeparationDeg(

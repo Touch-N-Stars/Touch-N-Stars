@@ -1,5 +1,5 @@
 /**
- * Builds a minimal NINA Advanced Sequencer JSON for "Add to Sequence": a real slew to the
+ * Builds a minimal NINA Advanced Sequencer JSON for "Add to Sequence": a slew to the
  * comet/asteroid's current position, Perihelion's own custom tracking-rate item (and
  * optionally its guider-shift counterpart), and a single-filter imaging loop.
  *
@@ -7,13 +7,13 @@
  * this app's own sequence-creator plugin (sequenceStore.js, createBasicDeepSkyObjectContainer)
  * almost field-for-field -- cross-checked against both before writing this, since a missing
  * $id/$ref/Parent link is what silently breaks NINA's own delete/edit commands on a loaded
- * sequence (see sequenceExport.ts's own header comment for the real incident that taught that
+ * sequence (see sequenceExport.ts's own header comment for the incident that taught that
  * lesson on the website side).
  *
  * Deliberately does NOT reuse sequence-creator's own createBasicDeepSkyObjectContainer --
  * that function is shaped around its drag-drop editor's "action" object model, which would
  * mean adapting Perihelion's own simple one-shot payload into an unrelated UI data shape for
- * no real benefit. This file is self-contained and only produces exactly what "Add to
+ * no benefit. This file is self-contained and only produces exactly what "Add to
  * Sequence" needs.
  */
 
@@ -56,7 +56,7 @@ function decDegToNinaFields(decDeg) {
  * @param {boolean} target.meridianFlip - add a MeridianFlipTrigger to the sequence's global triggers.
  * @param {number|null} target.autofocusMinutes - add an AutofocusAfterTimeTrigger with this interval (minutes) to the target's own triggers; omit/null to skip it entirely.
  * @param {{ raDeg: number, decDeg: number }|null} target.frameOffset - shifts only the GoTo/CenterAndRotate slew target (see FramingOffsetView.vue); null/omitted centers exactly on raHours/decDeg as usual.
- * @param {{ filterName: string|null, exposureSeconds: number, frameCount: number }} target.exposure - filterName null/empty means "don't touch the filter wheel" (leaves whatever's currently selected); any other value must be a real name from the connected wheel's AvailableFilters.
+ * @param {{ filterName: string|null, exposureSeconds: number, frameCount: number }} target.exposure - filterName null/empty means "don't touch the filter wheel" (leaves whatever's currently selected); any other value must be an actual name from the connected wheel's AvailableFilters.
  * @returns {object} a full NINA SequenceRootContainer, ready for sequenceApi.sequenceLoadJson(JSON.stringify(root)).
  */
 export function buildPerihelionSequence(target) {
@@ -226,9 +226,9 @@ export function buildPerihelionSequence(target) {
       },
     ];
     const items = [];
-    // filterName is a real name from the connected wheel's own AvailableFilters (see this
+    // filterName is an actual name from the connected wheel's own AvailableFilters (see this
     // file's own param docs) -- null/empty is the only case that means "leave the wheel alone",
-    // there's no magic string standing in for a real filter position any more.
+    // there's no magic string standing in for a filter position any more.
     if (filterName) items.push(ninaSwitchFilter(id, filterName));
     items.push(ninaTakeExposure(id, exposureSeconds));
     return finishContainer(
@@ -272,7 +272,7 @@ export function buildPerihelionSequence(target) {
     // actual GoTo/slew target -- targetObj's own InputCoordinates above stays at the object's
     // true position, so NINA's own sequencer UI still correctly identifies what this container
     // tracks. SetPerihelionTrackingRate is untouched either way: its rate computation looks up
-    // the object by TargetName and depends on the object's own real motion, not on where the
+    // the object by TargetName and depends on the object's own motion, not on where the
     // mount is centered, which is exactly what lets a one-time offset (captured once at export
     // time, rather than continuously re-anchored to the live position) hold for the whole
     // session -- the custom tracking rate keeps whatever framing choice was made here fixed in
