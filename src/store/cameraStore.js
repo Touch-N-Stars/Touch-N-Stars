@@ -84,11 +84,17 @@ export const useCameraStore = defineStore('cameraStore', () => {
   const commandedWarmUp = ref(null); // { deadline } | null
   const holdSetpoint = ref(null); // number | null
   let holdCaptureAt = 0; // earliest time a payload surely shows the post-cancel setpoint
+  let holdCandidate = null; // setpoint of the previous payload after that time
+
+  // Setpoint trend bookkeeping for the direction, see the cameraInfo watch.
+  let trendSetpoint = null; // setpoint of the previous payload
+  let trendSeenRunning = 0; // consecutive running payloads that showed it
 
   function clearHeuristicLatches() {
     commandedWarmUp.value = null;
     holdSetpoint.value = null;
     holdCaptureAt = 0;
+    holdCandidate = null;
   }
 
   function setCoolingPending(kind) {
@@ -156,7 +162,9 @@ export const useCameraStore = defineStore('cameraStore', () => {
     if (!info.CoolerOn) return false;
     if (commandedWarmUp.value) return true;
     if (holdSetpoint.value != null && info.TemperatureSetPoint === holdSetpoint.value) return false;
-    if (info.AtTargetTemp) return false;
+    // AtTargetTemp is not used: ninaAPI defines it as exact equality of sensor
+    // and setpoint, which also happens mid-ramp whenever the camera catches
+    // up with the current integer step.
     const target = targetTemp.value;
     if (target == null || info.Temperature == null) return false;
     // A cooler manually switched on far from the target reads as "running",
@@ -194,16 +202,20 @@ export const useCameraStore = defineStore('cameraStore', () => {
       if (holdSetpoint.value != null && info.TemperatureSetPoint !== holdSetpoint.value) {
         holdSetpoint.value = null;
       }
-      // Capture the held setpoint from the first payload that surely shows
-      // NINA's post-cancel write: exact equality (AtTargetTemp) is that write,
-      // otherwise wait one device poll after the cancel request completed.
-      if (
-        holdCaptureAt &&
-        (info.AtTargetTemp === true || Date.now() >= holdCaptureAt) &&
-        Number.isFinite(info.TemperatureSetPoint)
-      ) {
-        holdSetpoint.value = info.TemperatureSetPoint;
-        holdCaptureAt = 0;
+      // Capture the held setpoint once NINA's post-cancel write surely
+      // reached us: one device poll after the cancel completed, and two
+      // consecutive payloads since then agree on the setpoint. A payload
+      // requested before the cancel can still arrive after the deadline and
+      // would carry the old ramp's setpoint.
+      if (holdCaptureAt && Date.now() >= holdCaptureAt) {
+        const setpoint = info.TemperatureSetPoint;
+        if (Number.isFinite(setpoint) && setpoint === holdCandidate) {
+          holdSetpoint.value = setpoint;
+          holdCaptureAt = 0;
+          holdCandidate = null;
+        } else {
+          holdCandidate = setpoint;
+        }
       }
 
       const running = isRampRunning.value;
@@ -216,6 +228,34 @@ export const useCameraStore = defineStore('cameraStore', () => {
         typeof info.TempChangeRunning === 'boolean' || holdSetpoint.value != null;
       if (pending === 'cancel' && !running && cancelConfirmed) setCoolingPending(null);
 
+      // Direction. Every setpoint move of a running ramp re-derives it, so a
+      // ramp replaced from outside TNS (NINA UI, sequence) flips the latch.
+      // Two signals, each wrong in one situation, so they are combined:
+      // - The trend (previous vs. new setpoint) is right while the ramp
+      //   steps, even when a fast cooler keeps the sensor below the
+      //   setpoint. It is wrong for the first step, when the previous
+      //   setpoint is a leftover from before the ramp (e.g. the old cool
+      //   target under a camera that warmed up passively) - recorded on a
+      //   PINS Pi as 10 -> 17 while cooling from 23°C.
+      // - Setpoint vs. temperature is right for the first step, when the
+      //   sensor has not moved yet, and wrong once the sensor overshoots.
+      // A leftover shows in at most one running payload (NINA refreshes
+      // CameraInfo every device poll), so the trend only counts once the
+      // previous setpoint was seen in two running payloads.
+      const setpoint = info.TemperatureSetPoint;
+      if (setpoint !== trendSetpoint) {
+        if (running && setpoint != null && trendSetpoint != null) {
+          if (trendSeenRunning >= 2 && setpoint > trendSetpoint) rampDirection.value = 'warming';
+          else if (trendSeenRunning >= 2 && setpoint < trendSetpoint)
+            rampDirection.value = 'cooling';
+          else rampDirection.value = inferRampDirection() ?? rampDirection.value;
+        }
+        trendSetpoint = setpoint;
+        trendSeenRunning = running ? 1 : 0;
+      } else {
+        trendSeenRunning = running ? trendSeenRunning + 1 : 0;
+      }
+
       if (running) {
         if (!rampDirection.value) rampDirection.value = inferRampDirection();
       } else if (coolingPending.value !== 'cooling' && coolingPending.value !== 'warming') {
@@ -226,22 +266,25 @@ export const useCameraStore = defineStore('cameraStore', () => {
     }
   );
 
-  // The setpoint trend is the authoritative direction signal for ramps
-  // started outside of TNS (NINA UI, sequence): warming ramps step the
-  // setpoint up, cooling ramps step it down.
-  watch(
-    () => store.cameraInfo.TemperatureSetPoint,
-    (next, prev) => {
-      if (!isRampRunning.value || next == null || prev == null) return;
-      if (next > prev) rampDirection.value = 'warming';
-      else if (next < prev) rampDirection.value = 'cooling';
-    }
-  );
-
   function resetCoolingIntent() {
     setCoolingPending(null);
     rampDirection.value = null;
     clearHeuristicLatches();
+  }
+
+  // A cancelled ramp task ends asynchronously: its catch writes the setpoint
+  // to the driver (slow on INDI) and only then its finally clears
+  // TempChangeRunning. A ramp started meanwhile has already set the flag, so
+  // it reads false for its whole duration (seen on a PINS Pi). Wait for the
+  // flag to drop before starting; the field is live, not cached. Without
+  // the field (official ninaAPI) there is nothing to wait for.
+  async function waitForRampIdle() {
+    if (typeof store.cameraInfo.TempChangeRunning !== 'boolean') return;
+    for (let i = 0; i < 10; i++) {
+      const info = (await apiService.cameraAction('info'))?.Response;
+      if (info?.TempChangeRunning !== true) return;
+      await wait(300);
+    }
   }
 
   async function startCooling(temperature, minutes) {
@@ -257,11 +300,10 @@ export const useCameraStore = defineStore('cameraStore', () => {
       setCoolingPending('cooling');
     }
     try {
-      // Cancel first, as a separate request: cool and warm share one
-      // CancellationTokenSource in ninaAPI, and the cancelled task's finally
-      // (TempChangeRunning = false) runs asynchronously. The extra roundtrip
-      // gives it time to finish before the new ramp raises the flag again.
+      // Cancel first: cool and warm share one CancellationTokenSource in
+      // ninaAPI, see waitForRampIdle() for why the start has to wait.
       await apiService.stopCameraWarming();
+      await waitForRampIdle();
       await apiService.startCameraCooling(temperature, minutes ?? 10);
     } catch (error) {
       resetCoolingIntent();
@@ -280,6 +322,7 @@ export const useCameraStore = defineStore('cameraStore', () => {
     };
     try {
       await apiService.stopCameraCooling();
+      await waitForRampIdle();
       await apiService.startCameraWarming(minutes ?? 10);
     } catch (error) {
       resetCoolingIntent();
