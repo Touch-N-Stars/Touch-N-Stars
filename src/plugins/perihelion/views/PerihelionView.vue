@@ -1521,23 +1521,19 @@ const eqmodRaRateCorrection = ref(false);
 const reapplyIntervalSeconds = ref(900);
 const reapplyIntervalSecondsInput = ref(900);
 
-// Below 60s, shown as "N sec" (English-only string -- see autoReapplyToggleTitleSeconds/
-// autoReapplyingFooterSeconds in en.json, not translated into the other 13 locales like the
-// whole-minute strings are) rather than rounding into a misleading "0 min"/"1 min" the way a
-// naive minutes conversion would -- this is the whole reason QuickTrackReapply's own timer and
-// wire contract were changed to work in seconds instead of whole minutes.
-const autoReapplyToggleTitle = computed(() => {
-  const secs = reapplyIntervalSeconds.value;
-  return secs < 60
-    ? t('perihelion.track.autoReapplyToggleTitleSeconds', { seconds: secs })
-    : t('perihelion.track.autoReapplyToggleTitle', { minutes: Math.round(secs / 60) });
-});
-const autoReapplyingFooter = computed(() => {
-  const secs = reapplyIntervalSeconds.value;
-  return secs < 60
-    ? t('perihelion.track.autoReapplyingFooterSeconds', { seconds: secs })
-    : t('perihelion.track.autoReapplyingFooter', { minutes: Math.round(secs / 60) });
-});
+// Always seconds, matching the Windows Options page's own "Reapply Interval ... secs" field --
+// no minutes conversion at all, not even for round values. Math.round(230/60) showing "4 min"
+// for a fixed, user-set 230 was actively wrong, not just imprecise, and the same class of bug
+// as the one this whole seconds-conversion effort started from. English-only string (see
+// autoReapplyToggleTitleSeconds/autoReapplyingFooterSeconds in en.json) rather than touching the
+// existing whole-minute strings translated into the other 13 locales, since this is now the
+// only format ever shown, not a rare sub-minute edge case those strings could otherwise cover.
+const autoReapplyToggleTitle = computed(() =>
+  t('perihelion.track.autoReapplyToggleTitleSeconds', { seconds: reapplyIntervalSeconds.value })
+);
+const autoReapplyingFooter = computed(() =>
+  t('perihelion.track.autoReapplyingFooterSeconds', { seconds: reapplyIntervalSeconds.value })
+);
 
 // EQMOD's own ASCOM driver registers itself under a name containing "EQMOD" (e.g. "EQMOD
 // ASCOM HEQ5/6") -- store.mountInfo already carries the full NINA TelescopeInfo shape (Name,
@@ -2305,13 +2301,20 @@ onUnmounted(() => {
   if (positionDerivedStateHandle) clearInterval(positionDerivedStateHandle);
 });
 
-/** Coarse duration ("45s", "3m", "1h 05m") without a directional suffix -- caller supplies
+/** Duration ("45s", "3m 50s", "1h 05m") without a directional suffix -- caller supplies
  * "for"/"in ~". Sub-minute shown in seconds, not rounded into a misleading "under a minute" --
- * matters now that the reapply interval itself can genuinely be under a minute. */
+ * matters now that the reapply interval itself can genuinely be under a minute. The 60s-3600s
+ * range now includes the remaining seconds too, not just whole minutes -- the previous
+ * Math.floor(seconds / 60)-only version truncated 230s down to "3m", silently dropping the
+ * remaining 50 seconds instead of showing "3m 50s". */
 function formatDuration(ms) {
   const seconds = Math.max(0, ms) / 1000;
   if (seconds < 60) return `${Math.round(seconds)}s`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`;
+  if (seconds < 3600) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.round(seconds % 60);
+    return s > 0 ? `${m}m ${s}s` : `${m}m`;
+  }
   return `${Math.floor(seconds / 3600)}h ${String(Math.floor((seconds % 3600) / 60)).padStart(2, '0')}m`;
 }
 
@@ -2329,7 +2332,10 @@ const nextReapplyIn = computed(() => {
   const s = quickTrackStatus.value;
   if (!s?.autoReapplySeconds || !s.lastAppliedUtc) return null;
   const nextAtMs = new Date(s.lastAppliedUtc).getTime() + s.autoReapplySeconds * 1000;
-  return formatDuration(nextAtMs - now.value);
+  // Always raw seconds, not formatDuration's minutes/hours breakdown -- this counts down within
+  // a bound the reapply interval itself sets, and that interval is always seconds now (no /60
+  // conversion anywhere else in this feature), so the countdown shouldn't introduce one either.
+  return `${Math.max(0, Math.round((nextAtMs - now.value) / 1000))}s`;
 });
 
 // Shared by onAddToSequence (loads it live into NINA) and onDownloadSequence (saves the exact
