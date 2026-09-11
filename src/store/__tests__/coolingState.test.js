@@ -9,6 +9,25 @@ installBrowserGlobals();
 const { nextTick } = await import('vue');
 const { apiStore } = await import('@/store/store');
 const { useCameraStore } = await import('@/store/cameraStore');
+const { default: apiService } = await import('@/services/apiService');
+
+// Stub the four cooler endpoints for one test; restored afterwards.
+function stubCoolerApi(t, impl = async () => ({ Success: true })) {
+  const names = [
+    'startCameraCooling',
+    'stopCameraCooling',
+    'startCameraWarming',
+    'stopCameraWarming',
+  ];
+  const originals = Object.fromEntries(names.map((n) => [n, apiService[n]]));
+  for (const n of names) apiService[n] = impl;
+  t.after(() => Object.assign(apiService, originals));
+}
+
+async function poll(store, patch) {
+  store.cameraInfo = { ...store.cameraInfo, ...patch };
+  await nextTick();
+}
 
 function setup(cameraInfo = {}, cameraSettings = null) {
   freshPinia();
@@ -131,9 +150,23 @@ test('heuristic: within 1°C of target counts as holding', () => {
   const { cameraStore } = setup({
     CoolerOn: true,
     TargetTemp: -10,
+    TemperatureSetPoint: -10,
     Temperature: -9.5,
   });
   assert.equal(cameraStore.coolingState, 'holding');
+});
+
+test('heuristic: a setpoint stepped above the cool target is a warm-up (external start)', () => {
+  // NINA's first warm-up step sits 1°C above the target while the sensor
+  // has not moved yet - the distance rule alone would say "holding".
+  const { cameraStore } = setup({
+    CoolerOn: true,
+    TargetTemp: -10,
+    TemperatureSetPoint: -9,
+    Temperature: -10,
+  });
+  assert.equal(cameraStore.isRampRunning, true);
+  assert.equal(cameraStore.coolingState, 'warming');
 });
 
 test('heuristic: TemperatureSetPoint is the fallback when TargetTemp is missing', () => {
@@ -209,4 +242,208 @@ test('pending flag is cleared once the poll confirms the ramp', async () => {
   await nextTick();
   assert.equal(cameraStore.coolingPending, null);
   assert.equal(cameraStore.coolingState, 'cooling');
+});
+
+// --- real flag vs. stale CoolerOn --------------------------------------------
+
+test('TempChangeRunning=true counts as running although CoolerOn still reads false', () => {
+  // CameraInfo lags one NINA device poll behind the flag, and INDI reports
+  // CoolerOn from the cooler power, which is 0 during a warm-up.
+  const { cameraStore } = setup({
+    CoolerOn: false,
+    TempChangeRunning: true,
+    TemperatureSetPoint: -8,
+    Temperature: -10,
+  });
+  assert.equal(cameraStore.isRampRunning, true);
+  assert.equal(cameraStore.coolingState, 'warming');
+});
+
+// --- intent lifecycle ----------------------------------------------------------
+
+test('startCooling shows the intent before the first request completes', async (t) => {
+  let resolveStart;
+  stubCoolerApi(t, () => new Promise((resolve) => (resolveStart = resolve)));
+  const { cameraStore } = setup({ CoolerOn: false });
+  const done = cameraStore.startCooling(-10, 10);
+  assert.equal(cameraStore.coolingPending, 'cooling');
+  assert.equal(cameraStore.rampDirection, 'cooling');
+  assert.equal(cameraStore.coolingState, 'cooling');
+  resolveStart({ Success: true });
+  await nextTick();
+  resolveStart({ Success: true });
+  await done;
+  cameraStore.coolingPending = null;
+});
+
+test('a failed start request drops the intent again', async (t) => {
+  stubCoolerApi(t, async () => {
+    throw new Error('offline');
+  });
+  const { cameraStore } = setup({ CoolerOn: false });
+  await assert.rejects(cameraStore.startCooling(-10, 10));
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.rampDirection, null);
+  assert.equal(cameraStore.coolingState, 'off');
+});
+
+test('a re-cool within 1°C of the target is instant and shows no pending', async (t) => {
+  stubCoolerApi(t);
+  const { cameraStore } = setup({ CoolerOn: true, TemperatureSetPoint: -10, Temperature: -9.4 });
+  await cameraStore.startCooling(-10, 10);
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'holding');
+});
+
+test('pending survives a stale payload and only the confirming one clears it', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  stubCoolerApi(t);
+  const { store, cameraStore } = setup({ CoolerOn: false, TempChangeRunning: false });
+  await cameraStore.startCooling(-10, 10);
+
+  // Stale payload (fetched before NINA's device poll caught up).
+  await poll(store, { CoolerOn: false, TempChangeRunning: false, Temperature: 15.1 });
+  t.mock.timers.tick(7000);
+  assert.equal(cameraStore.coolingState, 'cooling');
+  assert.equal(cameraStore.coolingPending, 'cooling');
+
+  await poll(store, { CoolerOn: true, TempChangeRunning: true, TemperatureSetPoint: 14 });
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'cooling');
+});
+
+test('the confirming payload clears pending even without a running transition', async (t) => {
+  // The ramp was already running (started elsewhere) when the button was
+  // pressed, so isRampRunning never flips - the check must run per payload.
+  stubCoolerApi(t);
+  const { store, cameraStore } = setup({
+    CoolerOn: true,
+    TempChangeRunning: true,
+    TemperatureSetPoint: 10,
+    Temperature: 15,
+  });
+  await nextTick(); // the setup payload is processed before the press
+  await cameraStore.startCooling(-10, 10);
+  assert.equal(cameraStore.coolingPending, 'cooling');
+  await poll(store, { Temperature: 14.9 });
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'cooling');
+});
+
+test('an unconfirmed intent falls after the safety timeout', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  stubCoolerApi(t);
+  const { cameraStore } = setup({ CoolerOn: false, TempChangeRunning: false });
+  await cameraStore.startCooling(-10, 10);
+  t.mock.timers.tick(14999);
+  assert.equal(cameraStore.coolingState, 'cooling');
+  t.mock.timers.tick(1);
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'off');
+});
+
+test('pending "cancel" is cleared by the first payload without a ramp', async (t) => {
+  stubCoolerApi(t);
+  const { store, cameraStore } = setup({
+    CoolerOn: true,
+    TempChangeRunning: true,
+    TemperatureSetPoint: 10,
+    Temperature: 15,
+  });
+  await cameraStore.cancelTempChange();
+  assert.equal(cameraStore.coolingState, 'holding');
+  await poll(store, { TempChangeRunning: true, Temperature: 14.9 }); // stale
+  assert.equal(cameraStore.coolingPending, 'cancel');
+  await poll(store, { TempChangeRunning: false, TemperatureSetPoint: 14.8, Temperature: 14.8 });
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'holding');
+});
+
+// --- heuristic latches for TNS-commanded actions ------------------------------
+
+test('heuristic: a warm-up started at the cool target stays "warming" until the cooler is off', async (t) => {
+  stubCoolerApi(t);
+  const { store, cameraStore } = setup(
+    { CoolerOn: true, TargetTemp: -10, TemperatureSetPoint: -10, Temperature: -10 },
+    { Temperature: -10 }
+  );
+  assert.equal(cameraStore.coolingState, 'holding');
+  await cameraStore.startWarming(10);
+  // Confirmed by the next payload, sensor and setpoint still unchanged.
+  await poll(store, { Temperature: -9.9 });
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'warming');
+  // ...and long after the old 6s window, still within 1°C of the target.
+  await poll(store, { TemperatureSetPoint: -10, Temperature: -9.3 });
+  assert.equal(cameraStore.coolingState, 'warming');
+  // NINA switches the cooler off at the end of the warm-up.
+  await poll(store, { CoolerOn: false, TemperatureSetPoint: 20, Temperature: 19.5 });
+  assert.equal(cameraStore.coolingState, 'off');
+});
+
+test('heuristic: after a cancel the held setpoint reads as holding until it moves', async (t) => {
+  stubCoolerApi(t);
+  const { store, cameraStore } = setup(
+    { CoolerOn: true, TargetTemp: -10, TemperatureSetPoint: -4, Temperature: -5 },
+    { Temperature: -10 }
+  );
+  assert.equal(cameraStore.coolingState, 'warming');
+  await cameraStore.cancelTempChange();
+  // NINA wrote setpoint = temperature; exact equality marks that write.
+  await poll(store, { AtTargetTemp: true, TemperatureSetPoint: -5, Temperature: -5 });
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'holding');
+  // Sensor drifts, setpoint unchanged: still holding (used to flicker).
+  await poll(store, { AtTargetTemp: false, Temperature: -5.2 });
+  assert.equal(cameraStore.coolingState, 'holding');
+  await poll(store, { Temperature: -4.9 });
+  assert.equal(cameraStore.coolingState, 'holding');
+  // A new ramp (from anywhere) moves the setpoint and releases the hold.
+  await poll(store, { TemperatureSetPoint: -4, Temperature: -4.9 });
+  assert.equal(cameraStore.coolingState, 'warming');
+});
+
+test('heuristic: the held setpoint is captured by time when equality never shows', async (t) => {
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  stubCoolerApi(t);
+  const { store, cameraStore } = setup(
+    { CoolerOn: true, TargetTemp: -10, TemperatureSetPoint: -4, Temperature: -5 },
+    { Temperature: -10 }
+  );
+  await cameraStore.cancelTempChange();
+  // Too early: could still be the pre-cancel setpoint.
+  await poll(store, { TemperatureSetPoint: -5.3, Temperature: -5.2 });
+  assert.equal(cameraStore.coolingPending, 'cancel');
+  t.mock.timers.tick(3000); // default DevicePollingInterval 2s + 1s margin
+  await poll(store, { TemperatureSetPoint: -5.3, Temperature: -5.1 });
+  assert.equal(cameraStore.coolingPending, null);
+  assert.equal(cameraStore.coolingState, 'holding');
+});
+
+test('heuristic: a "not running" payload during the cancel requests does not end the hold early', async (t) => {
+  // AtTargetTemp can be a coincidence of the old ramp (integer setpoint ==
+  // sensor reading). Until the cancel completed nothing is captured, and the
+  // cancel stays pending so the distance heuristic cannot flicker in between.
+  const pendingRequests = [];
+  stubCoolerApi(t, () => new Promise((resolve) => pendingRequests.push(resolve)));
+  const { store, cameraStore } = setup(
+    { CoolerOn: true, TargetTemp: -10, TemperatureSetPoint: -4, Temperature: -5 },
+    { Temperature: -10 }
+  );
+  await nextTick();
+  const cancel = cameraStore.cancelTempChange();
+  await poll(store, { AtTargetTemp: true, TemperatureSetPoint: -4, Temperature: -4 });
+  assert.equal(cameraStore.coolingPending, 'cancel');
+  assert.equal(cameraStore.coolingState, 'holding');
+  pendingRequests.shift()({ Success: true });
+  await nextTick();
+  pendingRequests.shift()({ Success: true });
+  await cancel;
+  // Payload of the old ramp, then NINA's post-cancel write.
+  await poll(store, { AtTargetTemp: false, TemperatureSetPoint: -4, Temperature: -4.1 });
+  assert.equal(cameraStore.coolingState, 'holding');
+  await poll(store, { AtTargetTemp: true, TemperatureSetPoint: -4.2, Temperature: -4.2 });
+  assert.equal(cameraStore.coolingPending, null);
+  await poll(store, { AtTargetTemp: false, Temperature: -4.4 });
+  assert.equal(cameraStore.coolingState, 'holding');
 });
