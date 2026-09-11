@@ -5503,7 +5503,7 @@
       "beforeYouStart": "开始之前",
       "guidingToggleTitle": "包含导星偏移速率",
       "guidingToggleDescription": "如果你在导星，就需要此项 — 否则导星系统会对抗这种漂移。",
-      "autoReapplyToggleTitle": "每 {minutes} 分钟自动重新应用",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "仅适用于快速跟踪 — 定期重新计算并重新发送速率，使长时间无人值守的会话在天体真实速率变化时仍保持准确。",
       "meridianFlipToggleTitle": "包含中天翻转触发器",
       "meridianFlipToggleDescription": "对于任何会越过中天继续运行的拍摄，建议在德式赤道仪上启用。",
@@ -5531,7 +5531,7 @@
       "quickTrackDescriptionRest": "立即直接设置赤道仪的速率 — 供手动或目视使用，不能替代真正的拍摄序列。如果赤道仪报告已到达中天翻转极限，Quick Track 会自动停止，因为它没有序列触发器来替你执行翻转。",
       "stopSequence": "停止序列",
       "stopQuickTrack": "停止快速跟踪",
-      "autoReapplyingFooter": "每 {minutes} 分钟自动重新应用",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "在设备本地根据实时轨道根数计算 — 小行星无需互联网；彗星会定期同步，之后可离线工作。",
       "dismiss": "关闭"
     },

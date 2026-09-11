@@ -5503,7 +5503,7 @@
       "beforeYouStart": "開始する前に",
       "guidingToggleTitle": "ガイダーシフトレートを含める",
       "guidingToggleDescription": "ガイド撮影時に必要です — そうしないとガイダーがこのドリフトに逆らってしまいます。",
-      "autoReapplyToggleTitle": "{minutes}分ごとに自動再適用",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Quick Track専用 — レートを定期的に再計算・再送信し、天体の実際のレートが変化しても長時間の無人セッションで精度を保ちます。",
       "meridianFlipToggleTitle": "子午線反転トリガーを含める",
       "meridianFlipToggleDescription": "子午線を越えて撮影を続ける場合、GEM赤道儀では推奨されます。",
@@ -5531,7 +5531,7 @@
       "quickTrackDescriptionRest": "今すぐマウントのレートを直接設定します — 手動・目視観測用で、本格的な撮影シーケンスの代わりにはなりません。マウントが子午線反転の限界に達したと報告すると自動的に停止します。Quick Trackにはそれを代行するシーケンストリガーがないためです。",
       "stopSequence": "シーケンスを停止",
       "stopQuickTrack": "Quick Trackを停止",
-      "autoReapplyingFooter": "{minutes}分ごとに自動再適用中",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "デバイス上でリアルタイムの軌道要素から計算 — 小惑星はインターネット不要、彗星は定期的に同期した後オフラインで動作します。",
       "dismiss": "閉じる"
     },

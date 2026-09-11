@@ -5468,7 +5468,6 @@
       "beforeYouStart": "Before You Start",
       "guidingToggleTitle": "Include guider shift rate",
       "guidingToggleDescription": "Needed if you guide — otherwise it fights this drift.",
-      "autoReapplyToggleTitle": "Auto re-apply every {minutes} min",
       "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Quick Track only — recomputes and re-sends the rate on a timer, so a long unattended session stays accurate as the object's true rate drifts.",
       "meridianFlipToggleTitle": "Include meridian flip trigger",
@@ -5497,7 +5496,6 @@
       "quickTrackDescriptionRest": "sets the mount's rate directly right now — for manual or visual use, not a substitute for a real imaging sequence. Stops itself automatically if your mount reports it's reached the meridian flip limit, since Quick Track has no sequence trigger to flip it for you.",
       "stopSequence": "Stop Sequence",
       "stopQuickTrack": "Stop Quick Track",
-      "autoReapplyingFooter": "Auto re-applying every {minutes} min",
       "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Computed on-device from live orbital elements — asteroids need no internet; comets sync periodically, then work offline.",
       "dismiss": "Dismiss"

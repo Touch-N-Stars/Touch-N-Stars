@@ -5503,7 +5503,7 @@
       "beforeYouStart": "Než Začnete",
       "guidingToggleTitle": "Zahrnout rychlost posunu autoguideru",
       "guidingToggleDescription": "Nutné, pokud provádíte guiding — jinak autoguider tomuto driftu čelí.",
-      "autoReapplyToggleTitle": "Automaticky obnovovat každých {minutes} min",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Pouze pro Quick Track — pravidelně přepočítá a znovu odešle rychlost, aby dlouhá nehlídaná relace zůstala přesná i při změně skutečné rychlosti objektu.",
       "meridianFlipToggleTitle": "Zahrnout spouštěč překlopení přes poledník",
       "meridianFlipToggleDescription": "Doporučeno na montáži GEM pro vše, co přesahuje poledník.",
@@ -5531,7 +5531,7 @@
       "quickTrackDescriptionRest": "nastaví rychlost montáže přímo hned teď — pro ruční nebo vizuální použití, ne náhradu za skutečnou sekvenci snímkování. Automaticky se zastaví, pokud montáž oznámí dosažení limitu překlopení přes poledník, protože Quick Track nemá sekvenční spouštěč, který by to udělal za vás.",
       "stopSequence": "Zastavit Sekvenci",
       "stopQuickTrack": "Zastavit Quick Track",
-      "autoReapplyingFooter": "Automatické obnovování každých {minutes} min",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Počítáno přímo v zařízení ze živých drahových elementů — planetky nepotřebují internet; kométy se pravidelně synchronizují a pak fungují offline.",
       "dismiss": "Zavřít"
     },

@@ -5503,7 +5503,7 @@
       "beforeYouStart": "Zanim Zaczniesz",
       "guidingToggleTitle": "Uwzględnij prędkość przesunięcia guidera",
       "guidingToggleDescription": "Potrzebne, jeśli prowadzisz guiding — w przeciwnym razie guider przeciwdziała temu dryfowi.",
-      "autoReapplyToggleTitle": "Automatycznie odświeżaj co {minutes} min",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Tylko dla Quick Track — okresowo przelicza i ponownie wysyła prędkość, dzięki czemu długa, nienadzorowana sesja pozostaje dokładna mimo zmian rzeczywistej prędkości obiektu.",
       "meridianFlipToggleTitle": "Uwzględnij wyzwalacz przewrotu przez południk",
       "meridianFlipToggleDescription": "Zalecane na montażu GEM dla wszystkiego, co przechodzi przez południk.",
@@ -5531,7 +5531,7 @@
       "quickTrackDescriptionRest": "ustawia szybkość montażu bezpośrednio, od razu — do użytku ręcznego lub wizualnego, nie zastępuje prawdziwej sekwencji rejestracji. Zatrzymuje się automatycznie, gdy montaż zgłosi osiągnięcie limitu przerzutu przez południk, ponieważ Quick Track nie ma wyzwalacza sekwencji, który zrobiłby to za ciebie.",
       "stopSequence": "Zatrzymaj Sekwencję",
       "stopQuickTrack": "Zatrzymaj Quick Track",
-      "autoReapplyingFooter": "Automatyczne odświeżanie co {minutes} min",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Obliczane na urządzeniu na podstawie elementów orbitalnych na żywo — planetoidy nie potrzebują internetu; komety synchronizują się okresowo, a potem działają offline.",
       "dismiss": "Zamknij"
     },

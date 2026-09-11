@@ -5503,7 +5503,7 @@
       "beforeYouStart": "시작하기 전에",
       "guidingToggleTitle": "가이더 시프트 속도 포함",
       "guidingToggleDescription": "가이딩 중이라면 필요합니다 — 그렇지 않으면 가이더가 이 드리프트에 반대로 작용합니다.",
-      "autoReapplyToggleTitle": "{minutes}분마다 자동 재적용",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Quick Track 전용 — 천체의 실제 속도가 변함에 따라 장시간 무인 세션도 정확하게 유지되도록 주기적으로 속도를 재계산하여 다시 전송합니다.",
       "meridianFlipToggleTitle": "자오선 반전 트리거 포함",
       "meridianFlipToggleDescription": "자오선을 지나 계속 촬영하는 경우 GEM 마운트에서 권장됩니다.",
@@ -5531,7 +5531,7 @@
       "quickTrackDescriptionRest": "지금 바로 마운트의 속도를 직접 설정합니다 — 수동/육안 관측용이며 실제 촬영 시퀀스를 대체하지 않습니다. Quick Track에는 이를 대신 처리할 시퀀스 트리거가 없으므로, 마운트가 자오선 반전 한계에 도달했다고 보고하면 자동으로 정지합니다.",
       "stopSequence": "시퀀스 중지",
       "stopQuickTrack": "Quick Track 중지",
-      "autoReapplyingFooter": "{minutes}분마다 자동 재적용 중",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "실시간 궤도 요소로부터 기기에서 직접 계산 — 소행성은 인터넷이 필요 없으며, 혜성은 주기적으로 동기화된 후 오프라인으로 작동합니다.",
       "dismiss": "닫기"
     },

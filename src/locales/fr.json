@@ -5508,7 +5508,7 @@
       "beforeYouStart": "Avant de commencer",
       "guidingToggleTitle": "Inclure la vitesse de décalage du guidage",
       "guidingToggleDescription": "Nécessaire si vous guidez — sinon le guidage combat cette dérive.",
-      "autoReapplyToggleTitle": "Réappliquer automatiquement toutes les {minutes} min",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Suivi rapide uniquement — recalcule et renvoie la vitesse à intervalle régulier, pour qu'une longue session sans surveillance reste précise malgré la dérive réelle de l'objet.",
       "meridianFlipToggleTitle": "Inclure le déclencheur de retournement au méridien",
       "meridianFlipToggleDescription": "Recommandé sur une monture allemande pour tout ce qui dépasse le méridien.",
@@ -5536,7 +5536,7 @@
       "quickTrackDescriptionRest": "règle directement la vitesse de la monture, tout de suite — pour un usage manuel ou visuel, pas un substitut à une vraie séquence d'acquisition. S'arrête automatiquement si votre monture signale avoir atteint la limite de retournement au méridien, car Quick Track n'a pas de déclencheur de séquence pour le faire à votre place.",
       "stopSequence": "Arrêter la séquence",
       "stopQuickTrack": "Arrêter le suivi rapide",
-      "autoReapplyingFooter": "Réapplication automatique toutes les {minutes} min",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Calculé localement à partir des éléments orbitaux en direct — les astéroïdes n'ont besoin d'aucune connexion internet ; les comètes se synchronisent périodiquement, puis fonctionnent hors ligne.",
       "dismiss": "Ignorer"
     },

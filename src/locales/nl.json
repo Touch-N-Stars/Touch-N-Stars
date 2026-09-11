@@ -5503,7 +5503,7 @@
       "beforeYouStart": "Voordat je begint",
       "guidingToggleTitle": "Guider-verschuivingssnelheid meenemen",
       "guidingToggleDescription": "Nodig als je guidet — anders werkt de guider deze afwijking tegen.",
-      "autoReapplyToggleTitle": "Elke {minutes} min automatisch herhalen",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Alleen voor Quick Track — herberekent en verstuurt de snelheid periodiek opnieuw, zodat een lange onbewaakte sessie nauwkeurig blijft terwijl de werkelijke snelheid van het object verandert.",
       "meridianFlipToggleTitle": "Meridiaanflip-trigger meenemen",
       "meridianFlipToggleDescription": "Aanbevolen op een GEM-montering voor alles wat over de meridiaan heen loopt.",
@@ -5531,7 +5531,7 @@
       "quickTrackDescriptionRest": "stelt de snelheid van de montering direct nu in — voor handmatig of visueel gebruik, geen vervanging voor een echte opnamesequentie. Stopt zichzelf automatisch als je montering aangeeft de meridiaanflip-limiet te hebben bereikt, omdat Quick Track geen sequentie-trigger heeft om dat voor je te doen.",
       "stopSequence": "Sequentie stoppen",
       "stopQuickTrack": "Quick Track stoppen",
-      "autoReapplyingFooter": "Automatisch herhalen elke {minutes} min",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Op het apparaat berekend uit live baanelementen — asteroïden hebben geen internet nodig; kometen synchroniseren periodiek en werken daarna offline.",
       "dismiss": "Sluiten"
     },

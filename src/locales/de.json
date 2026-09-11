@@ -5508,7 +5508,7 @@
       "beforeYouStart": "Bevor du startest",
       "guidingToggleTitle": "Guider-Verschiebungsrate einbeziehen",
       "guidingToggleDescription": "Nötig, wenn du guidest — sonst wirkt der Guider dieser Drift entgegen.",
-      "autoReapplyToggleTitle": "Alle {minutes} Min. automatisch erneuern",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Nur bei Quick Track — berechnet und sendet die Rate zeitgesteuert neu, damit eine lange unbeaufsichtigte Sitzung genau bleibt, während sich die wahre Rate des Objekts ändert.",
       "meridianFlipToggleTitle": "Meridianflip-Trigger einbeziehen",
       "meridianFlipToggleDescription": "Auf einer GEM-Montierung empfohlen für alles, was über den Meridian hinausläuft.",
@@ -5536,7 +5536,7 @@
       "quickTrackDescriptionRest": "stellt die Nachführrate der Montierung sofort direkt ein — für manuellen oder visuellen Gebrauch, kein Ersatz für eine echte Aufnahmesequenz. Stoppt sich selbst automatisch, sobald die Montierung meldet, dass das Meridian-Flip-Limit erreicht ist, da Quick Track keinen Sequenz-Trigger zum Flippen hat.",
       "stopSequence": "Sequenz stoppen",
       "stopQuickTrack": "Quick Track stoppen",
-      "autoReapplyingFooter": "Automatische Erneuerung alle {minutes} Min.",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Direkt im Plugin aus aktuellen Bahnelementen berechnet — Asteroiden benötigen kein Internet; Kometen synchronisieren sich regelmäßig und funktionieren danach offline.",
       "dismiss": "Schließen"
     },

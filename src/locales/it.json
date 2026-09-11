@@ -5508,7 +5508,7 @@
       "beforeYouStart": "Prima di iniziare",
       "guidingToggleTitle": "Includi velocità di scostamento della guida",
       "guidingToggleDescription": "Necessario se stai guidando — altrimenti la guida contrasta questa deriva.",
-      "autoReapplyToggleTitle": "Riapplica automaticamente ogni {minutes} min",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Solo per Quick Track — ricalcola e reinvia la velocità a intervalli, così una lunga sessione incustodita resta accurata mentre la vera velocità dell'oggetto varia.",
       "meridianFlipToggleTitle": "Includi trigger di ribaltamento al meridiano",
       "meridianFlipToggleDescription": "Consigliato su una montatura GEM per tutto ciò che supera il meridiano.",
@@ -5536,7 +5536,7 @@
       "quickTrackDescriptionRest": "imposta subito la velocità della montatura direttamente — per uso manuale o visuale, non un sostituto di una vera sequenza di acquisizione. Si arresta automaticamente se la montatura segnala di aver raggiunto il limite di ribaltamento al meridiano, poiché Quick Track non ha un trigger di sequenza che lo faccia al posto tuo.",
       "stopSequence": "Ferma sequenza",
       "stopQuickTrack": "Ferma Quick Track",
-      "autoReapplyingFooter": "Riapplicazione automatica ogni {minutes} min",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Calcolato sul dispositivo dagli elementi orbitali in tempo reale — gli asteroidi non necessitano di internet; le comete si sincronizzano periodicamente e poi funzionano offline.",
       "dismiss": "Ignora"
     },

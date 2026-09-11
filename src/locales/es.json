@@ -5508,7 +5508,7 @@
       "beforeYouStart": "Antes de empezar",
       "guidingToggleTitle": "Incluir velocidad de desplazamiento del guiado",
       "guidingToggleDescription": "Necesario si guías — de lo contrario, el guiado contrarresta esta deriva.",
-      "autoReapplyToggleTitle": "Reaplicar automáticamente cada {minutes} min",
+      "autoReapplyToggleTitleSeconds": "Auto re-apply every {seconds} sec",
       "autoReapplyToggleDescription": "Solo en Seguimiento rápido — recalcula y reenvía la velocidad periódicamente, para que una sesión larga sin supervisión siga siendo precisa mientras la velocidad real del objeto varía.",
       "meridianFlipToggleTitle": "Incluir disparador de volteo de meridiano",
       "meridianFlipToggleDescription": "Recomendado en una montura GEM para cualquier cosa que pase el meridiano.",
@@ -5536,7 +5536,7 @@
       "quickTrackDescriptionRest": "ajusta la velocidad de la montura directamente ahora mismo — para uso manual o visual, no un sustituto de una secuencia de captura real. Se detiene automáticamente si tu montura indica que ha alcanzado el límite de inversión en el meridiano, ya que Quick Track no tiene un disparador de secuencia que lo haga por ti.",
       "stopSequence": "Detener secuencia",
       "stopQuickTrack": "Detener seguimiento rápido",
-      "autoReapplyingFooter": "Reaplicando automáticamente cada {minutes} min",
+      "autoReapplyingFooterSeconds": "Auto re-applying every {seconds} sec",
       "footer": "Calculado en el dispositivo a partir de elementos orbitales en vivo — los asteroides no necesitan internet; los cometas se sincronizan periódicamente y luego funcionan sin conexión.",
       "dismiss": "Descartar"
     },
