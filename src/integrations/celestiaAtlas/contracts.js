@@ -162,12 +162,15 @@ export function atlasSearchResultToTarget(result) {
   const coordinates = toAtlasCoordinates(result.coordinates ?? result);
   return {
     id,
+    uid: result.uid,
+    searchOnly: result.searchOnly,
+    crossIdSources: result.crossIdSources,
     name,
     displayName: result.displayName,
     aliases: result.aliases,
     objectType: result.type,
     parentBody: result.parentBody,
-    magnitude: result.mag,
+    magnitude: result.mag ?? result.magnitude,
     catalogueSource: result.catalogSource,
     coordinates,
   };

@@ -2156,6 +2156,8 @@
         "magnitude_limit_hint": "Lower values show only brighter objects; higher values include fainter objects.",
         "magnitude_limit_auto": "Auto",
         "star_magnitude_limit": "Stars (limiting magnitude)",
+        "star_catalogues": "Star catalogues",
+        "star_catalogue_hint": "Groups can overlap; any enabled group shows the star. Raise the magnitude limit for faint WR stars. Unknown-magnitude stars appear when selected. Stars in photographs without catalogue records are not selectable.",
         "galaxy_magnitude_limit": "Galaxies (limiting magnitude)",
         "dso_magnitude_limit": "Other deep-sky objects (limiting magnitude)",
         "title": "Settings",

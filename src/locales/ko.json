@@ -2156,6 +2156,8 @@
         "magnitude_limit_hint": "값이 낮을수록 밝은 천체만 표시하고, 높을수록 어두운 천체도 표시합니다.",
         "magnitude_limit_auto": "자동",
         "star_magnitude_limit": "별 (한계 등급)",
+        "star_catalogues": "항성 목록",
+        "star_catalogue_hint": "Groups can overlap; any enabled group shows the star. Raise the magnitude limit for faint WR stars. Unknown-magnitude stars appear when selected. Stars in photographs without catalogue records are not selectable.",
         "galaxy_magnitude_limit": "은하 (한계 등급)",
         "dso_magnitude_limit": "기타 심원천체 (한계 등급)",
         "title": "설정",

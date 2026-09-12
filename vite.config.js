@@ -78,7 +78,7 @@ export default defineConfig({
             },
             {
               name: 'celestia-star-catalog',
-              test: /node_modules[\/]@acocalypso[\/]celestia-atlas[\/]data[\/]hyg-star-catalog\.json/,
+              test: /node_modules[\/]@acocalypso[\/]celestia-atlas[\/]data[\/](?:hyg-star-catalog|sao-star-crossids|wr-star-catalog)\.json/,
               priority: 53,
             },
             {

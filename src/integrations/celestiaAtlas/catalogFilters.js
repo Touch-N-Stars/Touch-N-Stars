@@ -1,4 +1,28 @@
-import { deepSkyCatalogueGroupKeys, deepSkyObjectTypeKey } from '@acocalypso/celestia-atlas';
+import {
+  deepSkyCatalogueGroupKeys,
+  deepSkyObjectTypeKey,
+  starCatalogueMask,
+  STAR_CATALOGUE_BITS,
+} from '@acocalypso/celestia-atlas';
+
+const STAR_CATALOGUE_LABELS = {
+  curated: 'Named stars',
+  hyg: 'HYG / HIP',
+  hd: 'Henry Draper (HD)',
+  sao: 'SAO',
+  wr: 'Wolf-Rayet (WR)',
+};
+
+export function buildAtlasStarFacets(stars) {
+  const counts = new Map(Object.keys(STAR_CATALOGUE_BITS).map((key) => [key, 0]));
+  for (const star of stars) {
+    const mask = starCatalogueMask(star);
+    for (const [key, bit] of Object.entries(STAR_CATALOGUE_BITS)) {
+      if (mask & bit) counts.set(key, counts.get(key) + 1);
+    }
+  }
+  return facetEntries(counts, STAR_CATALOGUE_LABELS);
+}
 
 export const ATLAS_OBJECT_TYPE_LABELS = Object.freeze({
   '*ass': 'Stellar association',

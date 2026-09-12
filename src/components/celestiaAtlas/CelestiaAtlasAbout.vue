@@ -51,9 +51,10 @@
         <section>
           <h4 class="mb-1 text-base font-semibold text-gray-100">Catalogue credits</h4>
           <p>
-            Catalogue layers include HYG, OpenNGC and the supplementary catalogue sources documented
-            with Celestia Atlas. Full source and redistribution notices are included in the project
-            documentation.
+            Catalogue layers include HYG with HD identifiers (CC BY-SA 4.0), SIMBAD SAO
+            cross-identifiers and Wolf-Rayet stars (ODbL 1.0), OpenNGC and the supplementary
+            catalogue sources documented with Celestia Atlas. Full source and redistribution notices
+            are included in the project documentation.
           </p>
         </section>
       </div>

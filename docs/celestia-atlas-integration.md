@@ -57,6 +57,21 @@ Touch'N'Stars composes the package's normalized base catalogue with the A66 and
 Stellarium supplement layers. The resulting offline catalogue contains 21,192
 deep-sky markers and exposes ten catalogue filters, including `messier`.
 
+Stellar layers use the public `composeStarCatalog` helper with HYG curated
+cross-identifiers/search-only entries, SAO cross-identifiers and WR data. This
+matches the standalone atlas's 9,437 searchable stars without duplicating
+cross-matched identities. HD and SAO are identifiers for bundled stars, not full
+HD/SAO surveys. Star-group filters are independent of the DSO visibility switch,
+persist in settings, and support overlapping group membership. The magnitude
+slider reaches 20; unknown-magnitude stars appear only when selected from search.
+Search remains unfiltered, and only catalogue-backed photographic stars are clickable.
+
+The search-to-selection adapter must retain `uid`, `searchOnly` and
+`crossIdSources`. The renderer supports the adapter's nested `coordinates`
+payload for search-only markers. Regression targets are Sirius / SAO151881,
+WR104 (measured magnitude) and WR99 (unknown magnitude), including reopening
+the details card by clicking the centred marker after dismissing it.
+
 - The normalized base must contain exactly one object for every designation
   from M1 through M110. Package updates that break this invariant must fail the
   host catalogue tests.

@@ -2151,6 +2151,8 @@
         "magnitude_limit_hint": "Niedrigere Werte zeigen nur hellere Objekte; höhere Werte schließen schwächere Objekte ein.",
         "magnitude_limit_auto": "Automatisch",
         "star_magnitude_limit": "Sterne (Grenzgröße)",
+        "star_catalogues": "Sternkataloge",
+        "star_catalogue_hint": "Gruppen können sich überschneiden; jede aktivierte Gruppe zeigt den Stern. Erhöhe die Grenzgröße für schwache WR-Sterne. Sterne ohne bekannte Helligkeit erscheinen bei Auswahl. Sterne auf Fotos ohne Katalogeintrag sind nicht auswählbar.",
         "galaxy_magnitude_limit": "Galaxien (Grenzgröße)",
         "dso_magnitude_limit": "Andere Deep-Sky-Objekte (Grenzgröße)",
         "title": "Einstellungen",

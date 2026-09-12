@@ -2119,6 +2119,8 @@
         "magnitude_limit_hint": "値を小さくすると明るい天体だけを表示し、大きくすると暗い天体も表示します。",
         "magnitude_limit_auto": "自動",
         "star_magnitude_limit": "恒星（限界等級）",
+        "star_catalogues": "恒星カタログ",
+        "star_catalogue_hint": "Groups can overlap; any enabled group shows the star. Raise the magnitude limit for faint WR stars. Unknown-magnitude stars appear when selected. Stars in photographs without catalogue records are not selectable.",
         "galaxy_magnitude_limit": "銀河（限界等級）",
         "dso_magnitude_limit": "その他の深宇宙天体（限界等級）",
         "title": "設定",
