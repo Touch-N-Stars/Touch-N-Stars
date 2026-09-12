@@ -13,6 +13,7 @@ export const createDefaultCelestiaAtlasSettings = () => ({
   customLandscapeKey: 'custom',
   dsosVisible: true,
   starMagnitudeLimit: 6.5,
+  starCatalogueGroups: null,
   galaxyMagnitudeLimit: 30,
   deepSkyMagnitudeLimit: 30,
   deepSkyObjectTypes: null,

@@ -2110,6 +2110,8 @@
         "magnitude_limit_hint": "Valores mais baixos mostram apenas objetos mais brilhantes; valores mais altos incluem objetos mais ténues.",
         "magnitude_limit_auto": "Automático",
         "star_magnitude_limit": "Estrelas (magnitude limite)",
+        "star_catalogues": "Catálogos estelares",
+        "star_catalogue_hint": "Groups can overlap; any enabled group shows the star. Raise the magnitude limit for faint WR stars. Unknown-magnitude stars appear when selected. Stars in photographs without catalogue records are not selectable.",
         "galaxy_magnitude_limit": "Galáxias (magnitude limite)",
         "dso_magnitude_limit": "Outros objetos do céu profundo (magnitude limite)",
         "title": "Configurações",

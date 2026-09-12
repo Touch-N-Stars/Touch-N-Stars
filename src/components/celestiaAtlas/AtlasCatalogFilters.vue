@@ -12,6 +12,18 @@
       </p>
     </div>
 
+    <AtlasFacetGroup
+      kind="star-catalogues"
+      :title="t('components.celestiaAtlas.settings.star_catalogues')"
+      :facets="starCatalogueGroups"
+      :selection="settingsStore.celestiaAtlas.starCatalogueGroups"
+      @select-all="setSelection('starCatalogueGroups', null)"
+      @select-none="setSelection('starCatalogueGroups', [])"
+      @toggle="toggleSelection('starCatalogueGroups', starCatalogueGroups, $event)"
+    />
+    <p class="text-xs leading-5 text-gray-400">
+      {{ t('components.celestiaAtlas.settings.star_catalogue_hint') }}
+    </p>
     <fieldset :disabled="disabled" class="grid gap-2 disabled:opacity-50">
       <AtlasFacetGroup
         kind="object-types"
@@ -43,6 +55,10 @@ import AtlasFacetGroup from '@/components/celestiaAtlas/AtlasFacetGroup.vue';
 import { useI18n } from 'vue-i18n';
 
 defineProps({
+  starCatalogueGroups: {
+    type: Array,
+    default: () => [],
+  },
   objectTypes: {
     type: Array,
     default: () => [],

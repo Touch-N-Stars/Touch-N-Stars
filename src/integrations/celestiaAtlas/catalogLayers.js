@@ -1,4 +1,4 @@
-import { combineCatalogLayers } from '@acocalypso/celestia-atlas';
+import { combineCatalogLayers, composeStarCatalog } from '@acocalypso/celestia-atlas';
 
 function requireArray(payload, property, label) {
   if (!payload || typeof payload !== 'object' || !Array.isArray(payload[property])) {
@@ -75,26 +75,14 @@ function normalizeDeepSkyObject(object) {
   };
 }
 
-function normalizeStar(star) {
-  const name = star.name || star.id || star.uid;
-  return {
-    ...star,
-    id: star.id || name,
-    name,
-    aliases: uniqueStrings([star.aliases ?? [], star.alias]),
-    raDeg: Number.isFinite(star.raDeg) ? star.raDeg : star.ra * 15,
-    decDeg: Number.isFinite(star.decDeg) ? star.decDeg : star.dec,
-    frame: star.frame || 'ICRS',
-    type: 'Star',
-  };
-}
-
 export function buildEmbeddedAtlasCatalog({
   openNgc,
   abellPlanetaryNebulae,
   stellariumSupplement,
   brightSky,
   hygStars,
+  saoCrossIds = { crossIds: [] },
+  wrStars = { stars: [] },
   westernConstellations,
 }) {
   const openNgcObjects = requireArray(openNgc, 'objects', 'OpenNGC catalogue');
@@ -128,7 +116,14 @@ export function buildEmbeddedAtlasCatalog({
 
   return {
     catalog: layeredCatalog.objects.map(normalizeDeepSkyObject),
-    stars: [...brightStars, ...hygStarObjects].map(normalizeStar),
+    stars: composeStarCatalog({
+      curated: brightStars,
+      hyg: hygStarObjects,
+      curatedCrossIds: hygStars.curatedCrossIds ?? [],
+      hygSearch: hygStars.searchStars ?? [],
+      sao: requireArray(saoCrossIds, 'crossIds', 'SAO cross-identifiers'),
+      wr: requireArray(wrStars, 'stars', 'Wolf-Rayet catalogue'),
+    }),
     constellations: westernConstellations,
     meta: layeredCatalog.meta,
   };
