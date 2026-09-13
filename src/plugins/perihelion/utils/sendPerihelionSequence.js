@@ -3,7 +3,7 @@ import i18n from '@/i18n';
 import { buildPerihelionSequence } from './buildPerihelionSequence';
 
 /**
- * "Add to Sequence" — builds a real NINA sequence for the given target and loads it into the
+ * "Add to Sequence" — builds a NINA sequence for the given target and loads it into the
  * Advanced Sequencer via the app's own existing POST /sequence/load route (already wrapped as
  * sequenceLoadJson) — the same mechanism OryxAstro's own "Send to PINS" button already uses,
  * just built here instead of on the website.

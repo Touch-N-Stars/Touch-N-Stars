@@ -383,6 +383,7 @@
         <AtlasCatalogFilters
           :object-types="catalogObjectTypes"
           :catalogue-groups="catalogueGroups"
+          :star-catalogue-groups="starCatalogueGroups"
           :disabled="!settingsStore.celestiaAtlas.dsosVisible"
         />
 
@@ -406,7 +407,7 @@
               v-model.number="starMagnitudeLimit"
               type="range"
               min="-2"
-              max="6.5"
+              max="20"
               step="0.1"
               class="w-full h-11 accent-cyan-500"
             />
@@ -462,6 +463,10 @@ import AtlasCatalogFilters from '@/components/celestiaAtlas/AtlasCatalogFilters.
 import { canonicalizeCelestiaAtlasDataUrl } from '@/store/utils/celestiaAtlasSettingsMigration';
 
 defineProps({
+  starCatalogueGroups: {
+    type: Array,
+    default: () => [],
+  },
   catalogObjectTypes: {
     type: Array,
     default: () => [],
@@ -652,7 +657,7 @@ function createMagnitudeModel(key, fallback, minimum, maximum) {
   });
 }
 
-const starMagnitudeLimit = createMagnitudeModel('starMagnitudeLimit', 6.5, -2, 6.5);
+const starMagnitudeLimit = createMagnitudeModel('starMagnitudeLimit', 6.5, -2, 20);
 const galaxyMagnitudeLimit = createMagnitudeModel('galaxyMagnitudeLimit', 30, -2, 30);
 const deepSkyMagnitudeLimit = createMagnitudeModel('deepSkyMagnitudeLimit', 30, -2, 30);
 

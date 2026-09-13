@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { deepSkyObjectLabel, messierDesignation } from '@acocalypso/celestia-atlas';
+import {
+  deepSkyObjectLabel,
+  messierDesignation,
+  createCatalogSearchIndex,
+  searchCatalogIndex,
+} from '@acocalypso/celestia-atlas';
+import { buildAtlasStarFacets } from '../catalogFilters.js';
 import { buildEmbeddedAtlasCatalog } from '../catalogLayers.js';
 
 const fixturePayloads = () => ({
@@ -88,7 +94,7 @@ test('combines and normalizes the packaged Atlas layers without mutating their p
   assert.equal(hyg.decDeg, 5);
   assert.equal(hyg.frame, 'ICRS');
   assert.equal(hyg.type, 'Star');
-  assert.deepEqual(hyg.aliases, ['Test star']);
+  assert.ok(hyg.aliases.includes('Test star'));
 });
 
 test('rejects incomplete catalogue payloads before viewer initialization', () => {
@@ -106,6 +112,8 @@ test('loads every packaged offline catalogue and keeps the two Abell namespaces 
     stellariumSupplement,
     brightSky,
     hygStars,
+    saoCrossIds,
+    wrStars,
     westernConstellations,
   ] = await Promise.all([
     import('@acocalypso/celestia-atlas/viewer-catalog-data', { with: { type: 'json' } }),
@@ -115,6 +123,8 @@ test('loads every packaged offline catalogue and keeps the two Abell namespaces 
     }),
     import('@acocalypso/celestia-atlas/bright-sky-data', { with: { type: 'json' } }),
     import('@acocalypso/celestia-atlas/hyg-star-data', { with: { type: 'json' } }),
+    import('@acocalypso/celestia-atlas/sao-star-crossids', { with: { type: 'json' } }),
+    import('@acocalypso/celestia-atlas/wr-star-data', { with: { type: 'json' } }),
     import('@acocalypso/celestia-atlas/western-constellation-data', {
       with: { type: 'json' },
     }),
@@ -126,6 +136,8 @@ test('loads every packaged offline catalogue and keeps the two Abell namespaces 
     brightSky: brightSky.default,
     hygStars: hygStars.default,
     westernConstellations: westernConstellations.default,
+    saoCrossIds: saoCrossIds.default,
+    wrStars: wrStars.default,
   });
 
   assert.equal(result.catalog.length, 21_192);
@@ -142,7 +154,23 @@ test('loads every packaged offline catalogue and keeps the two Abell namespaces 
     'sharpless',
     'vdb',
   ]);
-  assert.equal(result.stars.length, 8_910);
+  assert.equal(result.stars.length, 9_437);
+  const index = createCatalogSearchIndex(result.stars);
+  for (const query of ['HD48915', 'SAO151881', 'HIP32349', 'Sirius']) {
+    assert.deepEqual(
+      searchCatalogIndex(index, query).map((star) => star.name),
+      ['Sirius']
+    );
+  }
+  const [wr] = searchCatalogIndex(index, 'WR104');
+  assert.equal(wr.name, 'WR 104');
+  assert.equal(wr.mag, 13.155);
+  const [unknown] = searchCatalogIndex(index, 'WR99');
+  assert.equal(unknown.searchOnly, true);
+  assert.equal(unknown.mag, undefined);
+  const facets = buildAtlasStarFacets(result.stars);
+  assert.equal(facets.find((facet) => facet.key === 'wr').count, 518);
+  assert.equal(facets.find((facet) => facet.key === 'sao').count, 8845);
   assert.equal(result.constellations.constellations.length, 88);
   assert.equal(result.constellations.meta.segmentCount, 674);
   assert.doesNotMatch(JSON.stringify(result.constellations.constellations), /\.webp|image/i);

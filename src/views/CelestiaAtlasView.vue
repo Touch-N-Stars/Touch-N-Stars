@@ -53,6 +53,7 @@
       <CelestiaAtlasSettings
         :catalog-object-types="catalogFacets.objectTypes"
         :catalogue-groups="catalogFacets.catalogueGroups"
+        :star-catalogue-groups="catalogFacets.starCatalogueGroups"
         :comet-refresh-state="cometRefreshState"
         :comet-refresh-count="cometRefreshCount"
         :comet-refresh-error="cometRefreshError"
@@ -139,6 +140,7 @@ import { atlasSelectionToCommandModel } from '@/integrations/celestiaAtlas/selec
 import { buildEmbeddedAtlasCatalog } from '@/integrations/celestiaAtlas/catalogLayers';
 import {
   buildAtlasCatalogFacets,
+  buildAtlasStarFacets,
   normalizeAtlasFacetSelection,
 } from '@/integrations/celestiaAtlas/catalogFilters';
 import { normalizeAtlasMagnitudeLimit } from '@/integrations/celestiaAtlas/magnitudeFilters';
@@ -184,7 +186,7 @@ const landscapeErrorMessage = ref('');
 const searchQuery = ref('');
 const searchResults = ref([]);
 const selectedTarget = ref(null);
-const catalogFacets = ref({ objectTypes: [], catalogueGroups: [] });
+const catalogFacets = ref({ objectTypes: [], catalogueGroups: [], starCatalogueGroups: [] });
 const mountFollow = ref(false);
 const clockPaused = ref(false);
 const clockLabel = ref('');
@@ -449,6 +451,10 @@ function updateDisplayOptions() {
       settingsStore.celestiaAtlas.deepSkyObjectTypes,
       catalogFacets.value.objectTypes
     ),
+    starCatalogueGroups: normalizeAtlasFacetSelection(
+      settingsStore.celestiaAtlas.starCatalogueGroups,
+      catalogFacets.value.starCatalogueGroups
+    ),
     deepSkyCatalogueGroups: normalizeAtlasFacetSelection(
       settingsStore.celestiaAtlas.deepSkyCatalogueGroups,
       catalogFacets.value.catalogueGroups
@@ -463,6 +469,7 @@ function synchronizeCatalogFilterSettings() {
   const mappings = [
     ['deepSkyObjectTypes', catalogFacets.value.objectTypes],
     ['deepSkyCatalogueGroups', catalogFacets.value.catalogueGroups],
+    ['starCatalogueGroups', catalogFacets.value.starCatalogueGroups],
   ];
 
   for (const [setting, facets] of mappings) {
@@ -628,6 +635,7 @@ watch(
     settingsStore.celestiaAtlas.constellationsLinesVisible,
     settingsStore.celestiaAtlas.dsosVisible,
     settingsStore.celestiaAtlas.starMagnitudeLimit,
+    settingsStore.celestiaAtlas.starCatalogueGroups,
     settingsStore.celestiaAtlas.galaxyMagnitudeLimit,
     settingsStore.celestiaAtlas.deepSkyMagnitudeLimit,
     settingsStore.celestiaAtlas.deepSkyObjectTypes,
@@ -656,6 +664,8 @@ onMounted(async () => {
       brightSkyModule,
       hygStarsModule,
       westernConstellationsModule,
+      saoCrossIdsModule,
+      wrStarsModule,
     ] = await Promise.all([
       import('@acocalypso/celestia-atlas/viewer-catalog-data'),
       import('@acocalypso/celestia-atlas/abell-pn-data'),
@@ -663,6 +673,8 @@ onMounted(async () => {
       import('@acocalypso/celestia-atlas/bright-sky-data'),
       import('@acocalypso/celestia-atlas/hyg-star-data'),
       import('@acocalypso/celestia-atlas/western-constellation-data'),
+      import('@acocalypso/celestia-atlas/sao-star-crossids'),
+      import('@acocalypso/celestia-atlas/wr-star-data'),
     ]);
     if (disposed) return;
     const { catalog, stars, constellations } = buildEmbeddedAtlasCatalog({
@@ -672,8 +684,13 @@ onMounted(async () => {
       brightSky: brightSkyModule.default,
       hygStars: hygStarsModule.default,
       westernConstellations: westernConstellationsModule.default,
+      saoCrossIds: saoCrossIdsModule.default,
+      wrStars: wrStarsModule.default,
     });
-    catalogFacets.value = buildAtlasCatalogFacets(catalog);
+    catalogFacets.value = {
+      ...buildAtlasCatalogFacets(catalog),
+      starCatalogueGroups: buildAtlasStarFacets(stars),
+    };
     synchronizeCatalogFilterSettings();
     const cachedCometCatalog = loadCachedCometCatalog();
     viewer = createCelestiaAtlasViewer({

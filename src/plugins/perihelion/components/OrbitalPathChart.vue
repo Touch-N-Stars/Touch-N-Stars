@@ -63,7 +63,7 @@
       />
 
       <!-- Invisible, larger hit targets -- the visible dots above (r=1.6, or 3 for "Tonight")
-           are too small to reliably tap on a phone. A real gap this filled: there was previously
+           are too small to reliably tap on a phone. Fills a gap: there was previously
            no way to read a path point's actual date/RA/Dec at all, hover or otherwise. -->
       <circle
         v-for="(p, i) in plotted"
@@ -129,7 +129,7 @@
       </text>
 
       <!--
-        Scale bar: a real angular reference for the line's own length, not a coordinate grid.
+        Scale bar: an angular reference for the line's own length, not a coordinate grid.
         Sits inside the plot rectangle's own bottom row (not the outer padding margin, where the
         date labels live), on whichever horizontal side (see scaleBarSide) has more clearance
         from the whole path -- a fixed bottom-left position, and later a version that only
@@ -190,7 +190,7 @@ const props = defineProps({
   points: { type: Array, required: true }, // [{ date, raHours, decDeg }]
 });
 
-// Real gap this fills: there was previously no way to read a path point's actual date/RA/Dec at
+// Fills a gap: there was previously no way to read a path point's actual date/RA/Dec at
 // all -- the dots were purely visual, no hover or tap did anything. Tap/click toggles selection
 // (works identically on mobile and desktop, unlike a native title tooltip); the info row below
 // the chart avoids floating-tooltip positioning math entirely.
@@ -221,7 +221,7 @@ const padding = 24;
  * finder-chart plot (shape of the motion night to night), not a fixed sky-coordinate grid, so
  * scaling to fit whatever span this particular object's path covers is correct here. Because RA
  * and Dec are each independently stretched to fill the box, the plotted line's own aspect ratio
- * doesn't represent a true angular shape -- the scale bar below approximates a real angular
+ * doesn't represent a true angular shape -- the scale bar below approximates the true angular
  * length along the line itself, not a per-axis coordinate scale.
  */
 const plotted = computed(() => {
@@ -316,7 +316,7 @@ const driftSummary = computed(() => {
 });
 
 // Bar length in px for a "nice" round angular value, derived from the actual pixel distance
-// between the two plotted endpoints and their real angular separation -- so it reflects the
+// between the two plotted endpoints and their true angular separation -- so it reflects the
 // line's own effective scale rather than a separate, potentially inconsistent per-axis figure.
 const NICE_DEG_STEPS = [
   { deg: 1 / 3600, label: '1″' },

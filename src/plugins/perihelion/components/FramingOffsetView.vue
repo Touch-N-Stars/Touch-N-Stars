@@ -87,7 +87,7 @@
       visually orphaned under whichever control happened to render last in the row above, since
       it was a separate paragraph the parent laid out independently of these buttons. One
       compact strip, one line per control, icons echoing each button's own -- short enough not
-      to add real scroll height even stacked on mobile.
+      to add much scroll height even stacked on mobile.
     -->
     <div v-if="ready" class="rounded-chip bg-surface-2/60 border border-line-strong/50 p-3">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -150,7 +150,7 @@
  * entirely on the theory that the online source (higher resolution) would just work -- it
  * rendered nothing at all, even with internet confirmed available. Nothing else in this app has
  * ever actually exercised that path (CelestiaAtlasView.vue always explicitly overrides it with
- * this same offline-bundled source), so it's untested in this app's real deployment environment
+ * this same offline-bundled source), so it's untested in this app's own deployment environment
  * for reasons never diagnosed -- rather than debug an unproven path further, using the one this
  * app already demonstrably renders with is the safer choice, even at lower resolution (HiPS
  * order 3-4).
@@ -170,10 +170,10 @@ import {
   resolveCelestiaAtlasDataBaseUrl,
 } from '@/integrations/celestiaAtlas/offlineSkySurvey';
 // Reused as-is, not reimplemented -- already does exactly what's needed: reads gain/exposure
-// straight from the profile's own PlateSolveSettings, runs a real exposure + plate solve, and
+// straight from the profile's own PlateSolveSettings, runs an exposure + plate solve, and
 // writes the result to framingStore.rotationAngle (the same shared field this view's own
 // rotation slider reads/writes, and the one CelestiaAtlasView.vue's own FOV overlay already
-// uses -- sharing it is deliberate: it represents the camera's real physical rotation, a fact
+// uses -- sharing it is deliberate: it represents the camera's physical rotation, a fact
 // about the rig, not a per-view preference).
 import getImageRotation from '@/components/framing/getImageRotation.vue';
 import { fetchPath } from '../utils/fetchPath';
@@ -203,7 +203,7 @@ const framingStore = useFramingStore();
 // library's online default (unlike this component's first version): nothing in this app has
 // ever actually exercised that path, since the main Celestia Atlas view always explicitly
 // overrides it with this same offline-bundled source. Lower resolution (HiPS order 3-4), but
-// proven to actually render in this app's real deployment environment.
+// proven to actually render in this app's own deployment environment.
 function atlasDataBaseUrl() {
   return resolveCelestiaAtlasDataBaseUrl({
     native: Capacitor.isNativePlatform(),
@@ -402,10 +402,10 @@ watch(() => framingStore.rotationAngle, updateFovRotation);
 // mount), centers on that captured offset instead of the object's raw position and marks
 // hasOffset true, so a restored offset looks identical to one just captured by hand. Every
 // other caller (Reset, the live-props watcher) omits it, which still means "recenter on the
-// real target, offset forgotten" exactly as before.
+// raw target, offset forgotten" exactly as before.
 function centerOnTarget(overrideCenter = null) {
   if (!viewer) return;
-  // The view's own zoom level has to scale with the camera's real FOV, not a fixed guess -- a
+  // The view's own zoom level has to scale with the camera's own FOV, not a fixed guess -- a
   // hardcoded 1.5deg view against a camera whose actual field is wider than that means the FOV
   // box ends up bigger than the whole visible view, so you're zoomed into the middle of it with
   // no edge ever in frame (exactly what happened before this fix). 3x the box's longer side
@@ -509,8 +509,8 @@ onMounted(async () => {
       labels: true,
       cardinals: false,
       skySurvey: true,
-      // Real hardware report: this rendered Celestia's ENTIRE bundled comet catalog as
-      // boxes+labels across the whole visible field, not just the object being framed -- every
+      // Without this set false, Celestia's own bundled comet catalog renders as boxes+labels
+      // across the whole visible field, not just the object being framed -- every
       // one of those positions comes from Celestia's own (possibly stale/different-epoch)
       // orbital elements, the exact same mismatch that justified removing centerOnTarget()'s own
       // single-object viewer.search()/select() call. This view's own doc comment already states
@@ -532,7 +532,7 @@ onMounted(async () => {
     await loadPath();
   } catch (error) {
     // Surfaced directly in the UI (not just the console) -- this is a new, unproven component,
-    // and showing the real message here means a real failure can be diagnosed from a screenshot
+    // and showing the actual message here means a failure can be diagnosed from a screenshot
     // rather than needing someone to open devtools.
     errorMessage.value = t('perihelion.framing.unavailable', { error: error.message });
     console.warn('[Perihelion] Could not start framing view:', error);

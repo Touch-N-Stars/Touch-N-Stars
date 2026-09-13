@@ -30,7 +30,7 @@ export async function fetchSyncStatus() {
 /**
  * Explicit "download comets now" action -- always attempts a live fetch (unlike the passive
  * stale-cache fallback the rest of the plugin uses) and reports whether it actually worked, since
- * a user pressing a sync button deserves a real answer rather than a silent no-op.
+ * a user pressing a sync button deserves an answer rather than a silent no-op.
  *
  * @returns {Promise<{ ok: boolean, message: string, lastSyncedUtc: Date | null }>}
  */

@@ -13,10 +13,10 @@ import { getUrls } from '@/services/api/core';
  * @param {'comet'|'asteroid'} target.objectType
  * @param {string} target.targetName
  * @param {boolean} target.guiding - also apply the guider shift rate.
- * @param {number|null} [target.autoReapplyMinutes] - re-apply (recompute + re-set) the rate on
- *   this interval, entirely server-side in the Perihelion plugin -- keeps the rate accurate
- *   through a long unattended session as the object's true angular rate drifts. Omit/null to
- *   disable (the previous run's own timer, if any, is always stopped either way).
+ * @param {number|null} [target.autoReapplyIntervalSeconds] - re-apply (recompute + re-set) the
+ *   rate on this interval (seconds), entirely server-side in the Perihelion plugin -- keeps the
+ *   rate accurate through a long unattended session as the object's true angular rate drifts.
+ *   Omit/null to disable (the previous run's own timer, if any, is always stopped either way).
  * @returns {Promise<{ ok: boolean, message: string }>}
  */
 export async function startQuickTrack(target) {
@@ -26,7 +26,7 @@ export async function startQuickTrack(target) {
       ObjectType: target.objectType === 'comet' ? 'Comet' : 'Asteroid',
       TargetName: target.targetName,
       Guiding: !!target.guiding,
-      AutoReapplyMinutes: target.autoReapplyMinutes || null,
+      AutoReapplySeconds: target.autoReapplyIntervalSeconds || null,
     });
     const body = response.data;
     return {

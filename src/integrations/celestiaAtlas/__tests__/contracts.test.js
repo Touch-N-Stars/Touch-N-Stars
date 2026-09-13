@@ -124,6 +124,23 @@ test('converts every tagged selection to the proven J2000 framing contract', () 
   );
 });
 
+test('preserves stellar identity and search-only marker metadata at the viewer boundary', () => {
+  const result = atlasSearchResultToTarget({
+    id: 'WR 99',
+    uid: 'simbad-wr:2412127',
+    name: 'WR 99',
+    searchOnly: true,
+    raDeg: 264.82612891646994,
+    decDeg: -28.25234379719,
+    frame: 'ICRS',
+    crossIdSources: ['SIMBAD WR'],
+  });
+  assert.equal(result.uid, 'simbad-wr:2412127');
+  assert.equal(result.searchOnly, true);
+  assert.equal(result.magnitude, undefined);
+  assert.deepEqual(result.crossIdSources, ['SIMBAD WR']);
+});
+
 test('builds viewer targets only from explicitly framed search results', () => {
   const result = atlasSearchResultToTarget({
     id: 'M 31',
