@@ -36,33 +36,36 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 import { apiStore } from '@/store/store';
-import { useGuiderStore } from '@/store/guiderStore';
+import { useStatusBarStore } from '@/store/statusBarStore';
 import Phd2GuiderLayout from '@/components/guider/PHD2/Phd2GuiderLayout.vue';
 import ControlGuider from '@/components/guider/ControlGuider.vue';
 import GuiderStatus from '@/components/guider/GuiderStatus.vue';
 import { useI18n } from 'vue-i18n';
 
 const store = apiStore();
-const guiderStore = useGuiderStore();
+const statusBarStore = useStatusBarStore();
 const { t: $t } = useI18n();
-const wasGraphVisible = ref(false);
+
+// Open the guider graph panel while on this page. Leaving restores the panel
+// that was open before - unless the user switched panels in the meantime, then
+// their choice stays.
+let panelToRestore = null;
 
 onMounted(() => {
-  wasGraphVisible.value = guiderStore.showGuiderGraph;
-  guiderStore.showGuiderGraph = true;
+  panelToRestore = statusBarStore.activePanel;
+  statusBarStore.openPanel('guider');
 
   watch(
-    () => guiderStore.showGuiderGraph,
-    () => {
-      console.log('showGuiderGraph changed:', guiderStore.showGuiderGraph);
-      wasGraphVisible.value = guiderStore.showGuiderGraph;
+    () => statusBarStore.activePanel,
+    (panel) => {
+      panelToRestore = panel;
     }
   );
 });
 
 onUnmounted(() => {
-  guiderStore.showGuiderGraph = wasGraphVisible.value;
+  statusBarStore.activePanel = panelToRestore;
 });
 </script>

@@ -162,3 +162,56 @@ export async function reloadIndiDriver(apiAction) {
   console.log('[equipmentDevices] reloaded', driver, 'for', apiAction);
   return true;
 }
+
+// NINA's built-in manual filter wheel. It prompts through MyMessageBox, which PINS forwards
+// to the app's message box modal — so this is the one manual wheel that actually asks the
+// user to swap the filter.
+export const MANUAL_FILTER_WHEEL_ID = 'Manual Filter Wheel';
+
+// The INDI counterpart. It never opens a dialog: it parks FILTER_SLOT in Busy and waits for
+// someone to press its CONFIRM_FILTER_SET switch, which nothing in NINA or the app does. The
+// filter change then hangs until the move times out. The plugin server lists it under the
+// same label as NINA's wheel, so the app hides it and redirects existing selections.
+export const INDI_MANUAL_WHEEL_DRIVER = 'indi_manual_wheel';
+
+// INDI drivers the app does not offer, per getINDIDeviceList device type. Gemini focusers
+// run through indi_myfocuserpro2_focus (renamed 'Gemini / MyFocuserPro2' in the dropdowns).
+const HIDDEN_INDI_DRIVERS = {
+  filterwheel: [INDI_MANUAL_WHEEL_DRIVER],
+  focuser: ['indi_gemini_focus'],
+};
+
+export function isHiddenIndiDriver(deviceType, driverName) {
+  return (HIDDEN_INDI_DRIVERS[deviceType] || []).includes(driverName);
+}
+
+/**
+ * Swaps a configured INDI manual wheel for NINA's built-in one before a connect: unloads
+ * the driver, refreshes the device list and writes the new Id into the profile. Triggered by
+ * the profile's IndiDriver or, when the profile was already cleared, by the selected device's
+ * DriverInfo.
+ *
+ * Like reloadIndiDriver, this does not call equipmentStore.triggerRescan(); callers refresh
+ * their own list.
+ *
+ * @returns {Promise<string|null>} the new device Id, or null when nothing had to change.
+ */
+export async function redirectManualFilterWheel(device = null) {
+  const isIndiManualWheel =
+    getIndiDriver('filterAction') === INDI_MANUAL_WHEEL_DRIVER ||
+    device?.DriverInfo === INDI_MANUAL_WHEEL_DRIVER;
+  if (!isIndiManualWheel) return null;
+
+  const { section } = DEVICE_MAP.filterAction;
+  await apiService.profileChangeValue(`${section}-IndiDriver`, 'None');
+  await apiService.filterAction('list-devices');
+  await setProfileDevice('filterAction', MANUAL_FILTER_WHEEL_ID);
+
+  console.log(
+    '[equipmentDevices] redirected',
+    INDI_MANUAL_WHEEL_DRIVER,
+    'to',
+    MANUAL_FILTER_WHEEL_ID
+  );
+  return MANUAL_FILTER_WHEEL_ID;
+}

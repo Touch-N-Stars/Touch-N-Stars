@@ -9,7 +9,6 @@ export const useFilterStore = defineStore('filterStore', {
     filterChange: false,
     message: '',
     filterName: '',
-    showFilterwheelInfo: false,
     filterwheelSettings: {},
   }),
   actions: {

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Status bar: New Switch chip that shows how many ports are on and opens the switch controls from any page, so powering the equipment no longer needs a detour to the Switch tab.
+- Status bar: The filter panel now has the filter selector, so the filter can be changed from any page.
+- Status bar: The camera panel offers the cool-down and warm-up controls with the target temperature when the camera has a cooler.
+
+### Fixed
+- Filter wheel: The INDI manual wheel is no longer offered and an existing selection is switched to NINA's Manual Filter Wheel on connect, so the filter change confirmation appears again in PINS.
+- Camera: The cooler status no longer shows Warming up right after starting a cool-down and no longer flips back to Off or At target temp after starting a cool-down, warm-up or cancel; warm-ups started at the target and holds after a cancel are shown correctly on Windows NINA too.
+
 ## [App6.3.1-beta3] - 2026-09-10 
 
 ### Added

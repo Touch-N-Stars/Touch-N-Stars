@@ -3,6 +3,7 @@ import apiService from '@/services/apiService';
 import apiPinsService from '@/services/apiPinsService';
 import { apiStore } from '@/store/store';
 import { createPoller } from '@/utils/poller';
+import { useStatusBarStore } from '@/store/statusBarStore';
 
 export const useGuiderStore = defineStore('guiderStore', {
   state: () => ({
@@ -13,7 +14,6 @@ export const useGuiderStore = defineStore('guiderStore', {
     raDuration: [],
     decDuration: [],
     chartInfo: [],
-    showGuiderGraph: false,
 
     phd2Connection: [],
     phd2Status: [],
@@ -148,6 +148,11 @@ export const useGuiderStore = defineStore('guiderStore', {
   getters: {
     isDarkLibraryBuildActive(state) {
       return state.phd2DarkLibraryBuildStatus?.Active === true;
+    },
+    // The graph flyout is one of the status bar panels; keep the old name so
+    // the poller and the graph components need not know about the status bar.
+    showGuiderGraph() {
+      return useStatusBarStore().isPanelOpen('guider');
     },
   },
   actions: {

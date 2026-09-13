@@ -120,6 +120,7 @@ import { useI18n } from 'vue-i18n';
 import { checkMountConnectionPermission } from '@/utils/locationSyncUtils';
 import {
   isOfflineDevice,
+  redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
   setProfileDevice,
@@ -377,6 +378,22 @@ async function toggleConnection() {
         if (!canConnect) {
           // Benutzer hat abgebrochen
           return;
+        }
+      }
+      // The INDI manual wheel never shows the filter change prompt (see equipmentDevices.js),
+      // so a selection of it is swapped for NINA's built-in manual wheel before connecting.
+      if (props.apiAction === 'filterAction') {
+        try {
+          const redirected = await redirectManualFilterWheel(selectedDeviceObj.value);
+          if (redirected) {
+            await getDevices();
+            deviceId = redirected;
+            const entry = devices.value.find((d) => String(d.Id) === redirected);
+            if (entry) selectedDevice.value = entry.DisplayName;
+          }
+        } catch (err) {
+          // Fall through to the connect attempt; its error handling reports the failure.
+          console.warn('[selectDevices] manual filter wheel redirect failed:', err);
         }
       }
       // A device PINS reports as OFFLINE can never be connected: its INDI driver was started

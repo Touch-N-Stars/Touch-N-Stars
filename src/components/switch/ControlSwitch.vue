@@ -1,46 +1,47 @@
 <template>
-  <div v-for="(WritableSwitche, index) in store.switchInfo.WritableSwitches" :key="index">
-    <div v-if="WritableSwitche.Maximum === 1.0">
-      <div
-        class="flex flex-row items-center justify-between gap-3 w-full bg-surface-2 rounded-chip px-3 py-2 min-h-touch"
-      >
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-content truncate md:text-base">
-            {{ WritableSwitche.Name }}
-          </p>
-          <p class="text-xs text-content-faint truncate mt-0.5">
-            {{ WritableSwitche.Description }}
-          </p>
-        </div>
-        <toggleButton
-          @click="setBool(index, WritableSwitche.Value)"
-          :status-value="WritableSwitche.TargetValue === 1"
-        />
+  <!-- Rows are rendered as siblings (on/off ports first, then value ports) so the
+       parent decides the layout: stacked on the switch page, a grid in the status
+       bar panel. -->
+  <template v-for="(WritableSwitche, index) in store.switchInfo.WritableSwitches" :key="index">
+    <div
+      v-if="WritableSwitche.Maximum === 1.0"
+      class="flex flex-row items-center justify-between gap-3 w-full bg-surface-2 rounded-chip px-3 py-2 min-h-touch"
+    >
+      <div class="min-w-0">
+        <p class="text-sm font-medium text-content truncate md:text-base">
+          {{ WritableSwitche.Name }}
+        </p>
+        <p class="text-xs text-content-faint truncate mt-0.5">
+          {{ WritableSwitche.Description }}
+        </p>
       </div>
+      <toggleButton
+        @click="setBool(index, WritableSwitche.Value)"
+        :status-value="WritableSwitche.TargetValue === 1"
+      />
     </div>
-  </div>
-  <div v-for="(WritableSwitche, index) in store.switchInfo.WritableSwitches" :key="index">
-    <div v-if="WritableSwitche.Maximum > 1.0">
-      <div
-        class="flex flex-row items-center justify-between gap-3 w-full bg-surface-2 rounded-chip px-3 py-2 min-h-touch"
-      >
-        <div class="min-w-0">
-          <p class="text-sm font-medium text-content truncate md:text-base">
-            {{ WritableSwitche.Name }}
-          </p>
-          <p class="text-xs text-content-faint truncate mt-0.5">
-            {{ WritableSwitche.Description }}
-          </p>
-        </div>
-        <SetValue
-          @blur="setValue(index, $event, WritableSwitche.Minimum, WritableSwitche.Maximum)"
-          :store-value="WritableSwitche.Value"
-          :min="WritableSwitche.Minimum"
-          :max="WritableSwitche.Maximum"
-        />
+  </template>
+  <template v-for="(WritableSwitche, index) in store.switchInfo.WritableSwitches" :key="index">
+    <div
+      v-if="WritableSwitche.Maximum > 1.0"
+      class="flex flex-row items-center justify-between gap-3 w-full bg-surface-2 rounded-chip px-3 py-2 min-h-touch"
+    >
+      <div class="min-w-0">
+        <p class="text-sm font-medium text-content truncate md:text-base">
+          {{ WritableSwitche.Name }}
+        </p>
+        <p class="text-xs text-content-faint truncate mt-0.5">
+          {{ WritableSwitche.Description }}
+        </p>
       </div>
+      <SetValue
+        @blur="setValue(index, $event, WritableSwitche.Minimum, WritableSwitche.Maximum)"
+        :store-value="WritableSwitche.Value"
+        :min="WritableSwitche.Minimum"
+        :max="WritableSwitche.Maximum"
+      />
     </div>
-  </div>
+  </template>
 </template>
 <script setup>
 import { apiStore } from '@/store/store';

@@ -31,6 +31,7 @@ import apiPinsService from '@/services/apiPinsService';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
 
 /**
  * Single-device INDI driver picker. Mirrors the per-device blocks of
@@ -74,7 +75,9 @@ async function loadDrivers() {
   try {
     const response = await apiPinsService.getINDIDeviceList(props.deviceType);
     const list = Array.isArray(response?.Response) ? response.Response : [];
-    drivers.value = [...list].sort((a, b) => driverLabel(a).localeCompare(driverLabel(b)));
+    drivers.value = list
+      .filter((driver) => !isHiddenIndiDriver(props.deviceType, driver.Name))
+      .sort((a, b) => driverLabel(a).localeCompare(driverLabel(b)));
     selectedDriver.value = store.profileInfo?.[props.profileSection]?.IndiDriver || 'None';
   } catch (error) {
     console.error('[PinsWizard] INDI driver list failed:', error);

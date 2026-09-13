@@ -27,7 +27,6 @@ export const useCameraStore = defineStore('cameraStore', () => {
   const readoutMode = ref(0);
   const containerSize = ref(100);
   const slewModal = ref(false);
-  const showCameraInfo = ref(false); // eslint-disable-line no-unused-vars
   let countdownSessionId = 0; // Unique ID for each countdown session
   const cameraSettings = ref();
 
@@ -50,21 +49,67 @@ export const useCameraStore = defineStore('cameraStore', () => {
   }
 
   // --- Cooler state (single source of truth) -------------------------------
+  //
+  // Backend facts this section is built on (NINA CameraVM / ninaAPI):
+  // - CoolCamera/WarmCamera set TempChangeRunning and the first setpoint
+  //   synchronously, but CameraInfo (CoolerOn, Temperature, setpoint) is only
+  //   refreshed every DevicePollingInterval (2s). Together with the 2s poll
+  //   here, the app sees a new state 4-6s after the button press.
+  // - TempChangeRunning exists on PINS only; the official ninaAPI has no such
+  //   field, so a heuristic has to do there.
+  // - The ramp steps the setpoint every 15s, rounded to whole degrees; on a
+  //   slow ramp the setpoint can sit still for minutes.
+  // - A warm-up ramps towards 20°C while TargetTemp keeps the cool-down
+  //   target, and NINA switches the cooler off once the warm-up is done.
+  // - A cancel writes TemperatureSetPoint = Temperature and leaves the cooler on.
+  // - Ramps started from NINA's own UI or a sequence use a different
+  //   CancellationTokenSource, so a cancel from here cannot stop them.
 
-  // Optimistic intent right after a button press, cleared when the next
-  // poll confirms the server state or after ~3 poll cycles (2s poll).
+  // Optimistic intent right after a button press. It is only cleared once
+  // the poll data confirms it (see the cameraInfo watch below): a short fixed
+  // timer used to expire before the confirming poll arrived, and the UI fell
+  // back to the stale state for a cycle. The long timeout is a safety net for
+  // a ramp that never started (driver error).
   const coolingPending = ref(null); // 'cooling' | 'warming' | 'cancel' | null
   let coolingPendingTimer = null;
-  const COOLING_PENDING_MS = 6000;
+  const COOLING_PENDING_MS = 15000;
+
+  // Heuristic-only latches for actions commanded from TNS (no TempChangeRunning):
+  // - commandedWarmUp: the distance heuristic is blind to a warm-up that starts
+  //   at the cool target, so remember that one runs until the cooler goes off.
+  // - holdSetpoint: after a cancel the setpoint sits next to the cool target,
+  //   which the distance heuristic would read as a running ramp. Remember the
+  //   held setpoint instead; any new ramp moves it within 15s.
+  const commandedWarmUp = ref(null); // { deadline } | null
+  const holdSetpoint = ref(null); // number | null
+  let holdCaptureAt = 0; // earliest time a payload surely shows the post-cancel setpoint
+  let holdCandidate = null; // setpoint of the previous payload after that time
+
+  // Setpoint trend bookkeeping for the direction, see the cameraInfo watch.
+  let trendSetpoint = null; // setpoint of the previous payload
+  let trendSeenRunning = 0; // consecutive running payloads that showed it
+
+  function clearHeuristicLatches() {
+    commandedWarmUp.value = null;
+    holdSetpoint.value = null;
+    holdCaptureAt = 0;
+    holdCandidate = null;
+  }
 
   function setCoolingPending(kind) {
     coolingPending.value = kind;
     clearTimeout(coolingPendingTimer);
     if (kind) {
       coolingPendingTimer = setTimeout(() => {
+        // Never confirmed: the ramp evidently did not start.
         coolingPending.value = null;
+        clearHeuristicLatches();
       }, COOLING_PENDING_MS);
     }
+  }
+
+  function devicePollMs() {
+    return (store.profileInfo?.ApplicationSettings?.DevicePollingInterval ?? 2) * 1000;
   }
 
   // Latched direction of the running ramp. TargetTemp cannot be used here:
@@ -100,75 +145,204 @@ export const useCameraStore = defineStore('cameraStore', () => {
   });
 
   // Is a temperature ramp running?
-  // PINS / newer ninaAPI report the real NINA state via TempChangeRunning.
-  // Heuristic fallback limits: a cooler manually switched on far from target
-  // reads as "running"; a slow final approach (<1°C) reads as "holding".
+  // PINS reports the real NINA state via TempChangeRunning; the official
+  // ninaAPI lacks the field, so the heuristic below has to do there. PINS
+  // sends unavailable values as the string "NaN"; every comparison with it is
+  // false, which is the intended outcome, so no extra guards are needed.
   const isRampRunning = computed(() => {
     const info = store.cameraInfo;
-    if (!info.Connected || !info.CoolerOn) return false;
+    if (!info.Connected) return false;
+    // Real state. CoolerOn is deliberately not required here: CameraInfo lags
+    // one device poll behind the flag, and INDI derives CoolerOn from the
+    // cooler power, which is 0 for the whole of a warm-up.
     if (typeof info.TempChangeRunning === 'boolean') return info.TempChangeRunning;
-    if (info.AtTargetTemp) return false;
+
+    // Heuristic fallback.
+    if (!info.CoolerOn) return false;
+    if (commandedWarmUp.value) return true;
+    if (holdSetpoint.value != null && info.TemperatureSetPoint === holdSetpoint.value) return false;
+    // AtTargetTemp is not used: ninaAPI defines it as exact equality of sensor
+    // and setpoint, which also happens mid-ramp whenever the camera catches
+    // up with the current integer step.
     const target = targetTemp.value;
     if (target == null || info.Temperature == null) return false;
-    return Math.abs(info.Temperature - target) > 1; // 1°C threshold
+    // A cooler manually switched on far from the target reads as "running",
+    // a slow final approach (<1°C) reads as "holding".
+    if (Math.abs(info.Temperature - target) > 1) return true;
+    // Near the cool target only a warm-up ramp steps the setpoint above it
+    // (covers warm-ups started from NINA's UI or a sequence).
+    return typeof info.TemperatureSetPoint === 'number' && info.TemperatureSetPoint > target + 0.5;
   });
 
   // 'off' | 'cooling' | 'warming' | 'holding'
   const coolingState = computed(() => {
     const info = store.cameraInfo;
     if (!info.Connected || !info.CanSetTemperature) return 'off';
-    if (coolingPending.value === 'cooling') return 'cooling';
-    if (coolingPending.value === 'warming') return 'warming';
-    if (!info.CoolerOn) return 'off';
-    if (coolingPending.value === 'cancel') return 'holding';
-    if (isRampRunning.value) return rampDirection.value ?? inferRampDirection() ?? 'cooling';
-    return 'holding';
-  });
-
-  // Clear the optimistic flag as soon as the poll confirms it, and manage
-  // the direction latch over the ramp lifecycle.
-  watch(isRampRunning, (running) => {
-    if (running) {
-      if (['cooling', 'warming'].includes(coolingPending.value)) setCoolingPending(null);
-      if (!rampDirection.value) rampDirection.value = inferRampDirection();
-    } else {
-      rampDirection.value = null;
-      if (coolingPending.value === 'cancel') setCoolingPending(null);
+    if (coolingPending.value === 'cooling' || coolingPending.value === 'warming') {
+      return coolingPending.value;
     }
+    if (coolingPending.value === 'cancel') return info.CoolerOn ? 'holding' : 'off';
+    // A running ramp wins over a CoolerOn that still reads false (see isRampRunning).
+    if (isRampRunning.value) return rampDirection.value ?? inferRampDirection() ?? 'cooling';
+    return info.CoolerOn ? 'holding' : 'off';
   });
 
-  // The setpoint trend is the authoritative direction signal for ramps
-  // started outside of TNS (NINA UI, sequence): warming ramps step the
-  // setpoint up, cooling ramps step it down.
+  // Runs on every changed camera payload (the store drops unchanged ones):
+  // maintains the latches, then confirms or ends the optimistic intent and
+  // manages the direction latch over the ramp lifecycle.
   watch(
-    () => store.cameraInfo.TemperatureSetPoint,
-    (next, prev) => {
-      if (!isRampRunning.value || next == null || prev == null) return;
-      if (next > prev) rampDirection.value = 'warming';
-      else if (next < prev) rampDirection.value = 'cooling';
+    () => store.cameraInfo,
+    (info) => {
+      if (!info.CoolerOn) clearHeuristicLatches();
+      if (commandedWarmUp.value && Date.now() >= commandedWarmUp.value.deadline) {
+        commandedWarmUp.value = null;
+      }
+      // Any ramp moves the setpoint; a moved setpoint ends the hold.
+      if (holdSetpoint.value != null && info.TemperatureSetPoint !== holdSetpoint.value) {
+        holdSetpoint.value = null;
+      }
+      // Capture the held setpoint once NINA's post-cancel write surely
+      // reached us: one device poll after the cancel completed, and two
+      // consecutive payloads since then agree on the setpoint. A payload
+      // requested before the cancel can still arrive after the deadline and
+      // would carry the old ramp's setpoint.
+      if (holdCaptureAt && Date.now() >= holdCaptureAt) {
+        const setpoint = info.TemperatureSetPoint;
+        if (Number.isFinite(setpoint) && setpoint === holdCandidate) {
+          holdSetpoint.value = setpoint;
+          holdCaptureAt = 0;
+          holdCandidate = null;
+        } else {
+          holdCandidate = setpoint;
+        }
+      }
+
+      const running = isRampRunning.value;
+      const pending = coolingPending.value;
+      if ((pending === 'cooling' || pending === 'warming') && running) setCoolingPending(null);
+      // Without the real flag a cancel only counts as confirmed once the held
+      // setpoint is known; an earlier "not running" may be a coincidence of
+      // the old ramp and would leave the distance heuristic without the hold.
+      const cancelConfirmed =
+        typeof info.TempChangeRunning === 'boolean' || holdSetpoint.value != null;
+      if (pending === 'cancel' && !running && cancelConfirmed) setCoolingPending(null);
+
+      // Direction. Every setpoint move of a running ramp re-derives it, so a
+      // ramp replaced from outside TNS (NINA UI, sequence) flips the latch.
+      // Two signals, each wrong in one situation, so they are combined:
+      // - The trend (previous vs. new setpoint) is right while the ramp
+      //   steps, even when a fast cooler keeps the sensor below the
+      //   setpoint. It is wrong for the first step, when the previous
+      //   setpoint is a leftover from before the ramp (e.g. the old cool
+      //   target under a camera that warmed up passively) - recorded on a
+      //   PINS Pi as 10 -> 17 while cooling from 23°C.
+      // - Setpoint vs. temperature is right for the first step, when the
+      //   sensor has not moved yet, and wrong once the sensor overshoots.
+      // A leftover shows in at most one running payload (NINA refreshes
+      // CameraInfo every device poll), so the trend only counts once the
+      // previous setpoint was seen in two running payloads.
+      const setpoint = info.TemperatureSetPoint;
+      if (setpoint !== trendSetpoint) {
+        if (running && setpoint != null && trendSetpoint != null) {
+          if (trendSeenRunning >= 2 && setpoint > trendSetpoint) rampDirection.value = 'warming';
+          else if (trendSeenRunning >= 2 && setpoint < trendSetpoint)
+            rampDirection.value = 'cooling';
+          else rampDirection.value = inferRampDirection() ?? rampDirection.value;
+        }
+        trendSetpoint = setpoint;
+        trendSeenRunning = running ? 1 : 0;
+      } else {
+        trendSeenRunning = running ? trendSeenRunning + 1 : 0;
+      }
+
+      if (running) {
+        if (!rampDirection.value) rampDirection.value = inferRampDirection();
+      } else if (coolingPending.value !== 'cooling' && coolingPending.value !== 'warming') {
+        // Keep the direction while a start is still unconfirmed: the payload
+        // may predate the command.
+        rampDirection.value = null;
+      }
     }
   );
 
+  function resetCoolingIntent() {
+    setCoolingPending(null);
+    rampDirection.value = null;
+    clearHeuristicLatches();
+  }
+
+  // A cancelled ramp task ends asynchronously: its catch writes the setpoint
+  // to the driver (slow on INDI) and only then its finally clears
+  // TempChangeRunning. A ramp started meanwhile has already set the flag, so
+  // it reads false for its whole duration (seen on a PINS Pi). Wait for the
+  // flag to drop before starting; the field is live, not cached. Without
+  // the field (official ninaAPI) there is nothing to wait for.
+  async function waitForRampIdle() {
+    if (typeof store.cameraInfo.TempChangeRunning !== 'boolean') return;
+    for (let i = 0; i < 10; i++) {
+      const info = (await apiService.cameraAction('info'))?.Response;
+      if (info?.TempChangeRunning !== true) return;
+      await wait(300);
+    }
+  }
+
   async function startCooling(temperature, minutes) {
-    await apiService.stopCameraWarming();
-    await apiService.startCameraCooling(temperature, minutes ?? 10);
-    rampDirection.value = 'cooling';
-    setCoolingPending('cooling');
+    clearHeuristicLatches();
+    // Within 1°C of the target NINA skips the ramp and returns at once, so
+    // there is nothing to show as pending.
+    const info = store.cameraInfo;
+    const instant =
+      Number.isFinite(info.Temperature) && Math.abs(info.Temperature - temperature) <= 1;
+    if (!instant) {
+      // Intent first, so the UI reacts on the press and not after two roundtrips.
+      rampDirection.value = 'cooling';
+      setCoolingPending('cooling');
+    }
+    try {
+      // Cancel first: cool and warm share one CancellationTokenSource in
+      // ninaAPI, see waitForRampIdle() for why the start has to wait.
+      await apiService.stopCameraWarming();
+      await waitForRampIdle();
+      await apiService.startCameraCooling(temperature, minutes ?? 10);
+    } catch (error) {
+      resetCoolingIntent();
+      throw error;
+    }
   }
 
   async function startWarming(minutes) {
-    await apiService.stopCameraCooling();
-    await apiService.startCameraWarming(minutes ?? 10);
+    clearHeuristicLatches();
     rampDirection.value = 'warming';
     setCoolingPending('warming');
+    // NINA gives a warm-up its duration plus 15 minutes before it gives up;
+    // past that the plain heuristic takes over again.
+    commandedWarmUp.value = {
+      deadline: Date.now() + ((minutes ?? 10) + 15) * 60000 + 20000,
+    };
+    try {
+      await apiService.stopCameraCooling();
+      await waitForRampIdle();
+      await apiService.startCameraWarming(minutes ?? 10);
+    } catch (error) {
+      resetCoolingIntent();
+      throw error;
+    }
   }
 
   async function cancelTempChange() {
-    // cancel=true on an idle ramp is a no-op, so cancel both to stay correct
-    // even if the derived direction is momentarily wrong.
-    await apiService.stopCameraCooling();
-    await apiService.stopCameraWarming();
+    clearHeuristicLatches();
     setCoolingPending('cancel');
+    try {
+      // cancel=true on an idle ramp is a no-op, so cancel both to stay correct
+      // even if the derived direction is momentarily wrong.
+      await apiService.stopCameraCooling();
+      await apiService.stopCameraWarming();
+    } catch (error) {
+      setCoolingPending(null);
+      throw error;
+    }
+    // NINA has written the held setpoint now; its next device poll reads it back.
+    holdCaptureAt = Date.now() + devicePollMs() + 1000;
   }
 
   // Start capture + image fetch

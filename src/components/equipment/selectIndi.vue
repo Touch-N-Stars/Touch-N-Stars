@@ -213,6 +213,7 @@ import apiPinsService from '@/services/apiPinsService';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
 
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
@@ -397,11 +398,11 @@ onMounted(async () => {
     const sortFocuserByLabel = (arr) =>
       [...arr].sort((a, b) => getFocuserLabel(a).localeCompare(getFocuserLabel(b)));
 
+    const visible = (type, arr) => arr.filter((item) => !isHiddenIndiDriver(type, item.Name));
+
     camera.value = sortByLabel(cameraResponse.Response);
-    focuser.value = sortFocuserByLabel(
-      focuserResponse.Response.filter((item) => item.Name !== 'indi_gemini_focus')
-    );
-    filterwheel.value = sortByLabel(filterwheelResponse.Response);
+    focuser.value = sortFocuserByLabel(visible('focuser', focuserResponse.Response));
+    filterwheel.value = sortByLabel(visible('filterwheel', filterwheelResponse.Response));
     rotator.value = sortByLabel(rotatorResponse.Response);
     telescope.value = sortByLabel(telescopeResponse.Response);
     weather.value = sortByLabel(weatherResponse.Response);

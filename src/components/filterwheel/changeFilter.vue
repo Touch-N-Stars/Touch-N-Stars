@@ -27,30 +27,27 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { watch } from 'vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 
-// Initialisiere Stores
 const store = apiStore();
 
 async function changeFilter() {
   try {
-    const data = apiService.changeFilter(store.filterNr);
-    console.log('Response:', data);
-    console.log('Filter:', store.filterNr);
+    await apiService.changeFilter(store.filterNr);
   } catch (error) {
     console.log('Error:', error);
   }
 }
 
-onMounted(async () => {
-  if (store.filterInfo?.SelectedFilter) {
-    store.filterNr = store.filterInfo.SelectedFilter.Id;
-    store.Name = store.filterInfo.SelectedFilter.Name;
-  } else {
-    store.filterNr = null;
-    store.Name = '';
-  }
-});
+// Follow the wheel, not just the initial mount: the status bar panel keeps this
+// component mounted, and a sequence or another page may move the filter meanwhile.
+watch(
+  () => store.filterInfo?.SelectedFilter?.Id,
+  (id) => {
+    store.filterNr = id ?? null;
+  },
+  { immediate: true }
+);
 </script>

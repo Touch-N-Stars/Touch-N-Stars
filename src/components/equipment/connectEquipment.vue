@@ -394,6 +394,7 @@ import {
   apiActionForApiName,
   getIndiDriver,
   isOfflineDevice,
+  redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
   setProfileDevice,
@@ -639,6 +640,22 @@ async function reloadOfflineIndiDrivers() {
   }
 }
 
+/**
+ * connectAll() connects without ?to=, so a profile still pointing at the INDI manual wheel
+ * has to be rewritten to NINA's built-in one first (see equipmentDevices.js for why).
+ */
+async function redirectManualFilterWheelBeforeConnect() {
+  if (isDeviceConnected('filter')) return;
+  try {
+    if (await redirectManualFilterWheel()) {
+      equipmentStore.triggerReload();
+    }
+  } catch (error) {
+    // The connect loop reports the failure if the wheel really cannot be connected.
+    console.warn('[Connect Equipment] manual filter wheel redirect failed', error);
+  }
+}
+
 async function connectAll() {
   isConnecting.value = true;
   try {
@@ -649,6 +666,7 @@ async function connectAll() {
     }
 
     await reloadOfflineIndiDrivers();
+    await redirectManualFilterWheelBeforeConnect();
 
     for (const device of store.existingEquipmentList) {
       switch (device.apiName) {
