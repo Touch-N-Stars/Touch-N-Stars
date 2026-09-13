@@ -11,10 +11,13 @@ const apiService = (await import('@/services/apiService')).default;
 const {
   apiActionForApiName,
   getIndiDriver,
+  isHiddenIndiDriver,
   isOfflineDevice,
+  redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
   setProfileDevice,
+  MANUAL_FILTER_WHEEL_ID,
 } = await import('@/utils/equipmentDevices');
 
 // Records every API call the reload makes, in order, and keeps the real methods out of
@@ -213,4 +216,84 @@ test('resolveReloadedDevice tolerates empty and missing input', () => {
   assert.equal(resolveReloadedDevice(null, [ONLINE_ENTRY]), null);
   assert.equal(resolveReloadedDevice(OFFLINE_ENTRY, null), null);
   assert.equal(resolveReloadedDevice({ Id: 'x' }, [ONLINE_ENTRY]), null);
+});
+
+test('isHiddenIndiDriver hides drivers only for their own device type', () => {
+  assert.equal(isHiddenIndiDriver('filterwheel', 'indi_manual_wheel'), true);
+  assert.equal(isHiddenIndiDriver('focuser', 'indi_gemini_focus'), true);
+  assert.equal(isHiddenIndiDriver('focuser', 'indi_manual_wheel'), false);
+  assert.equal(isHiddenIndiDriver('filterwheel', 'indi_simulator_wheel'), false);
+  assert.equal(isHiddenIndiDriver('camera', 'indi_gemini_focus'), false);
+});
+
+// Records the calls redirectManualFilterWheel makes and seeds the filter wheel profile.
+function stubFilterApi(calls, indiDriver) {
+  const original = {
+    profileChangeValue: apiService.profileChangeValue,
+    filterAction: apiService.filterAction,
+  };
+  apiService.profileChangeValue = async (path, value) => {
+    calls.push(`profileChangeValue:${path}=${value}`);
+  };
+  apiService.filterAction = async (action) => {
+    calls.push(`filterAction:${action}`);
+    return { Response: [], Success: true };
+  };
+
+  freshPinia();
+  const store = apiStore();
+  store.profileInfo = { FilterWheelSettings: { IndiDriver: indiDriver } };
+  store.fetchProfilInfos = async () => {
+    calls.push('fetchProfilInfos');
+  };
+  return () => Object.assign(apiService, original);
+}
+
+const REDIRECT_CALLS = [
+  'profileChangeValue:FilterWheelSettings-IndiDriver=None',
+  'filterAction:list-devices',
+  `profileChangeValue:FilterWheelSettings-Id=${MANUAL_FILTER_WHEEL_ID}`,
+  'fetchProfilInfos',
+];
+
+test('redirectManualFilterWheel swaps the configured INDI manual wheel for the NINA one', async () => {
+  const calls = [];
+  const restore = stubFilterApi(calls, 'indi_manual_wheel');
+
+  try {
+    assert.equal(await redirectManualFilterWheel(), MANUAL_FILTER_WHEEL_ID);
+  } finally {
+    restore();
+  }
+
+  assert.deepEqual(calls, REDIRECT_CALLS);
+});
+
+test('redirectManualFilterWheel also triggers on the selected device when the profile is clear', async () => {
+  const calls = [];
+  const restore = stubFilterApi(calls, 'None');
+
+  try {
+    const device = { Id: 'Manual Filter', DriverInfo: 'indi_manual_wheel', Category: 'INDI' };
+    assert.equal(await redirectManualFilterWheel(device), MANUAL_FILTER_WHEEL_ID);
+  } finally {
+    restore();
+  }
+
+  assert.deepEqual(calls, REDIRECT_CALLS);
+});
+
+test('redirectManualFilterWheel leaves other wheels alone', async () => {
+  const calls = [];
+  const restore = stubFilterApi(calls, 'indi_simulator_wheel');
+
+  try {
+    assert.equal(await redirectManualFilterWheel(), null);
+    assert.equal(await redirectManualFilterWheel({ Id: 'Manual Filter Wheel' }), null);
+    assert.equal(await redirectManualFilterWheel({ DriverInfo: 'n.A.' }), null);
+  } finally {
+    restore();
+  }
+
+  assert.deepEqual(calls, []);
 });

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Status bar: The camera panel offers the cool-down and warm-up controls with the target temperature when the camera has a cooler.
 
 ### Fixed
+- Filter wheel: The INDI manual wheel is no longer offered and an existing selection is switched to NINA's Manual Filter Wheel on connect, so the filter change confirmation appears again in PINS.
 - Camera: The cooler status no longer shows Warming up right after starting a cool-down and no longer flips back to Off or At target temp after starting a cool-down, warm-up or cancel; warm-ups started at the target and holds after a cancel are shown correctly on Windows NINA too.
 
 ## [App6.3.1-beta3] - 2026-09-10 
