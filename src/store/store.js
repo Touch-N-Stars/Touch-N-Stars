@@ -12,6 +12,7 @@ import signalRProgressService from '@/services/signalRprogressService';
 import signalRDialogService from '@/services/signalRDialogService';
 import signalRMessageboxesService from '@/services/signalRMessageboxesService';
 import { useProgressStore } from '@/store/progressStore';
+import { useSessionTimelineStore } from '@/store/sessionTimelineStore';
 import { useLivestackStore } from '@/plugins/livestack/store/livestackStore';
 import { useNightSummaryStore } from '@/plugins/nightsummary/store/nightsummaryStore';
 import { useGuiderStore } from '@/store/guiderStore';
@@ -727,6 +728,9 @@ export const apiStore = defineStore('store', {
       // Clear progress data from the previous instance
       const progressStore = useProgressStore();
       progressStore.clearAll();
+
+      // Session timeline mirrors backend buffers of the previous instance
+      useSessionTimelineStore().reset();
 
       // Clear autofocus data from the previous instance
       const autofocusStore = useAutofocusStore();

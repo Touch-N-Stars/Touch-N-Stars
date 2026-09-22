@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { DEFAULT_TIMEOUT, getUrls, simpleGetRequest } from './core';
+import { DEFAULT_TIMEOUT, getUrls, getWithParams, simpleGetRequest } from './core';
 
 export default {
   //-------------------------------------  Filterwheel ---------------------------------------
@@ -211,6 +211,13 @@ export default {
   guiderCancelConnect() {
     const { BASE_URL } = getUrls();
     return simpleGetRequest(`${BASE_URL}/equipment/guider/cancel-connect`);
+  },
+
+  // PINS only. Every guide step since the API started; `since` is the Time of the last known step.
+  guiderHistory(since = null) {
+    const { BASE_URL } = getUrls();
+    const url = `${BASE_URL}/equipment/guider/history`;
+    return since ? getWithParams(url, { since }) : simpleGetRequest(url);
   },
 
   // PINS only: not available in the official ninaAPI build.

@@ -70,6 +70,8 @@ export const useSettingsStore = defineStore('settings', {
       },
       graphDataSource1: 'HFR', // Erste Datenquelle für Graph
       graphDataSource2: 'Stars', // Zweite Datenquelle für Graph
+      timelineLatest: false, // session timeline: follow the last hour
+      timelineSeries: ['HFR', 'RA', 'DEC', 'RMS'], // session timeline: shown statistics
       imageFilter: {
         selectedTarget: null,
         selectedFilter: null,

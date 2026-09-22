@@ -66,16 +66,23 @@
         </button>
 
         <div
-          v-if="store.imageHistoryInfo && store.imageHistoryInfo.length > 0"
+          v-if="hasImages || showsTimeline"
           class="flex flex-col min-w-[80vw] w-full max-w-4xl justify-center items-center space-y-4"
         >
-          <h2>{{ sequenceStore.targetName }}</h2>
-          <div class="mt-5 w-full">
-            <LastSequenceImg />
-          </div>
+          <template v-if="hasImages">
+            <h2>{{ sequenceStore.targetName }}</h2>
+            <div class="mt-5 w-full">
+              <LastSequenceImg />
+            </div>
+          </template>
 
+          <!-- PINS: the session timeline covers the HFR chart's statistics, and shows
+               slews, solves and focus runs before the first frame exists -->
+          <div v-if="showsTimeline" class="w-full">
+            <SessionTimeline />
+          </div>
           <div
-            v-if="settingsStore.monitorViewSetting.showImgStatsGraph"
+            v-else-if="settingsStore.monitorViewSetting.showImgStatsGraph"
             class="w-full p-1 border border-cyan-700 bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl"
           >
             <SequenzGraph />
@@ -131,8 +138,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SubNav from '@/components/SubNav.vue';
+import SessionTimeline from '@/components/sessionTimeline/SessionTimeline.vue';
 import SequenceImageHistory from '@/components/imageHistory/SequenceImageHistory.vue';
 import LastSequenceImg from '@/components/imageHistory/LastSequenceImg.vue';
 import SequenzGraph from '@/components/imageHistory/SequenzGraph.vue';
@@ -153,6 +161,11 @@ const store = apiStore();
 const settingsStore = useSettingsStore();
 const sequenceStore = useSequenceStore();
 const showSettingsModal = ref(false);
+
+const hasImages = computed(() => store.imageHistoryInfo?.length > 0);
+const showsTimeline = computed(
+  () => store.isPINS && settingsStore.monitorViewSetting.showImgStatsGraph
+);
 </script>
 
 <style>

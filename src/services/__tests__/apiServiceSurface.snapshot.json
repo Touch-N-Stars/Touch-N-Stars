@@ -39,6 +39,7 @@
   "fetchApiPort": "function",
   "fetchApiVersion": "function",
   "fetchApplicatioTab": "function",
+  "fetchApplicationStart": "function",
   "fetchFilesystemFileBlob": "function",
   "fetchFilesystemFileBuffer": "function",
   "fetchFilesystemFileText": "function",
@@ -172,6 +173,7 @@
   "guiderAction": "function",
   "guiderCancelConnect": "function",
   "guiderClearGraph": "function",
+  "guiderHistory": "function",
   "guiderStart": "function",
   "haltLensControl": "function",
   "hocusfocus": [
