@@ -2174,6 +2174,7 @@
       "settings": {
         "constellations_lines_visible": "Sternzeichen",
         "azimuthal_lines_visible": "Azimuthal Gitter ",
+        "compass_visible": "Kompass anzeigen",
         "equatorial_lines_visible": "Äquatoriale Gitter",
         "meridian_lines_visible": "Meridian",
         "ecliptic_lines_visible": "Ecliptic Linie",

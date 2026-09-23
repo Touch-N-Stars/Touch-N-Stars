@@ -2133,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "Mostra costellazioni",
         "azimuthal_lines_visible": "Mostra linee azimutali",
+        "compass_visible": "Mostra la bussola",
         "equatorial_lines_visible": "Mostra linee equatoriali",
         "meridian_lines_visible": "Mostra meridiano",
         "ecliptic_lines_visible": "Mostra eclittica",

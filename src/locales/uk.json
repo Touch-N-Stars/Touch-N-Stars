@@ -2113,6 +2113,7 @@
       "settings": {
         "constellations_lines_visible": "Показати сузір'я",
         "azimuthal_lines_visible": "Показати азимутальні лінії",
+        "compass_visible": "Показати компас",
         "equatorial_lines_visible": "Показати екваторіальні лінії",
         "meridian_lines_visible": "Показати меридіан",
         "ecliptic_lines_visible": "Показати екліптику",

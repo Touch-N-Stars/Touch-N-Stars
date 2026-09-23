@@ -2179,6 +2179,7 @@
       "settings": {
         "constellations_lines_visible": "별자리 표시",
         "azimuthal_lines_visible": "방위 좌표선 표시",
+        "compass_visible": "나침반 표시",
         "equatorial_lines_visible": "적도 좌표선 표시",
         "meridian_lines_visible": "자오선 표시",
         "ecliptic_lines_visible": "황도 표시",

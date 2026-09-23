@@ -2133,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "Zobrazit Souhvězdí",
         "azimuthal_lines_visible": "Zobrazit azimutální linie",
+        "compass_visible": "Zobrazit kompas",
         "equatorial_lines_visible": "Zobrazit rovníkové linie",
         "meridian_lines_visible": "Zobrazit poledník",
         "ecliptic_lines_visible": "Zobrazit ekliptiku",

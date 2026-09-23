@@ -2133,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "显示星座",
         "azimuthal_lines_visible": "显示方位线",
+        "compass_visible": "显示指南针",
         "equatorial_lines_visible": "显示赤道线",
         "meridian_lines_visible": "显示子午线",
         "ecliptic_lines_visible": "显示黄道",

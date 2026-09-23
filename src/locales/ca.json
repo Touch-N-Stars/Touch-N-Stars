@@ -2179,6 +2179,7 @@
       "settings": {
         "constellations_lines_visible": "Mostra les constel·lacions",
         "azimuthal_lines_visible": "Mostra les línies azimutals",
+        "compass_visible": "Mostra la brúixola",
         "equatorial_lines_visible": "Mostra les línies equatorials",
         "meridian_lines_visible": "Mostra el meridià",
         "ecliptic_lines_visible": "Mostra l'eclíptica",

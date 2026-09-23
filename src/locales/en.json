@@ -2242,6 +2242,7 @@
       "settings": {
         "constellations_lines_visible": "Show Constellations",
         "azimuthal_lines_visible": "Show azimuthal lines",
+        "compass_visible": "Show compass",
         "equatorial_lines_visible": "Show equatorial lines",
         "meridian_lines_visible": "Show meridian",
         "ecliptic_lines_visible": "Show ecliptic",

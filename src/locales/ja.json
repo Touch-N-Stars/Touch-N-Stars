@@ -2142,6 +2142,7 @@
       "settings": {
         "constellations_lines_visible": "星座線を表示",
         "azimuthal_lines_visible": "地平座標線を表示",
+        "compass_visible": "コンパスを表示",
         "equatorial_lines_visible": "赤道座標線を表示",
         "meridian_lines_visible": "子午線を表示",
         "ecliptic_lines_visible": "黄道を表示",

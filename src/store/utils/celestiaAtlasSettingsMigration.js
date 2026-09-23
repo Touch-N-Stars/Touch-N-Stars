@@ -8,6 +8,7 @@ export const createDefaultCelestiaAtlasSettings = () => ({
   meridianLinesVisible: false,
   eclipticLinesVisible: false,
   atmosphereVisible: true,
+  compassVisible: true,
   landscapesVisible: true,
   hideBelowHorizon: true,
   skySurveyVisible: true,

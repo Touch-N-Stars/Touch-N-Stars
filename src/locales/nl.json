@@ -2133,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "Toon sterrenbeelden",
         "azimuthal_lines_visible": "Toon azimuth lijnen",
+        "compass_visible": "Toon kompas",
         "equatorial_lines_visible": "Toon equatoriale lijnen",
         "meridian_lines_visible": "Toon meridiaan lijnen",
         "ecliptic_lines_visible": "Toon ecliptica",
