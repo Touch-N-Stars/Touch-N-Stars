@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { markRaw } from 'vue';
 import apiService from '@/services/apiService';
 import { timeSync } from '@/utils/timeSync';
-import { mergeEvents, mergeGuideSteps, guideCursor, parseTime } from '@/utils/sessionTimelineUtils';
+import { mergeEvents, mergeGuideSteps, parseTime } from '@/utils/sessionTimelineUtils';
 
 const MAX_GUIDE_STEPS = 50000;
 
@@ -26,10 +26,10 @@ export const useSessionTimelineStore = defineStore('sessionTimeline', {
     nowMs: 0,
     // reset() bumps it; a response for an older generation is dropped
     generation: 0,
-    // The backend holds more steps than we do: reload instead of continuing
-    needsFullResync: false,
-    // Steps the backend counts but never delivers (same-millisecond duplicates)
-    resyncTolerance: 0,
+    // Cursor into the guide history: the backend's Session and the Id of the
+    // newest step received from it
+    guideSession: null,
+    guideAfter: null,
   }),
 
   actions: {
@@ -74,32 +74,33 @@ export const useSessionTimelineStore = defineStore('sessionTimeline', {
     },
 
     /**
-     * Fetches the steps after the newest known one. If the backend then still
-     * counts more steps than we hold, some were missed (a response lost to a
-     * reset) and the next poll reloads the whole history.
+     * Fetches the steps after the newest known one. A NINA restart starts the
+     * step ids over under a new Session: that history is then read from its
+     * start and appended to the steps of the old one.
      */
     async fetchGuideHistory() {
       if (this.guideHistorySupported === false) return;
-      const since = this.needsFullResync ? null : guideCursor(this.guideSteps);
-      const response = await this.request(() => apiService.guiderHistory(since));
+      const after = this.guideAfter;
+      const response = await this.request(() => apiService.guiderHistory(after));
       if (response?.StatusCode === 404) this.guideHistorySupported = false;
-      if (!response?.Success || !response.Response) return;
+      // A cursor moved meanwhile means another fetch already delivered these steps
+      if (!response?.Success || !response.Response || after !== this.guideAfter) return;
 
-      const { PixelScale, Steps, Count, MaxSize } = response.Response;
+      const { PixelScale, Steps, Session, MaxSize } = response.Response;
+      // Without a Session the rig predates the id cursor and would resend every step
+      this.guideHistorySupported = Boolean(Session);
+      if (!Session) return;
+      if (Session !== this.guideSession) {
+        this.guideSession = Session;
+        this.guideAfter = null;
+        if (after !== null) return this.fetchGuideHistory();
+      }
       if (PixelScale > 0) this.pixelScale = PixelScale;
       // markRaw: tens of thousands of steps must not become reactive proxies
       const limit = MaxSize > 0 ? MaxSize : MAX_GUIDE_STEPS;
-      const merged = mergeGuideSteps(since ? this.guideSteps : [], Steps, limit);
+      const merged = mergeGuideSteps(this.guideSteps, Steps, limit);
       if (merged !== this.guideSteps) this.guideSteps = markRaw(merged);
-      this.guideHistorySupported = true;
-
-      const missing = Number(Count) - this.guideSteps.length;
-      if (since === null) {
-        this.needsFullResync = false;
-        this.resyncTolerance = Math.max(0, missing || 0);
-      } else if (missing > this.resyncTolerance) {
-        this.needsFullResync = true;
-      }
+      if (Steps?.length) this.guideAfter = Steps[Steps.length - 1].Id ?? null;
     },
   },
 });

@@ -96,28 +96,27 @@ export function mergeEvents(existing, incoming) {
 }
 
 /**
- * Appends the steps newer than the last known one and keeps the newest
- * `maxSize`. Returns `existing` itself when nothing was added, so watchers of
- * the array reference stay quiet.
+ * Appends the steps of a history response, which its `after` cursor already
+ * limits to new ones, and keeps the newest `maxSize`. Returns `existing` itself
+ * when nothing was added, so watchers of the array reference stay quiet.
  */
 export function mergeGuideSteps(existing, incoming, maxSize = Infinity) {
   const known = existing || [];
-  let lastT = known.length ? known[known.length - 1].t : -Infinity;
   const added = [];
+  let previous = known.length ? known[known.length - 1].t : -Infinity;
+  let ordered = true;
   for (const step of incoming || []) {
     const t = parseTime(step?.Time);
-    if (t === null || t <= lastT) continue;
+    if (t === null) continue;
     added.push({ ...step, t });
-    lastT = t;
+    ordered &&= t >= previous;
+    previous = t;
   }
   if (added.length === 0) return known;
   const merged = known.concat(added);
+  // The rig's clock went back (NTP or GPS on a Pi without RTC): the series stay in time order
+  if (!ordered) merged.sort((a, b) => a.t - b.t);
   return merged.length > maxSize ? merged.slice(merged.length - maxSize) : merged;
-}
-
-/** The `since` cursor for the next fetch: the raw Time of the newest step. */
-export function guideCursor(steps) {
-  return steps?.length ? (steps[steps.length - 1].Time ?? null) : null;
 }
 
 // --- timeline rows ------------------------------------------------------------------

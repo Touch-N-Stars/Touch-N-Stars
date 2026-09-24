@@ -4,7 +4,6 @@ import {
   parseTime,
   mergeEvents,
   mergeGuideSteps,
-  guideCursor,
   pairIntervals,
   buildTimelineRows,
   rollingRms,
@@ -56,26 +55,36 @@ test('mergeEvents deduplicates by name + time and sorts by time', () => {
   assert.equal(mergeEvents([], [{ Event: 'X', Time: 'nope' }, { Event: 5 }]).length, 0);
 });
 
-test('mergeGuideSteps appends only newer steps and guideCursor returns the raw last Time', () => {
+test('mergeGuideSteps appends every new step, also one in the same millisecond', () => {
   const steps = mergeGuideSteps(
     [],
     [
-      { Time: at(1), RADistanceRaw: 1 },
-      { Time: at(2), RADistanceRaw: 2 },
+      { Id: 1, Time: at(1), RADistanceRaw: 1 },
+      { Id: 2, Time: at(2), RADistanceRaw: 2 },
     ]
   );
   assert.equal(steps.length, 2);
   const merged = mergeGuideSteps(steps, [
-    { Time: at(2), RADistanceRaw: 2 }, // duplicate of the cursor
-    { Time: at(1.5), RADistanceRaw: 9 }, // older than the cursor
-    { Time: at(3), RADistanceRaw: 3 },
+    { Id: 3, Time: at(2), RADistanceRaw: 3 },
+    { Id: 4, Time: 'broken', RADistanceRaw: 9 },
+    { Id: 5, Time: at(3), RADistanceRaw: 5 },
   ]);
   assert.deepEqual(
     merged.map((s) => s.RADistanceRaw),
-    [1, 2, 3]
+    [1, 2, 3, 5]
   );
-  assert.equal(guideCursor(merged), at(3));
-  assert.equal(guideCursor([]), null);
+});
+
+test('mergeGuideSteps keeps the steps in time order when the rig clock goes back', () => {
+  const steps = mergeGuideSteps([], [{ Id: 1, Time: at(100) }]);
+  const merged = mergeGuideSteps(steps, [
+    { Id: 2, Time: at(40) },
+    { Id: 3, Time: at(41) },
+  ]);
+  assert.deepEqual(
+    merged.map((s) => s.Id),
+    [2, 3, 1]
+  );
 });
 
 test('pairIntervals closes open bars at now and ignores ends without starts', () => {
@@ -396,7 +405,8 @@ test('mergeGuideSteps keeps the newest maxSize steps and its reference when noth
     steps.map((step) => step.t),
     [T0 + 2000, T0 + 3000]
   );
-  assert.equal(mergeGuideSteps(steps, [{ Time: at(3) }], 2), steps);
+  assert.equal(mergeGuideSteps(steps, [], 2), steps);
+  assert.equal(mergeGuideSteps(steps, [{ Time: 'broken' }], 2), steps);
 });
 
 test('nearestIndex finds the closest point of a sorted series', () => {

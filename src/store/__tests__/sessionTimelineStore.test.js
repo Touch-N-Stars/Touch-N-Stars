@@ -11,14 +11,15 @@ const { default: apiService } = await import('@/services/apiService');
 
 freshPinia();
 
-const step = (seconds) => ({
+const step = (seconds, Id = seconds) => ({
+  Id,
   Time: `2026-09-14T18:00:${String(seconds).padStart(2, '0')}Z`,
   RADistanceRaw: 1,
   DECDistanceRaw: 0,
 });
-const history = (Steps, Count = Steps.length) => ({
+const history = (Steps, Session = 'a') => ({
   Success: true,
-  Response: { PixelScale: 2, Count, MaxSize: 50000, Steps },
+  Response: { Session, PixelScale: 2, Count: Steps.length, MaxSize: 50000, Steps },
 });
 
 // Stubs the endpoints the store talks to; restored after the test.
@@ -99,14 +100,15 @@ test('a rig without the guide history route is asked once', async (t) => {
   assert.equal(timeline.guideHistorySupported, null);
 });
 
-test('guide steps are fetched incrementally with the last Time as since cursor', async (t) => {
+test('guide steps are fetched incrementally with the last Id as after cursor', async (t) => {
   const timeline = freshStore();
-  const sinceValues = [];
-  const pages = [[step(1), step(2)], [step(3)], []];
+  const afterValues = [];
+  // Two steps in the same millisecond are still two steps
+  const pages = [[step(1), step(2)], [step(2, 3)], []];
   stubApi(t, {
-    guideHistory: async (since) => {
-      sinceValues.push(since ?? null);
-      return history(pages.shift(), 3 - pages.length);
+    guideHistory: async (after) => {
+      afterValues.push(after ?? null);
+      return history(pages.shift());
     },
   });
 
@@ -115,7 +117,7 @@ test('guide steps are fetched incrementally with the last Time as since cursor',
   const steps = timeline.guideSteps;
   await timeline.poll();
 
-  assert.deepEqual(sinceValues, [null, step(2).Time, step(3).Time]);
+  assert.deepEqual(afterValues, [null, 2, 3]);
   assert.equal(timeline.guideSteps.length, 3);
   assert.equal(timeline.guideSteps, steps, 'a poll without new steps keeps the array');
   assert.equal(timeline.pixelScale, 2);
@@ -124,13 +126,13 @@ test('guide steps are fetched incrementally with the last Time as since cursor',
 
 test('a reset while the guide history request is in flight drops that response', async (t) => {
   const timeline = freshStore();
-  const sinceValues = [];
+  const afterValues = [];
   let release = null;
   stubApi(t, {
-    guideHistory: (since) => {
-      sinceValues.push(since ?? null);
-      const response = history(since ? [step(3)] : [step(1), step(2), step(3)], 3);
-      if (sinceValues.length !== 2) return Promise.resolve(response);
+    guideHistory: (after) => {
+      afterValues.push(after ?? null);
+      const response = history(after ? [step(3)] : [step(1), step(2), step(3)]);
+      if (afterValues.length !== 2) return Promise.resolve(response);
       return new Promise((resolve) => (release = () => resolve(response)));
     },
   });
@@ -147,27 +149,51 @@ test('a reset while the guide history request is in flight drops that response',
   assert.equal(timeline.guideSteps.length, 0, 'the tail must not survive the reset');
 
   await timeline.poll();
-  assert.deepEqual(sinceValues, [null, step(3).Time, null]);
+  assert.deepEqual(afterValues, [null, 3, null]);
   assert.equal(timeline.guideSteps.length, 3);
 });
 
-test('a backend count above the known steps reloads the whole history once', async (t) => {
+test('after a NINA restart the new history is read from its start and appended', async (t) => {
   const timeline = freshStore();
-  const all = [step(1), step(2), step(3)];
-  // Only the tail is known, as after a lost response
-  timeline.guideSteps = [{ ...all[2], t: Date.parse(all[2].Time) }];
-  const sinceValues = [];
+  const afterValues = [];
+  // The restarted backend numbers its steps from 1 again
+  const restarted = [step(10, 1), step(11, 2), step(12, 3)];
   stubApi(t, {
-    guideHistory: async (since) => {
-      sinceValues.push(since ?? null);
-      return history(since ? [] : all, all.length);
+    guideHistory: async (after) => {
+      afterValues.push(after ?? null);
+      if (afterValues.length === 1) return history([step(1), step(2)]);
+      return history(
+        restarted.filter((s) => s.Id > (after ?? 0)),
+        'b'
+      );
     },
   });
 
   await timeline.poll();
-  assert.equal(timeline.needsFullResync, true);
   await timeline.poll();
-  assert.equal(timeline.guideSteps.length, 3);
+
+  assert.deepEqual(afterValues, [null, 2, null]);
+  assert.deepEqual(
+    timeline.guideSteps.map((s) => s.Time),
+    [step(1), step(2), ...restarted].map((s) => s.Time)
+  );
+  assert.equal(timeline.guideAfter, 3);
+});
+
+test('a rig whose history has no Session is not polled for steps again', async (t) => {
+  const timeline = freshStore();
+  let calls = 0;
+  stubApi(t, {
+    // A build before the after cursor ignores it and would resend every step
+    guideHistory: async () => {
+      calls++;
+      return { Success: true, Response: { PixelScale: 2, Count: 1, Steps: [step(1)] } };
+    },
+  });
+
   await timeline.poll();
-  assert.deepEqual(sinceValues, [step(3).Time, null, step(3).Time]);
+  await timeline.poll();
+  assert.equal(calls, 1);
+  assert.equal(timeline.guideHistorySupported, false);
+  assert.equal(timeline.guideSteps.length, 0);
 });

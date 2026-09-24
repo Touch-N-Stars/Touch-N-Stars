@@ -213,11 +213,11 @@ export default {
     return simpleGetRequest(`${BASE_URL}/equipment/guider/cancel-connect`);
   },
 
-  // PINS only. Every guide step since the API started; `since` is the Time of the last known step.
-  guiderHistory(since = null) {
+  // PINS only. Every guide step since the API started; `after` is the Id of the last known step.
+  guiderHistory(after = null) {
     const { BASE_URL } = getUrls();
     const url = `${BASE_URL}/equipment/guider/history`;
-    return since ? getWithParams(url, { since }) : simpleGetRequest(url);
+    return after ? getWithParams(url, { after }) : simpleGetRequest(url);
   },
 
   // PINS only: not available in the official ninaAPI build.
