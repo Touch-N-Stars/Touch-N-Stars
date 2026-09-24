@@ -157,6 +157,23 @@ test('buildTimelineRows derives every row from events and images', () => {
   assert.notEqual(byKey.capture[0].color, byKey.capture[1].color);
 });
 
+test('mount row marks gotos from MOUNT-SLEWED, also without slewing bars', () => {
+  const to = { RAString: '05:35:17', DecString: `-05° 23' 28"`, Epoch: 'J2000' };
+  const events = mergeEvents(
+    [],
+    [ev('MOUNT-TRACKING-START', 0), ev('MOUNT-SLEWED', 50, { To: to }), ev('MOUNT-SLEWED', 90)]
+  );
+  const rows = buildTimelineRows(events, [], T0 + 100 * 1000);
+  const gotos = rows.find((r) => r.key === 'mount').bars.filter((b) => b.marker);
+  assert.deepEqual(
+    gotos.map((b) => [b.state, b.start, b.end, b.label]),
+    [
+      ['slewing', T0 + 50000, T0 + 50000, `05:35:17 -05° 23' 28"`],
+      ['slewing', T0 + 90000, T0 + 90000, ''],
+    ]
+  );
+});
+
 test('guide row falls back to start/stop events without GUIDER-STATE', () => {
   const now = T0 + 100000;
   const events = mergeEvents([], [ev('GUIDER-START', 10), ev('GUIDER-STOP', 50)]);

@@ -149,11 +149,23 @@ export function pairIntervals(events, startName, endName, nowMs, state) {
   return bars;
 }
 
+const slewTarget = (to) => (to?.RAString && to?.DecString ? `${to.RAString} ${to.DecString}` : '');
+
+/**
+ * Slewing bars only exist where an info poll caught the mount slewing, so a
+ * short slew or any slew of a mount without a Slewing flag (OnStep) has none.
+ * MOUNT-SLEWED marks the end of every goto through NINA, settle time included.
+ */
 function buildMountRow(events, nowMs) {
+  const gotos = markers(events, 'MOUNT-SLEWED', 'slewing').map((bar) => ({
+    ...bar,
+    label: slewTarget(bar.startEvent.To),
+  }));
   return [
     ...pairIntervals(events, 'MOUNT-TRACKING-START', 'MOUNT-TRACKING-STOP', nowMs, 'tracking'),
     ...pairIntervals(events, 'MOUNT-PARKED', 'MOUNT-UNPARKED', nowMs, 'parked'),
     ...pairIntervals(events, 'MOUNT-SLEW-START', 'MOUNT-SLEW-STOP', nowMs, 'slewing'),
+    ...gotos,
   ];
 }
 
