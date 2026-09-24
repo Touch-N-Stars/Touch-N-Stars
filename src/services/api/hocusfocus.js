@@ -539,9 +539,12 @@ export default {
         console.error('Error applying tilt plane:', error);
         // Extract error message from response if available
         if (error.response && error.response.data) {
-          throw new Error(
-            error.response.data.Error || error.response.data.message || error.message
-          );
+          const data = error.response.data;
+          const wrapped = new Error(data.Error || data.message || error.message);
+          // e.g. 'exceedsTravel', with RequiredTravel in mm, so the caller can explain it
+          wrapped.code = data.ErrorCode;
+          wrapped.requiredTravel = data.RequiredTravel;
+          throw wrapped;
         }
         throw error;
       }
