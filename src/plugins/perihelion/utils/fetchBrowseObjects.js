@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 
 function mapBrowseObjects(data) {
@@ -52,7 +52,7 @@ function mapBrowseObjects(data) {
  */
 export async function fetchBrowseObjects() {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/objects`);
+  const response = await perihelionApi.get(`${PERIHELION_URL}/objects`);
   return mapBrowseObjects(response.data);
 }
 
@@ -70,6 +70,6 @@ export async function fetchBrowseObjects() {
  */
 export async function refreshCobs() {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.post(`${PERIHELION_URL}/objects/refresh-cobs`);
+  const response = await perihelionApi.post(`${PERIHELION_URL}/objects/refresh-cobs`);
   return mapBrowseObjects(response.data);
 }

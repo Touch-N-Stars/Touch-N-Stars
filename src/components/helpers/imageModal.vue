@@ -22,6 +22,18 @@
 
       <!-- Control Buttons Container -->
       <div class="absolute top-4 right-4 flex gap-2 z-70">
+        <!-- Delete Button (image history only; the parent owns confirmation) -->
+        <button
+          v-if="imageData && deletable"
+          @click="emits('delete')"
+          class="w-10 h-10 bg-gray-800/90 hover:bg-red-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors backdrop-blur-sm"
+          :aria-label="$t('components.sequence.imageHistoryDelete.button')"
+          :title="$t('components.sequence.imageHistoryDelete.button')"
+          data-testid="image-modal-delete"
+        >
+          <TrashIcon class="h-6" />
+        </button>
+
         <!-- Histogram Toggle Button -->
         <button
           v-if="imageData"
@@ -132,7 +144,7 @@
 <script setup>
 import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import Panzoom from '@panzoom/panzoom';
-import { ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownTrayIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import { downloadImage as downloadImageHelper } from '@/utils/imageDownloader';
 import BadButton from './BadButton.vue';
 import HistogramChart from '@/components/helpers/HistogramChart.vue';
@@ -167,9 +179,14 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  // Shows a delete button next to download/close; the parent handles the rest.
+  deletable: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emits = defineEmits(['close']);
+const emits = defineEmits(['close', 'delete']);
 const image = ref(null);
 const imageContainer = ref(null);
 let panzoomInstance = null;

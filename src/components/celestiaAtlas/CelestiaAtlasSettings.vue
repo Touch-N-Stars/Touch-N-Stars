@@ -898,6 +898,7 @@ const activeTab = ref('display');
 
 // Plain on/off display toggles; hideBelowHorizon is inverted and has its own row.
 const displayToggles = [
+  { key: 'compassVisible', label: 'compass_visible' },
   { key: 'constellationsLinesVisible', label: 'constellations_lines_visible' },
   { key: 'equatorialLinesVisible', label: 'equatorial_lines_visible' },
   { key: 'azimuthalLinesVisible', label: 'azimuthal_lines_visible' },

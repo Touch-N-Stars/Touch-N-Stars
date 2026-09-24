@@ -884,6 +884,26 @@
       },
       "running": "运行中",
       "imageHistory": "图像历史",
+      "imageHistoryDelete": {
+        "button": "删除图像",
+        "confirmTitle": "从磁盘删除图像？",
+        "confirmMessage": "图像文件将从设备上永久删除，且无法恢复。",
+        "deleting": "正在删除…",
+        "errorTitle": "无法删除图像",
+        "errorGeneric": "设备在删除文件时报告了错误。",
+        "unsupported": "此设备不支持删除图像。需要 Advanced API 提供图像删除操作的 PINS 版本。",
+        "select": "选择",
+        "done": "完成",
+        "selectAll": "全选",
+        "clearSelection": "清除",
+        "selectedCount": "已选择 {count} 张",
+        "selectHint": "点按图像进行选择。长按缩略图也可开始选择。",
+        "confirmTitleMany": "从磁盘删除 {count} 张图像？",
+        "confirmMessageMany": "图像文件将从设备上永久删除，无法撤销。",
+        "moreFiles": "还有 {count} 张",
+        "deletingProgress": "正在删除 {done}/{total}…",
+        "partialError": "{total} 张图像中有 {failed} 张无法删除。"
+      },
       "duration": "持续时间",
       "temperatureShort": "温度",
       "targetName": "目标",
@@ -1674,11 +1694,6 @@
       "indi": {
         "settings": "对焦设置"
       },
-      "duration_seconds": "期间",
-      "estimated": "东部",
-      "filter": "筛选",
-      "focuser_position": "位置",
-      "hfr": "高频率响应",
       "BoardTemperature": "电路板温度：",
       "DcPower": "直流电源",
       "HeatingPower": "加热功率：",
@@ -2118,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "显示星座",
         "azimuthal_lines_visible": "显示方位线",
+        "compass_visible": "显示指南针",
         "equatorial_lines_visible": "显示赤道线",
         "meridian_lines_visible": "显示子午线",
         "ecliptic_lines_visible": "显示黄道",
@@ -3842,10 +3858,6 @@
         "finalFocusDataSummary": "最终焦点数据摘要",
         "backfocusError": "后焦点误差:",
         "hfrDifference": "HFR 差异:",
-        "innerHFR": "内部HFR:",
-        "outerHFR": "外部HFR:",
-        "moveSensor": "(移动传感器",
-        "flattener": "扁平器)",
         "tiltCornerMeasurements": "倾斜角测量",
         "sensorSide": "传感器侧",
         "focuserPosition": "对焦器位置",
@@ -3855,16 +3867,31 @@
         "unitMicrons": "微米",
         "unitSteps": "步数"
       },
+      "sensorModel": {
+        "pixelSize": "像素大小"
+      },
+      "eccentricity": {
+        "stars": "星点数"
+      },
+      "optimizer": {
+        "source": "来源",
+        "mode": "模式",
+        "filter": "滤镜",
+        "gain": "增益",
+        "stars": "星点数",
+        "cancel": "取消",
+        "close": "关闭",
+        "yes": "是",
+        "no": "否"
+      },
       "aberrationInspectorOptions": {
         "loading": "正在加载像差检查器选项...",
-        "noOptions": "还没有可用的像差检查器选项。",
         "error": "错误:",
-        "inspectorSettings": "检查器设置",
         "micronsPerFocuserStep": "每个对焦器步骤的微米数",
         "retry": "重试",
         "resetToDefaults": "重置为默认值",
         "resetting": "正在重置...",
-        "autoPlaceholder": "auto",
+        "cancel": "取消",
         "centerFocuserBeforeRun": "Center Focuser Before Run",
         "detailedAnalysisExposureSeconds": "Detailed Analysis Exposure Time (seconds)",
         "framesPerPoint": "Frames Per Point",
@@ -3881,11 +3908,9 @@
         "error": "错误:",
         "retry": "重试",
         "basicSettings": "基本设置",
-        "hfrValidation": "HFR验证"
-      },
-      "directoryBrowser": {
-        "browse": "浏览...",
-        "error": "无法打开目录选择器"
+        "hfrValidation": "HFR验证",
+        "cancel": "取消",
+        "save": "保存"
       },
       "starDetection": {
         "loading": "正在加载星星检测选项...",
@@ -3900,7 +3925,9 @@
         "noiseReducedStarMeasurement": "降噪星测量",
         "debugMode": "调试模式",
         "simpleModeSettings": "简单模式设置",
+        "cancel": "取消",
         "noiseLevel": "噪声级别",
+        "pixelScale": "像素比例",
         "useOptimizedSettings": "Use Optimized Settings"
       },
       "tilter": {
@@ -3909,14 +3936,10 @@
         "scanTooltip": "扫描设备",
         "connect": "连接",
         "disconnect": "断开",
-        "deviceInfo": "Device Information",
         "status": "地位",
-        "connected": "已连接",
         "moving": "移动",
         "idle": "闲置的",
         "currentPositions": "目前职位",
-        "noDeviceSelected": "请先选择设备",
-        "deviceNotConnected": "连接到设备以查看控件",
         "configuration": "配置",
         "sensorWidth": "传感器宽度",
         "sensorHeight": "传感器高度",
@@ -3947,14 +3970,7 @@
         "calculateActuatorPositions": "计算执行器位置",
         "calculatedPositions": "计算位置",
         "applyThesePositionsToDevice": "将这些位置应用到设备",
-        "actuatorVisualizationLabel": "执行器半径为 {radius} mm • 传感器旋转 {rotation}° • 顶视图",
-        "calculatingPositions": "正在计算...",
-        "applyingPositions": "正在申请...",
-        "savingConfiguration": "保存..."
-      },
-      "common": {
-        "error": "错误:",
-        "loading": "正在加载..."
+        "actuatorVisualizationLabel": "执行器半径为 {radius} mm • 传感器旋转 {rotation}° • 顶视图"
       }
     },
     "tenmicron": {
@@ -5205,6 +5221,135 @@
     "screenLock": {
       "unlock": "解锁屏幕",
       "holdToUnlock": "按住{seconds}秒以解锁"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "实时显示来自 NINA Target Scheduler 插件的项目、目标和进度。",
+      "actions": {
+        "refresh": "刷新",
+        "refreshing": "正在刷新…",
+        "showSchedule": "显示排程",
+        "hideSchedule": "隐藏排程",
+        "expandHeader": "展开",
+        "collapseHeader": "收起",
+        "cancel": "取消"
+      },
+      "labels": {
+        "apiPort": "Scheduler API 端口",
+        "profile": "配置文件",
+        "active": "活动",
+        "lastUpdated": "上次更新",
+        "loading": "正在加载项目…",
+        "noProjects": "未找到该配置文件的项目。",
+        "activeProjects": "活动项目",
+        "targets": "目标",
+        "completion": "完成度",
+        "legendAccepted": "已接受",
+        "legendPending": "已获取，待审核",
+        "integrationTime": "积分时间",
+        "unofficialDisclaimer": "非官方查看器 — 与 Target Scheduler 项目无关。",
+        "dataFrom": "数据来自",
+        "readOnlyNote": "只读，此处不会更改你的排程",
+        "searchPlaceholder": "搜索项目和目标…",
+        "clearSearch": "清除搜索",
+        "allStates": "全部",
+        "noResults": "没有与搜索匹配的项目或目标。",
+        "remainingTime": "剩余",
+        "completionFilterLabel": "完成度：",
+        "notStarted": "未开始",
+        "inProgress": "进行中",
+        "done": "已完成",
+        "legendTitle": "图例",
+        "legendBarsTitle": "进度条颜色",
+        "legendDotsTitle": "状态点颜色（项目和目标）",
+        "legendActive": "活动",
+        "legendInactive": "未活动",
+        "legendDraft": "草稿（仅项目）",
+        "legendClosed": "已关闭（仅项目）",
+        "creditNote": "Target Scheduler 插件及其排程引擎的所有功劳归于",
+        "filtersToggle": "筛选",
+        "stateFilterLabel": "状态：",
+        "filterNameFilterLabel": "滤镜：",
+        "mosaicFilterLabel": "类型：",
+        "scheduledFilterLabel": "日程：",
+        "mosaicOnly": "马赛克",
+        "singlePanelOnly": "单幅",
+        "scheduledTonightOnly": "今晚已排程",
+        "sortLabel": "排序：",
+        "sortName": "名称",
+        "sortPriority": "优先级",
+        "sortCompletion": "完成度",
+        "sortRemaining": "剩余时间",
+        "sortAscending": "升序排序",
+        "sortDescending": "降序排序",
+        "exportMarkdown": "复制为 Markdown",
+        "exportCopiedTitle": "已复制",
+        "exportCopiedMessage": "排程进度已以 Markdown 格式复制到剪贴板。",
+        "exportFailedTitle": "复制失败",
+        "exportFailedMessage": "无法复制到剪贴板。",
+        "apiDocsLink": "Target Scheduler API 文档",
+        "setupTitle": "设置 Target Scheduler API",
+        "setupStep1": "在 NINA 中打开 Target Scheduler 插件选项并启用其 API 服务器。",
+        "setupStep2": "记下显示的端口（默认 8188）。",
+        "setupStep3": "在上方输入该端口，随后将自动连接。",
+        "welcomeTitle": "欢迎使用 Target Scheduler Viewer",
+        "welcomeSubtitle": "此插件显示你的 NINA Target Scheduler 项目、目标和拍摄进度，只需要知道如何连接到它。",
+        "welcomeTrying": "正在尝试端口 {port}…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}：已接受 {accepted}/{desired}",
+        "integrated": "已积分 {time}"
+      },
+      "targetCard": {
+        "active": "活动",
+        "inactive": "未活动",
+        "hide": "隐藏",
+        "stats": "统计",
+        "loadingStats": "正在加载统计…",
+        "colFilter": "滤镜",
+        "colExp": "曝光",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Ecc.",
+        "belowAutoAccept": "低于自动接受阈值（字段含义未确认）",
+        "aboveAutoAccept": "高于自动接受阈值（字段含义未确认）",
+        "noAcceptedFrames": "尚无已接受的帧。",
+        "integratedOf": "已积分 {time} / {expected}",
+        "remaining": "剩余 {time}"
+      },
+      "projectCard": {
+        "priority": "优先级",
+        "integrationAccepted": "积分（已接受）",
+        "integrationExpected": "积分（预期）",
+        "integrationRemaining": "积分（剩余）",
+        "description": "描述",
+        "minimumTime": "最短时间",
+        "filterSwitchFrequency": "滤镜切换频率",
+        "ditherEvery": "每隔多少次抖动",
+        "meridianWindow": "中天窗口",
+        "horizon": "地平线",
+        "horizonCustom": "自定义，+{offset}°",
+        "altitudeLimits": "高度限制",
+        "grading": "评分",
+        "smartExposureOrder": "智能曝光顺序",
+        "mosaic": "马赛克",
+        "minutes": "{count} 分钟",
+        "exposures": "{count} 次曝光",
+        "emptyValue": "—",
+        "off": "关",
+        "on": "开",
+        "enabled": "已启用",
+        "disabled": "已禁用",
+        "yes": "是",
+        "no": "否",
+        "noTargets": "此项目中没有目标。"
+      },
+      "schedulePreview": {
+        "disclaimer": "Scheduler 对今晚的预测计划，每次刷新都会重新计算——并非 NINA 当前实际拍摄内容的记录。",
+        "learnMore": "了解更多",
+        "noScheduleData": "暂无排程数据。",
+        "waitingNotVisible": "等待中 — 目标尚不可见"
+      }
     }
   },
   "pinsDevices": {
@@ -5785,7 +5930,10 @@
       "cobsCountSynced": "已缓存 {count} 颗彗星 · {status}",
       "refreshedAgo": "{when}更新",
       "neverRefreshed": "从未更新",
-      "confirmClearCobs": "要移除所有已缓存的 COBS 观测数据吗？在下次浏览标签页刷新之前，实测亮度徽章将为空。"
+      "confirmClearCobs": "要移除所有已缓存的 COBS 观测数据吗？在下次浏览标签页刷新之前，实测亮度徽章将为空。",
+      "connectionSection": "连接",
+      "apiTokenHint": "首次打开此面板时会自动填写。仅在第二台设备上需要手动输入 -- 可从第一台设备的此字段复制，或从 Windows NINA 插件的选项页面获取。",
+      "apiTokenRequired": "此 Perihelion 安装需要 API 令牌。请在设置中输入以继续。"
     }
   }
 }

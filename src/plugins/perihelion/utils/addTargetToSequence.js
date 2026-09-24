@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import i18n from '@/i18n';
 import { getUrls } from '@/services/api/core';
 import { describePerihelionResponse, describePerihelionError } from './perihelionResult';
@@ -27,7 +27,7 @@ import { describePerihelionResponse, describePerihelionError } from './perihelio
 export async function addTargetToSequence(target) {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}/sequence/add-target`, {
+    const response = await perihelionApi.post(`${PERIHELION_URL}/sequence/add-target`, {
       ObjectType: target.objectType === 'comet' ? 'Comet' : 'Asteroid',
       TargetName: target.targetName,
       RaHours: target.raHours,

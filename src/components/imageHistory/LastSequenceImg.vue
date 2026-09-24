@@ -25,6 +25,8 @@
           Offset,
           TargetName,
         }"
+        :deletable="del.canDelete.value"
+        @delete="requestDelete"
       />
 
       <!-- Loading Spinner Overlay -->
@@ -48,6 +50,14 @@
         <p class="text-sm mt-2">Loading image...</p>
       </div>
     </div>
+
+    <ImageDeleteConfirm
+      :pending="del.pending.value"
+      :is-deleting="del.isDeleting.value"
+      :progress="del.progress.value"
+      @confirm="confirmDelete"
+      @cancel="del.cancel"
+    />
   </div>
 </template>
 
@@ -57,13 +67,17 @@ import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import SequenceImage from '@/components/imageHistory/SequenceImage.vue';
+import ImageDeleteConfirm from '@/components/imageHistory/ImageDeleteConfirm.vue';
 import { useImagetStore } from '@/store/imageStore';
+import { useImageHistoryDelete } from '@/composables/useImageHistoryDelete';
+import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';
 
 let isLoadingImg = ref(true);
 const store = apiStore();
 const settingsStore = useSettingsStore();
 const sequenceStore = useSequenceStore();
 const imageStore = useImagetStore();
+const del = useImageHistoryDelete();
 const imageData = ref(null);
 const Filter = ref(null);
 const HFR = ref(null);
@@ -97,6 +111,37 @@ async function loadImage(index) {
     console.error('Error loading image:', error.message);
   } finally {
     isLoadingImg.value = false;
+  }
+}
+
+function requestDelete() {
+  const index = lastImgIndex.value;
+  if (!Number.isInteger(index) || index < 0) return;
+  del.request({ index, stats: store.imageHistoryInfo?.[index] });
+}
+
+// Newest history entry that is not deleted, or -1.
+function latestAvailableIndex() {
+  const history = store.imageHistoryInfo ?? [];
+  for (let i = history.length - 1; i >= 0; i--) {
+    const entry = history[i];
+    if (!isHistoryEntryDeleted(entry, historyEntryKey(i, entry), imageStore.deletedHistoryKeys)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+async function confirmDelete() {
+  const { deleted } = await del.confirm();
+  if (!deleted.some((item) => item.index === lastImgIndex.value)) return;
+  // The shown image is gone: fall back to the newest remaining one.
+  const next = latestAvailableIndex();
+  if (next >= 0) {
+    loadImage(next);
+  } else {
+    imageData.value = null;
+    lastImgIndex.value = null;
   }
 }
 
@@ -183,7 +228,7 @@ watch(
   () => store.imageHistoryInfo,
   async (newVal, oldVal) => {
     if (!oldVal || newVal.length > oldVal.length) {
-      const latestIndex = newVal.length - 1;
+      const latestIndex = latestAvailableIndex();
       console.log('[LastSequenceImg] latestIndex: ', latestIndex);
 
       loadImage(latestIndex);
@@ -205,7 +250,7 @@ watch(
 );
 
 onMounted(() => {
-  const latestIndex = store.imageHistoryInfo.length - 1;
+  const latestIndex = latestAvailableIndex();
   loadImage(latestIndex);
   console.log('[LastSequenceImg] Mounted');
   console.log('[LastSequenceImg] latestIndex: ', latestIndex);

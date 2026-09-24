@@ -1,732 +1,471 @@
 <template>
   <div class="space-y-6">
-    <!-- Loading State -->
+    <!-- Loading -->
     <div v-if="store.isLoadingAutoFocusOptions" class="flex items-center justify-center py-12">
       <div class="spinner"></div>
-      <p class="text-gray-400 ml-4">{{ $t('plugins.hocusfocus.autoFocusOptions.loading') }}</p>
+      <p class="ml-4 text-gray-400">{{ L('loading') }}</p>
     </div>
 
-    <!-- Error State -->
-    <div v-if="store.autoFocusOptionsError" class="bg-red-900 border border-red-700 rounded-lg p-4">
+    <!-- Error -->
+    <div
+      v-if="store.autoFocusOptionsError"
+      class="rounded-lg border border-red-700/50 bg-red-900/40 p-4"
+    >
       <p class="text-red-200">
-        <span class="font-semibold">{{ $t('plugins.hocusfocus.autoFocusOptions.error') }}</span>
-        {{ store.autoFocusOptionsError }}
+        <span class="font-semibold">{{ L('error') }}</span> {{ store.autoFocusOptionsError }}
       </p>
-      <button
-        @click="loadAutoFocusOptions()"
-        class="mt-2 px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded transition"
-      >
-        {{ $t('plugins.hocusfocus.autoFocusOptions.retry') }}
+      <button class="tns-btn-secondary mt-3 w-auto px-4" @click="loadAutoFocusOptions()">
+        {{ L('retry') }}
       </button>
     </div>
 
-    <!-- AutoFocus Options Form -->
-    <div v-if="store.autoFocusOptions && !store.isLoadingAutoFocusOptions" class="space-y-6">
-      <!-- Basic Settings Section -->
-      <div class="border border-gray-700 rounded-lg p-4">
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">
-          {{ $t('plugins.hocusfocus.autoFocusOptions.basicSettings') }}
-        </h3>
-        <div class="space-y-3">
-          <div v-for="key in getSectionOptions('Basic Settings')" :key="key">
-            <template v-if="isNumeric(key)">
-              <label class="text-white mb-2 block"
-                >{{ formatOptionName(key) }}: {{ store.autoFocusOptions[key] }}</label
-              >
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.autoFocusOptions[key] = num;
-                    saveAutoFocusOption(key, num);
-                  }
-                "
-                type="range"
-                :min="getNumericRangeMin(key)"
-                :max="getNumericRangeMax(key)"
-                :step="getNumericStep(key)"
-                class="w-full"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isBoolean(key)">
-              <label class="flex items-center text-white">
-                <input
-                  :checked="store.autoFocusOptions[key]"
-                  @change="
-                    (e) => {
-                      store.autoFocusOptions[key] = e.target.checked;
-                      saveAutoFocusOption(key, e.target.checked);
-                    }
-                  "
-                  type="checkbox"
-                  class="mr-3"
-                  :disabled="savingOptions.has(key)"
-                />
-                <span>{{ formatOptionName(key) }}</span>
-              </label>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else>
-              <label class="text-white mb-2 block">{{ formatOptionName(key) }}</label>
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    store.autoFocusOptions[key] = e.target.value;
-                    saveAutoFocusOption(key, e.target.value);
-                  }
-                "
-                type="text"
-                class="w-full bg-gray-700 text-white p-2 rounded"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
+    <div v-if="o && !store.isLoadingAutoFocusOptions" class="space-y-6">
+      <!-- Basic -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('basicSettings') }}</h3>
+        <div class="flex flex-col gap-3">
+          <HfNumberField
+            v-for="f in basicNumbers"
+            :key="f.key"
+            :model-value="Number(o[f.key])"
+            :label="L(f.label)"
+            :help="H(f.label)"
+            :hint="f.hint ? L(f.hint) : ''"
+            :min="f.min"
+            :max="f.max"
+            :step="f.step"
+            :decimals="f.decimals"
+            :inputId="'hf-af-' + f.key"
+            :status="statusOf(f.key)"
+            :error="errorOf(f.key)"
+            @change="save(f.key, $event)"
+          />
+          <!-- Lives in InspectorOptions, but the plugin surfaces it here on the AutoFocus page
+               because it is the focuser convention every AutoFocus direction label reads. -->
+          <HfSelectField
+            v-if="inspectorReady"
+            :model-value="String(inspectorOptions.FocuserIncreasesTowardObjective)"
+            :label="L('focuserIncreasesTowardObjective')"
+            :help="H('focuserIncreasesTowardObjective')"
+            :options="focuserDirectionOptions"
+            :status="statusOf('FocuserIncreasesTowardObjective')"
+            :error="errorOf('FocuserIncreasesTowardObjective')"
+            @change="saveInspector('FocuserIncreasesTowardObjective', $event === 'true')"
+          />
+        </div>
+      </div>
+
+      <!-- HFR validation -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('hfrValidation') }}</h3>
+        <div class="flex flex-col gap-3">
+          <HfToggleRow
+            :model-value="o.ValidateHfrImprovement"
+            :label="L('validateHfrImprovement')"
+            :help="H('validateHfrImprovement')"
+            :status="statusOf('ValidateHfrImprovement')"
+            :error="errorOf('ValidateHfrImprovement')"
+            @change="save('ValidateHfrImprovement', $event)"
+          />
+          <HfNumberField
+            :model-value="Number(o.HFRImprovementThreshold)"
+            :label="L('hfrImprovementThreshold')"
+            :help="H('hfrImprovementThreshold')"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :decimals="2"
+            inputId="hf-af-HFRImprovementThreshold"
+            :status="statusOf('HFRImprovementThreshold')"
+            :error="errorOf('HFRImprovementThreshold')"
+            @change="save('HFRImprovementThreshold', $event)"
+          />
+        </div>
+      </div>
+
+      <!-- Curve fitting -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('curveFitting') }}</h3>
+        <div class="flex flex-col gap-3">
+          <HfSelectField
+            :model-value="o.HyperbolicFitModel"
+            :label="L('hyperbolicFitModel')"
+            :help="H('hyperbolicFitModel')"
+            :options="hyperbolicFitModelOptions"
+            :status="statusOf('HyperbolicFitModel')"
+            :error="errorOf('HyperbolicFitModel')"
+            @change="save('HyperbolicFitModel', $event)"
+          />
+          <HfToggleRow
+            :model-value="o.WeightedHyperbolicFitEnabled"
+            :label="L('weightedHyperbolicFitEnabled')"
+            :help="H('weightedHyperbolicFitEnabled')"
+            :status="statusOf('WeightedHyperbolicFitEnabled')"
+            :error="errorOf('WeightedHyperbolicFitEnabled')"
+            @change="save('WeightedHyperbolicFitEnabled', $event)"
+          />
+          <HfSelectField
+            :model-value="o.FitRejectionCriterion"
+            :label="L('fitRejectionCriterion')"
+            :help="H('fitRejectionCriterion')"
+            :options="fitRejectionCriterionOptions"
+            :status="statusOf('FitRejectionCriterion')"
+            :error="errorOf('FitRejectionCriterion')"
+            @change="save('FitRejectionCriterion', $event)"
+          />
+          <!-- The two thresholds are alternatives: only the one the criterion selects applies. -->
+          <HfNumberField
+            v-if="o.FitRejectionCriterion === 'RSquared'"
+            :model-value="Number(o.RSquaredRejectionThreshold)"
+            :label="L('rSquaredRejectionThreshold')"
+            :help="H('rSquaredRejectionThreshold')"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :decimals="2"
+            inputId="hf-af-RSquaredRejectionThreshold"
+            :status="statusOf('RSquaredRejectionThreshold')"
+            :error="errorOf('RSquaredRejectionThreshold')"
+            @change="save('RSquaredRejectionThreshold', $event)"
+          />
+          <HfNumberField
+            v-if="o.FitRejectionCriterion === 'ReducedChiSquared'"
+            :model-value="Number(o.ReducedChiSquaredRejectionThreshold)"
+            :label="L('reducedChiSquaredRejectionThreshold')"
+            :help="H('reducedChiSquaredRejectionThreshold')"
+            :min="0"
+            :max="1000"
+            :step="0.5"
+            :decimals="2"
+            inputId="hf-af-ReducedChiSquaredRejectionThreshold"
+            :status="statusOf('ReducedChiSquaredRejectionThreshold')"
+            :error="errorOf('ReducedChiSquaredRejectionThreshold')"
+            @change="save('ReducedChiSquaredRejectionThreshold', $event)"
+          />
+        </div>
+      </div>
+
+      <!-- Outlier rejection -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('outlierRejection') }}</h3>
+        <div class="flex flex-col gap-3">
+          <HfNumberField
+            :model-value="Number(o.MaxOutlierRejections)"
+            :label="L('maxOutlierRejections')"
+            :help="H('maxOutlierRejections')"
+            :min="0"
+            :max="20"
+            :step="1"
+            :decimals="0"
+            inputId="hf-af-MaxOutlierRejections"
+            :status="statusOf('MaxOutlierRejections')"
+            :error="errorOf('MaxOutlierRejections')"
+            @change="save('MaxOutlierRejections', $event)"
+          />
+          <HfNumberField
+            :model-value="Number(o.OutlierRejectionConfidence)"
+            :label="L('outlierRejectionConfidence')"
+            :help="H('outlierRejectionConfidence')"
+            :min="0.5001"
+            :max="0.9999"
+            :step="0.001"
+            :decimals="4"
+            inputId="hf-af-OutlierRejectionConfidence"
+            :status="statusOf('OutlierRejectionConfidence')"
+            :error="errorOf('OutlierRejectionConfidence')"
+            @change="save('OutlierRejectionConfidence', $event)"
+          />
+        </div>
+      </div>
+
+      <!-- Storage -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('storage') }}</h3>
+        <div class="flex flex-col gap-3">
+          <HfToggleRow
+            :model-value="o.Save"
+            :label="L('save')"
+            :help="H('save')"
+            :status="statusOf('Save')"
+            :error="errorOf('Save')"
+            @change="save('Save', $event)"
+          />
+          <HfToggleRow
+            :model-value="o.KeepFramesForReview"
+            :label="L('keepFramesForReview')"
+            :help="H('keepFramesForReview')"
+            :status="statusOf('KeepFramesForReview')"
+            :error="errorOf('KeepFramesForReview')"
+            @change="save('KeepFramesForReview', $event)"
+          />
+          <div v-if="o.Save">
+            <DirectoryBrowser
+              :model-value="o.SavePath"
+              :label="L('savePath')"
+              @update:model-value="save('SavePath', $event)"
+            />
+            <p v-if="errorOf('SavePath')" class="mt-1 text-xs text-red-400">
+              {{ errorOf('SavePath') }}
+            </p>
           </div>
         </div>
       </div>
 
-      <!-- HFR Validation Section -->
-      <div
-        v-if="getSectionOptions('HFR Validation').length > 0"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">
-          {{ $t('plugins.hocusfocus.autoFocusOptions.hfrValidation') }}
-        </h3>
-        <div class="space-y-3">
-          <div v-for="key in getSectionOptions('HFR Validation')" :key="key">
-            <template v-if="isNumeric(key) && store.autoFocusOptions.ValidateHfrImprovement">
-              <label class="text-white mb-2 block"
-                >{{ formatOptionName(key) }}: {{ store.autoFocusOptions[key] }}</label
-              >
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.autoFocusOptions[key] = num;
-                    saveAutoFocusOption(key, num);
-                  }
-                "
-                type="range"
-                :min="getNumericRangeMin(key)"
-                :max="getNumericRangeMax(key)"
-                :step="getNumericStep(key)"
-                class="w-full"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isBoolean(key)">
-              <label class="flex items-center text-white">
-                <input
-                  :checked="store.autoFocusOptions[key]"
-                  @change="
-                    (e) => {
-                      store.autoFocusOptions[key] = e.target.checked;
-                      saveAutoFocusOption(key, e.target.checked);
-                    }
-                  "
-                  type="checkbox"
-                  class="mr-3"
-                  :disabled="savingOptions.has(key)"
-                />
-                <span>{{ formatOptionName(key) }}</span>
-              </label>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="store.autoFocusOptions.ValidateHfrImprovement">
-              <label class="text-white mb-2 block">{{ formatOptionName(key) }}</label>
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    store.autoFocusOptions[key] = e.target.value;
-                    saveAutoFocusOption(key, e.target.value);
-                  }
-                "
-                type="text"
-                class="w-full bg-gray-700 text-white p-2 rounded"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <!-- Curve Fitting Section -->
-      <div
-        v-if="getSectionOptions('Curve Fitting').length > 0"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Curve Fitting</h3>
-        <div class="space-y-3">
-          <div v-for="key in getSectionOptions('Curve Fitting')" :key="key">
-            <template v-if="isEnum(key)">
-              <label class="text-white mb-2 block">{{ formatOptionName(key) }}</label>
-              <select
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    store.autoFocusOptions[key] = e.target.value;
-                    saveAutoFocusOption(key, e.target.value);
-                  }
-                "
-                class="w-full bg-gray-700 text-white p-2 rounded"
-                :disabled="savingOptions.has(key)"
-              >
-                <option v-for="value in getEnumValues(key)" :key="value" :value="value">
-                  {{ value }}
-                </option>
-              </select>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isNumeric(key)">
-              <label class="text-white mb-2 block"
-                >{{ formatOptionName(key) }}: {{ store.autoFocusOptions[key] }}</label
-              >
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.autoFocusOptions[key] = num;
-                    saveAutoFocusOption(key, num);
-                  }
-                "
-                type="range"
-                :min="getNumericRangeMin(key)"
-                :max="getNumericRangeMax(key)"
-                :step="getNumericStep(key)"
-                class="w-full"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isBoolean(key)">
-              <label class="flex items-center text-white">
-                <input
-                  :checked="store.autoFocusOptions[key]"
-                  @change="
-                    (e) => {
-                      store.autoFocusOptions[key] = e.target.checked;
-                      saveAutoFocusOption(key, e.target.checked);
-                    }
-                  "
-                  type="checkbox"
-                  class="mr-3"
-                  :disabled="savingOptions.has(key)"
-                />
-                <span>{{ formatOptionName(key) }}</span>
-              </label>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <!-- Outlier Rejection Section -->
-      <div
-        v-if="getSectionOptions('Outlier Rejection').length > 0"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Outlier Rejection</h3>
-        <div class="space-y-3">
-          <div v-for="key in getSectionOptions('Outlier Rejection')" :key="key">
-            <template v-if="isNumeric(key)">
-              <label class="text-white mb-2 block"
-                >{{ formatOptionName(key) }}: {{ store.autoFocusOptions[key] }}</label
-              >
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.autoFocusOptions[key] = num;
-                    saveAutoFocusOption(key, num);
-                  }
-                "
-                type="range"
-                :min="getNumericRangeMin(key)"
-                :max="getNumericRangeMax(key)"
-                :step="getNumericStep(key)"
-                class="w-full"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isBoolean(key)">
-              <label class="flex items-center text-white">
-                <input
-                  :checked="store.autoFocusOptions[key]"
-                  @change="
-                    (e) => {
-                      store.autoFocusOptions[key] = e.target.checked;
-                      saveAutoFocusOption(key, e.target.checked);
-                    }
-                  "
-                  type="checkbox"
-                  class="mr-3"
-                  :disabled="savingOptions.has(key)"
-                />
-                <span>{{ formatOptionName(key) }}</span>
-              </label>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else>
-              <label class="text-white mb-2 block">{{ formatOptionName(key) }}</label>
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    store.autoFocusOptions[key] = e.target.value;
-                    saveAutoFocusOption(key, e.target.value);
-                  }
-                "
-                type="text"
-                class="w-full bg-gray-700 text-white p-2 rounded"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <!-- FastFocus Settings Section -->
-      <div
-        v-if="getSectionOptions('FastFocus Settings').length > 0"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">FastFocus Settings</h3>
-        <div class="space-y-3">
-          <div v-for="key in getSectionOptions('FastFocus Settings')" :key="key">
-            <template v-if="isNumeric(key) && store.autoFocusOptions.FastFocusModeEnabled">
-              <label class="text-white mb-2 block"
-                >{{ formatOptionName(key) }}: {{ store.autoFocusOptions[key] }}</label
-              >
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.autoFocusOptions[key] = num;
-                    saveAutoFocusOption(key, num);
-                  }
-                "
-                type="range"
-                :min="getNumericRangeMin(key)"
-                :max="getNumericRangeMax(key)"
-                :step="getNumericStep(key)"
-                class="w-full"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isBoolean(key)">
-              <label class="flex items-center text-white">
-                <input
-                  :checked="store.autoFocusOptions[key]"
-                  @change="
-                    (e) => {
-                      store.autoFocusOptions[key] = e.target.checked;
-                      saveAutoFocusOption(key, e.target.checked);
-                    }
-                  "
-                  type="checkbox"
-                  class="mr-3"
-                  :disabled="savingOptions.has(key)"
-                />
-                <span>{{ formatOptionName(key) }}</span>
-              </label>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="store.autoFocusOptions.FastFocusModeEnabled">
-              <label class="text-white mb-2 block">{{ formatOptionName(key) }}</label>
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    store.autoFocusOptions[key] = e.target.value;
-                    saveAutoFocusOption(key, e.target.value);
-                  }
-                "
-                type="text"
-                class="w-full bg-gray-700 text-white p-2 rounded"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <!-- Storage Section -->
-      <div
-        v-if="getSectionOptions('Storage').length > 0"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Storage</h3>
-        <div class="space-y-3">
-          <div v-for="key in getSectionOptions('Storage')" :key="key">
-            <template v-if="isNumeric(key)">
-              <label class="text-white mb-2 block"
-                >{{ formatOptionName(key) }}: {{ store.autoFocusOptions[key] }}</label
-              >
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.autoFocusOptions[key] = num;
-                    saveAutoFocusOption(key, num);
-                  }
-                "
-                type="range"
-                :min="getNumericRangeMin(key)"
-                :max="getNumericRangeMax(key)"
-                :step="getNumericStep(key)"
-                class="w-full"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="isBoolean(key)">
-              <label class="flex items-center text-white">
-                <input
-                  :checked="store.autoFocusOptions[key]"
-                  @change="
-                    (e) => {
-                      store.autoFocusOptions[key] = e.target.checked;
-                      saveAutoFocusOption(key, e.target.checked);
-                    }
-                  "
-                  type="checkbox"
-                  class="mr-3"
-                  :disabled="savingOptions.has(key)"
-                />
-                <span>{{ formatOptionName(key) }}</span>
-              </label>
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else-if="key === 'SavePath'">
-              <DirectoryBrowser
-                :model-value="store.autoFocusOptions[key]"
-                @update:model-value="
-                  (path) => {
-                    store.autoFocusOptions[key] = path;
-                    saveAutoFocusOption(key, path);
-                  }
-                "
-                :label="formatOptionName(key)"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-            <template v-else>
-              <label class="text-white mb-2 block">{{ formatOptionName(key) }}</label>
-              <input
-                :value="store.autoFocusOptions[key]"
-                @change="
-                  (e) => {
-                    store.autoFocusOptions[key] = e.target.value;
-                    saveAutoFocusOption(key, e.target.value);
-                  }
-                "
-                type="text"
-                class="w-full bg-gray-700 text-white p-2 rounded"
-                :disabled="savingOptions.has(key)"
-              />
-              <div v-if="optionErrors[key]" class="text-red-400 text-xs mt-1">
-                {{ optionErrors[key] }}
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reset to Defaults Button -->
-      <div class="flex justify-end">
+      <!-- Reset -->
+      <div class="flex justify-start">
         <button
-          @click="resetAutoFocusDefaults()"
-          :disabled="resettingDefaults"
-          class="px-6 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 text-white rounded font-semibold transition"
+          class="tns-btn-secondary w-auto px-6"
+          :disabled="store.isLoadingAutoFocusOptions"
+          @click="showResetConfirm = true"
         >
-          {{ resettingDefaults ? 'Resetting...' : 'Reset to Defaults' }}
+          {{ L('resetToDefaults') }}
         </button>
       </div>
     </div>
+
+    <!-- Reset confirmation -->
+    <Modal :show="showResetConfirm" maxWidth="max-w-sm" @close="showResetConfirm = false">
+      <template #header>
+        <h2 class="text-xl font-bold text-white">{{ L('resetTitle') }}</h2>
+      </template>
+      <template #body>
+        <div class="flex w-full flex-col gap-6">
+          <p class="text-sm text-gray-300">{{ L('resetPrompt') }}</p>
+          <div class="flex justify-end gap-3">
+            <button class="tns-btn-secondary w-auto px-4" @click="showResetConfirm = false">
+              {{ L('cancel') }}
+            </button>
+            <button
+              class="tns-btn-danger w-auto px-4"
+              :disabled="isResetting"
+              @click="executeReset()"
+            >
+              {{ isResetting ? L('resetting') : L('reset') }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useHocusFocusStore } from '../store/hocusfocusStore';
 import apiService from '@/services/apiService';
+import Modal from '@/components/helpers/Modal.vue';
 import DirectoryBrowser from './DirectoryBrowser.vue';
+import HfToggleRow from './fields/HfToggleRow.vue';
+import HfNumberField from './fields/HfNumberField.vue';
+import HfSelectField from './fields/HfSelectField.vue';
 
+const { t } = useI18n();
 const store = useHocusFocusStore();
 
-// Track which options are currently being saved
-const savingOptions = ref(new Set());
+const L = (key) => t(`plugins.hocusfocus.autoFocusOptions.${key}`);
+const H = (key) => t(`plugins.hocusfocus.autoFocusOptions.help.${key}`);
+
+const o = computed(() => store.autoFocusOptions);
+
+const cardClass =
+  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
+const headingClass = 'font-bold text-base text-cyan-400';
+
+// Ranges follow the validation rules on the plugin's own options page. 0 means "no limit" for
+// both MaxConcurrent and MaxBlindStepsPerDirection, so neither can start at 1.
+const basicNumbers = [
+  {
+    key: 'MaxConcurrent',
+    label: 'maxConcurrent',
+    min: 0,
+    max: 16,
+    step: 1,
+    decimals: 0,
+    hint: 'noLimit',
+  },
+  {
+    key: 'AutoFocusTimeoutSeconds',
+    label: 'autoFocusTimeoutSeconds',
+    min: 1,
+    max: 7200,
+    step: 10,
+    decimals: 0,
+  },
+  { key: 'FocuserOffset', label: 'focuserOffset', min: -1000, max: 1000, step: 1, decimals: 0 },
+  {
+    key: 'MaxBlindStepsPerDirection',
+    label: 'maxBlindStepsPerDirection',
+    min: 0,
+    max: 50,
+    step: 1,
+    decimals: 0,
+    hint: 'noLimit',
+  },
+];
+
+const hyperbolicFitModelOptions = [
+  { value: 'Hybrid', label: 'Hybrid (Best Fit)' },
+  { value: 'Symmetric', label: 'Symmetric' },
+  { value: 'UnevenBlend', label: 'Uneven Blend' },
+  { value: 'TiltedHyperbola', label: 'Tilted Hyperbola' },
+  { value: 'SmoothBlend', label: 'Smooth Blend' },
+];
+const fitRejectionCriterionOptions = [
+  { value: 'RSquared', label: 'R²' },
+  { value: 'ReducedChiSquared', label: 'Reduced χ²' },
+];
+const focuserDirectionOptions = computed(() => [
+  { value: 'false', label: L('focuserAwayFromObjective') },
+  { value: 'true', label: L('focuserTowardObjective') },
+]);
+
+// --- The one InspectorOptions field this page owns -----------------------------------------
+const inspectorOptions = reactive({});
+const inspectorReady = ref(false);
+
+async function loadInspectorOptions() {
+  try {
+    const { options } = await apiService.hocusfocus.getAberrationInspectorOptions();
+    Object.assign(inspectorOptions, options);
+    inspectorReady.value = 'FocuserIncreasesTowardObjective' in inspectorOptions;
+  } catch (err) {
+    // Non-fatal: the rest of the page still works without it.
+    console.error('[AutoFocusOptions] Error loading inspector options:', err);
+    inspectorReady.value = false;
+  }
+}
+
+// --- Saving -------------------------------------------------------------------------------
+const optionStatus = ref({});
 const optionErrors = ref({});
-const resettingDefaults = ref(false);
+const saveTimers = new Map();
 
-const loadAutoFocusOptions = async () => {
+const statusOf = (key) => optionStatus.value[key] || '';
+const errorOf = (key) => optionErrors.value[key] || '';
+
+function setStatus(key, status) {
+  optionStatus.value = { ...optionStatus.value, [key]: status };
+}
+
+function setError(key, message) {
+  optionErrors.value = { ...optionErrors.value, [key]: message };
+}
+
+// The number fields commit on every keystroke, so coalesce before hitting the plugin.
+function schedule(key, fn) {
+  clearTimeout(saveTimers.get(key));
+  saveTimers.set(
+    key,
+    setTimeout(() => {
+      saveTimers.delete(key);
+      fn();
+    }, 300)
+  );
+}
+
+function save(key, value) {
+  if (value === undefined || value === null) return;
+  if (!store.autoFocusOptions) return;
+  store.autoFocusOptions[key] = value;
+  schedule(key, () => pushOption(key, value));
+}
+
+function saveInspector(key, value) {
+  inspectorOptions[key] = value;
+  schedule(key, () => pushInspectorOption(key, value));
+}
+
+async function pushOption(key, value) {
+  setStatus(key, 'saving');
+  setError(key, '');
+  try {
+    const response = await apiService.hocusfocus.setAutoFocusOption(key, value);
+    if (response && response.Success === false) {
+      throw new Error(response.Error || L('saveFailed'));
+    }
+    flashSaved(key);
+  } catch (err) {
+    await reportFailure(key, err, refreshOptions);
+  }
+}
+
+async function pushInspectorOption(key, value) {
+  setStatus(key, 'saving');
+  setError(key, '');
+  try {
+    const response = await apiService.hocusfocus.setAberrationInspectorOption(key, value);
+    if (response && response.Success === false) {
+      throw new Error(response.Error || L('saveFailed'));
+    }
+    flashSaved(key);
+  } catch (err) {
+    await reportFailure(key, err, loadInspectorOptions);
+  }
+}
+
+function flashSaved(key) {
+  setStatus(key, 'saved');
+  setTimeout(() => setStatus(key, ''), 1000);
+}
+
+async function reportFailure(key, err, resync) {
+  console.error(`[AutoFocusOptions] Error saving ${key}:`, err);
+  // A rejected value comes back as HTTP 400 with the plugin's own validation message.
+  const detail = err.response?.data?.Error || err.response?.data?.error || err.message;
+  setStatus(key, 'error');
+  setError(key, detail || L('saveFailed'));
+  // The plugin kept its previous value, so put the shown value back in sync.
+  await resync();
+}
+
+// Re-reads the options WITHOUT the store's loading flag, which would unmount the form and take
+// the just-raised error message with it.
+async function refreshOptions() {
+  try {
+    const { options, enumOptions } = await apiService.hocusfocus.getAutoFocusOptions();
+    store.autoFocusOptions = options;
+    store.autoFocusEnumOptions = enumOptions;
+  } catch (err) {
+    console.error('[AutoFocusOptions] Error refreshing options:', err);
+  }
+}
+
+// --- Load / reset -------------------------------------------------------------------------
+const showResetConfirm = ref(false);
+const isResetting = ref(false);
+
+async function loadAutoFocusOptions() {
   await store.loadAutoFocusOptions();
-};
+}
 
-// Save individual AutoFocus option
-const saveAutoFocusOption = async (optionName, newValue) => {
+async function executeReset() {
+  isResetting.value = true;
   try {
-    savingOptions.value.add(optionName);
-    optionErrors.value[optionName] = null;
-
-    console.log(`[AutoFocus] Saving ${optionName}: ${newValue}`);
-    const response = await apiService.hocusfocus.setAutoFocusOption(optionName, newValue);
-
-    if (response.Success) {
-      console.log(`[AutoFocus] ${optionName} saved successfully`);
-    } else {
-      optionErrors.value[optionName] = response.Error || 'Failed to save option';
-    }
-  } catch (err) {
-    console.error(`[AutoFocus] Error saving ${optionName}:`, err);
-    optionErrors.value[optionName] = err.message || 'Failed to save option';
-  } finally {
-    savingOptions.value.delete(optionName);
-  }
-};
-
-// Reset AutoFocus options to defaults
-const resetAutoFocusDefaults = async () => {
-  if (!confirm('Are you sure you want to reset all AutoFocus options to their defaults?')) {
-    return;
-  }
-
-  try {
-    resettingDefaults.value = true;
-    console.log('[AutoFocus] Resetting all options to defaults');
     const response = await apiService.hocusfocus.resetAutoFocusDefaults();
-
-    if (response.Success) {
-      console.log('[AutoFocus] Options reset successfully:', response.Message);
-      // Reload options to sync with backend
-      await store.loadAutoFocusOptions();
-      // Clear any error messages
-      optionErrors.value = {};
-    } else {
-      store.autoFocusOptionsError = response.Error || 'Failed to reset options';
+    if (response && response.Success === false) {
+      throw new Error(response.Error || L('resetFailed'));
     }
+    optionStatus.value = {};
+    optionErrors.value = {};
+    await refreshOptions();
+    showResetConfirm.value = false;
   } catch (err) {
-    console.error('[AutoFocus] Error resetting options:', err);
-    store.autoFocusOptionsError = err.message || 'Failed to reset options';
+    console.error('[AutoFocusOptions] Error resetting options:', err);
+    store.autoFocusOptionsError = err.message || L('resetFailed');
+    showResetConfirm.value = false;
   } finally {
-    resettingDefaults.value = false;
+    isResetting.value = false;
   }
-};
+}
 
-// Option categorization mapping
-const optionCategories = {
-  // Basic Settings
-  MaxConcurrent: 'Basic Settings',
-  AutoFocusTimeoutSeconds: 'Basic Settings',
-  FocuserOffset: 'Basic Settings',
+onMounted(async () => {
+  await loadAutoFocusOptions();
+  await loadInspectorOptions();
+});
 
-  // HFR Validation
-  ValidateHfrImprovement: 'HFR Validation',
-  HFRImprovementThreshold: 'HFR Validation',
-
-  // Curve Fitting
-  WeightedHyperbolicFitEnabled: 'Curve Fitting',
-  HyperbolicFitModel: 'Curve Fitting',
-  FitRejectionCriterion: 'Curve Fitting',
-  RSquaredRejectionThreshold: 'Curve Fitting',
-  ReducedChiSquaredRejectionThreshold: 'Curve Fitting',
-
-  // Outlier Rejection
-  MaxOutlierRejections: 'Outlier Rejection',
-  OutlierRejectionConfidence: 'Outlier Rejection',
-
-  // FastFocus Settings
-  FastFocusModeEnabled: 'FastFocus Settings',
-  FastStepSize: 'FastFocus Settings',
-  FastOffsetSteps: 'FastFocus Settings',
-  FastThreshold_Seconds: 'FastFocus Settings',
-  FastThreshold_Celcius: 'FastFocus Settings',
-  FastThreshold_FocuserPosition: 'FastFocus Settings',
-
-  // Storage
-  Save: 'Storage',
-  SavePath: 'Storage',
-  KeepFramesForReview: 'Storage',
-};
-
-// Friendly display names for options
-const optionDisplayNames = {
-  MaxConcurrent: 'Max Concurrent',
-  AutoFocusTimeoutSeconds: 'AutoFocus Timeout (seconds)',
-  FocuserOffset: 'Focuser Offset',
-  ValidateHfrImprovement: 'Validate HFR Improvement',
-  HFRImprovementThreshold: 'HFR Improvement Threshold',
-  WeightedHyperbolicFitEnabled: 'Weighted Hyperbolic Fit',
-  HyperbolicFitModel: 'Hyperbolic Fit Model',
-  FitRejectionCriterion: 'Fit Rejection Criterion',
-  RSquaredRejectionThreshold: 'R² Rejection Threshold',
-  ReducedChiSquaredRejectionThreshold: 'Reduced χ² Rejection Threshold',
-  KeepFramesForReview: 'Keep Frames For Review',
-  MaxOutlierRejections: 'Max Outlier Rejections',
-  OutlierRejectionConfidence: 'Outlier Rejection Confidence',
-  FastFocusModeEnabled: 'Fast Focus Mode',
-  FastStepSize: 'Fast Step Size',
-  FastOffsetSteps: 'Fast Offset Steps',
-  FastThreshold_Seconds: 'Fast Threshold (Seconds)',
-  FastThreshold_Celcius: 'Fast Threshold (Celsius)',
-  FastThreshold_FocuserPosition: 'Fast Threshold (Focuser Position)',
-  Save: 'Save',
-  SavePath: 'Save Path',
-};
-
-// Helper function to get options for a specific section
-const getSectionOptions = (section) => {
-  if (!store.autoFocusOptions) return [];
-  return Object.keys(store.autoFocusOptions).filter((key) => {
-    const category = optionCategories[key];
-    if (category === section) return true;
-    if (!category && section === 'Other') return true;
-    return false;
-  });
-};
-
-// Helper function to check if a value is boolean
-const isBoolean = (key) => {
-  if (!store.autoFocusOptions) return false;
-  return typeof store.autoFocusOptions[key] === 'boolean';
-};
-
-// Helper function to check if a value is numeric
-const isNumeric = (key) => {
-  if (!store.autoFocusOptions) return false;
-  return typeof store.autoFocusOptions[key] === 'number';
-};
-
-// Helper function to get numeric range min
-const getNumericRangeMin = (key) => {
-  const ranges = {
-    MaxConcurrent: 0,
-    FastStepSize: 1,
-    FastOffsetSteps: 2,
-    FastThreshold_Seconds: 0,
-    FastThreshold_Celcius: 0,
-    FastThreshold_FocuserPosition: 0,
-    AutoFocusTimeoutSeconds: 1,
-    FocuserOffset: -1000,
-    MaxOutlierRejections: 0,
-    HFRImprovementThreshold: 0,
-    OutlierRejectionConfidence: 0.5001,
-    RSquaredRejectionThreshold: 0,
-    ReducedChiSquaredRejectionThreshold: 1,
-  };
-  return ranges[key] !== undefined ? ranges[key] : 0;
-};
-
-// Helper function to get numeric range max
-const getNumericRangeMax = (key) => {
-  const ranges = {
-    MaxConcurrent: 10,
-    FastStepSize: 100,
-    FastOffsetSteps: 100,
-    FastThreshold_Seconds: 3600,
-    FastThreshold_Celcius: 100,
-    FastThreshold_FocuserPosition: 10000,
-    AutoFocusTimeoutSeconds: 3600,
-    FocuserOffset: 1000,
-    MaxOutlierRejections: 10,
-    HFRImprovementThreshold: 1,
-    OutlierRejectionConfidence: 0.9999,
-    RSquaredRejectionThreshold: 1,
-    ReducedChiSquaredRejectionThreshold: 20,
-  };
-  return ranges[key] !== undefined ? ranges[key] : 100;
-};
-
-// Helper function to get numeric step
-const getNumericStep = (key) => {
-  const steps = {
-    HFRImprovementThreshold: 0.01,
-    OutlierRejectionConfidence: 0.01,
-    RSquaredRejectionThreshold: 0.01,
-    ReducedChiSquaredRejectionThreshold: 0.5,
-  };
-  return steps[key] !== undefined ? steps[key] : 1;
-};
-
-// Enum option helpers (enum values are provided by the backend per option name)
-const isEnum = (key) => {
-  return !!store.autoFocusEnumOptions && Array.isArray(store.autoFocusEnumOptions[key]);
-};
-
-const getEnumValues = (key) => {
-  return store.autoFocusEnumOptions?.[key] || [];
-};
-
-// Helper function to format option names
-const formatOptionName = (key) => {
-  if (!key) return '';
-  // Check if we have a friendly display name
-  if (optionDisplayNames[key]) {
-    return optionDisplayNames[key];
-  }
-  // Fallback: insert space before capital letters
-  return key
-    .replace(/([A-Z])/g, ' $1')
-    .replace(/^./, (str) => str.toUpperCase())
-    .trim();
-};
-
-// Load options on mount
-onMounted(() => {
-  loadAutoFocusOptions();
+onBeforeUnmount(() => {
+  saveTimers.forEach((timer) => clearTimeout(timer));
+  saveTimers.clear();
 });
 </script>

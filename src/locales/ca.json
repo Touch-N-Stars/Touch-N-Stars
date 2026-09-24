@@ -930,6 +930,26 @@
       },
       "running": "EN EXECUCIÓ",
       "imageHistory": "Historial d'imatges",
+      "imageHistoryDelete": {
+        "button": "Elimina la imatge",
+        "confirmTitle": "Vols eliminar la imatge del disc?",
+        "confirmMessage": "El fitxer d'imatge s'eliminarà permanentment del rig. Això no es pot desfer.",
+        "deleting": "Eliminant…",
+        "errorTitle": "No s'ha pogut eliminar la imatge",
+        "errorGeneric": "El rig ha informat d'un error en eliminar el fitxer.",
+        "unsupported": "Aquest rig no admet l'eliminació d'imatges. Cal una versió de PINS que ofereixi l'acció d'eliminació d'imatges a l'Advanced API.",
+        "select": "Selecciona",
+        "done": "Fet",
+        "selectAll": "Selecciona-ho tot",
+        "clearSelection": "Neteja",
+        "selectedCount": "{count} seleccionades",
+        "selectHint": "Toca les imatges per seleccionar-les. Una pulsació llarga sobre una miniatura també inicia la selecció.",
+        "confirmTitleMany": "Suprimir {count} imatges del disc?",
+        "confirmMessageMany": "Els fitxers d'imatge se suprimeixen permanentment de l'equip. Això no es pot desfer.",
+        "moreFiles": "+{count} més",
+        "deletingProgress": "Suprimint {done} de {total}…",
+        "partialError": "No s'han pogut suprimir {failed} de {total} imatges."
+      },
       "duration": "Durada",
       "temperatureShort": "Temp",
       "targetName": "Objectiu",
@@ -1663,16 +1683,11 @@
         "value": "Valor",
         "invalidDate": "Data no vàlida"
       },
-      "hfr": "HFR",
-      "focuser_position": "Posició",
       "IsStalled": "Blocat",
       "HeatingPower": "Potència de calefacció:",
       "BoardTemperature": "Temperatura del circuit:",
       "DcPower": "Alimentació DC",
       "StepSize": "Mida del pas",
-      "duration_seconds": "Durada",
-      "filter": "Filtre",
-      "estimated": "est.",
       "settings": {
         "AutoFocusInitialOffsetSteps": "Passos de desplaçament inicial",
         "AutoFocusStepSize": "Mida del pas",
@@ -2164,6 +2179,7 @@
       "settings": {
         "constellations_lines_visible": "Mostra les constel·lacions",
         "azimuthal_lines_visible": "Mostra les línies azimutals",
+        "compass_visible": "Mostra la brúixola",
         "equatorial_lines_visible": "Mostra les línies equatorials",
         "meridian_lines_visible": "Mostra el meridià",
         "ecliptic_lines_visible": "Mostra l'eclíptica",
@@ -3198,7 +3214,12 @@
         "title": "Ajuda sobre la URL d'instantània",
         "what": "Una URL d'instantània és un enllaç directe a una sola imatge de la teva càmera IP. La URL ha de retornar una imatge JPEG o PNG directament, no una pàgina HTML ni un flux de vídeo.",
         "examplesTitle": "Exemples",
-        "exampleLabels": ["Càmera IP genèrica", "Càmera ONVIF", "Càmera Axis", "Càmera Hikvision"],
+        "exampleLabels": [
+          "Càmera IP genèrica",
+          "Càmera ONVIF",
+          "Càmera Axis",
+          "Càmera Hikvision"
+        ],
         "credentialsTitle": "Càmeres protegides per contrasenya",
         "credentials": "Si la teva càmera requereix nom d'usuari i contrasenya, inclou les credencials directament a la URL:",
         "credentialsNote": "El proxy del backend gestiona l'autenticació automàticament: les credencials a la URL funcionen amb autenticació Basic i Digest (p. ex., Hikvision).",
@@ -4044,10 +4065,6 @@
         "finalFocusDataSummary": "Resum de les dades d'enfocament final",
         "backfocusError": "Error de distància focal posterior:",
         "hfrDifference": "Diferència HFR:",
-        "innerHFR": "HFR interior:",
-        "outerHFR": "HFR exterior:",
-        "moveSensor": "(Mou el sensor",
-        "flattener": "aplanador)",
         "tiltCornerMeasurements": "Mesures d'inclinació als cantons",
         "sensorSide": "Costat del sensor",
         "focuserPosition": "Posició del focador",
@@ -4055,13 +4072,37 @@
         "adjustmentMicrons": "Micres d'ajust",
         "rSquared": "R²",
         "unitMicrons": "µm",
-        "unitSteps": "passos"
+        "unitSteps": "passos",
+        "axisFocuserPosition": "Posició del focus",
+        "axisHFR": "HFR",
+        "backfocusAdjustment": "Ajust",
+        "backfocusSteps": "Passos de retrofocus",
+        "bottomLeftRSquared": "R² inferior esquerra",
+        "bottomLeftSteps": "Esglaons inferior esquerra",
+        "bottomRightRSquared": "R² inferior dret",
+        "bottomRightSteps": "Passos inferior dret",
+        "centerRSquared": "Centre R²",
+        "eccentricity": "Excentricitat d'estrelles"
+      },
+      "sensorModel": {
+        "pixelSize": "Tamany Pixel"
+      },
+      "eccentricity": {
+        "eccentricity": "Excentricitat",
+        "stars": "Estrelles"
+      },
+      "optimizer": {
+        "source": "Origen",
+        "filter": "Filtre",
+        "gain": "Guany",
+        "stars": "Estrelles",
+        "cancel": "Cancel·lar",
+        "close": "Tancar",
+        "yes": "Si"
       },
       "aberrationInspectorOptions": {
         "loading": "Carregant opcions de l'inspector d'aberracions...",
-        "noOptions": "Encara no hi ha opcions de l'inspector d'aberracions disponibles.",
         "error": "Error:",
-        "inspectorSettings": "Configuració de l'inspector",
         "micronsPerFocuserStep": "Micres per pas del focador",
         "stepCount": "Nombre de passos",
         "stepSize": "Mida del pas",
@@ -4073,21 +4114,19 @@
         "centerFocuserBeforeRun": "Centra el focador abans d'executar",
         "numRegionsWide": "Nombre de regions d'amplada",
         "sensorCurveModelEnabled": "Model de corba del sensor",
-        "autoPlaceholder": "automàtic",
         "retry": "Torna a intentar",
         "resetToDefaults": "Restableix els valors predeterminats",
-        "resetting": "Restablint..."
+        "resetting": "Restablint...",
+        "cancel": "Cancel·lar"
       },
       "autoFocusOptions": {
         "loading": "Carregant opcions d'AF...",
         "error": "Error:",
         "retry": "Torna a intentar",
         "basicSettings": "Configuració bàsica",
-        "hfrValidation": "Validació HFR"
-      },
-      "directoryBrowser": {
-        "browse": "Navega...",
-        "error": "No s'ha pogut obrir el selector de directori"
+        "hfrValidation": "Validació HFR",
+        "cancel": "Cancel·lar",
+        "save": "Guardar"
       },
       "starDetection": {
         "loading": "Carregant opcions de detecció d'estels...",
@@ -4103,7 +4142,9 @@
         "debugMode": "Mode de depuració",
         "useOptimizedSettings": "Utilitza la configuració optimitzada",
         "simpleModeSettings": "Configuració del mode simple",
-        "noiseLevel": "Nivell de soroll"
+        "cancel": "Cancel·lar",
+        "noiseLevel": "Nivell de soroll",
+        "pixelScale": "Escala de Pixel"
       },
       "tilter": {
         "device": "Dispositiu",
@@ -4111,14 +4152,10 @@
         "scanTooltip": "Cerca dispositius",
         "connect": "Connecta",
         "disconnect": "Desconnecta",
-        "deviceInfo": "Informació del dispositiu (beta - utilitza amb precaució)",
         "status": "Estat",
-        "connected": "Connectat",
         "moving": "En moviment",
         "idle": "En repòs",
         "currentPositions": "Posicions actuals",
-        "noDeviceSelected": "Selecciona primer un dispositiu",
-        "deviceNotConnected": "Connecta un dispositiu per veure els controls",
         "configuration": "Configuració",
         "sensorWidth": "Amplada del sensor",
         "sensorHeight": "Alçada del sensor",
@@ -4149,14 +4186,7 @@
         "calculateActuatorPositions": "Calcula les posicions dels actuadors",
         "calculatedPositions": "Posicions calculades",
         "applyThesePositionsToDevice": "Aplica aquestes posicions al dispositiu",
-        "actuatorVisualizationLabel": "Actuadors a {radius} mm de radi • Rotació del sensor {rotation}° • Vista superior",
-        "calculatingPositions": "Calculant...",
-        "applyingPositions": "Aplicant...",
-        "savingConfiguration": "Desant..."
-      },
-      "common": {
-        "error": "Error:",
-        "loading": "Carregant..."
+        "actuatorVisualizationLabel": "Actuadors a {radius} mm de radi • Rotació del sensor {rotation}° • Vista superior"
       }
     },
     "tenmicron": {
@@ -5205,6 +5235,135 @@
     "screenLock": {
       "unlock": "Desbloquejar",
       "holdToUnlock": "Mantén {seconds} s per desbloquejar"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "Projectes, objectius i progrés en directe del connector NINA Target Scheduler.",
+      "actions": {
+        "refresh": "Actualitza",
+        "refreshing": "Actualitzant…",
+        "showSchedule": "Mostra la planificació",
+        "hideSchedule": "Amaga la planificació",
+        "expandHeader": "Expandeix",
+        "collapseHeader": "Redueix",
+        "cancel": "Cancel·la"
+      },
+      "labels": {
+        "apiPort": "Port de l'API de l'Scheduler",
+        "profile": "Perfil",
+        "active": "actiu",
+        "lastUpdated": "Última actualització",
+        "loading": "Carregant projectes…",
+        "noProjects": "No s'ha trobat cap projecte per a aquest perfil.",
+        "activeProjects": "Projectes actius",
+        "targets": "Objectius",
+        "completion": "Compleció",
+        "legendAccepted": "Acceptades",
+        "legendPending": "Adquirides, pendents de revisió",
+        "integrationTime": "Temps d'integració",
+        "unofficialDisclaimer": "Visualitzador no oficial — no afiliat al projecte Target Scheduler.",
+        "dataFrom": "Dades de",
+        "readOnlyNote": "només lectura, res aquí canvia la teva planificació",
+        "searchPlaceholder": "Cerca projectes i objectius…",
+        "clearSearch": "Neteja la cerca",
+        "allStates": "Tots",
+        "noResults": "Cap projecte o objectiu coincideix amb la teva cerca.",
+        "remainingTime": "Restant",
+        "completionFilterLabel": "Compleció:",
+        "notStarted": "No iniciat",
+        "inProgress": "En curs",
+        "done": "Fet",
+        "legendTitle": "Llegenda",
+        "legendBarsTitle": "Colors de la barra de progrés",
+        "legendDotsTitle": "Colors dels punts d'estat (projectes i objectius)",
+        "legendActive": "Actiu",
+        "legendInactive": "Inactiu",
+        "legendDraft": "Esborrany (només projectes)",
+        "legendClosed": "Tancat (només projectes)",
+        "creditNote": "Tot el mèrit del connector Target Scheduler i el seu motor de planificació és de",
+        "filtersToggle": "Filtres",
+        "stateFilterLabel": "Estat:",
+        "filterNameFilterLabel": "Filtre:",
+        "mosaicFilterLabel": "Tipus:",
+        "scheduledFilterLabel": "Planificació:",
+        "mosaicOnly": "Mosaic",
+        "singlePanelOnly": "Panell únic",
+        "scheduledTonightOnly": "Planificat aquesta nit",
+        "sortLabel": "Ordena:",
+        "sortName": "Nom",
+        "sortPriority": "Prioritat",
+        "sortCompletion": "Compleció",
+        "sortRemaining": "Temps restant",
+        "sortAscending": "Ordre ascendent",
+        "sortDescending": "Ordre descendent",
+        "exportMarkdown": "Copia com a Markdown",
+        "exportCopiedTitle": "Copiat",
+        "exportCopiedMessage": "Progrés de la planificació copiat al porta-retalls en format Markdown.",
+        "exportFailedTitle": "Còpia fallida",
+        "exportFailedMessage": "No s'ha pogut copiar al porta-retalls.",
+        "apiDocsLink": "Documentació de l'API de Target Scheduler",
+        "setupTitle": "Configura l'API de Target Scheduler",
+        "setupStep1": "Al NINA, obre les opcions del connector Target Scheduler i activa'n el servidor API.",
+        "setupStep2": "Anota el port que mostra (per defecte 8188).",
+        "setupStep3": "Introdueix aquest port a dalt; la connexió es farà automàticament.",
+        "welcomeTitle": "Benvingut a Target Scheduler Viewer",
+        "welcomeSubtitle": "Aquest connector mostra els teus projectes, objectius i progrés d'adquisició de NINA Target Scheduler. Només necessita saber com arribar-hi.",
+        "welcomeTrying": "Provant el port {port}…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}: {accepted} de {desired} acceptades",
+        "integrated": "{time} integrat"
+      },
+      "targetCard": {
+        "active": "Actiu",
+        "inactive": "Inactiu",
+        "hide": "Amaga",
+        "stats": "Estad.",
+        "loadingStats": "Carregant estadístiques…",
+        "colFilter": "Filtre",
+        "colExp": "Exp.",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Exc.",
+        "belowAutoAccept": "Per sota del llindar d'auto-acceptació (semàntica del camp no confirmada)",
+        "aboveAutoAccept": "Per sobre del llindar d'auto-acceptació (semàntica del camp no confirmada)",
+        "noAcceptedFrames": "Encara no hi ha fotogrames acceptats.",
+        "integratedOf": "{time} / {expected} integrat",
+        "remaining": "{time} restant"
+      },
+      "projectCard": {
+        "priority": "Prioritat",
+        "integrationAccepted": "Integració (acceptada)",
+        "integrationExpected": "Integració (esperada)",
+        "integrationRemaining": "Integració (restant)",
+        "description": "Descripció",
+        "minimumTime": "Temps mínim",
+        "filterSwitchFrequency": "Freqüència de canvi de filtre",
+        "ditherEvery": "Dither cada",
+        "meridianWindow": "Finestra de meridià",
+        "horizon": "Horitzó",
+        "horizonCustom": "personalitzat, +{offset}°",
+        "altitudeLimits": "Límits d'altitud",
+        "grading": "Qualificació",
+        "smartExposureOrder": "Ordre d'exposició intel·ligent",
+        "mosaic": "Mosaic",
+        "minutes": "{count} min",
+        "exposures": "{count} exposicions",
+        "emptyValue": "—",
+        "off": "desactivat",
+        "on": "activat",
+        "enabled": "habilitat",
+        "disabled": "deshabilitat",
+        "yes": "sí",
+        "no": "no",
+        "noTargets": "Cap objectiu en aquest projecte."
+      },
+      "schedulePreview": {
+        "disclaimer": "Pla previst de l'Scheduler per a aquesta nit, recalculat a cada actualització — no és un registre del que la NINA està capturant realment ara mateix.",
+        "learnMore": "Més informació",
+        "noScheduleData": "Sense dades de planificació.",
+        "waitingNotVisible": "Esperant — objectiu encara no visible"
+      }
     }
   },
   "loading": "carregant",
@@ -5785,7 +5944,10 @@
       "cobsCountSynced": "{count} cometes a la memòria cau · {status}",
       "refreshedAgo": "actualitzat {when}",
       "neverRefreshed": "mai actualitzat",
-      "confirmClearCobs": "Voleu eliminar totes les observacions COBS desades a la memòria cau? Les insígnies de magnitud observada estaran buides fins a la propera actualització de la pestanya Explora."
+      "confirmClearCobs": "Voleu eliminar totes les observacions COBS desades a la memòria cau? Les insígnies de magnitud observada estaran buides fins a la propera actualització de la pestanya Explora.",
+      "connectionSection": "Connexió",
+      "apiTokenHint": "S'omple automàticament la primera vegada que obres aquest panell. Només cal introduir-lo manualment per a un segon dispositiu -- copia'l des d'aquest camp al primer dispositiu, o des de la pàgina d'Opcions del connector a Windows NINA.",
+      "apiTokenRequired": "Aquesta instal·lació de Perihelion necessita un testimoni d'API. Introdueix-lo a Configuració per continuar."
     }
   }
 }

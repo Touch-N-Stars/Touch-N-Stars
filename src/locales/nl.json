@@ -884,6 +884,26 @@
       },
       "running": "IN WERKING",
       "imageHistory": "Beeld geschiedenis",
+      "imageHistoryDelete": {
+        "button": "Afbeelding verwijderen",
+        "confirmTitle": "Afbeelding van de schijf verwijderen?",
+        "confirmMessage": "Het afbeeldingsbestand wordt permanent van de rig verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "deleting": "Verwijderen…",
+        "errorTitle": "Afbeelding kon niet worden verwijderd",
+        "errorGeneric": "De rig meldde een fout bij het verwijderen van het bestand.",
+        "unsupported": "Deze rig ondersteunt het verwijderen van afbeeldingen niet. Er is een PINS-versie nodig waarvan de Advanced API de actie voor het verwijderen van afbeeldingen biedt.",
+        "select": "Selecteren",
+        "done": "Klaar",
+        "selectAll": "Alles selecteren",
+        "clearSelection": "Wissen",
+        "selectedCount": "{count} geselecteerd",
+        "selectHint": "Tik op afbeeldingen om ze te selecteren. Lang drukken op een tegel start de selectie ook.",
+        "confirmTitleMany": "{count} afbeeldingen van de schijf verwijderen?",
+        "confirmMessageMany": "De afbeeldingsbestanden worden permanent van de rig verwijderd. Dit kan niet ongedaan worden gemaakt.",
+        "moreFiles": "+{count} meer",
+        "deletingProgress": "Verwijderen {done} van {total}…",
+        "partialError": "{failed} van {total} afbeeldingen konden niet worden verwijderd."
+      },
       "duration": "Duur",
       "temperatureShort": "Temp",
       "targetName": "Doel",
@@ -1674,11 +1694,6 @@
       "indi": {
         "settings": "Focuser-instellingen"
       },
-      "duration_seconds": "Duur",
-      "estimated": "est.",
-      "filter": "Filter",
-      "focuser_position": "Positie",
-      "hfr": "HFR",
       "BoardTemperature": "Raadstemperatuur:",
       "DcPower": "Gelijkstroomvoeding",
       "HeatingPower": "Verwarmingsvermogen:",
@@ -2118,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "Toon sterrenbeelden",
         "azimuthal_lines_visible": "Toon azimuth lijnen",
+        "compass_visible": "Toon kompas",
         "equatorial_lines_visible": "Toon equatoriale lijnen",
         "meridian_lines_visible": "Toon meridiaan lijnen",
         "ecliptic_lines_visible": "Toon ecliptica",
@@ -3842,10 +3858,6 @@
         "finalFocusDataSummary": "Samenvatting Eindige Focusgegevens",
         "backfocusError": "Achterfocusfout:",
         "hfrDifference": "HFR-verschil:",
-        "innerHFR": "Binnenste HFR:",
-        "outerHFR": "Buitenste HFR:",
-        "moveSensor": "(Beweeg sensor",
-        "flattener": "vlakmaker)",
         "tiltCornerMeasurements": "Kantelhoek-metingen",
         "sensorSide": "Sensorzijde",
         "focuserPosition": "Focusserpositie",
@@ -3855,16 +3867,25 @@
         "unitMicrons": "µm",
         "unitSteps": "stappen"
       },
+      "sensorModel": {
+        "pixelSize": "Pixelgrootte"
+      },
+      "optimizer": {
+        "source": "Bron",
+        "mode": "Modus",
+        "cancel": "Annuleer",
+        "close": "Sluiten",
+        "yes": "Ja",
+        "no": "Nee"
+      },
       "aberrationInspectorOptions": {
         "loading": "Opties Aberratie-inspecteur laden...",
-        "noOptions": "Nog geen opties voor Aberratie-inspecteur beschikbaar.",
         "error": "Fout:",
-        "inspectorSettings": "Inspecteurinstellingen",
         "micronsPerFocuserStep": "Micronen per Focusserstap",
         "retry": "Opnieuw proberen",
         "resetToDefaults": "Standaardwaarden herstellen",
         "resetting": "Resetten...",
-        "autoPlaceholder": "auto",
+        "cancel": "Annuleer",
         "centerFocuserBeforeRun": "Centerfocuser vóór het rennen",
         "detailedAnalysisExposureSeconds": "Gedetailleerde analyse Belichtingstijd (seconden)",
         "framesPerPoint": "Frames per punt",
@@ -3881,11 +3902,9 @@
         "error": "Fout:",
         "retry": "Opnieuw proberen",
         "basicSettings": "Basisinstellingen",
-        "hfrValidation": "HFR-validatie"
-      },
-      "directoryBrowser": {
-        "browse": "Bladeren...",
-        "error": "Fout bij het openen van directoryelector"
+        "hfrValidation": "HFR-validatie",
+        "cancel": "Annuleer",
+        "save": "Opslaan"
       },
       "starDetection": {
         "loading": "Opties voor Sterre detectie laden...",
@@ -3900,7 +3919,9 @@
         "noiseReducedStarMeasurement": "Ster-meting met ruisvermindering",
         "debugMode": "Foutopsporingmodus",
         "simpleModeSettings": "Eenvoudige modusinstellingen",
+        "cancel": "Annuleer",
         "noiseLevel": "Geluidsniveau",
+        "pixelScale": "Pixelschaal",
         "useOptimizedSettings": "Gebruik geoptimaliseerde instellingen"
       },
       "tilter": {
@@ -3909,14 +3930,10 @@
         "scanTooltip": "Scannen naar apparaten",
         "connect": "Verbinden",
         "disconnect": "Verbreek de verbinding",
-        "deviceInfo": "Device Information",
         "status": "Status",
-        "connected": "Aangesloten",
         "moving": "Bewegen",
         "idle": "Inactief",
         "currentPositions": "Huidige posities",
-        "noDeviceSelected": "Selecteer eerst een apparaat",
-        "deviceNotConnected": "Maak verbinding met een apparaat om de bedieningselementen te bekijken",
         "configuration": "Configuratie",
         "sensorWidth": "Sensorbreedte",
         "sensorHeight": "Sensorhoogte",
@@ -3947,14 +3964,7 @@
         "calculateActuatorPositions": "Bereken actuatorposities",
         "calculatedPositions": "Berekende posities",
         "applyThesePositionsToDevice": "Pas deze posities toe op het apparaat",
-        "actuatorVisualizationLabel": "Actuators met een straal van {radius} mm • Rotatie van de sensor {rotation}° • Bovenaanzicht",
-        "calculatingPositions": "Berekenen...",
-        "applyingPositions": "Toepassen...",
-        "savingConfiguration": "Besparing..."
-      },
-      "common": {
-        "error": "Fout:",
-        "loading": "Laden..."
+        "actuatorVisualizationLabel": "Actuators met een straal van {radius} mm • Rotatie van de sensor {rotation}° • Bovenaanzicht"
       }
     },
     "tenmicron": {
@@ -5205,6 +5215,135 @@
     "screenLock": {
       "unlock": "Scherm ontgrendelen",
       "holdToUnlock": "Houd {seconds} s vast om te ontgrendelen"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "Live projecten, doelen en voortgang van de NINA Target Scheduler-plugin.",
+      "actions": {
+        "refresh": "Vernieuwen",
+        "refreshing": "Vernieuwen…",
+        "showSchedule": "Schema tonen",
+        "hideSchedule": "Schema verbergen",
+        "expandHeader": "Uitklappen",
+        "collapseHeader": "Inklappen",
+        "cancel": "Annuleren"
+      },
+      "labels": {
+        "apiPort": "Scheduler API-poort",
+        "profile": "Profiel",
+        "active": "actief",
+        "lastUpdated": "Laatst bijgewerkt",
+        "loading": "Projecten laden…",
+        "noProjects": "Geen projecten gevonden voor dit profiel.",
+        "activeProjects": "Actieve projecten",
+        "targets": "Doelen",
+        "completion": "Voltooiing",
+        "legendAccepted": "Geaccepteerd",
+        "legendPending": "Vastgelegd, wacht op controle",
+        "integrationTime": "Integratietijd",
+        "unofficialDisclaimer": "Niet-officiële viewer — niet verbonden aan het Target Scheduler-project.",
+        "dataFrom": "Gegevens van",
+        "readOnlyNote": "alleen-lezen, hier verandert niets aan je schema",
+        "searchPlaceholder": "Projecten & doelen zoeken…",
+        "clearSearch": "Zoekopdracht wissen",
+        "allStates": "Alle",
+        "noResults": "Geen projecten of doelen komen overeen met je zoekopdracht.",
+        "remainingTime": "Resterend",
+        "completionFilterLabel": "Voltooiing:",
+        "notStarted": "Niet gestart",
+        "inProgress": "Bezig",
+        "done": "Klaar",
+        "legendTitle": "Legenda",
+        "legendBarsTitle": "Kleuren voortgangsbalk",
+        "legendDotsTitle": "Kleuren statuspunten (projecten & doelen)",
+        "legendActive": "Actief",
+        "legendInactive": "Inactief",
+        "legendDraft": "Concept (alleen projecten)",
+        "legendClosed": "Gesloten (alleen projecten)",
+        "creditNote": "Alle eer voor de Target Scheduler-plugin en de planningsengine gaat naar",
+        "filtersToggle": "Filters",
+        "stateFilterLabel": "Status:",
+        "filterNameFilterLabel": "Filter:",
+        "mosaicFilterLabel": "Type:",
+        "scheduledFilterLabel": "Planning:",
+        "mosaicOnly": "Mozaïek",
+        "singlePanelOnly": "Enkel paneel",
+        "scheduledTonightOnly": "Vannacht gepland",
+        "sortLabel": "Sorteren:",
+        "sortName": "Naam",
+        "sortPriority": "Prioriteit",
+        "sortCompletion": "Voltooiing",
+        "sortRemaining": "Resterende tijd",
+        "sortAscending": "Oplopend sorteren",
+        "sortDescending": "Aflopend sorteren",
+        "exportMarkdown": "Kopiëren als Markdown",
+        "exportCopiedTitle": "Gekopieerd",
+        "exportCopiedMessage": "Schemavoortgang als Markdown naar klembord gekopieerd.",
+        "exportFailedTitle": "Kopiëren mislukt",
+        "exportFailedMessage": "Kopiëren naar klembord is mislukt.",
+        "apiDocsLink": "Target Scheduler API-documentatie",
+        "setupTitle": "Target Scheduler API instellen",
+        "setupStep1": "Open in NINA de opties van de Target Scheduler-plugin en schakel de API-server in.",
+        "setupStep2": "Noteer de getoonde poort (standaard 8188).",
+        "setupStep3": "Voer die poort hierboven in, de verbinding wordt dan automatisch gemaakt.",
+        "welcomeTitle": "Welkom bij Target Scheduler Viewer",
+        "welcomeSubtitle": "Deze plugin toont je NINA Target Scheduler-projecten, -doelen en opnamevoortgang. Hij hoeft alleen te weten hoe hij dit kan bereiken.",
+        "welcomeTrying": "Poort {port} proberen…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}: {accepted} van {desired} geaccepteerd",
+        "integrated": "{time} geïntegreerd"
+      },
+      "targetCard": {
+        "active": "Actief",
+        "inactive": "Inactief",
+        "hide": "Verbergen",
+        "stats": "Stats",
+        "loadingStats": "Statistieken laden…",
+        "colFilter": "Filter",
+        "colExp": "Exp.",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Ecc.",
+        "belowAutoAccept": "Onder auto-accept-drempel (veldbetekenis onbevestigd)",
+        "aboveAutoAccept": "Boven auto-accept-drempel (veldbetekenis onbevestigd)",
+        "noAcceptedFrames": "Nog geen geaccepteerde frames.",
+        "integratedOf": "{time} / {expected} geïntegreerd",
+        "remaining": "{time} resterend"
+      },
+      "projectCard": {
+        "priority": "Prioriteit",
+        "integrationAccepted": "Integratie (geaccepteerd)",
+        "integrationExpected": "Integratie (verwacht)",
+        "integrationRemaining": "Integratie (resterend)",
+        "description": "Omschrijving",
+        "minimumTime": "Minimumtijd",
+        "filterSwitchFrequency": "Filterwisselfrequentie",
+        "ditherEvery": "Dither elke",
+        "meridianWindow": "Meridiaanvenster",
+        "horizon": "Horizon",
+        "horizonCustom": "aangepast, +{offset}°",
+        "altitudeLimits": "Hoogtelimieten",
+        "grading": "Beoordeling",
+        "smartExposureOrder": "Slimme belichtingsvolgorde",
+        "mosaic": "Mozaïek",
+        "minutes": "{count} min",
+        "exposures": "{count} belichtingen",
+        "emptyValue": "—",
+        "off": "uit",
+        "on": "aan",
+        "enabled": "ingeschakeld",
+        "disabled": "uitgeschakeld",
+        "yes": "ja",
+        "no": "nee",
+        "noTargets": "Geen doelen in dit project."
+      },
+      "schedulePreview": {
+        "disclaimer": "Voorspeld schema van de Scheduler voor vannacht, bij elke refresh herberekend — geen registratie van wat NINA op dit moment daadwerkelijk opneemt.",
+        "learnMore": "Meer info",
+        "noScheduleData": "Geen planningsgegevens.",
+        "waitingNotVisible": "Wachten — doel nog niet zichtbaar"
+      }
     }
   },
   "pinsDevices": {
@@ -5785,7 +5924,10 @@
       "cobsCountSynced": "{count} kometen gecached · {status}",
       "refreshedAgo": "vernieuwd {when}",
       "neverRefreshed": "nooit vernieuwd",
-      "confirmClearCobs": "Alle gecachte COBS-waarnemingen verwijderen? De badges voor waargenomen helderheid zijn leeg tot de volgende vernieuwing van het tabblad Bladeren."
+      "confirmClearCobs": "Alle gecachte COBS-waarnemingen verwijderen? De badges voor waargenomen helderheid zijn leeg tot de volgende vernieuwing van het tabblad Bladeren.",
+      "connectionSection": "Verbinding",
+      "apiTokenHint": "Wordt automatisch ingevuld de eerste keer dat je dit paneel opent. Alleen handmatig nodig voor een tweede apparaat -- kopieer het uit dit veld op je eerste apparaat, of van de Opties-pagina van de plugin in Windows NINA.",
+      "apiTokenRequired": "Deze Perihelion-installatie heeft een API-token nodig. Vul dit in bij Instellingen om door te gaan."
     }
   }
 }

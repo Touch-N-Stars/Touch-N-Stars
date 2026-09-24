@@ -23,6 +23,14 @@ export const useHocusFocusStore = defineStore('hocusfocus', {
     isLoadingAutoFocusOptions: false,
     autoFocusOptionsError: null,
 
+    // Which Aberration Inspector result sections are expanded. Remembered per device; the plots
+    // start collapsed so slow devices neither fetch nor draw them unless asked.
+    resultSections: {
+      sensorModel: true,
+      fwhmContour: false,
+      eccentricity: false,
+    },
+
     // Plugin Info
     pluginInfo: {
       name: 'HocusFocus',
@@ -168,5 +176,11 @@ export const useHocusFocusStore = defineStore('hocusfocus', {
     clearAutoFocusOptionsError() {
       this.autoFocusOptionsError = null;
     },
+  },
+
+  // pinia-plugin-persistedstate v4: persist only the section toggles, never the fetched options.
+  persist: {
+    key: 'hocusfocus-ui',
+    pick: ['resultSections'],
   },
 });

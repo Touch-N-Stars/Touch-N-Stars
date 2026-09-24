@@ -1,923 +1,451 @@
 <template>
-  <div class="flex flex-col gap-4">
-    <!-- Scan and Device Selection Section -->
-    <div
-      class="flex flex-col sm:flex-row border border-gray-700 p-4 rounded-lg gap-2 sm:items-center transition-all duration-300 bg-gradient-to-br from-gray-800 to-gray-900"
-    >
-      <label class="text-sm sm:w-36 shrink-0">{{ $t('plugins.hocusfocus.tilter.device') }}:</label>
-      <div class="flex gap-2 items-center w-full">
+  <div class="space-y-6">
+    <!-- Device: Wanderer ETA selection and live state -->
+    <div :class="cardClass">
+      <h3 :class="headingClass">{{ L('device') }}</h3>
+      <div class="flex items-center gap-2">
         <select
-          class="w-full border border-gray-600 rounded px-3 py-2 text-white min-w-0 transition-colors"
-          :class="{
-            'bg-gray-700 cursor-pointer': !isConnected,
-            'bg-gray-600 cursor-not-allowed opacity-70': isConnected,
-          }"
           v-model="selectedDeviceId"
-          :disabled="isScanning || isConnecting || isDisconnecting || isConnected"
+          class="tns-select min-w-0 flex-1 py-2"
+          :disabled="isBusy || isConnected"
         >
-          <option disabled value="">
-            {{ $t('plugins.hocusfocus.tilter.selectDevice') }}
-          </option>
+          <option disabled value="">{{ L('selectDevice') }}</option>
           <option v-for="device in devices" :key="device.DeviceId" :value="String(device.DeviceId)">
             {{ device.Name }} - {{ device.SerialInfo }}
           </option>
         </select>
-        <div class="flex shrink-0 gap-1">
-          <button
-            @click="scanDevices"
-            :disabled="isConnecting || isDisconnecting"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-70 transition-colors"
-            :title="$t('plugins.hocusfocus.tilter.scanTooltip')"
+        <!-- Scanning while connected would drop the selection out from under the open device -->
+        <button
+          class="tns-btn-secondary w-auto! shrink-0 px-3!"
+          :disabled="isBusy || isConnected"
+          :title="L('scanTooltip')"
+          :aria-label="L('scanTooltip')"
+          @click="scanDevices"
+        >
+          <ArrowPathIcon class="h-5 w-5" :class="{ 'animate-spin': isScanning }" />
+        </button>
+        <button
+          class="w-auto! shrink-0 px-3!"
+          :class="isConnected ? 'tns-btn-danger' : 'tns-btn-primary'"
+          :disabled="!selectedDeviceId || isBusy || (isConnected && isMoving)"
+          :title="isConnected ? L('disconnect') : L('connect')"
+          :aria-label="isConnected ? L('disconnect') : L('connect')"
+          @click="toggleConnection"
+        >
+          <LinkSlashIcon v-if="isConnected" class="h-5 w-5" />
+          <LinkIcon v-else class="h-5 w-5" />
+        </button>
+      </div>
+
+      <template v-if="isConnected && selectedDeviceId">
+        <div class="flex items-center justify-between text-sm">
+          <span class="text-gray-400">{{ L('status') }}</span>
+          <span
+            class="flex items-center gap-1.5 font-semibold"
+            :class="isMoving ? 'text-amber-400' : 'text-green-400'"
           >
-            <svg
-              class="w-6 h-6"
-              :class="{ 'animate-spin text-green-500': isScanning, 'text-white': !isScanning }"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-              />
-            </svg>
-          </button>
+            <ArrowPathIcon v-if="isMoving" class="h-4 w-4 animate-spin" />
+            {{ isMoving ? L('moving') : L('idle') }}
+          </span>
+        </div>
+
+        <div
+          v-if="isMoving"
+          class="flex items-center gap-2 rounded-lg border border-amber-600/50 bg-amber-900/25 p-2 text-sm text-amber-200"
+        >
+          <ArrowPathIcon class="h-5 w-5 shrink-0 animate-spin" />
+          {{ L('movingHint') }}
+        </div>
+        <div
+          v-else-if="moveDone"
+          class="flex items-center gap-2 rounded-lg border border-green-700/40 bg-green-900/15 p-2 text-sm text-green-300"
+        >
+          <CheckCircleIcon class="h-5 w-5 shrink-0" />
+          {{ L('moveDone') }}
+        </div>
+
+        <p class="text-sm font-medium text-gray-300">{{ L('currentPositions') }}</p>
+        <div class="grid grid-cols-3 gap-2">
           <button
-            @click="toggleConnection"
-            :disabled="!selectedDeviceId || isConnecting || isDisconnecting"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-70 transition-colors relative"
-            :title="
-              isConnected
-                ? $t('plugins.hocusfocus.tilter.disconnect')
-                : $t('plugins.hocusfocus.tilter.connect')
-            "
+            v-for="n in [1, 2, 3]"
+            :key="n"
+            class="tns-btn-secondary flex-col gap-0.5! px-2! py-2"
+            :disabled="isMoving"
+            @click="openPositionPicker(n)"
           >
-            <svg
-              v-if="!isConnected"
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.658 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-              />
-            </svg>
-            <svg
-              v-else
-              class="w-6 h-6 text-red-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-            <svg
-              v-if="isConnecting || isDisconnecting"
-              class="animate-spin h-6 w-6 text-white absolute"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+            <span class="text-xs text-gray-400">{{ L('positionN', { n }) }}</span>
+            <span class="font-mono text-sm">{{
+              formatMm(deviceStatus?.[`CurrentPosition${n}`])
+            }}</span>
           </button>
         </div>
-      </div>
+
+        <TilterPlot
+          :rotation="Number(sensorConfig.SensorRotation) || 0"
+          :sensor-width="Number(sensorConfig.SensorWidth) || 0"
+          :sensor-height="Number(sensorConfig.SensorHeight) || 0"
+          :screw-count="3"
+          :corner-values="etaCornerValues"
+        />
+        <p class="text-center text-xs text-gray-500">{{ L('cornerOffsetsCaption') }}</p>
+      </template>
+      <p v-else class="text-sm text-gray-400">{{ L('manualModeHint') }}</p>
+
+      <p v-if="deviceError" class="text-sm text-red-400">{{ deviceError }}</p>
     </div>
 
-    <!-- Device Info and Controls (Wanderer ETA) - only show if not using manual tilter -->
-    <div
-      v-if="isConnected && selectedDeviceId"
-      class="border border-gray-700 rounded-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg"
-    >
-      <h3 class="font-bold text-base text-cyan-400 mb-4">
-        {{ $t('plugins.hocusfocus.tilter.deviceInfo') }}
-      </h3>
-      <div class="flex flex-col gap-3">
-        <!-- Device Status -->
-        <div class="grid grid-cols-2 gap-2 text-sm">
-          <div>
-            <span class="text-gray-400">{{ $t('plugins.hocusfocus.tilter.status') }}:</span>
-            <span
-              class="ml-2 font-semibold"
-              :class="deviceStatus?.IsMoving ? 'text-yellow-400' : 'text-green-400'"
-            >
-              {{
-                deviceStatus?.IsMoving
-                  ? $t('plugins.hocusfocus.tilter.moving')
-                  : $t('plugins.hocusfocus.tilter.idle')
-              }}
-            </span>
-          </div>
-          <div>
-            <span class="text-gray-400">{{ $t('plugins.hocusfocus.tilter.connected') }}:</span>
-            <span class="ml-2 font-semibold text-green-400">{{ $t('general.yes') }}</span>
-          </div>
-        </div>
-
-        <!-- Position Display -->
-        <div class="border border-gray-600/30 rounded p-3 bg-gray-700/20">
-          <div class="flex justify-between items-center mb-4">
-            <p class="text-sm text-cyan-400 font-semibold">
-              {{ $t('plugins.hocusfocus.tilter.currentPositions') }}
-            </p>
-          </div>
-
-          <div class="grid grid-cols-4 gap-4">
-            <!-- Position buttons -->
-            <div class="col-span-1 flex flex-col gap-2">
-              <button
-                @click="openPositionPicker(1)"
-                :disabled="deviceStatus?.IsMoving"
-                :class="{
-                  'bg-blue-500/20 border-blue-500 text-blue-300 text-blue-400 hover:bg-blue-500/30 cursor-pointer':
-                    !deviceStatus?.IsMoving,
-                  'bg-blue-500/10 border-blue-500/50 text-blue-300/50 text-blue-400/50 cursor-not-allowed opacity-60':
-                    deviceStatus?.IsMoving,
-                }"
-                class="border rounded p-2 text-center transition-colors w-full"
-              >
-                <p class="text-xs font-semibold mb-0.5">Position 1</p>
-                <p class="text-xs font-mono font-bold">
-                  {{ deviceStatus?.CurrentPosition1?.toFixed(3) ?? 'N/A' }}
-                </p>
-              </button>
-
-              <button
-                @click="openPositionPicker(2)"
-                :disabled="deviceStatus?.IsMoving"
-                :class="{
-                  'bg-green-500/20 border-green-500 text-green-300 text-green-400 hover:bg-green-500/30 cursor-pointer':
-                    !deviceStatus?.IsMoving,
-                  'bg-green-500/10 border-green-500/50 text-green-300/50 text-green-400/50 cursor-not-allowed opacity-60':
-                    deviceStatus?.IsMoving,
-                }"
-                class="border rounded p-2 text-center transition-colors w-full"
-              >
-                <p class="text-xs font-semibold mb-0.5">Position 2</p>
-                <p class="text-xs font-mono font-bold">
-                  {{ deviceStatus?.CurrentPosition2?.toFixed(3) ?? 'N/A' }}
-                </p>
-              </button>
-
-              <button
-                @click="openPositionPicker(3)"
-                :disabled="deviceStatus?.IsMoving"
-                :class="{
-                  'bg-amber-500/20 border-amber-500 text-amber-300 text-amber-400 hover:bg-amber-500/30 cursor-pointer':
-                    !deviceStatus?.IsMoving,
-                  'bg-amber-500/10 border-amber-500/50 text-amber-300/50 text-amber-400/50 cursor-not-allowed opacity-60':
-                    deviceStatus?.IsMoving,
-                }"
-                class="border rounded p-2 text-center transition-colors w-full"
-              >
-                <p class="text-xs font-semibold mb-0.5">Position 3</p>
-                <p class="text-xs font-mono font-bold">
-                  {{ deviceStatus?.CurrentPosition3?.toFixed(3) ?? 'N/A' }}
-                </p>
-              </button>
-            </div>
-
-            <!-- Sensor plane visualization -->
-            <div class="col-span-3 flex justify-center items-center" style="min-height: 320px">
-              <div
-                class="relative flex items-center justify-center"
-                style="width: 320px; height: 320px"
-              >
-                <div
-                  class="relative w-64 h-48 border border-gray-600 rounded bg-gray-800/30 flex items-center justify-center"
-                  :style="{ transform: `rotate(${sensorConfig.SensorRotation}deg)` }"
-                >
-                  <!-- Rotating sensor frame -->
-                  <svg
-                    class="absolute inset-0 w-full h-full"
-                    viewBox="0 0 256 192"
-                    preserve-aspect-ratio="xMidYMid meet"
-                  >
-                    <!-- Center crosshair -->
-                    <line
-                      x1="128"
-                      y1="80"
-                      x2="128"
-                      y2="104"
-                      stroke="#6B7280"
-                      stroke-width="1"
-                      stroke-dasharray="4"
-                    />
-                    <line
-                      x1="104"
-                      y1="96"
-                      x2="152"
-                      y2="96"
-                      stroke="#6B7280"
-                      stroke-width="1"
-                      stroke-dasharray="4"
-                    />
-                    <!-- Small center dot -->
-                    <circle cx="128" cy="96" r="2" fill="#6B7280" />
-                  </svg>
-
-                  <!-- Fixed corner boxes (always at same position, values update based on rotation) -->
-                  <div
-                    class="absolute top-3 right-3 bg-amber-500/20 border border-amber-500 rounded px-2 py-1 text-center text-xs"
-                  >
-                    <p class="text-amber-300 font-semibold">TL</p>
-                    <p class="text-amber-400 whitespace-nowrap">
-                      {{ (deviceStatus?.ImagePlaneTopLeftOffset * 1000)?.toFixed(0) ?? 'N/A' }} µm
-                    </p>
-                  </div>
-
-                  <div
-                    class="absolute top-3 left-3 bg-blue-500/20 border border-blue-500 rounded px-2 py-1 text-center text-xs"
-                  >
-                    <p class="text-blue-300 font-semibold">TR</p>
-                    <p class="text-blue-400 whitespace-nowrap">
-                      {{ (deviceStatus?.ImagePlaneTopRightOffset * 1000)?.toFixed(0) ?? 'N/A' }} µm
-                    </p>
-                  </div>
-
-                  <div
-                    class="absolute bottom-3 right-3 bg-green-500/20 border border-green-500 rounded px-2 py-1 text-center text-xs"
-                  >
-                    <p class="text-green-300 font-semibold">BL</p>
-                    <p class="text-green-400 whitespace-nowrap">
-                      {{ (deviceStatus?.ImagePlaneBottomLeftOffset * 1000)?.toFixed(0) ?? 'N/A' }}
-                      µm
-                    </p>
-                  </div>
-
-                  <div
-                    class="absolute bottom-3 left-3 bg-cyan-500/20 border border-cyan-500 rounded px-2 py-1 text-center text-xs"
-                  >
-                    <p class="text-cyan-300 font-semibold">BR</p>
-                    <p class="text-cyan-400 whitespace-nowrap">
-                      {{ (deviceStatus?.ImagePlaneBottomRightOffset * 1000)?.toFixed(0) ?? 'N/A' }}
-                      µm
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Error Message -->
-        <div v-if="errorMessage" class="p-3 bg-red-500/10 border border-red-500/30 rounded">
-          <p class="text-red-400 text-sm">{{ errorMessage }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Manual Tilter Configuration - only show if manual tilter is selected OR if real device is not connected -->
-    <div
-      v-if="shouldShowManualTilterUI()"
-      class="border border-gray-700 rounded-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg"
-    >
-      <h3 class="font-bold text-base text-cyan-400 mb-4">
-        {{ $t('plugins.hocusfocus.tilter.manualTilterConfiguration') }}
-      </h3>
-
-      <div class="flex flex-col gap-4">
-        <!-- Tilter Geometry Visualization -->
-        <div
-          class="border border-gray-600/30 rounded p-4 bg-gray-700/20 flex justify-center items-center"
-        >
-          <div class="relative" style="width: 340px; height: 340px">
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 340 340"
-              xmlns="http://www.w3.org/2000/svg"
-              class="mx-auto"
-              preserveAspectRatio="xMidYMid meet"
-              style="overflow: visible"
-            >
-              <!-- Outer ring (tilter housing) -->
-              <circle
-                cx="170"
-                cy="170"
-                r="160"
-                fill="none"
-                stroke="#4b5563"
-                stroke-width="20"
-                opacity="0.6"
-              />
-              <circle
-                cx="170"
-                cy="170"
-                r="160"
-                fill="none"
-                stroke="#6b7280"
-                stroke-width="2"
-                stroke-dasharray="2"
-                opacity="0.3"
-              />
-
-              <!-- Inner circle (sensor plane boundary) -->
-              <circle
-                cx="170"
-                cy="170"
-                r="50"
-                fill="none"
-                stroke="#1f2937"
-                stroke-width="2"
-                opacity="0.5"
-              />
-
-              <!-- Sensor plane in center (rotated) -->
-              <g :transform="`rotate(${Number(sensorConfig.SensorRotation) || 0} 170 170)`">
-                <!-- Sensor rectangle -->
-                <rect
-                  x="100"
-                  y="123"
-                  width="140"
-                  height="94"
-                  fill="#f97316"
-                  opacity="0.15"
-                  stroke="#f97316"
-                  stroke-width="1.5"
-                />
-                <!-- Sensor corners -->
-                <circle cx="100" cy="123" r="2" fill="#f97316" />
-                <circle cx="240" cy="123" r="2" fill="#f97316" />
-                <circle cx="100" cy="217" r="2" fill="#f97316" />
-                <circle cx="240" cy="217" r="2" fill="#f97316" />
-
-                <!-- Corner text -->
-                <text
-                  :x="115"
-                  :y="138"
-                  text-anchor="middle"
-                  fill="#9ca3af"
-                  font-weight="bold"
-                  font-size="13"
-                >
-                  TR
-                </text>
-                <text
-                  :x="225"
-                  :y="138"
-                  text-anchor="middle"
-                  fill="#9ca3af"
-                  font-weight="bold"
-                  font-size="13"
-                >
-                  TL
-                </text>
-                <text
-                  :x="115"
-                  :y="210"
-                  text-anchor="middle"
-                  fill="#9ca3af"
-                  font-weight="bold"
-                  font-size="13"
-                >
-                  BR
-                </text>
-                <text
-                  :x="225"
-                  :y="210"
-                  text-anchor="middle"
-                  fill="#9ca3af"
-                  font-weight="bold"
-                  font-size="13"
-                >
-                  BL
-                </text>
-
-                <!-- Center crosshair -->
-                <line
-                  x1="170"
-                  y1="140"
-                  x2="170"
-                  y2="200"
-                  stroke="#9ca3af"
-                  stroke-width="1"
-                  stroke-dasharray="2"
-                />
-                <line
-                  x1="140"
-                  y1="170"
-                  x2="200"
-                  y2="170"
-                  stroke="#9ca3af"
-                  stroke-width="1"
-                  stroke-dasharray="2"
-                />
-                <circle cx="170" cy="170" r="2" fill="#9ca3af" />
-              </g>
-
-              <!-- Actuators (screws) positioned on the outer ring -->
-              <template v-for="screw in actuators" :key="screw.label">
-                <g>
-                  <circle
-                    :cx="screw.cx"
-                    :cy="screw.cy"
-                    r="12"
-                    :fill="screw.fill"
-                    opacity="0.2"
-                    :stroke="screw.fill"
-                    stroke-width="2"
-                  />
-                  <circle
-                    :cx="screw.cx"
-                    :cy="screw.cy"
-                    r="7"
-                    fill="none"
-                    :stroke="screw.fill"
-                    stroke-width="2"
-                  />
-                  <circle :cx="screw.cx" :cy="screw.cy" r="2" :fill="screw.fill" />
-                  <line
-                    :x1="screw.cx"
-                    :y1="screw.cy - 7"
-                    :x2="screw.cx"
-                    :y2="screw.cy + 7"
-                    :stroke="screw.fill"
-                    stroke-width="1.5"
-                  />
-                  <line
-                    :x1="screw.cx - 7"
-                    :y1="screw.cy"
-                    :x2="screw.cx + 7"
-                    :y2="screw.cy"
-                    :stroke="screw.fill"
-                    stroke-width="1.5"
-                  />
-                </g>
-                <text
-                  :x="screw.labelX"
-                  :y="screw.labelY"
-                  text-anchor="middle"
-                  :fill="screw.textFill"
-                  font-weight="bold"
-                  font-size="13"
-                >
-                  {{ screw.label }}
-                </text>
-              </template>
-            </svg>
-          </div>
-        </div>
-
-        <p class="text-xs text-gray-400 text-center mt-2">
-          {{
-            $t('plugins.hocusfocus.tilter.actuatorVisualizationLabel', {
-              radius: sensorConfig.value?.TilterOuterRadius?.toFixed(1),
-              rotation: (Number(sensorConfig.SensorRotation) || 0).toFixed(1),
-            })
-          }}
-        </p>
-
-        <p v-if="screwCount === 4" class="text-xs text-amber-300/80 text-center">
-          {{ $t('plugins.hocusfocus.tilter.fourScrewHint') }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Sensor Configuration Section -->
-    <div
-      class="border border-gray-700 rounded-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg"
-    >
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="font-bold text-base text-cyan-400">
-          {{ $t('plugins.hocusfocus.tilter.configuration') }}
-        </h3>
-        <button
-          @click="toggleSensorConfigEdit"
-          class="px-3 py-1 text-xs rounded border border-cyan-500/20 bg-gray-700 text-white hover:bg-gray-600 transition-colors"
-        >
-          {{ isSensorConfigEditing ? $t('general.cancel') : $t('general.edit') }}
-        </button>
-      </div>
-
-      <div class="grid grid-cols-3 gap-4">
-        <!-- Sensor Width -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400"
-            >{{ $t('plugins.hocusfocus.tilter.sensorWidth') }} (mm)</label
-          >
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ sensorConfig.SensorWidth?.toFixed(1) ?? 'N/A' }}
-          </div>
-          <input
-            v-else
-            v-model.number="sensorConfig.SensorWidth"
-            type="number"
-            step="0.1"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-        </div>
-
-        <!-- Sensor Height -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400"
-            >{{ $t('plugins.hocusfocus.tilter.sensorHeight') }} (mm)</label
-          >
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ sensorConfig.SensorHeight?.toFixed(1) ?? 'N/A' }}
-          </div>
-          <input
-            v-else
-            v-model.number="sensorConfig.SensorHeight"
-            type="number"
-            step="0.1"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-        </div>
-
-        <!-- Sensor Rotation -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400"
-            >{{ $t('plugins.hocusfocus.tilter.sensorRotation') }} (°)</label
-          >
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ sensorConfig.SensorRotation?.toFixed(1) ?? 'N/A' }}
-          </div>
-          <input
-            v-else
-            v-model.number="sensorConfig.SensorRotation"
-            type="number"
-            step="0.1"
-            min="0"
-            max="359.9"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-          <p class="text-xs text-gray-500">
-            {{ $t('plugins.hocusfocus.tilter.sensorRotationDescription') }}
-          </p>
-        </div>
-
-        <!-- Tilter Outer Radius (only for manual tilter) -->
-        <div v-if="shouldShowManualTilterUI()" class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400"
-            >{{ $t('plugins.hocusfocus.tilter.tilterOuterRadius') }} (mm)</label
-          >
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ sensorConfig.TilterOuterRadius?.toFixed(1) ?? 'N/A' }}
-          </div>
-          <input
-            v-else
-            v-model.number="sensorConfig.TilterOuterRadius"
-            type="number"
-            step="0.1"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            placeholder="e.g., 60"
-          />
-        </div>
-
-        <!-- Tilter Thread Pitch (only for manual tilter) -->
-        <div v-if="shouldShowManualTilterUI()" class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400"
-            >{{ $t('plugins.hocusfocus.tilter.tilterThreadPitch') }} (mm)</label
-          >
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ sensorConfig.TilterThreadPitch?.toFixed(2) ?? 'N/A' }}
-          </div>
-          <input
-            v-else
-            v-model.number="sensorConfig.TilterThreadPitch"
-            type="number"
-            step="0.01"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-            placeholder="e.g., 0.35"
-          />
-        </div>
-
-        <!-- Tilter Screw Count (manual tilter, backends that support it) -->
-        <div
-          v-if="shouldShowManualTilterUI() && backendSupportsScrewCount"
-          class="flex flex-col gap-2"
-        >
-          <label class="text-xs text-gray-400">{{
-            $t('plugins.hocusfocus.tilter.tilterScrewCount')
-          }}</label>
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ screwCountLabel }}
-          </div>
-          <select
-            v-else
-            v-model.number="sensorConfig.TilterScrewCount"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          >
-            <option :value="3">{{ $t('plugins.hocusfocus.tilter.screwCountThree') }}</option>
-            <option :value="4">{{ $t('plugins.hocusfocus.tilter.screwCountFour') }}</option>
-          </select>
-          <p class="text-xs text-gray-500">
-            {{ $t('plugins.hocusfocus.tilter.tilterScrewCountDescription') }}
-          </p>
-        </div>
-
-        <!-- Positive Turn Direction (only for manual tilter) -->
-        <div v-if="shouldShowManualTilterUI()" class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400">{{
-            $t('plugins.hocusfocus.tilter.positiveTurnDirection')
-          }}</label>
-          <div
-            v-if="!isSensorConfigEditing"
-            class="px-3 py-2 bg-gray-700/30 border border-gray-600 rounded text-white text-sm"
-          >
-            {{ positiveTurnDirectionLabel }}
-          </div>
-          <select
-            v-else
-            v-model="sensorConfig.TilterPositiveTurnIsOutward"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          >
-            <option :value="false">{{ $t('plugins.hocusfocus.tilter.positiveTurnInward') }}</option>
-            <option :value="true">{{ $t('plugins.hocusfocus.tilter.positiveTurnOutward') }}</option>
-          </select>
-          <p class="text-xs text-gray-500">
-            {{ $t('plugins.hocusfocus.tilter.positiveTurnDirectionDescription') }}
-          </p>
-        </div>
-      </div>
-
-      <!-- Save Button (only show when editing) -->
-      <div v-if="isSensorConfigEditing" class="flex justify-end gap-2 mt-4">
-        <button
-          @click="saveSensorConfiguration"
-          :disabled="isSavingSensorConfig"
-          class="px-4 py-2 text-sm rounded border border-green-500/50 bg-green-500/20 text-green-400 hover:bg-green-500/30 disabled:opacity-50 transition-colors"
-        >
-          {{ isSavingSensorConfig ? $t('general.saving') : $t('general.save') }}
-        </button>
-      </div>
-
-      <!-- Error Message -->
-      <div v-if="sensorConfigError" class="mt-3 p-2 bg-red-500/10 border border-red-500/30 rounded">
-        <p class="text-red-400 text-xs">{{ sensorConfigError }}</p>
-      </div>
-    </div>
-
-    <!-- Apply Tilt Plane Section -->
-    <div
-      v-if="selectedDeviceId || shouldShowManualTilterUI()"
-      class="border border-gray-700 rounded-lg p-4 bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg"
-    >
-      <h3 class="font-bold text-base text-cyan-400 mb-4">
-        {{ $t('plugins.hocusfocus.tilter.applyTiltPlane') }}
-      </h3>
-
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Top-Left Z -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400">Top-Left Z (mm)</label>
-          <input
-            v-model.number="applyTiltPlane.topLeftZ"
-            type="number"
-            step="0.001"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-        </div>
-
-        <!-- Top-Right Z -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400">Top-Right Z (mm)</label>
-          <input
-            v-model.number="applyTiltPlane.topRightZ"
-            type="number"
-            step="0.001"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-        </div>
-
-        <!-- Bottom-Left Z -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400">Bottom-Left Z (mm)</label>
-          <input
-            v-model.number="applyTiltPlane.bottomLeftZ"
-            type="number"
-            step="0.001"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-        </div>
-
-        <!-- Bottom-Right Z -->
-        <div class="flex flex-col gap-2">
-          <label class="text-xs text-gray-400">Bottom-Right Z (mm)</label>
-          <input
-            v-model.number="applyTiltPlane.bottomRightZ"
-            type="number"
-            step="0.001"
-            class="px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white text-sm focus:border-cyan-500 focus:outline-none"
-          />
-        </div>
-      </div>
-
-      <!-- Screw travel reference (manual tilters only) -->
-      <div v-if="shouldShowManualTilterUI()" class="mt-4">
-        <label class="flex items-center gap-2 cursor-pointer">
-          <input
-            v-model="shiftToNonNegative"
-            type="checkbox"
-            class="rounded border-gray-600 text-cyan-500 focus:ring-cyan-500"
-          />
-          <span class="text-gray-300 text-sm">{{
-            $t('plugins.hocusfocus.tilter.shiftToNonNegative')
-          }}</span>
-        </label>
-        <p class="text-xs text-gray-500 mt-1">
-          {{ $t('plugins.hocusfocus.tilter.startFromSeatedDescription') }}
-        </p>
-      </div>
-
-      <!-- Calculate Button -->
-      <div class="flex justify-start gap-2 mt-4">
-        <button
-          @click="fetchFromAberrationInspector"
-          :disabled="!aberrationInspectorAvailable || isFetchingAberration"
-          class="px-4 py-2 text-sm rounded border border-purple-500/50 bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          :title="
-            aberrationInspectorAvailable
-              ? 'Fill corner Z values from last Aberration Inspector run'
-              : 'No Aberration Inspector data available'
-          "
-        >
-          {{
-            isFetchingAberration
-              ? $t('general.loading')
-              : $t('plugins.hocusfocus.tilter.fetchFromAberrationInspector')
-          }}
-        </button>
-        <button
-          @click="calculateTiltPlane"
-          :disabled="isCalculatingTiltPlane"
-          class="px-4 py-2 text-sm rounded border border-cyan-500/50 bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30 disabled:opacity-50 transition-colors"
-        >
-          {{
-            isCalculatingTiltPlane
-              ? $t('general.calculating')
-              : $t('plugins.hocusfocus.tilter.calculateActuatorPositions')
-          }}
-        </button>
-      </div>
-
-      <!-- Calculated Positions -->
-      <div
-        v-if="calculatedPositions"
-        class="mt-4 p-3 bg-green-500/10 border border-green-500/30 rounded"
-      >
-        <p class="text-green-400 text-sm font-semibold mb-2">
-          {{ $t('plugins.hocusfocus.tilter.calculatedPositions') }}:
-        </p>
-        <div
-          class="grid gap-2 text-xs text-green-300"
-          :class="calculatedScrews.length === 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'"
-        >
-          <div v-for="screw in calculatedScrews" :key="screw.label">
-            <div>
-              {{ screw.label }}: {{ screw.position?.toFixed(3) }} mm<span
-                v-if="shouldShowManualTilterUI() && screw.raw !== null && screw.showRaw"
-                class="text-gray-400 text-xs"
-              >
-                [calc: {{ screw.raw?.toFixed(3) }} mm]</span
-              >
-            </div>
-            <div v-if="shouldShowManualTilterUI()" class="mt-1 font-semibold">
-              <span
-                :class="
-                  screw.direction === 'inward'
-                    ? 'text-cyan-300'
-                    : screw.direction === 'outward'
-                      ? 'text-amber-300'
-                      : 'text-gray-400'
-                "
-              >
-                {{ screw.directionLabel }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Apply Button (hidden for manual tilter) -->
-        <button
-          v-if="!shouldShowManualTilterUI()"
-          @click="applyCalculatedPositions"
-          :disabled="isApplyingPositions"
-          class="mt-3 px-4 py-2 text-sm rounded border border-green-500/50 bg-green-500/20 text-green-400 hover:bg-green-500/30 disabled:opacity-50 transition-colors w-full"
-        >
-          {{
-            isApplyingPositions
-              ? $t('general.applying')
-              : $t('plugins.hocusfocus.tilter.applyThesePositionsToDevice')
-          }}
-        </button>
-      </div>
-
-      <!-- Error Message -->
-      <div
-        v-if="applyTiltPlaneError"
-        class="mt-3 p-2 bg-red-500/10 border border-red-500/30 rounded"
-      >
-        <p class="text-red-400 text-xs">{{ applyTiltPlaneError }}</p>
-      </div>
-    </div>
-
-    <!-- No Device Selected Message -->
-    <div v-if="!selectedDeviceId" class="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-      <p class="text-blue-400 font-medium text-center text-sm">
-        {{ $t('plugins.hocusfocus.tilter.noDeviceSelected') }}
+    <!-- Manual tilter geometry -->
+    <div v-if="isManualMode" :class="cardClass">
+      <h3 :class="headingClass">{{ L('manualTilterConfiguration') }}</h3>
+      <TilterPlot
+        :rotation="Number(sensorConfig.SensorRotation) || 0"
+        :sensor-width="Number(sensorConfig.SensorWidth) || 0"
+        :sensor-height="Number(sensorConfig.SensorHeight) || 0"
+        :screw-count="screwCount"
+      />
+      <p class="text-center text-xs text-gray-500">
+        {{
+          L('actuatorVisualizationLabel', {
+            radius: (Number(sensorConfig.TilterOuterRadius) || 0).toFixed(1),
+            rotation: (Number(sensorConfig.SensorRotation) || 0).toFixed(1),
+          })
+        }}
+      </p>
+      <p v-if="screwCount === 4" class="text-center text-xs text-amber-300/80">
+        {{ L('fourScrewHint') }}
       </p>
     </div>
 
-    <!-- Position Picker Modal -->
-    <div
-      v-if="showPositionPicker"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-      @click.self="closePositionPicker"
-    >
-      <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 w-96 shadow-xl">
-        <h3 class="text-lg font-bold text-cyan-400 mb-4">
-          Set Position {{ selectedPositionIndex }}
-        </h3>
-
-        <div class="mb-4">
-          <label class="block text-sm text-gray-300 mb-2"> New Position (0 - 1.200 mm) </label>
-          <input
-            v-model="positionInputValue"
-            type="number"
-            min="0"
-            max="1.2"
-            step="0.001"
-            placeholder="Enter position value"
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded text-white focus:border-cyan-500 focus:outline-none"
+    <!-- Configuration: saved on change, like the other HocusFocus tabs -->
+    <div :class="cardClass">
+      <h3 :class="headingClass">{{ L('configuration') }}</h3>
+      <div class="flex flex-col gap-3">
+        <HfNumberField
+          v-model="sensorConfig.SensorWidth"
+          :label="L('sensorWidth')"
+          :hint="L('unitMm')"
+          :min="1"
+          :max="100"
+          :step="0.1"
+          :decimals="1"
+          inputId="hf-tilter-width"
+          :status="statusOf('SensorWidth')"
+          :error="errorOf('SensorWidth')"
+          @change="saveConfig('SensorWidth')"
+        />
+        <HfNumberField
+          v-model="sensorConfig.SensorHeight"
+          :label="L('sensorHeight')"
+          :hint="L('unitMm')"
+          :min="1"
+          :max="100"
+          :step="0.1"
+          :decimals="1"
+          inputId="hf-tilter-height"
+          :status="statusOf('SensorHeight')"
+          :error="errorOf('SensorHeight')"
+          @change="saveConfig('SensorHeight')"
+        />
+        <HfNumberField
+          v-model="sensorConfig.SensorRotation"
+          :label="L('sensorRotation')"
+          :hint="L('sensorRotationDescription')"
+          :min="0"
+          :max="359.9"
+          :step="1"
+          :decimals="1"
+          inputId="hf-tilter-rotation"
+          :status="statusOf('SensorRotation')"
+          :error="errorOf('SensorRotation')"
+          @change="saveConfig('SensorRotation')"
+        />
+        <template v-if="isManualMode">
+          <HfNumberField
+            v-model="sensorConfig.TilterOuterRadius"
+            :label="L('tilterOuterRadius')"
+            :hint="L('unitMm')"
+            :min="1"
+            :max="200"
+            :step="0.5"
+            :decimals="1"
+            inputId="hf-tilter-radius"
+            :status="statusOf('TilterOuterRadius')"
+            :error="errorOf('TilterOuterRadius')"
+            @change="saveConfig('TilterOuterRadius')"
           />
-        </div>
-
-        <div v-if="positionError" class="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded">
-          <p class="text-red-400 text-sm">{{ positionError }}</p>
-        </div>
-
-        <div class="flex gap-2 justify-end">
-          <button
-            @click="closePositionPicker"
-            :disabled="isSettingPosition"
-            class="px-4 py-2 text-sm rounded border border-gray-600 bg-gray-700 text-gray-300 hover:bg-gray-600 disabled:opacity-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            @click="savePosition"
-            :disabled="isSettingPosition"
-            class="px-4 py-2 text-sm rounded border border-green-500/50 bg-green-500/20 text-green-400 hover:bg-green-500/30 disabled:opacity-50 transition-colors"
-          >
-            {{ isSettingPosition ? 'Setting...' : 'Set Position' }}
-          </button>
-        </div>
+          <HfNumberField
+            v-model="sensorConfig.TilterThreadPitch"
+            :label="L('tilterThreadPitch')"
+            :help="L('threadPitchHelp')"
+            :hint="L('unitMm')"
+            :min="0"
+            :max="5"
+            :step="0.05"
+            :decimals="2"
+            inputId="hf-tilter-pitch"
+            :status="statusOf('TilterThreadPitch')"
+            :error="errorOf('TilterThreadPitch')"
+            @change="saveConfig('TilterThreadPitch')"
+          />
+          <HfSelectField
+            v-if="backendSupportsScrewCount"
+            :model-value="String(screwCount)"
+            :label="L('tilterScrewCount')"
+            :help="L('tilterScrewCountDescription')"
+            :options="[
+              { value: '3', label: L('screwCountThree') },
+              { value: '4', label: L('screwCountFour') },
+            ]"
+            :status="statusOf('TilterScrewCount')"
+            :error="errorOf('TilterScrewCount')"
+            @change="onScrewCountChange"
+          />
+          <HfSelectField
+            :model-value="sensorConfig.TilterPositiveTurnIsOutward ? 'outward' : 'inward'"
+            :label="L('positiveTurnDirection')"
+            :help="L('positiveTurnDirectionDescription')"
+            :options="[
+              { value: 'inward', label: L('positiveTurnInward') },
+              { value: 'outward', label: L('positiveTurnOutward') },
+            ]"
+            :status="statusOf('TilterPositiveTurnIsOutward')"
+            :error="errorOf('TilterPositiveTurnIsOutward')"
+            @change="onDirectionChange"
+          />
+        </template>
       </div>
+      <p v-if="configError" class="text-sm text-red-400">{{ configError }}</p>
     </div>
+
+    <!-- Tilt plane: corner corrections in, screw targets out -->
+    <div :class="cardClass">
+      <h3 :class="headingClass">{{ L('applyTiltPlane') }}</h3>
+      <p class="text-xs text-gray-400">{{ L('tiltPlaneDescription') }}</p>
+      <div class="flex flex-col gap-3">
+        <HfNumberField
+          v-for="corner in CORNER_FIELDS"
+          :key="corner.key"
+          v-model="applyTiltPlane[corner.key]"
+          :label="L(corner.label)"
+          :hint="L('unitMm')"
+          :min="-5"
+          :max="5"
+          :step="0.001"
+          :decimals="3"
+          :inputId="`hf-tilter-${corner.key}`"
+        />
+        <HfToggleRow
+          v-if="isManualMode"
+          v-model="shiftToNonNegative"
+          :label="L('shiftToNonNegative')"
+          :help="L('startFromSeatedDescription')"
+        />
+      </div>
+
+      <p v-if="fetchedReversed" class="text-xs text-amber-300/80">{{ L('fetchedReversed') }}</p>
+
+      <div class="flex flex-wrap gap-2">
+        <button
+          class="tns-btn-secondary w-auto! px-4"
+          :disabled="!aberrationInspectorAvailable || isFetchingAberration"
+          :title="aberrationInspectorAvailable ? '' : L('aberrationUnavailable')"
+          @click="fetchFromAberrationInspector"
+        >
+          {{ isFetchingAberration ? L('loading') : L('fetchFromAberrationInspector') }}
+        </button>
+        <button
+          class="tns-btn-primary w-auto! px-4"
+          :disabled="isCalculatingTiltPlane || (!isManualMode && isMoving)"
+          @click="calculateTiltPlane"
+        >
+          {{ isCalculatingTiltPlane ? L('calculating') : L('calculateActuatorPositions') }}
+        </button>
+      </div>
+
+      <!-- Calculated positions -->
+      <div
+        v-if="calculatedPositions"
+        class="flex flex-col gap-2 rounded-lg border border-green-700/40 bg-green-900/15 p-3"
+      >
+        <p class="text-sm font-semibold text-green-400">{{ L('calculatedPositions') }}</p>
+        <div
+          v-for="screw in calculatedScrews"
+          :key="screw.label"
+          class="flex items-center justify-between gap-3 border-b border-gray-700/40 py-1 text-sm last:border-0"
+        >
+          <span class="font-semibold text-gray-300">{{ screw.label }}</span>
+          <span class="text-right">
+            <span class="font-mono text-gray-100">{{ formatMm(screw.position) }}</span>
+            <span v-if="calculatedForManual && screw.showRaw" class="block text-xs text-gray-500">
+              {{ L('calculatedRaw', { value: formatMm(screw.raw) }) }}
+            </span>
+            <span
+              v-if="calculatedForManual"
+              class="block text-xs font-semibold"
+              :class="
+                screw.direction === 'inward'
+                  ? 'text-cyan-300'
+                  : screw.direction === 'outward'
+                    ? 'text-amber-300'
+                    : 'text-gray-400'
+              "
+            >
+              {{ screw.directionLabel }}
+            </span>
+          </span>
+        </div>
+        <button
+          v-if="!calculatedForManual"
+          class="tns-btn-primary"
+          :disabled="isApplyingPositions || !isConnected || isMoving"
+          @click="applyCalculatedPositions"
+        >
+          {{
+            isApplyingPositions
+              ? L('applying')
+              : isMoving
+                ? L('waitForMove')
+                : L('applyThesePositionsToDevice')
+          }}
+        </button>
+      </div>
+
+      <p v-if="applyTiltPlaneError" class="text-sm text-red-400">{{ applyTiltPlaneError }}</p>
+    </div>
+
+    <!-- Set one ETA actuator -->
+    <Modal :show="showPositionPicker" maxWidth="max-w-sm" @close="closePositionPicker">
+      <template #header>
+        <h2 class="text-xl font-bold text-white">
+          {{ L('setPositionTitle', { n: selectedPositionIndex }) }}
+        </h2>
+      </template>
+      <template #body>
+        <div class="flex w-full flex-col gap-4">
+          <HfNumberField
+            v-model="positionInputValue"
+            :label="L('newPosition')"
+            :hint="L('newPositionHint', { max: ETA_TRAVEL.toFixed(3) })"
+            :min="0"
+            :max="ETA_TRAVEL"
+            :step="0.001"
+            :decimals="3"
+            inputId="hf-tilter-position"
+          />
+          <p v-if="positionError" class="text-sm text-red-400">{{ positionError }}</p>
+          <div class="flex justify-end gap-2">
+            <button
+              class="tns-btn-secondary w-auto! px-4"
+              :disabled="isSettingPosition"
+              @click="closePositionPicker"
+            >
+              {{ $t('general.cancel') }}
+            </button>
+            <button
+              class="tns-btn-primary w-auto! px-4"
+              :disabled="isSettingPosition || isMoving"
+              @click="savePosition"
+            >
+              {{ isSettingPosition ? L('applying') : L('setPosition') }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { ArrowPathIcon, CheckCircleIcon, LinkIcon, LinkSlashIcon } from '@heroicons/vue/24/outline';
 import { usePolling } from '@/composables/usePolling';
 import apiService from '@/services/apiService';
-import { useI18n } from 'vue-i18n';
+import { useSettingsStore } from '@/store/settingsStore';
+import Modal from '@/components/helpers/Modal.vue';
+import HfNumberField from './fields/HfNumberField.vue';
+import HfSelectField from './fields/HfSelectField.vue';
+import HfToggleRow from './fields/HfToggleRow.vue';
+import TilterPlot from './tilter/TilterPlot.vue';
+import { SCREW_LAYOUTS, ETA_TRAVEL } from './tilter/tilterGeometry';
 
 const { t } = useI18n();
+const settingsStore = useSettingsStore();
+const L = (key, params) => t(`plugins.hocusfocus.tilter.${key}`, params ?? {});
+
+const cardClass =
+  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
+const headingClass = 'font-bold text-base text-cyan-400';
+
+const CORNER_FIELDS = [
+  { key: 'topLeftZ', label: 'cornerTopLeft' },
+  { key: 'topRightZ', label: 'cornerTopRight' },
+  { key: 'bottomLeftZ', label: 'cornerBottomLeft' },
+  { key: 'bottomRightZ', label: 'cornerBottomRight' },
+];
+
+// Travel below this (mm) is shown as "no turn"; it rounds to 0.000 mm in the display
+const NO_TURN_THRESHOLD_MM = 0.0005;
+
+// localStorage keys, unchanged from earlier versions so saved state carries over
+const STORAGE = {
+  devices: 'tilterDevicesList',
+  deviceId: 'tilterSelectedDeviceId',
+  connected: 'tilterIsConnected',
+  tiltPlane: 'applyTiltPlane',
+  shift: 'tilterShiftToNonNegative',
+};
+
+// Storage can be unavailable (private mode, blocked site data); the panel must work without it.
+// The device list, the chosen device and the measured corners belong to one rig, so they are kept
+// per NINA instance; the screw travel reference is a personal preference and stays shared.
+const RIG_KEYS = new Set([STORAGE.devices, STORAGE.deviceId, STORAGE.connected, STORAGE.tiltPlane]);
+function storageKey(key) {
+  const instanceId = settingsStore.selectedInstanceId;
+  return RIG_KEYS.has(key) && instanceId ? `${key}:${instanceId}` : key;
+}
+
+function readStorage(key) {
+  try {
+    const scoped = storageKey(key);
+    const value = localStorage.getItem(scoped);
+    if (value !== null || scoped === key) return value;
+    // Earlier versions kept one unscoped entry for all instances: the first instance to read it
+    // adopts it, and it is removed so no other instance picks up that rig's devices.
+    const legacy = localStorage.getItem(key);
+    if (legacy !== null) {
+      localStorage.setItem(scoped, legacy);
+      localStorage.removeItem(key);
+    }
+    return legacy;
+  } catch {
+    return null;
+  }
+}
+function writeStorage(key, value) {
+  try {
+    if (value === null) localStorage.removeItem(storageKey(key));
+    else localStorage.setItem(storageKey(key), value);
+  } catch {
+    // Remembering is a convenience only
+  }
+}
+
+// The server's own reason when it gave one, otherwise the transport error
+const detailOf = (error) =>
+  error?.response?.data?.Error || error?.response?.data?.Message || error?.message || '';
+const withDetail = (message, error) => {
+  const detail = detailOf(error);
+  return detail ? `${message}: ${detail}` : message;
+};
+
+// The server refuses a new target while the actuators are still travelling
+const isStillMoving = (error) => error?.response?.data?.ErrorCode === 'moving';
+
+const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+const formatMm = (value) => (isFiniteNumber(value) ? `${value.toFixed(3)} mm` : '—');
+
+// ---- Device ---------------------------------------------------------------------------------
 
 const devices = ref([]);
 const selectedDeviceId = ref('');
@@ -926,21 +454,254 @@ const isConnecting = ref(false);
 const isDisconnecting = ref(false);
 const isConnected = ref(false);
 const deviceStatus = ref(null);
-const errorMessage = ref('');
-// Refresh status every 1 second while connected; started on connect,
-// stopped on disconnect and automatically on unmount
+const deviceError = ref('');
+
+const isBusy = computed(() => isScanning.value || isConnecting.value || isDisconnecting.value);
+// Without a connected ETA everything is calculated for a manual tilter
+const isManualMode = computed(() => !isConnected.value);
+
+// A move counts from the moment it is sent until the ETA reports it has settled. Status is polled
+// once a second, so right after sending the device can still read idle; without the pending move
+// the controls would unlock in that gap and take a second target mid-move.
+const MOVE_START_GRACE_MS = 3000;
+const pendingMove = ref(null); // { sentAt, seenMoving }
+const moveDone = ref(false);
+let moveDoneTimer = null;
+let lastReportedMoving = false;
+const isMoving = computed(() => !!deviceStatus.value?.IsMoving || !!pendingMove.value);
+
+function beginMove() {
+  pendingMove.value = { sentAt: Date.now(), seenMoving: false };
+  moveDone.value = false;
+  clearTimeout(moveDoneTimer);
+}
+
+function showMoveDone() {
+  moveDone.value = true;
+  clearTimeout(moveDoneTimer);
+  moveDoneTimer = setTimeout(() => (moveDone.value = false), 5000);
+}
+
+// Called with every status: ends a pending move once the device has been seen moving and stops,
+// or when a short move finished between two polls and it never read as moving at all.
+function trackMove(status) {
+  const moving = !!status.IsMoving;
+  const move = pendingMove.value;
+  if (move) {
+    if (moving) {
+      move.seenMoving = true;
+    } else if (move.seenMoving || Date.now() - move.sentAt > MOVE_START_GRACE_MS) {
+      pendingMove.value = null;
+      showMoveDone();
+    }
+  } else if (lastReportedMoving && !moving) {
+    // A move started elsewhere (another client) finished
+    showMoveDone();
+  }
+  lastReportedMoving = moving;
+}
+
+// Corner offsets of the ETA's current plane, in µm, keyed like TilterPlot's corners
+const etaCornerValues = computed(() => {
+  const s = deviceStatus.value;
+  const microns = (mm) => (isFiniteNumber(mm) ? `${Math.round(mm * 1000)} µm` : '—');
+  return {
+    TL: microns(s?.ImagePlaneTopLeftOffset),
+    TR: microns(s?.ImagePlaneTopRightOffset),
+    BL: microns(s?.ImagePlaneBottomLeftOffset),
+    BR: microns(s?.ImagePlaneBottomRightOffset),
+  };
+});
+
 const statusPoller = usePolling(
   () => {
-    if (isConnected.value && selectedDeviceId.value) {
-      return refreshStatus();
-    }
+    if (isConnected.value && selectedDeviceId.value) return refreshStatus();
   },
   1000,
   { autoStart: false, immediate: false }
 );
 
-// Sensor configuration state
-const sensorConfig = ref({
+function rememberDevices(list) {
+  devices.value = list;
+  writeStorage(STORAGE.devices, JSON.stringify(list));
+}
+
+async function loadDevices() {
+  try {
+    isScanning.value = true;
+    deviceError.value = '';
+    const response = await apiService.hocusfocus.getTilterDevices();
+    rememberDevices(Array.isArray(response?.Response) ? response.Response : []);
+  } catch (error) {
+    deviceError.value = withDetail(L('loadDevicesFailed'), error);
+  } finally {
+    isScanning.value = false;
+  }
+}
+
+async function scanDevices() {
+  if (isConnected.value) return;
+  try {
+    isScanning.value = true;
+    deviceError.value = '';
+    const response = await apiService.hocusfocus.scanTilterDevices();
+    const list = Array.isArray(response?.Response) ? response.Response : [];
+    rememberDevices(list);
+    // Keep the selection when the device is still there
+    if (!list.some((d) => String(d.DeviceId) === selectedDeviceId.value)) {
+      selectedDeviceId.value = '';
+    }
+  } catch (error) {
+    deviceError.value = withDetail(L('loadDevicesFailed'), error);
+  } finally {
+    isScanning.value = false;
+  }
+}
+
+function setConnected(connected) {
+  isConnected.value = connected;
+  writeStorage(STORAGE.connected, connected ? 'true' : 'false');
+  if (connected) {
+    statusPoller.start();
+  } else {
+    statusPoller.stop();
+    deviceStatus.value = null;
+    pendingMove.value = null;
+    moveDone.value = false;
+    lastReportedMoving = false;
+  }
+}
+
+async function toggleConnection() {
+  if (!selectedDeviceId.value) return;
+  if (isConnected.value) await disconnect();
+  else await connect();
+}
+
+async function connect() {
+  try {
+    isConnecting.value = true;
+    deviceError.value = '';
+    const response = await apiService.hocusfocus.connectTilterDevice(selectedDeviceId.value);
+    if (response?.Success === false) {
+      deviceError.value = response.Error || response.Message || L('connectFailed');
+      setConnected(false);
+      return;
+    }
+    setConnected(true);
+    await refreshStatus();
+  } catch (error) {
+    deviceError.value = withDetail(L('connectFailed'), error);
+    setConnected(false);
+  } finally {
+    isConnecting.value = false;
+  }
+}
+
+async function disconnect() {
+  try {
+    isDisconnecting.value = true;
+    deviceError.value = '';
+    const response = await apiService.hocusfocus.disconnectTilterDevice(selectedDeviceId.value);
+    if (response?.Success === false) {
+      deviceError.value = response.Error || response.Message || L('disconnectFailed');
+      return;
+    }
+    setConnected(false);
+    calculatedPositions.value = null;
+  } catch (error) {
+    deviceError.value = withDetail(L('disconnectFailed'), error);
+  } finally {
+    isDisconnecting.value = false;
+  }
+}
+
+async function refreshStatus() {
+  try {
+    const response = await apiService.hocusfocus.getTilterStatus(selectedDeviceId.value);
+    if (response?.Response) {
+      deviceStatus.value = response.Response;
+      deviceError.value = '';
+      trackMove(response.Response);
+    }
+  } catch (error) {
+    deviceError.value = withDetail(L('statusFailed'), error);
+  }
+}
+
+// A remembered connection is only trusted once the backend confirms it (it forgets its devices on
+// every NINA restart).
+async function restoreConnection() {
+  try {
+    const response = await apiService.hocusfocus.isTilterDeviceConnected(selectedDeviceId.value);
+    setConnected(!!response?.IsConnected);
+    if (response?.IsConnected) await refreshStatus();
+  } catch {
+    setConnected(false);
+  }
+}
+
+watch(selectedDeviceId, (value) => writeStorage(STORAGE.deviceId, value || null));
+
+// ---- Position picker ------------------------------------------------------------------------
+
+const showPositionPicker = ref(false);
+const selectedPositionIndex = ref(null);
+const positionInputValue = ref(0);
+const isSettingPosition = ref(false);
+const positionError = ref('');
+
+function openPositionPicker(index) {
+  selectedPositionIndex.value = index;
+  const current = deviceStatus.value?.[`CurrentPosition${index}`];
+  positionInputValue.value = isFiniteNumber(current) ? Number(current.toFixed(3)) : 0;
+  positionError.value = '';
+  showPositionPicker.value = true;
+}
+
+function closePositionPicker() {
+  showPositionPicker.value = false;
+  selectedPositionIndex.value = null;
+  positionError.value = '';
+}
+
+async function savePosition() {
+  if (isMoving.value) {
+    positionError.value = L('stillMoving');
+    return;
+  }
+  const value = Number(positionInputValue.value);
+  if (!Number.isFinite(value) || value < 0 || value > ETA_TRAVEL) {
+    positionError.value = L('positionOutOfRange', { max: ETA_TRAVEL.toFixed(3) });
+    return;
+  }
+  try {
+    isSettingPosition.value = true;
+    positionError.value = '';
+    // Only the changed actuator is sent; the others keep their positions
+    const response = await apiService.hocusfocus.setTilterPositions(selectedDeviceId.value, {
+      [`position${selectedPositionIndex.value}`]: value,
+    });
+    if (response?.Success === false) {
+      positionError.value = response.Error || response.Message || L('setPositionFailed');
+      return;
+    }
+    beginMove();
+    // An ETA result is current + correction; with one actuator moved it no longer holds
+    if (!calculatedForManual.value) calculatedPositions.value = null;
+    closePositionPicker();
+  } catch (error) {
+    positionError.value = isStillMoving(error)
+      ? L('stillMoving')
+      : withDetail(L('setPositionFailed'), error);
+  } finally {
+    isSettingPosition.value = false;
+  }
+}
+
+// ---- Configuration --------------------------------------------------------------------------
+
+const sensorConfig = reactive({
   SensorWidth: 36,
   SensorHeight: 24,
   SensorRotation: 0,
@@ -950,587 +711,152 @@ const sensorConfig = ref({
   TilterPositiveTurnIsOutward: false,
 });
 
-// Screw ring radius in SVG units (the visualization is drawn at a fixed scale)
-const RING_RADIUS = 160;
-
-// Screw layouts, mirroring TilterService.GetScrewPositions on the backend.
-// Angles are in SVG screen space (y grows downward), so screen_y = -math_y.
-// 3 screws: equilateral plate (P1 upper left, P2 bottom, P3 upper right).
-// 4 screws: one screw on each diagonal, under a sensor corner.
-const SCREW_LAYOUTS = {
-  3: [
-    { label: 'P1', angle: 210, fill: '#60a5fa', textFill: '#93c5fd' },
-    { label: 'P2', angle: 90, fill: '#4ade80', textFill: '#86efac' },
-    { label: 'P3', angle: 330, fill: '#fb923c', textFill: '#fed7aa' },
-  ],
-  4: [
-    { label: 'TL', angle: 315, fill: '#60a5fa', textFill: '#93c5fd' },
-    { label: 'TR', angle: 225, fill: '#4ade80', textFill: '#86efac' },
-    { label: 'BL', angle: 45, fill: '#fb923c', textFill: '#fed7aa' },
-    { label: 'BR', angle: 135, fill: '#c084fc', textFill: '#e9d5ff' },
-  ],
-};
-
-// Whether the backend understands the screw-count contract. Plugin versions older than the
-// 4-screw support ignore `screwCount` and always compute a 3-screw solution, so the option
-// stays hidden there rather than showing silently wrong guidance for a 4-screw plate.
+// Plugin versions before the 4-screw support ignore `screwCount` and always compute a 3-screw
+// solution, so the option stays hidden there rather than showing wrong guidance.
 const backendSupportsScrewCount = ref(false);
-
 const screwCount = computed(() =>
-  backendSupportsScrewCount.value && Number(sensorConfig.value.TilterScrewCount) === 4 ? 4 : 3
+  backendSupportsScrewCount.value && Number(sensorConfig.TilterScrewCount) === 4 ? 4 : 3
 );
 
-const screwCountLabel = computed(() =>
-  screwCount.value === 4
-    ? t('plugins.hocusfocus.tilter.screwCountFour')
-    : t('plugins.hocusfocus.tilter.screwCountThree')
-);
+const configError = ref('');
+const configStatus = ref({});
+const configErrors = ref({});
+const statusOf = (key) => configStatus.value[key] || '';
+const errorOf = (key) => configErrors.value[key] || '';
+const setStatus = (key, status) => (configStatus.value = { ...configStatus.value, [key]: status });
+const setFieldError = (key, message) =>
+  (configErrors.value = { ...configErrors.value, [key]: message });
 
-const positiveTurnDirectionLabel = computed(() =>
-  sensorConfig.value.TilterPositiveTurnIsOutward === true
-    ? t('plugins.hocusfocus.tilter.positiveTurnOutward')
-    : t('plugins.hocusfocus.tilter.positiveTurnInward')
-);
+async function loadSensorConfiguration() {
+  try {
+    configError.value = '';
+    const response = await apiService.hocusfocus.getSensorConfiguration();
+    if (!response?.Success) {
+      if (response?.Error) configError.value = response.Error;
+      return;
+    }
+    Object.assign(sensorConfig, {
+      SensorWidth: response.SensorWidth,
+      SensorHeight: response.SensorHeight,
+      SensorRotation: response.SensorRotation,
+      TilterOuterRadius: response.TilterOuterRadius ?? 60,
+      TilterThreadPitch: response.TilterThreadPitch ?? 0,
+      TilterScrewCount: response.TilterScrewCount === 4 ? 4 : 3,
+      TilterPositiveTurnIsOutward: response.TilterPositiveTurnIsOutward === true,
+    });
+    backendSupportsScrewCount.value =
+      response.TilterScrewCount !== undefined && response.TilterScrewCount !== null;
+  } catch (error) {
+    configError.value = withDetail(L('configLoadFailed'), error);
+  }
+}
 
-// Screw markers for the geometry visualization, laid out on the outer ring.
-// Labels are pulled back towards the centre so they stay inside the viewBox.
-const actuators = computed(() =>
-  SCREW_LAYOUTS[screwCount.value].map((screw) => {
-    const radians = (screw.angle * Math.PI) / 180;
-    const cx = 170 + RING_RADIUS * Math.cos(radians);
-    const cy = 170 + RING_RADIUS * Math.sin(radians);
-    return {
-      ...screw,
-      cx,
-      cy,
-      labelX: cx - 28 * Math.cos(radians),
-      labelY: cy - 28 * Math.sin(radians) + 5,
-    };
-  })
-);
+// The endpoint takes the whole configuration, so each edit sends all of it; edits in quick
+// succession collapse into one request, marked on the field that was changed last.
+let saveTimer = null;
+let pendingKey = null;
+function saveConfig(key) {
+  pendingKey = key;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(pushConfig, 300);
+}
 
-const isSensorConfigEditing = ref(false);
-const isSavingSensorConfig = ref(false);
-const sensorConfigError = ref('');
+async function pushConfig() {
+  const key = pendingKey;
+  setStatus(key, 'saving');
+  setFieldError(key, '');
+  try {
+    const response = await apiService.hocusfocus.setSensorConfiguration({
+      sensorWidth: Number(sensorConfig.SensorWidth),
+      sensorHeight: Number(sensorConfig.SensorHeight),
+      sensorRotation: Number(sensorConfig.SensorRotation) || 0,
+      tilterOuterRadius: Number(sensorConfig.TilterOuterRadius),
+      tilterThreadPitch: Number(sensorConfig.TilterThreadPitch),
+      tilterScrewCount: screwCount.value,
+      tilterPositiveTurnIsOutward: sensorConfig.TilterPositiveTurnIsOutward === true,
+    });
+    if (response?.Success === false) throw new Error(response.Error || L('configSaveFailed'));
+    setStatus(key, 'saved');
+    setTimeout(() => setStatus(key, ''), 1000);
+  } catch (error) {
+    setStatus(key, 'error');
+    setFieldError(key, withDetail(L('configSaveFailed'), error));
+  }
+}
 
-// Position picker modal state
-const showPositionPicker = ref(false);
-const selectedPositionIndex = ref(null); // 1, 2, or 3
-const positionInputValue = ref('');
-const isSettingPosition = ref(false);
-const positionError = ref('');
+function onScrewCountChange(value) {
+  sensorConfig.TilterScrewCount = Number(value) === 4 ? 4 : 3;
+  saveConfig('TilterScrewCount');
+}
 
-// Apply Tilt Plane
-const applyTiltPlane = ref({
-  topLeftZ: 0,
-  topRightZ: 0,
-  bottomLeftZ: 0,
-  bottomRightZ: 0,
-});
+function onDirectionChange(value) {
+  sensorConfig.TilterPositiveTurnIsOutward = value === 'outward';
+  saveConfig('TilterPositiveTurnIsOutward');
+}
+
+// ---- Tilt plane -----------------------------------------------------------------------------
+
+const applyTiltPlane = reactive({ topLeftZ: 0, topRightZ: 0, bottomLeftZ: 0, bottomRightZ: 0 });
+// Manual tilters are adjusted from fully seated screws, so travel is reported as inward-only by
+// default (sign depends on TilterPositiveTurnIsOutward); unchecking reports signed adjustments.
+const shiftToNonNegative = ref(true);
 const calculatedPositions = ref(null);
+// Whether the result on screen was calculated for a manual tilter (it must not follow a later
+// connect or disconnect, or ETA targets would be labelled as screw turns and vice versa)
+const calculatedForManual = ref(true);
 const isCalculatingTiltPlane = ref(false);
 const isApplyingPositions = ref(false);
 const applyTiltPlaneError = ref('');
 const aberrationInspectorAvailable = ref(false);
-// Manual tilters are adjusted from fully seated screws, so travel is reported as inward-only
-// by default (sign depends on TilterPositiveTurnIsOutward); unchecking reports signed adjustments.
-const shiftToNonNegative = ref(true);
 const isFetchingAberration = ref(false);
+// True when the last fetch flipped the signs for a focuser that moves toward the objective
+const fetchedReversed = ref(false);
 
-// Travel below this (mm) is shown as "no turn"; it rounds to 0.000 mm in the display
-const NO_TURN_THRESHOLD_MM = 0.0005;
+watch(applyTiltPlane, (value) => writeStorage(STORAGE.tiltPlane, JSON.stringify(value)), {
+  deep: true,
+});
+watch(shiftToNonNegative, (value) => writeStorage(STORAGE.shift, JSON.stringify(value)));
 
-// Calculated positions flattened into per-screw rows for display
+// Calculated positions flattened into per-screw rows
 const calculatedScrews = computed(() => {
   const result = calculatedPositions.value;
   if (!result) return [];
   const layout = SCREW_LAYOUTS[result.ScrewCount === 4 ? 4 : 3];
-  const pitch = Number(sensorConfig.value.TilterThreadPitch);
-  // Use the direction the backend calculated with, so a later config change can't relabel old values
+  const pitch = Number(sensorConfig.TilterThreadPitch);
+  // The direction the backend calculated with, so a later config change can't relabel old values
   const positiveIsOutward = result.PositiveTurnIsOutward === true;
   return layout.map((screw, index) => {
     const position = result[`Position${index + 1}`];
     const raw = result[`RawPosition${index + 1}`];
     let direction = null;
-    if (typeof position === 'number' && Math.abs(position) >= NO_TURN_THRESHOLD_MM) {
+    if (isFiniteNumber(position) && Math.abs(position) >= NO_TURN_THRESHOLD_MM) {
       direction = position > 0 === positiveIsOutward ? 'outward' : 'inward';
     }
     const turns = direction && pitch > 0 ? (Math.abs(position) / pitch).toFixed(2) : null;
     let directionLabel;
-    if (!direction) {
-      directionLabel = t('plugins.hocusfocus.tilter.noTurn');
-    } else if (direction === 'inward') {
-      directionLabel =
-        turns !== null
-          ? t('plugins.hocusfocus.tilter.turnsInward', { turns })
-          : t('plugins.hocusfocus.tilter.inward');
-    } else {
-      directionLabel =
-        turns !== null
-          ? t('plugins.hocusfocus.tilter.turnsOutward', { turns })
-          : t('plugins.hocusfocus.tilter.outward');
-    }
+    if (!direction) directionLabel = L('noTurn');
+    else if (direction === 'inward')
+      directionLabel = turns !== null ? L('turnsInward', { turns }) : L('inward');
+    else directionLabel = turns !== null ? L('turnsOutward', { turns }) : L('outward');
     return {
-      label: screw.label,
+      // 4-screw rows name the corner in full; the plot keeps the short tag
+      label: screw.nameKey ? L(screw.nameKey) : screw.label,
       position,
       raw,
       direction,
       directionLabel,
       // With the shift disabled the reported value is the raw one, so don't print it twice
-      showRaw: raw !== undefined && raw !== null && Math.abs(raw - position) > 1e-9,
+      showRaw: isFiniteNumber(raw) && Math.abs(raw - position) > 1e-9,
     };
   });
 });
 
-// Computed property to detect if selected device is manual tilter
-const isSelectedManualTilter = () => selectedDeviceId.value === '-1';
-
-// Computed property: show manual tilter UI whenever not connected to a device
-const shouldShowManualTilterUI = () => !isConnected.value;
-
-// Load devices on mount
-onMounted(async () => {
-  // Restore devices list and selected device from localStorage
-  const savedDevicesList = localStorage.getItem('tilterDevicesList');
-  const savedDeviceId = localStorage.getItem('tilterSelectedDeviceId');
-  const savedIsConnected = localStorage.getItem('tilterIsConnected');
-
-  if (savedDevicesList) {
-    // Use cached devices list
-    try {
-      devices.value = JSON.parse(savedDevicesList);
-    } catch (e) {
-      console.error('Error parsing saved devices list:', e);
-      await loadDevices(); // Reload if parsing fails
-    }
-  } else {
-    // First run - load devices from API
-    await loadDevices();
-  }
-
-  if (savedDeviceId) {
-    selectedDeviceId.value = savedDeviceId;
-    // Restore connection state immediately from cache
-    // Skip auto-connect for manual tilter (device -1) - always require explicit connection
-    if (savedIsConnected === 'true' && selectedDeviceId.value !== '-1') {
-      // Only auto-connect real devices (not manual tilter)
-      isConnected.value = true;
-      checkConnectionStatus();
-      statusPoller.start();
-    }
-
-    // Restore corner Z values for Apply Tilt Plane
-    const savedTiltPlane = localStorage.getItem('applyTiltPlane');
-    if (savedTiltPlane) {
-      try {
-        const tiltPlane = JSON.parse(savedTiltPlane);
-        applyTiltPlane.value = tiltPlane;
-      } catch (e) {
-        console.error('Error parsing saved tilt plane values:', e);
-      }
-    }
-  }
-
-  // Restore the screw travel reference choice
-  const savedShift = localStorage.getItem('tilterShiftToNonNegative');
-  if (savedShift !== null) {
-    try {
-      shiftToNonNegative.value = JSON.parse(savedShift) !== false;
-    } catch (e) {
-      console.error('Error parsing saved screw travel reference:', e);
-    }
-  }
-
-  // Load sensor configuration
-  await loadSensorConfiguration();
-
-  // Check if Aberration Inspector data is available
+async function checkAberrationInspector() {
   try {
-    const d = await apiService.hocusfocus.getTiltCornerMeasurements();
-    aberrationInspectorAvailable.value = !!d?.tiltCornerMeasurements?.length;
-  } catch (_) {
+    const data = await apiService.hocusfocus.getTiltCornerMeasurements();
+    aberrationInspectorAvailable.value = !!data?.tiltCornerMeasurements?.length;
+  } catch {
     aberrationInspectorAvailable.value = false;
-  }
-});
-
-// Watch for changes to selectedDeviceId and persist to localStorage
-watch(selectedDeviceId, (newValue) => {
-  if (newValue) {
-    localStorage.setItem('tilterSelectedDeviceId', newValue);
-  } else {
-    localStorage.removeItem('tilterSelectedDeviceId');
-  }
-});
-
-// Watch for changes to SensorRotation and clamp to 0-359°
-watch(
-  () => sensorConfig.value.SensorRotation,
-  (newValue) => {
-    // Default to 0 if empty, null, or undefined
-    if (newValue == null || newValue === '') {
-      sensorConfig.value.SensorRotation = 0;
-    } else if (newValue < 0) {
-      sensorConfig.value.SensorRotation = 0;
-    } else if (newValue > 359.9) {
-      sensorConfig.value.SensorRotation = 359.9;
-    }
-  }
-);
-
-// Watch for changes to corner Z values and persist to localStorage
-watch(
-  () => applyTiltPlane.value,
-  (newValue) => {
-    localStorage.setItem('applyTiltPlane', JSON.stringify(newValue));
-  },
-  { deep: true }
-);
-
-// Persist the screw travel reference choice
-watch(shiftToNonNegative, (newValue) => {
-  localStorage.setItem('tilterShiftToNonNegative', JSON.stringify(newValue));
-});
-
-async function loadDevices() {
-  try {
-    isScanning.value = true;
-    errorMessage.value = '';
-    const response = await apiService.hocusfocus.getTilterDevices();
-
-    if (response.Error) {
-      console.error('Error loading devices:', response.Error);
-      errorMessage.value = response.Error;
-      devices.value = [];
-    } else if (Array.isArray(response.Response)) {
-      devices.value = response.Response;
-      // Save devices list to localStorage
-      localStorage.setItem('tilterDevicesList', JSON.stringify(devices.value));
-    } else {
-      devices.value = [];
-    }
-  } catch (error) {
-    console.error('Error loading tilter devices:', error);
-    errorMessage.value = error.message || 'Failed to load devices';
-    devices.value = [];
-  } finally {
-    isScanning.value = false;
-  }
-}
-
-async function scanDevices() {
-  try {
-    isScanning.value = true;
-    errorMessage.value = '';
-    const response = await apiService.hocusfocus.scanTilterDevices();
-
-    if (response.Error) {
-      console.error('Scan error:', response.Error);
-      errorMessage.value = response.Error;
-      devices.value = [];
-    } else if (Array.isArray(response.Response)) {
-      devices.value = response.Response;
-      // Save devices list to localStorage
-      localStorage.setItem('tilterDevicesList', JSON.stringify(devices.value));
-      selectedDeviceId.value = ''; // Reset selection after scan
-    } else {
-      devices.value = [];
-    }
-  } catch (error) {
-    console.error('Error scanning tilter devices:', error);
-    errorMessage.value = error.message || 'Failed to scan devices';
-    devices.value = [];
-  } finally {
-    isScanning.value = false;
-  }
-}
-
-async function toggleConnection() {
-  if (!selectedDeviceId.value) return;
-
-  try {
-    if (isConnected.value) {
-      await disconnect();
-    } else {
-      await connect();
-    }
-  } catch (error) {
-    console.error('Connection error:', error);
-    errorMessage.value = error.message || 'Connection failed';
-  }
-}
-
-async function connect() {
-  try {
-    isConnecting.value = true;
-    errorMessage.value = '';
-
-    // Handle manual tilter - no actual connection needed.
-    // Radius, thread pitch and screw count come from the server-side sensor
-    // configuration, which is loaded on mount.
-    if (isSelectedManualTilter()) {
-      isConnected.value = true;
-      localStorage.setItem('tilterIsConnected', 'true');
-      return;
-    }
-
-    const response = await apiService.hocusfocus.connectTilterDevice(selectedDeviceId.value);
-
-    if (response.Error) {
-      errorMessage.value = response.Error;
-      isConnected.value = false;
-      localStorage.setItem('tilterIsConnected', 'false');
-    } else {
-      isConnected.value = true;
-      localStorage.setItem('tilterIsConnected', 'true');
-      await refreshStatus();
-      statusPoller.start();
-    }
-  } catch (error) {
-    console.error('Connect error:', error);
-    errorMessage.value = error.message || 'Failed to connect';
-    isConnected.value = false;
-    localStorage.setItem('tilterIsConnected', 'false');
-  } finally {
-    isConnecting.value = false;
-  }
-}
-
-async function disconnect() {
-  try {
-    isDisconnecting.value = true;
-    errorMessage.value = '';
-    statusPoller.stop();
-
-    // Handle manual tilter - no actual disconnection needed
-    if (isSelectedManualTilter()) {
-      isConnected.value = false;
-      deviceStatus.value = null;
-      localStorage.setItem('tilterIsConnected', 'false');
-      return;
-    }
-
-    const response = await apiService.hocusfocus.disconnectTilterDevice(selectedDeviceId.value);
-
-    if (response.Error) {
-      errorMessage.value = response.Error;
-    } else {
-      isConnected.value = false;
-      deviceStatus.value = null;
-      localStorage.setItem('tilterIsConnected', 'false');
-    }
-  } catch (error) {
-    console.error('Disconnect error:', error);
-    errorMessage.value = error.message || 'Failed to disconnect';
-  } finally {
-    isDisconnecting.value = false;
-  }
-}
-
-async function refreshStatus() {
-  // Skip status refresh for manual tilter (device -1)
-  if (selectedDeviceId.value === '-1') {
-    return;
-  }
-
-  try {
-    const response = await apiService.hocusfocus.getTilterStatus(selectedDeviceId.value);
-
-    if (response.Error) {
-      errorMessage.value = response.Error;
-    } else if (response.Response) {
-      deviceStatus.value = response.Response;
-    }
-  } catch (error) {
-    console.error('Status refresh error:', error);
-    errorMessage.value = error.message || 'Failed to get status';
-  }
-}
-
-async function checkConnectionStatus() {
-  if (!selectedDeviceId.value) return;
-
-  try {
-    const response = await apiService.hocusfocus.isTilterDeviceConnected(selectedDeviceId.value);
-
-    if (!response.Error && response.IsConnected) {
-      isConnected.value = true;
-      localStorage.setItem('tilterIsConnected', 'true');
-      await refreshStatus();
-      statusPoller.start();
-    } else {
-      isConnected.value = false;
-      localStorage.setItem('tilterIsConnected', 'false');
-    }
-  } catch (error) {
-    console.error('Error checking connection status:', error);
-    isConnected.value = false;
-    localStorage.setItem('tilterIsConnected', 'false');
-  }
-}
-
-async function loadSensorConfiguration() {
-  try {
-    sensorConfigError.value = '';
-    const response = await apiService.hocusfocus.getSensorConfiguration();
-
-    if (!response) {
-      console.warn('Sensor configuration API returned no response');
-      return;
-    }
-
-    if (response.Error) {
-      console.error('Error loading sensor configuration:', response.Error);
-      sensorConfigError.value = response.Error;
-    } else if (
-      response.Success &&
-      response.SensorWidth !== undefined &&
-      response.SensorWidth !== null
-    ) {
-      sensorConfig.value = {
-        SensorWidth: response.SensorWidth,
-        SensorHeight: response.SensorHeight,
-        SensorRotation: response.SensorRotation,
-        TilterOuterRadius: response.TilterOuterRadius ?? 60,
-        TilterThreadPitch: response.TilterThreadPitch ?? 0,
-        TilterScrewCount: response.TilterScrewCount === 4 ? 4 : 3,
-        TilterPositiveTurnIsOutward: response.TilterPositiveTurnIsOutward === true,
-      };
-      backendSupportsScrewCount.value =
-        response.TilterScrewCount !== undefined && response.TilterScrewCount !== null;
-      console.log('Sensor configuration loaded:', sensorConfig.value);
-    }
-  } catch (error) {
-    console.error('Error loading sensor configuration:', error);
-    sensorConfigError.value = error.message || 'Failed to load sensor configuration';
-  }
-}
-
-function toggleSensorConfigEdit() {
-  if (isSensorConfigEditing.value) {
-    // Cancel editing - reload original configuration
-    isSensorConfigEditing.value = false;
-    sensorConfigError.value = '';
-    loadSensorConfiguration();
-  } else {
-    // Start editing
-    isSensorConfigEditing.value = true;
-    sensorConfigError.value = '';
-  }
-}
-
-async function saveSensorConfiguration() {
-  try {
-    isSavingSensorConfig.value = true;
-    sensorConfigError.value = '';
-
-    // Ensure SensorRotation is a number, default to 0 if empty
-    const rotation = Number(sensorConfig.value.SensorRotation) || 0;
-    if (rotation < 0 || rotation > 359.9) {
-      sensorConfigError.value = 'Sensor rotation must be between 0 and 359.9 degrees';
-      isSavingSensorConfig.value = false;
-      return;
-    }
-
-    const response = await apiService.hocusfocus.setSensorConfiguration({
-      sensorWidth: sensorConfig.value.SensorWidth,
-      sensorHeight: sensorConfig.value.SensorHeight,
-      sensorRotation: rotation,
-      tilterOuterRadius: sensorConfig.value.TilterOuterRadius,
-      tilterThreadPitch: sensorConfig.value.TilterThreadPitch,
-      tilterScrewCount: screwCount.value,
-      tilterPositiveTurnIsOutward: sensorConfig.value.TilterPositiveTurnIsOutward === true,
-    });
-
-    if (response.Error) {
-      sensorConfigError.value = response.Error;
-    } else if (response.Success) {
-      isSensorConfigEditing.value = false;
-      // Configuration saved successfully, will be used in next status refresh
-    }
-  } catch (error) {
-    console.error('Error saving sensor configuration:', error);
-    sensorConfigError.value = error.message || 'Failed to save sensor configuration';
-  } finally {
-    isSavingSensorConfig.value = false;
-  }
-}
-
-function openPositionPicker(positionIndex) {
-  selectedPositionIndex.value = positionIndex;
-  const currentValue =
-    positionIndex === 1
-      ? deviceStatus.value?.CurrentPosition1
-      : positionIndex === 2
-        ? deviceStatus.value?.CurrentPosition2
-        : deviceStatus.value?.CurrentPosition3;
-  positionInputValue.value = currentValue ? currentValue.toString() : '0';
-  positionError.value = '';
-  showPositionPicker.value = true;
-}
-
-function closePositionPicker() {
-  showPositionPicker.value = false;
-  selectedPositionIndex.value = null;
-  positionInputValue.value = '';
-  positionError.value = '';
-}
-
-function validatePositionInput(value) {
-  const num = parseFloat(value);
-  if (isNaN(num)) {
-    return 'Please enter a valid number';
-  }
-  if (num < 0 || num > 1.2) {
-    return 'Position must be between 0 and 1.200';
-  }
-  return '';
-}
-
-async function savePosition() {
-  try {
-    const error = validatePositionInput(positionInputValue.value);
-    if (error) {
-      positionError.value = error;
-      return;
-    }
-
-    if (!selectedDeviceId.value || selectedPositionIndex.value === null) {
-      positionError.value = 'Invalid device or position';
-      return;
-    }
-
-    isSettingPosition.value = true;
-    positionError.value = '';
-
-    const newValue = parseFloat(positionInputValue.value);
-    // Only send the position being changed - others will be undefined/null
-    const positions = {};
-    if (selectedPositionIndex.value === 1) {
-      positions.position1 = newValue;
-    } else if (selectedPositionIndex.value === 2) {
-      positions.position2 = newValue;
-    } else if (selectedPositionIndex.value === 3) {
-      positions.position3 = newValue;
-    }
-
-    const response = await apiService.hocusfocus.setTilterPositions(
-      selectedDeviceId.value,
-      positions
-    );
-
-    if (response.Error) {
-      positionError.value = response.Error;
-    } else if (!response.Success) {
-      positionError.value = response.Message || 'Failed to set position';
-    } else {
-      closePositionPicker();
-      // Status will update on next refresh
-    }
-  } catch (error) {
-    console.error('Error saving position:', error);
-    positionError.value = error.message || 'Failed to save position';
-  } finally {
-    isSettingPosition.value = false;
   }
 }
 
@@ -1539,160 +865,171 @@ async function fetchFromAberrationInspector() {
     isFetchingAberration.value = true;
     applyTiltPlaneError.value = '';
     const data = await apiService.hocusfocus.getTiltCornerMeasurements();
-    if (!data || !data.tiltCornerMeasurements || data.tiltCornerMeasurements.length === 0) {
+    const corners = data?.tiltCornerMeasurements || [];
+    const microns = (side) => {
+      const corner = corners.find((c) => c.sensorSide === side);
+      // NaN arrives as the string "NaN"
+      return corner ? Number(corner.adjustmentRequiredMicrons) : undefined;
+    };
+    const values = {
+      topLeftZ: microns('TopLeft'),
+      topRightZ: microns('TopRight'),
+      bottomLeftZ: microns('BottomLeft'),
+      bottomRightZ: microns('BottomRight'),
+    };
+    if (Object.values(values).some((v) => v === undefined)) {
       aberrationInspectorAvailable.value = false;
-      applyTiltPlaneError.value = 'No Aberration Inspector data available';
+      applyTiltPlaneError.value = L('aberrationUnavailable');
       return;
     }
-    const corners = data.tiltCornerMeasurements;
-    const find = (side) => corners.find((c) => c.sensorSide === side);
-    const tl = find('TopLeft');
-    const tr = find('TopRight');
-    const bl = find('BottomLeft');
-    const br = find('BottomRight');
-    // adjustmentRequiredMicrons is in µm, inputs expect mm
-    applyTiltPlane.value.topLeftZ = tl ? +(tl.adjustmentRequiredMicrons / 1000).toFixed(6) : 0;
-    applyTiltPlane.value.topRightZ = tr ? +(tr.adjustmentRequiredMicrons / 1000).toFixed(6) : 0;
-    applyTiltPlane.value.bottomLeftZ = bl ? +(bl.adjustmentRequiredMicrons / 1000).toFixed(6) : 0;
-    applyTiltPlane.value.bottomRightZ = br ? +(br.adjustmentRequiredMicrons / 1000).toFixed(6) : 0;
+    // Without a focuser step size HocusFocus has no micron values; filling the corners anyway
+    // would send nulls that the backend reads as 0 and report a level plate.
+    if (!Object.values(values).every(Number.isFinite)) {
+      applyTiltPlaneError.value = L('noMicronsPerStep');
+      return;
+    }
+    // HocusFocus measures in focuser direction. The screw corrections here assume a focuser that
+    // moves the camera away from the objective as its position increases; for one that moves
+    // toward it, the same physical tilt reads with the opposite sign.
+    const sign = data.focuserIncreasesTowardObjective ? -1 : 1;
+    for (const [key, value] of Object.entries(values)) {
+      applyTiltPlane[key] = Number(((sign * value) / 1000).toFixed(6));
+    }
+    fetchedReversed.value = !!data.focuserIncreasesTowardObjective;
   } catch (error) {
-    console.error('Error fetching Aberration Inspector data:', error);
-    applyTiltPlaneError.value = error.message || 'Failed to fetch Aberration Inspector data';
+    applyTiltPlaneError.value = withDetail(L('fetchFailed'), error);
   } finally {
     isFetchingAberration.value = false;
   }
 }
 
 async function calculateTiltPlane() {
+  applyTiltPlaneError.value = '';
+  const corners = CORNER_FIELDS.map((c) => Number(applyTiltPlane[c.key]));
+  if (!corners.every(Number.isFinite)) {
+    applyTiltPlaneError.value = L('invalidCorners');
+    return;
+  }
+  const manual = isManualMode.value;
+  // The ETA calculation starts from the current actuator positions, which are meaningless mid-move
+  if (!manual && isMoving.value) {
+    applyTiltPlaneError.value = L('stillMoving');
+    return;
+  }
+  if (manual && !(Number(sensorConfig.TilterOuterRadius) > 0)) {
+    applyTiltPlaneError.value = L('outerRadiusRequired');
+    return;
+  }
   try {
     isCalculatingTiltPlane.value = true;
-    applyTiltPlaneError.value = '';
-
-    // Validate outer radius for manual tilter (or fallback)
-    if (shouldShowManualTilterUI()) {
-      if (!sensorConfig.value?.TilterOuterRadius || sensorConfig.value.TilterOuterRadius <= 0) {
-        applyTiltPlaneError.value =
-          'Please configure the Tilter Screw Outer Radius before calculating positions';
-        isCalculatingTiltPlane.value = false;
-        return;
-      }
-    }
-
-    // Only send outerRadius for manual tilter; ETA devices will fetch from hardware
-    const outerRadius = shouldShowManualTilterUI()
-      ? parseFloat(sensorConfig.value.TilterOuterRadius)
-      : undefined;
-
-    // Use device ID -1 for manual tilter (virtual device), or the selected device ID for real hardware
-    const deviceId = shouldShowManualTilterUI() ? -1 : parseInt(selectedDeviceId.value);
-
-    console.log('[calculateTiltPlane]', {
-      deviceId: deviceId,
-      usingManualTilterMode: shouldShowManualTilterUI(),
-      outerRadius: outerRadius,
-      screwCount: shouldShowManualTilterUI() ? screwCount.value : 3,
-      shiftToNonNegative: shouldShowManualTilterUI() ? shiftToNonNegative.value : true,
-      positiveTurnIsOutward: shouldShowManualTilterUI()
-        ? sensorConfig.value.TilterPositiveTurnIsOutward === true
-        : false,
-      cornerValues: {
-        topLeftZ: applyTiltPlane.value.topLeftZ,
-        topRightZ: applyTiltPlane.value.topRightZ,
-        bottomLeftZ: applyTiltPlane.value.bottomLeftZ,
-        bottomRightZ: applyTiltPlane.value.bottomRightZ,
-      },
-    });
-
     const response = await apiService.hocusfocus.applyTiltPlane(
-      deviceId,
-      applyTiltPlane.value.topLeftZ,
-      applyTiltPlane.value.topRightZ,
-      applyTiltPlane.value.bottomLeftZ,
-      applyTiltPlane.value.bottomRightZ,
-      outerRadius,
-      shouldShowManualTilterUI() ? true : undefined, // Skip offset to 0 for manual tilters
-      // ETA hardware is always a 3-screw plate; only manual tilters may be 4-screw
-      shouldShowManualTilterUI() ? screwCount.value : 3,
+      // -1 is the virtual manual device
+      manual ? -1 : parseInt(selectedDeviceId.value),
+      ...corners,
+      // ETA devices report their own radius
+      manual ? Number(sensorConfig.TilterOuterRadius) : undefined,
+      // Manual tilters have no fixed travel, so no offset into 0..1.2 mm
+      manual ? true : undefined,
+      // ETA hardware is always a 3-screw plate
+      manual ? screwCount.value : 3,
       // Real hardware always needs non-negative positions
-      shouldShowManualTilterUI() ? shiftToNonNegative.value : true,
-      // Only manual tilters have a screw direction; ETA positions are always non-negative
-      shouldShowManualTilterUI() ? sensorConfig.value.TilterPositiveTurnIsOutward === true : false
+      manual ? shiftToNonNegative.value : true,
+      // Only manual tilters have a screw direction
+      manual ? sensorConfig.TilterPositiveTurnIsOutward === true : false
     );
-
-    if (response.Error) {
-      applyTiltPlaneError.value = response.Error;
+    if (!response?.Success) {
+      applyTiltPlaneError.value = response?.Error || response?.Message || L('calculateFailed');
       calculatedPositions.value = null;
-    } else if (!response.Success) {
-      applyTiltPlaneError.value = response.Message || 'Failed to calculate positions';
-      calculatedPositions.value = null;
-    } else {
-      calculatedPositions.value = response;
+      return;
     }
+    calculatedPositions.value = response;
+    calculatedForManual.value = manual;
   } catch (error) {
-    console.error('Error calculating tilt plane:', error);
-    applyTiltPlaneError.value = error.message || 'Failed to calculate positions';
     calculatedPositions.value = null;
+    applyTiltPlaneError.value =
+      error?.code === 'exceedsTravel'
+        ? L('exceedsTravel', {
+            travel: Number(error.requiredTravel).toFixed(3),
+            max: ETA_TRAVEL.toFixed(1),
+          })
+        : withDetail(L('calculateFailed'), error);
   } finally {
     isCalculatingTiltPlane.value = false;
   }
 }
 
 async function applyCalculatedPositions() {
+  const result = calculatedPositions.value;
+  if (!result) return;
+  if (isMoving.value) {
+    applyTiltPlaneError.value = L('stillMoving');
+    return;
+  }
+  // 4-screw plates are manual-only and this path drives exactly three actuators
+  if (result.ScrewCount === 4) {
+    applyTiltPlaneError.value = L('fourScrewApplyUnsupported');
+    return;
+  }
   try {
-    if (!calculatedPositions.value) {
-      applyTiltPlaneError.value = 'No calculated positions available';
-      return;
-    }
-
-    // 4-screw plates are manual-only and this path drives exactly three actuators.
-    // Unreachable today (the Apply button is hidden in manual mode), but stated explicitly
-    // so a future change to the visibility rules cannot move 3 of 4 screws and report success.
-    if (calculatedPositions.value.ScrewCount === 4) {
-      applyTiltPlaneError.value = t('plugins.hocusfocus.tilter.fourScrewApplyUnsupported');
-      return;
-    }
-
     isApplyingPositions.value = true;
     applyTiltPlaneError.value = '';
-
-    // Use device ID -1 for manual tilter (virtual device), or the selected device ID for real hardware
-    const deviceId = shouldShowManualTilterUI() ? -1 : parseInt(selectedDeviceId.value);
-
-    const response = await apiService.hocusfocus.setTilterPositions(deviceId, {
-      position1: calculatedPositions.value.Position1,
-      position2: calculatedPositions.value.Position2,
-      position3: calculatedPositions.value.Position3,
-    });
-
-    if (response.Error) {
-      applyTiltPlaneError.value = response.Error;
-    } else if (!response.Success) {
-      applyTiltPlaneError.value = response.Message || 'Failed to apply positions';
-    } else {
-      // Success!
-      calculatedPositions.value = null;
-      // Position will update on next status refresh
+    const response = await apiService.hocusfocus.setTilterPositions(
+      parseInt(selectedDeviceId.value),
+      { position1: result.Position1, position2: result.Position2, position3: result.Position3 }
+    );
+    if (response?.Success === false) {
+      applyTiltPlaneError.value = response.Error || response.Message || L('applyFailed');
+      return;
     }
+    calculatedPositions.value = null;
+    beginMove();
   } catch (error) {
-    console.error('Error applying positions:', error);
-    applyTiltPlaneError.value = error.message || 'Failed to apply positions';
+    applyTiltPlaneError.value = isStillMoving(error)
+      ? L('stillMoving')
+      : withDetail(L('applyFailed'), error);
   } finally {
     isApplyingPositions.value = false;
   }
 }
+
+// ---- Startup --------------------------------------------------------------------------------
+
+onMounted(async () => {
+  const savedDevices = readStorage(STORAGE.devices);
+  let restored = false;
+  if (savedDevices) {
+    try {
+      devices.value = JSON.parse(savedDevices);
+      restored = Array.isArray(devices.value);
+    } catch {
+      restored = false;
+    }
+  }
+  if (!restored) await loadDevices();
+
+  // Corner values and the travel reference are remembered whether or not a device is used
+  const savedTiltPlane = readStorage(STORAGE.tiltPlane);
+  if (savedTiltPlane) {
+    try {
+      const saved = JSON.parse(savedTiltPlane);
+      for (const { key } of CORNER_FIELDS) {
+        const value = Number(saved?.[key]);
+        if (Number.isFinite(value)) applyTiltPlane[key] = value;
+      }
+    } catch {
+      // Ignore a corrupt entry
+    }
+  }
+  const savedShift = readStorage(STORAGE.shift);
+  if (savedShift !== null) shiftToNonNegative.value = savedShift !== 'false';
+
+  const savedDeviceId = readStorage(STORAGE.deviceId);
+  if (savedDeviceId && savedDeviceId !== '-1') {
+    selectedDeviceId.value = savedDeviceId;
+    if (readStorage(STORAGE.connected) === 'true') restoreConnection();
+  }
+
+  await loadSensorConfiguration();
+  await checkAberrationInspector();
+});
 </script>
-
-<style scoped>
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>

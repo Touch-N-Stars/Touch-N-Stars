@@ -3,7 +3,7 @@ import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from './settingsStore';
 import { useHistogramStore } from './histogramStore';
-import { thumbnailCacheKey } from '@/utils/imageHistoryUtils';
+import { historyEntryKey, thumbnailCacheKey } from '@/utils/imageHistoryUtils';
 
 // Deliberately a plain module-level Map instead of Pinia state: nothing renders the
 // cache itself, and keeping it out of the store avoids Vue proxying every blob entry.
@@ -18,6 +18,10 @@ export const useImagetStore = defineStore('imageStore', {
     isImageFetching: false,
     isSequenceImageFetching: false,
     pendingFetch: false,
+    // History entries deleted from disk in this session, keyed by historyEntryKey().
+    // The 2 s poll keeps delivering them until the backend flags them, so the list
+    // view needs this to hide them immediately and permanently.
+    deletedHistoryKeys: new Set(),
     lastImage: {
       index: 0,
       quality: 0,
@@ -294,6 +298,32 @@ export const useImagetStore = defineStore('imageStore', {
       thumbnailCache.clear();
     },
 
+    /**
+     * Deletes the file behind a history entry on the rig and hides the entry locally.
+     * `absIdx` addresses store.imageHistoryInfo, `typeIdx`/`imageType` address the
+     * Advanced API (see buildTypeIndexMap). Throws when the backend refuses.
+     */
+    async deleteHistoryImage({ absIdx, entry }) {
+      if (!entry?.Id) throw new Error('History entry has no id');
+      const response = await apiService.deleteHistoryImage(entry.Id, entry.Filename ?? null);
+      if (response?.Success === false) {
+        throw new Error(response?.Error || 'Image could not be deleted');
+      }
+
+      this.deletedHistoryKeys.add(historyEntryKey(absIdx, entry));
+
+      // The full-resolution cache may hold exactly this image; a later tap on a
+      // neighbouring tile must not be served a file that is gone.
+      if (this.lastImage.image && this.lastImage.index === absIdx) {
+        URL.revokeObjectURL(this.lastImage.image);
+        const histogramStore = useHistogramStore();
+        histogramStore.clearImageCache(this.lastImage.image);
+        this.lastImage.image = null;
+      }
+
+      return response;
+    },
+
     async validateImage(imageUrl) {
       return new Promise((resolve) => {
         if (!imageUrl) {
@@ -374,6 +404,8 @@ export const useImagetStore = defineStore('imageStore', {
       this.pendingFetch = false;
       this.lastImage.index = 0;
       this.lastImage.image = null;
+      // A new backend means a new history; its indices must not inherit old marks.
+      this.deletedHistoryKeys.clear();
       console.log('[ImageStore] Clearing image cache');
     },
   },

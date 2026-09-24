@@ -28,6 +28,7 @@
   "deleteFavorite": "function",
   "deleteFilesystemDirectory": "function",
   "deleteFilesystemFile": "function",
+  "deleteHistoryImage": "function",
   "deleteSetting": "function",
   "disconnectPHD2": "function",
   "disconnectPHD2Equipment": "function",

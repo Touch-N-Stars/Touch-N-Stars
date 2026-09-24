@@ -48,5 +48,8 @@ export const usePerihelionStore = defineStore('perihelion', {
     // installed (including Windows NINA users, if this panel ever lands upstream) would
     // just see confusing connection-refused errors instead of a clear "not installed" message.
     pluginInstalled: null,
+    // True when the plugin answered but rejected the request for a missing/wrong API token --
+    // distinct from pluginInstalled: false (nothing there to answer at all).
+    apiUnauthorized: false,
   }),
 });

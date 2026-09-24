@@ -44,9 +44,31 @@
           {{ t('components.sequence.stats') }}
         </span>
       </button>
+      <button
+        v-if="del.canDelete.value"
+        @click="toggleSelectionMode"
+        class="flex items-center gap-2 text-sm sm:text-base transition-all duration-150 ease-in-out focus:outline-none group bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2"
+        :class="
+          selectionMode
+            ? 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
+            : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400'
+        "
+        role="button"
+        :aria-pressed="selectionMode"
+        data-testid="image-history-select-mode"
+      >
+        <CheckCircleIcon class="w-5 h-5" />
+        <span class="border-b-2 border-transparent group-hover:border-current">
+          {{ t('components.sequence.imageHistoryDelete.select') }}
+        </span>
+      </button>
     </div>
+    <p v-if="selectionMode" class="px-4 sm:px-0 text-sm text-gray-400">
+      {{ t('components.sequence.imageHistoryDelete.selectHint') }}
+    </p>
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3 xl:gap-4 pt-4 pb-20"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3 xl:gap-4 pt-4"
+      :class="selectionMode ? 'pb-40' : 'pb-20'"
     >
       <div v-for="item in visibleImages" :key="item.index" class="relative">
         <SequenceImage
@@ -55,6 +77,13 @@
           :image="item.data"
           :stats="item.stats"
           :showStats="settingsStore.monitorViewSetting.showHistoryImageStats"
+          :deletable="del.canDelete.value"
+          :selectable="selectionMode"
+          :selected="selectedIndices.has(item.index)"
+          :hold-to-select="del.canDelete.value"
+          @delete="del.request({ index: item.index, stats: item.stats })"
+          @toggle-select="toggleSelected(item.index)"
+          @hold="enterSelectionMode(item.index)"
         />
         <div
           v-else
@@ -78,21 +107,96 @@
         ></div>
       </div>
     </div>
+
+    <!-- Selection action bar: pinned above the status bar while selecting. -->
+    <transition name="fade">
+      <div
+        v-if="selectionMode"
+        class="fixed left-0 right-0 z-30 px-3 pointer-events-none"
+        style="bottom: calc(var(--above-statusbar) + 0.5rem)"
+      >
+        <div
+          class="tns-card mx-auto max-w-3xl flex flex-wrap items-center gap-2 p-2 pointer-events-auto shadow-xl shadow-black/60"
+          data-testid="image-history-selection-bar"
+        >
+          <span class="text-sm text-gray-200 px-2 min-w-24">
+            {{
+              t('components.sequence.imageHistoryDelete.selectedCount', {
+                count: selectedIndices.size,
+              })
+            }}
+          </span>
+          <button
+            type="button"
+            class="tns-btn-secondary w-auto! px-3! text-sm!"
+            :disabled="del.isDeleting.value"
+            @click="selectAll"
+          >
+            {{ t('components.sequence.imageHistoryDelete.selectAll') }}
+          </button>
+          <button
+            type="button"
+            class="tns-btn-secondary w-auto! px-3! text-sm!"
+            :disabled="selectedIndices.size === 0 || del.isDeleting.value"
+            @click="clearSelection"
+          >
+            {{ t('components.sequence.imageHistoryDelete.clearSelection') }}
+          </button>
+          <span class="grow"></span>
+          <button
+            type="button"
+            class="tns-btn-danger w-auto! px-3! text-sm!"
+            :disabled="selectedIndices.size === 0 || del.isDeleting.value"
+            data-testid="image-history-delete-selected"
+            @click="deleteSelected"
+          >
+            {{ t('general.delete') }}
+          </button>
+          <button
+            type="button"
+            class="tns-btn-secondary w-auto! px-3! text-sm!"
+            :disabled="del.isDeleting.value"
+            @click="exitSelectionMode"
+          >
+            {{ t('components.sequence.imageHistoryDelete.done') }}
+          </button>
+        </div>
+      </div>
+    </transition>
+
+    <!-- One confirmation dialog for the whole grid instead of one per tile. -->
+    <ImageDeleteConfirm
+      :pending="del.pending.value"
+      :is-deleting="del.isDeleting.value"
+      :progress="del.progress.value"
+      @confirm="confirmDelete"
+      @cancel="del.cancel"
+    />
   </div>
 </template>
 
 <script setup>
 import { useI18n } from 'vue-i18n';
 import { ref, watch, onUnmounted, computed } from 'vue';
-import { ChevronUpIcon, ChevronDownIcon, ChartBarIcon, PhotoIcon } from '@heroicons/vue/24/outline';
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  ChartBarIcon,
+  CheckCircleIcon,
+  PhotoIcon,
+} from '@heroicons/vue/24/outline';
 import SequenceImage from '@/components/imageHistory/SequenceImage.vue';
+import ImageDeleteConfirm from '@/components/imageHistory/ImageDeleteConfirm.vue';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { useImagetStore } from '@/store/imageStore';
+import { useImageHistoryDelete } from '@/composables/useImageHistoryDelete';
 import { useImageFilter, passesImageFilter } from '@/composables/useImageFilter';
 import {
   buildTypeIndexMap,
+  historyEntryKey,
+  isHistoryEntryDeleted,
   runWithConcurrency,
   selectIndicesToLoad,
 } from '@/utils/imageHistoryUtils';
@@ -102,6 +206,7 @@ const sequenceStore = useSequenceStore();
 const imageStore = useImagetStore();
 const store = apiStore();
 const settingsStore = useSettingsStore();
+const del = useImageHistoryDelete();
 const { filter } = useImageFilter();
 
 // How many thumbnails are added per batch, and how many downloads run at once.
@@ -147,10 +252,63 @@ function toggleSortOrder() {
 const sortedIndices = computed(() => {
   const indices = [];
   for (let i = 0; i < enrichedStats.value.length; i++) {
-    if (passesImageFilter(enrichedStats.value[i], filter.value)) indices.push(i);
+    const stats = enrichedStats.value[i];
+    if (isHistoryEntryDeleted(stats, historyEntryKey(i, stats), imageStore.deletedHistoryKeys)) {
+      continue;
+    }
+    if (passesImageFilter(stats, filter.value)) indices.push(i);
   }
   return sortAscending.value ? indices : indices.reverse();
 });
+
+// --- selection mode ---------------------------------------------------------
+// Entered via the toolbar button or a long press on a tile. While active, tiles
+// show checkboxes and the action bar owns deleting; the per-tile trash button is hidden.
+const selectionMode = ref(false);
+const selectedIndices = ref(new Set()); // absolute history indices
+
+function enterSelectionMode(index) {
+  selectionMode.value = true;
+  if (Number.isInteger(index)) selectedIndices.value.add(index);
+}
+
+function exitSelectionMode() {
+  if (del.isDeleting.value) return;
+  selectionMode.value = false;
+  selectedIndices.value.clear();
+}
+
+function toggleSelectionMode() {
+  if (selectionMode.value) exitSelectionMode();
+  else enterSelectionMode();
+}
+
+function toggleSelected(index) {
+  if (selectedIndices.value.has(index)) selectedIndices.value.delete(index);
+  else selectedIndices.value.add(index);
+}
+
+// "All" means every image that passes the current filter, loaded or not.
+function selectAll() {
+  selectedIndices.value = new Set(sortedIndices.value);
+}
+
+function clearSelection() {
+  selectedIndices.value.clear();
+}
+
+function deleteSelected() {
+  const items = sortedIndices.value
+    .filter((index) => selectedIndices.value.has(index))
+    .map((index) => ({ index, stats: enrichedStats.value[index] }));
+  del.request(items);
+}
+
+async function confirmDelete() {
+  const { deleted } = await del.confirm();
+  for (const item of deleted) selectedIndices.value.delete(item.index);
+  if (selectionMode.value && selectedIndices.value.size === 0) selectionMode.value = false;
+}
 
 const visibleIndices = computed(() => sortedIndices.value.slice(0, visibleCount.value));
 

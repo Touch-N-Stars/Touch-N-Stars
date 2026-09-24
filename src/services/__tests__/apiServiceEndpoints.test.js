@@ -94,3 +94,25 @@ test('PINS daemon token falls back to the global localStorage token when the ins
   // ALL instances - only correct when they use the same token.
   assert.equal(calls[0].config.headers.Authorization, 'Bearer global-token');
 });
+
+test('deleting a history image is a DELETE by entry id with the file name as cross-check', async (t) => {
+  seedInstance({ ip: '10.0.0.5', port: 5000, apiPort: 1888 });
+  const calls = [];
+  t.mock.method(axios, 'delete', async (url, config) => {
+    calls.push({ url, config });
+    return { status: 200, data: { Success: true } };
+  });
+
+  await apiService.deleteHistoryImage('3f2b9c6e1d4a4f0b8e7c2a1d5b6e7f80', 'M31_0007.fits');
+  await apiService.deleteHistoryImage('a/b');
+
+  assert.equal(
+    calls[0].url,
+    'http://10.0.0.5:1888/v2/api/image-history/3f2b9c6e1d4a4f0b8e7c2a1d5b6e7f80'
+  );
+  assert.deepEqual(calls[0].config.params, { filename: 'M31_0007.fits' });
+  // The id lands in the path, so it is encoded; without a file name the
+  // parameter is omitted entirely.
+  assert.equal(calls[1].url, 'http://10.0.0.5:1888/v2/api/image-history/a%2Fb');
+  assert.deepEqual(calls[1].config.params, {});
+});

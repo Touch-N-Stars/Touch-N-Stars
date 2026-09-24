@@ -895,6 +895,26 @@
       },
       "running": "実行中",
       "imageHistory": "画像履歴",
+      "imageHistoryDelete": {
+        "button": "画像を削除",
+        "confirmTitle": "画像をディスクから削除しますか？",
+        "confirmMessage": "画像ファイルはリグから完全に削除されます。この操作は元に戻せません。",
+        "deleting": "削除中…",
+        "errorTitle": "画像を削除できませんでした",
+        "errorGeneric": "ファイルの削除中にリグがエラーを報告しました。",
+        "unsupported": "このリグは画像の削除に対応していません。Advanced API に画像削除アクションを備えた PINS のバージョンが必要です。",
+        "select": "選択",
+        "done": "完了",
+        "selectAll": "すべて選択",
+        "clearSelection": "解除",
+        "selectedCount": "{count}件選択中",
+        "selectHint": "画像をタップして選択します。タイルを長押ししても選択を開始できます。",
+        "confirmTitleMany": "{count}枚の画像をディスクから削除しますか？",
+        "confirmMessageMany": "画像ファイルは機材から完全に削除されます。元に戻せません。",
+        "moreFiles": "他{count}枚",
+        "deletingProgress": "削除中 {done}/{total}…",
+        "partialError": "{total}枚中{failed}枚の画像を削除できませんでした。"
+      },
       "duration": "継続時間",
       "temperatureShort": "温度",
       "targetName": "ターゲット",
@@ -1631,16 +1651,11 @@
         "value": "値",
         "invalidDate": "無効な日付"
       },
-      "hfr": "HFR",
-      "focuser_position": "位置",
       "IsStalled": "ストール",
       "HeatingPower": "ヒーター出力：",
       "BoardTemperature": "ボード温度：",
       "DcPower": "DC電源",
       "StepSize": "ステップサイズ",
-      "duration_seconds": "時間",
-      "filter": "フィルター",
-      "estimated": "推定",
       "settings": {
         "AutoFocusInitialOffsetSteps": "初期オフセットステップ数",
         "AutoFocusStepSize": "ステップサイズ",
@@ -2127,6 +2142,7 @@
       "settings": {
         "constellations_lines_visible": "星座線を表示",
         "azimuthal_lines_visible": "地平座標線を表示",
+        "compass_visible": "コンパスを表示",
         "equatorial_lines_visible": "赤道座標線を表示",
         "meridian_lines_visible": "子午線を表示",
         "ecliptic_lines_visible": "黄道を表示",
@@ -3953,10 +3969,6 @@
         "finalFocusDataSummary": "最終フォーカスデータのサマリー",
         "backfocusError": "バックフォーカス誤差：",
         "hfrDifference": "HFR差：",
-        "innerHFR": "内側HFR：",
-        "outerHFR": "外側HFR：",
-        "moveSensor": "（センサーを移動",
-        "flattener": "フラットナー）",
         "tiltCornerMeasurements": "チルトコーナー測定",
         "sensorSide": "センサー側",
         "focuserPosition": "フォーカサー位置",
@@ -3966,16 +3978,31 @@
         "unitMicrons": "µm",
         "unitSteps": "ステップ"
       },
+      "sensorModel": {
+        "pixelSize": "ピクセルサイズ"
+      },
+      "eccentricity": {
+        "stars": "星"
+      },
+      "optimizer": {
+        "source": "ソース",
+        "mode": "モード",
+        "filter": "フィルター",
+        "gain": "ゲイン",
+        "stars": "星",
+        "cancel": "キャンセル",
+        "close": "クローズ",
+        "yes": "はい",
+        "no": "いいえ"
+      },
       "aberrationInspectorOptions": {
         "loading": "収差インスペクターオプションを読み込み中...",
-        "noOptions": "収差インスペクターオプションはまだ利用できません。",
         "error": "エラー：",
-        "inspectorSettings": "インスペクター設定",
         "micronsPerFocuserStep": "フォーカサーステップあたりのマイクロン数",
         "retry": "再試行",
         "resetToDefaults": "デフォルトにリセット",
         "resetting": "リセット中...",
-        "autoPlaceholder": "自動",
+        "cancel": "キャンセル",
         "centerFocuserBeforeRun": "実行前のセンターフォーカサー",
         "detailedAnalysisExposureSeconds": "詳細分析露光時間（秒）",
         "framesPerPoint": "ポイントあたりのフレーム数",
@@ -3992,11 +4019,9 @@
         "error": "エラー：",
         "retry": "再試行",
         "basicSettings": "基本設定",
-        "hfrValidation": "HFR検証"
-      },
-      "directoryBrowser": {
-        "browse": "参照...",
-        "error": "ディレクトリピッカーを開けませんでした"
+        "hfrValidation": "HFR検証",
+        "cancel": "キャンセル",
+        "save": "保存"
       },
       "starDetection": {
         "loading": "星検出オプションを読み込み中...",
@@ -4011,7 +4036,9 @@
         "noiseReducedStarMeasurement": "ノイズ低減星測定",
         "debugMode": "デバッグモード",
         "simpleModeSettings": "シンプルモード設定",
+        "cancel": "キャンセル",
         "noiseLevel": "ノイズレベル",
+        "pixelScale": "ピクセルスケール",
         "useOptimizedSettings": "最適化された設定を使用する"
       },
       "tilter": {
@@ -4020,14 +4047,10 @@
         "scanTooltip": "デバイスをスキャン",
         "connect": "接続",
         "disconnect": "切断",
-        "deviceInfo": "デバイス情報（ベータ - 慎重に使用してください）",
         "status": "ステータス",
-        "connected": "接続済み",
         "moving": "移動中",
         "idle": "アイドル",
         "currentPositions": "現在の位置",
-        "noDeviceSelected": "最初にデバイスを選択してください",
-        "deviceNotConnected": "コントロールを表示するにはデバイスに接続してください",
         "configuration": "設定",
         "sensorWidth": "センサー幅",
         "sensorHeight": "センサー高さ",
@@ -4058,14 +4081,7 @@
         "calculateActuatorPositions": "アクチュエーター位置を計算",
         "calculatedPositions": "計算済み位置",
         "applyThesePositionsToDevice": "これらの位置をデバイスに適用",
-        "actuatorVisualizationLabel": "アクチュエーター {radius}mm 半径 • センサー回転 {rotation}° • 上面図",
-        "calculatingPositions": "計算中...",
-        "applyingPositions": "適用中...",
-        "savingConfiguration": "保存中..."
-      },
-      "common": {
-        "error": "エラー：",
-        "loading": "読み込み中..."
+        "actuatorVisualizationLabel": "アクチュエーター {radius}mm 半径 • センサー回転 {rotation}° • 上面図"
       }
     },
     "tenmicron": {
@@ -5205,6 +5221,135 @@
     "screenLock": {
       "unlock": "ロック解除",
       "holdToUnlock": "{seconds}秒長押しで解除"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "NINA Target Schedulerプラグインからプロジェクト、ターゲット、進捗をリアルタイム表示。",
+      "actions": {
+        "refresh": "更新",
+        "refreshing": "更新中…",
+        "showSchedule": "スケジュールを表示",
+        "hideSchedule": "スケジュールを非表示",
+        "expandHeader": "展開",
+        "collapseHeader": "折りたたむ",
+        "cancel": "キャンセル"
+      },
+      "labels": {
+        "apiPort": "Scheduler APIポート",
+        "profile": "プロファイル",
+        "active": "アクティブ",
+        "lastUpdated": "最終更新",
+        "loading": "プロジェクトを読み込み中…",
+        "noProjects": "このプロファイルのプロジェクトが見つかりません。",
+        "activeProjects": "アクティブなプロジェクト",
+        "targets": "ターゲット",
+        "completion": "完了率",
+        "legendAccepted": "承認済み",
+        "legendPending": "取得済み、確認待ち",
+        "integrationTime": "積算時間",
+        "unofficialDisclaimer": "非公式ビューア — Target Schedulerプロジェクトとは無関係です。",
+        "dataFrom": "データ提供元",
+        "readOnlyNote": "読み取り専用、ここでの操作はスケジュールを変更しません",
+        "searchPlaceholder": "プロジェクト・ターゲットを検索…",
+        "clearSearch": "検索をクリア",
+        "allStates": "すべて",
+        "noResults": "検索条件に一致するプロジェクトやターゲットがありません。",
+        "remainingTime": "残り",
+        "completionFilterLabel": "完了率:",
+        "notStarted": "未着手",
+        "inProgress": "進行中",
+        "done": "完了",
+        "legendTitle": "凡例",
+        "legendBarsTitle": "進捗バーの色",
+        "legendDotsTitle": "ステータスドットの色（プロジェクト・ターゲット）",
+        "legendActive": "アクティブ",
+        "legendInactive": "非アクティブ",
+        "legendDraft": "下書き（プロジェクトのみ）",
+        "legendClosed": "クローズ（プロジェクトのみ）",
+        "creditNote": "Target Schedulerプラグインとそのスケジューリングエンジンの功績はすべて",
+        "filtersToggle": "フィルター",
+        "stateFilterLabel": "状態:",
+        "filterNameFilterLabel": "フィルター:",
+        "mosaicFilterLabel": "種類:",
+        "scheduledFilterLabel": "スケジュール:",
+        "mosaicOnly": "モザイク",
+        "singlePanelOnly": "単一パネル",
+        "scheduledTonightOnly": "今夜予定",
+        "sortLabel": "並べ替え:",
+        "sortName": "名前",
+        "sortPriority": "優先度",
+        "sortCompletion": "完了率",
+        "sortRemaining": "残り時間",
+        "sortAscending": "昇順に並べ替え",
+        "sortDescending": "降順に並べ替え",
+        "exportMarkdown": "Markdownとしてコピー",
+        "exportCopiedTitle": "コピーしました",
+        "exportCopiedMessage": "スケジュールの進捗をMarkdown形式でクリップボードにコピーしました。",
+        "exportFailedTitle": "コピー失敗",
+        "exportFailedMessage": "クリップボードにコピーできませんでした。",
+        "apiDocsLink": "Target Scheduler APIドキュメント",
+        "setupTitle": "Target Scheduler APIを設定",
+        "setupStep1": "NINAでTarget Schedulerプラグインのオプションを開き、APIサーバーを有効にしてください。",
+        "setupStep2": "表示されたポート番号を控えてください（デフォルト8188）。",
+        "setupStep3": "上のポートを入力すると自動的に接続されます。",
+        "welcomeTitle": "Target Scheduler Viewerへようこそ",
+        "welcomeSubtitle": "このプラグインはNINA Target Schedulerのプロジェクト、ターゲット、撮影進捗を表示します。接続先を教えるだけで動作します。",
+        "welcomeTrying": "ポート{port}を試しています…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}: {desired}枚中{accepted}枚承認",
+        "integrated": "{time} 積算"
+      },
+      "targetCard": {
+        "active": "アクティブ",
+        "inactive": "非アクティブ",
+        "hide": "非表示",
+        "stats": "統計",
+        "loadingStats": "統計を読み込み中…",
+        "colFilter": "フィルター",
+        "colExp": "露光",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Ecc.",
+        "belowAutoAccept": "自動承認しきい値未満（フィールドの意味は未確認）",
+        "aboveAutoAccept": "自動承認しきい値以上（フィールドの意味は未確認）",
+        "noAcceptedFrames": "承認済みフレームはまだありません。",
+        "integratedOf": "{time} / {expected} 積算",
+        "remaining": "残り {time}"
+      },
+      "projectCard": {
+        "priority": "優先度",
+        "integrationAccepted": "積算（承認済み）",
+        "integrationExpected": "積算（予定）",
+        "integrationRemaining": "積算（残り）",
+        "description": "説明",
+        "minimumTime": "最小時間",
+        "filterSwitchFrequency": "フィルター切替頻度",
+        "ditherEvery": "ディザー間隔",
+        "meridianWindow": "南中ウィンドウ",
+        "horizon": "地平線",
+        "horizonCustom": "カスタム、+{offset}°",
+        "altitudeLimits": "高度制限",
+        "grading": "評価",
+        "smartExposureOrder": "スマート露光順",
+        "mosaic": "モザイク",
+        "minutes": "{count} 分",
+        "exposures": "{count} 回露光",
+        "emptyValue": "—",
+        "off": "オフ",
+        "on": "オン",
+        "enabled": "有効",
+        "disabled": "無効",
+        "yes": "はい",
+        "no": "いいえ",
+        "noTargets": "このプロジェクトにターゲットはありません。"
+      },
+      "schedulePreview": {
+        "disclaimer": "Schedulerによる今夜の予測プランです。更新のたびに再計算され、NINAが実際に撮影している内容の記録ではありません。",
+        "learnMore": "詳しく見る",
+        "noScheduleData": "スケジュールデータがありません。",
+        "waitingNotVisible": "待機中 — ターゲットはまだ見えていません"
+      }
     }
   },
   "pinsDevices": {
@@ -5785,7 +5930,10 @@
       "cobsCountSynced": "{count} 件の彗星をキャッシュ済み · {status}",
       "refreshedAgo": "{when}に更新",
       "neverRefreshed": "未更新",
-      "confirmClearCobs": "キャッシュされたCOBS観測データをすべて削除しますか? 次に閲覧タブを更新するまで、実視等級バッジは空になります。"
+      "confirmClearCobs": "キャッシュされたCOBS観測データをすべて削除しますか? 次に閲覧タブを更新するまで、実視等級バッジは空になります。",
+      "connectionSection": "接続",
+      "apiTokenHint": "このパネルを初めて開いたときに自動的に入力されます。2台目の端末でのみ手動入力が必要です -- 1台目の端末のこの項目からコピーするか、Windows NINAのプラグインのオプションページから取得してください。",
+      "apiTokenRequired": "このPerihelionのインストールにはAPIトークンが必要です。続行するには設定で入力してください。"
     }
   }
 }

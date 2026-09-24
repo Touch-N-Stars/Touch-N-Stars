@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -11,7 +11,7 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchCometActivity(targetName) {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/objects/activity`, {
+  const response = await perihelionApi.get(`${PERIHELION_URL}/objects/activity`, {
     params: { targetName },
   });
   return {

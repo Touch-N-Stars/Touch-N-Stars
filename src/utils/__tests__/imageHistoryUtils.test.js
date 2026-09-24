@@ -2,9 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   buildTypeIndexMap,
+  historyEntryKey,
+  isHistoryEntryDeleted,
   thumbnailCacheKey,
   runWithConcurrency,
   selectIndicesToLoad,
+  runDeleteBatch,
 } from '../imageHistoryUtils.js';
 
 test('buildTypeIndexMap counts per image type', () => {
@@ -149,4 +152,60 @@ test('runWithConcurrency stops picking up items once shouldStop turns true', asy
 test('runWithConcurrency handles an empty or missing queue', async () => {
   await runWithConcurrency([], async () => assert.fail('must not be called'));
   await runWithConcurrency(undefined, async () => assert.fail('must not be called'));
+});
+
+test('historyEntryKey ties the index to the capture date', () => {
+  // Same index, different capture: after a NINA restart the history starts at 0
+  // again, so a bare index would let a new image inherit an old "deleted" mark.
+  const oldKey = historyEntryKey(3, { Date: '2026-09-13T22:10:00' });
+  const newKey = historyEntryKey(3, { Date: '2026-09-14T01:05:00' });
+  assert.notEqual(oldKey, newKey);
+  assert.equal(historyEntryKey(3, { Date: '2026-09-13T22:10:00' }), oldKey);
+  assert.equal(historyEntryKey(0, null), '0:');
+});
+
+test('isHistoryEntryDeleted honours the backend flag and the local marks', () => {
+  const deleted = new Set([historyEntryKey(1, { Date: 'd1' })]);
+
+  assert.equal(
+    isHistoryEntryDeleted({ Date: 'd1' }, historyEntryKey(1, { Date: 'd1' }), deleted),
+    true
+  );
+  assert.equal(
+    isHistoryEntryDeleted({ Date: 'd2' }, historyEntryKey(2, { Date: 'd2' }), deleted),
+    false
+  );
+  assert.equal(isHistoryEntryDeleted({ IsDeleted: true }, 'x', new Set()), true);
+  // A backend that does not know the flag, and no local mark: the image is shown.
+  assert.equal(isHistoryEntryDeleted({}, 'x', undefined), false);
+  assert.equal(isHistoryEntryDeleted(null, 'x', new Set()), false);
+});
+
+test('runDeleteBatch deletes sequentially, keeps going after a failure and reports progress', async () => {
+  const order = [];
+  const progress = [];
+  const result = await runDeleteBatch(
+    [1, 2, 3],
+    async (item) => {
+      order.push(item);
+      if (item === 2) throw new Error('boom');
+    },
+    { onProgress: (done, total) => progress.push([done, total]) }
+  );
+  assert.deepEqual(order, [1, 2, 3]);
+  assert.deepEqual(result.deleted, [1, 3]);
+  assert.equal(result.failed.length, 1);
+  assert.equal(result.failed[0].item, 2);
+  assert.equal(result.failed[0].error.message, 'boom');
+  assert.deepEqual(progress, [
+    [0, 3],
+    [1, 3],
+    [2, 3],
+    [3, 3],
+  ]);
+});
+
+test('runDeleteBatch with nothing to do resolves empty', async () => {
+  const result = await runDeleteBatch([], async () => {});
+  assert.deepEqual(result, { deleted: [], failed: [] });
 });

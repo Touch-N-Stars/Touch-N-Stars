@@ -845,6 +845,26 @@
       },
       "running": "ВИКОНУЄТЬСЯ",
       "imageHistory": "Історія зображень",
+      "imageHistoryDelete": {
+        "button": "Видалити зображення",
+        "confirmTitle": "Видалити зображення з диска?",
+        "confirmMessage": "Файл зображення буде назавжди видалено з рига. Цю дію неможливо скасувати.",
+        "deleting": "Видалення…",
+        "errorTitle": "Не вдалося видалити зображення",
+        "errorGeneric": "Риг повідомив про помилку під час видалення файлу.",
+        "unsupported": "Цей риг не підтримує видалення зображень. Потрібна версія PINS, Advanced API якої надає дію видалення зображень.",
+        "select": "Вибрати",
+        "done": "Готово",
+        "selectAll": "Вибрати все",
+        "clearSelection": "Очистити",
+        "selectedCount": "Вибрано: {count}",
+        "selectHint": "Торкніться зображень, щоб вибрати їх. Довге натискання на плитку також починає вибір.",
+        "confirmTitleMany": "Видалити {count} зображень з диска?",
+        "confirmMessageMany": "Файли зображень буде остаточно видалено з обладнання. Це неможливо скасувати.",
+        "moreFiles": "+{count} ще",
+        "deletingProgress": "Видалення {done} з {total}…",
+        "partialError": "Не вдалося видалити {failed} з {total} зображень."
+      },
       "duration": "Тривалість",
       "temperatureShort": "Темп",
       "targetName": "Ціль",
@@ -1651,16 +1671,11 @@
         "FocuserAlias": "Псевдонім фокусера",
         "deviceSpecific": "Налаштування пристрою"
       },
-      "hfr": "HFR",
-      "focuser_position": "Позиція",
       "IsStalled": "Заблоковано",
       "HeatingPower": "Потужність нагріву:",
       "BoardTemperature": "Температура плати:",
       "DcPower": "Живлення DC",
       "StepSize": "Розмір кроку",
-      "duration_seconds": "Тривалість",
-      "filter": "Фільтр",
-      "estimated": "оцін.",
       "indi": {
         "settings": "Налаштування фокусера"
       }
@@ -2098,6 +2113,7 @@
       "settings": {
         "constellations_lines_visible": "Показати сузір'я",
         "azimuthal_lines_visible": "Показати азимутальні лінії",
+        "compass_visible": "Показати компас",
         "equatorial_lines_visible": "Показати екваторіальні лінії",
         "meridian_lines_visible": "Показати меридіан",
         "ecliptic_lines_visible": "Показати екліптику",
@@ -3751,10 +3767,6 @@
         "finalFocusDataSummary": "Підсумок фінальних даних фокусу",
         "backfocusError": "Похибка бекфокусу:",
         "hfrDifference": "Різниця HFR:",
-        "innerHFR": "Внутрішній HFR:",
-        "outerHFR": "Зовнішній HFR:",
-        "moveSensor": "(Перемістити сенсор",
-        "flattener": "флетенер)",
         "tiltCornerMeasurements": "Вимірювання нахилу по кутах",
         "sensorSide": "Сторона сенсора",
         "focuserPosition": "Позиція фокусера",
@@ -3764,16 +3776,20 @@
         "unitMicrons": "мкм",
         "unitSteps": "кроків"
       },
+      "optimizer": {
+        "filter": "Фільтр",
+        "gain": "Підсилення (Gain)",
+        "cancel": "Скасувати",
+        "close": "Закрити"
+      },
       "aberrationInspectorOptions": {
         "loading": "Завантаження параметрів інспектора аберацій...",
-        "noOptions": "Параметри інспектора аберацій ще недоступні.",
         "error": "Помилка:",
-        "inspectorSettings": "Налаштування інспектора",
         "micronsPerFocuserStep": "Мікрони на крок фокусера",
         "retry": "Повторити",
         "resetToDefaults": "Скинути до значень за замовчуванням",
         "resetting": "Скидання...",
-        "autoPlaceholder": "авто",
+        "cancel": "Скасувати",
         "centerFocuserBeforeRun": "Центральний фокус перед запуском",
         "framesPerPoint": "Кількість кадрів на точку",
         "detailedAnalysisExposureSeconds": "Час експозиції детального аналізу (секунди)",
@@ -3790,11 +3806,8 @@
         "error": "Помилка:",
         "retry": "Повторити",
         "basicSettings": "Основні налаштування",
-        "hfrValidation": "Валідація HFR"
-      },
-      "directoryBrowser": {
-        "browse": "Огляд...",
-        "error": "Не вдалося відкрити вибір директорії"
+        "hfrValidation": "Валідація HFR",
+        "cancel": "Скасувати"
       },
       "starDetection": {
         "loading": "Завантаження параметрів виявлення зірок...",
@@ -3809,6 +3822,7 @@
         "noiseReducedStarMeasurement": "Вимірювання зірок зі зниженим шумом",
         "debugMode": "Режим налагодження",
         "simpleModeSettings": "Налаштування простого режиму",
+        "cancel": "Скасувати",
         "noiseLevel": "Рівень шуму",
         "useOptimizedSettings": "Використовуйте оптимізовані налаштування"
       },
@@ -3818,14 +3832,10 @@
         "scanTooltip": "Сканувати пристрої",
         "connect": "Підключити",
         "disconnect": "Відключити",
-        "deviceInfo": "Інформація про пристрій (бета — використовуйте обережно)",
         "status": "Статус",
-        "connected": "Підключено",
         "moving": "Переміщення",
         "idle": "Очікування",
         "currentPositions": "Поточні позиції",
-        "noDeviceSelected": "Спочатку оберіть пристрій",
-        "deviceNotConnected": "Підключіться до пристрою для перегляду елементів керування",
         "configuration": "Конфігурація",
         "sensorWidth": "Ширина сенсора",
         "sensorHeight": "Висота сенсора",
@@ -3856,14 +3866,7 @@
         "calculateActuatorPositions": "Розрахувати позиції актуаторів",
         "calculatedPositions": "Розраховані позиції",
         "applyThesePositionsToDevice": "Застосувати ці позиції до пристрою",
-        "actuatorVisualizationLabel": "Актуатори на радіусі {radius} мм • Поворот сенсора {rotation}° • Вигляд зверху",
-        "calculatingPositions": "Розрахунок...",
-        "applyingPositions": "Застосування...",
-        "savingConfiguration": "Збереження..."
-      },
-      "common": {
-        "error": "Помилка:",
-        "loading": "Завантаження..."
+        "actuatorVisualizationLabel": "Актуатори на радіусі {radius} мм • Поворот сенсора {rotation}° • Вигляд зверху"
       }
     },
     "tenmicron": {
@@ -5205,6 +5208,135 @@
     "screenLock": {
       "unlock": "Розблокувати",
       "holdToUnlock": "Утримуйте {seconds} с для розблокування"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "Проєкти, цілі та прогрес у реальному часі з плагіна NINA Target Scheduler.",
+      "actions": {
+        "refresh": "Оновити",
+        "refreshing": "Оновлення…",
+        "showSchedule": "Показати розклад",
+        "hideSchedule": "Приховати розклад",
+        "expandHeader": "Розгорнути",
+        "collapseHeader": "Згорнути",
+        "cancel": "Скасувати"
+      },
+      "labels": {
+        "apiPort": "Порт API Scheduler",
+        "profile": "Профіль",
+        "active": "активний",
+        "lastUpdated": "Востаннє оновлено",
+        "loading": "Завантаження проєктів…",
+        "noProjects": "Для цього профілю не знайдено проєктів.",
+        "activeProjects": "Активні проєкти",
+        "targets": "Цілі",
+        "completion": "Завершеність",
+        "legendAccepted": "Прийнято",
+        "legendPending": "Отримано, очікує перевірки",
+        "integrationTime": "Час накопичення",
+        "unofficialDisclaimer": "Неофіційний переглядач — не пов'язаний із проєктом Target Scheduler.",
+        "dataFrom": "Дані з",
+        "readOnlyNote": "лише читання, тут нічого не змінює ваш розклад",
+        "searchPlaceholder": "Пошук проєктів і цілей…",
+        "clearSearch": "Очистити пошук",
+        "allStates": "Усі",
+        "noResults": "Жоден проєкт чи ціль не відповідає вашому пошуку.",
+        "remainingTime": "Залишилось",
+        "completionFilterLabel": "Завершеність:",
+        "notStarted": "Не розпочато",
+        "inProgress": "У процесі",
+        "done": "Завершено",
+        "legendTitle": "Легенда",
+        "legendBarsTitle": "Кольори смуги прогресу",
+        "legendDotsTitle": "Кольори точок статусу (проєкти та цілі)",
+        "legendActive": "Активний",
+        "legendInactive": "Неактивний",
+        "legendDraft": "Чернетка (лише проєкти)",
+        "legendClosed": "Закрито (лише проєкти)",
+        "creditNote": "Уся заслуга за плагін Target Scheduler та його механізм планування належить",
+        "filtersToggle": "Фільтри",
+        "stateFilterLabel": "Стан:",
+        "filterNameFilterLabel": "Фільтр:",
+        "mosaicFilterLabel": "Тип:",
+        "scheduledFilterLabel": "Розклад:",
+        "mosaicOnly": "Мозаїка",
+        "singlePanelOnly": "Одна панель",
+        "scheduledTonightOnly": "Заплановано на сьогоднішню ніч",
+        "sortLabel": "Сортування:",
+        "sortName": "Назва",
+        "sortPriority": "Пріоритет",
+        "sortCompletion": "Завершеність",
+        "sortRemaining": "Залишок часу",
+        "sortAscending": "Сортувати за зростанням",
+        "sortDescending": "Сортувати за спаданням",
+        "exportMarkdown": "Копіювати як Markdown",
+        "exportCopiedTitle": "Скопійовано",
+        "exportCopiedMessage": "Прогрес розкладу скопійовано в буфер обміну у форматі Markdown.",
+        "exportFailedTitle": "Помилка копіювання",
+        "exportFailedMessage": "Не вдалося скопіювати в буфер обміну.",
+        "apiDocsLink": "Документація API Target Scheduler",
+        "setupTitle": "Налаштувати API Target Scheduler",
+        "setupStep1": "У NINA відкрийте параметри плагіна Target Scheduler і увімкніть його API-сервер.",
+        "setupStep2": "Запишіть показаний порт (типово 8188).",
+        "setupStep3": "Введіть цей порт вище, і з'єднання відбудеться автоматично.",
+        "welcomeTitle": "Ласкаво просимо до Target Scheduler Viewer",
+        "welcomeSubtitle": "Цей плагін показує ваші проєкти, цілі та прогрес зйомки NINA Target Scheduler. Йому лише потрібно знати, як до нього дістатися.",
+        "welcomeTrying": "Спроба на порту {port}…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}: прийнято {accepted} із {desired}",
+        "integrated": "{time} накопичено"
+      },
+      "targetCard": {
+        "active": "Активний",
+        "inactive": "Неактивний",
+        "hide": "Приховати",
+        "stats": "Статистика",
+        "loadingStats": "Завантаження статистики…",
+        "colFilter": "Фільтр",
+        "colExp": "Екс.",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Ecc.",
+        "belowAutoAccept": "Нижче порогу автоприйняття (семантика поля не підтверджена)",
+        "aboveAutoAccept": "Вище порогу автоприйняття (семантика поля не підтверджена)",
+        "noAcceptedFrames": "Поки що немає прийнятих кадрів.",
+        "integratedOf": "{time} / {expected} накопичено",
+        "remaining": "{time} залишилось"
+      },
+      "projectCard": {
+        "priority": "Пріоритет",
+        "integrationAccepted": "Накопичення (прийнято)",
+        "integrationExpected": "Накопичення (очікувано)",
+        "integrationRemaining": "Накопичення (залишилось)",
+        "description": "Опис",
+        "minimumTime": "Мінімальний час",
+        "filterSwitchFrequency": "Частота зміни фільтра",
+        "ditherEvery": "Дізер кожні",
+        "meridianWindow": "Вікно меридіана",
+        "horizon": "Горизонт",
+        "horizonCustom": "власний, +{offset}°",
+        "altitudeLimits": "Межі висоти",
+        "grading": "Оцінювання",
+        "smartExposureOrder": "Розумний порядок експозицій",
+        "mosaic": "Мозаїка",
+        "minutes": "{count} хв",
+        "exposures": "{count} експозицій",
+        "emptyValue": "—",
+        "off": "вимкнено",
+        "on": "увімкнено",
+        "enabled": "увімкнено",
+        "disabled": "вимкнено",
+        "yes": "так",
+        "no": "ні",
+        "noTargets": "У цьому проєкті немає цілей."
+      },
+      "schedulePreview": {
+        "disclaimer": "Прогнозований план Scheduler на сьогоднішню ніч, перераховується при кожному оновленні — це не запис того, що NINA знімає зараз насправді.",
+        "learnMore": "Дізнатися більше",
+        "noScheduleData": "Немає даних розкладу.",
+        "waitingNotVisible": "Очікування — ціль ще не видима"
+      }
     }
   },
   "dialogs": {
@@ -5785,7 +5917,10 @@
       "cobsCountSynced": "{count} комет кешовано · {status}",
       "refreshedAgo": "оновлено {when}",
       "neverRefreshed": "ніколи не оновлювалося",
-      "confirmClearCobs": "Видалити всі кешовані спостереження COBS? Позначки спостережуваної яскравості будуть порожніми до наступного оновлення вкладки Огляд."
+      "confirmClearCobs": "Видалити всі кешовані спостереження COBS? Позначки спостережуваної яскравості будуть порожніми до наступного оновлення вкладки Огляд.",
+      "connectionSection": "З'єднання",
+      "apiTokenHint": "Заповнюється автоматично при першому відкритті цієї панелі. Вручну потрібно вводити лише для другого пристрою -- скопіюйте його з цього поля на першому пристрої або зі сторінки параметрів плагіна у Windows NINA.",
+      "apiTokenRequired": "Для цієї установки Perihelion потрібен токен API. Введіть його в Налаштуваннях, щоб продовжити."
     }
   }
 }

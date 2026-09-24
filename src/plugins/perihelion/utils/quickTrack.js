@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 import { describePerihelionResponse, describePerihelionError } from './perihelionResult';
 
@@ -22,7 +22,7 @@ import { describePerihelionResponse, describePerihelionError } from './perihelio
 export async function startQuickTrack(target) {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}/track`, {
+    const response = await perihelionApi.post(`${PERIHELION_URL}/track`, {
       ObjectType: target.objectType === 'comet' ? 'Comet' : 'Asteroid',
       TargetName: target.targetName,
       Guiding: !!target.guiding,
@@ -41,7 +41,7 @@ export async function startQuickTrack(target) {
 export async function stopQuickTrack() {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}/stop`);
+    const response = await perihelionApi.post(`${PERIHELION_URL}/stop`);
     return describePerihelionResponse(response.data);
   } catch (error) {
     return describePerihelionError(error);

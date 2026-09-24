@@ -1,6 +1,6 @@
 <template>
   <div class="celestia-atlas-container" :class="containerClasses">
-    <div ref="viewerContainer" class="celestia-atlas-viewer" />
+    <div ref="viewerContainer" class="celestia-atlas-viewer" @pointermove="updateCompass" />
     <canvas ref="secondaryFovCanvas" class="celestia-atlas-secondary-fov" />
 
     <!-- Header: search and settings. Everything else lives in the toolbar below. -->
@@ -180,6 +180,21 @@
       <AtlasLayersPanel v-else-if="activeSheet === 'layers'" />
     </AtlasSheet>
 
+    <div
+      v-if="ready && settingsStore.celestiaAtlas.compassVisible !== false"
+      class="celestia-atlas-compass"
+      role="img"
+      :aria-label="`View centre bearing ${compassHeading}`"
+      data-testid="atlas-compass"
+    >
+      <div class="celestia-atlas-compass-dial" aria-hidden="true">
+        <span class="compass-n">N</span><span class="compass-e">E</span>
+        <span class="compass-s">S</span><span class="compass-w">W</span>
+        <span class="compass-needle" :style="{ transform: `rotate(${compassBearing}deg)` }" />
+      </div>
+      <strong class="celestia-atlas-compass-heading">{{ compassHeading }}</strong>
+    </div>
+
     <AtlasToolbar
       v-if="ready"
       :mount-connected="Boolean(store.mountInfo.Connected)"
@@ -205,7 +220,11 @@
 
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { calculateCameraFieldOfView, createCelestiaAtlasViewer } from '@acocalypso/celestia-atlas';
+import {
+  calculateCameraFieldOfView,
+  createCelestiaAtlasViewer,
+  equatorialToHorizontal,
+} from '@acocalypso/celestia-atlas';
 import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
 import { useOrientation } from '@/composables/useOrientation';
@@ -279,6 +298,11 @@ const mountFollow = ref(false);
 const clockPaused = ref(false);
 const clockLabel = ref('');
 const clockLabelShort = ref('');
+const compassBearing = ref(0);
+const compassHeading = computed(() => {
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  return `${directions[Math.round(compassBearing.value / 45) % 8]} ${compassBearing.value.toFixed(1)}°`;
+});
 // Which sheet is open: 'target' | 'clock' | 'layers' | null. Only one at a time.
 const activeSheet = ref(null);
 const clockDate = ref('');
@@ -306,6 +330,7 @@ const containerClasses = computed(() => ({
   'celestia-atlas-portrait': !isLandscape.value,
   'celestia-atlas-landscape': isLandscape.value,
   'celestia-atlas-has-sheet': activeSheet.value !== null,
+  'celestia-atlas-has-compass': settingsStore.celestiaAtlas.compassVisible !== false,
 }));
 const showFovControls = computed(
   () =>
@@ -544,6 +569,7 @@ async function resetClockToServer() {
 
 function updateClockLabel() {
   if (!viewer) return;
+  updateCompass();
   const time = new Date(viewer.getTime());
   clockMinuteUtcMs.value = Math.floor(time.getTime() / 60000) * 60000;
   clockLabel.value = time.toLocaleTimeString([], {
@@ -552,6 +578,17 @@ function updateClockLabel() {
     second: '2-digit',
   });
   clockLabelShort.value = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function updateCompass() {
+  if (!viewer || settingsStore.celestiaAtlas.compassVisible === false) return;
+  const atlasState = viewer.getState();
+  const horizontal = equatorialToHorizontal(
+    atlasState.view.center,
+    atlasState.observer,
+    viewer.getTime()
+  );
+  compassBearing.value = ((horizontal.azimuthDeg % 360) + 360) % 360;
 }
 
 function startClockDisplay() {
@@ -814,6 +851,7 @@ watch(
 );
 watch(() => framingStore.framingReloadKey, applyFramingReload);
 watch(() => store.showSkyAtlas, updateVisibility);
+watch(() => settingsStore.celestiaAtlas.compassVisible, updateCompass);
 watch(isAppBackgrounded, updateVisibility);
 watch(clockSpeedPower, (value) => {
   if (!clockPaused.value) viewer?.setTimeRate(Math.pow(2, Number(value)));
@@ -927,6 +965,7 @@ onMounted(async () => {
         activeSheet.value = 'target';
       },
       onViewChange: (viewState) => {
+        updateCompass();
         queueViewPersistence(viewState);
         drawSecondaryFieldOfView();
       },
@@ -957,6 +996,7 @@ onMounted(async () => {
     updateVisibility();
     document.addEventListener('visibilitychange', handleVisibilityChange);
     ready.value = true;
+    updateCompass();
     // After the persisted view: a target loaded before the first open wins.
     applyFramingReload();
   } catch (error) {
@@ -1007,6 +1047,106 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+.celestia-atlas-compass {
+  position: absolute;
+  z-index: 12;
+  left: calc(0.75rem + env(safe-area-inset-left, 0px));
+  bottom: calc(var(--atlas-toolbar-clearance) + 0.5rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: calc(100% - var(--atlas-side-inset) - 1.5rem);
+  padding: 0.4rem 0.65rem;
+  color: #e8f4ff;
+  background: rgb(10 18 30 / 88%);
+  border: 1px solid rgb(112 151 180 / 34%);
+  border-radius: 0.875rem;
+  pointer-events: none;
+}
+.celestia-atlas-compass-dial {
+  position: relative;
+  flex: 0 0 4rem;
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid #526378;
+  border-radius: 50%;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+.celestia-atlas-compass-dial span:not(.compass-needle) {
+  position: absolute;
+  line-height: 1;
+}
+.compass-n {
+  top: 0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #7bdcff;
+}
+.compass-e {
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.compass-s {
+  bottom: 0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.compass-w {
+  left: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.compass-needle {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.12s linear;
+}
+.compass-needle::before {
+  content: '';
+  position: absolute;
+  top: 0.9rem;
+  left: calc(50% - 0.1875rem);
+  width: 0.375rem;
+  height: 1.1rem;
+  background: #7bdcff;
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.compass-needle::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 0.1875rem);
+  left: calc(50% - 0.1875rem);
+  width: 0.375rem;
+  height: 0.375rem;
+  background: #7bdcff;
+  border-radius: 50%;
+}
+.celestia-atlas-compass-heading {
+  min-width: 3.6rem;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .celestia-atlas-compass {
+    gap: 0.375rem;
+    padding: 0.25rem 0.45rem;
+  }
+  .celestia-atlas-compass-dial {
+    flex-basis: 3.25rem;
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+  .compass-needle::before {
+    top: 0.7rem;
+    height: 0.9rem;
+  }
+  .celestia-atlas-compass-heading {
+    font-size: 0.75rem;
+  }
 }
 :deep(.celestia-atlas-survey-credit) {
   display: none !important;
@@ -1128,6 +1268,9 @@ onBeforeUnmount(() => {
   background: rgb(3 7 18 / 92%);
   border: 1px solid rgb(8 145 178);
   color: white;
+}
+.celestia-atlas-has-compass .celestia-atlas-toast {
+  bottom: calc(var(--atlas-toolbar-clearance) + 5.5rem);
 }
 .celestia-atlas-toast-warning {
   background: rgba(120, 53, 15, 0.92);

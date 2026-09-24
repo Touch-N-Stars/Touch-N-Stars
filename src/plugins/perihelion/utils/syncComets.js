@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import i18n from '@/i18n';
 import { getUrls } from '@/services/api/core';
 
@@ -13,7 +13,7 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchSyncStatus() {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/sync/status`);
+  const response = await perihelionApi.get(`${PERIHELION_URL}/sync/status`);
   return {
     cometsLastSyncedUtc: response.data.CometsLastSyncedUtc
       ? new Date(response.data.CometsLastSyncedUtc)
@@ -40,7 +40,7 @@ export async function fetchSyncStatus() {
 export async function syncComets() {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}/sync/comets`);
+    const response = await perihelionApi.post(`${PERIHELION_URL}/sync/comets`);
     return {
       ok: response.data.Success,
       message: response.data.Message,
@@ -67,7 +67,7 @@ export async function syncComets() {
 export async function syncAsteroids() {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}/sync/asteroids`);
+    const response = await perihelionApi.post(`${PERIHELION_URL}/sync/asteroids`);
     return {
       ok: response.data.Success,
       message: response.data.Message,

@@ -1,1189 +1,701 @@
 <template>
   <div class="space-y-6">
-    <!-- Loading State -->
+    <!-- Loading -->
     <div v-if="store.isLoadingDetectionOptions" class="flex items-center justify-center py-12">
       <div class="spinner"></div>
-      <p class="text-gray-400 ml-4">{{ $t('plugins.hocusfocus.starDetection.loading') }}</p>
+      <p class="ml-4 text-gray-400">{{ L('loading') }}</p>
     </div>
 
-    <!-- Error State -->
-    <div v-if="store.detectionOptionsError" class="bg-red-900 border border-red-700 rounded-lg p-4">
+    <!-- Error -->
+    <div
+      v-if="store.detectionOptionsError"
+      class="rounded-lg border border-red-700/50 bg-red-900/40 p-4"
+    >
       <p class="text-red-200">
-        <span class="font-semibold">{{ $t('plugins.hocusfocus.starDetection.error') }}</span>
-        {{ store.detectionOptionsError }}
+        <span class="font-semibold">{{ L('error') }}</span> {{ store.detectionOptionsError }}
       </p>
-      <button
-        @click="loadStarDetectionOptions()"
-        class="mt-2 px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded transition"
-      >
-        {{ $t('plugins.hocusfocus.starDetection.retry') }}
+      <button class="tns-btn-secondary mt-3 w-auto px-4" @click="loadStarDetectionOptions()">
+        {{ L('retry') }}
       </button>
     </div>
 
-    <!-- Options Form -->
-    <div v-if="store.starDetectionOptions && !store.isLoadingDetectionOptions" class="space-y-6">
-      <!-- General Settings Card -->
-      <div class="border border-gray-700 rounded-lg p-4">
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">
-          {{ $t('plugins.hocusfocus.starDetection.generalSettings') }}
-        </h3>
-        <div class="space-y-3">
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.UseAdvanced"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.UseAdvanced = e.target.checked;
-                  saveStarDetectionOption('UseAdvanced', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.advancedMode') }}</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.HotpixelThresholdingEnabled"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.HotpixelThresholdingEnabled = e.target.checked;
-                  saveStarDetectionOption('HotpixelThresholdingEnabled', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.useHotpixelThresholding') }}</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.UseAutoFocusCrop"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.UseAutoFocusCrop = e.target.checked;
-                  saveStarDetectionOption('UseAutoFocusCrop', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.useAutoFocusCrop') }}</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.ModelPSF"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.ModelPSF = e.target.checked;
-                  saveStarDetectionOption('ModelPSF', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.fitPSF') }}</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.HotpixelFiltering"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.HotpixelFiltering = e.target.checked;
-                  saveStarDetectionOption('HotpixelFiltering', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.hotpixelFiltering') }}</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.StarMeasurementNoiseReductionEnabled"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.StarMeasurementNoiseReductionEnabled =
-                    e.target.checked;
-                  saveStarDetectionOption('StarMeasurementNoiseReductionEnabled', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.noiseReducedStarMeasurement') }}</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.DebugMode"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.DebugMode = e.target.checked;
-                  saveStarDetectionOption('DebugMode', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.debugMode') }}</span>
-          </label>
-          <label
-            class="flex items-center text-white"
-            :class="{ 'opacity-50': !store.starDetectionOptions.HasOptimizedSettings }"
+    <div v-if="o && !store.isLoadingDetectionOptions" class="space-y-6">
+      <!-- Per-filter notice: while per-filter star detection owns the options object these
+           edits go into one filter's snapshot instead of the global settings. -->
+      <div
+        v-if="o.PersistToProfile === false"
+        class="rounded-lg border border-amber-600/50 bg-amber-900/25 p-3 text-sm text-amber-200"
+      >
+        {{ L('perFilterActive') }}
+      </div>
+
+      <!-- The optimizer tunes these settings against a saved or live auto-focus run -->
+      <div :class="cardClass">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="min-w-0">
+            <h3 :class="headingClass">{{ L('optimizer') }}</h3>
+            <p class="text-sm text-gray-400">
+              {{ optimizerRunning ? L('optimizerRunning') : L('optimizerDescription') }}
+            </p>
+          </div>
+          <button class="tns-btn-secondary w-auto px-4" @click="showOptimizer = true">
+            {{ optimizerRunning ? L('optimizerResume') : L('optimizerOpen') }}
+          </button>
+        </div>
+      </div>
+
+      <!-- General -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('generalSettings') }}</h3>
+        <div class="flex flex-col gap-3">
+          <HfSelectField
+            :model-value="o.DetectionBinning"
+            :label="L('detectionBinning')"
+            :help="H('detectionBinning')"
+            :options="detectionBinningOptions"
+            :status="statusOf('DetectionBinning')"
+            :error="errorOf('DetectionBinning')"
+            @change="save('DetectionBinning', $event)"
+          />
+          <p
+            v-if="o.DetectionBinningRecommendationVisible && o.DetectionBinningHint"
+            class="text-sm italic text-cyan-300"
+            :title="o.DetectionBinningHintDetail"
           >
-            <input
-              :checked="store.starDetectionOptions.UseOptimizedSettings"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.UseOptimizedSettings = e.target.checked;
-                  saveStarDetectionOption('UseOptimizedSettings', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-              :disabled="!store.starDetectionOptions.HasOptimizedSettings"
-            />
-            <span>{{ $t('plugins.hocusfocus.starDetection.useOptimizedSettings') }}</span>
-          </label>
+            {{ o.DetectionBinningHint }}
+          </p>
+          <HfSelectField
+            :model-value="o.MeasurementAverage"
+            :label="L('measurementAverage')"
+            :help="H('measurementAverage')"
+            :options="measurementAverageOptions"
+            :status="statusOf('MeasurementAverage')"
+            :error="errorOf('MeasurementAverage')"
+            @change="save('MeasurementAverage', $event)"
+          />
+          <HfToggleRow
+            v-for="tg in generalToggles"
+            :key="tg.key"
+            :model-value="o[tg.key]"
+            :label="L(tg.label)"
+            :help="H(tg.label)"
+            :status="statusOf(tg.key)"
+            :error="errorOf(tg.key)"
+            @change="save(tg.key, $event)"
+          />
         </div>
       </div>
 
-      <!-- Simple Mode Settings -->
-      <div
-        v-if="!store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">
-          {{ $t('plugins.hocusfocus.starDetection.simpleModeSettings') }}
-        </h3>
-        <div class="space-y-3">
-          <div>
-            <label class="text-white mb-2 block">{{
-              $t('plugins.hocusfocus.starDetection.noiseLevel')
-            }}</label>
-            <select
-              :value="store.starDetectionOptions.Simple_NoiseLevel"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.Simple_NoiseLevel = e.target.value;
-                  saveStarDetectionOption('Simple_NoiseLevel', e.target.value);
-                }
-              "
-              class="w-full bg-gray-700 text-white p-2 rounded"
-            >
-              <option>Typical</option>
-              <option>None</option>
-              <option>High</option>
-              <option>Low</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-white mb-2 block">Pixel Scale</label>
-            <select
-              :value="store.starDetectionOptions.Simple_PixelScale"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.Simple_PixelScale = e.target.value;
-                  saveStarDetectionOption('Simple_PixelScale', e.target.value);
-                }
-              "
-              class="w-full bg-gray-700 text-white p-2 rounded"
-            >
-              <option>Typical</option>
-              <option>WideField</option>
-              <option>LongFocalLength</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-white mb-2 block">Focus Range</label>
-            <select
-              :value="store.starDetectionOptions.Simple_FocusRange"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.Simple_FocusRange = e.target.value;
-                  saveStarDetectionOption('Simple_FocusRange', e.target.value);
-                }
-              "
-              class="w-full bg-gray-700 text-white p-2 rounded"
-            >
-              <option>Typical</option>
-              <option>WideRange</option>
-            </select>
-          </div>
+      <!-- Simple mode -->
+      <div v-if="!o.UseAdvanced" :class="cardClass">
+        <h3 :class="headingClass">{{ L('simpleModeSettings') }}</h3>
+        <HfToggleRow
+          v-if="o.HasOptimizedSettings"
+          :model-value="o.UseOptimizedSettings"
+          :label="L('useOptimizedSettings')"
+          :help="H('useOptimizedSettings')"
+          :status="statusOf('UseOptimizedSettings')"
+          :error="errorOf('UseOptimizedSettings')"
+          @change="save('UseOptimizedSettings', $event)"
+        />
+        <div v-if="!o.UseOptimizedSettings" class="flex flex-col gap-3">
+          <HfSelectField
+            :model-value="o.Simple_NoiseLevel"
+            :label="L('noiseLevel')"
+            :help="H('noiseLevel')"
+            :options="noiseLevelOptions"
+            :status="statusOf('Simple_NoiseLevel')"
+            :error="errorOf('Simple_NoiseLevel')"
+            @change="save('Simple_NoiseLevel', $event)"
+          />
+          <HfSelectField
+            :model-value="o.Simple_PixelScale"
+            :label="L('pixelScale')"
+            :help="H('pixelScale')"
+            :options="pixelScaleOptions"
+            :status="statusOf('Simple_PixelScale')"
+            :error="errorOf('Simple_PixelScale')"
+            @change="save('Simple_PixelScale', $event)"
+          />
+          <HfSelectField
+            :model-value="o.Simple_FocusRange"
+            :label="L('focusRange')"
+            :help="H('focusRange')"
+            :options="focusRangeOptions"
+            :status="statusOf('Simple_FocusRange')"
+            :error="errorOf('Simple_FocusRange')"
+            @change="save('Simple_FocusRange', $event)"
+          />
         </div>
       </div>
 
-      <!-- Advanced Parameters Card -->
-      <div
-        v-if="store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Basic Detection Parameters</h3>
-        <div class="space-y-3">
-          <div>
-            <label class="text-white mb-2 block"
-              >Noise Reduction Radius: {{ store.starDetectionOptions.NoiseReductionRadius }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.NoiseReductionRadius"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.NoiseReductionRadius = num;
-                  saveStarDetectionOption('NoiseReductionRadius', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="20"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Noise Clipping Multiplier:
-              {{ store.starDetectionOptions.NoiseClippingMultiplier }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.NoiseClippingMultiplier"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.NoiseClippingMultiplier = num;
-                  saveStarDetectionOption('NoiseClippingMultiplier', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="20"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Star Clipping Multiplier:
-              {{ store.starDetectionOptions.StarClippingMultiplier }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StarClippingMultiplier"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.StarClippingMultiplier = num;
-                  saveStarDetectionOption('StarClippingMultiplier', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="20"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Structure Layers: {{ store.starDetectionOptions.StructureLayers }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StructureLayers"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.StructureLayers = num;
-                  saveStarDetectionOption('StructureLayers', num);
-                }
-              "
-              type="range"
-              min="1"
-              max="10"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Brightness Sensitivity:
-              {{ store.starDetectionOptions.BrightnessSensitivity.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.BrightnessSensitivity"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.BrightnessSensitivity = num;
-                  saveStarDetectionOption('BrightnessSensitivity', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="20"
-              step="0.01"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Structure Layer Boost: {{ store.starDetectionOptions.StructureLayerBoost }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StructureLayerBoost"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.StructureLayerBoost = num;
-                  saveStarDetectionOption('StructureLayerBoost', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="5"
-              class="w-full"
-            />
-          </div>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.LocallyAdaptiveBinarization"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.LocallyAdaptiveBinarization = e.target.checked;
-                  saveStarDetectionOption('LocallyAdaptiveBinarization', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Locally Adaptive Binarization</span>
-          </label>
-          <div v-if="store.starDetectionOptions.LocallyAdaptiveBinarization">
-            <label class="text-white mb-2 block"
-              >Adaptive Noise Block Size:
-              {{ store.starDetectionOptions.AdaptiveNoiseBlockSize }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.AdaptiveNoiseBlockSize"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.AdaptiveNoiseBlockSize = num;
-                  saveStarDetectionOption('AdaptiveNoiseBlockSize', num);
-                }
-              "
-              type="range"
-              min="32"
-              max="512"
-              step="16"
-              class="w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Star Detection Parameters Card -->
-      <div
-        v-if="store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Star Detection Parameters</h3>
-        <div class="space-y-3">
-          <div>
-            <label class="text-white mb-2 block"
-              >Max Distortion: {{ store.starDetectionOptions.MaxDistortion.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.MaxDistortion"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.MaxDistortion = num;
-                  saveStarDetectionOption('MaxDistortion', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Star Peak Response:
-              {{ store.starDetectionOptions.StarPeakResponse.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StarPeakResponse"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.StarPeakResponse = num;
-                  saveStarDetectionOption('StarPeakResponse', num);
-                }
-              "
-              type="range"
-              min="0.01"
-              max="1.0"
-              step="0.01"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Star Center Tolerance:
-              {{ store.starDetectionOptions.StarCenterTolerance.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StarCenterTolerance"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.StarCenterTolerance = num;
-                  saveStarDetectionOption('StarCenterTolerance', num);
-                }
-              "
-              type="range"
-              min="0.01"
-              max="1.0"
-              step="0.01"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Star Background Box Expansion:
-              {{ store.starDetectionOptions.StarBackgroundBoxExpansion }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StarBackgroundBoxExpansion"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.StarBackgroundBoxExpansion = num;
-                  saveStarDetectionOption('StarBackgroundBoxExpansion', num);
-                }
-              "
-              type="range"
-              min="1"
-              max="20"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Min Star Bounding Box Size:
-              {{ store.starDetectionOptions.MinStarBoundingBoxSize }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.MinStarBoundingBoxSize"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.MinStarBoundingBoxSize = num;
-                  saveStarDetectionOption('MinStarBoundingBoxSize', num);
-                }
-              "
-              type="range"
-              min="1"
-              max="50"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Min HFR: {{ store.starDetectionOptions.MinHFR.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.MinHFR"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.MinHFR = num;
-                  saveStarDetectionOption('MinHFR', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="10"
-              step="0.1"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Structure Dilation Size:
-              {{ store.starDetectionOptions.StructureDilationSize }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StructureDilationSize"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.StructureDilationSize = num;
-                  saveStarDetectionOption('StructureDilationSize', num);
-                }
-              "
-              type="range"
-              min="3"
-              max="30"
-              step="1"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Structure Dilation Count:
-              {{ store.starDetectionOptions.StructureDilationCount }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.StructureDilationCount"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.StructureDilationCount = num;
-                  saveStarDetectionOption('StructureDilationCount', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="10"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Pixel Sample Size: {{ store.starDetectionOptions.PixelSampleSize }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.PixelSampleSize"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.PixelSampleSize = num;
-                  saveStarDetectionOption('PixelSampleSize', num);
-                }
-              "
-              type="range"
-              min="0.01"
-              max="1.0"
-              step="0.01"
-              class="w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Contamination Detection Card -->
-      <div
-        v-if="store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Contamination Detection</h3>
-        <div class="space-y-3">
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.RejectContaminatedStars"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.RejectContaminatedStars = e.target.checked;
-                  saveStarDetectionOption('RejectContaminatedStars', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Reject Contaminated Stars</span>
-          </label>
-          <div v-if="store.starDetectionOptions.RejectContaminatedStars">
-            <label class="text-white mb-2 block"
-              >Contamination Sensitivity:
-              {{ store.starDetectionOptions.ContaminationSensitivity.toFixed(1) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.ContaminationSensitivity"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.ContaminationSensitivity = num;
-                  saveStarDetectionOption('ContaminationSensitivity', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="20"
-              step="0.5"
-              class="w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Defocus & Donut Detection Card -->
-      <div
-        v-if="store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Defocus &amp; Donut Detection</h3>
-        <div class="space-y-3">
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.DefocusAwareGates"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.DefocusAwareGates = e.target.checked;
-                  saveStarDetectionOption('DefocusAwareGates', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Defocus-Aware Gates</span>
-          </label>
-          <div v-if="store.starDetectionOptions.DefocusAwareGates">
-            <label class="text-white mb-2 block"
-              >Defocus Distortion Size Reference:
-              {{ store.starDetectionOptions.DefocusDistortionSizeReference.toFixed(0) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.DefocusDistortionSizeReference"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.DefocusDistortionSizeReference = num;
-                  saveStarDetectionOption('DefocusDistortionSizeReference', num);
-                }
-              "
-              type="range"
-              min="5"
-              max="100"
-              step="1"
-              class="w-full"
-            />
-          </div>
-          <div v-if="store.starDetectionOptions.DefocusAwareGates">
-            <label class="text-white mb-2 block"
-              >Defocus Distortion Min Factor:
-              {{ store.starDetectionOptions.DefocusDistortionMinFactor.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.DefocusDistortionMinFactor"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.DefocusDistortionMinFactor = num;
-                  saveStarDetectionOption('DefocusDistortionMinFactor', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              class="w-full"
-            />
-          </div>
-          <div v-if="store.starDetectionOptions.DefocusAwareGates">
-            <label class="text-white mb-2 block"
-              >Defocus Centering Tolerance Factor:
-              {{ store.starDetectionOptions.DefocusCenteringToleranceFactor.toFixed(1) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.DefocusCenteringToleranceFactor"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.DefocusCenteringToleranceFactor = num;
-                  saveStarDetectionOption('DefocusCenteringToleranceFactor', num);
-                }
-              "
-              type="range"
-              min="0.5"
-              max="5"
-              step="0.1"
-              class="w-full"
-            />
-          </div>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.DefocusAwareStructure"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.DefocusAwareStructure = e.target.checked;
-                  saveStarDetectionOption('DefocusAwareStructure', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Defocus-Aware Structure</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.DefocusAwareDonutDetection"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.DefocusAwareDonutDetection = e.target.checked;
-                  saveStarDetectionOption('DefocusAwareDonutDetection', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Defocus-Aware Donut Detection</span>
-          </label>
-          <template v-if="store.starDetectionOptions.DefocusAwareDonutDetection">
-            <div>
-              <label class="text-white mb-2 block"
-                >Donut Morph Close Size: {{ store.starDetectionOptions.DonutMorphCloseSize }}</label
-              >
-              <input
-                :value="store.starDetectionOptions.DonutMorphCloseSize"
-                @change="
-                  (e) => {
-                    const num = parseInt(e.target.value);
-                    store.starDetectionOptions.DonutMorphCloseSize = num;
-                    saveStarDetectionOption('DonutMorphCloseSize', num);
-                  }
-                "
-                type="range"
-                min="1"
-                max="15"
-                step="2"
-                class="w-full"
+      <!-- Advanced sections -->
+      <template v-if="o.UseAdvanced">
+        <div v-for="section in advancedSections" :key="section.title" :class="cardClass">
+          <h3 :class="headingClass">{{ L(section.title) }}</h3>
+          <div class="flex flex-col gap-3">
+            <template v-for="f in visibleFields(section)" :key="f.key">
+              <HfToggleRow
+                v-if="f.type === 'bool'"
+                :model-value="o[f.key]"
+                :label="L(f.label)"
+                :help="H(f.label)"
+                :status="statusOf(f.key)"
+                :error="errorOf(f.key)"
+                @change="save(f.key, $event)"
               />
-            </div>
-            <div>
-              <label class="text-white mb-2 block"
-                >Donut Min Annularity Hole Fraction:
-                {{ store.starDetectionOptions.DonutMinAnnularityHoleFraction.toFixed(2) }}</label
-              >
-              <input
-                :value="store.starDetectionOptions.DonutMinAnnularityHoleFraction"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.starDetectionOptions.DonutMinAnnularityHoleFraction = num;
-                    saveStarDetectionOption('DonutMinAnnularityHoleFraction', num);
-                  }
-                "
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                class="w-full"
+              <HfSelectField
+                v-else-if="f.type === 'enum'"
+                :model-value="o[f.key]"
+                :label="L(f.label)"
+                :help="H(f.label)"
+                :options="f.options"
+                :status="statusOf(f.key)"
+                :error="errorOf(f.key)"
+                @change="save(f.key, $event)"
               />
-            </div>
-            <div>
-              <label class="text-white mb-2 block"
-                >Donut Max Streak Eccentricity:
-                {{ store.starDetectionOptions.DonutMaxStreakEccentricity.toFixed(2) }}</label
-              >
-              <input
-                :value="store.starDetectionOptions.DonutMaxStreakEccentricity"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.starDetectionOptions.DonutMaxStreakEccentricity = num;
-                    saveStarDetectionOption('DonutMaxStreakEccentricity', num);
-                  }
-                "
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                class="w-full"
+              <HfNumberField
+                v-else
+                :model-value="Number(o[f.key])"
+                :label="L(f.label)"
+                :help="H(f.label)"
+                :hint="rangeHint(f)"
+                :min="f.min"
+                :max="f.max"
+                :step="f.step"
+                :decimals="f.decimals"
+                :inputId="'hf-sd-' + f.key"
+                :status="statusOf(f.key)"
+                :error="errorOf(f.key)"
+                @change="save(f.key, $event)"
               />
-            </div>
-            <div>
-              <label class="text-white mb-2 block"
-                >Donut Saturation Bloom Radius:
-                {{ store.starDetectionOptions.DonutSaturationBloomRadius.toFixed(0) }}</label
-              >
-              <input
-                :value="store.starDetectionOptions.DonutSaturationBloomRadius"
-                @change="
-                  (e) => {
-                    const num = parseFloat(e.target.value);
-                    store.starDetectionOptions.DonutSaturationBloomRadius = num;
-                    saveStarDetectionOption('DonutSaturationBloomRadius', num);
-                  }
-                "
-                type="range"
-                min="0"
-                max="50"
-                step="1"
-                class="w-full"
-              />
-            </div>
-          </template>
-        </div>
-      </div>
-
-      <!-- PSF Settings Card -->
-      <div
-        v-if="store.starDetectionOptions.ModelPSF && store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">PSF Settings</h3>
-        <div class="space-y-3">
-          <div>
-            <label class="text-white mb-2 block">PSF Type</label>
-            <select
-              :value="store.starDetectionOptions.PSFFitType"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.PSFFitType = e.target.value;
-                  saveStarDetectionOption('PSFFitType', e.target.value);
-                }
-              "
-              class="w-full bg-gray-700 text-white p-2 rounded"
-            >
-              <option>Moffat_40</option>
-              <option>Gaussian</option>
-            </select>
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >PSF Resolution: {{ store.starDetectionOptions.PSFResolution }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.PSFResolution"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.PSFResolution = num;
-                  saveStarDetectionOption('PSFResolution', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="30"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >PSF Parallel Partition Size:
-              {{ store.starDetectionOptions.PSFParallelPartitionSize }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.PSFParallelPartitionSize"
-              @change="
-                (e) => {
-                  const num = parseInt(e.target.value);
-                  store.starDetectionOptions.PSFParallelPartitionSize = num;
-                  saveStarDetectionOption('PSFParallelPartitionSize', num);
-                }
-              "
-              type="range"
-              min="0"
-              max="2000"
-              step="10"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >PSF Fit Threshold: {{ store.starDetectionOptions.PSFFitThreshold.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.PSFFitThreshold"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.PSFFitThreshold = num;
-                  saveStarDetectionOption('PSFFitThreshold', num);
-                }
-              "
-              type="range"
-              min="0.01"
-              max="1.0"
-              step="0.01"
-              class="w-full"
-            />
-          </div>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.UsePSFAbsoluteDeviation"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.UsePSFAbsoluteDeviation = e.target.checked;
-                  saveStarDetectionOption('UsePSFAbsoluteDeviation', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>PSF MAD Fitting</span>
-          </label>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.PSFPixelIntegration"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.PSFPixelIntegration = e.target.checked;
-                  saveStarDetectionOption('PSFPixelIntegration', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>PSF Pixel Integration</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- Hotpixel Settings Card -->
-      <div
-        v-if="store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Hotpixel Settings</h3>
-        <div class="space-y-3">
-          <div
-            v-if="
-              store.starDetectionOptions.HotpixelThresholdingEnabled &&
-              store.starDetectionOptions.UseAdvanced
-            "
-          >
-            <label class="text-white mb-2 block"
-              >Hotpixel Threshold:
-              {{ store.starDetectionOptions.HotpixelThreshold.toFixed(3) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.HotpixelThreshold"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.HotpixelThreshold = num;
-                  saveStarDetectionOption('HotpixelThreshold', num);
-                }
-              "
-              type="range"
-              min="0.01"
-              max="1.0"
-              step="0.001"
-              class="w-full"
-            />
-          </div>
-          <div>
-            <label class="text-white mb-2 block"
-              >Saturation Threshold:
-              {{ store.starDetectionOptions.SaturationThreshold.toFixed(2) }}</label
-            >
-            <input
-              :value="store.starDetectionOptions.SaturationThreshold"
-              @change="
-                (e) => {
-                  const num = parseFloat(e.target.value);
-                  store.starDetectionOptions.SaturationThreshold = num;
-                  saveStarDetectionOption('SaturationThreshold', num);
-                }
-              "
-              type="range"
-              min="0.01"
-              max="1.0"
-              step="0.001"
-              class="w-full"
-            />
+            </template>
           </div>
         </div>
+      </template>
+
+      <!-- Intermediate files (always available, like the plugin's own options page) -->
+      <div :class="cardClass">
+        <h3 :class="headingClass">{{ L('intermediateFiles') }}</h3>
+        <HfToggleRow
+          :model-value="o.SaveIntermediateImages"
+          :label="L('saveIntermediateImages')"
+          :help="H('saveIntermediateImages')"
+          :status="statusOf('SaveIntermediateImages')"
+          :error="errorOf('SaveIntermediateImages')"
+          @change="save('SaveIntermediateImages', $event)"
+        />
+        <HfTextField
+          v-if="o.SaveIntermediateImages"
+          :model-value="o.IntermediateSavePath"
+          :label="L('intermediateSavePath')"
+          :help="H('intermediateSavePath')"
+          :status="statusOf('IntermediateSavePath')"
+          :error="errorOf('IntermediateSavePath')"
+          @change="save('IntermediateSavePath', $event)"
+        />
       </div>
 
-      <!-- Star Measurement Settings Card -->
-      <div
-        v-if="store.starDetectionOptions.UseAdvanced"
-        class="border border-gray-700 rounded-lg p-4"
-      >
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">Star Measurement</h3>
-        <div class="space-y-3">
-          <div>
-            <label class="text-white mb-2 block">Measurement Average Method</label>
-            <select
-              :value="store.starDetectionOptions.MeasurementAverage"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.MeasurementAverage = e.target.value;
-                  saveStarDetectionOption('MeasurementAverage', e.target.value);
-                }
-              "
-              class="w-full bg-gray-700 text-white p-2 rounded"
-            >
-              <option>Median</option>
-              <option>MeanOutliers</option>
-            </select>
-          </div>
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.ExcludeSaturatedStarsFromHFR"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.ExcludeSaturatedStarsFromHFR = e.target.checked;
-                  saveStarDetectionOption('ExcludeSaturatedStarsFromHFR', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Exclude Saturated Stars From HFR</span>
-          </label>
-        </div>
-      </div>
-
-      <!-- File Settings Card -->
-      <div class="border border-gray-700 rounded-lg p-4">
-        <h3 class="text-lg font-semibold text-cyan-400 mb-4">File Settings</h3>
-        <div class="space-y-3">
-          <label class="flex items-center text-white">
-            <input
-              :checked="store.starDetectionOptions.SaveIntermediateImages"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.SaveIntermediateImages = e.target.checked;
-                  saveStarDetectionOption('SaveIntermediateImages', e.target.checked);
-                }
-              "
-              type="checkbox"
-              class="mr-3"
-            />
-            <span>Save Intermediate Images</span>
-          </label>
-          <div v-if="store.starDetectionOptions.SaveIntermediateImages">
-            <label class="text-white mb-2 block">Intermediate Save Path</label>
-            <input
-              :value="store.starDetectionOptions.IntermediateSavePath"
-              @change="
-                (e) => {
-                  store.starDetectionOptions.IntermediateSavePath = e.target.value;
-                  saveStarDetectionOption('IntermediateSavePath', e.target.value);
-                }
-              "
-              type="text"
-              class="w-full bg-gray-700 text-white p-2 rounded"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
+      <!-- Reset -->
       <div class="flex justify-start">
         <button
-          @click="showDetectionResetConfirmation = true"
+          class="tns-btn-secondary w-auto px-6"
           :disabled="store.isLoadingDetectionOptions"
-          class="px-6 py-2 bg-gray-600 hover:bg-gray-700 disabled:bg-gray-600 text-white rounded font-semibold transition"
+          @click="showResetConfirm = true"
         >
-          Reset to Defaults
+          {{ L('resetToDefaults') }}
         </button>
       </div>
     </div>
 
-    <!-- Detection Reset Confirmation Dialog -->
-    <div
-      v-if="showDetectionResetConfirmation"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    >
-      <div class="bg-gray-800 border border-gray-700 rounded-lg p-6 max-w-sm mx-4">
-        <h3 class="text-lg font-semibold text-white mb-4">Reset Star Detection Options</h3>
+    <StarDetectionOptimizer
+      :show="showOptimizer"
+      @close="onOptimizerClosed"
+      @accepted="loadStarDetectionOptions()"
+    />
 
-        <p class="text-sm text-gray-300 mb-6">
-          Are you sure you want to reset all Star Detection options to their defaults? This action
-          cannot be undone.
-        </p>
-
-        <div class="flex gap-3">
-          <button
-            @click="showDetectionResetConfirmation = false"
-            class="flex-1 py-2 px-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-white text-sm font-semibold transition-all"
-          >
-            Cancel
-          </button>
-          <button
-            @click="executeDetectionResetDefaults()"
-            :disabled="isResettingDetectionOptions"
-            class="flex-1 py-2 px-3 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {{ isResettingDetectionOptions ? 'Resetting...' : 'Reset' }}
-          </button>
+    <!-- Reset confirmation -->
+    <Modal :show="showResetConfirm" maxWidth="max-w-sm" @close="showResetConfirm = false">
+      <template #header>
+        <h2 class="text-xl font-bold text-white">{{ L('resetTitle') }}</h2>
+      </template>
+      <template #body>
+        <div class="flex w-full flex-col gap-6">
+          <p class="text-sm text-gray-300">{{ L('resetPrompt') }}</p>
+          <div class="flex justify-end gap-3">
+            <button class="tns-btn-secondary w-auto px-4" @click="showResetConfirm = false">
+              {{ L('cancel') }}
+            </button>
+            <button
+              class="tns-btn-danger w-auto px-4"
+              :disabled="isResetting"
+              @click="executeReset()"
+            >
+              {{ isResetting ? L('resetting') : L('reset') }}
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch, onBeforeUnmount } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useHocusFocusStore } from '../store/hocusfocusStore';
 import apiService from '@/services/apiService';
-
-const store = useHocusFocusStore();
-const showDetectionResetConfirmation = ref(false);
-const isResettingDetectionOptions = ref(false);
-const savingOptions = ref(new Set());
-const optionErrors = ref({});
+import Modal from '@/components/helpers/Modal.vue';
+import HfToggleRow from './fields/HfToggleRow.vue';
+import HfNumberField from './fields/HfNumberField.vue';
+import HfSelectField from './fields/HfSelectField.vue';
+import HfTextField from './fields/HfTextField.vue';
+import StarDetectionOptimizer from './optimizer/StarDetectionOptimizer.vue';
 
 const props = defineProps({
-  isTabActive: {
-    type: Boolean,
-    default: false,
-  },
+  isTabActive: { type: Boolean, default: false },
 });
 
-const loadStarDetectionOptions = async () => {
-  await store.loadStarDetectionOptions();
-};
+const { t } = useI18n();
+const store = useHocusFocusStore();
 
-// Save individual Star Detection option
-const saveStarDetectionOption = async (optionName, newValue) => {
+const L = (key) => t(`plugins.hocusfocus.starDetection.${key}`);
+const H = (key) => t(`plugins.hocusfocus.starDetection.help.${key}`);
+
+const o = computed(() => store.starDetectionOptions);
+
+// --- Optimizer ------------------------------------------------------------------------------
+const showOptimizer = ref(false);
+// A run keeps going when its window is closed, so the card offers to reopen it.
+const optimizerRunning = ref(false);
+
+async function refreshOptimizerStatus() {
   try {
-    savingOptions.value.add(optionName);
-    optionErrors.value[optionName] = null;
+    const state = await apiService.hocusfocus.optimizer.getState();
+    optimizerRunning.value = !!state?.Active;
+  } catch {
+    optimizerRunning.value = false;
+  }
+}
 
-    console.log(`[StarDetection] Saving ${optionName}: ${newValue}`);
-    // Update the store option first
-    store.starDetectionOptions[optionName] = newValue;
+function onOptimizerClosed() {
+  showOptimizer.value = false;
+  refreshOptimizerStatus();
+}
 
-    // Send individual option to backend
-    const response = await apiService.hocusfocus.setStarDetectionOption(optionName, newValue);
+const cardClass =
+  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
+const headingClass = 'font-bold text-base text-cyan-400';
 
-    if (response.success || response.message) {
-      console.log(`[StarDetection] ${optionName} saved successfully`);
-    } else {
-      optionErrors.value[optionName] = response.error || 'Failed to save option';
+// --- Enum choices. Values are the backend enum names; labels mirror the plugin's own wording. ---
+const detectionBinningOptions = [
+  { value: 'Bin1', label: '1x1 (Off)' },
+  { value: 'Bin2', label: '2x2' },
+  { value: 'Bin3', label: '3x3' },
+  { value: 'Bin4', label: '4x4' },
+];
+const measurementAverageOptions = [
+  { value: 'Median', label: 'Median' },
+  { value: 'MeanOutliers', label: 'Mean + Outlier Detection' },
+];
+const noiseLevelOptions = ['Typical', 'None', 'High', 'Low'].map((v) => ({ value: v, label: v }));
+const pixelScaleOptions = [
+  { value: 'Typical', label: 'Typical' },
+  { value: 'WideField', label: 'Wide Field' },
+  { value: 'LongFocalLength', label: 'Long Focal Length' },
+];
+const focusRangeOptions = [
+  { value: 'Typical', label: 'Typical' },
+  { value: 'WideRange', label: 'Wide Range' },
+];
+const psfFitTypeOptions = [
+  { value: 'Moffat_40', label: 'Moffat 4.0' },
+  { value: 'Gaussian', label: 'Gaussian' },
+  { value: 'Moffat_25', label: 'Moffat 2.5' },
+  { value: 'Moffat_15', label: 'Moffat 1.5' },
+  { value: 'MoffatFittable', label: 'Moffat (β fittable)' },
+];
+
+// Toggles the plugin shows regardless of Advanced Mode.
+const generalToggles = [
+  { key: 'UseAdvanced', label: 'advancedMode' },
+  { key: 'HotpixelThresholdingEnabled', label: 'useHotpixelThresholding' },
+  { key: 'UseAutoFocusCrop', label: 'useAutoFocusCrop' },
+  { key: 'ModelPSF', label: 'fitPSF' },
+  { key: 'DebugMode', label: 'debugMode' },
+];
+
+// Advanced fields, grouped for the touch layout. Ranges and steps follow the validation rules in
+// the plugin's own options page (Resources/OptionsDataTemplates.xaml) so TNS cannot offer a value
+// HocusFocus would reject. `when` mirrors that page's row visibility.
+const advancedSections = [
+  {
+    title: 'noiseAndStructure',
+    fields: [
+      { key: 'HotpixelFiltering', label: 'hotpixelFiltering', type: 'bool' },
+      {
+        key: 'StarMeasurementNoiseReductionEnabled',
+        label: 'noiseReducedStarMeasurement',
+        type: 'bool',
+      },
+      {
+        key: 'NoiseReductionRadius',
+        label: 'noiseReductionRadius',
+        min: 0,
+        max: 20,
+        step: 1,
+        decimals: 0,
+      },
+      {
+        key: 'NoiseClippingMultiplier',
+        label: 'noiseClippingMultiplier',
+        min: 0.1,
+        max: 20,
+        step: 0.1,
+        decimals: 2,
+      },
+      {
+        key: 'StarClippingMultiplier',
+        label: 'starClippingMultiplier',
+        min: 0.1,
+        max: 20,
+        step: 0.1,
+        decimals: 2,
+      },
+      { key: 'StructureLayers', label: 'structureLayers', min: 1, max: 10, step: 1, decimals: 0 },
+      {
+        key: 'BrightnessSensitivity',
+        label: 'brightnessSensitivity',
+        min: 0,
+        max: 100,
+        step: 0.1,
+        decimals: 2,
+      },
+      { key: 'LocallyAdaptiveBinarization', label: 'locallyAdaptiveBinarization', type: 'bool' },
+      {
+        key: 'AdaptiveNoiseBlockSize',
+        label: 'adaptiveNoiseBlockSize',
+        min: 64,
+        max: 256,
+        step: 16,
+        decimals: 0,
+        when: (v) => v.LocallyAdaptiveBinarization,
+      },
+    ],
+  },
+  {
+    title: 'starGates',
+    fields: [
+      {
+        key: 'StarPeakResponse',
+        label: 'starPeakResponse',
+        min: 0,
+        max: 1,
+        step: 0.01,
+        decimals: 2,
+      },
+      { key: 'MaxDistortion', label: 'maxDistortion', min: 0, max: 1, step: 0.01, decimals: 2 },
+      {
+        key: 'StarCenterTolerance',
+        label: 'starCenterTolerance',
+        min: 0,
+        max: 1,
+        step: 0.01,
+        decimals: 2,
+      },
+      {
+        key: 'StarBackgroundBoxExpansion',
+        label: 'starBackgroundBoxExpansion',
+        min: 1,
+        max: 20,
+        step: 1,
+        decimals: 0,
+      },
+      {
+        key: 'MinStarBoundingBoxSize',
+        label: 'minStarBoundingBoxSize',
+        min: 1,
+        max: 50,
+        step: 1,
+        decimals: 0,
+      },
+      { key: 'MinHFR', label: 'minHFR', min: 0.1, max: 10, step: 0.1, decimals: 2 },
+      {
+        key: 'StructureDilationSize',
+        label: 'structureDilationSize',
+        min: 3,
+        max: 30,
+        step: 1,
+        decimals: 0,
+      },
+      {
+        key: 'StructureDilationCount',
+        label: 'structureDilationCount',
+        min: 0,
+        max: 10,
+        step: 1,
+        decimals: 0,
+      },
+      {
+        key: 'PixelSampleSize',
+        label: 'pixelSampleSize',
+        min: 0.01,
+        max: 1,
+        step: 0.01,
+        decimals: 2,
+      },
+    ],
+  },
+  {
+    title: 'defocusAware',
+    fields: [
+      { key: 'DefocusAwareGates', label: 'defocusAwareGates', type: 'bool' },
+      {
+        key: 'DefocusDistortionSizeReference',
+        label: 'defocusDistortionSizeReference',
+        min: 1,
+        max: 1000,
+        step: 1,
+        decimals: 1,
+        when: (v) => v.DefocusAwareGates,
+      },
+      {
+        key: 'DefocusDistortionMinFactor',
+        label: 'defocusDistortionMinFactor',
+        min: 0.01,
+        max: 1,
+        step: 0.01,
+        decimals: 2,
+        when: (v) => v.DefocusAwareGates,
+      },
+      {
+        key: 'DefocusCenteringToleranceFactor',
+        label: 'defocusCenteringToleranceFactor',
+        min: 1,
+        max: 10,
+        step: 0.1,
+        decimals: 2,
+        when: (v) => v.DefocusAwareGates,
+      },
+      { key: 'DefocusAwareStructure', label: 'defocusAwareStructure', type: 'bool' },
+      {
+        key: 'StructureLayerBoost',
+        label: 'structureLayerBoost',
+        min: 0,
+        max: 6,
+        step: 1,
+        decimals: 0,
+      },
+      { key: 'DefocusAwareDonutDetection', label: 'defocusAwareDonutDetection', type: 'bool' },
+      {
+        key: 'DonutMorphCloseSize',
+        label: 'donutMorphCloseSize',
+        min: 1,
+        max: 25,
+        step: 1,
+        decimals: 0,
+        when: (v) => v.DefocusAwareDonutDetection,
+      },
+      {
+        key: 'DonutMinAnnularityHoleFraction',
+        label: 'donutMinAnnularityHoleFraction',
+        min: 0.02,
+        max: 0.6,
+        step: 0.01,
+        decimals: 2,
+        when: (v) => v.DefocusAwareDonutDetection,
+      },
+      {
+        key: 'DonutMaxStreakEccentricity',
+        label: 'donutMaxStreakEccentricity',
+        min: 0.8,
+        max: 1,
+        step: 0.01,
+        decimals: 2,
+        when: (v) => v.DefocusAwareDonutDetection,
+      },
+      {
+        key: 'DonutSaturationBloomRadius',
+        label: 'donutSaturationBloomRadius',
+        min: 0,
+        max: 100,
+        step: 1,
+        decimals: 1,
+        when: (v) => v.DefocusAwareDonutDetection,
+      },
+    ],
+  },
+  {
+    title: 'psfFitting',
+    fields: [
+      { key: 'PSFFitType', label: 'psfFitType', type: 'enum', options: psfFitTypeOptions },
+      { key: 'PSFResolution', label: 'psfResolution', min: 1, max: 30, step: 1, decimals: 0 },
+      {
+        key: 'PSFParallelPartitionSize',
+        label: 'psfParallelPartitionSize',
+        min: 0,
+        max: 2000,
+        step: 10,
+        decimals: 0,
+      },
+      { key: 'PSFFitThreshold', label: 'psfFitThreshold', min: 0, max: 1, step: 0.01, decimals: 2 },
+      { key: 'PSFPixelIntegration', label: 'psfPixelIntegration', type: 'bool' },
+      { key: 'UsePSFAbsoluteDeviation', label: 'usePSFAbsoluteDeviation', type: 'bool' },
+    ],
+  },
+  {
+    title: 'saturationAndContamination',
+    fields: [
+      {
+        key: 'HotpixelThreshold',
+        label: 'hotpixelThreshold',
+        min: 0,
+        max: 1,
+        step: 0.001,
+        decimals: 3,
+        when: (v) => v.HotpixelThresholdingEnabled,
+      },
+      {
+        key: 'SaturationThreshold',
+        label: 'saturationThreshold',
+        min: 0,
+        max: 1,
+        step: 0.001,
+        decimals: 3,
+      },
+      { key: 'ExcludeSaturatedStarsFromHFR', label: 'excludeSaturatedStarsFromHFR', type: 'bool' },
+      {
+        key: 'ContaminationSensitivity',
+        label: 'contaminationSensitivity',
+        min: 0,
+        max: 20,
+        step: 0.1,
+        decimals: 2,
+      },
+      { key: 'RejectContaminatedStars', label: 'rejectContaminatedStars', type: 'bool' },
+    ],
+  },
+];
+
+function visibleFields(section) {
+  const values = o.value || {};
+  return section.fields.filter((f) => (f.when ? f.when(values) : true));
+}
+
+function rangeHint(field) {
+  if (field.type) return '';
+  return `${field.min} – ${field.max}`;
+}
+
+// --- Saving -------------------------------------------------------------------------------
+const optionStatus = ref({});
+const optionErrors = ref({});
+const saveTimers = new Map();
+
+const statusOf = (key) => optionStatus.value[key] || '';
+const errorOf = (key) => optionErrors.value[key] || '';
+
+// The number fields commit on every keystroke, so coalesce before hitting the plugin.
+function save(key, value) {
+  if (value === undefined || value === null) return;
+  if (!store.starDetectionOptions) return;
+  store.starDetectionOptions[key] = value;
+
+  clearTimeout(saveTimers.get(key));
+  saveTimers.set(
+    key,
+    setTimeout(() => {
+      saveTimers.delete(key);
+      pushOption(key, value);
+    }, 300)
+  );
+}
+
+async function pushOption(key, value) {
+  optionStatus.value = { ...optionStatus.value, [key]: 'saving' };
+  optionErrors.value = { ...optionErrors.value, [key]: '' };
+  try {
+    const response = await apiService.hocusfocus.setStarDetectionOption(key, value);
+    if (response && response.success === false) {
+      throw new Error(response.error || L('saveFailed'));
+    }
+    optionStatus.value = { ...optionStatus.value, [key]: 'saved' };
+    setTimeout(() => {
+      optionStatus.value = { ...optionStatus.value, [key]: '' };
+    }, 1000);
+    // Simple-mode presets and the binning recommendation are derived server-side, so a change
+    // to one option can move several others.
+    if (derivedRefreshKeys.has(key)) {
+      await refreshOptions();
     }
   } catch (err) {
-    console.error(`[StarDetection] Error saving ${optionName}:`, err);
-    optionErrors.value[optionName] = err.message || 'Failed to save option';
-  } finally {
-    savingOptions.value.delete(optionName);
+    console.error(`[StarDetection] Error saving ${key}:`, err);
+    // A rejected value comes back as HTTP 400 with the plugin's own validation message.
+    const detail = err.response?.data?.error || err.message;
+    optionStatus.value = { ...optionStatus.value, [key]: 'error' };
+    optionErrors.value = { ...optionErrors.value, [key]: detail || L('saveFailed') };
+    // The plugin kept its previous value, so put the shown value back in sync.
+    await refreshOptions();
   }
-};
+}
 
-const executeDetectionResetDefaults = async () => {
+// Re-reads the options WITHOUT the store's loading flag, which would unmount the form and take
+// the just-raised error message with it.
+async function refreshOptions() {
   try {
-    isResettingDetectionOptions.value = true;
-    const response = await store.resetStarDetectionDefaults();
+    const options = await apiService.hocusfocus.getStarDetectionOptions();
+    if (options) store.starDetectionOptions = options;
+  } catch (err) {
+    console.error('[StarDetection] Error refreshing options:', err);
+  }
+}
 
-    if (response && response.success) {
-      showDetectionResetConfirmation.value = false;
-      console.log('[StarDetection] Options reset successfully');
-    } else if (response && response.message) {
-      console.log('[StarDetection] Reset response:', response.message);
-      showDetectionResetConfirmation.value = false;
-    } else {
-      throw new Error('Reset failed');
-    }
+const derivedRefreshKeys = new Set([
+  'UseAdvanced',
+  'UseOptimizedSettings',
+  'Simple_NoiseLevel',
+  'Simple_PixelScale',
+  'Simple_FocusRange',
+  'DetectionBinning',
+]);
+
+// --- Load / reset -------------------------------------------------------------------------
+const showResetConfirm = ref(false);
+const isResetting = ref(false);
+
+async function loadStarDetectionOptions() {
+  await store.loadStarDetectionOptions();
+}
+
+async function executeReset() {
+  isResetting.value = true;
+  try {
+    await store.resetStarDetectionDefaults();
+    optionErrors.value = {};
+    optionStatus.value = {};
+    showResetConfirm.value = false;
   } catch (err) {
     console.error('[StarDetection] Error resetting options:', err);
-    alert(`Failed to reset options: ${err.message}`);
+    store.detectionOptionsError = err.message || L('resetFailed');
+    showResetConfirm.value = false;
   } finally {
-    isResettingDetectionOptions.value = false;
+    isResetting.value = false;
   }
-};
+}
 
-// Load options when tab becomes active
 watch(
   () => props.isTabActive,
   async (isActive) => {
     if (isActive) {
-      console.log('[StarDetection] Tab activated - loading options');
       await loadStarDetectionOptions();
+      refreshOptimizerStatus();
     }
   },
   { immediate: true }
 );
+
+onBeforeUnmount(() => {
+  saveTimers.forEach((timer) => clearTimeout(timer));
+  saveTimers.clear();
+});
 </script>

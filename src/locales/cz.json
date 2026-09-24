@@ -884,6 +884,26 @@
       },
       "running": "BĚŽÍCÍ",
       "imageHistory": "Historie Snímků",
+      "imageHistoryDelete": {
+        "button": "Smazat snímek",
+        "confirmTitle": "Smazat snímek z disku?",
+        "confirmMessage": "Soubor snímku bude trvale smazán z rigu. Tuto akci nelze vrátit zpět.",
+        "deleting": "Mažu…",
+        "errorTitle": "Snímek se nepodařilo smazat",
+        "errorGeneric": "Rig nahlásil chybu při mazání souboru.",
+        "unsupported": "Tento rig nepodporuje mazání snímků. Je potřeba verze PINS, jejíž Advanced API nabízí akci pro smazání snímku.",
+        "select": "Vybrat",
+        "done": "Hotovo",
+        "selectAll": "Vybrat vše",
+        "clearSelection": "Vymazat",
+        "selectedCount": "Vybráno: {count}",
+        "selectHint": "Klepnutím na snímky je vyberete. Výběr lze zahájit i dlouhým stiskem dlaždice.",
+        "confirmTitleMany": "Smazat {count} snímků z disku?",
+        "confirmMessageMany": "Soubory snímků budou ze sestavy trvale smazány. Tuto akci nelze vrátit zpět.",
+        "moreFiles": "+{count} dalších",
+        "deletingProgress": "Mažu {done} z {total}…",
+        "partialError": "{failed} z {total} snímků se nepodařilo smazat."
+      },
       "duration": "Trvání",
       "temperatureShort": "Teplota",
       "targetName": "Cíl",
@@ -1674,11 +1694,6 @@
       "indi": {
         "settings": "Nastavení zaostřovače"
       },
-      "duration_seconds": "Trvání",
-      "estimated": "odhad",
-      "filter": "Filtr",
-      "focuser_position": "Pozice",
-      "hfr": "HFR",
       "BoardTemperature": "Teplota desky:",
       "DcPower": "DC napájení",
       "HeatingPower": "Topný výkon:",
@@ -2118,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "Zobrazit Souhvězdí",
         "azimuthal_lines_visible": "Zobrazit azimutální linie",
+        "compass_visible": "Zobrazit kompas",
         "equatorial_lines_visible": "Zobrazit rovníkové linie",
         "meridian_lines_visible": "Zobrazit poledník",
         "ecliptic_lines_visible": "Zobrazit ekliptiku",
@@ -3842,10 +3858,6 @@
         "finalFocusDataSummary": "Shrnutí údajů o konečném zaostření",
         "backfocusError": "Chyba zpětného zaostření:",
         "hfrDifference": "Rozdíl HFR:",
-        "innerHFR": "Vnitřní HFR:",
-        "outerHFR": "Vnější HFR:",
-        "moveSensor": "(Posunout senzor",
-        "flattener": "plochý)",
         "tiltCornerMeasurements": "Měření koutů sklonu",
         "sensorSide": "Strana senzoru",
         "focuserPosition": "Poloha fokusáru",
@@ -3855,16 +3867,32 @@
         "unitMicrons": "um",
         "unitSteps": "kroky"
       },
+      "sensorModel": {
+        "pixelSize": "Velikost Pixelu"
+      },
+      "eccentricity": {
+        "eccentricity": "Excentricita",
+        "stars": "Hvězdy"
+      },
+      "optimizer": {
+        "source": "Zdroj",
+        "mode": "Režim",
+        "filter": "Filtr",
+        "gain": "Zisk",
+        "stars": "Hvězdy",
+        "cancel": "Zrušit",
+        "close": "Zavřít",
+        "yes": "Ano",
+        "no": "Ne"
+      },
       "aberrationInspectorOptions": {
         "loading": "Načítání možností inspektoru aberací...",
-        "noOptions": "Zatím nejsou k dispozici žádné možnosti inspektoru aberací.",
         "error": "Chyba:",
-        "inspectorSettings": "Nastavení inspektoru",
         "micronsPerFocuserStep": "Mikrony na krok fokusáru",
         "retry": "Zkusit znovu",
         "resetToDefaults": "Obnovit výchozí hodnoty",
         "resetting": "Obnovování...",
-        "autoPlaceholder": "auto",
+        "cancel": "Zrušit",
         "centerFocuserBeforeRun": "Center Focuser Before Run",
         "detailedAnalysisExposureSeconds": "Detailed Analysis Exposure Time (seconds)",
         "framesPerPoint": "Frames Per Point",
@@ -3881,11 +3909,9 @@
         "error": "Chyba:",
         "retry": "Zkusit znovu",
         "basicSettings": "Základní nastavení",
-        "hfrValidation": "Ověření HFR"
-      },
-      "directoryBrowser": {
-        "browse": "Procházet...",
-        "error": "Nepodařilo se otevřít výběr adresáře"
+        "hfrValidation": "Ověření HFR",
+        "cancel": "Zrušit",
+        "save": "Uložit"
       },
       "starDetection": {
         "loading": "Načítání možností detekce hvězd...",
@@ -3900,7 +3926,9 @@
         "noiseReducedStarMeasurement": "Měření hvězd se sníženým šumem",
         "debugMode": "Režim ladění",
         "simpleModeSettings": "Nastavení jednoduchého režimu",
+        "cancel": "Zrušit",
         "noiseLevel": "Úroveň hluku",
+        "pixelScale": "Měřítko Pixelu",
         "useOptimizedSettings": "Use Optimized Settings"
       },
       "tilter": {
@@ -3909,14 +3937,10 @@
         "scanTooltip": "Vyhledejte zařízení",
         "connect": "Připojit",
         "disconnect": "Odpojit",
-        "deviceInfo": "Device Information",
         "status": "Postavení",
-        "connected": "Připojeno",
         "moving": "Stěhování",
         "idle": "Líný",
         "currentPositions": "Aktuální pozice",
-        "noDeviceSelected": "Nejprve prosím vyberte zařízení",
-        "deviceNotConnected": "Chcete-li zobrazit ovládací prvky, připojte se k zařízení",
         "configuration": "Konfigurace",
         "sensorWidth": "Šířka snímače",
         "sensorHeight": "Výška snímače",
@@ -3947,14 +3971,7 @@
         "calculateActuatorPositions": "Vypočítat polohy ovladače",
         "calculatedPositions": "Vypočítané pozice",
         "applyThesePositionsToDevice": "Použijte tyto pozice na zařízení",
-        "actuatorVisualizationLabel": "Akční členy s poloměrem {radius} mm • Rotace snímače {rotation}° • Pohled shora",
-        "calculatingPositions": "Počítání...",
-        "applyingPositions": "Aplikace...",
-        "savingConfiguration": "Ukládání..."
-      },
-      "common": {
-        "error": "Chyba:",
-        "loading": "Načítání..."
+        "actuatorVisualizationLabel": "Akční členy s poloměrem {radius} mm • Rotace snímače {rotation}° • Pohled shora"
       }
     },
     "tenmicron": {
@@ -5205,6 +5222,135 @@
     "screenLock": {
       "unlock": "Odemknout",
       "holdToUnlock": "Držte {seconds} s pro odemknutí"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "Živé projekty, cíle a postup z pluginu NINA Target Scheduler.",
+      "actions": {
+        "refresh": "Obnovit",
+        "refreshing": "Obnovuje se…",
+        "showSchedule": "Zobrazit plán",
+        "hideSchedule": "Skrýt plán",
+        "expandHeader": "Rozbalit",
+        "collapseHeader": "Sbalit",
+        "cancel": "Zrušit"
+      },
+      "labels": {
+        "apiPort": "Port API Scheduleru",
+        "profile": "Profil",
+        "active": "aktivní",
+        "lastUpdated": "Naposledy aktualizováno",
+        "loading": "Načítání projektů…",
+        "noProjects": "Pro tento profil nebyly nalezeny žádné projekty.",
+        "activeProjects": "Aktivní projekty",
+        "targets": "Cíle",
+        "completion": "Dokončení",
+        "legendAccepted": "Přijaté",
+        "legendPending": "Pořízené, čekají na kontrolu",
+        "integrationTime": "Doba integrace",
+        "unofficialDisclaimer": "Neoficiální prohlížeč — není přidružen k projektu Target Scheduler.",
+        "dataFrom": "Data z",
+        "readOnlyNote": "pouze pro čtení, nic zde nemění váš plán",
+        "searchPlaceholder": "Hledat projekty a cíle…",
+        "clearSearch": "Vymazat hledání",
+        "allStates": "Vše",
+        "noResults": "Žádný projekt ani cíl neodpovídá vašemu hledání.",
+        "remainingTime": "Zbývá",
+        "completionFilterLabel": "Dokončení:",
+        "notStarted": "Nezahájeno",
+        "inProgress": "Probíhá",
+        "done": "Hotovo",
+        "legendTitle": "Legenda",
+        "legendBarsTitle": "Barvy ukazatele postupu",
+        "legendDotsTitle": "Barvy stavových teček (projekty a cíle)",
+        "legendActive": "Aktivní",
+        "legendInactive": "Neaktivní",
+        "legendDraft": "Koncept (pouze projekty)",
+        "legendClosed": "Uzavřeno (pouze projekty)",
+        "creditNote": "Veškerá zásluha za plugin Target Scheduler a jeho plánovací engine patří",
+        "filtersToggle": "Filtry",
+        "stateFilterLabel": "Stav:",
+        "filterNameFilterLabel": "Filtr:",
+        "mosaicFilterLabel": "Typ:",
+        "scheduledFilterLabel": "Plán:",
+        "mosaicOnly": "Mozaika",
+        "singlePanelOnly": "Jeden panel",
+        "scheduledTonightOnly": "Naplánováno na dnešní noc",
+        "sortLabel": "Řadit:",
+        "sortName": "Název",
+        "sortPriority": "Priorita",
+        "sortCompletion": "Dokončení",
+        "sortRemaining": "Zbývající čas",
+        "sortAscending": "Řadit vzestupně",
+        "sortDescending": "Řadit sestupně",
+        "exportMarkdown": "Kopírovat jako Markdown",
+        "exportCopiedTitle": "Zkopírováno",
+        "exportCopiedMessage": "Postup plánu zkopírován do schránky ve formátu Markdown.",
+        "exportFailedTitle": "Kopírování selhalo",
+        "exportFailedMessage": "Nelze zkopírovat do schránky.",
+        "apiDocsLink": "Dokumentace API Target Scheduler",
+        "setupTitle": "Nastavit API Target Scheduler",
+        "setupStep1": "V NINA otevřete možnosti pluginu Target Scheduler a povolte jeho API server.",
+        "setupStep2": "Poznamenejte si zobrazený port (výchozí 8188).",
+        "setupStep3": "Zadejte tento port výše, poté se automaticky připojí.",
+        "welcomeTitle": "Vítejte v Target Scheduler Viewer",
+        "welcomeSubtitle": "Tento plugin zobrazuje vaše projekty, cíle a postup snímání z NINA Target Scheduler. Stačí, aby věděl, jak se k němu připojit.",
+        "welcomeTrying": "Zkouší se port {port}…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}: {accepted} z {desired} přijato",
+        "integrated": "{time} integrováno"
+      },
+      "targetCard": {
+        "active": "Aktivní",
+        "inactive": "Neaktivní",
+        "hide": "Skrýt",
+        "stats": "Statistiky",
+        "loadingStats": "Načítání statistik…",
+        "colFilter": "Filtr",
+        "colExp": "Exp.",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Ecc.",
+        "belowAutoAccept": "Pod prahem automatického přijetí (význam pole nepotvrzen)",
+        "aboveAutoAccept": "Nad prahem automatického přijetí (význam pole nepotvrzen)",
+        "noAcceptedFrames": "Zatím žádné přijaté snímky.",
+        "integratedOf": "{time} / {expected} integrováno",
+        "remaining": "{time} zbývá"
+      },
+      "projectCard": {
+        "priority": "Priorita",
+        "integrationAccepted": "Integrace (přijato)",
+        "integrationExpected": "Integrace (očekáváno)",
+        "integrationRemaining": "Integrace (zbývá)",
+        "description": "Popis",
+        "minimumTime": "Minimální čas",
+        "filterSwitchFrequency": "Frekvence přepínání filtrů",
+        "ditherEvery": "Dither každých",
+        "meridianWindow": "Okno meridiánu",
+        "horizon": "Horizont",
+        "horizonCustom": "vlastní, +{offset}°",
+        "altitudeLimits": "Limity výšky",
+        "grading": "Hodnocení",
+        "smartExposureOrder": "Chytré pořadí expozic",
+        "mosaic": "Mozaika",
+        "minutes": "{count} min",
+        "exposures": "{count} expozic",
+        "emptyValue": "—",
+        "off": "vypnuto",
+        "on": "zapnuto",
+        "enabled": "povoleno",
+        "disabled": "zakázáno",
+        "yes": "ano",
+        "no": "ne",
+        "noTargets": "V tomto projektu nejsou žádné cíle."
+      },
+      "schedulePreview": {
+        "disclaimer": "Predikovaný plán Scheduleru na dnešní noc, přepočítaný při každém obnovení — není záznamem toho, co NINA právě skutečně snímá.",
+        "learnMore": "Zjistit více",
+        "noScheduleData": "Žádná data plánu.",
+        "waitingNotVisible": "Čeká se — cíl zatím není viditelný"
+      }
     }
   },
   "pinsDevices": {
@@ -5785,7 +5931,10 @@
       "cobsCountSynced": "{count} komet uloženo · {status}",
       "refreshedAgo": "obnoveno {when}",
       "neverRefreshed": "nikdy neobnoveno",
-      "confirmClearCobs": "Odstranit všechna uložená pozorování COBS? Odznaky pozorované jasnosti budou prázdné až do dalšího obnovení karty Procházet."
+      "confirmClearCobs": "Odstranit všechna uložená pozorování COBS? Odznaky pozorované jasnosti budou prázdné až do dalšího obnovení karty Procházet.",
+      "connectionSection": "Připojení",
+      "apiTokenHint": "Vyplní se automaticky při prvním otevření tohoto panelu. Ručně je potřeba pouze pro druhé zařízení -- zkopírujte jej z tohoto pole na prvním zařízení, nebo ze stránky Možnosti pluginu ve Windows NINA.",
+      "apiTokenRequired": "Tato instalace Perihelionu vyžaduje API token. Zadejte jej v Nastavení pro pokračování."
     }
   }
 }

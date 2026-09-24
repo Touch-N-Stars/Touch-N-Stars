@@ -20,8 +20,19 @@
       <SubNav :items="tabItems" v-model:activeItem="activeTab" />
 
       <div class="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+        <!-- Blocks every tab except Settings until a working token is entered -- Settings has
+             to stay reachable so there's a way to fix it. -->
+        <div
+          v-if="apiUnauthorized && activeTab !== 'settings'"
+          class="tns-card text-center flex flex-col gap-3 items-center"
+        >
+          <p class="text-sm text-content-faint">{{ t('perihelion.settings.apiTokenRequired') }}</p>
+          <button class="tns-btn-primary" @click="activeTab = 'settings'">
+            {{ t('perihelion.tabs.settings') }}
+          </button>
+        </div>
         <!-- ===================== BROWSE ===================== -->
-        <template v-if="activeTab === 'browse'">
+        <template v-else-if="activeTab === 'browse'">
           <div class="flex items-center gap-3">
             <div
               class="w-11 h-11 rounded-chip bg-violet-400/15 flex items-center justify-center shrink-0"
@@ -1315,6 +1326,20 @@
 
         <!-- ===================== SETTINGS ===================== -->
         <template v-else-if="activeTab === 'settings'">
+          <div class="tns-card flex flex-col gap-2">
+            <span class="tns-stat-label">{{ t('perihelion.settings.connectionSection') }}</span>
+            <span class="text-[11px] text-content-muted leading-tight">
+              {{ t('perihelion.settings.apiTokenHint') }}
+            </span>
+            <input
+              v-model="apiTokenInput"
+              type="password"
+              autocomplete="off"
+              class="tns-input w-full text-sm"
+              @change="onSaveApiToken"
+            />
+          </div>
+
           <div class="tns-card flex flex-col gap-3">
             <span class="tns-stat-label">{{ t('perihelion.settings.trackingSection') }}</span>
 
@@ -1641,6 +1666,8 @@ import { addTargetToSequence } from '../utils/addTargetToSequence';
 import { buildPerihelionSequence } from '../utils/buildPerihelionSequence';
 import { startQuickTrack, stopQuickTrack } from '../utils/quickTrack';
 import { fetchQuickTrackStatus } from '../utils/fetchQuickTrackStatus';
+import { getPerihelionToken, setPerihelionToken } from '../utils/perihelionAuth';
+import { attemptPairing } from '../utils/perihelionPairing';
 import { downloadBlob } from '@/utils/blobDownloader';
 import { usePerihelionStore } from '../store/perihelionStore';
 import { useFramingStore } from '@/store/framingStore';
@@ -1775,6 +1802,7 @@ const {
   actionMode,
   framingOffset,
   pluginInstalled,
+  apiUnauthorized,
 } = storeToRefs(perihelionStore);
 
 // Persisted on the plugin side via PluginOptionsAccessor, reachable here since PINS has no
@@ -1799,6 +1827,13 @@ const likelyEqmodMount = computed(() => {
   const haystack = `${info.Name ?? ''} ${info.Description ?? ''} ${info.DriverInfo ?? ''}`;
   return /eqmod/i.test(haystack);
 });
+
+const apiTokenInput = ref(getPerihelionToken());
+
+async function onSaveApiToken() {
+  setPerihelionToken(apiTokenInput.value);
+  await checkPluginInstalled();
+}
 
 const cometMagnitudeThresholdInput = ref(16);
 const maxCometsInput = ref(30);
@@ -1967,8 +2002,16 @@ async function checkPluginInstalled() {
   try {
     await fetchQuickTrackStatus();
     pluginInstalled.value = true;
-  } catch {
-    pluginInstalled.value = false;
+    apiUnauthorized.value = false;
+  } catch (error) {
+    if (error?.response?.status === 401) {
+      // The server answered -- it's installed, just rejecting this request's token.
+      pluginInstalled.value = true;
+      apiUnauthorized.value = true;
+    } else {
+      pluginInstalled.value = false;
+      apiUnauthorized.value = false;
+    }
   }
 }
 
@@ -2105,8 +2148,12 @@ async function restoreActiveQuickTrackSession() {
 // before pluginInstalled is known, or run right alongside the "not detected" check instead of
 // being skipped by it.
 onMounted(async () => {
+  await attemptPairing();
+  // apiTokenInput was seeded at setup time, before pairing could have stored anything --
+  // re-read it now so a freshly-paired token actually shows up in Settings.
+  apiTokenInput.value = getPerihelionToken();
   await checkPluginInstalled();
-  if (pluginInstalled.value) {
+  if (pluginInstalled.value && !apiUnauthorized.value) {
     await loadObjects();
     loadSyncStatus();
     loadMountSettings();

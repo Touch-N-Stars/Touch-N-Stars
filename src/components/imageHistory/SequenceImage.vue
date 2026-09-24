@@ -1,8 +1,14 @@
 <template>
   <div
-    @click="openModal"
+    @click="onTileClick"
+    @pointerdown="onPointerDown"
+    @pointerup="cancelHold"
+    @pointercancel="cancelHold"
+    @pointerleave="cancelHold"
+    @contextmenu="onContextMenu"
     ref="imageContainer"
-    class="image-container relative overflow-hidden touch-auto bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl border border-cyan-700 cursor-pointer"
+    class="image-container relative overflow-hidden touch-auto bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl border cursor-pointer transition-shadow"
+    :class="selected ? 'border-cyan-400 ring-2 ring-cyan-400' : 'border-cyan-700'"
   >
     <img
       ref="image"
@@ -11,6 +17,40 @@
       class="block w-full max-h-[80vh] object-contain"
       :style="{ transform: 'rotate(' + settingsStore.currentImageRotation + 'deg)' }"
     />
+    <!-- Selection checkbox (selection mode only). The whole tile toggles too; the
+         button is the visible affordance and a 48 px target of its own. -->
+    <button
+      v-if="selectable"
+      type="button"
+      class="absolute top-2 left-2 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+      role="checkbox"
+      :aria-checked="selected"
+      :aria-label="$t('components.sequence.imageHistoryDelete.select')"
+      data-testid="image-history-select"
+      @click.stop="emit('toggle-select')"
+    >
+      <span
+        class="flex items-center justify-center w-7 h-7 rounded-full border-2 transition-colors"
+        :class="
+          selected ? 'bg-cyan-500 border-cyan-400 text-white' : 'bg-gray-900/60 border-white/80'
+        "
+      >
+        <CheckIcon v-if="selected" class="w-5 h-5" />
+      </span>
+    </button>
+    <!-- .stop: the tile itself opens the full-size modal; the delete button must not.
+         Hidden in selection mode, where the batch action bar owns deleting. -->
+    <button
+      v-if="deletable && !selectable"
+      type="button"
+      class="absolute top-2 right-2 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-lg bg-gray-900/75 text-gray-200 hover:bg-red-700/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 transition-colors"
+      :aria-label="$t('components.sequence.imageHistoryDelete.button')"
+      :title="$t('components.sequence.imageHistoryDelete.button')"
+      data-testid="image-history-delete"
+      @click.stop="emit('delete')"
+    >
+      <TrashIcon class="w-6 h-6" />
+    </button>
     <div
       v-if="showStats"
       :class="[
@@ -108,12 +148,16 @@
     :isLoading="isLoadingModal"
     :index="index"
     :statistics="stats"
+    :deletable="deletable"
     @close="closeModal"
+    @delete="onModalDelete"
   />
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onBeforeUnmount } from 'vue';
+import { TrashIcon, CheckIcon } from '@heroicons/vue/24/outline';
+import { createHoldTimer } from '@/utils/holdTimer';
 import ImageModal from '@/components/helpers/imageModal.vue';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { useImagetStore } from '@/store/imageStore';
@@ -146,7 +190,83 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  // Shows the delete overlay. The parent owns confirmation and the API call.
+  deletable: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  // Selection mode: a checkbox replaces the delete overlay and tapping the tile
+  // toggles the selection instead of opening the full-size modal.
+  selectable: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  selected: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  // Long-pressing the tile emits `hold` (used to enter selection mode).
+  holdToSelect: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
+
+const emit = defineEmits(['delete', 'toggle-select', 'hold']);
+
+// --- long press -----------------------------------------------------------
+// A completed hold must not also count as a tap, so the click that follows the
+// pointer release is swallowed once.
+const HOLD_MS = 500;
+let holdFired = false;
+const holdTimer = createHoldTimer({
+  durationMs: HOLD_MS,
+  onComplete: () => {
+    holdFired = true;
+    emit('hold');
+  },
+});
+
+function onPointerDown(event) {
+  if (!props.holdToSelect || props.selectable) return;
+  if (event.button !== undefined && event.button !== 0) return;
+  holdFired = false;
+  holdTimer.start();
+}
+
+function cancelHold() {
+  holdTimer.cancel();
+}
+
+function onContextMenu(event) {
+  // The browser's long-press menu would compete with the hold gesture.
+  if (props.holdToSelect) event.preventDefault();
+}
+
+onBeforeUnmount(() => holdTimer.dispose());
+
+function onTileClick() {
+  if (holdFired) {
+    holdFired = false;
+    return;
+  }
+  if (props.selectable) {
+    emit('toggle-select');
+    return;
+  }
+  openModal();
+}
+
+function onModalDelete() {
+  // The confirmation belongs to the parent; close the full-size view first so
+  // the dialog is not shown over an image that is about to disappear.
+  closeModal();
+  emit('delete');
+}
 
 const isLoadingModal = ref(false);
 const showModal = ref(false);

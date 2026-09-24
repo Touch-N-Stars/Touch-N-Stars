@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -26,7 +26,7 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchQuickTrackStatus() {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/status`);
+  const response = await perihelionApi.get(`${PERIHELION_URL}/status`);
   const body = response.data;
   return {
     active: !!body.Active,

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import i18n from '@/i18n';
 import { getUrls } from '@/services/api/core';
 import { describePerihelionResponse, describePerihelionError } from './perihelionResult';
@@ -41,7 +41,7 @@ export async function clearCobs() {
 async function doImport(path, body, contentType) {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}${path}`, body, {
+    const response = await perihelionApi.post(`${PERIHELION_URL}${path}`, body, {
       headers: { 'Content-Type': contentType },
     });
     return { ...describePerihelionResponse(response.data), count: response.data.Count };
@@ -53,9 +53,9 @@ async function doImport(path, body, contentType) {
 async function doExport(path) {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.get(`${PERIHELION_URL}${path}`, { responseType: 'text' });
+    const response = await perihelionApi.get(`${PERIHELION_URL}${path}`, { responseType: 'text' });
     // This route always answers 200 with a plain string (empty means never synced) -- the
-    // global axios interceptor (src/utils/errorHandler.js) replaces a failed request's real
+    // global axios interceptor (src/utils/errorHandler.js) replaces a failed request's own
     // response with a synthetic {Error, Success:false, ...} object instead of rejecting, so
     // anything that isn't a string means the request didn't actually succeed.
     if (typeof response.data !== 'string') {
@@ -74,7 +74,7 @@ async function doExport(path) {
 async function doClear(path) {
   const { PERIHELION_URL } = getUrls();
   try {
-    const response = await axios.post(`${PERIHELION_URL}${path}`);
+    const response = await perihelionApi.post(`${PERIHELION_URL}${path}`);
     return describePerihelionResponse(response.data);
   } catch (error) {
     return describePerihelionError(error);

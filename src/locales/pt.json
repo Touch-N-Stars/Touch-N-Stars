@@ -884,6 +884,26 @@
       },
       "running": "EXECUTANDO",
       "imageHistory": "Histórico de imagens",
+      "imageHistoryDelete": {
+        "button": "Eliminar imagem",
+        "confirmTitle": "Eliminar a imagem do disco?",
+        "confirmMessage": "O ficheiro de imagem será eliminado permanentemente do rig. Esta ação não pode ser anulada.",
+        "deleting": "A eliminar…",
+        "errorTitle": "Não foi possível eliminar a imagem",
+        "errorGeneric": "O rig comunicou um erro ao eliminar o ficheiro.",
+        "unsupported": "Este rig não suporta a eliminação de imagens. É necessária uma versão do PINS cuja Advanced API disponibilize a ação de eliminação de imagens.",
+        "select": "Selecionar",
+        "done": "Concluído",
+        "selectAll": "Selecionar tudo",
+        "clearSelection": "Limpar",
+        "selectedCount": "{count} selecionadas",
+        "selectHint": "Toque nas imagens para selecioná-las. Um toque longo numa miniatura também inicia a seleção.",
+        "confirmTitleMany": "Excluir {count} imagens do disco?",
+        "confirmMessageMany": "Os arquivos de imagem são excluídos permanentemente do equipamento. Isso não pode ser desfeito.",
+        "moreFiles": "+{count} mais",
+        "deletingProgress": "Excluindo {done} de {total}…",
+        "partialError": "{failed} de {total} imagens não puderam ser excluídas."
+      },
       "duration": "Duração",
       "temperatureShort": "Temperatura",
       "targetName": "Alvo",
@@ -1674,11 +1694,6 @@
       "indi": {
         "settings": "Configurações do focalizador"
       },
-      "duration_seconds": "Duração",
-      "estimated": "Husa.",
-      "filter": "Filtro",
-      "focuser_position": "Posição",
-      "hfr": "HFR",
       "BoardTemperature": "Temperatura da placa:",
       "DcPower": "Alimentação CC",
       "HeatingPower": "Potência de aquecimento:",
@@ -2118,6 +2133,7 @@
       "settings": {
         "constellations_lines_visible": "Mostrar constelações",
         "azimuthal_lines_visible": "Mostrar linhas azimutais",
+        "compass_visible": "Mostrar bússola",
         "equatorial_lines_visible": "Mostrar linhas equatoriais",
         "meridian_lines_visible": "Mostrar meridiano",
         "ecliptic_lines_visible": "Mostrar eclíptica",
@@ -3842,10 +3858,6 @@
         "finalFocusDataSummary": "Resumo dos Dados de Foco Final",
         "backfocusError": "Erro de Foco Posterior:",
         "hfrDifference": "Diferença HFR:",
-        "innerHFR": "HFR Interior:",
-        "outerHFR": "HFR Exterior:",
-        "moveSensor": "(Mover sensor",
-        "flattener": "achatador)",
         "tiltCornerMeasurements": "Medições de Canto de Inclinação",
         "sensorSide": "Lado do Sensor",
         "focuserPosition": "Posição do Focalizador",
@@ -3855,16 +3867,30 @@
         "unitMicrons": "µm",
         "unitSteps": "etapas"
       },
+      "sensorModel": {
+        "pixelSize": "Tamanho do Pixel"
+      },
+      "eccentricity": {
+        "stars": "Estrelas"
+      },
+      "optimizer": {
+        "source": "Origem",
+        "mode": "Modo",
+        "filter": "Filtro",
+        "stars": "Estrelas",
+        "cancel": "Cancelar",
+        "close": "Fechar",
+        "yes": "Sim",
+        "no": "Não"
+      },
       "aberrationInspectorOptions": {
         "loading": "Carregando opções do Inspetor de Aberrações...",
-        "noOptions": "Nenhuma opção do Inspetor de Aberrações disponível ainda.",
         "error": "Erro:",
-        "inspectorSettings": "Configurações do Inspetor",
         "micronsPerFocuserStep": "Microns por Etapa do Focalizador",
         "retry": "Tentar novamente",
         "resetToDefaults": "Redefinir para Padrões",
         "resetting": "Redefinindo...",
-        "autoPlaceholder": "auto",
+        "cancel": "Cancelar",
         "centerFocuserBeforeRun": "Centralizar o foco antes da execução",
         "detailedAnalysisExposureSeconds": "Tempo de exposição de análise detalhada (segundos)",
         "framesPerPoint": "Quadros por ponto",
@@ -3881,11 +3907,9 @@
         "error": "Erro:",
         "retry": "Tentar novamente",
         "basicSettings": "Configurações Básicas",
-        "hfrValidation": "Validação HFR"
-      },
-      "directoryBrowser": {
-        "browse": "Procurar...",
-        "error": "Falha ao abrir seletor de diretório"
+        "hfrValidation": "Validação HFR",
+        "cancel": "Cancelar",
+        "save": "Guardar"
       },
       "starDetection": {
         "loading": "Carregando opções de Detecção de Estrelas...",
@@ -3900,7 +3924,9 @@
         "noiseReducedStarMeasurement": "Medição de Estrelas com Ruído Reduzido",
         "debugMode": "Modo de Depuração",
         "simpleModeSettings": "Configurações do Modo Simples",
+        "cancel": "Cancelar",
         "noiseLevel": "Nível de Ruído",
+        "pixelScale": "Escala de Pixel",
         "useOptimizedSettings": "Use configurações otimizadas"
       },
       "tilter": {
@@ -3909,14 +3935,10 @@
         "scanTooltip": "Procurar dispositivos",
         "connect": "Conectar",
         "disconnect": "Desconectar",
-        "deviceInfo": "Device Information",
         "status": "Status",
-        "connected": "Conectado",
         "moving": "Movendo-se",
         "idle": "Parado",
         "currentPositions": "Posições Atuais",
-        "noDeviceSelected": "Selecione um dispositivo primeiro",
-        "deviceNotConnected": "Conecte-se a um dispositivo para visualizar os controles",
         "configuration": "Configuração",
         "sensorWidth": "Largura do Sensor",
         "sensorHeight": "Altura do sensor",
@@ -3947,14 +3969,7 @@
         "calculateActuatorPositions": "Calcular posições do atuador",
         "calculatedPositions": "Posições calculadas",
         "applyThesePositionsToDevice": "Aplique essas posições ao dispositivo",
-        "actuatorVisualizationLabel": "Atuadores com raio de {radius} mm • Rotação do sensor {rotation}° • Vista superior",
-        "calculatingPositions": "Calculando...",
-        "applyingPositions": "Aplicando...",
-        "savingConfiguration": "Salvando..."
-      },
-      "common": {
-        "error": "Erro:",
-        "loading": "Carregando..."
+        "actuatorVisualizationLabel": "Atuadores com raio de {radius} mm • Rotação do sensor {rotation}° • Vista superior"
       }
     },
     "tenmicron": {
@@ -5210,6 +5225,135 @@
     "screenLock": {
       "unlock": "Desbloquear tela",
       "holdToUnlock": "Segure por {seconds} s para desbloquear"
+    },
+    "targetSchedulerViewer": {
+      "title": "Target Scheduler Viewer",
+      "subtitle": "Projetos, alvos e progresso ao vivo do plugin NINA Target Scheduler.",
+      "actions": {
+        "refresh": "Atualizar",
+        "refreshing": "Atualizando…",
+        "showSchedule": "Mostrar agenda",
+        "hideSchedule": "Ocultar agenda",
+        "expandHeader": "Expandir",
+        "collapseHeader": "Recolher",
+        "cancel": "Cancelar"
+      },
+      "labels": {
+        "apiPort": "Porta da API do Scheduler",
+        "profile": "Perfil",
+        "active": "ativo",
+        "lastUpdated": "Última atualização",
+        "loading": "Carregando projetos…",
+        "noProjects": "Nenhum projeto encontrado para este perfil.",
+        "activeProjects": "Projetos ativos",
+        "targets": "Alvos",
+        "completion": "Conclusão",
+        "legendAccepted": "Aceitas",
+        "legendPending": "Adquiridas, aguardando revisão",
+        "integrationTime": "Tempo de integração",
+        "unofficialDisclaimer": "Visualizador não oficial — não afiliado ao projeto Target Scheduler.",
+        "dataFrom": "Dados de",
+        "readOnlyNote": "somente leitura, nada aqui altera sua agenda",
+        "searchPlaceholder": "Buscar projetos e alvos…",
+        "clearSearch": "Limpar busca",
+        "allStates": "Todos",
+        "noResults": "Nenhum projeto ou alvo corresponde à sua busca.",
+        "remainingTime": "Restante",
+        "completionFilterLabel": "Conclusão:",
+        "notStarted": "Não iniciado",
+        "inProgress": "Em andamento",
+        "done": "Concluído",
+        "legendTitle": "Legenda",
+        "legendBarsTitle": "Cores da barra de progresso",
+        "legendDotsTitle": "Cores dos pontos de status (projetos e alvos)",
+        "legendActive": "Ativo",
+        "legendInactive": "Inativo",
+        "legendDraft": "Rascunho (somente projetos)",
+        "legendClosed": "Fechado (somente projetos)",
+        "creditNote": "Todo o crédito pelo plugin Target Scheduler e seu motor de agendamento vai para",
+        "filtersToggle": "Filtros",
+        "stateFilterLabel": "Estado:",
+        "filterNameFilterLabel": "Filtro:",
+        "mosaicFilterLabel": "Tipo:",
+        "scheduledFilterLabel": "Agendamento:",
+        "mosaicOnly": "Mosaico",
+        "singlePanelOnly": "Painel único",
+        "scheduledTonightOnly": "Agendado para esta noite",
+        "sortLabel": "Ordenar:",
+        "sortName": "Nome",
+        "sortPriority": "Prioridade",
+        "sortCompletion": "Conclusão",
+        "sortRemaining": "Tempo restante",
+        "sortAscending": "Ordem crescente",
+        "sortDescending": "Ordem decrescente",
+        "exportMarkdown": "Copiar como Markdown",
+        "exportCopiedTitle": "Copiado",
+        "exportCopiedMessage": "Progresso da agenda copiado para a área de transferência em Markdown.",
+        "exportFailedTitle": "Falha ao copiar",
+        "exportFailedMessage": "Não foi possível copiar para a área de transferência.",
+        "apiDocsLink": "Documentação da API do Target Scheduler",
+        "setupTitle": "Configurar a API do Target Scheduler",
+        "setupStep1": "No NINA, abra as opções do plugin Target Scheduler e ative o servidor API.",
+        "setupStep2": "Anote a porta exibida (padrão 8188).",
+        "setupStep3": "Digite essa porta acima; a conexão será feita automaticamente.",
+        "welcomeTitle": "Bem-vindo ao Target Scheduler Viewer",
+        "welcomeSubtitle": "Este plugin mostra seus projetos, alvos e progresso de captura do NINA Target Scheduler. Ele só precisa saber como alcançá-lo.",
+        "welcomeTrying": "Tentando a porta {port}…"
+      },
+      "exposureBar": {
+        "ariaLabel": "{filter}: {accepted} de {desired} aceitas",
+        "integrated": "{time} integrado"
+      },
+      "targetCard": {
+        "active": "Ativo",
+        "inactive": "Inativo",
+        "hide": "Ocultar",
+        "stats": "Estat.",
+        "loadingStats": "Carregando estatísticas…",
+        "colFilter": "Filtro",
+        "colExp": "Exp.",
+        "colHfr": "HFR",
+        "colFwhm": "FWHM",
+        "colEcc": "Exc.",
+        "belowAutoAccept": "Abaixo do limite de auto-aceitação (semântica do campo não confirmada)",
+        "aboveAutoAccept": "Acima do limite de auto-aceitação (semântica do campo não confirmada)",
+        "noAcceptedFrames": "Ainda sem quadros aceitos.",
+        "integratedOf": "{time} / {expected} integrado",
+        "remaining": "{time} restante"
+      },
+      "projectCard": {
+        "priority": "Prioridade",
+        "integrationAccepted": "Integração (aceita)",
+        "integrationExpected": "Integração (esperada)",
+        "integrationRemaining": "Integração (restante)",
+        "description": "Descrição",
+        "minimumTime": "Tempo mínimo",
+        "filterSwitchFrequency": "Frequência de troca de filtro",
+        "ditherEvery": "Dither a cada",
+        "meridianWindow": "Janela de meridiano",
+        "horizon": "Horizonte",
+        "horizonCustom": "personalizado, +{offset}°",
+        "altitudeLimits": "Limites de altitude",
+        "grading": "Classificação",
+        "smartExposureOrder": "Ordem inteligente de exposição",
+        "mosaic": "Mosaico",
+        "minutes": "{count} min",
+        "exposures": "{count} exposições",
+        "emptyValue": "—",
+        "off": "desativado",
+        "on": "ativado",
+        "enabled": "ativado",
+        "disabled": "desativado",
+        "yes": "sim",
+        "no": "não",
+        "noTargets": "Nenhum alvo neste projeto."
+      },
+      "schedulePreview": {
+        "disclaimer": "Plano previsto do Scheduler para esta noite, recalculado a cada atualização — não é um registro do que o NINA está realmente capturando agora.",
+        "learnMore": "Saiba mais",
+        "noScheduleData": "Sem dados de agendamento.",
+        "waitingNotVisible": "Aguardando — alvo ainda não visível"
+      }
     }
   },
   "pinsDevices": {
@@ -5790,7 +5934,10 @@
       "cobsCountSynced": "{count} cometas em cache · {status}",
       "refreshedAgo": "atualizado {when}",
       "neverRefreshed": "nunca atualizado",
-      "confirmClearCobs": "Remover todas as observações COBS em cache? Os selos de magnitude observada ficarão vazios até a próxima atualização da aba Explorar."
+      "confirmClearCobs": "Remover todas as observações COBS em cache? Os selos de magnitude observada ficarão vazios até a próxima atualização da aba Explorar.",
+      "connectionSection": "Ligação",
+      "apiTokenHint": "Preenchido automaticamente na primeira vez que abres este painel. Só é preciso inserir manualmente num segundo dispositivo -- copia-o deste campo no teu primeiro dispositivo, ou da página de Opções do plugin no Windows NINA.",
+      "apiTokenRequired": "Esta instalação do Perihelion precisa de um token de API. Introduz-o em Definições para continuar."
     }
   }
 }

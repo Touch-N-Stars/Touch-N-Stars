@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -11,7 +11,7 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchPath(target, days = 10) {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/objects/path`, {
+  const response = await perihelionApi.get(`${PERIHELION_URL}/objects/path`, {
     params: { objectType: target.objectType, targetName: target.targetName, days },
   });
   return response.data.map((p) => ({ date: p.Date, raHours: p.RaHours, decDeg: p.DecDeg }));

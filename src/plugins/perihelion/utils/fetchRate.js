@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -14,7 +14,7 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchRate(target) {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/objects/rate`, {
+  const response = await perihelionApi.get(`${PERIHELION_URL}/objects/rate`, {
     params: { objectType: target.objectType, targetName: target.targetName },
   });
   return {

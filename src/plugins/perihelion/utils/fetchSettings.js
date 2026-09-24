@@ -1,4 +1,4 @@
-import axios from 'axios';
+import perihelionApi from './perihelionClient';
 import { getUrls } from '@/services/api/core';
 
 /**
@@ -9,7 +9,7 @@ import { getUrls } from '@/services/api/core';
  */
 export async function fetchSettings() {
   const { PERIHELION_URL } = getUrls();
-  const response = await axios.get(`${PERIHELION_URL}/settings`);
+  const response = await perihelionApi.get(`${PERIHELION_URL}/settings`);
   return {
     eqmodRaRateCorrection: response.data.EqmodRaRateCorrection,
     quickTrackReapplyIntervalSeconds: response.data.QuickTrackReapplyIntervalSeconds,
@@ -41,6 +41,6 @@ export async function saveSettings(settings) {
   for (const [key, wireKey] of Object.entries(FIELD_MAP)) {
     if (settings[key] !== undefined) body[wireKey] = settings[key];
   }
-  const response = await axios.post(`${PERIHELION_URL}/settings`, body);
+  const response = await perihelionApi.post(`${PERIHELION_URL}/settings`, body);
   return response.data.Success === true;
 }

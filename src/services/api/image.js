@@ -118,6 +118,24 @@ export default {
     return simpleGetRequest(`${BASE_URL}/image/${index}/${action}`);
   },
 
+  /**
+   * Deletes the image file behind a history entry from the rig's disk.
+   * The entry is addressed by the `Id` the history payload carries, never by its
+   * index: the index is positional and changes whenever the history is rebuilt.
+   * `filename` is sent as a cross-check; the backend refuses (409) when it does not
+   * match the entry. Only the PINS fork of the Advanced API serves this route (see
+   * docs/features/image-history-delete.md); an official ninaAPI answers 404.
+   */
+  async deleteHistoryImage(id, filename = null) {
+    const { BASE_URL } = getUrls();
+    const params = filename ? { filename } : {};
+    const response = await axios.delete(`${BASE_URL}/image-history/${encodeURIComponent(id)}`, {
+      params,
+      timeout: DEFAULT_TIMEOUT,
+    });
+    return response.data;
+  },
+
   //-------------------------------------  Livestack ---------------------------------------
   async livestackStart() {
     try {

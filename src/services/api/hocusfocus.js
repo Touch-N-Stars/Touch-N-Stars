@@ -129,6 +129,79 @@ export default {
       }
     },
 
+    async getSensorModel() {
+      try {
+        const { API_URL } = getUrls();
+        const response = await axios.get(`${API_URL}hocusfocus/sensor-model`);
+        return response.data;
+      } catch (error) {
+        console.error('Error getting sensor model:', error);
+        throw error;
+      }
+    },
+
+    async getEccentricity() {
+      try {
+        const { API_URL } = getUrls();
+        const response = await axios.get(`${API_URL}hocusfocus/eccentricity`);
+        return response.data;
+      } catch (error) {
+        console.error('Error getting eccentricity:', error);
+        throw error;
+      }
+    },
+
+    async getFwhmContour() {
+      try {
+        const { API_URL } = getUrls();
+        const response = await axios.get(`${API_URL}hocusfocus/fwhm-contour`);
+        return response.data;
+      } catch (error) {
+        console.error('Error getting FWHM contour:', error);
+        throw error;
+      }
+    },
+
+    // Star Detection Optimization Wizard, driven headlessly (one session at a time). Every call returns the
+    // session state; errors carry the backend's message.
+    optimizer: {
+      async request(method, path, body) {
+        const { API_URL } = getUrls();
+        try {
+          const response = await axios({
+            method,
+            url: `${API_URL}hocusfocus/optimizer${path}`,
+            data: body,
+          });
+          return response.data;
+        } catch (error) {
+          throw new Error(error.response?.data?.Error || error.message);
+        }
+      },
+      getState() {
+        return this.request('get', '');
+      },
+      start() {
+        return this.request('post', '/start');
+      },
+      end() {
+        return this.request('post', '/end');
+      },
+      setProperty(name, value) {
+        return this.request('post', `/property/${name}`, { value });
+      },
+      // relativePath as listed by listAutoFocusDirectories (run folder / attempt folder)
+      setSource(index, relativePath) {
+        return this.request('post', `/source/${index}`, { value: relativePath });
+      },
+      runCommand(name) {
+        return this.request('post', `/command/${name}`);
+      },
+      confirm(id, value) {
+        return this.request('post', '/confirm', { id, value });
+      },
+    },
+
     async getStatus() {
       try {
         const { API_URL } = getUrls();
@@ -466,9 +539,12 @@ export default {
         console.error('Error applying tilt plane:', error);
         // Extract error message from response if available
         if (error.response && error.response.data) {
-          throw new Error(
-            error.response.data.Error || error.response.data.message || error.message
-          );
+          const data = error.response.data;
+          const wrapped = new Error(data.Error || data.message || error.message);
+          // e.g. 'exceedsTravel', with RequiredTravel in mm, so the caller can explain it
+          wrapped.code = data.ErrorCode;
+          wrapped.requiredTravel = data.RequiredTravel;
+          throw wrapped;
         }
         throw error;
       }

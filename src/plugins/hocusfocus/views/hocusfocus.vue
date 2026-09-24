@@ -69,52 +69,54 @@
             </button>
           </div>
 
-          <!-- AutoFocus Directory Selection Modal -->
-          <div
-            v-if="showAFDirectoryModal"
-            class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          <!-- AutoFocus directory picker for "Load Saved AF" -->
+          <Modal
+            :show="showAFDirectoryModal"
+            maxWidth="max-w-md"
+            @close="showAFDirectoryModal = false"
           >
-            <div class="bg-gray-800 rounded-lg p-6 w-96 border border-gray-700">
-              <h3 class="text-xl font-semibold text-white mb-4">
+            <template #header>
+              <h2 class="text-xl font-bold text-white">
                 {{ $t('plugins.hocusfocus.modal.selectDirectory') }}
-              </h3>
-
-              <div v-if="loadingAFDirectories" class="text-gray-400 text-center py-4">
-                <div class="spinner inline-block"></div>
-                <p class="mt-2">{{ $t('plugins.hocusfocus.modal.loading') }}</p>
-              </div>
-
-              <div v-else>
-                <select
-                  v-model="selectedAFDirectory"
-                  class="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white mb-4"
+              </h2>
+            </template>
+            <template #body>
+              <div class="flex w-full flex-col gap-4">
+                <div
+                  v-if="loadingAFDirectories"
+                  class="flex items-center justify-center gap-3 py-4 text-gray-400"
                 >
-                  <option value="" disabled selected>
-                    {{ $t('plugins.hocusfocus.modal.placeholder') }}
-                  </option>
-                  <option v-for="dir in afDirectories" :key="dir" :value="dir">
-                    {{ dir }}
-                  </option>
-                </select>
-
-                <div class="flex gap-3">
-                  <button
-                    @click="proceedWithAFRerun()"
-                    :disabled="!selectedAFDirectory"
-                    class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded font-semibold transition"
-                  >
-                    {{ $t('plugins.hocusfocus.modal.proceed') }}
-                  </button>
-                  <button
-                    @click="showAFDirectoryModal = false"
-                    class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded font-semibold transition"
-                  >
-                    {{ $t('plugins.hocusfocus.modal.cancel') }}
-                  </button>
+                  <div class="spinner"></div>
+                  <span>{{ $t('plugins.hocusfocus.modal.loading') }}</span>
                 </div>
+                <template v-else>
+                  <select v-model="selectedAFDirectory" class="tns-select">
+                    <option :value="null" disabled>
+                      {{ $t('plugins.hocusfocus.modal.placeholder') }}
+                    </option>
+                    <option v-for="dir in afDirectories" :key="dir" :value="dir">
+                      {{ dir }}
+                    </option>
+                  </select>
+                  <div class="flex justify-end gap-3">
+                    <button
+                      class="tns-btn-secondary w-auto px-4"
+                      @click="showAFDirectoryModal = false"
+                    >
+                      {{ $t('plugins.hocusfocus.modal.cancel') }}
+                    </button>
+                    <button
+                      class="tns-btn-primary w-auto px-4"
+                      :disabled="!selectedAFDirectory"
+                      @click="proceedWithAFRerun()"
+                    >
+                      {{ $t('plugins.hocusfocus.modal.proceed') }}
+                    </button>
+                  </div>
+                </template>
               </div>
-            </div>
-          </div>
+            </template>
+          </Modal>
 
           <!-- Aberration Inspector Tab -->
           <div v-if="activeTab === 'aberration'" class="p-6">
@@ -125,9 +127,15 @@
               :tilt-measurements="tiltMeasurements"
               :tilt-measurement-history="tiltMeasurementHistory"
               :final-focus-data="finalFocusData"
+              :sensor-model="sensorModel"
+              :eccentricity="eccentricity"
+              :fwhm-contour="fwhmContour"
+              :exposure-analyzed="exposureAnalyzed"
+              :error="store.error || ''"
               :camera-connected="store.cameraConnected"
               :focuser-connected="store.focuserConnected"
               :is-cancelling="store.isCancelling"
+              :sequence-running="sequenceRunning"
               :backend-can-run="backendCanRun"
               :backend-can-rerun="backendCanRerun"
               :is-tab-active="activeTab === 'aberration'"
@@ -135,11 +143,15 @@
               :on-update-final-focus-data="updateFinalFocusData"
               :on-update-tilt-measurements="updateTiltMeasurements"
               :on-update-tilt-measurement-history="updateTiltMeasurementHistory"
+              :on-update-sensor-model="updateSensorModel"
+              :on-update-eccentricity="updateEccentricity"
+              :on-update-fwhm-contour="updateFwhmContour"
               :get-region-focus-points="() => apiService.hocusfocus.getRegionFocusPoints()"
               @run="runDetailedAutoFocus"
               @stop="stopDetailedAutoFocus"
               @rerun="rerunDetailedAutoFocus"
               @clear="clearDetailedAutoFocus"
+              @dismiss-error="store.error = null"
             />
           </div>
 
@@ -173,6 +185,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useBackgroundAwarePolling } from '@/utils/appLifecycle';
 import { useHocusFocusStore } from '../store/hocusfocusStore';
 import apiService from '@/services/apiService';
+import Modal from '@/components/helpers/Modal.vue';
 import AberrationInspector from '../components/AberrationInspector.vue';
 import AberrationInspectorOptions from '../components/AberrationInspectorOptions.vue';
 import AutoFocusOptions from '../components/AutoFocusOptions.vue';
@@ -184,6 +197,14 @@ const activeTab = ref('aberration');
 const tiltMeasurements = ref([]);
 const tiltMeasurementHistory = ref([]);
 const finalFocusData = ref(null);
+const sensorModel = ref(null);
+const eccentricity = ref(null);
+const fwhmContour = ref(null);
+// Whether the run's final exposure produced plot data; undefined until a status arrives, and on a
+// plugin build without the flag.
+const exposureAnalyzed = ref(undefined);
+// A live Inspector run is refused while a sequence runs (backend-enforced); shown before the tap.
+const sequenceRunning = ref(false);
 const autoFocusCompleted = ref(false);
 const autoFocusChartActive = ref(false);
 const autoFocusChartActivatedOnce = ref(false);
@@ -222,9 +243,7 @@ useBackgroundAwarePolling(
 // Fetch and update tilt corner measurements
 const updateTiltMeasurements = async () => {
   try {
-    console.log('[TiltMeasurements] Fetching data...');
     const data = await apiService.hocusfocus.getTiltCornerMeasurements();
-    console.log('[TiltMeasurements] Data received:', data);
     if (data && data.tiltCornerMeasurements) {
       tiltMeasurements.value = data.tiltCornerMeasurements;
     }
@@ -236,9 +255,7 @@ const updateTiltMeasurements = async () => {
 // Fetch and update tilt measurement history
 const updateTiltMeasurementHistory = async () => {
   try {
-    console.log('[TiltHistory] Fetching data...');
     const data = await apiService.hocusfocus.getTiltMeasurementHistory();
-    console.log('[TiltHistory] Data received:', data);
     if (data && data.tiltMeasurementHistory) {
       tiltMeasurementHistory.value = data.tiltMeasurementHistory;
     }
@@ -250,9 +267,7 @@ const updateTiltMeasurementHistory = async () => {
 // Fetch and update final focus data
 const updateFinalFocusData = async () => {
   try {
-    console.log('[FinalFocus] Fetching data...');
     const data = await apiService.hocusfocus.getFinalFocusData();
-    console.log('[FinalFocus] Data received:', data);
     if (data && data.RegionFinalFocusPoints) {
       finalFocusData.value = data;
     }
@@ -261,12 +276,43 @@ const updateFinalFocusData = async () => {
   }
 };
 
+// Fetch the sensor curve model; ModelLoaded is false unless the run had the option enabled
+const updateSensorModel = async () => {
+  try {
+    const data = await apiService.hocusfocus.getSensorModel();
+    sensorModel.value = data?.Success ? data : null;
+  } catch (err) {
+    console.error('Error fetching sensor model:', err);
+    sensorModel.value = null;
+  }
+};
+
+// Fetch per-cell star eccentricity from the run's final exposure
+const updateEccentricity = async () => {
+  try {
+    const data = await apiService.hocusfocus.getEccentricity();
+    eccentricity.value = data?.Success ? data : null;
+  } catch (err) {
+    console.error('Error fetching eccentricity:', err);
+    eccentricity.value = null;
+  }
+};
+
+// Fetch the FWHM surface HocusFocus' contour map draws, from the run's final exposure
+const updateFwhmContour = async () => {
+  try {
+    const data = await apiService.hocusfocus.getFwhmContour();
+    fwhmContour.value = data?.Success ? data : null;
+  } catch (err) {
+    console.error('Error fetching FWHM contour:', err);
+    fwhmContour.value = null;
+  }
+};
+
 // Fetch and update status
 const updateStatus = async () => {
   try {
-    console.log('[Status] Fetching data...');
     const data = await apiService.hocusfocus.getStatus();
-    console.log('[Status] Data received:', data);
     if (data && data.Success) {
       const wasNotCompleted = !autoFocusCompleted.value;
       backendCanRun.value = data.CanRunAutoFocusAnalysis ?? false;
@@ -274,10 +320,11 @@ const updateStatus = async () => {
       autoFocusCompleted.value = data.AutoFocusCompleted ?? false;
       autoFocusChartActive.value = data.AutoFocusChartActive ?? false;
       autoFocusChartActivatedOnce.value = data.AutoFocusChartActivatedOnce ?? false;
+      exposureAnalyzed.value = data.ExposureAnalysisActivatedOnce;
+      sequenceRunning.value = !!data.SequenceRunning;
 
       // If AutoFocus just completed, fetch the updated tilt history
       if (wasNotCompleted && autoFocusCompleted.value) {
-        console.log('[Status] AutoFocus completed, updating tilt history...');
         await updateTiltMeasurementHistory();
       }
 
@@ -297,6 +344,9 @@ const updateStatus = async () => {
 };
 
 // Update and manage focus curve chart
+// A failed request throws in axios; the backend's reason is in the response body.
+const errorMessage = (err, fallback) => err.response?.data?.Error || err.message || fallback;
+
 // Start detailed autofocus run with analysis
 const runDetailedAutoFocus = async () => {
   if (!canRunAutoFocus.value) {
@@ -304,11 +354,8 @@ const runDetailedAutoFocus = async () => {
   }
 
   try {
-    console.log('[HocusFocus] Starting detailed AutoFocus analysis');
-
     // Call the backend endpoint - let polling handle state transitions
     const response = await apiService.hocusfocus.runDetailedAutoFocus();
-    console.log('[HocusFocus] RunDetailedAutoFocus response:', response);
 
     if (response && response.Success) {
       store.error = null;
@@ -318,17 +365,15 @@ const runDetailedAutoFocus = async () => {
     }
   } catch (err) {
     console.error('[HocusFocus] Error starting analysis:', err);
-    store.error = err.message || 'Failed to run DetailedAutoFocus';
+    store.error = errorMessage(err, 'Failed to run DetailedAutoFocus');
   }
 };
 
 const stopDetailedAutoFocus = async () => {
-  console.log('[HocusFocus] Sending cancel request to backend');
   store.isCancelling = true;
 
   try {
     const response = await apiService.hocusfocus.cancelDetailedAutoFocus();
-    console.log('[HocusFocus] Cancel response:', response);
 
     if (!response?.Success) {
       store.error = response?.Error || 'Failed to cancel analysis';
@@ -338,7 +383,7 @@ const stopDetailedAutoFocus = async () => {
     // Let polling reset the isCancelling flag
   } catch (err) {
     console.error('[HocusFocus] Error cancelling analysis:', err);
-    store.error = `Error cancelling: ${err.message}`;
+    store.error = `Error cancelling: ${errorMessage(err)}`;
     // Next polling cycle will attempt to reset state
   }
 };
@@ -349,14 +394,12 @@ const rerunDetailedAutoFocus = async () => {
   }
 
   try {
-    console.log('[HocusFocus] Loading AutoFocus directories for rerun');
     loadingAFDirectories.value = true;
     afDirectories.value = [];
     selectedAFDirectory.value = null;
 
     // Load list of available AutoFocus directories
     const result = await apiService.hocusfocus.listAutoFocusDirectories();
-    console.log('[HocusFocus] Directory list response:', result);
 
     if (result && Array.isArray(result.DirectoryNames)) {
       afDirectories.value = result.DirectoryNames;
@@ -387,14 +430,8 @@ const proceedWithAFRerun = async () => {
   }
 
   try {
-    console.log(
-      '[HocusFocus] Re-running AutoFocus analysis with directory:',
-      selectedAFDirectory.value
-    );
-
     // Call the backend endpoint with the selected directory
     const response = await apiService.hocusfocus.rerunDetailedAutoFocus(selectedAFDirectory.value);
-    console.log('[HocusFocus] ReRunDetailedAutoFocus response:', response);
 
     if (response && response.Success) {
       store.error = null;
@@ -403,12 +440,13 @@ const proceedWithAFRerun = async () => {
       await updateStatus();
       await updateFinalFocusData();
       await updateTiltMeasurements();
+      await updateSensorModel();
     } else {
       store.error = response?.Error || 'Failed to re-run detailed AutoFocus';
     }
   } catch (err) {
     console.error('[HocusFocus] Error re-run analysis:', err);
-    store.error = err.message || 'Failed to re-run DetailedAutoFocus';
+    store.error = errorMessage(err, 'Failed to re-run DetailedAutoFocus');
   }
 };
 
@@ -418,30 +456,25 @@ const clearDetailedAutoFocus = async () => {
   }
 
   try {
-    console.log('[HocusFocus] Clearing AutoFocus analysis');
-
     // Call the backend endpoint (which now also clears tilt history)
     const response = await apiService.hocusfocus.clearDetailedAutoFocus();
-    console.log('[HocusFocus] ClearDetailedAutoFocus response:', response);
 
     if (response && response.Success) {
       store.error = null;
       // Fetch updated data to reflect cleared state
-      console.log('[HocusFocus] Fetching updated data after clear...');
       await updateStatus();
       await updateFinalFocusData();
       await updateTiltMeasurements();
       await updateTiltMeasurementHistory();
-      console.log(
-        '[HocusFocus] Tilt measurement history after clear:',
-        tiltMeasurementHistory.value
-      );
+      await updateSensorModel();
+      eccentricity.value = null;
+      fwhmContour.value = null;
     } else {
       store.error = response?.Error || 'Failed to clear detailed AutoFocus';
     }
   } catch (err) {
     console.error('[HocusFocus] Error clearing analysis:', err);
-    store.error = err.message || 'Failed to clear DetailedAutoFocus';
+    store.error = errorMessage(err, 'Failed to clear DetailedAutoFocus');
   }
 };
 
