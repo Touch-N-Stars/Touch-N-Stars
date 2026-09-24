@@ -138,3 +138,35 @@ test('failed PINS Wi-Fi job stops recovery immediately with its classified reaso
     /MISSING_CREDENTIALS/
   );
 });
+
+test('rig is identified from the page host when no instance is saved', async (t) => {
+  const probedUrls = [];
+  const originalFetch = globalThis.fetch;
+  t.after(() => {
+    globalThis.fetch = originalFetch;
+  });
+  globalThis.fetch = async (url) => {
+    probedUrls.push(String(url));
+    return {
+      ok: true,
+      json: async () => ({ status: 'ok', service: 'pinsdaemon', rigId: 'pins-503ce' }),
+    };
+  };
+
+  const settingsStore = {
+    selectedInstanceId: null,
+    connection: { ip: '10.42.0.1', port: 5000 },
+    getInstance: () => undefined,
+  };
+  const backendStore = reactive({
+    isPINS: true,
+    isBackendReachable: true,
+    async switchBackend() {},
+  });
+
+  await initializeRigConnectionSupervisor({ settingsStore, backendStore });
+  const rigId = await identifySelectedRig();
+
+  assert.equal(rigId, 'pins-503ce');
+  assert.deepEqual(probedUrls, ['http://10.42.0.1:8000/health']);
+});

@@ -131,7 +131,18 @@ export async function identifySelectedRig() {
     throw new Error('PINS rig discovery is unavailable for this backend');
   }
   const instance = selectedInstance();
-  if (!instance) throw new Error('No PINS rig is selected');
+  if (!instance) {
+    // Browser served directly by the rig (e.g. http://10.42.0.1:5000) has no
+    // saved instance; identify the rig behind the page host instead.
+    const host = normalizeCandidateHost(
+      settingsStoreRef?.connection?.ip || window.location.hostname
+    );
+    if (!host) throw new Error('No PINS rig is selected');
+    const result = await probePinsHealth({ host, source: 'active' });
+    rigConnectionState.rigId = result.health.rigId;
+    rigConnectionState.activeHost = result.host;
+    return result.health.rigId;
+  }
   if (instance.rigId) return instance.rigId;
 
   const result = await probePinsHealth({
