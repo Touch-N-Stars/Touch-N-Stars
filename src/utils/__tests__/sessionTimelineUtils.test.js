@@ -378,15 +378,15 @@ test('the guide row ends a bar on every state without a bar and on a disconnect'
   );
 });
 
-test('a blind-solve failover is one failed and one finished solve, without an echo', () => {
-  // NINA logs the inner (blind) solve and then the result of the outer one again
+test('a blind-solve failover is one failed and one finished solve', () => {
+  // The backend reports the first solver's failure when the blind solve starts
   const events = mergeEvents(
     [],
     [
       ev('PLATESOLVE-START', 10),
+      ev('PLATESOLVE-FAILED', 20),
       ev('PLATESOLVE-START', 20),
       ev('PLATESOLVE-SUCCESS', 30),
-      ev('PLATESOLVE-SUCCESS', 31),
     ]
   );
   const align = buildTimelineRows(events, [], T0 + 100000).find((r) => r.key === 'align').bars;

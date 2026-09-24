@@ -194,23 +194,25 @@ function buildGuideRow(events, nowMs) {
   return [...bars, ...dithers];
 }
 
+/**
+ * The backend follows every PLATESOLVE-START with one result; for a blind-solve
+ * failover that is PLATESOLVE-FAILED of the first solver right before the start
+ * of the blind solve.
+ */
 function buildAlignRow(events, nowMs) {
   const bars = [];
   let open = null;
-  // A blind-solve failover logs its result twice; the echo has no solve of its own.
-  let resultSeen = false;
   for (const event of events) {
     if (event.Event === 'PLATESOLVE-START') {
-      // No result arrived for the solve before: the failover took over
+      // No result arrived for the solve before: it threw or was cancelled
       if (open) bars.push(closed(open, event.t, { state: 'failed' }));
       open = openBar(event, 'running');
-      resultSeen = false;
     } else if (event.Event === 'PLATESOLVE-SUCCESS' || event.Event === 'PLATESOLVE-FAILED') {
       const state = event.Event === 'PLATESOLVE-SUCCESS' ? 'success' : 'failed';
-      if (open) bars.push(closed(open, event.t, { state, endEvent: event }));
-      else if (!resultSeen) bars.push(marker(event.t, state, event));
+      bars.push(
+        open ? closed(open, event.t, { state, endEvent: event }) : marker(event.t, state, event)
+      );
       open = null;
-      resultSeen = true;
     }
   }
   if (open) bars.push(stillOpen(open, nowMs));
