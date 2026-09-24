@@ -194,18 +194,25 @@ function buildGuideRow(events, nowMs) {
   return [...bars, ...dithers];
 }
 
+const SOLVE_STALE_MS = 10 * 60 * 1000;
+
 /**
  * The backend follows every PLATESOLVE-START with one result; for a blind-solve
  * failover that is PLATESOLVE-FAILED of the first solver right before the start
- * of the blind solve.
+ * of the blind solve. A solve that threw or was cancelled has no result: it
+ * ends failed at the next start, or, once older than any real solve, is only
+ * marked as failed where it started.
  */
 function buildAlignRow(events, nowMs) {
+  const unfinished = (bar, until) =>
+    until - bar.start > SOLVE_STALE_MS
+      ? marker(bar.start, 'failed', bar.startEvent)
+      : closed(bar, until, { state: 'failed' });
   const bars = [];
   let open = null;
   for (const event of events) {
     if (event.Event === 'PLATESOLVE-START') {
-      // No result arrived for the solve before: it threw or was cancelled
-      if (open) bars.push(closed(open, event.t, { state: 'failed' }));
+      if (open) bars.push(unfinished(open, event.t));
       open = openBar(event, 'running');
     } else if (event.Event === 'PLATESOLVE-SUCCESS' || event.Event === 'PLATESOLVE-FAILED') {
       const state = event.Event === 'PLATESOLVE-SUCCESS' ? 'success' : 'failed';
@@ -215,7 +222,10 @@ function buildAlignRow(events, nowMs) {
       open = null;
     }
   }
-  if (open) bars.push(stillOpen(open, nowMs));
+  if (open)
+    bars.push(
+      nowMs - open.start > SOLVE_STALE_MS ? unfinished(open, nowMs) : stillOpen(open, nowMs)
+    );
   return [
     ...bars,
     ...markers(events, 'MOUNT-CENTER', 'center'),

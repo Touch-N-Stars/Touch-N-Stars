@@ -399,6 +399,36 @@ test('a blind-solve failover is one failed and one finished solve', () => {
   );
 });
 
+test('a solve without result ends at the next start, or is marked failed once stale', () => {
+  const events = mergeEvents(
+    [],
+    [
+      // Threw, and was retried right away
+      ev('PLATESOLVE-START', 10),
+      ev('PLATESOLVE-START', 40),
+      ev('PLATESOLVE-SUCCESS', 50),
+      // Threw, and the next solve came an hour later
+      ev('PLATESOLVE-START', 100),
+      ev('PLATESOLVE-START', 3700),
+      ev('PLATESOLVE-SUCCESS', 3710),
+      // Threw, and nothing came after it
+      ev('PLATESOLVE-START', 4000),
+    ]
+  );
+  const solves = (nowSeconds) =>
+    buildTimelineRows(events, [], T0 + nowSeconds * 1000)
+      .find((r) => r.key === 'align')
+      .bars.map((b) => [b.start - T0, b.end - T0, b.state, Boolean(b.marker)]);
+  assert.deepEqual(solves(4100), [
+    [10000, 40000, 'failed', false],
+    [40000, 50000, 'success', false],
+    [100000, 100000, 'failed', true],
+    [3700000, 3710000, 'success', false],
+    [4000000, 4100000, 'running', false],
+  ]);
+  assert.deepEqual(solves(5000).at(-1), [4000000, 4000000, 'failed', true]);
+});
+
 test('mergeGuideSteps keeps the newest maxSize steps and its reference when nothing is new', () => {
   const steps = mergeGuideSteps([], [{ Time: at(1) }, { Time: at(2) }, { Time: at(3) }], 2);
   assert.deepEqual(
