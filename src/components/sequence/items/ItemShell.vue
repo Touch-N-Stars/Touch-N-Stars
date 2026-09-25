@@ -30,13 +30,13 @@
       <div class="shrink-0 flex items-center gap-1.5">
         <!-- Issues badge -->
         <button
-          v-if="item.Issues && item.Issues.length"
+          v-if="issues.length"
           ref="issuesRef"
           class="flex items-center gap-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded-full px-1.5 py-0.5 text-xs hover:bg-red-500/30 transition-colors"
           @click.stop="toggleIssues"
         >
           <ExclamationTriangleIcon class="w-3 h-3" />
-          {{ item.Issues.length }}
+          {{ issues.length }}
         </button>
         <Teleport to="body">
           <div
@@ -46,7 +46,7 @@
             @click.stop
           >
             <p
-              v-for="(iss, i) in item.Issues"
+              v-for="(iss, i) in issues"
               :key="i"
               class="text-red-300 text-xs flex items-start gap-1.5 py-0.5"
             >
@@ -58,11 +58,11 @@
 
         <!-- Status badge -->
         <span
-          v-if="item.Status && item.Status !== 'CREATED'"
+          v-if="status && status !== 'CREATED'"
           class="rounded-full px-2 py-0.5 text-xs font-medium"
-          :class="statusColor(item.Status)"
+          :class="statusColor(status)"
         >
-          {{ item.Status }}
+          {{ status }}
         </span>
 
         <!-- Edit toggle -->
@@ -89,14 +89,10 @@
     <div v-if="editing && hasEditor" class="border-t border-slate-700/50 mt-1 pt-2 space-y-2">
       <!-- Issues list -->
       <div
-        v-if="item.Issues && item.Issues.length"
+        v-if="issues.length"
         class="bg-red-900/20 border border-red-700/40 rounded-lg p-2 space-y-0.5"
       >
-        <p
-          v-for="(iss, i) in item.Issues"
-          :key="i"
-          class="text-red-300 text-xs flex items-start gap-1"
-        >
+        <p v-for="(iss, i) in issues" :key="i" class="text-red-300 text-xs flex items-start gap-1">
           <ExclamationTriangleIcon class="w-3.5 h-3.5 shrink-0 mt-0.5" />
           {{ iss }}
         </p>
@@ -159,6 +155,7 @@ import {
   CommandLineIcon,
 } from '@heroicons/vue/24/outline';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
+import { displayIssues, displayStatus } from '@/utils/sequenceStatus';
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -203,6 +200,10 @@ const isRunning = computed(() => props.item.Status === 'RUNNING');
 watch(isRunning, (running) => {
   if (running) editing.value = false;
 });
+
+// A composite item hides its children, so their failure and their issues show on it.
+const status = computed(() => displayStatus(props.item));
+const issues = computed(() => displayIssues(props.item));
 
 const ICON_MAP = [
   // Containers
@@ -310,6 +311,8 @@ function statusColor(status) {
       return 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/50';
     case 'RUNNING':
       return 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/50';
+    case 'FAILED':
+      return 'bg-red-500/30 text-red-200 border border-red-400/50';
     case 'SKIPPED':
       return 'bg-gray-500/30 text-gray-300 border border-gray-400/50';
     case 'DISABLED':
