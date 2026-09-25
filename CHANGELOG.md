@@ -5,12 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [App6.3.1-beta7] - 2026-09-25
+
+### Added
+
+- Autofocus: Support for Hocus Focus V4 with the autofocus wizard.
+- Sequence monitor (PINS): New session timeline on the Stats tab showing mount, guiding, plate solve, focus and capture events of the night with a zoomable statistics graph. Thanks @aduffeck
+- Image history (PINS): Images can be deleted individually or several at once from the image history, the image viewer and the last-image panel.
+- Target Scheduler Viewer: New plugin that shows the progress and predicted schedule of NINA's Target Scheduler. Thanks @ArnaudNe
+- Atlas: Compact, responsive view compass with a saved display toggle.
+
+### Changed
 
 - Setup wizard (PINS): Opens automatically for a new profile, e.g. after flashing a fresh image or adding a profile.
 - Setup wizard (PINS): The guide camera is now set up before the imaging camera so it can still be scanned; the dither calculator moved to its own step at the end.
-- Atlas: Added a compact, responsive geographic view compass with a saved display toggle.
 - Atlas: Updated the embedded Celestia Atlas to v9, including the constellation and horizon fixes.
+- Tilter: Reworked layout, consistent with the rest of the app.
+
+### Security
+
+- Perihelion: Every request now requires an API token; a fresh install pairs automatically on first contact. Thanks @OryxAstro
+
+### Fixed
+
+- Wi-Fi setup: Works in the browser when the app is opened directly from the PINS rig.
 
 ## [App6.3.1-beta6] - 2026-09-16
 
