@@ -101,6 +101,11 @@ export default {
     return simpleGetRequest(`${BASE_URL}/time`);
   },
 
+  async fetchApplicationStart() {
+    const { BASE_URL } = getUrls();
+    return simpleGetRequest(`${BASE_URL}/application-start`);
+  },
+
   //------------------------------------------- event-history -------------------------------------------------
   async getEventHistory() {
     const { BASE_URL } = getUrls();

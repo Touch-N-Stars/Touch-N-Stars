@@ -116,3 +116,16 @@ test('deleting a history image is a DELETE by entry id with the file name as cro
   assert.equal(calls[1].url, 'http://10.0.0.5:1888/v2/api/image-history/a%2Fb');
   assert.deepEqual(calls[1].config.params, {});
 });
+
+test('guider history goes to the Advanced API, with the after cursor as a query parameter', async (t) => {
+  seedInstance({ ip: '10.0.0.5', port: 5000, apiPort: 1888 });
+  const calls = recordGets(t);
+
+  await apiService.guiderHistory();
+  await apiService.guiderHistory(42);
+
+  assert.equal(calls[0].url, 'http://10.0.0.5:1888/v2/api/equipment/guider/history');
+  assert.equal(calls[0].config, undefined);
+  assert.equal(calls[1].url, 'http://10.0.0.5:1888/v2/api/equipment/guider/history');
+  assert.deepEqual(calls[1].config, { params: { after: 42 } });
+});

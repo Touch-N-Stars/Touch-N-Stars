@@ -51,7 +51,11 @@
       class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
     >
       <label for="showImgStatsGraph" class="text-gray-400">
-        {{ $t('components.sequence.monitor.settings.showImgStatsGraph') }}
+        {{
+          store.isPINS
+            ? $t('components.sequence.monitor.settings.showTimeline')
+            : $t('components.sequence.monitor.settings.showImgStatsGraph')
+        }}
       </label>
       <div>
         <toggleButton
@@ -122,7 +126,9 @@
 </template>
 <script setup>
 import { useSettingsStore } from '@/store/settingsStore';
+import { apiStore } from '@/store/store';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 
 const settingsStore = useSettingsStore();
+const store = apiStore();
 </script>
