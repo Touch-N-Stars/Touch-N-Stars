@@ -23,10 +23,14 @@ entries — read them before reordering. The load-bearing ones:
 - **Mount before location**, because the location sync needs a connected mount.
 - **Telescope before camera**, because the camera step's image-scale readout
   needs `TelescopeSettings.FocalLength`.
-- **Guiding last**, because PHD2 needs a connected mount and the dither
-  calculator needs the camera and telescope values.
+- **Guiding after mount and before camera**, because PHD2 needs a connected
+  mount, and once the imaging camera is connected PHD2 can no longer scan for
+  the guide camera.
+- **Dither last**, as its own step, because the calculator needs the imaging
+  camera and telescope values as well as the guide setup.
 
-PINS-only steps (`localization`, `wifi`, `updates`, `slewRate`, `guider`) are
+PINS-only steps (`localization`, `wifi`, `updates`, `slewRate`, `guider`,
+`dither`) are
 spliced in conditionally, which is why **steps are tracked by id, not by index**
 (`currentStepId`): the list grows underneath the user when `isPINS` flips.
 A persisted id that no longer exists falls back to index 0 rather than rendering
@@ -36,19 +40,29 @@ The wizard hides itself while `pinsStore.shouldShowUpgradeOverlay` is true and
 persists `settingsStore.setupWizard.currentStepId` — a PINS upgrade restarts
 services and can temporarily interrupt the app connection.
 
+## Auto-open on a new PINS profile
+
+After the first-run pass, App.vue reopens the wizard (at `localization`) when
+on PINS the active profile has no device selected and its `Id` is not yet in
+the `localStorage` list `setupWizardSeenProfiles` — a freshly flashed image or
+a profile added in the profile manager. Criteria live in
+`src/utils/setupWizardProfile.js`. Equipment is read from `profileInfo`, not
+`existingEquipmentList`: `clearAllStates()` empties that list on every
+transient connection loss while the profile stays.
+
 ## z-index staffing
 
 Modals opened from inside the wizard teleport to `body`, so they need explicit
-layering or they open invisibly *behind* it:
+layering or they open invisibly _behind_ it:
 
-| Layer | Value |
-| --- | --- |
-| `Modal.vue` default | `z-40` |
-| `LoadingOverlay` | `z-[60]` |
-| **Wizard overlay** | `z-70` |
-| Modals opened from the wizard | `z-[75]` |
-| `LocationSyncModal` | `z-[76]` — it blocks the mount connect |
-| PINS upgrade overlay, `DialogModal` | `z-[80]` |
+| Layer                               | Value                                  |
+| ----------------------------------- | -------------------------------------- |
+| `Modal.vue` default                 | `z-40`                                 |
+| `LoadingOverlay`                    | `z-[60]`                               |
+| **Wizard overlay**                  | `z-70`                                 |
+| Modals opened from the wizard       | `z-[75]`                               |
+| `LocationSyncModal`                 | `z-[76]` — it blocks the mount connect |
+| PINS upgrade overlay, `DialogModal` | `z-[80]`                               |
 
 `Indi3rdpartyInstallPanel.vue:19` documents this at the call site.
 

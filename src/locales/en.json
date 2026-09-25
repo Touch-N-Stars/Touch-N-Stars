@@ -277,6 +277,7 @@
         "focuser": "Focuser",
         "filterWheel": "Filter wheel",
         "guider": "Guiding",
+        "dither": "Dither",
         "done": "Done",
         "localization": "Regional settings"
       },
@@ -452,7 +453,7 @@
         "ditherCurrent": "Currently in the profile: {pixels} guide pixels ({mainPixels} imaging pixels).",
         "ditherApply": "Apply to profile",
         "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length in the guiding step.",
         "applyFailed": "Could not save: {message}"
       },
       "done": {

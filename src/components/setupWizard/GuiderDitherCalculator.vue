@@ -1,12 +1,5 @@
 <template>
   <div class="flex flex-col gap-3">
-    <h3 class="text-sm font-semibold text-content">
-      {{ t('components.setupWizard.guider.ditherTitle') }}
-    </h3>
-    <p class="text-sm text-content-muted">
-      {{ t('components.setupWizard.guider.ditherDescription') }}
-    </p>
-
     <!-- Desired dither, expressed the way the common recommendations are:
          in pixels of the imaging camera. -->
     <NumberInputPicker

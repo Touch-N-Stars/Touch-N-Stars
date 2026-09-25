@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+- Setup wizard (PINS): Opens automatically for a new profile, e.g. after flashing a fresh image or adding a profile.
+- Setup wizard (PINS): The guide camera is now set up before the imaging camera so it can still be scanned; the dither calculator moved to its own step at the end.
 - Atlas: Added a compact, responsive geographic view compass with a saved display toggle.
 - Atlas: Updated the embedded Celestia Atlas to v9, including the constellation and horizon fixes.
 
