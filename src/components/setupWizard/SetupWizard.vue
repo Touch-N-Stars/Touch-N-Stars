@@ -99,6 +99,8 @@
 
               <WizardGuiderStep v-else-if="currentStep.id === 'guider'" />
 
+              <WizardDitherStep v-else-if="currentStep.id === 'dither'" />
+
               <!-- Done -->
               <div v-else class="flex flex-col gap-4">
                 <h2 class="text-xl font-semibold text-content">
@@ -167,6 +169,7 @@ import WizardCameraStep from './steps/WizardCameraStep.vue';
 import WizardFocuserStep from './steps/WizardFocuserStep.vue';
 import WizardFilterWheelStep from './steps/WizardFilterWheelStep.vue';
 import WizardGuiderStep from './steps/WizardGuiderStep.vue';
+import WizardDitherStep from './steps/WizardDitherStep.vue';
 
 const emit = defineEmits(['close']);
 
@@ -207,13 +210,16 @@ const steps = computed(() => [
   // Telescope before camera on purpose: the camera step's image-scale readout
   // needs TelescopeSettings.FocalLength to be set.
   step('telescope'),
+  // Guiding runs through PHD2, which is only reachable on PINS. It needs a
+  // connected mount, and it has to come before the camera step: once the imaging
+  // camera is connected, PHD2 can no longer scan for the guide camera.
+  ...(store.isPINS ? [step('guider')] : []),
   step('camera'),
   step('focuser'),
   step('filterWheel'),
-  // Guiding runs through PHD2, which is only reachable on PINS. Last on purpose:
-  // PHD2 needs a connected mount, and the dither calculator needs the camera and
-  // telescope values from the steps above.
-  ...(store.isPINS ? [step('guider')] : []),
+  // Dither last: the calculator needs the imaging camera and telescope values as
+  // well as the guide setup from the steps above.
+  ...(store.isPINS ? [step('dither')] : []),
   step('done'),
 ]);
 

@@ -60,9 +60,6 @@
         {{ t('components.setupWizard.guider.focalLengthHint') }}
       </p>
     </div>
-
-    <!-- 4. Dither -->
-    <GuiderDitherCalculator />
   </div>
 </template>
 
@@ -75,7 +72,6 @@ import { useEquipmentStore } from '@/store/equipmentStore';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import selectGuiderCam from '@/components/guider/PHD2/selectGuiderCam.vue';
 import Phd2FocalLength from '@/components/guider/PHD2/pins/Phd2FocalLength.vue';
-import GuiderDitherCalculator from '../GuiderDitherCalculator.vue';
 
 const { t } = useI18n();
 const store = apiStore();
