@@ -255,12 +255,12 @@ function previousStep() {
 // the setup itself complete, so the app is usable either way. Only the wording
 // the user saw beforehand differs.
 function cancel() {
-  settingsStore.completeSetupWizard();
+  settingsStore.completeSetupWizard(store.profileInfo?.Id);
   emit('close');
 }
 
 function finish() {
-  settingsStore.completeSetupWizard();
+  settingsStore.completeSetupWizard(store.profileInfo?.Id);
   emit('close');
 }
 </script>

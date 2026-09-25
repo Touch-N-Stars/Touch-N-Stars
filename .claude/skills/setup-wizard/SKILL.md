@@ -40,6 +40,16 @@ The wizard hides itself while `pinsStore.shouldShowUpgradeOverlay` is true and
 persists `settingsStore.setupWizard.currentStepId` — a PINS upgrade restarts
 services and can temporarily interrupt the app connection.
 
+## Auto-open on a new PINS profile
+
+After the first-run pass, App.vue reopens the wizard (at `localization`) when
+on PINS the active profile has no device selected and its `Id` is not yet in
+the `localStorage` list `setupWizardSeenProfiles` — a freshly flashed image or
+a profile added in the profile manager. Criteria live in
+`src/utils/setupWizardProfile.js`. Equipment is read from `profileInfo`, not
+`existingEquipmentList`: `clearAllStates()` empties that list on every
+transient connection loss while the profile stays.
+
 ## z-index staffing
 
 Modals opened from inside the wizard teleport to `body`, so they need explicit

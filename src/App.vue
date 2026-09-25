@@ -350,6 +350,11 @@ import {
 } from 'vue';
 import axios from 'axios';
 import { apiStore } from '@/store/store';
+import {
+  loadSeenProfileIds,
+  profileHasEquipment,
+  shouldOfferWizardForProfile,
+} from '@/utils/setupWizardProfile';
 import { useImagetStore } from './store/imageStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useHead } from '@unhead/vue';
@@ -1484,6 +1489,24 @@ watch(
     showSetupWizard.value = true;
   },
   { immediate: true }
+);
+
+// PINS only: reopen the wizard for a new profile - a freshly flashed image or
+// one added in the profile manager. The first-run pass has to be done first;
+// it covers the same ground on its own.
+watch(
+  () => [store.isPINS, store.profileInfo],
+  ([isPINS, profile]) => {
+    if (!settingsStore.setupWizard.completed || showSetupWizard.value) return;
+    const profileId = profile?.Id;
+    const offer = shouldOfferWizardForProfile({
+      isPINS,
+      profileId,
+      hasEquipment: profileHasEquipment(profile),
+      seenIds: loadSeenProfileIds(),
+    });
+    if (offer) settingsStore.openSetupWizardForNewProfile(profileId);
+  }
 );
 
 function dismissWhatsNew() {

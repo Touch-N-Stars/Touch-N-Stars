@@ -5,6 +5,7 @@ import { useSequenceStore } from './sequenceStore';
 import { useTppaStore } from './tppaStore';
 import apiService from '@/services/apiService';
 import { reloadForInstanceSwitch } from '@/utils/instanceSwitchReload';
+import { markProfileSeen } from '@/utils/setupWizardProfile';
 import {
   createDefaultCelestiaAtlasSettings,
   migrateCelestiaAtlasSettingsStorage,
@@ -690,7 +691,8 @@ export const useSettingsStore = defineStore('settings', {
 
     // Cancelling and finishing are the same transaction: the app becomes usable
     // and the wizard stops offering itself. Only the wording differs.
-    completeSetupWizard() {
+    completeSetupWizard(profileId) {
+      markProfileSeen(profileId);
       this.setupWizard.completed = true;
       this.setupWizard.currentStepId = '';
       this.completeSetup();
@@ -704,6 +706,15 @@ export const useSettingsStore = defineStore('settings', {
       this.setupWizard.openRequest += 1;
       localStorage.removeItem('setupWizardCompleted');
       localStorage.removeItem('setupWizardStepId');
+    },
+
+    // A new PINS profile (see utils/setupWizardProfile.js). Marked as seen right
+    // away so a killed app cannot loop; the persisted step still resumes it.
+    // Language and instance are already set, so it starts at the rig steps.
+    openSetupWizardForNewProfile(profileId) {
+      markProfileSeen(profileId);
+      this.resetSetupWizard();
+      this.setSetupWizardStep('localization');
     },
 
     toggleUnits() {
