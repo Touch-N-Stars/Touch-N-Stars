@@ -263,17 +263,9 @@ import {
 } from '@heroicons/vue/24/outline';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { ITEM_COMPONENTS, GenericItem } from './items/index.js';
+import { displayStatus, isCompositeItem } from '@/utils/sequenceStatus';
 
 const NO_ADD_TYPES = new Set(['NINA.Sequencer.SequenceItem.Imaging.SmartExposure']);
-const NO_EXPAND_TYPES = new Set([
-  'NINA.Sequencer.SequenceItem.Imaging.SmartExposure',
-  'NINA.Sequencer.SequenceItem.Imaging.TakeManyExposures',
-  'NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat',
-  'NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat',
-  'NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat',
-  'NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure',
-  'NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure',
-]);
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -282,7 +274,7 @@ const props = defineProps({
 });
 
 const canAdd = computed(() => !NO_ADD_TYPES.has(props.item.FullTypeName));
-const isNoExpand = computed(() => NO_EXPAND_TYPES.has(props.item.FullTypeName));
+const isNoExpand = computed(() => isCompositeItem(props.item));
 
 const store = useSequenceV2Store();
 const sequenceStore = useSequenceStore();
@@ -370,9 +362,10 @@ const DEPTH_BORDERS = [
 const depthLeftBorder = computed(() => DEPTH_BORDERS[(props.depth - 1) % DEPTH_BORDERS.length]);
 
 const borderClass = computed(() => {
-  const s = props.item.Status;
+  const s = displayStatus(props.item);
   if (s === 'RUNNING') return 'border-green-500/50 shadow-lg shadow-green-500/35';
   if (s === 'FINISHED') return 'border-emerald-600/30 bg-emerald-950/10';
+  if (s === 'FAILED') return 'border-red-500/40 bg-red-950/10';
   if (s === 'DISABLED') return 'border-slate-700/30 bg-slate-900/20 opacity-60';
   return 'border-slate-600/30 bg-slate-800/30';
 });
