@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased] 
 
+### Added
+
+- Sequence editor (NINA): With an up-to-date Touch'N'Stars plugin, NINA now gets the same sequence editor as PINS. Items, triggers and conditions can be added, moved, duplicated, deleted and edited directly in the list while the running status keeps updating, and sequences can be loaded, saved and managed as files. With an older plugin the previous view is still shown.
+- Sequence editor: Items from other NINA plugins can now be added as well. Items without their own editor get a generic one; complex plugin values are shown read-only.
+
 ### Changed
 
 - Guiding (PHD2): The guider graph is hidden on the settings tab and shown again when returning to guiding.
+- Sequence editor: The Target Scheduler container gets a compact view that shows the current target and starts collapsed. Its items are filled by the scheduler, so only triggers and conditions can be added to it.
+- Sequence editor: The live status of a sequence is now fetched with much less data, which keeps large sequences responsive.
 
 ### Fixed
 
+- Target Scheduler Viewer: "Apply to sequence" is only offered when the sequence editor is available; on NINA it previously failed.
 - Sequence monitor: Changes to the exposure settings of a Smart Exposure are now saved; rejected changes now show an error message.
 - Framing and Atlas: The camera rotation from plate solves (e.g. TPPA) is now also applied on PINS while its clock is still wrong after a restart.
 - Location settings (NINA): The mount location is shown again instead of "Mount not connected", and syncing from mount to profile works.
