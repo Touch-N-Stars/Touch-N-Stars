@@ -38,6 +38,11 @@ let lastWrittenInfoJson = {};
 // staying silenced for the rest of the session (see checkForPINS()).
 const PINS_RECHECK_INTERVAL_MS = 15000;
 
+// A plugin without the sequence controller only gains it through an update, which needs a
+// NINA restart and therefore a reconnect (clearAllStates) - so a negative probe is only
+// repeated rarely, as a safety net for a transient wrong answer.
+const SEQUENCE_EDITOR_RECHECK_INTERVAL_MS = 60000;
+
 // Initial profileInfo shape. Also used by switchBackend() to drop the previous
 // instance's profile (readers like capturePhoto's SnapShotControlSettings.Save
 // must not see another instance's values until the new profile is fetched).
@@ -138,6 +143,11 @@ export const apiStore = defineStore('store', {
     pinsCheckResolvedOnce: false,
     pinsCheckNegativeCount: 0,
     pinsLastNegativeCheckAt: 0,
+    // Whether the TNS plugin serves the id-based sequence editor (/api/sequence/*).
+    // null = not probed yet. Feature-detected instead of tied to isPINS, because the same
+    // plugin runs on Windows NINA and on PINS. Read it through sequenceEditorAvailable.
+    sequenceEditorSupported: null,
+    sequenceEditorLastNegativeCheckAt: 0,
     isTimeSynced: false,
     intervalIdGraph: null,
     lastEventHistoryFetch: 0,
@@ -225,6 +235,15 @@ export const apiStore = defineStore('store', {
     // Every other PHD2 app state (Stopped, Looping, Selected, Paused, LostLock)
     // still allows changing settings.
     guiderIsRunning: (state) => ['Guiding', 'Calibrating'].includes(state.guiderInfo?.State),
+
+    // The id-based sequence editor (SequenceV2Page) instead of the legacy NINA view.
+    sequenceEditorAvailable: (state) => state.isPINS || state.sequenceEditorSupported === true,
+
+    // Still waiting for the PINS check or the sequence editor probe to answer.
+    sequenceEditorDetectionPending: (state) =>
+      state.isTnsPluginConnected &&
+      !state.isPINS &&
+      (!state.pinsCheckResolvedOnce || state.sequenceEditorSupported === null),
   },
 
   actions: {
@@ -398,6 +417,8 @@ export const apiStore = defineStore('store', {
         // (PINS may come up after NINA) permanently unreachable.
         if (this.isApiVersionNewerOrEqual) {
           await this.checkForPINS();
+          if (isStale()) return;
+          await this.checkSequenceEditorSupport();
           if (isStale()) return;
         }
 
@@ -671,6 +692,8 @@ export const apiStore = defineStore('store', {
       this.isPinsCheckDone = false;
       this.pinsCheckResolvedOnce = false;
       this.pinsCheckNegativeCount = 0;
+      this.sequenceEditorSupported = null;
+      this.sequenceEditorLastNegativeCheckAt = 0;
       this.isTimeSynced = false;
       this.imageHistoryInfo = null;
       this.lastImageStats = null;
@@ -781,6 +804,8 @@ export const apiStore = defineStore('store', {
       sequenceV2Store.$patch({
         data: [],
         loaded: false,
+        revision: null,
+        statusEndpointSupported: null,
         availableItems: [],
         availableTriggers: [],
         availableConditions: [],
@@ -1207,6 +1232,23 @@ export const apiStore = defineStore('store', {
         this.pinsLastNegativeCheckAt = Date.now();
         console.log('[API Store] No PINS endpoint — assuming NINA, rechecking in 15s');
       }
+    },
+
+    // Probes once per connection whether the plugin serves /api/sequence/*. A positive
+    // answer latches until clearAllStates(); a negative one is repeated rarely.
+    async checkSequenceEditorSupport() {
+      if (this.sequenceEditorSupported === true) return;
+      if (!this.isTnsPluginConnected) return;
+      if (
+        this.sequenceEditorSupported === false &&
+        Date.now() - this.sequenceEditorLastNegativeCheckAt < SEQUENCE_EDITOR_RECHECK_INTERVAL_MS
+      ) {
+        return;
+      }
+      const supported = await apiService.probeSequenceEditorSupport();
+      if (supported === null) return; // no answer - retry next cycle
+      this.sequenceEditorSupported = supported;
+      if (!supported) this.sequenceEditorLastNegativeCheckAt = Date.now();
     },
 
     async syncSystemTime() {

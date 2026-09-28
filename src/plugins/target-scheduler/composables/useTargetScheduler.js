@@ -330,11 +330,8 @@ export function useTargetScheduler() {
     Array.isArray(favoritesStore.favoriteTargets) ? favoritesStore.favoriteTargets : []
   );
 
-  const canApplyToSequence = computed(
-    () =>
-      mainStore.isPINS ||
-      mainStore.checkVersionNewerOrEqual(mainStore.currentTnsPluginVersion, '1.2.8.0')
-  );
+  // Applying writes through the id-based sequence endpoints (sequenceV2Store)
+  const canApplyToSequence = computed(() => mainStore.sequenceEditorAvailable);
 
   const totalScheduledMinutes = computed(() =>
     scheduleResult.value.segments.reduce((sum, segment) => sum + (segment.durationMinutes || 0), 0)
