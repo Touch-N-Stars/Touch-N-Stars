@@ -229,7 +229,7 @@
 
         <!-- Add item button at bottom, centered -->
         <div
-          v-if="item.Items !== undefined && canAdd && !isLocked"
+          v-if="item.Items !== undefined && canAddItems && !isLocked"
           class="flex justify-center mt-2"
         >
           <AddTypeButton
@@ -265,7 +265,14 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { ITEM_COMPONENTS, GenericItem } from './items/index.js';
 import { displayStatus, isCompositeItem } from '@/utils/sequenceStatus';
 
+const TARGET_SCHEDULER_CONTAINER = 'NINA.Plugin.TargetScheduler.Sequencer.TargetSchedulerContainer';
+
 const NO_ADD_TYPES = new Set(['NINA.Sequencer.SequenceItem.Imaging.SmartExposure']);
+// Target Scheduler fills its container with the planned instructions itself at runtime;
+// triggers and conditions on it stay user-defined.
+const NO_ADD_ITEM_TYPES = new Set([TARGET_SCHEDULER_CONTAINER]);
+// Containers that can hold many generated children start collapsed
+const COLLAPSED_BY_DEFAULT = new Set([TARGET_SCHEDULER_CONTAINER]);
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -274,12 +281,13 @@ const props = defineProps({
 });
 
 const canAdd = computed(() => !NO_ADD_TYPES.has(props.item.FullTypeName));
+const canAddItems = computed(() => canAdd.value && !NO_ADD_ITEM_TYPES.has(props.item.FullTypeName));
 const isNoExpand = computed(() => isCompositeItem(props.item));
 
 const store = useSequenceV2Store();
 const sequenceStore = useSequenceStore();
 const mainStore = apiStore();
-const collapsed = ref(false);
+const collapsed = ref(COLLAPSED_BY_DEFAULT.has(props.item.FullTypeName));
 const activeSection = ref(null);
 const isLocked = computed(() => sequenceStore.sequenceControlsLocked);
 // The sequencer is executing this node right now -- changing, resetting, disabling,
