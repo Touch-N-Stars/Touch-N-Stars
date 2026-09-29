@@ -9,6 +9,7 @@ installBrowserGlobals();
 const { useSequenceV2Store } = await import('@/store/sequenceV2Store');
 const { apiStore } = await import('@/store/store');
 const { default: apiService } = await import('@/services/apiService');
+const { useToastStore } = await import('@/store/toastStore');
 
 function tree() {
   return [
@@ -165,6 +166,69 @@ test('a plugin without /sequence/status falls back to the ninaAPI json tree', as
   );
 });
 
+// Older PINS images: the endpoint is missing, and depending on the server the answer is not
+// always a clean 404. Anything that is not the endpoint's own JSON must lead to the fallback.
+for (const [label, answer] of [
+  ['an HTML page with 200', () => '<!doctype html><html></html>'],
+  [
+    'an HTML error page with 500',
+    () => {
+      const error = new Error('500');
+      error.response = { status: 500, data: '<html>error</html>' };
+      throw error;
+    },
+  ],
+]) {
+  test(`${label} from /sequence/status switches to the fallback`, async (t) => {
+    const store = setup();
+    store.data = tree();
+    store.loaded = true;
+
+    const calls = mockApi(t, {
+      fetchSequenceStatus: answer,
+      sequenceAction: () => ({ Response: tree() }),
+    });
+
+    await store.fetchStatusUpdate();
+
+    assert.equal(store.statusEndpointSupported, false);
+    assert.deepEqual(calls, ['fetchSequenceStatus', 'sequenceAction']);
+  });
+}
+
+test('a JSON error from /sequence/status (e.g. no sequence loaded) is transient', async (t) => {
+  const store = setup();
+  store.data = tree();
+  store.loaded = true;
+
+  const calls = mockApi(t, {
+    fetchSequenceStatus: () => {
+      const error = new Error('400');
+      error.response = { status: 400, data: { Success: false, Error: 'No sequence loaded' } };
+      throw error;
+    },
+    sequenceAction: () => assert.fail('no fallback for an answer from the endpoint itself'),
+  });
+
+  await store.fetchStatusUpdate();
+
+  assert.equal(store.statusEndpointSupported, null);
+  assert.deepEqual(calls, ['fetchSequenceStatus']);
+});
+
+test('PINS never probes for the sequence editor', async (t) => {
+  freshPinia();
+  const store = apiStore();
+  store.isTnsPluginConnected = true;
+  store.isPINS = true;
+  const calls = mockApi(t, { probeSequenceEditorSupport: () => true });
+
+  await store.checkSequenceEditorSupport();
+
+  assert.deepEqual(calls, []);
+  assert.equal(store.sequenceEditorAvailable, true);
+});
+
 test('a transient status error neither reloads nor switches to the fallback', async (t) => {
   const store = setup();
   store.data = tree();
@@ -244,4 +308,53 @@ test('clearAllStates() drops the probe result', () => {
   store.clearAllStates();
 
   assert.equal(store.sequenceEditorSupported, null);
+});
+
+// --- property edits ---------------------------------------------------------------
+
+function rejectedWith(message) {
+  const error = new Error('400');
+  error.response = { status: 400, data: { Success: false, Error: message } };
+  throw error;
+}
+
+test('a rejected property edit is reported instead of silently reverting', async (t) => {
+  const store = setup();
+  store.data = tree();
+  store.loaded = true;
+  mockApi(t, {
+    sequenceSetProperty: () => rejectedWith("'X' is not a valid value for 'SelectedMode'"),
+    fetchSequenceStatus: () => ({ Revision: 'rev-a', Items: [] }),
+    fetchSequenceCurrent: () => tree(),
+  });
+
+  const ok = await store.setProperty('id_5', 'SelectedMode', 'X');
+
+  const toast = useToastStore();
+  assert.equal(ok, false);
+  assert.equal(toast.type, 'error');
+  assert.match(toast.message, /not a valid value/);
+});
+
+test('an accepted property edit shows no error', async (t) => {
+  const store = setup();
+  store.data = tree();
+  store.loaded = true;
+  mockApi(t, {
+    sequenceSetProperty: () => ({ Success: true }),
+    fetchSequenceStatus: () => ({ Revision: 'rev-a', Items: [] }),
+    fetchSequenceCurrent: () => tree(),
+  });
+
+  const ok = await store.setProperty('id_5', 'ExposureTime', 30);
+
+  assert.equal(ok, true);
+  assert.equal(useToastStore().newMessage, false);
+});
+
+test('missing field metadata (older plugin) falls back to null without logging', async (t) => {
+  const store = setup();
+  mockApi(t, { sequenceFetchFields: notFound });
+
+  assert.equal(await store.fetchEditableFields('id_5'), null);
 });

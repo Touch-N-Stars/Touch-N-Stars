@@ -91,6 +91,13 @@ export default {
     return response.data;
   },
 
+  // Editable properties of one item: { Fields: [{ Name, Type, Options?, ReadOnly }] }
+  async sequenceFetchFields(id) {
+    const { API_URL } = getUrls();
+    const response = await axios.get(`${API_URL}sequence/fields`, { params: { id } });
+    return response.data;
+  },
+
   async sequenceEnable(id, enabled) {
     const { API_URL } = getUrls();
     const response = await axios.post(`${API_URL}sequence/enable?id=${id}&enabled=${enabled}`, {});

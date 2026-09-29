@@ -1237,6 +1237,8 @@ export const apiStore = defineStore('store', {
     // Probes once per connection whether the plugin serves /api/sequence/*. A positive
     // answer latches until clearAllStates(); a negative one is repeated rarely.
     async checkSequenceEditorSupport() {
+      // PINS always has the editor (sequenceEditorAvailable), no need to probe
+      if (this.isPINS) return;
       if (this.sequenceEditorSupported === true) return;
       if (!this.isTnsPluginConnected) return;
       if (

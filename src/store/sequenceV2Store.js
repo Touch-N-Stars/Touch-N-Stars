@@ -4,6 +4,7 @@ import { apiStore } from './store';
 import { useToastStore } from './toastStore';
 import { useSequenceStore } from './sequenceStore';
 import { createPoller } from '@/utils/poller';
+import i18n from '@/i18n';
 import {
   collectDsoContainers,
   findTargetAreaContainer,
@@ -124,25 +125,33 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         try {
           res = await apiService.fetchSequenceStatus();
         } catch (e) {
-          if (e?.response?.status === 404) {
-            this.statusEndpointSupported = false;
-          } else {
-            // 400 = no sequence loaded, or a transient error - try again next tick
+          // A JSON error body comes from the endpoint itself (400 = no sequence loaded, or a
+          // transient failure) - try again next tick. A 404 or any non-JSON answer means the
+          // plugin has no such endpoint (older PINS images), so switch to the fallback.
+          const body = e?.response?.data;
+          const fromEndpoint = typeof body === 'object' && body !== null;
+          if (!e?.response || (fromEndpoint && e.response.status !== 404)) {
             console.error('fetchSequenceStatus:', e);
             return;
           }
+          this.statusEndpointSupported = false;
         }
-        if (res && Array.isArray(res.Items)) {
-          this.statusEndpointSupported = true;
-          if (res.Revision !== this.revision || !this.loaded) {
-            // If the structure changes again between both requests, the stored revision
-            // is already outdated and the next tick simply reloads once more.
-            if (await this.loadCurrent()) this.revision = res.Revision;
+        if (this.statusEndpointSupported !== false) {
+          if (res && Array.isArray(res.Items)) {
+            this.statusEndpointSupported = true;
+            if (res.Revision !== this.revision || !this.loaded) {
+              // If the structure changes again between both requests, the stored revision
+              // is already outdated and the next tick simply reloads once more.
+              if (await this.loadCurrent()) this.revision = res.Revision;
+            }
+            this.applyStatusById(res.Items);
+            return;
           }
-          this.applyStatusById(res.Items);
-          return;
+          // Success=false from the endpoint is transient; anything else (e.g. an HTML page
+          // served for an unknown path) means the endpoint does not exist.
+          if (typeof res === 'object' && res !== null && 'Error' in res) return;
+          this.statusEndpointSupported = false;
         }
-        if (this.statusEndpointSupported !== false) return;
       }
 
       await this.fetchStatusUpdateLegacy();
@@ -308,16 +317,34 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.refresh();
     },
 
+    // Returns whether NINA accepted the value. A rejected value (invalid choice, a property
+    // that ignores its setter, ...) is reported to the user instead of silently reverting.
     async setProperty(id, propertyName, value) {
-      if (this._isControlsLocked()) return;
-      if (this._isItemRunning(id)) return;
+      if (this._isControlsLocked()) return false;
+      if (this._isItemRunning(id)) return false;
 
+      let error = null;
       try {
-        await apiService.sequenceSetProperty(id, propertyName, value);
+        const res = await apiService.sequenceSetProperty(id, propertyName, value);
+        if (res?.Success === false) error = res.Error;
       } catch (e) {
         console.error('sequenceSetProperty:', e);
+        error = e?.response?.data?.Error ?? e?.message ?? String(e);
       }
+      if (error) this._showError(error);
       await this.refresh();
+      return !error;
+    },
+
+    // Field metadata for the generic editor, or null when the plugin does not provide it
+    async fetchEditableFields(id) {
+      try {
+        const res = await apiService.sequenceFetchFields(id);
+        return Array.isArray(res?.Fields) ? res.Fields : null;
+      } catch (e) {
+        if (e?.response?.status !== 404) console.error('sequenceFetchFields:', e);
+        return null;
+      }
     },
 
     async enable(id, enabled) {
@@ -381,7 +408,12 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
     },
 
     _showError(message) {
-      useToastStore().showToast({ type: 'error', title: 'Fehler', message, autoClose: true });
+      useToastStore().showToast({
+        type: 'error',
+        title: i18n.global.t('components.sequence.editFailed'),
+        message,
+        autoClose: true,
+      });
     },
 
     async addItem(targetId, itemType, insertAfter = true) {

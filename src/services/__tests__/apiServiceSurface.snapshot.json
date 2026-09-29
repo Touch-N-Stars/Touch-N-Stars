@@ -286,6 +286,7 @@
   "sequenceDuplicate": "function",
   "sequenceEnable": "function",
   "sequenceFetchConditionTypes": "function",
+  "sequenceFetchFields": "function",
   "sequenceFetchFiles": "function",
   "sequenceFetchItemTypes": "function",
   "sequenceFetchTriggerTypes": "function",
