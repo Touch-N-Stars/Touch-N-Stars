@@ -467,11 +467,14 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this._isControlsLocked()) return { ok: false, locked: true };
       if (this._isItemRunning(id)) return { ok: false, locked: true };
 
-      const dsoContainers = collectDsoContainers(this.data);
-      const index = Math.max(
-        0,
-        dsoContainers.findIndex((c) => c.Id === id)
-      );
+      // set-target addresses the container by position. If the Id is not in the held tree
+      // (e.g. it changed since the last load), falling back to index 0 would silently
+      // overwrite the coordinates of the first target -- refuse instead.
+      const index = collectDsoContainers(this.data).findIndex((c) => c.Id === id);
+      if (index < 0) {
+        await this.refresh();
+        return { ok: false, error: i18n.global.t('components.sequence.targetNotFound') };
+      }
       let result = { ok: true };
       try {
         const res = await apiService.sequnceTargetSet(

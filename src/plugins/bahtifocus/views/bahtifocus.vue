@@ -163,19 +163,6 @@
                     }}
                   </span>
                 </button>
-
-                <select
-                  v-if="exampleOptions.length"
-                  v-model="selectedExampleKey"
-                  class="w-full min-w-[12rem] flex-1 rounded-lg border border-gray-700 bg-gray-950/80 px-3 py-2 text-sm text-gray-200 shadow-inner focus:border-cyan-500 focus:outline-none focus:ring focus:ring-cyan-500/30"
-                >
-                  <option value="">
-                    {{ t('plugins.bahtifocus.image.examplePlaceholder') }}
-                  </option>
-                  <option v-for="example in exampleOptions" :key="example.key" :value="example.key">
-                    {{ example.label }}
-                  </option>
-                </select>
               </div>
 
               <div class="flex flex-wrap items-center gap-3 text-sm text-gray-300">
@@ -768,8 +755,6 @@ const RESIZE_COMPATIBLE_MIME_TYPES = new Set([
   'image/tiff',
 ]);
 
-const selectedExampleKey = ref('');
-const exampleOptions = ref([]);
 const isLoadingCapture = ref(false);
 const analysisLoading = ref(false);
 const analysisResult = ref(null);
@@ -1082,7 +1067,6 @@ async function loadLatestCapturedImage() {
     const blob = await fetchLatestCaptureBlob();
     const inferredName = t('plugins.bahtifocus.image.capturedName');
     await setImageFromBlob(blob, inferredName, 'capture');
-    selectedExampleKey.value = '';
   } catch (error) {
     handleError(error, t('plugins.bahtifocus.errors.captureLoad'));
   } finally {
@@ -1344,9 +1328,6 @@ function inferMimeType(name = '') {
 function sourceLabelFor(source) {
   if (source === 'capture') {
     return t('plugins.bahtifocus.image.sourceCaptured');
-  }
-  if (source === 'example') {
-    return t('plugins.bahtifocus.image.sourceExample');
   }
   if (source === 'upload') {
     return t('plugins.bahtifocus.image.sourceUpload');
@@ -2046,28 +2027,6 @@ function toStringSafe(value) {
   return String(value);
 }
 
-async function loadExampleAsset(key) {
-  const example = exampleOptions.value.find((entry) => entry.key === key);
-  if (!example) return;
-  try {
-    const response = await fetch(example.url);
-    if (!response.ok) throw new Error('Failed to load example image');
-    const blob = await response.blob();
-    await setImageFromBlob(blob, example.label, 'example');
-  } catch (error) {
-    handleError(error, t('plugins.bahtifocus.errors.exampleLoad'));
-  }
-}
-
-watch(
-  () => selectedExampleKey.value,
-  (value) => {
-    if (value) {
-      loadExampleAsset(value);
-    }
-  }
-);
-
 watch(
   () => ({
     focalLength: form.focalLength,
@@ -2087,7 +2046,6 @@ watch(
 
 onMounted(() => {
   applyDefaults();
-  populateExampleOptions();
   runValidation();
 });
 
@@ -2096,25 +2054,6 @@ onBeforeUnmount(() => {
     analysisAbortController.value.abort();
   }
 });
-
-const exampleImageModules = import.meta.glob(
-  '../image/*.{png,jpg,jpeg,webp,bmp,tif,tiff,fit,fits}',
-  { eager: true, import: 'default' }
-);
-
-function populateExampleOptions() {
-  try {
-    exampleOptions.value = Object.entries(exampleImageModules)
-      .map(([fullPath, url]) => {
-        const label = fullPath.split('/').pop() || fullPath;
-        return { key: `./${label}`, label, url };
-      })
-      .sort((a, b) => a.label.localeCompare(b.label));
-  } catch (error) {
-    console.warn('[Bahtifocus] No example images available', error);
-    exampleOptions.value = [];
-  }
-}
 </script>
 
 <style scoped>

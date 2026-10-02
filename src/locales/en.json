@@ -950,6 +950,7 @@
       "error_loading_sequences": "Error loading sequences",
       "error_loading_sequence": "Error loading sequence",
       "editFailed": "NINA did not accept the change",
+      "targetNotFound": "Target not found in the sequence. Please try again.",
       "filter": "Filter",
       "triggers": "Triggers",
       "expandAll": "Expand All",
@@ -2827,7 +2828,6 @@
         "selectFile": "Select image",
         "loadingCapture": "Loading capture…",
         "useLatestCapture": "Use latest capture",
-        "examplePlaceholder": "Load example image…",
         "clearSelection": "Clear selection",
         "source": "Source",
         "size": "File size",
@@ -2839,7 +2839,6 @@
         "previewUnavailable": "Preview not available. The analysis still supports this format.",
         "capturedName": "Latest capture",
         "sourceCaptured": "Current capture",
-        "sourceExample": "Example image",
         "sourceUpload": "Uploaded image",
         "resizedTitle": "Image optimized",
         "resizedMessage": "Resized to {width}×{height} (about {size}). Original size was {originalSize}."
@@ -2922,7 +2921,6 @@
         "title": "Bahtinov analysis",
         "readFile": "Unable to read the selected file.",
         "captureLoad": "Failed to load the latest capture from N.I.N.A.",
-        "exampleLoad": "Could not load the example image.",
         "analysisFailed": "Analysis request failed.",
         "badRequest": "The server rejected the request. Please verify the parameters.",
         "mockMode": "Bahtinov analysis is not available while the mock API is enabled.",
@@ -5611,6 +5609,7 @@
       "clear": "Clear",
       "session": "Session:",
       "excludeDither": "Auto-exclude dither settling",
+      "ditherFrames": "({count} frames)",
       "rawRa": "Raw, uncorrected RA",
       "emptyState": "Select a PHD2 guide log from the dropdown above.",
       "tabs": {
@@ -5622,6 +5621,12 @@
         "raRaw": "RA (raw)",
         "dec": "Dec",
         "dither": "Dither"
+      },
+      "graph": {
+        "arcsec": "arcsec ({scale}\"/px)",
+        "pixels": "pixels",
+        "frames": "{count} frames",
+        "zoomView": "{percent}% view"
       },
       "info": {
         "started": "Session started",
@@ -5648,6 +5653,11 @@
         "maxError": "max error",
         "of": "of {total}"
       },
+      "summary": {
+        "framesUsed": "{used} / {total} frames used",
+        "excluded": "{count} excluded",
+        "pixelScale": "{scale}\" /px scale"
+      },
       "fft": {
         "title": "RA Frequency Analysis",
         "subtitle": "Identifies periodic error harmonics in RA guiding.",
@@ -5663,7 +5673,11 @@
         "backlash": "Backlash",
         "over": "over",
         "noSummary": "No summary data (calibration may have been interrupted)",
-        "noData": "No calibration data for this session."
+        "noData": "No calibration data for this session.",
+        "stepSize": "Step size",
+        "calDistance": "Cal distance",
+        "raRate": "RA rate",
+        "decRate": "Dec rate"
       },
       "settings": {
         "title": "Log Directory",

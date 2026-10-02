@@ -19,6 +19,7 @@ import {
 } from '../services/targetSchedulerApi';
 import { THEME } from '../theme';
 import { fuzzyMatch } from '../fuzzyMatch';
+import { copyText } from '@/utils/clipboard';
 import {
   computeSummary,
   computeRollup,
@@ -344,7 +345,7 @@ async function exportMarkdown() {
     profileName: profiles.value.find((p) => p.Id === selectedProfileId.value)?.Name,
   });
   try {
-    await navigator.clipboard.writeText(md);
+    await copyText(md);
     toastStore.showToast({
       type: 'success',
       title: t('plugins.targetSchedulerViewer.labels.exportCopiedTitle'),

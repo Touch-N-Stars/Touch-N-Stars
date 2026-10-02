@@ -21,7 +21,7 @@
       v-model="focalLength"
       :label="$t('components.camera.chip_settings.focal_length')"
       labelKey="components.camera.chip_settings.focal_length"
-      :min="10"
+      :min="1"
       :max="5000"
       :step="1"
       :decimalPlaces="0"

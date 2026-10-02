@@ -118,6 +118,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { copyText } from '@/utils/clipboard';
 
 const { t } = useI18n();
 
@@ -212,7 +213,7 @@ const sequenceStats = computed(() => {
 async function copyToClipboard() {
   try {
     copyStatus.value = 'copying';
-    await navigator.clipboard.writeText(formattedJson.value);
+    await copyText(formattedJson.value);
     copyStatus.value = 'copied';
     setTimeout(() => {
       copyStatus.value = 'idle';
@@ -220,17 +221,6 @@ async function copyToClipboard() {
   } catch (error) {
     console.error('Failed to copy to clipboard:', error);
     copyStatus.value = 'idle';
-    // Fallback for older browsers
-    const textArea = document.createElement('textarea');
-    textArea.value = formattedJson.value;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    copyStatus.value = 'copied';
-    setTimeout(() => {
-      copyStatus.value = 'idle';
-    }, 2000);
   }
 }
 
