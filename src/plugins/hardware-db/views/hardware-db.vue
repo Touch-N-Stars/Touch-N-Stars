@@ -142,6 +142,7 @@ import {
   suggestionsForCategory,
 } from '../utils/knowledgeLookup';
 import metadata from '../plugin.json';
+import { copyText } from '@/utils/clipboard';
 
 const { t } = useI18n();
 const store = useHardwareDbStore();
@@ -411,7 +412,7 @@ async function refreshStatuses() {
 
 async function copyToken(token) {
   try {
-    await navigator.clipboard.writeText(token);
+    await copyText(token);
     copiedToken.value = token;
     setTimeout(() => {
       if (copiedToken.value === token) copiedToken.value = '';

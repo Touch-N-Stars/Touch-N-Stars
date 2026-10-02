@@ -471,6 +471,7 @@ import {
 } from '../utils/diagnosticsSupport';
 import { buildLogManifest, MANIFEST_DIAGNOSTICS_VALIDATION_FAILED } from '../utils/manifestBuilder';
 import { PINS_PORT as PORT, DEFAULT_PINS_DAEMON_API_TOKEN as TOKEN } from '@/services/pinsConfig';
+import { copyText } from '@/utils/clipboard';
 
 const logStore = useLogStore();
 const logCollectorStore = useLogCollectorStore();
@@ -1128,7 +1129,7 @@ function extractErrorMessage(error, fallback) {
 // Utility functions for the new features
 async function copyTokenToClipboard(token = lastGeneratedToken.value) {
   try {
-    await navigator.clipboard.writeText(token);
+    await copyText(token);
     resultMsg.value = t('plugins.logfileCollector.result.tokenCopied');
     resultOk.value = true;
 

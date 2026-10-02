@@ -406,17 +406,13 @@
       </div>
     </div>
 
-    <!-- Settings Tab -->
+    <!-- Settings Tab: normal page flow, the App stage already offsets navbar and SubNav -->
     <div
       v-if="currentTab === 'showSettings'"
       class="container py-4 flex items-center justify-center"
-      :style="{
-        paddingTop: isLandscape ? 'var(--subnav-offset)' : 'calc(82px + var(--subnav-offset))',
-        paddingLeft: isLandscape ? 'var(--nav-width)' : undefined,
-      }"
     >
       <div class="container max-w-md landscape:max-w-xl">
-        <div class="mt-4 border border-line rounded-card shadow-lg bg-surface-1">
+        <div class="border border-line rounded-card shadow-lg bg-surface-1">
           <div class="container pl-5 pb-5 pr-5">
             <div class="mt-5">
               <Phd2Settings />

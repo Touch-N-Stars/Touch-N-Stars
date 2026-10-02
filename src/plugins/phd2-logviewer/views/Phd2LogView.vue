@@ -140,7 +140,9 @@
               class="rounded border-gray-600 bg-gray-800 text-cyan-500 focus:ring-cyan-500"
             />
             {{ t('plugins.phd2logviewer.excludeDither') }}
-            <span class="text-gray-500">({{ activeSession.ditherFrames.size }} frames)</span>
+            <span class="text-gray-500">{{
+              t('plugins.phd2logviewer.ditherFrames', { count: activeSession.ditherFrames.size })
+            }}</span>
           </label>
           <label
             v-if="activeSession"
@@ -427,10 +429,25 @@
             </div>
           </div>
           <div class="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-500">
-            <span>{{ stats?.frameCount }} / {{ stats?.totalFrames }} frames used</span>
-            <span v-if="stats?.excludedCount">· {{ stats.excludedCount }} excluded</span>
+            <span>{{
+              t('plugins.phd2logviewer.summary.framesUsed', {
+                used: stats?.frameCount,
+                total: stats?.totalFrames,
+              })
+            }}</span>
+            <span v-if="stats?.excludedCount"
+              >·
+              {{
+                t('plugins.phd2logviewer.summary.excluded', { count: stats.excludedCount })
+              }}</span
+            >
             <span v-if="activeSession.info.pixelScale"
-              >· {{ activeSession.info.pixelScale }}" /px scale</span
+              >·
+              {{
+                t('plugins.phd2logviewer.summary.pixelScale', {
+                  scale: activeSession.info.pixelScale,
+                })
+              }}</span
             >
           </div>
         </section>
@@ -575,18 +592,22 @@ const calMetaItems = computed(() => {
   const session = activeSession.value;
   if (!cal) return [];
   const items = [];
-  if (cal.stepSize != null) items.push({ label: 'Step size', value: `${cal.stepSize} ms` });
+  if (cal.stepSize != null)
+    items.push({ label: t('plugins.phd2logviewer.cal.stepSize'), value: `${cal.stepSize} ms` });
   if (cal.calDistance != null)
-    items.push({ label: 'Cal distance', value: `${cal.calDistance} px` });
+    items.push({
+      label: t('plugins.phd2logviewer.cal.calDistance'),
+      value: `${cal.calDistance} px`,
+    });
   if (session?.normRaRate != null)
     items.push({
-      label: 'RA rate',
+      label: t('plugins.phd2logviewer.cal.raRate'),
       value: `${session.normRaRate.toFixed(1)}"/s`,
       color: 'text-cyan-400',
     });
   if (session?.normDecRate != null)
     items.push({
-      label: 'Dec rate',
+      label: t('plugins.phd2logviewer.cal.decRate'),
       value: `${session.normDecRate.toFixed(1)}"/s`,
       color: 'text-orange-400',
     });
@@ -982,8 +1003,12 @@ function drawGuideChart() {
   const zoomSuffix =
     xZoomStart.value === 0 && xZoomEnd.value === 1
       ? ''
-      : `  ·  ${((xZoomEnd.value - xZoomStart.value) * 100) | 0}% view`;
-  guideLabel.value = `${unit === '"' ? `arcsec (${session.info.pixelScale}"/px)` : 'pixels'}  ·  ${visCount} frames  ·  ${vm}m ${vs}s${zoomSuffix}`;
+      : `  ·  ${t('plugins.phd2logviewer.graph.zoomView', { percent: ((xZoomEnd.value - xZoomStart.value) * 100) | 0 })}`;
+  const unitLabel =
+    unit === '"'
+      ? t('plugins.phd2logviewer.graph.arcsec', { scale: session.info.pixelScale })
+      : t('plugins.phd2logviewer.graph.pixels');
+  guideLabel.value = `${unitLabel}  ·  ${t('plugins.phd2logviewer.graph.frames', { count: visCount })}  ·  ${vm}m ${vs}s${zoomSuffix}`;
 }
 
 // ── Canvas: calibration chart ─────────────────────────────────────────────

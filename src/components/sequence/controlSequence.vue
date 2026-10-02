@@ -319,6 +319,7 @@
 import { ref, computed } from 'vue';
 import apiService from '@/services/apiService';
 import { useSequenceStore } from '@/store/sequenceStore';
+import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useOrientation } from '@/composables/useOrientation';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
@@ -335,6 +336,7 @@ import {
 import Modal from '@/components/helpers/Modal.vue';
 
 const sequenceStore = useSequenceStore();
+const sequenceV2Store = useSequenceV2Store();
 const store = apiStore();
 const toastStore = useToastStore();
 const { t } = useI18n();
@@ -556,6 +558,9 @@ async function confirmReset() {
 
     if (success) {
       await sequenceStore.getSequenceInfo();
+      // The V2 poll only reloads the tree on a Status change. Items that were already
+      // CREATED keep their status, so their reset loop counters would stay stale.
+      if (sequenceV2Store.loaded) await sequenceV2Store.loadCurrent();
       isLoading.value = false;
     } else {
       console.error('Failed to reset sequence');
