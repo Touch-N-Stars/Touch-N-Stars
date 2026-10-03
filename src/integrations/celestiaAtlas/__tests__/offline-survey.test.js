@@ -12,6 +12,12 @@ import {
   readHipsOrder,
   resolveCelestiaAtlasDataBaseUrl,
   resolveDssSurveyUrl,
+  createSkySurveySource,
+  estimateSkySurveyBytes,
+  loadSkySurveyOrder,
+  normalizeSkySurveyId,
+  skySurveyTileCount,
+  SKY_SURVEY_IDS,
 } from '../offlineSkySurvey.js';
 
 const SAMPLE_PROPERTIES = `creator_did          = ivo://CDS/P/DSS2/color
@@ -120,4 +126,40 @@ test('loadDssSurveyOrder reads the served properties and treats 404/network erro
   // An order below the minimum the source can render is unusable as maxOrder.
   const fetchTooLow = async () => ({ ok: true, text: async () => 'hips_order = 1' });
   assert.equal(await loadDssSurveyOrder('/celestia-atlas-data', fetchTooLow), null);
+});
+
+test('NSNS is a second plugin-served survey with its own route, orders and credit', () => {
+  assert.deepEqual(SKY_SURVEY_IDS, ['dss', 'nsns']);
+  const source = createSkySurveySource('nsns', 'http://nina:5000/celestia-atlas-data', 6);
+  assert.equal(source.url, 'http://nina:5000/celestia-atlas-data/surveys/nsns');
+  assert.equal(source.key, 'local-nsns-ohs8');
+  assert.equal(source.format, 'jpg');
+  assert.equal(source.minOrder, 3);
+  assert.match(source.attribution, /CC BY-NC-SA 4\.0/);
+  assert.throws(() => createSkySurveySource('nsns', '/celestia-atlas-data', 2), RangeError);
+});
+
+test('unknown survey ids fall back to DSS', () => {
+  assert.equal(normalizeSkySurveyId('nsns'), 'nsns');
+  assert.equal(normalizeSkySurveyId(undefined), 'dss');
+  assert.equal(normalizeSkySurveyId('toString'), 'dss');
+  assert.equal(createSkySurveySource('bogus', '/celestia-atlas-data', 4).key, 'local-dss-color');
+});
+
+test('NSNS estimates count only the tiles inside its northern coverage', () => {
+  assert.equal(skySurveyTileCount('nsns', 3), 528);
+  assert.equal(skySurveyTileCount('nsns', 6), 31872);
+  assert.equal(skySurveyTileCount('dss', 6), 49152);
+  assert.equal(estimateSkySurveyBytes('nsns', 3, 4), 528 * 68_000 + 2016 * 78_000);
+  assert.throws(() => estimateSkySurveyBytes('nsns', 3, 7), RangeError);
+});
+
+test('loadSkySurveyOrder reads the properties of the requested survey', async () => {
+  const requests = [];
+  const fetchOk = async (url) => {
+    requests.push(url);
+    return { ok: true, text: async () => 'hips_order = 6' };
+  };
+  assert.equal(await loadSkySurveyOrder('nsns', '/celestia-atlas-data', fetchOk), 6);
+  assert.equal(requests[0], '/celestia-atlas-data/surveys/nsns/properties');
 });

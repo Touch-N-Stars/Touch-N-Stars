@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [App6.3.1-beta8] - 2026-09-30
 
+### Added
+
+- Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as a second sky background and switched with DSS; it shows emission nebulae in [OIII], H-alpha and [SII] for the sky north of -16°.
+
 ### Changed
 
 - Guiding (PHD2): The guider graph is hidden on the settings tab and shown again when returning to guiding.

@@ -110,15 +110,15 @@ test('uses app-owned photographic survey data without any public online tile sou
   assert.match(view, /settingsStore\.celestiaAtlas\.skySurveyVisible/);
   // The survey layer follows the order the plugin server advertises; no packaged default.
   assert.match(view, /skySurveySource: null/);
-  assert.match(view, /loadDssSurveyOrder\(baseUrl\)/);
-  assert.match(view, /createDssSkySurveySource\(baseUrl, order\)/);
+  assert.match(view, /loadSkySurveyOrder\(surveyId, baseUrl\)/);
+  assert.match(view, /createSkySurveySource\(surveyId, baseUrl, order\)/);
   assert.match(view, /viewer\.setSkySurvey\(order === null \? null/);
   assert.match(view, /native: Capacitor\.isNativePlatform\(\)/);
   assert.match(view, /host: settingsStore\.connection\.ip/);
   assert.match(view, /port: settingsStore\.connection\.port/);
   assert.match(offlineSurvey, /CELESTIA_ATLAS_DATA_PATH = '\/celestia-atlas-data'/);
-  assert.match(offlineSurvey, /createDssSkySurveySource/);
-  assert.match(offlineSurvey, /minOrder: DSS_SURVEY_MIN_ORDER/);
+  assert.match(offlineSurvey, /createSkySurveySource/);
+  assert.match(offlineSurvey, /minOrder: definition\.minOrder/);
   assert.doesNotMatch(offlineSurvey, /maxOrder: 4/);
   assert.match(offlineSurvey, /blendStartFovDeg: 170/);
   assert.match(offlineSurvey, /blendFullFovDeg: 130/);

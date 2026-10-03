@@ -280,9 +280,11 @@ import {
   CELESTIA_ATLAS_DATA_PATH,
   DSS_SURVEY_BASE_ORDER,
   DSS_SURVEY_MIN_ORDER,
-  createDssSkySurveySource,
+  SKY_SURVEY_IDS,
+  createSkySurveySource,
   estimateDssSurveyBytes,
-  loadDssSurveyOrder,
+  loadSkySurveyOrder,
+  normalizeSkySurveyId,
   resolveCelestiaAtlasDataBaseUrl,
 } from '@/integrations/celestiaAtlas/offlineSkySurvey';
 import { getUrls } from '@/services/api/core';
@@ -310,7 +312,12 @@ const store = apiStore();
 const framingStore = useFramingStore();
 const settingsStore = useSettingsStore();
 const horizonStore = useHorizonStore();
-const surveyStore = useCelestiaAtlasSurveyStore();
+// The DSS store drives the first-open offer; the active store is the survey shown as background.
+const surveyStore = useCelestiaAtlasSurveyStore('dss');
+const activeSurveyId = computed(() =>
+  normalizeSkySurveyId(settingsStore.celestiaAtlas.skySurveySource)
+);
+const activeSurveyStore = computed(() => useCelestiaAtlasSurveyStore(activeSurveyId.value));
 const { t } = useI18n();
 const { isLandscape } = useOrientation();
 const viewerContainer = ref(null);
@@ -809,8 +816,8 @@ function atlasDataBaseUrl() {
   });
 }
 
-// The DSS survey is plugin-managed data, not a packaged asset: the Vite dev server
-// answers /celestia-atlas-data/surveys/dss with the SPA fallback (no properties, no
+// The surveys are plugin-managed data, not a packaged asset: the Vite dev server
+// answers /celestia-atlas-data/surveys/<id> with the SPA fallback (no properties, no
 // tiles). In dev the layer is therefore fetched from the plugin server, which
 // getUrls() already resolves with the 8080 -> 5000 dev port rule.
 function surveyDataBaseUrl() {
@@ -820,25 +827,33 @@ function surveyDataBaseUrl() {
   return atlasDataBaseUrl();
 }
 
-// The survey layer follows what the plugin server advertises in `properties`: the
-// installed order becomes maxOrder, no properties file means no photographic layer.
-// A token guards against a slow lookup overtaking a newer one after a host switch.
+// The survey layer follows what the plugin server advertises in `properties` for the
+// selected survey: the installed order becomes maxOrder, no properties file means no
+// photographic layer (also when NSNS is selected but only DSS is installed). A token
+// guards against a slow lookup overtaking a newer one after a host or survey switch.
 let surveyLookupToken = 0;
 async function updateSkySurveySource() {
   if (!viewer) return;
   const token = ++surveyLookupToken;
+  const surveyId = activeSurveyId.value;
   const baseUrl = surveyDataBaseUrl();
-  const order = await loadDssSurveyOrder(baseUrl);
+  const order = await loadSkySurveyOrder(surveyId, baseUrl);
   if (disposed || !viewer || token !== surveyLookupToken) return;
-  viewer.setSkySurvey(order === null ? null : createDssSkySurveySource(baseUrl, order));
+  viewer.setSkySurvey(order === null ? null : createSkySurveySource(surveyId, baseUrl, order));
 }
 
+// Every survey is polled: the settings show the download state of the selected one and the
+// layer panel offers the switch once more than one is installed. Idle stores refresh only
+// every 15 s (see the store), so the extra survey costs next to nothing.
 const surveyPollingActive = computed(
   () => ready.value && store.showSkyAtlas && surveyStore.supported !== false
 );
-useBackgroundAwarePolling(() => surveyStore.tick(), 2000, surveyPollingActive, {
-  immediate: true,
-});
+useBackgroundAwarePolling(
+  () => Promise.all(SKY_SURVEY_IDS.map((id) => useCelestiaAtlasSurveyStore(id).tick())),
+  2000,
+  surveyPollingActive,
+  { immediate: true }
+);
 
 // First-open offer: shown until the user declines it or a survey is installed; while
 // the accepted download runs it turns into a progress line and disappears once the base
@@ -847,6 +862,8 @@ useBackgroundAwarePolling(() => surveyStore.tick(), 2000, surveyPollingActive, {
 const surveyBannerMode = computed(() => {
   if (!ready.value || !surveyStore.loaded || surveyStore.supported !== true) return null;
   if (settingsStore.celestiaAtlas.dssSurveyOfferDismissed) return null;
+  // Someone who chose NSNS as background has found the survey settings already.
+  if (activeSurveyId.value !== 'dss') return null;
   const installed = surveyStore.installedOrder;
   if (surveyStore.isRunning) {
     return installed !== null && installed >= DSS_SURVEY_BASE_ORDER ? null : 'progress';
@@ -979,14 +996,15 @@ watch(
 watch(
   () => [settingsStore.backendProtocol, settingsStore.connection.ip, settingsStore.connection.port],
   () => {
-    surveyStore.reset();
+    for (const id of SKY_SURVEY_IDS) useCelestiaAtlasSurveyStore(id).reset();
     updateLandscape();
     void updateSkySurveySource();
   }
 );
-// A finished download or a delete changes what the server serves; re-read `properties`.
+// A finished download, a delete or another survey choice changes what is served; re-read
+// `properties` of the selected survey.
 watch(
-  () => surveyStore.installedOrder,
+  () => [activeSurveyId.value, activeSurveyStore.value.installedOrder],
   () => {
     void updateSkySurveySource();
   }

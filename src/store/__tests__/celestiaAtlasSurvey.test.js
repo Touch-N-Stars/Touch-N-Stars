@@ -65,6 +65,7 @@ test('status is polled from the plugin server on the instance port and mirrored 
   await store.refresh();
 
   assert.equal(calls[0].url, 'http://10.0.0.5:5000/api/atlas/survey/status');
+  assert.deepEqual(calls[0].config.params, { survey: 'dss' });
   assert.equal(store.supported, true);
   assert.equal(store.loaded, true);
   assert.equal(store.installedOrder, 4);
@@ -169,7 +170,7 @@ test('actions post to the plugin server and surface a refused start as actionErr
 
   assert.equal(started, false);
   assert.equal(posts[0].url, 'http://10.0.0.5:5000/api/atlas/survey/download');
-  assert.deepEqual(posts[0].body, { targetOrder: 5 });
+  assert.deepEqual(posts[0].body, { survey: 'dss', targetOrder: 5 });
   assert.equal(store.actionError, 'A survey download is already running.');
   assert.equal(store.busy, false);
 
@@ -193,10 +194,10 @@ test('deleteSurvey posts keepOrder only when given, to downgrade instead of wipi
 
   await store.deleteSurvey(4);
   assert.equal(posts[0].url, 'http://10.0.0.5:5000/api/atlas/survey/delete');
-  assert.deepEqual(posts[0].body, { keepOrder: 4 });
+  assert.deepEqual(posts[0].body, { survey: 'dss', keepOrder: 4 });
 
   await store.deleteSurvey();
-  assert.deepEqual(posts[1].body, {});
+  assert.deepEqual(posts[1].body, { survey: 'dss' });
 });
 
 test('tick refreshes every time while a job runs but throttles when idle', async (t) => {
@@ -226,4 +227,100 @@ test('tick refreshes every time while a job runs but throttles when idle', async
   store.lastRefreshAt = Date.now() - 60_000;
   await store.tick();
   assert.equal(gets, 4);
+});
+
+function nsnsStatus({ installedOrder = null } = {}) {
+  const counts = { 3: 528, 4: 2016, 5: 8000, 6: 31872 };
+  const orders = [3, 4, 5, 6].map((order) => {
+    const tilesPresent = installedOrder !== null && order <= installedOrder ? counts[order] : 0;
+    return {
+      order,
+      tileCount: counts[order],
+      tilesPresent,
+      bytes: tilesPresent * 80_000,
+      complete: tilesPresent >= counts[order],
+    };
+  });
+  return {
+    success: true,
+    survey: 'nsns',
+    installedOrder,
+    hasAllsky: installedOrder !== null,
+    legacyFormat: false,
+    totalBytes: orders.reduce((sum, order) => sum + order.bytes, 0),
+    freeBytes: 5e9,
+    orders,
+    job: null,
+    minOrder: 3,
+    baseOrder: 4,
+    maxOrder: 6,
+  };
+}
+
+test('the NSNS store is separate from DSS and asks the server for its own survey', async (t) => {
+  const calls = [];
+  t.mock.method(axios, 'get', async (url, config) => {
+    calls.push({ url, config });
+    return { status: 200, data: nsnsStatus({ installedOrder: 4 }) };
+  });
+  const dss = useCelestiaAtlasSurveyStore('dss');
+  const nsns = useCelestiaAtlasSurveyStore('nsns');
+  dss.reset();
+  nsns.reset();
+
+  await nsns.refresh();
+
+  assert.notEqual(dss, nsns);
+  assert.equal(useCelestiaAtlasSurveyStore('unknown'), dss);
+  assert.deepEqual(calls[0].config.params, { survey: 'nsns' });
+  assert.equal(nsns.supported, true);
+  assert.equal(nsns.installedOrder, 4);
+  assert.equal(dss.loaded, false);
+  assert.deepEqual(
+    nsns.orderOptions.map((option) => [option.order, option.installed]),
+    [
+      [4, true],
+      [5, false],
+      [6, false],
+    ]
+  );
+  assert.equal(nsns.estimateMissingBytes(5), 8000 * 92_000);
+});
+
+test('a plugin from before NSNS answers with DSS status, which counts as unsupported for NSNS', async (t) => {
+  t.mock.method(axios, 'get', async () => ({
+    status: 200,
+    data: serverStatus({ installedOrder: 4 }),
+  }));
+  const nsns = useCelestiaAtlasSurveyStore('nsns');
+  nsns.reset();
+
+  await nsns.refresh();
+
+  assert.equal(nsns.supported, false);
+  assert.equal(nsns.status, null);
+});
+
+test('NSNS actions carry the survey id', async (t) => {
+  const posts = [];
+  t.mock.method(axios, 'get', async () => ({ status: 200, data: nsnsStatus() }));
+  t.mock.method(axios, 'post', async (url, body) => {
+    posts.push({ url, body });
+    return { status: 200, data: { success: true } };
+  });
+  const nsns = useCelestiaAtlasSurveyStore('nsns');
+  nsns.reset();
+
+  await nsns.startDownload(4);
+  await nsns.cancelDownload();
+  await nsns.deleteSurvey();
+
+  assert.deepEqual(
+    posts.map((post) => [post.url.replace('http://10.0.0.5:5000/api/', ''), post.body]),
+    [
+      ['atlas/survey/download', { survey: 'nsns', targetOrder: 4 }],
+      ['atlas/survey/cancel', { survey: 'nsns' }],
+      ['atlas/survey/delete', { survey: 'nsns' }],
+    ]
+  );
 });
