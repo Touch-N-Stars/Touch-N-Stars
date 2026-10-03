@@ -44,7 +44,8 @@ Download, storage and serving follow the DSS survey feature
 
 - No blending of NSNS over DSS and no DSS fallback south of Dec −16° (needs an engine
   change in celestia_atlas).
-- No other NSNS products (`hbr8`, `halpha8`, linear FITS data).
+- No other NSNS products than `ohs8` and the three 8-bit single lines (no `hbr8`, `rgb8`, no linear FITS data).
+- No mixing of single lines in the app; each product is its own download.
 - The Perihelion framing-offset view keeps using DSS.
 - The DSS behaviour, endpoints and stored files stay unchanged; an app that does not send
   `survey` keeps talking to DSS.
@@ -84,6 +85,16 @@ Download, storage and serving follow the DSS survey feature
 | Native | yes | Tiles via `resolveCelestiaAtlasDataBaseUrl` from the host, never fetched by the phone |
 | Persistence | yes | Survey choice in `settingsStore.celestiaAtlas.skySurveySource`; data on the host |
 | Tests | yes | Server: MOC parser, coverage tile sets, PNG→JPEG conversion, survey parameter default. App: survey definitions, source factory, store per survey, settings default |
+
+## Single-line products (added 2026-10-03)
+
+On request the 8-bit single-line products are offered as separate surveys next to the
+colour composite: `nsns-ha` (halpha8), `nsns-oiii` (oiii8), `nsns-sii` (sii8). Same
+coverage (528 / 2016 / 8000 / 31872 tiles for orders 3–6), same licence, separate folders
+and downloads. Source tiles are 8-bit greyscale PNGs (~120–190 kB); stored as JPEG q85
+(a greyscale JPEG saves only ~2 %, so the RGB path is kept). Means of 25 random tiles per
+order: Hα 37 / 53 / 58 / 50 kB (≈ 2.2 GB up to order 6), [OIII] 61 / 79 / 78 / 65 kB
+(≈ 2.9 GB), [SII] 79 / 98 / 95 / 74 kB (≈ 3.4 GB).
 
 ## Open questions
 

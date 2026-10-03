@@ -38,29 +38,53 @@ export function resolveCelestiaAtlasDataBaseUrl({
 }
 
 // Average stored bytes per NSNS tile (source PNGs re-encoded to JPEG q85 on the server),
-// the same table the plugin server uses (SurveyDefinition.Nsns): means of 40 random tiles
-// per order measured on 2026-10-03.
+// the same tables the plugin server uses (SurveyDefinition.Nsns*): means of 25-40 random
+// tiles per order measured on 2026-10-03.
 export const NSNS_SURVEY_AVERAGE_TILE_BYTES = Object.freeze({
-  3: 68_000,
-  4: 78_000,
-  5: 92_000,
-  6: 81_000,
+  nsns: Object.freeze({ 3: 68_000, 4: 78_000, 5: 92_000, 6: 81_000 }),
+  'nsns-ha': Object.freeze({ 3: 37_000, 4: 53_000, 5: 58_000, 6: 50_000 }),
+  'nsns-oiii': Object.freeze({ 3: 61_000, 4: 79_000, 5: 78_000, 6: 65_000 }),
+  'nsns-sii': Object.freeze({ 3: 79_000, 4: 98_000, 5: 95_000, 6: 74_000 }),
 });
 
 // NSNS covers the sky north of Dec -16 deg only; tile counts per order inside its coverage
-// map (Moc.fits of DR0.2). Used for the size estimate before the server reports exact counts.
+// map (Moc.fits of DR0.2, identical for every product). Used for the size estimate before
+// the server reports exact counts.
 const NSNS_SURVEY_TILE_COUNTS = Object.freeze({ 3: 528, 4: 2016, 5: 8000, 6: 31872 });
+
+const NSNS_CREDIT =
+  'Northern Sky Narrowband Survey DR0.2 — Stefan Ziegenbalg, CC BY-NC-SA 4.0 (doi:10.3847/2515-5172/adfec7).';
+
+function nsnsSurvey(id, product, label) {
+  return Object.freeze({
+    id,
+    family: 'nsns',
+    key: `local-nsns-${product}`,
+    label,
+    path: `/surveys/${id}`,
+    minOrder: 3,
+    baseOrder: 4,
+    maxOrder: 6,
+    averageTileBytes: NSNS_SURVEY_AVERAGE_TILE_BYTES[id],
+    tileCounts: NSNS_SURVEY_TILE_COUNTS,
+    credit: NSNS_CREDIT,
+    attributionUrl: 'https://www.simg.de/nebulae3/dr0_2',
+    rightsUrl: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+  });
+}
 
 export const DEFAULT_SKY_SURVEY_ID = 'dss';
 
 /**
  * The downloadable Atlas surveys. Each is fetched by the plugin server onto the NINA/PINS
  * host and served from `/celestia-atlas-data/surveys/<id>`; the app never loads tiles from
- * the public survey hosts.
+ * the public survey hosts. The NSNS products share coverage, licence and texts (`family`)
+ * but are separate downloads.
  */
 const SKY_SURVEYS = Object.freeze({
   dss: Object.freeze({
     id: 'dss',
+    family: 'dss',
     key: 'local-dss-color',
     label: 'DSS Color (offline)',
     path: DSS_SURVEY_PATH,
@@ -75,21 +99,10 @@ const SKY_SURVEYS = Object.freeze({
     rightsUrl:
       'https://outerspace.stsci.edu/spaces/MASTDATA/pages/176435492/Photographic+Sky+Surveys',
   }),
-  nsns: Object.freeze({
-    id: 'nsns',
-    key: 'local-nsns-ohs8',
-    label: 'NSNS [OIII] / H-alpha / [SII] (offline)',
-    path: '/surveys/nsns',
-    minOrder: 3,
-    baseOrder: 4,
-    maxOrder: 6,
-    averageTileBytes: NSNS_SURVEY_AVERAGE_TILE_BYTES,
-    tileCounts: NSNS_SURVEY_TILE_COUNTS,
-    credit:
-      'Northern Sky Narrowband Survey DR0.2 — Stefan Ziegenbalg, CC BY-NC-SA 4.0 (doi:10.3847/2515-5172/adfec7).',
-    attributionUrl: 'https://www.simg.de/nebulae3/dr0_2',
-    rightsUrl: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
-  }),
+  nsns: nsnsSurvey('nsns', 'ohs8', 'NSNS [OIII] / H-alpha / [SII] (offline)'),
+  'nsns-ha': nsnsSurvey('nsns-ha', 'halpha8', 'NSNS H-alpha (offline)'),
+  'nsns-oiii': nsnsSurvey('nsns-oiii', 'oiii8', 'NSNS [OIII] (offline)'),
+  'nsns-sii': nsnsSurvey('nsns-sii', 'sii8', 'NSNS [SII] (offline)'),
 });
 
 export const SKY_SURVEY_IDS = Object.freeze(Object.keys(SKY_SURVEYS));
@@ -101,6 +114,11 @@ export function normalizeSkySurveyId(id) {
 
 export function getSkySurveyDefinition(id) {
   return SKY_SURVEYS[normalizeSkySurveyId(id)];
+}
+
+/** Locale key segment for a survey id ('nsns-ha' -> 'nsns_ha'); keys avoid the hyphen. */
+export function skySurveyLocaleKey(id) {
+  return normalizeSkySurveyId(id).replace(/-/g, '_');
 }
 
 export function resolveSkySurveyUrl(id, dataBaseUrl = CELESTIA_ATLAS_DATA_PATH) {

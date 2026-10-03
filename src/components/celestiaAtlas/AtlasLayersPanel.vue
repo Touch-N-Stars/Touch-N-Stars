@@ -35,7 +35,7 @@
       >
         <span class="tns-dot" :class="activeSurveyId === id ? 'bg-accent' : 'bg-content-faint'" />
         <span class="min-w-0 flex-1 text-left leading-tight [overflow-wrap:anywhere]">
-          {{ $t(`components.celestiaAtlas.survey.source_${id}`) }}
+          {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
         </span>
       </button>
     </div>
@@ -49,6 +49,7 @@ import { useCelestiaAtlasSurveyStore } from '@/store/celestiaAtlasSurveyStore';
 import {
   SKY_SURVEY_IDS,
   normalizeSkySurveyId,
+  skySurveyLocaleKey,
 } from '@/integrations/celestiaAtlas/offlineSkySurvey';
 
 // Quick toggles for what is drawn on the sky. These are the settings a user flips while

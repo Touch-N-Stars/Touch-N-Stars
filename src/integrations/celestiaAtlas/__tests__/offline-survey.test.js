@@ -16,6 +16,7 @@ import {
   estimateSkySurveyBytes,
   loadSkySurveyOrder,
   normalizeSkySurveyId,
+  skySurveyLocaleKey,
   skySurveyTileCount,
   SKY_SURVEY_IDS,
 } from '../offlineSkySurvey.js';
@@ -129,7 +130,7 @@ test('loadDssSurveyOrder reads the served properties and treats 404/network erro
 });
 
 test('NSNS is a second plugin-served survey with its own route, orders and credit', () => {
-  assert.deepEqual(SKY_SURVEY_IDS, ['dss', 'nsns']);
+  assert.deepEqual(SKY_SURVEY_IDS, ['dss', 'nsns', 'nsns-ha', 'nsns-oiii', 'nsns-sii']);
   const source = createSkySurveySource('nsns', 'http://nina:5000/celestia-atlas-data', 6);
   assert.equal(source.url, 'http://nina:5000/celestia-atlas-data/surveys/nsns');
   assert.equal(source.key, 'local-nsns-ohs8');
@@ -162,4 +163,15 @@ test('loadSkySurveyOrder reads the properties of the requested survey', async ()
   };
   assert.equal(await loadSkySurveyOrder('nsns', '/celestia-atlas-data', fetchOk), 6);
   assert.equal(requests[0], '/celestia-atlas-data/surveys/nsns/properties');
+});
+
+test('the NSNS single-line products are separate surveys sharing the NSNS coverage', () => {
+  const source = createSkySurveySource('nsns-oiii', '/celestia-atlas-data', 5);
+  assert.equal(source.url, '/celestia-atlas-data/surveys/nsns-oiii');
+  assert.equal(source.key, 'local-nsns-oiii8');
+  assert.match(source.attribution, /Ziegenbalg/);
+  assert.equal(skySurveyTileCount('nsns-ha', 4), 2016);
+  assert.equal(estimateSkySurveyBytes('nsns-ha', 3, 4), 528 * 37_000 + 2016 * 53_000);
+  assert.equal(skySurveyLocaleKey('nsns-sii'), 'nsns_sii');
+  assert.equal(skySurveyLocaleKey('bogus'), 'dss');
 });

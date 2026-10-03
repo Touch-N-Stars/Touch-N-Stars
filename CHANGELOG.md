@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as a second sky background and switched with DSS; it shows emission nebulae in [OIII], H-alpha and [SII] for the sky north of -16°.
+- Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as an additional sky background, as colour composite or as single H-alpha, [OIII] or [SII] line, and switched with DSS; it covers the sky north of -16°.
 
 ### Changed
 

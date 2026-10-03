@@ -188,6 +188,7 @@ import { ArrowPathIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import { useCelestiaAtlasSurveyStore } from '@/store/celestiaAtlasSurveyStore';
 import { formatSurveyBytes } from '@/utils/formatSurveyBytes';
+import { getSkySurveyDefinition } from '@/integrations/celestiaAtlas/offlineSkySurvey';
 
 // Download, progress and delete for one Atlas survey. The parent keys this component by
 // survey id, so the store below never changes for the lifetime of an instance.
@@ -201,15 +202,17 @@ const props = defineProps({
 const { t } = useI18n();
 const surveyStore = useCelestiaAtlasSurveyStore(props.surveyId);
 
-// Usage terms per survey; DSS keeps its original locale keys, other surveys add a suffix.
+// Texts and usage terms per survey family; DSS keeps its original locale keys, the NSNS
+// products share the `_nsns` ones.
+const family = getSkySurveyDefinition(props.surveyId).family;
 const TERMS_URLS = {
   dss: 'https://archive.stsci.edu/dss/copyright.html',
   nsns: 'https://www.simg.de/nebulae3/dr0_2',
 };
-const termsUrl = TERMS_URLS[props.surveyId] ?? TERMS_URLS.dss;
+const termsUrl = TERMS_URLS[family] ?? TERMS_URLS.dss;
 
 function surveyKey(name) {
-  const suffix = props.surveyId === 'dss' ? '' : `_${props.surveyId}`;
+  const suffix = family === 'dss' ? '' : `_${family}`;
   return `components.celestiaAtlas.survey.${name}${suffix}`;
 }
 

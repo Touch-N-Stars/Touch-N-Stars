@@ -39,9 +39,10 @@
       <h4 class="mb-1 text-base font-semibold text-gray-100">Narrowband sky survey</h4>
       <p>
         Northern Sky Narrowband Survey (NSNS) DR0.2 by Stefan Ziegenbalg, [OIII], H-alpha and [SII]
-        colour composite, licensed under CC BY-NC-SA 4.0 (doi:10.3847/2515-5172/adfec7). The survey
-        is downloaded on request to the NINA host by the Touch-N-Stars plugin, converted to JPEG
-        there and served locally; the tiles are not redistributed.
+        colour composite and single lines, licensed under CC BY-NC-SA 4.0
+        (doi:10.3847/2515-5172/adfec7). The survey is downloaded on request to the NINA host by the
+        Touch-N-Stars plugin, converted to JPEG there and served locally; the tiles are not
+        redistributed.
       </p>
       <a
         class="break-all text-cyan-400 hover:underline"

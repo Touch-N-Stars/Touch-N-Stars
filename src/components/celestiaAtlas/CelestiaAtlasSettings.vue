@@ -264,11 +264,15 @@
                 :aria-checked="activeSurveyId === id"
                 @click="settingsStore.celestiaAtlas.skySurveySource = id"
               >
-                {{ $t(`components.celestiaAtlas.survey.source_${id}`) }}
+                {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
               </button>
             </div>
             <p class="text-xs text-gray-400">
-              {{ $t(`components.celestiaAtlas.survey.source_${activeSurveyId}_hint`) }}
+              {{
+                $t(
+                  `components.celestiaAtlas.survey.source_${skySurveyLocaleKey(activeSurveyId)}_hint`
+                )
+              }}
             </p>
           </div>
           <AtlasSurveyDownload :key="activeSurveyId" :survey-id="activeSurveyId" />
@@ -421,6 +425,7 @@ import { useCelestiaAtlasSurveyStore } from '@/store/celestiaAtlasSurveyStore';
 import {
   SKY_SURVEY_IDS,
   normalizeSkySurveyId,
+  skySurveyLocaleKey,
 } from '@/integrations/celestiaAtlas/offlineSkySurvey';
 
 defineProps({
