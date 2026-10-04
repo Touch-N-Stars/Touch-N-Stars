@@ -5888,6 +5888,118 @@
         "noScheduleData": "Aucune donnée de planning.",
         "waitingNotVisible": "En attente — cible pas encore visible"
       }
+    },
+    "aapa": {
+      "title": "Contrôleur AAPA",
+      "invalidValue": "Valeur invalide",
+      "tabs": {
+        "control": "Contrôle",
+        "calibration": "Calibration",
+        "settings": "Paramètres",
+        "log": "Journal"
+      },
+      "ws": {
+        "idle": "Non connecté",
+        "connecting": "Connexion…",
+        "open": "Plugin connecté",
+        "closed": "Plugin injoignable",
+        "unreachable": "Aucune connexion au plugin AAPA à l'adresse {url}.",
+        "checkPlugin": "Le plugin AAPA Controller est-il installé et chargé dans N.I.N.A. ?",
+        "checkEnabled": "Le serveur WebSocket est-il activé dans les paramètres du plugin, avec le même port que ci-dessous ?",
+        "checkFirewall": "Le pare-feu Windows autorise-t-il les connexions entrantes sur ce port ?",
+        "port": "Port WebSocket"
+      },
+      "connection": {
+        "title": "Appareil AAPA",
+        "connectedTo": "Connecté : {port}",
+        "disconnected": "Non connecté",
+        "port": "Port",
+        "auto": "Auto (scanner tous les ports)",
+        "wifi": "Wi-Fi (adresse IP)",
+        "ipAddress": "Adresse IP de l'AAPA",
+        "connect": "Connecter",
+        "disconnect": "Déconnecter",
+        "autoHint": "Auto recherche un AAPA sur tous les ports série de l'ordinateur N.I.N.A."
+      },
+      "status": {
+        "positionX": "Position X (Az)",
+        "positionY": "Position Y (Alt)",
+        "motion": "Mouvement",
+        "moving": "En mouvement",
+        "idle": "Au repos",
+        "homed": "Origine atteinte",
+        "lastError": "Dernière erreur mesurée",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Itération {n}",
+        "running": "En cours"
+      },
+      "autoPilot": {
+        "title": "Auto-Pilot",
+        "hint": "Lancez d'abord TPPA et activez « Log polar alignment error adjustments » dans ses paramètres. L'Auto-Pilot corrige jusqu'à ce que l'erreur soit dans la tolérance.",
+        "start": "Démarrer l'Auto-Pilot",
+        "stop": "Arrêter"
+      },
+      "manual": {
+        "title": "Contrôle manuel",
+        "stepSize": "Taille du pas (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Aller à l'origine",
+        "setHome": "Définir l'origine",
+        "setHomeConfirm": "Définir la position actuelle comme nouvelle origine pour les deux axes ?",
+        "stop": "Arrêter les moteurs"
+      },
+      "calibration": {
+        "title": "Calibration du rapport de réduction",
+        "hint": "Lancez d'abord TPPA. L'AAPA déplace un axe du nombre de pas indiqué et calcule le rapport à partir de la variation d'erreur mesurée.",
+        "steps": "Pas de calibration",
+        "azimuth": "Calibrer Az",
+        "altitude": "Calibrer Alt",
+        "running": "Calibration…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Géométrie du moteur",
+          "motor": "Vitesse et accélération",
+          "limits": "Limites d'altitude"
+        },
+        "fields": {
+          "ToleranceDegrees": "Tolérance (°)",
+          "SettleTimeSeconds": "Temps de stabilisation (s)",
+          "MaxIterations": "Itérations max. (0 = illimité)",
+          "MaxCorrectionDeg": "Correction max. par itération (°)",
+          "MotionTimeoutSeconds": "Délai de mouvement (s)",
+          "StepsPerRevolution": "Pas par tour",
+          "AzimuthMicrosteps": "Micropas Az",
+          "AltitudeMicrosteps": "Micropas Alt",
+          "AzimuthGearRatio": "Rapport de réduction Az",
+          "AltitudeGearRatio": "Rapport de réduction Alt",
+          "ReverseAzimuth": "Inverser Az",
+          "ReverseAltitude": "Inverser Alt",
+          "AzimuthBacklash": "Jeu Az (pas)",
+          "AltitudeBacklash": "Jeu Alt (pas)",
+          "AzimuthSpeed": "Vitesse Az (pas/s)",
+          "AltitudeSpeed": "Vitesse Alt (pas/s)",
+          "AzimuthAccel": "Accélération Az (pas/s²)",
+          "AltitudeAccel": "Accélération Alt (pas/s²)",
+          "MinYLimit": "Y min. (pas)",
+          "MaxYLimit": "Y max. (pas)"
+        },
+        "autoSaveHint": "Les modifications sont enregistrées dans N.I.N.A. dès que vous quittez un champ.",
+        "saveInNina": "Enregistrer dans N.I.N.A.",
+        "storeOnDevice": "Enregistrer sur l'AAPA",
+        "sendConfirm": "Enregistrer définitivement la configuration actuelle de l'AAPA dans sa mémoire (EEPROM) ?",
+        "applyToDevice": "Appliquer à l'AAPA",
+        "applyInNinaHint": "Ces valeurs sont enregistrées dans N.I.N.A. Pour les transférer à l'AAPA, utilisez le bouton d'envoi dans le panneau AAPA de N.I.N.A."
+      },
+      "log": {
+        "title": "Journal",
+        "clear": "Effacer",
+        "empty": "Aucun message pour l'instant."
+      }
     }
   },
   "pinsDevices": {

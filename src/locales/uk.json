@@ -5888,6 +5888,118 @@
         "noScheduleData": "Немає даних розкладу.",
         "waitingNotVisible": "Очікування — ціль ще не видима"
       }
+    },
+    "aapa": {
+      "title": "Контролер AAPA",
+      "invalidValue": "Недійсне значення",
+      "tabs": {
+        "control": "Керування",
+        "calibration": "Калібрування",
+        "settings": "Налаштування",
+        "log": "Журнал"
+      },
+      "ws": {
+        "idle": "Не підключено",
+        "connecting": "Підключення…",
+        "open": "Плагін підключено",
+        "closed": "Плагін недоступний",
+        "unreachable": "Немає з’єднання з плагіном AAPA за адресою {url}.",
+        "checkPlugin": "Чи встановлено й завантажено плагін AAPA Controller у N.I.N.A.?",
+        "checkEnabled": "Чи ввімкнено сервер WebSocket у налаштуваннях плагіна з тим самим портом, що й нижче?",
+        "checkFirewall": "Чи дозволяє брандмауер Windows вхідні з’єднання на цей порт?",
+        "port": "Порт WebSocket"
+      },
+      "connection": {
+        "title": "Пристрій AAPA",
+        "connectedTo": "Підключено: {port}",
+        "disconnected": "Не підключено",
+        "port": "Порт",
+        "auto": "Авто (сканувати всі порти)",
+        "wifi": "Wi-Fi (IP-адреса)",
+        "ipAddress": "IP-адреса AAPA",
+        "connect": "Підключити",
+        "disconnect": "Відключити",
+        "autoHint": "Авто перевіряє всі послідовні порти комп’ютера з N.I.N.A. на наявність AAPA."
+      },
+      "status": {
+        "positionX": "Позиція X (Az)",
+        "positionY": "Позиція Y (Alt)",
+        "motion": "Рух",
+        "moving": "Рухається",
+        "idle": "Простій",
+        "homed": "У позиції home",
+        "lastError": "Остання виміряна похибка",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Ітерація {n}",
+        "running": "Працює"
+      },
+      "autoPilot": {
+        "title": "Auto-Pilot",
+        "hint": "Спершу запустіть TPPA і ввімкніть у його налаштуваннях «Log polar alignment error adjustments». Auto-Pilot коригує, доки похибка не буде в межах допуску.",
+        "start": "Запустити Auto-Pilot",
+        "stop": "Стоп"
+      },
+      "manual": {
+        "title": "Ручне керування",
+        "stepSize": "Розмір кроку (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "До home",
+        "setHome": "Задати home",
+        "setHomeConfirm": "Зробити поточну позицію новою позицією home для обох осей?",
+        "stop": "Зупинити двигуни"
+      },
+      "calibration": {
+        "title": "Калібрування передавального числа",
+        "hint": "Спершу запустіть TPPA. AAPA переміщує одну вісь на вказану кількість кроків і обчислює передавальне число за виміряною зміною похибки.",
+        "steps": "Кроки калібрування",
+        "azimuth": "Калібрувати Az",
+        "altitude": "Калібрувати Alt",
+        "running": "Калібрування…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Геометрія двигуна",
+          "motor": "Швидкість і прискорення",
+          "limits": "Обмеження висоти"
+        },
+        "fields": {
+          "ToleranceDegrees": "Допуск (°)",
+          "SettleTimeSeconds": "Час стабілізації (с)",
+          "MaxIterations": "Макс. ітерацій (0 = без обмежень)",
+          "MaxCorrectionDeg": "Макс. корекція за ітерацію (°)",
+          "MotionTimeoutSeconds": "Тайм-аут руху (с)",
+          "StepsPerRevolution": "Кроків на оберт",
+          "AzimuthMicrosteps": "Мікрокроки Az",
+          "AltitudeMicrosteps": "Мікрокроки Alt",
+          "AzimuthGearRatio": "Передавальне число Az",
+          "AltitudeGearRatio": "Передавальне число Alt",
+          "ReverseAzimuth": "Інвертувати Az",
+          "ReverseAltitude": "Інвертувати Alt",
+          "AzimuthBacklash": "Люфт Az (кроки)",
+          "AltitudeBacklash": "Люфт Alt (кроки)",
+          "AzimuthSpeed": "Швидкість Az (кроків/с)",
+          "AltitudeSpeed": "Швидкість Alt (кроків/с)",
+          "AzimuthAccel": "Прискорення Az (кроків/с²)",
+          "AltitudeAccel": "Прискорення Alt (кроків/с²)",
+          "MinYLimit": "Мін. Y (кроки)",
+          "MaxYLimit": "Макс. Y (кроки)"
+        },
+        "autoSaveHint": "Зміни зберігаються в N.I.N.A., щойно ви залишаєте поле.",
+        "saveInNina": "Зберегти в N.I.N.A.",
+        "storeOnDevice": "Зберегти в AAPA",
+        "sendConfirm": "Назавжди зберегти поточну конфігурацію AAPA в його пам’яті (EEPROM)?",
+        "applyToDevice": "Застосувати до AAPA",
+        "applyInNinaHint": "Ці значення зберігаються в N.I.N.A. Щоб передати їх на AAPA, скористайтеся кнопкою надсилання на панелі AAPA в N.I.N.A."
+      },
+      "log": {
+        "title": "Журнал",
+        "clear": "Очистити",
+        "empty": "Повідомлень поки немає."
+      }
     }
   },
   "dialogs": {

@@ -5888,6 +5888,118 @@
         "noScheduleData": "Žádná data plánu.",
         "waitingNotVisible": "Čeká se — cíl zatím není viditelný"
       }
+    },
+    "aapa": {
+      "title": "Ovladač AAPA",
+      "invalidValue": "Neplatná hodnota",
+      "tabs": {
+        "control": "Ovládání",
+        "calibration": "Kalibrace",
+        "settings": "Nastavení",
+        "log": "Protokol"
+      },
+      "ws": {
+        "idle": "Nepřipojeno",
+        "connecting": "Připojování…",
+        "open": "Plugin připojen",
+        "closed": "Plugin není dostupný",
+        "unreachable": "Žádné spojení s pluginem AAPA na {url}.",
+        "checkPlugin": "Je plugin AAPA Controller nainstalován a načten v N.I.N.A.?",
+        "checkEnabled": "Je v nastavení pluginu zapnutý server WebSocket se stejným portem jako níže?",
+        "checkFirewall": "Povoluje brána firewall Windows příchozí spojení na tomto portu?",
+        "port": "Port WebSocket"
+      },
+      "connection": {
+        "title": "Zařízení AAPA",
+        "connectedTo": "Připojeno: {port}",
+        "disconnected": "Nepřipojeno",
+        "port": "Port",
+        "auto": "Auto (prohledat všechny porty)",
+        "wifi": "Wi-Fi (IP adresa)",
+        "ipAddress": "IP adresa AAPA",
+        "connect": "Připojit",
+        "disconnect": "Odpojit",
+        "autoHint": "Auto zkontroluje všechny sériové porty počítače s N.I.N.A., zda na nich není AAPA."
+      },
+      "status": {
+        "positionX": "Poloha X (Az)",
+        "positionY": "Poloha Y (Alt)",
+        "motion": "Pohyb",
+        "moving": "Pohybuje se",
+        "idle": "Nečinný",
+        "homed": "V poloze home",
+        "lastError": "Poslední naměřená chyba",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Iterace {n}",
+        "running": "Běží"
+      },
+      "autoPilot": {
+        "title": "Auto-Pilot",
+        "hint": "Nejprve spusťte TPPA a v jeho nastavení zapněte „Log polar alignment error adjustments“. Auto-Pilot koriguje, dokud není chyba v toleranci.",
+        "start": "Spustit Auto-Pilot",
+        "stop": "Stop"
+      },
+      "manual": {
+        "title": "Ruční ovládání",
+        "stepSize": "Velikost kroku (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Najet do home",
+        "setHome": "Nastavit home",
+        "setHomeConfirm": "Nastavit aktuální polohu jako novou polohu home pro obě osy?",
+        "stop": "Zastavit motory"
+      },
+      "calibration": {
+        "title": "Kalibrace převodového poměru",
+        "hint": "Nejprve spusťte TPPA. AAPA posune jednu osu o zadaný počet kroků a z naměřené změny chyby vypočítá převodový poměr.",
+        "steps": "Kroky kalibrace",
+        "azimuth": "Kalibrovat Az",
+        "altitude": "Kalibrovat Alt",
+        "running": "Kalibrace…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Geometrie motoru",
+          "motor": "Rychlost a zrychlení",
+          "limits": "Výškové limity"
+        },
+        "fields": {
+          "ToleranceDegrees": "Tolerance (°)",
+          "SettleTimeSeconds": "Doba ustálení (s)",
+          "MaxIterations": "Max. iterací (0 = neomezeno)",
+          "MaxCorrectionDeg": "Max. korekce na iteraci (°)",
+          "MotionTimeoutSeconds": "Časový limit pohybu (s)",
+          "StepsPerRevolution": "Kroků na otáčku",
+          "AzimuthMicrosteps": "Mikrokroky Az",
+          "AltitudeMicrosteps": "Mikrokroky Alt",
+          "AzimuthGearRatio": "Převodový poměr Az",
+          "AltitudeGearRatio": "Převodový poměr Alt",
+          "ReverseAzimuth": "Obrátit Az",
+          "ReverseAltitude": "Obrátit Alt",
+          "AzimuthBacklash": "Vůle Az (kroky)",
+          "AltitudeBacklash": "Vůle Alt (kroky)",
+          "AzimuthSpeed": "Rychlost Az (kroků/s)",
+          "AltitudeSpeed": "Rychlost Alt (kroků/s)",
+          "AzimuthAccel": "Zrychlení Az (kroků/s²)",
+          "AltitudeAccel": "Zrychlení Alt (kroků/s²)",
+          "MinYLimit": "Min. Y (kroky)",
+          "MaxYLimit": "Max. Y (kroky)"
+        },
+        "autoSaveHint": "Změny se ukládají do N.I.N.A., jakmile pole opustíte.",
+        "saveInNina": "Uložit v N.I.N.A.",
+        "storeOnDevice": "Uložit do AAPA",
+        "sendConfirm": "Trvale uložit aktuální konfiguraci AAPA do jeho paměti (EEPROM)?",
+        "applyToDevice": "Použít na AAPA",
+        "applyInNinaHint": "Tyto hodnoty jsou uloženy v N.I.N.A. Pro přenos do AAPA použijte tlačítko odeslání v panelu AAPA v N.I.N.A."
+      },
+      "log": {
+        "title": "Protokol",
+        "clear": "Vymazat",
+        "empty": "Zatím žádné zprávy."
+      }
     }
   },
   "pinsDevices": {

@@ -5888,6 +5888,118 @@
         "noScheduleData": "Sense dades de planificació.",
         "waitingNotVisible": "Esperant — objectiu encara no visible"
       }
+    },
+    "aapa": {
+      "title": "Controlador AAPA",
+      "invalidValue": "Valor no vàlid",
+      "tabs": {
+        "control": "Control",
+        "calibration": "Calibratge",
+        "settings": "Configuració",
+        "log": "Registre"
+      },
+      "ws": {
+        "idle": "No connectat",
+        "connecting": "Connectant…",
+        "open": "Connector connectat",
+        "closed": "Connector no accessible",
+        "unreachable": "Sense connexió amb el connector AAPA a {url}.",
+        "checkPlugin": "El connector AAPA Controller està instal·lat i carregat a N.I.N.A.?",
+        "checkEnabled": "El servidor WebSocket està activat a la configuració del connector, amb el mateix port que a sota?",
+        "checkFirewall": "El tallafocs de Windows permet connexions entrants en aquest port?",
+        "port": "Port WebSocket"
+      },
+      "connection": {
+        "title": "Dispositiu AAPA",
+        "connectedTo": "Connectat: {port}",
+        "disconnected": "No connectat",
+        "port": "Port",
+        "auto": "Auto (escaneja tots els ports)",
+        "wifi": "Wi-Fi (adreça IP)",
+        "ipAddress": "Adreça IP de l'AAPA",
+        "connect": "Connecta",
+        "disconnect": "Desconnecta",
+        "autoHint": "Auto comprova tots els ports sèrie de l'ordinador amb N.I.N.A. a la recerca d'un AAPA."
+      },
+      "status": {
+        "positionX": "Posició X (Az)",
+        "positionY": "Posició Y (Alt)",
+        "motion": "Moviment",
+        "moving": "En moviment",
+        "idle": "Aturat",
+        "homed": "A l'origen",
+        "lastError": "Últim error mesurat",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Iteració {n}",
+        "running": "En execució"
+      },
+      "autoPilot": {
+        "title": "Auto-Pilot",
+        "hint": "Inicia primer TPPA i activa «Log polar alignment error adjustments» a la seva configuració. L'Auto-Pilot corregeix fins que l'error és dins de la tolerància.",
+        "start": "Inicia l'Auto-Pilot",
+        "stop": "Atura"
+      },
+      "manual": {
+        "title": "Control manual",
+        "stepSize": "Mida del pas (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Vés a l'origen",
+        "setHome": "Defineix l'origen",
+        "setHomeConfirm": "Establir la posició actual com a nou origen per als dos eixos?",
+        "stop": "Atura els motors"
+      },
+      "calibration": {
+        "title": "Calibratge de la relació d'engranatge",
+        "hint": "Inicia primer TPPA. L'AAPA mou un eix els passos indicats i calcula la relació a partir del canvi d'error mesurat.",
+        "steps": "Passos de calibratge",
+        "azimuth": "Calibra Az",
+        "altitude": "Calibra Alt",
+        "running": "Calibrant…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Geometria del motor",
+          "motor": "Velocitat i acceleració",
+          "limits": "Límits d'altitud"
+        },
+        "fields": {
+          "ToleranceDegrees": "Tolerància (°)",
+          "SettleTimeSeconds": "Temps d'estabilització (s)",
+          "MaxIterations": "Iteracions màx. (0 = il·limitat)",
+          "MaxCorrectionDeg": "Correcció màx. per iteració (°)",
+          "MotionTimeoutSeconds": "Temps límit de moviment (s)",
+          "StepsPerRevolution": "Passos per volta",
+          "AzimuthMicrosteps": "Micropassos Az",
+          "AltitudeMicrosteps": "Micropassos Alt",
+          "AzimuthGearRatio": "Relació d'engranatge Az",
+          "AltitudeGearRatio": "Relació d'engranatge Alt",
+          "ReverseAzimuth": "Inverteix Az",
+          "ReverseAltitude": "Inverteix Alt",
+          "AzimuthBacklash": "Joc Az (passos)",
+          "AltitudeBacklash": "Joc Alt (passos)",
+          "AzimuthSpeed": "Velocitat Az (passos/s)",
+          "AltitudeSpeed": "Velocitat Alt (passos/s)",
+          "AzimuthAccel": "Acceleració Az (passos/s²)",
+          "AltitudeAccel": "Acceleració Alt (passos/s²)",
+          "MinYLimit": "Y mín. (passos)",
+          "MaxYLimit": "Y màx. (passos)"
+        },
+        "autoSaveHint": "Els canvis es desen a N.I.N.A. en sortir d'un camp.",
+        "saveInNina": "Desa a N.I.N.A.",
+        "storeOnDevice": "Desa a l'AAPA",
+        "sendConfirm": "Desar de manera permanent la configuració actual de l'AAPA a la seva memòria (EEPROM)?",
+        "applyToDevice": "Aplica a l'AAPA",
+        "applyInNinaHint": "Aquests valors es desen a N.I.N.A. Per transferir-los a l'AAPA, utilitza el botó d'enviament al tauler AAPA de N.I.N.A."
+      },
+      "log": {
+        "title": "Registre",
+        "clear": "Esborra",
+        "empty": "Encara no hi ha missatges."
+      }
     }
   },
   "loading": "carregant",

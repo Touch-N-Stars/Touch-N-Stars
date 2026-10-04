@@ -5888,6 +5888,118 @@
         "noScheduleData": "Geen planningsgegevens.",
         "waitingNotVisible": "Wachten — doel nog niet zichtbaar"
       }
+    },
+    "aapa": {
+      "title": "AAPA-controller",
+      "invalidValue": "Ongeldige waarde",
+      "tabs": {
+        "control": "Besturing",
+        "calibration": "Kalibratie",
+        "settings": "Instellingen",
+        "log": "Log"
+      },
+      "ws": {
+        "idle": "Niet verbonden",
+        "connecting": "Verbinden…",
+        "open": "Plugin verbonden",
+        "closed": "Plugin niet bereikbaar",
+        "unreachable": "Geen verbinding met de AAPA-plugin op {url}.",
+        "checkPlugin": "Is de AAPA Controller-plugin geïnstalleerd en geladen in N.I.N.A.?",
+        "checkEnabled": "Is de WebSocket-server ingeschakeld in de pluginsinstellingen, met dezelfde poort als hieronder?",
+        "checkFirewall": "Staat de Windows-firewall inkomende verbindingen op deze poort toe?",
+        "port": "WebSocket-poort"
+      },
+      "connection": {
+        "title": "AAPA-apparaat",
+        "connectedTo": "Verbonden: {port}",
+        "disconnected": "Niet verbonden",
+        "port": "Poort",
+        "auto": "Auto (alle poorten scannen)",
+        "wifi": "Wi-Fi (IP-adres)",
+        "ipAddress": "IP-adres van de AAPA",
+        "connect": "Verbinden",
+        "disconnect": "Verbinding verbreken",
+        "autoHint": "Auto controleert alle seriële poorten van de N.I.N.A.-computer op een AAPA."
+      },
+      "status": {
+        "positionX": "Positie X (Az)",
+        "positionY": "Positie Y (Alt)",
+        "motion": "Beweging",
+        "moving": "Beweegt",
+        "idle": "Stilstand",
+        "homed": "Op home",
+        "lastError": "Laatst gemeten fout",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Iteratie {n}",
+        "running": "Actief"
+      },
+      "autoPilot": {
+        "title": "Auto-Pilot",
+        "hint": "Start eerst TPPA en schakel daarin „Log polar alignment error adjustments” in. De Auto-Pilot corrigeert tot de fout binnen de tolerantie valt.",
+        "start": "Auto-Pilot starten",
+        "stop": "Stop"
+      },
+      "manual": {
+        "title": "Handmatige besturing",
+        "stepSize": "Stapgrootte (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Naar home",
+        "setHome": "Home instellen",
+        "setHomeConfirm": "Huidige positie instellen als nieuwe homepositie voor beide assen?",
+        "stop": "Motoren stoppen"
+      },
+      "calibration": {
+        "title": "Kalibratie van de overbrengingsverhouding",
+        "hint": "Start eerst TPPA. De AAPA beweegt een as over het opgegeven aantal stappen en berekent de verhouding uit de gemeten foutverandering.",
+        "steps": "Kalibratiestappen",
+        "azimuth": "Az kalibreren",
+        "altitude": "Alt kalibreren",
+        "running": "Kalibreren…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Motorgeometrie",
+          "motor": "Snelheid en versnelling",
+          "limits": "Hoogtelimieten"
+        },
+        "fields": {
+          "ToleranceDegrees": "Tolerantie (°)",
+          "SettleTimeSeconds": "Insteltijd (s)",
+          "MaxIterations": "Max. iteraties (0 = onbeperkt)",
+          "MaxCorrectionDeg": "Max. correctie per iteratie (°)",
+          "MotionTimeoutSeconds": "Bewegingstime-out (s)",
+          "StepsPerRevolution": "Stappen per omwenteling",
+          "AzimuthMicrosteps": "Az-microstappen",
+          "AltitudeMicrosteps": "Alt-microstappen",
+          "AzimuthGearRatio": "Az-overbrenging",
+          "AltitudeGearRatio": "Alt-overbrenging",
+          "ReverseAzimuth": "Az omkeren",
+          "ReverseAltitude": "Alt omkeren",
+          "AzimuthBacklash": "Az-speling (stappen)",
+          "AltitudeBacklash": "Alt-speling (stappen)",
+          "AzimuthSpeed": "Az-snelheid (stappen/s)",
+          "AltitudeSpeed": "Alt-snelheid (stappen/s)",
+          "AzimuthAccel": "Az-versnelling (stappen/s²)",
+          "AltitudeAccel": "Alt-versnelling (stappen/s²)",
+          "MinYLimit": "Min. Y (stappen)",
+          "MaxYLimit": "Max. Y (stappen)"
+        },
+        "autoSaveHint": "Wijzigingen worden in N.I.N.A. opgeslagen zodra je een veld verlaat.",
+        "saveInNina": "Opslaan in N.I.N.A.",
+        "storeOnDevice": "Opslaan op AAPA",
+        "sendConfirm": "De huidige configuratie van de AAPA permanent in het geheugen (EEPROM) opslaan?",
+        "applyToDevice": "Toepassen op AAPA",
+        "applyInNinaHint": "Deze waarden worden in N.I.N.A. opgeslagen. Gebruik de verzendknop in het AAPA-paneel in N.I.N.A. om ze naar de AAPA over te dragen."
+      },
+      "log": {
+        "title": "Log",
+        "clear": "Wissen",
+        "empty": "Nog geen berichten."
+      }
     }
   },
   "pinsDevices": {
