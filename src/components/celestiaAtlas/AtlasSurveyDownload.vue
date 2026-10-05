@@ -71,7 +71,7 @@
           </span>
           <select
             :id="`${surveyId}SurveyTargetOrder`"
-            v-model.number="selectedOrder"
+            v-model.number="displayedOrder"
             class="tns-select"
           >
             <option
@@ -231,6 +231,16 @@ watch(
   },
   { immediate: true }
 );
+
+// With every order installed there is nothing left to pick (selectedOrder stays null and
+// the download button stays off); show the highest, disabled "installed" entry instead of
+// an empty select.
+const displayedOrder = computed({
+  get: () => selectedOrder.value ?? surveyStore.orderOptions.at(-1)?.order ?? null,
+  set: (order) => {
+    selectedOrder.value = order;
+  },
+});
 
 const installedSummary = computed(() => {
   const installed = surveyStore.installedOrder;
