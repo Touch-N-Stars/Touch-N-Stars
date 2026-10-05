@@ -250,23 +250,14 @@
             </div>
           </div>
           <div class="grid gap-2">
-            <span class="text-sm text-gray-300">
+            <label for="skySurveySource" class="text-sm text-gray-300">
               {{ $t('components.celestiaAtlas.survey.source_label') }}
-            </span>
-            <div class="atlas-survey-switch" role="radiogroup">
-              <button
-                v-for="id in SKY_SURVEY_IDS"
-                :key="id"
-                class="atlas-survey-switch-option"
-                :class="{ 'is-active': activeSurveyId === id }"
-                type="button"
-                role="radio"
-                :aria-checked="activeSurveyId === id"
-                @click="settingsStore.celestiaAtlas.skySurveySource = id"
-              >
+            </label>
+            <select id="skySurveySource" v-model="surveySource" class="tns-select w-full">
+              <option v-for="id in SKY_SURVEY_IDS" :key="id" :value="id">
                 {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
-              </button>
-            </div>
+              </option>
+            </select>
             <p class="text-xs text-gray-400">
               {{
                 $t(
@@ -460,6 +451,12 @@ const settingsStore = useSettingsStore();
 const activeSurveyId = computed(() =>
   normalizeSkySurveyId(settingsStore.celestiaAtlas.skySurveySource)
 );
+const surveySource = computed({
+  get: () => activeSurveyId.value,
+  set: (id) => {
+    settingsStore.celestiaAtlas.skySurveySource = id;
+  },
+});
 const settingsVisible = ref(false);
 const landscapeSourceDirty = ref(false);
 const availableLandscapes = ref([]);
@@ -680,25 +677,6 @@ watch(
 }
 .atlas-settings-list {
   display: grid;
-}
-.atlas-survey-switch {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-.atlas-survey-switch-option {
-  min-height: var(--spacing-touch);
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  color: var(--color-content-muted);
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-chip);
-}
-.atlas-survey-switch-option.is-active {
-  color: var(--color-content);
-  border-color: rgb(34 211 238 / 45%);
-  background: rgb(34 211 238 / 10%);
 }
 .atlas-settings-row {
   display: flex;

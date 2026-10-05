@@ -17,28 +17,16 @@
       </button>
     </div>
     <!-- Background switch, only once there is more than one survey to choose from -->
-    <div
+    <select
       v-if="installedSurveyIds.length > 1"
-      class="grid grid-cols-2 gap-2"
-      role="radiogroup"
+      v-model="surveySource"
+      class="tns-select w-full"
       :aria-label="$t('components.celestiaAtlas.survey.source_label')"
     >
-      <button
-        v-for="id in installedSurveyIds"
-        :key="id"
-        class="atlas-layer-chip"
-        :class="{ 'is-on': activeSurveyId === id }"
-        type="button"
-        role="radio"
-        :aria-checked="activeSurveyId === id"
-        @click="settingsStore.celestiaAtlas.skySurveySource = id"
-      >
-        <span class="tns-dot" :class="activeSurveyId === id ? 'bg-accent' : 'bg-content-faint'" />
-        <span class="min-w-0 flex-1 text-left leading-tight [overflow-wrap:anywhere]">
-          {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
-        </span>
-      </button>
-    </div>
+      <option v-for="id in installedSurveyIds" :key="id" :value="id">
+        {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
+      </option>
+    </select>
   </div>
 </template>
 
@@ -74,9 +62,12 @@ const layers = [
 const installedSurveyIds = computed(() =>
   SKY_SURVEY_IDS.filter((id) => useCelestiaAtlasSurveyStore(id).installedOrder !== null)
 );
-const activeSurveyId = computed(() =>
-  normalizeSkySurveyId(settingsStore.celestiaAtlas.skySurveySource)
-);
+const surveySource = computed({
+  get: () => normalizeSkySurveyId(settingsStore.celestiaAtlas.skySurveySource),
+  set: (id) => {
+    settingsStore.celestiaAtlas.skySurveySource = id;
+  },
+});
 
 function isOn(layer) {
   const value = settingsStore.celestiaAtlas[layer.key];
