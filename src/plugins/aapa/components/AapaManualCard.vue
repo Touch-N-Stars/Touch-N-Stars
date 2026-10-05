@@ -68,6 +68,7 @@ const canMove = computed(
   () =>
     store.deviceConnected &&
     !store.server?.isBusy &&
+    !store.assistActive &&
     !store.runState.autoPilotRunning &&
     !store.runState.calibrationRunning
 );

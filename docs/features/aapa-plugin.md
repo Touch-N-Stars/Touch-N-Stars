@@ -8,7 +8,9 @@ Date: 2026-10-04
 The user can run the AAPA (Astrophilos Automated Polar Alignment) from Touch'N'Stars with the
 same features as the AAPA Controller panel in N.I.N.A.: connect the device, watch its state,
 move it by hand, calibrate the gear ratios, run the Auto-Pilot together with TPPA and edit
-every setting, all from a phone, a tablet or the browser.
+every setting, all from a phone, a tablet or the browser. The polar alignment itself is one
+button: it starts TPPA (unless it already runs) and then the Auto-Pilot, and stops TPPA when
+the Auto-Pilot ends.
 
 ## Scope
 
@@ -16,16 +18,21 @@ every setting, all from a phone, a tablet or the browser.
 - Surface: new plugin page `src/plugins/aapa/` (tabs: control, calibration, settings, log)
 - Backends touched: the AAPA Controller N.I.N.A. plugin's own WebSocket server
   (`AAPAWebSocketServer.cs`, Fleck, `ws://<nina-host>:8081`). No TNS plugin server, Advanced API
-  or pinsdaemon endpoint is involved.
+  or pinsdaemon endpoint is involved for the device itself. The one-button flow additionally
+  drives TPPA over the Advanced API's `/v2/tppa` socket (`src/services/websocketTppa.js`) with
+  the rig-shared TPPA settings (`tppaStore.settings`, start message built by
+  `src/utils/tppaStart.js`, shared with the TPPA page).
 - Dependency: the WebSocket server is not yet part of the public
   [AAPA-Controller-Plugin](https://github.com/Blayzer-Astro/AAPA-Controller-Plugin) release.
 
 ## Non-goals
 
-- No change to the TPPA page; the AAPA is controlled from its own page only.
+- No behaviour change on the TPPA page; it only shares the start-message builder now.
 - No PINS support in this version.
 - No change to the AAPA N.I.N.A. plugin itself; missing protocol features are proposed below.
-- No background connection: the socket lives only while the plugin page is open.
+- No background connection: the socket lives only while the plugin page is open. Leaving the
+  page during a run leaves TPPA and the Auto-Pilot running in N.I.N.A.; only the automatic TPPA
+  stop needs the page open.
 
 ## Acceptance criteria
 
@@ -44,8 +51,16 @@ every setting, all from a phone, a tablet or the browser.
    shows up in TNS without reloading.
 7. When the N.I.N.A. side restarts, the page reconnects on its own and resets the derived
    Auto-Pilot state.
-8. Every user-facing string has an `en.json` key; the other 13 locales come in one batch before
-   the commit.
+8. Given the device is connected and TPPA is not running, when the user taps "Start polar
+   alignment", TPPA starts with the saved TPPA settings and, once the socket acknowledges it, the
+   Auto-Pilot starts. If TPPA already runs, only the Auto-Pilot starts.
+9. When the Auto-Pilot ends (tolerance reached, cancelled or failed), TPPA is stopped. When TPPA
+   is stopped elsewhere, the Auto-Pilot is stopped. Stop stops both.
+10. TPPA not acknowledging the start (15 s), the Auto-Pilot not starting (20 s) or TPPA going
+    silent for 2 min ends the flow with a message and stops what it started. Manual moves and
+    calibration are disabled while the flow runs.
+11. Every user-facing string has an `en.json` key; the other 13 locales come in one batch before
+    the commit.
 
 ## Dimensions considered
 

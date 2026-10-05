@@ -49,6 +49,7 @@ const canCalibrate = computed(
   () =>
     store.deviceConnected &&
     !store.server?.isBusy &&
+    !store.assistActive &&
     !run.value.autoPilotRunning &&
     !run.value.calibrationRunning
 );

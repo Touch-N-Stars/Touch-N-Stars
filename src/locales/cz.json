@@ -5933,12 +5933,6 @@
         "iteration": "Iterace {n}",
         "running": "Běží"
       },
-      "autoPilot": {
-        "title": "Auto-Pilot",
-        "hint": "Nejprve spusťte TPPA a v jeho nastavení zapněte „Log polar alignment error adjustments“. Auto-Pilot koriguje, dokud není chyba v toleranci.",
-        "start": "Spustit Auto-Pilot",
-        "stop": "Stop"
-      },
       "manual": {
         "title": "Ruční ovládání",
         "stepSize": "Velikost kroku (°)",

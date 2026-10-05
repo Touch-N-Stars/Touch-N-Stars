@@ -101,6 +101,25 @@ test('tppa socket dials /v2/tppa on the selected instance', async (t) => {
   assert.equal(tppaService.isOpen(), true);
 });
 
+test('tppa socket feeds extra listeners next to the page callback', async (t) => {
+  setup(t);
+  const fromPage = [];
+  const fromListener = [];
+  tppaService.setMessageCallback((m) => fromPage.push(m));
+  const unsubscribe = tppaService.addMessageListener((m) => fromListener.push(m));
+  t.after(() => tppaService.setMessageCallback(null));
+
+  const p = tppaService.connect();
+  lastSocket().emitOpen();
+  await p;
+  lastSocket().emitMessage(JSON.stringify({ Response: 'started procedure' }));
+  unsubscribe();
+  lastSocket().emitMessage(JSON.stringify({ Response: 'stopped procedure' }));
+
+  assert.equal(fromPage.length, 2);
+  assert.deepEqual(fromListener, [{ Response: 'started procedure' }]);
+});
+
 // --- shouldReconnect arming (switchBackend re-arm depends on this) ----------
 
 test('connect() arms shouldReconnect, disconnect() latches it off', async (t) => {

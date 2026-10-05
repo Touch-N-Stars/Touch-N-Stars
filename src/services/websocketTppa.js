@@ -17,6 +17,8 @@ class WebSocketTppaService {
   constructor() {
     this.statusCallback = null;
     this.messageCallback = null;
+    // Extra subscribers besides the TPPA page (e.g. the AAPA plugin's one-button flow).
+    this.messageListeners = new Set();
 
     this._rws = new ReconnectingWebSocket({
       name: 'TPPA',
@@ -43,6 +45,7 @@ class WebSocketTppaService {
       },
       onMessage: (message) => {
         if (this.messageCallback) this.messageCallback(message);
+        for (const listener of this.messageListeners) listener(message);
       },
     });
   }
@@ -53,6 +56,12 @@ class WebSocketTppaService {
 
   setMessageCallback(callback) {
     this.messageCallback = callback;
+  }
+
+  /** @returns {() => void} unsubscribe */
+  addMessageListener(listener) {
+    this.messageListeners.add(listener);
+    return () => this.messageListeners.delete(listener);
   }
 
   isOpen() {

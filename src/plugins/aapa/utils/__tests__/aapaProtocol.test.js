@@ -7,6 +7,7 @@ import {
   buildNudgeMessage,
   buildSetMessage,
   classifyMessage,
+  classifyTppaMessage,
   coerceSettingValue,
   deriveFromLog,
   initialDerivedState,
@@ -153,4 +154,28 @@ test('explicit server fields win over the log heuristic', () => {
 test('optional commands are only offered when the server lists them', () => {
   assert.equal(supportsCommand({}, 'STOP'), false);
   assert.equal(supportsCommand({ supportedCommands: ['STOP'] }, 'STOP'), true);
+});
+
+test('classifyTppaMessage() maps the TPPA socket acknowledgements', () => {
+  assert.equal(classifyTppaMessage({ Response: 'started procedure' }).kind, 'started');
+  assert.equal(classifyTppaMessage({ Response: 'stopped procedure' }).kind, 'stopped');
+  assert.equal(classifyTppaMessage({ Response: 'paused procedure' }).kind, 'paused');
+  assert.equal(classifyTppaMessage({ Response: 'resumed procedure' }).kind, 'resumed');
+  assert.equal(classifyTppaMessage({ Response: 'something else' }).kind, 'other');
+  assert.equal(classifyTppaMessage(null).kind, 'other');
+});
+
+test('classifyTppaMessage() extracts the alignment error and progress', () => {
+  assert.deepEqual(
+    classifyTppaMessage({ Response: { AzimuthError: 0.1, AltitudeError: -0.2, TotalError: 0.25 } }),
+    { kind: 'reading', reading: { azDeg: 0.1, altDeg: -0.2, totalDeg: 0.25 } }
+  );
+  assert.deepEqual(classifyTppaMessage({ Response: { Status: 'Paused', Progress: 0 } }), {
+    kind: 'progress',
+    status: 'Paused',
+  });
+  assert.deepEqual(classifyTppaMessage({ Error: 'No camera', Response: '' }), {
+    kind: 'error',
+    error: 'No camera',
+  });
 });

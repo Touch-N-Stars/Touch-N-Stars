@@ -258,3 +258,46 @@ export function supportsCommand(serverState, command) {
   const list = serverState?.supportedCommands;
   return Array.isArray(list) && list.includes(command);
 }
+
+/**
+ * Classify a message from the Advanced API's /v2/tppa socket (TPPASocket.cs). The socket
+ * acknowledges every start/stop/pause/resume request to all clients, then pushes the
+ * alignment error and progress while TPPA runs. It never reports a failed start: a TPPA
+ * that cannot run simply goes quiet, which the caller has to catch with a timeout.
+ *
+ * @returns {{ kind: 'started'|'stopped'|'paused'|'resumed'|'reading'|'progress'|'error'|'other',
+ *   reading?: { azDeg: number, altDeg: number, totalDeg: number }, status?: string, error?: string }}
+ */
+export function classifyTppaMessage(message) {
+  if (!message || typeof message !== 'object') return { kind: 'other' };
+  if (typeof message.Error === 'string' && message.Error !== '') {
+    return { kind: 'error', error: message.Error };
+  }
+  const response = message.Response;
+  if (typeof response === 'string') {
+    const kind = {
+      'started procedure': 'started',
+      'stopped procedure': 'stopped',
+      'paused procedure': 'paused',
+      'resumed procedure': 'resumed',
+    }[response];
+    return { kind: kind ?? 'other' };
+  }
+  if (response && typeof response === 'object') {
+    const { AzimuthError, AltitudeError, TotalError } = response;
+    if (Number.isFinite(AzimuthError) && Number.isFinite(AltitudeError)) {
+      return {
+        kind: 'reading',
+        reading: {
+          azDeg: AzimuthError,
+          altDeg: AltitudeError,
+          totalDeg: Number.isFinite(TotalError)
+            ? TotalError
+            : Math.hypot(AzimuthError, AltitudeError),
+        },
+      };
+    }
+    if (typeof response.Status === 'string') return { kind: 'progress', status: response.Status };
+  }
+  return { kind: 'other' };
+}

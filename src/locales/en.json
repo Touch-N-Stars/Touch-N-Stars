@@ -2598,11 +2598,31 @@
         "iteration": "Iteration {n}",
         "running": "Running"
       },
-      "autoPilot": {
-        "title": "Auto-Pilot",
-        "hint": "Start TPPA first and enable \"Log polar alignment error adjustments\" in its settings. The Auto-Pilot corrects until the error is within tolerance.",
-        "start": "Start Auto-Pilot",
-        "stop": "Stop"
+      "assist": {
+        "title": "Automatic polar alignment",
+        "hint": "One tap starts TPPA (unless it is already running) and then the Auto-Pilot, which corrects until the error is within tolerance. TPPA stops automatically when the Auto-Pilot ends. In the TPPA settings in N.I.N.A., \"Log polar alignment error adjustments\" must be enabled. Keep this page open while it runs.",
+        "start": "Start polar alignment",
+        "running": "Running…",
+        "stop": "Stop",
+        "tppaSettings": "TPPA settings",
+        "tnsPluginRequired": "TPPA needs the Touch'N'Stars plugin in N.I.N.A.; it is not reachable.",
+        "phaseLabel": "Status",
+        "azError": "Azimuth error",
+        "altError": "Altitude error",
+        "phase": {
+          "idle": "Idle",
+          "startingTppa": "Starting TPPA…",
+          "startingAutoPilot": "Starting Auto-Pilot…",
+          "running": "Auto-Pilot running"
+        },
+        "errors": {
+          "tppaUnavailable": "The TPPA connection could not be opened.",
+          "tppaNoResponse": "TPPA did not respond to the start request.",
+          "tppaError": "TPPA reported an error. Check camera, mount and plate solver.",
+          "tppaSilent": "TPPA has not sent anything for two minutes. TPPA and the Auto-Pilot were stopped.",
+          "autoPilotNotStarted": "The Auto-Pilot did not start. Check the AAPA log; TPPA was stopped if it was started here.",
+          "connectionLost": "The connection to the AAPA plugin was interrupted. TPPA and the Auto-Pilot may still be running - use Stop if needed."
+        }
       },
       "manual": {
         "title": "Manual control",

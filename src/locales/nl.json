@@ -5933,12 +5933,6 @@
         "iteration": "Iteratie {n}",
         "running": "Actief"
       },
-      "autoPilot": {
-        "title": "Auto-Pilot",
-        "hint": "Start eerst TPPA en schakel daarin „Log polar alignment error adjustments” in. De Auto-Pilot corrigeert tot de fout binnen de tolerantie valt.",
-        "start": "Auto-Pilot starten",
-        "stop": "Stop"
-      },
       "manual": {
         "title": "Handmatige besturing",
         "stepSize": "Stapgrootte (°)",
