@@ -21,9 +21,9 @@
       <h4 class="mb-1 text-base font-semibold text-gray-100">Photographic sky survey</h4>
       <p>
         Digitized Sky Survey — STScI/NASA; colored and HiPS-processed by CDS (CNRS/Unistra). The
-        survey is downloaded on request to the NINA host by the Touch-N-Stars plugin and served from
-        there; the app itself does not fetch public survey tiles. Free for non-commercial use with
-        attribution.
+        survey is downloaded on request to the NINA/PINS host by the Touch-N-Stars plugin and served
+        from there; the app itself does not fetch public survey tiles. Free for non-commercial use
+        with attribution.
       </p>
       <a
         class="break-all text-cyan-400 hover:underline"
@@ -40,8 +40,8 @@
       <p>
         Northern Sky Narrowband Survey (NSNS) DR0.2 by Stefan Ziegenbalg, [OIII], H-alpha and [SII]
         colour composite and single lines, licensed under CC BY-NC-SA 4.0
-        (doi:10.3847/2515-5172/adfec7). The survey is downloaded on request to the NINA host by the
-        Touch-N-Stars plugin, converted to JPEG there and served locally; the tiles are not
+        (doi:10.3847/2515-5172/adfec7). The survey is downloaded on request to the NINA/PINS host by
+        the Touch-N-Stars plugin, converted to JPEG there and served locally; the tiles are not
         redistributed.
       </p>
       <a
