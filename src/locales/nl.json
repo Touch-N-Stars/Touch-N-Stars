@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "De gedownloade hemelachtergrond gebruikt een verouderd formaat. Nu opnieuw downloaden (ongeveer {size})? De oude bestanden worden vervangen.",
         "offer_accept": "Downloaden",
         "offer_decline": "Niet nu",
-        "offer_progress": "Hemelachtergrond wordt gedownload… {percent}%"
+        "offer_progress": "Hemelachtergrond wordt gedownload… {percent}%",
+        "source_label": "Achtergrondsurvey",
+        "source_dss": "DSS kleur",
+        "source_nsns": "NSNS kleur",
+        "source_dss_hint": "Digitized Sky Survey: fotografische beelden in ware kleuren van de hele hemel.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] rood, Hα groen, [SII] blauw, zodat emissienevels hun volledige omvang tonen. Dekt alleen de hemel ten noorden van −16°.",
+        "hint_nsns": "De NSNS-smalbandsurvey wordt eenmalig naar de NINA/PINS-host gedownload en vanaf daar aan de Atlas geleverd. Hogere orders voegen detail toe voor smalle beeldvelden.",
+        "plugin_update_required_nsns": "Werk de Touch'N'Stars-plug-in bij om de NSNS-smalbandsurvey te downloaden.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, gelicentieerd onder CC BY-NC-SA 4.0. Gratis voor niet-commercieel gebruik met bronvermelding; de tegels blijven op je eigen NINA/PINS-host.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, alleen Hα-lijn (geïoniseerde waterstof). Dekt alleen de hemel ten noorden van −16°; aparte download.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, alleen [OIII]-lijn (dubbel geïoniseerde zuurstof). Dekt alleen de hemel ten noorden van −16°; aparte download.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, alleen [SII]-lijn (geïoniseerde zwavel). Dekt alleen de hemel ten noorden van −16°; aparte download."
       },
       "object_types": {
         "_ass": "Sterassociatie",

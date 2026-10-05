@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "Lo sfondo del cielo scaricato usa un formato obsoleto. Scaricarlo di nuovo ora (circa {size})? I vecchi file saranno sostituiti.",
         "offer_accept": "Scarica",
         "offer_decline": "Non ora",
-        "offer_progress": "Scaricamento dello sfondo del cielo… {percent}%"
+        "offer_progress": "Scaricamento dello sfondo del cielo… {percent}%",
+        "source_label": "Survey di sfondo",
+        "source_dss": "DSS colore",
+        "source_nsns": "NSNS colore",
+        "source_dss_hint": "Digitized Sky Survey: immagini fotografiche a colori reali di tutto il cielo.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] rosso, Hα verde, [SII] blu, così le nebulose a emissione mostrano tutta la loro estensione. Copre solo il cielo a nord di −16°.",
+        "hint_nsns": "Il survey a banda stretta NSNS viene scaricato una sola volta sull'host NINA/PINS e servito all'Atlas da lì. Gli ordini superiori aggiungono dettaglio per i campi stretti.",
+        "plugin_update_required_nsns": "Aggiorna il plugin Touch'N'Stars per scaricare il survey a banda stretta NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, con licenza CC BY-NC-SA 4.0. Gratuito per uso non commerciale con attribuzione; le tessere restano sul tuo host NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, solo linea Hα (idrogeno ionizzato). Copre solo il cielo a nord di −16°; download separato.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, solo linea [OIII] (ossigeno doppiamente ionizzato). Copre solo il cielo a nord di −16°; download separato.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, solo linea [SII] (zolfo ionizzato). Copre solo il cielo a nord di −16°; download separato."
       },
       "object_types": {
         "_ass": "Associazione stellare",

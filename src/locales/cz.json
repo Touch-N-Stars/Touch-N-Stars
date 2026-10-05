@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "Stažené pozadí oblohy používá zastaralý formát. Stáhnout je nyní znovu (přibližně {size})? Staré soubory budou nahrazeny.",
         "offer_accept": "Stáhnout",
         "offer_decline": "Teď ne",
-        "offer_progress": "Stahování pozadí oblohy… {percent}%"
+        "offer_progress": "Stahování pozadí oblohy… {percent}%",
+        "source_label": "Podkladový survey",
+        "source_dss": "DSS barevný",
+        "source_nsns": "NSNS barevný",
+        "source_dss_hint": "Digitized Sky Survey: fotografické snímky celé oblohy ve skutečných barvách.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] červeně, Hα zeleně, [SII] modře, takže emisní mlhoviny ukážou celý svůj rozsah. Pokrývá jen oblohu severně od −16°.",
+        "hint_nsns": "Úzkopásmový survey NSNS se stáhne jednou na hostitele NINA/PINS a odtud se poskytuje Atlasu. Vyšší řády přidávají detaily pro úzká zorná pole.",
+        "plugin_update_required_nsns": "Pro stažení úzkopásmového surveye NSNS aktualizujte plugin Touch'N'Stars.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licence CC BY-NC-SA 4.0. Zdarma pro nekomerční použití s uvedením autora; dlaždice zůstávají na vašem vlastním hostiteli NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, pouze čára Hα (ionizovaný vodík). Pokrývá jen oblohu severně od −16°; samostatné stažení.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, pouze čára [OIII] (dvakrát ionizovaný kyslík). Pokrývá jen oblohu severně od −16°; samostatné stažení.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, pouze čára [SII] (ionizovaná síra). Pokrývá jen oblohu severně od −16°; samostatné stažení."
       },
       "object_types": {
         "_ass": "Hvězdná asociace",

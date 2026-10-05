@@ -2315,7 +2315,21 @@
         "offer_text_legacy": "Завантажений фон неба використовує застарілий формат. Завантажити його знову зараз (приблизно {size})? Старі файли буде замінено.",
         "offer_accept": "Завантажити",
         "offer_decline": "Не зараз",
-        "offer_progress": "Завантаження фону неба… {percent}%"
+        "offer_progress": "Завантаження фону неба… {percent}%",
+        "source_label": "Фоновий огляд",
+        "source_dss": "DSS кольоровий",
+        "source_nsns": "NSNS кольоровий",
+        "source_dss_hint": "Digitized Sky Survey: фотографічні знімки всього неба в справжніх кольорах.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] червоний, Hα зелений, [SII] синій, тож емісійні туманності показують усю свою протяжність. Охоплює лише небо на північ від −16°.",
+        "hint_nsns": "Вузькосмуговий огляд NSNS завантажується один раз на хост NINA/PINS і звідти подається в Атлас. Вищі порядки додають деталей для вузьких полів.",
+        "plugin_update_required_nsns": "Оновіть плагін Touch'N'Stars, щоб завантажити вузькосмуговий огляд NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, ліцензія CC BY-NC-SA 4.0. Безкоштовно для некомерційного використання із зазначенням авторства; плитки залишаються на вашому хості NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, лише лінія Hα (іонізований водень). Охоплює лише небо на північ від −16°; окреме завантаження.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, лише лінія [OIII] (двічі іонізований кисень). Охоплює лише небо на північ від −16°; окреме завантаження.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, лише лінія [SII] (іонізована сірка). Охоплює лише небо на північ від −16°; окреме завантаження."
       },
       "object_types": {
         "_ass": "Зоряна асоціація",
