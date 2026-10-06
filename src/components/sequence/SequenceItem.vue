@@ -1,13 +1,17 @@
 <template>
-  <!-- @container: every nesting level costs ~98px of fixed chrome (padding, drag handle,
-       chevron, more-menu), so a deeply nested item can be left with well under 100px for its
-       name and summary. Below 16rem the chrome shrinks to give that space back. Safe despite
-       the draggables below: they all set fallbackOnBody, so the Sortable ghost is appended to
-       document.body and is not affected by the containing block container-type creates. -->
   <div
     class="@container rounded-lg border transition-all duration-200"
     :class="[borderClass, hasChildren && depth > 0 ? depthLeftBorder : '', activeSectionRing]"
   >
+    <!-- Keep this comment inside the root element: a root-level comment turns the template
+         into a Fragment in dev builds, and vuedraggable then attaches its item context to
+         the fragment anchor instead of this div ("this.context is null" on drag start).
+
+         @container: every nesting level costs ~98px of fixed chrome (padding, drag handle,
+         chevron, more-menu), so a deeply nested item can be left with well under 100px for its
+         name and summary. Below 16rem the chrome shrinks to give that space back. Safe despite
+         the draggables below: they all set fallbackOnBody, so the Sortable ghost is appended to
+         document.body and is not affected by the containing block container-type creates. -->
     <!-- Item header row -->
     <div class="flex items-center gap-1.5 px-2 py-2 @max-[16rem]:gap-1 @max-[16rem]:px-1">
       <!-- Drag handle. Sortable picks the handle up by the .drag-handle class, so dropping

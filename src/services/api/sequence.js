@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUrls, simpleGetRequest } from './core';
+import { getUrls, rawHttp, simpleGetRequest } from './core';
 
 export default {
   //-------------------------------------  sequence ---------------------------------------
@@ -22,10 +22,12 @@ export default {
     return simpleGetRequest(`${API_URL}sequence/current`);
   },
 
-  // Lightweight poll: { Revision, Running, Items: [{ Id, Status, ...runtime fields }] }
+  // Lightweight poll: { Revision, Running, Items: [{ Id, Status, ...runtime fields }] }.
+  // Rejects on HTTP errors (rawHttp) so the caller can detect a plugin without this route.
   async fetchSequenceStatus() {
     const { API_URL } = getUrls();
-    return simpleGetRequest(`${API_URL}sequence/status`);
+    const response = await rawHttp.get(`${API_URL}sequence/status`);
+    return response.data;
   },
 
   // Feature detection for the id-based sequence editor (TNS plugin sequence controller).
@@ -34,7 +36,7 @@ export default {
   async probeSequenceEditorSupport() {
     const { API_URL } = getUrls();
     try {
-      const data = await simpleGetRequest(`${API_URL}sequence/status`);
+      const { data } = await rawHttp.get(`${API_URL}sequence/status`);
       return typeof data === 'object' && data !== null && 'Revision' in data;
     } catch (error) {
       const status = error?.response?.status;
@@ -94,7 +96,7 @@ export default {
   // Editable properties of one item: { Fields: [{ Name, Type, Options?, ReadOnly }] }
   async sequenceFetchFields(id) {
     const { API_URL } = getUrls();
-    const response = await axios.get(`${API_URL}sequence/fields`, { params: { id } });
+    const response = await rawHttp.get(`${API_URL}sequence/fields`, { params: { id } });
     return response.data;
   },
 
