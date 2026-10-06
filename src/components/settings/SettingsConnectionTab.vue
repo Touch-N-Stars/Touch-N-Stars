@@ -115,6 +115,7 @@
 
     <!-- Raspberry Pi system locale, regulatory domain, timezone and keyboard -->
     <PinsLocalizationSettings v-if="store.isPINS" />
+    <PinsSwapSettings v-if="store.isPINS" />
 
     <!-- Connection Settings -->
     <div
@@ -155,6 +156,7 @@ import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import LocationSettingsPins from '@/components/settings/general/LocationSettingsPins.vue';
 import TimeSyncSettings from '@/components/settings/general/TimeSyncSettings.vue';
 import PinsLocalizationSettings from '@/components/settings/general/PinsLocalizationSettings.vue';
+import PinsSwapSettings from '@/components/settings/general/PinsSwapSettings.vue';
 import SetInstance from '@/components/settings/general/SetInstance.vue';
 import SetHorizonFilePath from '@/components/settings/general/SetHorizonFilePath.vue';
 

@@ -772,6 +772,27 @@
         "missingJob": "The PINS daemon did not return an operation ID.",
         "refresh": "Reload current values",
         "searchPlaceholder": "Filter available options..."
+      },
+      "swap": {
+        "title": "Raspberry Pi swap",
+        "description": "Choose the disk-backed swap file size. Changes take effect after you reboot the Pi. Zram settings stay unchanged. Larger files use more storage; swap is slower than RAM.",
+        "loading": "Reading swap configuration…",
+        "current": "Current file size: {size} GB",
+        "size": "Configured swap size",
+        "choose": "Choose a size",
+        "defaultSize": "2 GB (image default)",
+        "recommendedSize": "8 GB (recommended)",
+        "freeSpace": "Free storage: {size} GB",
+        "pending": "{size} GB is configured. Reboot the Pi when your imaging session has finished to apply it.",
+        "saved": "Swap configuration saved.",
+        "saving": "Saving…",
+        "save": "Save swap size",
+        "refresh": "Refresh",
+        "unsupported": "This system does not have a supported disk-backed swap configuration.",
+        "unavailable": "Swap configuration is unavailable. Update pinsdaemon on the Pi.",
+        "loadError": "Could not read swap configuration: {message}",
+        "saveError": "Could not save swap configuration: {message}",
+        "missingJob": "The daemon did not return a swap job."
       }
     },
     "alpacaDirect": {

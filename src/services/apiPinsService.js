@@ -813,6 +813,26 @@ export default {
     });
   },
 
+  getPinsSystemSwap() {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/system/swap', {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 15000,
+    });
+  },
+
+  updatePinsSystemSwap(sizeGb) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPutRequest(
+      '/system/swap',
+      { sizeGb },
+      {
+        baseUrl: PINSDAEMON_URL,
+        timeout: 15000,
+      }
+    );
+  },
+
   getPinsSystemLocalizationOptions() {
     const { PINSDAEMON_URL } = getUrls();
     return this._pinsDaemonGetRequest('/system/localization/options', {

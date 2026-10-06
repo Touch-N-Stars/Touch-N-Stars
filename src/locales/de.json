@@ -772,6 +772,27 @@
         "missingJob": "Der PINS-Daemon hat keine Vorgangs-ID zurückgegeben.",
         "refresh": "Aktuelle Werte neu laden",
         "searchPlaceholder": "Verfügbare Optionen filtern..."
+      },
+      "swap": {
+        "title": "Raspberry-Pi-Swap",
+        "description": "Größe der dateibasierten Swap-Datei auswählen. Änderungen werden nach einem Neustart des Pi wirksam. Zram bleibt unverändert. Größere Dateien benötigen mehr Speicherplatz; Swap ist langsamer als RAM.",
+        "loading": "Swap-Konfiguration wird gelesen…",
+        "current": "Aktuelle Dateigröße: {size} GB",
+        "size": "Konfigurierte Swap-Größe",
+        "choose": "Größe auswählen",
+        "defaultSize": "2 GB (Image-Standard)",
+        "recommendedSize": "8 GB (empfohlen)",
+        "freeSpace": "Freier Speicherplatz: {size} GB",
+        "pending": "{size} GB sind konfiguriert. Starte den Pi nach deiner Aufnahmesitzung neu, um die Änderung anzuwenden.",
+        "saved": "Swap-Konfiguration gespeichert.",
+        "saving": "Wird gespeichert…",
+        "save": "Swap-Größe speichern",
+        "refresh": "Aktualisieren",
+        "unsupported": "Dieses System hat keine unterstützte dateibasierte Swap-Konfiguration.",
+        "unavailable": "Swap-Konfiguration nicht verfügbar. Aktualisiere pinsdaemon auf dem Pi.",
+        "loadError": "Swap-Konfiguration konnte nicht gelesen werden: {message}",
+        "saveError": "Swap-Konfiguration konnte nicht gespeichert werden: {message}",
+        "missingJob": "Der Daemon hat keinen Swap-Auftrag zurückgegeben."
       }
     },
     "alpacaDirect": {
