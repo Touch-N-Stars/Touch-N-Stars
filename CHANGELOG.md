@@ -5,17 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-
-- PINS settings: Configure the disk-backed swap file to 2 GB (image default), 4 GB, or 8 GB (recommended). Changes apply after reboot and require an updated pinsdaemon.
-
 ## [App6.5.0 - beta 1] - unreleased
 
 ### Added
 
 - Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as an additional sky background, as colour composite or as single H-alpha, [OIII] or [SII] line, and switched with DSS; it covers the sky north of -16°.
+- PINS settings: Configure the disk-backed swap file to 2 GB (image default), 4 GB, or 8 GB (recommended). Changes apply after reboot and require an updated pinsdaemon.
 
 ### Changed
 
