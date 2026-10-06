@@ -927,6 +927,7 @@
       "error_loading_sequences": "Fout tijdens laden sequenties",
       "error_loading_sequence": "Fout tijdens laden sequentie",
       "editFailed": "NINA heeft de wijziging niet overgenomen",
+      "targetNotFound": "Doel niet gevonden in de sequentie. Probeer het opnieuw.",
       "filter": "Filter",
       "triggers": "Triggers",
       "expandAll": "Alles uitvouwen",

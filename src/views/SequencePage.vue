@@ -1,8 +1,8 @@
 <template>
-  <SequenceV2Page v-if="store.isPINS" />
+  <SequenceV2Page v-if="store.sequenceEditorAvailable" />
 
   <div
-    v-else-if="store.isTnsPluginConnected && !store.pinsCheckResolvedOnce"
+    v-else-if="store.sequenceEditorDetectionPending"
     class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center"
   >
     <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400"></div>

@@ -121,9 +121,9 @@ async function setSequenceTarget() {
     rotation,
   };
 
-  // NINA/WPF has no sequence editor to pick a target in -- unchanged behaviour: the
-  // first target of the sequence is overwritten.
-  if (!store.isPINS) {
+  // Without the plugin's sequence editor there is nothing to pick a target in -- legacy
+  // behaviour: the first target of the sequence is overwritten.
+  if (!store.sequenceEditorAvailable) {
     try {
       await apiService.sequnceTargetSet(
         name,

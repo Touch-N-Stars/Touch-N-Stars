@@ -112,7 +112,7 @@
     </button>
 
     <button
-      v-if="!sequenceStore.sequenceRunning && store.isPINS"
+      v-if="!sequenceStore.sequenceRunning && store.sequenceEditorAvailable"
       class="tns-btn-danger h-16 w-14 flex-col gap-0.5"
       @click="clearSequence"
     >
@@ -123,7 +123,7 @@
     </button>
 
     <button
-      v-if="sequenceStore.lastSequenceFilePath && store.isPINS"
+      v-if="sequenceStore.lastSequenceFilePath && store.sequenceEditorAvailable"
       class="tns-btn-secondary h-16 w-14 flex-col gap-0.5"
       :disabled="saveLoading"
       @click="saveCurrentFile"
@@ -139,7 +139,7 @@
     </button>
 
     <button
-      v-if="store.isPINS"
+      v-if="store.sequenceEditorAvailable"
       class="tns-btn-secondary h-16 w-14 flex-col gap-0.5"
       @click="openFileManager"
     >

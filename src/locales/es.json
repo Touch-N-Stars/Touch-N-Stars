@@ -927,6 +927,7 @@
       "error_loading_sequences": "Error al cargar las secuencias",
       "error_loading_sequence": "Error al cargar la secuencia",
       "editFailed": "NINA no ha aceptado el cambio",
+      "targetNotFound": "No se encontró el objetivo en la secuencia. Inténtalo de nuevo.",
       "filter": "Filtro",
       "triggers": "Desencadenantes",
       "expandAll": "Expandir todo",

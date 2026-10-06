@@ -927,6 +927,7 @@
       "error_loading_sequences": "Chyba při načítání sekvencí",
       "error_loading_sequence": "Chyba při načítání sekvence",
       "editFailed": "NINA změnu nepřijala",
+      "targetNotFound": "Cíl nebyl v sekvenci nalezen. Zkuste to znovu.",
       "filter": "Filtr",
       "triggers": "Spouštěče:",
       "expandAll": "Rozbalit vše",

@@ -971,6 +971,7 @@
       "error_loading_sequences": "Error en carregar les seqüències",
       "error_loading_sequence": "Error en carregar la seqüència",
       "editFailed": "NINA no ha acceptat el canvi",
+      "targetNotFound": "No s'ha trobat l'objectiu a la seqüència. Torna-ho a provar.",
       "filter": "Filtre",
       "triggers": "Activadors",
       "expandAll": "Expandeix-ho tot",

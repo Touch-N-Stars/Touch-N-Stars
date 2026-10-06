@@ -971,6 +971,7 @@
       "error_loading_sequences": "Error loading sequences",
       "error_loading_sequence": "Error loading sequence",
       "editFailed": "NINA did not accept the change",
+      "targetNotFound": "Target not found in the sequence. Please try again.",
       "filter": "Filter",
       "triggers": "Triggers",
       "expandAll": "Expand All",

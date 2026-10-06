@@ -927,6 +927,7 @@
       "error_loading_sequences": "加载序列时出错",
       "error_loading_sequence": "加载序列时出错",
       "editFailed": "NINA 未接受此更改",
+      "targetNotFound": "在序列中未找到目标，请重试。",
       "filter": "滤镜",
       "triggers": "触发器",
       "expandAll": "展开全部",

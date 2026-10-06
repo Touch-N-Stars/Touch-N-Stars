@@ -888,6 +888,7 @@
       "error_loading_sequences": "Помилка завантаження послідовностей",
       "error_loading_sequence": "Помилка завантаження послідовності",
       "editFailed": "NINA не прийняла зміну",
+      "targetNotFound": "Ціль не знайдено в послідовності. Спробуйте ще раз.",
       "filter": "Фільтр",
       "triggers": "Тригери",
       "expandAll": "Розгорнути все",

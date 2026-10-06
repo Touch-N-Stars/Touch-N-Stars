@@ -22,6 +22,29 @@ export default {
     return simpleGetRequest(`${API_URL}sequence/current`);
   },
 
+  // Lightweight poll: { Revision, Running, Items: [{ Id, Status, ...runtime fields }] }
+  async fetchSequenceStatus() {
+    const { API_URL } = getUrls();
+    return simpleGetRequest(`${API_URL}sequence/status`);
+  },
+
+  // Feature detection for the id-based sequence editor (TNS plugin sequence controller).
+  // Returns true/false, or null when the backend did not answer and the probe should be
+  // repeated. Unknown plugin routes answer with an HTML 404, so only a JSON body counts.
+  async probeSequenceEditorSupport() {
+    const { API_URL } = getUrls();
+    try {
+      const data = await simpleGetRequest(`${API_URL}sequence/status`);
+      return typeof data === 'object' && data !== null && 'Revision' in data;
+    } catch (error) {
+      const status = error?.response?.status;
+      if (!status) return null;
+      // 400 = endpoint exists, but no sequence is loaded yet
+      const body = error.response.data;
+      return status === 400 && typeof body === 'object' && body !== null && 'Error' in body;
+    }
+  },
+
   async fetchSequenceInfo(id) {
     const { API_URL } = getUrls();
     return simpleGetRequest(`${API_URL}sequence/info?id=${id}`);
@@ -65,6 +88,13 @@ export default {
       `${API_URL}sequence/set?id=${id}&propertyName=${encodeURIComponent(propertyName)}&value=${encodeURIComponent(value)}`,
       {}
     );
+    return response.data;
+  },
+
+  // Editable properties of one item: { Fields: [{ Name, Type, Options?, ReadOnly }] }
+  async sequenceFetchFields(id) {
+    const { API_URL } = getUrls();
+    const response = await axios.get(`${API_URL}sequence/fields`, { params: { id } });
     return response.data;
   },
 

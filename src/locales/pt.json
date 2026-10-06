@@ -927,6 +927,7 @@
       "error_loading_sequences": "Erro ao carregar sequências",
       "error_loading_sequence": "Erro ao carregar sequência",
       "editFailed": "O NINA não aceitou a alteração",
+      "targetNotFound": "Alvo não encontrado na sequência. Tente novamente.",
       "filter": "Filtro",
       "triggers": "Gatilhos",
       "expandAll": "Expandir tudo",

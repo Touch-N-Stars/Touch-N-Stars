@@ -4,6 +4,7 @@ import { apiStore } from './store';
 import { useToastStore } from './toastStore';
 import { useSequenceStore } from './sequenceStore';
 import { createPoller } from '@/utils/poller';
+import i18n from '@/i18n';
 import {
   collectDsoContainers,
   findTargetAreaContainer,
@@ -36,6 +37,12 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
     availableItems: [],
     availableTriggers: [],
     availableConditions: [],
+    // Structure hash from /sequence/status of the tree currently held in `data`.
+    // null forces the next status update to reload the full tree.
+    revision: null,
+    // Whether the plugin serves /sequence/status. null = unknown; false = older plugin,
+    // fall back to matching the ninaAPI sequence/json tree by position.
+    statusEndpointSupported: null,
   }),
   getters: {
     globalTriggers: (s) => s.data[0]?.GlobalTriggers ?? [],
@@ -84,24 +91,103 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       return this.findById(id)?.Status === 'RUNNING';
     },
 
+    // Returns whether a tree was loaded
     async loadCurrent() {
       const store = apiStore();
-      if (!store.isBackendReachable) return;
+      if (!store.isBackendReachable) return false;
       try {
         const res = await apiService.fetchSequenceCurrent();
         const items = res?.Data?.Items ?? (Array.isArray(res) ? res : null);
         if (Array.isArray(items)) {
           this.data = items;
           this.loaded = true;
+          return true;
         }
       } catch (e) {
         console.error('fetchSequenceCurrent:', e);
       }
+      return false;
+    },
+
+    // Reloads the full tree and the runtime status, e.g. after an own edit.
+    async refresh() {
+      this.revision = null;
+      if (this.statusEndpointSupported === false) await this.loadCurrent();
+      await this.fetchStatusUpdate();
     },
 
     async fetchStatusUpdate() {
       const store = apiStore();
       if (!store.isBackendReachable) return;
+
+      if (this.statusEndpointSupported !== false) {
+        let res;
+        try {
+          res = await apiService.fetchSequenceStatus();
+        } catch (e) {
+          // A JSON error body comes from the endpoint itself (400 = no sequence loaded, or a
+          // transient failure) - try again next tick. A 404 or any non-JSON answer means the
+          // plugin has no such endpoint (older PINS images), so switch to the fallback.
+          const body = e?.response?.data;
+          const fromEndpoint = typeof body === 'object' && body !== null;
+          if (!e?.response || (fromEndpoint && e.response.status !== 404)) {
+            console.error('fetchSequenceStatus:', e);
+            return;
+          }
+          this.statusEndpointSupported = false;
+        }
+        if (this.statusEndpointSupported !== false) {
+          if (res && Array.isArray(res.Items)) {
+            this.statusEndpointSupported = true;
+            if (res.Revision !== this.revision || !this.loaded) {
+              // If the structure changes again between both requests, the stored revision
+              // is already outdated and the next tick simply reloads once more.
+              if (await this.loadCurrent()) this.revision = res.Revision;
+            }
+            this.applyStatusById(res.Items);
+            return;
+          }
+          // Success=false from the endpoint is transient; anything else (e.g. an HTML page
+          // served for an unknown path) means the endpoint does not exist.
+          if (typeof res === 'object' && res !== null && 'Error' in res) return;
+          this.statusEndpointSupported = false;
+        }
+      }
+
+      await this.fetchStatusUpdateLegacy();
+    },
+
+    // Merges the flat /sequence/status list into the held tree by Id. Only Status and the
+    // runtime fields are written, onto the existing objects, so collapse and edit state in
+    // the UI survive.
+    applyStatusById(entries) {
+      const byId = new Map();
+      const index = (items) => {
+        for (const item of items ?? []) {
+          if (item?.Id) byId.set(item.Id, item);
+          index(item?.Items);
+          index(item?.Triggers);
+          index(item?.Conditions);
+          index(item?.GlobalTriggers);
+        }
+      };
+      index(this.data);
+
+      for (const entry of entries) {
+        const node = byId.get(entry.Id);
+        if (!node) continue;
+        if (entry.Status !== undefined && node.Status !== entry.Status) node.Status = entry.Status;
+        for (const field of RUNTIME_FIELDS) {
+          if (entry[field] !== undefined && node[field] !== entry[field]) {
+            node[field] = entry[field];
+          }
+        }
+      }
+    },
+
+    // Older plugins (PINS images before /sequence/status existed): match the ninaAPI
+    // sequence/json tree by position and fetch the running items' details one by one.
+    async fetchStatusUpdateLegacy() {
       try {
         const res = await apiService.sequenceAction('json');
         const jsonItems = res?.Response;
@@ -175,14 +261,14 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
     async startPolling() {
       this.stopPolling();
       const generation = this.pollGeneration;
-      await this.loadCurrent();
-      // stopPolling() may have run during loadCurrent() (e.g. app backgrounded
+      await this.refresh();
+      // stopPolling() may have run during refresh() (e.g. app backgrounded
       // mid-initialization). It bumps pollGeneration, so bail out instead of
       // starting an interval that stopPolling already meant to prevent.
       if (generation !== this.pollGeneration) {
         return;
       }
-      this.intervalId = createPoller(() => this.fetchStatusUpdate(), 2000, { immediate: true });
+      this.intervalId = createPoller(() => this.fetchStatusUpdate(), 2000);
       this.intervalId.start();
     },
 
@@ -205,8 +291,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceMove:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     async remove(id) {
@@ -218,8 +303,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceRemove:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     async duplicate(id) {
@@ -230,21 +314,37 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceDuplicate:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
+    // Returns whether NINA accepted the value. A rejected value (invalid choice, a property
+    // that ignores its setter, ...) is reported to the user instead of silently reverting.
     async setProperty(id, propertyName, value) {
-      if (this._isControlsLocked()) return;
-      if (this._isItemRunning(id)) return;
+      if (this._isControlsLocked()) return false;
+      if (this._isItemRunning(id)) return false;
 
+      let error = null;
       try {
-        await apiService.sequenceSetProperty(id, propertyName, value);
+        const res = await apiService.sequenceSetProperty(id, propertyName, value);
+        if (res?.Success === false) error = res.Error;
       } catch (e) {
         console.error('sequenceSetProperty:', e);
+        error = e?.response?.data?.Error ?? e?.message ?? String(e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      if (error) this._showError(error);
+      await this.refresh();
+      return !error;
+    },
+
+    // Field metadata for the generic editor, or null when the plugin does not provide it
+    async fetchEditableFields(id) {
+      try {
+        const res = await apiService.sequenceFetchFields(id);
+        return Array.isArray(res?.Fields) ? res.Fields : null;
+      } catch (e) {
+        if (e?.response?.status !== 404) console.error('sequenceFetchFields:', e);
+        return null;
+      }
     },
 
     async enable(id, enabled) {
@@ -256,8 +356,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceEnable:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     async resetStatus(id) {
@@ -269,8 +368,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceResetStatus:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     async fetchAvailableItems() {
@@ -310,7 +408,12 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
     },
 
     _showError(message) {
-      useToastStore().showToast({ type: 'error', title: 'Fehler', message, autoClose: true });
+      useToastStore().showToast({
+        type: 'error',
+        title: i18n.global.t('components.sequence.editFailed'),
+        message,
+        autoClose: true,
+      });
     },
 
     async addItem(targetId, itemType, insertAfter = true) {
@@ -325,8 +428,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceAddItem:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     async addTrigger(itemId, triggerType, insertAfter = true) {
@@ -341,8 +443,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceAddTrigger:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     async addCondition(itemId, conditionType, insertAfter = true) {
@@ -357,8 +458,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       } catch (e) {
         console.error('sequenceAddCondition:', e);
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
     },
 
     // Returns { ok, locked, error } so callers outside the sequence editor -- the framing
@@ -367,11 +467,14 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this._isControlsLocked()) return { ok: false, locked: true };
       if (this._isItemRunning(id)) return { ok: false, locked: true };
 
-      const dsoContainers = collectDsoContainers(this.data);
-      const index = Math.max(
-        0,
-        dsoContainers.findIndex((c) => c.Id === id)
-      );
+      // set-target addresses the container by position. If the Id is not in the held tree
+      // (e.g. it changed since the last load), falling back to index 0 would silently
+      // overwrite the coordinates of the first target -- refuse instead.
+      const index = collectDsoContainers(this.data).findIndex((c) => c.Id === id);
+      if (index < 0) {
+        await this.refresh();
+        return { ok: false, error: i18n.global.t('components.sequence.targetNotFound') };
+      }
       let result = { ok: true };
       try {
         const res = await apiService.sequnceTargetSet(
@@ -386,8 +489,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         console.error('setDsoTarget:', e);
         result = { ok: false, error: e?.response?.data?.Error ?? e?.response?.data?.Message };
       }
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
       return result;
     },
 
@@ -416,8 +518,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         return { ok: false, error: e?.response?.data?.Error ?? e?.response?.data?.Message };
       }
 
-      await this.loadCurrent();
-      await this.fetchStatusUpdate();
+      await this.refresh();
 
       const added = collectDsoContainers(this.data).find((c) => !knownIds.has(c.Id));
       if (!added) return { ok: false };
