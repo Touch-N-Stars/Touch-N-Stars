@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "已下载的天空背景使用了过时的格式。现在重新下载吗（约 {size}）？旧文件将被替换。",
         "offer_accept": "下载",
         "offer_decline": "暂不",
-        "offer_progress": "正在下载天空背景… {percent}%"
+        "offer_progress": "正在下载天空背景… {percent}%",
+        "source_label": "背景星空巡天",
+        "source_dss": "DSS 彩色",
+        "source_nsns": "NSNS 彩色",
+        "source_dss_hint": "Digitized Sky Survey：全天真彩色摄影图像。",
+        "source_nsns_hint": "Northern Sky Narrowband Survey：[OIII] 为红、Hα 为绿、[SII] 为蓝，发射星云可显示其完整范围。仅覆盖 −16° 以北的天空。",
+        "hint_nsns": "NSNS 窄带巡天只需下载一次到 NINA/PINS 主机，并由主机提供给星图。更高的阶数可为窄视场增加细节。",
+        "plugin_update_required_nsns": "请更新 Touch'N'Stars 插件以下载 NSNS 窄带巡天。",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg，采用 CC BY-NC-SA 4.0 许可。注明出处后可免费用于非商业用途；图块保存在您自己的 NINA/PINS 主机上。",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey，仅 Hα 谱线（电离氢）。仅覆盖 −16° 以北的天空；需单独下载。",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey，仅 [OIII] 谱线（双电离氧）。仅覆盖 −16° 以北的天空；需单独下载。",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey，仅 [SII] 谱线（电离硫）。仅覆盖 −16° 以北的天空；需单独下载。"
       },
       "object_types": {
         "_ass": "星协",

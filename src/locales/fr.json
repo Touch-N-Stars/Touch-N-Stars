@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "Le fond du ciel téléchargé utilise un format obsolète. Le télécharger à nouveau maintenant (environ {size}) ? Les anciens fichiers seront remplacés.",
         "offer_accept": "Télécharger",
         "offer_decline": "Pas maintenant",
-        "offer_progress": "Téléchargement du fond du ciel… {percent} %"
+        "offer_progress": "Téléchargement du fond du ciel… {percent} %",
+        "source_label": "Survey d'arrière-plan",
+        "source_dss": "DSS couleur",
+        "source_nsns": "NSNS couleur",
+        "source_dss_hint": "Digitized Sky Survey : images photographiques en vraies couleurs de tout le ciel.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey : [OIII] rouge, Hα vert, [SII] bleu, pour que les nébuleuses à émission montrent toute leur étendue. Couvre uniquement le ciel au nord de −16°.",
+        "hint_nsns": "Le survey à bande étroite NSNS est téléchargé une seule fois sur l'hôte NINA/PINS et servi à l'Atlas depuis celui-ci. Les ordres supérieurs ajoutent du détail pour les champs étroits.",
+        "plugin_update_required_nsns": "Veuillez mettre à jour le plugin Touch'N'Stars pour télécharger le survey à bande étroite NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, sous licence CC BY-NC-SA 4.0. Gratuit pour un usage non commercial avec attribution ; les tuiles restent sur votre propre hôte NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, raie Hα uniquement (hydrogène ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, raie [OIII] uniquement (oxygène doublement ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, raie [SII] uniquement (soufre ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé."
       },
       "object_types": {
         "_ass": "Association stellaire",

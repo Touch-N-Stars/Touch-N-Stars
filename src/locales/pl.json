@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "Pobrane tło nieba używa przestarzałego formatu. Pobrać je ponownie teraz (około {size})? Stare pliki zostaną zastąpione.",
         "offer_accept": "Pobierz",
         "offer_decline": "Nie teraz",
-        "offer_progress": "Pobieranie tła nieba… {percent}%"
+        "offer_progress": "Pobieranie tła nieba… {percent}%",
+        "source_label": "Przegląd tła",
+        "source_dss": "DSS kolor",
+        "source_nsns": "NSNS kolor",
+        "source_dss_hint": "Digitized Sky Survey: fotograficzne obrazy całego nieba w prawdziwych kolorach.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] czerwony, Hα zielony, [SII] niebieski – mgławice emisyjne pokazują pełny zasięg. Obejmuje tylko niebo na północ od −16°.",
+        "hint_nsns": "Przegląd wąskopasmowy NSNS jest pobierany jednorazowo na hosta NINA/PINS i stamtąd udostępniany Atlasowi. Wyższe rzędy dodają szczegółów dla wąskich pól.",
+        "plugin_update_required_nsns": "Zaktualizuj wtyczkę Touch'N'Stars, aby pobrać przegląd wąskopasmowy NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licencja CC BY-NC-SA 4.0. Bezpłatny do użytku niekomercyjnego z podaniem autora; kafelki pozostają na Twoim hoście NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, tylko linia Hα (zjonizowany wodór). Obejmuje tylko niebo na północ od −16°; osobne pobieranie.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, tylko linia [OIII] (dwukrotnie zjonizowany tlen). Obejmuje tylko niebo na północ od −16°; osobne pobieranie.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, tylko linia [SII] (zjonizowana siarka). Obejmuje tylko niebo na północ od −16°; osobne pobieranie."
       },
       "object_types": {
         "_ass": "Asocjacja gwiazdowa",

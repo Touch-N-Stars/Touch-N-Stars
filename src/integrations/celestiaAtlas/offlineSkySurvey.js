@@ -37,8 +37,96 @@ export function resolveCelestiaAtlasDataBaseUrl({
   return `${protocol || 'http'}://${authority}${CELESTIA_ATLAS_DATA_PATH}`;
 }
 
+// Average stored bytes per NSNS tile (source PNGs re-encoded to JPEG q85 on the server),
+// the same tables the plugin server uses (SurveyDefinition.Nsns*): means of 25-40 random
+// tiles per order measured on 2026-10-03.
+export const NSNS_SURVEY_AVERAGE_TILE_BYTES = Object.freeze({
+  nsns: Object.freeze({ 3: 68_000, 4: 78_000, 5: 92_000, 6: 81_000 }),
+  'nsns-ha': Object.freeze({ 3: 37_000, 4: 53_000, 5: 58_000, 6: 50_000 }),
+  'nsns-oiii': Object.freeze({ 3: 61_000, 4: 79_000, 5: 78_000, 6: 65_000 }),
+  'nsns-sii': Object.freeze({ 3: 79_000, 4: 98_000, 5: 95_000, 6: 74_000 }),
+});
+
+// NSNS covers the sky north of Dec -16 deg only; tile counts per order inside its coverage
+// map (Moc.fits of DR0.2, identical for every product). Used for the size estimate before
+// the server reports exact counts.
+const NSNS_SURVEY_TILE_COUNTS = Object.freeze({ 3: 528, 4: 2016, 5: 8000, 6: 31872 });
+
+const NSNS_CREDIT =
+  'Northern Sky Narrowband Survey DR0.2 — Stefan Ziegenbalg, CC BY-NC-SA 4.0 (doi:10.3847/2515-5172/adfec7).';
+
+function nsnsSurvey(id, product, label) {
+  return Object.freeze({
+    id,
+    family: 'nsns',
+    key: `local-nsns-${product}`,
+    label,
+    path: `/surveys/${id}`,
+    minOrder: 3,
+    baseOrder: 4,
+    maxOrder: 6,
+    averageTileBytes: NSNS_SURVEY_AVERAGE_TILE_BYTES[id],
+    tileCounts: NSNS_SURVEY_TILE_COUNTS,
+    credit: NSNS_CREDIT,
+    attributionUrl: 'https://www.simg.de/nebulae3/dr0_2',
+    rightsUrl: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+  });
+}
+
+export const DEFAULT_SKY_SURVEY_ID = 'dss';
+
+/**
+ * The downloadable Atlas surveys. Each is fetched by the plugin server onto the NINA/PINS
+ * host and served from `/celestia-atlas-data/surveys/<id>`; the app never loads tiles from
+ * the public survey hosts. The NSNS products share coverage, licence and texts (`family`)
+ * but are separate downloads.
+ */
+const SKY_SURVEYS = Object.freeze({
+  dss: Object.freeze({
+    id: 'dss',
+    family: 'dss',
+    key: 'local-dss-color',
+    label: 'DSS Color (offline)',
+    path: DSS_SURVEY_PATH,
+    minOrder: DSS_SURVEY_MIN_ORDER,
+    baseOrder: DSS_SURVEY_BASE_ORDER,
+    maxOrder: DSS_SURVEY_MAX_ORDER,
+    averageTileBytes: DSS_SURVEY_AVERAGE_TILE_BYTES,
+    tileCounts: null,
+    credit: 'Digitized Sky Survey — STScI/NASA; colored and HiPS-processed by CDS (CNRS/Unistra).',
+    attributionUrl:
+      'https://alasky.cds.unistra.fr/MocServer/query?ID=CDS%2FP%2FDSS2%2Fcolor&fmt=html&get=record',
+    rightsUrl:
+      'https://outerspace.stsci.edu/spaces/MASTDATA/pages/176435492/Photographic+Sky+Surveys',
+  }),
+  nsns: nsnsSurvey('nsns', 'ohs8', 'NSNS [OIII] / H-alpha / [SII] (offline)'),
+  'nsns-ha': nsnsSurvey('nsns-ha', 'halpha8', 'NSNS H-alpha (offline)'),
+  'nsns-oiii': nsnsSurvey('nsns-oiii', 'oiii8', 'NSNS [OIII] (offline)'),
+  'nsns-sii': nsnsSurvey('nsns-sii', 'sii8', 'NSNS [SII] (offline)'),
+});
+
+export const SKY_SURVEY_IDS = Object.freeze(Object.keys(SKY_SURVEYS));
+
+/** A known survey id, falling back to DSS for anything else (old settings, typos). */
+export function normalizeSkySurveyId(id) {
+  return Object.prototype.hasOwnProperty.call(SKY_SURVEYS, id) ? id : DEFAULT_SKY_SURVEY_ID;
+}
+
+export function getSkySurveyDefinition(id) {
+  return SKY_SURVEYS[normalizeSkySurveyId(id)];
+}
+
+/** Locale key segment for a survey id ('nsns-ha' -> 'nsns_ha'); keys avoid the hyphen. */
+export function skySurveyLocaleKey(id) {
+  return normalizeSkySurveyId(id).replace(/-/g, '_');
+}
+
+export function resolveSkySurveyUrl(id, dataBaseUrl = CELESTIA_ATLAS_DATA_PATH) {
+  return `${normalizeDataBaseUrl(dataBaseUrl)}${getSkySurveyDefinition(id).path}`;
+}
+
 export function resolveDssSurveyUrl(dataBaseUrl = CELESTIA_ATLAS_DATA_PATH) {
-  return `${normalizeDataBaseUrl(dataBaseUrl)}${DSS_SURVEY_PATH}`;
+  return resolveSkySurveyUrl('dss', dataBaseUrl);
 }
 
 /** Number of HiPS tiles in one order: 12 base pixels, each split in four per order. */
@@ -46,18 +134,29 @@ export function dssSurveyTileCount(order) {
   return 12 * 4 ** order;
 }
 
+/** Tiles of one order that exist in a survey (full sky, or inside its coverage). */
+export function skySurveyTileCount(id, order) {
+  const counts = getSkySurveyDefinition(id).tileCounts;
+  return counts?.[order] ?? dssSurveyTileCount(order);
+}
+
 /**
  * Estimated download size in bytes for orders `fromOrder`..`toOrder` (inclusive).
  * Used for the size hint per selectable order; the server checks the real free space.
  */
-export function estimateDssSurveyBytes(fromOrder, toOrder) {
+export function estimateSkySurveyBytes(id, fromOrder, toOrder) {
+  const definition = getSkySurveyDefinition(id);
   let bytes = 0;
   for (let order = fromOrder; order <= toOrder; order += 1) {
-    const perTile = DSS_SURVEY_AVERAGE_TILE_BYTES[order];
+    const perTile = definition.averageTileBytes[order];
     if (!perTile) throw new RangeError(`No size estimate for HiPS order ${order}`);
-    bytes += perTile * dssSurveyTileCount(order);
+    bytes += perTile * skySurveyTileCount(id, order);
   }
   return bytes;
+}
+
+export function estimateDssSurveyBytes(fromOrder, toOrder) {
+  return estimateSkySurveyBytes('dss', fromOrder, toOrder);
 }
 
 /** Parse a HiPS `properties` file (key = value lines, `#` comments) into an object. */
@@ -87,46 +186,53 @@ export function readHipsOrder(text) {
  * plugin server only advertises orders whose tiles are all present, so the returned value
  * can be used as `maxOrder` directly.
  */
-export async function loadDssSurveyOrder(dataBaseUrl, fetchImpl = globalThis.fetch) {
+export async function loadSkySurveyOrder(id, dataBaseUrl, fetchImpl = globalThis.fetch) {
   try {
-    const response = await fetchImpl(`${resolveDssSurveyUrl(dataBaseUrl)}/properties`, {
+    const response = await fetchImpl(`${resolveSkySurveyUrl(id, dataBaseUrl)}/properties`, {
       cache: 'no-store',
     });
     if (!response.ok) return null;
     const order = readHipsOrder(await response.text());
-    return order !== null && order >= DSS_SURVEY_MIN_ORDER ? order : null;
+    return order !== null && order >= getSkySurveyDefinition(id).minOrder ? order : null;
   } catch {
     return null;
   }
 }
 
+export function loadDssSurveyOrder(dataBaseUrl, fetchImpl = globalThis.fetch) {
+  return loadSkySurveyOrder('dss', dataBaseUrl, fetchImpl);
+}
+
 /**
  * Survey source for the Atlas viewer. `maxOrder` is the order the plugin server advertises
- * in `properties`; there is no packaged default any more, so the caller must know what is
- * installed (see loadDssSurveyOrder).
+ * in `properties`; there is no packaged default, so the caller must know what is installed
+ * (see loadSkySurveyOrder).
  */
-export function createDssSkySurveySource(dataBaseUrl, maxOrder) {
-  if (!Number.isInteger(maxOrder) || maxOrder < DSS_SURVEY_MIN_ORDER) {
-    throw new RangeError(`DSS survey maxOrder must be an integer >= ${DSS_SURVEY_MIN_ORDER}`);
+export function createSkySurveySource(id, dataBaseUrl, maxOrder) {
+  const definition = getSkySurveyDefinition(id);
+  if (!Number.isInteger(maxOrder) || maxOrder < definition.minOrder) {
+    throw new RangeError(
+      `${definition.id} survey maxOrder must be an integer >= ${definition.minOrder}`
+    );
   }
   return Object.freeze({
-    key: 'local-dss-color',
-    label: 'DSS Color (offline)',
-    url: resolveDssSurveyUrl(dataBaseUrl),
+    key: definition.key,
+    label: definition.label,
+    url: resolveSkySurveyUrl(definition.id, dataBaseUrl),
     frame: 'ICRS',
-    minOrder: DSS_SURVEY_MIN_ORDER,
+    minOrder: definition.minOrder,
     maxOrder,
     tileWidth: 512,
     format: 'jpg',
     blendStartFovDeg: 170,
     blendFullFovDeg: 130,
-    creditLabel:
-      'Digitized Sky Survey — STScI/NASA; colored and HiPS-processed by CDS (CNRS/Unistra).',
-    attribution:
-      'Digitized Sky Survey — STScI/NASA; colored and HiPS-processed by CDS (CNRS/Unistra).',
-    attributionUrl:
-      'https://alasky.cds.unistra.fr/MocServer/query?ID=CDS%2FP%2FDSS2%2Fcolor&fmt=html&get=record',
-    rightsUrl:
-      'https://outerspace.stsci.edu/spaces/MASTDATA/pages/176435492/Photographic+Sky+Surveys',
+    creditLabel: definition.credit,
+    attribution: definition.credit,
+    attributionUrl: definition.attributionUrl,
+    rightsUrl: definition.rightsUrl,
   });
+}
+
+export function createDssSkySurveySource(dataBaseUrl, maxOrder) {
+  return createSkySurveySource('dss', dataBaseUrl, maxOrder);
 }

@@ -2381,7 +2381,21 @@
         "offer_text_legacy": "El fons del cel descarregat fa servir un format obsolet. Vols tornar-lo a descarregar ara (uns {size})? Els fitxers antics seran substituïts.",
         "offer_accept": "Descarrega",
         "offer_decline": "Ara no",
-        "offer_progress": "S'està descarregant el fons del cel… {percent}%"
+        "offer_progress": "S'està descarregant el fons del cel… {percent}%",
+        "source_label": "Survey de fons",
+        "source_dss": "DSS color",
+        "source_nsns": "NSNS color",
+        "source_dss_hint": "Digitized Sky Survey: imatges fotogràfiques en colors reals de tot el cel.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] vermell, Hα verd, [SII] blau, perquè les nebuloses d'emissió mostrin tota la seva extensió. Cobreix només el cel al nord de −16°.",
+        "hint_nsns": "El survey de banda estreta NSNS es descarrega una sola vegada a l'amfitrió NINA/PINS i s'ofereix a l'Atlas des d'allà. Els ordres superiors afegeixen detall per a camps estrets.",
+        "plugin_update_required_nsns": "Actualitza el connector Touch'N'Stars per descarregar el survey de banda estreta NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, amb llicència CC BY-NC-SA 4.0. Gratuït per a ús no comercial amb atribució; les tessel·les es queden al teu propi amfitrió NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, només línia Hα (hidrogen ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, només línia [OIII] (oxigen doblement ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, només línia [SII] (sofre ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent."
       },
       "object_types": {
         "_ass": "Associació estel·lar",

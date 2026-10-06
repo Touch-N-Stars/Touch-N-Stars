@@ -2344,7 +2344,21 @@
         "offer_text_legacy": "ダウンロード済みの空の背景は古い形式です。今すぐ再度ダウンロードしますか（約{size}）？古いファイルは置き換えられます。",
         "offer_accept": "ダウンロード",
         "offer_decline": "今はしない",
-        "offer_progress": "空の背景をダウンロード中… {percent}%"
+        "offer_progress": "空の背景をダウンロード中… {percent}%",
+        "source_label": "背景サーベイ",
+        "source_dss": "DSS カラー",
+        "source_nsns": "NSNS カラー",
+        "source_dss_hint": "Digitized Sky Survey：全天の実写トゥルーカラー画像。",
+        "source_nsns_hint": "Northern Sky Narrowband Survey：[OIII] を赤、Hα を緑、[SII] を青で表示し、輝線星雲の全体像を示します。−16° より北の空のみが対象です。",
+        "hint_nsns": "NSNS 狭帯域サーベイは NINA/PINS ホストに一度だけダウンロードされ、そこからアトラスに配信されます。高いオーダーほど狭い視野の細部が増えます。",
+        "plugin_update_required_nsns": "NSNS 狭帯域サーベイをダウンロードするには、Touch'N'Stars プラグインを更新してください。",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg、CC BY-NC-SA 4.0 ライセンス。出典を明記すれば非商用で無料で利用できます。タイルはお使いの NINA/PINS ホストに保存されます。",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey、Hα 輝線のみ（電離水素）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey、[OIII] 輝線のみ（二重電離酸素）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey、[SII] 輝線のみ（電離硫黄）。−16° より北の空のみが対象です。別途ダウンロードが必要です。"
       },
       "object_types": {
         "_ass": "アソシエーション",

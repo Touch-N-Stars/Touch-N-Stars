@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "El fondo del cielo descargado usa un formato obsoleto. ¿Descargarlo de nuevo ahora (unos {size})? Los archivos antiguos serán reemplazados.",
         "offer_accept": "Descargar",
         "offer_decline": "Ahora no",
-        "offer_progress": "Descargando el fondo del cielo… {percent}%"
+        "offer_progress": "Descargando el fondo del cielo… {percent}%",
+        "source_label": "Survey de fondo",
+        "source_dss": "DSS color",
+        "source_nsns": "NSNS color",
+        "source_dss_hint": "Digitized Sky Survey: imágenes fotográficas a todo color de todo el cielo.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] rojo, Hα verde, [SII] azul, para que las nebulosas de emisión muestren toda su extensión. Cubre solo el cielo al norte de −16°.",
+        "hint_nsns": "El survey de banda estrecha NSNS se descarga una sola vez en el host NINA/PINS y se sirve al Atlas desde allí. Los órdenes superiores añaden detalle para campos estrechos.",
+        "plugin_update_required_nsns": "Actualiza el plugin Touch'N'Stars para descargar el survey de banda estrecha NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, con licencia CC BY-NC-SA 4.0. Gratis para uso no comercial con atribución; las teselas permanecen en tu propio host NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, solo línea Hα (hidrógeno ionizado). Cubre solo el cielo al norte de −16°; descarga independiente.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, solo línea [OIII] (oxígeno doblemente ionizado). Cubre solo el cielo al norte de −16°; descarga independiente.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, solo línea [SII] (azufre ionizado). Cubre solo el cielo al norte de −16°; descarga independiente."
       },
       "object_types": {
         "_ass": "Asociación estelar",

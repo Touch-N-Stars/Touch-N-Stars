@@ -2376,7 +2376,21 @@
         "offer_text_legacy": "Der heruntergeladene Himmelshintergrund verwendet ein veraltetes Format. Jetzt erneut herunterladen (etwa {size})? Die alten Dateien werden ersetzt.",
         "offer_accept": "Herunterladen",
         "offer_decline": "Jetzt nicht",
-        "offer_progress": "Himmelshintergrund wird heruntergeladen… {percent} %"
+        "offer_progress": "Himmelshintergrund wird heruntergeladen… {percent} %",
+        "source_label": "Hintergrund-Survey",
+        "source_dss": "DSS Farbe",
+        "source_nsns": "NSNS Farbe",
+        "source_dss_hint": "Digitized Sky Survey: Echtfarben-Fotoaufnahmen des gesamten Himmels.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] rot, Hα grün, [SII] blau – Emissionsnebel zeigen so ihre volle Ausdehnung. Deckt nur den Himmel nördlich von −16° ab.",
+        "hint_nsns": "Der NSNS-Schmalband-Survey wird einmalig auf den NINA/PINS-Host geladen und von dort an den Atlas ausgeliefert. Höhere Stufen liefern mehr Details für kleine Bildfelder.",
+        "plugin_update_required_nsns": "Bitte aktualisiere das Touch'N'Stars-Plugin, um den NSNS-Schmalband-Survey herunterzuladen.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, lizenziert unter CC BY-NC-SA 4.0. Kostenlos für nichtkommerzielle Nutzung mit Namensnennung; die Kacheln bleiben auf deinem eigenen NINA/PINS-Host.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, nur Hα-Linie (ionisierter Wasserstoff). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, nur [OIII]-Linie (doppelt ionisierter Sauerstoff). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, nur [SII]-Linie (ionisierter Schwefel). Deckt nur den Himmel nördlich von −16° ab; separater Download."
       },
       "object_types": {
         "_ass": "Sternassoziation",

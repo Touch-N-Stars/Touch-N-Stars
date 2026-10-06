@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 1] - unreleased
+
+### Added
+
+- Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as an additional sky background, as colour composite or as single H-alpha, [OIII] or [SII] line, and switched with DSS; it covers the sky north of -16°.
+
+### Changed
+
+- Atlas: The sky survey source is picked from a select in the Layers panel and the Atlas settings, and the survey download offers the highest installed order when fully downloaded.
+
+### Fixed
+
+- Atlas: The survey download select shows the highest order when the survey is fully installed.
+
 ## [App6.4.0] - 2026-10-03
 
 Summary of all changes since 6.2.0 (released in 6.3.0-beta1 to 6.3.1-beta8, see below for the individual beta releases).

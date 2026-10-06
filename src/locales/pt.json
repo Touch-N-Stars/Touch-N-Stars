@@ -2335,7 +2335,21 @@
         "offer_text_legacy": "O fundo do céu baixado usa um formato desatualizado. Baixá-lo novamente agora (cerca de {size})? Os arquivos antigos serão substituídos.",
         "offer_accept": "Baixar",
         "offer_decline": "Agora não",
-        "offer_progress": "Baixando o fundo do céu… {percent}%"
+        "offer_progress": "Baixando o fundo do céu… {percent}%",
+        "source_label": "Survey de fundo",
+        "source_dss": "DSS cor",
+        "source_nsns": "NSNS cor",
+        "source_dss_hint": "Digitized Sky Survey: imagens fotográficas em cores reais de todo o céu.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] vermelho, Hα verde, [SII] azul, para que as nebulosas de emissão mostrem toda a sua extensão. Cobre apenas o céu a norte de −16°.",
+        "hint_nsns": "O survey de banda estreita NSNS é descarregado uma única vez para o host NINA/PINS e servido ao Atlas a partir daí. Ordens mais altas acrescentam detalhe para campos estreitos.",
+        "plugin_update_required_nsns": "Atualize o plugin Touch'N'Stars para descarregar o survey de banda estreita NSNS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licenciado sob CC BY-NC-SA 4.0. Gratuito para uso não comercial com atribuição; os mosaicos permanecem no seu próprio host NINA/PINS.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, apenas linha Hα (hidrogénio ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, apenas linha [OIII] (oxigénio duplamente ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, apenas linha [SII] (enxofre ionizado). Cobre apenas o céu a norte de −16°; descarga separada."
       },
       "object_types": {
         "_ass": "Associação estelar",

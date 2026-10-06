@@ -2381,7 +2381,21 @@
         "offer_text_legacy": "다운로드된 하늘 배경이 오래된 형식을 사용합니다. 지금 다시 다운로드할까요 (약 {size})? 기존 파일은 교체됩니다.",
         "offer_accept": "다운로드",
         "offer_decline": "지금 안 함",
-        "offer_progress": "하늘 배경 다운로드 중… {percent}%"
+        "offer_progress": "하늘 배경 다운로드 중… {percent}%",
+        "source_label": "배경 서베이",
+        "source_dss": "DSS 컬러",
+        "source_nsns": "NSNS 컬러",
+        "source_dss_hint": "Digitized Sky Survey: 전천을 실제 색상으로 촬영한 사진 이미지입니다.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII]는 빨강, Hα는 초록, [SII]는 파랑으로 표시되어 발광성운의 전체 범위를 보여줍니다. −16° 북쪽 하늘만 포함합니다.",
+        "hint_nsns": "NSNS 협대역 서베이는 NINA/PINS 호스트에 한 번만 다운로드되며 그곳에서 아틀라스로 제공됩니다. 높은 차수일수록 좁은 시야의 디테일이 늘어납니다.",
+        "plugin_update_required_nsns": "NSNS 협대역 서베이를 다운로드하려면 Touch'N'Stars 플러그인을 업데이트하세요.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, CC BY-NC-SA 4.0 라이선스. 출처를 밝히면 비상업적 용도로 무료로 사용할 수 있으며, 타일은 사용자의 NINA/PINS 호스트에 남습니다.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, Hα 선만 (이온화된 수소). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, [OIII] 선만 (이중 이온화된 산소). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] 선만 (이온화된 황). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다."
       },
       "object_types": {
         "_ass": "성협",
