@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Najet do home",
         "setHome": "Nastavit home",
-        "setHomeConfirm": "Nastavit aktuální polohu jako novou polohu home pro obě osy?",
-        "stop": "Zastavit motory"
+        "setHomeConfirm": "Nastavit aktuální polohu jako novou polohu home pro obě osy?"
       },
       "calibration": {
         "title": "Kalibrace převodového poměru",

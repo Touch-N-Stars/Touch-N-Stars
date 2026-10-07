@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "回到原点",
         "setHome": "设置原点",
-        "setHomeConfirm": "将当前位置设为两个轴的新原点?",
-        "stop": "停止电机"
+        "setHomeConfirm": "将当前位置设为两个轴的新原点?"
       },
       "calibration": {
         "title": "传动比校准",

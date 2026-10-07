@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Ir para home",
         "setHome": "Definir home",
-        "setHomeConfirm": "Definir a posição atual como nova posição home para ambos os eixos?",
-        "stop": "Parar motores"
+        "setHomeConfirm": "Definir a posição atual como nova posição home para ambos os eixos?"
       },
       "calibration": {
         "title": "Calibração da relação de engrenagem",

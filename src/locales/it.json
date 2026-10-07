@@ -5947,8 +5947,7 @@
         "altPlus": "Alt +",
         "home": "Vai a home",
         "setHome": "Imposta home",
-        "setHomeConfirm": "Impostare la posizione attuale come nuova home per entrambi gli assi?",
-        "stop": "Ferma i motori"
+        "setHomeConfirm": "Impostare la posizione attuale come nuova home per entrambi gli assi?"
       },
       "calibration": {
         "title": "Calibrazione del rapporto di riduzione",

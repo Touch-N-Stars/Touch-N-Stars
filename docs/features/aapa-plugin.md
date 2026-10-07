@@ -22,8 +22,10 @@ the Auto-Pilot ends.
   drives TPPA over the Advanced API's `/v2/tppa` socket (`src/services/websocketTppa.js`) with
   the rig-shared TPPA settings (`tppaStore.settings`, start message built by
   `src/utils/tppaStart.js`, shared with the TPPA page).
-- Dependency: the WebSocket server is not yet part of the public
-  [AAPA-Controller-Plugin](https://github.com/Blayzer-Astro/AAPA-Controller-Plugin) release.
+- Dependency: AAPA Controller plugin with WebSocket server. Protocol v2 (plugin 5.0.0.15) is the
+  target; v1 (first WebSocket build) keeps working with the log heuristic and without the
+  optional commands. Neither is part of a public
+  [AAPA-Controller-Plugin](https://github.com/Blayzer-Astro/AAPA-Controller-Plugin) release yet.
 
 ## Non-goals
 
@@ -59,7 +61,14 @@ the Auto-Pilot ends.
 10. TPPA not acknowledging the start (15 s), the Auto-Pilot not starting (20 s) or TPPA going
     silent for 2 min ends the flow with a message and stops what it started. Manual moves and
     calibration are disabled while the flow runs.
-11. Every user-facing string has an `en.json` key; the other 13 locales come in one batch before
+11. Given a protocol v2 server, when the user taps "Stop everything", TNS sends `STOP`,
+    `StopAutoPilot` and `CANCEL_CALIBRATION`, and a running one-button flow also stops TPPA.
+    The button is hidden on v1 servers, which have no motor stop.
+12. Given a protocol v2 server, Home and Set home are also offered per axis (Az/Alt); Set home per
+    axis asks for confirmation. A running calibration can be cancelled.
+13. Given a protocol v2 server, the status shows the last TPPA error with the total error in
+    arcseconds, and during the Auto-Pilot the last correction in steps.
+14. Every user-facing string has an `en.json` key; the other 13 locales come in one batch before
     the commit.
 
 ## Dimensions considered
@@ -78,30 +87,38 @@ the Auto-Pilot ends.
 
 ## Auto-Pilot and calibration state
 
-The current protocol reports neither. TNS derives both from the log lines
+Protocol v2 reports both in `state` (`autoPilotRunning`, `autoPilotIteration`,
+`calibrationRunning`). For v1 servers TNS derives them from the log lines
 (`deriveFromLog()` in `utils/aapaProtocol.js`): "Auto-Pilot started." / "Iteration N:" set it,
 "Auto-Pilot stopped/cancelled/finished" and "Auto-Pilot: …" clear it; the calibration markers
-work the same way. A client that connects mid-run does not see the run until the next marker.
-Explicit server fields (see below) override the heuristic as soon as a server sends them.
+work the same way. A v1 client that connects mid-run does not see the run until the next marker.
+`resolveRunState()` lets any server field win over the heuristic; fields are feature-detected on
+the payload, never branched on `protocolVersion`.
 
-## Protocol wishlist for the AAPA plugin author
+## Protocol v2 (AAPA plugin 5.0.0.15)
 
-To be passed on to Blayzer. TNS already feature-detects every item, so none of them breaks an
-older server.
+The wishlist handed to Blayzer is implemented:
 
-1. **Auto-Pilot state in `state`**: `autoPilotRunning` (bool), `autoPilotIteration` (int), and
-   the last correction. `AAPACore.AutoPilotStateChanged` and `AutoPilot.ProgressUpdated` exist
-   but are not broadcast.
-2. **Last TPPA reading in `state`**: `azErrorDeg`, `altErrorDeg`, `totalErrorArcSec`, timestamp,
-   from `TPPALogMonitor.ErrorDetected`.
-3. **`STOP` command**: an emergency motor stop. Today only `StopAutoPilot` stops the motors.
-4. **Per-axis commands**: `HOME_AZ`, `HOME_ALT`, `RESET_X`, `RESET_Y`, as in the panel.
-   `HOME`/`SET_HOME` currently fire both axes without awaiting the first.
-5. **`SEND_SPEED_ACCEL`**: push speed, acceleration and the Y limits to the firmware like the
-   panel's send button. `set` only stores them in N.I.N.A. today.
-6. **Calibration state and cancel**: `calibrationRunning` in `state` plus a `CANCEL_CALIBRATION`
-   command.
-7. **`supportedCommands`** (string array) and/or `protocolVersion` in `state`, so clients can
-   detect the optional commands above.
-8. Numbers in log lines use the N.I.N.A. culture (e.g. `+0,1234°` on a German system); invariant
-   culture would make them machine-readable.
+- `state` carries `protocolVersion: 2`, `supportedCommands`, `autoPilotRunning`,
+  `autoPilotIteration` (0 when idle), `lastCorrection: {azSteps, altSteps} | null`,
+  `calibrationRunning` and `tppaError: {azErrorDeg, altErrorDeg, totalErrorArcSec, timestamp} | null`.
+  `tppaError` is nested, not flat as proposed.
+- New commands: `STOP`, `HOME_AZ`, `HOME_ALT`, `RESET_X`, `RESET_Y`, `SEND_SPEED_ACCEL`,
+  `CANCEL_CALIBRATION`. `supportedCommands` lists the Auto-Pilot as `START_AUTOPILOT` /
+  `STOP_AUTOPILOT`; TNS keeps sending `StartAutoPilot` / `StopAutoPilot`, which the server still
+  accepts.
+- `PolarAlignmentError` and `CorrectionResult` format their numbers with the invariant culture.
+  Other log lines still follow the N.I.N.A. culture, so the log parser keeps accepting a decimal
+  comma.
+
+### Open points for the plugin author
+
+1. `STOP` only halts the motors; a running Auto-Pilot or calibration starts its next move one
+   iteration later. TNS works around it by sending `StopAutoPilot` and `CANCEL_CALIBRATION` too.
+2. `SEND_SPEED_ACCEL` ignores the results of the `Set…Async` calls and logs "sent to AAPA" even
+   without a connected device; the `Task.Run` body has no try/catch, so failures get lost.
+3. `HOME` / `SET_HOME` still fire both axes in parallel without awaiting the first.
+4. `AAPACore.StopCalibration()` resets `_errorTcs` without `Interlocked`, unlike the rest of the
+   class.
+5. The source archive contains three copies of the project; only the innermost
+   `nina.plugin.aapa/nina.plugin.aapa` is current.

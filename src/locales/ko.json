@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "홈으로 이동",
         "setHome": "홈 설정",
-        "setHomeConfirm": "현재 위치를 두 축의 새 홈 위치로 설정할까요?",
-        "stop": "모터 정지"
+        "setHomeConfirm": "현재 위치를 두 축의 새 홈 위치로 설정할까요?"
       },
       "calibration": {
         "title": "기어비 보정",

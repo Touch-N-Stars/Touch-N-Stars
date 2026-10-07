@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Ir al origen",
         "setHome": "Fijar origen",
-        "setHomeConfirm": "¿Establecer la posición actual como nuevo origen para ambos ejes?",
-        "stop": "Detener motores"
+        "setHomeConfirm": "¿Establecer la posición actual como nuevo origen para ambos ejes?"
       },
       "calibration": {
         "title": "Calibración de la relación de engranaje",

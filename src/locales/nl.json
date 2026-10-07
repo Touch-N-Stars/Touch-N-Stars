@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Naar home",
         "setHome": "Home instellen",
-        "setHomeConfirm": "Huidige positie instellen als nieuwe homepositie voor beide assen?",
-        "stop": "Motoren stoppen"
+        "setHomeConfirm": "Huidige positie instellen als nieuwe homepositie voor beide assen?"
       },
       "calibration": {
         "title": "Kalibratie van de overbrengingsverhouding",

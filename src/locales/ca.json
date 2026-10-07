@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Vés a l'origen",
         "setHome": "Defineix l'origen",
-        "setHomeConfirm": "Establir la posició actual com a nou origen per als dos eixos?",
-        "stop": "Atura els motors"
+        "setHomeConfirm": "Establir la posició actual com a nou origen per als dos eixos?"
       },
       "calibration": {
         "title": "Calibratge de la relació d'engranatge",

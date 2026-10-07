@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Aller à l'origine",
         "setHome": "Définir l'origine",
-        "setHomeConfirm": "Définir la position actuelle comme nouvelle origine pour les deux axes ?",
-        "stop": "Arrêter les moteurs"
+        "setHomeConfirm": "Définir la position actuelle comme nouvelle origine pour les deux axes ?"
       },
       "calibration": {
         "title": "Calibration du rapport de réduction",

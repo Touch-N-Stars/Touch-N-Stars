@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "Jedź do home",
         "setHome": "Ustaw home",
-        "setHomeConfirm": "Ustawić bieżącą pozycję jako nową pozycję home dla obu osi?",
-        "stop": "Zatrzymaj silniki"
+        "setHomeConfirm": "Ustawić bieżącą pozycję jako nową pozycję home dla obu osi?"
       },
       "calibration": {
         "title": "Kalibracja przełożenia",

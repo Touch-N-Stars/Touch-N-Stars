@@ -2596,7 +2596,10 @@
         "lastError": "Last measured error",
         "autoPilot": "Auto-Pilot",
         "iteration": "Iteration {n}",
-        "running": "Running"
+        "running": "Running",
+        "totalError": "total {arcsec}″",
+        "lastCorrection": "Last correction",
+        "correctionSteps": "Az {az} · Alt {alt} steps"
       },
       "assist": {
         "title": "Automatic polar alignment",
@@ -2634,7 +2637,12 @@
         "home": "Go home",
         "setHome": "Set home",
         "setHomeConfirm": "Make the current position the new home position for both axes?",
-        "stop": "Stop motors"
+        "homeAz": "Home Az",
+        "homeAlt": "Home Alt",
+        "setHomeAz": "Set home Az",
+        "setHomeAlt": "Set home Alt",
+        "setHomeAxisConfirm": "Make the current {axis} position the new home position?",
+        "stopAll": "Stop everything"
       },
       "calibration": {
         "title": "Gear ratio calibration",
@@ -2642,7 +2650,8 @@
         "steps": "Calibration steps",
         "azimuth": "Calibrate Az",
         "altitude": "Calibrate Alt",
-        "running": "Calibrating…"
+        "running": "Calibrating…",
+        "cancel": "Cancel calibration"
       },
       "settings": {
         "groups": {

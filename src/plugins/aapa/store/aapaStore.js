@@ -21,6 +21,7 @@ import {
   deriveFromLog,
   initialDerivedState,
   resolveRunState,
+  supportsCommand,
 } from '../utils/aapaProtocol';
 
 const STORAGE_KEY = 'aapa-plugin-settings';
@@ -225,6 +226,21 @@ export const useAapaStore = defineStore('aapaStore', {
       this.command('StopAutoPilot');
       this.stopTppa();
       this.finishAssist();
+    },
+
+    /**
+     * Stop everything that can move the AAPA. The server's STOP only halts the motors; a
+     * running Auto-Pilot or calibration would start the next move one iteration later.
+     * STOP goes first so the motors halt before anything else is processed.
+     */
+    emergencyStop() {
+      this.command('STOP');
+      this.command('StopAutoPilot');
+      if (supportsCommand(this.server, 'CANCEL_CALIBRATION')) this.command('CANCEL_CALIBRATION');
+      if (this.assistActive) {
+        this.stopTppa();
+        this.finishAssist();
+      }
     },
 
     stopTppa() {

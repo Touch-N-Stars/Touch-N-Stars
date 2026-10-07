@@ -229,13 +229,15 @@ export function initialDerivedState() {
 }
 
 /**
- * Merge explicit server fields over the log-derived state. Fields are
- * feature-detected on the payload: the protocol extensions proposed in
- * docs/features/aapa-plugin.md are used as soon as a server sends them.
+ * Merge explicit server fields over the log-derived state. Protocol v2 (AAPA plugin
+ * 5.0.0.15) sends them all; a v1 server sends none, and the log heuristic carries on.
+ * Fields are feature-detected on the payload, never branched on `protocolVersion`.
  */
 export function resolveRunState(serverState, derived) {
   const s = serverState ?? {};
   const has = (key) => Object.prototype.hasOwnProperty.call(s, key);
+  // tppaError is null until the first TPPA reading; the log may already have one.
+  const tppa = s.tppaError;
   return {
     autoPilotRunning: has('autoPilotRunning')
       ? Boolean(s.autoPilotRunning)
@@ -247,13 +249,18 @@ export function resolveRunState(serverState, derived) {
       ? Boolean(s.calibrationRunning)
       : derived.calibrationRunning,
     lastError:
-      has('azErrorDeg') && has('altErrorDeg')
-        ? { azDeg: s.azErrorDeg, altDeg: s.altErrorDeg }
+      tppa && Number.isFinite(tppa.azErrorDeg) && Number.isFinite(tppa.altErrorDeg)
+        ? {
+            azDeg: tppa.azErrorDeg,
+            altDeg: tppa.altErrorDeg,
+            totalArcSec: Number.isFinite(tppa.totalErrorArcSec) ? tppa.totalErrorArcSec : null,
+          }
         : derived.lastError,
+    lastCorrection: s.lastCorrection ?? null,
   };
 }
 
-/** Commands the current protocol lacks; the UI shows them only when the server advertises them. */
+/** Optional commands (STOP, per-axis home, ...) are offered only when the server lists them. */
 export function supportsCommand(serverState, command) {
   const list = serverState?.supportedCommands;
   return Array.isArray(list) && list.includes(command);

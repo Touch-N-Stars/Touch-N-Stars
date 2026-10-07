@@ -24,6 +24,14 @@
         {{ $t('plugins.aapa.calibration.altitude') }}
       </button>
     </div>
+    <button
+      v-if="run.calibrationRunning && supportsCommand(store.server, 'CANCEL_CALIBRATION')"
+      class="tns-btn-danger"
+      :disabled="!store.isWsOpen"
+      @click="store.command('CANCEL_CALIBRATION')"
+    >
+      {{ $t('plugins.aapa.calibration.cancel') }}
+    </button>
 
     <dl class="grid grid-cols-2 gap-2 text-sm">
       <div class="tns-stat-tile">
@@ -41,6 +49,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useAapaStore } from '../store/aapaStore';
+import { supportsCommand } from '../utils/aapaProtocol';
 import AapaSettingInput from './AapaSettingInput.vue';
 
 const store = useAapaStore();

@@ -5942,8 +5942,7 @@
         "altPlus": "Alt +",
         "home": "原点へ移動",
         "setHome": "原点を設定",
-        "setHomeConfirm": "現在位置を両軸の新しい原点に設定しますか?",
-        "stop": "モーターを停止"
+        "setHomeConfirm": "現在位置を両軸の新しい原点に設定しますか?"
       },
       "calibration": {
         "title": "ギア比キャリブレーション",

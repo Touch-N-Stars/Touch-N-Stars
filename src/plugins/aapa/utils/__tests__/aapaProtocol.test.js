@@ -139,16 +139,49 @@ test('calibration run is derived from the log lines', () => {
   );
 });
 
-test('explicit server fields win over the log heuristic', () => {
+test('v1 server without run fields falls back to the log heuristic', () => {
+  const derived = {
+    ...initialDerivedState(),
+    autoPilotRunning: true,
+    autoPilotIteration: 2,
+    lastError: { azDeg: 0.1, altDeg: 0.2 },
+  };
+  const resolved = resolveRunState({ type: 'state', isConnected: true }, derived);
+  assert.equal(resolved.autoPilotRunning, true);
+  assert.equal(resolved.autoPilotIteration, 2);
+  assert.deepEqual(resolved.lastError, { azDeg: 0.1, altDeg: 0.2 });
+  assert.equal(resolved.lastCorrection, null);
+});
+
+test('protocol v2 fields win over the log heuristic', () => {
   const derived = { ...initialDerivedState(), autoPilotRunning: true, autoPilotIteration: 2 };
-  assert.equal(resolveRunState({}, derived).autoPilotRunning, true);
   const resolved = resolveRunState(
-    { autoPilotRunning: false, autoPilotIteration: 7, azErrorDeg: 0.01, altErrorDeg: -0.02 },
+    {
+      protocolVersion: 2,
+      autoPilotRunning: false,
+      autoPilotIteration: 0,
+      calibrationRunning: true,
+      lastCorrection: { azSteps: 120, altSteps: -50 },
+      tppaError: {
+        azErrorDeg: 0.01,
+        altErrorDeg: -0.02,
+        totalErrorArcSec: 80.5,
+        timestamp: '2026-10-07T18:50:00Z',
+      },
+    },
     derived
   );
   assert.equal(resolved.autoPilotRunning, false);
-  assert.equal(resolved.autoPilotIteration, 7);
-  assert.deepEqual(resolved.lastError, { azDeg: 0.01, altDeg: -0.02 });
+  assert.equal(resolved.autoPilotIteration, 0);
+  assert.equal(resolved.calibrationRunning, true);
+  assert.deepEqual(resolved.lastCorrection, { azSteps: 120, altSteps: -50 });
+  assert.deepEqual(resolved.lastError, { azDeg: 0.01, altDeg: -0.02, totalArcSec: 80.5 });
+});
+
+test('tppaError null before the first reading keeps the log-derived error', () => {
+  const derived = { ...initialDerivedState(), lastError: { azDeg: 0.3, altDeg: -0.1 } };
+  const resolved = resolveRunState({ protocolVersion: 2, tppaError: null }, derived);
+  assert.deepEqual(resolved.lastError, { azDeg: 0.3, altDeg: -0.1 });
 });
 
 test('optional commands are only offered when the server lists them', () => {
