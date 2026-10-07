@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as an additional sky background, as colour composite or as single H-alpha, [OIII] or [SII] line, and switched with DSS; it covers the sky north of -16°.
 - PINS settings: Configure the disk-backed swap file to 2 GB (image default), 4 GB, or 8 GB (recommended). Changes apply after reboot and require an updated pinsdaemon.
 - Sequence editor (NINA): With an up-to-date Touch'N'Stars plugin, NINA now gets the same sequence editor as PINS. Items, triggers and conditions can be added, moved, duplicated, deleted and edited directly in the list while the running status keeps updating, and sequences can be loaded, saved and managed as files. With an older plugin the previous view is still shown.
+- AAPA Controller (plugin): Control the Astrophilos Automated Polar Alignment through the AAPA Controller NINA plugin, including one-button polar alignment together with TPPA.
 - Sequence editor: Items from other NINA plugins can now be added as well. Items without their own editor get a generic one; complex plugin values are shown read-only.
 
 ### Changed
