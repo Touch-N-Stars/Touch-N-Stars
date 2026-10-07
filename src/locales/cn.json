@@ -5924,6 +5924,111 @@
         "noScheduleData": "暂无排程数据。",
         "waitingNotVisible": "等待中 — 目标尚不可见"
       }
+    },
+    "aapa": {
+      "title": "AAPA 控制器",
+      "invalidValue": "无效值",
+      "tabs": {
+        "control": "控制",
+        "calibration": "校准",
+        "settings": "设置",
+        "log": "日志"
+      },
+      "ws": {
+        "idle": "未连接",
+        "connecting": "正在连接…",
+        "open": "插件已连接",
+        "closed": "无法访问插件",
+        "unreachable": "无法连接到 {url} 上的 AAPA 插件。",
+        "checkPlugin": "AAPA Controller 插件是否已在 N.I.N.A. 中安装并加载?",
+        "checkEnabled": "插件设置中是否已启用 WebSocket 服务器,且端口与下方一致?",
+        "checkFirewall": "Windows 防火墙是否允许此端口的入站连接?",
+        "port": "WebSocket 端口"
+      },
+      "connection": {
+        "title": "AAPA 设备",
+        "connectedTo": "已连接:{port}",
+        "disconnected": "未连接",
+        "port": "端口",
+        "auto": "自动(扫描所有端口)",
+        "wifi": "Wi-Fi(IP 地址)",
+        "ipAddress": "AAPA 的 IP 地址",
+        "connect": "连接",
+        "disconnect": "断开连接",
+        "autoHint": "自动模式会检查 N.I.N.A. 计算机上的所有串口,查找 AAPA。"
+      },
+      "status": {
+        "positionX": "位置 X (Az)",
+        "positionY": "位置 Y (Alt)",
+        "motion": "运动",
+        "moving": "移动中",
+        "idle": "空闲",
+        "homed": "已归位",
+        "lastError": "上次测得误差",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "第 {n} 次迭代",
+        "running": "运行中"
+      },
+      "manual": {
+        "title": "手动控制",
+        "stepSize": "步长 (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "回到原点",
+        "setHome": "设置原点",
+        "setHomeConfirm": "将当前位置设为两个轴的新原点?"
+      },
+      "calibration": {
+        "title": "传动比校准",
+        "hint": "请先启动 TPPA。AAPA 会将一个轴移动指定步数,并根据测得的误差变化计算传动比。",
+        "steps": "校准步数",
+        "azimuth": "校准 Az",
+        "altitude": "校准 Alt",
+        "running": "校准中…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "电机几何参数",
+          "motor": "速度与加速度",
+          "limits": "高度限制"
+        },
+        "fields": {
+          "ToleranceDegrees": "容差 (°)",
+          "SettleTimeSeconds": "稳定时间 (秒)",
+          "MaxIterations": "最大迭代次数(0 = 不限)",
+          "MaxCorrectionDeg": "每次迭代最大修正 (°)",
+          "MotionTimeoutSeconds": "运动超时 (秒)",
+          "StepsPerRevolution": "每转步数",
+          "AzimuthMicrosteps": "Az 微步",
+          "AltitudeMicrosteps": "Alt 微步",
+          "AzimuthGearRatio": "Az 传动比",
+          "AltitudeGearRatio": "Alt 传动比",
+          "ReverseAzimuth": "反转 Az",
+          "ReverseAltitude": "反转 Alt",
+          "AzimuthBacklash": "Az 回差(步)",
+          "AltitudeBacklash": "Alt 回差(步)",
+          "AzimuthSpeed": "Az 速度(步/秒)",
+          "AltitudeSpeed": "Alt 速度(步/秒)",
+          "AzimuthAccel": "Az 加速度(步/秒²)",
+          "AltitudeAccel": "Alt 加速度(步/秒²)",
+          "MinYLimit": "最小 Y(步)",
+          "MaxYLimit": "最大 Y(步)"
+        },
+        "autoSaveHint": "离开输入框后,更改会立即保存到 N.I.N.A.。",
+        "saveInNina": "保存到 N.I.N.A.",
+        "storeOnDevice": "存储到 AAPA",
+        "sendConfirm": "将 AAPA 当前配置永久存储到其内存 (EEPROM) 中?",
+        "applyToDevice": "应用到 AAPA",
+        "applyInNinaHint": "这些值保存在 N.I.N.A. 中。要传输到 AAPA,请使用 N.I.N.A. 中 AAPA 面板的发送按钮。"
+      },
+      "log": {
+        "title": "日志",
+        "clear": "清除",
+        "empty": "暂无消息。"
+      }
     }
   },
   "pinsDevices": {

@@ -2590,6 +2590,147 @@
     }
   },
   "plugins": {
+    "aapa": {
+      "title": "AAPA Controller",
+      "invalidValue": "Invalid value",
+      "tabs": {
+        "control": "Control",
+        "calibration": "Calibration",
+        "settings": "Settings",
+        "log": "Log"
+      },
+      "ws": {
+        "idle": "Not connected",
+        "connecting": "Connecting…",
+        "open": "Plugin connected",
+        "closed": "Plugin not reachable",
+        "unreachable": "No connection to the AAPA plugin at {url}.",
+        "checkPlugin": "Is the AAPA Controller plugin installed and loaded in N.I.N.A.?",
+        "checkEnabled": "Is the WebSocket server enabled in the plugin settings, with the same port as below?",
+        "checkFirewall": "Does the Windows firewall allow incoming connections on this port?",
+        "port": "WebSocket port"
+      },
+      "connection": {
+        "title": "AAPA device",
+        "connectedTo": "Connected: {port}",
+        "disconnected": "Not connected",
+        "port": "Port",
+        "auto": "Auto (scan all ports)",
+        "wifi": "Wi-Fi (IP address)",
+        "ipAddress": "IP address of the AAPA",
+        "connect": "Connect",
+        "disconnect": "Disconnect",
+        "autoHint": "Auto checks every serial port on the N.I.N.A. computer for an AAPA."
+      },
+      "status": {
+        "positionX": "Position X (Az)",
+        "positionY": "Position Y (Alt)",
+        "motion": "Motion",
+        "moving": "Moving",
+        "idle": "Idle",
+        "homed": "Homed",
+        "lastError": "Last measured error",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Iteration {n}",
+        "running": "Running",
+        "totalError": "total {arcsec}″",
+        "lastCorrection": "Last correction",
+        "correctionSteps": "Az {az} · Alt {alt} steps"
+      },
+      "assist": {
+        "title": "Automatic polar alignment",
+        "hint": "One tap starts TPPA (unless it is already running) and then the Auto-Pilot, which corrects until the error is within tolerance. TPPA stops automatically when the Auto-Pilot ends. In the TPPA settings in N.I.N.A., \"Log polar alignment error adjustments\" must be enabled. Keep this page open while it runs.",
+        "start": "Start polar alignment",
+        "running": "Running…",
+        "stop": "Stop",
+        "tppaSettings": "TPPA settings",
+        "tnsPluginRequired": "TPPA needs the Touch'N'Stars plugin in N.I.N.A.; it is not reachable.",
+        "phaseLabel": "Status",
+        "azError": "Azimuth error",
+        "altError": "Altitude error",
+        "phase": {
+          "idle": "Idle",
+          "startingTppa": "Starting TPPA…",
+          "startingAutoPilot": "Starting Auto-Pilot…",
+          "running": "Auto-Pilot running"
+        },
+        "errors": {
+          "tppaUnavailable": "The TPPA connection could not be opened.",
+          "tppaNoResponse": "TPPA did not respond to the start request.",
+          "tppaError": "TPPA reported an error. Check camera, mount and plate solver.",
+          "tppaSilent": "TPPA has not sent anything for two minutes. TPPA and the Auto-Pilot were stopped.",
+          "autoPilotNotStarted": "The Auto-Pilot did not start. Check the AAPA log; TPPA was stopped if it was started here.",
+          "connectionLost": "The connection to the AAPA plugin was interrupted. TPPA and the Auto-Pilot may still be running - use Stop if needed."
+        }
+      },
+      "manual": {
+        "title": "Manual control",
+        "stepSize": "Step size (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Go home",
+        "setHome": "Set home",
+        "setHomeConfirm": "Make the current position the new home position for both axes?",
+        "homeAz": "Home Az",
+        "homeAlt": "Home Alt",
+        "setHomeAz": "Set home Az",
+        "setHomeAlt": "Set home Alt",
+        "setHomeAxisConfirm": "Make the current {axis} position the new home position?",
+        "stopAll": "Stop everything"
+      },
+      "calibration": {
+        "title": "Gear ratio calibration",
+        "hint": "Start TPPA first. The AAPA moves one axis by the given steps and calculates the gear ratio from the measured change in error.",
+        "steps": "Calibration steps",
+        "azimuth": "Calibrate Az",
+        "altitude": "Calibrate Alt",
+        "running": "Calibrating…",
+        "cancel": "Cancel calibration"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Motor geometry",
+          "motor": "Speed and acceleration",
+          "limits": "Altitude limits"
+        },
+        "fields": {
+          "ToleranceDegrees": "Tolerance (°)",
+          "SettleTimeSeconds": "Settle time (s)",
+          "MaxIterations": "Max iterations (0 = unlimited)",
+          "MaxCorrectionDeg": "Max correction per iteration (°)",
+          "MotionTimeoutSeconds": "Motion timeout (s)",
+          "StepsPerRevolution": "Steps per revolution",
+          "AzimuthMicrosteps": "Az microsteps",
+          "AltitudeMicrosteps": "Alt microsteps",
+          "AzimuthGearRatio": "Az gear ratio",
+          "AltitudeGearRatio": "Alt gear ratio",
+          "ReverseAzimuth": "Reverse Az",
+          "ReverseAltitude": "Reverse Alt",
+          "AzimuthBacklash": "Az backlash (steps)",
+          "AltitudeBacklash": "Alt backlash (steps)",
+          "AzimuthSpeed": "Az speed (steps/s)",
+          "AltitudeSpeed": "Alt speed (steps/s)",
+          "AzimuthAccel": "Az acceleration (steps/s²)",
+          "AltitudeAccel": "Alt acceleration (steps/s²)",
+          "MinYLimit": "Min Y (steps)",
+          "MaxYLimit": "Max Y (steps)"
+        },
+        "autoSaveHint": "Changes are saved in N.I.N.A. as soon as you leave a field.",
+        "saveInNina": "Save in N.I.N.A.",
+        "storeOnDevice": "Store on AAPA",
+        "sendConfirm": "Permanently store the AAPA's current configuration in its memory (EEPROM)?",
+        "applyToDevice": "Apply to AAPA",
+        "applyInNinaHint": "These values are saved in N.I.N.A. To transfer them to the AAPA, use the send button in the AAPA panel in N.I.N.A."
+      },
+      "log": {
+        "title": "Log",
+        "clear": "Clear",
+        "empty": "No messages yet."
+      }
+    },
     "indiControlPanel": {
       "title": "INDI Control Panel",
       "description": "Inspect and control every property of the INDI drivers currently loaded on the server.",

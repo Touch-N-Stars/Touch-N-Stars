@@ -5924,6 +5924,111 @@
         "noScheduleData": "Sin datos de programación.",
         "waitingNotVisible": "Esperando — objetivo aún no visible"
       }
+    },
+    "aapa": {
+      "title": "Controlador AAPA",
+      "invalidValue": "Valor no válido",
+      "tabs": {
+        "control": "Control",
+        "calibration": "Calibración",
+        "settings": "Ajustes",
+        "log": "Registro"
+      },
+      "ws": {
+        "idle": "No conectado",
+        "connecting": "Conectando…",
+        "open": "Plugin conectado",
+        "closed": "Plugin no accesible",
+        "unreachable": "Sin conexión con el plugin AAPA en {url}.",
+        "checkPlugin": "¿Está el plugin AAPA Controller instalado y cargado en N.I.N.A.?",
+        "checkEnabled": "¿Está activado el servidor WebSocket en los ajustes del plugin, con el mismo puerto que abajo?",
+        "checkFirewall": "¿Permite el firewall de Windows las conexiones entrantes en este puerto?",
+        "port": "Puerto WebSocket"
+      },
+      "connection": {
+        "title": "Dispositivo AAPA",
+        "connectedTo": "Conectado: {port}",
+        "disconnected": "No conectado",
+        "port": "Puerto",
+        "auto": "Auto (escanear todos los puertos)",
+        "wifi": "Wi-Fi (dirección IP)",
+        "ipAddress": "Dirección IP del AAPA",
+        "connect": "Conectar",
+        "disconnect": "Desconectar",
+        "autoHint": "Auto busca un AAPA en todos los puertos serie del equipo con N.I.N.A."
+      },
+      "status": {
+        "positionX": "Posición X (Az)",
+        "positionY": "Posición Y (Alt)",
+        "motion": "Movimiento",
+        "moving": "En movimiento",
+        "idle": "Inactivo",
+        "homed": "En origen",
+        "lastError": "Último error medido",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Iteración {n}",
+        "running": "En ejecución"
+      },
+      "manual": {
+        "title": "Control manual",
+        "stepSize": "Tamaño de paso (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Ir al origen",
+        "setHome": "Fijar origen",
+        "setHomeConfirm": "¿Establecer la posición actual como nuevo origen para ambos ejes?"
+      },
+      "calibration": {
+        "title": "Calibración de la relación de engranaje",
+        "hint": "Inicia primero TPPA. El AAPA mueve un eje los pasos indicados y calcula la relación a partir del cambio de error medido.",
+        "steps": "Pasos de calibración",
+        "azimuth": "Calibrar Az",
+        "altitude": "Calibrar Alt",
+        "running": "Calibrando…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Geometría del motor",
+          "motor": "Velocidad y aceleración",
+          "limits": "Límites de altitud"
+        },
+        "fields": {
+          "ToleranceDegrees": "Tolerancia (°)",
+          "SettleTimeSeconds": "Tiempo de estabilización (s)",
+          "MaxIterations": "Iteraciones máx. (0 = ilimitado)",
+          "MaxCorrectionDeg": "Corrección máx. por iteración (°)",
+          "MotionTimeoutSeconds": "Tiempo límite de movimiento (s)",
+          "StepsPerRevolution": "Pasos por revolución",
+          "AzimuthMicrosteps": "Micropasos Az",
+          "AltitudeMicrosteps": "Micropasos Alt",
+          "AzimuthGearRatio": "Relación de engranaje Az",
+          "AltitudeGearRatio": "Relación de engranaje Alt",
+          "ReverseAzimuth": "Invertir Az",
+          "ReverseAltitude": "Invertir Alt",
+          "AzimuthBacklash": "Holgura Az (pasos)",
+          "AltitudeBacklash": "Holgura Alt (pasos)",
+          "AzimuthSpeed": "Velocidad Az (pasos/s)",
+          "AltitudeSpeed": "Velocidad Alt (pasos/s)",
+          "AzimuthAccel": "Aceleración Az (pasos/s²)",
+          "AltitudeAccel": "Aceleración Alt (pasos/s²)",
+          "MinYLimit": "Y mín. (pasos)",
+          "MaxYLimit": "Y máx. (pasos)"
+        },
+        "autoSaveHint": "Los cambios se guardan en N.I.N.A. al salir de un campo.",
+        "saveInNina": "Guardar en N.I.N.A.",
+        "storeOnDevice": "Guardar en el AAPA",
+        "sendConfirm": "¿Guardar de forma permanente la configuración actual del AAPA en su memoria (EEPROM)?",
+        "applyToDevice": "Aplicar al AAPA",
+        "applyInNinaHint": "Estos valores se guardan en N.I.N.A. Para transferirlos al AAPA, usa el botón de envío en el panel AAPA de N.I.N.A."
+      },
+      "log": {
+        "title": "Registro",
+        "clear": "Borrar",
+        "empty": "Aún no hay mensajes."
+      }
     }
   },
   "pinsDevices": {

@@ -309,7 +309,6 @@ import {
 import { apiStore } from '@/store/store';
 import { useTppaStore } from '@/store/tppaStore';
 import { useImagetStore } from '@/store/imageStore';
-import apiService from '@/services/apiService';
 import TppaLastStatus from '@/components/tppa/TppaLastStatus.vue';
 import ActuellErrorModal from '@/components/tppa/ActuellErrorModal.vue';
 import ButtonPause from '@/components/tppa/ButtonPause.vue';
@@ -323,6 +322,7 @@ import MountButton from '@/components/helpers/quickAccessButtons/MountButton.vue
 import moveAxis from '@/components/mount/moveAxis.vue';
 import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import { timeSync } from '@/utils/timeSync';
+import { buildTppaStartMessage, unparkMountForTppa } from '@/utils/tppaStart';
 
 const tppaStore = useTppaStore();
 const store = apiStore();
@@ -458,73 +458,9 @@ function formatMessage(message) {
 async function startAlignment() {
   tppaStore.isPause = false;
   resetErrors();
-  await unparkMount();
+  await unparkMountForTppa(store);
 
-  const message = {
-    Action: 'start-alignment',
-  };
-
-  if (store.isPINS) {
-    // PINS manages its own alignment settings via the PINS API – only send ManualMode and StartFromCurrentPosition
-    message.StartFromCurrentPosition = tppaStore.settings.StartFromCurrentPosition || false;
-
-    if (
-      !store.mountInfo.Connected &&
-      store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.10.0')
-    ) {
-      message.ManualMode = true;
-      console.log('Mount not connected, forcing ManualMode to true');
-    } else {
-      message.ManualMode = tppaStore.settings.ManualMode;
-    }
-    if (tppaStore.settings.ExposureTime !== null) {
-      message.ExposureTime = tppaStore.settings.ExposureTime;
-    }
-    if (tppaStore.settings.Gain !== null) {
-      message.Gain = tppaStore.settings.Gain;
-    }
-    if (tppaStore.settings.Filter) {
-      message.Filter = tppaStore.settings.Filter;
-    }
-  } else {
-    // NINA
-    //Defines if the direction for the second and third point should be done by moving the mount in east or west direction along the RA axis
-    message.EastDirection = tppaStore.settings.EastDirection;
-
-    if (!tppaStore.settings.StartFromCurrentPosition) {
-      message.StartFromCurrentPosition = 'false';
-    } else {
-      message.StartFromCurrentPosition = tppaStore.settings.StartFromCurrentPosition;
-    }
-
-    if (
-      !store.mountInfo.Connected &&
-      store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.10.0')
-    ) {
-      // if mount is not connected, force manual mode
-      message.ManualMode = true;
-      console.log('Mount not connected, forcing ManualMode to true');
-    } else {
-      message.ManualMode = tppaStore.settings.ManualMode;
-      console.log(
-        'Mount connected, using ManualMode from settings:',
-        tppaStore.settings.ManualMode
-      );
-    }
-
-    if (tppaStore.settings.ExposureTime !== null) {
-      message.ExposureTime = tppaStore.settings.ExposureTime;
-    }
-
-    if (tppaStore.settings.Gain !== null) {
-      message.Gain = tppaStore.settings.Gain;
-    }
-
-    if (tppaStore.settings.Filter) {
-      message.Filter = tppaStore.settings.Filter;
-    }
-  }
-
+  const message = buildTppaStartMessage(tppaStore.settings, store);
   console.log('Sending TPPA start message:', message);
   websocketService.sendMessage(JSON.stringify(message));
 
@@ -557,22 +493,6 @@ function stopAlignment() {
   );
   // Close the dialog when stop is clicked
   emit('close');
-}
-
-async function unparkMount() {
-  if (store.mountInfo.AtPark) {
-    try {
-      await apiService.mountAction('unpark');
-      await wait(2000);
-      console.log(t('components.mount.control.unpark'));
-    } catch (error) {
-      console.log(t('components.mount.control.errors.unpark'));
-    }
-  }
-}
-
-async function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Re-sync the TPPA status from the backend whenever the connection comes back

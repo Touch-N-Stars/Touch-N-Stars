@@ -5924,6 +5924,111 @@
         "noScheduleData": "일정 데이터가 없습니다.",
         "waitingNotVisible": "대기 중 — 대상이 아직 보이지 않음"
       }
+    },
+    "aapa": {
+      "title": "AAPA 컨트롤러",
+      "invalidValue": "잘못된 값",
+      "tabs": {
+        "control": "제어",
+        "calibration": "보정",
+        "settings": "설정",
+        "log": "로그"
+      },
+      "ws": {
+        "idle": "연결 안 됨",
+        "connecting": "연결 중…",
+        "open": "플러그인 연결됨",
+        "closed": "플러그인에 연결할 수 없음",
+        "unreachable": "{url}의 AAPA 플러그인에 연결할 수 없습니다.",
+        "checkPlugin": "AAPA Controller 플러그인이 N.I.N.A.에 설치되어 로드되어 있나요?",
+        "checkEnabled": "플러그인 설정에서 WebSocket 서버가 켜져 있고 아래와 같은 포트를 사용하나요?",
+        "checkFirewall": "Windows 방화벽이 이 포트의 수신 연결을 허용하나요?",
+        "port": "WebSocket 포트"
+      },
+      "connection": {
+        "title": "AAPA 장치",
+        "connectedTo": "연결됨: {port}",
+        "disconnected": "연결 안 됨",
+        "port": "포트",
+        "auto": "자동(모든 포트 검색)",
+        "wifi": "Wi-Fi(IP 주소)",
+        "ipAddress": "AAPA의 IP 주소",
+        "connect": "연결",
+        "disconnect": "연결 해제",
+        "autoHint": "자동은 N.I.N.A. 컴퓨터의 모든 시리얼 포트에서 AAPA를 찾습니다."
+      },
+      "status": {
+        "positionX": "위치 X (Az)",
+        "positionY": "위치 Y (Alt)",
+        "motion": "동작",
+        "moving": "이동 중",
+        "idle": "대기 중",
+        "homed": "홈 완료",
+        "lastError": "마지막 측정 오차",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "반복 {n}",
+        "running": "실행 중"
+      },
+      "manual": {
+        "title": "수동 제어",
+        "stepSize": "스텝 크기 (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "홈으로 이동",
+        "setHome": "홈 설정",
+        "setHomeConfirm": "현재 위치를 두 축의 새 홈 위치로 설정할까요?"
+      },
+      "calibration": {
+        "title": "기어비 보정",
+        "hint": "먼저 TPPA를 시작하세요. AAPA가 한 축을 지정한 스텝만큼 움직이고, 측정된 오차 변화로 기어비를 계산합니다.",
+        "steps": "보정 스텝",
+        "azimuth": "Az 보정",
+        "altitude": "Alt 보정",
+        "running": "보정 중…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "모터 구성",
+          "motor": "속도 및 가속도",
+          "limits": "고도 제한"
+        },
+        "fields": {
+          "ToleranceDegrees": "허용 오차 (°)",
+          "SettleTimeSeconds": "안정화 시간 (초)",
+          "MaxIterations": "최대 반복 횟수 (0 = 무제한)",
+          "MaxCorrectionDeg": "반복당 최대 보정량 (°)",
+          "MotionTimeoutSeconds": "동작 제한 시간 (초)",
+          "StepsPerRevolution": "1회전당 스텝 수",
+          "AzimuthMicrosteps": "Az 마이크로스텝",
+          "AltitudeMicrosteps": "Alt 마이크로스텝",
+          "AzimuthGearRatio": "Az 기어비",
+          "AltitudeGearRatio": "Alt 기어비",
+          "ReverseAzimuth": "Az 반전",
+          "ReverseAltitude": "Alt 반전",
+          "AzimuthBacklash": "Az 백래시 (스텝)",
+          "AltitudeBacklash": "Alt 백래시 (스텝)",
+          "AzimuthSpeed": "Az 속도 (스텝/초)",
+          "AltitudeSpeed": "Alt 속도 (스텝/초)",
+          "AzimuthAccel": "Az 가속도 (스텝/초²)",
+          "AltitudeAccel": "Alt 가속도 (스텝/초²)",
+          "MinYLimit": "최소 Y (스텝)",
+          "MaxYLimit": "최대 Y (스텝)"
+        },
+        "autoSaveHint": "필드를 벗어나면 변경 사항이 N.I.N.A.에 저장됩니다.",
+        "saveInNina": "N.I.N.A.에 저장",
+        "storeOnDevice": "AAPA에 저장",
+        "sendConfirm": "AAPA의 현재 설정을 메모리(EEPROM)에 영구 저장할까요?",
+        "applyToDevice": "AAPA에 적용",
+        "applyInNinaHint": "이 값은 N.I.N.A.에 저장됩니다. AAPA로 전송하려면 N.I.N.A.의 AAPA 패널에 있는 전송 버튼을 사용하세요."
+      },
+      "log": {
+        "title": "로그",
+        "clear": "지우기",
+        "empty": "아직 메시지가 없습니다."
+      }
     }
   },
   "pinsDevices": {

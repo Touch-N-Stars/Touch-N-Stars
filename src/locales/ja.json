@@ -5924,6 +5924,111 @@
         "noScheduleData": "スケジュールデータがありません。",
         "waitingNotVisible": "待機中 — ターゲットはまだ見えていません"
       }
+    },
+    "aapa": {
+      "title": "AAPA コントローラー",
+      "invalidValue": "無効な値",
+      "tabs": {
+        "control": "操作",
+        "calibration": "キャリブレーション",
+        "settings": "設定",
+        "log": "ログ"
+      },
+      "ws": {
+        "idle": "未接続",
+        "connecting": "接続中…",
+        "open": "プラグイン接続済み",
+        "closed": "プラグインに到達できません",
+        "unreachable": "{url} の AAPA プラグインに接続できません。",
+        "checkPlugin": "AAPA Controller プラグインが N.I.N.A. にインストールされ、読み込まれていますか?",
+        "checkEnabled": "プラグイン設定で WebSocket サーバーが有効になっており、下記と同じポートですか?",
+        "checkFirewall": "Windows ファイアウォールでこのポートへの受信接続が許可されていますか?",
+        "port": "WebSocket ポート"
+      },
+      "connection": {
+        "title": "AAPA デバイス",
+        "connectedTo": "接続済み: {port}",
+        "disconnected": "未接続",
+        "port": "ポート",
+        "auto": "自動(すべてのポートをスキャン)",
+        "wifi": "Wi-Fi(IP アドレス)",
+        "ipAddress": "AAPA の IP アドレス",
+        "connect": "接続",
+        "disconnect": "切断",
+        "autoHint": "自動では、N.I.N.A. コンピューターのすべてのシリアルポートから AAPA を検索します。"
+      },
+      "status": {
+        "positionX": "位置 X (Az)",
+        "positionY": "位置 Y (Alt)",
+        "motion": "動作",
+        "moving": "移動中",
+        "idle": "待機中",
+        "homed": "原点復帰済み",
+        "lastError": "最後に測定された誤差",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "反復 {n}",
+        "running": "実行中"
+      },
+      "manual": {
+        "title": "手動操作",
+        "stepSize": "ステップ幅 (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "原点へ移動",
+        "setHome": "原点を設定",
+        "setHomeConfirm": "現在位置を両軸の新しい原点に設定しますか?"
+      },
+      "calibration": {
+        "title": "ギア比キャリブレーション",
+        "hint": "先に TPPA を起動してください。AAPA は指定ステップ数だけ1軸を動かし、測定された誤差の変化からギア比を計算します。",
+        "steps": "キャリブレーションステップ数",
+        "azimuth": "Az をキャリブレーション",
+        "altitude": "Alt をキャリブレーション",
+        "running": "キャリブレーション中…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "モーター構成",
+          "motor": "速度と加速度",
+          "limits": "高度制限"
+        },
+        "fields": {
+          "ToleranceDegrees": "許容誤差 (°)",
+          "SettleTimeSeconds": "整定時間 (秒)",
+          "MaxIterations": "最大反復回数(0 = 無制限)",
+          "MaxCorrectionDeg": "反復ごとの最大補正量 (°)",
+          "MotionTimeoutSeconds": "動作タイムアウト (秒)",
+          "StepsPerRevolution": "1回転あたりのステップ数",
+          "AzimuthMicrosteps": "Az マイクロステップ",
+          "AltitudeMicrosteps": "Alt マイクロステップ",
+          "AzimuthGearRatio": "Az ギア比",
+          "AltitudeGearRatio": "Alt ギア比",
+          "ReverseAzimuth": "Az 反転",
+          "ReverseAltitude": "Alt 反転",
+          "AzimuthBacklash": "Az バックラッシュ(ステップ)",
+          "AltitudeBacklash": "Alt バックラッシュ(ステップ)",
+          "AzimuthSpeed": "Az 速度(ステップ/秒)",
+          "AltitudeSpeed": "Alt 速度(ステップ/秒)",
+          "AzimuthAccel": "Az 加速度(ステップ/秒²)",
+          "AltitudeAccel": "Alt 加速度(ステップ/秒²)",
+          "MinYLimit": "最小 Y(ステップ)",
+          "MaxYLimit": "最大 Y(ステップ)"
+        },
+        "autoSaveHint": "フィールドを離れると、変更は N.I.N.A. に保存されます。",
+        "saveInNina": "N.I.N.A. に保存",
+        "storeOnDevice": "AAPA に保存",
+        "sendConfirm": "AAPA の現在の設定をメモリ (EEPROM) に永続保存しますか?",
+        "applyToDevice": "AAPA に適用",
+        "applyInNinaHint": "これらの値は N.I.N.A. に保存されます。AAPA に転送するには、N.I.N.A. の AAPA パネルにある送信ボタンを使用してください。"
+      },
+      "log": {
+        "title": "ログ",
+        "clear": "クリア",
+        "empty": "メッセージはまだありません。"
+      }
     }
   },
   "pinsDevices": {
