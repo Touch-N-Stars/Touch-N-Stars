@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Switching to the unstable PINS repository now requires two Yes/No confirmations warning that experimental builds may break things and are intended for developers.
+- PINS Software: Switch between the stable trixie repository and unstable builds through pinsdaemon, then install updates from the selected channel.
 - PINS settings: Configure traditional disk swap to 2 GB (image default size), 4 GB, or 8 GB (recommended). Saving replaces zram after reboot, and the panel shows active system swap capacity. Requires an updated pinsdaemon.
 
 ## [App6.3.1-beta8] - 2026-09-30

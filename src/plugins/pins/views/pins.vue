@@ -89,6 +89,12 @@
 
           <template v-if="activeTab === 'software'">
             <PinsSoftwareTab
+              :repository="repository"
+              :repository-loading="repositoryLoading"
+              :repository-switching="repositorySwitching"
+              :repository-error="repositoryError"
+              @repository-switch="switchRepository"
+              @repository-refresh="loadRepository"
               :available-update-count="availableUpdatePackages.length"
               :drivers="indi3rdpartyDrivers"
               :loading="isIndi3rdpartyLoading"
@@ -283,6 +289,7 @@ import PinsIndiInstallConfirmModal from '../components/PinsIndiInstallConfirmMod
 import PinsIndiRegistryEditModal from '../components/PinsIndiRegistryEditModal.vue';
 import { usePinsWifiInterfaces } from '../composables/usePinsWifiInterfaces';
 import { usePinsUpgradeTracker } from '../composables/usePinsUpgradeTracker';
+import { usePinsRepository } from '../composables/usePinsRepository';
 import {
   buildIndiInstallPayload,
   extractIndiInstallErrorDetail,
@@ -446,10 +453,26 @@ const {
   shouldWaitForApiRecovery: () => !store.isBackendReachable,
 });
 
+const {
+  repository,
+  repositoryLoading,
+  repositorySwitching,
+  repositoryError,
+  loadRepository,
+  switchRepository,
+} = usePinsRepository({
+  t,
+  status,
+  pinsStore,
+  appendLog,
+  refreshPackages: () => Promise.all([checkUpdates(), loadPinsPlugins()]),
+});
+
 watch(
   () => store.isPINS,
   (newValue) => {
     if (newValue) {
+      loadRepository();
       checkSambaStatus();
       checkPhd2Status();
       loadHotspotSettings();
