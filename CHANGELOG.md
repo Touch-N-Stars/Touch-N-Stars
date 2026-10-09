@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sequence editor (NINA): With an up-to-date Touch'N'Stars plugin, NINA now gets the same sequence editor as PINS. Items, triggers and conditions can be added, moved, duplicated, deleted and edited directly in the list while the running status keeps updating, and sequences can be loaded, saved and managed as files. With an older plugin the previous view is still shown.
 - AAPA Controller (plugin): Control the Astrophilos Automated Polar Alignment through the AAPA Controller NINA plugin, including one-button polar alignment together with TPPA.
 - Sequence editor: Items from other NINA plugins can now be added as well. Items without their own editor get a generic one; complex plugin values are shown read-only.
+- Native Guider (PINS): New guiding page for the guider built into PINS, as an alternative to PHD2. It shows the live guide frame, guide graph, target plot, statistics, calibration, event log, settings and dark library. The guide camera has its own slot in equipment connect and the setup wizard, and critical guiding alerts are shown on every page. Thanks @aduffeck
+- Native Guider (PINS): The Guiding Coach measures the guide camera, the seeing and the mount, tries better settings and recommends what to change, with live hints while guiding. Thanks @aduffeck
+- Native Guider (PINS): The Incidents tab replays the frames and telemetry around the moments guiding went wrong, names a likely cause, offers downloads and a Mark button to save a moment. Thanks @aduffeck
 
 ### Changed
 

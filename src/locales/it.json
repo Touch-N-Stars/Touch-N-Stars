@@ -413,7 +413,9 @@
         "ditherApply": "Apply to profile",
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "nativeCamera": "Camera guida (PINS Native Guider)",
+        "nativeCameraHint": "Il native guider controlla direttamente la camera guida. Scegli il suo driver INDI e il dispositivo e inserisci la lunghezza focale del telescopio guida."
       },
       "done": {
         "title": "Your equipment is ready",
@@ -1703,6 +1705,1485 @@
         "ditherScale": "Scala del dither",
         "ditherModeRandom": "Casuale",
         "ditherModeSpiral": "Spirale"
+      },
+      "native": {
+        "notConnected": "PINS Native Guider non è connesso",
+        "notConnectedHint": "Connetti il PINS Native Guider nella pagina dell'attrezzatura. Le impostazioni possono già essere modificate.",
+        "states": {
+          "Stopped": "Fermato",
+          "Looping": "In loop",
+          "Selected": "Stella selezionata",
+          "Calibrating": "Calibrazione",
+          "Guiding": "Guida",
+          "LostLock": "Stella persa",
+          "Reacquiring": "Riacquisizione",
+          "Paused": "In pausa",
+          "Failed": "Fallito",
+          "Disconnected": "Disconnesso",
+          "Unknown": "Sconosciuto"
+        },
+        "tabs": {
+          "frame": "Frame",
+          "graph": "Grafico",
+          "stats": "Stat",
+          "calibration": "Calibrazione",
+          "log": "Log",
+          "settings": "Impostazioni",
+          "dashboard": "Guida",
+          "coach": "Coach",
+          "incidents": "Anomalie"
+        },
+        "strip": {
+          "settling": "Assestamento",
+          "live": "Live",
+          "poll": "Polling",
+          "liveHint": "Aggiornamenti live via WebSocket",
+          "pollHint": "WebSocket non disponibile - aggiornamento ogni 2 s",
+          "rmsTotal": "RMS",
+          "rmsRa": "RA",
+          "rmsDec": "Dec",
+          "snr": "SNR",
+          "mass": "Massa",
+          "hfd": "HFD",
+          "stars": "Stelle",
+          "usedTotal": "usate/trovate",
+          "processing": "Proc.",
+          "rmsImage": "RMS / immagine",
+          "rmsImageHint": "RMS totale della guida diviso per la scala dei pixel della camera di ripresa. Sotto 0,5 è eccellente; intorno a 1 l'errore di guida raggiunge un intero pixel di ripresa.",
+          "imageScale": "su {scale}″/px",
+          "imageScaleUnknown": "imposta camera e focale",
+          "learningChip": "Apprende cielo e montatura {percent} %",
+          "learningChipHint": "L'algoritmo Predictive impara il seeing e il moto proprio della montatura dai frame di guida (circa 120 frame; l'assestamento dopo un dither non conta). Nel frattempo guida già e in seguito continua ad adattarsi.",
+          "help": {
+            "rms": {
+              "title": "RMS – errore di guida totale",
+              "text": "Quanto la stella guida si allontana dalla sua posizione di aggancio, come media quadratica sugli ultimi frame di guida (RA e Dec insieme, senza l'assestamento dopo i dither), in secondi d'arco sul cielo e in pixel della camera di guida. Più basso è meglio; conta il confronto con la scala della camera di ripresa (RMS / immagine) e con il seeing. Diventa arancione sopra 1,2″ e rosso sopra 2″."
+            },
+            "ra": {
+              "title": "RA – errore in ascensione retta",
+              "text": "L'errore di guida RMS lungo l'ascensione retta. La RA porta l'errore periodico e le irregolarità del motore, perciò spesso è il maggiore dei due; nettamente più grande della Dec indica errore periodico, bilanciamento o vento."
+            },
+            "dec": {
+              "title": "Dec – errore in declinazione",
+              "text": "L'errore di guida RMS lungo la declinazione. La Dec mostra soprattutto la deriva dovuta all'allineamento polare e il gioco (backlash) degli ingranaggi Dec; nettamente più grande della RA indica backlash o un cattivo allineamento polare."
+            },
+            "snr": {
+              "title": "SNR – rapporto segnale/rumore",
+              "text": "Quanto chiaramente la stella guida emerge dal rumore di fondo. Sopra 20 è comodo; sotto 10 la posizione misurata diventa rumorosa e la stella può andare persa: esposizione più lunga, più guadagno o una stella più luminosa. La massa è la luminosità totale della stella: un calo improvviso significa nuvole o una stella persa."
+            },
+            "hfd": {
+              "title": "HFD – diametro a metà flusso",
+              "text": "La dimensione della stella guida in pixel della camera di guida. Deve essere piccola e stabile; un HFD grande o crescente significa un telescopio guida sfocato o seeing scarso. Valori molto piccoli (sotto circa 1,5 px) rendono la posizione meno precisa."
+            },
+            "stars": {
+              "title": "Stelle – usate / trovate",
+              "text": "Le stelle usate per la guida e quelle trovate nel frame. Con la guida multistella la posizione è mediata sulle stelle usate, il che riduce il rumore del seeing; più sono, meglio è. Le stelle troppo deboli, sature o vicine al bordo non vengono usate."
+            },
+            "processing": {
+              "title": "Elab. – tempo di elaborazione",
+              "text": "Quanto ha impiegato la guida ad analizzare l'ultimo frame (ricerca delle stelle, posizioni, correzione). Deve restare ben sotto il tempo di esposizione; diventa arancione oltre la metà: un computer lento o un frame di guida molto grande (il binning aiuta)."
+            },
+            "rmsImage": {
+              "title": "RMS / immagine – errore in pixel di ripresa"
+            }
+          },
+          "periodicErrorChip": "Apprende errore periodico {percent} %",
+          "periodicErrorChipHint": "L'algoritmo Predictive sta imparando l'errore periodico della vite senza fine in AR: trova il periodo della vite dopo circa cinque giri (si sommano anche se la guida si ferma e riparte; uno slew, una sincronizzazione o un meridian flip fa ricominciare da capo), o subito dall'impostazione dei denti della corona, e verifica che la curva resti uguale da un giro all'altro (due giri con i denti impostati). Nel frattempo continua a guidare.",
+          "decDirection": {
+            "Both": "entrambe",
+            "North": "solo N",
+            "South": "solo S"
+          }
+        },
+        "controls": {
+          "loop": "Loop",
+          "stop": "Stop",
+          "guide": "Guida",
+          "calibrate": "Calibra",
+          "pause": "Pausa",
+          "resume": "Riprendi",
+          "dither": "Dither",
+          "clearCalibration": "Canc. cal.",
+          "ditherTitle": "Dither",
+          "ditherPixels": "Quantità (pixel guida)",
+          "ditherRaOnly": "Solo RA",
+          "ditherHint": "Sposta la posizione di lock casualmente fino a questo valore e attende l'assestamento della guida.",
+          "ditherInvalid": "Inserisci un valore tra 0 e 100 pixel.",
+          "confirmStopTitle": "Fermare la guida?",
+          "confirmStop": "La guida si ferma e le esposizioni di una sequenza in corso non saranno più guidate.",
+          "confirmCalibrateTitle": "Ricalibrare?",
+          "confirmCalibrate": "La calibrazione attuale viene scartata e ne inizia una nuova.",
+          "confirmClearTitle": "Cancellare la calibrazione?",
+          "confirmClear": "La calibrazione salvata viene eliminata. Al prossimo avvio della guida si calibrerà di nuovo.",
+          "failed": "{action} non riuscito",
+          "actions": {
+            "loop": "Loop",
+            "stop": "Stop",
+            "start-guiding": "Avvia guida",
+            "stop-guiding": "Ferma guida",
+            "pause": "Pausa",
+            "resume": "Riprendi",
+            "dither": "Dither",
+            "clear-calibration": "Cancella calibrazione",
+            "calibrate": "Calibra",
+            "darks": "Crea libreria dark",
+            "coach-start": "Avvia coach",
+            "coach-skip": "Salta fase del coach",
+            "coach-cancel": "Annulla coach",
+            "coach-apply": "Applica consigli"
+          }
+        },
+        "frame": {
+          "title": "Frame guida",
+          "stretch": "Stretch",
+          "stretch_low": "Basso",
+          "stretch_medium": "Medio",
+          "stretch_high": "Alto",
+          "overlay": "Mostra/nascondi overlay stelle",
+          "resetZoom": "Reimposta zoom",
+          "noFrame": "Nessun frame guida ancora. Premi Loop per avviare le esposizioni.",
+          "imageFailed": "Caricamento del frame guida non riuscito",
+          "starCount": "{count} stelle",
+          "age": "{seconds} s fa",
+          "weight": "Peso",
+          "rejected": "Non usata",
+          "legendPrimary": "Stella primaria",
+          "legendSecondary": "Stella secondaria",
+          "legendRejected": "Non usata",
+          "legendLock": "Posizione di lock",
+          "tapHint": "Tocca una stella per i dettagli",
+          "levelSaturated": "Frame saturato ({percent} % dei pixel a fondo scala): il cielo è ancora troppo luminoso o esposizione/guadagno sono troppo alti. Riduci esposizione o guadagno.",
+          "levelFlat": "Nessun segnale utile nel frame (livello {level} su {fullScale}): tappo inserito, condensa o la camera non espone?",
+          "levelPartlySaturated": "{percent} % saturato"
+        },
+        "profile": {
+          "noStar": "Nessuna stella guida",
+          "horizontal": "H",
+          "vertical": "V",
+          "radial": "radiale",
+          "peak": "Picco",
+          "saturated": "La stella è satura - riduci l'esposizione o scegli un'altra stella."
+        },
+        "log": {
+          "title": "Eventi",
+          "empty": "Nessun evento ancora.",
+          "filter_all": "Tutti",
+          "filter_warning": "Avvisi",
+          "filter_critical": "Critici",
+          "explanation": "Cosa è successo",
+          "fix": "Soluzione",
+          "detail": "Dettaglio",
+          "severity": {
+            "info": "Info",
+            "warning": "Avviso",
+            "critical": "Critico"
+          }
+        },
+        "alerts": {
+          "StarLost": {
+            "title": "Stella guida persa",
+            "explanation": "La stella guida non è stata trovata nell'ultimo frame. Finché resta persa non vengono inviate correzioni.",
+            "fix": "Controlla nuvole, ostacoli o condensa. La guida continua a cercare automaticamente."
+          },
+          "StarReacquireTimeout": {
+            "title": "Stella guida non riacquisita",
+            "explanation": "La stella è rimasta persa oltre il timeout di riacquisizione; la guida è stata fermata.",
+            "fix": "Controlla cielo e ottica, poi riavvia la guida (il trigger “Restore Guiding” del sequencer può farlo)."
+          },
+          "StarSaturated": {
+            "title": "Stella guida satura",
+            "explanation": "Il picco della stella guida è saturo, il che peggiora la precisione del centroide.",
+            "fix": "Riduci esposizione o guadagno, oppure lascia che la selezione automatica scelga una stella più debole."
+          },
+          "StarLowSnr": {
+            "title": "SNR della stella basso",
+            "explanation": "Il rapporto segnale/rumore della stella guida è basso; i centroidi diventano rumorosi.",
+            "fix": "Aumenta esposizione o guadagno, oppure controlla il fuoco della camera guida."
+          },
+          "StarMassChanged": {
+            "title": "Luminosità della stella cambiata bruscamente",
+            "explanation": "La luminosità della stella è cambiata più della soglia di variazione massa; il frame è stato ignorato.",
+            "fix": "Di solito nuvole di passaggio. Se persiste, alza la soglia di variazione massa."
+          },
+          "NoStarFound": {
+            "title": "Nessuna stella guida adatta",
+            "explanation": "La selezione automatica non ha trovato stelle che soddisfino i criteri di SNR e saturazione.",
+            "fix": "Aumenta esposizione/guadagno, controlla il fuoco e che il telescopio guida non sia coperto."
+          },
+          "LockPositionNearEdge": {
+            "title": "Posizione di lock troppo vicina al bordo",
+            "explanation": "La posizione di lock richiesta è troppo vicina al bordo del frame per la regione di ricerca.",
+            "fix": "Scegli una stella più lontana dal bordo o riduci l'ampiezza del dither."
+          },
+          "PrimaryEstimatedFromSecondaries": {
+            "title": "Stella primaria stimata",
+            "explanation": "La stella primaria non era misurabile; la sua posizione è stata stimata dalle stelle secondarie.",
+            "fix": "Nessuna azione necessaria. Se succede spesso, conviene scegliere un'altra stella primaria."
+          },
+          "StarReacquired": {
+            "title": "Stella guida riacquisita",
+            "explanation": "La stella guida è stata ritrovata e la guida è ripresa.",
+            "fix": "Nessuna azione necessaria."
+          },
+          "CalibrationFailedRaNoMove": {
+            "title": "Calibrazione fallita: la RA non si è mossa",
+            "explanation": "Durante la calibrazione la stella non si è spostata abbastanza in RA.",
+            "fix": "Controlla il collegamento dell'uscita di guida (montatura/ST4), la velocità di guida e che la montatura stia inseguendo e non sia parcheggiata."
+          },
+          "CalibrationFailedDecNoMove": {
+            "title": "Calibrazione fallita: la Dec non si è mossa",
+            "explanation": "Durante la calibrazione la stella non si è spostata abbastanza in Dec.",
+            "fix": "Controlla backlash Dec, bilanciamento e cavi impigliati; oppure calibra/guida solo in RA."
+          },
+          "CalibrationFailedBacklash": {
+            "title": "Calibrazione fallita: backlash Dec non recuperato",
+            "explanation": "Il backlash Dec non è stato recuperato prima del movimento di calibrazione in Dec.",
+            "fix": "Riduci il backlash Dec (ingranamento, bilanciamento in Dec leggermente pesante a est) e ricalibra."
+          },
+          "CalibrationFailedStarLost": {
+            "title": "Calibrazione fallita: stella persa",
+            "explanation": "La stella di calibrazione è andata persa troppo spesso durante la calibrazione.",
+            "fix": "Scegli una stella più luminosa lontana dal bordo e riprova."
+          },
+          "CalibrationFewSteps": {
+            "title": "Calibrazione con pochi passi",
+            "explanation": "La calibrazione si è conclusa con meno di 4 passi su un asse, quindi potrebbe essere imprecisa.",
+            "fix": "Riduci il passo di calibrazione e ricalibra."
+          },
+          "CalibrationNotOrthogonal": {
+            "title": "Assi di calibrazione non perpendicolari",
+            "explanation": "Gli assi RA e Dec misurati si discostano di oltre 12,5° dalla perpendicolare.",
+            "fix": "Controlla backlash Dec, cavi impigliati o vento durante la calibrazione; ricalibra."
+          },
+          "CalibrationRateRatio": {
+            "title": "Rapporto di velocità RA/Dec inatteso",
+            "explanation": "Il rapporto tra le velocità di calibrazione RA e Dec non corrisponde alla declinazione.",
+            "fix": "Controlla la declinazione riportata dalla montatura e le velocità di guida; se possibile ricalibra vicino a Dec 0."
+          },
+          "CalibrationDecRateChanged": {
+            "title": "Velocità Dec diversa dall'ultima calibrazione",
+            "explanation": "La velocità Dec differisce di oltre il 20 % dalla calibrazione precedente con la stessa configurazione.",
+            "fix": "Ricalibra; controlla se ci sono backlash o problemi meccanici."
+          },
+          "CalibrationInvalidated": {
+            "title": "Calibrazione invalidata",
+            "explanation": "La calibrazione salvata non corrisponde più a camera, binning o focale.",
+            "fix": "All'avvio della guida verrà eseguita una nuova calibrazione."
+          },
+          "CalibrationHighDeclination": {
+            "title": "Calibrazione ad alta declinazione",
+            "explanation": "La calibrazione è stata fatta a oltre 60° a nord o a sud dell'equatore celeste, quindi la compensazione della declinazione non è affidabile.",
+            "fix": "Per risultati migliori ricalibra più vicino all'equatore celeste."
+          },
+          "CalibrationGuideRateChanged": {
+            "title": "Velocità di guida cambiata",
+            "explanation": "La velocità di guida della montatura differisce di oltre il 5 % da quella della calibrazione.",
+            "fix": "Ricalibra, oppure ripristina la velocità di guida precedente."
+          },
+          "NotCalibrated": {
+            "title": "Non calibrato",
+            "explanation": "La guida richiede una calibrazione.",
+            "fix": "Avvia la guida con calibrazione."
+          },
+          "CalibrationFlipped": {
+            "title": "Calibrazione invertita per il lato piedistallo",
+            "explanation": "Dopo un meridian flip la calibrazione è stata adattata al nuovo lato piedistallo.",
+            "fix": "Nessuna azione necessaria."
+          },
+          "DecFlipCorrected": {
+            "title": "Direzione Dec corretta dopo il flip",
+            "explanation": "Dopo il meridian flip le correzioni Dec aumentavano l'errore, quindi la direzione Dec è stata invertita e l'impostazione della montatura salvata.",
+            "fix": "Nessuna azione necessaria; se la guida sembra instabile è consigliabile ricalibrare."
+          },
+          "CalibrationReturnIncomplete": {
+            "title": "Ritorno della calibrazione incompleto",
+            "explanation": "Durante la calibrazione la stella non è tornata vicino al punto di partenza; può indicare backlash o una frizione che slitta.",
+            "fix": "Controlla la meccanica della montatura e ricalibra."
+          },
+          "PulseLimitReached": {
+            "title": "Correzione limitata dall'impulso max.",
+            "explanation": "Diverse correzioni consecutive sono state limitate alla durata massima dell'impulso.",
+            "fix": "Controlla se c'è una forte deriva (allineamento polare, cavo impigliato) o aumenta la durata massima dell'impulso."
+          },
+          "RunawayDetected": {
+            "title": "Guida fuori controllo rilevata",
+            "explanation": "Le correzioni continuavano a crescere senza ridurre l'errore (es. segno di calibrazione sbagliato). La guida è stata fermata per proteggere la sessione.",
+            "fix": "Cancella la calibrazione e ricalibra; verifica l'impostazione della montatura per lato piedistallo/inversione Dec."
+          },
+          "MountNotResponding": {
+            "title": "La montatura non risponde alle correzioni",
+            "explanation": "Diverse correzioni grandi non hanno prodotto alcun movimento della stella.",
+            "fix": "Controlla il collegamento dell'uscita di guida (driver della montatura/cavo ST4) e che la montatura stia inseguendo."
+          },
+          "MountSlewing": {
+            "title": "Montatura in slew – guida in pausa",
+            "explanation": "La guida va in pausa automaticamente durante lo slew della montatura.",
+            "fix": "La guida riprende dopo lo slew. Se compare mentre la montatura non è in slew, disattiva l'impostazione della guida “Pausa durante lo slew”."
+          },
+          "MountParked": {
+            "title": "Montatura parcheggiata – guida in pausa",
+            "explanation": "La montatura risulta parcheggiata; non vengono inviate correzioni.",
+            "fix": "Togli la montatura dal parcheggio e riavvia la guida."
+          },
+          "MountTrackingOff": {
+            "title": "Inseguimento spento – guida in pausa",
+            "explanation": "La montatura non sta inseguendo; non vengono inviate correzioni.",
+            "fix": "Attiva l'inseguimento; la guida riprende automaticamente. Se la montatura insegue ma il suo driver non può segnalarlo, disattiva l'impostazione della guida “Pausa con inseguimento spento”."
+          },
+          "MountDisconnected": {
+            "title": "Montatura disconnessa",
+            "explanation": "La montatura o l'uscita di guida si è disconnessa.",
+            "fix": "Riconnetti la montatura e riavvia la guida."
+          },
+          "PulseOutputFailed": {
+            "title": "Impulso di guida non riuscito",
+            "explanation": "Non è stato possibile inviare un impulso di guida.",
+            "fix": "Controlla il collegamento alla montatura o alla porta di guida."
+          },
+          "PierSideUnknown": {
+            "title": "Lato piedistallo sconosciuto",
+            "explanation": "La montatura non riporta il lato piedistallo; i meridian flip non possono essere compensati automaticamente.",
+            "fix": "Ricalibra dopo ogni meridian flip, oppure usa un driver che riporti il lato piedistallo."
+          },
+          "CameraCaptureFailed": {
+            "title": "Esposizione di guida non riuscita",
+            "explanation": "Un'esposizione della camera guida è fallita o è andata in timeout; nuovo tentativo in corso.",
+            "fix": "Controlla il collegamento USB e l'alimentazione della camera guida."
+          },
+          "CameraReconnecting": {
+            "title": "Riconnessione della camera guida",
+            "explanation": "Esposizioni fallite ripetutamente; riconnessione della camera guida in corso.",
+            "fix": "Controlla il collegamento USB e l'alimentazione della camera guida."
+          },
+          "CameraFailed": {
+            "title": "Camera guida fuori uso",
+            "explanation": "La camera guida non ha fornito frame nonostante i nuovi tentativi e una riconnessione. La guida è stata fermata.",
+            "fix": "Controlla cavi/alimentazione, riconnetti la camera guida e riavvia la guida."
+          },
+          "CameraDisconnected": {
+            "title": "Camera guida disconnessa",
+            "explanation": "La camera guida non è connessa.",
+            "fix": "Connetti la camera guida."
+          },
+          "FrameProcessingSlow": {
+            "title": "Elaborazione frame lenta",
+            "explanation": "L'elaborazione di un frame di guida ha richiesto più tempo del previsto, ritardando le correzioni.",
+            "fix": "Riduci il numero massimo di stelle guida, usa il binning o un subframe, oppure controlla il carico della CPU."
+          },
+          "SettleTimeout": {
+            "title": "Timeout di assestamento",
+            "explanation": "La guida non si è assestata entro il timeout.",
+            "fix": "Aumenta tolleranza/timeout di assestamento, oppure controlla le prestazioni della guida."
+          },
+          "DitherFailed": {
+            "title": "Dither non riuscito",
+            "explanation": "Il dither richiede una guida attiva e calibrata.",
+            "fix": "Avvia la guida prima del dither."
+          },
+          "Internal": {
+            "title": "Errore interno della guida",
+            "explanation": "Si è verificato un errore imprevisto nella guida.",
+            "fix": "Consulta il log per i dettagli e segnala il problema."
+          }
+        },
+        "graph": {
+          "title": "Grafico guida",
+          "unit": "Unità",
+          "arcsec": "″",
+          "px": "px",
+          "window": "Passi mostrati",
+          "yScale": "Scala Y",
+          "auto": "Auto",
+          "ra": "RA",
+          "dec": "Dec",
+          "raPulse": "Impulso RA",
+          "decPulse": "Impulso Dec",
+          "pulses": "Impulsi",
+          "ms": "ms",
+          "snr": "SNR",
+          "mass": "Massa",
+          "snrTitle": "SNR / massa stella",
+          "settling": "Assestamento",
+          "empty": "Nessun passo di guida ancora. Avvia la guida per vedere il grafico.",
+          "markers": {
+            "dither": "Dither",
+            "starlost": "Stella persa",
+            "settled": "Assestata",
+            "settleFailed": "Assestamento fallito",
+            "calibration": "Calibrazione"
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS degli ultimi {count} passi di guida mostrati (esclusi assestamento e ricentraggio dopo il dithering)",
+          "rmsLine": "RMS totale ({count})",
+          "rmsLineShort": "RMS ({count})",
+          "rmsLineHint": "RMS totale degli ultimi {count} passi di guida a ogni passo (senza assestamento né ricentraggio)"
+        },
+        "target": {
+          "title": "Target",
+          "lastSteps": "Ultimi {count} passi",
+          "ra": "RA",
+          "dec": "Dec",
+          "rms": "RMS",
+          "scale": "Anello esterno {value}",
+          "empty": "Nessun passo di guida ancora."
+        },
+        "stats": {
+          "title": "Statistiche",
+          "empty": "Nessuna statistica ancora. Appariranno all'avvio della guida.",
+          "window": "Finestra",
+          "windowFrames": "{count} frame",
+          "session": "Sessione",
+          "rmsTotal": "RMS totale",
+          "rmsRa": "RMS RA",
+          "rmsDec": "RMS Dec",
+          "peak": "Picco RA / Dec",
+          "driftRa": "Deriva RA",
+          "driftDec": "Deriva Dec",
+          "polarAlignment": "Err. allin. polare",
+          "oscillation": "Indice oscillazione",
+          "duty": "Duty RA / Dec",
+          "snr": "SNR min / media",
+          "snrLast": "ultimo {value}",
+          "stars": "Stelle (media)",
+          "starLost": "Stella persa",
+          "frames": "Frame",
+          "elapsed": "Trascorso",
+          "predictive": {
+            "title": "Guida predittiva",
+            "phases": {
+              "Learning": "in apprendimento {percent} %",
+              "Adapted": "regolato"
+            },
+            "weight": "peso del frame {percent} %",
+            "weightHint": "Quanto ogni nuovo frame di guida sposta la sua stima della posizione della montatura: basso con seeing scarso (l'errore di un frame è per lo più seeing), alto quando la montatura vaga.",
+            "details": "seeing {seeing} · montatura {wander} · deriva {drift}",
+            "detailsHint": "Appreso per frame di guida (σ): seeing = rumore di misura dovuto alla turbolenza e al calcolo del centroide, montatura = il suo moto casuale proprio; la deriva viene prevista e corretta in anticipo.",
+            "periodic": {
+              "label": "errore periodico",
+              "teeth": "{teeth} denti",
+              "phases": {
+                "Off": "spento",
+                "Learning": "in apprendimento {percent} %",
+                "Ready": "pronto",
+                "Predicting": "in previsione",
+                "Negligible": "trascurabile"
+              },
+              "negligible": "Troppo piccolo per prevederlo: tra due frame di guida sposta la stella solo di una piccola parte del seeing.",
+              "helpTitle": "Errore periodico",
+              "help": "La vite senza fine in AR compie un giro ogni pochi minuti, e a ogni giro la montatura va un po' veloce e un po' lenta allo stesso modo. L'algoritmo Predictive impara questa curva e la corregge prima che si veda. ± è l'oscillazione principale della curva su questo oggetto, seguita dal periodo della vite. Il periodo viene trovato dopo circa cinque giri della vite (si sommano anche se la guida si ferma e riparte; uno slew, una sincronizzazione o un meridian flip fa ricominciare da capo), oppure è noto subito dall'impostazione dei denti della corona; in entrambi i casi la curva viene usata solo quando resta uguale da un giro all'altro, così un'oscillazione della montatura non viene scambiata per essa. Pronto: imparato, ma non ancora migliore della guida senza. In previsione: corretto in anticipo. Trascurabile: troppo piccolo per prevederlo con questo seeing e questa cadenza di frame, anche finché la curva non è ancora regolare. La curva viene salvata per profilo e montatura, quindi la notte successiva parte già con essa."
+            }
+          },
+          "decDirection": {
+            "label": "Direzione Dec",
+            "directions": {
+              "Both": "entrambe le direzioni",
+              "North": "solo Nord",
+              "South": "solo Sud"
+            },
+            "drift": "deriva {drift}",
+            "notes": {
+              "unknown": "In entrambe le direzioni finché non misura una deriva netta.",
+              "valve": "In entrambe le direzioni finché un errore grande dall'altro lato non è rientrato (valvola di sicurezza)."
+            },
+            "helpTitle": "Modalità di guida Dec Drift",
+            "help": "Drift guida la Dec in una sola direzione, contro la deriva che misura durante la guida, così gli ingranaggi Dec non invertono mai e il backlash non conta più. Guida in entrambe le direzioni finché non misura una deriva netta (qualche minuto; una deriva debole non conta), durante l'assestamento dopo un dither e finché l'errore resta lontano sul lato che quella direzione non può correggere (valvola di sicurezza). Quando la deriva si indebolisce o si inverte per qualche minuto, torna a guidare in entrambe le direzioni o cambia direzione."
+          }
+        },
+        "calibration": {
+          "title": "Calibrazione",
+          "inProgress": "Calibrazione…",
+          "notCalibrated": "Non ancora calibrato. Avvia la guida per calibrare automaticamente, oppure usa Calibra.",
+          "diagram": "Vettori di calibrazione degli assi RA e Dec nel frame della camera guida",
+          "raAxisLabel": "RA",
+          "decAxisLabel": "Dec",
+          "raAngle": "Angolo RA",
+          "decAngle": "Angolo Dec",
+          "raRate": "Tasso RA",
+          "decRate": "Tasso Dec",
+          "orthogonality": "Errore ortogonalità",
+          "declination": "Declinazione",
+          "pierSide": "Lato piedistallo",
+          "binning": "Binning",
+          "steps": "Passi",
+          "raShort": "RA",
+          "decShort": "Dec",
+          "decFlip": "Inverti Dec dopo flip",
+          "decFlipYes": "Sì",
+          "decFlipNo": "No",
+          "lastIssue": "Problema",
+          "pierSides": {
+            "East": "Est",
+            "West": "Ovest",
+            "Unknown": "Sconosciuto",
+            "pierEast": "Est",
+            "pierWest": "Ovest",
+            "pierUnknown": "Sconosciuto"
+          },
+          "justNow": "calibrato adesso",
+          "minutesAgo": "calibrato {minutes} min fa",
+          "hoursAgo": "calibrato {hours} h fa",
+          "legendRaOut": "AR andata",
+          "legendRaBack": "AR ritorno",
+          "legendBacklash": "Backlash",
+          "legendDecOut": "Dec andata",
+          "legendDecBack": "Dec ritorno"
+        },
+        "settings": {
+          "basic": "Base",
+          "advanced": "Avanzate",
+          "refresh": "Ricarica impostazioni",
+          "loading": "Caricamento impostazioni…",
+          "loadFailed": "Impossibile caricare le impostazioni",
+          "empty": "Nessuna impostazione disponibile.",
+          "notConnectedHint": "Il native guider non è connesso. Le modifiche vengono salvate nel profilo; le modifiche alla camera avranno effetto alla prossima connessione.",
+          "requiresReconnect": "Applicato dopo la riconnessione",
+          "range": "{min} – {max}",
+          "rangeMin": "min {min}",
+          "rangeMax": "max {max}",
+          "on": "on",
+          "off": "off",
+          "resetToDefault": "Ripristina a {value}",
+          "saveFailed": "Impossibile salvare l'impostazione.",
+          "errors": {
+            "required": "Inserisci un valore.",
+            "number": "Inserisci un numero.",
+            "integer": "Inserisci un numero intero.",
+            "min": "Il valore deve essere almeno {min}.",
+            "max": "Il valore deve essere al massimo {max}.",
+            "option": "Scegli uno dei valori elencati."
+          },
+          "groups": {
+            "Camera": "Camera",
+            "Stars": "Stelle",
+            "Guiding": "Guida",
+            "Algorithms": "Algoritmi",
+            "Calibration": "Calibrazione",
+            "Dither": "Dither",
+            "Safety": "Sicurezza",
+            "Incidents": "Anomalie"
+          },
+          "reconnectNeeded": "Riconnetti la guida per usare le nuove impostazioni della camera.",
+          "reconnectNow": "Riconnetti ora",
+          "reconnecting": "Riconnessione…",
+          "reconnectFailed": "Riconnessione non riuscita: {message}",
+          "actionConfirm": "L'operazione non può essere annullata.",
+          "actionCancel": "Annulla",
+          "actionOptionConfirm": "Eseguire “{option}”?",
+          "optionLabels": {
+            "DecGuideMode": {
+              "Auto": "Auto – entrambe le direzioni",
+              "North": "Solo Nord",
+              "South": "Solo Sud",
+              "Off": "Spento – solo RA",
+              "Drift": "Drift – segue la deriva (una direzione)"
+            }
+          },
+          "labels": {
+            "ExposureSeconds": "Esposizione",
+            "Gain": "Guadagno",
+            "Offset": "Offset",
+            "Binning": "Binning",
+            "FocalLengthMm": "Focale di guida",
+            "PixelSizeUm": "Dimensione pixel manuale",
+            "NoiseReduction": "Riduzione rumore",
+            "UseDarkLibrary": "Usa libreria dark",
+            "PulseOutput": "Uscita di guida",
+            "MultiStar": "Guida multistella",
+            "MaxStars": "Max stelle guida",
+            "MinSnr": "SNR min. stella",
+            "SearchRegion": "Regione di ricerca",
+            "MinHfd": "HFD min. stella",
+            "MaxHfd": "HFD max. stella",
+            "MassChangeEnabled": "Rilevamento variazione massa",
+            "MassChangeThreshold": "Soglia variazione massa",
+            "PrimaryDropoutFallback": "Continua con le secondarie",
+            "SaturationAdu": "Saturazione (ADU)",
+            "RaAlgorithm": "Algoritmo RA",
+            "RaAggression": "Aggressività RA",
+            "RaHysteresis": "Isteresi RA",
+            "RaLowpass2Aggressiveness": "Aggressività Lowpass2 RA",
+            "RaMinMove": "Movimento min. RA",
+            "PeriodicErrorPrediction": "Previsione errore periodico",
+            "WormTeeth": "Denti della corona RA",
+            "ForgetPeriodicError": "Dimentica errore periodico",
+            "DecAlgorithm": "Algoritmo Dec",
+            "DecAggression": "Aggressività Dec",
+            "DecHysteresis": "Isteresi Dec",
+            "DecLowpass2Aggressiveness": "Aggressività Lowpass2 Dec",
+            "DecFastSwitch": "Inversione rapida Dec",
+            "DecMinMove": "Movimento min. Dec",
+            "DecGuideMode": "Modalità di guida Dec",
+            "MaxRaDurationMs": "Impulso RA max.",
+            "MaxDecDurationMs": "Impulso Dec max.",
+            "MinPulseMs": "Impulso min.",
+            "BacklashCompensation": "Compensazione backlash Dec",
+            "BacklashPulseMs": "Impulso backlash Dec",
+            "CalibrationStepMs": "Passo di calibrazione",
+            "ReuseCalibration": "Riusa calibrazione",
+            "AssumeOrthogonal": "Assumi Dec ortogonale",
+            "DecCompensation": "Compensazione declinazione",
+            "DecFlipRequired": "Inverti Dec dopo meridian flip",
+            "VerifyDecAfterFlip": "Autoverifica Dec dopo flip",
+            "DitherMode": "Modalità dither",
+            "DitherScale": "Scala dither",
+            "FastRecenter": "Ricentraggio rapido dopo dither",
+            "ReacquireTimeoutSec": "Timeout stella persa",
+            "MaxPulseDutyPercent": "Duty max. correzioni",
+            "PauseWhenSlewing": "Pausa durante lo slew",
+            "PauseWhenTrackingOff": "Pausa con inseguimento spento",
+            "SaveGuideLog": "Scrivi log di guida",
+            "IncidentRecorder": "Registra anomalie",
+            "IncidentBudgetMb": "Spazio disco anomalie",
+            "SimulatorScenario": "Scenario simulatore",
+            "SimulateFault": "Simula un guasto"
+          },
+          "descriptions": {
+            "Gain": "-1 mantiene il guadagno attuale del driver. (Il guadagno di PHD2 è una percentuale, quindi non viene importato.)",
+            "Offset": "-1 mantiene l'offset attuale del driver.",
+            "FocalLengthMm": "Focale del telescopio guida (o del telescopio principale con un OAG). Serve per i valori in secondi d'arco e per il passo di calibrazione.",
+            "PixelSizeUm": "0 usa la dimensione dei pixel indicata dal driver della camera.",
+            "UseDarkLibrary": "Sottrae i dark: la libreria nativa se creata, altrimenti la libreria dark di PHD2 per questa dimensione del sensore.",
+            "PulseOutput": "Mount: pulse guiding tramite il driver della montatura connessa. CameraST4: tramite la porta ST4 della camera guida.",
+            "PrimaryDropoutFallback": "Quando la stella primaria manca in un frame, ne stima la posizione da ≥3 stelle secondarie concordi.",
+            "SaturationAdu": "0 = rileva la saturazione dal profilo della stella.",
+            "RaAlgorithm": "Predictive (sperimentale) impara il seeing e il moto proprio della montatura dai frame di guida e corregge l'errore che prevede per il frame successivo, quindi aggressività, isteresi e movimento min. non si applicano.",
+            "RaAggression": "Quota dell'errore corretta a ogni frame (0..1).",
+            "RaMinMove": "0 = automatico dalla scala dell'immagine.",
+            "PeriodicErrorPrediction": "Impara l'errore periodico della vite senza fine RA e lo corregge prima che si veda. La curva appresa viene salvata per profilo e montatura.",
+            "WormTeeth": "Denti della corona RA (es. 180 su una EQ6-R, 135 su una HEQ5); dà il periodo esatto della vite senza fine. 0 = rileva il periodo dai frame di guida.",
+            "ForgetPeriodicError": "Dimentica l'errore periodico appreso per questa montatura, es. dopo aver regolato la vite senza fine; viene poi appreso di nuovo.",
+            "DecAlgorithm": "Predictive (sperimentale) impara il seeing e il moto proprio della montatura dai frame di guida e corregge l'errore che prevede per il frame successivo, quindi aggressività, isteresi e movimento min. non si applicano.",
+            "DecMinMove": "0 = automatico dalla scala dell'immagine.",
+            "DecGuideMode": "Auto guida la Dec in entrambe le direzioni, Nord o Sud in una sola, Spento per niente. Drift segue la deriva: misura la deriva in Dec durante la guida e guida solo contro di essa, così gli ingranaggi Dec non invertono mai e il backlash non conta più; cambia direzione quando la deriva si inverte e guida in entrambe le direzioni finché la deriva non è nota, durante l'assestamento e per recuperare un errore grande.",
+            "MinPulseMs": "Gli impulsi di guida più brevi vengono arrotondati a 0 o a questa durata: alcune montature gestiscono male gli impulsi molto brevi. 0 = qualsiasi durata.",
+            "CalibrationStepMs": "0 = automatico da ottica, velocità di guida e declinazione.",
+            "ReuseCalibration": "Mantiene la calibrazione tra una sessione e l'altra e la adatta a declinazione e lato piedistallo.",
+            "DecFlipRequired": "Impostazione per montatura; corretta automaticamente dall'autoverifica Dec dopo flip.",
+            "MaxPulseDutyPercent": "La guida si ferma quando un asse riceve impulsi per più di questa quota di un minuto (protezione da guida fuori controllo).",
+            "PauseWhenSlewing": "Sospende le correzioni mentre la montatura segnala slew o parcheggio. Disattivalo solo se il driver della montatura segnala “in slew” in modo permanente.",
+            "PauseWhenTrackingOff": "Sospende le correzioni mentre la montatura segnala l'inseguimento spento. Disattivalo se il driver della montatura non può segnalare lo stato dell'inseguimento.",
+            "SaveGuideLog": "Log di guida compatibile con PHD2 in ~/.local/share/NINA/InternalGuider/Logs.",
+            "IncidentRecorder": "Tiene in memoria gli ultimi minuti di frame di guida e li salva attorno a perdite della stella, guida fuori controllo, problemi di montatura e camera e picchi di errore, per rivederli e scaricarli.",
+            "IncidentBudgetMb": "Spazio su disco per le anomalie registrate; le più vecchie non conservate vengono eliminate per prime. Le anomalie del simulatore hanno 200 MB propri.",
+            "SimulatorScenario": "Montatura, cielo e camera simulati dal simulatore integrato.",
+            "SimulateFault": "Inserisce un guasto nel simulatore in esecuzione: nuvole (110 s), un urto alla montatura, una montatura che non risponde più (60 s), 3 esposizioni fallite o correzioni Dec nella direzione sbagliata (120 s)."
+          }
+        },
+        "darks": {
+          "title": "Libreria dark",
+          "none": "Nessuna libreria dark.",
+          "build": "Crea libreria dark",
+          "cancel": "Annulla creazione",
+          "stopFirst": "Ferma loop e guida per creare una libreria dark.",
+          "connectFirst": "Connetti il native guider per creare una libreria dark.",
+          "dialogTitle": "Crea libreria dark",
+          "coverWarning": "Copri il telescopio guida",
+          "coverHint": "Nessuna luce deve raggiungere la camera guida durante l'acquisizione dei dark.",
+          "minExposure": "Esposizione min.",
+          "maxExposure": "Esposizione max.",
+          "frames": "Frame per esposizione",
+          "start": "Avvia",
+          "invalidExposure": "Le esposizioni devono essere superiori a 0 s, il massimo almeno pari al minimo e non oltre 60 s.",
+          "invalidFrames": "I frame devono essere un numero intero da 1 a 50.",
+          "exposureDetail": "{exposure} s",
+          "frameDetail": "frame {frame}/{frames}",
+          "statusStarting": "Avvio…",
+          "statusCapturing": "Acquisizione dark…",
+          "statusDone": "Libreria dark completata",
+          "statusFailed": "Libreria dark fallita"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "sconosciuto",
+          "intro": "Il coach misura la camera guida, il cielo e la montatura, prova impostazioni migliori rispetto a quelle attuali e spiega cosa limita la tua guida. Una sessione completa dura circa 15 minuti.",
+          "introSafe": "Le impostazioni temporanee vengono sempre ripristinate. Sei tu a decidere quali consigli applicare.",
+          "stepsTitle": "Fasi",
+          "steps": {
+            "CameraCheck": {
+              "name": "Verifica camera",
+              "desc": "Esposizione × guadagno: SNR, saturazione e jitter della stella"
+            },
+            "Drift": {
+              "name": "Cielo e deriva",
+              "desc": "Uscita di guida spenta: seeing, errore periodico, allineamento polare"
+            },
+            "MountResponse": {
+              "name": "Risposta montatura",
+              "desc": "Backlash Dec e reazione della montatura agli impulsi"
+            },
+            "Trials": {
+              "name": "Prove",
+              "desc": "Guida con le tue impostazioni e con i suggerimenti e le confronta"
+            },
+            "Calibrating": {
+              "name": "Calibrazione",
+              "desc": "Calibra prima, perché non esiste una calibrazione valida"
+            },
+            "Report": {
+              "name": "Rapporto",
+              "desc": "Bilancio degli errori, valutazione e azioni in ordine di priorità"
+            }
+          },
+          "stepStates": {
+            "Pending": "In attesa",
+            "Running": "In corso",
+            "Settling": "Assestamento",
+            "Done": "Fatto",
+            "Skipped": "Saltato",
+            "Failed": "Fallito"
+          },
+          "details": {
+            "camera": {
+              "combination": "Esposizione {exposureSeconds} · guadagno {gain} ({index}/{total})"
+            },
+            "calibrating": "Calibrazione",
+            "drift": {
+              "measuring": "Misura in corso"
+            },
+            "response": {
+              "backlash": "Misura del backlash Dec",
+              "pulses": "Test della risposta agli impulsi · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Prova {id} · Assestamento",
+              "running": "Prova {id}"
+            }
+          },
+          "options": {
+            "advanced": "Opzioni avanzate",
+            "exposures": "Esposizioni della verifica camera",
+            "exposuresHint": "Ogni esposizione viene provata con ogni guadagno.",
+            "gains": "Guadagni della verifica camera",
+            "gainsAuto": "Predefinito: il guadagno attuale più due valori distribuiti nel range della camera ({min} – {max}).",
+            "gainsNoRange": "La camera non indica un range di guadagno. Si usa il guadagno attuale, a meno che tu non aggiunga guadagni.",
+            "add": "Aggiungi",
+            "remove": "Rimuovi {value}",
+            "exposurePlaceholder": "es. 1,5",
+            "gainPlaceholder": "es. 120",
+            "invalidExposure": "Inserisci un'esposizione tra 0,01 e 30 s.",
+            "invalidGain": "Inserisci un numero intero tra {min} e {max}.",
+            "tooManyValues": "Al massimo 12 valori.",
+            "tooManyCombinations": "{count} combinazioni sono troppe (al massimo 60).",
+            "frames": "Frame per combinazione",
+            "driftSeconds": "Misura della deriva",
+            "trialSeconds": "Durata per prova",
+            "repeatBaseline": "Ripeti le impostazioni attuali alla fine",
+            "repeatBaselineHint": "Rileva variazioni di seeing o nuvole durante le prove.",
+            "allowCalibration": "Calibra se necessario",
+            "allowCalibrationHint": "Senza calibrazione non si possono eseguire deriva, risposta della montatura e prove.",
+            "minutes": "{value} min",
+            "reset": "Ripristina predefiniti"
+          },
+          "estimate": "≈ {duration}",
+          "total": "Totale ≈ {duration}",
+          "calibrationExtra": "Include ≈ 2 min per una calibrazione (non ancora calibrato).",
+          "noSteps": "Seleziona almeno una fase.",
+          "guidingWarning": "La guida è attiva. Il coach interrompe la guida normale per le sue misure, quindi un'esposizione in corso della camera di ripresa verrà disturbata. Poi la guida riprende con le tue impostazioni.",
+          "notConnected": "Connetti il PINS Native Guider per usare il coach.",
+          "calibratingBlock": "Attendi la fine della calibrazione.",
+          "darksBlock": "Attendi che la libreria dark sia creata.",
+          "start": "Avvia coach",
+          "starting": "Avvio…",
+          "startFailed": "Impossibile avviare il coach",
+          "phases": {
+            "Complete": "Sessione completata",
+            "Cancelled": "Sessione annullata",
+            "Failed": "Sessione fallita"
+          },
+          "outcomeFindings": "Risultati di questa sessione",
+          "run": {
+            "elapsed": "Trascorso: {elapsed}",
+            "remaining": "≈ {duration} rimanenti",
+            "current": "Ora: {step}",
+            "skip": "Salta fase",
+            "cancel": "Annulla sessione",
+            "confirmCancelTitle": "Annullare la sessione del coach?",
+            "confirmCancel": "I risultati ottenuti finora vengono conservati e le impostazioni temporanee ripristinate.",
+            "keepRunning": "Continua",
+            "findingsSoFar": "Risultati finora",
+            "waiting": "In attesa delle prime misure…",
+            "calibratingHint": "Il coach calibra prima. L'avanzamento è mostrato sopra.",
+            "skipFailed": "Impossibile saltare la fase",
+            "cancelFailed": "Impossibile annullare la sessione",
+            "applyLater": "I consigli si possono applicare al termine della sessione."
+          },
+          "camera": {
+            "title": "Esposizione × guadagno",
+            "exposure": "Esposizione",
+            "gain": "Guadagno",
+            "jitter": "Jitter",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "Stelle",
+            "frames": "Frame",
+            "recommended": "Consigliato",
+            "legend": "Colore: jitter della stella, verde = più stabile. Le celle barrate non sono utilizzabili.",
+            "notMeasured": "non ancora misurato",
+            "tapHint": "Tocca una cella per i dettagli",
+            "noResults": "Nessuna misura della camera ancora."
+          },
+          "drift": {
+            "title": "Deriva con guida disattivata",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "Fit PE",
+            "time": "s",
+            "seeing": "Seeing",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "Errore periodico",
+            "period": "periodo {value}",
+            "periodUnknown": "periodo sconosciuto",
+            "polarAlignment": "Allineamento polare",
+            "decAssumed": "Dec assunta 0°",
+            "exposureLimit": "Limite esposizione",
+            "exposureLimitSub": "esposizione guida max.",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "In attesa dei campioni di deriva…"
+          },
+          "response": {
+            "title": "Risposta montatura",
+            "backlash": "Backlash Dec",
+            "backlashAxisX": "Durata impulso (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measuring": "misurazione…",
+              "Measured": "misurato",
+              "None": "nessuno",
+              "Unreliable": "inaffidabile",
+              "Skipped": "saltato"
+            },
+            "pulses": "Risposta agli impulsi",
+            "pulsesHint": "Movimento misurato rispetto alla calibrazione, per durata d'impulso. Sotto il 50 % un impulso muove appena la montatura.",
+            "pulsesNoiseHint": "Grigio: lo spostamento atteso è nel rumore del seeing, la sua percentuale non dice nulla sulla montatura.",
+            "directions": {
+              "West": "Ovest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
+            "minPulse": "Impulso min. efficace",
+            "asymmetry": "Asimmetria",
+            "rateRatio": "Velocità vs. calibrazione",
+            "noData": "Nessuna misura della montatura ancora."
+          },
+          "trials": {
+            "title": "Prove",
+            "kinds": {
+              "current": "Impostazioni attuali",
+              "suggestion": "Suggerimento del coach",
+              "variant": "Variante",
+              "currentRepeat": "Impostazioni attuali (ripetute)"
+            },
+            "winner": "Migliore",
+            "noChanges": "Le tue impostazioni attuali",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "{count} frame",
+            "apply": "Applica prova {id}",
+            "noData": "Le prove non sono ancora iniziate."
+          },
+          "report": {
+            "title": "Rapporto",
+            "grade": "Valutazione",
+            "grades": {
+              "excellent": "Eccellente",
+              "good": "Buona",
+              "fair": "Discreta",
+              "poor": "Scarsa",
+              "unknown": "Sconosciuta"
+            },
+            "gradeRatio": "{ratio} × scala immagine",
+            "gradeArcsec": "valutata sull'RMS in arcsec (senza scala immagine)",
+            "guidedRms": "RMS guidato",
+            "guidedSources": {
+              "trials": "dalle prove",
+              "window": "dall'ultima guida",
+              "none": "nessuna misura guidata"
+            },
+            "budget": "Bilancio degli errori",
+            "budgetHint": "Le componenti si sommano in quadratura: la più grande limita la tua guida.",
+            "budgetParts": {
+              "seeing": "Seeing",
+              "noise": "Rumore del centroide",
+              "mount": "Montatura e altro"
+            },
+            "actions": "Azioni consigliate",
+            "noActions": "Niente da correggere: la tua guida è limitata dalle condizioni, non dalle impostazioni.",
+            "others": "Altri risultati",
+            "measurements": "Misure",
+            "newSession": "Nuova sessione"
+          },
+          "finding": {
+            "why": "Perché è importante",
+            "fix": "Come risolvere",
+            "impact": "≈ {value} in meglio",
+            "apply": "Applica",
+            "applying": "Applicazione…",
+            "applied": "Applicato",
+            "applyFailed": "Impossibile applicare il consiglio",
+            "appliedToast": "Applicato: {title}",
+            "changes": "Modifiche alle impostazioni",
+            "more": "Mostra spiegazione",
+            "less": "Nascondi spiegazione"
+          },
+          "history": {
+            "title": "Progressi nel tempo",
+            "empty": "Qui compaiono i rapporti delle tue sessioni, così puoi seguire i tuoi progressi.",
+            "metrics": {
+              "rms": "RMS guidato",
+              "grade": "Valutazione",
+              "polarAlignment": "Allineamento polare",
+              "backlash": "Backlash Dec",
+              "seeing": "Seeing",
+              "periodicError": "Errore periodico"
+            },
+            "nights": "Notti: {count}",
+            "compare": "Confronto con il rapporto precedente ({date})",
+            "trend": {
+              "better": "meglio",
+              "worse": "peggio",
+              "same": "invariato"
+            },
+            "loadFailed": "Impossibile caricare la cronologia"
+          },
+          "hint": {
+            "label": "Suggerimento",
+            "dismiss": "Ignora suggerimento",
+            "apply": "Applica",
+            "applied": "Applicato",
+            "applyFailed": "Impossibile applicare il suggerimento",
+            "open": "Mostra suggerimento",
+            "close": "Nascondi suggerimento"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "Apri"
+          },
+          "confirmInterruptTitle": "Interrompere il Guiding Coach?",
+          "confirmInterrupt": "È in corso una sessione del coach. Questo comando la annulla; le impostazioni temporanee vengono ripristinate.",
+          "values": {
+            "level": {
+              "good": "buono",
+              "average": "medio",
+              "poor": "scarso"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "Nord",
+              "South": "Sud",
+              "Drift": "Drift"
+            },
+            "direction": {
+              "West": "Ovest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
+            "reason": {
+              "saturated": "stella satura",
+              "lowSnr": "SNR troppo basso",
+              "noStar": "nessuna stella trovata",
+              "guiding": "la guida è stata avviata o fermata",
+              "dither": "è stato richiesto un dither",
+              "stopped": "il loop è stato fermato",
+              "slew": "la montatura ha eseguito uno slew",
+              "trackingOff": "la montatura ha interrotto l'inseguimento",
+              "disconnect": "un dispositivo si è disconnesso",
+              "unknown": "un altro comando l'ha interrotta"
+            },
+            "bool": {
+              "true": "sì",
+              "false": "no"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "Impostazioni camera migliori: {exposureSeconds} con guadagno {gain}",
+                "why": "Questa combinazione ha dato la posizione della stella più stabile: jitter {jitterArcsec} a SNR {snr} con {stars} stelle utilizzabili (impostazioni attuali: {currentJitterArcsec}). Meno oscilla la posizione misurata, meno rumore la guida corregge come se fosse reale.",
+                "fix": "Usa questa esposizione e questo guadagno per la guida."
+              },
+              "good": {
+                "title": "Le impostazioni della camera sono già le migliori",
+                "why": "Esposizione e guadagno attuali hanno dato la posizione della stella più stabile (jitter {jitterArcsec} a SNR {snr}).",
+                "fix": "Niente da cambiare."
+              },
+              "noFeasible": {
+                "title": "Nessuna impostazione camera utilizzabile",
+                "why": "Nessuna combinazione di esposizione e guadagno ha dato una stella non satura con SNR di almeno 15 (soprattutto: {reason}). La guida non può misurare la stella in modo affidabile.",
+                "fix": "Controlla il fuoco e che il telescopio guida veda stelle (condensa, nuvole, copertura). Prova esposizioni più lunghe, un altro campo o un guadagno più basso se le stelle saturano."
+              },
+              "snrLow": {
+                "title": "Stella guida debole (SNR {snr})",
+                "why": "Con questo SNR la posizione misurata della stella ha un rumore di circa {noiseArcsec}. La guida corregge quel rumore come se la montatura si fosse mossa, e questo si aggiunge al tuo RMS.",
+                "fix": "Usa un'esposizione più lunga o un guadagno più alto, crea una libreria dark, metti a fuoco la camera guida o scegli una stella più luminosa."
+              },
+              "saturated": {
+                "title": "Stella guida satura a {exposureSeconds}, guadagno {gain}",
+                "why": "Una stella satura ha la cima piatta, quindi il suo centro non si misura con precisione e i piccoli movimenti passano inosservati.",
+                "fix": "Abbassa il guadagno o accorcia l'esposizione, oppure scegli una stella più debole."
+              },
+              "defocused": {
+                "title": "Stelle guida fuori fuoco (HFD {hfdPx})",
+                "why": "Stelle grandi e morbide ({hfdArcsec}) disperdono la luce, il che abbassa l'SNR e rende meno preciso il centro misurato.",
+                "fix": "Metti a fuoco la camera guida finché le stelle sono il più piccole possibile, poi riavvia il coach."
+              },
+              "fewStars": {
+                "title": "Solo {stars} stelle guida utilizzabili",
+                "why": "La guida multistella media il seeing su più stelle. Con meno di 3 stelle aiuta poco.",
+                "fix": "Prova un'esposizione più lunga, un guadagno più alto o una zona di cielo con più stelle."
+              },
+              "noDarks": {
+                "title": "Nessuna libreria dark",
+                "why": "Senza dark, i pixel caldi possono essere scambiati per stelle e aggiungono rumore alle stelle deboli.",
+                "fix": "Copri il telescopio guida e crea una libreria dark nella scheda Impostazioni."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "Seeing: {rmsArcsec} ({level})",
+                "why": "Con la guida disattivata la stella balla comunque di {rmsArcsec} a causa dell'atmosfera. Nessuna guida può seguire questo movimento rapido: è il limite minimo del tuo RMS guidato.",
+                "fix_good": "Buone condizioni: ora si vedono i piccoli errori della montatura, quindi la regolazione fine ripaga.",
+                "fix": "Non inseguire il seeing: guida con 2 s o più e un movimento minimo appena sopra il seeing."
+              },
+              "minMove": {
+                "title": "Movimento min. dal seeing: RA {raPx}, Dec {decPx}",
+                "why": "Correzioni più piccole del jitter da seeing inseguono solo l'atmosfera. Un movimento minimo appena superiore le ignora e mantiene calma la montatura.",
+                "fix": "Imposta il movimento minimo RA e Dec su questi valori."
+              },
+              "periodicError": {
+                "title": "Errore periodico RA ±{amplitudeArcsec}",
+                "why": "La vite senza fine fa andare la montatura più veloce e più lenta in un ciclo (periodo {periodSeconds}). Nel punto più ripido la stella deriva di {maxRateArcsecPerSec} e la guida deve recuperarlo entro ogni esposizione.",
+                "fix": "Usa esposizioni di guida più brevi se la velocità di deriva è alta, addestra il PEC se la montatura lo supporta e controlla l'accoppiamento della vite senza fine e il bilanciamento in RA.",
+                "notes": {
+                  "learned": "Imparato dall'algoritmo Predictive su giri interi della vite, più preciso di questa breve misura.",
+                  "predicting": "L'algoritmo Predictive lo corregge già in anticipo."
+                }
+              },
+              "exposureLimit": {
+                "title_good": "L'esposizione di guida è adatta alla deriva RA",
+                "title": "Esposizione di guida troppo lunga per la deriva RA",
+                "why": "L'errore RA cresce durante ogni esposizione. Fino a {seconds} resta sotto il seeing; la tua esposizione è {currentSeconds}.",
+                "fix_good": "Niente da cambiare.",
+                "fix": "Usa un'esposizione di guida di al massimo {seconds}."
+              },
+              "polarAlignment": {
+                "title": "Errore di allineamento polare ≈ {arcmin}",
+                "why": "Un errore di allineamento polare fa derivare la stella in Dec ({driftArcsecPerMin}) e ruota lentamente il campo. La guida può seguire la deriva, ma deve correggere di continuo e la rotazione di campo si vede nelle sessioni lunghe.",
+                "fix_good": "Eccellente, niente da fare.",
+                "fix_info": "Va bene per la guida. Affinalo per sessioni lunghe a focali lunghe.",
+                "fix": "Rifai l'allineamento polare (es. con TPPA). Sotto 3′ è ideale, sotto 5′ va bene.",
+                "notes": {
+                  "decAssumed": "La declinazione era sconosciuta, quindi è stato assunto 0°: a declinazioni più alte l'errore reale è maggiore."
+                }
+              },
+              "wind": {
+                "title": "Raffiche o vibrazioni",
+                "why": "Il {gustPercent} dei frame mostra salti improvvisi. La guida non può correggerli in tempo, e inseguirli peggiora le cose.",
+                "fix": "Ripara il telescopio dal vento, controlla cavi allentati e la stabilità del treppiede, e usa un movimento minimo leggermente più alto."
+              },
+              "decGuideMode": {
+                "title": "Guida la Dec in una sola direzione ({mode})",
+                "why": "La Dec deriva costantemente ({driftArcsecPerMin}) e il backlash Dec è {backlashMs}. Guidando la Dec in una sola direzione, contro la deriva, gli ingranaggi non invertono mai, quindi il backlash non conta più.",
+                "fix": "Imposta la modalità di guida Dec su {mode}. Si adatta da sola a un nuovo allineamento polare, a un meridian flip o a un nuovo oggetto."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Backlash Dec: {ms} ({arcsec})",
+                "why": "Quando la Dec inverte, gli ingranaggi devono prima recuperare il gioco. In quel tempo le correzioni non hanno effetto, poi la stella va oltre e la Dec oscilla.",
+                "fix_good": "Niente da fare.",
+                "fix": "Usa la compensazione del backlash con l'impulso misurato, riduci il gioco meccanicamente o sbilancia leggermente la Dec. Guidare la Dec in una sola direzione lo evita del tutto."
+              },
+              "minPulse": {
+                "title": "{axis}: impulsi sotto {ms} non muovono la montatura",
+                "why": "L'attrito statico nel motore {axis} assorbe gli impulsi brevi. La guida crede di aver corretto, ma la stella resta dov'è.",
+                "fix": "Aumenta il movimento minimo in modo che le correzioni siano almeno così lunghe, e controlla il bilanciamento e l'ingranamento."
+              },
+              "asymmetry": {
+                "title": "{axis} si muove in modo diverso nelle due direzioni",
+                "why": "Una direzione sposta la stella di {ratio} rispetto all'altra, quindi la guida corregge troppo o troppo poco a seconda della direzione.",
+                "fix": "Controlla il bilanciamento (RA leggermente pesante a est), l'ingranamento e che la velocità di guida sia uguale nelle due direzioni."
+              },
+              "rateMismatch": {
+                "title": "Velocità {axis} diversa dalla calibrazione",
+                "why": "La montatura si muove di {ratio} rispetto a quanto previsto dalla calibrazione, quindi ogni correzione è troppo grande o troppo piccola.",
+                "fix": "Ricalibra vicino al target e verifica che la velocità di guida della montatura corrisponda all'impostazione."
+              },
+              "good": {
+                "title": "La montatura risponde in modo pulito",
+                "why": "Gli impulsi in tutte le direzioni muovono la montatura come previsto, senza attrito statico o asimmetria evidenti.",
+                "fix": "Niente da fare."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "La prova {id} ha guidato meglio: {rmsArcsec}",
+                "why": "Con lo stesso cielo ha raggiunto {rmsArcsec} contro {baselineRmsArcsec} con le impostazioni attuali (migliore del {improvementPercent}).",
+                "fix": "Applica la prova {id} per mantenerne le impostazioni."
+              },
+              "noImprovement": {
+                "title": "Le tue impostazioni sono già le migliori",
+                "why": "Nessuno dei suggerimenti ha guidato meglio delle tue impostazioni attuali ({rmsArcsec}).",
+                "fix": "Mantieni le tue impostazioni."
+              },
+              "conditionsChanged": {
+                "title": "Le condizioni sono cambiate durante le prove",
+                "why": "Le impostazioni attuali hanno guidato in modo diverso del {changePercent} tra inizio e fine, quindi nel frattempo sono cambiati il seeing o il cielo. Il confronto non è affidabile.",
+                "fix": "Ripeti le prove con condizioni stabili, oppure considera il vincitore con cautela."
+              },
+              "nothingToTry": {
+                "title": "Niente da provare",
+                "why": "La sessione non ha trovato modifiche che valgano una prova; le tue impostazioni attuali hanno guidato con {rmsArcsec}.",
+                "fix": "Mantieni le tue impostazioni.",
+                "notes": {
+                  "predictive": "L'algoritmo Predictive regola da sé il proprio guadagno e non ha bisogno del movimento min.; si proverebbero solo modifiche a camera, modalità Dec e backlash."
+                }
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "Il seeing limita la tua guida",
+                "why": "Del tuo RMS guidato di {guidedArcsec}, il seeing da solo ne spiega {seeingArcsec}. Le impostazioni e la montatura fanno il loro lavoro.",
+                "fix": "Niente da regolare. Il risultato migliora con un seeing migliore."
+              },
+              "mountLimited": {
+                "title": "La montatura limita la tua guida",
+                "why": "Del tuo RMS guidato di {guidedArcsec}, circa {mountArcsec} viene dalla montatura (errore periodico, backlash, bilanciamento, attrito statico) e non dal cielo.",
+                "fix": "Affronta i risultati sulla montatura: backlash, errore periodico, bilanciamento e allineamento polare."
+              },
+              "noImagingScale": {
+                "title": "Scala immagine sconosciuta",
+                "why": "Senza la dimensione dei pixel della camera di ripresa e la focale del telescopio, il coach non può confrontare l'errore di guida con i pixel della tua immagine.",
+                "fix": "Inserisci nel profilo la dimensione dei pixel nelle impostazioni della camera e la focale in quelle del telescopio."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA sovracorregge",
+                "why": "Le correzioni RA cambiano continuamente direzione (indice di oscillazione {index}): ognuna spinge la stella oltre il target.",
+                "fix": "Riduci l'aggressività RA di 0,1."
+              },
+              "raSluggish": {
+                "title": "RA corregge troppo poco",
+                "why": "RA continua a derivare nella stessa direzione (indice di oscillazione {index}) con un RMS di {rmsRaArcsec}. Le correzioni sono troppo timide.",
+                "fix": "Aumenta l'aggressività RA di 0,1."
+              },
+              "pulseLimited": {
+                "title": "Gli impulsi {axis} raggiungono il massimo",
+                "why": "Il {percent} delle correzioni {axis} viene tagliato alla durata massima dell'impulso, quindi i grandi errori richiedono più frame per essere corretti.",
+                "fix": "Aumenta la durata massima dell'impulso, o ricalibra se la velocità di guida è cambiata."
+              },
+              "lowSnr": {
+                "title": "La stella guida si sta indebolendo (SNR {snr})",
+                "why": "L'SNR della stella è sceso, spesso per nuvole, condensa sull'ottica o foschia vicino all'orizzonte.",
+                "fix": "Controlla il cielo e la fascia anticondensa, e scegli un'altra stella se resta basso."
+              },
+              "decDrift": {
+                "title": "La Dec deriva costantemente ({driftArcsecPerMin})",
+                "why": "Quasi tutte le correzioni Dec vanno in una direzione, il che indica un errore di allineamento polare di circa {arcmin}.",
+                "fix": "Affina l'allineamento polare, o guida la Dec in una sola direzione."
+              },
+              "seeingBound": {
+                "title": "La guida è al limite del seeing",
+                "why": "Il tuo RMS di {rmsArcsec} è vicino a quanto consente l'atmosfera.",
+                "fix": "Per ora niente da regolare."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "È in corso un'altra sessione del coach",
+                "why": "Si può eseguire una sola sessione alla volta.",
+                "fix": "Attendi che finisca o annullala."
+              },
+              "notConnected": {
+                "title": "Guida non connessa",
+                "why": "Il coach richiede il native guider connesso, con la sua camera e la montatura.",
+                "fix": "Connetti la guida (e la montatura per il pulse guiding) e riprova."
+              },
+              "noStar": {
+                "title": "Nessuna stella guida trovata",
+                "why": "Il coach ha bisogno di una stella da misurare.",
+                "fix": "Controlla fuoco, nuvole e copertura, usa un'esposizione più lunga o passa a un altro campo."
+              },
+              "noCalibration": {
+                "title": "Non calibrato",
+                "why": "Deriva, risposta della montatura e prove misurano lungo gli assi della montatura, il che richiede una calibrazione.",
+                "fix": "Calibra prima, oppure consenti al coach di calibrare nelle opzioni avanzate."
+              },
+              "calibrationFailed": {
+                "title": "Calibrazione fallita",
+                "why": "Il coach non è riuscito a calibrare, quindi le fasi che richiedono una calibrazione non sono state eseguite.",
+                "fix": "Cerca il motivo nel registro eventi, risolvilo (es. stella persa, movimento insufficiente) e calibra di nuovo."
+              },
+              "starLost": {
+                "title": "Stella guida persa",
+                "why": "La stella è scomparsa durante una misura: nuvole, un ostacolo, oppure è uscita dal frame.",
+                "fix": "Attendi un cielo sereno o scegli un'altra stella, poi ricomincia."
+              },
+              "noPulseOutput": {
+                "title": "Nessuna uscita di guida",
+                "why": "Risposta della montatura e prove richiedono impulsi di guida, ma non sono disponibili né la montatura né un'uscita ST4.",
+                "fix": "Connetti la montatura (o scegli l'uscita ST4 della camera) e riprova."
+              },
+              "interrupted": {
+                "title": "Sessione interrotta",
+                "why": "La sessione si è fermata: {reason}. Le impostazioni temporanee sono state ripristinate.",
+                "fix": "Riavvia il coach quando nient'altro controlla la guida o la montatura."
+              },
+              "cameraError": {
+                "title": "Errore camera",
+                "why": "La camera guida ha avuto un errore durante una misura.",
+                "fix": "Controlla la connessione della camera e il registro eventi, poi riprova."
+              },
+              "internal": {
+                "title": "Errore interno",
+                "why": "Qualcosa di imprevisto è andato storto nel coach.",
+                "fix": "Riprova. Se succede di nuovo, condividi il file di log."
+              }
+            }
+          }
+        },
+        "incidents": {
+          "title": "Anomalie",
+          "intro": "Frame e telemetria attorno ai momenti in cui la guida è andata storta, con una causa probabile.",
+          "empty": "Nessuna anomalia registrata finora.",
+          "emptyHint": "Durante la guida o la calibrazione, il guider tiene in memoria i frame degli ultimi 2 minuti. Quando la stella guida va persa, la montatura o la camera smettono di rispondere, una calibrazione fallisce o l'errore salta all'improvviso, salva i frame attorno a quel momento insieme a ciò che ha misurato e inviato, e a una prima ipotesi sulla causa. Tocca Segna nei controlli per salvare tu stesso un momento.",
+          "disabled": "Il registratore di volo è disattivato nelle impostazioni della guida (gruppo Anomalie).",
+          "loadFailed": "Impossibile caricare le anomalie",
+          "refresh": "Ricarica anomalie",
+          "budget": "{used} di {budget} · {count} di {max} anomalie",
+          "budgetSimulator": "Simulatore: {used} di {budget}",
+          "filterProfile": "Questo profilo",
+          "filterAll": "Tutte",
+          "noneForProfile": "Nessuna anomalia per questo profilo.",
+          "recording": "Registrazione…",
+          "recordingHint": "Salvata quando la guida torna normale, più 30 s.",
+          "ongoing": "in corso",
+          "occurrences": "{count}×",
+          "likely": "Probabile: {cause}",
+          "analysing": "Causa non ancora nota",
+          "simulator": "Simulatore",
+          "kept": "Conservata",
+          "keep": "Conserva",
+          "release": "Rilascia",
+          "keepHint": "Conserva: non viene mai eliminata per fare spazio a nuove anomalie",
+          "releaseHint": "Rilascia: può essere eliminata per fare spazio a nuove anomalie",
+          "delete": "Elimina",
+          "deleteConfirm": "Eliminare?",
+          "deleteAll": "Elimina tutte",
+          "deleteAllConfirm": "Eliminare tutte le anomalie non conservate? Quelle conservate restano.",
+          "deleteAllButton": "Elimina {count}",
+          "deletedAll": "Eliminate: {count}",
+          "cancel": "Annulla",
+          "download": "Scarica",
+          "downloading": "Preparazione del download…",
+          "downloadSaved": "Salvato come {file}",
+          "downloadFailed": "Download non riuscito",
+          "replayButton": "Rivedi",
+          "actionFailed": "Azione sull'anomalia non riuscita",
+          "frames": "{count} frame",
+          "framesOmitted": {
+            "diskSpace": "Frame non conservati: poco spazio su disco",
+            "budget": "Frame non conservati: spazio riservato pieno di anomalie conservate"
+          },
+          "endReasons": {
+            "recording": "In registrazione",
+            "recovered": "Rientrata",
+            "stopped": "Fermata",
+            "cap": "Limite di 5 minuti",
+            "manual": "Segnata"
+          },
+          "kinds": {
+            "StarLost": "Stella persa",
+            "Runaway": "Fuga della stella",
+            "MountNotResponding": "La montatura non risponde",
+            "SettleTimeout": "Timeout di assestamento",
+            "CameraFailure": "Errore della camera",
+            "MountPaused": "Montatura in pausa",
+            "CalibrationFailed": "Calibrazione fallita",
+            "PulseLimited": "Limite impulsi raggiunto",
+            "PulseOutputFailed": "Uscita impulsi non riuscita",
+            "DecFlipCorrected": "Inversione Dec corretta",
+            "Spike": "Picco di errore",
+            "Manual": "Segnalazione manuale"
+          },
+          "savedTitle": "Anomalia salvata",
+          "savedMessage": "{kind} alle {time}",
+          "mark": {
+            "button": "Segna",
+            "title": "Segna anomalia",
+            "hint": "Salva gli ultimi 2 minuti e i 30 secondi successivi di guida per poterli rivedere.",
+            "note": "Nota (facoltativa)",
+            "placeholder": "es. raffica di vento",
+            "submit": "Segna",
+            "done": "Segnata. I prossimi 30 s vengono registrati, poi l'anomalia viene salvata.",
+            "failed": "Impossibile segnare l'anomalia"
+          },
+          "replay": {
+            "close": "Chiudi riproduzione",
+            "loading": "Caricamento anomalia…",
+            "loadFailed": "Impossibile caricare l'anomalia",
+            "frame": "Frame {frame}",
+            "position": "{index} di {count}",
+            "noImage": "Nessuna immagine conservata per questo frame",
+            "keyFrame": "Frame intero",
+            "context": "Binning {binning}×",
+            "imageFailed": "Impossibile caricare l'immagine",
+            "starLost": "Stella non trovata",
+            "starLostStatus": "Stella non trovata: {status}",
+            "play": "Riproduci",
+            "pause": "Pausa",
+            "stepBack": "Frame precedente",
+            "stepForward": "Frame successivo",
+            "prevMarker": "Marcatore precedente",
+            "nextMarker": "Marcatore successivo",
+            "speed": "Velocità di riproduzione",
+            "scrubber": "Posizione del frame",
+            "crops": "Stelle",
+            "noCrops": "Nessun ritaglio delle stelle conservato per questo frame",
+            "graph": "Errore di guida",
+            "telemetry": "Questo frame",
+            "note": "La tua nota",
+            "triggers": "Trigger",
+            "evidence": "Riscontri",
+            "showFrame": "Mostra frame",
+            "searchRegion": "Regione di ricerca",
+            "diagnosisPending": "Ancora nessuna diagnosi: l'anomalia è ancora in registrazione."
+          },
+          "tele": {
+            "time": "Ora",
+            "state": "Stato",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "mass": "Massa",
+            "error": "Errore",
+            "pulses": "Impulsi",
+            "mount": "Montatura",
+            "pierSide": "Lato piedistallo",
+            "calibration": "Calibrazione",
+            "stars": "Stelle",
+            "settling": "assestamento",
+            "dithering": "dithering",
+            "limited": "limitati",
+            "tracking": "inseguimento",
+            "notTracking": "inseguimento spento",
+            "slewing": "in slew",
+            "parked": "parcheggiata",
+            "unknown": "sconosciuto"
+          },
+          "markers": {
+            "trigger": "Trigger",
+            "recovered": "Rientrata",
+            "note": "Nota",
+            "gap": "Nessuna immagine",
+            "end": "Fine"
+          },
+          "causes": {
+            "camera": {
+              "title": "Camera",
+              "why": "Attorno a questo momento mancavano dei frame o sono arrivati in ritardo: la camera guida non li ha forniti (errori di acquisizione, timeout, una connessione USB persa).",
+              "fix": "Controlla il cavo USB e l'alimentazione della camera, evita lunghe prolunghe USB passive e prova un'esposizione più lunga o una banda USB più bassa."
+            },
+            "mountMoved": {
+              "title": "La montatura si è mossa",
+              "why": "La montatura ha eseguito uno slew, ha smesso di inseguire, è stata parcheggiata o disconnessa oppure ha cambiato lato piedistallo, quindi la stella ha lasciato la sua posizione.",
+              "fix": "Metti in pausa la guida prima di slew e meridian flip (una sequenza lo fa per te) e controlla che l'inseguimento resti attivo."
+            },
+            "calibrationMismatch": {
+              "title": "La calibrazione non corrisponde",
+              "why": "Le correzioni hanno spinto la stella più lontano invece di riportarla indietro: la calibrazione non corrisponde più alla montatura (lato piedistallo, declinazione, velocità di guida o direzione Dec invertita).",
+              "fix": "Ricalibra vicino al target e controlla che la montatura riporti correttamente il lato piedistallo."
+            },
+            "mountNotMoving": {
+              "title": "La montatura non si è mossa",
+              "why": "Sono stati inviati impulsi di correzione, ma la stella si è mossa appena: la montatura non li ha eseguiti.",
+              "fix": "Controlla la connessione della montatura e l'uscita di guida (cavo ST-4 o pulse guiding), e che le frizioni siano serrate."
+            },
+            "fieldJump": {
+              "title": "Salto del campo",
+              "why": "Tutte le stelle sono saltate della stessa quantità nello stesso istante: si è mosso l'intero telescopio (un urto, una raffica di vento, un cavo impigliato, la montatura che scivola).",
+              "fix": "Controlla il percorso dei cavi, le frizioni e il bilanciamento, e ripara il telescopio dal vento."
+            },
+            "clouds": {
+              "title": "Nuvole",
+              "why": "Tutte le stelle si sono affievolite insieme in meno di un minuto e sono tornate più tardi: qualcosa è passato davanti al cielo.",
+              "fix": "Niente da correggere nella guida. Attendi un cielo sereno; con nuvole sottili aiuta un'esposizione più lunga."
+            },
+            "dew": {
+              "title": "Condensa",
+              "why": "Tutte le stelle si sono affievolite lentamente nell'arco di alcuni minuti mentre diventavano più grandi (HFD): condensa o brina sull'ottica.",
+              "fix": "Accendi o alza la fascia anticondensa e usa un paraluce anticondensa."
+            },
+            "guideStarOnly": {
+              "title": "Problema della stella guida",
+              "why": "È cambiata solo la stella guida (persa, molto più luminosa o più debole) mentre le altre stelle restavano normali: saturazione, un pixel caldo o una stella vicina hanno disturbato il tracciamento.",
+              "fix": "Scegli un'altra stella guida, abbassa l'esposizione o il guadagno se satura, e usa la guida multistella."
+            },
+            "driftTooFast": {
+              "title": "Deriva troppo veloce",
+              "why": "La stella è derivata costantemente verso il bordo della regione di ricerca mentre le correzioni erano al limite.",
+              "fix": "Aumenta la durata massima dell'impulso o l'aggressività, controlla l'allineamento polare e il bilanciamento, e ricalibra se la velocità di guida è cambiata."
+            },
+            "periodicSpike": {
+              "title": "Errore periodico",
+              "why": "Il picco si ripete con il periodo della vite senza fine della montatura: un errore periodico negli ingranaggi.",
+              "fix": "Usa l'algoritmo Predictive RA o il PEC della montatura; se i picchi sono grandi, pulisci e ingrassa la vite senza fine."
+            },
+            "unclear": {
+              "title": "Non chiaro",
+              "why": "Nessuno degli schemi noti corrisponde. I riscontri qui sotto mostrano cosa è stato misurato.",
+              "fix": "Guarda la riproduzione; scarica l'anomalia per allegarla a una segnalazione di bug."
+            }
+          },
+          "evidence": {
+            "cameraFailures": "Acquisizioni della camera fallite: {count}",
+            "frameGap": "Nessun frame per {seconds}",
+            "mountSlewing": "La montatura era in slew",
+            "mountTrackingOff": "L'inseguimento della montatura era spento",
+            "mountParked": "La montatura era parcheggiata",
+            "mountDisconnected": "La montatura era disconnessa",
+            "pierSideChanged": "Il lato piedistallo è cambiato da {from} a {to}",
+            "errorGrew": "L'errore in {axis} è cresciuto da {fromPx} a {toPx} in {frames} frame mentre le correzioni lo contrastavano",
+            "runaway": "Fuga in {axis}: le correzioni hanno allontanato ancora di più la stella",
+            "decFlipCorrected": "La direzione Dec era invertita ed è stata corretta",
+            "pulsesWithoutMotion": "{pulses} impulsi {axis} avrebbero dovuto spostare la stella di {expectedPx}; si è spostata di {movedPx}",
+            "fieldJump": "{stars} stelle sono saltate insieme di {jumpPx} ({jumpArcsec})",
+            "starsFaded": "Tutte le stelle ({stars}) si sono affievolite del {dropPercent} in {seconds}",
+            "recoveredAfter": "Sono tornate dopo {seconds}",
+            "starsFadingSlowly": "Tutte le stelle ({stars}) si sono affievolite del {dropPercent} nell'arco di {minutes}",
+            "hfdGrew": "Le stelle si sono ingrandite: HFD aumentato del {percent}",
+            "primaryOnly": "La stella guida si è affievolita del {dropPercent}; le altre stelle ({secondaries}) sono rimaste normali",
+            "saturated": "La stella guida era satura",
+            "massJump": "La massa della stella guida è saltata del {percent}",
+            "driftToEdge": "La stella è derivata in {axis} fino al {percentOfRegion} della regione di ricerca in {frames} frame",
+            "pulsesLimited": "Correzioni {axis} al limite in {frames} frame",
+            "spikeRepeats": "{count} picchi precedenti a multipli del periodo della vite senza fine ({periodSeconds})",
+            "spike": "Picco di errore di {errorArcsec} con un RMS di {rmsArcsec}",
+            "starLost": "Stella persa ({status})",
+            "trigger": "Trigger: {kind}"
+          },
+          "values": {
+            "axis": {
+              "ra": "RA",
+              "dec": "Dec"
+            },
+            "pierSide": {
+              "East": "est",
+              "West": "ovest",
+              "Unknown": "sconosciuto"
+            },
+            "status": {
+              "LowSnr": "SNR troppo basso",
+              "Saturated": "satura",
+              "MassChanged": "massa della stella cambiata",
+              "NotFound": "nessuna stella trovata"
+            }
+          },
+          "unknown": "?"
+        }
       }
     },
     "focuser": {

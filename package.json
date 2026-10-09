@@ -73,6 +73,7 @@
     "papaparse": "5.5.4",
     "pinia": "3.0.4",
     "pinia-plugin-persistedstate": "4.7.1",
+    "uplot": "1.6.32",
     "uuid": "14.0.1",
     "vue": "3.5.39",
     "vue-i18n": "11.4.6",

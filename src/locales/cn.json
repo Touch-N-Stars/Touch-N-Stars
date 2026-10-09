@@ -413,7 +413,9 @@
         "ditherApply": "Apply to profile",
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "nativeCamera": "导星相机（PINS 原生导星仪）",
+        "nativeCameraHint": "原生导星仪直接驱动导星相机。请选择其 INDI 驱动和设备，并输入导星镜焦距。"
       },
       "done": {
         "title": "Your equipment is ready",
@@ -1703,6 +1705,1485 @@
         "ditherScale": "抖动比例",
         "ditherModeRandom": "随机",
         "ditherModeSpiral": "螺旋"
+      },
+      "native": {
+        "notConnected": "PINS 自动导星仪未连接",
+        "notConnectedHint": "请在设备页面连接 PINS 自动导星仪。设置项目前仍可编辑。",
+        "states": {
+          "Stopped": "已停止",
+          "Looping": "循环中",
+          "Selected": "已选星",
+          "Calibrating": "校准中",
+          "Guiding": "导星中",
+          "LostLock": "丢失导星",
+          "Reacquiring": "重新捕获",
+          "Paused": "已暂停",
+          "Failed": "失败",
+          "Disconnected": "已断开",
+          "Unknown": "未知"
+        },
+        "tabs": {
+          "frame": "画面",
+          "graph": "图表",
+          "stats": "统计",
+          "calibration": "校准",
+          "log": "日志",
+          "settings": "设置",
+          "dashboard": "导星",
+          "coach": "Coach",
+          "incidents": "异常"
+        },
+        "strip": {
+          "settling": "稳定中",
+          "live": "实时",
+          "poll": "轮询",
+          "liveHint": "通过 WebSocket 实时更新",
+          "pollHint": "WebSocket 不可用 - 每 2 秒更新一次",
+          "rmsTotal": "RMS",
+          "rmsRa": "RA",
+          "rmsDec": "Dec",
+          "snr": "SNR",
+          "mass": "质量",
+          "hfd": "HFD",
+          "stars": "星数",
+          "usedTotal": "已用/已找到",
+          "processing": "处理",
+          "rmsImage": "RMS / 成像",
+          "rmsImageHint": "导星总 RMS 除以主相机的像素比例。低于 0.5 为优秀；接近 1 时导星误差达到一个完整的成像像素。",
+          "imageScale": "/ {scale}″/px",
+          "imageScaleUnknown": "请设置相机和焦距",
+          "learningChip": "正在学习天空与赤道仪 {percent} %",
+          "learningChipHint": "Predictive 算法从导星帧中学习视宁度和赤道仪自身的运动（约 120 帧；抖动后的稳定过程不计入）。学习期间已在导星，之后也会持续适应。",
+          "help": {
+            "rms": {
+              "title": "RMS – 总导星误差",
+              "text": "导星星偏离锁定位置的程度，按最近导星帧的均方根计算（RA 和 Dec 合并，不含抖动后的稳定过程），单位为天空上的角秒和导星相机像素。越低越好；关键是与主相机的像素比例（RMS / 图像）以及视宁度相比。超过 1.2″ 显示为橙色，超过 2″ 为红色。"
+            },
+            "ra": {
+              "title": "RA – 赤经误差",
+              "text": "沿赤经方向的导星 RMS 误差。RA 包含周期误差和驱动的不规则性，因此通常是两者中较大的；明显大于 Dec 时，多为周期误差、配重平衡或风的影响。"
+            },
+            "dec": {
+              "title": "Dec – 赤纬误差",
+              "text": "沿赤纬方向的导星 RMS 误差。Dec 主要反映极轴对准误差造成的漂移和赤纬齿轮的回差（backlash）；明显大于 RA 时，说明存在回差或极轴对准不佳。"
+            },
+            "snr": {
+              "title": "SNR – 信噪比",
+              "text": "导星星从背景噪声中突显的清晰程度。高于 20 较为理想；低于 10 时测得的位置噪声变大，星点可能丢失——请延长曝光、提高增益或选择更亮的星。质量是星点的总亮度：突然下降意味着云层或星点丢失。"
+            },
+            "hfd": {
+              "title": "HFD – 半通量直径",
+              "text": "导星星在导星相机像素中的大小。应当小且稳定；HFD 较大或不断增大表示导星镜失焦或视宁度差。非常小的值（小于约 1.5 px）会降低位置精度。"
+            },
+            "stars": {
+              "title": "星点 – 已用 / 已找到",
+              "text": "用于导星的星点和画面中找到的星点。多星导星时位置在已用星点上取平均，可降低视宁度噪声；越多越好。过暗、饱和或太靠近边缘的星点不会被使用。"
+            },
+            "processing": {
+              "title": "处理 – 处理时间",
+              "text": "导星程序分析上一帧所用的时间（找星、定位、校正）。应远低于曝光时间；超过一半时显示为橙色——可能是电脑较慢或导星画面很大（合并像素有帮助）。"
+            },
+            "rmsImage": {
+              "title": "RMS / 图像 – 以主相机像素计的误差"
+            }
+          },
+          "periodicErrorChip": "正在学习周期误差 {percent} %",
+          "periodicErrorChipHint": "Predictive 算法正在学习 RA 蜗杆的周期误差：约五圈蜗杆转动后（导星停止再开始时圈数会累计；赤道仪转动、同步或中天翻转后则重新开始），或根据蜗轮齿数设置立即确定蜗杆周期，再检查曲线在各圈之间是否保持一致（设置齿数时为两圈）。学习期间持续导星。",
+          "decDirection": {
+            "Both": "双向",
+            "North": "仅北",
+            "South": "仅南"
+          }
+        },
+        "controls": {
+          "loop": "循环",
+          "stop": "停止",
+          "guide": "导星",
+          "calibrate": "校准",
+          "pause": "暂停",
+          "resume": "继续",
+          "dither": "抖动",
+          "clearCalibration": "清除校准",
+          "ditherTitle": "抖动",
+          "ditherPixels": "幅度（导星像素）",
+          "ditherRaOnly": "仅 RA",
+          "ditherHint": "将锁定位置随机移动最多此幅度，并等待导星稳定。",
+          "ditherInvalid": "请输入 0 到 100 像素之间的值。",
+          "confirmStopTitle": "停止导星？",
+          "confirmStop": "导星将停止，运行中序列的曝光将不再被导星。",
+          "confirmCalibrateTitle": "重新校准？",
+          "confirmCalibrate": "当前校准将被丢弃，并开始新的校准。",
+          "confirmClearTitle": "清除校准？",
+          "confirmClear": "已存储的校准将被删除。下次开始导星时将重新校准。",
+          "failed": "{action} 失败",
+          "actions": {
+            "loop": "循环",
+            "stop": "停止",
+            "start-guiding": "开始导星",
+            "stop-guiding": "停止导星",
+            "pause": "暂停",
+            "resume": "继续",
+            "dither": "抖动",
+            "clear-calibration": "清除校准",
+            "calibrate": "校准",
+            "darks": "构建暗场库",
+            "coach-start": "启动 Coach",
+            "coach-skip": "跳过 Coach 步骤",
+            "coach-cancel": "取消 Coach",
+            "coach-apply": "应用建议"
+          }
+        },
+        "frame": {
+          "title": "导星画面",
+          "stretch": "拉伸",
+          "stretch_low": "低",
+          "stretch_medium": "中",
+          "stretch_high": "高",
+          "overlay": "显示/隐藏星点叠加",
+          "resetZoom": "重置缩放",
+          "noFrame": "暂无导星画面。按“循环”开始曝光。",
+          "imageFailed": "加载导星画面失败",
+          "starCount": "{count} 颗星",
+          "age": "{seconds} 秒前",
+          "weight": "权重",
+          "rejected": "未使用",
+          "legendPrimary": "主星",
+          "legendSecondary": "副星",
+          "legendRejected": "未使用",
+          "legendLock": "锁定位置",
+          "tapHint": "点击星点查看详情",
+          "levelSaturated": "画面饱和（{percent} % 的像素达到满量程）：天空仍太亮，或曝光/增益过高。请降低曝光或增益。",
+          "levelFlat": "画面中无可用信号（电平 {level}/{fullScale}）：镜头盖未取下、结露，还是相机未在曝光？",
+          "levelPartlySaturated": "{percent} % 饱和"
+        },
+        "profile": {
+          "noStar": "无导星星点",
+          "horizontal": "H",
+          "vertical": "V",
+          "radial": "径向",
+          "peak": "峰值",
+          "saturated": "星点已饱和 - 请缩短曝光时间或选择其他星点。"
+        },
+        "log": {
+          "title": "事件",
+          "empty": "暂无事件。",
+          "filter_all": "全部",
+          "filter_warning": "警告",
+          "filter_critical": "严重",
+          "explanation": "发生情况",
+          "fix": "解决方法",
+          "detail": "详情",
+          "severity": {
+            "info": "信息",
+            "warning": "警告",
+            "critical": "严重"
+          }
+        },
+        "alerts": {
+          "StarLost": {
+            "title": "丢失导星",
+            "explanation": "在最近一帧中找不到导星星点。丢失期间不会发送修正。",
+            "fix": "检查是否有云层、遮挡物或结露。导星仪会自动继续搜索。"
+          },
+          "StarReacquireTimeout": {
+            "title": "无法重新捕获导星星点",
+            "explanation": "星点丢失的时间超过了“丢失导星超时”，导星已停止。",
+            "fix": "检查天空和光学系统，然后重新开始导星（序列中的“恢复导星”（Restore Guiding）触发器可自动完成）。"
+          },
+          "StarSaturated": {
+            "title": "导星星点饱和",
+            "explanation": "导星星点的峰值已饱和，会降低质心精度。",
+            "fix": "降低曝光或增益，或让自动选星选择较暗的星。"
+          },
+          "StarLowSnr": {
+            "title": "星点 SNR 过低",
+            "explanation": "导星星点的信噪比较低；质心测量噪声会变大。",
+            "fix": "延长曝光或提高增益，或检查导星相机的对焦。"
+          },
+          "StarMassChanged": {
+            "title": "星点亮度突变",
+            "explanation": "星点亮度的变化超过了质量变化阈值；该帧已被忽略。",
+            "fix": "通常是飘过的云。若持续出现，请提高质量变化阈值。"
+          },
+          "NoStarFound": {
+            "title": "没有合适的导星星点",
+            "explanation": "自动选星未找到满足 SNR 和饱和条件的星点。",
+            "fix": "延长曝光/提高增益，检查对焦，并确认导星镜未被遮盖。"
+          },
+          "LockPositionNearEdge": {
+            "title": "锁定位置太靠近边缘",
+            "explanation": "对于当前搜索区域，请求的锁定位置离画面边缘太近。",
+            "fix": "选择离边缘更远的星，或减小抖动幅度。"
+          },
+          "PrimaryEstimatedFromSecondaries": {
+            "title": "主星位置为估算值",
+            "explanation": "主星无法测量；其位置由副星估算得出。",
+            "fix": "无需处理。若频繁出现，建议选择其他主星。"
+          },
+          "StarReacquired": {
+            "title": "已重新捕获导星星点",
+            "explanation": "已重新找到导星星点，导星已恢复。",
+            "fix": "无需处理。"
+          },
+          "CalibrationFailedRaNoMove": {
+            "title": "校准失败：RA 未移动",
+            "explanation": "校准期间星点在 RA 方向移动的距离不足。",
+            "fix": "检查导星输出连接（赤道仪/ST4）、导星速率，以及赤道仪是否正在跟踪且未停放。"
+          },
+          "CalibrationFailedDecNoMove": {
+            "title": "校准失败：Dec 未移动",
+            "explanation": "校准期间星点在 Dec 方向移动的距离不足。",
+            "fix": "检查 Dec 回差、平衡和线缆牵扯；或仅对 RA 进行校准/导星。"
+          },
+          "CalibrationFailedBacklash": {
+            "title": "校准失败：未能消除 Dec 回差",
+            "explanation": "在 Dec 校准移动之前未能消除 Dec 回差。",
+            "fix": "减小 Dec 回差（齿轮啮合、Dec 平衡略偏东重）并重新校准。"
+          },
+          "CalibrationFailedStarLost": {
+            "title": "校准失败：丢失星点",
+            "explanation": "校准期间校准星丢失次数过多。",
+            "fix": "选择离边缘较远的更亮星点后重试。"
+          },
+          "CalibrationFewSteps": {
+            "title": "校准步数过少",
+            "explanation": "校准完成时某一轴的步数少于 4 步，结果可能不准确。",
+            "fix": "减小校准步长并重新校准。"
+          },
+          "CalibrationNotOrthogonal": {
+            "title": "校准轴不垂直",
+            "explanation": "测得的 RA 轴与 Dec 轴偏离垂直超过 12.5°。",
+            "fix": "检查校准期间是否存在 Dec 回差、线缆牵扯或风；然后重新校准。"
+          },
+          "CalibrationRateRatio": {
+            "title": "RA/Dec 速率比异常",
+            "explanation": "RA 与 Dec 校准速率之比与赤纬不符。",
+            "fix": "检查赤道仪报告的赤纬和导星速率；如有可能，在 Dec 0 附近重新校准。"
+          },
+          "CalibrationDecRateChanged": {
+            "title": "Dec 速率与上次校准不同",
+            "explanation": "Dec 速率与相同设置下的上次校准相差超过 20%。",
+            "fix": "重新校准；检查是否存在回差或机械问题。"
+          },
+          "CalibrationInvalidated": {
+            "title": "校准已失效",
+            "explanation": "已存储的校准与相机、像素合并或焦距不再匹配。",
+            "fix": "开始导星时将运行新的校准。"
+          },
+          "CalibrationHighDeclination": {
+            "title": "校准时赤纬过高",
+            "explanation": "校准位置在天赤道以北或以南超过 60°，因此赤纬补偿不可靠。",
+            "fix": "为获得最佳效果，请在更靠近天赤道处重新校准。"
+          },
+          "CalibrationGuideRateChanged": {
+            "title": "导星速率已更改",
+            "explanation": "赤道仪的导星速率与校准时相差超过 5%。",
+            "fix": "重新校准，或恢复之前的导星速率。"
+          },
+          "NotCalibrated": {
+            "title": "未校准",
+            "explanation": "导星需要校准。",
+            "fix": "开始导星并进行校准。"
+          },
+          "CalibrationFlipped": {
+            "title": "校准已按子午侧翻转",
+            "explanation": "中天翻转后，校准已针对新的子午侧进行调整。",
+            "fix": "无需处理。"
+          },
+          "DecFlipCorrected": {
+            "title": "翻转后已纠正 Dec 方向",
+            "explanation": "中天翻转后 Dec 修正使误差增大，因此已反转 Dec 方向并保存了赤道仪设置。",
+            "fix": "无需处理；若导星看起来不稳定，建议重新校准。"
+          },
+          "CalibrationReturnIncomplete": {
+            "title": "校准回程移动未完成",
+            "explanation": "校准期间星点未返回到起点附近；这可能表明存在回差或离合器打滑。",
+            "fix": "检查赤道仪机械结构并重新校准。"
+          },
+          "PulseLimitReached": {
+            "title": "修正受最大脉冲限制",
+            "explanation": "连续多次修正被截断为最大脉冲长度。",
+            "fix": "检查是否存在较大漂移（极轴对准、线缆牵扯），或增大最大脉冲时长。"
+          },
+          "RunawayDetected": {
+            "title": "检测到导星失控",
+            "explanation": "修正不断增大却未减小误差（例如校准符号错误）。为保护本次拍摄，导星已停止。",
+            "fix": "清除校准并重新校准；核实赤道仪的子午侧/Dec 翻转设置。"
+          },
+          "MountNotResponding": {
+            "title": "赤道仪对修正无响应",
+            "explanation": "多次大幅修正都未使星点移动。",
+            "fix": "检查导星输出连接（赤道仪驱动/ST4 线），以及赤道仪是否正在跟踪。"
+          },
+          "MountSlewing": {
+            "title": "赤道仪转动中 — 导星已暂停",
+            "explanation": "赤道仪转动时导星会自动暂停。",
+            "fix": "转动结束后导星将恢复。如果赤道仪并未转动却出现此提示，请关闭导星设置“赤道仪转动时暂停”。"
+          },
+          "MountParked": {
+            "title": "赤道仪已停放 — 导星已暂停",
+            "explanation": "赤道仪报告已停放；不会发送修正。",
+            "fix": "解除赤道仪停放并重新开始导星。"
+          },
+          "MountTrackingOff": {
+            "title": "跟踪关闭 — 导星已暂停",
+            "explanation": "赤道仪未在跟踪；不会发送修正。",
+            "fix": "开启跟踪后导星将自动恢复。如果赤道仪正在跟踪但其驱动无法报告，请关闭导星设置“跟踪关闭时暂停”。"
+          },
+          "MountDisconnected": {
+            "title": "赤道仪已断开",
+            "explanation": "赤道仪或导星输出已断开连接。",
+            "fix": "重新连接赤道仪并重新开始导星。"
+          },
+          "PulseOutputFailed": {
+            "title": "导星脉冲失败",
+            "explanation": "无法发送导星脉冲。",
+            "fix": "检查赤道仪/导星接口的连接。"
+          },
+          "PierSideUnknown": {
+            "title": "子午侧未知",
+            "explanation": "赤道仪未报告其子午侧；无法自动补偿中天翻转。",
+            "fix": "每次中天翻转后重新校准，或使用能报告子午侧的驱动。"
+          },
+          "CameraCaptureFailed": {
+            "title": "导星曝光失败",
+            "explanation": "导星相机曝光失败或超时；正在重试。",
+            "fix": "检查导星相机的 USB 连接和供电。"
+          },
+          "CameraReconnecting": {
+            "title": "正在重新连接导星相机",
+            "explanation": "曝光多次失败；正在重新连接导星相机。",
+            "fix": "检查导星相机的 USB 连接和供电。"
+          },
+          "CameraFailed": {
+            "title": "导星相机故障",
+            "explanation": "经过重试和重新连接后，导星相机仍无法提供画面。导星已停止。",
+            "fix": "检查线缆/供电，重新连接导星相机并重新开始导星。"
+          },
+          "CameraDisconnected": {
+            "title": "导星相机已断开",
+            "explanation": "导星相机未连接。",
+            "fix": "连接导星相机。"
+          },
+          "FrameProcessingSlow": {
+            "title": "画面处理缓慢",
+            "explanation": "处理一帧导星画面所用的时间超出预期，会延迟修正。",
+            "fix": "减少最大导星星数，使用像素合并或子帧，或检查 CPU 负载。"
+          },
+          "SettleTimeout": {
+            "title": "稳定超时",
+            "explanation": "导星未在超时时间内稳定下来。",
+            "fix": "增大稳定容差/超时，或检查导星效果。"
+          },
+          "DitherFailed": {
+            "title": "抖动失败",
+            "explanation": "抖动需要已校准且正在进行的导星。",
+            "fix": "请先开始导星再抖动。"
+          },
+          "Internal": {
+            "title": "导星仪内部错误",
+            "explanation": "导星仪中发生了意外错误。",
+            "fix": "查看日志了解详情，并报告该问题。"
+          }
+        },
+        "graph": {
+          "title": "导星图表",
+          "unit": "单位",
+          "arcsec": "″",
+          "px": "px",
+          "window": "显示步数",
+          "yScale": "Y 轴比例",
+          "auto": "自动",
+          "ra": "RA",
+          "dec": "Dec",
+          "raPulse": "RA 脉冲",
+          "decPulse": "Dec 脉冲",
+          "pulses": "脉冲",
+          "ms": "ms",
+          "snr": "SNR",
+          "mass": "质量",
+          "snrTitle": "SNR / 星体质量",
+          "settling": "稳定中",
+          "empty": "暂无导星步骤。开始导星后即可查看图表。",
+          "markers": {
+            "dither": "抖动",
+            "starlost": "丢失导星",
+            "settled": "已稳定",
+            "settleFailed": "稳定失败",
+            "calibration": "校准"
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "所显示的最近 {count} 个导星步的 RMS（不含稳定过程和抖动后的回中）",
+          "rmsLine": "总 RMS（{count}）",
+          "rmsLineShort": "RMS（{count}）",
+          "rmsLineHint": "每一步最近 {count} 个导星步的总 RMS（不含稳定过程和重新居中移动）"
+        },
+        "target": {
+          "title": "目标",
+          "lastSteps": "最近 {count} 步",
+          "ra": "RA",
+          "dec": "Dec",
+          "rms": "RMS",
+          "scale": "外圈 {value}",
+          "empty": "暂无导星步骤。"
+        },
+        "stats": {
+          "title": "统计信息",
+          "empty": "暂无统计信息，导星运行后将显示。",
+          "window": "窗口",
+          "windowFrames": "{count} 帧",
+          "session": "本次会话",
+          "rmsTotal": "RMS 总计",
+          "rmsRa": "RMS RA",
+          "rmsDec": "RMS Dec",
+          "peak": "峰值 RA / Dec",
+          "driftRa": "漂移 RA",
+          "driftDec": "漂移 Dec",
+          "polarAlignment": "极轴误差",
+          "oscillation": "振荡指数",
+          "duty": "占空比 RA / Dec",
+          "snr": "SNR 最小/平均",
+          "snrLast": "最近 {value}",
+          "stars": "星数（平均）",
+          "starLost": "丢失导星",
+          "frames": "帧数",
+          "elapsed": "已用时间",
+          "predictive": {
+            "title": "预测导星",
+            "phases": {
+              "Learning": "学习中 {percent} %",
+              "Adapted": "已调好"
+            },
+            "weight": "帧权重 {percent} %",
+            "weightHint": "每个新导星帧对赤道仪指向估计的影响程度：视宁度差时较低（此时帧误差多为视宁度），赤道仪游移时较高。",
+            "details": "视宁度 {seeing} · 赤道仪 {wander} · 漂移 {drift}",
+            "detailsHint": "按每个导星帧学习（σ）：视宁度 = 大气抖动和质心计算带来的测量噪声，赤道仪 = 其自身的随机运动；漂移会被预测并提前校正。",
+            "periodic": {
+              "label": "周期误差",
+              "teeth": "{teeth} 齿",
+              "phases": {
+                "Off": "关闭",
+                "Learning": "学习中 {percent} %",
+                "Ready": "就绪",
+                "Predicting": "预测中",
+                "Negligible": "可忽略"
+              },
+              "negligible": "太小，无需预测：在两个导星帧之间，它使星点移动的距离只占视宁度的一小部分。",
+              "helpTitle": "周期误差",
+              "help": "RA 蜗杆每隔几分钟转一圈，每一圈赤道仪都会以相同的方式稍快、稍慢地运行。Predictive 算法学习这条曲线，并在误差显现之前进行校正。± 表示该曲线在当前目标处的主要摆幅，其后是蜗杆周期。周期在约五圈蜗杆转动后得到（导星停止再开始时圈数会累计；赤道仪转动、同步或中天翻转后则重新开始），设置了蜗轮齿数则立即可知；无论哪种情况，只有当曲线在各圈之间保持一致时才会使用，以免把赤道仪的晃动误认为周期误差。就绪：已学会，但还没有比不使用它时更好。预测中：已提前校正。可忽略：在当前视宁度和导星帧节奏下太小，无需预测，即使曲线尚未稳定也是如此。曲线按配置文件和赤道仪保存，下一晚即可直接使用。"
+            }
+          },
+          "decDirection": {
+            "label": "Dec 方向",
+            "directions": {
+              "Both": "双向",
+              "North": "仅北",
+              "South": "仅南"
+            },
+            "drift": "漂移 {drift}",
+            "notes": {
+              "unknown": "测得明显漂移之前双向导星。",
+              "valve": "另一侧的大误差回来之前双向导星（安全阀）。"
+            },
+            "helpTitle": "Dec 导星模式 Drift",
+            "help": "Drift 只向一个方向进行 Dec 导星，即与导星时测得的漂移相反的方向，因此赤纬齿轮从不反转，回差便不再有影响。在测得明显漂移之前（几分钟；微弱的漂移不算）、抖动后的稳定过程中，以及误差长时间远离在该方向无法校正的一侧时（安全阀），它会双向导星。漂移减弱或反向持续几分钟后，它会重新双向导星或切换方向。"
+          }
+        },
+        "calibration": {
+          "title": "校准",
+          "inProgress": "校准中…",
+          "notCalibrated": "尚未校准。开始导星将自动校准，或使用“校准”。",
+          "diagram": "导星相机画面中 RA 和 Dec 轴的校准矢量",
+          "raAxisLabel": "RA",
+          "decAxisLabel": "Dec",
+          "raAngle": "RA 角度",
+          "decAngle": "Dec 角度",
+          "raRate": "RA 速率",
+          "decRate": "Dec 速率",
+          "orthogonality": "正交性误差",
+          "declination": "赤纬",
+          "pierSide": "子午侧",
+          "binning": "像素合并",
+          "steps": "步数",
+          "raShort": "RA",
+          "decShort": "Dec",
+          "decFlip": "翻转后反转 Dec",
+          "decFlipYes": "是",
+          "decFlipNo": "否",
+          "lastIssue": "问题",
+          "pierSides": {
+            "East": "东",
+            "West": "西",
+            "Unknown": "未知",
+            "pierEast": "东",
+            "pierWest": "西",
+            "pierUnknown": "未知"
+          },
+          "justNow": "刚刚校准",
+          "minutesAgo": "{minutes} 分钟前校准",
+          "hoursAgo": "{hours} 小时前校准",
+          "legendRaOut": "赤经 去程",
+          "legendRaBack": "赤经 回程",
+          "legendBacklash": "回差",
+          "legendDecOut": "赤纬 去程",
+          "legendDecBack": "赤纬 回程"
+        },
+        "settings": {
+          "basic": "基本",
+          "advanced": "高级",
+          "refresh": "重新加载设置",
+          "loading": "正在加载设置…",
+          "loadFailed": "无法加载设置",
+          "empty": "暂无可用设置。",
+          "notConnectedHint": "原生导星仪未连接。更改将保存到配置文件；相机更改将在下次连接时生效。",
+          "requiresReconnect": "重新连接后生效",
+          "range": "{min} – {max}",
+          "rangeMin": "最小 {min}",
+          "rangeMax": "最大 {max}",
+          "on": "开",
+          "off": "关",
+          "resetToDefault": "重置为 {value}",
+          "saveFailed": "无法保存该设置。",
+          "errors": {
+            "required": "请输入一个值。",
+            "number": "请输入一个数字。",
+            "integer": "请输入一个整数。",
+            "min": "该值不能小于 {min}。",
+            "max": "该值不能大于 {max}。",
+            "option": "请从列表中选择一个值。"
+          },
+          "groups": {
+            "Camera": "相机",
+            "Stars": "星点",
+            "Guiding": "导星",
+            "Algorithms": "算法",
+            "Calibration": "校准",
+            "Dither": "抖动",
+            "Safety": "安全",
+            "Incidents": "异常事件"
+          },
+          "reconnectNeeded": "重新连接导星器以使用新的相机设置。",
+          "reconnectNow": "立即重新连接",
+          "reconnecting": "正在重新连接…",
+          "reconnectFailed": "重新连接失败：{message}",
+          "actionConfirm": "此操作无法撤销。",
+          "actionCancel": "取消",
+          "actionOptionConfirm": "执行“{option}”？",
+          "optionLabels": {
+            "DecGuideMode": {
+              "Auto": "Auto – 双向",
+              "North": "仅北",
+              "South": "仅南",
+              "Off": "关闭 – 仅 RA",
+              "Drift": "Drift – 跟随漂移（单向）"
+            }
+          },
+          "labels": {
+            "ExposureSeconds": "曝光",
+            "Gain": "增益",
+            "Offset": "偏移",
+            "Binning": "像素合并",
+            "FocalLengthMm": "导星焦距",
+            "PixelSizeUm": "自定义像素尺寸",
+            "NoiseReduction": "降噪",
+            "UseDarkLibrary": "使用暗场库",
+            "PulseOutput": "导星输出",
+            "MultiStar": "多星导星",
+            "MaxStars": "最大导星星数",
+            "MinSnr": "最小星点 SNR",
+            "SearchRegion": "搜索区域",
+            "MinHfd": "最小星点 HFD",
+            "MaxHfd": "最大星点 HFD",
+            "MassChangeEnabled": "星点质量变化检测",
+            "MassChangeThreshold": "质量变化阈值",
+            "PrimaryDropoutFallback": "用副星继续导星",
+            "SaturationAdu": "饱和 ADU",
+            "RaAlgorithm": "RA 算法",
+            "RaAggression": "RA 激进度",
+            "RaHysteresis": "RA 滞后",
+            "RaLowpass2Aggressiveness": "RA Lowpass2 激进度",
+            "RaMinMove": "RA 最小移动量",
+            "PeriodicErrorPrediction": "周期误差预测",
+            "WormTeeth": "RA 蜗轮齿数",
+            "ForgetPeriodicError": "忘记周期误差",
+            "DecAlgorithm": "Dec 算法",
+            "DecAggression": "Dec 激进度",
+            "DecHysteresis": "Dec 滞后",
+            "DecLowpass2Aggressiveness": "Dec Lowpass2 激进度",
+            "DecFastSwitch": "Dec 快速切换",
+            "DecMinMove": "Dec 最小移动量",
+            "DecGuideMode": "Dec 导星模式",
+            "MaxRaDurationMs": "最大 RA 脉冲",
+            "MaxDecDurationMs": "最大 Dec 脉冲",
+            "MinPulseMs": "最小脉冲",
+            "BacklashCompensation": "Dec 回差补偿",
+            "BacklashPulseMs": "Dec 回差脉冲",
+            "CalibrationStepMs": "校准步长",
+            "ReuseCalibration": "重用校准",
+            "AssumeOrthogonal": "假定 Dec 正交",
+            "DecCompensation": "赤纬补偿",
+            "DecFlipRequired": "中天翻转后反转 Dec",
+            "VerifyDecAfterFlip": "翻转后 Dec 自检",
+            "DitherMode": "抖动模式",
+            "DitherScale": "抖动比例",
+            "FastRecenter": "抖动后快速回中",
+            "ReacquireTimeoutSec": "丢失导星超时",
+            "MaxPulseDutyPercent": "最大修正占空比",
+            "PauseWhenSlewing": "赤道仪转动时暂停",
+            "PauseWhenTrackingOff": "跟踪关闭时暂停",
+            "SaveGuideLog": "写入导星日志",
+            "IncidentRecorder": "记录异常事件",
+            "IncidentBudgetMb": "异常事件磁盘配额",
+            "SimulatorScenario": "模拟器场景",
+            "SimulateFault": "模拟故障"
+          },
+          "descriptions": {
+            "Gain": "-1 保持驱动当前的增益。（PHD2 的增益是百分比，因此不会沿用。）",
+            "Offset": "-1 保持驱动当前的偏移。",
+            "FocalLengthMm": "导星镜的焦距（使用 OAG 时为主镜焦距）。角秒数值和校准步长需要用到。",
+            "PixelSizeUm": "0 表示使用相机驱动报告的像素尺寸。",
+            "UseDarkLibrary": "减去暗场：若已构建原生暗场库则使用它，否则使用 PHD2 针对此相机尺寸的暗场库。",
+            "PulseOutput": "Mount：通过已连接的赤道仪驱动进行脉冲导星。CameraST4：通过导星相机的 ST4 接口导星。",
+            "PrimaryDropoutFallback": "主星在某一帧中丢失时，根据 ≥3 颗结果一致的副星估算其位置。",
+            "SaturationAdu": "0 = 根据星点轮廓检测饱和。",
+            "RaAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
+            "RaAggression": "每帧校正的误差比例（0..1）。",
+            "RaMinMove": "0 = 根据像素比例自动设定。",
+            "PeriodicErrorPrediction": "学习 RA 蜗杆的周期误差，并在其显现之前加以校正。学得的曲线按配置文件和赤道仪保存。",
+            "WormTeeth": "RA 蜗轮的齿数（例如 EQ6-R 为 180，HEQ5 为 135），可得出精确的蜗杆周期。0 = 从导星帧中检测周期。",
+            "ForgetPeriodicError": "忘记为此赤道仪学得的周期误差，例如在调整蜗杆之后；之后会重新学习。",
+            "DecAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
+            "DecMinMove": "0 = 根据像素比例自动设定。",
+            "DecGuideMode": "Auto 双向导星 Dec，仅北或仅南只朝一个方向，关闭则完全不导星。Drift 跟随漂移：它在导星时测量 Dec 漂移，只朝与之相反的方向导星，因此赤纬齿轮从不反转，回差便不再有影响；漂移反向时它会切换方向，在漂移确定之前、稳定过程中以及需要拉回较大误差时会双向导星。",
+            "MinPulseMs": "更短的导星脉冲会被舍入为 0 或此长度：有些赤道仪无法正确处理极短的脉冲。0 = 不限长度。",
+            "CalibrationStepMs": "0 = 根据光学参数、导星速率和赤纬自动设定。",
+            "ReuseCalibration": "跨会话保留校准，并根据赤纬和子午侧进行调整。",
+            "DecFlipRequired": "每台赤道仪单独设置；由“翻转后 Dec 自检”自动纠正。",
+            "MaxPulseDutyPercent": "某一轴在一分钟内的脉冲时间超过此比例时停止导星（失控保护）。",
+            "PauseWhenSlewing": "赤道仪报告转动中/已停放时暂停修正。仅当赤道仪驱动一直报告“转动中”时才关闭此项。",
+            "PauseWhenTrackingOff": "赤道仪报告跟踪关闭时暂停修正。若赤道仪驱动无法报告跟踪状态，请关闭此项。",
+            "SaveGuideLog": "兼容 PHD2 的导星日志，保存在 ~/.local/share/NINA/InternalGuider/Logs。",
+            "IncidentRecorder": "在内存中保留最近几分钟的导星画面，并在丢失导星、导星失控、赤道仪和相机问题以及误差尖峰前后保存这些画面，供回放和下载。",
+            "IncidentBudgetMb": "已记录异常事件可用的磁盘空间；最早的未保留异常事件会被优先删除。模拟器异常事件另有独立的 200 MB。",
+            "SimulatorScenario": "内置模拟器所模拟的赤道仪、天空和相机。",
+            "SimulateFault": "向运行中的模拟器注入故障：云层（110 秒）、赤道仪受到碰撞、赤道仪停止响应（60 秒）、3 次曝光失败，或 Dec 修正方向错误（120 秒）。"
+          }
+        },
+        "darks": {
+          "title": "暗场库",
+          "none": "暂无暗场库。",
+          "build": "构建暗场库",
+          "cancel": "取消构建",
+          "stopFirst": "请先停止循环和导星，再构建暗场库。",
+          "connectFirst": "请先连接原生导星仪，再构建暗场库。",
+          "dialogTitle": "构建暗场库",
+          "coverWarning": "遮盖导星镜",
+          "coverHint": "拍摄暗场期间不可有光线进入导星相机。",
+          "minExposure": "最短曝光",
+          "maxExposure": "最长曝光",
+          "frames": "每次曝光帧数",
+          "start": "开始",
+          "invalidExposure": "曝光时间须大于 0 秒，最大值不小于最小值且不超过 60 秒。",
+          "invalidFrames": "帧数须为 1 到 50 之间的整数。",
+          "exposureDetail": "{exposure} 秒",
+          "frameDetail": "第 {frame}/{frames} 帧",
+          "statusStarting": "正在开始…",
+          "statusCapturing": "正在拍摄暗场…",
+          "statusDone": "暗场库构建完成",
+          "statusFailed": "暗场库构建失败"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "未知",
+          "intro": "Coach 会测量您的导星相机、天空和赤道仪，将更优设置与当前设置对比试验，并说明限制导星效果的因素。完整会话约需 15 分钟。",
+          "introSafe": "临时设置总会被恢复。采用哪些建议由您决定。",
+          "stepsTitle": "步骤",
+          "steps": {
+            "CameraCheck": {
+              "name": "相机检查",
+              "desc": "曝光 × 增益：SNR、饱和与星点晃动"
+            },
+            "Drift": {
+              "name": "天空与漂移",
+              "desc": "关闭导星输出：视宁度、周期误差、极轴对准"
+            },
+            "MountResponse": {
+              "name": "赤道仪响应",
+              "desc": "Dec 回差及赤道仪对脉冲的反应"
+            },
+            "Trials": {
+              "name": "试验",
+              "desc": "分别用您的设置和建议设置导星并进行比较"
+            },
+            "Calibrating": {
+              "name": "校准",
+              "desc": "因无有效校准，先进行校准"
+            },
+            "Report": {
+              "name": "报告",
+              "desc": "误差预算、评级和按优先级排列的措施"
+            }
+          },
+          "stepStates": {
+            "Pending": "等待中",
+            "Running": "运行中",
+            "Settling": "稳定中",
+            "Done": "完成",
+            "Skipped": "已跳过",
+            "Failed": "失败"
+          },
+          "details": {
+            "camera": {
+              "combination": "曝光 {exposureSeconds} · 增益 {gain} ({index}/{total})"
+            },
+            "calibrating": "校准中",
+            "drift": {
+              "measuring": "测量中"
+            },
+            "response": {
+              "backlash": "正在测量 Dec 回差",
+              "pulses": "正在测试脉冲响应 · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "试验 {id} · 稳定中",
+              "running": "试验 {id}"
+            }
+          },
+          "options": {
+            "advanced": "高级选项",
+            "exposures": "相机检查曝光时间",
+            "exposuresHint": "每个曝光时间都会与每个增益组合测试。",
+            "gains": "相机检查增益",
+            "gainsAuto": "默认：当前增益，外加在相机范围（{min} – {max}）内分布的两个值。",
+            "gainsNoRange": "相机未报告增益范围。除非您添加增益，否则使用当前增益。",
+            "add": "添加",
+            "remove": "移除 {value}",
+            "exposurePlaceholder": "例如 1.5",
+            "gainPlaceholder": "例如 120",
+            "invalidExposure": "请输入 0.01 到 30 s 之间的曝光时间。",
+            "invalidGain": "请输入 {min} 到 {max} 之间的整数。",
+            "tooManyValues": "最多 12 个值。",
+            "tooManyCombinations": "{count} 种组合过多（最多 60 种）。",
+            "frames": "每种组合的帧数",
+            "driftSeconds": "漂移测量",
+            "trialSeconds": "每次试验时长",
+            "repeatBaseline": "最后再次测试当前设置",
+            "repeatBaselineHint": "可检测试验期间视宁度变化或云层。",
+            "allowCalibration": "需要时进行校准",
+            "allowCalibrationHint": "没有校准，漂移、赤道仪响应和试验都无法运行。",
+            "minutes": "{value} 分钟",
+            "reset": "恢复默认值"
+          },
+          "estimate": "≈ {duration}",
+          "total": "总计 ≈ {duration}",
+          "calibrationExtra": "含 ≈ 2 分钟校准（尚未校准）。",
+          "noSteps": "请至少选择一个步骤。",
+          "guidingWarning": "导星正在进行。Coach 测量时会中断正常导星，主相机正在进行的曝光会受到干扰。之后将以您的设置恢复导星。",
+          "notConnected": "请连接 PINS 自动导星仪以使用 Coach。",
+          "calibratingBlock": "请等待校准完成。",
+          "darksBlock": "请等待暗场库构建完成。",
+          "start": "启动 Coach",
+          "starting": "正在启动…",
+          "startFailed": "Coach 无法启动",
+          "phases": {
+            "Complete": "会话已完成",
+            "Cancelled": "会话已取消",
+            "Failed": "会话失败"
+          },
+          "outcomeFindings": "本次会话的发现",
+          "run": {
+            "elapsed": "已用 {elapsed}",
+            "remaining": "剩余 ≈ {duration}",
+            "current": "当前：{step}",
+            "skip": "跳过步骤",
+            "cancel": "取消会话",
+            "confirmCancelTitle": "取消 Coach 会话？",
+            "confirmCancel": "已有结果将被保留，临时设置将被恢复。",
+            "keepRunning": "继续运行",
+            "findingsSoFar": "目前的发现",
+            "waiting": "等待首批测量结果…",
+            "calibratingHint": "Coach 先进行校准。进度显示在上方。",
+            "skipFailed": "跳过步骤失败",
+            "cancelFailed": "取消会话失败",
+            "applyLater": "会话结束后即可应用建议。"
+          },
+          "camera": {
+            "title": "曝光 × 增益",
+            "exposure": "曝光",
+            "gain": "增益",
+            "jitter": "晃动",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "星数",
+            "frames": "帧数",
+            "recommended": "推荐",
+            "legend": "颜色：星点晃动，绿色 = 最稳定。划掉的单元格不可用。",
+            "notMeasured": "尚未测量",
+            "tapHint": "点击单元格查看详情",
+            "noResults": "暂无相机测量结果。"
+          },
+          "drift": {
+            "title": "关闭导星时的漂移",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "PE 拟合",
+            "time": "s",
+            "seeing": "视宁度",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "周期误差",
+            "period": "周期 {value}",
+            "periodUnknown": "周期未知",
+            "polarAlignment": "极轴对准",
+            "decAssumed": "假定 Dec 为 0°",
+            "exposureLimit": "曝光上限",
+            "exposureLimitSub": "最长导星曝光",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "等待漂移采样…"
+          },
+          "response": {
+            "title": "赤道仪响应",
+            "backlash": "Dec 回差",
+            "backlashAxisX": "脉冲时长（ms）",
+            "backlashAxisY": "Dec（″）",
+            "backlashStates": {
+              "Measuring": "测量中…",
+              "Measured": "已测量",
+              "None": "无",
+              "Unreliable": "不可靠",
+              "Skipped": "已跳过"
+            },
+            "pulses": "脉冲响应",
+            "pulsesHint": "按脉冲长度比较实测移动与校准值。低于 50 % 时，脉冲几乎无法移动赤道仪。",
+            "pulsesNoiseHint": "灰色：预期移动在视宁度噪声之内，其百分比不能说明赤道仪的情况。",
+            "directions": {
+              "West": "西",
+              "East": "东",
+              "North": "北",
+              "South": "南"
+            },
+            "minPulse": "最小有效脉冲",
+            "asymmetry": "不对称性",
+            "rateRatio": "速率与校准之比",
+            "noData": "暂无赤道仪测量结果。"
+          },
+          "trials": {
+            "title": "试验",
+            "kinds": {
+              "current": "当前设置",
+              "suggestion": "Coach 建议",
+              "variant": "变体",
+              "currentRepeat": "再次测试当前设置"
+            },
+            "winner": "最佳",
+            "noChanges": "您的当前设置",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "{count} 帧",
+            "apply": "应用试验 {id}",
+            "noData": "试验尚未开始。"
+          },
+          "report": {
+            "title": "报告",
+            "grade": "评级",
+            "grades": {
+              "excellent": "优秀",
+              "good": "良好",
+              "fair": "一般",
+              "poor": "较差",
+              "unknown": "未知"
+            },
+            "gradeRatio": "{ratio} × 像素比例",
+            "gradeArcsec": "按角秒 RMS 评级（无像素比例）",
+            "guidedRms": "导星 RMS",
+            "guidedSources": {
+              "trials": "来自试验",
+              "window": "来自最近一次导星",
+              "none": "无导星测量"
+            },
+            "budget": "误差预算",
+            "budgetHint": "各部分按平方和叠加：最大的一项限制了您的导星。",
+            "budgetParts": {
+              "seeing": "视宁度",
+              "noise": "质心噪声",
+              "mount": "赤道仪及其他"
+            },
+            "actions": "建议措施",
+            "noActions": "无需修正：您的导星受限于观测条件，而非设置。",
+            "others": "其他发现",
+            "measurements": "测量结果",
+            "newSession": "新会话"
+          },
+          "finding": {
+            "why": "为何重要",
+            "fix": "解决方法",
+            "impact": "改善 ≈ {value}",
+            "apply": "应用",
+            "applying": "正在应用…",
+            "applied": "已应用",
+            "applyFailed": "应用建议失败",
+            "appliedToast": "已应用：{title}",
+            "changes": "设置更改",
+            "more": "显示说明",
+            "less": "隐藏说明"
+          },
+          "history": {
+            "title": "历史进展",
+            "empty": "您的会话报告将显示在这里，便于跟踪进展。",
+            "metrics": {
+              "rms": "导星 RMS",
+              "grade": "评级",
+              "polarAlignment": "极轴对准",
+              "backlash": "Dec 回差",
+              "seeing": "视宁度",
+              "periodicError": "周期误差"
+            },
+            "nights": "夜数：{count}",
+            "compare": "与上次报告相比（{date}）",
+            "trend": {
+              "better": "更好",
+              "worse": "更差",
+              "same": "不变"
+            },
+            "loadFailed": "无法加载历史记录"
+          },
+          "hint": {
+            "label": "提示",
+            "dismiss": "关闭提示",
+            "apply": "应用",
+            "applied": "已应用",
+            "applyFailed": "应用提示失败",
+            "open": "显示提示",
+            "close": "隐藏提示"
+          },
+          "banner": {
+            "running": "Guiding Coach：{step} · {percent} %",
+            "open": "打开"
+          },
+          "confirmInterruptTitle": "中断 Guiding Coach？",
+          "confirmInterrupt": "Coach 会话正在运行。此命令将取消该会话；临时设置将被恢复。",
+          "values": {
+            "level": {
+              "good": "良好",
+              "average": "一般",
+              "poor": "较差"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "北",
+              "South": "南",
+              "Drift": "Drift"
+            },
+            "direction": {
+              "West": "西",
+              "East": "东",
+              "North": "北",
+              "South": "南"
+            },
+            "reason": {
+              "saturated": "星点饱和",
+              "lowSnr": "SNR 过低",
+              "noStar": "未找到星点",
+              "guiding": "导星被启动或停止",
+              "dither": "收到抖动请求",
+              "stopped": "循环被停止",
+              "slew": "赤道仪进行了转动",
+              "trackingOff": "赤道仪停止了跟踪",
+              "disconnect": "有设备断开了连接",
+              "unknown": "被其他命令中断"
+            },
+            "bool": {
+              "true": "是",
+              "false": "否"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "最佳相机设置：{exposureSeconds}，增益 {gain}",
+                "why": "此组合的星点位置最稳定：SNR {snr} 时晃动 {jitterArcsec}，可用星 {stars} 颗（当前设置：{currentJitterArcsec}）。测得位置晃动越小，导星仪当作真实移动去修正的噪声就越少。",
+                "fix": "导星时使用此曝光时间和增益。"
+              },
+              "good": {
+                "title": "相机设置已是最佳",
+                "why": "您当前的曝光和增益得到了最稳定的星点位置（SNR {snr} 时晃动 {jitterArcsec}）。",
+                "fix": "无需更改。"
+              },
+              "noFeasible": {
+                "title": "未找到可用的相机设置",
+                "why": "没有任何曝光和增益组合能得到未饱和且 SNR 至少为 15 的星点（主要原因：{reason}）。导星仪无法可靠地测量星点。",
+                "fix": "检查对焦，并确认导星镜能看到星星（结露、云层、镜头盖）。尝试更长曝光、换个天区；若星点饱和，则降低增益。"
+              },
+              "snrLow": {
+                "title": "导星星点较暗（SNR {snr}）",
+                "why": "在此 SNR 下，测得的星点位置噪声约为 {noiseArcsec}。导星仪会把这些噪声当作赤道仪移动来修正，从而增大 RMS。",
+                "fix": "使用更长曝光或更高增益、构建暗场库、对导星相机对焦，或选择更亮的星。"
+              },
+              "saturated": {
+                "title": "导星星点在 {exposureSeconds}、增益 {gain} 时饱和",
+                "why": "饱和星点顶部是平的，无法精确测量其中心，微小移动也会被忽略。",
+                "fix": "降低增益或缩短曝光，或选择较暗的星。"
+              },
+              "defocused": {
+                "title": "导星星点失焦（HFD {hfdPx}）",
+                "why": "大而模糊的星点（{hfdArcsec}）光线分散，会降低 SNR，并使测得的中心不够精确。",
+                "fix": "对导星相机对焦，直到星点尽可能小，然后再次运行 Coach。"
+              },
+              "fewStars": {
+                "title": "仅有 {stars} 颗可用导星星点",
+                "why": "多星导星会在多颗星上平均视宁度的影响。少于 3 颗星时作用不大。",
+                "fix": "尝试更长曝光、更高增益，或星点更多的天区。"
+              },
+              "noDarks": {
+                "title": "无暗场库",
+                "why": "没有暗场时，热像素可能被误认为星点，并给暗星增加噪声。",
+                "fix": "遮盖导星镜，然后在设置标签页中构建暗场库。"
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "视宁度：{rmsArcsec}（{level}）",
+                "why": "即使关闭导星，星点仍因大气而晃动 {rmsArcsec}。任何导星都跟不上这种快速运动：它是导星 RMS 的下限。",
+                "fix_good": "条件良好：赤道仪的小误差现在会显现，精细调整值得一做。",
+                "fix": "不要追逐视宁度：使用 2 s 或更长的导星曝光，并将最小移动量设为略高于视宁度。"
+              },
+              "minMove": {
+                "title": "按视宁度设定最小移动量：RA {raPx}，Dec {decPx}",
+                "why": "小于视宁度晃动的修正只是在追逐大气。略高于视宁度的最小移动量会忽略这些晃动，使赤道仪保持平稳。",
+                "fix": "将 RA 和 Dec 最小移动量设为这些值。"
+              },
+              "periodicError": {
+                "title": "RA 周期误差 ±{amplitudeArcsec}",
+                "why": "蜗杆使赤道仪周期性地时快时慢（周期 {periodSeconds}）。在最陡处星点漂移 {maxRateArcsecPerSec}，导星仪必须在每次曝光内跟上。",
+                "fix": "漂移速率高时使用更短的导星曝光；若赤道仪支持，请训练 PEC；并检查蜗杆啮合和 RA 平衡。",
+                "notes": {
+                  "learned": "由 Predictive 算法在完整的蜗杆转圈中学得，比这次短时测量更精确。",
+                  "predicting": "Predictive 算法已在提前校正它。"
+                }
+              },
+              "exposureLimit": {
+                "title_good": "导星曝光与 RA 漂移相符",
+                "title": "导星曝光相对 RA 漂移过长",
+                "why": "RA 误差在每次曝光期间不断增大。在 {seconds} 以内它保持低于视宁度；您的曝光为 {currentSeconds}。",
+                "fix_good": "无需更改。",
+                "fix": "导星曝光最长使用 {seconds}。"
+              },
+              "polarAlignment": {
+                "title": "极轴误差 ≈ {arcmin}",
+                "why": "极轴误差会使星点在 Dec 方向漂移（{driftArcsecPerMin}），并缓慢旋转视场。导星仪可以跟随漂移，但必须持续修正，长时间拍摄时会出现视场旋转。",
+                "fix_good": "非常好，无需处理。",
+                "fix_info": "对导星而言足够。长焦距下长时间拍摄时请进一步精调。",
+                "fix": "重新进行极轴校准（例如使用 TPPA）。低于 3′ 为理想，低于 5′ 即可。",
+                "notes": {
+                  "decAssumed": "赤纬未知，因此假定为 0°：赤纬越高，实际误差越大。"
+                }
+              },
+              "wind": {
+                "title": "阵风或振动",
+                "why": "{gustPercent} 的帧出现突然跳动。导星仪无法及时修正，追逐它们反而更糟。",
+                "fix": "为望远镜挡风，检查线缆是否松动、三脚架是否稳固，并稍微提高最小移动量。"
+              },
+              "decGuideMode": {
+                "title": "Dec 仅单向导星（{mode}）",
+                "why": "Dec 稳定漂移（{driftArcsecPerMin}），Dec 回差为 {backlashMs}。只向与漂移相反的一个方向进行 Dec 导星时齿轮永不反转，回差便不再有影响。",
+                "fix": "将 Dec 导星模式设为“{mode}”。它会自动适应新的极轴校准、中天翻转或新目标。"
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Dec 回差：{ms}（{arcsec}）",
+                "why": "Dec 反向时，齿轮必须先消除间隙。在此期间修正不起作用，随后星点冲过头，Dec 发生振荡。",
+                "fix_good": "无需处理。",
+                "fix": "按实测脉冲使用回差补偿、机械上减小间隙，或让 Dec 略微失衡。Dec 单向导星可完全避免此问题。"
+              },
+              "minPulse": {
+                "title": "{axis}：短于 {ms} 的脉冲无法移动赤道仪",
+                "why": "{axis} 驱动的静摩擦吞掉了短脉冲。导星仪以为已修正，但星点纹丝不动。",
+                "fix": "提高最小移动量，使修正至少达到此时长，并检查平衡和齿轮啮合。"
+              },
+              "asymmetry": {
+                "title": "{axis} 两个方向的移动不均",
+                "why": "一个方向移动星点的距离是另一方向的 {ratio}，因此导星仪会因方向不同而过度修正或修正不足。",
+                "fix": "检查平衡（RA 略偏东重）、齿轮啮合，以及两个方向的导星速率是否相同。"
+              },
+              "rateMismatch": {
+                "title": "{axis} 速率与校准不符",
+                "why": "赤道仪的移动距离是校准预测值的 {ratio}，因此每次修正都过大或过小。",
+                "fix": "在目标附近重新校准，并检查赤道仪的导星速率是否与设置一致。"
+              },
+              "good": {
+                "title": "赤道仪响应良好",
+                "why": "各方向的脉冲都能按预期移动赤道仪，无明显静摩擦或不对称。",
+                "fix": "无需处理。"
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "试验 {id} 导星最佳：{rmsArcsec}",
+                "why": "在相同天空下，它达到 {rmsArcsec}，而您当前设置为 {baselineRmsArcsec}（改善 {improvementPercent}）。",
+                "fix": "应用试验 {id} 以保留其设置。"
+              },
+              "noImprovement": {
+                "title": "您的设置已是最佳",
+                "why": "没有任何建议比您当前设置（{rmsArcsec}）导星效果更好。",
+                "fix": "保留您的设置。"
+              },
+              "conditionsChanged": {
+                "title": "试验期间条件发生变化",
+                "why": "您的当前设置在开始和结束时的导星结果相差 {changePercent}，说明期间视宁度或天空发生了变化。比较结果不可靠。",
+                "fix": "在条件稳定时重复试验，或谨慎看待最佳结果。"
+              },
+              "nothingToTry": {
+                "title": "无可试验",
+                "why": "本次会话没有找到值得试验的设置更改；您当前的设置导星为 {rmsArcsec}。",
+                "fix": "保留您的设置。",
+                "notes": {
+                  "predictive": "Predictive 算法自行设定增益，不需要最小移动量；只会试验相机、Dec 模式和回差（backlash）的更改。"
+                }
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "视宁度限制了您的导星",
+                "why": "在您 {guidedArcsec} 的导星 RMS 中，仅视宁度就占 {seeingArcsec}。您的设置和赤道仪都表现正常。",
+                "fix": "无需调整。视宁度更好时结果会改善。"
+              },
+              "mountLimited": {
+                "title": "赤道仪限制了您的导星",
+                "why": "在您 {guidedArcsec} 的导星 RMS 中，约 {mountArcsec} 来自赤道仪（周期误差、回差、平衡、静摩擦），而非天空。",
+                "fix": "逐一处理赤道仪相关发现：回差、周期误差、平衡和极轴对准。"
+              },
+              "noImagingScale": {
+                "title": "像素比例未知",
+                "why": "没有主相机的像素尺寸和望远镜焦距，Coach 无法将导星误差与您的图像像素进行比较。",
+                "fix": "在配置文件的相机设置中输入像素尺寸，在望远镜设置中输入焦距。"
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA 过度修正",
+                "why": "RA 修正不断改变方向（振荡指数 {index}）：每次修正都把星点推过目标位置。",
+                "fix": "将 RA 激进度降低 0.1。"
+              },
+              "raSluggish": {
+                "title": "RA 修正不足",
+                "why": "RA 持续朝同一方向漂移（振荡指数 {index}），RMS 为 {rmsRaArcsec}。修正过于保守。",
+                "fix": "将 RA 激进度提高 0.1。"
+              },
+              "pulseLimited": {
+                "title": "{axis} 脉冲达到上限",
+                "why": "{percent} 的 {axis} 修正被截断在最大脉冲长度，因此大误差需要多帧才能修正。",
+                "fix": "增大最大脉冲长度；若导星速率已更改，请重新校准。"
+              },
+              "lowSnr": {
+                "title": "导星星点变暗（SNR {snr}）",
+                "why": "星点的 SNR 下降，通常是由于云层、光学结露或地平线附近的雾霾。",
+                "fix": "检查天空和除露加热带；若 SNR 持续偏低，请选择其他星。"
+              },
+              "decDrift": {
+                "title": "Dec 稳定漂移（{driftArcsecPerMin}）",
+                "why": "几乎所有 Dec 修正都朝同一方向，表明极轴误差约为 {arcmin}。",
+                "fix": "精调极轴，或 Dec 仅单向导星。"
+              },
+              "seeingBound": {
+                "title": "导星已达视宁度极限",
+                "why": "您的 RMS {rmsArcsec} 已接近大气允许的水平。",
+                "fix": "目前无需调整。"
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "另一个 Coach 会话正在运行",
+                "why": "同一时间只能运行一个会话。",
+                "fix": "请等待其完成，或将其取消。"
+              },
+              "notConnected": {
+                "title": "导星仪未连接",
+                "why": "Coach 需要已连接的原生导星仪及其相机和赤道仪。",
+                "fix": "连接导星仪（脉冲导星还需连接赤道仪）后重试。"
+              },
+              "noStar": {
+                "title": "未找到导星星点",
+                "why": "Coach 需要一颗星来测量。",
+                "fix": "检查对焦、云层和镜头盖，使用更长曝光或换到其他天区。"
+              },
+              "noCalibration": {
+                "title": "未校准",
+                "why": "漂移、赤道仪响应和试验沿赤道仪轴测量，因此需要校准。",
+                "fix": "请先校准，或在高级选项中允许 Coach 进行校准。"
+              },
+              "calibrationFailed": {
+                "title": "校准失败",
+                "why": "Coach 无法完成校准，因此需要校准的步骤无法运行。",
+                "fix": "在事件日志中查找原因并解决（例如丢失导星、移动量太小），然后重新校准。"
+              },
+              "starLost": {
+                "title": "丢失导星",
+                "why": "测量过程中星点消失：云层、遮挡物，或星点移出了画面。",
+                "fix": "等待天空晴朗或选择其他星，然后重新开始。"
+              },
+              "noPulseOutput": {
+                "title": "无导星输出",
+                "why": "赤道仪响应和试验需要导星脉冲，但赤道仪和 ST4 输出均不可用。",
+                "fix": "连接赤道仪（或选择相机的 ST4 输出）后重试。"
+              },
+              "interrupted": {
+                "title": "会话被中断",
+                "why": "会话已停止，因为{reason}。临时设置已恢复。",
+                "fix": "在没有其他程序控制导星仪或赤道仪时，重新启动 Coach。"
+              },
+              "cameraError": {
+                "title": "相机错误",
+                "why": "测量过程中导星相机出错。",
+                "fix": "检查相机连接和事件日志，然后重试。"
+              },
+              "internal": {
+                "title": "内部错误",
+                "why": "Coach 中发生了意外错误。",
+                "fix": "请重试。若再次发生，请分享日志文件。"
+              }
+            }
+          }
+        },
+        "incidents": {
+          "title": "异常事件",
+          "intro": "导星出问题时前后的画面和遥测数据，并附可能的原因。",
+          "empty": "尚未记录任何异常事件。",
+          "emptyHint": "导星或校准时，导星仪会在内存中保留最近 2 分钟的画面。当丢失导星、赤道仪或相机停止响应、校准失败或误差突然跳变时，它会保存该时刻前后的画面，连同当时测得和发送的数据，以及对原因的初步判断。点击控制栏中的“标记”可自行保存某个时刻。",
+          "disabled": "飞行记录器已在导星设置中关闭（“异常事件”分组）。",
+          "loadFailed": "无法加载异常事件",
+          "refresh": "重新加载异常事件",
+          "budget": "{used} / {budget} · {count} / {max} 个异常事件",
+          "budgetSimulator": "模拟器：{used} / {budget}",
+          "filterProfile": "当前配置文件",
+          "filterAll": "全部",
+          "noneForProfile": "此配置文件没有异常事件。",
+          "recording": "记录中…",
+          "recordingHint": "导星恢复后再过 30 秒保存。",
+          "ongoing": "进行中",
+          "occurrences": "{count}×",
+          "likely": "可能原因：{cause}",
+          "analysing": "原因尚不明确",
+          "simulator": "模拟器",
+          "kept": "已保留",
+          "keep": "保留",
+          "release": "取消保留",
+          "keepHint": "保留：不会为了给新的异常事件腾出空间而被删除",
+          "releaseHint": "取消保留：可能会被删除，为新的异常事件腾出空间",
+          "delete": "删除",
+          "deleteConfirm": "删除？",
+          "deleteAll": "全部删除",
+          "deleteAllConfirm": "删除所有未保留的异常事件？已保留的不受影响。",
+          "deleteAllButton": "删除 {count} 个",
+          "deletedAll": "已删除：{count}",
+          "cancel": "取消",
+          "download": "下载",
+          "downloading": "正在准备下载…",
+          "downloadSaved": "已保存为 {file}",
+          "downloadFailed": "下载失败",
+          "replayButton": "回放",
+          "actionFailed": "异常事件操作失败",
+          "frames": "{count} 帧",
+          "framesOmitted": {
+            "diskSpace": "未保留画面：磁盘空间不足",
+            "budget": "未保留画面：存储配额已被保留的异常事件占满"
+          },
+          "endReasons": {
+            "recording": "记录中",
+            "recovered": "已恢复",
+            "stopped": "已停止",
+            "cap": "5 分钟上限",
+            "manual": "已标记"
+          },
+          "kinds": {
+            "StarLost": "丢失导星",
+            "Runaway": "导星失控",
+            "MountNotResponding": "赤道仪无响应",
+            "SettleTimeout": "稳定超时",
+            "CameraFailure": "相机故障",
+            "MountPaused": "赤道仪暂停",
+            "CalibrationFailed": "校准失败",
+            "PulseLimited": "达到脉冲上限",
+            "PulseOutputFailed": "脉冲输出失败",
+            "DecFlipCorrected": "已纠正 Dec 翻转",
+            "Spike": "误差尖峰",
+            "Manual": "手动标记"
+          },
+          "savedTitle": "异常事件已保存",
+          "savedMessage": "{kind}（{time}）",
+          "mark": {
+            "button": "标记",
+            "title": "标记异常事件",
+            "hint": "保存最近 2 分钟和接下来 30 秒的导星数据，用于回放。",
+            "note": "备注（可选）",
+            "placeholder": "例如：一阵风",
+            "submit": "标记",
+            "done": "已标记。将再记录 30 秒，然后保存该异常事件。",
+            "failed": "标记失败"
+          },
+          "replay": {
+            "close": "关闭回放",
+            "loading": "正在加载异常事件…",
+            "loadFailed": "无法加载该异常事件",
+            "frame": "第 {frame} 帧",
+            "position": "{index} / {count}",
+            "noImage": "此帧未保留图像",
+            "keyFrame": "完整画面",
+            "context": "合并 {binning}×",
+            "imageFailed": "无法加载图像",
+            "starLost": "未找到星点",
+            "starLostStatus": "未找到星点：{status}",
+            "play": "播放",
+            "pause": "暂停",
+            "stepBack": "上一帧",
+            "stepForward": "下一帧",
+            "prevMarker": "上一个标记",
+            "nextMarker": "下一个标记",
+            "speed": "播放速度",
+            "scrubber": "帧位置",
+            "crops": "星点",
+            "noCrops": "此帧未保留星点裁切图",
+            "graph": "导星误差",
+            "telemetry": "此帧",
+            "note": "您的备注",
+            "triggers": "触发条件",
+            "evidence": "依据",
+            "showFrame": "显示画面",
+            "searchRegion": "搜索区域",
+            "diagnosisPending": "尚无诊断：异常事件仍在记录中。"
+          },
+          "tele": {
+            "time": "时间",
+            "state": "状态",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "mass": "质量",
+            "error": "误差",
+            "pulses": "脉冲",
+            "mount": "赤道仪",
+            "pierSide": "子午侧",
+            "calibration": "校准",
+            "stars": "星数",
+            "settling": "稳定中",
+            "dithering": "抖动中",
+            "limited": "受限",
+            "tracking": "跟踪中",
+            "notTracking": "跟踪关闭",
+            "slewing": "转动中",
+            "parked": "已停放",
+            "unknown": "未知"
+          },
+          "markers": {
+            "trigger": "触发",
+            "recovered": "已恢复",
+            "note": "备注",
+            "gap": "无图像",
+            "end": "结束"
+          },
+          "causes": {
+            "camera": {
+              "title": "相机",
+              "why": "此时刻前后画面缺失或延迟：导星相机未能送出画面（拍摄错误、超时、USB 连接中断）。",
+              "fix": "检查相机的 USB 线和供电，避免使用过长的无源 USB 延长线，并尝试更长的曝光或更低的 USB 带宽。"
+            },
+            "mountMoved": {
+              "title": "赤道仪发生了移动",
+              "why": "赤道仪进行了转动、停止跟踪、停放、断开连接或改变了子午侧，导致星点离开了原位。",
+              "fix": "在转动和中天翻转前暂停导星（序列会自动完成），并检查跟踪是否保持开启。"
+            },
+            "calibrationMismatch": {
+              "title": "校准不匹配",
+              "why": "修正把星点推得更远，而不是拉回来：校准已不再符合赤道仪（子午侧、赤纬、导星速率或 Dec 方向翻转）。",
+              "fix": "在目标附近重新校准，并检查赤道仪是否正确报告子午侧。"
+            },
+            "mountNotMoving": {
+              "title": "赤道仪未移动",
+              "why": "已发送修正脉冲，但星点几乎没动：赤道仪没有执行这些脉冲。",
+              "fix": "检查赤道仪连接和导星输出（ST-4 线或脉冲导星），以及离合器是否锁紧。"
+            },
+            "fieldJump": {
+              "title": "视场跳变",
+              "why": "所有星点同时跳动了相同的距离：整个望远镜发生了移动（碰撞、阵风、线缆牵扯、赤道仪打滑）。",
+              "fix": "检查走线、离合器和平衡，并为望远镜挡风。"
+            },
+            "clouds": {
+              "title": "云层",
+              "why": "所有星点在一分钟内同时变暗，之后又恢复：有东西从天空前方经过。",
+              "fix": "导星仪无需修正。请等待晴空；有薄云时，更长的曝光会有帮助。"
+            },
+            "dew": {
+              "title": "结露",
+              "why": "所有星点在几分钟内缓慢变暗，同时变大（HFD）：光学元件上有露水或霜。",
+              "fix": "打开或调高除露加热带，并使用防露罩。"
+            },
+            "guideStarOnly": {
+              "title": "导星星点问题",
+              "why": "只有导星星点发生变化（丢失、明显变亮或变暗），其他星点正常：饱和、热像素或邻近星点干扰了跟踪。",
+              "fix": "选择其他导星星点；若饱和则降低曝光或增益，并使用多星导星。"
+            },
+            "driftTooFast": {
+              "title": "漂移过快",
+              "why": "星点稳定地向搜索区域边缘漂移，而修正已达到上限。",
+              "fix": "提高最大脉冲长度或激进度，检查极轴对准和平衡；若导星速率已更改，请重新校准。"
+            },
+            "periodicSpike": {
+              "title": "周期误差",
+              "why": "尖峰按赤道仪的蜗杆周期重复出现：齿轮存在周期误差。",
+              "fix": "使用 Predictive RA 算法或赤道仪的 PEC；若尖峰较大，请清洁蜗杆并重新上油。"
+            },
+            "unclear": {
+              "title": "不明确",
+              "why": "没有匹配任何已知模式。下方依据列出了测量结果。",
+              "fix": "查看回放；下载该异常事件并附到错误报告中。"
+            }
+          },
+          "evidence": {
+            "cameraFailures": "相机拍摄失败：{count} 次",
+            "frameGap": "{seconds} 内没有画面",
+            "mountSlewing": "赤道仪正在转动",
+            "mountTrackingOff": "赤道仪跟踪已关闭",
+            "mountParked": "赤道仪已停放",
+            "mountDisconnected": "赤道仪已断开连接",
+            "pierSideChanged": "子午侧由{from}变为{to}",
+            "errorGrew": "{axis} 误差在 {frames} 帧内从 {fromPx} 增大到 {toPx}，尽管修正一直在反向纠正",
+            "runaway": "{axis} 失控：修正使星点偏得更远",
+            "decFlipCorrected": "Dec 方向曾被翻转，已纠正",
+            "pulsesWithoutMotion": "{pulses} 个 {axis} 脉冲本应使星点移动 {expectedPx}；实际移动 {movedPx}",
+            "fieldJump": "{stars} 颗星同时跳动了 {jumpPx}（{jumpArcsec}）",
+            "starsFaded": "所有星点（{stars}）在 {seconds} 内变暗 {dropPercent}",
+            "recoveredAfter": "{seconds} 后恢复",
+            "starsFadingSlowly": "所有星点（{stars}）在 {minutes} 内逐渐变暗 {dropPercent}",
+            "hfdGrew": "星点变大：HFD 增加 {percent}",
+            "primaryOnly": "导星星点变暗 {dropPercent}；其他星点（{secondaries}）保持正常",
+            "saturated": "导星星点饱和",
+            "massJump": "导星星点的质量跳变 {percent}",
+            "driftToEdge": "星点在 {frames} 帧内沿 {axis} 漂移至搜索区域的 {percentOfRegion}",
+            "pulsesLimited": "{frames} 帧中 {axis} 修正达到上限",
+            "spikeRepeats": "此前在蜗杆周期（{periodSeconds}）的整数倍处出现过 {count} 次尖峰",
+            "spike": "误差尖峰 {errorArcsec}，当时 RMS 为 {rmsArcsec}",
+            "starLost": "丢失导星（{status}）",
+            "trigger": "触发：{kind}"
+          },
+          "values": {
+            "axis": {
+              "ra": "RA",
+              "dec": "Dec"
+            },
+            "pierSide": {
+              "East": "东",
+              "West": "西",
+              "Unknown": "未知"
+            },
+            "status": {
+              "LowSnr": "SNR 过低",
+              "Saturated": "饱和",
+              "MassChanged": "星点质量变化",
+              "NotFound": "未找到星点"
+            }
+          },
+          "unknown": "?"
+        }
       }
     },
     "focuser": {

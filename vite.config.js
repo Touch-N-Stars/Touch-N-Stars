@@ -112,6 +112,12 @@ export default defineConfig({
               priority: 20,
             },
             {
+              // native guider charts only: kept out of the shared vendor chunk
+              name: 'uplot-vendor',
+              test: /node_modules[\\/]uplot[\\/]/,
+              priority: 19,
+            },
+            {
               name: 'media-vendor',
               test: /node_modules[\\/](@capacitor|@capacitor-community|@capawesome|@capgo)[\\/]/,
               priority: 15,

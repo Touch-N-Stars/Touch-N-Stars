@@ -256,4 +256,54 @@ export default {
       throw error;
     }
   },
+
+  //-------------------------------------  Guide camera (PINS) ---------------------------------------
+  // PINS' second camera slot. Same routes as the camera's under /equipment/guidecamera.
+  guideCameraAction(action) {
+    const { BASE_URL } = getUrls();
+    return simpleGetRequest(`${BASE_URL}/equipment/guidecamera/${action}`);
+  },
+
+  guideCameraCancelConnect() {
+    const { BASE_URL } = getUrls();
+    return simpleGetRequest(`${BASE_URL}/equipment/guidecamera/cancel-connect`);
+  },
+
+  // One exposure, returned as an image without going through the imaging pipeline (nothing is saved).
+  async guideCameraCapture(duration, gain, quality = 80) {
+    const { BASE_URL } = getUrls();
+    const params = { duration: duration, quality: quality, resize: true, size: '1280x960' };
+    if (gain !== null && gain !== undefined && gain !== '') {
+      params.gain = gain;
+    }
+    const response = await axios.get(`${BASE_URL}/equipment/guidecamera/capture`, {
+      params,
+      timeout: (duration + 120) * 1000,
+    });
+    return response.data;
+  },
+
+  async guideCameraCool(temp, minutes) {
+    const { BASE_URL } = getUrls();
+    const response = await axios.get(`${BASE_URL}/equipment/guidecamera/cool`, {
+      params: { temperature: temp, minutes: minutes },
+    });
+    return response.data;
+  },
+
+  async guideCameraWarm(minutes) {
+    const { BASE_URL } = getUrls();
+    const response = await axios.get(`${BASE_URL}/equipment/guidecamera/warm`, {
+      params: { minutes: minutes },
+    });
+    return response.data;
+  },
+
+  async guideCameraSetBinning(mode) {
+    const { BASE_URL } = getUrls();
+    const response = await axios.get(`${BASE_URL}/equipment/guidecamera/set-binning`, {
+      params: { binning: mode },
+    });
+    return response.data;
+  },
 };

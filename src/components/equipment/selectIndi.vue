@@ -43,6 +43,24 @@
         </select>
       </div>
 
+      <!-- Guide camera (PINS' second camera slot, same driver list as the camera) -->
+      <div v-if="store.profileInfo?.GuideCameraSettings" class="flex flex-row w-full items-center">
+        <label for="indi-guide-camera" class="mr-3 text-gray-200">
+          {{ $t('components.connectEquipment.guideCamera.name') }}
+        </label>
+        <select
+          id="indi-guide-camera"
+          v-model="selectedGuideCamera"
+          @change="onGuideCameraChange"
+          class="tns-select w-40 ml-auto"
+        >
+          <option value="None">None</option>
+          <option v-for="item in camera" :key="item.Name" :value="item.Name">
+            {{ item.Label }}
+          </option>
+        </select>
+      </div>
+
       <!-- Focuser -->
       <div class="flex flex-row w-full items-center">
         <label for="indi-focuser" class="mr-3 text-gray-200">
@@ -230,6 +248,7 @@ const dome = ref([]);
 const safetymonitor = ref([]);
 
 const selectedCamera = ref('None');
+const selectedGuideCamera = ref('None');
 const selectedFocuser = ref('None');
 const selectedFilterwheel = ref('None');
 const selectedRotator = ref('None');
@@ -249,6 +268,21 @@ const onCameraChange = async () => {
     console.log('[SelectIndi] Camera selected:', selectedCamera.value);
   } catch (error) {
     console.error('[SelectIndi] Error Camera selection:', error);
+  }
+};
+
+const onGuideCameraChange = async () => {
+  try {
+    await apiService.profileChangeValue(
+      'GuideCameraSettings-IndiDriver',
+      selectedGuideCamera.value
+    );
+    await apiService.guideCameraAction('list-devices');
+    equipmentStore.triggerRescan('guideCamera');
+    await store.fetchProfilInfos();
+    console.log('[SelectIndi] Guide camera selected:', selectedGuideCamera.value);
+  } catch (error) {
+    console.error('[SelectIndi] Error guide camera selection:', error);
   }
 };
 
@@ -413,6 +447,7 @@ onMounted(async () => {
 
     // Set saved values from store as defaults
     selectedCamera.value = store.profileInfo?.CameraSettings?.IndiDriver || 'None';
+    selectedGuideCamera.value = store.profileInfo?.GuideCameraSettings?.IndiDriver || 'None';
     selectedFocuser.value = store.profileInfo?.FocuserSettings?.IndiDriver || 'None';
     selectedFilterwheel.value = store.profileInfo?.FilterWheelSettings?.IndiDriver || 'None';
     selectedRotator.value = store.profileInfo?.RotatorSettings?.IndiDriver || 'None';

@@ -70,6 +70,16 @@
       @open-config="openCameraSettings"
     />
 
+    <!-- PINS' guide camera slot; official NINA's profile has no GuideCameraSettings. -->
+    <selectDevices
+      v-if="store.profileInfo?.GuideCameraSettings"
+      apiAction="guideCameraAction"
+      :deviceName="$t('components.connectEquipment.guideCamera.name')"
+      :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
+      :isConnected="store.guideCameraInfo.Connected"
+      @open-config="openCameraSettings"
+    />
+
     <selectDevices
       apiAction="mountAction"
       :deviceName="$t('components.connectEquipment.mount.name')"
@@ -86,8 +96,9 @@
       @open-config="openFocuserSettings"
     />
 
+    <!-- The PHD2 guide camera picker; the PINS native guider configures its own camera. -->
     <selectGuiderCam
-      v-if="store.isPINS"
+      v-if="store.isPINS && !isNativeGuiderChoice"
       :deviceName="$t('components.connectEquipment.guiderCam.name')"
     />
 
@@ -400,6 +411,7 @@ import {
   setProfileDevice,
 } from '@/utils/equipmentDevices';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { isNativeGuiderSelected } from '@/utils/nativeGuider';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -446,6 +458,15 @@ const isAlpacaDirect = (device) => device?.Category === 'ASCOM Alpaca';
 const WEATHER_API_KEY_DEVICES = ['OpenWeatherMap', 'TheWeatherCompany', 'Weather Underground'];
 const weatherHasApiKeySettings = computed(() =>
   WEATHER_API_KEY_DEVICES.includes(selectedWeatherDeviceName.value)
+);
+
+// The PINS native guider neither needs the PHD2 guide camera pick nor PHD2's mount-first rule.
+const isNativeGuiderChoice = computed(() =>
+  isNativeGuiderSelected({
+    guiderInfo: store.guiderInfo,
+    profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
+    selectedDisplayName: selectedGuiderDevice.value,
+  })
 );
 
 const isGuiderConnectDisabled = computed(() => {
@@ -535,6 +556,8 @@ function isDeviceConnected(apiName) {
   switch (apiName) {
     case 'camera':
       return store.cameraInfo.Connected;
+    case 'guidecamera':
+      return store.guideCameraInfo.Connected;
     case 'mount':
       return store.mountInfo.Connected;
     case 'filter':
@@ -673,6 +696,9 @@ async function connectAll() {
         case 'camera':
           await apiService.cameraAction('connect');
           break;
+        case 'guidecamera':
+          await apiService.guideCameraAction('connect');
+          break;
         case 'mount': {
           const canConnect = await checkMountConnectionPermission(t);
           if (!canConnect) {
@@ -692,7 +718,7 @@ async function connectAll() {
           await apiService.rotatorAction('connect');
           break;
         case 'guider':
-          if (store.isPINS) {
+          if (store.isPINS && !isNativeGuiderChoice.value) {
             if (!store.mountInfo.Connected || !guiderStore.guidecamOk) {
               console.warn(
                 '[Connect Equipment] Mount must be connected or guide camera must be match before connecting guider in PINS mode'
@@ -728,10 +754,15 @@ async function connectAll() {
 async function disconnectAll() {
   isDisconnecting.value = true;
   try {
+    // The guider stops before its camera goes away, so the guide camera is disconnected after the loop.
+    let hasGuideCamera = false;
     for (const device of store.existingEquipmentList) {
       switch (device.apiName) {
         case 'camera':
           await apiService.cameraAction('disconnect');
+          break;
+        case 'guidecamera':
+          hasGuideCamera = true;
           break;
         case 'mount':
           await apiService.mountAction('disconnect');
@@ -772,6 +803,9 @@ async function disconnectAll() {
           await apiService.switchAction('disconnect');
           break;
       }
+    }
+    if (hasGuideCamera) {
+      await apiService.guideCameraAction('disconnect');
     }
   } catch (error) {
     console.error(t('components.connectEquipment.disconnectAllError'), error);

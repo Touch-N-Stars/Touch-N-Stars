@@ -9,9 +9,33 @@
       </p>
     </div>
 
-    <!-- 1. Guide camera. PHD2 enumerates its own drivers, so unlike every other
-         device step there is no INDI driver to pick here. -->
-    <div class="flex flex-col gap-1">
+    <!-- 1. Guide camera. The PINS native guider uses PINS' guide camera slot, with
+         device and INDI driver picked like the imaging camera's. -->
+    <div v-if="isNativeGuider" class="flex flex-col gap-3">
+      <div class="flex flex-col gap-1">
+        <span class="text-xs font-semibold uppercase text-content-muted">
+          {{ t('components.setupWizard.guider.guideCamera') }}
+        </span>
+        <selectDevices
+          apiAction="guideCameraAction"
+          :deviceName="$t('components.connectEquipment.guideCamera.name')"
+          :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
+          :isConnected="store.guideCameraInfo?.Connected"
+        />
+      </div>
+      <IndiDriverSelect
+        deviceType="camera"
+        settingPath="GuideCameraSettings-IndiDriver"
+        listAction="guideCameraAction"
+        rescanKey="guideCamera"
+        profileSection="GuideCameraSettings"
+        :label="t('components.setupWizard.camera.selectDriver')"
+      />
+    </div>
+
+    <!-- PHD2 enumerates its own drivers, so unlike every other device step there
+         is no INDI driver to pick here. -->
+    <div v-else class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.guider.guideCamera') }}
       </span>
@@ -49,9 +73,20 @@
       </p>
     </div>
 
+    <!-- Native guider: guide source and optics from its own settings. -->
+    <div v-if="isNativeGuider" class="flex flex-col gap-1">
+      <span class="text-xs font-semibold uppercase text-content-muted">
+        {{ t('components.setupWizard.guider.nativeCamera') }}
+      </span>
+      <NativeSettingsSheet :names="NATIVE_WIZARD_SETTINGS" compact />
+      <p class="text-xs text-content-faint">
+        {{ t('components.setupWizard.guider.nativeCameraHint') }}
+      </p>
+    </div>
+
     <!-- 3. Guide scope focal length. This lives in the PHD2 profile, not in
          NINA's - there is no GuiderSettings-FocalLength. -->
-    <div class="flex flex-col gap-1">
+    <div v-else class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.guider.focalLength') }}
       </span>
@@ -72,6 +107,9 @@ import { useEquipmentStore } from '@/store/equipmentStore';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import selectGuiderCam from '@/components/guider/PHD2/selectGuiderCam.vue';
 import Phd2FocalLength from '@/components/guider/PHD2/pins/Phd2FocalLength.vue';
+import NativeSettingsSheet from '@/components/guider/native/NativeSettingsSheet.vue';
+import IndiDriverSelect from '../IndiDriverSelect.vue';
+import { isNativeGuiderSelected } from '@/utils/nativeGuider';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -79,6 +117,17 @@ const guiderStore = useGuiderStore();
 const equipmentStore = useEquipmentStore();
 
 const selectedGuiderDevice = ref('');
+
+const NATIVE_WIZARD_SETTINGS = ['GuideSource', 'FocalLengthMm'];
+
+// The PINS native guider needs neither the PHD2 guide camera nor the PHD2 profile.
+const isNativeGuider = computed(() =>
+  isNativeGuiderSelected({
+    guiderInfo: store.guiderInfo,
+    profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
+    selectedDisplayName: selectedGuiderDevice.value,
+  })
+);
 
 // Mirrors connectEquipment.vue:440-456 - PHD2 in PINS needs a connected mount
 // and a validated guide camera before it can be connected at all.

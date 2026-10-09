@@ -422,7 +422,9 @@
         "ditherApply": "Apply to profile",
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "nativeCamera": "ガイドカメラ（PINS ネイティブガイダー）",
+        "nativeCameraHint": "ネイティブガイダーはガイドカメラを直接制御します。INDI ドライバーとデバイスを選び、ガイド鏡の焦点距離を入力してください。"
       },
       "done": {
         "title": "Your equipment is ready",
@@ -1712,6 +1714,1485 @@
         "ditherScale": "ディザースケール",
         "ditherModeRandom": "ランダム",
         "ditherModeSpiral": "スパイラル"
+      },
+      "native": {
+        "notConnected": "PINS ネイティブガイダーが接続されていません",
+        "notConnectedHint": "機材ページで PINS ネイティブガイダーを接続してください。設定は接続前でも編集できます。",
+        "states": {
+          "Stopped": "停止",
+          "Looping": "ループ中",
+          "Selected": "星を選択",
+          "Calibrating": "キャリブレーション中",
+          "Guiding": "ガイド中",
+          "LostLock": "星をロスト",
+          "Reacquiring": "再取得中",
+          "Paused": "一時停止",
+          "Failed": "失敗",
+          "Disconnected": "切断",
+          "Unknown": "不明"
+        },
+        "tabs": {
+          "frame": "フレーム",
+          "graph": "グラフ",
+          "stats": "統計",
+          "calibration": "校正",
+          "log": "ログ",
+          "settings": "設定",
+          "dashboard": "ガイド",
+          "coach": "コーチ",
+          "incidents": "インシデント"
+        },
+        "strip": {
+          "settling": "整定中",
+          "live": "ライブ",
+          "poll": "ポーリング",
+          "liveHint": "WebSocket でリアルタイム更新",
+          "pollHint": "WebSocket 利用不可 - 2 秒ごとに更新",
+          "rmsTotal": "RMS",
+          "rmsRa": "RA",
+          "rmsDec": "Dec",
+          "snr": "SNR",
+          "mass": "質量",
+          "hfd": "HFD",
+          "stars": "星数",
+          "usedTotal": "使用/検出",
+          "processing": "処理",
+          "rmsImage": "RMS / 撮像",
+          "rmsImageHint": "ガイドの総 RMS を撮像カメラのピクセルスケールで割った値です。0.5 未満なら優秀、1 前後でガイド誤差が撮像の 1 ピクセルに達します。",
+          "imageScale": "／{scale}″/px",
+          "imageScaleUnknown": "カメラと焦点距離を設定",
+          "learningChip": "空と赤道儀を学習中 {percent} %",
+          "learningChipHint": "Predictive アルゴリズムはガイドフレームからシーイングと赤道儀自身の動きを学習します（約 120 フレーム。ディザー後の安定化は数えません）。その間もガイドを続け、その後も適応し続けます。",
+          "help": {
+            "rms": {
+              "title": "RMS – ガイド誤差の合計",
+              "text": "ガイド星がロック位置からどれだけずれているかを、直近のガイドフレームの二乗平均平方根で表したもの（RA と Dec の合計、ディザー後の安定化は除外）。単位は天球上の秒角とガイドカメラのピクセル。小さいほど良く、重要なのは撮影カメラのピクセルスケール（RMS / 画像）やシーイングとの比較です。1.2″ を超えるとオレンジ、2″ を超えると赤になります。"
+            },
+            "ra": {
+              "title": "RA – 赤経方向の誤差",
+              "text": "赤経方向のガイド RMS 誤差。RA には赤道儀のピリオディックエラーや駆動の不規則さが乗るため、通常は二つのうち大きい方です。Dec より明らかに大きい場合は、ピリオディックエラー、バランス、風が考えられます。"
+            },
+            "dec": {
+              "title": "Dec – 赤緯方向の誤差",
+              "text": "赤緯方向のガイド RMS 誤差。Dec には主に極軸のずれによるドリフトと赤緯ギアのバックラッシュが表れます。RA より明らかに大きい場合は、バックラッシュか極軸合わせの不良が考えられます。"
+            },
+            "snr": {
+              "title": "SNR – 信号対雑音比",
+              "text": "ガイド星が背景ノイズからどれだけはっきり浮かび上がっているか。20 以上なら十分で、10 未満では位置の測定が不安定になり星を見失うことがあります。露出を延ばす、ゲインを上げる、明るい星を選ぶなどしてください。マスは星の総輝度で、急な低下は雲か星の喪失を意味します。"
+            },
+            "hfd": {
+              "title": "HFD – ハーフフラックス径",
+              "text": "ガイドカメラのピクセル単位でのガイド星の大きさ。小さく安定しているのが理想で、大きい、または増えていく HFD はガイド鏡のピンぼけかシーイングの悪さを示します。非常に小さい値（約 1.5 px 未満）は位置の精度を下げます。"
+            },
+            "stars": {
+              "title": "星 – 使用 / 検出",
+              "text": "ガイドに使っている星と、フレーム内で見つかった星。マルチスターガイドでは使用中の星で位置を平均するため、シーイングによるノイズが減ります。多いほど良好です。暗すぎる星、飽和した星、端に近すぎる星は使われません。"
+            },
+            "processing": {
+              "title": "処理 – 処理時間",
+              "text": "直前のフレームの解析（星の検出、位置測定、補正）にかかった時間。露出時間より十分短いことが望ましく、半分を超えるとオレンジになります。PC が遅いか、ガイドフレームが非常に大きい可能性があります（ビニングが有効です）。"
+            },
+            "rmsImage": {
+              "title": "RMS / 画像 – 撮影ピクセル単位の誤差"
+            }
+          },
+          "periodicErrorChip": "周期誤差を学習中 {percent} %",
+          "periodicErrorChipHint": "Predictive アルゴリズムが RA ウォームの周期誤差を学習しています。ウォーム約 5 回転後（ガイドを止めて再開しても回転数は積み重なりますが、導入・同期・子午線反転のあとは最初からになります）、またはウォームホイールの歯数設定からすぐにウォーム周期を求め、カーブが回転ごとに同じかを確かめます（歯数設定時は 2 回転）。その間もガイドを続けます。",
+          "decDirection": {
+            "Both": "両方向",
+            "North": "北のみ",
+            "South": "南のみ"
+          }
+        },
+        "controls": {
+          "loop": "ループ",
+          "stop": "停止",
+          "guide": "ガイド",
+          "calibrate": "校正",
+          "pause": "一時停止",
+          "resume": "再開",
+          "dither": "ディザー",
+          "clearCalibration": "校正消去",
+          "ditherTitle": "ディザー",
+          "ditherPixels": "移動量（ガイドピクセル）",
+          "ditherRaOnly": "RA のみ",
+          "ditherHint": "ロック位置をこの量までランダムに移動し、ガイドが整定するまで待機します。",
+          "ditherInvalid": "0～100 ピクセルの範囲で値を入力してください。",
+          "confirmStopTitle": "ガイドを停止しますか？",
+          "confirmStop": "ガイドが停止し、実行中のシーケンスの露光はガイドされなくなります。",
+          "confirmCalibrateTitle": "再校正しますか？",
+          "confirmCalibrate": "現在の校正データは破棄され、新しい校正を開始します。",
+          "confirmClearTitle": "校正データを消去しますか？",
+          "confirmClear": "保存された校正データが削除されます。次回のガイド開始時に再度校正されます。",
+          "failed": "{action} に失敗しました",
+          "actions": {
+            "loop": "ループ",
+            "stop": "停止",
+            "start-guiding": "ガイド開始",
+            "stop-guiding": "ガイド停止",
+            "pause": "一時停止",
+            "resume": "再開",
+            "dither": "ディザー",
+            "clear-calibration": "校正を消去",
+            "calibrate": "校正",
+            "darks": "ダークライブラリ作成",
+            "coach-start": "コーチ開始",
+            "coach-skip": "コーチステップのスキップ",
+            "coach-cancel": "コーチのキャンセル",
+            "coach-apply": "推奨の適用"
+          }
+        },
+        "frame": {
+          "title": "ガイドフレーム",
+          "stretch": "ストレッチ",
+          "stretch_low": "弱",
+          "stretch_medium": "中",
+          "stretch_high": "強",
+          "overlay": "星のオーバーレイを表示/非表示",
+          "resetZoom": "ズームをリセット",
+          "noFrame": "ガイドフレームはまだありません。「ループ」を押して露光を開始してください。",
+          "imageFailed": "ガイドフレームの読み込みに失敗しました",
+          "starCount": "{count} 個の星",
+          "age": "{seconds} 秒前",
+          "weight": "重み",
+          "rejected": "未使用",
+          "legendPrimary": "主星",
+          "legendSecondary": "副星",
+          "legendRejected": "未使用",
+          "legendLock": "ロック位置",
+          "tapHint": "星をタップして詳細を表示",
+          "levelSaturated": "フレームが飽和しています（{percent} % のピクセルが最大値）。空がまだ明るすぎるか、露光/ゲインが高すぎます。露光かゲインを下げてください。",
+          "levelFlat": "フレームに有効な信号がありません（レベル {level}／{fullScale}）。キャップの外し忘れ、結露、またはカメラが露光していませんか？",
+          "levelPartlySaturated": "{percent} % 飽和"
+        },
+        "profile": {
+          "noStar": "ガイド星なし",
+          "horizontal": "H",
+          "vertical": "V",
+          "radial": "動径",
+          "peak": "ピーク",
+          "saturated": "星が飽和しています - 露光時間を短くするか、別の星を選んでください。"
+        },
+        "log": {
+          "title": "イベント",
+          "empty": "イベントはまだありません。",
+          "filter_all": "すべて",
+          "filter_warning": "警告",
+          "filter_critical": "重大",
+          "explanation": "内容",
+          "fix": "対処法",
+          "detail": "詳細",
+          "severity": {
+            "info": "情報",
+            "warning": "警告",
+            "critical": "重大"
+          }
+        },
+        "alerts": {
+          "StarLost": {
+            "title": "ガイド星をロスト",
+            "explanation": "直前のフレームでガイド星が見つかりませんでした。ロスト中は補正を送信しません。",
+            "fix": "雲、障害物、結露がないか確認してください。ガイダーは自動的に探索を続けます。"
+          },
+          "StarReacquireTimeout": {
+            "title": "ガイド星を再取得できませんでした",
+            "explanation": "再取得のタイムアウトより長く星をロストしたため、ガイドを停止しました。",
+            "fix": "空と光学系を確認してから、ガイドを再開してください（シーケンサーの「Restore Guiding」トリガーで自動化できます）。"
+          },
+          "StarSaturated": {
+            "title": "ガイド星が飽和",
+            "explanation": "ガイド星のピークが飽和しており、重心の精度が低下します。",
+            "fix": "露光かゲインを下げるか、自動選択でより暗い星を選ばせてください。"
+          },
+          "StarLowSnr": {
+            "title": "星の SNR が低い",
+            "explanation": "ガイド星の信号対雑音比が低く、重心がノイズの影響を受けます。",
+            "fix": "露光かゲインを上げるか、ガイドカメラのピントを確認してください。"
+          },
+          "StarMassChanged": {
+            "title": "星の明るさが急変",
+            "explanation": "星の明るさが質量変化のしきい値を超えて変化したため、このフレームは無視されました。",
+            "fix": "通常は雲の通過です。続く場合は質量変化のしきい値を上げてください。"
+          },
+          "NoStarFound": {
+            "title": "適切なガイド星なし",
+            "explanation": "自動星選択で、SNR と飽和の基準を満たす星が見つかりませんでした。",
+            "fix": "露光/ゲインを上げ、ピントとガイド鏡が覆われていないかを確認してください。"
+          },
+          "LockPositionNearEdge": {
+            "title": "ロック位置が端に近すぎます",
+            "explanation": "指定されたロック位置は、探索領域に対してフレームの端に近すぎます。",
+            "fix": "端から離れた星を選ぶか、ディザー量を減らしてください。"
+          },
+          "PrimaryEstimatedFromSecondaries": {
+            "title": "主星の位置を推定",
+            "explanation": "主星を測定できなかったため、副星から位置を推定しました。",
+            "fix": "対処は不要です。頻繁に起こる場合は、別の主星を選ぶことをお勧めします。"
+          },
+          "StarReacquired": {
+            "title": "ガイド星を再取得",
+            "explanation": "ガイド星が再び見つかり、ガイドを再開しました。",
+            "fix": "対処は不要です。"
+          },
+          "CalibrationFailedRaNoMove": {
+            "title": "校正失敗: RA が動きません",
+            "explanation": "校正中に星が RA 方向に十分動きませんでした。",
+            "fix": "ガイド出力の接続（赤道儀/ST4）とガイドレート、赤道儀が追尾中でパーク解除されているかを確認してください。"
+          },
+          "CalibrationFailedDecNoMove": {
+            "title": "校正失敗: Dec が動きません",
+            "explanation": "校正中に星が Dec 方向に十分動きませんでした。",
+            "fix": "Dec バックラッシュ、バランス、ケーブルの引っかかりを確認するか、RA のみで校正/ガイドしてください。"
+          },
+          "CalibrationFailedBacklash": {
+            "title": "校正失敗: Dec バックラッシュを解消できません",
+            "explanation": "Dec の校正移動の前に Dec バックラッシュを解消できませんでした。",
+            "fix": "Dec バックラッシュを減らして（ギアの噛み合わせ、Dec のバランスをやや東側を重く）、再校正してください。"
+          },
+          "CalibrationFailedStarLost": {
+            "title": "校正失敗: 星をロスト",
+            "explanation": "校正中に校正用の星を何度もロストしました。",
+            "fix": "端から離れた明るい星を選んで再試行してください。"
+          },
+          "CalibrationFewSteps": {
+            "title": "校正のステップ数が少ない",
+            "explanation": "いずれかの軸で 4 ステップ未満で校正が完了したため、不正確な可能性があります。",
+            "fix": "校正ステップを小さくして再校正してください。"
+          },
+          "CalibrationNotOrthogonal": {
+            "title": "校正の軸が直交していません",
+            "explanation": "測定された RA 軸と Dec 軸が直角から 12.5° を超えてずれています。",
+            "fix": "校正中の Dec バックラッシュ、ケーブルの引っかかり、風を確認し、再校正してください。"
+          },
+          "CalibrationRateRatio": {
+            "title": "RA/Dec のレート比が想定外",
+            "explanation": "RA と Dec の校正レートの比が赤緯と一致しません。",
+            "fix": "赤道儀が報告する赤緯とガイドレートを確認し、可能なら Dec 0 付近で再校正してください。"
+          },
+          "CalibrationDecRateChanged": {
+            "title": "Dec レートが前回の校正と異なります",
+            "explanation": "Dec レートが、同じ構成での前回の校正と 20 % を超えて異なります。",
+            "fix": "再校正し、バックラッシュや機械的な問題がないか確認してください。"
+          },
+          "CalibrationInvalidated": {
+            "title": "校正が無効になりました",
+            "explanation": "保存された校正が、カメラ、ビニング、または焦点距離と一致しなくなりました。",
+            "fix": "ガイド開始時に新しい校正が実行されます。"
+          },
+          "CalibrationHighDeclination": {
+            "title": "高赤緯で校正されています",
+            "explanation": "天の赤道から南北に 60° を超えて離れた位置で校正されたため、赤緯補正の信頼性が低くなります。",
+            "fix": "最良の結果を得るには、天の赤道に近い位置で再校正してください。"
+          },
+          "CalibrationGuideRateChanged": {
+            "title": "ガイドレートが変更されました",
+            "explanation": "赤道儀のガイドレートが校正時と 5 % を超えて異なります。",
+            "fix": "再校正するか、以前のガイドレートに戻してください。"
+          },
+          "NotCalibrated": {
+            "title": "未校正",
+            "explanation": "ガイドには校正が必要です。",
+            "fix": "校正ありでガイドを開始してください。"
+          },
+          "CalibrationFlipped": {
+            "title": "鏡筒配置に合わせて校正を反転",
+            "explanation": "子午線反転後、新しい鏡筒配置に合わせて校正を調整しました。",
+            "fix": "対処は不要です。"
+          },
+          "DecFlipCorrected": {
+            "title": "反転後に Dec 方向を修正",
+            "explanation": "子午線反転後に Dec 補正で誤差が増えたため、Dec 方向を反転し、赤道儀の設定を保存しました。",
+            "fix": "対処は不要です。ガイドが不安定に見える場合は再校正をお勧めします。"
+          },
+          "CalibrationReturnIncomplete": {
+            "title": "校正の戻り移動が不完全",
+            "explanation": "校正中に星が開始位置付近まで戻りませんでした。バックラッシュかクラッチの滑りの可能性があります。",
+            "fix": "赤道儀の機構を確認し、再校正してください。"
+          },
+          "PulseLimitReached": {
+            "title": "最大パルスで補正を制限",
+            "explanation": "連続する複数の補正が最大パルス長で打ち切られました。",
+            "fix": "大きなドリフト（極軸、ケーブルの引っかかり）がないか確認するか、最大パルス長を増やしてください。"
+          },
+          "RunawayDetected": {
+            "title": "ガイドの暴走を検出",
+            "explanation": "誤差が減らないまま補正が大きくなり続けました（例: 校正の符号の誤り）。セッションを守るためガイドを停止しました。",
+            "fix": "校正を消去して再校正し、赤道儀の鏡筒配置/Dec 反転の設定を確認してください。"
+          },
+          "MountNotResponding": {
+            "title": "赤道儀が補正に応答しません",
+            "explanation": "大きな補正を何度か行っても星が動きませんでした。",
+            "fix": "ガイド出力の接続（赤道儀ドライバー/ST4 ケーブル）と、赤道儀が追尾中かを確認してください。"
+          },
+          "MountSlewing": {
+            "title": "赤道儀が導入中 — ガイド一時停止",
+            "explanation": "赤道儀の導入中はガイドが自動的に一時停止します。",
+            "fix": "導入が終わるとガイドは再開します。赤道儀が導入中でないのにこれが表示される場合は、ガイダー設定の「導入中は一時停止」をオフにしてください。"
+          },
+          "MountParked": {
+            "title": "赤道儀がパーク中 — ガイド一時停止",
+            "explanation": "赤道儀がパーク中と報告しているため、補正を送信しません。",
+            "fix": "赤道儀のパークを解除し、ガイドを再開してください。"
+          },
+          "MountTrackingOff": {
+            "title": "追尾オフ — ガイド一時停止",
+            "explanation": "赤道儀が追尾していないため、補正を送信しません。",
+            "fix": "追尾を有効にしてください。ガイドは自動的に再開します。赤道儀は追尾しているのにドライバーがそれを報告できない場合は、ガイダー設定の「追尾オフ時は一時停止」をオフにしてください。"
+          },
+          "MountDisconnected": {
+            "title": "赤道儀が切断されました",
+            "explanation": "赤道儀またはガイド出力が切断されました。",
+            "fix": "赤道儀を再接続し、ガイドを再開してください。"
+          },
+          "PulseOutputFailed": {
+            "title": "ガイドパルスの送信に失敗",
+            "explanation": "ガイドパルスを送信できませんでした。",
+            "fix": "赤道儀/ガイドポートの接続を確認してください。"
+          },
+          "PierSideUnknown": {
+            "title": "鏡筒配置が不明",
+            "explanation": "赤道儀が鏡筒配置を報告しないため、子午線反転を自動で補正できません。",
+            "fix": "子午線反転のたびに再校正するか、鏡筒配置を報告するドライバーを使用してください。"
+          },
+          "CameraCaptureFailed": {
+            "title": "ガイド露光に失敗",
+            "explanation": "ガイドカメラの露光が失敗またはタイムアウトしました。再試行しています。",
+            "fix": "ガイドカメラの USB 接続と電源を確認してください。"
+          },
+          "CameraReconnecting": {
+            "title": "ガイドカメラを再接続中",
+            "explanation": "露光の失敗が続いたため、ガイドカメラを再接続しています。",
+            "fix": "ガイドカメラの USB 接続と電源を確認してください。"
+          },
+          "CameraFailed": {
+            "title": "ガイドカメラの障害",
+            "explanation": "再試行と再接続の後も、ガイドカメラからフレームを取得できませんでした。ガイドを停止しました。",
+            "fix": "ケーブルと電源を確認し、ガイドカメラを再接続してからガイドを再開してください。"
+          },
+          "CameraDisconnected": {
+            "title": "ガイドカメラが切断されました",
+            "explanation": "ガイドカメラが接続されていません。",
+            "fix": "ガイドカメラを接続してください。"
+          },
+          "FrameProcessingSlow": {
+            "title": "フレーム処理が遅い",
+            "explanation": "ガイドフレームの処理に想定より時間がかかり、補正が遅れています。",
+            "fix": "最大ガイド星数を減らす、ビニングやサブフレームを使う、または CPU 負荷を確認してください。"
+          },
+          "SettleTimeout": {
+            "title": "整定タイムアウト",
+            "explanation": "タイムアウト内にガイドが整定しませんでした。",
+            "fix": "整定の許容値/タイムアウトを増やすか、ガイド性能を確認してください。"
+          },
+          "DitherFailed": {
+            "title": "ディザー失敗",
+            "explanation": "ディザーには、校正済みのガイドが動作中である必要があります。",
+            "fix": "ディザーの前にガイドを開始してください。"
+          },
+          "Internal": {
+            "title": "ガイダー内部エラー",
+            "explanation": "ガイダーで予期しないエラーが発生しました。",
+            "fix": "詳細はログを確認し、問題を報告してください。"
+          }
+        },
+        "graph": {
+          "title": "ガイドグラフ",
+          "unit": "単位",
+          "arcsec": "″",
+          "px": "px",
+          "window": "表示ステップ数",
+          "yScale": "Y スケール",
+          "auto": "自動",
+          "ra": "RA",
+          "dec": "Dec",
+          "raPulse": "RA パルス",
+          "decPulse": "Dec パルス",
+          "pulses": "パルス",
+          "ms": "ms",
+          "snr": "SNR",
+          "mass": "質量",
+          "snrTitle": "SNR / 星の質量",
+          "settling": "整定中",
+          "empty": "ガイドステップはまだありません。ガイドを開始するとグラフが表示されます。",
+          "markers": {
+            "dither": "ディザー",
+            "starlost": "星をロスト",
+            "settled": "整定完了",
+            "settleFailed": "整定失敗",
+            "calibration": "校正"
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "表示中の直近 {count} ガイドステップの RMS（整定中とディザー後の再センタリングを除く）",
+          "rmsLine": "合計 RMS（{count}）",
+          "rmsLineShort": "RMS（{count}）",
+          "rmsLineHint": "各ステップで直近 {count} ガイドステップの合計 RMS（安定化と再センタリングを除く）"
+        },
+        "target": {
+          "title": "ターゲット",
+          "lastSteps": "直近 {count} ステップ",
+          "ra": "RA",
+          "dec": "Dec",
+          "rms": "RMS",
+          "scale": "外周円 {value}",
+          "empty": "ガイドステップはまだありません。"
+        },
+        "stats": {
+          "title": "統計",
+          "empty": "統計はまだありません。ガイドを実行すると表示されます。",
+          "window": "ウィンドウ",
+          "windowFrames": "{count} フレーム",
+          "session": "セッション",
+          "rmsTotal": "RMS 合計",
+          "rmsRa": "RMS RA",
+          "rmsDec": "RMS Dec",
+          "peak": "ピーク RA / Dec",
+          "driftRa": "ドリフト RA",
+          "driftDec": "ドリフト Dec",
+          "polarAlignment": "極軸誤差",
+          "oscillation": "振動指数",
+          "duty": "デューティ RA / Dec",
+          "snr": "SNR 最小/平均",
+          "snrLast": "直近 {value}",
+          "stars": "星数（平均）",
+          "starLost": "星をロスト",
+          "frames": "フレーム数",
+          "elapsed": "経過時間",
+          "predictive": {
+            "title": "予測ガイド",
+            "phases": {
+              "Learning": "学習中 {percent} %",
+              "Adapted": "調整済み"
+            },
+            "weight": "フレーム重み {percent} %",
+            "weightHint": "新しいガイドフレームごとに赤道儀の位置推定をどれだけ動かすか。シーイングが悪いと低く（フレームの誤差の大半がシーイング）、赤道儀がふらつくと高くなります。",
+            "details": "シーイング {seeing} · 赤道儀 {wander} · ドリフト {drift}",
+            "detailsHint": "ガイドフレームごとに学習（σ）：シーイング = 大気のゆらぎと重心計算による測定ノイズ、赤道儀 = 赤道儀自身のランダムな動き。ドリフトは予測して先回りで補正します。",
+            "periodic": {
+              "label": "周期誤差",
+              "teeth": "{teeth} 歯",
+              "phases": {
+                "Off": "オフ",
+                "Learning": "学習中 {percent} %",
+                "Ready": "準備完了",
+                "Predicting": "予測中",
+                "Negligible": "微小"
+              },
+              "negligible": "小さすぎて予測不要：2 つのガイドフレームの間に星を動かす量は、シーイングのごく一部にすぎません。",
+              "helpTitle": "周期誤差",
+              "help": "RA ウォームは数分ごとに 1 回転し、毎回転ごとに赤道儀は同じように少し速く、少し遅く動きます。Predictive アルゴリズムはこのカーブを学習し、現れる前に補正します。± は現在の対象でのカーブの主な振れ幅で、その後にウォーム周期が続きます。周期はウォーム約 5 回転後に求まり（ガイドを止めて再開しても回転数は積み重なりますが、導入・同期・子午線反転のあとは最初からになります）、ウォームホイールの歯数を設定していればすぐにわかります。どちらの場合も、カーブが回転ごとに同じであることを確かめてから使うので、赤道儀のふらつきを周期誤差と取り違えません。準備完了：学習済みですが、まだ使わない場合より良くなっていません。予測中：前もって補正しています。微小：このシーイングとフレーム間隔では小さすぎて予測しても効果がありません。カーブがまだ一定していなくても同様です。カーブはプロファイルと赤道儀ごとに保存されるので、次の夜はそこから始まります。"
+            }
+          },
+          "decDirection": {
+            "label": "Dec 方向",
+            "directions": {
+              "Both": "両方向",
+              "North": "北のみ",
+              "South": "南のみ"
+            },
+            "drift": "ドリフト {drift}",
+            "notes": {
+              "unknown": "はっきりしたドリフトが測定されるまで両方向にガイドします。",
+              "valve": "反対側の大きな誤差が戻るまで両方向にガイドします（安全弁）。"
+            },
+            "helpTitle": "Dec ガイドモード Drift",
+            "help": "Drift はガイド中に測定したドリフトに逆らう一方向だけに Dec をガイドします。赤緯ギアが反転しないため、バックラッシュは問題になりません。はっきりしたドリフトが測定されるまで（数分。弱いドリフトは数えません）、ディザー後の整定中、そしてその方向では補正できない側に誤差が大きく残っている間（安全弁）は両方向にガイドします。ドリフトが数分間弱まるか逆転すると、再び両方向にガイドするか、方向を切り替えます。"
+          }
+        },
+        "calibration": {
+          "title": "校正",
+          "inProgress": "校正中…",
+          "notCalibrated": "まだ校正されていません。ガイドを開始すると自動校正されます。または「校正」を使用してください。",
+          "diagram": "ガイドカメラ画面内の RA・Dec 軸の校正ベクトル",
+          "raAxisLabel": "RA",
+          "decAxisLabel": "Dec",
+          "raAngle": "RA 角度",
+          "decAngle": "Dec 角度",
+          "raRate": "RA レート",
+          "decRate": "Dec レート",
+          "orthogonality": "直交性誤差",
+          "declination": "赤緯",
+          "pierSide": "鏡筒配置",
+          "binning": "ビニング",
+          "steps": "ステップ数",
+          "raShort": "RA",
+          "decShort": "Dec",
+          "decFlip": "反転後に Dec を反転",
+          "decFlipYes": "はい",
+          "decFlipNo": "いいえ",
+          "lastIssue": "問題",
+          "pierSides": {
+            "East": "東",
+            "West": "西",
+            "Unknown": "不明",
+            "pierEast": "東",
+            "pierWest": "西",
+            "pierUnknown": "不明"
+          },
+          "justNow": "たった今校正",
+          "minutesAgo": "{minutes} 分前に校正",
+          "hoursAgo": "{hours} 時間前に校正",
+          "legendRaOut": "RA 往路",
+          "legendRaBack": "RA 復路",
+          "legendBacklash": "バックラッシュ",
+          "legendDecOut": "Dec 往路",
+          "legendDecBack": "Dec 復路"
+        },
+        "settings": {
+          "basic": "基本",
+          "advanced": "詳細",
+          "refresh": "設定を再読み込み",
+          "loading": "設定を読み込み中…",
+          "loadFailed": "設定を読み込めませんでした",
+          "empty": "利用可能な設定がありません。",
+          "notConnectedHint": "ネイティブガイダーが接続されていません。変更はプロファイルに保存され、カメラの変更は次回接続時に反映されます。",
+          "requiresReconnect": "再接続後に適用",
+          "range": "{min} ～ {max}",
+          "rangeMin": "最小 {min}",
+          "rangeMax": "最大 {max}",
+          "on": "オン",
+          "off": "オフ",
+          "resetToDefault": "{value} にリセット",
+          "saveFailed": "設定を保存できませんでした。",
+          "errors": {
+            "required": "値を入力してください。",
+            "number": "数値を入力してください。",
+            "integer": "整数を入力してください。",
+            "min": "値は {min} 以上にしてください。",
+            "max": "値は {max} 以下にしてください。",
+            "option": "リストにある値から選んでください。"
+          },
+          "groups": {
+            "Camera": "カメラ",
+            "Stars": "星",
+            "Guiding": "ガイド",
+            "Algorithms": "アルゴリズム",
+            "Calibration": "校正",
+            "Dither": "ディザー",
+            "Safety": "安全",
+            "Incidents": "インシデント"
+          },
+          "reconnectNeeded": "新しいカメラ設定を使うにはガイダーを再接続してください。",
+          "reconnectNow": "今すぐ再接続",
+          "reconnecting": "再接続中…",
+          "reconnectFailed": "再接続に失敗しました: {message}",
+          "actionConfirm": "この操作は元に戻せません。",
+          "actionCancel": "キャンセル",
+          "actionOptionConfirm": "「{option}」を実行しますか？",
+          "optionLabels": {
+            "DecGuideMode": {
+              "Auto": "Auto – 両方向",
+              "North": "北のみ",
+              "South": "南のみ",
+              "Off": "オフ – RA のみ",
+              "Drift": "Drift – ドリフトに追従（一方向）"
+            }
+          },
+          "labels": {
+            "ExposureSeconds": "露光時間",
+            "Gain": "ゲイン",
+            "Offset": "オフセット",
+            "Binning": "ビニング",
+            "FocalLengthMm": "ガイド焦点距離",
+            "PixelSizeUm": "ピクセルサイズの上書き",
+            "NoiseReduction": "ノイズ低減",
+            "UseDarkLibrary": "ダークライブラリを使用",
+            "PulseOutput": "ガイド出力",
+            "MultiStar": "マルチスターガイド",
+            "MaxStars": "最大ガイド星数",
+            "MinSnr": "星の最小 SNR",
+            "SearchRegion": "探索領域",
+            "MinHfd": "星の最小 HFD",
+            "MaxHfd": "星の最大 HFD",
+            "MassChangeEnabled": "星の質量変化の検出",
+            "MassChangeThreshold": "質量変化のしきい値",
+            "PrimaryDropoutFallback": "副星でガイドを継続",
+            "SaturationAdu": "飽和 ADU",
+            "RaAlgorithm": "RA アルゴリズム",
+            "RaAggression": "RA Aggression（補正強度）",
+            "RaHysteresis": "RA ヒステリシス",
+            "RaLowpass2Aggressiveness": "RA Lowpass2 補正強度",
+            "RaMinMove": "RA 最小移動量",
+            "PeriodicErrorPrediction": "周期誤差の予測",
+            "WormTeeth": "RA ウォームホイール歯数",
+            "ForgetPeriodicError": "周期誤差をリセット",
+            "DecAlgorithm": "Dec アルゴリズム",
+            "DecAggression": "Dec Aggression（補正強度）",
+            "DecHysteresis": "Dec ヒステリシス",
+            "DecLowpass2Aggressiveness": "Dec Lowpass2 補正強度",
+            "DecFastSwitch": "Dec 高速切り替え",
+            "DecMinMove": "Dec 最小移動量",
+            "DecGuideMode": "Dec ガイドモード",
+            "MaxRaDurationMs": "RA 最大パルス",
+            "MaxDecDurationMs": "Dec 最大パルス",
+            "MinPulseMs": "最小パルス",
+            "BacklashCompensation": "Dec バックラッシュ補正",
+            "BacklashPulseMs": "Dec バックラッシュパルス",
+            "CalibrationStepMs": "校正ステップ",
+            "ReuseCalibration": "校正を再利用",
+            "AssumeOrthogonal": "Dec を直交と仮定",
+            "DecCompensation": "赤緯補正",
+            "DecFlipRequired": "子午線反転後に Dec を反転",
+            "VerifyDecAfterFlip": "反転後の Dec 自己チェック",
+            "DitherMode": "ディザーモード",
+            "DitherScale": "ディザースケール",
+            "FastRecenter": "ディザー後に高速リセンター",
+            "ReacquireTimeoutSec": "星ロストのタイムアウト",
+            "MaxPulseDutyPercent": "最大補正デューティ",
+            "PauseWhenSlewing": "導入中は一時停止",
+            "PauseWhenTrackingOff": "追尾オフ時は一時停止",
+            "SaveGuideLog": "ガイドログを保存",
+            "IncidentRecorder": "インシデントを記録",
+            "IncidentBudgetMb": "インシデントのディスク容量",
+            "SimulatorScenario": "シミュレーターのシナリオ",
+            "SimulateFault": "障害をシミュレート"
+          },
+          "descriptions": {
+            "Gain": "-1 でドライバーの現在のゲインを維持します。（PHD2 のゲインはパーセント値のため引き継がれません。）",
+            "Offset": "-1 でドライバーの現在のオフセットを維持します。",
+            "FocalLengthMm": "ガイド鏡の焦点距離（OAG 使用時はメイン鏡筒の焦点距離）。秒角の値と校正ステップの計算に必要です。",
+            "PixelSizeUm": "0 ではカメラドライバーのピクセルサイズを使用します。",
+            "UseDarkLibrary": "ダークを減算します。ネイティブのライブラリがあればそれを、なければこのカメラサイズ用の PHD2 のダークライブラリを使用します。",
+            "PulseOutput": "Mount：接続された赤道儀ドライバー経由でパルスガイドします。CameraST4：ガイドカメラの ST4 ポート経由でガイドします。",
+            "PrimaryDropoutFallback": "主星が 1 フレームだけ測定できなかったとき、一致する 3 個以上（≥3）の副星からその位置を推定します。",
+            "SaturationAdu": "0 = 星のプロファイルから飽和を検出します。",
+            "RaAlgorithm": "Predictive（実験的）はガイドフレームからシーイングと赤道儀自身の動きを学習し、次のフレームで予測される誤差を補正します。そのため補正強度、ヒステリシス、最小移動量は適用されません。",
+            "RaAggression": "1 フレームごとに補正する誤差の割合（0..1）。",
+            "RaMinMove": "0 = 画像スケールから自動設定。",
+            "PeriodicErrorPrediction": "RA ウォームの周期誤差を学習し、現れる前に補正します。学習したカーブはプロファイルと赤道儀ごとに保存されます。",
+            "WormTeeth": "RA ウォームホイールの歯数（例: EQ6-R は 180、HEQ5 は 135）。正確なウォーム周期がわかります。0 = ガイドフレームから周期を検出。",
+            "ForgetPeriodicError": "この赤道儀について学習した周期誤差を破棄します（ウォームを調整した後など）。その後、改めて学習されます。",
+            "DecAlgorithm": "Predictive（実験的）はガイドフレームからシーイングと赤道儀自身の動きを学習し、次のフレームで予測される誤差を補正します。そのため補正強度、ヒステリシス、最小移動量は適用されません。",
+            "DecMinMove": "0 = 画像スケールから自動設定。",
+            "DecGuideMode": "Auto は Dec を両方向に、北または南は一方向のみにガイドし、オフは Dec をガイドしません。Drift はドリフトに追従します。ガイド中に Dec のドリフトを測定してそれに逆らう方向にのみガイドするため、赤緯ギアが反転せず、バックラッシュが問題になりません。ドリフトが逆転すると方向を切り替え、ドリフトがわかるまでの間、整定中、そして大きな誤差を戻すときは両方向にガイドします。",
+            "MinPulseMs": "これより短いガイドパルスは 0 またはこの長さに丸められます。非常に短いパルスを正しく処理できない赤道儀があるためです。0 = 長さの制限なし。",
+            "CalibrationStepMs": "0 = 光学系、ガイドレート、赤緯から自動設定。",
+            "ReuseCalibration": "セッションをまたいで校正を保持し、赤緯と鏡筒配置に合わせて調整します。",
+            "DecFlipRequired": "赤道儀ごとの設定です。反転後の Dec 自己チェックで自動的に修正されます。",
+            "MaxPulseDutyPercent": "1 分間のうちこの割合を超えて軸にパルスが送られると、ガイドを停止します（暴走防止）。",
+            "PauseWhenSlewing": "赤道儀が導入中/パーク中と報告している間は補正を一時停止します。赤道儀ドライバーが常に「導入中」と報告する場合にのみオフにしてください。",
+            "PauseWhenTrackingOff": "赤道儀が追尾オフと報告している間は補正を一時停止します。赤道儀ドライバーが追尾状態を報告できない場合はオフにしてください。",
+            "SaveGuideLog": "PHD2 互換のガイドログを ~/.local/share/NINA/InternalGuider/Logs に保存します。",
+            "IncidentRecorder": "直近数分間のガイドフレームをメモリに保持し、星のロスト、暴走、赤道儀やカメラの問題、誤差スパイクの前後を保存して、再生とダウンロードができるようにします。",
+            "IncidentBudgetMb": "記録したインシデント用のディスク容量。保護されていないものから古い順に削除されます。シミュレーターのインシデントには別に 200 MB が割り当てられます。",
+            "SimulatorScenario": "内蔵シミュレーターがシミュレートする赤道儀・空・カメラ。",
+            "SimulateFault": "実行中のシミュレーターに障害を発生させます: 雲（110 秒）、赤道儀への衝撃、応答しなくなる赤道儀（60 秒）、3 回の露光失敗、または逆方向に働く Dec 補正（120 秒）。"
+          }
+        },
+        "darks": {
+          "title": "ダークライブラリ",
+          "none": "ダークライブラリがありません。",
+          "build": "ダークライブラリを作成",
+          "cancel": "作成をキャンセル",
+          "stopFirst": "ダークライブラリを作成するには、ループとガイドを停止してください。",
+          "connectFirst": "ダークライブラリを作成するには、ネイティブガイダーを接続してください。",
+          "dialogTitle": "ダークライブラリを作成",
+          "coverWarning": "ガイド鏡を覆ってください",
+          "coverHint": "ダーク撮影中はガイドカメラに光が入らないようにしてください。",
+          "minExposure": "最短露光",
+          "maxExposure": "最長露光",
+          "frames": "露光ごとのフレーム数",
+          "start": "開始",
+          "invalidExposure": "露光時間は 0 秒より長く、最大値は最小値以上かつ 60 秒以下にしてください。",
+          "invalidFrames": "フレーム数は 1～50 の整数にしてください。",
+          "exposureDetail": "{exposure} 秒",
+          "frameDetail": "フレーム {frame}/{frames}",
+          "statusStarting": "開始中…",
+          "statusCapturing": "ダークを撮影中…",
+          "statusDone": "ダークライブラリが完成しました",
+          "statusFailed": "ダークライブラリの作成に失敗しました"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "不明",
+          "intro": "コーチはガイドカメラ・空・赤道儀を測定し、より良い設定を現在の設定と比較して、ガイドを制限している要因を説明します。フルセッションは約 15 分かかります。",
+          "introSafe": "一時的な設定は必ず元に戻されます。どの推奨を適用するかはあなたが決めます。",
+          "stepsTitle": "ステップ",
+          "steps": {
+            "CameraCheck": {
+              "name": "カメラチェック",
+              "desc": "露光 × ゲイン: SNR、飽和、星のジッター"
+            },
+            "Drift": {
+              "name": "空とドリフト",
+              "desc": "ガイド出力オフ: シーイング、周期誤差、極軸"
+            },
+            "MountResponse": {
+              "name": "赤道儀の応答",
+              "desc": "Dec バックラッシュとパルスへの赤道儀の反応"
+            },
+            "Trials": {
+              "name": "試行",
+              "desc": "現在の設定と提案設定でガイドして比較します"
+            },
+            "Calibrating": {
+              "name": "校正",
+              "desc": "有効な校正がないため、先に校正します"
+            },
+            "Report": {
+              "name": "レポート",
+              "desc": "誤差の内訳、評価、優先度順の対策"
+            }
+          },
+          "stepStates": {
+            "Pending": "待機中",
+            "Running": "実行中",
+            "Settling": "整定中",
+            "Done": "完了",
+            "Skipped": "スキップ",
+            "Failed": "失敗"
+          },
+          "details": {
+            "camera": {
+              "combination": "露光 {exposureSeconds} · ゲイン {gain} ({index}/{total})"
+            },
+            "calibrating": "校正中",
+            "drift": {
+              "measuring": "測定中"
+            },
+            "response": {
+              "backlash": "Dec バックラッシュを測定中",
+              "pulses": "パルス応答をテスト中 · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "試行 {id} · 整定中",
+              "running": "試行 {id}"
+            }
+          },
+          "options": {
+            "advanced": "詳細オプション",
+            "exposures": "カメラチェックの露光時間",
+            "exposuresHint": "各露光時間を各ゲインでテストします。",
+            "gains": "カメラチェックのゲイン",
+            "gainsAuto": "既定: 現在のゲインと、カメラの範囲（{min} – {max}）に分散した 2 つの値。",
+            "gainsNoRange": "カメラがゲイン範囲を報告していません。ゲインを追加しない限り、現在のゲインを使用します。",
+            "add": "追加",
+            "remove": "{value} を削除",
+            "exposurePlaceholder": "例: 1.5",
+            "gainPlaceholder": "例: 120",
+            "invalidExposure": "0.01～30 s の露光時間を入力してください。",
+            "invalidGain": "{min}～{max} の整数を入力してください。",
+            "tooManyValues": "最大 12 個までです。",
+            "tooManyCombinations": "{count} 通りの組み合わせは多すぎます（最大 60）。",
+            "frames": "組み合わせごとのフレーム数",
+            "driftSeconds": "ドリフト測定",
+            "trialSeconds": "試行ごとの時間",
+            "repeatBaseline": "最後に現在の設定をもう一度試す",
+            "repeatBaselineHint": "試行中のシーイングの変化や雲を検出します。",
+            "allowCalibration": "必要に応じて校正する",
+            "allowCalibrationHint": "校正がないと、ドリフト・赤道儀の応答・試行は実行できません。",
+            "minutes": "{value} 分",
+            "reset": "既定値に戻す"
+          },
+          "estimate": "≈ {duration}",
+          "total": "合計 ≈ {duration}",
+          "calibrationExtra": "校正用の ≈ 2 分を含みます（まだ校正されていません）。",
+          "noSteps": "ステップを 1 つ以上選択してください。",
+          "guidingWarning": "ガイド中です。コーチは測定のため通常のガイドを中断するので、撮像カメラの露光中の画像が乱れます。終了後はあなたの設定でガイドが再開されます。",
+          "notConnected": "コーチを使うには PINS ネイティブガイダーを接続してください。",
+          "calibratingBlock": "校正が終わるまでお待ちください。",
+          "darksBlock": "ダークライブラリの作成が終わるまでお待ちください。",
+          "start": "コーチを開始",
+          "starting": "開始中…",
+          "startFailed": "コーチを開始できませんでした",
+          "phases": {
+            "Complete": "セッション完了",
+            "Cancelled": "セッションをキャンセルしました",
+            "Failed": "セッション失敗"
+          },
+          "outcomeFindings": "このセッションの診断結果",
+          "run": {
+            "elapsed": "経過 {elapsed}",
+            "remaining": "残り ≈ {duration}",
+            "current": "現在: {step}",
+            "skip": "ステップをスキップ",
+            "cancel": "セッションをキャンセル",
+            "confirmCancelTitle": "コーチセッションをキャンセルしますか？",
+            "confirmCancel": "これまでの結果は保持され、一時的な設定は元に戻されます。",
+            "keepRunning": "続行",
+            "findingsSoFar": "これまでの診断結果",
+            "waiting": "最初の測定を待っています…",
+            "calibratingHint": "コーチはまず校正します。進行状況は上に表示されます。",
+            "skipFailed": "ステップのスキップに失敗しました",
+            "cancelFailed": "セッションのキャンセルに失敗しました",
+            "applyLater": "推奨はセッション終了後に適用できます。"
+          },
+          "camera": {
+            "title": "露光 × ゲイン",
+            "exposure": "露光",
+            "gain": "ゲイン",
+            "jitter": "ジッター",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "星数",
+            "frames": "フレーム数",
+            "recommended": "推奨",
+            "legend": "色: 星のジッター、緑 = 最も安定。取り消し線のセルは使用できません。",
+            "notMeasured": "未測定",
+            "tapHint": "セルをタップして詳細を表示",
+            "noResults": "カメラの測定結果はまだありません。"
+          },
+          "drift": {
+            "title": "ガイドオフ時のドリフト",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "PE フィット",
+            "time": "s",
+            "seeing": "シーイング",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "周期誤差",
+            "period": "周期 {value}",
+            "periodUnknown": "周期は不明",
+            "polarAlignment": "極軸誤差",
+            "decAssumed": "Dec を 0° と仮定",
+            "exposureLimit": "露光の上限",
+            "exposureLimitSub": "ガイド露光の最大値",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "ドリフトのサンプルを待っています…"
+          },
+          "response": {
+            "title": "赤道儀の応答",
+            "backlash": "Dec バックラッシュ",
+            "backlashAxisX": "パルス時間 (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measuring": "測定中…",
+              "Measured": "測定済み",
+              "None": "なし",
+              "Unreliable": "信頼性低",
+              "Skipped": "スキップ"
+            },
+            "pulses": "パルス応答",
+            "pulsesHint": "パルス長ごとに、実測した移動量を校正と比較したものです。50 % 未満ではパルスで赤道儀がほとんど動きません。",
+            "pulsesNoiseHint": "グレー：予想移動量がシーイングのノイズ内にあるため、その割合は架台について何も示しません。",
+            "directions": {
+              "West": "西",
+              "East": "東",
+              "North": "北",
+              "South": "南"
+            },
+            "minPulse": "最小有効パルス",
+            "asymmetry": "非対称性",
+            "rateRatio": "校正とのレート比",
+            "noData": "赤道儀の測定結果はまだありません。"
+          },
+          "trials": {
+            "title": "試行",
+            "kinds": {
+              "current": "現在の設定",
+              "suggestion": "コーチの提案",
+              "variant": "バリエーション",
+              "currentRepeat": "現在の設定（再測定）"
+            },
+            "winner": "最良",
+            "noChanges": "現在の設定のまま",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "{count} フレーム",
+            "apply": "試行 {id} を適用",
+            "noData": "試行はまだ開始されていません。"
+          },
+          "report": {
+            "title": "レポート",
+            "grade": "評価",
+            "grades": {
+              "excellent": "優秀",
+              "good": "良好",
+              "fair": "まずまず",
+              "poor": "不良",
+              "unknown": "不明"
+            },
+            "gradeRatio": "{ratio} × 撮像スケール",
+            "gradeArcsec": "秒角の RMS で評価（撮像スケールなし）",
+            "guidedRms": "ガイド RMS",
+            "guidedSources": {
+              "trials": "試行から",
+              "window": "直近のガイドから",
+              "none": "ガイド時の測定なし"
+            },
+            "budget": "誤差の内訳",
+            "budgetHint": "各要素は二乗和で合成されます。最大の要素がガイドを制限します。",
+            "budgetParts": {
+              "seeing": "シーイング",
+              "noise": "重心ノイズ",
+              "mount": "赤道儀・その他"
+            },
+            "actions": "推奨される対策",
+            "noActions": "修正すべき点はありません。ガイドは設定ではなく条件によって制限されています。",
+            "others": "その他の診断結果",
+            "measurements": "測定値",
+            "newSession": "新しいセッション"
+          },
+          "finding": {
+            "why": "重要な理由",
+            "fix": "対処法",
+            "impact": "≈ {value} 改善",
+            "apply": "適用",
+            "applying": "適用中…",
+            "applied": "適用済み",
+            "applyFailed": "推奨の適用に失敗しました",
+            "appliedToast": "適用しました: {title}",
+            "changes": "設定の変更",
+            "more": "説明を表示",
+            "less": "説明を隠す"
+          },
+          "history": {
+            "title": "これまでの推移",
+            "empty": "セッションのレポートがここに表示され、上達の推移を確認できます。",
+            "metrics": {
+              "rms": "ガイド RMS",
+              "grade": "評価",
+              "polarAlignment": "極軸誤差",
+              "backlash": "Dec バックラッシュ",
+              "seeing": "シーイング",
+              "periodicError": "周期誤差"
+            },
+            "nights": "夜数: {count}",
+            "compare": "前回のレポート（{date}）との比較",
+            "trend": {
+              "better": "改善",
+              "worse": "悪化",
+              "same": "変化なし"
+            },
+            "loadFailed": "履歴を読み込めませんでした"
+          },
+          "hint": {
+            "label": "ヒント",
+            "dismiss": "ヒントを閉じる",
+            "apply": "適用",
+            "applied": "適用済み",
+            "applyFailed": "ヒントの適用に失敗しました",
+            "open": "ヒントを表示",
+            "close": "ヒントを隠す"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "開く"
+          },
+          "confirmInterruptTitle": "Guiding Coach を中断しますか？",
+          "confirmInterrupt": "コーチセッションが実行中です。この操作でセッションはキャンセルされ、一時的な設定は元に戻されます。",
+          "values": {
+            "level": {
+              "good": "良好",
+              "average": "普通",
+              "poor": "不良"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "北",
+              "South": "南",
+              "Drift": "Drift"
+            },
+            "direction": {
+              "West": "西",
+              "East": "東",
+              "North": "北",
+              "South": "南"
+            },
+            "reason": {
+              "saturated": "飽和",
+              "lowSnr": "SNR 不足",
+              "noStar": "星なし",
+              "guiding": "ガイドの開始または停止",
+              "dither": "ディザーの要求",
+              "stopped": "ループの停止",
+              "slew": "赤道儀の導入",
+              "trackingOff": "赤道儀の追尾停止",
+              "disconnect": "デバイスの切断",
+              "unknown": "別のコマンドによる中断"
+            },
+            "bool": {
+              "true": "はい",
+              "false": "いいえ"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "最適なカメラ設定: {exposureSeconds}、ゲイン {gain}",
+                "why": "この組み合わせで星の位置が最も安定しました: SNR {snr}、使用可能な星 {stars} 個でジッター {jitterArcsec}（現在の設定: {currentJitterArcsec}）。測定位置のジッターが小さいほど、ガイダーがノイズを実際の動きとして補正することが減ります。",
+                "fix": "この露光とゲインでガイドしてください。"
+              },
+              "good": {
+                "title": "カメラ設定はすでに最適です",
+                "why": "現在の露光とゲインで星の位置が最も安定しました（SNR {snr} でジッター {jitterArcsec}）。",
+                "fix": "変更は不要です。"
+              },
+              "noFeasible": {
+                "title": "使用できるカメラ設定が見つかりません",
+                "why": "SNR 15 以上で飽和しない星が得られる露光・ゲインはありませんでした（主な原因: {reason}）。ガイダーは星を確実に測定できません。",
+                "fix": "ピントと、ガイド鏡に星が写っているか（結露、雲、カバー）を確認してください。露光を延ばす、別の視野を試す、星が飽和するならゲインを下げる、などを試してください。"
+              },
+              "snrLow": {
+                "title": "ガイド星が暗い（SNR {snr}）",
+                "why": "この SNR では星の測定位置に約 {noiseArcsec} のノイズが乗ります。ガイダーはこのノイズを赤道儀の動きとして補正するため、RMS が増えます。",
+                "fix": "露光を延ばすかゲインを上げる、ダークライブラリを作成する、ガイドカメラのピントを合わせる、または明るい星を選んでください。"
+              },
+              "saturated": {
+                "title": "ガイド星が飽和（{exposureSeconds}、ゲイン {gain}）",
+                "why": "飽和した星は頂上が平らになるため中心を正確に測定できず、小さな動きを見逃します。",
+                "fix": "ゲインを下げるか露光を短くする、または暗い星を選んでください。"
+              },
+              "defocused": {
+                "title": "ガイド星のピントが合っていません（HFD {hfdPx}）",
+                "why": "大きくぼやけた星（{hfdArcsec}）は光が広がるため SNR が下がり、中心の測定精度が落ちます。",
+                "fix": "星ができるだけ小さくなるまでガイドカメラのピントを合わせ、コーチを再実行してください。"
+              },
+              "fewStars": {
+                "title": "使用可能なガイド星が {stars} 個のみ",
+                "why": "マルチスターガイドは複数の星でシーイングを平均化します。星が 3 個未満ではあまり効果がありません。",
+                "fix": "露光を延ばす、ゲインを上げる、または星の多い領域を試してください。"
+              },
+              "noDarks": {
+                "title": "ダークライブラリなし",
+                "why": "ダークがないと、ホットピクセルを星と誤認したり、暗い星にノイズが加わったりします。",
+                "fix": "ガイド鏡を覆い、設定タブでダークライブラリを作成してください。"
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "シーイング: {rmsArcsec}（{level}）",
+                "why": "ガイドをオフにしても、大気の影響で星は {rmsArcsec} 揺れています。この速い動きはどんなガイドでも追従できず、ガイド RMS の下限になります。",
+                "fix_good": "良好な条件です。赤道儀の小さな誤差が表れるので、微調整の効果があります。",
+                "fix": "シーイングを追わないでください。露光 2 s 以上、シーイングをわずかに上回る最小移動量でガイドしてください。"
+              },
+              "minMove": {
+                "title": "シーイングに基づく最小移動量: RA {raPx}、Dec {decPx}",
+                "why": "シーイングのジッターより小さい補正は大気を追うだけです。それをわずかに上回る最小移動量ならこれを無視し、赤道儀を落ち着かせます。",
+                "fix": "RA と Dec の最小移動量をこの値に設定してください。"
+              },
+              "periodicError": {
+                "title": "RA 周期誤差 ±{amplitudeArcsec}",
+                "why": "ウォームギアにより、赤道儀は周期的に速くなったり遅くなったりします（周期 {periodSeconds}）。最も急な箇所で星は {maxRateArcsecPerSec} でドリフトし、ガイダーは各露光内でこれに追いつく必要があります。",
+                "fix": "ドリフト速度が大きい場合はガイド露光を短くし、赤道儀が対応していれば PEC をトレーニングし、ウォームの噛み合わせと RA のバランスを確認してください。",
+                "notes": {
+                  "learned": "Predictive アルゴリズムがウォームの全回転にわたって学習したもので、この短い測定より正確です。",
+                  "predicting": "Predictive アルゴリズムがすでに前もって補正しています。"
+                }
+              },
+              "exposureLimit": {
+                "title_good": "ガイド露光は RA ドリフトに適合しています",
+                "title": "RA ドリフトに対してガイド露光が長すぎます",
+                "why": "RA の誤差は露光ごとに増加します。{seconds} まではシーイング未満に収まりますが、現在の露光は {currentSeconds} です。",
+                "fix_good": "変更は不要です。",
+                "fix": "ガイド露光を {seconds} 以下にしてください。"
+              },
+              "polarAlignment": {
+                "title": "極軸誤差 ≈ {arcmin}",
+                "why": "極軸誤差があると星が Dec 方向にドリフトし（{driftArcsecPerMin}）、視野がゆっくり回転します。ガイダーはドリフトに追従できますが、常に補正し続ける必要があり、長時間のセッションでは視野回転が現れます。",
+                "fix_good": "非常に良好です。対処は不要です。",
+                "fix_info": "ガイドには十分です。長焦点で長時間撮影する場合は追い込んでください。",
+                "fix": "極軸合わせをやり直してください（例: TPPA）。3′ 未満が理想、5′ 未満なら十分です。",
+                "notes": {
+                  "decAssumed": "赤緯が不明なため 0° と仮定しました。赤緯が高いほど実際の誤差は大きくなります。"
+                }
+              },
+              "wind": {
+                "title": "突風または振動",
+                "why": "フレームの {gustPercent} に急な跳びが見られます。ガイダーは間に合うように補正できず、追いかけるとかえって悪化します。",
+                "fix": "鏡筒を風から守り、ケーブルの緩みと三脚の安定性を確認し、最小移動量を少し上げてください。"
+              },
+              "decGuideMode": {
+                "title": "Dec を一方向のみガイド（{mode}）",
+                "why": "Dec が一定方向にドリフトしており（{driftArcsecPerMin}）、Dec バックラッシュは {backlashMs} です。ドリフトに逆らう一方向のみに Dec をガイドすればギアが反転しないため、バックラッシュは問題になりません。",
+                "fix": "Dec ガイドモードを {mode} に設定してください。極軸合わせのやり直し、子午線反転、別の対象にも自動で対応します。"
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Dec バックラッシュ: {ms}（{arcsec}）",
+                "why": "Dec が反転するとき、ギアはまず遊びを詰める必要があります。その間の補正は効かず、その後星がオーバーシュートして Dec が振動します。",
+                "fix_good": "対処は不要です。",
+                "fix": "測定したパルスでバックラッシュ補正を使う、機械的に遊びを減らす、または Dec のバランスをわずかにずらしてください。Dec を一方向のみガイドすれば完全に回避できます。"
+              },
+              "minPulse": {
+                "title": "{axis}: {ms} 未満のパルスでは赤道儀が動きません",
+                "why": "{axis} 駆動の静止摩擦が短いパルスを吸収します。ガイダーは補正したつもりでも、星は動きません。",
+                "fix": "補正が少なくともこの長さになるよう最小移動量を上げ、バランスとギアの噛み合わせを確認してください。"
+              },
+              "asymmetry": {
+                "title": "{axis} の動きが方向によって不均一です",
+                "why": "一方の方向ではもう一方の {ratio} だけ星が動くため、方向によってガイダーが補正しすぎたり不足したりします。",
+                "fix": "バランス（RA はやや東側を重く）、ギアの噛み合わせ、ガイドレートが両方向で同じかを確認してください。"
+              },
+              "rateMismatch": {
+                "title": "{axis} のレートが校正と異なります",
+                "why": "赤道儀は校正の予測の {ratio} だけ動くため、毎回の補正が大きすぎるか小さすぎます。",
+                "fix": "ターゲット付近で再校正し、赤道儀のガイドレートが設定と一致しているか確認してください。"
+              },
+              "good": {
+                "title": "赤道儀は正常に応答しています",
+                "why": "全方向のパルスで赤道儀は期待どおりに動き、目立つ静止摩擦や非対称性はありません。",
+                "fix": "対処は不要です。"
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "試行 {id} が最良: {rmsArcsec}",
+                "why": "同じ空の下で、現在の設定の {baselineRmsArcsec} に対し {rmsArcsec} を達成しました（{improvementPercent} 改善）。",
+                "fix": "この設定を使うには試行 {id} を適用してください。"
+              },
+              "noImprovement": {
+                "title": "現在の設定がすでに最良です",
+                "why": "現在の設定（{rmsArcsec}）より良くガイドできた提案はありませんでした。",
+                "fix": "現在の設定を維持してください。"
+              },
+              "conditionsChanged": {
+                "title": "試行中に条件が変化しました",
+                "why": "現在の設定でのガイド結果が最初と最後で {changePercent} 異なるため、その間にシーイングや空の状態が変わっています。比較は信頼できません。",
+                "fix": "条件が安定しているときに試行を繰り返すか、最良の結果を慎重に扱ってください。"
+              },
+              "nothingToTry": {
+                "title": "試すものがありません",
+                "why": "このセッションでは試す価値のある設定変更が見つかりませんでした。現在の設定でのガイドは {rmsArcsec} でした。",
+                "fix": "現在の設定を維持してください。",
+                "notes": {
+                  "predictive": "Predictive アルゴリズムはゲインを自分で決め、最小移動量は不要です。試されるのはカメラ、Dec モード、バックラッシュの変更だけです。"
+                }
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "シーイングがガイドを制限しています",
+                "why": "ガイド RMS {guidedArcsec} のうち、シーイングだけで {seeingArcsec} を占めます。設定と赤道儀は十分に機能しています。",
+                "fix": "調整の余地はありません。シーイングが良くなれば結果も向上します。"
+              },
+              "mountLimited": {
+                "title": "赤道儀がガイドを制限しています",
+                "why": "ガイド RMS {guidedArcsec} のうち、約 {mountArcsec} は空ではなく赤道儀（周期誤差、バックラッシュ、バランス、静止摩擦）に起因します。",
+                "fix": "赤道儀に関する診断結果に順に対処してください: バックラッシュ、周期誤差、バランス、極軸。"
+              },
+              "noImagingScale": {
+                "title": "撮像スケールが不明",
+                "why": "撮像カメラのピクセルサイズと望遠鏡の焦点距離がないと、コーチはガイド誤差を撮像ピクセルと比較できません。",
+                "fix": "プロファイルのカメラ設定にピクセルサイズを、望遠鏡設定に焦点距離を入力してください。"
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA が過補正しています",
+                "why": "RA の補正が方向を変え続けています（振動指数 {index}）。補正のたびに星が目標を行き過ぎています。",
+                "fix": "RA の Aggression を 0.1 下げてください。"
+              },
+              "raSluggish": {
+                "title": "RA の補正が不足しています",
+                "why": "RA が同じ方向にドリフトし続けています（振動指数 {index}、RMS {rmsRaArcsec}）。補正が控えめすぎます。",
+                "fix": "RA の Aggression を 0.1 上げてください。"
+              },
+              "pulseLimited": {
+                "title": "{axis} パルスが最大値に達しています",
+                "why": "{axis} 補正の {percent} が最大パルス長で打ち切られているため、大きな誤差の補正に数フレームかかります。",
+                "fix": "最大パルス長を増やすか、ガイドレートが変わった場合は再校正してください。"
+              },
+              "lowSnr": {
+                "title": "ガイド星が暗くなっています（SNR {snr}）",
+                "why": "星の SNR が低下しました。雲、光学系の結露、地平線付近のもやが原因であることが多いです。",
+                "fix": "空と結露防止ヒーターを確認し、低いままなら別の星を選んでください。"
+              },
+              "decDrift": {
+                "title": "Dec が一定方向にドリフト（{driftArcsecPerMin}）",
+                "why": "Dec の補正がほぼすべて一方向で、約 {arcmin} の極軸誤差を示しています。",
+                "fix": "極軸を追い込むか、Dec を一方向のみガイドしてください。"
+              },
+              "seeingBound": {
+                "title": "ガイドはシーイングの限界に達しています",
+                "why": "RMS {rmsArcsec} は大気が許す限界に近い値です。",
+                "fix": "今のところ調整は不要です。"
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "別のコーチセッションが実行中です",
+                "why": "同時に実行できるセッションは 1 つだけです。",
+                "fix": "終了するまで待つか、キャンセルしてください。"
+              },
+              "notConnected": {
+                "title": "ガイダーが接続されていません",
+                "why": "コーチには、カメラと赤道儀を備えた接続済みのネイティブガイダーが必要です。",
+                "fix": "ガイダー（パルスガイドには赤道儀も）を接続して再試行してください。"
+              },
+              "noStar": {
+                "title": "ガイド星が見つかりません",
+                "why": "コーチには測定する星が必要です。",
+                "fix": "ピント、雲、カバーを確認し、露光を延ばすか別の視野に移動してください。"
+              },
+              "noCalibration": {
+                "title": "未校正",
+                "why": "ドリフト・赤道儀の応答・試行は赤道儀の軸に沿って測定するため、校正が必要です。",
+                "fix": "先に校正するか、詳細オプションでコーチによる校正を許可してください。"
+              },
+              "calibrationFailed": {
+                "title": "校正に失敗しました",
+                "why": "コーチが校正できなかったため、校正が必要なステップを実行できませんでした。",
+                "fix": "イベントログで原因を確認して対処し（例: 星のロスト、移動量不足）、再度校正してください。"
+              },
+              "starLost": {
+                "title": "ガイド星をロストしました",
+                "why": "測定中に星が消えました。雲、障害物、または星がフレーム外に出た可能性があります。",
+                "fix": "晴れるのを待つか別の星を選び、もう一度開始してください。"
+              },
+              "noPulseOutput": {
+                "title": "ガイド出力なし",
+                "why": "赤道儀の応答と試行にはガイドパルスが必要ですが、赤道儀も ST4 出力も利用できません。",
+                "fix": "赤道儀を接続するか、カメラの ST4 出力を選択して再試行してください。"
+              },
+              "interrupted": {
+                "title": "セッションが中断されました",
+                "why": "セッションが停止しました（理由: {reason}）。一時的な設定は元に戻されました。",
+                "fix": "ガイダーや赤道儀を他から操作していないときに、コーチを再度開始してください。"
+              },
+              "cameraError": {
+                "title": "カメラエラー",
+                "why": "測定中にガイドカメラでエラーが発生しました。",
+                "fix": "カメラの接続とイベントログを確認して、再試行してください。"
+              },
+              "internal": {
+                "title": "内部エラー",
+                "why": "コーチで予期しないエラーが発生しました。",
+                "fix": "再試行してください。再発する場合はログファイルを共有してください。"
+              }
+            }
+          }
+        },
+        "incidents": {
+          "title": "インシデント",
+          "intro": "ガイドがうまくいかなかった瞬間の前後のフレームとテレメトリを、推定原因とともに表示します。",
+          "empty": "記録されたインシデントはまだありません。",
+          "emptyHint": "ガイド中や校正中、ガイダーは直近 2 分間のフレームをメモリに保持しています。ガイド星をロストしたとき、赤道儀やカメラが応答しなくなったとき、校正に失敗したとき、または誤差が急に跳ね上がったときに、その前後のフレームを、測定値・送信内容・原因の第一推定とともに保存します。自分で保存したいときは、コントロールの「マーク」をタップしてください。",
+          "disabled": "フライトレコーダーはガイダー設定でオフになっています（グループ「インシデント」）。",
+          "loadFailed": "インシデントを読み込めませんでした",
+          "refresh": "インシデントを再読み込み",
+          "budget": "{used}／{budget} · インシデント {count}／{max} 件",
+          "budgetSimulator": "シミュレーター: {used}／{budget}",
+          "filterProfile": "このプロファイル",
+          "filterAll": "すべて",
+          "noneForProfile": "このプロファイルのインシデントはありません。",
+          "recording": "記録中…",
+          "recordingHint": "ガイドが回復してから 30 秒後に保存されます。",
+          "ongoing": "継続中",
+          "occurrences": "{count}×",
+          "likely": "推定原因: {cause}",
+          "analysing": "原因はまだ不明です",
+          "simulator": "シミュレーター",
+          "kept": "保護中",
+          "keep": "保護",
+          "release": "保護解除",
+          "keepHint": "保護: 新しいインシデントの空き容量を確保するために削除されることはありません",
+          "releaseHint": "保護解除: 新しいインシデントの空き容量を確保するために削除されることがあります",
+          "delete": "削除",
+          "deleteConfirm": "削除？",
+          "deleteAll": "すべて削除",
+          "deleteAllConfirm": "保護されていないインシデントをすべて削除しますか？保護中のインシデントは残ります。",
+          "deleteAllButton": "{count} 件を削除",
+          "deletedAll": "削除しました: {count} 件",
+          "cancel": "キャンセル",
+          "download": "ダウンロード",
+          "downloading": "ダウンロードを準備中…",
+          "downloadSaved": "{file} として保存しました",
+          "downloadFailed": "ダウンロードに失敗しました",
+          "replayButton": "再生",
+          "actionFailed": "インシデントの操作に失敗しました",
+          "frames": "{count} フレーム",
+          "framesOmitted": {
+            "diskSpace": "フレーム未保存: ディスク容量不足",
+            "budget": "フレーム未保存: 保存容量が保護中のインシデントで一杯です"
+          },
+          "endReasons": {
+            "recording": "記録中",
+            "recovered": "回復",
+            "stopped": "停止",
+            "cap": "5 分の上限",
+            "manual": "マーク"
+          },
+          "kinds": {
+            "StarLost": "星をロスト",
+            "Runaway": "ガイドの暴走",
+            "MountNotResponding": "赤道儀が応答なし",
+            "SettleTimeout": "整定タイムアウト",
+            "CameraFailure": "カメラ障害",
+            "MountPaused": "赤道儀が一時停止",
+            "CalibrationFailed": "校正失敗",
+            "PulseLimited": "パルス上限に到達",
+            "PulseOutputFailed": "パルス出力失敗",
+            "DecFlipCorrected": "Dec 反転を修正",
+            "Spike": "誤差スパイク",
+            "Manual": "手動マーク"
+          },
+          "savedTitle": "インシデントを保存しました",
+          "savedMessage": "{kind}（{time}）",
+          "mark": {
+            "button": "マーク",
+            "title": "インシデントをマーク",
+            "hint": "直近 2 分間と、この後 30 秒間のガイドを再生用に保存します。",
+            "note": "メモ（任意）",
+            "placeholder": "例: 突風",
+            "submit": "マーク",
+            "done": "マークしました。この後 30 秒間を記録してから、インシデントを保存します。",
+            "failed": "マークに失敗しました"
+          },
+          "replay": {
+            "close": "再生を閉じる",
+            "loading": "インシデントを読み込み中…",
+            "loadFailed": "インシデントを読み込めませんでした",
+            "frame": "フレーム {frame}",
+            "position": "{index}／{count}",
+            "noImage": "このフレームの画像は保存されていません",
+            "keyFrame": "フルフレーム",
+            "context": "ビニング {binning}×",
+            "imageFailed": "画像を読み込めませんでした",
+            "starLost": "星が見つかりません",
+            "starLostStatus": "星が見つかりません: {status}",
+            "play": "再生",
+            "pause": "一時停止",
+            "stepBack": "前のフレーム",
+            "stepForward": "次のフレーム",
+            "prevMarker": "前のマーカー",
+            "nextMarker": "次のマーカー",
+            "speed": "再生速度",
+            "scrubber": "フレーム位置",
+            "crops": "星",
+            "noCrops": "このフレームの星の切り抜きは保存されていません",
+            "graph": "ガイド誤差",
+            "telemetry": "このフレーム",
+            "note": "メモ",
+            "triggers": "トリガー",
+            "evidence": "根拠",
+            "showFrame": "フレームを表示",
+            "searchRegion": "探索領域",
+            "diagnosisPending": "診断はまだありません。インシデントを記録中です。"
+          },
+          "tele": {
+            "time": "時刻",
+            "state": "状態",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "mass": "質量",
+            "error": "誤差",
+            "pulses": "パルス",
+            "mount": "赤道儀",
+            "pierSide": "鏡筒配置",
+            "calibration": "校正",
+            "stars": "星数",
+            "settling": "整定中",
+            "dithering": "ディザー中",
+            "limited": "上限",
+            "tracking": "追尾中",
+            "notTracking": "追尾オフ",
+            "slewing": "導入中",
+            "parked": "パーク中",
+            "unknown": "不明"
+          },
+          "markers": {
+            "trigger": "トリガー",
+            "recovered": "回復",
+            "note": "メモ",
+            "gap": "画像なし",
+            "end": "終了"
+          },
+          "causes": {
+            "camera": {
+              "title": "カメラ",
+              "why": "この前後でフレームが欠落または遅延しました。ガイドカメラがフレームを出力できませんでした（撮影エラー、タイムアウト、USB 接続の切断）。",
+              "fix": "カメラの USB ケーブルと電源を確認し、長いパッシブ USB 延長ケーブルを避け、露光を延ばすか USB 帯域を下げてみてください。"
+            },
+            "mountMoved": {
+              "title": "赤道儀が動いた",
+              "why": "赤道儀が導入した、追尾を停止した、パークした、切断された、または鏡筒配置が変わったため、星が元の位置から外れました。",
+              "fix": "導入や子午線反転の前にはガイドを一時停止し（シーケンスなら自動で行います）、追尾がオンのままか確認してください。"
+            },
+            "calibrationMismatch": {
+              "title": "校正が合っていない",
+              "why": "補正で星が戻らず、かえって遠ざかりました。校正が赤道儀に合わなくなっています（鏡筒配置、赤緯、ガイドレート、Dec 方向の反転）。",
+              "fix": "ターゲット付近で再校正し、赤道儀が鏡筒配置を正しく報告しているか確認してください。"
+            },
+            "mountNotMoving": {
+              "title": "赤道儀が動かなかった",
+              "why": "補正パルスは送信されましたが、星はほとんど動きませんでした。赤道儀がパルスを実行していません。",
+              "fix": "赤道儀の接続とガイド出力（ST-4 ケーブルまたはパルスガイド）、クラッチが締まっているかを確認してください。"
+            },
+            "fieldJump": {
+              "title": "視野の跳び",
+              "why": "すべての星が同時に同じ量だけ跳びました。望遠鏡全体が動いています（衝撃、突風、ケーブルの引っかかり、赤道儀の滑り）。",
+              "fix": "ケーブルの取り回し、クラッチ、バランスを確認し、望遠鏡を風から守ってください。"
+            },
+            "clouds": {
+              "title": "雲",
+              "why": "すべての星が 1 分以内にそろって暗くなり、後で戻りました。何かが空を横切りました。",
+              "fix": "ガイダー側で直すことはありません。晴れるのを待ってください。薄雲なら露光を延ばすと効果があります。"
+            },
+            "dew": {
+              "title": "結露",
+              "why": "すべての星が数分かけてゆっくり暗くなり、同時に大きくなりました（HFD）。光学系の結露か霜です。",
+              "fix": "結露防止ヒーターをオンにするか出力を上げ、フードを使ってください。"
+            },
+            "guideStarOnly": {
+              "title": "ガイド星の問題",
+              "why": "ガイド星だけが変化し（ロスト、大幅に明るく／暗く）、他の星は正常でした。飽和、ホットピクセル、近くの星が追跡を乱しました。",
+              "fix": "別のガイド星を選び、飽和している場合は露光かゲインを下げ、マルチスターガイドを使ってください。"
+            },
+            "driftTooFast": {
+              "title": "ドリフトが速すぎる",
+              "why": "補正が上限に達したまま、星が探索領域の端に向かって一定方向にドリフトしました。",
+              "fix": "最大パルス長か Aggression を上げ、極軸とバランスを確認し、ガイドレートを変えた場合は再校正してください。"
+            },
+            "periodicSpike": {
+              "title": "周期誤差",
+              "why": "スパイクが赤道儀のウォーム周期で繰り返しています。ギアの周期誤差です。",
+              "fix": "Predictive RA アルゴリズムか赤道儀の PEC を使ってください。スパイクが大きい場合はウォームを清掃してグリスアップしてください。"
+            },
+            "unclear": {
+              "title": "不明",
+              "why": "既知のパターンに一致しませんでした。下の根拠に測定内容が示されています。",
+              "fix": "再生で確認してください。バグ報告に添付するには、インシデントをダウンロードしてください。"
+            }
+          },
+          "evidence": {
+            "cameraFailures": "カメラの撮影失敗: {count} 回",
+            "frameGap": "{seconds} の間フレームなし",
+            "mountSlewing": "赤道儀が導入中でした",
+            "mountTrackingOff": "赤道儀の追尾がオフでした",
+            "mountParked": "赤道儀がパーク中でした",
+            "mountDisconnected": "赤道儀が切断されていました",
+            "pierSideChanged": "鏡筒配置が{from}から{to}に変わりました",
+            "errorGrew": "補正が逆向きに働いていたにもかかわらず、{axis} の誤差が {frames} フレームで {fromPx} から {toPx} に増えました",
+            "runaway": "{axis} が暴走: 補正で星がさらに離れました",
+            "decFlipCorrected": "Dec の方向が反転していたため修正しました",
+            "pulsesWithoutMotion": "{axis} パルス {pulses} 回で星は {expectedPx} 動くはずでしたが、実際は {movedPx} でした",
+            "fieldJump": "{stars} 個の星が同時に {jumpPx}（{jumpArcsec}）跳びました",
+            "starsFaded": "すべての星（{stars}）が {seconds} 以内に {dropPercent} 暗くなりました",
+            "recoveredAfter": "{seconds} 後に戻りました",
+            "starsFadingSlowly": "すべての星（{stars}）が {minutes} かけて {dropPercent} 暗くなりました",
+            "hfdGrew": "星が大きくなりました: HFD が {percent} 増加",
+            "primaryOnly": "ガイド星が {dropPercent} 暗くなり、他の星（{secondaries}）は正常でした",
+            "saturated": "ガイド星が飽和していました",
+            "massJump": "ガイド星の質量が {percent} 跳ね上がりました",
+            "driftToEdge": "星が {frames} フレームで {axis} 方向に探索領域の {percentOfRegion} までドリフトしました",
+            "pulsesLimited": "{frames} フレームで {axis} 補正が上限に達しました",
+            "spikeRepeats": "ウォーム周期（{periodSeconds}）の整数倍の時点で過去に {count} 回スパイク",
+            "spike": "誤差スパイク {errorArcsec}（RMS {rmsArcsec} 時）",
+            "starLost": "星をロスト（{status}）",
+            "trigger": "トリガー: {kind}"
+          },
+          "values": {
+            "axis": {
+              "ra": "RA",
+              "dec": "Dec"
+            },
+            "pierSide": {
+              "East": "東",
+              "West": "西",
+              "Unknown": "不明"
+            },
+            "status": {
+              "LowSnr": "SNR 不足",
+              "Saturated": "飽和",
+              "MassChanged": "星の質量が変化",
+              "NotFound": "星なし"
+            }
+          },
+          "unknown": "?"
+        }
       }
     },
     "focuser": {

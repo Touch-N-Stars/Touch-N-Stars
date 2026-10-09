@@ -18,6 +18,7 @@ import tppaApi from './api/tppa';
 import tenmicronApi from './api/tenmicron';
 import pluginsApi from './api/plugins';
 import atlasApi from './api/atlas';
+import nativeGuiderApi from './api/nativeGuider';
 
 const apiService = {
   ...systemApi,
@@ -37,6 +38,7 @@ const apiService = {
   ...tenmicronApi,
   ...pluginsApi,
   ...atlasApi,
+  ...nativeGuiderApi,
 };
 
 export default apiService;

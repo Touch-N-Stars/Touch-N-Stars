@@ -454,7 +454,9 @@
         "ditherApply": "Apply to profile",
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "nativeCamera": "가이드 카메라 (PINS 네이티브 가이더)",
+        "nativeCameraHint": "네이티브 가이더가 가이드 카메라를 직접 제어합니다. INDI 드라이버와 장치를 선택하고 가이드 경통의 초점 거리를 입력하세요."
       },
       "done": {
         "title": "Your equipment is ready",
@@ -1744,6 +1746,1485 @@
         "imageDisplay": "Image Display",
         "imageGamma": "Stretch (Gamma)",
         "imageGammaHint": "Low = stronger stretch, High = linear"
+      },
+      "native": {
+        "notConnected": "PINS 네이티브 가이더가 연결되지 않았습니다",
+        "notConnectedHint": "장비 페이지에서 PINS 네이티브 가이더를 연결하세요. 설정은 연결 전에도 편집할 수 있습니다.",
+        "states": {
+          "Stopped": "정지됨",
+          "Looping": "루프 중",
+          "Selected": "별 선택됨",
+          "Calibrating": "보정 중",
+          "Guiding": "가이드 중",
+          "LostLock": "별 놓침",
+          "Reacquiring": "재탐색 중",
+          "Paused": "일시정지",
+          "Failed": "실패",
+          "Disconnected": "연결 끊김",
+          "Unknown": "알 수 없음"
+        },
+        "tabs": {
+          "frame": "프레임",
+          "graph": "그래프",
+          "stats": "통계",
+          "calibration": "보정",
+          "log": "로그",
+          "settings": "설정",
+          "dashboard": "가이딩",
+          "coach": "코치",
+          "incidents": "인시던트"
+        },
+        "strip": {
+          "settling": "안정화 중",
+          "live": "실시간",
+          "poll": "폴링",
+          "liveHint": "WebSocket을 통한 실시간 업데이트",
+          "pollHint": "WebSocket 사용 불가 - 2초마다 업데이트",
+          "rmsTotal": "RMS",
+          "rmsRa": "RA",
+          "rmsDec": "Dec",
+          "snr": "SNR",
+          "mass": "질량",
+          "hfd": "HFD",
+          "stars": "별",
+          "usedTotal": "사용/발견",
+          "processing": "처리",
+          "rmsImage": "RMS / 이미지",
+          "rmsImageHint": "전체 가이드 RMS를 촬영 카메라의 픽셀 스케일로 나눈 값입니다. 0.5 미만이면 매우 좋고, 약 1이면 가이드 오차가 촬영 이미지의 한 픽셀에 이릅니다.",
+          "imageScale": "/ {scale}″/px",
+          "imageScaleUnknown": "카메라와 초점거리를 설정하세요",
+          "learningChip": "하늘과 마운트 학습 중 {percent} %",
+          "learningChipHint": "Predictive 알고리즘은 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습합니다(약 120 프레임, 디더 후 안정화 구간은 제외). 그동안에도 가이드를 하며, 이후에도 계속 적응합니다.",
+          "help": {
+            "rms": {
+              "title": "RMS – 전체 가이드 오차",
+              "text": "가이드 별이 고정 위치에서 얼마나 벗어나는지를 최근 가이드 프레임의 제곱평균제곱근으로 나타낸 값입니다(RA와 Dec 합산, 디더 후 안정화 구간 제외). 단위는 하늘의 각초와 가이드 카메라 픽셀입니다. 낮을수록 좋으며, 중요한 것은 촬영 카메라의 픽셀 스케일(RMS / 이미지) 및 시잉과의 비교입니다. 1.2″를 넘으면 주황색, 2″를 넘으면 빨간색이 됩니다."
+            },
+            "ra": {
+              "title": "RA – 적경 오차",
+              "text": "적경 방향의 가이드 RMS 오차입니다. RA에는 마운트의 주기 오차와 구동 불균일이 실리므로 보통 둘 중 더 큽니다. Dec보다 확연히 크면 주기 오차, 밸런스 또는 바람을 의심하세요."
+            },
+            "dec": {
+              "title": "Dec – 적위 오차",
+              "text": "적위 방향의 가이드 RMS 오차입니다. Dec에는 주로 극축 정렬 오차로 인한 드리프트와 적위 기어의 백래시가 나타납니다. RA보다 확연히 크면 백래시나 부정확한 극축 정렬을 의심하세요."
+            },
+            "snr": {
+              "title": "SNR – 신호 대 잡음비",
+              "text": "가이드 별이 배경 잡음에서 얼마나 뚜렷하게 드러나는지입니다. 20 이상이면 여유가 있고, 10 미만이면 측정 위치가 흔들려 별을 놓칠 수 있습니다. 노출을 늘리거나 게인을 높이거나 더 밝은 별을 고르세요. 질량은 별의 전체 밝기로, 갑자기 떨어지면 구름이나 별 손실을 뜻합니다."
+            },
+            "hfd": {
+              "title": "HFD – 반광속 지름",
+              "text": "가이드 카메라 픽셀 단위의 가이드 별 크기입니다. 작고 안정적이어야 하며, HFD가 크거나 커지면 가이드 경통의 초점이 맞지 않거나 시잉이 나쁜 것입니다. 아주 작은 값(약 1.5 px 미만)은 위치 정밀도를 떨어뜨립니다."
+            },
+            "stars": {
+              "title": "별 – 사용 / 검출",
+              "text": "가이드에 사용 중인 별과 프레임에서 찾은 별입니다. 다중 별 가이드는 사용 중인 별들로 위치를 평균하므로 시잉 잡음이 줄어듭니다. 많을수록 좋습니다. 너무 어둡거나 포화되었거나 가장자리에 가까운 별은 사용하지 않습니다."
+            },
+            "processing": {
+              "title": "처리 – 처리 시간",
+              "text": "가이더가 마지막 프레임을 분석하는 데 걸린 시간(별 검출, 위치, 보정)입니다. 노출 시간보다 충분히 짧아야 하며, 절반을 넘으면 주황색이 됩니다. 컴퓨터가 느리거나 가이드 프레임이 매우 큰 경우입니다(비닝이 도움이 됩니다)."
+            },
+            "rmsImage": {
+              "title": "RMS / 이미지 – 촬영 픽셀 단위 오차"
+            }
+          },
+          "periodicErrorChip": "주기 오차 학습 중 {percent} %",
+          "periodicErrorChipHint": "Predictive 알고리즘이 RA 웜의 주기 오차를 학습하고 있습니다. 웜 약 다섯 바퀴 후(가이딩을 멈췄다 다시 시작해도 바퀴 수는 누적되지만, 슬루·동기화·자오선 반전 후에는 처음부터 다시 시작합니다) 또는 웜 휠 톱니 수 설정으로 즉시 웜 주기를 찾고, 곡선이 바퀴마다 같게 유지되는지 확인합니다(톱니 수 설정 시 두 바퀴). 그동안에도 계속 가이드합니다.",
+          "decDirection": {
+            "Both": "양방향",
+            "North": "북쪽만",
+            "South": "남쪽만"
+          }
+        },
+        "controls": {
+          "loop": "루프",
+          "stop": "정지",
+          "guide": "가이드",
+          "calibrate": "보정",
+          "pause": "일시정지",
+          "resume": "재개",
+          "dither": "디더링",
+          "clearCalibration": "보정 지우기",
+          "ditherTitle": "디더링",
+          "ditherPixels": "이동량 (가이드 픽셀)",
+          "ditherRaOnly": "RA만",
+          "ditherHint": "잠금 위치를 이 값 이내에서 무작위로 이동시키고 가이딩이 안정될 때까지 기다립니다.",
+          "ditherInvalid": "0에서 100픽셀 사이의 값을 입력하세요.",
+          "confirmStopTitle": "가이딩을 정지할까요?",
+          "confirmStop": "가이딩이 정지되며 실행 중인 시퀀스의 노출은 더 이상 가이드되지 않습니다.",
+          "confirmCalibrateTitle": "다시 보정할까요?",
+          "confirmCalibrate": "현재 보정 값이 삭제되고 새로운 보정이 시작됩니다.",
+          "confirmClearTitle": "보정을 지울까요?",
+          "confirmClear": "저장된 보정 값이 삭제됩니다. 다음 가이딩 시작 시 다시 보정됩니다.",
+          "failed": "{action} 실패",
+          "actions": {
+            "loop": "루프",
+            "stop": "정지",
+            "start-guiding": "가이딩 시작",
+            "stop-guiding": "가이딩 정지",
+            "pause": "일시정지",
+            "resume": "재개",
+            "dither": "디더링",
+            "clear-calibration": "보정 지우기",
+            "calibrate": "보정",
+            "darks": "다크 라이브러리 생성",
+            "coach-start": "코치 시작",
+            "coach-skip": "코치 단계 건너뛰기",
+            "coach-cancel": "코치 취소",
+            "coach-apply": "권장 사항 적용"
+          }
+        },
+        "frame": {
+          "title": "가이드 프레임",
+          "stretch": "스트레치",
+          "stretch_low": "낮음",
+          "stretch_medium": "중간",
+          "stretch_high": "높음",
+          "overlay": "별 오버레이 표시/숨기기",
+          "resetZoom": "확대/축소 초기화",
+          "noFrame": "아직 가이드 프레임이 없습니다. 노출을 시작하려면 루프를 누르세요.",
+          "imageFailed": "가이드 프레임을 불러오지 못했습니다",
+          "starCount": "별 {count}개",
+          "age": "{seconds}초 전",
+          "weight": "가중치",
+          "rejected": "사용 안 함",
+          "legendPrimary": "주 별",
+          "legendSecondary": "보조 별",
+          "legendRejected": "사용 안 함",
+          "legendLock": "잠금 위치",
+          "tapHint": "별을 탭하면 세부정보 표시",
+          "levelSaturated": "프레임 포화 (픽셀의 {percent} %가 최대값): 하늘이 아직 너무 밝거나 노출/게인이 너무 높습니다. 노출이나 게인을 줄이세요.",
+          "levelFlat": "프레임에 유효한 신호가 없습니다 (레벨 {level} / {fullScale}): 렌즈 캡, 이슬, 또는 카메라가 노출하지 않나요?",
+          "levelPartlySaturated": "{percent} % 포화"
+        },
+        "profile": {
+          "noStar": "가이드 별 없음",
+          "horizontal": "H",
+          "vertical": "V",
+          "radial": "방사형",
+          "peak": "피크",
+          "saturated": "별이 포화되었습니다 - 노출 시간을 줄이거나 다른 별을 선택하세요."
+        },
+        "log": {
+          "title": "이벤트",
+          "empty": "아직 이벤트가 없습니다.",
+          "filter_all": "전체",
+          "filter_warning": "경고",
+          "filter_critical": "심각",
+          "explanation": "발생 내용",
+          "fix": "해결 방법",
+          "detail": "세부정보",
+          "severity": {
+            "info": "정보",
+            "warning": "경고",
+            "critical": "심각"
+          }
+        },
+        "alerts": {
+          "StarLost": {
+            "title": "가이드 별 놓침",
+            "explanation": "마지막 프레임에서 가이드 별을 찾을 수 없습니다. 별을 놓친 동안에는 교정을 보내지 않습니다.",
+            "fix": "구름, 장애물, 이슬을 확인하세요. 가이더는 자동으로 계속 탐색합니다."
+          },
+          "StarReacquireTimeout": {
+            "title": "가이드 별을 다시 찾지 못함",
+            "explanation": "별을 놓친 시간이 “별 놓침 제한 시간”을 넘어 가이딩이 정지되었습니다.",
+            "fix": "하늘과 광학계를 확인한 후 가이딩을 다시 시작하세요(시퀀서의 가이딩 복원(Restore Guiding) 트리거로 할 수 있습니다)."
+          },
+          "StarSaturated": {
+            "title": "가이드 별 포화",
+            "explanation": "가이드 별의 피크가 포화되어 중심점 정밀도가 떨어집니다.",
+            "fix": "노출이나 게인을 줄이거나, 자동 선택이 더 어두운 별을 고르도록 하세요."
+          },
+          "StarLowSnr": {
+            "title": "별 SNR 낮음",
+            "explanation": "가이드 별의 신호 대 잡음비가 낮아 중심점에 노이즈가 생깁니다.",
+            "fix": "노출이나 게인을 늘리거나 가이드 카메라의 초점을 확인하세요."
+          },
+          "StarMassChanged": {
+            "title": "별 밝기가 급변함",
+            "explanation": "별의 밝기가 질량 변화 임계값보다 크게 변해 해당 프레임을 무시했습니다.",
+            "fix": "대개 지나가는 구름입니다. 계속되면 질량 변화 임계값을 높이세요."
+          },
+          "NoStarFound": {
+            "title": "적합한 가이드 별 없음",
+            "explanation": "자동 별 선택이 SNR과 포화 기준을 충족하는 별을 찾지 못했습니다.",
+            "fix": "노출/게인을 늘리고, 초점과 가이드 경통이 덮여 있지 않은지 확인하세요."
+          },
+          "LockPositionNearEdge": {
+            "title": "잠금 위치가 가장자리에 너무 가까움",
+            "explanation": "요청한 잠금 위치가 탐색 영역에 비해 프레임 가장자리에 너무 가깝습니다.",
+            "fix": "가장자리에서 더 먼 별을 고르거나 디더링 이동량을 줄이세요."
+          },
+          "PrimaryEstimatedFromSecondaries": {
+            "title": "주 별 위치 추정됨",
+            "explanation": "주 별을 측정할 수 없어 보조 별로 위치를 추정했습니다.",
+            "fix": "조치가 필요 없습니다. 자주 발생하면 다른 주 별을 고르는 것이 좋습니다."
+          },
+          "StarReacquired": {
+            "title": "가이드 별 다시 찾음",
+            "explanation": "가이드 별을 다시 찾아 가이딩이 재개되었습니다.",
+            "fix": "조치가 필요 없습니다."
+          },
+          "CalibrationFailedRaNoMove": {
+            "title": "보정 실패: RA가 움직이지 않음",
+            "explanation": "보정 중 별이 RA 방향으로 충분히 움직이지 않았습니다.",
+            "fix": "가이드 출력 연결(마운트/ST4), 가이드 속도, 그리고 마운트가 추적 중이며 파킹 해제되어 있는지 확인하세요."
+          },
+          "CalibrationFailedDecNoMove": {
+            "title": "보정 실패: Dec가 움직이지 않음",
+            "explanation": "보정 중 별이 Dec 방향으로 충분히 움직이지 않았습니다.",
+            "fix": "Dec 백래시, 밸런스, 케이블 걸림을 확인하거나 RA만 보정/가이드하세요."
+          },
+          "CalibrationFailedBacklash": {
+            "title": "보정 실패: Dec 백래시가 해소되지 않음",
+            "explanation": "Dec 보정 이동 전에 Dec 백래시를 해소할 수 없었습니다.",
+            "fix": "Dec 백래시를 줄이고(기어 맞물림, Dec 밸런스를 약간 동쪽이 무겁게) 다시 보정하세요."
+          },
+          "CalibrationFailedStarLost": {
+            "title": "보정 실패: 별 놓침",
+            "explanation": "보정 중 보정 별을 너무 자주 놓쳤습니다.",
+            "fix": "가장자리에서 떨어진 더 밝은 별을 골라 다시 시도하세요."
+          },
+          "CalibrationFewSteps": {
+            "title": "보정 스텝 수가 적음",
+            "explanation": "한 축의 스텝이 4개 미만인 채로 보정이 완료되어 부정확할 수 있습니다.",
+            "fix": "보정 스텝 크기를 줄이고 다시 보정하세요."
+          },
+          "CalibrationNotOrthogonal": {
+            "title": "보정 축이 수직이 아님",
+            "explanation": "측정된 RA 축과 Dec 축이 수직에서 12.5° 넘게 벗어났습니다.",
+            "fix": "보정 중 Dec 백래시, 케이블 걸림, 바람이 있었는지 확인하고 다시 보정하세요."
+          },
+          "CalibrationRateRatio": {
+            "title": "예상과 다른 RA/Dec 속도 비",
+            "explanation": "RA와 Dec 보정 속도의 비가 적위와 맞지 않습니다.",
+            "fix": "마운트가 보고하는 적위와 가이드 속도를 확인하고, 가능하면 Dec 0 근처에서 다시 보정하세요."
+          },
+          "CalibrationDecRateChanged": {
+            "title": "Dec 속도가 지난 보정과 다름",
+            "explanation": "Dec 속도가 같은 구성의 이전 보정과 20% 넘게 다릅니다.",
+            "fix": "다시 보정하고 백래시나 기계적 문제를 확인하세요."
+          },
+          "CalibrationInvalidated": {
+            "title": "보정 무효화됨",
+            "explanation": "저장된 보정이 더 이상 카메라, 비닝 또는 초점거리와 맞지 않습니다.",
+            "fix": "가이딩을 시작하면 새 보정이 실행됩니다."
+          },
+          "CalibrationHighDeclination": {
+            "title": "높은 적위에서 수행된 보정",
+            "explanation": "천구 적도에서 북쪽 또는 남쪽으로 60° 넘게 떨어진 곳에서 보정했으므로 적위 보상을 신뢰할 수 없습니다.",
+            "fix": "최상의 결과를 위해 천구 적도에 더 가까운 곳에서 다시 보정하세요."
+          },
+          "CalibrationGuideRateChanged": {
+            "title": "가이드 속도 변경됨",
+            "explanation": "마운트의 가이드 속도가 보정 시와 5% 넘게 다릅니다.",
+            "fix": "다시 보정하거나 이전 가이드 속도로 되돌리세요."
+          },
+          "NotCalibrated": {
+            "title": "보정되지 않음",
+            "explanation": "가이딩에는 보정이 필요합니다.",
+            "fix": "보정을 포함해 가이딩을 시작하세요."
+          },
+          "CalibrationFlipped": {
+            "title": "경통 위치에 맞게 보정 반전됨",
+            "explanation": "자오선 반전 후 새 경통 위치에 맞게 보정을 조정했습니다.",
+            "fix": "조치가 필요 없습니다."
+          },
+          "DecFlipCorrected": {
+            "title": "반전 후 Dec 방향 수정됨",
+            "explanation": "자오선 반전 후 Dec 교정이 오차를 키워서 Dec 방향을 뒤집고 마운트 설정을 저장했습니다.",
+            "fix": "조치가 필요 없습니다. 가이딩이 불안정해 보이면 다시 보정하는 것이 좋습니다."
+          },
+          "CalibrationReturnIncomplete": {
+            "title": "보정 복귀 이동 미완료",
+            "explanation": "보정 중 별이 시작점 근처로 돌아오지 않았습니다. 백래시나 클러치 미끄러짐일 수 있습니다.",
+            "fix": "마운트의 기계 부분을 점검하고 다시 보정하세요."
+          },
+          "PulseLimitReached": {
+            "title": "최대 펄스로 교정 제한됨",
+            "explanation": "여러 번 연속된 교정이 최대 펄스 길이로 잘렸습니다.",
+            "fix": "큰 드리프트(극축 정렬, 케이블 걸림)가 있는지 확인하거나 최대 펄스 시간을 늘리세요."
+          },
+          "RunawayDetected": {
+            "title": "가이드 폭주 감지",
+            "explanation": "교정이 오차를 줄이지 못한 채 계속 커졌습니다(예: 보정 부호 오류). 세션을 보호하기 위해 가이딩을 정지했습니다.",
+            "fix": "보정을 지우고 다시 보정하세요. 마운트의 경통 위치/Dec 반전 설정을 확인하세요."
+          },
+          "MountNotResponding": {
+            "title": "마운트가 교정에 응답하지 않음",
+            "explanation": "여러 번의 큰 교정에도 별이 움직이지 않았습니다.",
+            "fix": "가이드 출력 연결(마운트 드라이버/ST4 케이블)과 마운트가 추적 중인지 확인하세요."
+          },
+          "MountSlewing": {
+            "title": "마운트 슬루 중 — 가이딩 일시정지",
+            "explanation": "마운트가 슬루하는 동안 가이딩은 자동으로 일시정지됩니다.",
+            "fix": "슬루가 끝나면 가이딩이 재개됩니다. 마운트가 슬루 중이 아닌데 이 알림이 나타나면 가이더 설정 “마운트 슬루 중 일시정지”를 끄세요."
+          },
+          "MountParked": {
+            "title": "마운트 파킹됨 — 가이딩 일시정지",
+            "explanation": "마운트가 파킹 상태로 보고되어 교정을 보내지 않습니다.",
+            "fix": "마운트 파킹을 해제하고 가이딩을 다시 시작하세요."
+          },
+          "MountTrackingOff": {
+            "title": "추적 꺼짐 — 가이딩 일시정지",
+            "explanation": "마운트가 추적하지 않아 교정을 보내지 않습니다.",
+            "fix": "추적을 켜면 가이딩이 자동으로 재개됩니다. 마운트가 추적 중인데 드라이버가 이를 보고하지 못하면 가이더 설정 “추적 꺼짐 시 일시정지”를 끄세요."
+          },
+          "MountDisconnected": {
+            "title": "마운트 연결 끊김",
+            "explanation": "마운트 또는 가이드 출력의 연결이 끊겼습니다.",
+            "fix": "마운트를 다시 연결하고 가이딩을 다시 시작하세요."
+          },
+          "PulseOutputFailed": {
+            "title": "가이드 펄스 실패",
+            "explanation": "가이드 펄스를 보낼 수 없었습니다.",
+            "fix": "마운트/가이드 포트 연결을 확인하세요."
+          },
+          "PierSideUnknown": {
+            "title": "경통 위치 알 수 없음",
+            "explanation": "마운트가 경통 위치를 보고하지 않아 자오선 반전을 자동으로 보상할 수 없습니다.",
+            "fix": "자오선 반전 후마다 다시 보정하거나, 경통 위치를 보고하는 드라이버를 사용하세요."
+          },
+          "CameraCaptureFailed": {
+            "title": "가이드 노출 실패",
+            "explanation": "가이드 카메라 노출이 실패했거나 시간 초과되었습니다. 재시도 중입니다.",
+            "fix": "가이드 카메라의 USB 연결과 전원을 확인하세요."
+          },
+          "CameraReconnecting": {
+            "title": "가이드 카메라 다시 연결 중",
+            "explanation": "노출이 반복해서 실패해 가이드 카메라를 다시 연결하고 있습니다.",
+            "fix": "가이드 카메라의 USB 연결과 전원을 확인하세요."
+          },
+          "CameraFailed": {
+            "title": "가이드 카메라 오류",
+            "explanation": "재시도와 재연결 후에도 가이드 카메라가 프레임을 전달하지 못했습니다. 가이딩이 정지되었습니다.",
+            "fix": "케이블/전원을 확인하고 가이드 카메라를 다시 연결한 뒤 가이딩을 다시 시작하세요."
+          },
+          "CameraDisconnected": {
+            "title": "가이드 카메라 연결 끊김",
+            "explanation": "가이드 카메라가 연결되어 있지 않습니다.",
+            "fix": "가이드 카메라를 연결하세요."
+          },
+          "FrameProcessingSlow": {
+            "title": "프레임 처리 느림",
+            "explanation": "가이드 프레임 처리가 예상보다 오래 걸려 교정이 지연됩니다.",
+            "fix": "최대 가이드 별 수를 줄이거나, 비닝이나 서브프레임을 사용하거나, CPU 부하를 확인하세요."
+          },
+          "SettleTimeout": {
+            "title": "안정화 시간 초과",
+            "explanation": "제한 시간 내에 가이딩이 안정되지 않았습니다.",
+            "fix": "안정화 허용 오차/제한 시간을 늘리거나 가이딩 성능을 확인하세요."
+          },
+          "DitherFailed": {
+            "title": "디더링 실패",
+            "explanation": "디더링에는 보정된 상태로 실행 중인 가이딩이 필요합니다.",
+            "fix": "디더링 전에 가이딩을 시작하세요."
+          },
+          "Internal": {
+            "title": "가이더 내부 오류",
+            "explanation": "가이더에서 예기치 않은 오류가 발생했습니다.",
+            "fix": "자세한 내용은 로그를 확인하고 문제를 보고하세요."
+          }
+        },
+        "graph": {
+          "title": "가이드 그래프",
+          "unit": "단위",
+          "arcsec": "″",
+          "px": "px",
+          "window": "표시 스텝 수",
+          "yScale": "Y 축 배율",
+          "auto": "자동",
+          "ra": "RA",
+          "dec": "Dec",
+          "raPulse": "RA 펄스",
+          "decPulse": "Dec 펄스",
+          "pulses": "펄스",
+          "ms": "ms",
+          "snr": "SNR",
+          "mass": "질량",
+          "snrTitle": "SNR / 별 질량",
+          "settling": "안정화 중",
+          "empty": "아직 가이드 스텝이 없습니다. 가이딩을 시작하면 그래프가 표시됩니다.",
+          "markers": {
+            "dither": "디더링",
+            "starlost": "별 놓침",
+            "settled": "안정됨",
+            "settleFailed": "안정화 실패",
+            "calibration": "보정"
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "표시된 최근 {count}개 가이드 단계의 RMS (안정화 및 디더 후 재중심 제외)",
+          "rmsLine": "전체 RMS ({count})",
+          "rmsLineShort": "RMS ({count})",
+          "rmsLineHint": "각 단계에서 최근 {count}개 가이드 단계의 전체 RMS(안정화 및 재중심 이동 제외)"
+        },
+        "target": {
+          "title": "목표",
+          "lastSteps": "최근 {count} 스텝",
+          "ra": "RA",
+          "dec": "Dec",
+          "rms": "RMS",
+          "scale": "외곽 원 {value}",
+          "empty": "아직 가이드 스텝이 없습니다."
+        },
+        "stats": {
+          "title": "통계",
+          "empty": "아직 통계가 없습니다. 가이딩이 실행되면 표시됩니다.",
+          "window": "구간",
+          "windowFrames": "{count} 프레임",
+          "session": "세션",
+          "rmsTotal": "RMS 합계",
+          "rmsRa": "RMS RA",
+          "rmsDec": "RMS Dec",
+          "peak": "피크 RA / Dec",
+          "driftRa": "드리프트 RA",
+          "driftDec": "드리프트 Dec",
+          "polarAlignment": "극축 정렬 오차",
+          "oscillation": "진동 지수",
+          "duty": "듀티 RA / Dec",
+          "snr": "SNR 최소/평균",
+          "snrLast": "최근 {value}",
+          "stars": "별 수(평균)",
+          "starLost": "별 놓침",
+          "frames": "프레임 수",
+          "elapsed": "경과 시간",
+          "predictive": {
+            "title": "예측 가이드",
+            "phases": {
+              "Learning": "학습 중 {percent} %",
+              "Adapted": "조정 완료"
+            },
+            "weight": "프레임 가중치 {percent} %",
+            "weightHint": "새 가이드 프레임마다 마운트 위치 추정을 얼마나 움직이는지: 시잉이 나쁘면 낮고(프레임 오차의 대부분이 시잉), 마운트가 떠돌면 높습니다.",
+            "details": "시잉 {seeing} · 마운트 {wander} · 드리프트 {drift}",
+            "detailsHint": "가이드 프레임마다 학습(σ): 시잉 = 대기 요동과 중심 계산으로 인한 측정 노이즈, 마운트 = 마운트 자체의 무작위 움직임. 드리프트는 예측하여 미리 보정합니다.",
+            "periodic": {
+              "label": "주기 오차",
+              "teeth": "톱니 {teeth}개",
+              "phases": {
+                "Off": "꺼짐",
+                "Learning": "학습 중 {percent} %",
+                "Ready": "준비됨",
+                "Predicting": "예측 중",
+                "Negligible": "무시할 수준"
+              },
+              "negligible": "예측하기엔 너무 작음: 두 가이드 프레임 사이에 별을 움직이는 양이 시잉의 작은 일부에 불과합니다.",
+              "helpTitle": "주기 오차",
+              "help": "RA 웜은 몇 분마다 한 바퀴 돌며, 매 바퀴마다 마운트는 같은 방식으로 조금 빠르게, 조금 느리게 움직입니다. Predictive 알고리즘은 이 곡선을 학습해 드러나기 전에 보정합니다. ±는 현재 대상에서 곡선의 주된 흔들림이며, 그 뒤에 웜 주기가 표시됩니다. 주기는 웜 약 다섯 바퀴 후에 찾으며(가이딩을 멈췄다 다시 시작해도 바퀴 수는 누적되지만, 슬루·동기화·자오선 반전 후에는 처음부터 다시 시작합니다), 웜 휠 톱니 수를 설정하면 바로 알 수 있습니다. 어느 경우든 곡선이 바퀴마다 같게 유지될 때에만 사용하므로 마운트의 흔들림을 주기 오차로 착각하지 않습니다. 준비됨: 학습했지만 아직 사용하지 않을 때보다 낫지 않습니다. 예측 중: 미리 보정하고 있습니다. 무시할 수준: 이 시잉과 프레임 간격에서는 너무 작아 예측해도 도움이 되지 않습니다. 곡선이 아직 일정하지 않을 때도 마찬가지입니다. 곡선은 프로필과 마운트별로 저장되므로 다음 밤에는 이 곡선으로 시작합니다."
+            }
+          },
+          "decDirection": {
+            "label": "Dec 방향",
+            "directions": {
+              "Both": "양방향",
+              "North": "북쪽만",
+              "South": "남쪽만"
+            },
+            "drift": "드리프트 {drift}",
+            "notes": {
+              "unknown": "뚜렷한 드리프트가 측정될 때까지 양방향으로 가이드합니다.",
+              "valve": "반대쪽의 큰 오차가 돌아올 때까지 양방향으로 가이드합니다(안전 밸브)."
+            },
+            "helpTitle": "Dec 가이드 모드 Drift",
+            "help": "Drift는 가이드 중에 측정한 드리프트를 거스르는 한 방향으로만 Dec를 가이드합니다. 적위 기어가 반전되지 않아 백래시가 더 이상 문제되지 않습니다. 뚜렷한 드리프트가 측정될 때까지(몇 분, 약한 드리프트는 치지 않음), 디더링 후 안정화 중, 그리고 그 방향으로는 보정할 수 없는 쪽에 오차가 크게 남아 있는 동안(안전 밸브)은 양방향으로 가이드합니다. 드리프트가 몇 분 동안 약해지거나 반대로 바뀌면 다시 양방향으로 가이드하거나 방향을 전환합니다."
+          }
+        },
+        "calibration": {
+          "title": "보정",
+          "inProgress": "보정 중…",
+          "notCalibrated": "아직 보정되지 않았습니다. 가이딩을 시작하면 자동으로 보정되거나 보정을 사용하세요.",
+          "diagram": "가이드 카메라 프레임 내 RA 및 Dec 축의 보정 벡터",
+          "raAxisLabel": "RA",
+          "decAxisLabel": "Dec",
+          "raAngle": "RA 각도",
+          "decAngle": "Dec 각도",
+          "raRate": "RA 속도",
+          "decRate": "Dec 속도",
+          "orthogonality": "직교성 오차",
+          "declination": "적위",
+          "pierSide": "경통 위치",
+          "binning": "비닝",
+          "steps": "스텝 수",
+          "raShort": "RA",
+          "decShort": "Dec",
+          "decFlip": "반전 후 Dec 반대로",
+          "decFlipYes": "예",
+          "decFlipNo": "아니요",
+          "lastIssue": "문제",
+          "pierSides": {
+            "East": "동쪽",
+            "West": "서쪽",
+            "Unknown": "알 수 없음",
+            "pierEast": "동쪽",
+            "pierWest": "서쪽",
+            "pierUnknown": "알 수 없음"
+          },
+          "justNow": "방금 보정됨",
+          "minutesAgo": "{minutes}분 전 보정됨",
+          "hoursAgo": "{hours}시간 전 보정됨",
+          "legendRaOut": "RA 이동",
+          "legendRaBack": "RA 복귀",
+          "legendBacklash": "백래시",
+          "legendDecOut": "Dec 이동",
+          "legendDecBack": "Dec 복귀"
+        },
+        "settings": {
+          "basic": "기본",
+          "advanced": "고급",
+          "refresh": "설정 새로고침",
+          "loading": "설정 불러오는 중…",
+          "loadFailed": "설정을 불러오지 못했습니다",
+          "empty": "사용 가능한 설정이 없습니다.",
+          "notConnectedHint": "네이티브 가이더가 연결되지 않았습니다. 변경 사항은 프로필에 저장되며, 카메라 변경은 다음 연결 시 적용됩니다.",
+          "requiresReconnect": "재연결 후 적용됨",
+          "range": "{min} ~ {max}",
+          "rangeMin": "최소 {min}",
+          "rangeMax": "최대 {max}",
+          "on": "켜짐",
+          "off": "꺼짐",
+          "resetToDefault": "{value}(으)로 초기화",
+          "saveFailed": "설정을 저장할 수 없습니다.",
+          "errors": {
+            "required": "값을 입력하세요.",
+            "number": "숫자를 입력하세요.",
+            "integer": "정수를 입력하세요.",
+            "min": "값은 {min} 이상이어야 합니다.",
+            "max": "값은 {max} 이하이어야 합니다.",
+            "option": "목록에 있는 값 중 하나를 선택하세요."
+          },
+          "groups": {
+            "Camera": "카메라",
+            "Stars": "별",
+            "Guiding": "가이딩",
+            "Algorithms": "알고리즘",
+            "Calibration": "보정",
+            "Dither": "디더링",
+            "Safety": "안전",
+            "Incidents": "인시던트"
+          },
+          "reconnectNeeded": "새 카메라 설정을 사용하려면 가이더를 다시 연결하세요.",
+          "reconnectNow": "지금 다시 연결",
+          "reconnecting": "다시 연결 중…",
+          "reconnectFailed": "다시 연결 실패: {message}",
+          "actionConfirm": "이 작업은 되돌릴 수 없습니다.",
+          "actionCancel": "취소",
+          "actionOptionConfirm": "“{option}”을(를) 실행할까요?",
+          "optionLabels": {
+            "DecGuideMode": {
+              "Auto": "Auto – 양방향",
+              "North": "북쪽만",
+              "South": "남쪽만",
+              "Off": "끄기 – RA만",
+              "Drift": "Drift – 드리프트 추종(한 방향)"
+            }
+          },
+          "labels": {
+            "ExposureSeconds": "노출",
+            "Gain": "게인",
+            "Offset": "오프셋",
+            "Binning": "비닝",
+            "FocalLengthMm": "가이드 초점거리",
+            "PixelSizeUm": "픽셀 크기 직접 지정",
+            "NoiseReduction": "노이즈 감소",
+            "UseDarkLibrary": "다크 라이브러리 사용",
+            "PulseOutput": "가이드 출력",
+            "MultiStar": "다중 별 가이딩",
+            "MaxStars": "최대 가이드 별 수",
+            "MinSnr": "최소 별 SNR",
+            "SearchRegion": "탐색 영역",
+            "MinHfd": "최소 별 HFD",
+            "MaxHfd": "최대 별 HFD",
+            "MassChangeEnabled": "별 질량 변화 감지",
+            "MassChangeThreshold": "질량 변화 임계값",
+            "PrimaryDropoutFallback": "보조 별로 가이딩 유지",
+            "SaturationAdu": "포화 ADU",
+            "RaAlgorithm": "RA 알고리즘",
+            "RaAggression": "RA 적극성",
+            "RaHysteresis": "RA 히스테리시스",
+            "RaLowpass2Aggressiveness": "RA Lowpass2 적극성",
+            "RaMinMove": "RA 최소 이동",
+            "PeriodicErrorPrediction": "주기 오차 예측",
+            "WormTeeth": "RA 웜 휠 톱니 수",
+            "ForgetPeriodicError": "주기 오차 잊기",
+            "DecAlgorithm": "Dec 알고리즘",
+            "DecAggression": "Dec 적극성",
+            "DecHysteresis": "Dec 히스테리시스",
+            "DecLowpass2Aggressiveness": "Dec Lowpass2 적극성",
+            "DecFastSwitch": "Dec 빠른 전환",
+            "DecMinMove": "Dec 최소 이동",
+            "DecGuideMode": "Dec 가이드 모드",
+            "MaxRaDurationMs": "최대 RA 펄스",
+            "MaxDecDurationMs": "최대 Dec 펄스",
+            "MinPulseMs": "최소 펄스",
+            "BacklashCompensation": "Dec 백래시 보상",
+            "BacklashPulseMs": "Dec 백래시 펄스",
+            "CalibrationStepMs": "보정 스텝",
+            "ReuseCalibration": "보정 재사용",
+            "AssumeOrthogonal": "Dec 직교 가정",
+            "DecCompensation": "적위 보상",
+            "DecFlipRequired": "자오선 반전 후 Dec 반대로",
+            "VerifyDecAfterFlip": "반전 후 Dec 자가 점검",
+            "DitherMode": "디더링 모드",
+            "DitherScale": "디더링 배율",
+            "FastRecenter": "디더링 후 빠른 재중심",
+            "ReacquireTimeoutSec": "별 놓침 제한 시간",
+            "MaxPulseDutyPercent": "최대 교정 듀티",
+            "PauseWhenSlewing": "마운트 슬루 중 일시정지",
+            "PauseWhenTrackingOff": "추적 꺼짐 시 일시정지",
+            "SaveGuideLog": "가이드 로그 기록",
+            "IncidentRecorder": "인시던트 기록",
+            "IncidentBudgetMb": "인시던트 디스크 한도",
+            "SimulatorScenario": "시뮬레이터 시나리오",
+            "SimulateFault": "장애 시뮬레이션"
+          },
+          "descriptions": {
+            "Gain": "-1이면 드라이버의 현재 게인을 유지합니다. (PHD2의 게인은 백분율이므로 가져오지 않습니다.)",
+            "Offset": "-1이면 드라이버의 현재 오프셋을 유지합니다.",
+            "FocalLengthMm": "가이드 경통(OAG 사용 시 메인 경통)의 초점거리입니다. 각초 값과 보정 스텝 계산에 필요합니다.",
+            "PixelSizeUm": "0이면 카메라 드라이버의 픽셀 크기를 사용합니다.",
+            "UseDarkLibrary": "다크를 뺍니다. 네이티브 라이브러리가 만들어져 있으면 그것을, 없으면 이 카메라 크기에 맞는 PHD2 다크 라이브러리를 사용합니다.",
+            "PulseOutput": "Mount: 연결된 마운트 드라이버를 통한 펄스 가이딩. CameraST4: 가이드 카메라의 ST4 포트를 통한 가이딩.",
+            "PrimaryDropoutFallback": "주 별이 한 프레임 동안 사라지면, 서로 일치하는 보조 별 ≥3개로 그 위치를 추정합니다.",
+            "SaturationAdu": "0 = 별 프로파일에서 포화를 감지합니다.",
+            "RaAlgorithm": "Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습하고 다음 프레임에 대해 예측한 오차를 교정합니다. 따라서 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
+            "RaAggression": "프레임마다 교정하는 오차의 비율(0..1).",
+            "RaMinMove": "0 = 이미지 스케일에서 자동으로 결정.",
+            "PeriodicErrorPrediction": "RA 웜의 주기 오차를 학습해 드러나기 전에 교정합니다. 학습한 곡선은 프로필과 마운트별로 저장됩니다.",
+            "WormTeeth": "RA 웜 휠의 톱니 수(예: EQ6-R은 180, HEQ5는 135)로, 정확한 웜 주기를 알 수 있습니다. 0 = 가이드 프레임에서 주기를 감지.",
+            "ForgetPeriodicError": "이 마운트에 대해 학습한 주기 오차를 잊습니다(예: 웜을 조정한 후). 이후 새로 학습합니다.",
+            "DecAlgorithm": "Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습하고 다음 프레임에 대해 예측한 오차를 교정합니다. 따라서 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
+            "DecMinMove": "0 = 이미지 스케일에서 자동으로 결정.",
+            "DecGuideMode": "Auto는 Dec를 양방향으로, 북쪽만·남쪽만은 한 방향으로만 가이드하며, 끄기는 전혀 가이드하지 않습니다. Drift는 드리프트를 따릅니다. 가이드 중에 Dec 드리프트를 측정해 그 반대 방향으로만 가이드하므로 Dec 기어가 반전되지 않아 백래시가 더 이상 문제되지 않습니다. 드리프트가 반대로 바뀌면 방향을 전환하며, 드리프트를 알기 전까지, 안정화 중, 그리고 큰 오차를 되돌릴 때는 양방향으로 가이드합니다.",
+            "MinPulseMs": "더 짧은 가이드 펄스는 0 또는 이 길이로 반올림됩니다. 일부 마운트는 매우 짧은 펄스를 제대로 처리하지 못합니다. 0 = 길이 제한 없음.",
+            "CalibrationStepMs": "0 = 광학계, 가이드 속도, 적위에서 자동으로 결정.",
+            "ReuseCalibration": "세션이 바뀌어도 보정을 유지하고 적위와 경통 위치에 맞게 조정합니다.",
+            "DecFlipRequired": "마운트별 설정이며, “반전 후 Dec 자가 점검”이 자동으로 수정합니다.",
+            "MaxPulseDutyPercent": "한 축에 1분 중 이 비율보다 오래 펄스를 보내면 가이딩을 멈춥니다(폭주 방지).",
+            "PauseWhenSlewing": "마운트가 슬루 중/파킹됨을 보고하는 동안 교정을 일시정지합니다. 마운트 드라이버가 항상 “슬루 중”으로 보고하는 경우에만 끄세요.",
+            "PauseWhenTrackingOff": "마운트가 추적 꺼짐을 보고하는 동안 교정을 일시정지합니다. 마운트 드라이버가 추적 상태를 보고하지 못하면 끄세요.",
+            "SaveGuideLog": "PHD2 호환 가이드 로그를 ~/.local/share/NINA/InternalGuider/Logs에 저장합니다.",
+            "IncidentRecorder": "최근 몇 분간의 가이드 프레임을 메모리에 보관하고, 별 놓침, 폭주, 마운트 및 카메라 문제, 스파이크 전후의 프레임을 저장해 재생하고 다운로드할 수 있게 합니다.",
+            "IncidentBudgetMb": "기록된 인시던트용 디스크 공간입니다. 보존되지 않은 가장 오래된 인시던트부터 삭제됩니다. 시뮬레이터 인시던트는 별도로 200 MB를 사용합니다.",
+            "SimulatorScenario": "내장 시뮬레이터가 시뮬레이션하는 마운트, 하늘, 카메라입니다.",
+            "SimulateFault": "실행 중인 시뮬레이터에 장애를 주입합니다: 구름(110초), 마운트 충격, 응답을 멈춘 마운트(60초), 노출 실패 3회, 또는 잘못된 방향의 Dec 교정(120초)."
+          }
+        },
+        "darks": {
+          "title": "다크 라이브러리",
+          "none": "다크 라이브러리가 없습니다.",
+          "build": "다크 라이브러리 생성",
+          "cancel": "생성 취소",
+          "stopFirst": "다크 라이브러리를 만들려면 루프와 가이딩을 정지하세요.",
+          "connectFirst": "다크 라이브러리를 만들려면 네이티브 가이더를 연결하세요.",
+          "dialogTitle": "다크 라이브러리 생성",
+          "coverWarning": "가이드 경통을 덮으세요",
+          "coverHint": "다크를 촬영하는 동안 가이드 카메라에 빛이 들어가면 안 됩니다.",
+          "minExposure": "최소 노출",
+          "maxExposure": "최대 노출",
+          "frames": "노출당 프레임 수",
+          "start": "시작",
+          "invalidExposure": "노출은 0초보다 커야 하며, 최댓값은 최솟값 이상 60초 이하여야 합니다.",
+          "invalidFrames": "프레임 수는 1~50 사이의 정수여야 합니다.",
+          "exposureDetail": "{exposure}초",
+          "frameDetail": "프레임 {frame}/{frames}",
+          "statusStarting": "시작 중…",
+          "statusCapturing": "다크 촬영 중…",
+          "statusDone": "다크 라이브러리 완료",
+          "statusFailed": "다크 라이브러리 생성 실패"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "알 수 없음",
+          "intro": "코치는 가이드 카메라, 하늘, 마운트를 측정하고, 더 나은 설정을 현재 설정과 비교해 시험하며, 가이딩을 제한하는 요인을 설명합니다. 전체 세션은 약 15분 걸립니다.",
+          "introSafe": "임시 설정은 항상 복원됩니다. 어떤 권장 사항을 적용할지는 사용자가 결정합니다.",
+          "stepsTitle": "단계",
+          "steps": {
+            "CameraCheck": {
+              "name": "카메라 점검",
+              "desc": "노출 × 게인: SNR, 포화, 별 흔들림"
+            },
+            "Drift": {
+              "name": "하늘 및 드리프트",
+              "desc": "가이드 출력 끔: 시잉, 주기 오차, 극축 정렬"
+            },
+            "MountResponse": {
+              "name": "마운트 응답",
+              "desc": "Dec 백래시와 펄스에 대한 마운트 반응"
+            },
+            "Trials": {
+              "name": "시험",
+              "desc": "현재 설정과 제안 설정으로 가이드하여 비교합니다"
+            },
+            "Calibrating": {
+              "name": "보정",
+              "desc": "유효한 보정이 없어 먼저 보정합니다"
+            },
+            "Report": {
+              "name": "보고서",
+              "desc": "오차 예산, 등급, 우선순위별 조치"
+            }
+          },
+          "stepStates": {
+            "Pending": "대기 중",
+            "Running": "실행 중",
+            "Settling": "안정화 중",
+            "Done": "완료",
+            "Skipped": "건너뜀",
+            "Failed": "실패"
+          },
+          "details": {
+            "camera": {
+              "combination": "노출 {exposureSeconds} · 게인 {gain} ({index}/{total})"
+            },
+            "calibrating": "보정 중",
+            "drift": {
+              "measuring": "측정 중"
+            },
+            "response": {
+              "backlash": "Dec 백래시 측정 중",
+              "pulses": "펄스 응답 테스트 중 · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "시험 {id} · 안정화 중",
+              "running": "시험 {id}"
+            }
+          },
+          "options": {
+            "advanced": "고급 옵션",
+            "exposures": "카메라 점검 노출",
+            "exposuresHint": "각 노출을 모든 게인과 조합해 테스트합니다.",
+            "gains": "카메라 점검 게인",
+            "gainsAuto": "기본값: 현재 게인과 카메라 범위({min} – {max})에 고르게 분포된 두 값.",
+            "gainsNoRange": "카메라가 게인 범위를 보고하지 않습니다. 게인을 추가하지 않으면 현재 게인을 사용합니다.",
+            "add": "추가",
+            "remove": "{value} 제거",
+            "exposurePlaceholder": "예: 1.5",
+            "gainPlaceholder": "예: 120",
+            "invalidExposure": "0.01~30 s 사이의 노출을 입력하세요.",
+            "invalidGain": "{min}~{max} 사이의 정수를 입력하세요.",
+            "tooManyValues": "값은 최대 12개입니다.",
+            "tooManyCombinations": "조합 {count}개는 너무 많습니다 (최대 60개).",
+            "frames": "조합당 프레임 수",
+            "driftSeconds": "드리프트 측정",
+            "trialSeconds": "시험당 시간",
+            "repeatBaseline": "마지막에 현재 설정 반복",
+            "repeatBaselineHint": "시험 중 시잉 변화나 구름을 감지합니다.",
+            "allowCalibration": "필요 시 보정",
+            "allowCalibrationHint": "보정이 없으면 드리프트, 마운트 응답, 시험을 실행할 수 없습니다.",
+            "minutes": "{value}분",
+            "reset": "기본값으로 초기화"
+          },
+          "estimate": "≈ {duration}",
+          "total": "합계 ≈ {duration}",
+          "calibrationExtra": "보정 시간 ≈ 2분 포함 (아직 보정되지 않음).",
+          "noSteps": "단계를 하나 이상 선택하세요.",
+          "guidingWarning": "가이딩이 진행 중입니다. 코치는 측정을 위해 일반 가이딩을 중단하므로 촬영 카메라의 진행 중인 노출이 영향을 받습니다. 이후 가이딩은 사용자 설정으로 재개됩니다.",
+          "notConnected": "코치를 사용하려면 PINS 네이티브 가이더를 연결하세요.",
+          "calibratingBlock": "보정이 끝날 때까지 기다리세요.",
+          "darksBlock": "다크 라이브러리 생성이 끝날 때까지 기다리세요.",
+          "start": "코치 시작",
+          "starting": "시작 중…",
+          "startFailed": "코치를 시작할 수 없습니다",
+          "phases": {
+            "Complete": "세션 완료",
+            "Cancelled": "세션 취소됨",
+            "Failed": "세션 실패"
+          },
+          "outcomeFindings": "이번 세션의 결과",
+          "run": {
+            "elapsed": "{elapsed} 경과",
+            "remaining": "≈ {duration} 남음",
+            "current": "현재: {step}",
+            "skip": "단계 건너뛰기",
+            "cancel": "세션 취소",
+            "confirmCancelTitle": "코치 세션을 취소할까요?",
+            "confirmCancel": "지금까지의 결과는 유지되고 임시 설정은 복원됩니다.",
+            "keepRunning": "계속 실행",
+            "findingsSoFar": "지금까지의 결과",
+            "waiting": "첫 측정값을 기다리는 중…",
+            "calibratingHint": "코치가 먼저 보정합니다. 진행 상황은 위에 표시됩니다.",
+            "skipFailed": "단계를 건너뛰지 못했습니다",
+            "cancelFailed": "세션을 취소하지 못했습니다",
+            "applyLater": "권장 사항은 세션이 끝난 후 적용할 수 있습니다."
+          },
+          "camera": {
+            "title": "노출 × 게인",
+            "exposure": "노출",
+            "gain": "게인",
+            "jitter": "흔들림",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "별",
+            "frames": "프레임",
+            "recommended": "권장",
+            "legend": "색상: 별 흔들림, 초록색 = 가장 안정적. 줄이 그어진 칸은 사용할 수 없습니다.",
+            "notMeasured": "아직 측정 안 됨",
+            "tapHint": "칸을 탭하면 세부정보 표시",
+            "noResults": "아직 카메라 측정값이 없습니다."
+          },
+          "drift": {
+            "title": "가이드를 끈 상태의 드리프트",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "PE 피팅",
+            "time": "s",
+            "seeing": "시잉",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "주기 오차",
+            "period": "주기 {value}",
+            "periodUnknown": "주기 알 수 없음",
+            "polarAlignment": "극축 정렬",
+            "decAssumed": "Dec 0°로 가정",
+            "exposureLimit": "노출 한계",
+            "exposureLimitSub": "최대 가이드 노출",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "드리프트 샘플을 기다리는 중…"
+          },
+          "response": {
+            "title": "마운트 응답",
+            "backlash": "Dec 백래시",
+            "backlashAxisX": "펄스 시간 (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measuring": "측정 중…",
+              "Measured": "측정됨",
+              "None": "없음",
+              "Unreliable": "신뢰할 수 없음",
+              "Skipped": "건너뜀"
+            },
+            "pulses": "펄스 응답",
+            "pulsesHint": "펄스 길이별로 측정된 이동량을 보정 값과 비교합니다. 50 % 미만이면 펄스가 마운트를 거의 움직이지 못합니다.",
+            "pulsesNoiseHint": "회색: 예상 이동이 시잉 잡음 안에 있어 그 백분율은 마운트에 대해 아무것도 알려주지 않습니다.",
+            "directions": {
+              "West": "서쪽",
+              "East": "동쪽",
+              "North": "북쪽",
+              "South": "남쪽"
+            },
+            "minPulse": "최소 유효 펄스",
+            "asymmetry": "비대칭",
+            "rateRatio": "보정 대비 속도",
+            "noData": "아직 마운트 측정값이 없습니다."
+          },
+          "trials": {
+            "title": "시험",
+            "kinds": {
+              "current": "현재 설정",
+              "suggestion": "코치 제안",
+              "variant": "변형",
+              "currentRepeat": "현재 설정 (재측정)"
+            },
+            "winner": "최고",
+            "noChanges": "현재 설정",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "프레임 {count}개",
+            "apply": "시험 {id} 적용",
+            "noData": "시험이 아직 시작되지 않았습니다."
+          },
+          "report": {
+            "title": "보고서",
+            "grade": "등급",
+            "grades": {
+              "excellent": "매우 좋음",
+              "good": "좋음",
+              "fair": "보통",
+              "poor": "나쁨",
+              "unknown": "알 수 없음"
+            },
+            "gradeRatio": "{ratio} × 이미지 스케일",
+            "gradeArcsec": "각초 단위 RMS로 평가 (이미지 스케일 없음)",
+            "guidedRms": "가이드 RMS",
+            "guidedSources": {
+              "trials": "시험 결과 기준",
+              "window": "최근 가이딩 기준",
+              "none": "가이드 측정 없음"
+            },
+            "budget": "오차 예산",
+            "budgetHint": "각 요소는 제곱합으로 더해집니다. 가장 큰 요소가 가이딩을 제한합니다.",
+            "budgetParts": {
+              "seeing": "시잉",
+              "noise": "중심점 노이즈",
+              "mount": "마운트 및 기타"
+            },
+            "actions": "권장 조치",
+            "noActions": "고칠 것이 없습니다. 가이딩은 설정이 아니라 관측 조건에 의해 제한됩니다.",
+            "others": "기타 결과",
+            "measurements": "측정값",
+            "newSession": "새 세션"
+          },
+          "finding": {
+            "why": "중요한 이유",
+            "fix": "해결 방법",
+            "impact": "≈ {value} 개선",
+            "apply": "적용",
+            "applying": "적용 중…",
+            "applied": "적용됨",
+            "applyFailed": "권장 사항을 적용하지 못했습니다",
+            "appliedToast": "적용됨: {title}",
+            "changes": "설정 변경",
+            "more": "설명 보기",
+            "less": "설명 숨기기"
+          },
+          "history": {
+            "title": "진행 추이",
+            "empty": "세션 보고서가 여기에 표시되어 진행 상황을 확인할 수 있습니다.",
+            "metrics": {
+              "rms": "가이드 RMS",
+              "grade": "등급",
+              "polarAlignment": "극축 정렬",
+              "backlash": "Dec 백래시",
+              "seeing": "시잉",
+              "periodicError": "주기 오차"
+            },
+            "nights": "관측 밤 수: {count}",
+            "compare": "이전 보고서({date})와 비교",
+            "trend": {
+              "better": "개선",
+              "worse": "악화",
+              "same": "변화 없음"
+            },
+            "loadFailed": "기록을 불러오지 못했습니다"
+          },
+          "hint": {
+            "label": "팁",
+            "dismiss": "팁 닫기",
+            "apply": "적용",
+            "applied": "적용됨",
+            "applyFailed": "팁을 적용하지 못했습니다",
+            "open": "팁 보기",
+            "close": "팁 숨기기"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "열기"
+          },
+          "confirmInterruptTitle": "Guiding Coach를 중단할까요?",
+          "confirmInterrupt": "코치 세션이 실행 중입니다. 이 명령은 세션을 취소하며, 임시 설정은 복원됩니다.",
+          "values": {
+            "level": {
+              "good": "좋음",
+              "average": "보통",
+              "poor": "나쁨"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "북쪽",
+              "South": "남쪽",
+              "Drift": "Drift"
+            },
+            "direction": {
+              "West": "서쪽",
+              "East": "동쪽",
+              "North": "북쪽",
+              "South": "남쪽"
+            },
+            "reason": {
+              "saturated": "포화",
+              "lowSnr": "SNR 너무 낮음",
+              "noStar": "별을 찾지 못함",
+              "guiding": "가이딩 시작 또는 정지",
+              "dither": "디더링 요청",
+              "stopped": "루프 정지",
+              "slew": "마운트 슬루",
+              "trackingOff": "마운트 추적 중지",
+              "disconnect": "장치 연결 끊김",
+              "unknown": "다른 명령에 의한 중단"
+            },
+            "bool": {
+              "true": "예",
+              "false": "아니요"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "최적 카메라 설정: {exposureSeconds}, 게인 {gain}",
+                "why": "이 조합에서 별 위치가 가장 안정적이었습니다: 흔들림 {jitterArcsec}, SNR {snr}, 사용 가능한 별 {stars}개 (현재 설정: {currentJitterArcsec}). 측정 위치의 흔들림이 적을수록 가이더가 실제 움직임으로 착각해 교정하는 노이즈가 줄어듭니다.",
+                "fix": "가이딩에 이 노출과 게인을 사용하세요."
+              },
+              "good": {
+                "title": "카메라 설정이 이미 최적입니다",
+                "why": "현재 노출과 게인에서 별 위치가 가장 안정적이었습니다 (흔들림 {jitterArcsec}, SNR {snr}).",
+                "fix": "변경할 것이 없습니다."
+              },
+              "noFeasible": {
+                "title": "사용 가능한 카메라 설정 없음",
+                "why": "포화되지 않고 SNR이 15 이상인 별을 얻은 노출·게인 조합이 없습니다 (주로: {reason}). 가이더가 별을 안정적으로 측정할 수 없습니다.",
+                "fix": "초점을 확인하고 가이드 경통에 별이 보이는지 확인하세요 (이슬, 구름, 덮개). 더 긴 노출이나 다른 영역을 시도하고, 별이 포화되면 게인을 낮추세요."
+              },
+              "snrLow": {
+                "title": "가이드 별이 어둡습니다 (SNR {snr})",
+                "why": "이 SNR에서는 측정된 별 위치에 약 {noiseArcsec}의 노이즈가 있습니다. 가이더는 이 노이즈를 마운트가 움직인 것처럼 교정하므로 RMS가 커집니다.",
+                "fix": "노출을 늘리거나 게인을 높이고, 다크 라이브러리를 만들고, 가이드 카메라 초점을 맞추거나 더 밝은 별을 선택하세요."
+              },
+              "saturated": {
+                "title": "가이드 별 포화 ({exposureSeconds}, 게인 {gain})",
+                "why": "포화된 별은 꼭대기가 평평해 중심을 정확히 측정할 수 없고 작은 움직임을 놓칩니다.",
+                "fix": "게인을 낮추거나 노출을 줄이거나 더 어두운 별을 선택하세요."
+              },
+              "defocused": {
+                "title": "가이드 별의 초점이 맞지 않습니다 (HFD {hfdPx})",
+                "why": "크고 흐린 별({hfdArcsec})은 빛이 퍼져 SNR이 낮아지고 측정된 중심이 덜 정확해집니다.",
+                "fix": "별이 최대한 작아질 때까지 가이드 카메라 초점을 맞춘 뒤 코치를 다시 실행하세요."
+              },
+              "fewStars": {
+                "title": "사용 가능한 가이드 별이 {stars}개뿐입니다",
+                "why": "다중 별 가이딩은 여러 별로 시잉을 평균화합니다. 별이 3개 미만이면 효과가 크지 않습니다.",
+                "fix": "더 긴 노출, 더 높은 게인, 또는 별이 더 많은 하늘 영역을 시도하세요."
+              },
+              "noDarks": {
+                "title": "다크 라이브러리 없음",
+                "why": "다크가 없으면 핫 픽셀이 별로 오인되거나 어두운 별에 노이즈가 더해질 수 있습니다.",
+                "fix": "가이드 경통을 덮고 설정 탭에서 다크 라이브러리를 만드세요."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "시잉: {rmsArcsec} ({level})",
+                "why": "가이딩을 끈 상태에서도 대기 때문에 별이 {rmsArcsec}만큼 흔들립니다. 어떤 가이딩도 이 빠른 움직임을 따라갈 수 없으며, 이것이 가이드 RMS의 하한입니다.",
+                "fix_good": "좋은 조건입니다. 이제 마운트의 작은 오차가 드러나므로 미세 조정이 효과가 있습니다.",
+                "fix": "시잉을 쫓지 마세요. 2 s 이상으로 가이드하고 최소 이동을 시잉보다 약간 크게 설정하세요."
+              },
+              "minMove": {
+                "title": "시잉 기반 최소 이동: RA {raPx}, Dec {decPx}",
+                "why": "시잉 흔들림보다 작은 교정은 대기만 쫓을 뿐입니다. 최소 이동을 그보다 약간 크게 하면 이를 무시해 마운트가 안정됩니다.",
+                "fix": "RA와 Dec 최소 이동을 이 값으로 설정하세요."
+              },
+              "periodicError": {
+                "title": "RA 주기 오차 ±{amplitudeArcsec}",
+                "why": "웜 기어 때문에 마운트가 주기적으로 빨라졌다 느려집니다 (주기 {periodSeconds}). 가장 가파른 구간에서 별이 {maxRateArcsecPerSec} 드리프트하며, 가이더는 매 노출 안에 이를 따라잡아야 합니다.",
+                "fix": "드리프트 속도가 크면 가이드 노출을 줄이고, 마운트가 지원하면 PEC를 학습시키고, 웜 맞물림과 RA 밸런스를 점검하세요.",
+                "notes": {
+                  "learned": "Predictive 알고리즘이 웜의 완전한 회전에 걸쳐 학습한 값으로, 이번 짧은 측정보다 정확합니다.",
+                  "predicting": "Predictive 알고리즘이 이미 미리 보정하고 있습니다."
+                }
+              },
+              "exposureLimit": {
+                "title_good": "가이드 노출이 RA 드리프트에 적합합니다",
+                "title": "RA 드리프트에 비해 가이드 노출이 너무 깁니다",
+                "why": "RA 오차는 매 노출 동안 커집니다. {seconds}까지는 시잉 이하로 유지되며, 현재 노출은 {currentSeconds}입니다.",
+                "fix_good": "변경할 것이 없습니다.",
+                "fix": "가이드 노출을 {seconds} 이하로 설정하세요."
+              },
+              "polarAlignment": {
+                "title": "극축 정렬 오차 ≈ {arcmin}",
+                "why": "극축 정렬 오차는 별을 Dec 방향으로 드리프트시키고({driftArcsecPerMin}) 시야를 천천히 회전시킵니다. 가이더가 드리프트를 따라갈 수는 있지만 계속 교정해야 하며, 긴 세션에서는 시야 회전이 드러납니다.",
+                "fix_good": "매우 좋습니다. 할 일이 없습니다.",
+                "fix_info": "가이딩에는 충분합니다. 긴 초점거리로 오래 촬영한다면 더 다듬으세요.",
+                "fix": "극축 정렬을 다시 하세요 (예: TPPA). 3′ 미만이 이상적이고 5′ 미만이면 괜찮습니다.",
+                "notes": {
+                  "decAssumed": "적위를 알 수 없어 0°로 가정했습니다. 적위가 높을수록 실제 오차는 더 큽니다."
+                }
+              },
+              "wind": {
+                "title": "돌풍 또는 진동",
+                "why": "프레임의 {gustPercent}에서 갑작스러운 튐이 보입니다. 가이더는 이를 제때 교정할 수 없으며, 쫓으면 오히려 나빠집니다.",
+                "fix": "경통을 바람으로부터 가리고, 느슨한 케이블과 삼각대 안정성을 점검하고, 최소 이동을 약간 높이세요."
+              },
+              "decGuideMode": {
+                "title": "Dec 단방향 가이드 ({mode})",
+                "why": "Dec 방향으로 꾸준한 드리프트가 있고({driftArcsecPerMin}) Dec 백래시는 {backlashMs}입니다. 드리프트를 거스르는 한 방향으로만 Dec를 가이드하면 기어 방향이 바뀌지 않아 백래시가 더 이상 문제되지 않습니다.",
+                "fix": "Dec 가이드 모드를 {mode}(으)로 설정하세요. 새 극축 정렬, 자오선 반전, 새 대상에도 알아서 맞춰집니다."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Dec 백래시: {ms} ({arcsec})",
+                "why": "Dec 방향이 바뀌면 기어가 먼저 유격을 메워야 합니다. 그동안 교정은 효과가 없고, 이후 별이 지나쳐 Dec 축이 진동합니다.",
+                "fix_good": "할 일이 없습니다.",
+                "fix": "측정된 펄스로 백래시 보상을 사용하거나, 기계적으로 유격을 줄이거나, Dec 밸런스를 약간 어긋나게 하세요. Dec 단방향 가이드로 완전히 피할 수도 있습니다."
+              },
+              "minPulse": {
+                "title": "{axis}: {ms} 미만 펄스는 마운트를 움직이지 못합니다",
+                "why": "{axis} 구동부의 정지 마찰이 짧은 펄스를 삼킵니다. 가이더는 교정했다고 판단하지만 별은 그대로 있습니다.",
+                "fix": "교정이 최소한 이 길이가 되도록 최소 이동을 높이고, 밸런스와 기어 맞물림을 점검하세요."
+              },
+              "asymmetry": {
+                "title": "{axis} 축이 두 방향으로 고르지 않게 움직입니다",
+                "why": "한 방향은 다른 방향의 {ratio}만큼 별을 움직이므로, 가이더가 방향에 따라 과잉 또는 과소 교정합니다.",
+                "fix": "밸런스(RA는 동쪽이 약간 무겁게), 기어 맞물림, 그리고 두 방향의 가이드 속도가 같은지 확인하세요."
+              },
+              "rateMismatch": {
+                "title": "{axis} 속도가 보정 값과 다릅니다",
+                "why": "마운트가 보정에서 예측한 거리의 {ratio}만큼 움직이므로 모든 교정이 너무 크거나 작습니다.",
+                "fix": "대상 근처에서 다시 보정하고, 마운트의 가이드 속도가 설정과 일치하는지 확인하세요."
+              },
+              "good": {
+                "title": "마운트가 깔끔하게 응답합니다",
+                "why": "모든 방향의 펄스가 눈에 띄는 정지 마찰이나 비대칭 없이 예상대로 마운트를 움직입니다.",
+                "fix": "할 일이 없습니다."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "시험 {id}의 가이딩이 가장 좋음: {rmsArcsec}",
+                "why": "같은 하늘에서 현재 설정의 {baselineRmsArcsec} 대비 {rmsArcsec}에 도달했습니다 ({improvementPercent} 개선).",
+                "fix": "해당 설정을 유지하려면 시험 {id} 결과를 적용하세요."
+              },
+              "noImprovement": {
+                "title": "현재 설정이 이미 최적입니다",
+                "why": "현재 설정({rmsArcsec})보다 가이딩이 좋았던 제안이 없습니다.",
+                "fix": "현재 설정을 유지하세요."
+              },
+              "conditionsChanged": {
+                "title": "시험 도중 조건이 변했습니다",
+                "why": "현재 설정의 가이딩 결과가 처음과 끝에서 {changePercent} 달라, 그 사이 시잉이나 하늘이 변했습니다. 비교 결과를 신뢰할 수 없습니다.",
+                "fix": "조건이 안정적일 때 시험을 반복하거나, 최고 결과를 신중히 받아들이세요."
+              },
+              "nothingToTry": {
+                "title": "시험할 설정 없음",
+                "why": "이번 세션에서 시험할 만한 설정 변경을 찾지 못했습니다. 현재 설정의 가이딩은 {rmsArcsec}였습니다.",
+                "fix": "현재 설정을 유지하세요.",
+                "notes": {
+                  "predictive": "Predictive 알고리즘은 게인을 스스로 정하고 최소 이동이 필요 없으므로, 카메라·Dec 모드·백래시 변경만 시험합니다."
+                }
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "시잉이 가이딩을 제한합니다",
+                "why": "가이드 RMS {guidedArcsec} 중 시잉 몫만 {seeingArcsec}입니다. 설정과 마운트는 제 역할을 하고 있습니다.",
+                "fix": "조정할 것이 없습니다. 시잉이 좋아지면 결과도 좋아집니다."
+              },
+              "mountLimited": {
+                "title": "마운트가 가이딩을 제한합니다",
+                "why": "가이드 RMS {guidedArcsec} 중 하늘이 아닌 마운트(주기 오차, 백래시, 밸런스, 정지 마찰) 요인이 약 {mountArcsec}입니다.",
+                "fix": "마운트 관련 결과를 차례로 해결하세요: 백래시, 주기 오차, 밸런스, 극축 정렬."
+              },
+              "noImagingScale": {
+                "title": "이미지 스케일을 알 수 없음",
+                "why": "촬영 카메라의 픽셀 크기와 망원경 초점거리가 없으면 코치가 가이드 오차를 이미지 픽셀과 비교할 수 없습니다.",
+                "fix": "프로필의 카메라 설정에 픽셀 크기를, 망원경 설정에 초점거리를 입력하세요."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA 과잉 교정",
+                "why": "RA 교정 방향이 계속 바뀝니다 (진동 지수 {index}). 교정할 때마다 별이 목표를 지나칩니다.",
+                "fix": "RA 적극성을 0.1 낮추세요."
+              },
+              "raSluggish": {
+                "title": "RA 교정 부족",
+                "why": "RA가 계속 같은 방향으로 드리프트합니다 (진동 지수 {index}, RMS {rmsRaArcsec}). 교정이 너무 소극적입니다.",
+                "fix": "RA 적극성을 0.1 높이세요."
+              },
+              "pulseLimited": {
+                "title": "{axis} 펄스가 최대값에 도달합니다",
+                "why": "{axis} 교정의 {percent}가 최대 펄스 길이에서 잘려, 큰 오차를 교정하는 데 여러 프레임이 걸립니다.",
+                "fix": "최대 펄스 길이를 늘리거나, 가이드 속도가 바뀌었다면 다시 보정하세요."
+              },
+              "lowSnr": {
+                "title": "가이드 별이 어두워지고 있습니다 (SNR {snr})",
+                "why": "별의 SNR이 떨어졌습니다. 흔히 구름, 광학계의 이슬, 지평선 근처의 연무 때문입니다.",
+                "fix": "하늘과 이슬 히터를 확인하고, 계속 낮으면 다른 별을 선택하세요."
+              },
+              "decDrift": {
+                "title": "Dec 방향 드리프트 지속 ({driftArcsecPerMin})",
+                "why": "Dec 교정이 거의 모두 한 방향이므로 약 {arcmin}의 극축 정렬 오차가 의심됩니다.",
+                "fix": "극축 정렬을 다듬거나 Dec 단방향 가이드를 사용하세요."
+              },
+              "seeingBound": {
+                "title": "가이딩이 시잉 한계에 있습니다",
+                "why": "현재 RMS({rmsArcsec})는 대기가 허용하는 수준에 가깝습니다.",
+                "fix": "지금은 조정할 것이 없습니다."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "다른 코치 세션이 실행 중입니다",
+                "why": "한 번에 하나의 세션만 실행할 수 있습니다.",
+                "fix": "끝날 때까지 기다리거나 취소하세요."
+              },
+              "notConnected": {
+                "title": "가이더가 연결되지 않음",
+                "why": "코치에는 카메라와 마운트가 연결된 네이티브 가이더가 필요합니다.",
+                "fix": "가이더(펄스 가이딩을 위해 마운트도)를 연결하고 다시 시도하세요."
+              },
+              "noStar": {
+                "title": "가이드 별을 찾을 수 없음",
+                "why": "코치에는 측정할 별이 필요합니다.",
+                "fix": "초점, 구름, 덮개를 확인하고, 노출을 늘리거나 다른 영역으로 이동하세요."
+              },
+              "noCalibration": {
+                "title": "보정되지 않음",
+                "why": "드리프트, 마운트 응답, 시험은 마운트 축을 따라 측정하므로 보정이 필요합니다.",
+                "fix": "먼저 보정하거나, 고급 옵션에서 코치의 보정을 허용하세요."
+              },
+              "calibrationFailed": {
+                "title": "보정 실패",
+                "why": "코치가 보정하지 못해 보정이 필요한 단계를 실행할 수 없었습니다.",
+                "fix": "이벤트 로그에서 원인을 찾아 해결한 뒤(예: 별 놓침, 이동량 부족) 다시 보정하세요."
+              },
+              "starLost": {
+                "title": "가이드 별 놓침",
+                "why": "측정 중 별이 사라졌습니다: 구름, 장애물, 또는 프레임 밖으로 벗어남.",
+                "fix": "하늘이 맑아질 때까지 기다리거나 다른 별을 선택한 후 다시 시작하세요."
+              },
+              "noPulseOutput": {
+                "title": "가이드 출력 없음",
+                "why": "마운트 응답과 시험에는 가이드 펄스가 필요하지만, 마운트도 ST4 출력도 사용할 수 없습니다.",
+                "fix": "마운트를 연결하거나 카메라의 ST4 출력을 선택한 후 다시 시도하세요."
+              },
+              "interrupted": {
+                "title": "세션 중단됨",
+                "why": "세션이 중단되었습니다 (원인: {reason}). 임시 설정은 복원되었습니다.",
+                "fix": "가이더나 마운트를 제어하는 다른 작업이 없을 때 코치를 다시 시작하세요."
+              },
+              "cameraError": {
+                "title": "카메라 오류",
+                "why": "측정 중 가이드 카메라에 오류가 발생했습니다.",
+                "fix": "카메라 연결과 이벤트 로그를 확인한 후 다시 시도하세요."
+              },
+              "internal": {
+                "title": "내부 오류",
+                "why": "코치에서 예기치 않은 문제가 발생했습니다.",
+                "fix": "다시 시도하세요. 다시 발생하면 로그 파일을 공유하세요."
+              }
+            }
+          }
+        },
+        "incidents": {
+          "title": "인시던트",
+          "intro": "가이딩이 잘못된 순간 전후의 프레임과 텔레메트리, 그리고 예상 원인입니다.",
+          "empty": "아직 기록된 인시던트가 없습니다.",
+          "emptyHint": "가이딩이나 보정 중에 가이더는 최근 2분간의 프레임을 메모리에 보관합니다. 가이드 별을 놓치거나, 마운트나 카메라가 응답하지 않거나, 보정이 실패하거나, 오차가 갑자기 튀면 그 순간 전후의 프레임을 측정값, 전송 내용, 원인에 대한 1차 추정과 함께 저장합니다. 직접 순간을 저장하려면 컨트롤에서 마크를 탭하세요.",
+          "disabled": "플라이트 레코더가 가이더 설정에서 꺼져 있습니다 (인시던트 그룹).",
+          "loadFailed": "인시던트를 불러오지 못했습니다",
+          "refresh": "인시던트 새로고침",
+          "budget": "{used} / {budget} · 인시던트 {count} / {max}개",
+          "budgetSimulator": "시뮬레이터: {used} / {budget}",
+          "filterProfile": "이 프로필",
+          "filterAll": "전체",
+          "noneForProfile": "이 프로필의 인시던트가 없습니다.",
+          "recording": "기록 중…",
+          "recordingHint": "가이딩이 회복되고 30초 후에 저장됩니다.",
+          "ongoing": "진행 중",
+          "occurrences": "{count}×",
+          "likely": "예상 원인: {cause}",
+          "analysing": "아직 원인을 알 수 없음",
+          "simulator": "시뮬레이터",
+          "kept": "보존됨",
+          "keep": "보존",
+          "release": "보존 해제",
+          "keepHint": "보존: 새 인시던트를 위한 공간 확보 시 삭제되지 않습니다",
+          "releaseHint": "보존 해제: 새 인시던트를 위한 공간 확보 시 삭제될 수 있습니다",
+          "delete": "삭제",
+          "deleteConfirm": "삭제?",
+          "deleteAll": "모두 삭제",
+          "deleteAllConfirm": "보존되지 않은 인시던트를 모두 삭제할까요? 보존된 인시던트는 남습니다.",
+          "deleteAllButton": "{count}개 삭제",
+          "deletedAll": "삭제됨: {count}개",
+          "cancel": "취소",
+          "download": "다운로드",
+          "downloading": "다운로드 준비 중…",
+          "downloadSaved": "{file}(으)로 저장됨",
+          "downloadFailed": "다운로드 실패",
+          "replayButton": "재생",
+          "actionFailed": "인시던트 작업 실패",
+          "frames": "프레임 {count}개",
+          "framesOmitted": {
+            "diskSpace": "프레임 미보관: 디스크 공간 부족",
+            "budget": "프레임 미보관: 저장 공간이 보존된 인시던트로 가득 참"
+          },
+          "endReasons": {
+            "recording": "기록 중",
+            "recovered": "회복됨",
+            "stopped": "정지됨",
+            "cap": "5분 제한",
+            "manual": "마크됨"
+          },
+          "kinds": {
+            "StarLost": "별 놓침",
+            "Runaway": "가이드 폭주",
+            "MountNotResponding": "마운트 응답 없음",
+            "SettleTimeout": "안정화 시간 초과",
+            "CameraFailure": "카메라 오류",
+            "MountPaused": "마운트 일시정지",
+            "CalibrationFailed": "보정 실패",
+            "PulseLimited": "펄스 한계 도달",
+            "PulseOutputFailed": "펄스 출력 실패",
+            "DecFlipCorrected": "Dec 반전 수정됨",
+            "Spike": "오차 스파이크",
+            "Manual": "수동 마크"
+          },
+          "savedTitle": "인시던트 저장됨",
+          "savedMessage": "{kind} ({time})",
+          "mark": {
+            "button": "마크",
+            "title": "인시던트 마크",
+            "hint": "최근 2분과 이후 30초의 가이딩을 재생용으로 저장합니다.",
+            "note": "메모 (선택)",
+            "placeholder": "예: 돌풍",
+            "submit": "마크",
+            "done": "마크했습니다. 이후 30초를 기록한 뒤 인시던트를 저장합니다.",
+            "failed": "마크 실패"
+          },
+          "replay": {
+            "close": "재생 닫기",
+            "loading": "인시던트 불러오는 중…",
+            "loadFailed": "인시던트를 불러오지 못했습니다",
+            "frame": "프레임 {frame}",
+            "position": "{index} / {count}",
+            "noImage": "이 프레임의 이미지는 보관되지 않았습니다",
+            "keyFrame": "전체 프레임",
+            "context": "비닝 {binning}×",
+            "imageFailed": "이미지를 불러오지 못했습니다",
+            "starLost": "별을 찾지 못함",
+            "starLostStatus": "별을 찾지 못함: {status}",
+            "play": "재생",
+            "pause": "일시정지",
+            "stepBack": "이전 프레임",
+            "stepForward": "다음 프레임",
+            "prevMarker": "이전 마커",
+            "nextMarker": "다음 마커",
+            "speed": "재생 속도",
+            "scrubber": "프레임 위치",
+            "crops": "별",
+            "noCrops": "이 프레임의 별 잘라낸 이미지는 보관되지 않았습니다",
+            "graph": "가이드 오차",
+            "telemetry": "이 프레임",
+            "note": "내 메모",
+            "triggers": "트리거",
+            "evidence": "근거",
+            "showFrame": "프레임 보기",
+            "searchRegion": "탐색 영역",
+            "diagnosisPending": "아직 진단이 없습니다. 인시던트를 기록하는 중입니다."
+          },
+          "tele": {
+            "time": "시간",
+            "state": "상태",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "mass": "질량",
+            "error": "오차",
+            "pulses": "펄스",
+            "mount": "마운트",
+            "pierSide": "경통 위치",
+            "calibration": "보정",
+            "stars": "별",
+            "settling": "안정화 중",
+            "dithering": "디더링 중",
+            "limited": "제한됨",
+            "tracking": "추적 중",
+            "notTracking": "추적 꺼짐",
+            "slewing": "슬루 중",
+            "parked": "파킹됨",
+            "unknown": "알 수 없음"
+          },
+          "markers": {
+            "trigger": "트리거",
+            "recovered": "회복",
+            "note": "메모",
+            "gap": "이미지 없음",
+            "end": "끝"
+          },
+          "causes": {
+            "camera": {
+              "title": "카메라",
+              "why": "이 순간 전후로 프레임이 누락되거나 늦었습니다. 가이드 카메라가 프레임을 전달하지 못했습니다(촬영 오류, 시간 초과, USB 연결 끊김).",
+              "fix": "카메라의 USB 케이블과 전원을 확인하고, 긴 패시브 USB 연장 케이블을 피하고, 더 긴 노출이나 더 낮은 USB 대역폭을 시도하세요."
+            },
+            "mountMoved": {
+              "title": "마운트가 움직임",
+              "why": "마운트가 슬루하거나, 추적을 멈추거나, 파킹되거나, 연결이 끊기거나, 경통 위치가 바뀌어 별이 제자리를 벗어났습니다.",
+              "fix": "슬루와 자오선 반전 전에는 가이딩을 일시정지하고(시퀀스가 자동으로 처리합니다) 추적이 켜져 있는지 확인하세요."
+            },
+            "calibrationMismatch": {
+              "title": "보정이 맞지 않음",
+              "why": "교정이 별을 되돌리지 못하고 오히려 더 멀리 밀었습니다. 보정이 더 이상 마운트와 맞지 않습니다(경통 위치, 적위, 가이드 속도 또는 반전된 Dec 방향).",
+              "fix": "대상 근처에서 다시 보정하고, 마운트가 경통 위치를 올바르게 보고하는지 확인하세요."
+            },
+            "mountNotMoving": {
+              "title": "마운트가 움직이지 않음",
+              "why": "교정 펄스를 보냈지만 별이 거의 움직이지 않았습니다. 마운트가 펄스를 실행하지 않았습니다.",
+              "fix": "마운트 연결과 가이드 출력(ST-4 케이블 또는 펄스 가이딩), 그리고 클러치가 단단히 잠겨 있는지 확인하세요."
+            },
+            "fieldJump": {
+              "title": "시야 점프",
+              "why": "모든 별이 동시에 같은 양만큼 튀었습니다. 망원경 전체가 움직였습니다(충격, 돌풍, 케이블 걸림, 마운트 미끄러짐).",
+              "fix": "케이블 배선, 클러치, 밸런스를 확인하고 망원경을 바람으로부터 가리세요."
+            },
+            "clouds": {
+              "title": "구름",
+              "why": "모든 별이 1분 안에 함께 어두워졌다가 나중에 돌아왔습니다. 무언가가 하늘 앞을 지나갔습니다.",
+              "fix": "가이더에서 고칠 것은 없습니다. 맑은 하늘을 기다리세요. 옅은 구름에는 더 긴 노출이 도움이 됩니다."
+            },
+            "dew": {
+              "title": "이슬",
+              "why": "모든 별이 몇 분에 걸쳐 천천히 어두워지면서 커졌습니다(HFD). 광학계에 이슬이나 서리가 맺혔습니다.",
+              "fix": "이슬 히터를 켜거나 출력을 높이고 이슬 방지 후드를 사용하세요."
+            },
+            "guideStarOnly": {
+              "title": "가이드 별 문제",
+              "why": "가이드 별만 변하고(놓침, 훨씬 밝아지거나 어두워짐) 다른 별은 정상이었습니다. 포화, 핫 픽셀 또는 근처 별이 추적을 방해했습니다.",
+              "fix": "다른 가이드 별을 고르고, 포화되면 노출이나 게인을 낮추고, 다중 별 가이딩을 사용하세요."
+            },
+            "driftTooFast": {
+              "title": "드리프트가 너무 빠름",
+              "why": "교정이 한계에 도달한 상태에서 별이 탐색 영역 가장자리로 꾸준히 드리프트했습니다.",
+              "fix": "최대 펄스 길이나 적극성을 높이고, 극축 정렬과 밸런스를 확인하고, 가이드 속도가 바뀌었다면 다시 보정하세요."
+            },
+            "periodicSpike": {
+              "title": "주기 오차",
+              "why": "스파이크가 마운트의 웜 주기마다 반복됩니다. 기어의 주기 오차입니다.",
+              "fix": "Predictive RA 알고리즘이나 마운트의 PEC를 사용하세요. 스파이크가 크면 웜을 청소하고 그리스를 바르세요."
+            },
+            "unclear": {
+              "title": "불명확",
+              "why": "알려진 패턴과 일치하지 않았습니다. 아래 근거에 측정 내용이 나와 있습니다.",
+              "fix": "재생을 살펴보세요. 버그 보고서에 첨부하려면 인시던트를 다운로드하세요."
+            }
+          },
+          "evidence": {
+            "cameraFailures": "카메라 촬영 실패: {count}회",
+            "frameGap": "{seconds} 동안 프레임 없음",
+            "mountSlewing": "마운트가 슬루 중이었습니다",
+            "mountTrackingOff": "마운트 추적이 꺼져 있었습니다",
+            "mountParked": "마운트가 파킹되어 있었습니다",
+            "mountDisconnected": "마운트 연결이 끊겨 있었습니다",
+            "pierSideChanged": "경통 위치 변경: {from} → {to}",
+            "errorGrew": "교정이 반대 방향으로 밀었는데도 {axis} 오차가 {frames} 프레임 동안 {fromPx}에서 {toPx}(으)로 커졌습니다",
+            "runaway": "{axis} 폭주: 교정이 별을 더 멀리 밀어냈습니다",
+            "decFlipCorrected": "Dec 방향이 반전되어 있어 수정했습니다",
+            "pulsesWithoutMotion": "{axis} 펄스 {pulses}회로 별이 {expectedPx} 움직여야 했지만 실제로는 {movedPx} 움직였습니다",
+            "fieldJump": "별 {stars}개가 함께 {jumpPx}({jumpArcsec}) 튀었습니다",
+            "starsFaded": "모든 별({stars})이 {seconds} 안에 {dropPercent} 어두워졌습니다",
+            "recoveredAfter": "{seconds} 후에 돌아왔습니다",
+            "starsFadingSlowly": "모든 별({stars})이 {minutes}에 걸쳐 {dropPercent} 어두워졌습니다",
+            "hfdGrew": "별이 커졌습니다: HFD {percent} 증가",
+            "primaryOnly": "가이드 별은 {dropPercent} 어두워졌지만 다른 별({secondaries})은 정상이었습니다",
+            "saturated": "가이드 별이 포화되었습니다",
+            "massJump": "가이드 별의 질량이 {percent} 급변했습니다",
+            "driftToEdge": "별이 {frames} 프레임 동안 {axis} 방향으로 탐색 영역의 {percentOfRegion}까지 드리프트했습니다",
+            "pulsesLimited": "{frames} 프레임에서 {axis} 교정이 한계에 도달",
+            "spikeRepeats": "웜 주기({periodSeconds})의 배수 시점에 이전 스파이크 {count}회",
+            "spike": "RMS {rmsArcsec}에서 {errorArcsec}의 오차 스파이크",
+            "starLost": "별 놓침 ({status})",
+            "trigger": "트리거: {kind}"
+          },
+          "values": {
+            "axis": {
+              "ra": "RA",
+              "dec": "Dec"
+            },
+            "pierSide": {
+              "East": "동쪽",
+              "West": "서쪽",
+              "Unknown": "알 수 없음"
+            },
+            "status": {
+              "LowSnr": "SNR 너무 낮음",
+              "Saturated": "포화",
+              "MassChanged": "별 질량 변화",
+              "NotFound": "별을 찾지 못함"
+            }
+          },
+          "unknown": "?"
+        }
       }
     },
     "focuser": {

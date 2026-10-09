@@ -382,6 +382,8 @@ import Modal from '@/components/helpers/Modal.vue';
 import { usePinsStore } from '@/plugins/pins/store/pinsStore';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
 import { useGuiderStore } from '@/store/guiderStore';
+import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { NATIVE_GUIDER_ID } from '@/utils/nativeGuider';
 import { usePinsDeviceStore } from '@/plugins/pinsDevices/store/pinsDevicesStore';
 import { useImageMonitorStore } from '@/plugins/multi-image-monitor/store/imageMonitorStore';
 import { usePinsAllSkyStore } from '@/plugins/pins-allsky/store/pinsAllskyStore';
@@ -515,6 +517,21 @@ const pinsDeviceStore = usePinsDeviceStore();
 const imageMonitorStore = useImageMonitorStore();
 const sequenceV2Store = useSequenceV2Store();
 const pinsAllSkyStore = usePinsAllSkyStore();
+const nativeGuiderStore = useNativeGuiderStore();
+
+// PINS native guider: its live feed (/ws/internal-guider) runs app-wide while it is the
+// connected guider, so critical guiding alerts toast on every page, not only on the guider page.
+watch(
+  () => store.guiderInfo?.Connected === true && store.guiderInfo?.DeviceId === NATIVE_GUIDER_ID,
+  (nativeConnected) => {
+    if (nativeConnected) {
+      nativeGuiderStore.startFeed();
+    } else {
+      nativeGuiderStore.stopFeed();
+    }
+  },
+  { immediate: true }
+);
 
 // Global flat run outcome — fires regardless of which page is active.
 // prevRun !== null guard mirrors the original page watcher: first setter wins,
@@ -1008,6 +1025,7 @@ async function performResume() {
     // respective socket was disconnected on purpose.
     websocketTppaService.resumeAfterBackground();
     websocketMountControlService.resumeAfterBackground();
+    nativeGuiderStore.resumeAfterBackground();
 
     // Kill all HTTP requests still in flight from before the background phase.
     // Their TCP connections are likely dead (Android cuts them), but they hog

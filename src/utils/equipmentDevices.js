@@ -13,6 +13,13 @@ import apiService from '@/services/apiService';
 // The guider is the only one whose selection is not stored under `Id`.
 export const DEVICE_MAP = {
   cameraAction: { section: 'CameraSettings', rescanKey: 'camera', idKey: 'Id', indi: true },
+  // PINS only: the profile of official NINA has no GuideCameraSettings.
+  guideCameraAction: {
+    section: 'GuideCameraSettings',
+    rescanKey: 'guideCamera',
+    idKey: 'Id',
+    indi: true,
+  },
   mountAction: { section: 'TelescopeSettings', rescanKey: 'mount', idKey: 'Id', indi: true },
   focusAction: { section: 'FocuserSettings', rescanKey: 'focus', idKey: 'Id', indi: true },
   filterAction: { section: 'FilterWheelSettings', rescanKey: 'filter', idKey: 'Id', indi: true },
@@ -39,6 +46,7 @@ export const DEVICE_MAP = {
 // rescan key is 'focus' — so this cannot be derived from DEVICE_MAP alone.
 const API_NAME_TO_ACTION = {
   camera: 'cameraAction',
+  guidecamera: 'guideCameraAction',
   mount: 'mountAction',
   focuser: 'focusAction',
   filter: 'filterAction',

@@ -454,7 +454,9 @@
         "ditherApply": "Apply to profile",
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "nativeCamera": "Càmera de guiatge (Guiador Natiu de PINS)",
+        "nativeCameraHint": "El guiador natiu controla directament la càmera de guiatge. Trieu-ne el controlador INDI i el dispositiu, i introduïu la distància focal del telescopi de guiatge."
       },
       "done": {
         "title": "Your equipment is ready",
@@ -1743,6 +1745,1485 @@
           "max": "Màx. (ms)",
           "min": "Mín. (ms)",
           "title": "Compensació de joc"
+        }
+      },
+      "native": {
+        "notConnected": "El Guiador Natiu de PINS no està connectat",
+        "notConnectedHint": "Connecteu el Guiador Natiu de PINS a la pàgina d'equipament. Els ajustos ja es poden editar.",
+        "states": {
+          "Stopped": "Aturat",
+          "Looping": "En bucle",
+          "Selected": "Estrella seleccionada",
+          "Calibrating": "Calibrant",
+          "Guiding": "Guiant",
+          "LostLock": "Estrella perduda",
+          "Reacquiring": "Recuperant",
+          "Paused": "En pausa",
+          "Failed": "Ha fallat",
+          "Disconnected": "Desconnectat",
+          "Unknown": "Desconegut"
+        },
+        "tabs": {
+          "frame": "Fotograma",
+          "graph": "Gràfic",
+          "stats": "Estad.",
+          "calibration": "Calibratge",
+          "log": "Registre",
+          "settings": "Ajustos",
+          "dashboard": "Guiatge",
+          "coach": "Coach",
+          "incidents": "Incidències"
+        },
+        "strip": {
+          "settling": "Assentant",
+          "live": "En viu",
+          "poll": "Sondeig",
+          "liveHint": "Actualitzacions en viu via WebSocket",
+          "pollHint": "WebSocket no disponible - actualitza cada 2 s",
+          "rmsTotal": "RMS",
+          "rmsRa": "RA",
+          "rmsDec": "Dec",
+          "snr": "SNR",
+          "mass": "Massa",
+          "hfd": "HFD",
+          "stars": "Estrelles",
+          "usedTotal": "usades/trobades",
+          "processing": "Proc.",
+          "rmsImage": "RMS / imatge",
+          "rmsImageHint": "RMS total del guiatge dividit per l'escala de píxel de la càmera d'imatge. Per sota de 0,5 és excel·lent; al voltant d'1 l'error de guiatge arriba a un píxel sencer de la imatge.",
+          "imageScale": "de {scale}″/px",
+          "imageScaleUnknown": "defineix càmera i focal",
+          "learningChip": "Aprenent cel i muntura {percent} %",
+          "learningChipHint": "L'algorisme Predictive aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge (uns 120 fotogrames; l'estabilització després d'un dither no compta). Mentrestant ja guia i després continua adaptant-se.",
+          "help": {
+            "rms": {
+              "title": "RMS – error de guiatge total",
+              "text": "Quant s'allunya l'estrella guia de la seva posició de bloqueig, com a mitjana quadràtica sobre els últims fotogrames de guiatge (RA i Dec junts, sense l'estabilització després dels dithers), en segons d'arc al cel i en píxels de la càmera de guiatge. Com més baix, millor; el que compta és comparar-lo amb l'escala de la càmera d'imatge (RMS / imatge) i amb el seeing. Es torna taronja per sobre d'1,2″ i vermell per sobre de 2″."
+            },
+            "ra": {
+              "title": "RA – error en ascensió recta",
+              "text": "L'error de guiatge RMS al llarg de l'ascensió recta. La RA porta l'error periòdic i les irregularitats del motor, per això sol ser el més gran dels dos; clarament més gran que Dec indica error periòdic, equilibratge o vent."
+            },
+            "dec": {
+              "title": "Dec – error en declinació",
+              "text": "L'error de guiatge RMS al llarg de la declinació. La Dec mostra sobretot la deriva per l'alineació polar i el joc (backlash) dels engranatges de Dec; clarament més gran que RA indica backlash o una mala alineació polar."
+            },
+            "snr": {
+              "title": "SNR – relació senyal/soroll",
+              "text": "Amb quina claredat destaca l'estrella guia sobre el soroll de fons. Per sobre de 20 és còmode; per sota de 10 la posició mesurada es torna sorollosa i l'estrella es pot perdre: exposició més llarga, més guany o una estrella més brillant. La massa és la brillantor total de l'estrella: una caiguda sobtada vol dir núvols o una estrella perduda."
+            },
+            "hfd": {
+              "title": "HFD – diàmetre de mig flux",
+              "text": "La mida de l'estrella guia en píxels de la càmera de guiatge. Ha de ser petita i estable; un HFD gran o creixent vol dir un telescopi guia desenfocat o mal seeing. Valors molt petits (per sota d'uns 1,5 px) fan la posició menys precisa."
+            },
+            "stars": {
+              "title": "Estrelles – usades / trobades",
+              "text": "Estrelles usades per al guiatge i estrelles trobades al fotograma. Amb el guiatge multiestrella la posició es fa la mitjana de les estrelles usades, cosa que redueix el soroll del seeing; com més, millor. Les estrelles massa febles, saturades o a prop de la vora no s'usen."
+            },
+            "processing": {
+              "title": "Proc. – temps de processament",
+              "text": "Quant ha trigat el guiador a analitzar l'últim fotograma (detecció d'estrelles, posicions, correcció). Ha de quedar molt per sota del temps d'exposició; es torna taronja per sobre de la meitat: un ordinador lent o un fotograma de guiatge molt gran (el binning ajuda)."
+            },
+            "rmsImage": {
+              "title": "RMS / imatge – error en píxels d'imatge"
+            }
+          },
+          "periodicErrorChip": "Aprenent l'error periòdic {percent} %",
+          "periodicErrorChipHint": "L'algorisme Predictive està aprenent l'error periòdic del vis sens fi d'AR: troba el període del vis després d'unes cinc voltes (es van sumant encara que el guiatge s'aturi i es reprengui; després d'un desplaçament, una sincronització o un gir de meridià es comença de nou), o de seguida a partir de l'ajust de dents de la corona, i comprova que la corba es mantingui igual d'una volta a l'altra (dues voltes amb les dents ajustades). Mentrestant continua guiant.",
+          "decDirection": {
+            "Both": "ambdós",
+            "North": "només N",
+            "South": "només S"
+          }
+        },
+        "controls": {
+          "loop": "Bucle",
+          "stop": "Atura",
+          "guide": "Guia",
+          "calibrate": "Calibra",
+          "pause": "Pausa",
+          "resume": "Reprèn",
+          "dither": "Dither",
+          "clearCalibration": "Esborra cal.",
+          "ditherTitle": "Dither",
+          "ditherPixels": "Quantitat (píxels de guiatge)",
+          "ditherRaOnly": "Només RA",
+          "ditherHint": "Mou la posició de bloqueig aleatòriament fins a aquesta quantitat i espera fins que el guiatge s'hagi assentat.",
+          "ditherInvalid": "Introduïu un valor entre 0 i 100 píxels.",
+          "confirmStopTitle": "Aturar el guiatge?",
+          "confirmStop": "El guiatge s'atura i les exposicions d'una seqüència en curs ja no es guien.",
+          "confirmCalibrateTitle": "Tornar a calibrar?",
+          "confirmCalibrate": "El calibratge actual es descarta i en comença un de nou.",
+          "confirmClearTitle": "Esborrar el calibratge?",
+          "confirmClear": "El calibratge desat s'elimina. El proper inici del guiatge tornarà a calibrar.",
+          "failed": "{action} ha fallat",
+          "actions": {
+            "loop": "Bucle",
+            "stop": "Atura",
+            "start-guiding": "Inicia el guiatge",
+            "stop-guiding": "Atura el guiatge",
+            "pause": "Pausa",
+            "resume": "Reprèn",
+            "dither": "Dither",
+            "clear-calibration": "Esborra el calibratge",
+            "calibrate": "Calibra",
+            "darks": "Crea la biblioteca de foscos",
+            "coach-start": "Inicia el Coach",
+            "coach-skip": "Omet el pas del Coach",
+            "coach-cancel": "Cancel·la el Coach",
+            "coach-apply": "Aplica les recomanacions"
+          }
+        },
+        "frame": {
+          "title": "Fotograma de guiatge",
+          "stretch": "Estirament",
+          "stretch_low": "Baix",
+          "stretch_medium": "Mitjà",
+          "stretch_high": "Alt",
+          "overlay": "Mostra/amaga la superposició d'estrelles",
+          "resetZoom": "Restableix el zoom",
+          "noFrame": "Encara no hi ha cap fotograma de guiatge. Premeu Bucle per iniciar les exposicions.",
+          "imageFailed": "No s'ha pogut carregar el fotograma de guiatge",
+          "starCount": "{count} estrelles",
+          "age": "fa {seconds} s",
+          "weight": "Pes",
+          "rejected": "No usada",
+          "legendPrimary": "Estrella primària",
+          "legendSecondary": "Estrella secundària",
+          "legendRejected": "No usada",
+          "legendLock": "Posició de bloqueig",
+          "tapHint": "Toqueu una estrella per veure'n els detalls",
+          "levelSaturated": "Fotograma saturat ({percent} % dels píxels al màxim de l'escala): el cel encara és massa brillant o l'exposició/guany són massa alts. Reduïu l'exposició o el guany.",
+          "levelFlat": "Cap senyal útil al fotograma (nivell {level} de {fullScale}): tapa posada, rosada o la càmera no exposa?",
+          "levelPartlySaturated": "{percent} % saturat"
+        },
+        "profile": {
+          "noStar": "Sense estrella de guiatge",
+          "horizontal": "H",
+          "vertical": "V",
+          "radial": "radial",
+          "peak": "Pic",
+          "saturated": "L'estrella està saturada - escurceu l'exposició o trieu una altra estrella."
+        },
+        "log": {
+          "title": "Esdeveniments",
+          "empty": "Encara no hi ha cap esdeveniment.",
+          "filter_all": "Tots",
+          "filter_warning": "Avisos",
+          "filter_critical": "Crítics",
+          "explanation": "Què ha passat",
+          "fix": "Solució",
+          "detail": "Detall",
+          "severity": {
+            "info": "Info",
+            "warning": "Avís",
+            "critical": "Crític"
+          }
+        },
+        "alerts": {
+          "StarLost": {
+            "title": "Estrella de guiatge perduda",
+            "explanation": "No s'ha trobat l'estrella de guiatge a l'últim fotograma. Mentre estigui perduda no s'envien correccions.",
+            "fix": "Comproveu si hi ha núvols, obstacles o rosada. El guiador continua cercant automàticament."
+          },
+          "StarReacquireTimeout": {
+            "title": "No s'ha pogut recuperar l'estrella de guiatge",
+            "explanation": "L'estrella ha estat perduda més temps que el límit per recuperar-la; s'ha aturat el guiatge.",
+            "fix": "Comproveu el cel i l'òptica i torneu a iniciar el guiatge (el disparador Restore Guiding del seqüenciador ho pot fer)."
+          },
+          "StarSaturated": {
+            "title": "Estrella de guiatge saturada",
+            "explanation": "El pic de l'estrella de guiatge està saturat, cosa que empitjora la precisió del centroide.",
+            "fix": "Reduïu l'exposició o el guany, o deixeu que la selecció automàtica triï una estrella més feble."
+          },
+          "StarLowSnr": {
+            "title": "SNR de l'estrella baixa",
+            "explanation": "La relació senyal/soroll de l'estrella de guiatge és baixa; els centroides es tornen sorollosos.",
+            "fix": "Augmenteu l'exposició o el guany, o comproveu l'enfocament de la càmera de guiatge."
+          },
+          "StarMassChanged": {
+            "title": "La brillantor de l'estrella ha canviat bruscament",
+            "explanation": "La brillantor de l'estrella ha canviat més que el llindar de canvi de massa; s'ha ignorat el fotograma.",
+            "fix": "Normalment són núvols de pas. Si persisteix, apugeu el llindar de canvi de massa."
+          },
+          "NoStarFound": {
+            "title": "Cap estrella de guiatge adequada",
+            "explanation": "La selecció automàtica no ha trobat cap estrella que compleixi els criteris de SNR i saturació.",
+            "fix": "Augmenteu l'exposició o el guany, comproveu l'enfocament i que el telescopi de guiatge no estigui tapat."
+          },
+          "LockPositionNearEdge": {
+            "title": "Posició de bloqueig massa a prop de la vora",
+            "explanation": "La posició de bloqueig sol·licitada és massa a prop de la vora del fotograma per a la regió de cerca.",
+            "fix": "Trieu una estrella més allunyada de la vora o reduïu la quantitat de dither."
+          },
+          "PrimaryEstimatedFromSecondaries": {
+            "title": "Estrella primària estimada",
+            "explanation": "L'estrella primària no s'ha pogut mesurar; se n'ha estimat la posició a partir de les estrelles secundàries.",
+            "fix": "No cal fer res. Si passa sovint, convé triar una altra estrella primària."
+          },
+          "StarReacquired": {
+            "title": "Estrella de guiatge recuperada",
+            "explanation": "S'ha tornat a trobar l'estrella de guiatge i el guiatge s'ha reprès.",
+            "fix": "No cal fer res."
+          },
+          "CalibrationFailedRaNoMove": {
+            "title": "El calibratge ha fallat: RA no s'ha mogut",
+            "explanation": "L'estrella no s'ha mogut prou en RA durant el calibratge.",
+            "fix": "Comproveu la connexió de la sortida de guiatge (muntura/ST4), la velocitat de guiatge i que la muntura faci seguiment i no estigui aparcada."
+          },
+          "CalibrationFailedDecNoMove": {
+            "title": "El calibratge ha fallat: Dec no s'ha mogut",
+            "explanation": "L'estrella no s'ha mogut prou en Dec durant el calibratge.",
+            "fix": "Comproveu el joc en Dec, l'equilibri i que no hi hagi cables enganxats; o calibreu i guieu només en RA."
+          },
+          "CalibrationFailedBacklash": {
+            "title": "El calibratge ha fallat: no s'ha eliminat el joc en Dec",
+            "explanation": "No s'ha pogut eliminar el joc en Dec abans del moviment de calibratge en Dec.",
+            "fix": "Reduïu el joc en Dec (engranatge, equilibri lleugerament carregat cap a l'est en Dec) i torneu a calibrar."
+          },
+          "CalibrationFailedStarLost": {
+            "title": "El calibratge ha fallat: estrella perduda",
+            "explanation": "L'estrella de calibratge s'ha perdut massa sovint durant el calibratge.",
+            "fix": "Trieu una estrella més brillant lluny de la vora i torneu-ho a provar."
+          },
+          "CalibrationFewSteps": {
+            "title": "Calibratge amb pocs passos",
+            "explanation": "El calibratge ha acabat amb menys de 4 passos en un eix, de manera que pot ser imprecís.",
+            "fix": "Reduïu la mida del pas de calibratge i torneu a calibrar."
+          },
+          "CalibrationNotOrthogonal": {
+            "title": "Eixos de calibratge no perpendiculars",
+            "explanation": "Els eixos RA i Dec mesurats es desvien més de 12,5° de la perpendicular.",
+            "fix": "Comproveu si hi ha hagut joc en Dec, un cable enganxat o vent durant el calibratge; torneu a calibrar."
+          },
+          "CalibrationRateRatio": {
+            "title": "Relació de velocitats RA/Dec inesperada",
+            "explanation": "La relació entre les velocitats de calibratge d'RA i de Dec no correspon a la declinació.",
+            "fix": "Comproveu la declinació que indica la muntura i les velocitats de guiatge; torneu a calibrar a prop de Dec 0 si és possible."
+          },
+          "CalibrationDecRateChanged": {
+            "title": "La velocitat Dec difereix de l'últim calibratge",
+            "explanation": "La velocitat Dec difereix més d'un 20 % del calibratge anterior amb el mateix equip.",
+            "fix": "Torneu a calibrar; comproveu si hi ha joc o un problema mecànic."
+          },
+          "CalibrationInvalidated": {
+            "title": "Calibratge invalidat",
+            "explanation": "El calibratge desat ja no correspon a la càmera, el binning o la distància focal.",
+            "fix": "Es farà un nou calibratge quan s'iniciï el guiatge."
+          },
+          "CalibrationHighDeclination": {
+            "title": "Calibratge fet a declinació alta",
+            "explanation": "El calibratge s'ha fet a més de 60° al nord o al sud de l'equador celeste, de manera que la compensació de declinació no és fiable.",
+            "fix": "Torneu a calibrar més a prop de l'equador celeste per obtenir els millors resultats."
+          },
+          "CalibrationGuideRateChanged": {
+            "title": "Ha canviat la velocitat de guiatge",
+            "explanation": "La velocitat de guiatge de la muntura difereix més d'un 5 % de la del calibratge.",
+            "fix": "Torneu a calibrar o restabliu la velocitat de guiatge anterior."
+          },
+          "NotCalibrated": {
+            "title": "No calibrat",
+            "explanation": "El guiatge requereix un calibratge.",
+            "fix": "Inicieu el guiatge amb calibratge."
+          },
+          "CalibrationFlipped": {
+            "title": "Calibratge invertit pel costat del pilar",
+            "explanation": "El calibratge s'ha ajustat al nou costat del pilar després d'un gir de meridià.",
+            "fix": "No cal fer res."
+          },
+          "DecFlipCorrected": {
+            "title": "Direcció de Dec corregida després del gir",
+            "explanation": "Després del gir de meridià, les correccions de Dec augmentaven l'error, així que s'ha invertit la direcció de Dec i s'ha desat l'ajust de la muntura.",
+            "fix": "No cal fer res; es recomana tornar a calibrar si el guiatge sembla inestable."
+          },
+          "CalibrationReturnIncomplete": {
+            "title": "Moviment de retorn del calibratge incomplet",
+            "explanation": "L'estrella no ha tornat a prop del punt de partida durant el calibratge; pot indicar joc o un embragatge que patina.",
+            "fix": "Comproveu la mecànica de la muntura i torneu a calibrar."
+          },
+          "PulseLimitReached": {
+            "title": "Correcció limitada pel pols màx.",
+            "explanation": "Diverses correccions consecutives s'han retallat a la durada màxima del puls.",
+            "fix": "Comproveu si hi ha una deriva gran (alineació polar, cable enganxat) o augmenteu la durada màxima del puls."
+          },
+          "RunawayDetected": {
+            "title": "S'ha detectat un guiatge descontrolat",
+            "explanation": "Les correccions continuaven creixent sense reduir l'error (p. ex. signe de calibratge erroni). S'ha aturat el guiatge per protegir la sessió.",
+            "fix": "Esborreu el calibratge i torneu a calibrar; comproveu l'ajust de la muntura de costat del pilar/inversió de Dec."
+          },
+          "MountNotResponding": {
+            "title": "La muntura no respon a les correccions",
+            "explanation": "Diverses correccions grans no han produït cap moviment de l'estrella.",
+            "fix": "Comproveu la connexió de la sortida de guiatge (controlador de la muntura/cable ST4) i que la muntura faci seguiment."
+          },
+          "MountSlewing": {
+            "title": "Muntura desplaçant-se — guiatge en pausa",
+            "explanation": "El guiatge es posa en pausa automàticament mentre la muntura es desplaça.",
+            "fix": "El guiatge es reprèn després del desplaçament. Si apareix quan la muntura no s'està desplaçant, desactiveu l'ajust del guiador «Pausa durant els desplaçaments»."
+          },
+          "MountParked": {
+            "title": "Muntura aparcada — guiatge en pausa",
+            "explanation": "La muntura indica que està aparcada; no s'envien correccions.",
+            "fix": "Desaparqueu la muntura i torneu a iniciar el guiatge."
+          },
+          "MountTrackingOff": {
+            "title": "Seguiment desactivat — guiatge en pausa",
+            "explanation": "La muntura no fa seguiment; no s'envien correccions.",
+            "fix": "Activeu el seguiment; el guiatge es reprèn automàticament. Si la muntura fa seguiment però el controlador no ho pot indicar, desactiveu l'ajust del guiador «Pausa sense seguiment»."
+          },
+          "MountDisconnected": {
+            "title": "Muntura desconnectada",
+            "explanation": "La muntura o la sortida de guiatge s'ha desconnectat.",
+            "fix": "Torneu a connectar la muntura i reinicieu el guiatge."
+          },
+          "PulseOutputFailed": {
+            "title": "Error del pols de guiatge",
+            "explanation": "No s'ha pogut enviar un pols de guiatge.",
+            "fix": "Comproveu la connexió de la muntura o del port de guiatge."
+          },
+          "PierSideUnknown": {
+            "title": "Costat del pilar desconegut",
+            "explanation": "La muntura no indica el seu costat del pilar; els girs de meridià no es poden compensar automàticament.",
+            "fix": "Torneu a calibrar després de cada gir de meridià, o useu un controlador que indiqui el costat del pilar."
+          },
+          "CameraCaptureFailed": {
+            "title": "L'exposició de guiatge ha fallat",
+            "explanation": "Una exposició de la càmera de guiatge ha fallat o ha esgotat el temps d'espera; s'està tornant a provar.",
+            "fix": "Comproveu la connexió USB i l'alimentació de la càmera de guiatge."
+          },
+          "CameraReconnecting": {
+            "title": "S'està tornant a connectar la càmera de guiatge",
+            "explanation": "Errors d'exposició repetits; s'està tornant a connectar la càmera de guiatge.",
+            "fix": "Comproveu la connexió USB i l'alimentació de la càmera de guiatge."
+          },
+          "CameraFailed": {
+            "title": "La càmera de guiatge ha fallat",
+            "explanation": "La càmera de guiatge no ha pogut lliurar fotogrames després de diversos intents i una reconnexió. S'ha aturat el guiatge.",
+            "fix": "Comproveu els cables i l'alimentació, torneu a connectar la càmera de guiatge i reinicieu el guiatge."
+          },
+          "CameraDisconnected": {
+            "title": "Càmera de guiatge desconnectada",
+            "explanation": "La càmera de guiatge no està connectada.",
+            "fix": "Connecteu la càmera de guiatge."
+          },
+          "FrameProcessingSlow": {
+            "title": "Processament de fotogrames lent",
+            "explanation": "Processar un fotograma de guiatge ha trigat més del previst, cosa que retarda les correccions.",
+            "fix": "Reduïu el nombre màxim d'estrelles de guiatge, useu binning o un subfotograma, o comproveu la càrrega de la CPU."
+          },
+          "SettleTimeout": {
+            "title": "Temps d'assentament esgotat",
+            "explanation": "El guiatge no s'ha assentat dins del temps límit.",
+            "fix": "Augmenteu la tolerància o el temps límit d'assentament, o comproveu el rendiment del guiatge."
+          },
+          "DitherFailed": {
+            "title": "El dither ha fallat",
+            "explanation": "El dither requereix un guiatge actiu i calibrat.",
+            "fix": "Inicieu el guiatge abans de fer dither."
+          },
+          "Internal": {
+            "title": "Error intern del guiador",
+            "explanation": "S'ha produït un error inesperat al guiador.",
+            "fix": "Consulteu el registre per veure'n els detalls i informeu del problema."
+          }
+        },
+        "graph": {
+          "title": "Gràfic de guiatge",
+          "unit": "Unitat",
+          "arcsec": "″",
+          "px": "px",
+          "window": "Passos mostrats",
+          "yScale": "Escala Y",
+          "auto": "Auto",
+          "ra": "RA",
+          "dec": "Dec",
+          "raPulse": "Pols RA",
+          "decPulse": "Pols Dec",
+          "pulses": "Polsos",
+          "ms": "ms",
+          "snr": "SNR",
+          "mass": "Massa",
+          "snrTitle": "SNR / massa estel·lar",
+          "settling": "Assentant",
+          "empty": "Encara no hi ha passos de guiatge. Inicieu el guiatge per veure el gràfic.",
+          "markers": {
+            "dither": "Dither",
+            "starlost": "Estrella perduda",
+            "settled": "Assentat",
+            "settleFailed": "Assentament fallit",
+            "calibration": "Calibratge"
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS dels darrers {count} passos de guiatge mostrats (sense estabilització ni recentrat després del dithering)",
+          "rmsLine": "RMS total ({count})",
+          "rmsLineShort": "RMS ({count})",
+          "rmsLineHint": "RMS total dels últims {count} passos de guiatge a cada pas (sense estabilització ni recentrat)"
+        },
+        "target": {
+          "title": "Objectiu",
+          "lastSteps": "Darrers {count} passos",
+          "ra": "RA",
+          "dec": "Dec",
+          "rms": "RMS",
+          "scale": "Anell exterior {value}",
+          "empty": "Encara no hi ha passos de guiatge."
+        },
+        "stats": {
+          "title": "Estadístiques",
+          "empty": "Encara no hi ha estadístiques. Apareixen quan el guiatge s'executa.",
+          "window": "Finestra",
+          "windowFrames": "{count} fotogrames",
+          "session": "Sessió",
+          "rmsTotal": "RMS total",
+          "rmsRa": "RMS RA",
+          "rmsDec": "RMS Dec",
+          "peak": "Pic RA / Dec",
+          "driftRa": "Deriva RA",
+          "driftDec": "Deriva Dec",
+          "polarAlignment": "Error d'alineació polar",
+          "oscillation": "Índex d'oscil·lació",
+          "duty": "Cicle de treball RA / Dec",
+          "snr": "SNR mín. / mitj.",
+          "snrLast": "darrer {value}",
+          "stars": "Estrelles (mitj.)",
+          "starLost": "Estrella perduda",
+          "frames": "Fotogrames",
+          "elapsed": "Temps transcorregut",
+          "predictive": {
+            "title": "Guiatge predictiu",
+            "phases": {
+              "Learning": "aprenent {percent} %",
+              "Adapted": "ajustat"
+            },
+            "weight": "pes per fotograma {percent} %",
+            "weightHint": "Quant desplaça cada nou fotograma de guiatge la seva estimació de la posició de la muntura: baix amb mal seeing (l'error d'un fotograma és sobretot seeing), alt quan la muntura divaga.",
+            "details": "seeing {seeing} · muntura {wander} · deriva {drift}",
+            "detailsHint": "Après per fotograma de guiatge (σ): seeing = soroll de mesura per la turbulència i el càlcul del centroide, muntura = el seu moviment aleatori propi; la deriva es prediu i es corregeix per endavant.",
+            "periodic": {
+              "label": "error periòdic",
+              "teeth": "{teeth} dents",
+              "phases": {
+                "Off": "desactivat",
+                "Learning": "aprenent {percent} %",
+                "Ready": "a punt",
+                "Predicting": "predient",
+                "Negligible": "negligible"
+              },
+              "negligible": "Massa petit per predir-lo: entre dos fotogrames de guiatge mou l'estel només una petita part del seeing.",
+              "helpTitle": "Error periòdic",
+              "help": "El vis sens fi d'AR fa una volta cada pocs minuts, i a cada volta la muntura va una mica massa ràpida i massa lenta de la mateixa manera. L'algorisme Predictive aprèn aquesta corba i la corregeix abans que es noti. ± és l'oscil·lació principal de la corba en aquest objectiu, seguida del període del vis. El període es troba després d'unes cinc voltes del vis (es van sumant encara que el guiatge s'aturi i es reprengui; després d'un desplaçament, una sincronització o un gir de meridià es comença de nou), o es coneix de seguida amb l'ajust de dents de la corona; en tots dos casos la corba només s'utilitza quan es manté igual d'una volta a l'altra, perquè una oscil·lació de la muntura no es prengui per ella. A punt: après, però encara no millor que guiar sense ell. Predient: es corregeix per avançat. Negligible: massa petit per predir-lo amb aquest seeing i aquest ritme de fotogrames, fins i tot mentre la corba encara no és regular. La corba es desa per perfil i muntura, de manera que la nit següent ja comença amb ella."
+            }
+          },
+          "decDirection": {
+            "label": "Direcció Dec",
+            "directions": {
+              "Both": "totes dues direccions",
+              "North": "només Nord",
+              "South": "només Sud"
+            },
+            "drift": "deriva {drift}",
+            "notes": {
+              "unknown": "En totes dues direccions fins que mesuri una deriva clara.",
+              "valve": "En totes dues direccions fins que torni un error gran de l'altre costat (vàlvula de seguretat)."
+            },
+            "helpTitle": "Mode de guiatge Dec Drift",
+            "help": "Drift guia Dec en una sola direcció, contra la deriva que mesura mentre guia, de manera que els engranatges de Dec no inverteixen mai el sentit i el joc ja no importa. Guia en totes dues direccions fins que mesura una deriva clara (uns minuts; una deriva feble no compta), mentre s'assenta després d'un dither i mentre l'error es queda lluny al costat que aquesta direcció no pot corregir (vàlvula de seguretat). Quan la deriva s'afebleix o s'inverteix durant uns minuts, torna a guiar en totes dues direccions o canvia de direcció."
+          }
+        },
+        "calibration": {
+          "title": "Calibratge",
+          "inProgress": "Calibrant…",
+          "notCalibrated": "Encara no calibrat. Inicieu el guiatge per calibrar automàticament, o useu Calibra.",
+          "diagram": "Vectors de calibratge dels eixos RA i Dec al fotograma de la càmera de guiatge",
+          "raAxisLabel": "RA",
+          "decAxisLabel": "Dec",
+          "raAngle": "Angle RA",
+          "decAngle": "Angle Dec",
+          "raRate": "Velocitat RA",
+          "decRate": "Velocitat Dec",
+          "orthogonality": "Error d'ortogonalitat",
+          "declination": "Declinació",
+          "pierSide": "Costat del pilar",
+          "binning": "Binning",
+          "steps": "Passos",
+          "raShort": "RA",
+          "decShort": "Dec",
+          "decFlip": "Inverteix Dec després del gir",
+          "decFlipYes": "Sí",
+          "decFlipNo": "No",
+          "lastIssue": "Problema",
+          "pierSides": {
+            "East": "Est",
+            "West": "Oest",
+            "Unknown": "Desconegut",
+            "pierEast": "Est",
+            "pierWest": "Oest",
+            "pierUnknown": "Desconegut"
+          },
+          "justNow": "calibrat ara mateix",
+          "minutesAgo": "calibrat fa {minutes} min",
+          "hoursAgo": "calibrat fa {hours} h",
+          "legendRaOut": "AR anada",
+          "legendRaBack": "AR tornada",
+          "legendBacklash": "Joc (backlash)",
+          "legendDecOut": "Dec anada",
+          "legendDecBack": "Dec tornada"
+        },
+        "settings": {
+          "basic": "Bàsic",
+          "advanced": "Avançat",
+          "refresh": "Recarrega els ajustos",
+          "loading": "Carregant els ajustos…",
+          "loadFailed": "No s'han pogut carregar els ajustos",
+          "empty": "No hi ha ajustos disponibles.",
+          "notConnectedHint": "El guiador natiu no està connectat. Els canvis es desen al perfil; els canvis de càmera tenen efecte a la propera connexió.",
+          "requiresReconnect": "S'aplica després de reconnectar",
+          "range": "{min} – {max}",
+          "rangeMin": "mín. {min}",
+          "rangeMax": "màx. {max}",
+          "on": "activat",
+          "off": "desactivat",
+          "resetToDefault": "Restableix a {value}",
+          "saveFailed": "No s'ha pogut desar l'ajust.",
+          "errors": {
+            "required": "Introduïu un valor.",
+            "number": "Introduïu un número.",
+            "integer": "Introduïu un número enter.",
+            "min": "El valor ha de ser com a mínim {min}.",
+            "max": "El valor ha de ser com a màxim {max}.",
+            "option": "Trieu un dels valors llistats."
+          },
+          "groups": {
+            "Camera": "Càmera",
+            "Stars": "Estrelles",
+            "Guiding": "Guiatge",
+            "Algorithms": "Algorismes",
+            "Calibration": "Calibratge",
+            "Dither": "Dither",
+            "Safety": "Seguretat",
+            "Incidents": "Incidències"
+          },
+          "reconnectNeeded": "Torna a connectar el guiatge per fer servir la nova configuració de càmera.",
+          "reconnectNow": "Torna a connectar ara",
+          "reconnecting": "S'està tornant a connectar…",
+          "reconnectFailed": "No s'ha pogut tornar a connectar: {message}",
+          "actionConfirm": "Això no es pot desfer.",
+          "actionCancel": "Cancel·la",
+          "actionOptionConfirm": "Voleu executar «{option}»?",
+          "optionLabels": {
+            "DecGuideMode": {
+              "Auto": "Auto – totes dues direccions",
+              "North": "Només Nord",
+              "South": "Només Sud",
+              "Off": "Desactivat – només RA",
+              "Drift": "Drift – segueix la deriva (una direcció)"
+            }
+          },
+          "labels": {
+            "ExposureSeconds": "Exposició",
+            "Gain": "Guany",
+            "Offset": "Offset",
+            "Binning": "Binning",
+            "FocalLengthMm": "Focal de guiatge",
+            "PixelSizeUm": "Mida de píxel manual",
+            "NoiseReduction": "Reducció de soroll",
+            "UseDarkLibrary": "Usa la biblioteca de foscos",
+            "PulseOutput": "Sortida de guiatge",
+            "MultiStar": "Guiatge multiestrella",
+            "MaxStars": "Màx. estrelles de guiatge",
+            "MinSnr": "SNR mín. de l'estrella",
+            "SearchRegion": "Regió de cerca",
+            "MinHfd": "HFD mín. de l'estrella",
+            "MaxHfd": "HFD màx. de l'estrella",
+            "MassChangeEnabled": "Detecció de canvi de massa",
+            "MassChangeThreshold": "Llindar de canvi de massa",
+            "PrimaryDropoutFallback": "Continua guiant amb les secundàries",
+            "SaturationAdu": "ADU de saturació",
+            "RaAlgorithm": "Algorisme RA",
+            "RaAggression": "Agressivitat RA",
+            "RaHysteresis": "Histèresi RA",
+            "RaLowpass2Aggressiveness": "Agressivitat Lowpass2 RA",
+            "RaMinMove": "Moviment mín. RA",
+            "PeriodicErrorPrediction": "Predicció de l'error periòdic",
+            "WormTeeth": "Dents de la corona RA",
+            "ForgetPeriodicError": "Oblida l'error periòdic",
+            "DecAlgorithm": "Algorisme Dec",
+            "DecAggression": "Agressivitat Dec",
+            "DecHysteresis": "Histèresi Dec",
+            "DecLowpass2Aggressiveness": "Agressivitat Lowpass2 Dec",
+            "DecFastSwitch": "Canvi ràpid Dec",
+            "DecMinMove": "Moviment mín. Dec",
+            "DecGuideMode": "Mode de guiatge Dec",
+            "MaxRaDurationMs": "Pols RA màx.",
+            "MaxDecDurationMs": "Pols Dec màx.",
+            "MinPulseMs": "Pols mín.",
+            "BacklashCompensation": "Compensació del joc en Dec",
+            "BacklashPulseMs": "Pols de joc en Dec",
+            "CalibrationStepMs": "Pas de calibratge",
+            "ReuseCalibration": "Reutilitza el calibratge",
+            "AssumeOrthogonal": "Suposa Dec ortogonal",
+            "DecCompensation": "Compensació de declinació",
+            "DecFlipRequired": "Inverteix Dec després del gir de meridià",
+            "VerifyDecAfterFlip": "Autocomprovació de Dec després del gir",
+            "DitherMode": "Mode de dither",
+            "DitherScale": "Escala de dither",
+            "FastRecenter": "Recentrat ràpid després del dither",
+            "ReacquireTimeoutSec": "Temps màx. sense estrella",
+            "MaxPulseDutyPercent": "Cicle màx. de correcció",
+            "PauseWhenSlewing": "Pausa durant els desplaçaments",
+            "PauseWhenTrackingOff": "Pausa sense seguiment",
+            "SaveGuideLog": "Escriu el registre de guiatge",
+            "IncidentRecorder": "Enregistra les incidències",
+            "IncidentBudgetMb": "Quota de disc per a incidències",
+            "SimulatorScenario": "Escenari del simulador",
+            "SimulateFault": "Simula una fallada"
+          },
+          "descriptions": {
+            "Gain": "-1 manté el guany actual del controlador. (El guany de PHD2 és un percentatge, per això no es trasllada.)",
+            "Offset": "-1 manté l'offset actual del controlador.",
+            "FocalLengthMm": "Distància focal del telescopi de guiatge (o del telescopi principal amb un OAG). Cal per als valors en segons d'arc i per al pas de calibratge.",
+            "PixelSizeUm": "0 fa servir la mida de píxel del controlador de la càmera.",
+            "UseDarkLibrary": "Resta foscos: la biblioteca nativa si s'ha creat; si no, la biblioteca de foscos de PHD2 per a les dimensions d'aquesta càmera.",
+            "PulseOutput": "Mount: guiatge per polsos a través del controlador de la muntura connectada. CameraST4: a través del port ST4 de la càmera de guiatge.",
+            "PrimaryDropoutFallback": "Quan l'estrella primària falla en un fotograma, n'estima la posició a partir de ≥3 estrelles secundàries concordants.",
+            "SaturationAdu": "0 = detecta la saturació a partir del perfil de l'estrella.",
+            "RaAlgorithm": "Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent, de manera que l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
+            "RaAggression": "Fracció de l'error que es corregeix a cada fotograma (0..1).",
+            "RaMinMove": "0 = automàtic segons l'escala d'imatge.",
+            "PeriodicErrorPrediction": "Aprèn l'error periòdic del vis sens fi d'RA i el corregeix abans que es noti. La corba apresa es desa per perfil i muntura.",
+            "WormTeeth": "Dents de la corona d'RA (p. ex. 180 en una EQ6-R, 135 en una HEQ5); dona el període exacte del vis sens fi. 0 = detecta el període a partir dels fotogrames de guiatge.",
+            "ForgetPeriodicError": "Oblida l'error periòdic après per a aquesta muntura, p. ex. després d'ajustar el vis sens fi; després es torna a aprendre.",
+            "DecAlgorithm": "Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent, de manera que l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
+            "DecMinMove": "0 = automàtic segons l'escala d'imatge.",
+            "DecGuideMode": "Auto guia Dec en totes dues direccions; Només Nord o Només Sud, en una sola; Desactivat, en cap. Drift segueix la deriva: mesura la deriva en Dec mentre guia i només guia en contra seva, de manera que els engranatges de Dec no inverteixen mai el sentit i el joc deixa d'importar; canvia de direcció quan la deriva s'inverteix i guia en totes dues direccions fins que coneix la deriva, mentre s'assenta i per recuperar un error gran.",
+            "MinPulseMs": "Els polsos de guiatge més curts s'arrodoneixen a 0 o a aquesta durada: algunes muntures gestionen malament els polsos molt curts. 0 = qualsevol durada.",
+            "CalibrationStepMs": "0 = automàtic segons l'òptica, la velocitat de guiatge i la declinació.",
+            "ReuseCalibration": "Conserva el calibratge entre sessions i l'ajusta segons la declinació i el costat del pilar.",
+            "DecFlipRequired": "Ajust per muntura; el corregeix automàticament l'autocomprovació de Dec després del gir.",
+            "MaxPulseDutyPercent": "El guiatge s'atura quan un eix rep polsos durant més d'aquesta fracció d'un minut (protecció contra el guiatge descontrolat).",
+            "PauseWhenSlewing": "Posa en pausa les correccions mentre la muntura indica que s'està desplaçant o que està aparcada. Desactiveu-ho només si el controlador de la muntura indica sempre «desplaçant-se».",
+            "PauseWhenTrackingOff": "Posa en pausa les correccions mentre la muntura indica que el seguiment està desactivat. Desactiveu-ho si el controlador de la muntura no pot informar del seu estat de seguiment.",
+            "SaveGuideLog": "Registre de guiatge compatible amb PHD2 a ~/.local/share/NINA/InternalGuider/Logs.",
+            "IncidentRecorder": "Conserva a la memòria els fotogrames de guiatge dels últims minuts i els desa al voltant de pèrdues d'estrella, guiatge descontrolat, problemes de muntura i càmera i pics d'error, per tornar-los a veure i descarregar-los.",
+            "IncidentBudgetMb": "Espai de disc per a les incidències enregistrades; primer s'esborren les més antigues que no s'han conservat. Les incidències del simulador tenen els seus propis 200 MB.",
+            "SimulatorScenario": "Muntura, cel i càmera que simula el simulador integrat.",
+            "SimulateFault": "Injecta una fallada al simulador en marxa: núvols (110 s), un cop a la muntura, una muntura que deixa de respondre (60 s), 3 exposicions fallides o correccions de Dec en la direcció equivocada (120 s)."
+          }
+        },
+        "darks": {
+          "title": "Biblioteca de foscos",
+          "none": "No hi ha cap biblioteca de foscos.",
+          "build": "Crea la biblioteca de foscos",
+          "cancel": "Cancel·la la creació",
+          "stopFirst": "Atureu el bucle i el guiatge per crear una biblioteca de foscos.",
+          "connectFirst": "Connecteu el guiador natiu per crear una biblioteca de foscos.",
+          "dialogTitle": "Crea la biblioteca de foscos",
+          "coverWarning": "Cobriu el telescopi de guiatge",
+          "coverHint": "No hi pot arribar llum a la càmera de guiatge mentre es capturen els foscos.",
+          "minExposure": "Exposició mín.",
+          "maxExposure": "Exposició màx.",
+          "frames": "Fotogrames per exposició",
+          "start": "Inicia",
+          "invalidExposure": "Les exposicions han de ser superiors a 0 s, el màxim com a mínim igual al mínim i com a màxim 60 s.",
+          "invalidFrames": "Els fotogrames han de ser un número enter d'1 a 50.",
+          "exposureDetail": "{exposure} s",
+          "frameDetail": "fotograma {frame}/{frames}",
+          "statusStarting": "Iniciant…",
+          "statusCapturing": "Capturant foscos…",
+          "statusDone": "Biblioteca de foscos completa",
+          "statusFailed": "La biblioteca de foscos ha fallat"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "desconegut",
+          "intro": "El Coach mesura la càmera de guiatge, el cel i la muntura, prova ajustos millors comparats amb els actuals i explica què limita el vostre guiatge. Una sessió completa dura uns 15 minuts.",
+          "introSafe": "Els ajustos temporals sempre es desfan. Vosaltres decidiu quines recomanacions s'apliquen.",
+          "stepsTitle": "Passos",
+          "steps": {
+            "CameraCheck": {
+              "name": "Comprovació de càmera",
+              "desc": "Exposició × guany: SNR, saturació i fluctuació de l'estrella"
+            },
+            "Drift": {
+              "name": "Cel i deriva",
+              "desc": "Sortida de guiatge desactivada: seeing, error periòdic, alineació polar"
+            },
+            "MountResponse": {
+              "name": "Resposta de la muntura",
+              "desc": "Joc en Dec i com reacciona la muntura als polsos"
+            },
+            "Trials": {
+              "name": "Proves",
+              "desc": "Guia amb els vostres ajustos i amb els suggeriments i els compara"
+            },
+            "Calibrating": {
+              "name": "Calibratge",
+              "desc": "Calibra primer perquè no hi ha cap calibratge vàlid"
+            },
+            "Report": {
+              "name": "Informe",
+              "desc": "Pressupost d'error, qualificació i accions ordenades"
+            }
+          },
+          "stepStates": {
+            "Pending": "En espera",
+            "Running": "En curs",
+            "Settling": "Assentant",
+            "Done": "Fet",
+            "Skipped": "Omès",
+            "Failed": "Ha fallat"
+          },
+          "details": {
+            "camera": {
+              "combination": "Exposició {exposureSeconds} · guany {gain} ({index}/{total})"
+            },
+            "calibrating": "Calibrant",
+            "drift": {
+              "measuring": "Mesurant"
+            },
+            "response": {
+              "backlash": "Mesurant el joc en Dec",
+              "pulses": "Provant la resposta als polsos · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Prova {id} · Assentant",
+              "running": "Prova {id}"
+            }
+          },
+          "options": {
+            "advanced": "Opcions avançades",
+            "exposures": "Exposicions de la comprovació de càmera",
+            "exposuresHint": "Cada exposició es prova amb cada guany.",
+            "gains": "Guanys de la comprovació de càmera",
+            "gainsAuto": "Per defecte: el guany actual més dos valors repartits pel rang de la càmera ({min} – {max}).",
+            "gainsNoRange": "La càmera no informa de cap rang de guany. S'usa el guany actual si no n'afegiu d'altres.",
+            "add": "Afegeix",
+            "remove": "Elimina {value}",
+            "exposurePlaceholder": "p. ex. 1.5",
+            "gainPlaceholder": "p. ex. 120",
+            "invalidExposure": "Introduïu una exposició entre 0.01 i 30 s.",
+            "invalidGain": "Introduïu un número enter entre {min} i {max}.",
+            "tooManyValues": "Com a màxim 12 valors.",
+            "tooManyCombinations": "{count} combinacions són massa (màxim 60).",
+            "frames": "Fotogrames per combinació",
+            "driftSeconds": "Mesura de la deriva",
+            "trialSeconds": "Durada per prova",
+            "repeatBaseline": "Repeteix els ajustos actuals al final",
+            "repeatBaselineHint": "Detecta canvis de seeing o núvols durant les proves.",
+            "allowCalibration": "Calibra si cal",
+            "allowCalibrationHint": "Sense calibratge no es poden executar la deriva, la resposta de la muntura ni les proves.",
+            "minutes": "{value} min",
+            "reset": "Restableix els valors per defecte"
+          },
+          "estimate": "≈ {duration}",
+          "total": "Total ≈ {duration}",
+          "calibrationExtra": "Inclou ≈ 2 min per a un calibratge (encara no calibrat).",
+          "noSteps": "Seleccioneu com a mínim un pas.",
+          "guidingWarning": "El guiatge està actiu. El Coach interromp el guiatge normal per fer les mesures, de manera que una exposició en curs de la càmera d'imatge es veurà afectada. Després, el guiatge es reprèn amb els vostres ajustos.",
+          "notConnected": "Connecteu el Guiador Natiu de PINS per usar el Coach.",
+          "calibratingBlock": "Espereu que acabi el calibratge.",
+          "darksBlock": "Espereu que es creï la biblioteca de foscos.",
+          "start": "Inicia el Coach",
+          "starting": "Iniciant…",
+          "startFailed": "No s'ha pogut iniciar el Coach",
+          "phases": {
+            "Complete": "Sessió completada",
+            "Cancelled": "Sessió cancel·lada",
+            "Failed": "La sessió ha fallat"
+          },
+          "outcomeFindings": "Troballes d'aquesta sessió",
+          "run": {
+            "elapsed": "Transcorregut: {elapsed}",
+            "remaining": "Queden ≈ {duration}",
+            "current": "Ara: {step}",
+            "skip": "Omet el pas",
+            "cancel": "Cancel·la la sessió",
+            "confirmCancelTitle": "Cancel·lar la sessió del Coach?",
+            "confirmCancel": "Es conserven els resultats obtinguts fins ara i es desfan els ajustos temporals.",
+            "keepRunning": "Continua",
+            "findingsSoFar": "Troballes fins ara",
+            "waiting": "Esperant les primeres mesures…",
+            "calibratingHint": "El Coach calibra primer. El progrés es mostra a dalt.",
+            "skipFailed": "No s'ha pogut ometre el pas",
+            "cancelFailed": "No s'ha pogut cancel·lar la sessió",
+            "applyLater": "Les recomanacions es poden aplicar quan la sessió hagi acabat."
+          },
+          "camera": {
+            "title": "Exposició × guany",
+            "exposure": "Exposició",
+            "gain": "Guany",
+            "jitter": "Fluctuació",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "Estrelles",
+            "frames": "Fotogrames",
+            "recommended": "Recomanat",
+            "legend": "Color: fluctuació de l'estrella, verd = més estable. Les cel·les ratllades no són utilitzables.",
+            "notMeasured": "encara no mesurat",
+            "tapHint": "Toqueu una cel·la per veure'n els detalls",
+            "noResults": "Encara no hi ha mesures de la càmera."
+          },
+          "drift": {
+            "title": "Deriva sense guiatge",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "Ajust PE",
+            "time": "s",
+            "seeing": "Seeing",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "Error periòdic",
+            "period": "període {value}",
+            "periodUnknown": "període desconegut",
+            "polarAlignment": "Alineació polar",
+            "decAssumed": "Dec suposada 0°",
+            "exposureLimit": "Límit d'exposició",
+            "exposureLimitSub": "exposició de guiatge màx.",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "Esperant mostres de deriva…"
+          },
+          "response": {
+            "title": "Resposta de la muntura",
+            "backlash": "Joc en Dec",
+            "backlashAxisX": "Durada del puls (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measuring": "mesurant…",
+              "Measured": "mesurat",
+              "None": "cap",
+              "Unreliable": "poc fiable",
+              "Skipped": "omès"
+            },
+            "pulses": "Resposta als polsos",
+            "pulsesHint": "Moviment mesurat comparat amb el calibratge, per durada de puls. Per sota del 50 % un puls amb prou feines mou la muntura.",
+            "pulsesNoiseHint": "Gris: el moviment esperat és dins del soroll del seeing, el seu percentatge no diu res de la muntura.",
+            "directions": {
+              "West": "Oest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
+            "minPulse": "Puls efectiu mín.",
+            "asymmetry": "Asimetria",
+            "rateRatio": "Velocitat vs. calibratge",
+            "noData": "Encara no hi ha mesures de la muntura."
+          },
+          "trials": {
+            "title": "Proves",
+            "kinds": {
+              "current": "Ajustos actuals",
+              "suggestion": "Suggeriment del Coach",
+              "variant": "Variant",
+              "currentRepeat": "Ajustos actuals de nou"
+            },
+            "winner": "Millor",
+            "noChanges": "Els vostres ajustos actuals",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "{count} fotogrames",
+            "apply": "Aplica la prova {id}",
+            "noData": "Les proves encara no han començat."
+          },
+          "report": {
+            "title": "Informe",
+            "grade": "Qualificació",
+            "grades": {
+              "excellent": "Excel·lent",
+              "good": "Bona",
+              "fair": "Acceptable",
+              "poor": "Dolenta",
+              "unknown": "Desconeguda"
+            },
+            "gradeRatio": "{ratio} × escala d'imatge",
+            "gradeArcsec": "qualificat per l'RMS en segons d'arc (sense escala d'imatge)",
+            "guidedRms": "RMS guiat",
+            "guidedSources": {
+              "trials": "de les proves",
+              "window": "del darrer guiatge",
+              "none": "cap mesura amb guiatge"
+            },
+            "budget": "Pressupost d'error",
+            "budgetHint": "Les parts se sumen en quadratura: la més gran limita el vostre guiatge.",
+            "budgetParts": {
+              "seeing": "Seeing",
+              "noise": "Soroll del centroide",
+              "mount": "Muntura i altres"
+            },
+            "actions": "Accions recomanades",
+            "noActions": "Res a corregir: el guiatge està limitat per les condicions, no pels ajustos.",
+            "others": "Altres troballes",
+            "measurements": "Mesures",
+            "newSession": "Nova sessió"
+          },
+          "finding": {
+            "why": "Per què importa",
+            "fix": "Com solucionar-ho",
+            "impact": "≈ {value} millor",
+            "apply": "Aplica",
+            "applying": "Aplicant…",
+            "applied": "Aplicat",
+            "applyFailed": "No s'ha pogut aplicar la recomanació",
+            "appliedToast": "Aplicat: {title}",
+            "changes": "Canvis d'ajustos",
+            "more": "Mostra l'explicació",
+            "less": "Amaga l'explicació"
+          },
+          "history": {
+            "title": "Progrés al llarg del temps",
+            "empty": "Aquí apareixen els informes de les vostres sessions, perquè pugueu seguir el vostre progrés.",
+            "metrics": {
+              "rms": "RMS guiat",
+              "grade": "Qualificació",
+              "polarAlignment": "Alineació polar",
+              "backlash": "Joc en Dec",
+              "seeing": "Seeing",
+              "periodicError": "Error periòdic"
+            },
+            "nights": "Nits: {count}",
+            "compare": "Comparat amb l'informe anterior ({date})",
+            "trend": {
+              "better": "millor",
+              "worse": "pitjor",
+              "same": "sense canvis"
+            },
+            "loadFailed": "No s'ha pogut carregar l'historial"
+          },
+          "hint": {
+            "label": "Consell",
+            "dismiss": "Descarta el consell",
+            "apply": "Aplica",
+            "applied": "Aplicat",
+            "applyFailed": "No s'ha pogut aplicar el consell",
+            "open": "Mostra el consell",
+            "close": "Amaga el consell"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "Obre"
+          },
+          "confirmInterruptTitle": "Interrompre el Guiding Coach?",
+          "confirmInterrupt": "Hi ha una sessió del Coach en curs. Aquesta ordre la cancel·la; es desfan els ajustos temporals.",
+          "values": {
+            "level": {
+              "good": "bo",
+              "average": "mitjà",
+              "poor": "dolent"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "Nord",
+              "South": "Sud",
+              "Drift": "Drift"
+            },
+            "direction": {
+              "West": "Oest",
+              "East": "Est",
+              "North": "Nord",
+              "South": "Sud"
+            },
+            "reason": {
+              "saturated": "saturada",
+              "lowSnr": "SNR massa baixa",
+              "noStar": "sense estrella",
+              "guiding": "s'ha iniciat o aturat el guiatge",
+              "dither": "s'ha demanat un dither",
+              "stopped": "s'ha aturat el bucle",
+              "slew": "la muntura s'ha desplaçat",
+              "trackingOff": "la muntura ha deixat de fer seguiment",
+              "disconnect": "s'ha desconnectat un dispositiu",
+              "unknown": "una altra ordre l'ha interrompuda"
+            },
+            "bool": {
+              "true": "sí",
+              "false": "no"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "Millors ajustos de càmera: {exposureSeconds} amb guany {gain}",
+                "why": "Aquesta combinació ha donat la posició d'estrella més estable: fluctuació {jitterArcsec} amb SNR {snr} i {stars} estrelles utilitzables (ajustos actuals: {currentJitterArcsec}). Com menys fluctua la posició mesurada, menys soroll corregeix el guiador com si fos real.",
+                "fix": "Useu aquesta exposició i aquest guany per al guiatge."
+              },
+              "good": {
+                "title": "Els ajustos de càmera ja són els millors",
+                "why": "La vostra exposició i guany actuals han donat la posició d'estrella més estable (fluctuació {jitterArcsec} amb SNR {snr}).",
+                "fix": "No cal canviar res."
+              },
+              "noFeasible": {
+                "title": "No s'ha trobat cap ajust de càmera utilitzable",
+                "why": "Cap exposició ni guany ha donat una estrella sense saturar amb una SNR d'almenys 15 (sobretot: {reason}). El guiador no pot mesurar l'estrella de manera fiable.",
+                "fix": "Comproveu l'enfocament i que el telescopi de guiatge vegi estrelles (rosada, núvols, tapa). Proveu exposicions més llargues, un altre camp o un guany més baix si les estrelles se saturen."
+              },
+              "snrLow": {
+                "title": "L'estrella de guiatge és feble (SNR {snr})",
+                "why": "Amb aquesta SNR, la posició mesurada de l'estrella té un soroll d'uns {noiseArcsec}. El guiador corregeix aquest soroll com si la muntura s'hagués mogut, cosa que augmenta el vostre RMS.",
+                "fix": "Useu una exposició més llarga o un guany més alt, creeu una biblioteca de foscos, enfoqueu la càmera de guiatge o trieu una estrella més brillant."
+              },
+              "saturated": {
+                "title": "L'estrella de guiatge se satura amb {exposureSeconds}, guany {gain}",
+                "why": "Una estrella saturada té el cim pla, de manera que el seu centre no es pot mesurar amb precisió i els moviments petits passen desapercebuts.",
+                "fix": "Baixeu el guany o escurceu l'exposició, o trieu una estrella més feble."
+              },
+              "defocused": {
+                "title": "Les estrelles de guiatge estan desenfocades (HFD {hfdPx})",
+                "why": "Les estrelles grans i difuses ({hfdArcsec}) escampen la llum, cosa que redueix la SNR i fa menys precís el centre mesurat.",
+                "fix": "Enfoqueu la càmera de guiatge fins que les estrelles siguin tan petites com sigui possible i torneu a executar el Coach."
+              },
+              "fewStars": {
+                "title": "Només {stars} estrelles de guiatge utilitzables",
+                "why": "El guiatge multiestrella fa la mitjana del seeing sobre diverses estrelles. Amb menys de 3 estrelles no ajuda gaire.",
+                "fix": "Proveu una exposició més llarga, un guany més alt o una zona del cel amb més estrelles."
+              },
+              "noDarks": {
+                "title": "Sense biblioteca de foscos",
+                "why": "Sense foscos, els píxels calents es poden confondre amb estrelles i afegeixen soroll a les estrelles febles.",
+                "fix": "Cobriu el telescopi de guiatge i creeu una biblioteca de foscos a la pestanya Ajustos."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "Seeing: {rmsArcsec} ({level})",
+                "why": "Amb el guiatge desactivat, l'estrella encara balla {rmsArcsec} a causa de l'atmosfera. Cap guiatge pot seguir aquest moviment ràpid: és el mínim del vostre RMS guiat.",
+                "fix_good": "Bones condicions: ara es noten els petits errors de la muntura, així que val la pena afinar.",
+                "fix": "No persegueixiu el seeing: guieu amb 2 s o més i un moviment mínim just per sobre del seeing."
+              },
+              "minMove": {
+                "title": "Moviment mínim segons el seeing: RA {raPx}, Dec {decPx}",
+                "why": "Les correccions més petites que la fluctuació del seeing només persegueixen l'atmosfera. Un moviment mínim just per sobre les ignora i manté la muntura tranquil·la.",
+                "fix": "Poseu aquests valors al moviment mínim RA i Dec."
+              },
+              "periodicError": {
+                "title": "Error periòdic en RA ±{amplitudeArcsec}",
+                "why": "El cargol sense fi fa que la muntura vagi més ràpida i més lenta de manera cíclica (període {periodSeconds}). En el punt més abrupte l'estrella deriva {maxRateArcsecPerSec}, i el guiador ho ha de corregir dins de cada exposició.",
+                "fix": "Useu exposicions de guiatge més curtes si la velocitat de deriva és alta, entreneu el PEC si la muntura ho admet i reviseu l'engranatge del cargol i l'equilibri en RA.",
+                "notes": {
+                  "learned": "Après per l'algorisme Predictive al llarg de voltes senceres del vis, més precís que aquesta mesura curta.",
+                  "predicting": "L'algorisme Predictive ja el corregeix per avançat."
+                }
+              },
+              "exposureLimit": {
+                "title_good": "L'exposició de guiatge s'adequa a la deriva en RA",
+                "title": "Exposició de guiatge massa llarga per a la deriva en RA",
+                "why": "L'error en RA creix durant cada exposició. Fins a {seconds} es manté per sota del seeing; la vostra exposició és de {currentSeconds}.",
+                "fix_good": "No cal canviar res.",
+                "fix": "Useu una exposició de guiatge de com a màxim {seconds}."
+              },
+              "polarAlignment": {
+                "title": "Error d'alineació polar ≈ {arcmin}",
+                "why": "Un error d'alineació polar fa derivar l'estrella en Dec ({driftArcsecPerMin}) i fa girar lentament el camp. El guiador pot seguir la deriva, però ha de corregir contínuament i la rotació de camp es nota en sessions llargues.",
+                "fix_good": "Excel·lent, no cal fer res.",
+                "fix_info": "Suficient per al guiatge. Afineu-la per a sessions llargues amb focals llargues.",
+                "fix": "Refeu l'alineació polar (p. ex. amb TPPA). Per sota de 3′ és ideal, per sota de 5′ és correcte.",
+                "notes": {
+                  "decAssumed": "La declinació era desconeguda, així que s'ha suposat 0°: a declinacions més altes l'error real és més gran."
+                }
+              },
+              "wind": {
+                "title": "Ratxes de vent o vibracions",
+                "why": "{gustPercent} dels fotogrames mostren salts sobtats. El guiador no els pot corregir a temps, i perseguir-los ho empitjora.",
+                "fix": "Protegiu el telescopi del vent, comproveu que no hi hagi cables fluixos i que el trípode sigui estable, i useu un moviment mínim una mica més alt."
+              },
+              "decGuideMode": {
+                "title": "Guieu Dec en una sola direcció ({mode})",
+                "why": "Dec deriva de manera constant ({driftArcsecPerMin}) i el joc en Dec és de {backlashMs}. Guiant Dec en una sola direcció, contra la deriva, els engranatges no inverteixen mai el sentit, així que el joc ja no importa.",
+                "fix": "Poseu el mode de guiatge Dec a {mode}. S'adapta tot sol a una nova alineació polar, a un gir de meridià o a un objectiu nou."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Joc en Dec: {ms} ({arcsec})",
+                "why": "Quan Dec inverteix el sentit, els engranatges primer han d'absorbir el joc. Durant aquest temps les correccions no fan res; després l'estrella se'n passa i Dec oscil·la.",
+                "fix_good": "No cal fer res.",
+                "fix": "Useu la compensació de joc amb el puls mesurat, reduïu el joc mecànicament o desequilibreu lleugerament Dec. Guiar Dec en una sola direcció l'evita del tot."
+              },
+              "minPulse": {
+                "title": "{axis}: els polsos de menys de {ms} no mouen la muntura",
+                "why": "La fricció estàtica de l'eix {axis} s'empassa els polsos curts. El guiador creu que ha corregit, però l'estrella no es mou.",
+                "fix": "Augmenteu el moviment mínim perquè les correccions durin almenys això, i comproveu l'equilibri i l'engranatge."
+              },
+              "asymmetry": {
+                "title": "{axis} es mou de manera desigual en les dues direccions",
+                "why": "Una direcció desplaça l'estrella {ratio} respecte de l'altra, així que el guiador corregeix de més o de menys segons la direcció.",
+                "fix": "Comproveu l'equilibri (RA lleugerament carregada cap a l'est), l'engranatge i que la velocitat de guiatge sigui la mateixa en les dues direccions."
+              },
+              "rateMismatch": {
+                "title": "La velocitat {axis} no coincideix amb el calibratge",
+                "why": "La muntura es mou {ratio} respecte del que preveu el calibratge, així que cada correcció és massa gran o massa petita.",
+                "fix": "Torneu a calibrar a prop de l'objectiu i comproveu que la velocitat de guiatge de la muntura coincideixi amb el seu ajust."
+              },
+              "good": {
+                "title": "La muntura respon correctament",
+                "why": "Els polsos en totes les direccions mouen la muntura com s'esperava, sense fricció estàtica ni asimetria apreciables.",
+                "fix": "No cal fer res."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "La prova {id} ha guiat millor: {rmsArcsec}",
+                "why": "Amb el mateix cel ha arribat a {rmsArcsec} davant de {baselineRmsArcsec} amb els vostres ajustos actuals ({improvementPercent} millor).",
+                "fix": "Apliqueu la prova {id} per conservar-ne els ajustos."
+              },
+              "noImprovement": {
+                "title": "Els vostres ajustos ja són els millors",
+                "why": "Cap dels suggeriments ha guiat millor que els vostres ajustos actuals ({rmsArcsec}).",
+                "fix": "Conserveu els vostres ajustos."
+              },
+              "conditionsChanged": {
+                "title": "Les condicions han canviat durant les proves",
+                "why": "Els vostres ajustos actuals han guiat un {changePercent} diferent a l'inici i al final, així que el seeing o el cel han canviat entremig. La comparació no és fiable.",
+                "fix": "Repetiu les proves quan les condicions siguin estables, o preneu el guanyador amb prudència."
+              },
+              "nothingToTry": {
+                "title": "Res a provar",
+                "why": "La sessió no ha trobat cap canvi que valgui una prova; els vostres ajustos actuals han guiat amb {rmsArcsec}.",
+                "fix": "Conserveu els vostres ajustos.",
+                "notes": {
+                  "predictive": "L'algorisme Predictive ajusta el seu propi guany i no necessita moviment mínim; només es provarien canvis de càmera, mode Dec i backlash."
+                }
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "El seeing limita el vostre guiatge",
+                "why": "Del vostre RMS guiat de {guidedArcsec}, el seeing sol n'aporta {seeingArcsec}. Els vostres ajustos i la muntura fan la seva feina.",
+                "fix": "No cal ajustar res. El resultat millora amb un seeing millor."
+              },
+              "mountLimited": {
+                "title": "La muntura limita el vostre guiatge",
+                "why": "Del vostre RMS guiat de {guidedArcsec}, uns {mountArcsec} provenen de la muntura (error periòdic, joc, equilibri, fricció estàtica) i no del cel.",
+                "fix": "Reviseu les troballes de la muntura: joc, error periòdic, equilibri i alineació polar."
+              },
+              "noImagingScale": {
+                "title": "Escala d'imatge desconeguda",
+                "why": "Sense la mida de píxel de la càmera d'imatge i la distància focal del telescopi, el Coach no pot comparar l'error de guiatge amb els píxels de la imatge.",
+                "fix": "Introduïu la mida de píxel a la configuració de la càmera i la distància focal a la configuració del telescopi del perfil."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA corregeix de més",
+                "why": "Les correccions en RA canvien de direcció constantment (índex d'oscil·lació {index}): cadascuna empeny l'estrella més enllà de l'objectiu.",
+                "fix": "Reduïu l'agressivitat RA en 0,1."
+              },
+              "raSluggish": {
+                "title": "RA corregeix massa poc",
+                "why": "RA continua derivant cap al mateix costat (índex d'oscil·lació {index}) amb un RMS de {rmsRaArcsec}. Les correccions són massa tímides.",
+                "fix": "Augmenteu l'agressivitat RA en 0,1."
+              },
+              "pulseLimited": {
+                "title": "Els polsos {axis} arriben al màxim",
+                "why": "El {percent} de les correccions {axis} es tallen a la durada màxima del puls, així que els errors grans triguen diversos fotogrames a corregir-se.",
+                "fix": "Augmenteu la durada màxima del puls, o torneu a calibrar si ha canviat la velocitat de guiatge."
+              },
+              "lowSnr": {
+                "title": "L'estrella de guiatge es torna feble (SNR {snr})",
+                "why": "La SNR de l'estrella ha baixat, sovint per núvols, rosada a l'òptica o boira a prop de l'horitzó.",
+                "fix": "Comproveu el cel i el calefactor antirosada, i trieu una altra estrella si continua baixa."
+              },
+              "decDrift": {
+                "title": "Dec deriva de manera constant ({driftArcsecPerMin})",
+                "why": "Gairebé totes les correccions en Dec van en una sola direcció, cosa que apunta a un error d'alineació polar d'uns {arcmin}.",
+                "fix": "Afineu l'alineació polar o guieu Dec en una sola direcció."
+              },
+              "seeingBound": {
+                "title": "El guiatge és al límit del seeing",
+                "why": "El vostre RMS de {rmsArcsec} és a prop del que permet l'atmosfera.",
+                "fix": "Ara mateix no cal ajustar res."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "Ja hi ha una altra sessió del Coach en curs",
+                "why": "Només es pot executar una sessió alhora.",
+                "fix": "Espereu que acabi o cancel·leu-la."
+              },
+              "notConnected": {
+                "title": "Guiador no connectat",
+                "why": "El Coach necessita el guiador natiu connectat amb la seva càmera i la muntura.",
+                "fix": "Connecteu el guiador (i la muntura per al guiatge per polsos) i torneu-ho a provar."
+              },
+              "noStar": {
+                "title": "No s'ha trobat cap estrella de guiatge",
+                "why": "El Coach necessita una estrella per mesurar.",
+                "fix": "Comproveu l'enfocament, els núvols i la tapa, useu una exposició més llarga o moveu-vos a un altre camp."
+              },
+              "noCalibration": {
+                "title": "No calibrat",
+                "why": "La deriva, la resposta de la muntura i les proves mesuren al llarg dels eixos de la muntura, cosa que requereix un calibratge.",
+                "fix": "Calibreu primer o permeteu que el Coach calibri a les opcions avançades."
+              },
+              "calibrationFailed": {
+                "title": "El calibratge ha fallat",
+                "why": "El Coach no ha pogut calibrar, així que els passos que necessiten calibratge no s'han pogut executar.",
+                "fix": "Consulteu el motiu al registre d'esdeveniments, corregiu-lo (p. ex. estrella perduda, massa poc moviment) i torneu a calibrar."
+              },
+              "starLost": {
+                "title": "Estrella de guiatge perduda",
+                "why": "L'estrella ha desaparegut durant una mesura: núvols, un obstacle o ha sortit del fotograma.",
+                "fix": "Espereu un cel clar o trieu una altra estrella i torneu a començar."
+              },
+              "noPulseOutput": {
+                "title": "Sense sortida de guiatge",
+                "why": "La resposta de la muntura i les proves necessiten polsos de guiatge, però no hi ha disponible ni la muntura ni una sortida ST4.",
+                "fix": "Connecteu la muntura (o trieu la sortida ST4 de la càmera) i torneu-ho a provar."
+              },
+              "interrupted": {
+                "title": "Sessió interrompuda",
+                "why": "La sessió s'ha aturat perquè {reason}. Els ajustos temporals s'han desfet.",
+                "fix": "Torneu a iniciar el Coach quan cap altra cosa controli el guiador ni la muntura."
+              },
+              "cameraError": {
+                "title": "Error de càmera",
+                "why": "La càmera de guiatge ha fallat durant una mesura.",
+                "fix": "Comproveu la connexió de la càmera i el registre d'esdeveniments, i torneu-ho a provar."
+              },
+              "internal": {
+                "title": "Error intern",
+                "why": "Alguna cosa inesperada ha fallat al Coach.",
+                "fix": "Torneu-ho a provar. Si torna a passar, compartiu el fitxer de registre."
+              }
+            }
+          }
+        },
+        "incidents": {
+          "title": "Incidències",
+          "intro": "Fotogrames i telemetria dels moments en què el guiatge ha fallat, amb una causa probable.",
+          "empty": "Encara no s'ha enregistrat cap incidència.",
+          "emptyHint": "Mentre guia o calibra, el guiador conserva a la memòria els fotogrames dels últims 2 minuts. Quan es perd l'estrella guia, la muntura o la càmera deixen de respondre, falla un calibratge o l'error fa un salt sobtat, desa els fotogrames d'aquell moment juntament amb el que ha mesurat i enviat, i una primera hipòtesi sobre la causa. Toqueu Marca als controls per desar vosaltres mateixos un moment.",
+          "disabled": "El registrador de vol està desactivat als ajustos del guiador (grup Incidències).",
+          "loadFailed": "No s'han pogut carregar les incidències",
+          "refresh": "Torna a carregar les incidències",
+          "budget": "{used} de {budget} · {count} de {max} incidències",
+          "budgetSimulator": "Simulador: {used} de {budget}",
+          "filterProfile": "Aquest perfil",
+          "filterAll": "Totes",
+          "noneForProfile": "No hi ha incidències per a aquest perfil.",
+          "recording": "Enregistrant…",
+          "recordingHint": "Es desa quan el guiatge s'ha recuperat, més 30 s.",
+          "ongoing": "en curs",
+          "occurrences": "{count}×",
+          "likely": "Probable: {cause}",
+          "analysing": "Causa encara desconeguda",
+          "simulator": "Simulador",
+          "kept": "Conservada",
+          "keep": "Conserva",
+          "release": "Allibera",
+          "keepHint": "Conserva: no s'esborra mai per fer lloc a noves incidències",
+          "releaseHint": "Allibera: es pot esborrar per fer lloc a noves incidències",
+          "delete": "Suprimeix",
+          "deleteConfirm": "Suprimir?",
+          "deleteAll": "Suprimeix totes",
+          "deleteAllConfirm": "Voleu suprimir totes les incidències no conservades? Les conservades es mantenen.",
+          "deleteAllButton": "Suprimeix {count}",
+          "deletedAll": "Suprimides: {count}",
+          "cancel": "Cancel·la",
+          "download": "Descarrega",
+          "downloading": "Preparant la descàrrega…",
+          "downloadSaved": "Desat com a {file}",
+          "downloadFailed": "La descàrrega ha fallat",
+          "replayButton": "Repetició",
+          "actionFailed": "L'acció sobre la incidència ha fallat",
+          "frames": "{count} fotogrames",
+          "framesOmitted": {
+            "diskSpace": "Fotogrames no conservats: poc espai al disc",
+            "budget": "Fotogrames no conservats: quota d'emmagatzematge plena d'incidències conservades"
+          },
+          "endReasons": {
+            "recording": "Enregistrant",
+            "recovered": "Recuperat",
+            "stopped": "Aturat",
+            "cap": "Límit de 5 minuts",
+            "manual": "Marca manual"
+          },
+          "kinds": {
+            "StarLost": "Estrella perduda",
+            "Runaway": "Deriva descontrolada",
+            "MountNotResponding": "La muntura no respon",
+            "SettleTimeout": "Temps d'assentament esgotat",
+            "CameraFailure": "Error de càmera",
+            "MountPaused": "Muntura en pausa",
+            "CalibrationFailed": "El calibratge ha fallat",
+            "PulseLimited": "Límit de pols assolit",
+            "PulseOutputFailed": "Error a la sortida de polsos",
+            "DecFlipCorrected": "Inversió de Dec corregida",
+            "Spike": "Pic d'error",
+            "Manual": "Marca manual"
+          },
+          "savedTitle": "Incidència desada",
+          "savedMessage": "{kind} a les {time}",
+          "mark": {
+            "button": "Marca",
+            "title": "Marca una incidència",
+            "hint": "Desa els últims 2 minuts i els 30 segons següents de guiatge per poder-los tornar a veure.",
+            "note": "Nota (opcional)",
+            "placeholder": "p. ex. ratxa de vent",
+            "submit": "Marca",
+            "done": "Marcada. S'enregistren els 30 s següents i després es desa la incidència.",
+            "failed": "No s'ha pogut marcar"
+          },
+          "replay": {
+            "close": "Tanca la repetició",
+            "loading": "Carregant la incidència…",
+            "loadFailed": "No s'ha pogut carregar la incidència",
+            "frame": "Fotograma {frame}",
+            "position": "{index} de {count}",
+            "noImage": "No s'ha conservat cap imatge d'aquest fotograma",
+            "keyFrame": "Fotograma complet",
+            "context": "Binning {binning}×",
+            "imageFailed": "No s'ha pogut carregar la imatge",
+            "starLost": "No s'ha trobat l'estrella",
+            "starLostStatus": "No s'ha trobat l'estrella: {status}",
+            "play": "Reprodueix",
+            "pause": "Pausa",
+            "stepBack": "Fotograma anterior",
+            "stepForward": "Fotograma següent",
+            "prevMarker": "Marcador anterior",
+            "nextMarker": "Marcador següent",
+            "speed": "Velocitat de reproducció",
+            "scrubber": "Posició del fotograma",
+            "crops": "Estrelles",
+            "noCrops": "No s'han conservat retalls d'estrelles d'aquest fotograma",
+            "graph": "Error de guiatge",
+            "telemetry": "Aquest fotograma",
+            "note": "La vostra nota",
+            "triggers": "Desencadenants",
+            "evidence": "Evidències",
+            "showFrame": "Mostra el fotograma",
+            "searchRegion": "Regió de cerca",
+            "diagnosisPending": "Encara no hi ha diagnòstic: la incidència encara s'està enregistrant."
+          },
+          "tele": {
+            "time": "Hora",
+            "state": "Estat",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "mass": "Massa",
+            "error": "Error",
+            "pulses": "Polsos",
+            "mount": "Muntura",
+            "pierSide": "Costat del pilar",
+            "calibration": "Calibratge",
+            "stars": "Estrelles",
+            "settling": "assentant",
+            "dithering": "dithering",
+            "limited": "limitats",
+            "tracking": "en seguiment",
+            "notTracking": "sense seguiment",
+            "slewing": "desplaçant-se",
+            "parked": "aparcada",
+            "unknown": "desconegut"
+          },
+          "markers": {
+            "trigger": "Desencadenant",
+            "recovered": "Recuperat",
+            "note": "Nota",
+            "gap": "Sense imatges",
+            "end": "Final"
+          },
+          "causes": {
+            "camera": {
+              "title": "Càmera",
+              "why": "Al voltant d'aquest moment faltaven fotogrames o arribaven tard: la càmera de guiatge no els ha lliurat (errors de captura, temps d'espera esgotats, una connexió USB perduda).",
+              "fix": "Comproveu el cable USB i l'alimentació de la càmera, eviteu allargadors USB passius llargs i proveu una exposició més llarga o una amplada de banda USB més baixa."
+            },
+            "mountMoved": {
+              "title": "La muntura s'ha mogut",
+              "why": "La muntura s'ha desplaçat, ha deixat de fer seguiment, s'ha aparcat, s'ha desconnectat o ha canviat de costat del pilar, de manera que l'estrella ha sortit del seu lloc.",
+              "fix": "Poseu el guiatge en pausa abans dels desplaçaments i els girs de meridià (una seqüència ho fa per vosaltres) i comproveu que el seguiment continuï actiu."
+            },
+            "calibrationMismatch": {
+              "title": "El calibratge no encaixa",
+              "why": "Les correccions han allunyat l'estrella en lloc de tornar-la al seu lloc: el calibratge ja no correspon a la muntura (costat del pilar, declinació, velocitat de guiatge o una direcció de Dec invertida).",
+              "fix": "Torneu a calibrar a prop de l'objectiu i comproveu que la muntura informi correctament del seu costat del pilar."
+            },
+            "mountNotMoving": {
+              "title": "La muntura no s'ha mogut",
+              "why": "S'han enviat polsos de correcció, però l'estrella gairebé no s'ha mogut: la muntura no els ha executat.",
+              "fix": "Comproveu la connexió de la muntura i la sortida de guiatge (cable ST-4 o guiatge per polsos), i que els embragatges estiguin ben estrets."
+            },
+            "fieldJump": {
+              "title": "Salt del camp",
+              "why": "Totes les estrelles han saltat alhora la mateixa distància: s'ha mogut tot el telescopi (un cop, una ratxa de vent, un cable enganxat, la muntura que rellisca).",
+              "fix": "Comproveu el recorregut dels cables, els embragatges i l'equilibri, i protegiu el telescopi del vent."
+            },
+            "clouds": {
+              "title": "Núvols",
+              "why": "Totes les estrelles s'han afeblit juntes en menys d'un minut i han tornat més tard: alguna cosa ha passat per davant del cel.",
+              "fix": "No hi ha res a corregir al guiador. Espereu un cel clar; amb núvols prims ajuda una exposició més llarga."
+            },
+            "dew": {
+              "title": "Rosada",
+              "why": "Totes les estrelles s'han afeblit lentament durant uns minuts mentre es feien més grans (HFD): rosada o gebre a l'òptica.",
+              "fix": "Engegueu o apugeu el calefactor antirosada i useu un parasol antirosada."
+            },
+            "guideStarOnly": {
+              "title": "Problema amb l'estrella guia",
+              "why": "Només ha canviat l'estrella guia (perduda, molt més brillant o més feble) mentre les altres estrelles es mantenien normals: la saturació, un píxel calent o una estrella propera han confós el seguiment de l'estrella.",
+              "fix": "Trieu una altra estrella guia, baixeu l'exposició o el guany si se satura, i useu el guiatge multiestrella."
+            },
+            "driftTooFast": {
+              "title": "Deriva massa ràpida",
+              "why": "L'estrella ha derivat de manera constant cap a la vora de la regió de cerca mentre les correccions eren al límit.",
+              "fix": "Augmenteu la durada màxima del puls o l'agressivitat, comproveu l'alineació polar i l'equilibri, i torneu a calibrar si ha canviat la velocitat de guiatge."
+            },
+            "periodicSpike": {
+              "title": "Error periòdic",
+              "why": "El pic es repeteix amb el període del cargol sense fi de la muntura: un error periòdic als engranatges.",
+              "fix": "Useu l'algorisme Predictive RA o el PEC de la muntura; si els pics són grans, netegeu i greixeu el cargol sense fi."
+            },
+            "unclear": {
+              "title": "Indeterminat",
+              "why": "Cap dels patrons coneguts no hi encaixa. Les evidències de sota mostren què s'ha mesurat.",
+              "fix": "Reviseu la repetició; descarregueu la incidència per adjuntar-la a un informe d'error."
+            }
+          },
+          "evidence": {
+            "cameraFailures": "Errors de captura de la càmera: {count}",
+            "frameGap": "Cap fotograma durant {seconds}",
+            "mountSlewing": "La muntura s'estava desplaçant",
+            "mountTrackingOff": "El seguiment de la muntura estava desactivat",
+            "mountParked": "La muntura estava aparcada",
+            "mountDisconnected": "La muntura estava desconnectada",
+            "pierSideChanged": "El costat del pilar ha canviat ({from} → {to})",
+            "errorGrew": "L'error en {axis} ha crescut de {fromPx} a {toPx} en {frames} fotogrames mentre les correccions el contrarestaven",
+            "runaway": "{axis} s'ha descontrolat: les correccions han allunyat encara més l'estrella",
+            "decFlipCorrected": "La direcció de Dec estava invertida i s'ha corregit",
+            "pulsesWithoutMotion": "{pulses} polsos en {axis} haurien d'haver mogut l'estrella {expectedPx}; s'ha mogut {movedPx}",
+            "fieldJump": "{stars} estrelles han saltat juntes {jumpPx} ({jumpArcsec})",
+            "starsFaded": "Totes les estrelles ({stars}) s'han afeblit un {dropPercent} en {seconds}",
+            "recoveredAfter": "Han tornat al cap de {seconds}",
+            "starsFadingSlowly": "Totes les estrelles ({stars}) s'han afeblit un {dropPercent} en {minutes}",
+            "hfdGrew": "Les estrelles s'han fet més grans: l'HFD ha augmentat un {percent}",
+            "primaryOnly": "L'estrella guia s'ha afeblit un {dropPercent}; les altres estrelles ({secondaries}) s'han mantingut normals",
+            "saturated": "L'estrella guia estava saturada",
+            "massJump": "La massa de l'estrella guia ha saltat un {percent}",
+            "driftToEdge": "L'estrella ha derivat en {axis} fins al {percentOfRegion} de la regió de cerca en {frames} fotogrames",
+            "pulsesLimited": "Correccions en {axis} al límit en {frames} fotogrames",
+            "spikeRepeats": "{count} pics anteriors en múltiples del període del cargol sense fi ({periodSeconds})",
+            "spike": "Pic d'error de {errorArcsec} amb un RMS de {rmsArcsec}",
+            "starLost": "Estrella perduda ({status})",
+            "trigger": "Desencadenant: {kind}"
+          },
+          "values": {
+            "axis": {
+              "ra": "RA",
+              "dec": "Dec"
+            },
+            "pierSide": {
+              "East": "est",
+              "West": "oest",
+              "Unknown": "desconegut"
+            },
+            "status": {
+              "LowSnr": "SNR massa baixa",
+              "Saturated": "saturada",
+              "MassChanged": "ha canviat la massa de l'estrella",
+              "NotFound": "no s'ha trobat cap estrella"
+            }
+          },
+          "unknown": "?"
         }
       }
     },

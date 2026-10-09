@@ -33,8 +33,11 @@
         :class="{ 'active-subnav-button': item.value === activeItem }"
         @click="selectItem(item.value)"
         :title="item.name"
+        :aria-label="item.badge ? `${item.name} (${item.badge})` : undefined"
       >
         {{ item.name }}
+        <!-- Optional count badge (e.g. unseen items of a tab) -->
+        <span v-if="item.badge" class="subnav-badge" aria-hidden="true">{{ item.badge }}</span>
       </button>
     </div>
   </div>
@@ -166,6 +169,9 @@ watch(
 }
 .active-subnav-button {
   @apply text-cyan-400;
+}
+.subnav-badge {
+  @apply min-w-4 h-4 px-1 rounded-full bg-status-danger text-[10px] font-bold leading-4 text-white tabular-nums;
 }
 .active-subnav-button::after {
   background-color: rgba(6, 182, 212, 1) !important;
