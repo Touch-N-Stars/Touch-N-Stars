@@ -14,6 +14,9 @@ which saves the frames and telemetry around the moments guiding went wrong (inci
 for a replay. The guide camera is PINS' guide camera slot (`/v2/api/equipment/guidecamera`),
 set up in equipment connect and in the setup wizard like the imaging camera.
 
+The guider itself, including the Guiding Coach and the flight recorder, was developed by
+@aduffeck (https://github.com/aduffeck/pins/tree/pins-guider).
+
 ## Scope
 
 - Runtime modes: PINS only. Everything native is gated on the connected guider's
