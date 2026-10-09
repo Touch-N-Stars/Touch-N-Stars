@@ -85,6 +85,10 @@ The guider itself, including the Guiding Coach and the flight recorder, was deve
   `GuideCameraDriver`/`GuideCameraDevice` settings are legacy on the backend; the app
   has no picker for them. The guider setting `GuideSource` chooses between that camera
   and the built-in simulator.
+- **One guide camera row per guider.** Equipment connect shows a single guide camera
+  picker next to the guider: the PINS slot for the native guider, PHD2's own camera
+  pick for PHD2. The slot's INDI driver and its connect in "connect all" follow the
+  same rule, so NINA never opens the camera PHD2 is using.
 - **Name in the UI is "Native Guider"**, while PINS lists the device as "Internal
   Guider" (id `InternalGuider`). Before the first connect the chooser's display name is
   matched on both words (`isNativeGuiderSelected`).

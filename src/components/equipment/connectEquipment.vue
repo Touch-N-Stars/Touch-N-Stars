@@ -70,16 +70,6 @@
       @open-config="openCameraSettings"
     />
 
-    <!-- PINS' guide camera slot; official NINA's profile has no GuideCameraSettings. -->
-    <selectDevices
-      v-if="store.profileInfo?.GuideCameraSettings"
-      apiAction="guideCameraAction"
-      :deviceName="$t('components.connectEquipment.guideCamera.name')"
-      :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
-      :isConnected="store.guideCameraInfo.Connected"
-      @open-config="openCameraSettings"
-    />
-
     <selectDevices
       apiAction="mountAction"
       :deviceName="$t('components.connectEquipment.mount.name')"
@@ -96,9 +86,19 @@
       @open-config="openFocuserSettings"
     />
 
-    <!-- The PHD2 guide camera picker; the PINS native guider configures its own camera. -->
+    <!-- One guide camera row, owned by the chosen guider: the native guider uses PINS' guide
+         camera slot (official NINA's profile has no GuideCameraSettings), PHD2 opens the camera
+         from its own profile. Showing both would invite picking the same camera twice. -->
+    <selectDevices
+      v-if="isNativeGuiderChoice && store.profileInfo?.GuideCameraSettings"
+      apiAction="guideCameraAction"
+      :deviceName="$t('components.connectEquipment.guideCamera.name')"
+      :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
+      :isConnected="store.guideCameraInfo.Connected"
+      @open-config="openCameraSettings"
+    />
     <selectGuiderCam
-      v-if="store.isPINS && !isNativeGuiderChoice"
+      v-else-if="store.isPINS && !isNativeGuiderChoice"
       :deviceName="$t('components.connectEquipment.guiderCam.name')"
     />
 
@@ -697,7 +697,8 @@ async function connectAll() {
           await apiService.cameraAction('connect');
           break;
         case 'guidecamera':
-          await apiService.guideCameraAction('connect');
+          // Only the native guider uses the slot; for PHD2 it would grab PHD2's camera.
+          if (isNativeGuiderChoice.value) await apiService.guideCameraAction('connect');
           break;
         case 'mount': {
           const canConnect = await checkMountConnectionPermission(t);

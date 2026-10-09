@@ -43,8 +43,9 @@
         </select>
       </div>
 
-      <!-- Guide camera (PINS' second camera slot, same driver list as the camera) -->
-      <div v-if="store.profileInfo?.GuideCameraSettings" class="flex flex-row w-full items-center">
+      <!-- Guide camera (PINS' second camera slot, same driver list as the camera). Only the
+           native guider uses it; PHD2 picks its camera with its own drivers. -->
+      <div v-if="showGuideCamera" class="flex flex-row w-full items-center">
         <label for="indi-guide-camera" class="mr-3 text-gray-200">
           {{ $t('components.connectEquipment.guideCamera.name') }}
         </label>
@@ -226,15 +227,24 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
 import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import { isNativeGuiderSelected } from '@/utils/nativeGuider';
 
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
+const showGuideCamera = computed(
+  () =>
+    Boolean(store.profileInfo?.GuideCameraSettings) &&
+    isNativeGuiderSelected({
+      guiderInfo: store.guiderInfo,
+      profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
+    })
+);
 const loading = ref(true);
 const camera = ref([]);
 const focuser = ref([]);
