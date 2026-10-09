@@ -1,6 +1,6 @@
 {
   "name": "touch-n-stars",
-  "version": "6.4.1-beta1",
+  "version": "6.5.0-beta1",
   "private": true,
   "type": "module",
   "engines": {
@@ -38,6 +38,7 @@
     "generate-whats-new": "node scripts/generate-whats-new.js",
     "create-plugin": "node scripts/generate-plugin.js",
     "ci:verify": "npm run lint && npm run typecheck && npm run test:coverage && npm run format:check && npm run i18n:check && npm run build",
+    "postinstall": "node scripts/lockfile-https.mjs",
     "prepare": "husky"
   },
   "dependencies": {
@@ -73,6 +74,7 @@
     "papaparse": "5.5.4",
     "pinia": "3.0.4",
     "pinia-plugin-persistedstate": "4.7.1",
+    "uplot": "1.6.32",
     "uuid": "14.0.1",
     "vue": "3.5.39",
     "vue-i18n": "11.4.6",

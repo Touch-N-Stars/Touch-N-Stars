@@ -129,3 +129,38 @@ test('guider history goes to the Advanced API, with the after cursor as a query 
   assert.equal(calls[1].url, 'http://10.0.0.5:1888/v2/api/equipment/guider/history');
   assert.deepEqual(calls[1].config, { params: { after: 42 } });
 });
+
+test('camera and guide camera slot share the same calls on their own route', async (t) => {
+  seedInstance({ ip: '10.0.0.5', port: 5000, apiPort: 1888 });
+  const calls = recordGets(t);
+
+  await apiService.startCameraCooling(-10, 5);
+  await apiService.guideCameraCool(-10, 5);
+  await apiService.startCameraWarming(3);
+  await apiService.guideCameraWarm(3);
+  await apiService.setBinningMode('2x2');
+  await apiService.guideCameraSetBinning('2x2');
+  await apiService.cameraAction('info');
+  await apiService.guideCameraAction('info');
+  await apiService.guideCameraCapture(2, 100);
+
+  const base = 'http://10.0.0.5:1888/v2/api/equipment';
+  assert.deepEqual(
+    calls.map((c) => [c.url, c.config?.params]),
+    [
+      [`${base}/camera/cool`, { temperature: -10, minutes: 5 }],
+      [`${base}/guidecamera/cool`, { temperature: -10, minutes: 5 }],
+      [`${base}/camera/warm`, { minutes: 3 }],
+      [`${base}/guidecamera/warm`, { minutes: 3 }],
+      [`${base}/camera/set-binning`, { binning: '2x2' }],
+      [`${base}/guidecamera/set-binning`, { binning: '2x2' }],
+      [`${base}/camera/info`, undefined],
+      [`${base}/guidecamera/info`, undefined],
+      [
+        `${base}/guidecamera/capture`,
+        { duration: 2, quality: 80, resize: true, size: '1280x960', gain: 100 },
+      ],
+    ]
+  );
+  assert.equal(calls.at(-1).config.timeout, 122000, 'capture waits for the exposure');
+});

@@ -43,6 +43,7 @@ import DitherAfterExposuresItem from './DitherAfterExposuresItem.vue';
 import SmartExposureItem from './SmartExposureItem.vue';
 import RunAutofocusItem from './RunAutofocusItem.vue';
 import SequentialContainerItem from './SequentialContainerItem.vue';
+import TargetSchedulerContainerItem from './TargetSchedulerContainerItem.vue';
 import CenterItem from './CenterItem.vue';
 import SlewScopeToRaDecItem from './SlewScopeToRaDecItem.vue';
 import SlewToGuiderCalibrationPositionItem from './SlewToGuiderCalibrationPositionItem.vue';
@@ -132,6 +133,7 @@ export const ITEM_COMPONENTS = {
   'NINA.Sequencer.Container.ParallelContainer': SequentialContainerItem,
   'NINA.Sequencer.SequenceItem.Platesolving.Center': CenterItem,
   'NINA.Sequencer.Container.DeepSkyObjectContainer': DeepSkyObjectContainerItem,
+  'NINA.Plugin.TargetScheduler.Sequencer.TargetSchedulerContainer': TargetSchedulerContainerItem,
   'NINA.Sequencer.SequenceItem.Camera.WarmCamera': WarmCameraItem,
   'NINA.Sequencer.SequenceItem.Camera.CoolCamera': CoolCameraItem,
   'NINA.Sequencer.SequenceItem.Camera.DewHeater': DewHeaterItem,

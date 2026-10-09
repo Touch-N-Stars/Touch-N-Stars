@@ -1,13 +1,17 @@
 <template>
-  <!-- @container: every nesting level costs ~98px of fixed chrome (padding, drag handle,
-       chevron, more-menu), so a deeply nested item can be left with well under 100px for its
-       name and summary. Below 16rem the chrome shrinks to give that space back. Safe despite
-       the draggables below: they all set fallbackOnBody, so the Sortable ghost is appended to
-       document.body and is not affected by the containing block container-type creates. -->
   <div
     class="@container rounded-lg border transition-all duration-200"
     :class="[borderClass, hasChildren && depth > 0 ? depthLeftBorder : '', activeSectionRing]"
   >
+    <!-- Keep this comment inside the root element: a root-level comment turns the template
+         into a Fragment in dev builds, and vuedraggable then attaches its item context to
+         the fragment anchor instead of this div ("this.context is null" on drag start).
+
+         @container: every nesting level costs ~98px of fixed chrome (padding, drag handle,
+         chevron, more-menu), so a deeply nested item can be left with well under 100px for its
+         name and summary. Below 16rem the chrome shrinks to give that space back. Safe despite
+         the draggables below: they all set fallbackOnBody, so the Sortable ghost is appended to
+         document.body and is not affected by the containing block container-type creates. -->
     <!-- Item header row -->
     <div class="flex items-center gap-1.5 px-2 py-2 @max-[16rem]:gap-1 @max-[16rem]:px-1">
       <!-- Drag handle. Sortable picks the handle up by the .drag-handle class, so dropping
@@ -135,9 +139,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1"
+          :class="dropZoneClass(item.Triggers)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onSiblingDragEnd(evt, item.Triggers)"
+          :group="dragGroup('triggers', canAdd)"
+          @change="(evt) => store.applyDrop(evt, item.Triggers, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem
@@ -179,9 +185,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1"
+          :class="dropZoneClass(item.Conditions)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onSiblingDragEnd(evt, item.Conditions)"
+          :group="dragGroup('conditions', canAdd)"
+          @change="(evt) => store.applyDrop(evt, item.Conditions, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem
@@ -218,9 +226,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1.5"
+          :class="dropZoneClass(item.Items)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onChildDragEnd(evt)"
+          :group="dragGroup('items', canAddItems)"
+          @change="(evt) => store.applyDrop(evt, item.Items, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem :item="element" :siblings="item.Items" :depth="depth + 1" />
@@ -229,7 +239,7 @@
 
         <!-- Add item button at bottom, centered -->
         <div
-          v-if="item.Items !== undefined && canAdd && !isLocked"
+          v-if="item.Items !== undefined && canAddItems && !isLocked"
           class="flex justify-center mt-2"
         >
           <AddTypeButton
@@ -265,7 +275,14 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { ITEM_COMPONENTS, GenericItem } from './items/index.js';
 import { displayStatus, isCompositeItem } from '@/utils/sequenceStatus';
 
+const TARGET_SCHEDULER_CONTAINER = 'NINA.Plugin.TargetScheduler.Sequencer.TargetSchedulerContainer';
+
 const NO_ADD_TYPES = new Set(['NINA.Sequencer.SequenceItem.Imaging.SmartExposure']);
+// Target Scheduler fills its container with the planned instructions itself at runtime;
+// triggers and conditions on it stay user-defined.
+const NO_ADD_ITEM_TYPES = new Set([TARGET_SCHEDULER_CONTAINER]);
+// Containers that can hold many generated children start collapsed
+const COLLAPSED_BY_DEFAULT = new Set([TARGET_SCHEDULER_CONTAINER]);
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -274,12 +291,13 @@ const props = defineProps({
 });
 
 const canAdd = computed(() => !NO_ADD_TYPES.has(props.item.FullTypeName));
+const canAddItems = computed(() => canAdd.value && !NO_ADD_ITEM_TYPES.has(props.item.FullTypeName));
 const isNoExpand = computed(() => isCompositeItem(props.item));
 
 const store = useSequenceV2Store();
 const sequenceStore = useSequenceStore();
 const mainStore = apiStore();
-const collapsed = ref(false);
+const collapsed = ref(COLLAPSED_BY_DEFAULT.has(props.item.FullTypeName));
 const activeSection = ref(null);
 const isLocked = computed(() => sequenceStore.sequenceControlsLocked);
 // The sequencer is executing this node right now -- changing, resetting, disabling,
@@ -384,27 +402,17 @@ async function doAction(action) {
   if (action === 'remove') await store.remove(id);
 }
 
-function onChildDragEnd(evt) {
-  onSiblingDragEnd(evt, props.item.Items);
+// Lists of one kind share a Sortable group, so a row can be dropped into the same kind of
+// list of any other container. Without a group (older plugin) it stays in its own list.
+// canReceive false keeps rows out of containers that fill themselves (Target Scheduler).
+function dragGroup(kind, canReceive = true) {
+  if (!store.canMoveAcrossContainers) return null;
+  return { name: `sequence-${kind}`, pull: true, put: canReceive };
 }
 
-function onSiblingDragEnd(evt, siblings) {
-  if (isLocked.value) return;
-  if (evt.oldIndex === evt.newIndex) return;
-  const newIdx = evt.newIndex;
-  const moved = siblings[newIdx];
-  // The handle of a running item carries no .drag-handle class, so this should not
-  // happen -- but vuedraggable has already reordered the local list, and a reorder of
-  // equal length is not corrected by applyStatusUpdates. Reload to undo it.
-  if (moved?.Status === 'RUNNING') {
-    store.loadCurrent();
-    return;
-  }
-  if (newIdx === 0) {
-    store.move(moved.Id, siblings[1]?.Id, false);
-  } else {
-    store.move(moved.Id, siblings[newIdx - 1]?.Id, true);
-  }
+// An empty list has no height; give it some so a row can be dropped into it.
+function dropZoneClass(list) {
+  return store.canMoveAcrossContainers && !list?.length ? 'min-h-6' : '';
 }
 
 function onOutsideClick(e) {

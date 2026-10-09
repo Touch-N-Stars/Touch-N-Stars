@@ -1,24 +1,44 @@
 <template>
-  <div class="grid grid-cols-2 gap-2">
-    <button
-      v-for="layer in layers"
-      :key="layer.key"
-      class="atlas-layer-chip"
-      :class="{ 'is-on': isOn(layer) }"
-      type="button"
-      :aria-pressed="isOn(layer)"
-      @click="toggle(layer)"
+  <div class="grid gap-3">
+    <div class="grid grid-cols-2 gap-2">
+      <button
+        v-for="layer in layers"
+        :key="layer.key"
+        class="atlas-layer-chip"
+        :class="{ 'is-on': isOn(layer) }"
+        type="button"
+        :aria-pressed="isOn(layer)"
+        @click="toggle(layer)"
+      >
+        <span class="tns-dot" :class="isOn(layer) ? 'bg-accent' : 'bg-content-faint'" />
+        <span class="min-w-0 flex-1 text-left leading-tight [overflow-wrap:anywhere]">
+          {{ $t(`components.celestiaAtlas.settings.${layer.label}`) }}
+        </span>
+      </button>
+    </div>
+    <!-- Background switch, only once there is more than one survey to choose from -->
+    <select
+      v-if="installedSurveyIds.length > 1"
+      v-model="surveySource"
+      class="tns-select w-full"
+      :aria-label="$t('components.celestiaAtlas.survey.source_label')"
     >
-      <span class="tns-dot" :class="isOn(layer) ? 'bg-accent' : 'bg-content-faint'" />
-      <span class="min-w-0 flex-1 text-left leading-tight [overflow-wrap:anywhere]">
-        {{ $t(`components.celestiaAtlas.settings.${layer.label}`) }}
-      </span>
-    </button>
+      <option v-for="id in installedSurveyIds" :key="id" :value="id">
+        {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
+      </option>
+    </select>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useCelestiaAtlasSurveyStore } from '@/store/celestiaAtlasSurveyStore';
+import {
+  SKY_SURVEY_IDS,
+  normalizeSkySurveyId,
+  skySurveyLocaleKey,
+} from '@/integrations/celestiaAtlas/offlineSkySurvey';
 
 // Quick toggles for what is drawn on the sky. These are the settings a user flips while
 // observing; everything rarer stays in the settings dialog. `defaultOn` marks the keys
@@ -37,6 +57,17 @@ const layers = [
   { key: 'landscapesVisible', label: 'landscapes_visible' },
   { key: 'hideBelowHorizon', label: 'hide_below_horizon', defaultOn: true },
 ];
+
+// The survey stores are polled by the Atlas view; this only reads them.
+const installedSurveyIds = computed(() =>
+  SKY_SURVEY_IDS.filter((id) => useCelestiaAtlasSurveyStore(id).installedOrder !== null)
+);
+const surveySource = computed({
+  get: () => normalizeSkySurveyId(settingsStore.celestiaAtlas.skySurveySource),
+  set: (id) => {
+    settingsStore.celestiaAtlas.skySurveySource = id;
+  },
+});
 
 function isOn(layer) {
   const value = settingsStore.celestiaAtlas[layer.key];

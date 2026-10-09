@@ -43,6 +43,25 @@
         </select>
       </div>
 
+      <!-- Guide camera (PINS' second camera slot, same driver list as the camera). Only the
+           native guider uses it; PHD2 picks its camera with its own drivers. -->
+      <div v-if="showGuideCamera" class="flex flex-row w-full items-center">
+        <label for="indi-guide-camera" class="mr-3 text-gray-200">
+          {{ $t('components.connectEquipment.guideCamera.name') }}
+        </label>
+        <select
+          id="indi-guide-camera"
+          v-model="selectedGuideCamera"
+          @change="onGuideCameraChange"
+          class="tns-select w-40 ml-auto"
+        >
+          <option value="None">None</option>
+          <option v-for="item in camera" :key="item.Name" :value="item.Name">
+            {{ item.Label }}
+          </option>
+        </select>
+      </div>
+
       <!-- Focuser -->
       <div class="flex flex-row w-full items-center">
         <label for="indi-focuser" class="mr-3 text-gray-200">
@@ -208,15 +227,17 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
-import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import { DEVICE_MAP, isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import { usesGuideCameraSlot } from '@/utils/nativeGuider';
 
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
+const showGuideCamera = computed(() => usesGuideCameraSlot(store));
 const loading = ref(true);
 const camera = ref([]);
 const focuser = ref([]);
@@ -230,6 +251,7 @@ const dome = ref([]);
 const safetymonitor = ref([]);
 
 const selectedCamera = ref('None');
+const selectedGuideCamera = ref('None');
 const selectedFocuser = ref('None');
 const selectedFilterwheel = ref('None');
 const selectedRotator = ref('None');
@@ -249,6 +271,19 @@ const onCameraChange = async () => {
     console.log('[SelectIndi] Camera selected:', selectedCamera.value);
   } catch (error) {
     console.error('[SelectIndi] Error Camera selection:', error);
+  }
+};
+
+const onGuideCameraChange = async () => {
+  // Section and rescan key come from DEVICE_MAP, the one place that knows the slot.
+  const { section, rescanKey } = DEVICE_MAP.guideCameraAction;
+  try {
+    await apiService.profileChangeValue(`${section}-IndiDriver`, selectedGuideCamera.value);
+    await apiService.guideCameraAction('list-devices');
+    equipmentStore.triggerRescan(rescanKey);
+    await store.fetchProfilInfos();
+  } catch (error) {
+    console.error('[SelectIndi] Error guide camera selection:', error);
   }
 };
 
@@ -413,6 +448,7 @@ onMounted(async () => {
 
     // Set saved values from store as defaults
     selectedCamera.value = store.profileInfo?.CameraSettings?.IndiDriver || 'None';
+    selectedGuideCamera.value = store.profileInfo?.GuideCameraSettings?.IndiDriver || 'None';
     selectedFocuser.value = store.profileInfo?.FocuserSettings?.IndiDriver || 'None';
     selectedFilterwheel.value = store.profileInfo?.FilterWheelSettings?.IndiDriver || 'None';
     selectedRotator.value = store.profileInfo?.RotatorSettings?.IndiDriver || 'None';

@@ -454,7 +454,9 @@
         "ditherApply": "Ins Profil übernehmen",
         "ditherApplied": "Übernommen",
         "ditherMissingData": "Für die Dither-Berechnung werden Pixelgröße und Brennweite von Aufnahme- und Guiding-Seite gebraucht. Fülle die Kamera- und Teleskop-Schritte aus und trage oben die Brennweite des Leitrohrs ein.",
-        "applyFailed": "Konnte nicht gespeichert werden: {message}"
+        "applyFailed": "Konnte nicht gespeichert werden: {message}",
+        "nativeCamera": "Guide-Kamera (PINS Native Guider)",
+        "nativeCameraHint": "Der native Guider steuert die Guide-Kamera direkt an. Wähle den INDI-Treiber und das Gerät und gib die Brennweite des Guide-Teleskops ein."
       },
       "done": {
         "title": "Die Ausrüstung ist bereit",
@@ -971,6 +973,7 @@
       "error_loading_sequences": "Fehler beim Laden der Sequenzen",
       "error_loading_sequence": "Fehler beim Laden der Sequenz",
       "editFailed": "NINA hat die Änderung nicht übernommen",
+      "targetNotFound": "Ziel in der Sequenz nicht gefunden. Bitte erneut versuchen.",
       "filter": "Filter",
       "triggers": "Trigger",
       "expandAll": "Alle erweitern",
@@ -1743,6 +1746,1477 @@
         "ditherScale": "Dither-Skalierung",
         "ditherModeRandom": "Zufällig",
         "ditherModeSpiral": "Spirale"
+      },
+      "native": {
+        "notConnected": "PINS Native Guider ist nicht verbunden",
+        "notConnectedHint": "Verbinde den PINS Native Guider auf der Ausrüstungsseite. Die Einstellungen lassen sich schon jetzt bearbeiten.",
+        "states": {
+          "Stopped": "Gestoppt",
+          "Looping": "Loopt",
+          "Selected": "Stern gewählt",
+          "Calibrating": "Kalibrierung",
+          "Guiding": "Guiding",
+          "LostLock": "Stern verloren",
+          "Reacquiring": "Sucht Stern",
+          "Paused": "Pausiert",
+          "Failed": "Fehlgeschlagen",
+          "Disconnected": "Getrennt",
+          "Unknown": "Unbekannt"
+        },
+        "tabs": {
+          "frame": "Frame",
+          "graph": "Graph",
+          "stats": "Stats",
+          "calibration": "Kalibr.",
+          "log": "Log",
+          "settings": "Einstell.",
+          "dashboard": "Guiding",
+          "coach": "Coach",
+          "incidents": "Vorfälle"
+        },
+        "strip": {
+          "settling": "Settling",
+          "live": "Live",
+          "poll": "Polling",
+          "liveHint": "Live-Updates via WebSocket",
+          "pollHint": "WebSocket nicht verfügbar – Update alle 2 s",
+          "rmsTotal": "RMS",
+          "rmsRa": "RA",
+          "rmsDec": "Dec",
+          "snr": "SNR",
+          "mass": "Masse",
+          "hfd": "HFD",
+          "stars": "Sterne",
+          "usedTotal": "verw./gef.",
+          "processing": "Verarb.",
+          "rmsImage": "RMS / Bild",
+          "rmsImageHint": "Gesamt-RMS der Nachführung geteilt durch den Abbildungsmaßstab der Aufnahmekamera. Unter 0,5 ist hervorragend; bei etwa 1 erreicht der Nachführfehler ein ganzes Aufnahmepixel.",
+          "imageScale": "von {scale}″/px",
+          "imageScaleUnknown": "Kamera & Brennweite setzen",
+          "learningChip": "Lernt Himmel & Montierung {percent} %",
+          "learningChipHint": "Prädiktives Guiding lernt aus den Guiding-Frames das Seeing und die Eigenbewegung der Montierung (etwa 120 Frames; das Settling nach einem Dither zählt nicht). Es führt dabei bereits nach und passt sich auch danach laufend an.",
+          "help": {
+            "rms": {
+              "title": "RMS – gesamter Guiding-Fehler",
+              "text": "Wie weit der Leitstern von seiner Lock-Position abweicht, als quadratisches Mittel über die letzten Guiding-Frames (RA und Dec zusammen, ohne das Settling nach Dithern), in Bogensekunden am Himmel und in Pixeln der Guiding-Kamera. Kleiner ist besser; entscheidend ist der Vergleich mit dem Abbildungsmaßstab der Aufnahmekamera (RMS / Bild) und mit dem Seeing. Über 1,2″ wird der Wert orange, über 2″ rot."
+            },
+            "ra": {
+              "title": "RA – Fehler in Rektaszension",
+              "text": "Der RMS-Guiding-Fehler entlang der Rektaszension. RA trägt den periodischen Fehler und Unregelmäßigkeiten des Antriebs und ist daher oft der größere der beiden; deutlich größer als Dec deutet auf periodischen Fehler, Balance oder Wind."
+            },
+            "dec": {
+              "title": "Dec – Fehler in Deklination",
+              "text": "Der RMS-Guiding-Fehler entlang der Deklination. Dec zeigt vor allem die Drift durch Einnordungsfehler und das Spiel (Backlash) des Dec-Getriebes; deutlich größer als RA deutet auf Backlash oder eine schlechte Einnordung."
+            },
+            "snr": {
+              "title": "SNR – Signal-Rausch-Verhältnis",
+              "text": "Wie deutlich sich der Leitstern vom Hintergrundrauschen abhebt. Über 20 ist komfortabel; unter 10 wird die gemessene Position unruhig und der Stern kann verloren gehen – länger belichten, mehr Gain oder einen helleren Stern wählen. Die Masse ist die Gesamthelligkeit des Sterns: ein plötzlicher Einbruch bedeutet Wolken oder einen verlorenen Stern."
+            },
+            "hfd": {
+              "title": "HFD – Halbflussdurchmesser",
+              "text": "Die Größe des Leitsterns in Pixeln der Guiding-Kamera. Sie sollte klein und stabil sein; ein großer oder wachsender HFD bedeutet ein unscharfes Leitrohr oder schlechtes Seeing. Sehr kleine Werte (unter etwa 1,5 px) machen die Position ungenauer."
+            },
+            "stars": {
+              "title": "Sterne – verwendet / gefunden",
+              "text": "Zum Guiding verwendete und im Frame gefundene Sterne. Beim Multi-Star-Guiding wird die Position über die verwendeten Sterne gemittelt, was das Seeing-Rauschen senkt; mehr ist besser. Zu schwache, gesättigte oder zu randnahe Sterne werden nicht verwendet."
+            },
+            "processing": {
+              "title": "Verarb. – Verarbeitungszeit",
+              "text": "Wie lange der Guider für die Auswertung des letzten Frames brauchte (Sternsuche, Positionen, Korrektur). Sie sollte deutlich unter der Belichtungszeit bleiben; über der Hälfte wird sie orange – ein langsamer Rechner oder ein sehr großer Guiding-Frame (Binning hilft)."
+            },
+            "rmsImage": {
+              "title": "RMS / Bild – Fehler in Aufnahmepixeln"
+            }
+          },
+          "periodicErrorChip": "Lernt periodischen Fehler {percent} %",
+          "periodicErrorChipHint": "Prädiktives Guiding lernt den periodischen Fehler deiner RA-Schnecke: Es bestimmt die Schneckenperiode nach etwa fünf Schneckenumdrehungen (sie zählen weiter, wenn das Guiding anhält und neu startet; ein Schwenk, ein Sync oder ein Meridian-Flip beginnt von vorn) oder sofort aus der Einstellung der Schneckenradzähne und prüft, ob die Kurve von Umdrehung zu Umdrehung gleich bleibt (mit eingestellten Zähnen über zwei Umdrehungen). Es guidet währenddessen weiter.",
+          "decDirection": {
+            "Both": "beide",
+            "North": "nur N",
+            "South": "nur S"
+          }
+        },
+        "controls": {
+          "loop": "Loop",
+          "stop": "Stopp",
+          "guide": "Guide",
+          "calibrate": "Kalibrieren",
+          "pause": "Pause",
+          "resume": "Weiter",
+          "dither": "Dither",
+          "clearCalibration": "Kalibr. löschen",
+          "ditherTitle": "Dither",
+          "ditherPixels": "Betrag (Guide-Pixel)",
+          "ditherRaOnly": "Nur RA",
+          "ditherHint": "Verschiebt die Lock-Position zufällig um bis zu diesem Betrag und wartet, bis sich das Guiding eingependelt hat.",
+          "confirmStopTitle": "Guiding stoppen?",
+          "confirmStop": "Das Guiding stoppt, Aufnahmen einer laufenden Sequenz werden dann nicht mehr geguidet.",
+          "confirmCalibrateTitle": "Neu kalibrieren?",
+          "confirmCalibrate": "Die aktuelle Kalibrierung wird verworfen und eine neue Kalibrierung startet.",
+          "confirmClearTitle": "Kalibrierung löschen?",
+          "confirmClear": "Die gespeicherte Kalibrierung wird gelöscht. Beim nächsten Start des Guidings wird erneut kalibriert.",
+          "failed": "{action} fehlgeschlagen",
+          "actions": {
+            "loop": "Loop",
+            "stop": "Stopp",
+            "start-guiding": "Guiding starten",
+            "stop-guiding": "Guiding stoppen",
+            "pause": "Pause",
+            "resume": "Weiter",
+            "dither": "Dither",
+            "clear-calibration": "Kalibrierung löschen",
+            "calibrate": "Kalibrieren",
+            "darks": "Dark-Bibliothek erstellen",
+            "coach-start": "Coach starten",
+            "coach-skip": "Coach-Schritt überspringen",
+            "coach-cancel": "Coach abbrechen",
+            "coach-apply": "Empfehlungen übernehmen"
+          }
+        },
+        "frame": {
+          "title": "Guide-Frame",
+          "stretch": "Stretch",
+          "stretch_low": "Niedrig",
+          "stretch_medium": "Mittel",
+          "stretch_high": "Hoch",
+          "overlay": "Sternoverlay ein-/ausblenden",
+          "resetZoom": "Zoom zurücksetzen",
+          "noFrame": "Noch kein Guide-Frame. Drücke Loop, um Belichtungen zu starten.",
+          "imageFailed": "Laden des Guide-Frames fehlgeschlagen",
+          "starCount": "{count} Sterne",
+          "age": "vor {seconds} s",
+          "weight": "Gewicht",
+          "rejected": "Nicht genutzt",
+          "legendPrimary": "Primärer Stern",
+          "legendSecondary": "Sekundärer Stern",
+          "legendRejected": "Nicht genutzt",
+          "legendLock": "Lock-Position",
+          "tapHint": "Stern antippen für Details",
+          "levelSaturated": "Frame übersättigt ({percent} % der Pixel am Maximalwert): Der Himmel ist noch zu hell oder Belichtung/Gain sind zu hoch. Verringere Belichtung oder Gain.",
+          "levelFlat": "Kein brauchbares Signal im Frame (Pegel {level} von {fullScale}): Schutzkappe noch drauf, Tau, oder belichtet die Kamera nicht?",
+          "levelPartlySaturated": "{percent} % übersättigt"
+        },
+        "profile": {
+          "noStar": "Kein Guide-Stern",
+          "horizontal": "H",
+          "vertical": "V",
+          "radial": "radial",
+          "peak": "Peak",
+          "saturated": "Stern ist übersättigt – verkürze die Belichtung oder wähle einen anderen Stern."
+        },
+        "log": {
+          "title": "Ereignisse",
+          "empty": "Noch keine Ereignisse.",
+          "filter_all": "Alle",
+          "filter_warning": "Warnungen",
+          "filter_critical": "Kritisch",
+          "explanation": "Was ist passiert",
+          "fix": "Lösung",
+          "detail": "Detail",
+          "severity": {
+            "info": "Info",
+            "warning": "Warnung",
+            "critical": "Kritisch"
+          }
+        },
+        "alerts": {
+          "StarLost": {
+            "title": "Guide-Stern verloren",
+            "explanation": "Der Guide-Stern wurde im letzten Frame nicht gefunden. Solange er verloren ist, werden keine Korrekturen gesendet.",
+            "fix": "Prüfe auf Wolken, Hindernisse oder Tau. Der Guider sucht automatisch weiter."
+          },
+          "StarReacquireTimeout": {
+            "title": "Guide-Stern nicht wiedergefunden",
+            "explanation": "Der Stern blieb länger verloren als das Zeitlimit bei Sternverlust; das Guiding wurde gestoppt.",
+            "fix": "Prüfe Himmel und Optik und starte dann das Guiding neu (der Sequenzer-Trigger „Restore Guiding“ kann das übernehmen)."
+          },
+          "StarSaturated": {
+            "title": "Guide-Stern übersättigt",
+            "explanation": "Die Spitze des Guide-Sterns ist gesättigt, was die Genauigkeit der Schwerpunktbestimmung verschlechtert.",
+            "fix": "Verringere Belichtung oder Gain oder lass die automatische Auswahl einen schwächeren Stern wählen."
+          },
+          "StarLowSnr": {
+            "title": "Niedriges Stern-SNR",
+            "explanation": "Das Signal-Rausch-Verhältnis des Guide-Sterns ist niedrig; die gemessenen Schwerpunkte werden unruhig.",
+            "fix": "Erhöhe Belichtung oder Gain oder prüfe den Fokus der Guide-Kamera."
+          },
+          "StarMassChanged": {
+            "title": "Sternhelligkeit abrupt verändert",
+            "explanation": "Die Helligkeit des Sterns hat sich stärker verändert, als die Schwelle für Massenänderung erlaubt; der Frame wurde ignoriert.",
+            "fix": "Meist ziehende Wolken. Hält es an, erhöhe die Schwelle für Massenänderung."
+          },
+          "NoStarFound": {
+            "title": "Kein geeigneter Guide-Stern",
+            "explanation": "Die automatische Sternauswahl hat keinen Stern gefunden, der die Kriterien für SNR und Sättigung erfüllt.",
+            "fix": "Erhöhe Belichtung/Gain, prüfe den Fokus und ob das Guide-Teleskop abgedeckt ist."
+          },
+          "LockPositionNearEdge": {
+            "title": "Lock-Position zu nah am Rand",
+            "explanation": "Die angeforderte Lock-Position liegt für die Suchregion zu nah am Bildrand.",
+            "fix": "Wähle einen Stern weiter weg vom Rand oder verringere den Dither-Betrag."
+          },
+          "PrimaryEstimatedFromSecondaries": {
+            "title": "Primärer Stern geschätzt",
+            "explanation": "Der primäre Stern war nicht messbar; seine Position wurde aus den Sekundärsternen geschätzt.",
+            "fix": "Nichts zu tun. Passiert es häufig, wähle besser einen anderen primären Stern."
+          },
+          "StarReacquired": {
+            "title": "Guide-Stern wiedergefunden",
+            "explanation": "Der Guide-Stern wurde wiedergefunden und das Guiding fortgesetzt.",
+            "fix": "Nichts zu tun."
+          },
+          "CalibrationFailedRaNoMove": {
+            "title": "Kalibrierung fehlgeschlagen: RA hat sich nicht bewegt",
+            "explanation": "Der Stern hat sich während der Kalibrierung in RA nicht weit genug bewegt.",
+            "fix": "Prüfe die Verbindung des Guide-Ausgangs (Montierung/ST4), die Guide-Rate und ob die Montierung nachführt und nicht geparkt ist."
+          },
+          "CalibrationFailedDecNoMove": {
+            "title": "Kalibrierung fehlgeschlagen: Dec hat sich nicht bewegt",
+            "explanation": "Der Stern hat sich während der Kalibrierung in Dec nicht weit genug bewegt.",
+            "fix": "Prüfe Dec-Backlash, Balance und hängende Kabel; oder kalibriere/guide nur in RA."
+          },
+          "CalibrationFailedBacklash": {
+            "title": "Kalibrierung fehlgeschlagen: Dec-Backlash nicht überwunden",
+            "explanation": "Das Dec-Backlash konnte vor der Dec-Kalibrierbewegung nicht überwunden werden.",
+            "fix": "Verringere das Dec-Backlash (Zahneingriff, Dec leicht ostlastig ausbalancieren) und kalibriere neu."
+          },
+          "CalibrationFailedStarLost": {
+            "title": "Kalibrierung fehlgeschlagen: Stern verloren",
+            "explanation": "Der Kalibrierstern ging während der Kalibrierung zu oft verloren.",
+            "fix": "Wähle einen helleren Stern abseits des Rands und versuche es erneut."
+          },
+          "CalibrationFewSteps": {
+            "title": "Kalibrierung mit wenigen Schritten",
+            "explanation": "Die Kalibrierung wurde auf einer Achse mit weniger als 4 Schritten abgeschlossen und ist daher möglicherweise ungenau.",
+            "fix": "Verkleinere den Kalibrierschritt und kalibriere neu."
+          },
+          "CalibrationNotOrthogonal": {
+            "title": "Kalibrierachsen nicht rechtwinklig",
+            "explanation": "Die gemessenen RA- und Dec-Achsen weichen um mehr als 12,5° vom rechten Winkel ab.",
+            "fix": "Prüfe auf Dec-Backlash, hängende Kabel oder Wind während der Kalibrierung; kalibriere neu."
+          },
+          "CalibrationRateRatio": {
+            "title": "Unerwartetes Verhältnis der RA/Dec-Raten",
+            "explanation": "Das Verhältnis der RA- zur Dec-Kalibrierrate passt nicht zur Deklination.",
+            "fix": "Prüfe die von der Montierung gemeldete Deklination und die Guide-Raten; kalibriere nach Möglichkeit nahe Dec 0 neu."
+          },
+          "CalibrationDecRateChanged": {
+            "title": "Dec-Rate weicht von letzter Kalibrierung ab",
+            "explanation": "Die Dec-Rate weicht um mehr als 20 % von der vorherigen Kalibrierung mit demselben Setup ab.",
+            "fix": "Kalibriere neu; prüfe auf Backlash oder ein mechanisches Problem."
+          },
+          "CalibrationInvalidated": {
+            "title": "Kalibrierung ungültig",
+            "explanation": "Die gespeicherte Kalibrierung passt nicht mehr zu Kamera, Binning oder Brennweite.",
+            "fix": "Beim Start des Guidings wird neu kalibriert."
+          },
+          "CalibrationHighDeclination": {
+            "title": "Kalibrierung bei hoher Deklination",
+            "explanation": "Die Kalibrierung wurde mehr als 60° nördlich oder südlich des Himmelsäquators durchgeführt, daher ist die Deklinationskompensation unzuverlässig.",
+            "fix": "Kalibriere für beste Ergebnisse näher am Himmelsäquator neu."
+          },
+          "CalibrationGuideRateChanged": {
+            "title": "Guide-Rate geändert",
+            "explanation": "Die Guide-Rate der Montierung weicht um mehr als 5 % von der Kalibrierung ab.",
+            "fix": "Kalibriere neu oder stelle die vorherige Guide-Rate wieder her."
+          },
+          "NotCalibrated": {
+            "title": "Nicht kalibriert",
+            "explanation": "Guiding erfordert eine Kalibrierung.",
+            "fix": "Starte das Guiding mit Kalibrierung."
+          },
+          "CalibrationFlipped": {
+            "title": "Kalibrierung für Pier-Seite gespiegelt",
+            "explanation": "Die Kalibrierung wurde nach einem Meridian-Flip an die neue Pier-Seite angepasst.",
+            "fix": "Nichts zu tun."
+          },
+          "DecFlipCorrected": {
+            "title": "Dec-Richtung nach Flip korrigiert",
+            "explanation": "Die Dec-Korrekturen haben den Fehler nach dem Meridian-Flip vergrößert, daher wurde die Dec-Richtung umgekehrt und die Montierungseinstellung gespeichert.",
+            "fix": "Nichts zu tun; wirkt das Guiding instabil, empfiehlt sich eine neue Kalibrierung."
+          },
+          "CalibrationReturnIncomplete": {
+            "title": "Rückweg der Kalibrierung unvollständig",
+            "explanation": "Der Stern ist während der Kalibrierung nicht in die Nähe seines Ausgangspunkts zurückgekehrt; das kann auf Backlash oder eine rutschende Klemme hindeuten.",
+            "fix": "Prüfe die Mechanik der Montierung und kalibriere neu."
+          },
+          "PulseLimitReached": {
+            "title": "Korrektur durch max. Puls begrenzt",
+            "explanation": "Mehrere aufeinanderfolgende Korrekturen wurden auf die maximale Pulslänge begrenzt.",
+            "fix": "Prüfe auf eine große Drift (Polausrichtung, hängendes Kabel) oder erhöhe die maximale Pulsdauer."
+          },
+          "RunawayDetected": {
+            "title": "Davonlaufendes Guiding erkannt",
+            "explanation": "Die Korrekturen wurden immer größer, ohne den Fehler zu verringern (z. B. falsches Vorzeichen der Kalibrierung). Das Guiding wurde gestoppt, um die Sitzung zu schützen.",
+            "fix": "Lösche die Kalibrierung und kalibriere neu; prüfe die Montierungseinstellung für Pier-Seite/Dec-Flip."
+          },
+          "MountNotResponding": {
+            "title": "Montierung reagiert nicht auf Korrekturen",
+            "explanation": "Mehrere große Korrekturen haben den Stern nicht bewegt.",
+            "fix": "Prüfe die Verbindung des Guide-Ausgangs (Montierungstreiber/ST4-Kabel) und ob die Montierung nachführt."
+          },
+          "MountSlewing": {
+            "title": "Montierung schwenkt – Guiding pausiert",
+            "explanation": "Das Guiding pausiert automatisch, während die Montierung schwenkt.",
+            "fix": "Nach dem Schwenk läuft das Guiding weiter. Erscheint das, obwohl die Montierung nicht schwenkt, schalte die Guider-Einstellung „Beim Schwenken pausieren“ aus."
+          },
+          "MountParked": {
+            "title": "Montierung geparkt – Guiding pausiert",
+            "explanation": "Die Montierung meldet, dass sie geparkt ist; es werden keine Korrekturen gesendet.",
+            "fix": "Entparke die Montierung und starte das Guiding neu."
+          },
+          "MountTrackingOff": {
+            "title": "Nachführung aus – Guiding pausiert",
+            "explanation": "Die Montierung führt nicht nach; es werden keine Korrekturen gesendet.",
+            "fix": "Schalte die Nachführung ein; das Guiding läuft automatisch weiter. Führt die Montierung nach, kann ihr Treiber das aber nicht melden, schalte die Guider-Einstellung „Ohne Nachführung pausieren“ aus."
+          },
+          "MountDisconnected": {
+            "title": "Montierung getrennt",
+            "explanation": "Die Montierung oder der Guide-Ausgang wurde getrennt.",
+            "fix": "Verbinde die Montierung erneut und starte das Guiding neu."
+          },
+          "PulseOutputFailed": {
+            "title": "Guide-Puls fehlgeschlagen",
+            "explanation": "Ein Guide-Puls konnte nicht gesendet werden.",
+            "fix": "Prüfe die Verbindung zur Montierung bzw. zum Guide-Port."
+          },
+          "PierSideUnknown": {
+            "title": "Pier-Seite unbekannt",
+            "explanation": "Die Montierung meldet ihre Pier-Seite nicht; Meridian-Flips können nicht automatisch ausgeglichen werden.",
+            "fix": "Kalibriere nach jedem Meridian-Flip neu oder verwende einen Treiber, der die Pier-Seite meldet."
+          },
+          "CameraCaptureFailed": {
+            "title": "Guide-Belichtung fehlgeschlagen",
+            "explanation": "Eine Belichtung der Guide-Kamera ist fehlgeschlagen oder hat das Zeitlimit überschritten; neuer Versuch läuft.",
+            "fix": "Prüfe USB-Verbindung und Stromversorgung der Guide-Kamera."
+          },
+          "CameraReconnecting": {
+            "title": "Guide-Kamera wird neu verbunden",
+            "explanation": "Wiederholt fehlgeschlagene Belichtungen; die Guide-Kamera wird neu verbunden.",
+            "fix": "Prüfe USB-Verbindung und Stromversorgung der Guide-Kamera."
+          },
+          "CameraFailed": {
+            "title": "Guide-Kamera ausgefallen",
+            "explanation": "Die Guide-Kamera konnte trotz Wiederholungen und erneutem Verbinden keine Frames liefern. Das Guiding wurde gestoppt.",
+            "fix": "Prüfe Kabel/Stromversorgung, verbinde die Guide-Kamera neu und starte das Guiding neu."
+          },
+          "CameraDisconnected": {
+            "title": "Guide-Kamera getrennt",
+            "explanation": "Die Guide-Kamera ist nicht verbunden.",
+            "fix": "Verbinde die Guide-Kamera."
+          },
+          "FrameProcessingSlow": {
+            "title": "Frame-Verarbeitung langsam",
+            "explanation": "Die Verarbeitung eines Guide-Frames hat länger gedauert als erwartet, was die Korrekturen verzögert.",
+            "fix": "Verringere die maximale Anzahl an Guide-Sternen, nutze Binning oder einen Bildausschnitt oder prüfe die CPU-Last."
+          },
+          "SettleTimeout": {
+            "title": "Zeitlimit beim Einpendeln",
+            "explanation": "Das Guiding hat sich nicht innerhalb des Zeitlimits eingependelt.",
+            "fix": "Erhöhe Toleranz/Zeitlimit fürs Einpendeln oder prüfe die Guiding-Leistung."
+          },
+          "DitherFailed": {
+            "title": "Dither fehlgeschlagen",
+            "explanation": "Dithern erfordert aktives, kalibriertes Guiding.",
+            "fix": "Starte das Guiding vor dem Dithern."
+          },
+          "Internal": {
+            "title": "Interner Guider-Fehler",
+            "explanation": "Im Guider ist ein unerwarteter Fehler aufgetreten.",
+            "fix": "Details stehen im Log; bitte melde das Problem."
+          }
+        },
+        "graph": {
+          "title": "Guide-Graph",
+          "unit": "Einheit",
+          "arcsec": "″",
+          "px": "px",
+          "window": "Angez. Schritte",
+          "yScale": "Y-Skala",
+          "auto": "Auto",
+          "ra": "RA",
+          "dec": "Dec",
+          "raPulse": "RA-Puls",
+          "decPulse": "Dec-Puls",
+          "pulses": "Pulse",
+          "ms": "ms",
+          "snr": "SNR",
+          "mass": "Masse",
+          "snrTitle": "SNR / Sternmasse",
+          "settling": "Settling",
+          "empty": "Noch keine Guide-Schritte. Starte das Guiding, um den Graphen zu sehen.",
+          "markers": {
+            "dither": "Dither",
+            "starlost": "Stern verloren",
+            "settled": "Eingependelt",
+            "settleFailed": "Einpendeln fehlgeschlagen",
+            "calibration": "Kalibrierung"
+          },
+          "rmsTotal": "RMS",
+          "rmsHint": "RMS der letzten {count} angezeigten Guide-Schritte (ohne Einschwingen und Dither-Rückführung)",
+          "rmsLine": "RMS gesamt ({count})",
+          "rmsLineShort": "RMS ({count})",
+          "rmsLineHint": "Gesamt-RMS der jeweils letzten {count} Guiding-Schritte (ohne Settling und Recenter-Bewegungen)"
+        },
+        "target": {
+          "title": "Ziel",
+          "lastSteps": "Letzte {count} Schritte",
+          "ra": "RA",
+          "dec": "Dec",
+          "rms": "RMS",
+          "scale": "Äußerer Ring {value}",
+          "empty": "Noch keine Guide-Schritte."
+        },
+        "stats": {
+          "title": "Statistik",
+          "empty": "Noch keine Statistik. Sie erscheint, sobald das Guiding läuft.",
+          "window": "Fenster",
+          "windowFrames": "{count} Frames",
+          "session": "Sitzung",
+          "rmsTotal": "RMS gesamt",
+          "rmsRa": "RMS RA",
+          "rmsDec": "RMS Dec",
+          "peak": "Peak RA / Dec",
+          "driftRa": "Drift RA",
+          "driftDec": "Drift Dec",
+          "polarAlignment": "Polar-Fehler",
+          "oscillation": "Oszillationsindex",
+          "duty": "Duty RA / Dec",
+          "snr": "SNR min / Ø",
+          "snrLast": "letzte {value}",
+          "stars": "Sterne (Ø)",
+          "starLost": "Stern verloren",
+          "frames": "Frames",
+          "elapsed": "Dauer",
+          "predictive": {
+            "title": "Prädiktives Guiding",
+            "phases": {
+              "Learning": "lernt {percent} %",
+              "Adapted": "eingestellt"
+            },
+            "weight": "Frame-Gewicht {percent} %",
+            "weightHint": "Wie stark jeder neue Guiding-Frame die Schätzung der Position der Montierung verschiebt: niedrig bei schlechtem Seeing (der Fehler eines Frames ist dann meist Seeing), hoch bei einer wandernden Montierung.",
+            "details": "Seeing {seeing} · Montierung {wander} · Drift {drift}",
+            "detailsHint": "Pro Guiding-Frame gelernt (σ): Seeing = Messrauschen durch Luftunruhe und Schwerpunktbestimmung, Montierung = deren zufällige Eigenbewegung; die Drift wird vorhergesagt und vorab korrigiert.",
+            "periodic": {
+              "label": "periodischer Fehler",
+              "teeth": "{teeth} Zähne",
+              "phases": {
+                "Off": "aus",
+                "Learning": "lernt {percent} %",
+                "Ready": "bereit",
+                "Predicting": "sagt voraus",
+                "Negligible": "vernachlässigbar"
+              },
+              "negligible": "Zu klein für eine Vorhersage: Zwischen zwei Guiding-Frames bewegt er den Stern nur um einen kleinen Teil des Seeings.",
+              "helpTitle": "Periodischer Fehler",
+              "help": "Die RA-Schnecke dreht sich alle paar Minuten einmal, und bei jeder Umdrehung läuft die Montierung auf dieselbe Weise etwas zu schnell und zu langsam. Prädiktives Guiding lernt diese Kurve und korrigiert sie, bevor sie sichtbar wird. ± ist der Hauptausschlag der Kurve am aktuellen Ziel, danach folgt die Schneckenperiode. Die Periode wird nach etwa fünf Schneckenumdrehungen gefunden (sie zählen weiter, wenn das Guiding anhält und neu startet; ein Schwenk, ein Sync oder ein Meridian-Flip beginnt von vorn) oder ist aus der Einstellung der Schneckenradzähne sofort bekannt; in beiden Fällen wird die Kurve erst verwendet, wenn sie von Umdrehung zu Umdrehung gleich bleibt, damit ein Wackeln der Montierung nicht für sie gehalten wird. Bereit: gelernt, aber noch nicht besser als Guiding ohne sie. Sagt voraus: wird im Voraus korrigiert. Vernachlässigbar: bei diesem Seeing und dieser Frame-Folge zu klein für eine Vorhersage, auch solange die Kurve noch nicht gleichmäßig ist. Die Kurve wird pro Profil und Montierung gespeichert, die nächste Nacht beginnt also mit ihr."
+            }
+          },
+          "decDirection": {
+            "label": "Dec-Richtung",
+            "directions": {
+              "Both": "beide Richtungen",
+              "North": "nur Nord",
+              "South": "nur Süd"
+            },
+            "drift": "Drift {drift}",
+            "notes": {
+              "unknown": "Beide Richtungen, bis eine deutliche Drift gemessen ist.",
+              "valve": "Beide Richtungen, bis ein großer Fehler auf der anderen Seite zurückgeholt ist (Sicherheitsventil)."
+            },
+            "helpTitle": "Dec-Guide-Modus Drift",
+            "help": "Drift guidet Dec nur in eine Richtung, gegen die Drift, die es beim Guiden misst. So kehrt das Dec-Getriebe nie um und das Backlash spielt keine Rolle mehr. In beide Richtungen guidet es, bis eine deutliche Drift gemessen ist (einige Minuten; eine schwache Drift zählt nicht), beim Settling nach einem Dither und solange der Fehler weit auf der Seite bleibt, die die Richtung nicht korrigieren kann (Sicherheitsventil). Lässt die Drift einige Minuten lang nach oder kehrt sie sich um, guidet es wieder in beide Richtungen oder wechselt die Richtung."
+          }
+        },
+        "calibration": {
+          "title": "Kalibrierung",
+          "inProgress": "Kalibriere…",
+          "notCalibrated": "Noch nicht kalibriert. Starte das Guiding zur automatischen Kalibrierung oder nutze Kalibrieren.",
+          "diagram": "Kalibrierungsvektoren der RA- und Dec-Achse im Guide-Kamera-Bild",
+          "raAxisLabel": "RA",
+          "decAxisLabel": "Dec",
+          "raAngle": "RA-Winkel",
+          "decAngle": "Dec-Winkel",
+          "raRate": "RA-Rate",
+          "decRate": "Dec-Rate",
+          "orthogonality": "Orthogonalitätsfehler",
+          "declination": "Deklination",
+          "pierSide": "Pier-Seite",
+          "binning": "Binning",
+          "steps": "Schritte",
+          "raShort": "RA",
+          "decShort": "Dec",
+          "decFlip": "Dec nach Flip umkehren",
+          "decFlipYes": "Ja",
+          "decFlipNo": "Nein",
+          "lastIssue": "Problem",
+          "pierSides": {
+            "East": "Ost",
+            "West": "West",
+            "Unknown": "Unbekannt",
+            "pierEast": "Ost",
+            "pierWest": "West",
+            "pierUnknown": "Unbekannt"
+          },
+          "justNow": "gerade eben kalibriert",
+          "minutesAgo": "vor {minutes} min kalibriert",
+          "hoursAgo": "vor {hours} h kalibriert",
+          "legendRaOut": "RA hin",
+          "legendRaBack": "RA zurück",
+          "legendBacklash": "Spielausgleich",
+          "legendDecOut": "Dec hin",
+          "legendDecBack": "Dec zurück"
+        },
+        "settings": {
+          "basic": "Einfach",
+          "advanced": "Erweitert",
+          "refresh": "Einstellungen neu laden",
+          "loading": "Lade Einstellungen…",
+          "loadFailed": "Einstellungen konnten nicht geladen werden",
+          "empty": "Keine Einstellungen verfügbar.",
+          "notConnectedHint": "Der native Guider ist nicht verbunden. Änderungen werden im Profil gespeichert; Kameraänderungen wirken erst bei der nächsten Verbindung.",
+          "requiresReconnect": "Wirkt nach erneutem Verbinden",
+          "range": "{min} – {max}",
+          "rangeMin": "min {min}",
+          "rangeMax": "max {max}",
+          "on": "an",
+          "off": "aus",
+          "resetToDefault": "Auf {value} zurücksetzen",
+          "saveFailed": "Einstellung konnte nicht gespeichert werden.",
+          "errors": {
+            "required": "Bitte gib einen Wert ein.",
+            "number": "Bitte gib eine Zahl ein.",
+            "integer": "Bitte gib eine ganze Zahl ein.",
+            "min": "Der Wert muss mindestens {min} sein.",
+            "max": "Der Wert darf höchstens {max} sein.",
+            "option": "Bitte wähle einen der aufgeführten Werte."
+          },
+          "groups": {
+            "Camera": "Kamera",
+            "Stars": "Sterne",
+            "Guiding": "Guiding",
+            "Algorithms": "Algorithmen",
+            "Calibration": "Kalibrierung",
+            "Dither": "Dither",
+            "Safety": "Sicherheit",
+            "Incidents": "Vorfälle"
+          },
+          "reconnectNeeded": "Guider neu verbinden, um die neuen Kameraeinstellungen zu übernehmen.",
+          "reconnectNow": "Jetzt neu verbinden",
+          "reconnecting": "Verbinde neu…",
+          "reconnectFailed": "Neu verbinden fehlgeschlagen: {message}",
+          "actionConfirm": "Das lässt sich nicht rückgängig machen.",
+          "actionCancel": "Abbrechen",
+          "actionOptionConfirm": "„{option}“ ausführen?",
+          "optionLabels": {
+            "DecGuideMode": {
+              "Auto": "Auto – beide Richtungen",
+              "North": "nur Nord",
+              "South": "nur Süd",
+              "Off": "Aus – nur RA",
+              "Drift": "Drift – folgt der Drift (eine Richtung)"
+            }
+          },
+          "labels": {
+            "ExposureSeconds": "Belichtung",
+            "Gain": "Gain",
+            "Offset": "Offset",
+            "Binning": "Binning",
+            "FocalLengthMm": "Guide-Brennweite",
+            "PixelSizeUm": "Pixelgröße (manuell)",
+            "NoiseReduction": "Rauschreduzierung",
+            "UseDarkLibrary": "Dark-Bibliothek verwenden",
+            "PulseOutput": "Guide-Ausgang",
+            "MultiStar": "Multi-Star-Guiding",
+            "MaxStars": "Max. Guide-Sterne",
+            "MinSnr": "Min. Stern-SNR",
+            "SearchRegion": "Suchregion",
+            "MinHfd": "Min. Stern-HFD",
+            "MaxHfd": "Max. Stern-HFD",
+            "MassChangeEnabled": "Änderung der Sternmasse erkennen",
+            "MassChangeThreshold": "Schwelle für Massenänderung",
+            "PrimaryDropoutFallback": "Mit Sekundärsternen weiterguiden",
+            "SaturationAdu": "Sättigung (ADU)",
+            "RaAlgorithm": "RA-Algorithmus",
+            "RaAggression": "RA-Aggression",
+            "RaHysteresis": "RA-Hysterese",
+            "RaLowpass2Aggressiveness": "RA-Lowpass2-Aggressivität",
+            "RaMinMove": "RA-Min-Move",
+            "PeriodicErrorPrediction": "Vorhersage periodischer Fehler",
+            "WormTeeth": "RA-Schneckenradzähne",
+            "ForgetPeriodicError": "Periodischen Fehler vergessen",
+            "DecAlgorithm": "Dec-Algorithmus",
+            "DecAggression": "Dec-Aggression",
+            "DecHysteresis": "Dec-Hysterese",
+            "DecLowpass2Aggressiveness": "Dec-Lowpass2-Aggressivität",
+            "DecFastSwitch": "Dec-Schnellumschaltung",
+            "DecMinMove": "Dec-Min-Move",
+            "DecGuideMode": "Dec-Guide-Modus",
+            "MaxRaDurationMs": "Max. RA-Puls",
+            "MaxDecDurationMs": "Max. Dec-Puls",
+            "MinPulseMs": "Min. Puls",
+            "BacklashCompensation": "Dec-Backlash-Kompensation",
+            "BacklashPulseMs": "Dec-Backlash-Puls",
+            "CalibrationStepMs": "Kalibrierschritt",
+            "ReuseCalibration": "Kalibrierung wiederverwenden",
+            "AssumeOrthogonal": "Dec als orthogonal annehmen",
+            "DecCompensation": "Deklinationskompensation",
+            "DecFlipRequired": "Dec nach Meridian-Flip umkehren",
+            "VerifyDecAfterFlip": "Dec-Selbsttest nach Flip",
+            "DitherMode": "Dither-Modus",
+            "DitherScale": "Dither-Skalierung",
+            "FastRecenter": "Schnelle Rückführung nach Dither",
+            "ReacquireTimeoutSec": "Zeitlimit bei Sternverlust",
+            "MaxPulseDutyPercent": "Max. Korrekturanteil",
+            "PauseWhenSlewing": "Beim Schwenken pausieren",
+            "PauseWhenTrackingOff": "Ohne Nachführung pausieren",
+            "SaveGuideLog": "Guide-Log schreiben",
+            "IncidentRecorder": "Vorfälle aufzeichnen",
+            "IncidentBudgetMb": "Speicherbudget für Vorfälle",
+            "SimulatorScenario": "Simulator-Szenario",
+            "SimulateFault": "Fehler simulieren"
+          },
+          "descriptions": {
+            "Gain": "-1 behält den aktuellen Gain des Treibers bei. (Der Gain von PHD2 ist ein Prozentwert und wird daher nicht übernommen.)",
+            "Offset": "-1 behält den aktuellen Offset des Treibers bei.",
+            "FocalLengthMm": "Brennweite des Guide-Teleskops (oder des Hauptteleskops bei einem OAG). Nötig für Werte in Bogensekunden und für den Kalibrierschritt.",
+            "PixelSizeUm": "0 verwendet die Pixelgröße aus dem Kameratreiber.",
+            "UseDarkLibrary": "Darks abziehen: die eigene Bibliothek des nativen Guiders, falls erstellt, sonst die Dark-Bibliothek von PHD2 für diese Sensorgröße.",
+            "PulseOutput": "Mount: Pulse Guiding über den verbundenen Montierungstreiber. CameraST4: über den ST4-Port der Guide-Kamera.",
+            "PrimaryDropoutFallback": "Fällt der primäre Stern für einen Frame aus, wird seine Position aus ≥3 übereinstimmenden Sekundärsternen geschätzt.",
+            "SaturationAdu": "0 = Sättigung aus dem Sternprofil erkennen.",
+            "RaAlgorithm": "Predictive (experimentell) lernt aus den Guide-Frames das Seeing und die Eigenbewegung der Montierung und korrigiert den Fehler, den es für den nächsten Frame vorhersagt; Aggression, Hysterese und Min-Move gelten dafür daher nicht.",
+            "RaAggression": "Anteil des Fehlers, der pro Frame korrigiert wird (0..1).",
+            "RaMinMove": "0 = automatisch aus dem Abbildungsmaßstab.",
+            "PeriodicErrorPrediction": "Lernt den periodischen Fehler der RA-Schnecke und korrigiert ihn, bevor er sichtbar wird. Die gelernte Kurve wird pro Profil und Montierung gespeichert.",
+            "WormTeeth": "Zähne des RA-Schneckenrads (z. B. 180 bei einer EQ6-R, 135 bei einer HEQ5); ergibt die genaue Schneckenperiode. 0 = Periode aus den Guide-Frames bestimmen.",
+            "ForgetPeriodicError": "Vergisst den für diese Montierung gelernten periodischen Fehler, z. B. nachdem die Schnecke justiert wurde; er wird dann neu gelernt.",
+            "DecAlgorithm": "Predictive (experimentell) lernt aus den Guide-Frames das Seeing und die Eigenbewegung der Montierung und korrigiert den Fehler, den es für den nächsten Frame vorhersagt; Aggression, Hysterese und Min-Move gelten dafür daher nicht.",
+            "DecMinMove": "0 = automatisch aus dem Abbildungsmaßstab.",
+            "DecGuideMode": "Auto guidet Dec in beide Richtungen, Nord oder Süd nur in eine, Aus gar nicht. Drift folgt der Drift: Es misst beim Guiden die Dec-Drift und guidet nur dagegen, sodass das Dec-Getriebe nie umkehrt und das Backlash keine Rolle mehr spielt; es wechselt die Richtung, wenn sich die Drift umkehrt, und guidet in beide Richtungen, bis die Drift bekannt ist, beim Settling und um einen großen Fehler zurückzuholen.",
+            "MinPulseMs": "Kürzere Guide-Pulse werden auf 0 oder auf diese Länge gerundet: Manche Montierungen verarbeiten sehr kurze Pulse falsch. 0 = beliebige Länge.",
+            "CalibrationStepMs": "0 = automatisch aus Optik, Guide-Rate und Deklination.",
+            "ReuseCalibration": "Kalibrierung über Sitzungen hinweg behalten und an Deklination und Pier-Seite anpassen.",
+            "DecFlipRequired": "Einstellung pro Montierung; wird durch den Dec-Selbsttest nach Flip automatisch korrigiert.",
+            "MaxPulseDutyPercent": "Das Guiding stoppt, wenn eine Achse länger als dieser Anteil einer Minute gepulst wird (Schutz vor davonlaufendem Guiding).",
+            "PauseWhenSlewing": "Korrekturen pausieren, solange die Montierung Schwenken oder Parken meldet. Nur ausschalten, wenn der Montierungstreiber dauerhaft „schwenkt“ meldet.",
+            "PauseWhenTrackingOff": "Korrekturen pausieren, solange die Montierung ausgeschaltete Nachführung meldet. Ausschalten, wenn der Montierungstreiber seinen Nachführstatus nicht melden kann.",
+            "SaveGuideLog": "PHD2-kompatibles Guide-Log in ~/.local/share/NINA/InternalGuider/Logs.",
+            "IncidentRecorder": "Hält die letzten Minuten an Guide-Frames im Speicher und speichert sie rund um Sternverluste, davonlaufendes Guiding, Probleme mit Montierung und Kamera sowie Fehlerspitzen – zur Wiedergabe und zum Download.",
+            "IncidentBudgetMb": "Speicherplatz für aufgezeichnete Vorfälle; die ältesten nicht behaltenen werden zuerst gelöscht. Simulator-Vorfälle haben eigene 200 MB.",
+            "SimulatorScenario": "Montierung, Himmel und Kamera, die der integrierte Simulator simuliert.",
+            "SimulateFault": "Speist einen Fehler in den laufenden Simulator ein: Wolken (110 s), ein Stoß gegen die Montierung, eine Montierung, die nicht mehr reagiert (60 s), 3 fehlgeschlagene Belichtungen oder Dec-Korrekturen in die falsche Richtung (120 s)."
+          }
+        },
+        "darks": {
+          "title": "Dark-Bibliothek",
+          "none": "Keine Dark-Bibliothek.",
+          "build": "Dark-Bibliothek erstellen",
+          "cancel": "Erstellung abbrechen",
+          "stopFirst": "Stoppe Loop und Guiding, um eine Dark-Bibliothek zu erstellen.",
+          "connectFirst": "Verbinde den nativen Guider, um eine Dark-Bibliothek zu erstellen.",
+          "dialogTitle": "Dark-Bibliothek erstellen",
+          "coverWarning": "Guide-Teleskop abdecken",
+          "coverHint": "Während der Aufnahme der Darks darf kein Licht auf die Guide-Kamera fallen.",
+          "minExposure": "Min. Belichtung",
+          "maxExposure": "Max. Belichtung",
+          "frames": "Frames pro Belichtung",
+          "start": "Start",
+          "invalidExposure": "Belichtungen müssen über 0 s liegen, das Maximum mindestens dem Minimum entsprechen und höchstens 60 s betragen.",
+          "invalidFrames": "Frames müssen eine ganze Zahl von 1 bis 50 sein.",
+          "exposureDetail": "{exposure} s",
+          "frameDetail": "Frame {frame}/{frames}",
+          "statusStarting": "Startet…",
+          "statusCapturing": "Nimmt Darks auf…",
+          "statusDone": "Dark-Bibliothek fertig",
+          "statusFailed": "Dark-Bibliothek fehlgeschlagen"
+        },
+        "coach": {
+          "title": "Guiding Coach",
+          "unknown": "unbekannt",
+          "intro": "Der Coach misst deine Guide-Kamera, den Himmel und die Montierung, testet bessere Einstellungen gegen deine aktuellen und erklärt, was dein Guiding begrenzt. Eine vollständige Sitzung dauert etwa 15 Minuten.",
+          "introSafe": "Temporäre Einstellungen werden immer wiederhergestellt. Du entscheidest, welche Empfehlungen du übernimmst.",
+          "stepsTitle": "Schritte",
+          "steps": {
+            "CameraCheck": {
+              "name": "Kameratest",
+              "desc": "Belichtung × Gain: SNR, Sättigung und Stern-Jitter"
+            },
+            "Drift": {
+              "name": "Himmel & Drift",
+              "desc": "Ohne Korrekturen: Seeing, periodischer Fehler, Polausrichtung"
+            },
+            "MountResponse": {
+              "name": "Montierungsreaktion",
+              "desc": "Dec-Backlash und wie die Montierung auf Pulse reagiert"
+            },
+            "Trials": {
+              "name": "Testläufe",
+              "desc": "Guidet mit deinen Einstellungen und den Vorschlägen und vergleicht sie"
+            },
+            "Calibrating": {
+              "name": "Kalibrierung",
+              "desc": "Kalibriert zuerst, weil keine gültige Kalibrierung vorliegt"
+            },
+            "Report": {
+              "name": "Bericht",
+              "desc": "Fehlerbudget, Bewertung und priorisierte Maßnahmen"
+            }
+          },
+          "stepStates": {
+            "Pending": "Wartet",
+            "Running": "Läuft",
+            "Settling": "Pendelt ein",
+            "Done": "Fertig",
+            "Skipped": "Übersprungen",
+            "Failed": "Fehlgeschlagen"
+          },
+          "details": {
+            "camera": {
+              "combination": "Belichtung {exposureSeconds} · Gain {gain} ({index}/{total})"
+            },
+            "calibrating": "Kalibriert",
+            "drift": {
+              "measuring": "Misst"
+            },
+            "response": {
+              "backlash": "Misst Dec-Backlash",
+              "pulses": "Testet die Pulsreaktion · {direction} {ms}"
+            },
+            "trial": {
+              "settling": "Testlauf {id} · Pendelt ein",
+              "running": "Testlauf {id}"
+            }
+          },
+          "options": {
+            "advanced": "Erweiterte Optionen",
+            "exposures": "Belichtungen für den Kameratest",
+            "exposuresHint": "Jede Belichtung wird mit jedem Gain getestet.",
+            "gains": "Gain-Werte für den Kameratest",
+            "gainsAuto": "Standard: der aktuelle Gain plus zwei Werte, verteilt über den Kamerabereich ({min} – {max}).",
+            "gainsNoRange": "Die Kamera meldet keinen Gain-Bereich. Es wird der aktuelle Gain verwendet, sofern du keine Werte hinzufügst.",
+            "add": "Hinzufügen",
+            "remove": "{value} entfernen",
+            "exposurePlaceholder": "z. B. 1.5",
+            "gainPlaceholder": "z. B. 120",
+            "invalidExposure": "Gib eine Belichtung zwischen 0,01 und 30 s ein.",
+            "invalidGain": "Gib eine ganze Zahl zwischen {min} und {max} ein.",
+            "tooManyValues": "Höchstens 12 Werte.",
+            "tooManyCombinations": "{count} Kombinationen sind zu viele (höchstens 60).",
+            "frames": "Frames pro Kombination",
+            "driftSeconds": "Drift-Messung",
+            "trialSeconds": "Dauer pro Testlauf",
+            "repeatBaseline": "Aktuelle Einstellungen am Ende wiederholen",
+            "repeatBaselineHint": "Erkennt wechselndes Seeing oder Wolken während der Testläufe.",
+            "allowCalibration": "Bei Bedarf kalibrieren",
+            "allowCalibrationHint": "Ohne Kalibrierung können Drift, Montierungsreaktion und Testläufe nicht laufen.",
+            "minutes": "{value} min",
+            "reset": "Auf Standard zurücksetzen"
+          },
+          "estimate": "≈ {duration}",
+          "total": "Gesamt ≈ {duration}",
+          "calibrationExtra": "Inkl. ≈ 2 min für eine Kalibrierung (noch nicht kalibriert).",
+          "noSteps": "Wähle mindestens einen Schritt.",
+          "guidingWarning": "Das Guiding läuft. Der Coach unterbricht das normale Guiding für seine Messungen, eine laufende Belichtung deiner Aufnahmekamera wird also gestört. Danach läuft das Guiding mit deinen Einstellungen weiter.",
+          "notConnected": "Verbinde den PINS Native Guider, um den Coach zu nutzen.",
+          "calibratingBlock": "Warte, bis die Kalibrierung abgeschlossen ist.",
+          "darksBlock": "Warte, bis die Dark-Bibliothek erstellt ist.",
+          "start": "Coach starten",
+          "starting": "Startet…",
+          "startFailed": "Der Coach konnte nicht starten",
+          "phases": {
+            "Complete": "Sitzung abgeschlossen",
+            "Cancelled": "Sitzung abgebrochen",
+            "Failed": "Sitzung fehlgeschlagen"
+          },
+          "outcomeFindings": "Ergebnisse dieser Sitzung",
+          "run": {
+            "elapsed": "{elapsed} vergangen",
+            "remaining": "noch ≈ {duration}",
+            "current": "Jetzt: {step}",
+            "skip": "Schritt überspringen",
+            "cancel": "Sitzung abbrechen",
+            "confirmCancelTitle": "Coach-Sitzung abbrechen?",
+            "confirmCancel": "Bisherige Ergebnisse bleiben erhalten, temporäre Einstellungen werden wiederhergestellt.",
+            "keepRunning": "Weiterlaufen lassen",
+            "findingsSoFar": "Bisherige Ergebnisse",
+            "waiting": "Warte auf die ersten Messungen…",
+            "calibratingHint": "Der Coach kalibriert zuerst. Der Fortschritt wird oben angezeigt.",
+            "skipFailed": "Überspringen des Schritts fehlgeschlagen",
+            "cancelFailed": "Abbrechen der Sitzung fehlgeschlagen",
+            "applyLater": "Empfehlungen können nach Ende der Sitzung übernommen werden."
+          },
+          "camera": {
+            "title": "Belichtung × Gain",
+            "exposure": "Belichtung",
+            "gain": "Gain",
+            "jitter": "Jitter",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "stars": "Sterne",
+            "frames": "Frames",
+            "recommended": "Empfohlen",
+            "legend": "Farbe: Stern-Jitter, grün = am ruhigsten. Durchgestrichene Zellen sind nicht nutzbar.",
+            "notMeasured": "noch nicht gemessen",
+            "tapHint": "Zelle antippen für Details",
+            "noResults": "Noch keine Kameramessungen."
+          },
+          "drift": {
+            "title": "Drift ohne Guiding",
+            "ra": "RA",
+            "dec": "Dec",
+            "peFit": "PE-Fit",
+            "time": "s",
+            "seeing": "Seeing",
+            "seeingSub": "RA {ra} · Dec {dec}",
+            "periodicError": "Periodischer Fehler",
+            "period": "Periode {value}",
+            "periodUnknown": "Periode unbekannt",
+            "polarAlignment": "Polausrichtung",
+            "decAssumed": "Dec als 0° angenommen",
+            "exposureLimit": "Belichtungsgrenze",
+            "exposureLimitSub": "max. Guide-Belichtung",
+            "progress": "{elapsed} / {target}",
+            "noSamples": "Warte auf Drift-Messwerte…"
+          },
+          "response": {
+            "title": "Montierungsreaktion",
+            "backlash": "Dec-Backlash",
+            "backlashAxisX": "Pulsdauer (ms)",
+            "backlashAxisY": "Dec (″)",
+            "backlashStates": {
+              "Measuring": "wird gemessen…",
+              "Measured": "gemessen",
+              "None": "keins",
+              "Unreliable": "unzuverlässig",
+              "Skipped": "übersprungen"
+            },
+            "pulses": "Pulsreaktion",
+            "pulsesHint": "Gemessene Bewegung im Vergleich zur Kalibrierung, je Pulslänge. Unter 50 % bewegt ein Puls die Montierung kaum.",
+            "pulsesNoiseHint": "Grau: Die erwartete Bewegung liegt im Seeing-Rauschen, der Prozentwert sagt nichts über die Montierung.",
+            "directions": {
+              "West": "West",
+              "East": "Ost",
+              "North": "Nord",
+              "South": "Süd"
+            },
+            "minPulse": "Min. wirksamer Puls",
+            "asymmetry": "Asymmetrie",
+            "rateRatio": "Rate vs. Kalibrierung",
+            "noData": "Noch keine Montierungsmessungen."
+          },
+          "trials": {
+            "title": "Testläufe",
+            "kinds": {
+              "current": "Aktuelle Einstellungen",
+              "suggestion": "Coach-Vorschlag",
+              "variant": "Variante",
+              "currentRepeat": "Aktuelle Einstellungen erneut"
+            },
+            "winner": "Bester",
+            "noChanges": "Deine aktuellen Einstellungen",
+            "raDec": "RA {ra} · Dec {dec}",
+            "frames": "{count} Frames",
+            "apply": "Testlauf {id} übernehmen",
+            "noData": "Die Testläufe haben noch nicht begonnen."
+          },
+          "report": {
+            "title": "Bericht",
+            "grade": "Bewertung",
+            "grades": {
+              "excellent": "Hervorragend",
+              "good": "Gut",
+              "fair": "Mäßig",
+              "poor": "Schlecht",
+              "unknown": "Unbekannt"
+            },
+            "gradeRatio": "{ratio} × Abbildungsmaßstab",
+            "gradeArcsec": "bewertet nach RMS in Bogensekunden (kein Abbildungsmaßstab)",
+            "guidedRms": "Guiding-RMS",
+            "guidedSources": {
+              "trials": "aus den Testläufen",
+              "window": "aus dem letzten Guiding",
+              "none": "keine Guiding-Messung"
+            },
+            "budget": "Fehlerbudget",
+            "budgetHint": "Die Anteile addieren sich quadratisch: Der größte begrenzt dein Guiding.",
+            "budgetParts": {
+              "seeing": "Seeing",
+              "noise": "Zentroid-Rauschen",
+              "mount": "Montierung & Sonstiges"
+            },
+            "actions": "Empfohlene Maßnahmen",
+            "noActions": "Nichts zu beheben: Dein Guiding wird von den Bedingungen begrenzt, nicht von den Einstellungen.",
+            "others": "Weitere Ergebnisse",
+            "measurements": "Messwerte",
+            "newSession": "Neue Sitzung"
+          },
+          "finding": {
+            "why": "Warum das wichtig ist",
+            "fix": "Lösung",
+            "impact": "≈ {value} besser",
+            "apply": "Übernehmen",
+            "applying": "Übernehme…",
+            "applied": "Übernommen",
+            "applyFailed": "Übernehmen der Empfehlung fehlgeschlagen",
+            "appliedToast": "Übernommen: {title}",
+            "changes": "Geänderte Einstellungen",
+            "more": "Erklärung anzeigen",
+            "less": "Erklärung ausblenden"
+          },
+          "history": {
+            "title": "Fortschritt im Zeitverlauf",
+            "empty": "Hier erscheinen die Berichte deiner Sitzungen, damit du deinen Fortschritt verfolgen kannst.",
+            "metrics": {
+              "rms": "Guiding-RMS",
+              "grade": "Bewertung",
+              "polarAlignment": "Polausrichtung",
+              "backlash": "Dec-Backlash",
+              "seeing": "Seeing",
+              "periodicError": "Periodischer Fehler"
+            },
+            "nights": "Nächte: {count}",
+            "compare": "Verglichen mit dem vorherigen Bericht ({date})",
+            "trend": {
+              "better": "besser",
+              "worse": "schlechter",
+              "same": "unverändert"
+            },
+            "loadFailed": "Der Verlauf konnte nicht geladen werden"
+          },
+          "hint": {
+            "label": "Tipp",
+            "dismiss": "Tipp verwerfen",
+            "apply": "Übernehmen",
+            "applied": "Übernommen",
+            "applyFailed": "Übernehmen des Tipps fehlgeschlagen"
+          },
+          "banner": {
+            "running": "Guiding Coach: {step} · {percent} %",
+            "open": "Öffnen"
+          },
+          "confirmInterruptTitle": "Guiding Coach unterbrechen?",
+          "confirmInterrupt": "Eine Coach-Sitzung läuft. Dieser Befehl bricht sie ab; temporäre Einstellungen werden wiederhergestellt.",
+          "values": {
+            "level": {
+              "good": "gut",
+              "average": "mittel",
+              "poor": "schlecht"
+            },
+            "axis": {
+              "Ra": "RA",
+              "Dec": "Dec"
+            },
+            "mode": {
+              "North": "Nord",
+              "South": "Süd",
+              "Drift": "Drift"
+            },
+            "direction": {
+              "West": "West",
+              "East": "Ost",
+              "North": "Nord",
+              "South": "Süd"
+            },
+            "reason": {
+              "saturated": "übersättigt",
+              "lowSnr": "SNR zu niedrig",
+              "noStar": "kein Stern gefunden",
+              "guiding": "das Guiding gestartet oder gestoppt wurde",
+              "dither": "ein Dither angefordert wurde",
+              "stopped": "der Loop gestoppt wurde",
+              "slew": "die Montierung geschwenkt wurde",
+              "trackingOff": "die Montierung die Nachführung beendet hat",
+              "disconnect": "ein Gerät getrennt wurde",
+              "unknown": "ein anderer Befehl sie unterbrochen hat"
+            },
+            "bool": {
+              "true": "ja",
+              "false": "nein"
+            }
+          },
+          "codes": {
+            "camera": {
+              "recommendation": {
+                "title": "Beste Kameraeinstellung: {exposureSeconds} bei Gain {gain}",
+                "why": "Diese Kombination ergab die ruhigste Sternposition: Jitter {jitterArcsec} bei SNR {snr} mit {stars} nutzbaren Sternen (aktuelle Einstellungen: {currentJitterArcsec}). Je weniger die gemessene Position zittert, desto weniger Rauschen korrigiert der Guider, als wäre es echte Bewegung.",
+                "fix": "Verwende diese Belichtung und diesen Gain fürs Guiding."
+              },
+              "good": {
+                "title": "Kameraeinstellungen sind bereits optimal",
+                "why": "Deine aktuelle Belichtung und dein Gain ergaben die ruhigste Sternposition ({jitterArcsec} Jitter bei SNR {snr}).",
+                "fix": "Nichts zu ändern."
+              },
+              "noFeasible": {
+                "title": "Keine brauchbare Kameraeinstellung gefunden",
+                "why": "Keine Kombination aus Belichtung und Gain lieferte einen nicht übersättigten Stern mit einem SNR von mindestens 15 (meist: {reason}). Der Guider kann den Stern nicht zuverlässig messen.",
+                "fix": "Prüfe den Fokus und ob das Guide-Teleskop Sterne sieht (Tau, Wolken, Abdeckung). Versuche längere Belichtungen, ein anderes Feld oder einen niedrigeren Gain, falls die Sterne übersättigen."
+              },
+              "snrLow": {
+                "title": "Guide-Stern ist schwach (SNR {snr})",
+                "why": "Bei diesem SNR rauscht die gemessene Sternposition um etwa {noiseArcsec}. Der Guider korrigiert dieses Rauschen, als hätte sich die Montierung bewegt, und das erhöht dein RMS.",
+                "fix": "Belichte länger oder erhöhe den Gain, erstelle eine Dark-Bibliothek, fokussiere die Guide-Kamera oder wähle einen helleren Stern."
+              },
+              "saturated": {
+                "title": "Guide-Stern übersättigt bei {exposureSeconds}, Gain {gain}",
+                "why": "Ein übersättigter Stern hat eine flache Spitze, daher lässt sich sein Zentrum nicht genau messen und kleine Bewegungen bleiben unbemerkt.",
+                "fix": "Senke den Gain oder verkürze die Belichtung, oder wähle einen schwächeren Stern."
+              },
+              "defocused": {
+                "title": "Guide-Sterne sind unscharf (HFD {hfdPx})",
+                "why": "Große, weiche Sterne ({hfdArcsec}) verteilen ihr Licht, was das SNR senkt und das gemessene Zentrum ungenauer macht.",
+                "fix": "Fokussiere die Guide-Kamera, bis die Sterne so klein wie möglich sind, und starte den Coach dann erneut."
+              },
+              "fewStars": {
+                "title": "Nur {stars} nutzbare Guide-Sterne",
+                "why": "Multi-Star-Guiding mittelt das Seeing über mehrere Sterne. Mit weniger als 3 Sternen hilft es kaum.",
+                "fix": "Versuche eine längere Belichtung, einen höheren Gain oder eine sternreichere Himmelsregion."
+              },
+              "noDarks": {
+                "title": "Keine Dark-Bibliothek",
+                "why": "Ohne Darks können Hotpixel für Sterne gehalten werden und das Rauschen schwacher Sterne erhöhen.",
+                "fix": "Decke das Guide-Teleskop ab und erstelle im Einstellungs-Tab eine Dark-Bibliothek."
+              }
+            },
+            "drift": {
+              "seeing": {
+                "title": "Seeing: {rmsArcsec} ({level})",
+                "why": "Auch bei ausgeschaltetem Guiding tanzt der Stern wegen der Atmosphäre um {rmsArcsec}. Dieser schnellen Bewegung kann kein Guiding folgen: Sie ist die Untergrenze deines Guiding-RMS.",
+                "fix_good": "Gute Bedingungen: Jetzt zeigen sich kleine Fehler der Montierung, Feintuning lohnt sich.",
+                "fix": "Lauf dem Seeing nicht hinterher: Guide mit 2 s oder länger und einem Min-Move knapp über dem Seeing."
+              },
+              "minMove": {
+                "title": "Min-Move aus dem Seeing: RA {raPx}, Dec {decPx}",
+                "why": "Korrekturen, die kleiner als der Seeing-Jitter sind, laufen nur der Atmosphäre hinterher. Ein Min-Move knapp darüber ignoriert sie und hält die Montierung ruhig.",
+                "fix": "Setze den Min-Move für RA und Dec auf diese Werte."
+              },
+              "periodicError": {
+                "title": "Periodischer Fehler in RA ±{amplitudeArcsec}",
+                "why": "Die Schnecke lässt die Montierung zyklisch schneller und langsamer laufen (Periode {periodSeconds}). An der steilsten Stelle driftet der Stern mit {maxRateArcsecPerSec}, und der Guider muss das innerhalb jeder Belichtung auffangen.",
+                "fix": "Nutze kürzere Guide-Belichtungen, wenn die Driftrate hoch ist, trainiere PEC, falls deine Montierung es unterstützt, und prüfe den Schneckeneingriff und die RA-Balance.",
+                "notes": {
+                  "learned": "Von prädiktivem Guiding über ganze Schneckenumdrehungen gelernt, das ist genauer als diese kurze Messung.",
+                  "predicting": "Prädiktives Guiding korrigiert ihn bereits im Voraus."
+                }
+              },
+              "exposureLimit": {
+                "title_good": "Guide-Belichtung passt zur RA-Drift",
+                "title": "Guide-Belichtung zu lang für die RA-Drift",
+                "why": "Der RA-Fehler wächst während jeder Belichtung. Bis {seconds} bleibt er unter dem Seeing; deine Belichtung beträgt {currentSeconds}.",
+                "fix_good": "Nichts zu ändern.",
+                "fix": "Nutze eine Guide-Belichtung von höchstens {seconds}."
+              },
+              "polarAlignment": {
+                "title": "Polausrichtungsfehler ≈ {arcmin}",
+                "why": "Ein Polausrichtungsfehler lässt den Stern in Dec driften ({driftArcsecPerMin}) und dreht langsam das Bildfeld. Der Guider kann der Drift folgen, muss aber ständig korrigieren, und die Bildfelddrehung zeigt sich in langen Sitzungen.",
+                "fix_good": "Hervorragend, nichts zu tun.",
+                "fix_info": "Gut genug fürs Guiding. Für lange Sitzungen mit langer Brennweite verfeinern.",
+                "fix": "Wiederhole die Polausrichtung (z. B. mit TPPA). Unter 3′ ist ideal, unter 5′ in Ordnung.",
+                "notes": {
+                  "decAssumed": "Die Deklination war unbekannt, daher wurde 0° angenommen: Bei höheren Deklinationen ist der tatsächliche Fehler größer."
+                }
+              },
+              "wind": {
+                "title": "Böen oder Vibrationen",
+                "why": "{gustPercent} der Frames zeigen plötzliche Sprünge. Der Guider kann sie nicht rechtzeitig korrigieren, und ihnen hinterherzulaufen macht es schlimmer.",
+                "fix": "Schirme das Teleskop gegen Wind ab, prüfe auf lose Kabel und ein stabiles Stativ und nutze einen etwas höheren Min-Move."
+              },
+              "decGuideMode": {
+                "title": "Dec nur in eine Richtung guiden ({mode})",
+                "why": "Dec driftet gleichmäßig ({driftArcsecPerMin}) und das Dec-Backlash beträgt {backlashMs}. Wird Dec nur in eine Richtung geguidet, gegen die Drift, kehrt das Getriebe nie um und das Backlash spielt keine Rolle mehr.",
+                "fix": "Stelle den Dec-Guide-Modus auf {mode}. Er passt sich von selbst an eine neue Polausrichtung, einen Meridian-Flip oder ein neues Objekt an."
+              }
+            },
+            "response": {
+              "decBacklash": {
+                "title": "Dec-Backlash: {ms} ({arcsec})",
+                "why": "Wenn Dec die Richtung wechselt, muss das Getriebe erst sein Spiel überwinden. Korrekturen bewirken in dieser Zeit nichts, dann schießt der Stern über und Dec schwingt.",
+                "fix_good": "Nichts zu tun.",
+                "fix": "Nutze die Backlash-Kompensation mit dem gemessenen Puls, verringere das Spiel mechanisch oder bringe Dec leicht aus der Balance. Dec nur in eine Richtung zu guiden vermeidet es ganz."
+              },
+              "minPulse": {
+                "title": "{axis}: Pulse unter {ms} bewegen die Montierung nicht",
+                "why": "Haftreibung im {axis}-Antrieb schluckt kurze Pulse. Der Guider glaubt, korrigiert zu haben, aber der Stern bleibt, wo er ist.",
+                "fix": "Erhöhe den Min-Move, damit Korrekturen mindestens so lang sind, und prüfe Balance und Zahneingriff."
+              },
+              "asymmetry": {
+                "title": "{axis} bewegt sich in beide Richtungen ungleich",
+                "why": "Eine Richtung bewegt den Stern {ratio} so weit wie die andere, daher über- oder unterkorrigiert der Guider je nach Richtung.",
+                "fix": "Prüfe die Balance (RA leicht ostlastig), den Zahneingriff und ob die Guide-Rate in beiden Richtungen gleich ist."
+              },
+              "rateMismatch": {
+                "title": "{axis}-Rate weicht von der Kalibrierung ab",
+                "why": "Die Montierung bewegt sich {ratio} so weit, wie die Kalibrierung vorhersagt, daher ist jede Korrektur zu groß oder zu klein.",
+                "fix": "Kalibriere nahe am Ziel neu und prüfe, ob die Guide-Rate der Montierung ihrer Einstellung entspricht."
+              },
+              "good": {
+                "title": "Montierung reagiert sauber",
+                "why": "Pulse in alle Richtungen bewegen die Montierung wie erwartet, ohne merkliche Haftreibung oder Asymmetrie.",
+                "fix": "Nichts zu tun."
+              }
+            },
+            "trials": {
+              "winner": {
+                "title": "Testlauf {id} war am besten: {rmsArcsec}",
+                "why": "Unter demselben Himmel erreichte er {rmsArcsec} gegenüber {baselineRmsArcsec} mit deinen aktuellen Einstellungen ({improvementPercent} besser).",
+                "fix": "Übernimm Testlauf {id}, um seine Einstellungen zu behalten."
+              },
+              "noImprovement": {
+                "title": "Deine Einstellungen sind bereits die besten",
+                "why": "Keiner der Vorschläge guidete besser als deine aktuellen Einstellungen ({rmsArcsec}).",
+                "fix": "Behalte deine Einstellungen."
+              },
+              "conditionsChanged": {
+                "title": "Bedingungen haben sich während der Testläufe geändert",
+                "why": "Mit deinen aktuellen Einstellungen wich das Guiding zwischen Anfang und Ende um {changePercent} ab, also haben sich Seeing oder Himmel dazwischen verändert. Der Vergleich ist nicht zuverlässig.",
+                "fix": "Wiederhole die Testläufe bei stabilen Bedingungen oder bewerte den Sieger mit Vorsicht."
+              },
+              "nothingToTry": {
+                "title": "Nichts zu testen",
+                "why": "Die Sitzung hat keine Änderung gefunden, die einen Test lohnt; deine aktuellen Einstellungen guideten mit {rmsArcsec}.",
+                "fix": "Behalte deine Einstellungen.",
+                "notes": {
+                  "predictive": "Der Predictive-Algorithmus stellt seine Verstärkung selbst ein und braucht kein Min-Move; getestet würden nur Änderungen an Kamera, Dec-Modus und Backlash."
+                }
+              }
+            },
+            "report": {
+              "seeingLimited": {
+                "title": "Das Seeing begrenzt dein Guiding",
+                "why": "Von deinem Guiding-RMS von {guidedArcsec} entfallen allein {seeingArcsec} auf das Seeing. Deine Einstellungen und die Montierung machen ihre Arbeit.",
+                "fix": "Nichts einzustellen. Das Ergebnis wird mit besserem Seeing besser."
+              },
+              "mountLimited": {
+                "title": "Die Montierung begrenzt dein Guiding",
+                "why": "Von deinem Guiding-RMS von {guidedArcsec} stammen etwa {mountArcsec} von der Montierung (periodischer Fehler, Backlash, Balance, Haftreibung) statt vom Himmel.",
+                "fix": "Arbeite die Ergebnisse zur Montierung ab: Backlash, periodischer Fehler, Balance und Polausrichtung."
+              },
+              "noImagingScale": {
+                "title": "Abbildungsmaßstab unbekannt",
+                "why": "Ohne die Pixelgröße der Aufnahmekamera und die Brennweite des Teleskops kann der Coach den Guiding-Fehler nicht mit deinen Bildpixeln vergleichen.",
+                "fix": "Trage im Profil die Pixelgröße in den Kameraeinstellungen und die Brennweite in den Teleskopeinstellungen ein."
+              }
+            },
+            "hint": {
+              "raOscillation": {
+                "title": "RA überkorrigiert",
+                "why": "Die RA-Korrekturen wechseln ständig die Richtung (Oszillationsindex {index}): Jede schiebt den Stern über das Ziel hinaus.",
+                "fix": "Senke die RA-Aggression um 0,1."
+              },
+              "raSluggish": {
+                "title": "RA korrigiert zu wenig",
+                "why": "RA driftet ständig in dieselbe Richtung (Oszillationsindex {index}) bei einem RMS von {rmsRaArcsec}. Die Korrekturen sind zu zaghaft.",
+                "fix": "Erhöhe die RA-Aggression um 0,1."
+              },
+              "pulseLimited": {
+                "title": "{axis}-Pulse erreichen das Maximum",
+                "why": "{percent} der {axis}-Korrekturen werden bei der maximalen Pulslänge abgeschnitten, daher braucht es bei großen Fehlern mehrere Frames, um sie zu korrigieren.",
+                "fix": "Erhöhe die maximale Pulslänge oder kalibriere neu, falls sich die Guide-Rate geändert hat."
+              },
+              "lowSnr": {
+                "title": "Guide-Stern wird schwächer (SNR {snr})",
+                "why": "Das SNR des Sterns ist gesunken, oft wegen Wolken, Tau auf der Optik oder Dunst in Horizontnähe.",
+                "fix": "Prüfe den Himmel und die Taukappenheizung und wähle einen anderen Stern, falls das SNR niedrig bleibt."
+              },
+              "decDrift": {
+                "title": "Dec driftet gleichmäßig ({driftArcsecPerMin})",
+                "why": "Fast alle Dec-Korrekturen gehen in eine Richtung, was auf einen Polausrichtungsfehler von etwa {arcmin} hindeutet.",
+                "fix": "Verbessere die Polausrichtung oder guide Dec nur in eine Richtung."
+              },
+              "seeingBound": {
+                "title": "Guiding ist am Seeing-Limit",
+                "why": "Dein RMS von {rmsArcsec} liegt nah an dem, was die Atmosphäre zulässt.",
+                "fix": "Im Moment nichts einzustellen."
+              }
+            },
+            "coach": {
+              "busy": {
+                "title": "Eine andere Coach-Sitzung läuft",
+                "why": "Es kann immer nur eine Sitzung laufen.",
+                "fix": "Warte, bis sie fertig ist, oder brich sie ab."
+              },
+              "notConnected": {
+                "title": "Guider nicht verbunden",
+                "why": "Der Coach braucht den verbundenen nativen Guider mit Kamera und Montierung.",
+                "fix": "Verbinde den Guider (und die Montierung für Pulse Guiding) und versuche es erneut."
+              },
+              "noStar": {
+                "title": "Kein Guide-Stern gefunden",
+                "why": "Der Coach braucht einen Stern zum Messen.",
+                "fix": "Prüfe Fokus, Wolken und Abdeckung, belichte länger oder wechsle zu einem anderen Feld."
+              },
+              "noCalibration": {
+                "title": "Nicht kalibriert",
+                "why": "Drift, Montierungsreaktion und Testläufe messen entlang der Montierungsachsen, dafür ist eine Kalibrierung nötig.",
+                "fix": "Kalibriere zuerst oder erlaube dem Coach in den erweiterten Optionen zu kalibrieren."
+              },
+              "calibrationFailed": {
+                "title": "Kalibrierung fehlgeschlagen",
+                "why": "Der Coach konnte nicht kalibrieren, daher konnten die Schritte, die eine Kalibrierung brauchen, nicht laufen.",
+                "fix": "Schau im Log nach dem Grund, behebe ihn (z. B. Stern verloren, zu wenig Bewegung) und kalibriere erneut."
+              },
+              "starLost": {
+                "title": "Guide-Stern verloren",
+                "why": "Der Stern ist während einer Messung verschwunden: Wolken, ein Hindernis, oder er hat das Bildfeld verlassen.",
+                "fix": "Warte auf klaren Himmel oder wähle einen anderen Stern und starte dann erneut."
+              },
+              "noPulseOutput": {
+                "title": "Kein Guide-Ausgang",
+                "why": "Montierungsreaktion und Testläufe brauchen Guide-Pulse, aber weder die Montierung noch ein ST4-Ausgang ist verfügbar.",
+                "fix": "Verbinde die Montierung (oder wähle den ST4-Ausgang der Kamera) und versuche es erneut."
+              },
+              "interrupted": {
+                "title": "Sitzung unterbrochen",
+                "why": "Die Sitzung wurde beendet, weil {reason}. Temporäre Einstellungen wurden wiederhergestellt.",
+                "fix": "Starte den Coach erneut, wenn nichts anderes den Guider oder die Montierung steuert."
+              },
+              "cameraError": {
+                "title": "Kamerafehler",
+                "why": "Die Guide-Kamera ist während einer Messung ausgefallen.",
+                "fix": "Prüfe die Kameraverbindung und das Log und versuche es dann erneut."
+              },
+              "internal": {
+                "title": "Interner Fehler",
+                "why": "Im Coach ist etwas Unerwartetes schiefgelaufen.",
+                "fix": "Versuche es erneut. Wenn es wieder passiert, teile die Logdatei."
+              }
+            }
+          }
+        },
+        "incidents": {
+          "title": "Vorfälle",
+          "intro": "Frames und Telemetrie rund um die Momente, in denen das Guiding schiefging, mit einer wahrscheinlichen Ursache.",
+          "empty": "Noch keine Vorfälle aufgezeichnet.",
+          "emptyHint": "Beim Guiding und Kalibrieren hält der Guider die Frames der letzten 2 Minuten im Speicher. Wenn der Guide-Stern verloren geht, die Montierung oder die Kamera nicht mehr reagiert, eine Kalibrierung fehlschlägt oder der Fehler plötzlich springt, speichert er die Frames rund um diesen Moment zusammen mit dem, was er gemessen und gesendet hat, und einer ersten Vermutung zur Ursache. Tippe in der Steuerung auf Markieren, um selbst einen Moment zu speichern.",
+          "disabled": "Der Flugschreiber ist in den Guider-Einstellungen ausgeschaltet (Gruppe Vorfälle).",
+          "loadFailed": "Vorfälle konnten nicht geladen werden",
+          "refresh": "Vorfälle neu laden",
+          "budget": "{used} von {budget} · {count} von {max} Vorfällen",
+          "budgetSimulator": "Simulator: {used} von {budget}",
+          "filterProfile": "Dieses Profil",
+          "filterAll": "Alle",
+          "noneForProfile": "Keine Vorfälle für dieses Profil.",
+          "recording": "Zeichnet auf…",
+          "recordingHint": "Wird gespeichert, sobald das Guiding wieder normal läuft, plus 30 s.",
+          "ongoing": "läuft",
+          "occurrences": "{count}×",
+          "likely": "Vermutlich: {cause}",
+          "analysing": "Ursache noch unbekannt",
+          "simulator": "Simulator",
+          "kept": "Behalten",
+          "keep": "Behalten",
+          "release": "Freigeben",
+          "keepHint": "Behalten: wird nie gelöscht, um Platz für neue Vorfälle zu schaffen",
+          "releaseHint": "Freigeben: darf gelöscht werden, um Platz für neue Vorfälle zu schaffen",
+          "delete": "Löschen",
+          "deleteConfirm": "Löschen?",
+          "deleteAll": "Alle löschen",
+          "deleteAllConfirm": "Alle nicht behaltenen Vorfälle löschen? Behaltene Vorfälle bleiben erhalten.",
+          "deleteAllButton": "{count} löschen",
+          "deletedAll": "Gelöscht: {count}",
+          "cancel": "Abbrechen",
+          "download": "Download",
+          "downloading": "Download wird vorbereitet…",
+          "downloadSaved": "Gespeichert als {file}",
+          "downloadFailed": "Download fehlgeschlagen",
+          "replayButton": "Wiedergabe",
+          "actionFailed": "Aktion für den Vorfall fehlgeschlagen",
+          "frames": "{count} Frames",
+          "framesOmitted": {
+            "diskSpace": "Frames nicht behalten: wenig Speicherplatz",
+            "budget": "Frames nicht behalten: Speicherbudget voll mit behaltenen Vorfällen"
+          },
+          "endReasons": {
+            "recording": "Aufzeichnung",
+            "recovered": "Wieder normal",
+            "stopped": "Gestoppt",
+            "cap": "5-Minuten-Limit",
+            "manual": "Markiert"
+          },
+          "kinds": {
+            "StarLost": "Stern verloren",
+            "Runaway": "Stern läuft weg",
+            "MountNotResponding": "Montierung reagiert nicht",
+            "SettleTimeout": "Zeitlimit beim Einpendeln",
+            "CameraFailure": "Kamerafehler",
+            "MountPaused": "Montierung pausiert",
+            "CalibrationFailed": "Kalibrierung fehlgeschlagen",
+            "PulseLimited": "Pulslimit erreicht",
+            "PulseOutputFailed": "Pulsausgabe fehlgeschlagen",
+            "DecFlipCorrected": "Dec-Umkehr korrigiert",
+            "Spike": "Fehlerspitze",
+            "Manual": "Manuelle Markierung"
+          },
+          "savedTitle": "Vorfall gespeichert",
+          "savedMessage": "{kind} um {time}",
+          "mark": {
+            "button": "Markieren",
+            "title": "Vorfall markieren",
+            "hint": "Speichert die letzten 2 Minuten und die nächsten 30 Sekunden des Guidings für eine Wiedergabe.",
+            "note": "Notiz (optional)",
+            "placeholder": "z. B. Windböe",
+            "submit": "Markieren",
+            "done": "Markiert. Die nächsten 30 s werden aufgezeichnet, dann wird der Vorfall gespeichert.",
+            "failed": "Markieren fehlgeschlagen"
+          },
+          "replay": {
+            "close": "Wiedergabe schließen",
+            "loading": "Lade Vorfall…",
+            "loadFailed": "Der Vorfall konnte nicht geladen werden",
+            "frame": "Frame {frame}",
+            "position": "{index} von {count}",
+            "noImage": "Für diesen Frame wurde kein Bild behalten",
+            "keyFrame": "Vollbild",
+            "context": "Binning {binning}×",
+            "imageFailed": "Das Bild konnte nicht geladen werden",
+            "starLost": "Stern nicht gefunden",
+            "starLostStatus": "Stern nicht gefunden: {status}",
+            "play": "Abspielen",
+            "pause": "Pause",
+            "stepBack": "Vorheriger Frame",
+            "stepForward": "Nächster Frame",
+            "prevMarker": "Vorherige Markierung",
+            "nextMarker": "Nächste Markierung",
+            "speed": "Wiedergabegeschwindigkeit",
+            "scrubber": "Frame-Position",
+            "crops": "Sterne",
+            "noCrops": "Für diesen Frame wurden keine Sternausschnitte behalten",
+            "graph": "Guiding-Fehler",
+            "telemetry": "Dieser Frame",
+            "note": "Deine Notiz",
+            "triggers": "Auslöser",
+            "evidence": "Befunde",
+            "showFrame": "Frame anzeigen",
+            "searchRegion": "Suchregion",
+            "diagnosisPending": "Noch keine Diagnose: Der Vorfall wird noch aufgezeichnet."
+          },
+          "tele": {
+            "time": "Zeit",
+            "state": "Zustand",
+            "snr": "SNR",
+            "hfd": "HFD",
+            "mass": "Masse",
+            "error": "Fehler",
+            "pulses": "Pulse",
+            "mount": "Montierung",
+            "pierSide": "Pier-Seite",
+            "calibration": "Kalibrierung",
+            "stars": "Sterne",
+            "settling": "pendelt ein",
+            "dithering": "dithert",
+            "limited": "begrenzt",
+            "tracking": "führt nach",
+            "notTracking": "Nachführung aus",
+            "slewing": "schwenkt",
+            "parked": "geparkt",
+            "unknown": "unbekannt"
+          },
+          "markers": {
+            "trigger": "Auslöser",
+            "recovered": "Wieder normal",
+            "note": "Notiz",
+            "gap": "Keine Bilder",
+            "end": "Ende"
+          },
+          "causes": {
+            "camera": {
+              "title": "Kamera",
+              "why": "Um diesen Moment herum fehlten Frames oder kamen zu spät: Die Guide-Kamera hat sie nicht geliefert (Aufnahmefehler, Timeouts, eine verlorene USB-Verbindung).",
+              "fix": "Prüfe USB-Kabel und Stromversorgung der Kamera, vermeide lange passive USB-Verlängerungen und versuche eine längere Belichtung oder eine niedrigere USB-Bandbreite."
+            },
+            "mountMoved": {
+              "title": "Die Montierung hat sich bewegt",
+              "why": "Die Montierung ist geschwenkt, hat die Nachführung beendet, wurde geparkt oder getrennt oder hat die Pier-Seite gewechselt, daher hat der Stern seinen Platz verlassen.",
+              "fix": "Pausiere das Guiding vor Schwenks und Meridian-Flips (eine Sequenz erledigt das für dich) und prüfe, ob die Nachführung eingeschaltet bleibt."
+            },
+            "calibrationMismatch": {
+              "title": "Kalibrierung passt nicht",
+              "why": "Die Korrekturen haben den Stern weiter weggeschoben statt zurück: Die Kalibrierung passt nicht mehr zur Montierung (Pier-Seite, Deklination, Guide-Rate oder eine umgekehrte Dec-Richtung).",
+              "fix": "Kalibriere nahe am Ziel neu und prüfe, ob die Montierung ihre Pier-Seite korrekt meldet."
+            },
+            "mountNotMoving": {
+              "title": "Montierung hat sich nicht bewegt",
+              "why": "Korrekturpulse wurden gesendet, aber der Stern hat sich kaum bewegt: Die Montierung hat sie nicht ausgeführt.",
+              "fix": "Prüfe die Verbindung zur Montierung und den Guide-Ausgang (ST-4-Kabel oder Pulse Guiding) und ob die Klemmen fest angezogen sind."
+            },
+            "fieldJump": {
+              "title": "Sprung des Bildfelds",
+              "why": "Alle Sterne sind gleichzeitig um denselben Betrag gesprungen: Das ganze Teleskop hat sich bewegt (ein Stoß, eine Windböe, ein hängendes Kabel, eine rutschende Montierung).",
+              "fix": "Prüfe die Kabelführung, die Klemmen und die Balance und schirme das Teleskop gegen Wind ab."
+            },
+            "clouds": {
+              "title": "Wolken",
+              "why": "Alle Sterne wurden innerhalb einer Minute gemeinsam schwächer und kamen später zurück: Etwas ist vor den Himmel gezogen.",
+              "fix": "Im Guider gibt es nichts zu beheben. Warte auf klaren Himmel; bei dünnen Wolken hilft eine längere Belichtung."
+            },
+            "dew": {
+              "title": "Tau",
+              "why": "Alle Sterne wurden über Minuten langsam schwächer und dabei größer (HFD): Tau oder Reif auf der Optik.",
+              "fix": "Schalte die Taukappenheizung ein oder erhöhe ihre Leistung und verwende eine Taukappe."
+            },
+            "guideStarOnly": {
+              "title": "Problem mit dem Guide-Stern",
+              "why": "Nur der Guide-Stern hat sich verändert (verloren, viel heller oder schwächer), während die anderen Sterne normal blieben: Sättigung, ein Hotpixel oder ein naher Stern hat die Verfolgung gestört.",
+              "fix": "Wähle einen anderen Guide-Stern, senke Belichtung oder Gain, falls er übersättigt, und nutze Multi-Star-Guiding."
+            },
+            "driftTooFast": {
+              "title": "Drift zu schnell",
+              "why": "Der Stern driftete stetig zum Rand der Suchregion, während die Korrekturen am Limit waren.",
+              "fix": "Erhöhe die maximale Pulslänge oder die Aggression, prüfe Polausrichtung und Balance und kalibriere neu, falls sich die Guide-Rate geändert hat."
+            },
+            "periodicSpike": {
+              "title": "Periodischer Fehler",
+              "why": "Die Spitze wiederholt sich mit der Schneckenperiode der Montierung: ein periodischer Fehler im Getriebe.",
+              "fix": "Nutze den Algorithmus Predictive RA oder das PEC der Montierung; sind die Spitzen groß, reinige und fette die Schnecke."
+            },
+            "unclear": {
+              "title": "Unklar",
+              "why": "Keines der bekannten Muster passte. Die Befunde unten zeigen, was gemessen wurde.",
+              "fix": "Sieh dir die Wiedergabe an; lade den Vorfall herunter, um ihn an einen Fehlerbericht anzuhängen."
+            }
+          },
+          "evidence": {
+            "cameraFailures": "Fehlgeschlagene Kameraaufnahmen: {count}",
+            "frameGap": "Kein Frame für {seconds}",
+            "mountSlewing": "Die Montierung schwenkte",
+            "mountTrackingOff": "Die Nachführung der Montierung war aus",
+            "mountParked": "Die Montierung war geparkt",
+            "mountDisconnected": "Die Montierung war getrennt",
+            "pierSideChanged": "Die Pier-Seite wechselte von {from} nach {to}",
+            "errorGrew": "Der {axis}-Fehler wuchs über {frames} Frames von {fromPx} auf {toPx}, obwohl die Korrekturen dagegen arbeiteten",
+            "runaway": "{axis} lief davon: Die Korrekturen schoben den Stern weiter weg",
+            "decFlipCorrected": "Die Dec-Richtung war umgekehrt und wurde korrigiert",
+            "pulsesWithoutMotion": "{pulses} {axis}-Pulse hätten den Stern um {expectedPx} bewegen sollen; er bewegte sich um {movedPx}",
+            "fieldJump": "{stars} Sterne sprangen gemeinsam um {jumpPx} ({jumpArcsec})",
+            "starsFaded": "Alle Sterne ({stars}) wurden innerhalb von {seconds} um {dropPercent} schwächer",
+            "recoveredAfter": "Sie kamen nach {seconds} zurück",
+            "starsFadingSlowly": "Alle Sterne ({stars}) wurden über {minutes} um {dropPercent} schwächer",
+            "hfdGrew": "Die Sterne wurden größer: HFD um {percent} gestiegen",
+            "primaryOnly": "Der Guide-Stern wurde um {dropPercent} schwächer; die anderen Sterne ({secondaries}) blieben normal",
+            "saturated": "Der Guide-Stern war übersättigt",
+            "massJump": "Die Masse des Guide-Sterns sprang um {percent}",
+            "driftToEdge": "Der Stern driftete in {axis} über {frames} Frames bis auf {percentOfRegion} der Suchregion",
+            "pulsesLimited": "{axis}-Korrekturen in {frames} Frames am Limit",
+            "spikeRepeats": "{count} frühere Spitzen bei Vielfachen der Schneckenperiode ({periodSeconds})",
+            "spike": "Fehlerspitze von {errorArcsec} bei einem RMS von {rmsArcsec}",
+            "starLost": "Stern verloren ({status})",
+            "trigger": "Auslöser: {kind}"
+          },
+          "values": {
+            "axis": {
+              "ra": "RA",
+              "dec": "Dec"
+            },
+            "status": {
+              "LowSnr": "SNR zu niedrig",
+              "Saturated": "übersättigt",
+              "MassChanged": "Sternmasse verändert",
+              "NotFound": "kein Stern gefunden"
+            }
+          },
+          "unknown": "?"
+        }
       }
     },
     "focuser": {
@@ -2397,7 +3871,21 @@
         "offer_text_legacy": "Der heruntergeladene Himmelshintergrund verwendet ein veraltetes Format. Jetzt erneut herunterladen (etwa {size})? Die alten Dateien werden ersetzt.",
         "offer_accept": "Herunterladen",
         "offer_decline": "Jetzt nicht",
-        "offer_progress": "Himmelshintergrund wird heruntergeladen… {percent} %"
+        "offer_progress": "Himmelshintergrund wird heruntergeladen… {percent} %",
+        "source_label": "Hintergrund-Survey",
+        "source_dss": "DSS Farbe",
+        "source_nsns": "NSNS Farbe",
+        "source_dss_hint": "Digitized Sky Survey: Echtfarben-Fotoaufnahmen des gesamten Himmels.",
+        "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] rot, Hα grün, [SII] blau – Emissionsnebel zeigen so ihre volle Ausdehnung. Deckt nur den Himmel nördlich von −16° ab.",
+        "hint_nsns": "Der NSNS-Schmalband-Survey wird einmalig auf den NINA/PINS-Host geladen und von dort an den Atlas ausgeliefert. Höhere Stufen liefern mehr Details für kleine Bildfelder.",
+        "plugin_update_required_nsns": "Bitte aktualisiere das Touch'N'Stars-Plugin, um den NSNS-Schmalband-Survey herunterzuladen.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, lizenziert unter CC BY-NC-SA 4.0. Kostenlos für nichtkommerzielle Nutzung mit Namensnennung; die Kacheln bleiben auf deinem eigenen NINA/PINS-Host.",
+        "source_nsns_ha": "NSNS Hα",
+        "source_nsns_ha_hint": "Northern Sky Narrowband Survey, nur Hα-Linie (ionisierter Wasserstoff). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
+        "source_nsns_oiii": "NSNS [OIII]",
+        "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, nur [OIII]-Linie (doppelt ionisierter Sauerstoff). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
+        "source_nsns_sii": "NSNS [SII]",
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, nur [SII]-Linie (ionisierter Schwefel). Deckt nur den Himmel nördlich von −16° ab; separater Download."
       },
       "object_types": {
         "_ass": "Sternassoziation",
@@ -5929,6 +7417,111 @@
         "learnMore": "Mehr erfahren",
         "noScheduleData": "Keine Zeitplandaten.",
         "waitingNotVisible": "Wartet — Ziel noch nicht sichtbar"
+      }
+    },
+    "aapa": {
+      "title": "AAPA Controller",
+      "invalidValue": "Ungültiger Wert",
+      "tabs": {
+        "control": "Steuerung",
+        "calibration": "Kalibrierung",
+        "settings": "Einstellungen",
+        "log": "Protokoll"
+      },
+      "ws": {
+        "idle": "Nicht verbunden",
+        "connecting": "Verbinde…",
+        "open": "Plugin verbunden",
+        "closed": "Plugin nicht erreichbar",
+        "unreachable": "Keine Verbindung zum AAPA-Plugin unter {url}.",
+        "checkPlugin": "Ist das AAPA-Controller-Plugin in N.I.N.A. installiert und geladen?",
+        "checkEnabled": "Ist der WebSocket-Server in den Plugin-Einstellungen aktiviert und der Port derselbe wie unten?",
+        "checkFirewall": "Erlaubt die Windows-Firewall eingehende Verbindungen auf diesem Port?",
+        "port": "WebSocket-Port"
+      },
+      "connection": {
+        "title": "AAPA-Gerät",
+        "connectedTo": "Verbunden: {port}",
+        "disconnected": "Nicht verbunden",
+        "port": "Port",
+        "auto": "Auto (alle Ports scannen)",
+        "wifi": "WLAN (IP-Adresse)",
+        "ipAddress": "IP-Adresse des AAPA",
+        "connect": "Verbinden",
+        "disconnect": "Trennen",
+        "autoHint": "Auto prüft alle seriellen Ports des N.I.N.A.-Rechners auf ein AAPA."
+      },
+      "status": {
+        "positionX": "Position X (Az)",
+        "positionY": "Position Y (Alt)",
+        "motion": "Bewegung",
+        "moving": "Fährt",
+        "idle": "Ruhe",
+        "homed": "Referenziert",
+        "lastError": "Zuletzt gemessener Fehler",
+        "autoPilot": "Auto-Pilot",
+        "iteration": "Iteration {n}",
+        "running": "Läuft"
+      },
+      "manual": {
+        "title": "Manuelle Steuerung",
+        "stepSize": "Schrittweite (°)",
+        "azMinus": "Az −",
+        "azPlus": "Az +",
+        "altMinus": "Alt −",
+        "altPlus": "Alt +",
+        "home": "Home anfahren",
+        "setHome": "Home setzen",
+        "setHomeConfirm": "Aktuelle Position als neue Home-Position für beide Achsen übernehmen?"
+      },
+      "calibration": {
+        "title": "Getriebeübersetzung kalibrieren",
+        "hint": "Starte zuerst TPPA. Das AAPA bewegt eine Achse um die angegebenen Schritte und berechnet die Übersetzung aus der gemessenen Fehleränderung.",
+        "steps": "Kalibrierschritte",
+        "azimuth": "Az kalibrieren",
+        "altitude": "Alt kalibrieren",
+        "running": "Kalibriere…"
+      },
+      "settings": {
+        "groups": {
+          "autopilot": "Auto-Pilot",
+          "geometry": "Motorgeometrie",
+          "motor": "Geschwindigkeit und Beschleunigung",
+          "limits": "Höhengrenzen"
+        },
+        "fields": {
+          "ToleranceDegrees": "Toleranz (°)",
+          "SettleTimeSeconds": "Beruhigungszeit (s)",
+          "MaxIterations": "Max. Iterationen (0 = unbegrenzt)",
+          "MaxCorrectionDeg": "Max. Korrektur pro Iteration (°)",
+          "MotionTimeoutSeconds": "Bewegungs-Timeout (s)",
+          "StepsPerRevolution": "Schritte pro Umdrehung",
+          "AzimuthMicrosteps": "Az-Mikroschritte",
+          "AltitudeMicrosteps": "Alt-Mikroschritte",
+          "AzimuthGearRatio": "Az-Übersetzung",
+          "AltitudeGearRatio": "Alt-Übersetzung",
+          "ReverseAzimuth": "Az umkehren",
+          "ReverseAltitude": "Alt umkehren",
+          "AzimuthBacklash": "Az-Spiel (Schritte)",
+          "AltitudeBacklash": "Alt-Spiel (Schritte)",
+          "AzimuthSpeed": "Az-Geschwindigkeit (Schritte/s)",
+          "AltitudeSpeed": "Alt-Geschwindigkeit (Schritte/s)",
+          "AzimuthAccel": "Az-Beschleunigung (Schritte/s²)",
+          "AltitudeAccel": "Alt-Beschleunigung (Schritte/s²)",
+          "MinYLimit": "Min. Y (Schritte)",
+          "MaxYLimit": "Max. Y (Schritte)"
+        },
+        "autoSaveHint": "Änderungen werden in N.I.N.A. gespeichert, sobald du ein Feld verlässt.",
+        "saveInNina": "In N.I.N.A. speichern",
+        "storeOnDevice": "Auf AAPA speichern",
+        "sendConfirm": "Aktuelle Konfiguration des AAPA dauerhaft in dessen Speicher (EEPROM) ablegen?",
+        "applyToDevice": "Auf AAPA anwenden",
+        "applyInNinaHint": "Diese Werte werden in N.I.N.A. gespeichert. Zum Übertragen auf das AAPA nutze die Senden-Schaltfläche im AAPA-Panel in N.I.N.A."
+      },
+      "log": {
+        "title": "Protokoll",
+        "clear": "Leeren",
+        "empty": "Noch keine Meldungen."
       }
     }
   },

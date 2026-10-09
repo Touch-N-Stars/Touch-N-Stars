@@ -88,7 +88,9 @@
 
             <!-- Container body with draggable items -->
             <div v-if="!collapsed[container.Id ?? idx]" class="p-3 pt-0">
-              <template v-if="container.Items && container.Items.length">
+              <!-- Rendered even when empty, so rows from other containers can be dropped here.
+                   The hint sits on top of the empty list and lets the drop through. -->
+              <div v-if="container.Items" class="relative">
                 <draggable
                   :list="container.Items"
                   item-key="Id"
@@ -96,15 +98,23 @@
                   ghost-class="opacity-30"
                   :force-fallback="true"
                   class="space-y-1.5"
+                  :class="{ 'min-h-12': !container.Items.length }"
                   :fallbackOnBody="true"
                   :disabled="sequenceStore.sequenceControlsLocked"
-                  @end="(evt) => onDragEnd(evt, container.Items)"
+                  :group="store.canMoveAcrossContainers ? 'sequence-items' : null"
+                  @change="(evt) => store.applyDrop(evt, container.Items, container.Id)"
                 >
                   <template #item="{ element }">
                     <SequenceItem :item="element" :siblings="container.Items" />
                   </template>
                 </draggable>
-              </template>
+                <div
+                  v-if="!container.Items.length"
+                  class="pointer-events-none absolute inset-0 flex items-center justify-center text-slate-600 text-xs"
+                >
+                  {{ $t('components.sequence.emptyContainer') }}
+                </div>
+              </div>
               <div v-else class="text-center py-4 text-slate-600 text-xs">
                 {{ $t('components.sequence.emptyContainer') }}
               </div>
@@ -157,21 +167,6 @@ function toggleSection(key) {
 const DOT_COLORS = ['bg-blue-400', 'bg-green-400', 'bg-orange-400', 'bg-purple-400'];
 function containerDot(idx) {
   return DOT_COLORS[idx] ?? 'bg-slate-400';
-}
-
-function onDragEnd(evt, siblings) {
-  if (sequenceStore.sequenceControlsLocked) return;
-  if (evt.oldIndex === evt.newIndex) return;
-  const movedId = siblings[evt.newIndex].Id;
-  const newIdx = evt.newIndex;
-
-  if (newIdx === 0) {
-    // moved to top → insert before the next sibling
-    store.move(movedId, siblings[1]?.Id, false);
-  } else {
-    // insert after the preceding sibling
-    store.move(movedId, siblings[newIdx - 1]?.Id, true);
-  }
 }
 
 // Restart polling when the backend comes back while this view is mounted:

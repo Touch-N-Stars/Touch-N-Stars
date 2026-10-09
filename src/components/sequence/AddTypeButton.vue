@@ -56,7 +56,13 @@
                   class="flex items-center w-full pl-7 pr-4 py-1.5 text-xs text-slate-300 hover:bg-slate-700/60 transition-colors text-left"
                   @click="select(t)"
                 >
-                  {{ t.Name }}
+                  <span class="truncate">{{ t.Name }}</span>
+                  <span
+                    v-if="mode === 'item' && !hasOwnEditor(t)"
+                    class="ml-auto pl-2 shrink-0 text-[10px] text-slate-500"
+                  >
+                    {{ $t('components.sequence.items.generic') }}
+                  </span>
                 </button>
               </template>
             </template>
@@ -135,12 +141,15 @@ const types = computed(
     })[props.mode] ?? []
 );
 
+// Types without a dedicated component (mostly third-party plugin items) can still be added;
+// they are edited through GenericItem and marked as such in the list.
+function hasOwnEditor(type) {
+  return ITEM_COMPONENTS[type.FullTypeName] !== undefined;
+}
+
 const filteredTypes = computed(() => {
   const q = search.value.trim().toLowerCase();
-  let list = types.value;
-  if (props.mode === 'item') {
-    list = list.filter((t) => ITEM_COMPONENTS[t.FullTypeName] !== undefined);
-  }
+  const list = types.value;
   if (!q) return list;
   return list.filter(
     (t) => t.Name?.toLowerCase().includes(q) || t.Category?.toLowerCase().includes(q)

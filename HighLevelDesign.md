@@ -29,6 +29,7 @@ flowchart LR
   SERVICES -->|HTTP /v2/api| ADV[Advanced API V2]
   SERVICES -->|WebSocket /v2/socket| WSCH[Channel socket]
   SERVICES -->|WebSocket /v2/mount,/v2/tppa| WSSP[Special sockets]
+  SERVICES -->|WebSocket /ws/internal-guider| TNS
   SERVICES -->|SignalR hubs| SR[Notifications/Dialogs/Progress]
   SERVICES -->|HTTP :8000| PINS[PINS daemon/system API]
 
@@ -103,7 +104,9 @@ flowchart LR
 
 - REST (Axios): command-and-query operations for equipment, profiles, sequence, framing, guider, etc.
 - Channel WebSocket: event stream and image-related subscriptions.
-- Dedicated WebSockets: mount control and TPPA streams.
+- Dedicated WebSockets: mount control and TPPA streams, and in PINS mode the native
+  guider feed `/ws/internal-guider` on the TNS plugin server port (app-wide while the PINS
+  native guider is the connected guider).
 - SignalR services: notifications, progress, dialogs, message boxes.
 - PINS daemon/system API on port 8000 for headless/system features.
 
