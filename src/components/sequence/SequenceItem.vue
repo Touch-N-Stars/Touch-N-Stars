@@ -139,9 +139,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1"
+          :class="dropZoneClass(item.Triggers)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onSiblingDragEnd(evt, item.Triggers)"
+          :group="dragGroup('triggers', canAdd)"
+          @change="(evt) => store.applyDrop(evt, item.Triggers, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem
@@ -183,9 +185,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1"
+          :class="dropZoneClass(item.Conditions)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onSiblingDragEnd(evt, item.Conditions)"
+          :group="dragGroup('conditions', canAdd)"
+          @change="(evt) => store.applyDrop(evt, item.Conditions, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem
@@ -222,9 +226,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1.5"
+          :class="dropZoneClass(item.Items)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onChildDragEnd(evt)"
+          :group="dragGroup('items', canAddItems)"
+          @change="(evt) => store.applyDrop(evt, item.Items, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem :item="element" :siblings="item.Items" :depth="depth + 1" />
@@ -396,27 +402,17 @@ async function doAction(action) {
   if (action === 'remove') await store.remove(id);
 }
 
-function onChildDragEnd(evt) {
-  onSiblingDragEnd(evt, props.item.Items);
+// Lists of one kind share a Sortable group, so a row can be dropped into the same kind of
+// list of any other container. Without a group (older plugin) it stays in its own list.
+// canReceive false keeps rows out of containers that fill themselves (Target Scheduler).
+function dragGroup(kind, canReceive = true) {
+  if (!store.canMoveAcrossContainers) return null;
+  return { name: `sequence-${kind}`, pull: true, put: canReceive };
 }
 
-function onSiblingDragEnd(evt, siblings) {
-  if (isLocked.value) return;
-  if (evt.oldIndex === evt.newIndex) return;
-  const newIdx = evt.newIndex;
-  const moved = siblings[newIdx];
-  // The handle of a running item carries no .drag-handle class, so this should not
-  // happen -- but vuedraggable has already reordered the local list, and a reorder of
-  // equal length is not corrected by applyStatusUpdates. Reload to undo it.
-  if (moved?.Status === 'RUNNING') {
-    store.loadCurrent();
-    return;
-  }
-  if (newIdx === 0) {
-    store.move(moved.Id, siblings[1]?.Id, false);
-  } else {
-    store.move(moved.Id, siblings[newIdx - 1]?.Id, true);
-  }
+// An empty list has no height; give it some so a row can be dropped into it.
+function dropZoneClass(list) {
+  return store.canMoveAcrossContainers && !list?.length ? 'min-h-6' : '';
 }
 
 function onOutsideClick(e) {
