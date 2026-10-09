@@ -1891,10 +1891,30 @@
           "legendSecondary": "Sekundärer Stern",
           "legendRejected": "Nicht genutzt",
           "legendLock": "Lock-Position",
-          "tapHint": "Stern antippen für Details",
+          "tapHint": "Stern antippen für Details oder zum Guiden",
           "levelSaturated": "Frame übersättigt ({percent} % der Pixel am Maximalwert): Der Himmel ist noch zu hell oder Belichtung/Gain sind zu hoch. Verringere Belichtung oder Gain.",
           "levelFlat": "Kein brauchbares Signal im Frame (Pegel {level} von {fullScale}): Schutzkappe noch drauf, Tau, oder belichtet die Kamera nicht?",
-          "levelPartlySaturated": "{percent} % übersättigt"
+          "levelPartlySaturated": "{percent} % übersättigt",
+          "select": {
+            "useStar": "Auf diesem Stern guiden",
+            "useStarHere": "Auf dem Stern hier guiden",
+            "waiting": "Wird mit dem nächsten Frame gewählt…",
+            "done": "Guide-Stern gewählt, mit {count} Sekundärsternen drumherum. Drücke Guide, um das Guiding zu starten.",
+            "close": "Schließen",
+            "unavailable": {
+              "guiding": "Stoppe das Guiding und drücke Loop, um einen anderen Guide-Stern zu wählen.",
+              "notLooping": "Drücke Loop, um einen Guide-Stern zu wählen.",
+              "coach": "Nicht, während der Guiding Coach läuft."
+            },
+            "errors": {
+              "NoStar": "Dort ist kein brauchbarer Stern. Tippe genau auf einen Stern; sehr schwache Sterne gehen nicht.",
+              "NearEdge": "Dieser Stern liegt zu nah am Bildrand, um ihn zu verfolgen.",
+              "Busy": "Der Guider ist beschäftigt (Guiding, Kalibrierung oder Guiding Coach). Stoppe zuerst das Guiding.",
+              "NotLooping": "Drücke zuerst Loop: Der Guide-Stern wird auf einem Loop-Frame gewählt.",
+              "Cancelled": "Nicht gewählt: Das Looping wurde beendet oder inzwischen ein anderer Stern gewählt.",
+              "TimedOut": "Kein neuer Guide-Frame angekommen. Belichtet die Guide-Kamera noch?"
+            }
+          }
         },
         "profile": {
           "noStar": "Kein Guide-Stern",
@@ -1902,7 +1922,7 @@
           "vertical": "V",
           "radial": "radial",
           "peak": "Peak",
-          "saturated": "Stern ist übersättigt – verkürze die Belichtung oder wähle einen anderen Stern."
+          "saturated": "Stern ist übersättigt – verkürze die Belichtung oder tippe im Guide-Frame einen anderen Stern an."
         },
         "log": {
           "title": "Ereignisse",
@@ -1933,7 +1953,7 @@
           "StarSaturated": {
             "title": "Guide-Stern übersättigt",
             "explanation": "Die Spitze des Guide-Sterns ist gesättigt, was die Genauigkeit der Schwerpunktbestimmung verschlechtert.",
-            "fix": "Verringere Belichtung oder Gain oder lass die automatische Auswahl einen schwächeren Stern wählen."
+            "fix": "Verringere Belichtung oder Gain oder tippe beim Loopen im Guide-Frame einen schwächeren Stern an und guide auf ihm."
           },
           "StarLowSnr": {
             "title": "Niedriges Stern-SNR",
@@ -1953,7 +1973,7 @@
           "LockPositionNearEdge": {
             "title": "Lock-Position zu nah am Rand",
             "explanation": "Die angeforderte Lock-Position liegt für die Suchregion zu nah am Bildrand.",
-            "fix": "Wähle einen Stern weiter weg vom Rand oder verringere den Dither-Betrag."
+            "fix": "Wähle einen Stern weiter weg vom Rand (beim Loopen im Guide-Frame antippen) oder verringere den Dither-Betrag."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Primärer Stern geschätzt",
@@ -1964,6 +1984,11 @@
             "title": "Guide-Stern wiedergefunden",
             "explanation": "Der Guide-Stern wurde wiedergefunden und das Guiding fortgesetzt.",
             "fix": "Nichts zu tun."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Sekundärsterne neu gefunden",
+            "explanation": "Die Sekundärsterne waren nicht mehr dort, wo sie erwartet wurden (der Guide-Stern ist vielleicht auf einen Nachbarstern gewechselt oder das Feld hat sich verschoben), deshalb wurden sie rund um den Guide-Stern neu gesucht.",
+            "fix": "Nichts zu tun. Wenn das oft passiert, prüfe auf Wolken und ob der Guide-Stern verloren geht."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Kalibrierung fehlgeschlagen: RA hat sich nicht bewegt",
@@ -1983,7 +2008,7 @@
           "CalibrationFailedStarLost": {
             "title": "Kalibrierung fehlgeschlagen: Stern verloren",
             "explanation": "Der Kalibrierstern ging während der Kalibrierung zu oft verloren.",
-            "fix": "Wähle einen helleren Stern abseits des Rands und versuche es erneut."
+            "fix": "Wähle einen helleren Stern abseits des Rands (beim Loopen im Guide-Frame antippen) und versuche es erneut."
           },
           "CalibrationFewSteps": {
             "title": "Kalibrierung mit wenigen Schritten",

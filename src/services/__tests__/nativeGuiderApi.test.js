@@ -80,6 +80,40 @@ test('failures carry the backend reason, status and code', async (t) => {
   });
 });
 
+test('star selection posts the frame position and keeps the rejection reason', async (t) => {
+  const calls = recordRequests(t, {
+    success: true,
+    response: { action: 'select-star', star: { x: 101.5, y: 55.2 }, secondaryStars: 7 },
+  });
+  const result = await apiService.selectNativeGuiderStar(101.2, 55);
+  assert.equal(calls[0].method, 'post');
+  assert.equal(calls[0].url, 'http://10.0.0.5:5000/api/internal-guider/select-star');
+  assert.deepEqual(calls[0].params, { x: 101.2, y: 55 });
+  assert.ok(calls[0].timeout >= 60000, 'waits for the next guide frame');
+  assert.equal(result.secondaryStars, 7);
+
+  t.mock.method(nativeGuiderHttp, 'request', async () => {
+    const error = new Error('Request failed with status code 409');
+    error.response = {
+      status: 409,
+      data: {
+        success: false,
+        error: 'No star was found at that position.',
+        code: 'Rejected',
+        messageCode: 'NoStar',
+        messageParameters: {},
+      },
+    };
+    throw error;
+  });
+  await assert.rejects(apiService.selectNativeGuiderStar(10, 20), (error) => {
+    assert.equal(error.status, 409);
+    assert.equal(error.messageCode, 'NoStar');
+    assert.equal(error.message, 'No star was found at that position.');
+    return true;
+  });
+});
+
 test('cancelled requests are flagged, network errors keep their message', () => {
   const cancelled = mapNativeGuiderError({ code: 'ERR_CANCELED' });
   assert.equal(cancelled.cancelled, true);

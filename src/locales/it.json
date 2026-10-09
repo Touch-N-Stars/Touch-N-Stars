@@ -1850,10 +1850,30 @@
           "legendSecondary": "Stella secondaria",
           "legendRejected": "Non usata",
           "legendLock": "Posizione di lock",
-          "tapHint": "Tocca una stella per i dettagli",
+          "tapHint": "Tocca una stella per i dettagli o per guidare su di essa",
           "levelSaturated": "Frame saturato ({percent} % dei pixel a fondo scala): il cielo è ancora troppo luminoso o esposizione/guadagno sono troppo alti. Riduci esposizione o guadagno.",
           "levelFlat": "Nessun segnale utile nel frame (livello {level} su {fullScale}): tappo inserito, condensa o la camera non espone?",
-          "levelPartlySaturated": "{percent} % saturato"
+          "levelPartlySaturated": "{percent} % saturato",
+          "select": {
+            "useStar": "Guida su questa stella",
+            "useStarHere": "Guida sulla stella qui",
+            "waiting": "Scelta al prossimo frame…",
+            "done": "Stella guida scelta, con {count} stelle secondarie intorno. Premi Guida per avviare la guida.",
+            "close": "Chiudi",
+            "unavailable": {
+              "guiding": "Ferma la guida e premi Loop per scegliere un'altra stella guida.",
+              "notLooping": "Premi Loop per scegliere una stella guida.",
+              "coach": "Non mentre il Guiding Coach è in esecuzione."
+            },
+            "errors": {
+              "NoStar": "Nessuna stella utilizzabile lì. Tocca proprio sopra una stella; le stelle molto deboli non vanno bene.",
+              "NearEdge": "Questa stella è troppo vicina al bordo del frame per essere seguita.",
+              "Busy": "La guida è occupata (guida, calibrazione o Guiding Coach). Ferma prima la guida.",
+              "NotLooping": "Premi prima Loop: la stella guida si sceglie su un frame in loop.",
+              "Cancelled": "Non scelta: il loop si è fermato oppure nel frattempo è stata scelta un'altra stella.",
+              "TimedOut": "Nessun nuovo frame guida arrivato. La camera guida sta ancora esponendo?"
+            }
+          }
         },
         "profile": {
           "noStar": "Nessuna stella guida",
@@ -1861,7 +1881,7 @@
           "vertical": "V",
           "radial": "radiale",
           "peak": "Picco",
-          "saturated": "La stella è satura - riduci l'esposizione o scegli un'altra stella."
+          "saturated": "La stella è satura - riduci l'esposizione o tocca un'altra stella nel frame guida."
         },
         "log": {
           "title": "Eventi",
@@ -1892,7 +1912,7 @@
           "StarSaturated": {
             "title": "Stella guida satura",
             "explanation": "Il picco della stella guida è saturo, il che peggiora la precisione del centroide.",
-            "fix": "Riduci esposizione o guadagno, oppure lascia che la selezione automatica scelga una stella più debole."
+            "fix": "Riduci esposizione o guadagno, oppure, in loop, tocca una stella più debole nel frame guida e guida su di essa."
           },
           "StarLowSnr": {
             "title": "SNR della stella basso",
@@ -1912,7 +1932,7 @@
           "LockPositionNearEdge": {
             "title": "Posizione di lock troppo vicina al bordo",
             "explanation": "La posizione di lock richiesta è troppo vicina al bordo del frame per la regione di ricerca.",
-            "fix": "Scegli una stella più lontana dal bordo o riduci l'ampiezza del dither."
+            "fix": "Scegli una stella più lontana dal bordo (toccala nel frame guida in loop) o riduci l'ampiezza del dither."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Stella primaria stimata",
@@ -1923,6 +1943,11 @@
             "title": "Stella guida riacquisita",
             "explanation": "La stella guida è stata ritrovata e la guida è ripresa.",
             "fix": "Nessuna azione necessaria."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Stelle secondarie ritrovate",
+            "explanation": "Le stelle secondarie non erano più dove previsto (la stella guida potrebbe essere passata a una stella vicina, o il campo si è spostato), quindi sono state cercate di nuovo intorno alla stella guida.",
+            "fix": "Nessuna azione necessaria. Se succede spesso, controlla le nuvole e che la stella guida non vada persa."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Calibrazione fallita: la RA non si è mossa",
@@ -1942,7 +1967,7 @@
           "CalibrationFailedStarLost": {
             "title": "Calibrazione fallita: stella persa",
             "explanation": "La stella di calibrazione è andata persa troppo spesso durante la calibrazione.",
-            "fix": "Scegli una stella più luminosa lontana dal bordo e riprova."
+            "fix": "Scegli una stella più luminosa lontana dal bordo (toccala nel frame guida in loop) e riprova."
           },
           "CalibrationFewSteps": {
             "title": "Calibrazione con pochi passi",

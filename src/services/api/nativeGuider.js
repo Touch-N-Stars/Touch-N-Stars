@@ -123,6 +123,15 @@ export default {
     return request('post', action, { params, timeout: 20000 });
   },
 
+  /**
+   * Makes the star nearest (x, y) (frame px, as in frame-info) the guide star while looping.
+   * Answers after the next guide frame: { star, secondaryStars, state }; a rejection carries the
+   * reason as messageCode (NoStar, NearEdge, Busy, NotLooping, Cancelled, TimedOut).
+   */
+  selectNativeGuiderStar(x, y) {
+    return request('post', 'select-star', { params: { x, y }, timeout: 75000 });
+  },
+
   buildNativeGuiderDarks({ minExposure = 0.5, maxExposure = 4, frames = 5 } = {}) {
     return request('post', 'darks/build', { data: { minExposure, maxExposure, frames } });
   },
