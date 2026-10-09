@@ -11,7 +11,7 @@
     </p>
     <template v-else-if="status?.supported">
       <p class="text-sm text-content-muted">
-        {{ t('components.settings.swap.current', { size: status.activeFileSizeMb / 1024 }) }}
+        {{ t('components.settings.swap.current', { size: status.activeSwapSizeMb / 1024 }) }}
       </p>
       <label class="flex flex-col gap-1">
         <span class="text-sm font-semibold">{{ t('components.settings.swap.size') }}</span>
@@ -91,7 +91,8 @@ const dirty = computed(
   () =>
     status.value?.supported &&
     [2, 4, 8].includes(selected.value) &&
-    selected.value * 1024 !== status.value.configuredSizeMb
+    (selected.value * 1024 !== status.value.configuredSizeMb ||
+      (status.value.backend === 'rpi-swap' && status.value.mechanism !== 'swapfile'))
 );
 
 function messageFrom(error) {
@@ -104,7 +105,9 @@ async function load() {
   errorMessage.value = '';
   try {
     status.value = await apiPinsService.getPinsSystemSwap();
-    if (!status.value) throw new Error(t('components.settings.swap.unavailable'));
+    if (!status.value || status.value.activeSwapSizeMb == null) {
+      throw new Error(t('components.settings.swap.unavailable'));
+    }
     const size = status.value.configuredSizeMb / 1024;
     selected.value = [2, 4, 8].includes(size) ? size : 0;
     return true;

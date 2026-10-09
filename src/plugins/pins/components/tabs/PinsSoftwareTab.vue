@@ -1,5 +1,14 @@
 <template>
   <div class="flex flex-col space-y-6">
+    <PinsRepositoryCard
+      :repository="repository"
+      :loading="repositoryLoading"
+      :switching="repositorySwitching"
+      :error="repositoryError"
+      :disabled="disabled"
+      @switch="$emit('repository-switch', $event)"
+      @refresh="$emit('repository-refresh')"
+    />
     <div v-if="availableUpdateCount > 0" class="text-center">
       <button
         @click="$emit('open-updates')"
@@ -40,8 +49,13 @@
 <script setup>
 import PinsIndi3rdpartyCard from '../PinsIndi3rdpartyCard.vue';
 import PinsPluginsCard from '../PinsPluginsCard.vue';
+import PinsRepositoryCard from '../PinsRepositoryCard.vue';
 
 defineProps({
+  repository: { type: Object, default: null },
+  repositoryLoading: { type: Boolean, default: false },
+  repositorySwitching: { type: Boolean, default: false },
+  repositoryError: { type: String, default: '' },
   availableUpdateCount: {
     type: Number,
     required: true,
@@ -89,6 +103,8 @@ defineProps({
 });
 
 defineEmits([
+  'repository-switch',
+  'repository-refresh',
   'open-updates',
   'refresh',
   'search',

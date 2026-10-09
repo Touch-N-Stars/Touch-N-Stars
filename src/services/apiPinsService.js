@@ -716,6 +716,29 @@ export default {
     );
   },
 
+  getPinsRepository() {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/repository', {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 15000,
+    });
+  },
+
+  setPinsRepository(channel) {
+    if (!['trixie', 'unstable'].includes(channel)) {
+      throw new Error('Repository channel must be trixie or unstable.');
+    }
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPostRequest(
+      '/repository',
+      { channel },
+      {
+        baseUrl: PINSDAEMON_URL,
+        timeout: 15000,
+      }
+    );
+  },
+
   getPinsPlugins() {
     const { PINSDAEMON_URL } = getUrls();
     return this._pinsDaemonGetRequest('/plugins', {
