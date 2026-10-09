@@ -46,31 +46,33 @@
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent, ref, onMounted, onUnmounted, watch } from 'vue';
+import { computed, defineAsyncComponent, h, ref, onMounted, onUnmounted, watch } from 'vue';
 import { apiStore } from '@/store/store';
 import { useStatusBarStore } from '@/store/statusBarStore';
 import Phd2GuiderLayout from '@/components/guider/PHD2/Phd2GuiderLayout.vue';
 import ControlGuider from '@/components/guider/ControlGuider.vue';
 import GuiderStatus from '@/components/guider/GuiderStatus.vue';
 import GuideCameraCard from '@/components/guider/GuideCameraCard.vue';
-import { isNativeGuiderSelected } from '@/utils/nativeGuider';
+import AsyncLoadState from '@/components/helpers/AsyncLoadState.vue';
+import { isNativeGuiderInUse } from '@/utils/nativeGuider';
 import { useI18n } from 'vue-i18n';
 
 // Loaded only in native mode, so PHD2 users don't download the native UI and its charts.
-const NativeGuiderLayout = defineAsyncComponent(
-  () => import('@/components/guider/native/NativeGuiderLayout.vue')
-);
+const NativeGuiderLayout = defineAsyncComponent({
+  loader: () => import('@/components/guider/native/NativeGuiderLayout.vue'),
+  // A slow or lost link to the rig must not leave the guider page blank.
+  loadingComponent: AsyncLoadState,
+  delay: 200,
+  timeout: 30000,
+  errorComponent: () =>
+    h(AsyncLoadState, { failed: true, message: $t('components.guider.native.pageLoadFailed') }),
+});
 
 const store = apiStore();
 const statusBarStore = useStatusBarStore();
 const { t: $t } = useI18n();
 
-const isNativeGuider = computed(() =>
-  isNativeGuiderSelected({
-    guiderInfo: store.guiderInfo,
-    profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
-  })
-);
+const isNativeGuider = computed(() => isNativeGuiderInUse(store));
 
 // Open the guider graph panel while on this page. Leaving restores the panel
 // that was open before - unless the user switched panels in the meantime, then

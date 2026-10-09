@@ -4,12 +4,12 @@
       <span
         v-for="value in modelValue"
         :key="value"
-        class="inline-flex min-h-10 items-center gap-1 rounded-chip border border-line-strong bg-surface-2 pl-3 pr-1 text-sm tabular-nums text-content"
+        class="inline-flex min-h-touch items-center gap-1 rounded-chip border border-line-strong bg-surface-2 pl-3 pr-1 text-sm tabular-nums text-content"
       >
         {{ format(value) }}
         <button
           type="button"
-          class="flex h-8 w-8 items-center justify-center rounded-full text-content-muted hover:bg-surface-3"
+          class="flex h-touch w-touch items-center justify-center rounded-full text-content-muted hover:bg-surface-3"
           :aria-label="removeLabel(value)"
           :title="removeLabel(value)"
           :disabled="modelValue.length <= 1"
@@ -20,19 +20,23 @@
       </span>
     </div>
     <div class="flex items-center gap-2">
-      <input
+      <!-- The app's number picker; it keeps the value within min..max -->
+      <NumberInputPicker
         v-model="draft"
-        type="text"
-        :inputmode="integer ? 'numeric' : 'decimal'"
-        class="tns-input min-w-0 flex-1 tabular-nums"
-        :placeholder="placeholder"
-        :aria-label="placeholder"
-        @keyup.enter="add"
+        :labelKey="pickerTitleKey"
+        :min="pickerMin"
+        :max="pickerMax"
+        :step="integer ? 1 : 0.01"
+        :decimalPlaces="integer ? 0 : 2"
+        :useDefaultSentinel="false"
+        :inputId="inputId"
+        wrapperClass="w-full"
+        class="min-w-0 flex-1"
       />
       <button
         type="button"
         class="tns-btn-secondary w-auto! shrink-0 px-4!"
-        :disabled="!draft.trim() || modelValue.length >= maxCount"
+        :disabled="modelValue.length >= maxCount"
         @click="add"
       >
         <PlusIcon class="h-4 w-4" />
@@ -44,8 +48,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { PlusIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { addSorted, parseNumberInput, trimmed } from '@/utils/nativeGuiderCoach';
 
 const props = defineProps({
@@ -60,10 +65,18 @@ const props = defineProps({
   invalidText: { type: String, default: '' },
   tooManyText: { type: String, default: '' },
   removeLabel: { type: Function, default: (value) => String(value) },
+  // i18n key of the numpad's title, and the id of the input
+  pickerTitleKey: { type: String, required: true },
+  inputId: { type: String, required: true },
 });
 const emit = defineEmits(['update:modelValue']);
 
-const draft = ref('');
+const pickerMin = computed(() => (Number.isFinite(props.min) ? props.min : 0));
+const pickerMax = computed(() => (Number.isFinite(props.max) ? props.max : 1000000));
+// Start from the largest value in the list: the next one to add is usually above it.
+const draft = ref(
+  props.modelValue.length ? Math.max(...props.modelValue.map(Number)) : pickerMin.value
+);
 const error = ref('');
 
 function format(value) {
@@ -76,7 +89,7 @@ function add() {
     error.value = props.tooManyText;
     return;
   }
-  const value = parseNumberInput(draft.value, {
+  const value = parseNumberInput(String(draft.value), {
     integer: props.integer,
     min: props.min,
     max: props.max,
@@ -86,7 +99,6 @@ function add() {
     return;
   }
   error.value = '';
-  draft.value = '';
   emit('update:modelValue', addSorted(props.modelValue, value));
 }
 

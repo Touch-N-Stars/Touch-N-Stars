@@ -187,6 +187,22 @@ import {
   settlingSpans,
   symmetricRange,
 } from './graphData';
+import {
+  RA_COLOR,
+  DEC_COLOR,
+  RA_BAR_COLOR,
+  DEC_BAR_COLOR,
+  SNR_COLOR,
+  MASS_COLOR,
+  SETTLE_SHADE,
+  SETTLE_LEGEND_COLOR,
+  FONT,
+  AXIS_COLOR,
+  GRID_COLOR,
+  ZERO_COLOR,
+  formatClock as formatTime,
+  formatTick,
+} from './uplotTheme';
 
 const props = defineProps({
   /** Smaller plot heights for the tablet/desktop grid. */
@@ -219,20 +235,7 @@ async function clearGraph() {
 }
 
 const UNITS = ['arcsec', 'px'];
-const RA_COLOR = '#60a5fa';
-const DEC_COLOR = '#f87171';
 const RMS_COLOR = 'rgba(226, 232, 240, 0.85)';
-const RA_BAR_COLOR = 'rgba(96, 165, 250, 0.35)';
-const DEC_BAR_COLOR = 'rgba(248, 113, 113, 0.35)';
-const SNR_COLOR = '#22d3ee';
-const MASS_COLOR = 'rgba(167, 139, 250, 0.6)';
-const SETTLE_SHADE = 'rgba(251, 191, 36, 0.08)';
-const SETTLE_LEGEND_COLOR = 'rgba(251, 191, 36, 0.35)';
-const FONT = '10px system-ui, -apple-system, sans-serif';
-// uPlot draws on canvas, so theme tokens are resolved once from the CSS variables.
-const AXIS_COLOR = cssVar('--color-content-muted', '#8fa3bf');
-const GRID_COLOR = cssVar('--color-line', 'rgba(148, 163, 184, 0.16)');
-const ZERO_COLOR = cssVar('--color-line-strong', 'rgba(148, 163, 184, 0.32)');
 
 const scaleOptions = ['auto', ...Y_SCALES];
 
@@ -283,27 +286,6 @@ const syncKey = `native-guider-graph-${Math.random().toString(36).slice(2)}`;
 const mainHeight = computed(() => (props.compact ? 170 : 220));
 // As tall as the error plot: at a few dozen pixels the SNR/mass lines were flat
 const subHeight = mainHeight;
-
-function cssVar(name, fallback) {
-  // Note: `window` is a prop in this component, so only document/getComputedStyle are used here.
-  if (typeof document === 'undefined' || typeof getComputedStyle === 'undefined') return fallback;
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return value || fallback;
-}
-
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
-
-function formatTime(epochSeconds) {
-  const d = new Date(epochSeconds * 1000);
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
-
-function formatTick(value) {
-  if (Math.abs(value) < 1e-9) return '0';
-  return String(Number(value.toFixed(2)));
-}
 
 const unitSymbol = computed(() =>
   unitValue.value === 'px'
@@ -654,7 +636,7 @@ onBeforeUnmount(() => {
 }
 
 .seg-btn {
-  @apply h-9 min-w-9 px-2 text-xs font-semibold tabular-nums text-content-muted
+  @apply min-h-touch min-w-touch px-2 text-xs font-semibold tabular-nums text-content-muted
     transition-colors border-r border-line last:border-r-0;
 }
 

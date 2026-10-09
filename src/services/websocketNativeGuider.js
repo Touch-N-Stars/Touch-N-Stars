@@ -1,6 +1,7 @@
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import { ReconnectingWebSocket } from '@/utils/reconnectingWebSocket';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 // A 10 s server heartbeat keeps the feed alive; without any message for this long the socket
 // is treated as a half-open zombie and redialed.
@@ -37,6 +38,8 @@ class WebSocketNativeGuiderService {
         if (this.statusCallback) this.statusCallback('open');
       },
       onClose: () => {
+        // Nothing to watch until the next open re-arms it.
+        this._clearStaleCheck();
         if (this.statusCallback) this.statusCallback('closed');
       },
       onStatus: (status) => {
@@ -78,10 +81,15 @@ class WebSocketNativeGuiderService {
   _armStaleCheck() {
     this._clearStaleCheck();
     this._staleTimer = setInterval(() => {
+      // In the background the WebView is suspended and silence means nothing; redialing from
+      // there is what the background rule forbids. resumeAfterBackground() redials on return.
+      if (isAppBackgrounded.value) return;
       const last = this._rws.lastMessageAt;
       if (this._rws.isOpen() && last && Date.now() - last > STALE_AFTER_MS) {
         console.warn('[NativeGuider] feed stale, reconnecting');
-        this._rws.socket.close();
+        this._rws.forceReconnect().catch(() => {
+          // onclose arms the next attempt; nothing to do here
+        });
       }
     }, 5000);
   }

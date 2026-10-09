@@ -1817,7 +1817,6 @@
           "ditherPixels": "移動量（ガイドピクセル）",
           "ditherRaOnly": "RA のみ",
           "ditherHint": "ロック位置をこの量までランダムに移動し、ガイドが整定するまで待機します。",
-          "ditherInvalid": "0～100 ピクセルの範囲で値を入力してください。",
           "confirmStopTitle": "ガイドを停止しますか？",
           "confirmStop": "ガイドが停止し、実行中のシーケンスの露光はガイドされなくなります。",
           "confirmCalibrateTitle": "再校正しますか？",
@@ -2659,9 +2658,7 @@
             "dismiss": "ヒントを閉じる",
             "apply": "適用",
             "applied": "適用済み",
-            "applyFailed": "ヒントの適用に失敗しました",
-            "open": "ヒントを表示",
-            "close": "ヒントを隠す"
+            "applyFailed": "ヒントの適用に失敗しました"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3178,11 +3175,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "東",
-              "West": "西",
-              "Unknown": "不明"
             },
             "status": {
               "LowSnr": "SNR 不足",

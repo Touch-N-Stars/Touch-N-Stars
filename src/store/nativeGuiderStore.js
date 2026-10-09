@@ -4,7 +4,9 @@ import apiService from '@/services/apiService';
 import websocketNativeGuiderService from '@/services/websocketNativeGuider';
 import { useToastStore } from '@/store/toastStore';
 import {
+  textOr,
   NATIVE_GUIDER_ID,
+  alertKey,
   alertText,
   appendMarker,
   appendSteps,
@@ -23,6 +25,11 @@ const MAX_STEPS = 2000;
 const MAX_ALERTS = 200;
 const MAX_MARKERS = 300;
 const COACH_HISTORY_MAX = 30;
+// Without a 'darks' progress message for this long, a dark run is treated as over.
+const DARKS_STALE_MS = 3 * 60 * 1000;
+
+// Sequence number of the status polls: only the newest answer is applied.
+let statusGeneration = 0;
 
 // Manual marks waiting for their 'saved' event: id → handler of the toast's Replay button (a
 // component's router-aware callback; kept out of the reactive state).
@@ -66,6 +73,11 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     lastStatusAt: 0,
     statusError: null,
 
+    /** Time of the last 'state' feed event (a status poll sent before it must not undo it). */
+    stateEventAt: 0,
+    /** Steps, alerts and calibration were loaded at least once for this connection. */
+    historyLoaded: false,
+
     steps: [],
     // Once cleared, this browser session shows only newly received live steps.
     // Reconnect history (including a request already in flight) must not undo the clear.
@@ -77,6 +89,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     settle: null,
     stats: null,
     darks: null,
+    darksUpdatedAt: 0,
 
     /** Latest frame notification { frameNumber, width, height, timestamp }. */
     frame: null,
@@ -93,7 +106,6 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     reconnectError: null,
 
     pendingAction: null,
-    lastActionResult: null,
     _toastedAlertKeys: [],
 
     // --- Guiding Coach ---
@@ -145,8 +157,9 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     /** Highest frame number known from the socket or the status poll. */
     latestFrameNumber: (s) =>
       Math.max(Number(s.frame?.frameNumber) || 0, Number(s.status?.frameNumber) || 0),
-    criticalAlertCount: (s) =>
-      s.alerts.filter((a) => String(a.severity).toLowerCase() === 'critical').length,
+    /** A dark library is being built (progress shown, Build and the Coach blocked). */
+    darksRunning: (s) =>
+      ['starting', 'capturing'].includes(String(s.darks?.status || '').toLowerCase()),
     coachPhase: (s) => s.coach?.phase || 'Idle',
     /**
      * A coach session runs: the guider's own flag and the coach status, whichever is newer (a
@@ -186,6 +199,8 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       this.feedActive = false;
       this.wsConnected = false;
       websocketNativeGuiderService.disconnect();
+      // The guider disconnected: live state of that session must not show on the next connect.
+      this.resetLive();
     },
 
     resumeAfterBackground() {
@@ -195,10 +210,14 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     // --- REST loads -------------------------------------------------------------
 
     async refreshStatus() {
+      const generation = ++statusGeneration;
+      const requestedAt = Date.now();
       try {
         const result = await apiService.getNativeGuiderStatus();
-        if (!result) return;
+        // A newer poll was sent meanwhile (e.g. the extra one after an action): it wins.
+        if (!result || generation !== statusGeneration) return;
         const wasAvailable = this.summary.available;
+        const wasConnected = this.summary.connected;
         this.summary = {
           available: result.available === true,
           connected: result.connected === true,
@@ -207,23 +226,42 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           isNative: result.isNative === true,
           reason: result.reason ?? null,
         };
-        this.status = result.status ?? null;
+        // A 'state' event that arrived after this request was sent is newer than the answer:
+        // keep its state instead of flipping back (e.g. Guiding right after Stop).
+        const status = result.status ?? null;
+        this.status =
+          status && this.stateEventAt >= requestedAt && this.status?.state
+            ? { ...status, state: this.status.state }
+            : status;
         this.lastStatusAt = Date.now();
         this.hintClock = this.lastStatusAt;
         this.statusError = null;
         // The poll is the source of truth for the active hints; 'hint' events fill the gaps.
         this.hints = Array.isArray(result.status?.hints) ? result.status.hints : [];
+        // A fresh connection applies every setting: an old "reconnect needed" no longer holds.
+        if (!wasConnected && this.summary.connected) this.reconnectNeeded = false;
         if (!wasAvailable && this.summary.available) {
           // (Re)connected: the history may belong to a previous session.
           this.loadHistory();
         }
+        this.expireStaleDarks();
       } catch (error) {
-        if (!error?.cancelled) this.statusError = error?.message || String(error);
+        if (!error?.cancelled && generation === statusGeneration) {
+          this.statusError = error?.message || String(error);
+        }
       }
     },
 
-    async loadHistory() {
-      await Promise.allSettled([this.loadSteps(), this.loadAlerts(), this.loadCalibration()]);
+    /**
+     * Loads steps, alerts and calibration. After a gap in the feed (app resume, socket redial)
+     * critical alerts raised meanwhile are toasted, so they are not lost silently.
+     */
+    async loadHistory({ toastMissed = false } = {}) {
+      await Promise.allSettled([
+        this.loadSteps(),
+        this.loadAlerts(100, { toastMissed }),
+        this.loadCalibration(),
+      ]);
     },
 
     clearGraph() {
@@ -237,18 +275,35 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       try {
         const steps = await apiService.getNativeGuiderSteps(max);
         if (!this.graphCleared && Array.isArray(steps)) {
-          this.steps = appendSteps([], steps, MAX_STEPS);
+          const loaded = appendSteps([], steps, MAX_STEPS);
+          // Keep the live steps that arrived over the feed while the request was in flight.
+          const lastFrame = loaded.length ? loaded[loaded.length - 1].frame : -Infinity;
+          const newer = this.steps.filter((s) => s.frame > lastFrame);
+          this.steps = appendSteps(loaded, newer, MAX_STEPS);
         }
       } catch (error) {
         this.logLoadError('steps', error);
       }
     },
 
-    async loadAlerts(max = 100) {
+    async loadAlerts(max = 100, { toastMissed = false } = {}) {
       try {
         const alerts = await apiService.getNativeGuiderAlerts(max);
         if (Array.isArray(alerts)) {
+          if (toastMissed) {
+            // The newest critical alert this app has not seen yet (one toast, not a flood).
+            const known = new Set([
+              ...this._toastedAlertKeys,
+              ...this.alerts.map((a) => this.alertKey(a)),
+            ]);
+            const missed = alerts.filter(
+              (a) =>
+                String(a?.severity).toLowerCase() === 'critical' && !known.has(this.alertKey(a))
+            );
+            if (missed.length) this.toastAlert(missed[missed.length - 1]);
+          }
           this.alerts = alerts.slice(-MAX_ALERTS);
+          this.historyLoaded = true;
           // Alerts already in the history are not news: never toast them again.
           this._toastedAlertKeys = alerts.map((a) => this.alertKey(a)).slice(-MAX_ALERTS);
         }
@@ -303,7 +358,11 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       this.reconnecting = true;
       this.reconnectError = null;
       try {
-        await apiService.guiderAction('disconnect');
+        // guiderAction goes through the global interceptor: failures resolve with Success false.
+        const disconnected = await apiService.guiderAction('disconnect');
+        if (disconnected && disconnected.Success === false) {
+          throw new Error(disconnected.Error || 'disconnect failed');
+        }
         const response = await apiService.guiderAction(
           'connect?to=' + encodeURIComponent(NATIVE_GUIDER_ID)
         );
@@ -317,6 +376,16 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       } finally {
         this.reconnecting = false;
       }
+    },
+
+    /** Toasts a failed call with the backend's reason; a cancelled request (app resume) is silent. */
+    toastFailure(error, title) {
+      if (error?.cancelled) return;
+      useToastStore().showToast({
+        type: 'error',
+        title: title || i18n.global.t('components.guider.title'),
+        message: error?.message || String(error),
+      });
     },
 
     logLoadError(what, error) {
@@ -342,13 +411,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         if (action === 'clear-calibration') this.loadCalibration();
         return true;
       } catch (error) {
-        if (!error?.cancelled) {
-          useToastStore().showToast({
-            type: 'error',
-            title: title || action,
-            message: error?.message || String(error),
-          });
-        }
+        this.toastFailure(error, title || action);
         return false;
       } finally {
         this.pendingAction = null;
@@ -358,14 +421,10 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     async buildDarks(options, { title } = {}) {
       try {
         await apiService.buildNativeGuiderDarks(options);
-        this.darks = { status: 'starting', index: 0, total: 0 };
+        this.setDarks({ status: 'starting', index: 0, total: 0 });
         return true;
       } catch (error) {
-        useToastStore().showToast({
-          type: 'error',
-          title: title || i18n.global.t('components.guider.native.darks.title'),
-          message: error?.message || String(error),
-        });
+        this.toastFailure(error, title || i18n.global.t('components.guider.native.darks.title'));
         return false;
       }
     },
@@ -376,6 +435,23 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       } catch (error) {
         console.warn('[NativeGuider] cancel darks failed:', error?.message || error);
       }
+      // The guider ends the run with a final 'darks' message; if that is never received (feed
+      // down) the cancel still frees the UI instead of leaving it "capturing" for good.
+      if (this.darksRunning) this.setDarks(null);
+    },
+
+    setDarks(darks) {
+      this.darks = darks || null;
+      this.darksUpdatedAt = Date.now();
+    },
+
+    /**
+     * Progress messages arrive per dark frame; without any for DARKS_STALE_MS the final message
+     * was missed (feed down, app in background) and the run is treated as over, so Build and
+     * the Coach are not blocked until the app restarts.
+     */
+    expireStaleDarks(now = Date.now()) {
+      if (this.darksRunning && now - this.darksUpdatedAt > DARKS_STALE_MS) this.setDarks(null);
     },
 
     // --- Guiding Coach ------------------------------------------------------------
@@ -469,13 +545,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         if (name !== 'apply' && result?.status) this.setCoach(result.status);
         return true;
       } catch (error) {
-        if (!error?.cancelled) {
-          useToastStore().showToast({
-            type: 'error',
-            title: title || i18n.global.t('components.guider.native.coach.title'),
-            message: error?.message || String(error),
-          });
-        }
+        this.toastFailure(error, title || i18n.global.t('components.guider.native.coach.title'));
         return false;
       } finally {
         this.coachPending = null;
@@ -535,13 +605,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
         this.loadSettings();
         return true;
       } catch (error) {
-        if (!error?.cancelled) {
-          useToastStore().showToast({
-            type: 'error',
-            title: title || i18n.global.t('components.guider.native.coach.title'),
-            message: error?.message || String(error),
-          });
-        }
+        this.toastFailure(error, title || i18n.global.t('components.guider.native.coach.title'));
         return false;
       }
     },
@@ -654,13 +718,10 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       try {
         return (await call()) ?? true;
       } catch (error) {
-        if (!error?.cancelled) {
-          useToastStore().showToast({
-            type: 'error',
-            title: title || i18n.global.t('components.guider.native.incidents.title'),
-            message: error?.message || String(error),
-          });
-        }
+        this.toastFailure(
+          error,
+          title || i18n.global.t('components.guider.native.incidents.title')
+        );
         return null;
       } finally {
         this.incidentPending = null;
@@ -739,7 +800,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
     // --- Feed messages ----------------------------------------------------------
 
     alertKey(alert) {
-      return `${alert?.code ?? ''}|${alert?.timestamp ?? ''}|${alert?.title ?? ''}`;
+      return alertKey(alert);
     },
 
     /** Applies one { type, timestamp, payload } message from /ws/internal-guider. */
@@ -752,7 +813,13 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           if (payload && typeof payload === 'object') {
             const wasAvailable = this.summary.available;
             this.summary = { ...this.summary, ...payload };
-            if (!wasAvailable && this.summary.available) this.loadHistory();
+            // 'hello' opens every (re)connected socket: whatever happened while the feed was
+            // down (app in background, network gap, stale redial) must be reloaded, not only
+            // after the guider itself became available.
+            const reconnected = message.type === 'hello' && this.historyLoaded;
+            if (this.summary.available && (!wasAvailable || reconnected)) {
+              this.loadHistory({ toastMissed: reconnected });
+            }
           }
           break;
         case 'step':
@@ -762,6 +829,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           if (payload) this.addAlert(payload);
           break;
         case 'state':
+          this.stateEventAt = Date.now();
           this.applyState(payload);
           break;
         case 'calibration':
@@ -786,7 +854,7 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           if (payload) this.stats = payload;
           break;
         case 'darks':
-          this.darks = payload || null;
+          this.setDarks(payload);
           break;
         case 'coach':
           this.setCoach(payload);
@@ -801,7 +869,6 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           }
           break;
         case 'action':
-          this.lastActionResult = { ...(payload || {}), at: Date.now() };
           if (payload && payload.success === false && payload.error) {
             useToastStore().showToast({
               type: 'error',
@@ -832,13 +899,20 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       const { t, te } = i18n.global;
       if (!action) return t('components.guider.title');
       const key = `components.guider.native.controls.actions.${action}`;
-      return t('components.guider.native.controls.failed', { action: te(key) ? t(key) : action });
+      return t('components.guider.native.controls.failed', {
+        action: textOr({ t, te }, key, action),
+      });
     },
 
     addAlert(alert) {
-      const key = this.alertKey(alert);
       this.alerts = [...this.alerts, alert].slice(-MAX_ALERTS);
       if (String(alert.severity).toLowerCase() !== 'critical') return;
+      this.toastAlert(alert);
+    },
+
+    /** Toasts a critical alert once (the same alert never toasts twice). */
+    toastAlert(alert) {
+      const key = this.alertKey(alert);
       if (this._toastedAlertKeys.includes(key)) return;
       this._toastedAlertKeys = [...this._toastedAlertKeys, key].slice(-MAX_ALERTS);
       const text = alertText(i18n.global, alert);
@@ -851,9 +925,13 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
       });
     },
 
-    /** Forget everything instance-bound (used when the guider disconnects). */
+    /** Forget everything instance-bound (used when the guider disconnects, see stopFeed). */
     resetLive() {
       clearPendingIncidentWork();
+      this.summary = emptySummary();
+      this.historyLoaded = false;
+      this.reconnectNeeded = false;
+      this.setDarks(null);
       this.status = null;
       this.steps = [];
       this.markers = [];

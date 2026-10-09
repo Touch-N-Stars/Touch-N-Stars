@@ -3,7 +3,7 @@
   <button
     v-if="state === 'saved'"
     type="button"
-    class="tns-btn-secondary w-auto! min-h-9! px-2.5! text-xs! gap-1!"
+    class="tns-btn-secondary w-auto! px-2.5! text-xs! gap-1!"
     :aria-label="k('replayButton')"
     data-testid="native-guider-alert-replay"
     @click.stop="open"
@@ -13,7 +13,7 @@
   </button>
   <span
     v-else-if="state === 'recording'"
-    class="inline-flex min-h-9 items-center gap-1.5 text-xs font-semibold text-status-danger"
+    class="inline-flex min-h-touch items-center gap-1.5 text-xs font-semibold text-status-danger"
     role="status"
   >
     <span class="tns-dot bg-status-danger animate-pulse"></span>

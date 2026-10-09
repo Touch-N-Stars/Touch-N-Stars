@@ -68,7 +68,7 @@
             <button
               v-if="toastStore.actionText && toastStore.onAction"
               type="button"
-              class="tns-btn-secondary w-auto! min-h-9! px-3! mt-2 text-xs!"
+              class="tns-btn-secondary w-auto! px-3! mt-2 text-xs!"
               @click="toastStore.runToastAction()"
             >
               {{ toastStore.actionText }}

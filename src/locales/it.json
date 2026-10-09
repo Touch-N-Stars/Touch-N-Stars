@@ -1808,7 +1808,6 @@
           "ditherPixels": "Quantità (pixel guida)",
           "ditherRaOnly": "Solo RA",
           "ditherHint": "Sposta la posizione di lock casualmente fino a questo valore e attende l'assestamento della guida.",
-          "ditherInvalid": "Inserisci un valore tra 0 e 100 pixel.",
           "confirmStopTitle": "Fermare la guida?",
           "confirmStop": "La guida si ferma e le esposizioni di una sequenza in corso non saranno più guidate.",
           "confirmCalibrateTitle": "Ricalibrare?",
@@ -2650,9 +2649,7 @@
             "dismiss": "Ignora suggerimento",
             "apply": "Applica",
             "applied": "Applicato",
-            "applyFailed": "Impossibile applicare il suggerimento",
-            "open": "Mostra suggerimento",
-            "close": "Nascondi suggerimento"
+            "applyFailed": "Impossibile applicare il suggerimento"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "est",
-              "West": "ovest",
-              "Unknown": "sconosciuto"
             },
             "status": {
               "LowSnr": "SNR troppo basso",

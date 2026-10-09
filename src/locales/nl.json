@@ -1808,7 +1808,6 @@
           "ditherPixels": "Hoeveelheid (guide-pixels)",
           "ditherRaOnly": "Alleen RA",
           "ditherHint": "Verplaatst de lockpositie willekeurig tot deze hoeveelheid en wacht tot de guiding stabiel is.",
-          "ditherInvalid": "Voer een waarde tussen 0 en 100 pixels in.",
           "confirmStopTitle": "Guiding stoppen?",
           "confirmStop": "De guiding stopt en belichtingen van een lopende sequentie worden niet meer geguided.",
           "confirmCalibrateTitle": "Opnieuw kalibreren?",
@@ -2650,9 +2649,7 @@
             "dismiss": "Tip sluiten",
             "apply": "Toepassen",
             "applied": "Toegepast",
-            "applyFailed": "Tip toepassen mislukt",
-            "open": "Tip tonen",
-            "close": "Tip verbergen"
+            "applyFailed": "Tip toepassen mislukt"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "oost",
-              "West": "west",
-              "Unknown": "onbekend"
             },
             "status": {
               "LowSnr": "SNR te laag",

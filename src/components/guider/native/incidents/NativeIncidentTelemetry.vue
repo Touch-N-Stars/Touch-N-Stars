@@ -92,7 +92,14 @@
 
 <script setup>
 import { computed } from 'vue';
-import { TONE_TEXT, fmt, snrTone, stateTone } from '@/utils/nativeGuider';
+import {
+  pierSideText as pierSideText_,
+  textOr,
+  TONE_TEXT,
+  fmt,
+  snrTone,
+  stateTone,
+} from '@/utils/nativeGuider';
 import { useIncidentText } from './useIncidentText';
 
 const props = defineProps({
@@ -143,7 +150,7 @@ const stateTileClass = computed(() =>
 
 function statusText(status) {
   const key = `components.guider.native.incidents.values.status.${status}`;
-  return te(key) ? t(key) : status;
+  return textOr({ t, te }, key, status);
 }
 
 function fmtArcsec(value) {
@@ -177,19 +184,17 @@ const mountProblem = computed(
     props.frame?.mountTracking === false
 );
 
-const pierSideText = computed(() => {
-  const side = props.frame?.pierSide;
-  if (!side) return k('tele.unknown');
-  const key = `components.guider.native.incidents.values.pierSide.${side}`;
-  return te(key) ? t(key) : side;
-});
+// Same words as the calibration card (both NINA spellings, East and pierEast)
+const pierSideText = computed(() =>
+  pierSideText_({ t, te }, props.frame?.pierSide, k('tele.unknown'))
+);
 
 const calibrationText = computed(() => {
   const f = props.frame;
   if (!f?.calibrationDirection) return '–';
   const direction = f.calibrationDirection;
   const key = `components.guider.native.coach.values.direction.${direction}`;
-  const name = te(key) ? t(key) : direction;
+  const name = textOr({ t, te }, key, direction);
   return f.calibrationStep !== null && f.calibrationStep !== undefined
     ? `${name} #${f.calibrationStep}`
     : name;

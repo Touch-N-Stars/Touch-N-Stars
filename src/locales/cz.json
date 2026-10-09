@@ -1808,7 +1808,6 @@
           "ditherPixels": "Hodnota (pixely navádění)",
           "ditherRaOnly": "Jen RA",
           "ditherHint": "Náhodně posune zamčenou pozici až o tuto hodnotu a čeká, dokud se navádění neustálí.",
-          "ditherInvalid": "Zadejte hodnotu mezi 0 a 100 pixely.",
           "confirmStopTitle": "Zastavit navádění?",
           "confirmStop": "Navádění se zastaví a expozice běžící sekvence už nebudou naváděny.",
           "confirmCalibrateTitle": "Kalibrovat znovu?",
@@ -2650,9 +2649,7 @@
             "dismiss": "Zahodit tip",
             "apply": "Použít",
             "applied": "Použito",
-            "applyFailed": "Použití tipu selhalo",
-            "open": "Zobrazit tip",
-            "close": "Skrýt tip"
+            "applyFailed": "Použití tipu selhalo"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "východ",
-              "West": "západ",
-              "Unknown": "neznámá"
             },
             "status": {
               "LowSnr": "SNR příliš nízké",

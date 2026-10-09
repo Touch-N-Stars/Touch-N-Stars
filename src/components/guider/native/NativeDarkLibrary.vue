@@ -77,47 +77,36 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            <label class="flex flex-col gap-1 text-sm text-content-muted">
-              {{ t('components.guider.native.darks.minExposure') }}
-              <div class="relative">
-                <input
-                  v-model="minExposure"
-                  type="text"
-                  inputmode="decimal"
-                  class="tns-input pr-8 tabular-nums"
-                />
-                <span
-                  class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs"
-                  >s</span
-                >
-              </div>
-            </label>
-            <label class="flex flex-col gap-1 text-sm text-content-muted">
-              {{ t('components.guider.native.darks.maxExposure') }}
-              <div class="relative">
-                <input
-                  v-model="maxExposure"
-                  type="text"
-                  inputmode="decimal"
-                  class="tns-input pr-8 tabular-nums"
-                />
-                <span
-                  class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs"
-                  >s</span
-                >
-              </div>
-            </label>
-          </div>
-          <label class="flex flex-col gap-1 text-sm text-content-muted">
-            {{ t('components.guider.native.darks.frames') }}
-            <input
-              v-model="frames"
-              type="text"
-              inputmode="numeric"
-              class="tns-input tabular-nums"
-            />
-          </label>
+          <NumberInputPicker
+            v-model="minExposure"
+            :label="t('components.guider.native.darks.minExposure')"
+            labelKey="components.guider.native.darks.minExposure"
+            :min="0.001"
+            :max="60"
+            :step="0.1"
+            :decimalPlaces="1"
+            inputId="native-darks-min-exposure"
+          />
+          <NumberInputPicker
+            v-model="maxExposure"
+            :label="t('components.guider.native.darks.maxExposure')"
+            labelKey="components.guider.native.darks.maxExposure"
+            :min="0.001"
+            :max="60"
+            :step="0.1"
+            :decimalPlaces="1"
+            inputId="native-darks-max-exposure"
+          />
+          <NumberInputPicker
+            v-model="frames"
+            :label="t('components.guider.native.darks.frames')"
+            labelKey="components.guider.native.darks.frames"
+            :min="1"
+            :max="50"
+            :step="1"
+            :decimalPlaces="0"
+            inputId="native-darks-frames"
+          />
 
           <p v-if="validationError" class="text-sm text-status-danger">{{ validationError }}</p>
 
@@ -145,6 +134,7 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { canPerform } from '@/utils/nativeGuider';
 
@@ -152,9 +142,9 @@ const { t } = useI18n();
 const store = useNativeGuiderStore();
 
 const showDialog = ref(false);
-const minExposure = ref('0.5');
-const maxExposure = ref('4');
-const frames = ref('5');
+const minExposure = ref(0.5);
+const maxExposure = ref(4);
+const frames = ref(5);
 const starting = ref(false);
 const cancelling = ref(false);
 
@@ -162,25 +152,17 @@ const libraryText = computed(() => store.status?.darkLibrary || '');
 const darks = computed(() => store.darks);
 
 const darksStatus = computed(() => String(darks.value?.status || '').toLowerCase());
-const isRunning = computed(() => ['starting', 'capturing'].includes(darksStatus.value));
+const isRunning = computed(() => store.darksRunning);
 
 const canBuild = computed(
   () => !isRunning.value && canPerform('darks', store.state, { connected: store.isAvailable })
 );
 
-function parseNumber(text) {
-  const value = Number(
-    String(text ?? '')
-      .trim()
-      .replace(',', '.')
-  );
-  return Number.isFinite(value) ? value : NaN;
-}
-
+// The pickers keep each value in its range; what is left to check is how they relate.
 const validationError = computed(() => {
-  const min = parseNumber(minExposure.value);
-  const max = parseNumber(maxExposure.value);
-  const count = parseNumber(frames.value);
+  const min = Number(minExposure.value);
+  const max = Number(maxExposure.value);
+  const count = Number(frames.value);
   if (!(min > 0) || !(max >= min) || max > 60) {
     return t('components.guider.native.darks.invalidExposure');
   }
@@ -260,9 +242,9 @@ async function start() {
   try {
     const ok = await store.buildDarks(
       {
-        minExposure: parseNumber(minExposure.value),
-        maxExposure: parseNumber(maxExposure.value),
-        frames: parseNumber(frames.value),
+        minExposure: Number(minExposure.value),
+        maxExposure: Number(maxExposure.value),
+        frames: Number(frames.value),
       },
       { title: t('components.guider.native.darks.title') }
     );

@@ -1,7 +1,8 @@
 <template>
+  <!-- Three columns on phones: four would clip longer labels (e.g. German "Kalibrieren"). -->
   <div
-    class="tns-card p-2! grid gap-1.5"
-    :class="showMark ? 'grid-cols-4 sm:grid-cols-7' : 'grid-cols-3 sm:grid-cols-6'"
+    class="tns-card p-2! grid grid-cols-3 gap-1.5"
+    :class="showMark ? 'sm:grid-cols-7' : 'sm:grid-cols-6'"
   >
     <!-- Loop / Stop -->
     <button
@@ -147,17 +148,16 @@
       </template>
       <template #body>
         <div class="flex flex-col gap-4 w-full">
-          <label class="flex flex-col gap-1 text-sm text-content">
-            {{ t('components.guider.native.controls.ditherPixels') }}
-            <input
-              v-model="ditherPixels"
-              type="text"
-              inputmode="decimal"
-              class="tns-input"
-              @keyup.enter="dither"
-            />
-            <span v-if="ditherError" class="text-xs text-status-danger">{{ ditherError }}</span>
-          </label>
+          <NumberInputPicker
+            v-model="ditherPixels"
+            :label="t('components.guider.native.controls.ditherPixels')"
+            labelKey="components.guider.native.controls.ditherPixels"
+            :min="0.1"
+            :max="100"
+            :step="0.1"
+            :decimalPlaces="1"
+            inputId="native-guider-dither-pixels"
+          />
           <div class="flex items-center justify-between gap-3 text-sm text-content">
             <span>{{ t('components.guider.native.controls.ditherRaOnly') }}</span>
             <toggleButton v-model:statusValue="ditherRaOnly" />
@@ -195,11 +195,13 @@ import {
   TrashIcon,
 } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useToastStore } from '@/store/toastStore';
 import { canPerform } from '@/utils/nativeGuider';
 import { kindText } from '@/utils/nativeGuiderIncidents';
+import { readStored, writeStored } from '@/utils/safeStorage';
 
 const { t, te } = useI18n();
 const router = useRouter();
@@ -220,31 +222,14 @@ const showMark = computed(
 );
 
 const showDither = ref(false);
-const ditherPixels = ref(readStored('nativeGuider.ditherPixels', '3'));
+const ditherPixels = ref(Number(readStored('nativeGuider.ditherPixels', '3')) || 3);
 const ditherRaOnly = ref(readStored('nativeGuider.ditherRaOnly', 'false') === 'true');
-const ditherError = ref('');
 
 const pending = computed(() => store.pendingAction);
 const busy = computed(() => !!store.pendingAction);
 const showLoop = computed(() =>
   ['Stopped', 'Failed', 'Disconnected', 'Unknown'].includes(store.state)
 );
-
-function readStored(key, fallback) {
-  try {
-    return localStorage.getItem(key) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function writeStored(key, value) {
-  try {
-    localStorage.setItem(key, String(value));
-  } catch {
-    // storage unavailable (private mode) - the value just is not remembered
-  }
-}
 
 function can(action) {
   return canPerform(action, store.state, {
@@ -378,12 +363,8 @@ async function mark() {
 }
 
 async function dither() {
-  const pixels = Number(String(ditherPixels.value).replace(',', '.'));
-  if (!Number.isFinite(pixels) || pixels <= 0 || pixels > 100) {
-    ditherError.value = t('components.guider.native.controls.ditherInvalid');
-    return;
-  }
-  ditherError.value = '';
+  // The picker keeps the amount within 0.1..100 pixels.
+  const pixels = Number(ditherPixels.value);
   writeStored('nativeGuider.ditherPixels', pixels);
   writeStored('nativeGuider.ditherRaOnly', ditherRaOnly.value);
   showDither.value = false;

@@ -31,6 +31,11 @@ import {
   stateTone,
   validateSettingValue,
   windowRms,
+  equipmentInUse,
+  isNativeGuiderInUse,
+  numericPickerSpec,
+  alertRows,
+  usesGuideCameraSlot,
 } from '../nativeGuider.js';
 
 test('native guider selection follows the connected device, then the chooser, then the profile', () => {
@@ -494,4 +499,79 @@ test('every locale translates the backend texts, and each one renders as it is',
       assert.equal(t(full), raw, `${file}: ${key} renders unchanged`);
     }
   }
+});
+
+test('the guide camera slot is used only by the native guider, and only where PINS has it', () => {
+  const pinsProfile = (guider) => ({
+    GuideCameraSettings: { Id: 'ZWO ASI120MM' },
+    GuiderSettings: { GuiderName: guider },
+  });
+  const native = { profileInfo: pinsProfile('InternalGuider'), guiderInfo: { Connected: false } };
+  const phd2 = { profileInfo: pinsProfile('PHD2_Single'), guiderInfo: { Connected: false } };
+  const nina = {
+    profileInfo: { GuiderSettings: { GuiderName: 'InternalGuider' } },
+    guiderInfo: { Connected: false },
+  };
+
+  assert.equal(isNativeGuiderInUse(native), true);
+  assert.equal(usesGuideCameraSlot(native), true);
+  assert.equal(usesGuideCameraSlot(phd2), false);
+  assert.equal(usesGuideCameraSlot(phd2, 'Internal Guider'), true, 'the chooser decides first');
+  assert.equal(usesGuideCameraSlot(native, 'PHD2'), false);
+  assert.equal(usesGuideCameraSlot(nina), false, 'official NINA has no slot');
+  assert.equal(
+    usesGuideCameraSlot({
+      profileInfo: pinsProfile('PHD2_Single'),
+      guiderInfo: { Connected: true, DeviceId: 'InternalGuider' },
+    }),
+    true,
+    'the connected guider wins over the profile'
+  );
+});
+
+test('"connect all" leaves the guide camera slot alone unless the native guider uses it', () => {
+  const list = [
+    { apiName: 'camera', id: 'cam' },
+    { apiName: 'guidecamera', id: 'guide' },
+    { apiName: 'guider', id: 'PHD2_Single' },
+  ];
+  assert.deepEqual(
+    equipmentInUse(list, { guideCameraSlot: false }).map((d) => d.apiName),
+    ['camera', 'guider']
+  );
+  assert.equal(equipmentInUse(list, { guideCameraSlot: true }).length, 3);
+  assert.deepEqual(equipmentInUse(undefined, { guideCameraSlot: true }), []);
+});
+
+test('numeric settings get a picker range and precision from the numbers the backend sends', () => {
+  assert.deepEqual(
+    numericPickerSpec({ type: 'double', min: 0.01, max: 30, defaultValue: '2', value: '2.5' }),
+    { min: 0.01, max: 30, step: 0.01, decimals: 2 }
+  );
+  assert.deepEqual(
+    numericPickerSpec({ type: 'double', min: 0, max: 10000, defaultValue: '0', value: '240' }),
+    { min: 0, max: 10000, step: 0.1, decimals: 1 },
+    'a double keeps one decimal place even when all numbers are whole'
+  );
+  assert.deepEqual(numericPickerSpec({ type: 'int', min: 1, max: 50, value: '5' }), {
+    min: 1,
+    max: 50,
+    step: 1,
+    decimals: 0,
+  });
+  const unbounded = numericPickerSpec({ type: 'double', min: null, max: null, value: '0.12345' });
+  assert.equal(unbounded.decimals, 3, 'at most three places');
+  assert.ok(unbounded.min < -1000 && unbounded.max > 1000);
+});
+
+test('alert rows keep their key when newer alerts arrive', () => {
+  const a = { code: 301, timestamp: '2026-10-09T20:00:00Z', title: 'Star lost' };
+  const b = { code: 1, timestamp: '2026-10-09T20:01:00Z', title: 'Info' };
+  const before = alertRows([a, b]);
+  const after = alertRows([a, b, { ...a, timestamp: '2026-10-09T20:02:00Z' }]);
+  assert.equal(after[0].key, before[0].key);
+  assert.equal(after[1].key, before[1].key);
+
+  const twins = alertRows([a, a]);
+  assert.notEqual(twins[0].key, twins[1].key, 'identical alerts still get distinct keys');
 });

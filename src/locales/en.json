@@ -1753,6 +1753,7 @@
       "native": {
         "notConnected": "PINS Native Guider is not connected",
         "notConnectedHint": "Connect the PINS Native Guider on the equipment page. The settings can already be edited.",
+        "pageLoadFailed": "The guider page could not be loaded. Check the connection to the rig and open the page again.",
         "states": {
           "Stopped": "Stopped",
           "Looping": "Looping",
@@ -1852,7 +1853,6 @@
           "ditherPixels": "Amount (guide pixels)",
           "ditherRaOnly": "RA only",
           "ditherHint": "Moves the lock position randomly by up to this amount and waits until guiding has settled.",
-          "ditherInvalid": "Enter a value between 0 and 100 pixels.",
           "confirmStopTitle": "Stop guiding?",
           "confirmStop": "Guiding stops and exposures of a running sequence are no longer guided.",
           "confirmCalibrateTitle": "Recalibrate?",
@@ -2270,6 +2270,17 @@
           "legendRaBack": "RA back",
           "legendBacklash": "Backlash",
           "legendDecOut": "Dec out",
+          "progressDirection": "Direction",
+          "progressDx": "Δx",
+          "progressDy": "Δy",
+          "progressDistance": "Distance",
+          "progressReason": "Reason",
+          "directions": {
+            "North": "North",
+            "South": "South",
+            "East": "East",
+            "West": "West"
+          },
           "legendDecBack": "Dec back"
         },
         "settings": {
@@ -2306,7 +2317,9 @@
             "Safety": "Safety",
             "Incidents": "Incidents"
           },
-          "reconnectNeeded": "Reconnect the guider to use the new camera settings.",
+          "confirmReconnectTitle": "Reconnect the guider?",
+          "confirmReconnect": "The guider disconnects and connects again. Guiding stops meanwhile, so a running exposure is no longer guided.",
+          "reconnectNeeded": "The changed setting applies after the guider reconnects.",
           "reconnectNow": "Reconnect now",
           "reconnecting": "Reconnecting…",
           "reconnectFailed": "Reconnect failed: {message}",
@@ -2694,14 +2707,13 @@
             "dismiss": "Dismiss tip",
             "apply": "Apply",
             "applied": "Applied",
-            "applyFailed": "Applying the tip failed",
-            "open": "Show tip",
-            "close": "Hide tip"
+            "applyFailed": "Applying the tip failed"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
             "open": "Open"
           },
+          "confirmStartTitle": "Start the coach while guiding?",
           "confirmInterruptTitle": "Interrupt the Guiding Coach?",
           "confirmInterrupt": "A coach session is running. This command cancels it; temporary settings are restored.",
           "values": {
@@ -3213,11 +3225,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "East",
-              "West": "West",
-              "Unknown": "unknown"
             },
             "status": {
               "LowSnr": "SNR too low",

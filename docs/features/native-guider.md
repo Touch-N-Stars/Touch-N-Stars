@@ -111,14 +111,19 @@ The guider itself, including the Guiding Coach and the flight recorder, was deve
 
 ## Implementation
 
-| Part                                    | File                                                                            |
-| --------------------------------------- | ------------------------------------------------------------------------------- |
-| REST client and live feed               | `src/services/api/nativeGuider.js`, `src/services/websocketNativeGuider.js`     |
-| State, feed lifecycle, toasts           | `src/store/nativeGuiderStore.js` (feed started in `src/App.vue`)                |
-| Pure helpers: page, Coach, incidents    | `src/utils/nativeGuider.js`, `nativeGuiderCoach.js`, `nativeGuiderIncidents.js` |
-| Page, tabs, graph data                  | `src/components/guider/native/` (`NativeGuiderLayout.vue`, `graphData.js`)      |
-| Guiding Coach                           | `src/components/guider/native/coach/`                                           |
-| Flight recorder                         | `src/components/guider/native/incidents/`                                       |
-| Guide camera setup                      | `settingsGuiderConnect.vue`, `connectEquipment.vue`, `WizardGuiderStep.vue`     |
-| Toast action button, SubNav count badge | `src/store/toastStore.js`, `ToastModal.vue`, `src/components/SubNav.vue`        |
-| Tests                                   | `__tests__/` next to the utils, the store, the API module and `graphData.js`    |
+| Part                                              | File                                                                                                     |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| REST client and live feed                         | `src/services/api/nativeGuider.js`, `src/services/websocketNativeGuider.js`                              |
+| State, feed lifecycle, toasts                     | `src/store/nativeGuiderStore.js` (loaded and fed by `src/App.vue` on the first native connect)           |
+| Pure helpers: page, Coach, incidents              | `src/utils/nativeGuider.js`, `nativeGuiderCoach.js`, `nativeGuiderIncidents.js`                          |
+| Which guider, which guide camera                  | `isNativeGuiderInUse`, `usesGuideCameraSlot`, `equipmentInUse` in `src/utils/nativeGuider.js`            |
+| Page, tabs, graph data                            | `src/components/guider/native/` (`NativeGuiderLayout.vue`, `graphData.js`)                               |
+| Chart look, frame display options                 | `src/components/guider/native/uplotTheme.js`, `frameDisplay.js`                                          |
+| Guiding Coach                                     | `src/components/guider/native/coach/`                                                                    |
+| Flight recorder                                   | `src/components/guider/native/incidents/`                                                                |
+| Guide camera slot: API, polling, devices          | `src/services/api/camera.js`, `src/store/store.js` (`fetchDeviceInfos`), `src/utils/equipmentDevices.js` |
+| Guide camera setup                                | `connectEquipment.vue`, `selectIndi.vue`, `WizardGuiderStep.vue`, `settingsGuiderConnect.vue`            |
+| Guide camera without a guider                     | `src/components/guider/GuideCameraCard.vue`                                                              |
+| Toast action button and queue, SubNav count badge | `src/store/toastStore.js`, `ToastModal.vue`, `src/components/SubNav.vue`                                 |
+| Per-viewer storage                                | `src/utils/safeStorage.js`                                                                               |
+| Tests                                             | `__tests__/` next to the utils, the stores, the API modules and the native components                    |

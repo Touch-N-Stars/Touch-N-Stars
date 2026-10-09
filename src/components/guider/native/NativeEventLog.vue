@@ -7,7 +7,7 @@
           v-for="option in FILTERS"
           :key="option"
           type="button"
-          class="px-2.5 h-9 text-xs font-semibold"
+          class="px-2.5 min-h-touch text-xs font-semibold"
           :class="
             filter === option ? 'bg-accent/20 text-accent' : 'bg-surface-2 text-content-muted'
           "
@@ -24,8 +24,8 @@
 
     <ul class="flex flex-col gap-1.5 overflow-y-auto" :style="{ maxHeight }">
       <li
-        v-for="(alert, index) in visible"
-        :key="`${alert.timestamp}-${alert.code}-${index}`"
+        v-for="{ alert, key } in visible"
+        :key="key"
         class="rounded-control border px-2.5 py-2"
         :class="rowClass(alert)"
       >
@@ -34,7 +34,8 @@
             type="button"
             class="min-w-0 flex-1 flex items-start gap-2 text-left"
             data-haptic="none"
-            @click="toggle(alert, index)"
+            :aria-expanded="openKey === key"
+            @click="toggle(key)"
           >
             <component
               :is="iconFor(alert)"
@@ -50,14 +51,11 @@
                   {{ formatTime(alert.timestamp) }}
                 </span>
               </div>
-              <p
-                v-if="alert.detail && !isOpen(alert, index)"
-                class="text-xs text-content-muted truncate"
-              >
+              <p v-if="alert.detail && openKey !== key" class="text-xs text-content-muted truncate">
                 {{ alert.detail }}
               </p>
               <p
-                v-if="textOf(alert).fix && !isOpen(alert, index)"
+                v-if="textOf(alert).fix && openKey !== key"
                 class="text-xs text-accent/90 truncate"
               >
                 {{ t('components.guider.native.log.fix') }}: {{ textOf(alert).fix }}
@@ -66,12 +64,12 @@
           </button>
           <!-- Flight recorder: replay of the incident (the detail shows it too once opened) -->
           <NativeIncidentReplayButton
-            v-if="alert.incidentId && !isOpen(alert, index)"
+            v-if="alert.incidentId && openKey !== key"
             :alert="alert"
             class="shrink-0"
           />
         </div>
-        <div v-if="isOpen(alert, index)" class="mt-2 pl-7">
+        <div v-if="openKey === key" class="mt-2 pl-7">
           <NativeAlertDetail :alert="alert" />
         </div>
       </li>
@@ -88,7 +86,7 @@ import {
   XCircleIcon,
 } from '@heroicons/vue/24/outline';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { TONE_TEXT, alertText, severityTone } from '@/utils/nativeGuider';
+import { TONE_TEXT, alertRows, alertText, severityTone } from '@/utils/nativeGuider';
 import NativeAlertDetail from './NativeAlertDetail.vue';
 import NativeIncidentReplayButton from './incidents/NativeIncidentReplayButton.vue';
 
@@ -106,27 +104,19 @@ const FILTERS = ['all', 'warning', 'critical'];
 const filter = ref('all');
 const openKey = ref(null);
 
+// Newest first; each row keeps its key while new alerts arrive, so an open row stays open.
 const visible = computed(() => {
-  const list = [...store.alerts].reverse();
+  const rows = alertRows(store.alerts).reverse();
   if (filter.value === 'critical') {
-    return list.filter((a) => severityTone(a.severity) === 'danger');
+    return rows.filter(({ alert }) => severityTone(alert.severity) === 'danger');
   }
   if (filter.value === 'warning') {
-    return list.filter((a) => severityTone(a.severity) !== 'info');
+    return rows.filter(({ alert }) => severityTone(alert.severity) !== 'info');
   }
-  return list;
+  return rows;
 });
 
-function keyOf(alert, index) {
-  return `${alert.timestamp}|${alert.code}|${index}`;
-}
-
-function isOpen(alert, index) {
-  return openKey.value === keyOf(alert, index);
-}
-
-function toggle(alert, index) {
-  const key = keyOf(alert, index);
+function toggle(key) {
   openKey.value = openKey.value === key ? null : key;
 }
 

@@ -87,6 +87,8 @@
             <NativeCoachChips
               v-model="exposures"
               unit="s"
+              picker-title-key="components.guider.native.coach.options.exposurePlaceholder"
+              input-id="native-coach-exposures"
               :min="0.01"
               :max="30"
               :placeholder="k('options.exposurePlaceholder')"
@@ -108,6 +110,8 @@
             <NativeCoachChips
               v-model="gains"
               integer
+              picker-title-key="components.guider.native.coach.options.gainPlaceholder"
+              input-id="native-coach-gains"
               :min="hasGainRange ? gainMin : 0"
               :max="hasGainRange ? gainMax : 10000"
               :placeholder="k('options.gainPlaceholder')"
@@ -225,6 +229,7 @@
 
 <script setup>
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import {
   AcademicCapIcon,
   ArrowPathIcon,
@@ -237,6 +242,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { useToastStore } from '@/store/toastStore';
 import {
   COACH_STEPS,
   DEFAULT_EXPOSURES,
@@ -246,6 +252,7 @@ import {
 } from '@/utils/nativeGuiderCoach';
 import NativeCoachChips from './NativeCoachChips.vue';
 import { useCoachText } from './useCoachText';
+import { readStoredJson, writeStoredJson } from '@/utils/safeStorage';
 
 const OPTIONS_KEY = 'nativeGuider.coach.options';
 const FRAME_CHOICES = [3, 5, 8, 10];
@@ -261,6 +268,7 @@ const DEFAULTS = {
 };
 
 const store = useNativeGuiderStore();
+const { t } = useI18n();
 const { k, stepName, duration, message } = useCoachText();
 
 const stored = readStored();
@@ -306,33 +314,20 @@ const exposuresCustom = computed(
 );
 
 function readStored() {
-  try {
-    const raw = localStorage.getItem(OPTIONS_KEY);
-    const parsed = raw ? JSON.parse(raw) : {};
-    return parsed && typeof parsed === 'object' ? parsed : {};
-  } catch {
-    return {};
-  }
+  return readStoredJson(OPTIONS_KEY, {});
 }
 
 function writeStored() {
-  try {
-    localStorage.setItem(
-      OPTIONS_KEY,
-      JSON.stringify({
-        steps: selected.value,
-        frames: frames.value,
-        driftSeconds: driftSeconds.value,
-        trialSeconds: trialSeconds.value,
-        repeatBaseline: repeatBaseline.value,
-        allowCalibration: allowCalibration.value,
-        exposures: exposuresCustom.value ? exposures.value : undefined,
-        gains: gainsCustom.value ? gains.value : undefined,
-      })
-    );
-  } catch {
-    // storage unavailable: the options are just not remembered
-  }
+  writeStoredJson(OPTIONS_KEY, {
+    steps: selected.value,
+    frames: frames.value,
+    driftSeconds: driftSeconds.value,
+    trialSeconds: trialSeconds.value,
+    repeatBaseline: repeatBaseline.value,
+    allowCalibration: allowCalibration.value,
+    exposures: exposuresCustom.value ? exposures.value : undefined,
+    gains: gainsCustom.value ? gains.value : undefined,
+  });
 }
 
 function toggleStep(step) {
@@ -382,14 +377,10 @@ const guidingActive = computed(() =>
   ['Guiding', 'Paused', 'LostLock', 'Reacquiring'].includes(store.state)
 );
 
-const darksRunning = computed(() =>
-  ['starting', 'capturing'].includes(String(store.darks?.status || '').toLowerCase())
-);
-
 const blocker = computed(() => {
   if (!store.isAvailable) return k('notConnected');
   if (store.state === 'Calibrating') return k('calibratingBlock');
-  if (darksRunning.value) return k('darksBlock');
+  if (store.darksRunning) return k('darksBlock');
   return '';
 });
 
@@ -404,6 +395,16 @@ const canStart = computed(
 
 async function start() {
   if (!canStart.value) return;
+  // The coach takes over guiding: a running sub would be disturbed, so ask like Stop does.
+  if (guidingActive.value) {
+    const ok = await useToastStore().showConfirmation(
+      k('confirmStartTitle'),
+      k('guidingWarning'),
+      t('common.confirm'),
+      t('common.cancel')
+    );
+    if (!ok) return;
+  }
   startError.value = null;
   starting.value = true;
   writeStored();
@@ -440,7 +441,7 @@ async function start() {
 }
 
 .seg-btn {
-  @apply min-h-10 flex-1 px-2 text-sm font-semibold tabular-nums text-content-muted
+  @apply min-h-touch flex-1 px-2 text-sm font-semibold tabular-nums text-content-muted
     transition-colors border-r border-line last:border-r-0;
 }
 

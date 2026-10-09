@@ -382,7 +382,6 @@ import Modal from '@/components/helpers/Modal.vue';
 import { usePinsStore } from '@/plugins/pins/store/pinsStore';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
 import { useGuiderStore } from '@/store/guiderStore';
-import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { NATIVE_GUIDER_ID } from '@/utils/nativeGuider';
 import { usePinsDeviceStore } from '@/plugins/pinsDevices/store/pinsDevicesStore';
 import { useImageMonitorStore } from '@/plugins/multi-image-monitor/store/imageMonitorStore';
@@ -517,18 +516,23 @@ const pinsDeviceStore = usePinsDeviceStore();
 const imageMonitorStore = useImageMonitorStore();
 const sequenceV2Store = useSequenceV2Store();
 const pinsAllSkyStore = usePinsAllSkyStore();
-const nativeGuiderStore = useNativeGuiderStore();
-
 // PINS native guider: its live feed (/ws/internal-guider) runs app-wide while it is the
 // connected guider, so critical guiding alerts toast on every page, not only on the guider page.
+// The store (with its socket and helpers) is loaded on the first native connect, so NINA and
+// PHD2 users don't carry it in the main chunk.
+let nativeGuiderStore = null;
+const isNativeGuiderConnected = () =>
+  store.guiderInfo?.Connected === true && store.guiderInfo?.DeviceId === NATIVE_GUIDER_ID;
 watch(
-  () => store.guiderInfo?.Connected === true && store.guiderInfo?.DeviceId === NATIVE_GUIDER_ID,
-  (nativeConnected) => {
-    if (nativeConnected) {
-      nativeGuiderStore.startFeed();
-    } else {
-      nativeGuiderStore.stopFeed();
+  isNativeGuiderConnected,
+  async (nativeConnected) => {
+    if (nativeConnected && !nativeGuiderStore) {
+      const { useNativeGuiderStore } = await import('@/store/nativeGuiderStore');
+      nativeGuiderStore = useNativeGuiderStore();
     }
+    // The guider may have disconnected while the chunk loaded: apply the current state.
+    if (isNativeGuiderConnected()) nativeGuiderStore?.startFeed();
+    else nativeGuiderStore?.stopFeed();
   },
   { immediate: true }
 );
@@ -1025,7 +1029,7 @@ async function performResume() {
     // respective socket was disconnected on purpose.
     websocketTppaService.resumeAfterBackground();
     websocketMountControlService.resumeAfterBackground();
-    nativeGuiderStore.resumeAfterBackground();
+    nativeGuiderStore?.resumeAfterBackground();
 
     // Kill all HTTP requests still in flight from before the background phase.
     // Their TCP connections are likely dead (Android cuts them), but they hog

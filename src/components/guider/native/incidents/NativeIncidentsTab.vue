@@ -9,7 +9,7 @@
         </div>
         <button
           type="button"
-          class="tns-btn-secondary w-auto! h-9! min-h-9! min-w-9! px-2! shrink-0"
+          class="tns-btn-secondary w-auto! px-2! shrink-0"
           :disabled="store.incidentsLoading"
           :title="k('refresh')"
           :aria-label="k('refresh')"
@@ -84,7 +84,7 @@
         <button
           v-if="deletableCount > 0 && !confirmDeleteAll"
           type="button"
-          class="tns-btn-danger ml-auto w-auto! min-h-9! px-3! text-xs!"
+          class="tns-btn-danger ml-auto w-auto! px-3! text-xs!"
           :disabled="!!store.incidentPending"
           @click="confirmDeleteAll = true"
         >
@@ -102,14 +102,14 @@
         <div class="flex gap-2">
           <button
             type="button"
-            class="tns-btn-secondary min-h-10! text-xs!"
+            class="tns-btn-secondary text-xs!"
             @click="confirmDeleteAll = false"
           >
             {{ k('cancel') }}
           </button>
           <button
             type="button"
-            class="tns-btn-danger min-h-10! text-xs!"
+            class="tns-btn-danger text-xs!"
             :disabled="!!store.incidentPending"
             @click="deleteAll"
           >
@@ -178,6 +178,7 @@ import {
 } from '@/utils/nativeGuiderIncidents';
 import NativeIncidentRow from './NativeIncidentRow.vue';
 import { useIncidentText } from './useIncidentText';
+import { readStored, writeStored } from '@/utils/safeStorage';
 
 const FILTERS = ['profile', 'all'];
 const FILTER_KEY = 'nativeGuider.incidents.filter';
@@ -189,21 +190,9 @@ const { k, kind, dateTime } = useIncidentText();
 const filter = ref(readStored(FILTER_KEY, 'profile'));
 const confirmDeleteAll = ref(false);
 
-function readStored(key, fallback) {
-  try {
-    return localStorage.getItem(key) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
 function setFilter(value) {
   filter.value = value;
-  try {
-    localStorage.setItem(FILTER_KEY, value);
-  } catch {
-    // not remembered without storage
-  }
+  writeStored(FILTER_KEY, value);
 }
 
 const profileId = computed(() => apiStore().profileInfo?.Id || null);
@@ -256,7 +245,7 @@ onMounted(async () => {
 }
 
 .seg-btn {
-  @apply h-9 min-w-9 px-3 text-xs font-semibold text-content-muted
+  @apply min-h-touch min-w-touch px-3 text-xs font-semibold text-content-muted
     transition-colors border-r border-line last:border-r-0;
 }
 

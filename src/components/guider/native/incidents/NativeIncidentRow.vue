@@ -9,9 +9,10 @@
       <button
         type="button"
         class="flex min-w-0 flex-1 flex-col gap-1 text-left"
-        :aria-label="`${k('replayButton')}: ${kindsText}, ${dateTime(incident.start)}`"
         @click="emit('replay', incident.id)"
       >
+        <!-- Screen readers hear the action first, then the whole summary -->
+        <span class="sr-only">{{ k('replayButton') }}:</span>
         <span class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <span class="text-sm font-semibold text-content tabular-nums">
             {{ dateTime(incident.start) }}
@@ -87,11 +88,11 @@
       </span>
     </div>
 
-    <!-- Actions -->
-    <div class="grid grid-cols-4 gap-1.5">
+    <!-- Actions: two columns on phones, four would clip the labels (e.g. German) -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
       <button
         type="button"
-        class="tns-btn-primary min-h-10! px-1! text-xs! gap-1!"
+        class="tns-btn-primary px-1! text-xs! gap-1!"
         @click="emit('replay', incident.id)"
       >
         <PlayCircleIcon class="h-4 w-4 shrink-0" />
@@ -99,7 +100,7 @@
       </button>
       <button
         type="button"
-        class="tns-btn-secondary min-h-10! px-1! text-xs! gap-1!"
+        class="tns-btn-secondary px-1! text-xs! gap-1!"
         :disabled="busy"
         :title="incident.kept ? k('releaseHint') : k('keepHint')"
         :aria-pressed="incident.kept === true"
@@ -113,7 +114,7 @@
       </button>
       <button
         type="button"
-        class="tns-btn-secondary min-h-10! px-1! text-xs! gap-1!"
+        class="tns-btn-secondary px-1! text-xs! gap-1!"
         :disabled="!!downloading"
         :title="k('download')"
         @click="download(incident.id)"
@@ -126,7 +127,7 @@
       </button>
       <button
         type="button"
-        class="tns-btn-danger min-h-10! px-1! text-xs! gap-1!"
+        class="tns-btn-danger px-1! text-xs! gap-1!"
         :class="confirmDelete ? 'bg-status-danger/15!' : ''"
         :disabled="busy"
         @click="remove"

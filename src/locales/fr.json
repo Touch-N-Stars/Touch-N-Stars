@@ -1808,7 +1808,6 @@
           "ditherPixels": "Quantité (pixels de guidage)",
           "ditherRaOnly": "RA seulement",
           "ditherHint": "Déplace la position de verrouillage aléatoirement jusqu'à cette valeur et attend la stabilisation du guidage.",
-          "ditherInvalid": "Entrez une valeur entre 0 et 100 pixels.",
           "confirmStopTitle": "Arrêter le guidage ?",
           "confirmStop": "Le guidage s'arrête et les poses d'une séquence en cours ne sont plus guidées.",
           "confirmCalibrateTitle": "Recalibrer ?",
@@ -2650,9 +2649,7 @@
             "dismiss": "Ignorer l'astuce",
             "apply": "Appliquer",
             "applied": "Appliqué",
-            "applyFailed": "Échec de l'application de l'astuce",
-            "open": "Afficher l'astuce",
-            "close": "Masquer l'astuce"
+            "applyFailed": "Échec de l'application de l'astuce"
           },
           "banner": {
             "running": "Guiding Coach : {step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "est",
-              "West": "ouest",
-              "Unknown": "inconnu"
             },
             "status": {
               "LowSnr": "SNR trop faible",

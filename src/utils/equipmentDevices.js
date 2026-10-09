@@ -223,3 +223,16 @@ export async function redirectManualFilterWheel(device = null) {
   );
   return MANUAL_FILTER_WHEEL_ID;
 }
+
+/**
+ * Why PHD2 cannot be connected yet, as i18n keys (empty when it can). In PINS, PHD2 needs the
+ * connected mount (pulse guiding goes through it) and a validated guide camera before connect.
+ * Shared by the equipment page and the setup wizard so both gate the same way.
+ */
+export function phd2ConnectBlockers({ selectedGuider, isPINS, mountConnected, guidecamOk }) {
+  if (selectedGuider !== 'PHD2' || !isPINS) return [];
+  const blockers = [];
+  if (!mountConnected) blockers.push('components.connectEquipment.guider.mountRequired');
+  if (!guidecamOk) blockers.push('components.connectEquipment.guider.guideCamRequired');
+  return blockers;
+}

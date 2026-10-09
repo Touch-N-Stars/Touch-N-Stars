@@ -8,6 +8,7 @@
 import { onBeforeUnmount, onMounted, ref, toRaw, watch } from 'vue';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
+import { FONT, AXIS_COLOR, GRID_COLOR, formatTick as tick } from '../uplotTheme';
 
 /**
  * Minimal uPlot line/point plot with a numeric x axis for the coach views (drift vs time,
@@ -26,26 +27,11 @@ const props = defineProps({
   label: { type: String, default: '' },
 });
 
-const AXIS_COLOR = cssVar('--color-content-muted', '#8fa3bf');
-const GRID_COLOR = cssVar('--color-line', 'rgba(148, 163, 184, 0.16)');
-const FONT = '10px system-ui, -apple-system, sans-serif';
-
 const containerEl = ref(null);
 const plotEl = ref(null);
 let plot = null;
 let resizeObserver = null;
 let lastWidth = 0;
-
-function cssVar(name, fallback) {
-  if (typeof document === 'undefined' || typeof getComputedStyle === 'undefined') return fallback;
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return value || fallback;
-}
-
-function tick(value) {
-  if (Math.abs(value) < 1e-9) return '0';
-  return String(Number(value.toFixed(2)));
-}
 
 function axis(label) {
   return {

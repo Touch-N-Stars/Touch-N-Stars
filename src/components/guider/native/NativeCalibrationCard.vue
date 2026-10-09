@@ -35,7 +35,7 @@
         class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-content-muted"
       >
         <template v-for="field in progressFields" :key="field.key">
-          <dt class="truncate">{{ field.key }}</dt>
+          <dt class="truncate">{{ field.label }}</dt>
           <dd class="truncate text-right tabular-nums text-content">{{ field.value }}</dd>
         </template>
       </dl>
@@ -353,7 +353,7 @@ import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { fmt } from '@/utils/nativeGuider';
+import { pierSideText as pierSideText_, textOr, fmt } from '@/utils/nativeGuider';
 
 const { t, te } = useI18n();
 const store = useNativeGuiderStore();
@@ -384,22 +384,34 @@ const progressPercent = computed(() => {
   return Math.min(100, Math.max(0, percent));
 });
 
-// Any primitive fields of the latest 'calibration' progress event, shown as a compact list.
+// The guider's 'calibration' progress event: { step, progress, direction, dx, dy, distance }
+// while it moves, { step, failed, reason } when it fails. Step and progress are shown above;
+// the rest is listed with labels. Unknown fields are not shown as raw backend keys.
+const PROGRESS_FIELDS = {
+  direction: 'progressDirection',
+  dx: 'progressDx',
+  dy: 'progressDy',
+  distance: 'progressDistance',
+  reason: 'progressReason',
+};
 const progressFields = computed(() => {
   const payload = store.calibrationProgress;
   if (!payload || typeof payload !== 'object') return [];
-  return Object.entries(payload)
-    .filter(([, value]) => ['string', 'number', 'boolean'].includes(typeof value))
-    .slice(0, 8)
-    .map(([key, value]) => ({
-      key,
-      value:
-        typeof value === 'number'
-          ? Number.isInteger(value)
-            ? value
-            : value.toFixed(2)
-          : String(value),
-    }));
+  return Object.entries(PROGRESS_FIELDS)
+    .filter(([key]) => ['string', 'number'].includes(typeof payload[key]) && payload[key] !== '')
+    .map(([key, labelKey]) => {
+      const value = payload[key];
+      let text;
+      if (typeof value === 'number') {
+        text = key === 'direction' ? String(value) : `${value.toFixed(1)} px`;
+      } else if (key === 'direction') {
+        const directionKey = `components.guider.native.calibration.directions.${value}`;
+        text = textOr({ t, te }, directionKey, value);
+      } else {
+        text = value;
+      }
+      return { key, label: t(`components.guider.native.calibration.${labelKey}`), value: text };
+    });
 });
 
 function toRad(deg) {
@@ -569,12 +581,7 @@ function stepsTone(steps) {
   return n < 4 ? 'text-status-warn font-semibold' : 'text-content';
 }
 
-const pierSideText = computed(() => {
-  const side = calibration.value?.pierSide;
-  if (!side) return '–';
-  const key = `components.guider.native.calibration.pierSides.${side}`;
-  return te(key) ? t(key) : side;
-});
+const pierSideText = computed(() => pierSideText_({ t, te }, calibration.value?.pierSide));
 
 // Relative "calibrated x min ago", refreshed every 30 s.
 const now = ref(Date.now());

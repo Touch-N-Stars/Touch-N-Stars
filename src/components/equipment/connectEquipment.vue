@@ -90,12 +90,12 @@
          camera slot (official NINA's profile has no GuideCameraSettings), PHD2 opens the camera
          from its own profile. Showing both would invite picking the same camera twice. -->
     <selectDevices
-      v-if="isNativeGuiderChoice && store.profileInfo?.GuideCameraSettings"
+      v-if="guideCameraSlot"
       apiAction="guideCameraAction"
       :deviceName="$t('components.connectEquipment.guideCamera.name')"
       :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
       :isConnected="store.guideCameraInfo.Connected"
-      @open-config="openCameraSettings"
+      hideConfig
     />
     <selectGuiderCam
       v-else-if="store.isPINS && !isNativeGuiderChoice"
@@ -405,13 +405,14 @@ import {
   apiActionForApiName,
   getIndiDriver,
   isOfflineDevice,
+  phd2ConnectBlockers,
   redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
   setProfileDevice,
 } from '@/utils/equipmentDevices';
 import { useEquipmentStore } from '@/store/equipmentStore';
-import { isNativeGuiderSelected } from '@/utils/nativeGuider';
+import { equipmentInUse, isNativeGuiderInUse, usesGuideCameraSlot } from '@/utils/nativeGuider';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -461,31 +462,24 @@ const weatherHasApiKeySettings = computed(() =>
 );
 
 // The PINS native guider neither needs the PHD2 guide camera pick nor PHD2's mount-first rule.
-const isNativeGuiderChoice = computed(() =>
-  isNativeGuiderSelected({
-    guiderInfo: store.guiderInfo,
-    profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
-    selectedDisplayName: selectedGuiderDevice.value,
-  })
+const isNativeGuiderChoice = computed(() => isNativeGuiderInUse(store, selectedGuiderDevice.value));
+// One guide camera row per guider: the PINS slot only for the native guider.
+const guideCameraSlot = computed(() => usesGuideCameraSlot(store, selectedGuiderDevice.value));
+// What 'connect all' handles: without the slot while PHD2 is the guider.
+const equipmentToConnect = computed(() =>
+  equipmentInUse(store.existingEquipmentList, { guideCameraSlot: guideCameraSlot.value })
 );
 
-const isGuiderConnectDisabled = computed(() => {
-  return (
-    selectedGuiderDevice.value === 'PHD2' &&
-    store.isPINS &&
-    (!store.mountInfo.Connected || !guiderStore.guidecamOk)
-  );
-});
-
-const guiderDisabledMessage = computed(() => {
-  if (selectedGuiderDevice.value !== 'PHD2' || !store.isPINS) return '';
-  const messages = [];
-  if (!store.mountInfo.Connected)
-    messages.push(t('components.connectEquipment.guider.mountRequired'));
-  if (!guiderStore.guidecamOk)
-    messages.push(t('components.connectEquipment.guider.guideCamRequired'));
-  return messages.join(' ');
-});
+const phd2Blockers = computed(() =>
+  phd2ConnectBlockers({
+    selectedGuider: selectedGuiderDevice.value,
+    isPINS: store.isPINS,
+    mountConnected: store.mountInfo.Connected,
+    guidecamOk: guiderStore.guidecamOk,
+  })
+);
+const isGuiderConnectDisabled = computed(() => phd2Blockers.value.length > 0);
+const guiderDisabledMessage = computed(() => phd2Blockers.value.map((key) => t(key)).join(' '));
 
 const openGuiderSettings = (payload) => {
   selectedGuiderDevice.value = payload?.selectedDeviceDisplayName || '';
@@ -584,7 +578,7 @@ function isDeviceConnected(apiName) {
 }
 
 const allConnected = computed(() =>
-  store.existingEquipmentList.every((device) => isDeviceConnected(device.apiName))
+  equipmentToConnect.value.every((device) => isDeviceConnected(device.apiName))
 );
 
 const hasAnyConnection = computed(() =>
@@ -619,7 +613,7 @@ function waitForMountConnected(timeoutMs = 30000) {
 async function reloadOfflineIndiDrivers() {
   let reloaded = false;
 
-  for (const device of store.existingEquipmentList) {
+  for (const device of equipmentToConnect.value) {
     const apiAction = apiActionForApiName(device.apiName);
     // Skip everything that is not INDI-backed; native drivers re-enumerate on their own.
     if (!apiAction || !getIndiDriver(apiAction)) continue;
@@ -691,14 +685,13 @@ async function connectAll() {
     await reloadOfflineIndiDrivers();
     await redirectManualFilterWheelBeforeConnect();
 
-    for (const device of store.existingEquipmentList) {
+    for (const device of equipmentToConnect.value) {
       switch (device.apiName) {
         case 'camera':
           await apiService.cameraAction('connect');
           break;
         case 'guidecamera':
-          // Only the native guider uses the slot; for PHD2 it would grab PHD2's camera.
-          if (isNativeGuiderChoice.value) await apiService.guideCameraAction('connect');
+          await apiService.guideCameraAction('connect');
           break;
         case 'mount': {
           const canConnect = await checkMountConnectionPermission(t);

@@ -3,7 +3,7 @@
 // so they can be unit tested with node --test. Data shapes are the camelCase AdvancedIncident* DTOs
 // of IAdvancedGuider as served by /api/internal-guider/incidents* and the 'incident' WebSocket event.
 import { formatParameter, trimmed } from './nativeGuiderCoach';
-import { toEpochSeconds } from './nativeGuider';
+import { textOr, toEpochSeconds } from './nativeGuider';
 
 /** i18n base of all incident texts. */
 export const INCIDENTS_TEXT_BASE = 'components.guider.native.incidents';
@@ -110,7 +110,7 @@ export function formatIncidentParameter(name, value) {
 
 function unknownText({ t, te }) {
   const key = `${INCIDENTS_TEXT_BASE}.unknown`;
-  return te(key) ? t(key) : '?';
+  return textOr({ t, te }, key, '?');
 }
 
 /** Localized name of a trigger kind (the kind itself when unknown). */

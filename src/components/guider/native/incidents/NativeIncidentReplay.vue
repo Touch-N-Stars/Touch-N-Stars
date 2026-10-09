@@ -1,7 +1,9 @@
 <template>
+  <!-- z-[55]: above the navigation (50), below LoadingOverlay (60), the wizard (70) and
+       DialogModal / PINS upgrade (80), so a NINA message box is never hidden behind it. -->
   <teleport to="body">
     <div
-      class="replay fixed inset-0 z-top flex flex-col bg-ground text-content"
+      class="replay fixed inset-0 z-[55] flex flex-col bg-ground text-content"
       role="dialog"
       aria-modal="true"
       :aria-label="title"
@@ -14,7 +16,7 @@
         <button
           ref="closeButton"
           type="button"
-          class="tns-btn-secondary w-auto! h-10! min-h-10! min-w-10! px-2! shrink-0"
+          class="tns-btn-secondary w-auto! px-2! shrink-0"
           :aria-label="k('replay.close')"
           :title="k('replay.close')"
           @click="close"
@@ -27,7 +29,7 @@
         </div>
         <button
           type="button"
-          class="tns-btn-secondary w-auto! h-10! min-h-10! min-w-10! px-2! sm:px-3! text-xs! gap-1! shrink-0"
+          class="tns-btn-secondary w-auto! px-2! sm:px-3! text-xs! gap-1! shrink-0"
           :disabled="!!downloading"
           :aria-label="k('download')"
           :title="k('download')"
@@ -217,7 +219,7 @@
       >
         <div class="mx-auto flex w-full max-w-7xl flex-col gap-1">
           <!-- Scrubber with marker ticks and the stretches without images -->
-          <div class="relative h-8">
+          <div class="relative h-14">
             <div class="pointer-events-none absolute inset-x-2 top-0 h-2.5" aria-hidden="true">
               <span
                 v-for="(gap, i) in gaps"
@@ -324,6 +326,7 @@
 </template>
 
 <script setup>
+import { textOr } from '@/utils/nativeGuider';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import {
   ArrowDownTrayIcon,
@@ -335,6 +338,8 @@ import {
   PauseIcon,
   PlayIcon,
 } from '@heroicons/vue/24/solid';
+import { Capacitor } from '@capacitor/core';
+import { App as CapacitorApp } from '@capacitor/app';
 import apiService from '@/services/apiService';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import {
@@ -361,6 +366,14 @@ import NativeIncidentGraph from './NativeIncidentGraph.vue';
 import NativeIncidentTelemetry from './NativeIncidentTelemetry.vue';
 import { useIncidentDownload } from './useIncidentDownload';
 import { useIncidentText } from './useIncidentText';
+import { readStored, writeStored } from '@/utils/safeStorage';
+import {
+  DEFAULT_STRETCH_ID,
+  STRETCH_OPTIONS,
+  STRETCH_STORAGE_KEY,
+  frameWidthFor,
+  stretchValue,
+} from '../frameDisplay';
 
 const props = defineProps({
   /** Id of the incident to replay. */
@@ -372,14 +385,8 @@ const store = useNativeGuiderStore();
 const { t, te, k, kind, kinds, dateTime, clock, likely, endReason, marker } = useIncidentText();
 const { downloading, download } = useIncidentDownload();
 
-const STRETCH_OPTIONS = [
-  { id: 'low', value: 0.1 },
-  { id: 'medium', value: 0.2 },
-  { id: 'high', value: 0.33 },
-];
-// Rendered JPEG widths of full-resolution key frames (fixed sizes keep the backend cache useful);
-// context images are small (about 480 px) and always asked for at one size.
-const WIDTHS = [512, 768, 1024, 1536, 2048];
+// Context images are small (about 480 px) and always asked for at one size; full-resolution
+// key frames use the shared fixed widths (frameWidthFor).
 const CONTEXT_MAX_WIDTH = 1024;
 // At most this many images load at once (the shown frame plus preloads).
 const MAX_PARALLEL_IMAGES = 3;
@@ -397,7 +404,7 @@ const shown = ref({ index: 0, src: null, failed: false });
 const loadingImage = ref(false);
 const playing = ref(false);
 const speed = ref(1);
-const stretchId = ref(readStored('nativeGuider.frame.stretch', 'medium'));
+const stretchId = ref(readStored(STRETCH_STORAGE_KEY, DEFAULT_STRETCH_ID));
 const viewportSize = ref({ width: 0, height: 0 });
 const crops = shallowRef(null);
 const viewport = ref(null);
@@ -418,14 +425,6 @@ let previousOverflow = '';
 const loadPromises = new Map();
 const loadedSources = new Set();
 const cropCache = new Map();
-
-function readStored(key, fallback) {
-  try {
-    return localStorage.getItem(key) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
 
 // --- Data --------------------------------------------------------------------------------
 
@@ -485,9 +484,7 @@ const offsetSeconds = computed(() => {
 });
 
 const stretchLabel = computed(() => t('components.guider.native.frame.stretch'));
-const stretchValue = computed(
-  () => STRETCH_OPTIONS.find((o) => o.id === stretchId.value)?.value ?? 0.2
-);
+const stretchLevel = computed(() => stretchValue(stretchId.value));
 
 const imageLabel = computed(() => {
   const kindOfImage = frameImageKind(shownFrame.value);
@@ -501,7 +498,7 @@ const imageNotice = computed(() => {
   if (!shownFrame.value) return '';
   if (framesOmitted.value) {
     const key = `components.guider.native.incidents.framesOmitted.${framesOmitted.value}`;
-    return te(key) ? t(key) : framesOmitted.value;
+    return textOr({ t, te }, key, framesOmitted.value);
   }
   if (shown.value.failed) return k('replay.imageFailed');
   if (!frameImageKind(shownFrame.value)) return k('replay.noImage');
@@ -584,7 +581,7 @@ async function load({ keepFrame = null } = {}) {
 function keyWidth() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const needed = Math.max(fitScale.value * sensorWidth.value, 320) * dpr;
-  return WIDTHS.find((w) => w >= needed) || WIDTHS[WIDTHS.length - 1];
+  return frameWidthFor(needed);
 }
 
 function imageSource(i) {
@@ -595,7 +592,7 @@ function imageSource(i) {
     kind: kindOfImage,
     frame: frame.frame,
     maxWidth: kindOfImage === 'key' ? keyWidth() : CONTEXT_MAX_WIDTH,
-    stretch: stretchValue.value,
+    stretch: stretchLevel.value,
   });
 }
 
@@ -805,11 +802,7 @@ function setSpeed(value) {
 
 function setStretch(id) {
   stretchId.value = id;
-  try {
-    localStorage.setItem('nativeGuider.frame.stretch', id);
-  } catch {
-    // not remembered without storage
-  }
+  writeStored(STRETCH_STORAGE_KEY, id);
   display(shownIndex.value);
 }
 
@@ -885,7 +878,18 @@ onMounted(() => {
   if (typeof ResizeObserver !== 'undefined') resizeObserver = new ResizeObserver(measure);
   nextTick(() => closeButton.value?.focus?.());
   load();
+  listenForBackButton();
 });
+
+// Android: the hardware back button closes the full-screen replay like its back arrow, instead
+// of leaving the guider page (or the app). A registered listener replaces Capacitor's default.
+let backButtonHandle = null;
+async function listenForBackButton() {
+  if (Capacitor.getPlatform() !== 'android') return;
+  const handle = await CapacitorApp.addListener('backButton', close);
+  if (disposed) handle.remove();
+  else backButtonHandle = handle;
+}
 
 onBeforeUnmount(() => {
   disposed = true;
@@ -896,6 +900,8 @@ onBeforeUnmount(() => {
   resizeObserver = null;
   document.body.style.overflow = previousOverflow;
   previousFocus?.focus?.();
+  backButtonHandle?.remove();
+  backButtonHandle = null;
 });
 </script>
 
@@ -919,7 +925,7 @@ onBeforeUnmount(() => {
 }
 
 .seg-btn {
-  @apply h-9 min-w-9 px-2 text-xs font-semibold tabular-nums text-content-muted
+  @apply min-h-touch min-w-touch px-2 text-xs font-semibold tabular-nums text-content-muted
     transition-colors border-r border-line last:border-r-0;
 }
 
@@ -933,7 +939,8 @@ onBeforeUnmount(() => {
 
 .scrubber {
   accent-color: var(--color-accent);
-  height: 1.5rem;
+  /* The whole 48 px band is the touch target, not just the thin native track */
+  height: var(--spacing-touch);
 }
 
 .legend-swatch {

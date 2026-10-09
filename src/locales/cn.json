@@ -1808,7 +1808,6 @@
           "ditherPixels": "幅度（导星像素）",
           "ditherRaOnly": "仅 RA",
           "ditherHint": "将锁定位置随机移动最多此幅度，并等待导星稳定。",
-          "ditherInvalid": "请输入 0 到 100 像素之间的值。",
           "confirmStopTitle": "停止导星？",
           "confirmStop": "导星将停止，运行中序列的曝光将不再被导星。",
           "confirmCalibrateTitle": "重新校准？",
@@ -2650,9 +2649,7 @@
             "dismiss": "关闭提示",
             "apply": "应用",
             "applied": "已应用",
-            "applyFailed": "应用提示失败",
-            "open": "显示提示",
-            "close": "隐藏提示"
+            "applyFailed": "应用提示失败"
           },
           "banner": {
             "running": "Guiding Coach：{step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "东",
-              "West": "西",
-              "Unknown": "未知"
             },
             "status": {
               "LowSnr": "SNR 过低",

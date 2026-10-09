@@ -1849,7 +1849,6 @@
           "ditherPixels": "Betrag (Guide-Pixel)",
           "ditherRaOnly": "Nur RA",
           "ditherHint": "Verschiebt die Lock-Position zufällig um bis zu diesem Betrag und wartet, bis sich das Guiding eingependelt hat.",
-          "ditherInvalid": "Gib einen Wert zwischen 0 und 100 Pixel ein.",
           "confirmStopTitle": "Guiding stoppen?",
           "confirmStop": "Das Guiding stoppt, Aufnahmen einer laufenden Sequenz werden dann nicht mehr geguidet.",
           "confirmCalibrateTitle": "Neu kalibrieren?",
@@ -2691,9 +2690,7 @@
             "dismiss": "Tipp verwerfen",
             "apply": "Übernehmen",
             "applied": "Übernommen",
-            "applyFailed": "Übernehmen des Tipps fehlgeschlagen",
-            "open": "Tipp anzeigen",
-            "close": "Tipp ausblenden"
+            "applyFailed": "Übernehmen des Tipps fehlgeschlagen"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3210,11 +3207,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "Ost",
-              "West": "West",
-              "Unknown": "unbekannt"
             },
             "status": {
               "LowSnr": "SNR zu niedrig",

@@ -14,7 +14,7 @@
             v-for="option in STRETCH_OPTIONS"
             :key="option.id"
             type="button"
-            class="px-2 h-9 text-xs font-semibold"
+            class="px-2 min-h-touch text-xs font-semibold"
             :class="
               stretchId === option.id
                 ? 'bg-accent/20 text-accent'
@@ -28,8 +28,10 @@
         </div>
         <button
           type="button"
-          class="tns-btn-secondary w-auto! h-9! min-h-9! min-w-9! px-2!"
+          class="tns-btn-secondary w-auto! px-2!"
           :title="t('components.guider.native.frame.overlay')"
+          :aria-label="t('components.guider.native.frame.overlay')"
+          :aria-pressed="showOverlay"
           @click="toggleOverlay"
         >
           <EyeIcon v-if="showOverlay" class="w-5 h-5" />
@@ -38,8 +40,9 @@
         <button
           v-if="isZoomed"
           type="button"
-          class="tns-btn-secondary w-auto! h-9! min-h-9! min-w-9! px-2!"
+          class="tns-btn-secondary w-auto! px-2!"
           :title="t('components.guider.native.frame.resetZoom')"
+          :aria-label="t('components.guider.native.frame.resetZoom')"
           @click="resetZoom"
         >
           <ArrowsPointingInIcon class="w-5 h-5" />
@@ -52,7 +55,7 @@
       ref="viewport"
       class="relative w-full overflow-hidden rounded-control bg-black"
       :style="viewportStyle"
-      @pointerdown="onPointerDown"
+      @pointerdown.capture="onPointerDown"
       @click="onTap"
     >
       <!-- The stage fills the viewport; image (object-contain) and overlay (viewBox in frame
@@ -133,7 +136,7 @@
         </p>
         <p
           v-if="error && displayed.src"
-          class="text-[11px] text-status-danger bg-surface-1/80 rounded px-2 py-1 truncate"
+          class="text-[11px] text-status-danger bg-surface-1/80 rounded px-2 py-1 break-words pointer-events-auto select-text"
         >
           {{ error }}
         </p>
@@ -197,6 +200,14 @@ import { fmt, frameLevelWarning } from '@/utils/nativeGuider';
 import NativeFrameOverlay from './NativeFrameOverlay.vue';
 import NativeStarPeeper from './NativeStarPeeper.vue';
 import NativeStarProfile from './NativeStarProfile.vue';
+import { readStored, writeStored } from '@/utils/safeStorage';
+import {
+  DEFAULT_STRETCH_ID,
+  STRETCH_OPTIONS,
+  STRETCH_STORAGE_KEY,
+  frameWidthFor,
+  stretchValue,
+} from './frameDisplay';
 
 const props = defineProps({
   /** Only an active (visible) view fetches frames. */
@@ -208,13 +219,6 @@ const props = defineProps({
 const { t } = useI18n();
 const store = useNativeGuiderStore();
 
-const STRETCH_OPTIONS = [
-  { id: 'low', value: 0.1 },
-  { id: 'medium', value: 0.2 },
-  { id: 'high', value: 0.33 },
-];
-// Rendered JPEG widths - a few fixed sizes keep the backend's JPEG cache effective.
-const WIDTHS = [512, 768, 1024, 1536, 2048];
 const TAP_RADIUS_PX = 28;
 
 const viewport = ref(null);
@@ -248,7 +252,7 @@ const viewportSize = ref({ width: 0, height: 0 });
 const zoom = ref(1);
 /** Frame position of the tapped star; the popup follows the nearest star across frames. */
 const selectedPos = ref(null);
-const stretchId = ref(readStored('nativeGuider.frame.stretch', 'medium'));
+const stretchId = ref(readStored(STRETCH_STORAGE_KEY, DEFAULT_STRETCH_ID));
 const showOverlay = ref(readStored('nativeGuider.frame.overlay', 'true') !== 'false');
 const now = ref(Date.now());
 
@@ -257,22 +261,6 @@ let resizeObserver = null;
 let queued = false;
 let pointerStart = null;
 let clock = null;
-
-function readStored(key, fallback) {
-  try {
-    return localStorage.getItem(key) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function writeStored(key, value) {
-  try {
-    localStorage.setItem(key, String(value));
-  } catch {
-    // not remembered without storage
-  }
-}
 
 const frameWidth = computed(() => displayed.value.info?.width || 1936);
 const frameHeight = computed(() => displayed.value.info?.height || 1216);
@@ -350,7 +338,7 @@ const placeholderText = computed(() => {
 function targetWidth() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const needed = Math.max(fitScale.value * frameWidth.value, 320) * dpr;
-  const width = WIDTHS.find((w) => w >= needed) || WIDTHS[WIDTHS.length - 1];
+  const width = frameWidthFor(needed);
   return Math.min(width, displayed.value.info?.width || width);
 }
 
@@ -386,7 +374,7 @@ async function refresh({ force = false } = {}) {
       displayed.value = { ...displayed.value, info };
       return;
     }
-    const stretch = STRETCH_OPTIONS.find((o) => o.id === stretchId.value)?.value ?? 0.2;
+    const stretch = stretchValue(stretchId.value);
     const src = apiService.getNativeGuiderImageUrl({
       maxWidth: targetWidth(),
       stretch,
@@ -416,7 +404,7 @@ async function refresh({ force = false } = {}) {
 
 function setStretch(id) {
   stretchId.value = id;
-  writeStored('nativeGuider.frame.stretch', id);
+  writeStored(STRETCH_STORAGE_KEY, id);
   refresh({ force: true });
 }
 
@@ -428,7 +416,9 @@ function toggleOverlay() {
 // --- Zoom / pan ---------------------------------------------------------------
 
 function onPanzoomChange() {
-  if (panzoom) zoom.value = panzoom.getScale();
+  if (!panzoom) return;
+  zoom.value = panzoom.getScale();
+  if (viewport.value) viewport.value.style.touchAction = zoom.value > 1.01 ? 'none' : 'pan-y';
 }
 
 function onWheel(event) {
@@ -443,6 +433,9 @@ function initPanzoom() {
     minScale: 1,
     contain: 'outside',
     step: 0.6,
+    // Unzoomed, a vertical swipe scrolls the page (the frame fills most of a phone screen);
+    // pinch still reaches Panzoom. Once zoomed, Panzoom owns every gesture (see below).
+    touchAction: 'pan-y',
   });
   stage.value.addEventListener('panzoomchange', onPanzoomChange);
   viewport.value.addEventListener('wheel', onWheel, { passive: false });

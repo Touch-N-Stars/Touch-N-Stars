@@ -87,6 +87,22 @@ import {
   symmetricRange,
 } from '../graphData';
 import { useIncidentText } from './useIncidentText';
+import {
+  RA_COLOR,
+  DEC_COLOR,
+  RA_BAR_COLOR,
+  DEC_BAR_COLOR,
+  SNR_COLOR,
+  MASS_COLOR,
+  SETTLE_SHADE,
+  SETTLE_LEGEND_COLOR,
+  FONT,
+  AXIS_COLOR,
+  GRID_COLOR,
+  ZERO_COLOR,
+  formatClock as formatTime,
+  formatTick,
+} from '../uplotTheme';
 
 const props = defineProps({
   /** AdvancedIncidentFrame[], oldest first. */
@@ -103,20 +119,8 @@ const emit = defineEmits(['seek']);
 const { t, k, marker } = useIncidentText();
 
 const UNITS = ['arcsec', 'px'];
-const RA_COLOR = '#60a5fa';
-const DEC_COLOR = '#f87171';
-const RA_BAR_COLOR = 'rgba(96, 165, 250, 0.35)';
-const DEC_BAR_COLOR = 'rgba(248, 113, 113, 0.35)';
-const SNR_COLOR = '#22d3ee';
-const MASS_COLOR = 'rgba(167, 139, 250, 0.6)';
-const SETTLE_SHADE = 'rgba(251, 191, 36, 0.08)';
-const SETTLE_LEGEND_COLOR = 'rgba(251, 191, 36, 0.35)';
 const GAP_SHADE = 'rgba(148, 163, 184, 0.12)';
 const CURSOR_COLOR = 'rgba(248, 250, 252, 0.9)';
-const FONT = '10px system-ui, -apple-system, sans-serif';
-const AXIS_COLOR = cssVar('--color-content-muted', '#8fa3bf');
-const GRID_COLOR = cssVar('--color-line', 'rgba(148, 163, 184, 0.16)');
-const ZERO_COLOR = cssVar('--color-line-strong', 'rgba(148, 163, 184, 0.32)');
 const MAIN_HEIGHT = 190;
 const SUB_HEIGHT = 110;
 
@@ -138,21 +142,6 @@ const legendMarkers = computed(() => {
   if (props.gaps.length) types.add('gap');
   return ['trigger', 'recovered', 'note', 'gap', 'end'].filter((type) => types.has(type));
 });
-
-function cssVar(name, fallback) {
-  if (typeof document === 'undefined' || typeof getComputedStyle === 'undefined') return fallback;
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-  return value || fallback;
-}
-
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
-
-function formatTime(epochSeconds) {
-  const d = new Date(epochSeconds * 1000);
-  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-}
 
 function buildSeries() {
   const { steps, frameIndexes } = incidentGraphSteps(props.frames);
@@ -273,11 +262,6 @@ function axisBase() {
     grid: { stroke: GRID_COLOR, width: 1 },
     ticks: { stroke: GRID_COLOR, width: 1, size: 4 },
   };
-}
-
-function formatTick(value) {
-  if (Math.abs(value) < 1e-9) return '0';
-  return String(Number(value.toFixed(2)));
 }
 
 function mainOptions(width) {
@@ -452,7 +436,7 @@ onBeforeUnmount(() => {
 }
 
 .seg-btn {
-  @apply h-9 min-w-9 px-2 text-xs font-semibold tabular-nums text-content-muted
+  @apply min-h-touch min-w-touch px-2 text-xs font-semibold tabular-nums text-content-muted
     transition-colors border-r border-line last:border-r-0;
 }
 

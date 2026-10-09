@@ -25,28 +25,24 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import settingsPhd2 from '@/components/guider/PHD2/settingsPhd2.vue';
 import settingsDither from '@/components/guider/settingsDither.vue';
 import settingsSettle from '@/components/guider/settingsSettle.vue';
 import settingsGuideStart from '@/components/guider/settingsGuideStart.vue';
 import settingsROI from '@/components/guider/settingsROI.vue';
-import NativeSettingsSheet from '@/components/guider/native/NativeSettingsSheet.vue';
 import { apiStore } from '@/store/store';
-import { isNativeGuiderSelected } from '@/utils/nativeGuider';
+import { NATIVE_CONNECT_SETTINGS, isNativeGuiderInUse } from '@/utils/nativeGuider';
+
+// Native guider only: PHD2 users never load the native settings sheet.
+const NativeSettingsSheet = defineAsyncComponent(
+  () => import('@/components/guider/native/NativeSettingsSheet.vue')
+);
 
 const props = defineProps({
   selectedGuiderDevice: { type: String, default: '' },
 });
 
-const NATIVE_CONNECT_SETTINGS = ['GuideSource', 'FocalLengthMm', 'PixelSizeUm', 'PulseOutput'];
-
 const store = apiStore();
-const isNativeGuider = computed(() =>
-  isNativeGuiderSelected({
-    guiderInfo: store.guiderInfo,
-    profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
-    selectedDisplayName: props.selectedGuiderDevice,
-  })
-);
+const isNativeGuider = computed(() => isNativeGuiderInUse(store, props.selectedGuiderDevice));
 </script>

@@ -8,7 +8,7 @@ test('the guider page loads the native UI only in native mode', async () => {
   const page = await source('../../../../views/GuidingPage.vue');
   assert.match(
     page,
-    /defineAsyncComponent\(\s*\(\) => import\('@\/components\/guider\/native\/NativeGuiderLayout\.vue'\)\s*\)/
+    /defineAsyncComponent\(\{\s*loader: \(\) => import\('@\/components\/guider\/native\/NativeGuiderLayout\.vue'\)/
   );
   assert.doesNotMatch(page, /^import NativeGuiderLayout/m);
   assert.doesNotMatch(page, /uplot/i);
@@ -30,5 +30,20 @@ test('the native layout loads the Coach, the Incidents tab and the replay when s
       new RegExp(`defineAsyncComponent\\(\\s*\\(\\) => import\\('${escaped}'\\)`)
     );
     assert.doesNotMatch(layout, new RegExp(`^import \\w+ from '${escaped}'`, 'm'));
+  }
+});
+
+test('the PHD2 settings and the setup wizard load the native settings sheet only when needed', async () => {
+  for (const path of [
+    '../../settingsGuiderConnect.vue',
+    '../../../setupWizard/steps/WizardGuiderStep.vue',
+  ]) {
+    const file = await source(path);
+    assert.match(
+      file,
+      /defineAsyncComponent\(\s*\(\) => import\('@\/components\/guider\/native\/NativeSettingsSheet\.vue'\)/,
+      path
+    );
+    assert.doesNotMatch(file, /^import NativeSettingsSheet/m, path);
   }
 });

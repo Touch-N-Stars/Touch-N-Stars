@@ -9,7 +9,7 @@
         <button
           type="button"
           role="tab"
-          class="flex min-h-10 flex-1 items-center justify-center rounded-chip px-3 text-sm font-semibold transition-colors"
+          class="flex min-h-touch flex-1 items-center justify-center rounded-chip px-3 text-sm font-semibold transition-colors"
           :class="!advanced ? 'bg-accent-action text-white' : 'text-content-muted'"
           :aria-selected="!advanced"
           @click="setAdvanced(false)"
@@ -19,7 +19,7 @@
         <button
           type="button"
           role="tab"
-          class="flex min-h-10 flex-1 items-center justify-center rounded-chip px-3 text-sm font-semibold transition-colors"
+          class="flex min-h-touch flex-1 items-center justify-center rounded-chip px-3 text-sm font-semibold transition-colors"
           :class="advanced ? 'bg-accent-action text-white' : 'text-content-muted'"
           :aria-selected="advanced"
           @click="setAdvanced(true)"
@@ -71,7 +71,7 @@
         type="button"
         class="tns-btn-secondary w-auto! px-3! text-xs!"
         :disabled="store.reconnecting"
-        @click="store.reconnectGuider()"
+        @click="reconnect"
       >
         {{
           store.reconnecting
@@ -162,7 +162,9 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowPathIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { groupSettings, settingApplies } from '@/utils/nativeGuider';
+import { useToastStore } from '@/store/toastStore';
+import { textOr, groupSettings, settingApplies } from '@/utils/nativeGuider';
+import { readStored, writeStored } from '@/utils/safeStorage';
 import NativeSettingField from '@/components/guider/native/NativeSettingField.vue';
 import NativeDarkLibrary from '@/components/guider/native/NativeDarkLibrary.vue';
 
@@ -175,17 +177,20 @@ const props = defineProps({
 const { t, te } = useI18n();
 const store = useNativeGuiderStore();
 
-const ADVANCED_KEY = 'nativeGuider.settings.advanced';
-
-function readAdvanced() {
-  try {
-    return localStorage.getItem(ADVANCED_KEY) === 'true';
-  } catch {
-    return false;
-  }
+// Reconnecting disconnects the guider first: guiding stops, so ask like Stop does.
+async function reconnect() {
+  const ok = await useToastStore().showConfirmation(
+    t('components.guider.native.settings.confirmReconnectTitle'),
+    t('components.guider.native.settings.confirmReconnect'),
+    t('common.confirm'),
+    t('common.cancel')
+  );
+  if (ok) store.reconnectGuider();
 }
 
-const advanced = ref(readAdvanced());
+const ADVANCED_KEY = 'nativeGuider.settings.advanced';
+
+const advanced = ref(readStored(ADVANCED_KEY, 'false') === 'true');
 const collapsed = reactive({});
 
 const namesMode = computed(() => Array.isArray(props.names) && props.names.length > 0);
@@ -207,11 +212,7 @@ const visibleCount = computed(() =>
 
 function setAdvanced(value) {
   advanced.value = value;
-  try {
-    localStorage.setItem(ADVANCED_KEY, String(value));
-  } catch {
-    // Private mode / storage disabled: the choice just is not remembered.
-  }
+  writeStored(ADVANCED_KEY, value);
 }
 
 function toggleGroup(group) {
@@ -220,7 +221,7 @@ function toggleGroup(group) {
 
 function groupLabel(group) {
   const key = `components.guider.native.settings.groups.${group}`;
-  return te(key) ? t(key) : group;
+  return textOr({ t, te }, key, group);
 }
 
 onMounted(() => {

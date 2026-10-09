@@ -18,7 +18,7 @@
       <button
         v-if="hasExplanation"
         type="button"
-        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-control text-content-muted hover:bg-surface-2"
+        class="flex h-touch w-touch shrink-0 items-center justify-center rounded-control text-content-muted hover:bg-surface-2"
         :aria-expanded="open"
         :aria-label="open ? k('finding.less') : k('finding.more')"
         :title="open ? k('finding.less') : k('finding.more')"

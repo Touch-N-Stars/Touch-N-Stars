@@ -153,9 +153,8 @@ test('critical alerts toast once, info alerts do not', (t) => {
   assert.equal(store.alerts.length, 3);
   assert.equal(shown.length, 1);
   assert.equal(shown[0].type, 'error');
-  assert.equal(shown[0].title, 'Star lost');
+  assert.match(shown[0].title, /star lost/i);
   assert.match(shown[0].message, /Wait or pick another star/);
-  assert.equal(store.criticalAlertCount, 2);
 });
 
 test('state, settle, calibration and stats messages update the status', (t) => {
@@ -203,7 +202,6 @@ test('failed background actions are toasted with the backend reason', (t) => {
   assert.equal(shown.length, 1);
   assert.equal(shown[0].title, 'Start guiding failed', 'the action named in the UI language');
   assert.equal(shown[0].message, 'Calibration failed');
-  assert.equal(store.lastActionResult.action, 'dither');
 
   store.handleMessage({
     type: 'action',
@@ -756,4 +754,144 @@ test('the incident list loads with its budget; without a native guider it is emp
   await store.loadIncidents();
   assert.equal(store.incidentsError, null);
   assert.equal(store.incidentsLoading, false);
+});
+
+test('a reconnected feed reloads the history and toasts a critical alert missed meanwhile', async (t) => {
+  const store = setup(t);
+  const toast = useToastStore();
+  const shown = [];
+  t.mock.method(toast, 'showToast', (options) => shown.push(options));
+  const old = { code: 1, codeName: 'Info', severity: 'Info', timestamp: '2026-10-09T20:00:00Z' };
+  const missed = {
+    code: 301,
+    codeName: 'StarLost',
+    severity: 'Critical',
+    title: 'Star lost',
+    timestamp: '2026-10-09T20:05:00Z',
+  };
+  let history = [old];
+  stubApi(t, {
+    getNativeGuiderSteps: async () => [],
+    getNativeGuiderAlerts: async () => history,
+    getNativeGuiderCalibration: async () => null,
+  });
+
+  store.handleMessage({ type: 'hello', payload: { available: true, connected: true } });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(store.historyLoaded, true);
+  assert.equal(shown.length, 0, 'the first load is history, not news');
+
+  // App in background: the alert was raised while the socket was closed.
+  history = [old, missed];
+  store.handleMessage({ type: 'hello', payload: { available: true, connected: true } });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(store.alerts.length, 2);
+  assert.equal(shown.length, 1);
+  assert.match(shown[0].title, /star lost/i);
+
+  // A heartbeat is no reconnect: nothing is reloaded or toasted again.
+  store.handleMessage({ type: 'heartbeat', payload: { available: true, connected: true } });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(shown.length, 1);
+});
+
+test('steps that arrive while the history loads are kept', async (t) => {
+  const store = setup(t);
+  let release;
+  stubApi(t, {
+    getNativeGuiderSteps: () =>
+      new Promise((resolve) => {
+        release = () => resolve([{ frame: 1 }, { frame: 2 }]);
+      }),
+  });
+  const loading = store.loadSteps();
+  store.handleMessage({ type: 'step', payload: { frame: 3 } });
+  release();
+  await loading;
+  assert.deepEqual(
+    store.steps.map((s) => s.frame),
+    [1, 2, 3]
+  );
+});
+
+test('an older status answer does not undo a newer state event or a newer poll', async (t) => {
+  const store = setup(t);
+  const answers = [];
+  stubApi(t, {
+    getNativeGuiderStatus: () => new Promise((resolve) => answers.push(resolve)),
+  });
+  const guiding = { available: true, connected: true, status: { state: 'Guiding' } };
+
+  const first = store.refreshStatus();
+  store.handleMessage({ type: 'state', payload: 'Stopped' });
+  answers[0](guiding);
+  await first;
+  assert.equal(store.state, 'Stopped', 'the state event after the request wins');
+
+  const older = store.refreshStatus();
+  const newer = store.refreshStatus();
+  answers[2]({ available: true, connected: true, status: { state: 'Looping' } });
+  await newer;
+  answers[1](guiding);
+  await older;
+  assert.equal(store.state, 'Looping', 'the newest poll wins');
+});
+
+test('a dark run that stops reporting is released, and cancel frees the UI', async (t) => {
+  const store = setup(t);
+  stubApi(t, { cancelNativeGuiderDarks: async () => null });
+
+  store.handleMessage({ type: 'darks', payload: { status: 'capturing', index: 2, total: 9 } });
+  assert.equal(store.darksRunning, true);
+  store.expireStaleDarks(Date.now() + 60 * 1000);
+  assert.equal(store.darksRunning, true, 'still within the progress interval');
+  store.expireStaleDarks(Date.now() + 4 * 60 * 1000);
+  assert.equal(store.darksRunning, false);
+
+  store.handleMessage({ type: 'darks', payload: { status: 'capturing', index: 1, total: 9 } });
+  await store.cancelDarks();
+  assert.equal(store.darksRunning, false);
+});
+
+test('a cancelled dark build request (app resume) is not toasted', async (t) => {
+  const store = setup(t);
+  const toast = useToastStore();
+  const shown = [];
+  t.mock.method(toast, 'showToast', (options) => shown.push(options));
+  stubApi(t, {
+    buildNativeGuiderDarks: async () => {
+      const error = new Error('Request cancelled');
+      error.cancelled = true;
+      throw error;
+    },
+  });
+  assert.equal(await store.buildDarks({}), false);
+  assert.equal(shown.length, 0);
+});
+
+test('stopping the feed forgets the session; a new connection clears "reconnect needed"', async (t) => {
+  const store = setup(t);
+  store.startFeed();
+  store.summary = { ...store.summary, available: true, connected: true };
+  store.status = { state: 'Guiding' };
+  store.steps = [{ frame: 1 }];
+  store.historyLoaded = true;
+  store.reconnectNeeded = true;
+
+  store.stopFeed();
+  assert.equal(store.status, null);
+  assert.deepEqual(store.steps, []);
+  assert.equal(store.summary.available, false);
+  assert.equal(store.historyLoaded, false);
+  assert.equal(store.reconnectNeeded, false);
+
+  store.reconnectNeeded = true;
+  stubApi(t, {
+    getNativeGuiderStatus: async () => ({ available: true, connected: true, status: null }),
+    getNativeGuiderSteps: async () => [],
+    getNativeGuiderAlerts: async () => [],
+    getNativeGuiderCalibration: async () => null,
+  });
+  await store.refreshStatus();
+  assert.equal(store.reconnectNeeded, false);
 });

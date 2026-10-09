@@ -1808,7 +1808,6 @@
           "ditherPixels": "Wartość (piksele prowadzenia)",
           "ditherRaOnly": "Tylko RA",
           "ditherHint": "Przesuwa pozycję blokady losowo o maks. tę wartość i czeka, aż prowadzenie się ustabilizuje.",
-          "ditherInvalid": "Podaj wartość od 0 do 100 pikseli.",
           "confirmStopTitle": "Zatrzymać prowadzenie?",
           "confirmStop": "Prowadzenie zostanie zatrzymane, a ekspozycje trwającej sekwencji nie będą już prowadzone.",
           "confirmCalibrateTitle": "Skalibrować ponownie?",
@@ -2650,9 +2649,7 @@
             "dismiss": "Odrzuć wskazówkę",
             "apply": "Zastosuj",
             "applied": "Zastosowano",
-            "applyFailed": "Nie udało się zastosować wskazówki",
-            "open": "Pokaż wskazówkę",
-            "close": "Ukryj wskazówkę"
+            "applyFailed": "Nie udało się zastosować wskazówki"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "wschód",
-              "West": "zachód",
-              "Unknown": "nieznana"
             },
             "status": {
               "LowSnr": "za niski SNR",

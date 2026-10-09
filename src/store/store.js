@@ -124,6 +124,24 @@ const defaultProfileInfo = () => ({
   },
 });
 
+// Device info polled on every tick while the device is connected:
+// [connection flag, response key for handleApiResponses, request].
+const DEVICE_INFO_REQUESTS = [
+  ['isCameraConnected', 'cameraResponse', () => apiService.cameraAction('info')],
+  ['isGuideCameraConnected', 'guideCameraResponse', () => apiService.guideCameraAction('info')],
+  ['isMountConnected', 'mountResponse', () => apiService.mountAction('info')],
+  ['isFilterConnected', 'filterResponse', () => apiService.filterAction('info')],
+  ['isRotatorConnected', 'rotatorResponse', () => apiService.rotatorAction('info')],
+  ['isFocuserConnected', 'focuserResponse', () => apiService.focusAction('info')],
+  ['isFocuserConnected', 'focuserAfResponse', () => apiService.focuserAfAction('info')],
+  ['isGuiderConnected', 'guiderResponse', () => apiService.guiderAction('info')],
+  ['isFlatdeviceConnected', 'flatdeviceResponse', () => apiService.flatdeviceAction('info')],
+  ['isDomeConnected', 'domeResponse', () => apiService.domeAction('info')],
+  ['isSafetyConnected', 'safetyResponse', () => apiService.safetyAction('info')],
+  ['isWeatherConnected', 'weatherResponse', () => apiService.weatherAction('info')],
+  ['isSwitchConnected', 'switchResponse', () => apiService.switchAction('info')],
+];
+
 export const apiStore = defineStore('store', {
   state: () => ({
     apiPort: null,
@@ -250,6 +268,19 @@ export const apiStore = defineStore('store', {
   },
 
   actions: {
+    /**
+     * The info of every connected device, requested in parallel: { cameraResponse, ... }.
+     * Each response is keyed by what was requested, not by the connection flags afterwards:
+     * a CONNECTED/DISCONNECTED event can flip a flag while the requests are in flight (e.g. the
+     * native guider connecting its guide camera) and would shift every later response onto the
+     * wrong device.
+     */
+    async fetchDeviceInfos() {
+      const pending = DEVICE_INFO_REQUESTS.filter(([flag]) => this[flag]);
+      const responses = await Promise.all(pending.map(([, , request]) => request()));
+      return Object.fromEntries(pending.map(([, key], index) => [key, responses[index]]));
+    },
+
     async fetchAllInfos(t) {
       // Staleness guard: if switchBackend() bumps the epoch while this cycle
       // is parked on an await, every result below belongs to the OLD instance.
@@ -562,67 +593,9 @@ export const apiStore = defineStore('store', {
           this.lastEventHistoryFetch = now;
         }
 
-        // Build API requests dynamically based on connection status
-        const requests = [];
-        const requestMap = {};
-
-        if (this.isCameraConnected) {
-          requests.push(apiService.cameraAction('info'));
-          requestMap[requests.length - 1] = 'cameraResponse';
-        }
-        if (this.isGuideCameraConnected) {
-          requests.push(apiService.guideCameraAction('info'));
-          requestMap[requests.length - 1] = 'guideCameraResponse';
-        }
-        if (this.isMountConnected) {
-          requests.push(apiService.mountAction('info'));
-          requestMap[requests.length - 1] = 'mountResponse';
-        }
-        if (this.isFilterConnected) {
-          requests.push(apiService.filterAction('info'));
-          requestMap[requests.length - 1] = 'filterResponse';
-        }
-        if (this.isRotatorConnected) {
-          requests.push(apiService.rotatorAction('info'));
-          requestMap[requests.length - 1] = 'rotatorResponse';
-        }
-        if (this.isFocuserConnected) {
-          requests.push(apiService.focusAction('info'));
-          requestMap[requests.length - 1] = 'focuserResponse';
-        }
-        if (this.isFocuserConnected) {
-          requests.push(apiService.focuserAfAction('info'));
-          requestMap[requests.length - 1] = 'focuserAfResponse';
-        }
-        if (this.isGuiderConnected) {
-          requests.push(apiService.guiderAction('info'));
-          requestMap[requests.length - 1] = 'guiderResponse';
-        }
-        if (this.isFlatdeviceConnected) {
-          requests.push(apiService.flatdeviceAction('info'));
-          requestMap[requests.length - 1] = 'flatdeviceResponse';
-        }
-        if (this.isDomeConnected) {
-          requests.push(apiService.domeAction('info'));
-          requestMap[requests.length - 1] = 'domeResponse';
-        }
-        if (this.isSafetyConnected) {
-          requests.push(apiService.safetyAction('info'));
-          requestMap[requests.length - 1] = 'safetyResponse';
-        }
-        if (this.isWeatherConnected) {
-          requests.push(apiService.weatherAction('info'));
-          requestMap[requests.length - 1] = 'weatherResponse';
-        }
-        if (this.isSwitchConnected) {
-          requests.push(apiService.switchAction('info'));
-          requestMap[requests.length - 1] = 'switchResponse';
-        }
-
-        const responses = await Promise.all(requests);
+        const deviceResponses = await this.fetchDeviceInfos();
         if (isStale()) return;
 
-        // Map responses to correct keys
         const responseData = {
           imageHistoryResponse: null,
           cameraResponse: null,
@@ -638,24 +611,8 @@ export const apiStore = defineStore('store', {
           safetyResponse: null,
           weatherResponse: null,
           switchResponse: null,
+          ...deviceResponses,
         };
-
-        let responseIndex = 0;
-        if (this.isCameraConnected) responseData.cameraResponse = responses[responseIndex++];
-        if (this.isGuideCameraConnected)
-          responseData.guideCameraResponse = responses[responseIndex++];
-        if (this.isMountConnected) responseData.mountResponse = responses[responseIndex++];
-        if (this.isFilterConnected) responseData.filterResponse = responses[responseIndex++];
-        if (this.isRotatorConnected) responseData.rotatorResponse = responses[responseIndex++];
-        if (this.isFocuserConnected) responseData.focuserResponse = responses[responseIndex++];
-        if (this.isFocuserConnected) responseData.focuserAfResponse = responses[responseIndex++];
-        if (this.isGuiderConnected) responseData.guiderResponse = responses[responseIndex++];
-        if (this.isFlatdeviceConnected)
-          responseData.flatdeviceResponse = responses[responseIndex++];
-        if (this.isDomeConnected) responseData.domeResponse = responses[responseIndex++];
-        if (this.isSafetyConnected) responseData.safetyResponse = responses[responseIndex++];
-        if (this.isWeatherConnected) responseData.weatherResponse = responses[responseIndex++];
-        if (this.isSwitchConnected) responseData.switchResponse = responses[responseIndex++];
 
         this.handleApiResponses(responseData);
       } catch (error) {

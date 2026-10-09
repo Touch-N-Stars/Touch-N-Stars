@@ -3,10 +3,9 @@
     <div class="flex items-center gap-1">
       <button
         type="button"
-        class="flex min-h-9 min-w-0 flex-1 items-center gap-1.5 rounded-chip border px-2.5 py-1 text-left text-xs"
+        class="flex min-h-touch min-w-0 flex-1 items-center gap-1.5 rounded-chip border px-2.5 py-1 text-left text-xs"
         :class="chipClasses"
         :aria-expanded="open"
-        :aria-label="open ? k('hint.close') : k('hint.open')"
         @click="open = !open"
       >
         <LightBulbIcon class="h-4 w-4 shrink-0" />
@@ -21,7 +20,7 @@
       </button>
       <button
         type="button"
-        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-content-muted hover:bg-surface-2"
+        class="flex h-touch w-touch shrink-0 items-center justify-center rounded-full text-content-muted hover:bg-surface-2"
         :aria-label="k('hint.dismiss')"
         :title="k('hint.dismiss')"
         @click="dismiss"

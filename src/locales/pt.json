@@ -1808,7 +1808,6 @@
           "ditherPixels": "Quantidade (pixels de guiagem)",
           "ditherRaOnly": "Só RA",
           "ditherHint": "Move a posição de bloqueio aleatoriamente até este valor e aguarda até a guiagem estabilizar.",
-          "ditherInvalid": "Introduza um valor entre 0 e 100 pixels.",
           "confirmStopTitle": "Parar a guiagem?",
           "confirmStop": "A guiagem para e as exposições de uma sequência em curso deixam de ser guiadas.",
           "confirmCalibrateTitle": "Recalibrar?",
@@ -2650,9 +2649,7 @@
             "dismiss": "Dispensar dica",
             "apply": "Aplicar",
             "applied": "Aplicado",
-            "applyFailed": "Não foi possível aplicar a dica",
-            "open": "Mostrar dica",
-            "close": "Ocultar dica"
+            "applyFailed": "Não foi possível aplicar a dica"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3169,11 +3166,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "este",
-              "West": "oeste",
-              "Unknown": "desconhecido"
             },
             "status": {
               "LowSnr": "SNR demasiado baixo",

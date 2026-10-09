@@ -171,7 +171,7 @@ watch(
   @apply text-cyan-400;
 }
 .subnav-badge {
-  @apply min-w-4 h-4 px-1 rounded-full bg-status-danger text-[10px] font-bold leading-4 text-white tabular-nums;
+  @apply min-w-4 h-4 px-1 rounded-full bg-status-danger text-[10px] font-bold leading-4 text-gray-950 tabular-nums;
 }
 .active-subnav-button::after {
   background-color: rgba(6, 182, 212, 1) !important;

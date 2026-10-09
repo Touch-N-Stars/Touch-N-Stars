@@ -41,7 +41,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { TONE_TEXT, alertText, severityTone } from '@/utils/nativeGuider';
+import { textOr, TONE_TEXT, alertText, severityTone } from '@/utils/nativeGuider';
 import NativeIncidentReplayButton from './incidents/NativeIncidentReplayButton.vue';
 
 const props = defineProps({
@@ -54,7 +54,7 @@ const tone = computed(() => severityTone(props.alert.severity));
 const text = computed(() => alertText({ t, te }, props.alert));
 const severityLabel = computed(() => {
   const key = `components.guider.native.log.severity.${String(props.alert.severity || 'Info').toLowerCase()}`;
-  return te(key) ? t(key) : props.alert.severity;
+  return textOr({ t, te }, key, props.alert.severity);
 });
 const time = computed(() => {
   const ms = Date.parse(props.alert.timestamp);

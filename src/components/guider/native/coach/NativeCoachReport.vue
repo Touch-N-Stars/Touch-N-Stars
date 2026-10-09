@@ -118,7 +118,7 @@
     <div v-if="hasMeasurements" class="tns-card flex flex-col gap-3">
       <button
         type="button"
-        class="flex min-h-10 w-full items-center justify-between gap-2 text-left"
+        class="flex min-h-touch w-full items-center justify-between gap-2 text-left"
         :aria-expanded="showMeasurements"
         @click="showMeasurements = !showMeasurements"
       >

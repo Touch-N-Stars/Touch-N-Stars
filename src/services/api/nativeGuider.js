@@ -3,20 +3,14 @@
 // The controller answers { success: true, response } or { success: false, error, code } with a
 // real HTTP status (409 NotAvailable/Rejected, 400 bad input, 404 no frame yet, 202 accepted).
 // The global axios interceptors (utils/errorHandler.js) would turn every non-2xx into a resolved
-// mock object and drop the backend's reason, so this module talks through its own instance and
-// maps failures to Errors carrying { status, code } - the page shows the real reason instead of
-// "HTTP 409". The app-wide resume abort signal is attached by hand (see httpLifecycle.js).
+// mock object and drop the backend's reason, so this module talks through core's rawHttp (no
+// response interceptors, real rejections, the app-wide resume abort signal) and maps failures
+// to Errors carrying { status, code } - the page shows the real reason instead of "HTTP 409".
 import axios from 'axios';
-import { DEFAULT_TIMEOUT, getUrls } from './core';
-import { getHttpAbortSignal } from '@/utils/httpLifecycle';
+import { DEFAULT_TIMEOUT, getUrls, rawHttp } from './core';
 
-export const nativeGuiderHttp = axios.create();
-nativeGuiderHttp.interceptors.request.use((config) => {
-  if (!config.signal) {
-    config.signal = getHttpAbortSignal();
-  }
-  return config;
-});
+/** The HTTP instance of this module (core's rawHttp; tests mock its methods). */
+export const nativeGuiderHttp = rawHttp;
 
 /** Maps an axios failure to an Error with the backend's message, status and code. */
 export function mapNativeGuiderError(error, fallbackMessage = 'Native guider request failed') {

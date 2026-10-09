@@ -73,3 +73,38 @@ test('the guide camera joins the equipment list right after the camera, only whe
     ['camera', 'mount']
   );
 });
+
+test('device info is polled for the guide camera and stays with its device when flags flip', async (t) => {
+  freshPinia();
+  const store = apiStore();
+  const { default: apiService } = await import('@/services/apiService');
+  const originals = {
+    cameraAction: apiService.cameraAction,
+    guideCameraAction: apiService.guideCameraAction,
+    mountAction: apiService.mountAction,
+  };
+  t.after(() => Object.assign(apiService, originals));
+  let release;
+  const gate = new Promise((resolve) => (release = resolve));
+  Object.assign(apiService, {
+    cameraAction: async () => ({ Success: true, Response: { Name: 'cam' } }),
+    guideCameraAction: async () => {
+      await gate;
+      return { Success: true, Response: { Name: 'guide' } };
+    },
+    mountAction: async () => ({ Success: true, Response: { Name: 'mount' } }),
+  });
+  store.isCameraConnected = true;
+  store.isGuideCameraConnected = true;
+  store.isMountConnected = true;
+
+  const pending = store.fetchDeviceInfos();
+  // A DISCONNECTED event arrives while the requests are in flight.
+  store.isGuideCameraConnected = false;
+  release();
+  const data = await pending;
+
+  assert.equal(data.cameraResponse.Response.Name, 'cam');
+  assert.equal(data.guideCameraResponse.Response.Name, 'guide');
+  assert.equal(data.mountResponse.Response.Name, 'mount');
+});

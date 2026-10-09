@@ -80,7 +80,7 @@
       <button
         v-if="lastError"
         type="button"
-        class="ml-auto flex items-center gap-1.5 rounded-chip px-2.5 py-1 text-xs font-semibold border max-w-full min-w-0"
+        class="ml-auto flex min-h-touch items-center gap-1.5 rounded-chip px-2.5 py-1 text-xs font-semibold border max-w-full min-w-0"
         :class="errorChipClasses"
         @click="showError = true"
       >
@@ -111,31 +111,29 @@
     <!-- Settle status -->
     <p v-if="settleText" class="text-xs text-status-warn truncate">{{ settleText }}</p>
 
-    <!-- Live numbers -->
+    <!-- Live numbers. Each tile is a button that explains its value (no hover on touch);
+         labels wrap to two lines instead of being cut off in longer languages. -->
     <div class="grid grid-cols-4 gap-1.5">
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.rmsTotal') }}</span>
-          <NativeHelpTip v-bind="help('rms')" />
-        </span>
+      <NativeHelpTip v-bind="help('rms')" class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0">
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.rmsTotal')
+        }}</span>
         <span class="tns-stat-value" :class="rmsTone">{{ fmt(rms.total, 2) }}″</span>
         <span class="text-[10px] text-content-faint tabular-nums"
           >{{ fmt(rms.totalPx, 2) }} px</span
         >
-      </div>
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.rmsRa') }}</span>
-          <NativeHelpTip v-bind="help('ra')" />
-        </span>
+      </NativeHelpTip>
+      <NativeHelpTip v-bind="help('ra')" class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0">
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.rmsRa')
+        }}</span>
         <span class="tns-stat-value text-ra">{{ fmt(rms.ra, 2) }}″</span>
         <span class="text-[10px] text-content-faint tabular-nums">{{ fmt(rms.raPx, 2) }} px</span>
-      </div>
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.rmsDec') }}</span>
-          <NativeHelpTip v-bind="help('dec')" />
-        </span>
+      </NativeHelpTip>
+      <NativeHelpTip v-bind="help('dec')" class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0">
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.rmsDec')
+        }}</span>
         <span class="tns-stat-value text-dec">{{ fmt(rms.dec, 2) }}″</span>
         <!-- Dec guide mode Drift: the direction next to the px, details in the tooltip -->
         <span
@@ -150,32 +148,33 @@
             >· {{ decDirectionShort }}</span
           >
         </span>
-      </div>
-      <div class="tns-stat-tile min-h-12! px-2!" :class="snrTileClass">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.snr') }}</span>
-          <NativeHelpTip v-bind="help('snr')" />
-        </span>
+      </NativeHelpTip>
+      <NativeHelpTip
+        v-bind="help('snr')"
+        class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0"
+        :class="snrTileClass"
+      >
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.snr')
+        }}</span>
         <span class="tns-stat-value" :class="TONE_TEXT[snrToneValue]">{{
           fmt(primary?.snr, 1)
         }}</span>
         <span class="text-[10px] text-content-faint tabular-nums"
           >{{ t('components.guider.native.strip.mass') }} {{ fmt(primary?.mass, 0) }}</span
         >
-      </div>
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.hfd') }}</span>
-          <NativeHelpTip v-bind="help('hfd')" />
-        </span>
+      </NativeHelpTip>
+      <NativeHelpTip v-bind="help('hfd')" class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0">
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.hfd')
+        }}</span>
         <span class="tns-stat-value">{{ fmt(primary?.hfd, 2) }}</span>
         <span class="text-[10px] text-content-faint">px</span>
-      </div>
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.stars') }}</span>
-          <NativeHelpTip v-bind="help('stars')" />
-        </span>
+      </NativeHelpTip>
+      <NativeHelpTip v-bind="help('stars')" class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0">
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.stars')
+        }}</span>
         <span class="tns-stat-value">
           {{ status?.starsUsed ?? '–' }}<span class="text-content-faint">/</span
           >{{ status?.starCount ?? '–' }}
@@ -183,13 +182,12 @@
         <span class="text-[10px] text-content-faint">{{
           t('components.guider.native.strip.usedTotal')
         }}</span>
-      </div>
+      </NativeHelpTip>
       <!-- Guiding error relative to the imaging camera's pixel scale: < 0.5 is excellent -->
-      <div class="tns-stat-tile min-h-12! px-2!">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.rmsImage') }}</span>
-          <NativeHelpTip v-bind="help('rmsImage')" />
-        </span>
+      <NativeHelpTip v-bind="help('rmsImage')" class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0">
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.rmsImage')
+        }}</span>
         <span class="tns-stat-value" :class="imageRatioTone">{{
           imageRatio === null ? '–' : `${fmt(imageRatio, 2)}×`
         }}</span>
@@ -198,15 +196,18 @@
             ? t('components.guider.native.strip.imageScale', { scale: fmt(imageScale, 2) })
             : t('components.guider.native.strip.imageScaleUnknown')
         }}</span>
-      </div>
-      <div class="tns-stat-tile min-h-12! px-2!" :class="processingTileClass">
-        <span class="flex min-w-0 items-center gap-1">
-          <span class="tns-stat-label">{{ t('components.guider.native.strip.processing') }}</span>
-          <NativeHelpTip v-bind="help('processing')" />
-        </span>
+      </NativeHelpTip>
+      <NativeHelpTip
+        v-bind="help('processing')"
+        class="tns-stat-tile min-h-12! px-2! pr-4! min-w-0"
+        :class="processingTileClass"
+      >
+        <span class="tns-stat-label whitespace-normal! line-clamp-2">{{
+          t('components.guider.native.strip.processing')
+        }}</span>
         <span class="tns-stat-value">{{ processingMs === null ? '–' : fmt(processingMs, 0) }}</span>
         <span class="text-[10px] text-content-faint">ms</span>
-      </div>
+      </NativeHelpTip>
     </div>
 
     <!-- Error detail -->
@@ -235,6 +236,7 @@ import NativeHintChip from './coach/NativeHintChip.vue';
 import { apiStore } from '@/store/store';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import {
+  textOr,
   TONE_BG,
   TONE_TEXT,
   alertText,
@@ -257,9 +259,11 @@ const status = computed(() => store.status);
 // Title and explanation behind the ⓘ of a tile (the RMS/image text doubles as its former hover hint)
 function help(key) {
   const base = 'components.guider.native.strip';
+  const text = key === 'rmsImage' ? t(`${base}.rmsImageHint`) : t(`${base}.help.${key}.text`);
   return {
     title: t(`${base}.help.${key}.title`),
-    text: key === 'rmsImage' ? t(`${base}.rmsImageHint`) : t(`${base}.help.${key}.text`),
+    // Dec guide mode Drift: the direction details, otherwise only in a hover title
+    text: key === 'dec' && decDirectionHint.value ? `${text}\n\n${decDirectionHint.value}` : text,
   };
 }
 const primary = computed(() => store.status?.primaryStar || null);
@@ -267,7 +271,7 @@ const tone = computed(() => stateTone(store.state));
 
 const stateLabel = computed(() => {
   const key = `components.guider.native.states.${store.state}`;
-  return te(key) ? t(key) : store.state;
+  return textOr({ t, te }, key, store.state);
 });
 
 const pulsing = computed(

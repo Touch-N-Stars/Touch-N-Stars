@@ -27,7 +27,7 @@
         </select>
         <div class="flex shrink-0 gap-1">
           <button
-            v-if="store.isPINS"
+            v-if="store.isPINS && !props.hideConfig"
             @click="configDevice"
             :disabled="
               isScanning ||
@@ -140,6 +140,9 @@ const props = defineProps({
   disableConnect: { type: Boolean, default: false },
   disableConnectMessage: { type: String, default: '' },
   alwaysEnableConfig: { type: Boolean, default: false },
+  // For a device without a setup dialog of its own (e.g. PINS' guide camera slot, which the
+  // Alpaca settings cannot address): no cog that would do nothing or configure another device.
+  hideConfig: { type: Boolean, default: false },
 });
 
 const devices = ref([]);

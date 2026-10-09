@@ -77,8 +77,13 @@
       class="flex flex-col gap-2 border-t border-line pt-2 text-xs"
       data-testid="native-guider-predictive-stats"
     >
-      <div class="col-head text-left!">
+      <div class="col-head text-left! flex items-center gap-1.5">
         {{ t('components.guider.native.stats.predictive.title') }}
+        <!-- The weight and the details below explain themselves only in hover titles -->
+        <NativeHelpTip
+          :title="t('components.guider.native.stats.predictive.title')"
+          :text="predictiveHelp"
+        />
       </div>
       <div v-for="a in learning" :key="a.axis" class="flex flex-col gap-0.5 min-w-0">
         <div class="flex items-baseline gap-2 min-w-0">
@@ -109,7 +114,7 @@
           ></div>
         </div>
         <div
-          class="text-[10px] text-content-faint tabular-nums truncate"
+          class="text-[10px] text-content-faint tabular-nums break-words"
           :title="t('components.guider.native.stats.predictive.detailsHint')"
         >
           {{ details(a.state) }}
@@ -176,6 +181,14 @@ import { formatElapsed } from './graphData';
 
 const { t } = useI18n();
 const store = useNativeGuiderStore();
+
+// Both hover-only explanations of the predictive section, for touch screens.
+const predictiveHelp = computed(() =>
+  [
+    t('components.guider.native.stats.predictive.weightHint'),
+    t('components.guider.native.stats.predictive.detailsHint'),
+  ].join('\n\n')
+);
 
 const windowStats = computed(() => store.windowStats);
 const sessionStats = computed(() => store.sessionStats);

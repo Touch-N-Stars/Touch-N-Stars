@@ -17,7 +17,8 @@ const RMS_MIN_STEPS = 5;
 /** Marker kinds and their colours (canvas + legend). */
 export const MARKER_COLORS = {
   dither: '#a78bfa',
-  starlost: '#f87171',
+  // Not the Dec red of the graph: a lost star must stand out from the Dec line.
+  starlost: '#e879f9',
   settled: '#34d399',
   settleFailed: '#fbbf24',
   calibration: '#22d3ee',

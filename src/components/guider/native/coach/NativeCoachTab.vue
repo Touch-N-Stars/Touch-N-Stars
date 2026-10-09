@@ -26,7 +26,7 @@
           </div>
         </div>
         <details v-if="outcomeFindings.length" class="group">
-          <summary class="flex min-h-10 cursor-pointer items-center text-sm text-accent">
+          <summary class="flex min-h-touch cursor-pointer items-center text-sm text-accent">
             {{ k('outcomeFindings') }} ({{ outcomeFindings.length }})
           </summary>
           <div class="mt-2 flex flex-col gap-2">
@@ -99,9 +99,11 @@ const outcomeFindings = computed(() => (outcome.value ? coach.value.findings || 
 let lastPoll = 0;
 async function poll() {
   if (!store.isAvailable) return;
-  const running = store.coachRunning;
-  if (!running) return;
-  const interval = store.wsConnected ? 10000 : 2000;
+  // Also while the last coach status still says Running but the guider no longer does: the
+  // final 'coach' event was missed (app in background), and only a load brings the report.
+  const stale = !store.coachRunning && store.coachPhase === 'Running';
+  if (!store.coachRunning && !stale) return;
+  const interval = store.wsConnected && !stale ? 10000 : 2000;
   if (Date.now() - lastPoll < interval - 100) return;
   lastPoll = Date.now();
   await store.loadCoach();

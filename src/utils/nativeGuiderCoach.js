@@ -3,6 +3,8 @@
 // /api/internal-guider/coach* and the 'coach'/'hint' WebSocket events. The engine emits findings as
 // stable codes with parameters; every text is rendered here from the locale files.
 
+import { textOr } from './nativeGuider';
+
 /** Selectable steps in session order (the report is always built). */
 export const COACH_STEPS = ['CameraCheck', 'Drift', 'MountResponse', 'Trials'];
 
@@ -161,10 +163,10 @@ export function textParameters({ t, te }, parameters = {}) {
   for (const [name, raw] of Object.entries(parameters || {})) {
     if (typeof raw === 'string') {
       const key = `${VALUE_TEXT_BASE}.${name}.${raw}`;
-      out[name] = te(key) ? t(key) : raw;
+      out[name] = textOr({ t, te }, key, raw);
     } else if (typeof raw === 'boolean') {
       const key = `${VALUE_TEXT_BASE}.bool.${raw}`;
-      out[name] = te(key) ? t(key) : String(raw);
+      out[name] = textOr({ t, te }, key, String(raw));
     } else {
       out[name] = formatParameter(name, raw) ?? unknown;
     }

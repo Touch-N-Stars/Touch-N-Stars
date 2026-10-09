@@ -4,18 +4,17 @@
 
 export const NATIVE_GUIDER_ID = 'InternalGuider';
 
-/** Guider states reported by the native guider (IGuider.State / status.state). */
-export const GUIDER_STATES = [
-  'Stopped',
-  'Looping',
-  'Selected',
-  'Calibrating',
-  'Guiding',
-  'LostLock',
-  'Reacquiring',
-  'Paused',
-  'Failed',
+// Guider settings shown outside the guider page, by the backend's setting name. A name the
+// backend no longer has is simply not shown (NativeSettingsSheet skips unknown names).
+/** Guider connect dialog: guide source, optics and pulse output. */
+export const NATIVE_CONNECT_SETTINGS = [
+  'GuideSource',
+  'FocalLengthMm',
+  'PixelSizeUm',
+  'PulseOutput',
 ];
+/** Setup wizard: what is needed before the first guiding run. */
+export const NATIVE_WIZARD_SETTINGS = ['GuideSource', 'FocalLengthMm'];
 
 /**
  * Whether the native guider is the guider in use: the connected device when there is one,
@@ -35,6 +34,41 @@ export function isNativeGuiderSelected({
     return name === NATIVE_GUIDER_ID || /\b(internal|native) guider\b/i.test(name);
   }
   return profileGuiderName === NATIVE_GUIDER_ID;
+}
+
+/**
+ * isNativeGuiderSelected() for the main store: the connected guider, else the chooser's
+ * display name, else the profile's guider.
+ * @param {{ guiderInfo?: object, profileInfo?: object }} store apiStore (or the same shape)
+ */
+export function isNativeGuiderInUse(store, selectedDisplayName = '') {
+  return isNativeGuiderSelected({
+    guiderInfo: store?.guiderInfo,
+    profileGuiderName: store?.profileInfo?.GuiderSettings?.GuiderName,
+    selectedDisplayName,
+  });
+}
+
+/**
+ * Whether PINS' guide camera slot is in use. Only the native guider guides with it - PHD2
+ * opens its camera itself, so a slot camera would fight PHD2 for the device - and only PINS'
+ * profile has the slot (official NINA has no GuideCameraSettings).
+ */
+export function usesGuideCameraSlot(store, selectedDisplayName = '') {
+  return (
+    Boolean(store?.profileInfo?.GuideCameraSettings) &&
+    isNativeGuiderInUse(store, selectedDisplayName)
+  );
+}
+
+/**
+ * The devices "connect all" takes care of. The guide camera slot only counts while the native
+ * guider uses it: a camera left in the slot from an earlier native setup must neither be
+ * connected for PHD2 nor keep "all connected" from ever becoming true.
+ */
+export function equipmentInUse(existingEquipmentList, { guideCameraSlot }) {
+  const list = Array.isArray(existingEquipmentList) ? existingEquipmentList : [];
+  return guideCameraSlot ? list : list.filter((device) => device?.apiName !== 'guidecamera');
 }
 
 /** Colour tone of a guider state: ok | info | warn | danger | idle. */
@@ -526,7 +560,8 @@ const SETTINGS_TEXT_BASE = 'components.guider.native.settings';
 const ALERTS_TEXT_BASE = 'components.guider.native.alerts';
 
 /** The translation of key, else the fallback (the backend's English text for keys it doesn't know). */
-function textOr({ t, te }, key, fallback) {
+/** t(key) when the locale has it, else `fallback` (e.g. the backend's own English text). */
+export function textOr({ t, te }, key, fallback) {
   return te(key) ? t(key) : fallback;
 }
 
@@ -568,4 +603,65 @@ export function alertText(i18n, alert) {
     explanation: field('explanation'),
     fix: field('fix'),
   };
+}
+
+function decimalsOf(value) {
+  const text = String(value ?? '');
+  if (!/^-?\d+(\.\d+)?$/.test(text)) return 0;
+  return text.includes('.') ? text.split('.')[1].length : 0;
+}
+
+/**
+ * Range, step and decimal places for a numeric setting in NumberInputPicker. The backend sends
+ * only min/max (null = unbounded), so the precision is taken from the numbers it does send:
+ * min, max, default and current value (ExposureSeconds min 0.01 -> 2 places). A double gets at
+ * least one place, at most three; an int none.
+ */
+export function numericPickerSpec(setting) {
+  const isInt = String(setting?.type || '').toLowerCase() === 'int';
+  const finite = (v) => v !== null && v !== undefined && Number.isFinite(Number(v));
+  const decimals = isInt
+    ? 0
+    : Math.min(
+        3,
+        Math.max(
+          1,
+          ...[setting?.min, setting?.max, setting?.defaultValue, setting?.value].map(decimalsOf)
+        )
+      );
+  return {
+    min: finite(setting?.min) ? Number(setting.min) : -1000000,
+    max: finite(setting?.max) ? Number(setting.max) : 1000000,
+    step: isInt ? 1 : Number((10 ** -decimals).toFixed(decimals)),
+    decimals,
+  };
+}
+
+/** Identity of an alert (the guider sends no id): code, time and title. */
+export function alertKey(alert) {
+  return `${alert?.code ?? ''}|${alert?.timestamp ?? ''}|${alert?.title ?? ''}`;
+}
+
+/**
+ * Alerts with a stable row key, oldest first. The key must not depend on the position in the
+ * list: new alerts are added on top of the log, and an index-based key would close the row the
+ * user just opened. Identical alerts (same code, time, title) are numbered in arrival order.
+ */
+export function alertRows(alerts) {
+  const seen = new Map();
+  return (Array.isArray(alerts) ? alerts : []).map((alert) => {
+    const base = alertKey(alert);
+    const count = seen.get(base) || 0;
+    seen.set(base, count + 1);
+    return { alert, key: `${base}#${count}` };
+  });
+}
+
+/**
+ * A pier side in the UI language. NINA reports East/West/Unknown in some places and
+ * pierEast/pierWest/pierUnknown in others; both spellings map to the same words.
+ */
+export function pierSideText(i18n, side, fallback = '–') {
+  if (!side) return fallback;
+  return textOr(i18n, `components.guider.native.calibration.pierSides.${side}`, String(side));
 }

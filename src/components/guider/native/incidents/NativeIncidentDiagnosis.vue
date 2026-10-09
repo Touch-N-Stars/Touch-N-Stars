@@ -46,7 +46,7 @@
             <button
               v-if="item.frame !== null"
               type="button"
-              class="flex min-h-10 w-full items-center gap-2 rounded-control border border-line bg-surface-2 px-2.5 py-1.5 text-left text-sm text-content hover:bg-surface-3"
+              class="flex min-h-touch w-full items-center gap-2 rounded-control border border-line bg-surface-2 px-2.5 py-1.5 text-left text-sm text-content hover:bg-surface-3"
               :aria-label="`${item.text} – ${k('replay.showFrame')}`"
               @click="emit('jump', item.frame)"
             >
@@ -74,7 +74,7 @@
             v-for="(trigger, i) in triggers"
             :key="`trigger-${i}`"
             type="button"
-            class="flex min-h-9 items-center gap-1.5 rounded-chip border border-status-danger/40 bg-status-danger/10 px-2 text-xs text-content disabled:opacity-60"
+            class="flex min-h-touch items-center gap-1.5 rounded-chip border border-status-danger/40 bg-status-danger/10 px-2 text-xs text-content disabled:opacity-60"
             :disabled="trigger.frame === null"
             :title="trigger.message"
             @click="emit('jump', trigger.frame)"

@@ -18,7 +18,7 @@
             v-for="option in optionList"
             :key="option"
             type="button"
-            class="tns-btn-secondary w-auto! min-h-10! px-3! text-sm!"
+            class="tns-btn-secondary w-auto! px-3! text-sm!"
             :disabled="saving"
             @click="confirmingOption = option"
           >
@@ -123,23 +123,22 @@
       </option>
     </select>
 
-    <!-- int / double -->
-    <div v-else-if="isNumeric" class="relative">
-      <input
-        :id="inputId"
-        v-model="draft"
-        type="text"
-        :inputmode="type === 'int' ? 'numeric' : 'decimal'"
-        class="tns-input tabular-nums"
-        :class="[setting.unit ? 'pr-14' : '', error ? 'border-status-danger!' : '']"
-        :disabled="saving"
-        @blur="commit"
-        @keydown.enter.prevent="onEnter"
+    <!-- int / double: the app's number picker (numpad on touch, -/+ steps) -->
+    <div v-else-if="isNumeric" class="flex items-center gap-2">
+      <NumberInputPicker
+        v-model="numberDraft"
+        :labelKey="pickerTitleKey"
+        :min="pickerSpec.min"
+        :max="pickerSpec.max"
+        :step="pickerSpec.step"
+        :decimalPlaces="pickerSpec.decimals"
+        :useDefaultSentinel="false"
+        :inputId="inputId"
+        wrapperClass="w-full"
+        class="min-w-0 flex-1"
+        @change="commit"
       />
-      <span
-        v-if="setting.unit"
-        class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-content-muted"
-      >
+      <span v-if="setting.unit" class="shrink-0 text-xs text-content-muted">
         {{ setting.unit }}
       </span>
     </div>
@@ -167,7 +166,7 @@
       <button
         v-if="showReset"
         type="button"
-        class="ml-auto flex min-h-8 items-center gap-1 text-xs text-accent"
+        class="ml-auto flex min-h-touch items-center gap-1 text-xs text-accent"
         :disabled="saving"
         @click="resetToDefault"
       >
@@ -191,8 +190,10 @@ import {
   ExclamationTriangleIcon,
 } from '@heroicons/vue/24/outline';
 import toggleButton from '@/components/helpers/toggleButton.vue';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import {
+  numericPickerSpec,
   settingDescription,
   settingFormValue,
   settingLabel,
@@ -221,7 +222,25 @@ const optionLabel = (option) => settingOptionLabel({ t, te }, props.setting.name
 const label = computed(() => settingLabel({ t, te }, props.setting));
 const description = computed(() => settingDescription({ t, te }, props.setting));
 
+const pickerSpec = computed(() => numericPickerSpec(props.setting));
+// The numpad's title goes through t(): give it the translation key when there is one, the
+// backend's label otherwise (t() returns an unknown key unchanged).
+const pickerTitleKey = computed(() => {
+  const key = `components.guider.native.settings.labels.${props.setting.name}`;
+  return te(key) ? key : String(props.setting.label || props.setting.name);
+});
+
 const draft = ref(settingFormValue(props.setting));
+// The picker works on numbers; the draft stays the form value validateSettingValue() expects.
+const numberDraft = computed({
+  get: () => {
+    const value = Number(String(draft.value ?? '').replace(',', '.'));
+    return Number.isFinite(value) ? value : 0;
+  },
+  set: (value) => {
+    draft.value = String(value);
+  },
+});
 const saving = ref(false);
 const saved = ref(false);
 const error = ref('');

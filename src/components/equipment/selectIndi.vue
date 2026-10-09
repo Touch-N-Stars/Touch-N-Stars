@@ -232,19 +232,12 @@ import apiPinsService from '@/services/apiPinsService';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
-import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
-import { isNativeGuiderSelected } from '@/utils/nativeGuider';
+import { DEVICE_MAP, isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import { usesGuideCameraSlot } from '@/utils/nativeGuider';
 
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
-const showGuideCamera = computed(
-  () =>
-    Boolean(store.profileInfo?.GuideCameraSettings) &&
-    isNativeGuiderSelected({
-      guiderInfo: store.guiderInfo,
-      profileGuiderName: store.profileInfo?.GuiderSettings?.GuiderName,
-    })
-);
+const showGuideCamera = computed(() => usesGuideCameraSlot(store));
 const loading = ref(true);
 const camera = ref([]);
 const focuser = ref([]);
@@ -282,15 +275,13 @@ const onCameraChange = async () => {
 };
 
 const onGuideCameraChange = async () => {
+  // Section and rescan key come from DEVICE_MAP, the one place that knows the slot.
+  const { section, rescanKey } = DEVICE_MAP.guideCameraAction;
   try {
-    await apiService.profileChangeValue(
-      'GuideCameraSettings-IndiDriver',
-      selectedGuideCamera.value
-    );
+    await apiService.profileChangeValue(`${section}-IndiDriver`, selectedGuideCamera.value);
     await apiService.guideCameraAction('list-devices');
-    equipmentStore.triggerRescan('guideCamera');
+    equipmentStore.triggerRescan(rescanKey);
     await store.fetchProfilInfos();
-    console.log('[SelectIndi] Guide camera selected:', selectedGuideCamera.value);
   } catch (error) {
     console.error('[SelectIndi] Error guide camera selection:', error);
   }

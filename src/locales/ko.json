@@ -1849,7 +1849,6 @@
           "ditherPixels": "이동량 (가이드 픽셀)",
           "ditherRaOnly": "RA만",
           "ditherHint": "잠금 위치를 이 값 이내에서 무작위로 이동시키고 가이딩이 안정될 때까지 기다립니다.",
-          "ditherInvalid": "0에서 100픽셀 사이의 값을 입력하세요.",
           "confirmStopTitle": "가이딩을 정지할까요?",
           "confirmStop": "가이딩이 정지되며 실행 중인 시퀀스의 노출은 더 이상 가이드되지 않습니다.",
           "confirmCalibrateTitle": "다시 보정할까요?",
@@ -2691,9 +2690,7 @@
             "dismiss": "팁 닫기",
             "apply": "적용",
             "applied": "적용됨",
-            "applyFailed": "팁을 적용하지 못했습니다",
-            "open": "팁 보기",
-            "close": "팁 숨기기"
+            "applyFailed": "팁을 적용하지 못했습니다"
           },
           "banner": {
             "running": "Guiding Coach: {step} · {percent} %",
@@ -3210,11 +3207,6 @@
             "axis": {
               "ra": "RA",
               "dec": "Dec"
-            },
-            "pierSide": {
-              "East": "동쪽",
-              "West": "서쪽",
-              "Unknown": "알 수 없음"
             },
             "status": {
               "LowSnr": "SNR 너무 낮음",
