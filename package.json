@@ -38,6 +38,7 @@
     "generate-whats-new": "node scripts/generate-whats-new.js",
     "create-plugin": "node scripts/generate-plugin.js",
     "ci:verify": "npm run lint && npm run typecheck && npm run test:coverage && npm run format:check && npm run i18n:check && npm run build",
+    "postinstall": "node scripts/lockfile-https.mjs",
     "prepare": "husky"
   },
   "dependencies": {
