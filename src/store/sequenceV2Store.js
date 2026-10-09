@@ -26,6 +26,21 @@ const RUNTIME_FIELDS = [
   'Progress',
 ];
 
+// First plugin versions whose /sequence/move accepts a target in another container. PINS
+// builds the plugin from its own branch with its own version line.
+const CROSS_CONTAINER_MOVE_MIN_VERSION = { nina: '1.5.0.0', pins: '1.2.9.0' };
+
+function isVersionAtLeast(version, minimum) {
+  if (!version) return false;
+  const current = String(version).split('.').map(Number);
+  const required = minimum.split('.').map(Number);
+  for (let i = 0; i < Math.max(current.length, required.length); i++) {
+    const diff = (current[i] || 0) - (required[i] || 0);
+    if (diff !== 0) return diff > 0;
+  }
+  return true;
+}
+
 export const useSequenceV2Store = defineStore('sequenceV2Store', {
   state: () => ({
     data: [],
@@ -46,6 +61,15 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
   }),
   getters: {
     globalTriggers: (s) => s.data[0]?.GlobalTriggers ?? [],
+    // Older plugins reject a move into another container, so drag & drop stays inside the
+    // own list there.
+    canMoveAcrossContainers: () => {
+      const main = apiStore();
+      const minimum = main.isPINS
+        ? CROSS_CONTAINER_MOVE_MIN_VERSION.pins
+        : CROSS_CONTAINER_MOVE_MIN_VERSION.nina;
+      return isVersionAtLeast(main.currentTnsPluginVersion, minimum);
+    },
     containers: (s) => s.data.slice(1),
     findParentOf: (s) => (itemId) => {
       function search(items, parent) {
@@ -282,16 +306,49 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       return this.intervalId?.isRunning() === true;
     },
 
+    // insertAfter null moves into the container targetId
     async move(id, targetId, insertAfter) {
       if (this._isControlsLocked()) return;
       if (this._isItemRunning(id)) return;
 
+      let error = null;
       try {
-        await apiService.sequenceMove(id, targetId, insertAfter);
+        const res = await apiService.sequenceMove(id, targetId, insertAfter);
+        if (res?.Success === false) error = res.Error;
       } catch (e) {
         console.error('sequenceMove:', e);
+        error = e?.response?.data?.Error ?? e?.message ?? String(e);
       }
+      // A rejected move is reported; the refresh below puts the dragged row back.
+      if (error) this._showError(error);
       await this.refresh();
+    },
+
+    // Handles vuedraggable's change event. vuedraggable has already moved the element in the
+    // local lists; this sends the move to the plugin. list is the list that received the
+    // element, containerId the container owning it (used when the list was empty before).
+    async applyDrop(evt, list, containerId) {
+      const change = evt.moved ?? evt.added;
+      if (!change) return; // `removed` fires on the source list; the target handles the move
+      if (evt.moved && change.oldIndex === change.newIndex) return;
+
+      const newIndex = change.newIndex;
+      const moved = list[newIndex];
+      if (!moved) return;
+      // The handle of a running item carries no .drag-handle class, so this should not
+      // happen -- but vuedraggable has already changed the local lists. Reload to undo it.
+      if (moved.Status === 'RUNNING') {
+        await this.loadCurrent();
+        return;
+      }
+
+      if (list.length === 1) {
+        await this.move(moved.Id, containerId, null);
+      } else if (newIndex === 0) {
+        await this.move(moved.Id, list[1].Id, false);
+      } else {
+        await this.move(moved.Id, list[newIndex - 1].Id, true);
+      }
     },
 
     async remove(id) {

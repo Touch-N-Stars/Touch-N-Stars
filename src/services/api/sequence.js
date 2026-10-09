@@ -57,10 +57,13 @@ export default {
     return simpleGetRequest(`${API_URL}sequence/metadata?id=${id}`);
   },
 
+  // insertAfter null with a container targetId moves into that container (plugin 1.5.0.0+
+  // on NINA, 1.2.9.0+ on PINS)
   async sequenceMove(id, targetId, insertAfter = true) {
     const { API_URL } = getUrls();
+    const ia = insertAfter === null ? '' : `&insertAfter=${insertAfter}`;
     const response = await axios.post(
-      `${API_URL}sequence/move?id=${id}&targetId=${targetId}&insertAfter=${insertAfter}`,
+      `${API_URL}sequence/move?id=${id}&targetId=${targetId}${ia}`,
       {}
     );
     return response.data;
