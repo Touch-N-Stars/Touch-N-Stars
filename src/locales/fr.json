@@ -1850,10 +1850,30 @@
           "legendSecondary": "Étoile secondaire",
           "legendRejected": "Non utilisée",
           "legendLock": "Position de verrouillage",
-          "tapHint": "Touchez une étoile pour les détails",
+          "tapHint": "Touchez une étoile pour les détails ou pour guider dessus",
           "levelSaturated": "Image saturée ({percent} % des pixels au maximum) : le ciel est encore trop clair ou la pose/le gain sont trop élevés. Réduisez la pose ou le gain.",
           "levelFlat": "Aucun signal exploitable dans l'image (niveau {level} sur {fullScale}) : cache en place, buée, ou la caméra n'expose pas ?",
-          "levelPartlySaturated": "{percent} % saturés"
+          "levelPartlySaturated": "{percent} % saturés",
+          "select": {
+            "useStar": "Guider sur cette étoile",
+            "useStarHere": "Guider sur l'étoile ici",
+            "waiting": "Sélection sur la prochaine image…",
+            "done": "Étoile guide choisie, avec {count} étoiles secondaires autour. Appuyez sur Guider pour lancer le guidage.",
+            "close": "Fermer",
+            "unavailable": {
+              "guiding": "Arrêtez le guidage et appuyez sur Boucle pour choisir une autre étoile guide.",
+              "notLooping": "Appuyez sur Boucle pour choisir une étoile guide.",
+              "coach": "Impossible pendant que le Guiding Coach tourne."
+            },
+            "errors": {
+              "NoStar": "Aucune étoile utilisable ici. Touchez une étoile au plus près ; les étoiles très faibles ne conviennent pas.",
+              "NearEdge": "Cette étoile est trop près du bord de l'image pour être suivie.",
+              "Busy": "Le guideur est occupé (guidage, calibration ou Guiding Coach). Arrêtez d'abord le guidage.",
+              "NotLooping": "Appuyez d'abord sur Boucle : l'étoile guide est choisie sur une image en boucle.",
+              "Cancelled": "Non choisie : la boucle s'est arrêtée ou une autre étoile a été choisie entre-temps.",
+              "TimedOut": "Aucune nouvelle image de guidage reçue. La caméra de guidage expose-t-elle encore ?"
+            }
+          }
         },
         "profile": {
           "noStar": "Aucune étoile guide",
@@ -1861,7 +1881,7 @@
           "vertical": "V",
           "radial": "radial",
           "peak": "Pic",
-          "saturated": "L'étoile est saturée - raccourcissez la pose ou choisissez une autre étoile."
+          "saturated": "L'étoile est saturée - raccourcissez la pose ou touchez une autre étoile dans l'image de guidage."
         },
         "log": {
           "title": "Événements",
@@ -1892,7 +1912,7 @@
           "StarSaturated": {
             "title": "Étoile guide saturée",
             "explanation": "Le pic de l'étoile guide est saturé, ce qui dégrade la précision du centroïde.",
-            "fix": "Réduisez la pose ou le gain, ou laissez la sélection automatique choisir une étoile plus faible."
+            "fix": "Réduisez la pose ou le gain, ou, en boucle, touchez une étoile plus faible dans l'image de guidage et guidez dessus."
           },
           "StarLowSnr": {
             "title": "SNR de l'étoile faible",
@@ -1912,7 +1932,7 @@
           "LockPositionNearEdge": {
             "title": "Position de verrouillage trop près du bord",
             "explanation": "La position de verrouillage demandée est trop près du bord de l'image pour la région de recherche.",
-            "fix": "Choisissez une étoile plus éloignée du bord ou réduisez l'amplitude du dither."
+            "fix": "Choisissez une étoile plus éloignée du bord (touchez-la dans l'image de guidage en boucle) ou réduisez l'amplitude du dither."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Étoile primaire estimée",
@@ -1923,6 +1943,11 @@
             "title": "Étoile guide retrouvée",
             "explanation": "L'étoile guide a été retrouvée et le guidage a repris.",
             "fix": "Aucune action requise."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Étoiles secondaires retrouvées",
+            "explanation": "Les étoiles secondaires n'étaient plus là où on les attendait (l'étoile guide est peut-être passée à une étoile voisine, ou le champ s'est déplacé) ; elles ont été recherchées à nouveau autour de l'étoile guide.",
+            "fix": "Aucune action requise. Si cela arrive souvent, vérifiez les nuages et que l'étoile guide n'est pas perdue."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Échec de la calibration : la RA n'a pas bougé",
@@ -1942,7 +1967,7 @@
           "CalibrationFailedStarLost": {
             "title": "Échec de la calibration : étoile perdue",
             "explanation": "L'étoile de calibration a été perdue trop souvent pendant la calibration.",
-            "fix": "Choisissez une étoile plus brillante, loin du bord, et réessayez."
+            "fix": "Choisissez une étoile plus brillante, loin du bord (touchez-la dans l'image de guidage en boucle), et réessayez."
           },
           "CalibrationFewSteps": {
             "title": "Calibration avec peu d'étapes",

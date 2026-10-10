@@ -81,6 +81,7 @@
           :scale="fitScale * zoom"
           :show-labels="showLabels"
           :selected="selected"
+          :pick="pickPos"
         />
       </div>
 
@@ -143,6 +144,53 @@
       </div>
     </div>
 
+    <!-- Choose the tapped star (or the star at the tapped point) as the guide star; outside the
+         frame so the button never takes part in panning -->
+    <div
+      v-if="selectTarget || selectMessage"
+      class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"
+      data-testid="native-guider-select-star"
+    >
+      <button
+        v-if="selectTarget"
+        type="button"
+        class="tns-btn-primary w-auto! h-9! min-h-9! px-3! text-xs! gap-1.5!"
+        :disabled="!availability.allowed || selecting"
+        @click="selectGuideStar"
+      >
+        <span
+          v-if="selecting"
+          class="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin"
+        ></span>
+        {{
+          selected
+            ? t('components.guider.native.frame.select.useStar')
+            : t('components.guider.native.frame.select.useStarHere')
+        }}
+      </button>
+      <span v-if="selectTarget && !availability.allowed" class="text-content-muted">
+        {{ t(`components.guider.native.frame.select.unavailable.${availability.reason}`) }}
+      </span>
+      <span v-else-if="selecting" class="text-content-muted">
+        {{ t('components.guider.native.frame.select.waiting') }}
+      </span>
+      <span
+        v-if="selectMessage"
+        :class="selectMessage.kind === 'error' ? 'text-status-danger' : 'text-status-ok'"
+      >
+        {{ selectMessage.text }}
+      </span>
+      <button
+        type="button"
+        class="tns-btn-secondary w-auto! h-9! min-h-9! min-w-9! px-2! ml-auto"
+        :title="t('components.guider.native.frame.select.close')"
+        :aria-label="t('components.guider.native.frame.select.close')"
+        @click="clearSelection"
+      >
+        <XMarkIcon class="w-4 h-4" />
+      </button>
+    </div>
+
     <!-- Legend -->
     <div v-if="showOverlay" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-content-muted">
       <span class="flex items-center gap-1"
@@ -193,10 +241,16 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Panzoom from '@panzoom/panzoom';
-import { ArrowsPointingInIcon, EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+import { ArrowsPointingInIcon, EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import apiService from '@/services/apiService';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { fmt, frameLevelWarning } from '@/utils/nativeGuider';
+import {
+  fmt,
+  framePointFromTap,
+  frameLevelWarning,
+  starSelectionAvailability,
+  starSelectionErrorText,
+} from '@/utils/nativeGuider';
 import NativeFrameOverlay from './NativeFrameOverlay.vue';
 import NativeStarPeeper from './NativeStarPeeper.vue';
 import NativeStarProfile from './NativeStarProfile.vue';
@@ -216,10 +270,12 @@ const props = defineProps({
   maxHeight: { type: String, default: '62vh' },
 });
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 const store = useNativeGuiderStore();
 
 const TAP_RADIUS_PX = 28;
+// How long the confirmation of a chosen guide star stays below the frame.
+const SELECT_DONE_MS = 8000;
 
 const viewport = ref(null);
 const stage = ref(null);
@@ -252,6 +308,11 @@ const viewportSize = ref({ width: 0, height: 0 });
 const zoom = ref(1);
 /** Frame position of the tapped star; the popup follows the nearest star across frames. */
 const selectedPos = ref(null);
+/** Tapped frame point away from the marked stars, offered as the place to choose a guide star. */
+const pickPos = ref(null);
+const selecting = ref(false);
+/** Outcome of the last guide star choice: { kind: 'ok' | 'error', text } or null. */
+const selectMessage = ref(null);
 const stretchId = ref(readStored(STRETCH_STORAGE_KEY, DEFAULT_STRETCH_ID));
 const showOverlay = ref(readStored('nativeGuider.frame.overlay', 'true') !== 'false');
 const now = ref(Date.now());
@@ -261,6 +322,7 @@ let resizeObserver = null;
 let queued = false;
 let pointerStart = null;
 let clock = null;
+let selectMessageTimer = null;
 
 const frameWidth = computed(() => displayed.value.info?.width || 1936);
 const frameHeight = computed(() => displayed.value.info?.height || 1216);
@@ -314,6 +376,13 @@ const selectedTitleClass = computed(() => {
   return s.used ? 'text-accent' : 'text-content-muted';
 });
 const isZoomed = computed(() => Math.abs(zoom.value - 1) > 0.05);
+const availability = computed(() => starSelectionAvailability(store.state, store.coachRunning));
+/** Where "guide on this star" would look: a tapped star that is not the guide star yet, else the tapped point. */
+const selectTarget = computed(() => {
+  const s = selected.value;
+  if (s) return s.isPrimary ? null : { x: s.x, y: s.y };
+  return pickPos.value;
+});
 
 const subtitle = computed(() => {
   const info = displayed.value.info;
@@ -474,29 +543,91 @@ function onTap(event) {
   ) {
     return;
   }
-  if (!stage.value || !stars.value.length) {
+  // The stage rect includes the Panzoom transform; the image is letterboxed inside it.
+  const point = stage.value
+    ? framePointFromTap(
+        stage.value.getBoundingClientRect(),
+        frameWidth.value,
+        frameHeight.value,
+        event.clientX,
+        event.clientY
+      )
+    : null;
+  if (!point) {
     selectedPos.value = null;
+    pickPos.value = null;
     return;
   }
-  // The stage rect includes the Panzoom transform; the image is letterboxed inside it.
-  const rect = stage.value.getBoundingClientRect();
-  if (!rect.width || !rect.height) return;
-  const scale = Math.min(rect.width / frameWidth.value, rect.height / frameHeight.value);
-  const left = rect.left + (rect.width - frameWidth.value * scale) / 2;
-  const top = rect.top + (rect.height - frameHeight.value * scale) / 2;
-  const fx = (event.clientX - left) / scale;
-  const fy = (event.clientY - top) / scale;
+  const radius = TAP_RADIUS_PX / point.scale;
   let best = null;
-  let bestDistance = TAP_RADIUS_PX / scale;
+  let bestDistance = radius;
   for (const star of stars.value) {
-    const d = Math.hypot(star.x - fx, star.y - fy);
+    const d = Math.hypot(star.x - point.x, star.y - point.y);
     if (d <= bestDistance) {
       best = star;
       bestDistance = d;
     }
   }
-  const same = best && selected.value && best.x === selected.value.x && best.y === selected.value.y;
-  selectedPos.value = best && !same ? { x: best.x, y: best.y } : null;
+  if (!selecting.value) setSelectMessage(null);
+  if (best) {
+    const same = selected.value && best.x === selected.value.x && best.y === selected.value.y;
+    selectedPos.value = same ? null : { x: best.x, y: best.y };
+    pickPos.value = null;
+    return;
+  }
+  // Empty sky: offer the star there as the guide star while one can be chosen; a second tap on
+  // the same spot (or anywhere while guiding) just closes everything.
+  const pick = pickPos.value;
+  const samePick = pick && Math.hypot(pick.x - point.x, pick.y - point.y) <= radius;
+  selectedPos.value = null;
+  pickPos.value = availability.value.allowed && !samePick ? { x: point.x, y: point.y } : null;
+}
+
+function setSelectMessage(message) {
+  if (selectMessageTimer) clearTimeout(selectMessageTimer);
+  selectMessageTimer = null;
+  selectMessage.value = message;
+  if (message?.kind === 'ok') {
+    selectMessageTimer = setTimeout(() => {
+      selectMessageTimer = null;
+      selectMessage.value = null;
+    }, SELECT_DONE_MS);
+  }
+}
+
+function clearSelection() {
+  selectedPos.value = null;
+  pickPos.value = null;
+  setSelectMessage(null);
+}
+
+/** Makes the tapped star (or the star at the tapped point) the guide star on the next frame. */
+async function selectGuideStar() {
+  const target = selectTarget.value;
+  if (!target || selecting.value || !availability.value.allowed) return;
+  selecting.value = true;
+  setSelectMessage(null);
+  try {
+    const result = await apiService.selectNativeGuiderStar(
+      Math.round(target.x * 10) / 10,
+      Math.round(target.y * 10) / 10
+    );
+    selectedPos.value = null;
+    pickPos.value = null;
+    setSelectMessage({
+      kind: 'ok',
+      text: t('components.guider.native.frame.select.done', {
+        count: Number(result?.secondaryStars) || 0,
+      }),
+    });
+    store.refreshStatus();
+    refresh();
+  } catch (e) {
+    if (e?.cancelled) return;
+    setSelectMessage({ kind: 'error', text: starSelectionErrorText({ t, te }, e) });
+  } finally {
+    selecting.value = false;
+  }
 }
 
 // --- Lifecycle --------------------------------------------------------------------
@@ -539,6 +670,7 @@ onBeforeUnmount(() => {
   resizeObserver?.disconnect();
   resizeObserver = null;
   if (clock) clearInterval(clock);
+  if (selectMessageTimer) clearTimeout(selectMessageTimer);
 });
 </script>
 

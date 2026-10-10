@@ -308,6 +308,7 @@
   "saveDefaultSequence": "function",
   "searchNGC": "function",
   "searchTargetPic": "function",
+  "selectNativeGuiderStar": "function",
   "sequenceAction": "function",
   "sequenceAddCondition": "function",
   "sequenceAddItem": "function",
