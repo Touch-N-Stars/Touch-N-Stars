@@ -164,3 +164,28 @@ test('camera and guide camera slot share the same calls on their own route', asy
   );
   assert.equal(calls.at(-1).config.timeout, 122000, 'capture waits for the exposure');
 });
+
+test('native OnStepX settings go to the plugin server, writes carry their body', async (t) => {
+  seedInstance({ ip: '10.0.0.5', port: 5000, apiPort: 1888 });
+  const gets = recordGets(t);
+  const posts = [];
+  t.mock.method(axios, 'post', async (url, data) => {
+    posts.push([url, data]);
+    return { status: 200, data: { Success: true } };
+  });
+
+  await apiService.getOnStepXSettings();
+  await apiService.setOnStepXAltitudeLimits(-10, 85);
+  await apiService.setOnStepXMeridianLimits(15, 7.5);
+  await apiService.setOnStepXPreferredPierSide('');
+  await apiService.setOnStepXHome();
+
+  const base = 'http://10.0.0.5:5000/api/onstepx';
+  assert.equal(gets[0].url, `${base}/settings`);
+  assert.deepEqual(posts, [
+    [`${base}/altitude-limits`, { min: -10, max: 85 }],
+    [`${base}/meridian-limits`, { east: 15, west: 7.5 }],
+    [`${base}/preferred-pier-side`, { side: '' }],
+    [`${base}/set-home`, undefined],
+  ]);
+});

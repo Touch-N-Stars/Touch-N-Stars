@@ -1463,6 +1463,48 @@
       },
       "indi": {
         "settings": "Configuració de la muntura"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Aplica",
+        "saved": "Desat al controlador de la muntura",
+        "failed": "El controlador de la muntura no ha acceptat el canvi",
+        "altitude": {
+          "title": "Límits d'altitud",
+          "min": "Límit d'horitzó (°)",
+          "max": "Límit zenital (°)",
+          "hint": "Graus enters. Límit d'horitzó −30 a 30°, límit zenital 60 a 90°. Es desa al controlador de la muntura."
+        },
+        "meridian": {
+          "title": "Límits del meridià",
+          "east": "Est (°)",
+          "west": "Oest (°)",
+          "hint": "Fins on pot seguir la muntura més enllà del meridià a cada costat del pilar, −360 a 360° en passos de 0,25°. Es desa al controlador de la muntura."
+        },
+        "pierSide": {
+          "title": "Costat del pilar preferit",
+          "mount": "Com està a la muntura",
+          "east": "Est",
+          "west": "Oest",
+          "best": "El millor",
+          "current": "La muntura fa servir ara: {side}"
+        },
+        "home": {
+          "title": "Posició home",
+          "hint": "Converteix la posició actual en la posició home. Abans apunta la muntura al pol (equatorial alemanya: contrapesos avall) i deixa-la quieta.",
+          "button": "Fixa la posició actual com a home",
+          "confirmTitle": "Fixar la posició home?",
+          "confirm": "La muntura ha d'apuntar al pol i estar quieta. El controlador atura el seguiment i esborra l'estat d'aparcament, l'alineació i les velocitats de seguiment personalitzades."
+        },
+        "info": {
+          "title": "Controlador",
+          "model": "Model",
+          "firmware": "Firmware",
+          "firmwareDate": "Data del firmware",
+          "vendorFirmware": "Firmware del fabricant",
+          "serialPort": "Port sèrie",
+          "guideRate": "Velocitat de guiatge per polsos"
+        }
       }
     },
     "guider": {

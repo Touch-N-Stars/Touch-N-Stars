@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Montage-instellingen"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Toepassen",
+        "saved": "Opgeslagen in de montering-controller",
+        "failed": "De montering-controller heeft de wijziging niet geaccepteerd",
+        "altitude": {
+          "title": "Hoogtegrenzen",
+          "min": "Horizongrens (°)",
+          "max": "Zenitgrens (°)",
+          "hint": "Hele graden. Horizongrens −30 tot 30°, zenitgrens 60 tot 90°. Opgeslagen in de montering-controller."
+        },
+        "meridian": {
+          "title": "Meridiaangrenzen",
+          "east": "Oost (°)",
+          "west": "West (°)",
+          "hint": "Hoe ver de montering aan elke pierzijde voorbij de meridiaan mag volgen, −360 tot 360° in stappen van 0,25°. Opgeslagen in de montering-controller."
+        },
+        "pierSide": {
+          "title": "Voorkeur pierzijde",
+          "mount": "Zoals ingesteld op de montering",
+          "east": "Oost",
+          "west": "West",
+          "best": "Beste",
+          "current": "De montering gebruikt nu: {side}"
+        },
+        "home": {
+          "title": "Home-positie",
+          "hint": "Maakt de huidige positie de home-positie. Richt de montering eerst op de pool (Duitse equatoriaal: contragewicht omlaag) en laat haar stilstaan.",
+          "button": "Huidige positie als home instellen",
+          "confirmTitle": "Home-positie instellen?",
+          "confirm": "De montering moet op de pool gericht zijn en stilstaan. De controller stopt het volgen en wist de parkeerstatus, de uitlijning en eigen volgsnelheden."
+        },
+        "info": {
+          "title": "Controller",
+          "model": "Model",
+          "firmware": "Firmware",
+          "firmwareDate": "Firmwaredatum",
+          "vendorFirmware": "Fabrikantfirmware",
+          "serialPort": "Seriële poort",
+          "guideRate": "Pulse-guide-snelheid"
+        }
       }
     },
     "guider": {

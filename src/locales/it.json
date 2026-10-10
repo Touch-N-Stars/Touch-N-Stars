@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Impostazioni montatura"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Applica",
+        "saved": "Salvato nel controller della montatura",
+        "failed": "Il controller della montatura non ha accettato la modifica",
+        "altitude": {
+          "title": "Limiti di altitudine",
+          "min": "Limite orizzonte (°)",
+          "max": "Limite zenitale (°)",
+          "hint": "Gradi interi. Limite orizzonte da −30 a 30°, limite zenitale da 60 a 90°. Salvato nel controller della montatura."
+        },
+        "meridian": {
+          "title": "Limiti del meridiano",
+          "east": "Est (°)",
+          "west": "Ovest (°)",
+          "hint": "Quanto la montatura può inseguire oltre il meridiano su ciascun lato del pilastro, da −360 a 360° a passi di 0,25°. Salvato nel controller della montatura."
+        },
+        "pierSide": {
+          "title": "Lato pilastro preferito",
+          "mount": "Come impostato sulla montatura",
+          "east": "Est",
+          "west": "Ovest",
+          "best": "Migliore",
+          "current": "La montatura usa ora: {side}"
+        },
+        "home": {
+          "title": "Posizione home",
+          "hint": "Rende la posizione attuale la posizione home. Prima punta la montatura al polo (equatoriale tedesca: contrappesi in basso) e lasciala ferma.",
+          "button": "Imposta posizione attuale come home",
+          "confirmTitle": "Impostare la posizione home?",
+          "confirm": "La montatura deve puntare al polo ed essere ferma. Il controller ferma l'inseguimento e cancella lo stato di parcheggio, l'allineamento e le velocità di inseguimento personalizzate."
+        },
+        "info": {
+          "title": "Controller",
+          "model": "Modello",
+          "firmware": "Firmware",
+          "firmwareDate": "Data firmware",
+          "vendorFirmware": "Firmware del produttore",
+          "serialPort": "Porta seriale",
+          "guideRate": "Velocità di guida a impulsi"
+        }
       }
     },
     "guider": {

@@ -85,6 +85,14 @@ Use the `tns-*` utilities from `src/assets/tailwind.css` (`tns-card`, `tns-btn-p
 `tns-btn-secondary`, `tns-input`, `tns-select`, `min-h-touch`), not the legacy raw
 gray/cyan palette still present in older screens.
 
+Numeric fields use the helper **`NumberInputPicker`** (`src/components/helpers/`), never a raw
+`<input type="number">`: it brings the −/+ steppers, clamps to `min`/`max` and opens the touch
+picker when `touchOptimized` is on. Traps: `-1` counts as "use default" whenever `min >= -1`,
+so pass `:useDefaultSentinel="false"` for plain values; give every instance its own `inputId`
+(the default `number-input` collides); `labelKey` is required — it titles the touch picker.
+For a field under its own label use `labelPosition="top" wrapperClass="w-full"`. The one
+exception is coordinates (see the `setup-wizard` skill).
+
 The `tns-btn` base carries **`w-full`** (only `tns-btn-ghost` opts out with `w-auto`). That is
 right for a button that owns its row, but a `tns-btn-*` dropped into a flex row next to other
 content claims the whole width and refuses to shrink — the neighbouring text gets squeezed into

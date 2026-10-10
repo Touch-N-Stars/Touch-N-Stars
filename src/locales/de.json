@@ -1463,6 +1463,48 @@
       },
       "indi": {
         "settings": "Montierungseinstellungen"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Übernehmen",
+        "saved": "Im Montierungs-Controller gespeichert",
+        "failed": "Der Montierungs-Controller hat die Änderung nicht übernommen",
+        "altitude": {
+          "title": "Höhengrenzen",
+          "min": "Horizontgrenze (°)",
+          "max": "Zenitgrenze (°)",
+          "hint": "Ganze Grad. Horizontgrenze −30 bis 30°, Zenitgrenze 60 bis 90°. Wird im Montierungs-Controller gespeichert."
+        },
+        "meridian": {
+          "title": "Meridiangrenzen",
+          "east": "Ost (°)",
+          "west": "West (°)",
+          "hint": "Wie weit die Montierung auf jeder Pier-Seite über den Meridian hinaus nachführen darf, −360 bis 360° in 0,25°-Schritten. Wird im Montierungs-Controller gespeichert."
+        },
+        "pierSide": {
+          "title": "Bevorzugte Pier-Seite",
+          "mount": "Wie in der Montierung eingestellt",
+          "east": "Ost",
+          "west": "West",
+          "best": "Beste",
+          "current": "Die Montierung verwendet aktuell: {side}"
+        },
+        "home": {
+          "title": "Home-Position",
+          "hint": "Macht die aktuelle Position zur Home-Position. Richte die Montierung vorher auf den Pol aus (deutsche Montierung: Gegengewicht unten) und lass sie stillstehen.",
+          "button": "Aktuelle Position als Home setzen",
+          "confirmTitle": "Home-Position setzen?",
+          "confirm": "Die Montierung muss auf den Pol zeigen und stillstehen. Der Controller stoppt die Nachführung und löscht Park-Status, Alignment und eigene Nachführraten."
+        },
+        "info": {
+          "title": "Controller",
+          "model": "Modell",
+          "firmware": "Firmware",
+          "firmwareDate": "Firmware-Datum",
+          "vendorFirmware": "Hersteller-Firmware",
+          "serialPort": "Serieller Port",
+          "guideRate": "Pulse-Guide-Rate"
+        }
       }
     },
     "guider": {
