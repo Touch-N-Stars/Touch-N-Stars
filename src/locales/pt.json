@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Configurações da montagem"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Aplicar",
+        "saved": "Guardado no controlador da montagem",
+        "failed": "O controlador da montagem não aceitou a alteração",
+        "altitude": {
+          "title": "Limites de altitude",
+          "min": "Limite do horizonte (°)",
+          "max": "Limite zenital (°)",
+          "hint": "Graus inteiros. Limite do horizonte −30 a 30°, limite zenital 60 a 90°. Guardado no controlador da montagem."
+        },
+        "meridian": {
+          "title": "Limites do meridiano",
+          "east": "Este (°)",
+          "west": "Oeste (°)",
+          "hint": "Até onde a montagem pode seguir para lá do meridiano em cada lado do pilar, −360 a 360° em passos de 0,25°. Guardado no controlador da montagem."
+        },
+        "pierSide": {
+          "title": "Lado do pilar preferido",
+          "mount": "Como definido na montagem",
+          "east": "Este",
+          "west": "Oeste",
+          "best": "Melhor",
+          "current": "A montagem usa agora: {side}"
+        },
+        "home": {
+          "title": "Posição home",
+          "hint": "Torna a posição atual a posição home. Aponta primeiro a montagem para o polo (equatorial alemã: contrapesos em baixo) e deixa-a parada.",
+          "button": "Definir posição atual como home",
+          "confirmTitle": "Definir a posição home?",
+          "confirm": "A montagem tem de apontar para o polo e estar parada. O controlador para o seguimento e apaga o estado de estacionamento, o alinhamento e as velocidades de seguimento personalizadas."
+        },
+        "info": {
+          "title": "Controlador",
+          "model": "Modelo",
+          "firmware": "Firmware",
+          "firmwareDate": "Data do firmware",
+          "vendorFirmware": "Firmware do fabricante",
+          "serialPort": "Porta série",
+          "guideRate": "Velocidade de guiagem por pulsos"
+        }
       }
     },
     "guider": {

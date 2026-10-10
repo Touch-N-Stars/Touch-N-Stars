@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Configuración de la montura"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Aplicar",
+        "saved": "Guardado en el controlador de la montura",
+        "failed": "El controlador de la montura no aceptó el cambio",
+        "altitude": {
+          "title": "Límites de altitud",
+          "min": "Límite de horizonte (°)",
+          "max": "Límite cenital (°)",
+          "hint": "Grados enteros. Límite de horizonte −30 a 30°, límite cenital 60 a 90°. Se guarda en el controlador de la montura."
+        },
+        "meridian": {
+          "title": "Límites del meridiano",
+          "east": "Este (°)",
+          "west": "Oeste (°)",
+          "hint": "Cuánto puede seguir la montura más allá del meridiano en cada lado del pilar, −360 a 360° en pasos de 0,25°. Se guarda en el controlador de la montura."
+        },
+        "pierSide": {
+          "title": "Lado del pilar preferido",
+          "mount": "Como esté en la montura",
+          "east": "Este",
+          "west": "Oeste",
+          "best": "El mejor",
+          "current": "La montura usa ahora: {side}"
+        },
+        "home": {
+          "title": "Posición home",
+          "hint": "Convierte la posición actual en la posición home. Apunta antes la montura al polo (ecuatorial alemana: contrapesos abajo) y déjala quieta.",
+          "button": "Fijar posición actual como home",
+          "confirmTitle": "¿Fijar la posición home?",
+          "confirm": "La montura debe apuntar al polo y estar quieta. El controlador detiene el seguimiento y borra el estado de aparcado, la alineación y las velocidades de seguimiento personalizadas."
+        },
+        "info": {
+          "title": "Controlador",
+          "model": "Modelo",
+          "firmware": "Firmware",
+          "firmwareDate": "Fecha del firmware",
+          "vendorFirmware": "Firmware del fabricante",
+          "serialPort": "Puerto serie",
+          "guideRate": "Velocidad de guiado por pulsos"
+        }
       }
     },
     "guider": {

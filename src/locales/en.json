@@ -1466,6 +1466,48 @@
       },
       "indi": {
         "settings": "Mount Settings"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Apply",
+        "saved": "Saved to the mount controller",
+        "failed": "The mount controller did not accept the change",
+        "altitude": {
+          "title": "Altitude limits",
+          "min": "Horizon limit (°)",
+          "max": "Overhead limit (°)",
+          "hint": "Whole degrees. Horizon limit −30 to 30°, overhead limit 60 to 90°. Stored in the mount controller."
+        },
+        "meridian": {
+          "title": "Meridian limits",
+          "east": "East (°)",
+          "west": "West (°)",
+          "hint": "How far past the meridian the mount may track on each pier side, −360 to 360° in 0.25° steps. Stored in the mount controller."
+        },
+        "pierSide": {
+          "title": "Preferred pier side",
+          "mount": "As set on the mount",
+          "east": "East",
+          "west": "West",
+          "best": "Best",
+          "current": "Mount currently uses: {side}"
+        },
+        "home": {
+          "title": "Home position",
+          "hint": "Makes the current position the home position. Point the mount at the pole first (German equatorial: counterweights down) and let it stand still.",
+          "button": "Set current position as home",
+          "confirmTitle": "Set home position?",
+          "confirm": "The mount must point at the pole and stand still. The controller stops tracking and clears the park state, the alignment and custom tracking rates."
+        },
+        "info": {
+          "title": "Controller",
+          "model": "Model",
+          "firmware": "Firmware",
+          "firmwareDate": "Firmware date",
+          "vendorFirmware": "Vendor firmware",
+          "serialPort": "Serial port",
+          "guideRate": "Pulse guide rate"
+        }
       }
     },
     "guider": {

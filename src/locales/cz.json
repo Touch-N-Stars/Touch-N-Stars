@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Nastavení montáže"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Použít",
+        "saved": "Uloženo v řadiči montáže",
+        "failed": "Řadič montáže změnu nepřijal",
+        "altitude": {
+          "title": "Výškové limity",
+          "min": "Limit horizontu (°)",
+          "max": "Limit zenitu (°)",
+          "hint": "Celé stupně. Limit horizontu −30 až 30°, limit zenitu 60 až 90°. Ukládá se v řadiči montáže."
+        },
+        "meridian": {
+          "title": "Limity poledníku",
+          "east": "Východ (°)",
+          "west": "Západ (°)",
+          "hint": "Jak daleko za poledník smí montáž na každé straně pilíře sledovat, −360 až 360° v krocích 0,25°. Ukládá se v řadiči montáže."
+        },
+        "pierSide": {
+          "title": "Preferovaná strana pilíře",
+          "mount": "Podle nastavení montáže",
+          "east": "Východ",
+          "west": "Západ",
+          "best": "Nejlepší",
+          "current": "Montáž nyní používá: {side}"
+        },
+        "home": {
+          "title": "Výchozí pozice",
+          "hint": "Nastaví aktuální pozici jako výchozí (home). Nejprve namiř montáž na pól (německá montáž: protizávaží dole) a nech ji stát.",
+          "button": "Nastavit aktuální pozici jako home",
+          "confirmTitle": "Nastavit výchozí pozici?",
+          "confirm": "Montáž musí mířit na pól a stát. Řadič zastaví sledování a smaže stav parkování, zarovnání a vlastní rychlosti sledování."
+        },
+        "info": {
+          "title": "Řadič",
+          "model": "Model",
+          "firmware": "Firmware",
+          "firmwareDate": "Datum firmwaru",
+          "vendorFirmware": "Firmware výrobce",
+          "serialPort": "Sériový port",
+          "guideRate": "Rychlost pulzního navádění"
+        }
       }
     },
     "guider": {

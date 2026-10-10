@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Paramètres de la monture"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Appliquer",
+        "saved": "Enregistré dans le contrôleur de la monture",
+        "failed": "Le contrôleur de la monture n'a pas accepté la modification",
+        "altitude": {
+          "title": "Limites d'altitude",
+          "min": "Limite d'horizon (°)",
+          "max": "Limite zénithale (°)",
+          "hint": "Degrés entiers. Limite d'horizon −30 à 30°, limite zénithale 60 à 90°. Enregistré dans le contrôleur de la monture."
+        },
+        "meridian": {
+          "title": "Limites du méridien",
+          "east": "Est (°)",
+          "west": "Ouest (°)",
+          "hint": "Jusqu'où la monture peut suivre au-delà du méridien de chaque côté du pilier, −360 à 360° par pas de 0,25°. Enregistré dans le contrôleur de la monture."
+        },
+        "pierSide": {
+          "title": "Côté du pilier préféré",
+          "mount": "Comme réglé sur la monture",
+          "east": "Est",
+          "west": "Ouest",
+          "best": "Optimal",
+          "current": "La monture utilise actuellement : {side}"
+        },
+        "home": {
+          "title": "Position home",
+          "hint": "Définit la position actuelle comme position home. Pointe d'abord la monture vers le pôle (monture équatoriale allemande : contrepoids en bas) et laisse-la immobile.",
+          "button": "Définir la position actuelle comme home",
+          "confirmTitle": "Définir la position home ?",
+          "confirm": "La monture doit pointer vers le pôle et être immobile. Le contrôleur arrête le suivi et efface l'état de parking, l'alignement et les vitesses de suivi personnalisées."
+        },
+        "info": {
+          "title": "Contrôleur",
+          "model": "Modèle",
+          "firmware": "Firmware",
+          "firmwareDate": "Date du firmware",
+          "vendorFirmware": "Firmware du fabricant",
+          "serialPort": "Port série",
+          "guideRate": "Vitesse de guidage par impulsions"
+        }
       }
     },
     "guider": {

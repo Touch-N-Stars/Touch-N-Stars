@@ -1422,6 +1422,48 @@
       },
       "indi": {
         "settings": "Ustawienia montażu"
+      },
+      "onstepx": {
+        "title": "OnStepX",
+        "apply": "Zastosuj",
+        "saved": "Zapisano w kontrolerze montażu",
+        "failed": "Kontroler montażu nie przyjął zmiany",
+        "altitude": {
+          "title": "Limity wysokości",
+          "min": "Limit horyzontu (°)",
+          "max": "Limit zenitu (°)",
+          "hint": "Pełne stopnie. Limit horyzontu od −30 do 30°, limit zenitu od 60 do 90°. Zapisywane w kontrolerze montażu."
+        },
+        "meridian": {
+          "title": "Limity południka",
+          "east": "Wschód (°)",
+          "west": "Zachód (°)",
+          "hint": "Jak daleko za południk montaż może prowadzić po każdej stronie słupa, od −360 do 360° w krokach 0,25°. Zapisywane w kontrolerze montażu."
+        },
+        "pierSide": {
+          "title": "Preferowana strona słupa",
+          "mount": "Jak ustawiono w montażu",
+          "east": "Wschód",
+          "west": "Zachód",
+          "best": "Najlepsza",
+          "current": "Montaż używa teraz: {side}"
+        },
+        "home": {
+          "title": "Pozycja domowa",
+          "hint": "Ustawia bieżącą pozycję jako pozycję domową. Najpierw skieruj montaż na biegun (montaż niemiecki: przeciwwaga w dół) i pozostaw go nieruchomo.",
+          "button": "Ustaw bieżącą pozycję jako domową",
+          "confirmTitle": "Ustawić pozycję domową?",
+          "confirm": "Montaż musi być skierowany na biegun i stać nieruchomo. Kontroler zatrzymuje prowadzenie i kasuje stan parkowania, wyrównanie i własne prędkości prowadzenia."
+        },
+        "info": {
+          "title": "Kontroler",
+          "model": "Model",
+          "firmware": "Firmware",
+          "firmwareDate": "Data firmware",
+          "vendorFirmware": "Firmware producenta",
+          "serialPort": "Port szeregowy",
+          "guideRate": "Prędkość guidingu impulsowego"
+        }
       }
     },
     "guider": {

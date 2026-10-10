@@ -7,20 +7,12 @@
         : ''
     "
   >
-    <SubNav
-      :items="[
-        { name: t('components.mount.title'), value: 'showMount' },
-        { name: t('components.mount.slew'), value: 'showSlew' },
-        { name: t('components.tppa.tppa'), value: 'showTppa' },
-        { name: t('components.mount.settings.meridian_flip_settings'), value: 'showSettings' },
-      ]"
-      v-model:activeItem="store.mount.currentTab"
-    />
+    <SubNav :items="subNavItems" v-model:activeItem="store.mount.currentTab" />
     <div class="container py-4 flex items-center justify-center">
       <div class="container max-w-md landscape:max-w-xl">
         <!-- No page heading: the SubNav already names the page. -->
         <infoMount
-          v-if="store.mount.currentTab !== 'showTppa' && store.mount.currentTab !== 'showSettings'"
+          v-if="!['showTppa', 'showSettings', 'showOnStepX'].includes(store.mount.currentTab)"
           v-model="store.mountInfo.Connected"
           compact
           class="p-3 bg-surface-1 rounded-card border border-line"
@@ -84,18 +76,31 @@
             </div>
           </div>
         </Transition>
+
+        <Transition name="slide-in" mode="out-in">
+          <div v-if="store.mount.currentTab === 'showOnStepX' && isNativeOnStepX" key="onstepx-tab">
+            <div class="mt-4 border border-line rounded-card shadow-lg bg-surface-1">
+              <div class="container pl-5 pb-5 pr-5">
+                <div class="mt-5">
+                  <OnStepXSettings />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Transition>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import TppaPage from '@/components/tppa/TppaPage.vue';
 import TargetSearch from '@/components/framing/TargetSearch.vue';
 import infoMount from '@/components/mount/infoMount.vue';
 import controlMount from '@/components/mount/controlMount.vue';
 import MeridianFlipSettings from '@/components/mount/settings/MeridianFlipSettings.vue';
+import OnStepXSettings from '@/components/mount/settings/OnStepXSettings.vue';
 import { apiStore } from '@/store/store';
 import { useTppaStore } from '@/store/tppaStore';
 import { useImagetStore } from '@/store/imageStore';
@@ -107,6 +112,32 @@ const { t } = useI18n();
 const store = apiStore();
 const tppaStore = useTppaStore();
 const imageStore = useImagetStore();
+
+// pins' native OnStepX driver: its controller settings get their own tab
+const isNativeOnStepX = computed(
+  () => store.mountInfo.Connected && store.mountInfo.DeviceId === 'OnStepX'
+);
+
+const subNavItems = computed(() => [
+  { name: t('components.mount.title'), value: 'showMount' },
+  { name: t('components.mount.slew'), value: 'showSlew' },
+  { name: t('components.tppa.tppa'), value: 'showTppa' },
+  { name: t('components.mount.settings.meridian_flip_settings'), value: 'showSettings' },
+  ...(isNativeOnStepX.value
+    ? [{ name: t('components.mount.onstepx.title'), value: 'showOnStepX' }]
+    : []),
+]);
+
+// The tab disappears when the mount disconnects or another driver is chosen
+watch(
+  isNativeOnStepX,
+  (native) => {
+    if (!native && store.mount.currentTab === 'showOnStepX') {
+      store.mount.currentTab = 'showMount';
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>
