@@ -1892,10 +1892,30 @@
           "legendSecondary": "Gwiazda pomocnicza",
           "legendRejected": "Nieużywana",
           "legendLock": "Pozycja blokady",
-          "tapHint": "Dotknij gwiazdę, aby zobaczyć szczegóły",
+          "tapHint": "Dotknij gwiazdę, aby zobaczyć szczegóły lub na niej prowadzić",
           "levelSaturated": "Klatka przesycona ({percent} % pikseli na maksimum skali): niebo jest jeszcze za jasne lub ekspozycja/wzmocnienie są za wysokie. Zmniejsz ekspozycję lub wzmocnienie.",
           "levelFlat": "Brak użytecznego sygnału w klatce (poziom {level} z {fullScale}): założona osłona, rosa albo kamera nie naświetla?",
-          "levelPartlySaturated": "przesycenie {percent} %"
+          "levelPartlySaturated": "przesycenie {percent} %",
+          "select": {
+            "useStar": "Prowadź na tej gwieździe",
+            "useStarHere": "Prowadź na gwieździe tutaj",
+            "waiting": "Wybór przy następnej klatce…",
+            "done": "Wybrano gwiazdę prowadzącą (gwiazdy pomocnicze wokół: {count}). Naciśnij Prowadź, aby rozpocząć prowadzenie.",
+            "close": "Zamknij",
+            "unavailable": {
+              "guiding": "Zatrzymaj prowadzenie i naciśnij Pętla, aby wybrać inną gwiazdę prowadzącą.",
+              "notLooping": "Naciśnij Pętla, aby wybrać gwiazdę prowadzącą.",
+              "coach": "Niedostępne, gdy działa Guiding Coach."
+            },
+            "errors": {
+              "NoStar": "Brak tam użytecznej gwiazdy. Dotknij dokładnie gwiazdy; bardzo słabe gwiazdy się nie nadają.",
+              "NearEdge": "Ta gwiazda jest zbyt blisko krawędzi klatki, by ją śledzić.",
+              "Busy": "Guider jest zajęty (prowadzenie, kalibracja lub Guiding Coach). Najpierw zatrzymaj prowadzenie.",
+              "NotLooping": "Najpierw naciśnij Pętla: gwiazdę prowadzącą wybiera się na klatce z pętli.",
+              "Cancelled": "Nie wybrano: pętla została zatrzymana lub w międzyczasie wybrano inną gwiazdę.",
+              "TimedOut": "Nie nadeszła nowa klatka prowadzenia. Czy kamera prowadząca nadal naświetla?"
+            }
+          }
         },
         "profile": {
           "noStar": "Brak gwiazdy prowadzącej",
@@ -1903,7 +1923,7 @@
           "vertical": "V",
           "radial": "radialny",
           "peak": "Szczyt",
-          "saturated": "Gwiazda jest przesycona - skróć ekspozycję lub wybierz inną gwiazdę."
+          "saturated": "Gwiazda jest przesycona - skróć ekspozycję lub dotknij innej gwiazdy w klatce prowadzenia."
         },
         "log": {
           "title": "Zdarzenia",
@@ -1934,7 +1954,7 @@
           "StarSaturated": {
             "title": "Gwiazda prowadząca przesycona",
             "explanation": "Szczyt gwiazdy prowadzącej jest przesycony, co pogarsza dokładność wyznaczania centroidu.",
-            "fix": "Zmniejsz ekspozycję lub wzmocnienie albo pozwól, by automatyczny wybór wskazał słabszą gwiazdę."
+            "fix": "Zmniejsz ekspozycję lub wzmocnienie albo w trybie pętli dotknij słabszej gwiazdy w klatce prowadzenia i prowadź na niej."
           },
           "StarLowSnr": {
             "title": "Niski SNR gwiazdy",
@@ -1954,7 +1974,7 @@
           "LockPositionNearEdge": {
             "title": "Pozycja blokady zbyt blisko krawędzi",
             "explanation": "Żądana pozycja blokady jest zbyt blisko krawędzi klatki jak na obszar wyszukiwania.",
-            "fix": "Wybierz gwiazdę dalej od krawędzi lub zmniejsz wartość ditheringu."
+            "fix": "Wybierz gwiazdę dalej od krawędzi (dotknij jej w klatce prowadzenia w trybie pętli) lub zmniejsz wartość ditheringu."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Oszacowano pozycję gwiazdy głównej",
@@ -1965,6 +1985,11 @@
             "title": "Ponownie odnaleziono gwiazdę prowadzącą",
             "explanation": "Gwiazda prowadząca została odnaleziona, a prowadzenie wznowione.",
             "fix": "Nie trzeba nic robić."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Ponownie znaleziono gwiazdy pomocnicze",
+            "explanation": "Gwiazdy pomocnicze nie były już tam, gdzie się ich spodziewano (gwiazda prowadząca mogła przeskoczyć na sąsiednią gwiazdę albo pole się przesunęło), więc wyszukano je ponownie wokół gwiazdy prowadzącej.",
+            "fix": "Nie trzeba nic robić. Jeśli zdarza się to często, sprawdź chmury i czy gwiazda prowadząca nie jest gubiona."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Kalibracja nieudana: brak ruchu w RA",
@@ -1984,7 +2009,7 @@
           "CalibrationFailedStarLost": {
             "title": "Kalibracja nieudana: utracono gwiazdę",
             "explanation": "Gwiazda kalibracyjna była zbyt często tracona podczas kalibracji.",
-            "fix": "Wybierz jaśniejszą gwiazdę z dala od krawędzi i spróbuj ponownie."
+            "fix": "Wybierz jaśniejszą gwiazdę z dala od krawędzi (dotknij jej w klatce prowadzenia w trybie pętli) i spróbuj ponownie."
           },
           "CalibrationFewSteps": {
             "title": "Kalibracja z małą liczbą kroków",

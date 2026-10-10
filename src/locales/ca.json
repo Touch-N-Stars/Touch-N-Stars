@@ -1933,10 +1933,30 @@
           "legendSecondary": "Estrella secundària",
           "legendRejected": "No usada",
           "legendLock": "Posició de bloqueig",
-          "tapHint": "Toqueu una estrella per veure'n els detalls",
+          "tapHint": "Toqueu una estrella per veure'n els detalls o per guiar-hi",
           "levelSaturated": "Fotograma saturat ({percent} % dels píxels al màxim de l'escala): el cel encara és massa brillant o l'exposició/guany són massa alts. Reduïu l'exposició o el guany.",
           "levelFlat": "Cap senyal útil al fotograma (nivell {level} de {fullScale}): tapa posada, rosada o la càmera no exposa?",
-          "levelPartlySaturated": "{percent} % saturat"
+          "levelPartlySaturated": "{percent} % saturat",
+          "select": {
+            "useStar": "Guia amb aquesta estrella",
+            "useStarHere": "Guia amb l'estrella d'aquí",
+            "waiting": "Es tria al fotograma següent…",
+            "done": "Estrella de guiatge triada, amb {count} estrelles secundàries al voltant. Premeu Guia per començar el guiatge.",
+            "close": "Tanca",
+            "unavailable": {
+              "guiding": "Atureu el guiatge i premeu Bucle per triar una altra estrella de guiatge.",
+              "notLooping": "Premeu Bucle per triar una estrella de guiatge.",
+              "coach": "No mentre el Guiding Coach s'està executant."
+            },
+            "errors": {
+              "NoStar": "No hi ha cap estrella utilitzable aquí. Toqueu just a sobre d'una estrella; les estrelles molt febles no serveixen.",
+              "NearEdge": "Aquesta estrella és massa a prop de la vora del fotograma per seguir-la.",
+              "Busy": "El guiador està ocupat (guiant, calibrant o amb el Guiding Coach). Atureu primer el guiatge.",
+              "NotLooping": "Premeu primer Bucle: l'estrella de guiatge es tria en un fotograma del bucle.",
+              "Cancelled": "No triada: el bucle s'ha aturat o mentrestant s'ha triat una altra estrella.",
+              "TimedOut": "No ha arribat cap fotograma de guiatge nou. La càmera de guiatge encara exposa?"
+            }
+          }
         },
         "profile": {
           "noStar": "Sense estrella de guiatge",
@@ -1944,7 +1964,7 @@
           "vertical": "V",
           "radial": "radial",
           "peak": "Pic",
-          "saturated": "L'estrella està saturada - escurceu l'exposició o trieu una altra estrella."
+          "saturated": "L'estrella està saturada - escurceu l'exposició o toqueu una altra estrella al fotograma de guiatge."
         },
         "log": {
           "title": "Esdeveniments",
@@ -1975,7 +1995,7 @@
           "StarSaturated": {
             "title": "Estrella de guiatge saturada",
             "explanation": "El pic de l'estrella de guiatge està saturat, cosa que empitjora la precisió del centroide.",
-            "fix": "Reduïu l'exposició o el guany, o deixeu que la selecció automàtica triï una estrella més feble."
+            "fix": "Reduïu l'exposició o el guany, o, en bucle, toqueu una estrella més feble al fotograma de guiatge i guieu-hi."
           },
           "StarLowSnr": {
             "title": "SNR de l'estrella baixa",
@@ -1995,7 +2015,7 @@
           "LockPositionNearEdge": {
             "title": "Posició de bloqueig massa a prop de la vora",
             "explanation": "La posició de bloqueig sol·licitada és massa a prop de la vora del fotograma per a la regió de cerca.",
-            "fix": "Trieu una estrella més allunyada de la vora o reduïu la quantitat de dither."
+            "fix": "Trieu una estrella més allunyada de la vora (toqueu-la al fotograma de guiatge en bucle) o reduïu la quantitat de dither."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Estrella primària estimada",
@@ -2006,6 +2026,11 @@
             "title": "Estrella de guiatge recuperada",
             "explanation": "S'ha tornat a trobar l'estrella de guiatge i el guiatge s'ha reprès.",
             "fix": "No cal fer res."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Estrelles secundàries trobades de nou",
+            "explanation": "Les estrelles secundàries ja no eren on s'esperaven (potser l'estrella de guiatge ha canviat a una estrella veïna, o el camp s'ha desplaçat), així que s'han tornat a cercar al voltant de l'estrella de guiatge.",
+            "fix": "No cal fer res. Si passa sovint, comproveu si hi ha núvols i que l'estrella de guiatge no es perd."
           },
           "CalibrationFailedRaNoMove": {
             "title": "El calibratge ha fallat: RA no s'ha mogut",
@@ -2025,7 +2050,7 @@
           "CalibrationFailedStarLost": {
             "title": "El calibratge ha fallat: estrella perduda",
             "explanation": "L'estrella de calibratge s'ha perdut massa sovint durant el calibratge.",
-            "fix": "Trieu una estrella més brillant lluny de la vora i torneu-ho a provar."
+            "fix": "Trieu una estrella més brillant lluny de la vora (toqueu-la al fotograma de guiatge en bucle) i torneu-ho a provar."
           },
           "CalibrationFewSteps": {
             "title": "Calibratge amb pocs passos",

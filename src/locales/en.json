@@ -1937,10 +1937,30 @@
           "legendSecondary": "Secondary star",
           "legendRejected": "Not used",
           "legendLock": "Lock position",
-          "tapHint": "Tap a star for details",
+          "tapHint": "Tap a star for details or to guide on it",
           "levelSaturated": "Frame saturated ({percent} % of the pixels at full scale): the sky is still too bright or exposure/gain are too high. Reduce exposure or gain.",
           "levelFlat": "No usable signal in the frame (level {level} of {fullScale}): lens cap on, dew, or the camera not exposing?",
-          "levelPartlySaturated": "{percent} % saturated"
+          "levelPartlySaturated": "{percent} % saturated",
+          "select": {
+            "useStar": "Guide on this star",
+            "useStarHere": "Guide on the star here",
+            "waiting": "Choosing it on the next frame…",
+            "done": "Guide star chosen, with {count} secondary stars around it. Press Guide to start guiding.",
+            "close": "Close",
+            "unavailable": {
+              "guiding": "Stop guiding and press Loop to choose another guide star.",
+              "notLooping": "Press Loop to choose a guide star.",
+              "coach": "Not while the Guiding Coach is running."
+            },
+            "errors": {
+              "NoStar": "No usable star there. Tap right on a star; very faint stars can't be used.",
+              "NearEdge": "This star is too close to the edge of the frame to be tracked.",
+              "Busy": "The guider is busy guiding, calibrating or running the Guiding Coach. Stop guiding first.",
+              "NotLooping": "Press Loop first: the guide star is chosen on a looping frame.",
+              "Cancelled": "Not chosen: looping stopped, or another star was chosen meanwhile.",
+              "TimedOut": "No new guide frame arrived. Is the guide camera still exposing?"
+            }
+          }
         },
         "profile": {
           "noStar": "No guide star",
@@ -1948,7 +1968,7 @@
           "vertical": "V",
           "radial": "radial",
           "peak": "Peak",
-          "saturated": "Star is saturated - shorten the exposure or pick another star."
+          "saturated": "Star is saturated - shorten the exposure or tap another star in the guide frame."
         },
         "log": {
           "title": "Events",
@@ -1979,7 +1999,7 @@
           "StarSaturated": {
             "title": "Guide star saturated",
             "explanation": "The guide star's peak is saturated, which degrades centroid precision.",
-            "fix": "Reduce exposure or gain, or let auto-selection choose a fainter star."
+            "fix": "Reduce exposure or gain, or tap a fainter star in the guide frame while looping and guide on it."
           },
           "StarLowSnr": {
             "title": "Low star SNR",
@@ -1999,7 +2019,7 @@
           "LockPositionNearEdge": {
             "title": "Lock position too close to the edge",
             "explanation": "The requested lock position is too close to the frame edge for the search region.",
-            "fix": "Choose a star further from the edge or reduce the dither amount."
+            "fix": "Choose a star further from the edge (tap it in the guide frame while looping) or reduce the dither amount."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Primary star estimated",
@@ -2010,6 +2030,11 @@
             "title": "Guide star reacquired",
             "explanation": "The guide star was found again and guiding resumed.",
             "fix": "No action needed."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Secondary stars found again",
+            "explanation": "The secondary guide stars were no longer where they were expected (the guide star may have changed to a neighbouring star, or the field moved), so they were found again around the guide star.",
+            "fix": "No action needed. If it happens often, check for clouds and that the guide star is not lost."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Calibration failed: RA did not move",
@@ -2029,7 +2054,7 @@
           "CalibrationFailedStarLost": {
             "title": "Calibration failed: star lost",
             "explanation": "The calibration star was lost too often during calibration.",
-            "fix": "Choose a brighter star away from the edge and retry."
+            "fix": "Choose a brighter star away from the edge (tap it in the guide frame while looping) and retry."
           },
           "CalibrationFewSteps": {
             "title": "Calibration used few steps",

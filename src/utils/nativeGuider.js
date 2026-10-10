@@ -665,3 +665,42 @@ export function pierSideText(i18n, side, fallback = '–') {
   if (!side) return fallback;
   return textOr(i18n, `components.guider.native.calibration.pierSides.${side}`, String(side));
 }
+
+// The guider takes a guide star chosen in the frame only while looping without guiding.
+const STAR_SELECTION_STATES = ['Looping', 'Selected'];
+const GUIDING_STATES = ['Guiding', 'Calibrating', 'Paused', 'LostLock', 'Reacquiring'];
+
+/**
+ * Whether a guide star can be chosen in the frame now: { allowed: true, reason: null }, else
+ * { allowed: false, reason } with reason 'coach', 'guiding' or 'notLooping'.
+ */
+export function starSelectionAvailability(state, coachRunning) {
+  if (coachRunning) return { allowed: false, reason: 'coach' };
+  if (STAR_SELECTION_STATES.includes(state)) return { allowed: true, reason: null };
+  if (GUIDING_STATES.includes(state)) return { allowed: false, reason: 'guiding' };
+  return { allowed: false, reason: 'notLooping' };
+}
+
+/**
+ * Frame pixel { x, y } under a tap, or null outside the frame. `rect` is the on-screen rectangle
+ * of the stage (Panzoom transform included); the frame is letterboxed ("contain") inside it.
+ */
+export function framePointFromTap(rect, frameWidth, frameHeight, clientX, clientY) {
+  if (!rect?.width || !rect?.height || !frameWidth || !frameHeight) return null;
+  const scale = Math.min(rect.width / frameWidth, rect.height / frameHeight);
+  const left = rect.left + (rect.width - frameWidth * scale) / 2;
+  const top = rect.top + (rect.height - frameHeight * scale) / 2;
+  const x = (clientX - left) / scale;
+  const y = (clientY - top) / scale;
+  if (x < 0 || y < 0 || x >= frameWidth || y >= frameHeight) return null;
+  return { x, y, scale };
+}
+
+/** Text of a rejected guide star selection: the reason's translation, else the backend's message. */
+export function starSelectionErrorText(i18n, error) {
+  const code = String(error?.messageCode || '');
+  const fallback = error?.message || String(error || '');
+  return code
+    ? textOr(i18n, `components.guider.native.frame.select.errors.${code}`, fallback)
+    : fallback;
+}

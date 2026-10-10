@@ -1892,10 +1892,30 @@
           "legendSecondary": "Secundaire ster",
           "legendRejected": "Niet gebruikt",
           "legendLock": "Lockpositie",
-          "tapHint": "Tik op een ster voor details",
+          "tapHint": "Tik op een ster voor details of om erop te guiden",
           "levelSaturated": "Beeld verzadigd ({percent} % van de pixels op volle schaal): de hemel is nog te helder of belichting/gain zijn te hoog. Verlaag belichting of gain.",
           "levelFlat": "Geen bruikbaar signaal in het beeld (niveau {level} van {fullScale}): lensdop erop, dauw, of belicht de camera niet?",
-          "levelPartlySaturated": "{percent} % verzadigd"
+          "levelPartlySaturated": "{percent} % verzadigd",
+          "select": {
+            "useStar": "Op deze ster guiden",
+            "useStarHere": "Op de ster hier guiden",
+            "waiting": "Wordt bij het volgende beeld gekozen…",
+            "done": "Guide-ster gekozen, met {count} secundaire sterren eromheen. Druk op Guide om te starten met guiden.",
+            "close": "Sluiten",
+            "unavailable": {
+              "guiding": "Stop het guiden en druk op Loop om een andere guide-ster te kiezen.",
+              "notLooping": "Druk op Loop om een guide-ster te kiezen.",
+              "coach": "Niet terwijl de Guiding Coach loopt."
+            },
+            "errors": {
+              "NoStar": "Daar is geen bruikbare ster. Tik precies op een ster; zeer zwakke sterren werken niet.",
+              "NearEdge": "Deze ster ligt te dicht bij de rand van het beeld om te volgen.",
+              "Busy": "De guider is bezig (guiden, kalibreren of de Guiding Coach). Stop eerst het guiden.",
+              "NotLooping": "Druk eerst op Loop: de guide-ster wordt op een loop-beeld gekozen.",
+              "Cancelled": "Niet gekozen: het loopen is gestopt of intussen is een andere ster gekozen.",
+              "TimedOut": "Er kwam geen nieuw guide-beeld binnen. Belicht de guidecamera nog?"
+            }
+          }
         },
         "profile": {
           "noStar": "Geen guide-ster",
@@ -1903,7 +1923,7 @@
           "vertical": "V",
           "radial": "radiaal",
           "peak": "Piek",
-          "saturated": "Ster is verzadigd - verkort de belichting of kies een andere ster."
+          "saturated": "Ster is verzadigd - verkort de belichting of tik op een andere ster in het guide-beeld."
         },
         "log": {
           "title": "Gebeurtenissen",
@@ -1934,7 +1954,7 @@
           "StarSaturated": {
             "title": "Guide-ster verzadigd",
             "explanation": "De piek van de guide-ster is verzadigd, wat de precisie van de centroïde verslechtert.",
-            "fix": "Verlaag belichting of gain, of laat de automatische selectie een zwakkere ster kiezen."
+            "fix": "Verlaag belichting of gain, of tik tijdens het loopen op een zwakkere ster in het guide-beeld en guide daarop."
           },
           "StarLowSnr": {
             "title": "Lage SNR van ster",
@@ -1954,7 +1974,7 @@
           "LockPositionNearEdge": {
             "title": "Lockpositie te dicht bij de rand",
             "explanation": "De gevraagde lockpositie ligt te dicht bij de beeldrand voor het zoekgebied.",
-            "fix": "Kies een ster verder van de rand of verklein de ditherhoeveelheid."
+            "fix": "Kies een ster verder van de rand (tik erop in het guide-beeld tijdens het loopen) of verklein de ditherhoeveelheid."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Primaire ster geschat",
@@ -1965,6 +1985,11 @@
             "title": "Guide-ster teruggevonden",
             "explanation": "De guide-ster is teruggevonden en de guiding gaat verder.",
             "fix": "Geen actie nodig."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Secundaire sterren opnieuw gevonden",
+            "explanation": "De secundaire sterren stonden niet meer waar ze verwacht werden (de guide-ster is misschien naar een buurster overgesprongen, of het veld is verschoven), dus zijn ze rond de guide-ster opnieuw gezocht.",
+            "fix": "Geen actie nodig. Gebeurt het vaak, controleer dan op wolken en of de guide-ster niet verloren gaat."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Kalibratie mislukt: RA bewoog niet",
@@ -1984,7 +2009,7 @@
           "CalibrationFailedStarLost": {
             "title": "Kalibratie mislukt: ster kwijt",
             "explanation": "De kalibratiester raakte tijdens de kalibratie te vaak kwijt.",
-            "fix": "Kies een helderdere ster uit de buurt van de rand en probeer het opnieuw."
+            "fix": "Kies een helderdere ster uit de buurt van de rand (tik erop in het guide-beeld tijdens het loopen) en probeer het opnieuw."
           },
           "CalibrationFewSteps": {
             "title": "Kalibratie met weinig stappen",

@@ -1892,10 +1892,30 @@
           "legendSecondary": "Vedlejší hvězda",
           "legendRejected": "Nepoužita",
           "legendLock": "Zamčená pozice",
-          "tapHint": "Klepnutím na hvězdu zobrazíte podrobnosti",
+          "tapHint": "Klepnutím na hvězdu zobrazíte podrobnosti nebo na ní můžete navádět",
           "levelSaturated": "Snímek je přesycený ({percent} % pixelů na plné hodnotě): obloha je ještě příliš jasná nebo jsou expozice či zesílení příliš vysoké. Snižte expozici nebo zesílení.",
           "levelFlat": "Ve snímku není použitelný signál (úroveň {level} z {fullScale}): nasazená krytka, orosení, nebo kamera neexponuje?",
-          "levelPartlySaturated": "{percent} % přesyceno"
+          "levelPartlySaturated": "{percent} % přesyceno",
+          "select": {
+            "useStar": "Navádět na této hvězdě",
+            "useStarHere": "Navádět na hvězdě zde",
+            "waiting": "Vybírá se na dalším snímku…",
+            "done": "Naváděcí hvězda vybrána (vedlejší hvězdy kolem ní: {count}). Stiskněte Navádět pro spuštění navádění.",
+            "close": "Zavřít",
+            "unavailable": {
+              "guiding": "Zastavte navádění a stiskněte Smyčka, abyste vybrali jinou naváděcí hvězdu.",
+              "notLooping": "Stiskněte Smyčka pro výběr naváděcí hvězdy.",
+              "coach": "Není možné, dokud běží Guiding Coach."
+            },
+            "errors": {
+              "NoStar": "Tam není použitelná hvězda. Klepněte přesně na hvězdu; velmi slabé hvězdy použít nelze.",
+              "NearEdge": "Tato hvězda je příliš blízko okraje snímku, aby ji šlo sledovat.",
+              "Busy": "Navádění je zaneprázdněno (navádění, kalibrace nebo Guiding Coach). Nejprve zastavte navádění.",
+              "NotLooping": "Nejprve stiskněte Smyčka: naváděcí hvězda se vybírá na snímku ze smyčky.",
+              "Cancelled": "Nevybráno: smyčka se zastavila nebo byla mezitím vybrána jiná hvězda.",
+              "TimedOut": "Nepřišel žádný nový snímek navádění. Exponuje naváděcí kamera ještě?"
+            }
+          }
         },
         "profile": {
           "noStar": "Žádná naváděcí hvězda",
@@ -1903,7 +1923,7 @@
           "vertical": "V",
           "radial": "radiální",
           "peak": "Vrchol",
-          "saturated": "Hvězda je přesycená - zkraťte expozici nebo vyberte jinou hvězdu."
+          "saturated": "Hvězda je přesycená - zkraťte expozici nebo klepněte na jinou hvězdu ve snímku navádění."
         },
         "log": {
           "title": "Události",
@@ -1934,7 +1954,7 @@
           "StarSaturated": {
             "title": "Naváděcí hvězda přesycená",
             "explanation": "Vrchol naváděcí hvězdy je přesycený, což zhoršuje přesnost určení těžiště.",
-            "fix": "Snižte expozici nebo zesílení, nebo nechte automatický výběr zvolit slabší hvězdu."
+            "fix": "Snižte expozici nebo zesílení, nebo během smyčky klepněte na slabší hvězdu ve snímku navádění a navádějte na ní."
           },
           "StarLowSnr": {
             "title": "Nízké SNR hvězdy",
@@ -1954,7 +1974,7 @@
           "LockPositionNearEdge": {
             "title": "Zamčená pozice příliš blízko okraje",
             "explanation": "Požadovaná zamčená pozice je na danou oblast hledání příliš blízko okraje snímku.",
-            "fix": "Vyberte hvězdu dál od okraje nebo snižte hodnotu ditheru."
+            "fix": "Vyberte hvězdu dál od okraje (klepněte na ni ve snímku navádění během smyčky) nebo snižte hodnotu ditheru."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Poloha hlavní hvězdy odhadnuta",
@@ -1965,6 +1985,11 @@
             "title": "Naváděcí hvězda znovu nalezena",
             "explanation": "Naváděcí hvězda byla znovu nalezena a navádění pokračuje.",
             "fix": "Není třeba nic dělat."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Vedlejší hvězdy znovu nalezeny",
+            "explanation": "Vedlejší hvězdy už nebyly tam, kde se očekávaly (naváděcí hvězda mohla přeskočit na sousední hvězdu nebo se pole posunulo), proto byly znovu vyhledány kolem naváděcí hvězdy.",
+            "fix": "Není třeba nic dělat. Pokud se to děje často, zkontrolujte oblačnost a zda se naváděcí hvězda neztrácí."
           },
           "CalibrationFailedRaNoMove": {
             "title": "Kalibrace selhala: žádný pohyb v RA",
@@ -1984,7 +2009,7 @@
           "CalibrationFailedStarLost": {
             "title": "Kalibrace selhala: hvězda ztracena",
             "explanation": "Kalibrační hvězda se během kalibrace ztrácela příliš často.",
-            "fix": "Vyberte jasnější hvězdu dál od okraje a zkuste to znovu."
+            "fix": "Vyberte jasnější hvězdu dál od okraje (klepněte na ni ve snímku navádění během smyčky) a zkuste to znovu."
           },
           "CalibrationFewSteps": {
             "title": "Kalibrace s malým počtem kroků",

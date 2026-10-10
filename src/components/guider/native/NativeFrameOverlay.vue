@@ -110,6 +110,25 @@
       stroke-width="1"
       vector-effect="non-scaling-stroke"
     />
+    <!-- Tapped point without a marked star: where a new guide star would be searched -->
+    <g v-if="pick" stroke="#f8fafc" stroke-width="1.2" fill="none">
+      <circle
+        :cx="pick.x"
+        :cy="pick.y"
+        :r="sizes.star * 1.6"
+        stroke-dasharray="4 3"
+        vector-effect="non-scaling-stroke"
+      />
+      <line
+        v-for="(seg, i) in reticleSegments(pick, sizes.gap, sizes.lock)"
+        :key="`pick-${i}`"
+        :x1="seg[0]"
+        :y1="seg[1]"
+        :x2="seg[2]"
+        :y2="seg[3]"
+        vector-effect="non-scaling-stroke"
+      />
+    </g>
   </svg>
 </template>
 
@@ -130,6 +149,8 @@ const props = defineProps({
   showLabels: { type: Boolean, default: true },
   /** Highlighted star (tap details) or null. */
   selected: { type: Object, default: null },
+  /** Tapped point { x, y } away from the marked stars (choosing a guide star there), or null. */
+  pick: { type: Object, default: null },
   /** Search-region box { x, y, size } in frame pixels, or null. */
   searchRegion: { type: Object, default: null },
 });

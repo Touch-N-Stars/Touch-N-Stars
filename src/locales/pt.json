@@ -1892,10 +1892,30 @@
           "legendSecondary": "Estrela secundária",
           "legendRejected": "Não usada",
           "legendLock": "Posição de bloqueio",
-          "tapHint": "Toque numa estrela para ver detalhes",
+          "tapHint": "Toque numa estrela para ver detalhes ou para guiar nela",
           "levelSaturated": "Imagem saturada ({percent} % dos píxeis no máximo da escala): o céu ainda está demasiado claro ou a exposição/ganho estão demasiado altos. Reduza a exposição ou o ganho.",
           "levelFlat": "Sem sinal utilizável na imagem (nível {level} de {fullScale}): tampa colocada, orvalho ou a câmara não está a expor?",
-          "levelPartlySaturated": "{percent} % saturada"
+          "levelPartlySaturated": "{percent} % saturada",
+          "select": {
+            "useStar": "Guiar nesta estrela",
+            "useStarHere": "Guiar na estrela aqui",
+            "waiting": "A escolher na próxima imagem…",
+            "done": "Estrela guia escolhida, com {count} estrelas secundárias à volta. Prima Guiar para iniciar a guiagem.",
+            "close": "Fechar",
+            "unavailable": {
+              "guiding": "Pare a guiagem e prima Ciclo para escolher outra estrela guia.",
+              "notLooping": "Prima Ciclo para escolher uma estrela guia.",
+              "coach": "Não enquanto o Guiding Coach estiver a correr."
+            },
+            "errors": {
+              "NoStar": "Não há nenhuma estrela utilizável aí. Toque mesmo em cima de uma estrela; estrelas muito fracas não servem.",
+              "NearEdge": "Esta estrela está demasiado perto da margem da imagem para ser seguida.",
+              "Busy": "O guiador está ocupado (a guiar, a calibrar ou com o Guiding Coach). Pare primeiro a guiagem.",
+              "NotLooping": "Prima primeiro Ciclo: a estrela guia é escolhida numa imagem do ciclo.",
+              "Cancelled": "Não escolhida: o ciclo parou ou entretanto foi escolhida outra estrela.",
+              "TimedOut": "Não chegou nenhuma imagem de guiagem nova. A câmara de guiagem ainda está a expor?"
+            }
+          }
         },
         "profile": {
           "noStar": "Sem estrela guia",
@@ -1903,7 +1923,7 @@
           "vertical": "V",
           "radial": "radial",
           "peak": "Pico",
-          "saturated": "Estrela saturada - reduza a exposição ou escolha outra estrela."
+          "saturated": "Estrela saturada - reduza a exposição ou toque noutra estrela na imagem de guiagem."
         },
         "log": {
           "title": "Eventos",
@@ -1934,7 +1954,7 @@
           "StarSaturated": {
             "title": "Estrela guia saturada",
             "explanation": "O pico da estrela guia está saturado, o que degrada a precisão do centroide.",
-            "fix": "Reduza a exposição ou o ganho, ou deixe a seleção automática escolher uma estrela mais fraca."
+            "fix": "Reduza a exposição ou o ganho, ou, em ciclo, toque numa estrela mais fraca na imagem de guiagem e guie nela."
           },
           "StarLowSnr": {
             "title": "SNR da estrela baixo",
@@ -1954,7 +1974,7 @@
           "LockPositionNearEdge": {
             "title": "Posição de bloqueio demasiado perto da margem",
             "explanation": "A posição de bloqueio pedida está demasiado perto da margem da imagem para a região de pesquisa.",
-            "fix": "Escolha uma estrela mais afastada da margem ou reduza a quantidade de dither."
+            "fix": "Escolha uma estrela mais afastada da margem (toque nela na imagem de guiagem em ciclo) ou reduza a quantidade de dither."
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "Estrela principal estimada",
@@ -1965,6 +1985,11 @@
             "title": "Estrela guia readquirida",
             "explanation": "A estrela guia foi encontrada novamente e a guiagem foi retomada.",
             "fix": "Não é necessária nenhuma ação."
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "Estrelas secundárias encontradas de novo",
+            "explanation": "As estrelas secundárias já não estavam onde se esperava (a estrela guia pode ter mudado para uma estrela vizinha, ou o campo deslocou-se), por isso foram procuradas de novo à volta da estrela guia.",
+            "fix": "Não é necessária nenhuma ação. Se acontecer com frequência, verifique se há nuvens e se a estrela guia não se perde."
           },
           "CalibrationFailedRaNoMove": {
             "title": "A calibração falhou: RA não se moveu",
@@ -1984,7 +2009,7 @@
           "CalibrationFailedStarLost": {
             "title": "A calibração falhou: estrela perdida",
             "explanation": "A estrela de calibração perdeu-se demasiadas vezes durante a calibração.",
-            "fix": "Escolha uma estrela mais brilhante longe da margem e tente novamente."
+            "fix": "Escolha uma estrela mais brilhante longe da margem (toque nela na imagem de guiagem em ciclo) e tente novamente."
           },
           "CalibrationFewSteps": {
             "title": "Calibração com poucos passos",

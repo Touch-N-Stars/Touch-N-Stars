@@ -1892,10 +1892,30 @@
           "legendSecondary": "副星",
           "legendRejected": "未使用",
           "legendLock": "锁定位置",
-          "tapHint": "点击星点查看详情",
+          "tapHint": "点击星点查看详情或用它导星",
           "levelSaturated": "画面饱和（{percent} % 的像素达到满量程）：天空仍太亮，或曝光/增益过高。请降低曝光或增益。",
           "levelFlat": "画面中无可用信号（电平 {level}/{fullScale}）：镜头盖未取下、结露，还是相机未在曝光？",
-          "levelPartlySaturated": "{percent} % 饱和"
+          "levelPartlySaturated": "{percent} % 饱和",
+          "select": {
+            "useStar": "用此星导星",
+            "useStarHere": "用此处的星导星",
+            "waiting": "将在下一帧选定…",
+            "done": "已选定导星，周围有 {count} 颗副星。按“导星”开始导星。",
+            "close": "关闭",
+            "unavailable": {
+              "guiding": "停止导星并按“循环”以选择其他导星星点。",
+              "notLooping": "按“循环”以选择导星星点。",
+              "coach": "Guiding Coach 运行时不可用。"
+            },
+            "errors": {
+              "NoStar": "此处没有可用的星点。请准确点击星点；太暗的星无法使用。",
+              "NearEdge": "此星离画面边缘太近，无法跟踪。",
+              "Busy": "导星器正忙（导星、校准或 Guiding Coach）。请先停止导星。",
+              "NotLooping": "请先按“循环”：导星星点在循环画面上选定。",
+              "Cancelled": "未选定：循环已停止，或期间已选择了其他星点。",
+              "TimedOut": "没有收到新的导星画面。导星相机还在曝光吗？"
+            }
+          }
         },
         "profile": {
           "noStar": "无导星星点",
@@ -1903,7 +1923,7 @@
           "vertical": "V",
           "radial": "径向",
           "peak": "峰值",
-          "saturated": "星点已饱和 - 请缩短曝光时间或选择其他星点。"
+          "saturated": "星点已饱和 - 请缩短曝光时间或在导星画面中点击其他星点。"
         },
         "log": {
           "title": "事件",
@@ -1934,7 +1954,7 @@
           "StarSaturated": {
             "title": "导星星点饱和",
             "explanation": "导星星点的峰值已饱和，会降低质心精度。",
-            "fix": "降低曝光或增益，或让自动选星选择较暗的星。"
+            "fix": "降低曝光或增益，或在循环时于导星画面中点击较暗的星并用它导星。"
           },
           "StarLowSnr": {
             "title": "星点 SNR 过低",
@@ -1954,7 +1974,7 @@
           "LockPositionNearEdge": {
             "title": "锁定位置太靠近边缘",
             "explanation": "对于当前搜索区域，请求的锁定位置离画面边缘太近。",
-            "fix": "选择离边缘更远的星，或减小抖动幅度。"
+            "fix": "选择离边缘更远的星（循环时在导星画面中点击它），或减小抖动幅度。"
           },
           "PrimaryEstimatedFromSecondaries": {
             "title": "主星位置为估算值",
@@ -1965,6 +1985,11 @@
             "title": "已重新捕获导星星点",
             "explanation": "已重新找到导星星点，导星已恢复。",
             "fix": "无需处理。"
+          },
+          "SecondaryStarsRefreshed": {
+            "title": "已重新找到副星",
+            "explanation": "副星已不在预期位置（导星可能换到了相邻的星，或视场发生了移动），因此已在导星周围重新查找。",
+            "fix": "无需处理。如果经常发生，请检查是否有云以及导星是否丢失。"
           },
           "CalibrationFailedRaNoMove": {
             "title": "校准失败：RA 未移动",
@@ -1984,7 +2009,7 @@
           "CalibrationFailedStarLost": {
             "title": "校准失败：丢失星点",
             "explanation": "校准期间校准星丢失次数过多。",
-            "fix": "选择离边缘较远的更亮星点后重试。"
+            "fix": "选择离边缘较远的更亮星点（循环时在导星画面中点击它）后重试。"
           },
           "CalibrationFewSteps": {
             "title": "校准步数过少",

@@ -5,11 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App6.5.0 - beta 2] -  unreleased
+##  unreleased
 
 ### Added
 
 - Mount (PINS): With the native OnStepX driver connected, a new OnStepX tab sets the altitude and meridian limits, the preferred pier side and the home position stored in the mount controller.
+- Native Guider (PINS): Choose the guide star yourself. While looping, tap a star in the guide frame (or any star, also one without a marker) and press Guide on this star; the secondary stars are found around it. Until now only the automatic selection could pick a star, although several hints asked to choose another one.
 
 ## [App6.5.0 - beta 1] -  2026-10-09
 

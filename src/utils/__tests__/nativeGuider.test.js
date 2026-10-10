@@ -14,6 +14,9 @@ import {
   decDirection,
   groupSettings,
   alertText,
+  framePointFromTap,
+  starSelectionAvailability,
+  starSelectionErrorText,
   isBasicSetting,
   isNativeGuiderSelected,
   markerFromMessage,
@@ -467,6 +470,55 @@ test('alert texts are translated by code name, each field falling back to the ba
   assert.deepEqual(alertText(english, future), { title: 'New alert', explanation: 'Why', fix: '' });
   assert.equal(alertText(english, { codeName: 'FutureCode' }).title, 'FutureCode');
   assert.equal(alertText(english, { title: 'Only a title' }).title, 'Only a title');
+});
+
+test('a guide star can be chosen only while looping without guiding or the coach', () => {
+  for (const state of ['Looping', 'Selected']) {
+    assert.deepEqual(starSelectionAvailability(state, false), { allowed: true, reason: null });
+    assert.deepEqual(starSelectionAvailability(state, true), { allowed: false, reason: 'coach' });
+  }
+  for (const state of ['Guiding', 'Calibrating', 'Paused', 'LostLock', 'Reacquiring']) {
+    assert.equal(starSelectionAvailability(state, false).reason, 'guiding');
+  }
+  for (const state of ['Stopped', 'Failed', 'Disconnected', 'Unknown', undefined]) {
+    assert.equal(starSelectionAvailability(state, false).reason, 'notLooping');
+  }
+  for (const reason of ['guiding', 'notLooping', 'coach']) {
+    assert.ok(en.components.guider.native.frame.select.unavailable[reason], reason);
+  }
+});
+
+test('a tap maps to frame pixels of the letterboxed, zoomed frame', () => {
+  // 1000×500 stage showing a 2000×1000 frame: scale 0.5, no letterbox
+  const rect = { left: 100, top: 50, width: 1000, height: 500 };
+  assert.deepEqual(framePointFromTap(rect, 2000, 1000, 600, 300), { x: 1000, y: 500, scale: 0.5 });
+  // a 4:3 frame in the same stage is letterboxed left and right: scale 500/960
+  const p = framePointFromTap(rect, 1280, 960, 600, 300);
+  assert.ok(Math.abs(p.x - 640) < 1e-9 && Math.abs(p.y - 480) < 1e-9);
+  // zoomed ×2 (the stage rect grows) and panned: the same frame pixel under a moved point
+  const zoomed = { left: -400, top: -200, width: 2000, height: 1000 };
+  assert.deepEqual(framePointFromTap(zoomed, 2000, 1000, 600, 300), { x: 1000, y: 500, scale: 1 });
+  // the letterbox bars and points outside the stage are not on the frame
+  assert.equal(framePointFromTap(rect, 1280, 960, 120, 300), null);
+  assert.equal(framePointFromTap(rect, 2000, 1000, 50, 300), null);
+  assert.equal(framePointFromTap({ left: 0, top: 0, width: 0, height: 0 }, 2000, 1000, 1, 1), null);
+});
+
+test('a rejected star choice is explained by its reason, else by the backend message', () => {
+  const english = createI18n({ legacy: false, locale: 'en', messages: { en } }).global;
+  const errors = en.components.guider.native.frame.select.errors;
+  for (const code of ['NoStar', 'NearEdge', 'Busy', 'NotLooping', 'Cancelled', 'TimedOut']) {
+    assert.equal(
+      starSelectionErrorText(english, { messageCode: code, message: 'x' }),
+      errors[code],
+      code
+    );
+  }
+  assert.equal(
+    starSelectionErrorText(english, { messageCode: 'Future', message: 'Backend says' }),
+    'Backend says'
+  );
+  assert.equal(starSelectionErrorText(english, { message: 'Network Error' }), 'Network Error');
 });
 
 test('every locale translates the backend texts, and each one renders as it is', () => {
