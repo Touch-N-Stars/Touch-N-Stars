@@ -120,11 +120,17 @@ export const TONE_BG = {
 const ACTIVE_GUIDING = ['Calibrating', 'Guiding', 'LostLock', 'Reacquiring', 'Paused'];
 
 /**
- * Which controls are enabled in a state. connected=false disables everything.
+ * Which controls are enabled in a state. connected=false disables everything; while the mount
+ * slews to the calibration position (calibrationSlew) only stop is, and cancels the slew.
  * @returns {boolean}
  */
-export function canPerform(action, state, { connected = true, isCalibrated = false } = {}) {
+export function canPerform(
+  action,
+  state,
+  { connected = true, isCalibrated = false, calibrationSlew = false } = {}
+) {
   if (!connected) return false;
+  if (calibrationSlew) return action === 'stop';
   const guiding = ACTIVE_GUIDING.includes(state);
   switch (action) {
     case 'loop':

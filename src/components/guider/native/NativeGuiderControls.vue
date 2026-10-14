@@ -4,6 +4,17 @@
     class="tns-card p-2! grid grid-cols-3 gap-1.5"
     :class="showMark ? 'sm:grid-cols-7' : 'sm:grid-cols-6'"
   >
+    <!-- The mount is on its way to the calibration position; Stop cancels the slew -->
+    <p
+      v-if="calibrationSlewRunning"
+      class="col-span-full flex items-center gap-2 px-1 text-xs text-accent"
+      role="status"
+      data-testid="native-guider-calibration-slew"
+    >
+      <ArrowPathIcon class="w-4 h-4 shrink-0 animate-spin" />
+      {{ t('components.guider.native.controls.calibrationSlewRunning') }}
+    </p>
+
     <!-- Loop / Stop -->
     <button
       v-if="showLoop"
@@ -26,12 +37,12 @@
       {{ t('components.guider.native.controls.stop') }}
     </button>
 
-    <!-- Guide (calibrates when needed) -->
+    <!-- Guide (without a calibration it opens the calibrate dialog first) -->
     <button
       type="button"
       class="tns-btn-primary flex-col gap-0.5! px-1! text-xs!"
       :disabled="!can('guide') || busy"
-      @click="guide(false)"
+      @click="guide"
     >
       <PlayIcon class="w-5 h-5" :class="{ 'animate-pulse': pending === 'start-guiding' }" />
       {{ t('components.guider.native.controls.guide') }}
@@ -42,9 +53,9 @@
       type="button"
       class="tns-btn-secondary flex-col gap-0.5! px-1! text-xs!"
       :disabled="!can('calibrate') || busy"
-      @click="guide(true)"
+      @click="calibrate"
     >
-      <ArrowsPointingOutIcon class="w-5 h-5" />
+      <ArrowsPointingOutIcon class="w-5 h-5" :class="{ 'animate-pulse': calibrationSlewRunning }" />
       {{ t('components.guider.native.controls.calibrate') }}
     </button>
 
@@ -141,6 +152,87 @@
       </template>
     </Modal>
 
+    <!-- Calibrate dialog (first calibration or recalibration): optionally slew to a calibration position first -->
+    <Modal :show="showCalibrate" max-width="max-w-sm" @close="showCalibrate = false">
+      <template #header>
+        <h2 class="text-lg font-bold">
+          {{
+            t(
+              recalibrating
+                ? 'components.guider.native.controls.confirmCalibrateTitle'
+                : 'components.guider.native.controls.calibrateTitle'
+            )
+          }}
+        </h2>
+      </template>
+      <template #body>
+        <div class="flex flex-col gap-4 w-full">
+          <p class="text-sm text-content">
+            {{
+              t(
+                recalibrating
+                  ? 'components.guider.native.controls.confirmCalibrate'
+                  : 'components.guider.native.controls.calibrateMessage'
+              )
+            }}
+          </p>
+          <div class="flex flex-col gap-1.5">
+            <span
+              id="native-guider-calibration-slew-label"
+              class="text-sm font-medium text-content"
+            >
+              {{ t('components.guider.native.controls.calibrationSlew') }}
+            </span>
+            <!-- The app's segmented control (as in PinsWifiCard): the choice is filled with the accent color -->
+            <div
+              class="grid grid-cols-2 gap-1 rounded-control bg-surface-1 border border-line p-1"
+              role="radiogroup"
+              aria-labelledby="native-guider-calibration-slew-label"
+            >
+              <button
+                v-for="choice in SLEW_CHOICES"
+                :key="choice"
+                type="button"
+                role="radio"
+                class="min-h-touch rounded-chip px-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                :class="
+                  calibrationSlew === choice
+                    ? 'bg-accent-action text-white'
+                    : 'text-content-muted hover:bg-surface-2'
+                "
+                :aria-checked="calibrationSlew === choice"
+                :disabled="choice !== 'none' && !!mountBlocker"
+                :data-testid="`native-guider-calibration-slew-${choice}`"
+                @click="calibrationSlew = choice"
+              >
+                {{ t(`components.guider.native.controls.calibrationSlewChoices.${choice}`) }}
+              </button>
+            </div>
+            <p v-if="mountBlocker" class="text-xs text-status-warn">
+              {{ t(`components.guider.native.controls.${mountBlocker}`) }}
+            </p>
+            <p v-else class="text-xs text-content-muted">
+              {{ t('components.guider.native.controls.calibrationSlewHint') }}
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" class="tns-btn-secondary" @click="showCalibrate = false">
+              {{ t('common.cancel') }}
+            </button>
+            <button
+              type="button"
+              class="tns-btn-primary"
+              :disabled="busy"
+              data-testid="native-guider-calibrate-confirm"
+              @click="startCalibration"
+            >
+              {{ t('components.guider.native.controls.calibrate') }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </Modal>
+
     <!-- Dither dialog -->
     <Modal :show="showDither" max-width="max-w-sm" @close="showDither = false">
       <template #header>
@@ -198,6 +290,7 @@ import Modal from '@/components/helpers/Modal.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import { canPerform } from '@/utils/nativeGuider';
 import { kindText } from '@/utils/nativeGuiderIncidents';
@@ -206,6 +299,7 @@ import { readStored, writeStored } from '@/utils/safeStorage';
 const { t, te } = useI18n();
 const router = useRouter();
 const store = useNativeGuiderStore();
+const mainStore = apiStore();
 const toastStore = useToastStore();
 
 // States the flight recorder records in (and accepts a manual mark).
@@ -225,16 +319,35 @@ const showDither = ref(false);
 const ditherPixels = ref(Number(readStored('nativeGuider.ditherPixels', '3')) || 3);
 const ditherRaOnly = ref(readStored('nativeGuider.ditherRaOnly', 'false') === 'true');
 
+// Slew before a recalibration: none, or to the calibration position on the mount's current side
+// (stay) or on the east or west side of the sky.
+const SLEW_CHOICES = ['none', 'stay', 'east', 'west'];
+const showCalibrate = ref(false);
+// Whether the open dialog replaces a calibration (fixed when it opens).
+const recalibrating = ref(false);
+const calibrationSlew = ref('none');
+const calibrationSlewRunning = computed(() => store.summary.calibrationSlew === true);
+/** Locale key of why the mount cannot slew, or null. */
+const mountBlocker = computed(() => {
+  if (!mainStore.mountInfo?.Connected) return 'calibrationSlewNoMount';
+  if (mainStore.mountInfo.AtPark) return 'calibrationSlewParked';
+  return null;
+});
+
 const pending = computed(() => store.pendingAction);
 const busy = computed(() => !!store.pendingAction);
-const showLoop = computed(() =>
-  ['Stopped', 'Failed', 'Disconnected', 'Unknown'].includes(store.state)
+// While slewing to the calibration position the guider is stopped, but Stop cancels the slew.
+const showLoop = computed(
+  () =>
+    !calibrationSlewRunning.value &&
+    ['Stopped', 'Failed', 'Disconnected', 'Unknown'].includes(store.state)
 );
 
 function can(action) {
   return canPerform(action, store.state, {
     connected: store.isAvailable,
     isCalibrated: store.isCalibrated,
+    calibrationSlew: calibrationSlewRunning.value,
   });
 }
 
@@ -285,18 +398,27 @@ async function stop() {
   await run('stop');
 }
 
-async function guide(forceCalibration) {
-  if (
-    forceCalibration &&
-    store.isCalibrated &&
-    !(await confirm(
-      'components.guider.native.controls.confirmCalibrateTitle',
-      'components.guider.native.controls.confirmCalibrate'
-    ))
-  ) {
+/** Guides; without a calibration it asks first like Calibrate, so a slew can be chosen. */
+async function guide() {
+  if (!store.isCalibrated) {
+    calibrate();
     return;
   }
-  await run('start-guiding', { calibrate: forceCalibration });
+  await run('start-guiding', { calibrate: false });
+}
+
+/** Asks first, also for the first calibration, and offers to slew to a calibration position. */
+function calibrate() {
+  recalibrating.value = store.isCalibrated;
+  // No slew unless chosen each time: a slew moves the mount off the current target.
+  calibrationSlew.value = 'none';
+  showCalibrate.value = true;
+}
+
+async function startCalibration() {
+  const slew = mountBlocker.value ? 'none' : calibrationSlew.value;
+  showCalibrate.value = false;
+  await run('start-guiding', slew === 'none' ? { calibrate: true } : { calibrate: true, slew });
 }
 
 async function clearCalibration() {

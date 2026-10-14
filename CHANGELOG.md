@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Image history: The image viewer has arrows to the previous and next image, in the order and filter of the history. The arrow keys and a sideways swipe do the same; zoomed in, a swipe still moves the image.
 - Sequence monitor: The session timeline remembers the chosen start and end on this device, also after leaving the page or reloading. A range that reaches the current time keeps growing, so new data still shows up when only the start was moved. A range from an earlier night is not carried over to the next one.
 - Native Guider (PINS): The last error in the status bar can be dismissed with its cross; it stays hidden on this device until another error comes.
+- Native Guider (PINS): Calibrate asks first, and so does Guide when there is no calibration yet; the dialog can slew the mount to a calibration position first, like PHD2's Calibration Assistant: 5° from the meridian on the celestial equator, on the mount's current side or on the east or west side of the sky. The controls show the slew while it runs, and Stop cancels it. This needs a PINS version with the slew option.
 
 ### Changed
 

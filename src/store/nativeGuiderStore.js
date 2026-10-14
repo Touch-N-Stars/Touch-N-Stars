@@ -51,6 +51,7 @@ function emptySummary() {
     deviceName: null,
     isNative: false,
     reason: null,
+    calibrationSlew: false,
   };
 }
 
@@ -225,6 +226,8 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
           deviceName: result.deviceName ?? null,
           isNative: result.isNative === true,
           reason: result.reason ?? null,
+          // A start-guiding with slew is moving the mount to the calibration position.
+          calibrationSlew: result.calibrationSlew === true,
         };
         // A 'state' event that arrived after this request was sent is newer than the answer:
         // keep its state instead of flipping back (e.g. Guiding right after Stop).

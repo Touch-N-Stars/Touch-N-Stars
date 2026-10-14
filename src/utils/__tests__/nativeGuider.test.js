@@ -125,6 +125,10 @@ test('controls are enabled per state', () => {
   assert.equal(canPerform('darks', 'Stopped'), true);
   assert.equal(canPerform('darks', 'Looping'), false);
   assert.equal(canPerform('loop', 'Stopped', { connected: false }), false);
+  // Slewing to the calibration position: only stop (it cancels the slew).
+  assert.equal(canPerform('stop', 'Stopped', { calibrationSlew: true }), true);
+  assert.equal(canPerform('calibrate', 'Stopped', { calibrationSlew: true }), false);
+  assert.equal(canPerform('loop', 'Stopped', { calibrationSlew: true }), false);
 });
 
 test('appendSteps merges by frame, trims, and restarts on a new session', () => {
