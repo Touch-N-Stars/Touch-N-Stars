@@ -28,11 +28,13 @@ structural half; the simplification on top is
 ## Acceptance criteria
 
 1. Given PINS and a responding `hocusfocus/status`, the focus page shows the tabs Focuser,
-   Settings and HocusFocus; otherwise only Focuser and Settings appear, as today. The HocusFocus
-   tab has the sub-tabs of the old plugin: Aberration Inspector, Aberration Inspector Options,
-   AutoFocus Options, Star Detection and Tilter. The Settings tab splits into sub-tabs: the Hocus
-   Focus essentials first, then one per NINA focuser settings group (without HF only the NINA
-   groups).
+   Settings, Aberration Inspector (with its options as a sub-tab) and Tilter; otherwise only
+   Focuser and Settings appear, as today. The Settings tab has the same sub-tabs with and
+   without HF (one per NINA focuser settings group). With HF, its AutoFocus Options, star
+   detection and essentials take the place of the NINA values they duplicate or replace: the
+   sweep in Autofocus, star detection below the NINA crop values in Crop & Stars, timeout, R²
+   threshold and curve fitting in Advanced, where the HF expert cards (HFR validation, curve
+   fitting, outlier rejection) start collapsed.
 2. HF no longer appears in the plugin list or under Settings → Plugins. A navbar entry of the
    old plugin disappears after the update without an error or a dead link.
 3. Everything the old plugin tabs offered works as before: inspector run / stop / rerun from a

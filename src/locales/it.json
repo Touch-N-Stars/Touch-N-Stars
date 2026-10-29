@@ -3797,7 +3797,11 @@
         "StallDetection": "Rilevamento dello stallo",
         "USBCapacity": "Capacità USB",
         "commandFailed": "Comando non supportato da questo dispositivo",
-        "deviceSpecific": "Impostazioni del dispositivo"
+        "deviceSpecific": "Impostazioni del dispositivo",
+        "cropCardTitle": "Area dell'immagine e numero di stelle",
+        "cropCardHf": "Hocus Focus usa questo ritaglio per ogni misura delle stelle, autofocus incluso, finché 'Usa Ritaglio Autofocus' è attivo. Il limite delle stelle più luminose vale anche per il suo autofocus.",
+        "starDetectionTitle": "Rilevamento stelle (Hocus Focus)",
+        "starDetectionHf": "Come Hocus Focus trova e misura le stelle in ogni immagine."
       },
       "indi": {
         "settings": "Impostazioni del focheggiatore"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Ispettore Aberrazioni",
           "aberrationOptions": "Opzioni Ispettore Aberrazioni",
-          "autoFocusOptions": "Opzioni Autofocus",
           "starDetection": "Rilevamento Stelle",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Attiva la modalità avanzata con controllo dettagliato dei parametri di rilevamento stelle. Sconsigliato se non sei un esperto",
             "useHotpixelThresholding": "Una versione più sofisticata del filtro dei pixel caldi che limita la sostituzione ai pixel il cui valore si discosta molto dalla mediana. Questo evita di sfocare l'intera immagine, cosa che può ridurre la precisione delle misure di HFR e PSF",
-            "useAutoFocusCrop": "Usa il ritaglio interno ed esterno delle opzioni Autofocus anche per le esposizioni normali (cioè quelle non eseguite durante la messa a fuoco)",
+            "useAutoFocusCrop": "Se attivo, Hocus Focus misura le stelle solo all'interno del ritaglio interno ed esterno, nel suo autofocus e nelle esposizioni normali. Se disattivo, usa l'intera immagine.",
             "fitPSF": "Se adattare modelli PSF alle stelle rilevate. È necessario per FWHM ed eccentricità",
             "debugMode": "Attiva la modalità debug, che salva dati aggiuntivi utili per il debug. Lasciala disattivata a meno che tu non stia calibrando il rilevamento stelle e voglia vedere le mappe di struttura.",
             "detectionBinning": "Binning software applicato al fotogramma solo per il rilevamento stelle. Il rilevamento è calibrato per stelle a fuoco di circa 2-4 pixel; a lunghe focali le stelle sono molto più grandi, il che porta le impostazioni basate sui pixel fuori intervallo. Applicare il binning al fotogramma per il rilevamento riporta la dimensione delle stelle nell'intervallo e migliora il rapporto segnale/rumore per pixel. L'immagine visualizzata e i valori HFR riportati restano alla risoluzione acquisita dalla camera. Non è il Binning Autofocus di NINA, che cambia il modo in cui la camera acquisisce i fotogrammi di Autofocus e dovrebbe corrispondere al binning con cui riprendi; i due si moltiplicano",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Scala Pixel",
           "focusRange": "Intervallo di fuoco",
           "useOptimizedSettings": "Utilizza impostazioni ottimizzate"
+        },
+        "binningHint": {
+          "none": "Avvia un autofocus per ottenere una raccomandazione",
+          "recommended": "HFR misurato a fuoco {hfr} px – consigliato {factor}×{factor}",
+          "below": "HFR misurato a fuoco {hfr} px – sotto l'intervallo 2–4 px",
+          "right": "HFR misurato a fuoco {hfr} px – {factor}×{factor} è corretto",
+          "detail": {
+            "none": "Ancora nessuna misura. Avvia un autofocus o una scansione dal vivo nell'ottimizzatore del rilevamento stelle, e qui apparirà l'HFR misurato a fuoco con una raccomandazione. La scala dei pixel da sola non prevede la dimensione delle stelle: il seeing varia più della differenza tra due fattori di binning.",
+            "measuredAt": "Misurato il {when} nell'ultimo autofocus, in pixel acquisiti.",
+            "measured": "Misurato nell'ultimo autofocus, in pixel acquisiti.",
+            "recommended": "Il rilevamento stelle è calibrato per stelle a fuoco di circa 2–4 px; a {hfr} px, un binning {factor}×{factor} per il rilevamento lo porta a circa {binned} px.",
+            "below": "Il rilevamento stelle è calibrato per stelle a fuoco di circa 2–4 px, e {hfr} px è al di sotto. Il binning di rilevamento qui non aiuta: divide soltanto, nessun fattore ingrandisce una stella. L'impostazione utile è 'HFR min': abbassala perché stelle così piccole non vengano scartate, oppure avvia l'ottimizzatore, che la imposta dalla scansione.",
+            "right": "Il rilevamento stelle è calibrato per stelle a fuoco di circa 2–4 px, e {hfr} px è già in questo intervallo, quindi il binning non serve.",
+            "rigChange": "Cambiare lunghezza focale, dimensione dei pixel o binning di acquisizione scarta questa misura, quindi descrive sempre l'attrezzatura attuale."
+          }
         },
         "tilter": {
           "device": "Dispositivo",
@@ -4412,7 +4429,8 @@
           "tooSteep": "La curva è molto ripida ({ratio}×): i punti estremi sono molto sfocati. Una dimensione del passo minore mette più punti vicino al fuoco.",
           "starsLost": "Agli estremi sfocati sono andate perse delle stelle ({min} invece di {max}). Consentire stelle molto sfocate le mantiene.",
           "poorFit": "L'adattamento della curva è scarso (R² {r2}). Controlla posa, nuvole e seeing prima di abbassare una soglia.",
-          "worseAfter": "Le stelle erano più grandi dopo l'autofocus ({initial} → {final}). Controlla gioco o slittamento del focheggiatore."
+          "worseAfter": "Le stelle erano più grandi dopo l'autofocus ({initial} → {final}). Controlla gioco o slittamento del focheggiatore.",
+          "edgesLost": "I fotogrammi più esterni non hanno trovato stelle: la scansione è andata molto fuori fuoco. Un passo più piccolo mantiene le stelle visibili."
         },
         "fix": {
           "stepSize": "Imposta la dimensione del passo a {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Abbastanza lunga da vedere molte stelle anche fuori fuoco.",
           "stepSize": "Passi del focheggiatore tra due punti. Punta a stelle agli estremi circa tre volte più grandi che a fuoco.",
-          "offsetSteps": "Quanti punti la serie parte da ciascun lato della posizione attuale. Circa quattro è un buon inizio.",
-          "pixelScale": "Quanto appaiono grandi le stelle sul sensore. Usa il suggerimento basato sulla tua ottica.",
-          "noiseLevel": "Aumentalo per camere rumorose o ottiche molto lente.",
-          "wideRange": "Mantiene stelle molto sfocate a forma di anello. Utile per serie ampie e riflettori.",
-          "useOptimized": "Usa le impostazioni trovate dall'ottimizzatore per il tuo setup invece dei preset.",
-          "saveRuns": "Salva ogni autofocus sul dispositivo. L'ottimizzatore e l'Aberration Inspector hanno bisogno di autofocus salvati."
+          "offsetSteps": "Quanti punti la serie parte da ciascun lato della posizione attuale. Circa quattro è un buon inizio."
         },
-        "stars": "Rilevamento Stelle",
-        "advancedActive": "Hocus Focus è in modalità avanzata. Valgono le sue impostazioni dettagliate di rilevamento; disattivala in 'Rilevamento Stelle' per usare i preset.",
-        "useOptimized": "Usa impostazioni ottimizzate",
-        "pixelScale": "Dimensione stelle sul sensore",
         "usePixelScaleSuggestion": "Usa suggerimento: {preset}",
-        "noiseLevel": "Rumore della camera",
-        "wideRange": "Consenti stelle molto sfocate",
-        "runs": "Autofocus salvati",
-        "saveRuns": "Salva autofocus",
-        "savePath": "Cartella degli autofocus salvati",
-        "saveFailed": "Salvataggio non riuscito",
         "issues": {
           "missingOptics": "Manca la lunghezza focale o la dimensione dei pixel. Il suggerimento sulla dimensione delle stelle richiede entrambe.",
-          "binningStacked": "Il binning di rilevamento e quello di autofocus sono entrambi sopra 1×1. Si moltiplicano; di solito ne va impostato uno solo."
+          "binningStacked": "Il binning di rilevamento e quello di autofocus sono entrambi sopra 1×1. Si moltiplicano; di solito ne va impostato uno solo.",
+          "offsetStepsUnusual": "Il numero di punti per lato è insolito. Circa quattro è un buon inizio.",
+          "sweepTooLarge": "La scansione dell'autofocus copre gran parte della corsa del focheggiatore. La dimensione del passo è probabilmente troppo grande; misurala nell'assistente di configurazione."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Grande campo (stelle piccole)",
             "Typical": "Tipico",
             "LongFocalLength": "Focale lunga (stelle grandi)"
-          },
-          "noiseLevel": {
-            "None": "Nessuno",
-            "Low": "Basso",
-            "Typical": "Tipico",
-            "High": "Alto"
           }
         }
+      },
+      "hfSweep": {
+        "line": "L'autofocus si sposta da {from} a {to} (±{half} passi).",
+        "outOfRange": "Questo supera la corsa del focheggiatore."
       },
       "hfAssistant": {
         "title": "Configurazione dell'autofocus",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Messa a fuoco approssimativa",
             "description": "Scatta immagini e muovi il focheggiatore finché le stelle sono piccole e rotonde e l’HFR è il più basso possibile."
+          },
+          "measure": {
+            "title": "Dimensione del passo",
+            "description": "Misura quanto velocemente crescono le stelle quando il focheggiatore si muove e suggerisce una dimensione del passo per l'autofocus. Il focheggiatore si sposta verso l'esterno a passi crescenti e alla fine torna alla posizione iniziale."
           },
           "run": {
             "title": "Prova",
@@ -4544,6 +4551,31 @@
           "current": "Attuale: HFR {hfr} px alla posizione del focheggiatore {position} · {stars} stelle",
           "best": "Migliore finora: HFR {hfr} px alla posizione del focheggiatore {position}",
           "failed": "Impossibile acquisire l'immagine."
+        },
+        "measure": {
+          "current": "Attuale: dimensione del passo {stepSize} · {offsetSteps} punti per lato",
+          "start": "Misura dimensione del passo",
+          "restart": "Misura di nuovo",
+          "stop": "Ferma",
+          "phase": {
+            "reference": "Ripresa di un fotogramma nella posizione attuale …",
+            "probe": "Spostamento verso l'esterno e ripresa di un fotogramma …",
+            "return": "Ritorno alla posizione iniziale …"
+          },
+          "reference": "Posizione iniziale: HFR {hfr} px · {stars} stelle",
+          "probe": "{offset} passo verso l'esterno: HFR {hfr} px · {stars} stelle | {offset} passi verso l'esterno: HFR {hfr} px · {stars} stelle",
+          "result": "Suggerito: dimensione del passo {stepSize} con {offsetSteps} punti per lato",
+          "limited": "Tenuto più piccolo perché il punto più esterno mostri ancora abbastanza stelle.",
+          "apply": "Applica",
+          "applied": "Applicato. Il prossimo autofocus usa i nuovi valori.",
+          "failure": {
+            "noSignal": "Le stelle non sono cresciute, nemmeno lontano dal fuoco. Controlla la messa a fuoco approssimativa e che il focheggiatore si muova davvero.",
+            "lost": "Le stelle erano sparite già a un passo fuori fuoco. Controlla la messa a fuoco approssimativa e l'esposizione.",
+            "noReference": "Nessuna stella trovata nella posizione iniziale. Metti prima a fuoco a mano in modo approssimativo.",
+            "timeout": "Il focheggiatore o la camera non ha risposto in tempo.",
+            "error": "La misura non è riuscita.",
+            "returnFailed": "Il focheggiatore non è potuto tornare alla posizione iniziale. Controlla la sua posizione prima del prossimo ciclo."
+          }
         }
       }
     },

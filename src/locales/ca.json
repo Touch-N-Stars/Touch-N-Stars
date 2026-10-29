@@ -3878,17 +3878,19 @@
         "ResetPosition": "Estableix la posició a zero",
         "commandFailed": "Comanda no compatible amb aquest dispositiu",
         "FocuserAlias": "Àlies de l'enfocador",
-        "deviceSpecific": "Configuració del dispositiu"
+        "deviceSpecific": "Configuració del dispositiu",
+        "cropCardTitle": "Àrea d'imatge i nombre d'estels",
+        "cropCardHf": "Hocus Focus fa servir aquest retall en cada mesura d'estels, inclòs el seu autoenfocament, mentre 'Utilitza el retall d'AF' estigui activat. El límit d'estels més brillants també s'aplica al seu autoenfocament.",
+        "starDetectionTitle": "Detecció d'estels (Hocus Focus)",
+        "starDetectionHf": "Com Hocus Focus troba i mesura els estels de cada imatge."
       },
       "indi": {
         "settings": "Configuració de l'enfocador"
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Inspector d'aberracions",
           "aberrationOptions": "Opcions de l'inspector d'aberracions",
-          "autoFocusOptions": "Opcions d'enfocament automàtic",
           "starDetection": "Detecció d'estels",
           "tilter": "Inclinador (beta)"
         },
@@ -4283,7 +4285,7 @@
           "help": {
             "advancedMode": "Activa el mode avançat amb un control detallat dels paràmetres de detecció d'estels. No recomanat si no ets expert",
             "useHotpixelThresholding": "Una versió més sofisticada del filtratge de píxels calents que limita la substitució als píxels en què la mediana és molt diferent del valor del píxel. Això evita que tota la imatge es difumini, cosa que pot afectar negativament la precisió de les mesures d'HFR i PSF",
-            "useAutoFocusCrop": "Utilitza el retall interior i exterior de les opcions d'enfocament automàtic per a les exposicions normals (és a dir, les que no es fan durant l'enfocament)",
+            "useAutoFocusCrop": "Activat, Hocus Focus mesura els estels només dins del retall interior i exterior, en el seu autoenfocament i en les exposicions normals. Desactivat, fa servir la imatge sencera.",
             "fitPSF": "Indica si s'ajusten models PSF als estels detectats. És necessari per a la FWHM i l'excentricitat",
             "debugMode": "Activa el mode de depuració, que desa dades addicionals útils per depurar. Mantén-lo desactivat tret que estiguis ajustant la detecció d'estels i vulguis veure els mapes d'estructura.",
             "detectionBinning": "Binning per programari aplicat al fotograma només per a la detecció d'estels. La detecció d'estels està calibrada per a estels enfocats d'uns 2 a 4 píxels; amb distàncies focals llargues els estels són molt més grans, cosa que deixa fora de rang els paràmetres basats en píxels. Fer binning del fotograma per a la detecció torna la mida dels estels dins del rang i millora la relació senyal-soroll per píxel. La imatge que veus i els valors d'HFR informats es mantenen a la resolució amb què ha capturat la càmera. No és el binning d'AF de NINA, que canvia com la càmera captura els fotogrames d'AF i hauria de coincidir amb el binning amb què fas les imatges; tots dos es multipliquen",
@@ -4355,6 +4357,21 @@
           "noiseLevel": "Nivell de soroll",
           "pixelScale": "Escala de Pixel",
           "focusRange": "Rang d'enfocament"
+        },
+        "binningHint": {
+          "none": "Executa un autoenfocament per obtenir una recomanació",
+          "recommended": "HFR mesurat en focus {hfr} px – es recomana {factor}×{factor}",
+          "below": "HFR mesurat en focus {hfr} px – per sota del rang de 2–4 px",
+          "right": "HFR mesurat en focus {hfr} px – {factor}×{factor} és correcte",
+          "detail": {
+            "none": "Encara no hi ha cap mesura. Executa un autoenfocament o un escombratge en directe a l'optimitzador de la detecció d'estels, i l'HFR mesurat en focus apareixerà aquí amb una recomanació. L'escala de píxel sola no prediu la mida dels estels: el seeing varia més que la diferència entre factors de binning.",
+            "measuredAt": "Mesurat el {when} a l'últim autoenfocament, en píxels capturats.",
+            "measured": "Mesurat a l'últim autoenfocament, en píxels capturats.",
+            "recommended": "La detecció d'estels està calibrada per a estels en focus d'uns 2 a 4 px; amb {hfr} px, un binning {factor}×{factor} per a la detecció ho porta a uns {binned} px.",
+            "below": "La detecció d'estels està calibrada per a estels en focus d'uns 2 a 4 px, i {hfr} px queda per sota. El binning de detecció no hi ajuda: només divideix, cap factor fa més gran un estel. El paràmetre que ajuda és 'HFR mín.': abaixa'l perquè no es descartin estels tan petits, o executa l'optimitzador, que el fixa a partir de l'escombratge.",
+            "right": "La detecció d'estels està calibrada per a estels en focus d'uns 2 a 4 px, i {hfr} px ja és dins d'aquest rang, així que el binning no cal.",
+            "rigChange": "Canviar la distància focal, la mida del píxel o el binning de captura descarta aquesta mesura, de manera que sempre descriu l'equip actual."
+          }
         },
         "tilter": {
           "device": "Dispositiu",
@@ -4453,7 +4470,8 @@
           "tooSteep": "La corba és molt pronunciada ({ratio}×): els punts extrems estan molt desenfocats. Una mida del pas més petita posa més punts a prop del focus.",
           "starsLost": "S'han perdut estels als extrems desenfocats ({min} en lloc de {max}). Permetre estels molt desenfocats els conserva.",
           "poorFit": "L'ajust de la corba és dolent (R² {r2}). Revisa l'exposició, els núvols i el seeing abans de baixar cap llindar.",
-          "worseAfter": "Els estels eren més grans després de l'enfocament automàtic ({initial} → {final}). Revisa si l'enfocador té joc o rellisca."
+          "worseAfter": "Els estels eren més grans després de l'enfocament automàtic ({initial} → {final}). Revisa si l'enfocador té joc o rellisca.",
+          "edgesLost": "Les imatges més exteriors no han trobat cap estel: l'escombratge s'ha allunyat molt del focus. Una mida del pas més petita manté els estels a la vista."
         },
         "fix": {
           "stepSize": "Posa la mida del pas a {value}",
@@ -4478,41 +4496,26 @@
         "help": {
           "exposure": "Prou llarga per veure molts estels fins i tot desenfocats.",
           "stepSize": "Passos de l'enfocador entre dos punts. Busca estels extrems unes tres vegades més grans que en focus.",
-          "offsetSteps": "Quants punts comença la sèrie a cada costat de la posició actual. Uns quatre és un bon començament.",
-          "pixelScale": "La mida dels estels al sensor. Fes servir el suggeriment basat en la teva òptica.",
-          "noiseLevel": "Apuja-ho amb càmeres sorolloses o òptiques molt lentes.",
-          "wideRange": "Conserva estels molt desenfocats en forma d'anell. Útil per a sèries amples i reflectors.",
-          "useOptimized": "Fa servir els ajustos que l'optimitzador ha trobat per al teu equip en lloc dels predefinits.",
-          "saveRuns": "Desa cada enfocament automàtic al dispositiu. L'optimitzador i l'Aberration Inspector necessiten enfocaments desats."
+          "offsetSteps": "Quants punts comença la sèrie a cada costat de la posició actual. Uns quatre és un bon començament."
         },
-        "stars": "Detecció d'estels",
-        "advancedActive": "Hocus Focus és en mode avançat. S'apliquen els seus ajustos detallats de detecció; desactiva'l a 'Detecció d'estels' per fer servir els predefinits.",
-        "useOptimized": "Fes servir els ajustos optimitzats",
-        "pixelScale": "Mida dels estels al sensor",
         "usePixelScaleSuggestion": "Fes servir el suggeriment: {preset}",
-        "noiseLevel": "Soroll de la càmera",
-        "wideRange": "Permet estels molt desenfocats",
-        "runs": "Enfocaments desats",
-        "saveRuns": "Desa els enfocaments automàtics",
-        "savePath": "Carpeta dels enfocaments desats",
-        "saveFailed": "No s'ha pogut desar",
         "issues": {
           "missingOptics": "Falta la distància focal o la mida del píxel. El suggeriment de mida dels estels necessita totes dues.",
-          "binningStacked": "El binning de detecció i el d'enfocament automàtic són tots dos per sobre d'1×1. Es multipliquen; normalment només n'hauria d'estar un actiu."
+          "binningStacked": "El binning de detecció i el d'enfocament automàtic són tots dos per sobre d'1×1. Es multipliquen; normalment només n'hauria d'estar un actiu.",
+          "offsetStepsUnusual": "El nombre de punts per costat és inusual. Uns quatre és un bon començament.",
+          "sweepTooLarge": "L'escombratge de l'autoenfocament cobreix gran part del recorregut de l'enfocador. La mida del pas és probablement massa gran; mesura-la a l'assistent de configuració."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Camp ample (estels petits)",
             "Typical": "Típic",
             "LongFocalLength": "Focal llarga (estels grans)"
-          },
-          "noiseLevel": {
-            "None": "Cap",
-            "Low": "Baix",
-            "Typical": "Típic",
-            "High": "Alt"
           }
         }
+      },
+      "hfSweep": {
+        "line": "L'autoenfocament es mou de {from} a {to} (±{half} passos).",
+        "outOfRange": "Això supera el recorregut de l'enfocador."
       },
       "hfAssistant": {
         "title": "Configuració de l'enfocament automàtic",
@@ -4533,6 +4536,10 @@
           "rough": {
             "title": "Enfocament aproximat",
             "description": "Fes imatges i mou l'enfocador fins que els estels siguin petits i rodons i l'HFR sigui tan baix com sigui possible."
+          },
+          "measure": {
+            "title": "Mida del pas",
+            "description": "Mesura com de ràpid creixen els estels quan es mou l'enfocador i suggereix una mida del pas per a l'autoenfocament. L'enfocador es mou cap enfora en passos creixents i al final torna a la posició inicial."
           },
           "run": {
             "title": "Prova",
@@ -4585,6 +4592,31 @@
           "current": "Actual: HFR {hfr} px a la posició de l'enfocador {position} · {stars} estels",
           "best": "El millor fins ara: HFR {hfr} px a la posició de l'enfocador {position}",
           "failed": "No s'ha pogut fer la imatge."
+        },
+        "measure": {
+          "current": "Actual: mida del pas {stepSize} · {offsetSteps} punts per costat",
+          "start": "Mesura la mida del pas",
+          "restart": "Torna a mesurar",
+          "stop": "Atura",
+          "phase": {
+            "reference": "Fent una imatge a la posició actual …",
+            "probe": "Movent cap enfora i fent una imatge …",
+            "return": "Tornant a la posició inicial …"
+          },
+          "reference": "Posició inicial: HFR {hfr} px · {stars} estels",
+          "probe": "{offset} pas enfora: HFR {hfr} px · {stars} estels | {offset} passos enfora: HFR {hfr} px · {stars} estels",
+          "result": "Suggeriment: mida del pas {stepSize} amb {offsetSteps} punts per costat",
+          "limited": "S'ha mantingut més petita perquè el punt més exterior encara mostri prou estels.",
+          "apply": "Aplica",
+          "applied": "Aplicat. El proper autoenfocament fa servir els valors nous.",
+          "failure": {
+            "noSignal": "Els estels no han crescut, ni tan sols lluny del focus. Comprova l'enfocament aproximat i que l'enfocador es mogui de debò.",
+            "lost": "Els estels havien desaparegut ja a un pas fora de focus. Comprova l'enfocament aproximat i l'exposició.",
+            "noReference": "No s'han trobat estels a la posició inicial. Enfoca primer aproximadament a mà.",
+            "timeout": "L'enfocador o la càmera no ha respost a temps.",
+            "error": "La mesura ha fallat.",
+            "returnFailed": "L'enfocador no ha pogut tornar a la posició inicial. Comprova'n la posició abans de la propera execució."
+          }
         }
       }
     },

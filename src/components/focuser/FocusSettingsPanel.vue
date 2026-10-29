@@ -2,79 +2,116 @@
   <div class="flex flex-col gap-4">
     <SegmentTabs v-model="activeTab" :tabs="tabs" />
 
-    <!-- Optional leading tab, e.g. the Hocus Focus essentials -->
-    <slot v-if="activeTab === 'simple'" name="simple" />
-
     <!-- General Settings Container -->
     <div v-if="activeTab === 'general'" class="tns-card flex flex-col gap-3">
       <setFocuserMaxStep />
     </div>
 
     <!-- AutoFocus Settings Container -->
-    <div v-if="activeTab === 'autofocus'" class="tns-card flex flex-col gap-3">
-      <setFocuserUseFilterOffset />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusExposureTime"
-        settingKey="FocuserSettings-AutoFocusExposureTime"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusExposureTime"
-        :max="9999"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusInitialOffsetSteps"
-        settingKey="FocuserSettings-AutoFocusInitialOffsetSteps"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusInitialOffsetSteps"
-        :max="10"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusStepSize"
-        settingKey="FocuserSettings-AutoFocusStepSize"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusStepSize"
-        :max="100000"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.FocuserSettleTime"
-        settingKey="FocuserSettings-FocuserSettleTime"
-        :modelValue="store.profileInfo.FocuserSettings.FocuserSettleTime"
-        :max="1000"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusTotalNumberOfAttempts"
-        settingKey="FocuserSettings-AutoFocusTotalNumberOfAttempts"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusTotalNumberOfAttempts"
-        :max="50"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusNumberOfFramesPerPoint"
-        settingKey="FocuserSettings-AutoFocusNumberOfFramesPerPoint"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusNumberOfFramesPerPoint"
-        :max="50"
-      />
+    <div v-if="activeTab === 'autofocus'" class="flex flex-col gap-4">
+      <!-- With Hocus Focus its essentials (assistant, sweep) replace NINA's sweep fields -->
+      <HfSimpleSettings v-if="hfActive" @open-assistant="emit('open-assistant')" />
+      <div class="tns-card flex flex-col gap-3">
+        <setFocuserUseFilterOffset />
+        <template v-if="!hfActive">
+          <SettingInput
+            labelKey="components.focuser.settings.AutoFocusExposureTime"
+            settingKey="FocuserSettings-AutoFocusExposureTime"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusExposureTime"
+            :max="9999"
+          />
+          <SettingInput
+            labelKey="components.focuser.settings.AutoFocusInitialOffsetSteps"
+            settingKey="FocuserSettings-AutoFocusInitialOffsetSteps"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusInitialOffsetSteps"
+            :max="10"
+          />
+          <SettingInput
+            labelKey="components.focuser.settings.AutoFocusStepSize"
+            settingKey="FocuserSettings-AutoFocusStepSize"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusStepSize"
+            :max="100000"
+          />
+        </template>
+        <SettingInput
+          labelKey="components.focuser.settings.FocuserSettleTime"
+          settingKey="FocuserSettings-FocuserSettleTime"
+          :modelValue="store.profileInfo.FocuserSettings.FocuserSettleTime"
+          :max="1000"
+        />
+        <SettingInput
+          labelKey="components.focuser.settings.AutoFocusTotalNumberOfAttempts"
+          settingKey="FocuserSettings-AutoFocusTotalNumberOfAttempts"
+          :modelValue="store.profileInfo.FocuserSettings.AutoFocusTotalNumberOfAttempts"
+          :max="50"
+        />
+        <SettingInput
+          labelKey="components.focuser.settings.AutoFocusNumberOfFramesPerPoint"
+          settingKey="FocuserSettings-AutoFocusNumberOfFramesPerPoint"
+          :modelValue="store.profileInfo.FocuserSettings.AutoFocusNumberOfFramesPerPoint"
+          :max="50"
+        />
+      </div>
+      <AutoFocusOptions v-if="hfActive" :sections="['storage']" />
     </div>
 
     <!-- Crop & Stars Container -->
-    <div v-if="activeTab === 'crop_and_stars'" class="tns-card flex flex-col gap-3">
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusInnerCropRatio"
-        settingKey="FocuserSettings-AutoFocusInnerCropRatio"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusInnerCropRatio"
-        :min="0.2"
-        :max="1"
-        step="0.1"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusOuterCropRatio"
-        settingKey="FocuserSettings-AutoFocusOuterCropRatio"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusOuterCropRatio"
-        :min="0.2"
-        :max="1"
-        step="0.1"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusUseBrightestStars"
-        settingKey="FocuserSettings-AutoFocusUseBrightestStars"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusUseBrightestStars"
-        max="9999"
-      />
+    <div v-if="activeTab === 'crop_and_stars'" class="flex flex-col gap-4">
+      <div class="tns-card flex flex-col gap-3">
+        <!-- With Hocus Focus two engines share this tab: say which values belong to which -->
+        <div v-if="hfActive" class="flex flex-col gap-1">
+          <h3 class="text-base font-semibold text-content">
+            {{ t('components.focuser.settings.cropCardTitle') }}
+          </h3>
+          <p class="text-sm text-content-muted">
+            {{ t('components.focuser.settings.cropCardHf') }}
+          </p>
+        </div>
+        <!-- HF drops the crop for every detection, its own autofocus included, while this is off -->
+        <HfToggleRow
+          v-if="hfActive && hfStore.starDetectionOptions"
+          :model-value="hfStore.starDetectionOptions.UseAutoFocusCrop"
+          :label="t('components.focuser.hocus.starDetection.useAutoFocusCrop')"
+          :help="t('components.focuser.hocus.starDetection.help.useAutoFocusCrop')"
+          :status="cropToggleStatus"
+          :error="cropToggleError"
+          @change="saveUseAutoFocusCrop"
+        />
+        <SettingInput
+          labelKey="components.focuser.settings.AutoFocusInnerCropRatio"
+          settingKey="FocuserSettings-AutoFocusInnerCropRatio"
+          :modelValue="store.profileInfo.FocuserSettings.AutoFocusInnerCropRatio"
+          :min="0.2"
+          :max="1"
+          step="0.1"
+        />
+        <SettingInput
+          labelKey="components.focuser.settings.AutoFocusOuterCropRatio"
+          settingKey="FocuserSettings-AutoFocusOuterCropRatio"
+          :modelValue="store.profileInfo.FocuserSettings.AutoFocusOuterCropRatio"
+          :min="0.2"
+          :max="1"
+          step="0.1"
+        />
+        <SettingInput
+          labelKey="components.focuser.settings.AutoFocusUseBrightestStars"
+          settingKey="FocuserSettings-AutoFocusUseBrightestStars"
+          :modelValue="store.profileInfo.FocuserSettings.AutoFocusUseBrightestStars"
+          max="9999"
+        />
+      </div>
+      <!-- Hocus Focus star detection: presets, optimizer and the advanced detection values -->
+      <template v-if="hfActive">
+        <div class="flex flex-col gap-1 px-1">
+          <h3 class="text-base font-semibold text-content">
+            {{ t('components.focuser.settings.starDetectionTitle') }}
+          </h3>
+          <p class="text-sm text-content-muted">
+            {{ t('components.focuser.settings.starDetectionHf') }}
+          </p>
+        </div>
+        <StarDetection :isTabActive="true" :omitKeys="['UseAutoFocusCrop']" />
+      </template>
     </div>
 
     <!-- Backlash Container -->
@@ -101,38 +138,54 @@
     </div>
 
     <!-- Advanced Container -->
-    <div v-if="activeTab === 'advanced'" class="tns-card flex flex-col gap-3">
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusBinning"
-        settingKey="FocuserSettings-AutoFocusBinning"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusBinning"
-        max="9"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.AutoFocusTimeoutSeconds"
-        settingKey="FocuserSettings-AutoFocusTimeoutSeconds"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusTimeoutSeconds"
-        :max="9999"
-      />
-      <SettingInput
-        labelKey="components.focuser.settings.RSquaredThreshold"
-        settingKey="FocuserSettings-RSquaredThreshold"
-        :modelValue="store.profileInfo.FocuserSettings.RSquaredThreshold"
-        :min="0"
-        :max="1"
-        step="0.1"
-      />
-      <SettingSelect
-        labelKey="components.focuser.settings.AutoFocusFitFunction"
-        settingKey="FocuserSettings-AutoFocusCurveFitting"
-        :modelValue="store.profileInfo.FocuserSettings.AutoFocusCurveFitting"
-        :options="['TRENDLINES', 'PARABOLIC', 'TRENDPARABOLIC', 'HYPERBOLIC', 'TRENDHYPERBOLIC']"
-        translationPrefix="components.focuser.settings."
-      />
-      <ProfileToggle
-        class="rounded-control border border-line p-1"
-        labelKey="components.focuser.settings.AutoFocusDisableGuiding"
-        settingKey="FocuserSettings-AutoFocusDisableGuiding"
+    <div v-if="activeTab === 'advanced'" class="flex flex-col gap-4">
+      <div class="tns-card flex flex-col gap-3">
+        <SettingInput
+          labelKey="components.focuser.settings.AutoFocusBinning"
+          settingKey="FocuserSettings-AutoFocusBinning"
+          :modelValue="store.profileInfo.FocuserSettings.AutoFocusBinning"
+          max="9"
+        />
+        <!-- Hocus Focus brings its own timeout, fit and rejection thresholds (below) -->
+        <template v-if="!hfActive">
+          <SettingInput
+            labelKey="components.focuser.settings.AutoFocusTimeoutSeconds"
+            settingKey="FocuserSettings-AutoFocusTimeoutSeconds"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusTimeoutSeconds"
+            :max="9999"
+          />
+          <SettingInput
+            labelKey="components.focuser.settings.RSquaredThreshold"
+            settingKey="FocuserSettings-RSquaredThreshold"
+            :modelValue="store.profileInfo.FocuserSettings.RSquaredThreshold"
+            :min="0"
+            :max="1"
+            step="0.1"
+          />
+          <SettingSelect
+            labelKey="components.focuser.settings.AutoFocusFitFunction"
+            settingKey="FocuserSettings-AutoFocusCurveFitting"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusCurveFitting"
+            :options="[
+              'TRENDLINES',
+              'PARABOLIC',
+              'TRENDPARABOLIC',
+              'HYPERBOLIC',
+              'TRENDHYPERBOLIC',
+            ]"
+            translationPrefix="components.focuser.settings."
+          />
+        </template>
+        <ProfileToggle
+          class="rounded-control border border-line p-1"
+          labelKey="components.focuser.settings.AutoFocusDisableGuiding"
+          settingKey="FocuserSettings-AutoFocusDisableGuiding"
+        />
+      </div>
+      <AutoFocusOptions
+        v-if="hfActive"
+        :sections="['basic', 'hfr', 'fit', 'outlier', 'reset']"
+        collapseExpert
       />
     </div>
     <!-- Device specific settings container -->
@@ -173,27 +226,52 @@ import pinsSetFocuserAlias from './settingsPins/pinsSetFocuserAlias.vue';
 import pinsClearStall from './settingsPins/pinsClearStall.vue';
 import pinsResetPosition from './settingsPins/pinsResetPosition.vue';
 import SegmentTabs from '@/components/helpers/SegmentTabs.vue';
+import HfSimpleSettings from './hocus/HfSimpleSettings.vue';
+import AutoFocusOptions from './hocus/AutoFocusOptions.vue';
+import StarDetection from './hocus/StarDetection.vue';
+import HfToggleRow from './hocus/fields/HfToggleRow.vue';
 import { useFocuserStore } from '@/store/focuserStore';
+import { useHocusFocusStore } from '@/store/hocusFocusStore';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-const props = defineProps({
-  // Label of a leading tab that renders the `simple` slot; no such tab without it
-  simpleLabel: { type: String, default: '' },
-});
+const emit = defineEmits(['open-assistant']);
 
 const { t } = useI18n();
 const store = apiStore();
 const focuserStore = useFocuserStore();
+const hfStore = useHocusFocusStore();
+
+// Hocus Focus is the autofocus on PINS: its fields take the place of the NINA values it
+// duplicates or replaces. Feature-detected rather than isPINS, so a PINS without the HF routes
+// keeps the NINA fields; while the probe is pending (null) the NINA fields stay.
+const hfActive = computed(() => hfStore.available === true);
+
+// Hocus Focus' "Use AutoFocus Crop" lives next to the NINA crop values it switches on and off
+const cropToggleStatus = ref('');
+const cropToggleError = ref('');
+
+async function saveUseAutoFocusCrop(value) {
+  cropToggleStatus.value = 'saving';
+  cropToggleError.value = '';
+  try {
+    await hfStore.setStarDetectionOption('UseAutoFocusCrop', value);
+    cropToggleStatus.value = 'saved';
+    setTimeout(() => (cropToggleStatus.value = ''), 1000);
+  } catch (err) {
+    console.error('[FocusSettingsPanel] Error saving UseAutoFocusCrop:', err);
+    cropToggleStatus.value = 'error';
+    cropToggleError.value = err.response?.data?.error || err.message || '';
+  }
+}
 
 // focuserSettings survives a disconnect, so the connection decides whether they are current
 const hasDeviceSettings = computed(
   () => store.focuserInfo.Connected && focuserStore.focuserSettings != null
 );
 
-const tabs = computed(() => [
-  ...(props.simpleLabel ? [{ value: 'simple', label: props.simpleLabel }] : []),
-  ...[
+const tabs = computed(() =>
+  [
     // General holds only the max step, which hides itself on focusers that cannot set it
     ...(store.isPINS && store.focuserInfo.CanSetMaxStep ? ['general'] : []),
     'autofocus',
@@ -201,20 +279,18 @@ const tabs = computed(() => [
     'backlash',
     'advanced',
     ...(store.isPINS && hasDeviceSettings.value ? ['deviceSpecific'] : []),
-  ].map((value) => ({ value, label: t(`components.focuser.settings.${value}`) })),
-]);
-const activeTab = ref(tabs.value[0].value);
+  ].map((value) => ({ value, label: t(`components.focuser.settings.${value}`) }))
+);
+// With Hocus Focus the autofocus tab holds the setup assistant, the recommended start
+const activeTab = ref(hfActive.value ? 'autofocus' : tabs.value[0].value);
 
-// A tab can vanish (PINS check resolves, device settings or Hocus Focus go away): fall back to
-// the first one instead of showing nothing.
+// A tab can vanish (PINS check resolves, device settings go away): fall back to the first one
+// instead of showing nothing.
 watch(tabs, (list) => {
   if (!list.some((tab) => tab.value === activeTab.value)) activeTab.value = list[0].value;
 });
-// The leading tab is the recommended start; open it once it shows up after the async HF probe.
-watch(
-  () => props.simpleLabel,
-  (label, previous) => {
-    if (label && !previous) activeTab.value = 'simple';
-  }
-);
+// Open the autofocus tab once the async HF probe turns Hocus Focus on.
+watch(hfActive, (active) => {
+  if (active) activeTab.value = 'autofocus';
+});
 </script>

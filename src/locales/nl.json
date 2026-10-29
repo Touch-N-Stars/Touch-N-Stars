@@ -3797,7 +3797,11 @@
         "StallDetection": "Detectie van stilstand",
         "USBCapacity": "USB-capaciteit",
         "commandFailed": "Commando wordt niet ondersteund door dit apparaat",
-        "deviceSpecific": "Apparaatinstellingen"
+        "deviceSpecific": "Apparaatinstellingen",
+        "cropCardTitle": "Beelduitsnede en aantal sterren",
+        "cropCardHf": "Hocus Focus gebruikt deze uitsnede voor elke stermeting, ook in zijn eigen autofocus, zolang 'Autofocus-uitsnede gebruiken' aan staat. De limiet voor de helderste sterren geldt ook voor zijn autofocus.",
+        "starDetectionTitle": "Sterdetectie (Hocus Focus)",
+        "starDetectionHf": "Hoe Hocus Focus de sterren in elk beeld vindt en meet."
       },
       "indi": {
         "settings": "Focuser-instellingen"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Aberratie-inspecteur",
           "aberrationOptions": "Opties Aberratie-inspecteur",
-          "autoFocusOptions": "Autofocus-opties",
           "starDetection": "Sterre detectie",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Schakelt de geavanceerde modus in met nauwkeurige controle over de parameters voor sterdetectie. Niet aanbevolen tenzij je een expert bent",
             "useHotpixelThresholding": "Een geavanceerdere vorm van hotpixelfiltering die het vervangen van pixels beperkt tot pixels waarvan de mediaan sterk afwijkt van de pixelwaarde. Zo wordt niet het hele beeld vervaagd, wat een negatief effect kan hebben op de nauwkeurigheid van HFR- en PSF-metingen",
-            "useAutoFocusCrop": "Gebruikt de binnenste en buitenste uitsnede uit de Autofocus-opties ook voor gewone belichtingen (d.w.z. belichtingen die niet tijdens het focussen worden gemaakt)",
+            "useAutoFocusCrop": "Aan: Hocus Focus meet sterren alleen binnen de binnenste en buitenste uitsnede, in zijn eigen autofocus en bij gewone opnamen. Uit: het gebruikt het hele beeld.",
             "fitPSF": "Of er PSF-modellen op gedetecteerde sterren worden gefit. Dit is vereist voor FWHM en eccentriciteit",
             "debugMode": "Schakelt de foutopsporingsmodus in, die extra gegevens opslaat die nuttig zijn bij het debuggen. Laat dit uit, tenzij je de sterdetectie aan het afstemmen bent en structuurkaarten wilt bekijken.",
             "detectionBinning": "Software-binning die alleen voor de sterdetectie op het frame wordt toegepast. De sterdetectie is gekalibreerd voor sterren in focus van ongeveer 2 tot 4 pixels; bij lange brandpuntsafstanden zijn sterren veel groter, waardoor de pixelgebaseerde instellingen buiten bereik vallen. Door het frame voor de detectie te binnen komt de stergrootte weer binnen bereik en verbetert de signaal-ruisverhouding per pixel. Het beeld dat je ziet en de gerapporteerde HFR-waarden blijven op de resolutie waarmee de camera heeft opgenomen. Dit is niet de Autofocus-binning van NINA, die bepaalt hoe de camera de autofocusframes opneemt en overeen moet komen met de binning waarmee je fotografeert; de twee vermenigvuldigen elkaar",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Pixelschaal",
           "focusRange": "Focusbereik",
           "useOptimizedSettings": "Gebruik geoptimaliseerde instellingen"
+        },
+        "binningHint": {
+          "none": "Start een autofocus om een advies te krijgen",
+          "recommended": "Gemeten HFR in focus {hfr} px – {factor}×{factor} aanbevolen",
+          "below": "Gemeten HFR in focus {hfr} px – onder het bereik van 2–4 px",
+          "right": "Gemeten HFR in focus {hfr} px – {factor}×{factor} klopt",
+          "detail": {
+            "none": "Nog niets gemeten. Start een autofocus of een live-sweep in de optimizer van de sterdetectie, dan verschijnt hier de gemeten HFR in focus met een advies. De pixelschaal alleen voorspelt de stergrootte niet: de seeing varieert meer dan het verschil tussen binningfactoren.",
+            "measuredAt": "Gemeten op {when} bij de laatste autofocus, in opgenomen pixels.",
+            "measured": "Gemeten bij de laatste autofocus, in opgenomen pixels.",
+            "recommended": "De sterdetectie is afgestemd op sterren in focus van ongeveer 2 tot 4 px; bij {hfr} px brengt {factor}×{factor}-binning voor de detectie dat naar ongeveer {binned} px.",
+            "below": "De sterdetectie is afgestemd op sterren in focus van ongeveer 2 tot 4 px, en {hfr} px ligt daaronder. Detectie-binning helpt hier niet: het deelt alleen, geen factor maakt een ster groter. De instelling die helpt is 'Min. HFR': verlaag die zodat zulke kleine sterren niet worden verworpen, of start de optimizer, die hem uit de sweep instelt.",
+            "right": "De sterdetectie is afgestemd op sterren in focus van ongeveer 2 tot 4 px, en {hfr} px ligt al in dat bereik, dus binning is niet nodig.",
+            "rigChange": "Een andere brandpuntsafstand, pixelgrootte of opname-binning verwerpt deze meting, zodat ze altijd de huidige opstelling beschrijft."
+          }
         },
         "tilter": {
           "device": "Apparaat",
@@ -4412,7 +4429,8 @@
           "tooSteep": "De curve is erg steil ({ratio}×): de buitenste punten liggen ver buiten focus. Een kleinere stapgrootte zet meer punten dicht bij het focus.",
           "starsLost": "Aan de onscherpe uiteinden gingen sterren verloren ({min} in plaats van {max}). Sterk onscherpe sterren toestaan houdt ze vast.",
           "poorFit": "De curve-aanpassing is slecht (R² {r2}). Controleer belichting, wolken en seeing voordat je een drempel verlaagt.",
-          "worseAfter": "De sterren waren na de autofocus groter ({initial} → {final}). Controleer de focuser op speling of slippen."
+          "worseAfter": "De sterren waren na de autofocus groter ({initial} → {final}). Controleer de focuser op speling of slippen.",
+          "edgesLost": "In de buitenste beelden zijn geen sterren gevonden: de reeks ging ver uit focus. Een kleinere stapgrootte houdt de sterren in beeld."
         },
         "fix": {
           "stepSize": "Stapgrootte op {value} zetten",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Lang genoeg om ook onscherp nog veel sterren te zien.",
           "stepSize": "Focuserstappen tussen twee punten. Streef naar buitenste sterren die ongeveer drie keer zo groot zijn als in focus.",
-          "offsetSteps": "Hoeveel punten de reeks aan elke kant van de huidige positie begint. Ongeveer vier is een goed begin.",
-          "pixelScale": "Hoe groot sterren op de sensor verschijnen. Gebruik de suggestie op basis van je optiek.",
-          "noiseLevel": "Verhoog dit bij ruisende camera’s of zeer lichtzwakke optiek.",
-          "wideRange": "Houdt sterk onscherpe, ringvormige sterren vast. Handig bij brede reeksen en spiegeltelescopen.",
-          "useOptimized": "Gebruikt de instellingen die de optimalisator voor jouw opstelling vond in plaats van de voorinstellingen.",
-          "saveRuns": "Bewaart elke autofocus op het apparaat. De optimalisator en de Aberration Inspector hebben opgeslagen autofocussen nodig."
+          "offsetSteps": "Hoeveel punten de reeks aan elke kant van de huidige positie begint. Ongeveer vier is een goed begin."
         },
-        "stars": "Sterre detectie",
-        "advancedActive": "Hocus Focus staat in de geavanceerde modus. De gedetailleerde detectie-instellingen gelden; schakel die uit onder 'Sterre detectie' om de voorinstellingen te gebruiken.",
-        "useOptimized": "Geoptimaliseerde instellingen gebruiken",
-        "pixelScale": "Stergrootte op de sensor",
         "usePixelScaleSuggestion": "Suggestie gebruiken: {preset}",
-        "noiseLevel": "Cameraruis",
-        "wideRange": "Sterk onscherpe sterren toestaan",
-        "runs": "Opgeslagen autofocussen",
-        "saveRuns": "Autofocussen opslaan",
-        "savePath": "Map voor opgeslagen autofocussen",
-        "saveFailed": "Opslaan mislukt",
         "issues": {
           "missingOptics": "Brandpuntsafstand of pixelgrootte ontbreekt. De suggestie voor de stergrootte heeft beide nodig.",
-          "binningStacked": "Detectie-binning en autofocus-binning staan allebei boven 1×1. Ze vermenigvuldigen elkaar; meestal hoort er maar één ingesteld te zijn."
+          "binningStacked": "Detectie-binning en autofocus-binning staan allebei boven 1×1. Ze vermenigvuldigen elkaar; meestal hoort er maar één ingesteld te zijn.",
+          "offsetStepsUnusual": "Het aantal punten per kant is ongebruikelijk. Ongeveer vier is een goed begin.",
+          "sweepTooLarge": "De autofocusreeks beslaat een groot deel van het bereik van de focuser. De stapgrootte is waarschijnlijk veel te groot; meet hem in de installatieassistent."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Breedbeeld (kleine sterren)",
             "Typical": "Typisch",
             "LongFocalLength": "Lange brandpuntsafstand (grote sterren)"
-          },
-          "noiseLevel": {
-            "None": "Geen",
-            "Low": "Laag",
-            "Typical": "Typisch",
-            "High": "Hoog"
           }
         }
+      },
+      "hfSweep": {
+        "line": "De autofocus beweegt van {from} naar {to} (±{half} stappen).",
+        "outOfRange": "Dat valt buiten het bereik van de focuser."
       },
       "hfAssistant": {
         "title": "Autofocus instellen",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Grof scherpstellen",
             "description": "Maak opnames en beweeg de focuser tot de sterren klein en rond zijn en de HFR zo laag mogelijk is."
+          },
+          "measure": {
+            "title": "Stapgrootte",
+            "description": "Meet hoe snel de sterren groeien wanneer de focuser beweegt en stelt een stapgrootte voor de autofocus voor. De focuser beweegt in groeiende stappen naar buiten en keert aan het eind terug naar zijn startpositie."
           },
           "run": {
             "title": "Testrun",
@@ -4544,6 +4551,31 @@
           "current": "Huidig: HFR {hfr} px bij focuserpositie {position} · {stars} sterren",
           "best": "Beste tot nu toe: HFR {hfr} px bij focuserpositie {position}",
           "failed": "De opname kon niet worden gemaakt."
+        },
+        "measure": {
+          "current": "Huidig: stapgrootte {stepSize} · {offsetSteps} punten per kant",
+          "start": "Stapgrootte meten",
+          "restart": "Opnieuw meten",
+          "stop": "Stoppen",
+          "phase": {
+            "reference": "Beeld maken op de huidige positie …",
+            "probe": "Naar buiten bewegen en beeld maken …",
+            "return": "Terug naar de startpositie …"
+          },
+          "reference": "Startpositie: HFR {hfr} px · {stars} sterren",
+          "probe": "{offset} stap naar buiten: HFR {hfr} px · {stars} sterren | {offset} stappen naar buiten: HFR {hfr} px · {stars} sterren",
+          "result": "Voorstel: stapgrootte {stepSize} met {offsetSteps} punten per kant",
+          "limited": "Kleiner gehouden zodat het buitenste punt nog genoeg sterren toont.",
+          "apply": "Toepassen",
+          "applied": "Toegepast. De volgende autofocus gebruikt de nieuwe waarden.",
+          "failure": {
+            "noSignal": "De sterren werden niet groter, zelfs ver uit focus niet. Controleer de grove focus en of de focuser echt beweegt.",
+            "lost": "De sterren waren al één stap uit focus verdwenen. Controleer de grove focus en de belichting.",
+            "noReference": "Op de startpositie zijn geen sterren gevonden. Stel eerst met de hand grof scherp.",
+            "timeout": "De focuser of de camera reageerde niet op tijd.",
+            "error": "De meting is mislukt.",
+            "returnFailed": "De focuser kon niet terug naar zijn startpositie. Controleer de positie vóór de volgende run."
+          }
         }
       }
     },

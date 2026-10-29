@@ -3838,7 +3838,11 @@
         "StallDetection": "Blockiererkennung",
         "USBCapacity": "USB-Kapazität",
         "commandFailed": "Befehl wird von diesem Gerät nicht unterstützt",
-        "deviceSpecific": "Geräteeinstellungen"
+        "deviceSpecific": "Geräteeinstellungen",
+        "cropCardTitle": "Bildausschnitt und Sternanzahl",
+        "cropCardHf": "Hocus Focus nutzt diesen Ausschnitt für jede Sternmessung, auch im eigenen Autofokus, solange 'AutoFocus-Zuschnitt verwenden' an ist. Die Grenze für die hellsten Sterne gilt auch für seinen Autofokus.",
+        "starDetectionTitle": "Sternerkennung (Hocus Focus)",
+        "starDetectionHf": "Wie Hocus Focus die Sterne in jedem Bild findet und vermisst."
       },
       "indi": {
         "settings": "Fokussierer-Einstellungen"
@@ -3884,11 +3888,9 @@
         }
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Aberrationsprüfer",
           "aberrationOptions": "Optionen des Aberrationsprüfers",
-          "autoFocusOptions": "Autofokus-Optionen",
           "starDetection": "Sternerkennung",
           "tilter": "Tilter"
         },
@@ -4283,7 +4285,7 @@
           "help": {
             "advancedMode": "Aktiviert den erweiterten Modus mit feiner Kontrolle über die Parameter der Sternerkennung. Nur für Experten empfohlen",
             "useHotpixelThresholding": "Eine ausgefeiltere Hotpixel-Filterung, die Pixel nur dann ersetzt, wenn der Median weit vom Pixelwert abweicht. So wird nicht das ganze Bild weichgezeichnet, was die Genauigkeit von HFR- und PSF-Messungen beeinträchtigen kann",
-            "useAutoFocusCrop": "Verwendet den inneren und äußeren Zuschnitt aus den Autofokus-Optionen auch für normale Belichtungen (also solche, die nicht beim Fokussieren entstehen)",
+            "useAutoFocusCrop": "Wenn an, misst Hocus Focus Sterne nur innerhalb des inneren und äußeren Ausschnitts, im eigenen Autofokus und bei normalen Aufnahmen. Wenn aus, nutzt es das ganze Bild.",
             "fitPSF": "Ob PSF-Modelle an die erkannten Sterne angepasst werden. Erforderlich für FWHM und Exzentrizität",
             "debugMode": "Aktiviert den Debug-Modus, der zusätzliche Daten zur Fehlersuche speichert. Aus lassen, außer du stimmst die Sternerkennung ab und willst Strukturkarten ansehen.",
             "detectionBinning": "Software-Binning, das nur für die Sternerkennung auf den Frame angewendet wird. Die Sternerkennung ist auf fokussierte Sterne von etwa 2 bis 4 Pixeln kalibriert; bei langen Brennweiten sind Sterne deutlich größer, wodurch die pixelbasierten Einstellungen außerhalb ihres Bereichs liegen. Binning für die Erkennung bringt die Sterngröße zurück in den Bereich und verbessert das Signal-Rausch-Verhältnis pro Pixel. Das angezeigte Bild und die gemeldeten HFR-Werte bleiben in der Auflösung, mit der die Kamera aufgenommen hat. Das ist nicht das Autofokus-Binning von NINA, das bestimmt, wie die Kamera die Autofokus-Frames aufnimmt, und dem Binning deiner Aufnahmen entsprechen sollte; beide multiplizieren sich",
@@ -4355,6 +4357,21 @@
           "pixelScale": "Pixel Maßstab",
           "focusRange": "Fokusbereich",
           "useOptimizedSettings": "Verwenden Sie optimierte Einstellungen"
+        },
+        "binningHint": {
+          "none": "Starte einen Autofokus, um eine Empfehlung zu bekommen",
+          "recommended": "Gemessener HFR im Fokus {hfr} px – {factor}×{factor} empfohlen",
+          "below": "Gemessener HFR im Fokus {hfr} px – unter dem Bereich von 2–4 px",
+          "right": "Gemessener HFR im Fokus {hfr} px – {factor}×{factor} passt",
+          "detail": {
+            "none": "Noch nichts gemessen. Starte einen Autofokus oder einen Live-Sweep im Optimierer der Sternerkennung, dann erscheint hier der gemessene HFR im Fokus mit einer Empfehlung. Der Abbildungsmaßstab allein sagt die Sterngröße nicht voraus: Das Seeing schwankt stärker als der Abstand zwischen zwei Binning-Stufen.",
+            "measuredAt": "Gemessen am {when} beim letzten Autofokus, in aufgenommenen Pixeln.",
+            "measured": "Gemessen beim letzten Autofokus, in aufgenommenen Pixeln.",
+            "recommended": "Die Sternerkennung ist auf Sterne im Fokus von etwa 2 bis 4 px abgestimmt; bei {hfr} px bringt {factor}×{factor}-Binning für die Erkennung das auf etwa {binned} px.",
+            "below": "Die Sternerkennung ist auf Sterne im Fokus von etwa 2 bis 4 px abgestimmt, und {hfr} px liegt darunter. Erkennungs-Binning hilft hier nicht: Es teilt nur, kein Faktor macht einen Stern größer. Helfen kann 'Min. HFR': Senke den Wert, damit so kleine Sterne nicht verworfen werden, oder starte den Optimierer, der ihn aus dem Sweep setzt.",
+            "right": "Die Sternerkennung ist auf Sterne im Fokus von etwa 2 bis 4 px abgestimmt, und {hfr} px liegt bereits in diesem Bereich, Binning ist also nicht nötig.",
+            "rigChange": "Eine Änderung von Brennweite, Pixelgröße oder Aufnahme-Binning verwirft diese Messung, sie beschreibt also immer das aktuelle Setup."
+          }
         },
         "tilter": {
           "device": "Device",
@@ -4453,7 +4470,8 @@
           "tooSteep": "Die Kurve ist sehr steil ({ratio}×): Die äußeren Punkte liegen weit außerhalb des Fokus. Eine kleinere Schrittgröße setzt mehr Punkte in die Nähe des Fokus.",
           "starsLost": "An den unscharfen Enden gingen Sterne verloren ({min} statt {max}). Stark defokussierte Sterne zuzulassen behält sie.",
           "poorFit": "Die Kurvenanpassung ist schlecht (R² {r2}). Prüfe Belichtung, Wolken und Seeing, bevor du einen Schwellwert senkst.",
-          "worseAfter": "Die Sterne waren nach dem Lauf größer ({initial} → {final}). Prüfe den Fokussierer auf Spiel oder Rutschen."
+          "worseAfter": "Die Sterne waren nach dem Lauf größer ({initial} → {final}). Prüfe den Fokussierer auf Spiel oder Rutschen.",
+          "edgesLost": "In den äußersten Bildern wurden keine Sterne gefunden: Die Messreihe lief weit aus dem Fokus. Mit einer kleineren Schrittgröße bleiben die Sterne sichtbar."
         },
         "fix": {
           "stepSize": "Schrittgröße auf {value} setzen",
@@ -4478,41 +4496,26 @@
         "help": {
           "exposure": "Lang genug, dass auch unscharf noch viele Sterne zu sehen sind.",
           "stepSize": "Fokussierer-Schritte zwischen zwei Punkten. Ziel: Die äußeren Sterne sind etwa dreimal so groß wie im Fokus.",
-          "offsetSteps": "Wie viele Punkte die Messreihe je Seite von der aktuellen Position entfernt beginnt. Etwa vier sind ein guter Start.",
-          "pixelScale": "Wie groß Sterne auf dem Sensor erscheinen. Nimm den Vorschlag, der aus deiner Optik berechnet wird.",
-          "noiseLevel": "Erhöhen bei rauschenden Kameras oder sehr lichtschwacher Optik.",
-          "wideRange": "Behält stark defokussierte, ringförmige Sterne. Nützlich bei weiten Messreihen und Spiegelteleskopen.",
-          "useOptimized": "Verwendet die Einstellungen, die der Optimierer für dein Setup gefunden hat, statt der Voreinstellungen.",
-          "saveRuns": "Speichert jeden Lauf auf dem Gerät. Optimierer und Aberration Inspector brauchen gespeicherte Läufe."
+          "offsetSteps": "Wie viele Punkte die Messreihe je Seite von der aktuellen Position entfernt beginnt. Etwa vier sind ein guter Start."
         },
-        "stars": "Sternerkennung",
-        "advancedActive": "Hocus Focus ist im erweiterten Modus. Dessen detaillierte Sternerkennungs-Einstellungen gelten; schalte ihn unter 'Sternerkennung' aus, um die Voreinstellungen zu nutzen.",
-        "useOptimized": "Optimierte Einstellungen verwenden",
-        "pixelScale": "Sterngröße auf dem Sensor",
         "usePixelScaleSuggestion": "Vorschlag übernehmen: {preset}",
-        "noiseLevel": "Kamerarauschen",
-        "wideRange": "Stark defokussierte Sterne zulassen",
-        "runs": "Gespeicherte Läufe",
-        "saveRuns": "Autofokus-Läufe speichern",
-        "savePath": "Ordner für gespeicherte Läufe",
-        "saveFailed": "Speichern fehlgeschlagen",
         "issues": {
           "missingOptics": "Brennweite oder Pixelgröße fehlt. Der Vorschlag für die Sterngröße braucht beides.",
-          "binningStacked": "Erkennungs-Binning und Autofokus-Binning stehen beide über 1×1. Sie multiplizieren sich; meist sollte nur eines gesetzt sein."
+          "binningStacked": "Erkennungs-Binning und Autofokus-Binning stehen beide über 1×1. Sie multiplizieren sich; meist sollte nur eines gesetzt sein.",
+          "offsetStepsUnusual": "Die Zahl der Punkte je Seite ist ungewöhnlich. Etwa vier sind ein guter Start.",
+          "sweepTooLarge": "Die Autofokus-Messreihe deckt einen großen Teil des Fokussierer-Wegs ab. Die Schrittgröße ist vermutlich viel zu groß; miss sie im Einrichtungsassistenten."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Weitfeld (kleine Sterne)",
             "Typical": "Typisch",
             "LongFocalLength": "Lange Brennweite (große Sterne)"
-          },
-          "noiseLevel": {
-            "None": "Keins",
-            "Low": "Niedrig",
-            "Typical": "Typisch",
-            "High": "Hoch"
           }
         }
+      },
+      "hfSweep": {
+        "line": "Der Autofokus fährt von {from} bis {to} (±{half} Schritte).",
+        "outOfRange": "Das liegt außerhalb des Fokussierer-Wegs."
       },
       "hfAssistant": {
         "title": "Autofokus einrichten",
@@ -4533,6 +4536,10 @@
           "rough": {
             "title": "Grob fokussieren",
             "description": "Mach Aufnahmen und bewege den Fokussierer, bis die Sterne klein und rund sind und der HFR möglichst niedrig ist."
+          },
+          "measure": {
+            "title": "Schrittgröße",
+            "description": "Misst, wie schnell die Sterne wachsen, wenn sich der Fokussierer bewegt, und schlägt eine Schrittgröße für den Autofokus vor. Der Fokussierer fährt in wachsenden Schritten nach außen und am Ende zurück zur Startposition."
           },
           "run": {
             "title": "Testlauf",
@@ -4585,6 +4592,31 @@
           "current": "Aktuell: HFR {hfr} px bei Fokussierer-Position {position} · {stars} Sterne",
           "best": "Bisher am besten: HFR {hfr} px bei Fokussierer-Position {position}",
           "failed": "Das Bild konnte nicht aufgenommen werden."
+        },
+        "measure": {
+          "current": "Aktuell: Schrittgröße {stepSize} · {offsetSteps} Punkte je Seite",
+          "start": "Schrittgröße messen",
+          "restart": "Erneut messen",
+          "stop": "Stopp",
+          "phase": {
+            "reference": "Aufnahme an der aktuellen Position …",
+            "probe": "Nach außen fahren und Bild aufnehmen …",
+            "return": "Zurück zur Startposition …"
+          },
+          "reference": "Startposition: HFR {hfr} px · {stars} Sterne",
+          "probe": "{offset} Schritt nach außen: HFR {hfr} px · {stars} Sterne | {offset} Schritte nach außen: HFR {hfr} px · {stars} Sterne",
+          "result": "Vorschlag: Schrittgröße {stepSize} mit {offsetSteps} Punkten je Seite",
+          "limited": "Kleiner gehalten, damit der äußerste Punkt noch genug Sterne zeigt.",
+          "apply": "Übernehmen",
+          "applied": "Übernommen. Der nächste Autofokus nutzt die neuen Werte.",
+          "failure": {
+            "noSignal": "Die Sterne wurden nicht größer, auch weit außerhalb des Fokus nicht. Prüfe die Grobfokussierung und ob sich der Fokussierer wirklich bewegt.",
+            "lost": "Schon einen Schritt außerhalb des Fokus waren die Sterne verschwunden. Prüfe die Grobfokussierung und die Belichtung.",
+            "noReference": "An der Startposition wurden keine Sterne gefunden. Fokussiere zuerst grob von Hand.",
+            "timeout": "Der Fokussierer oder die Kamera hat nicht rechtzeitig reagiert.",
+            "error": "Die Messung ist fehlgeschlagen.",
+            "returnFailed": "Der Fokussierer konnte nicht zur Startposition zurückfahren. Prüfe seine Position vor dem nächsten Lauf."
+          }
         }
       }
     },
