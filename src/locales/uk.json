@@ -5470,6 +5470,7 @@
           "Fair": "Задовільно",
           "Poor": "Погано — виміряйте ще раз",
           "Insufficient": "Замало пар",
+          "Single": "Одна пара",
           "DaytimeEstimate": "Оцінка"
         },
         "beforeAfter": "До ({date}): {before}′ → тепер: {after}′",

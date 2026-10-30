@@ -5470,6 +5470,7 @@
           "Fair": "보통",
           "Poor": "나쁨 — 다시 측정하세요",
           "Insufficient": "쌍이 너무 적음",
+          "Single": "단일 쌍",
           "DaytimeEstimate": "추정"
         },
         "beforeAfter": "이전 ({date}): {before}′ → 현재: {after}′",

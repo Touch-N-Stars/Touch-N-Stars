@@ -5470,6 +5470,7 @@
           "Fair": "Přijatelná",
           "Poor": "Slabá — měřte znovu",
           "Insufficient": "Příliš málo párů",
+          "Single": "Jeden pár",
           "DaytimeEstimate": "Odhad"
         },
         "beforeAfter": "Před ({date}): {before}′ → nyní: {after}′",
