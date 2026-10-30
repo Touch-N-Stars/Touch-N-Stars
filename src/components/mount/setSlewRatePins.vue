@@ -4,10 +4,7 @@
       <p class="text-xs sm:text-sm min-w-24 sm:min-w-32 font-medium text-gray-500">
         {{ $t('components.mount.control.slewRate') }}
       </p>
-      <p
-        v-if="kind !== 'none' && currentLabel"
-        class="text-xs sm:text-sm text-cyan-400 font-medium"
-      >
+      <p v-if="currentLabel" class="text-xs sm:text-sm text-cyan-400 font-medium">
         {{ currentLabel }}
       </p>
     </div>
@@ -68,7 +65,7 @@
       />
     </div>
 
-    <!-- No rate control exposed by the driver, or no mount connected -->
+    <!-- No rate control exposed by the driver ('none'), or none known yet ('unavailable') -->
     <p v-else class="text-xs text-gray-500 italic py-2">
       {{
         kind === 'none'
@@ -83,13 +80,16 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useMountStore } from '@/store/mountStore';
+import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 
 const settingsStore = useSettingsStore();
 const mountStore = useMountStore();
+const store = apiStore();
 
-// 'none' until the capability is fetched; renders the "unavailable" hint meanwhile.
-const kind = ref('none');
+// 'unavailable' until the capability is fetched and after a failed fetch (no mount connected);
+// 'none' only when the driver itself offers no rate control.
+const kind = ref('unavailable');
 const capability = ref({ Kind: 'None', Options: [], Min: 0, Max: 0, Step: 0, Unit: '°/s' });
 const discreteIndex = ref(0);
 const continuousValue = ref(0);
@@ -147,7 +147,7 @@ async function loadCapability() {
     // nor write the old rate back to the driver.
     if (activeLoad !== loadId) return;
     if (!data?.Success || !data.Response) {
-      kind.value = 'none';
+      kind.value = 'unavailable';
       return;
     }
     const cap = data.Response;
@@ -170,7 +170,7 @@ async function loadCapability() {
   } catch {
     if (activeLoad !== loadId) return;
     // 404 / network: mount not connected — show the unavailable hint.
-    kind.value = 'none';
+    kind.value = 'unavailable';
     capability.value = { Kind: 'None', Options: [], Min: 0, Max: 0, Step: 0, Unit: '°/s' };
   }
 }
@@ -221,6 +221,12 @@ watch(
   (connected) => {
     if (connected) loadCapability();
   }
+);
+
+// Re-fetch when the mount connects or disconnects while the page is open.
+watch(
+  () => store.mountInfo?.Connected,
+  () => loadCapability()
 );
 
 onBeforeUnmount(() => {
