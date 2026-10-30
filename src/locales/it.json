@@ -5470,6 +5470,7 @@
           "Fair": "Discreta",
           "Poor": "Scarsa — misura di nuovo",
           "Insufficient": "Troppe poche coppie",
+          "Single": "Una sola coppia",
           "DaytimeEstimate": "Stima"
         },
         "beforeAfter": "Prima ({date}): {before}′ → ora: {after}′",

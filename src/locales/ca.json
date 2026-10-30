@@ -5470,6 +5470,7 @@
           "Fair": "Acceptable",
           "Poor": "Dolenta — torna a mesurar",
           "Insufficient": "Massa poques parelles",
+          "Single": "Una sola parella",
           "DaytimeEstimate": "Estimació"
         },
         "beforeAfter": "Abans ({date}): {before}′ → ara: {after}′",

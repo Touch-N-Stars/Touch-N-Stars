@@ -111,6 +111,7 @@ const qualityClass = computed(() => {
     case 'Fair':
       return 'bg-status-warn/15 text-status-warn';
     case 'DaytimeEstimate':
+    case 'Single':
       return 'bg-surface-3 text-content-muted';
     default:
       return 'bg-status-danger/15 text-status-danger';
