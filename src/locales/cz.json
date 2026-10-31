@@ -3797,7 +3797,11 @@
         "StallDetection": "Detekce zastavení",
         "USBCapacity": "Kapacita USB",
         "commandFailed": "Příkaz není tímto zařízením podporován",
-        "deviceSpecific": "Nastavení zařízení"
+        "deviceSpecific": "Nastavení zařízení",
+        "cropCardTitle": "Oblast snímku a počet hvězd",
+        "cropCardHf": "Hocus Focus používá tento ořez při každém měření hvězd, včetně vlastního automatického zaostřování, dokud je zapnuto 'Použít oříznutí automatického zaostření'. Limit nejjasnějších hvězd platí i pro jeho automatické zaostřování.",
+        "starDetectionTitle": "Detekce hvězd (Hocus Focus)",
+        "starDetectionHf": "Jak Hocus Focus hledá a měří hvězdy v každém snímku."
       },
       "indi": {
         "settings": "Nastavení zaostřovače"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Inspektor aberací",
           "aberrationOptions": "Možnosti inspektoru aberací",
-          "autoFocusOptions": "Možnosti automatického zaostření",
           "starDetection": "Detekce hvězd",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Zapne pokročilý režim s jemným ovládáním parametrů detekce hvězd. Nedoporučuje se, pokud nejste expert",
             "useHotpixelThresholding": "Propracovanější varianta filtrování horkých pixelů, která nahrazuje jen pixely, u nichž se medián výrazně liší od hodnoty pixelu. Tím se zabrání rozmazání celého snímku, které může zhoršit přesnost měření HFR a PSF",
-            "useAutoFocusCrop": "Použije vnitřní a vnější ořez z možností Auto Focus i pro běžné expozice (tj. ty, které se nepořizují během ostření)",
+            "useAutoFocusCrop": "Zapnuto: Hocus Focus měří hvězdy jen uvnitř vnitřního a vnějšího ořezu, při vlastním automatickém zaostřování i u běžných snímků. Vypnuto: používá celý snímek.",
             "fitPSF": "Zda fitovat modely PSF na detekované hvězdy. Je to nutné pro FWHM a excentricitu",
             "debugMode": "Zapne režim ladění, který ukládá další data užitečná pro ladění. Nechte vypnuté, pokud zrovna neladíte detekci hvězd a nechcete si prohlížet mapy struktury.",
             "detectionBinning": "Softwarový binning snímku použitý pouze pro detekci hvězd. Detekce hvězd je kalibrována na zaostřené hvězdy o velikosti zhruba 2 až 4 pixely; při dlouhých ohniskových vzdálenostech jsou hvězdy mnohem větší, čímž se nastavení založená na pixelech dostanou mimo rozsah. Binning snímku pro detekci vrátí velikost hvězd do rozsahu a zlepší poměr signálu k šumu na pixel. Zobrazený snímek i hlášené hodnoty HFR zůstávají v rozlišení, ve kterém kamera snímala. Nejde o Auto Focus Binning v NINA, který mění, jak kamera snímky automatického zaostření pořizuje, a měl by odpovídat binningu, se kterým fotografujete; oba se násobí",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Měřítko Pixelu",
           "focusRange": "Rozsah ostření",
           "useOptimizedSettings": "Use Optimized Settings"
+        },
+        "binningHint": {
+          "none": "Spusť automatické zaostřování a získáš doporučení",
+          "recommended": "Naměřené HFR v ohnisku {hfr} px – doporučeno {factor}×{factor}",
+          "below": "Naměřené HFR v ohnisku {hfr} px – pod rozsahem 2–4 px",
+          "right": "Naměřené HFR v ohnisku {hfr} px – {factor}×{factor} je správně",
+          "detail": {
+            "none": "Zatím nic nenaměřeno. Spusť automatické zaostřování nebo živý sweep v optimalizátoru detekce hvězd a zde se objeví naměřené HFR v ohnisku s doporučením. Samotné měřítko pixelu velikost hvězd nepředpoví: seeing kolísá víc než rozdíl mezi faktory binningu.",
+            "measuredAt": "Naměřeno {when} při posledním automatickém zaostřování, v zachycených pixelech.",
+            "measured": "Naměřeno při posledním automatickém zaostřování, v zachycených pixelech.",
+            "recommended": "Detekce hvězd je kalibrována na hvězdy v ohnisku o velikosti asi 2 až 4 px; při {hfr} px dostane binning {factor}×{factor} pro detekci hodnotu asi na {binned} px.",
+            "below": "Detekce hvězd je kalibrována na hvězdy v ohnisku o velikosti asi 2 až 4 px a {hfr} px je pod tímto rozsahem. Binning detekce tu nepomůže: jen dělí, žádný faktor hvězdu nezvětší. Pomoci může 'Min. HFR': sniž ho, aby se tak malé hvězdy nezahazovaly, nebo spusť optimalizátor, který ho nastaví ze sweepu.",
+            "right": "Detekce hvězd je kalibrována na hvězdy v ohnisku o velikosti asi 2 až 4 px a {hfr} px už v tomto rozsahu je, takže binning není potřeba.",
+            "rigChange": "Změna ohniskové vzdálenosti, velikosti pixelu nebo binningu záznamu toto měření zahodí, takže vždy popisuje aktuální sestavu."
+          }
         },
         "tilter": {
           "device": "Zařízení",
@@ -4412,7 +4429,8 @@
           "tooSteep": "Křivka je velmi strmá ({ratio}×): krajní body jsou daleko mimo ohnisko. Menší velikost kroku dá více bodů blízko ohniska.",
           "starsLost": "Na rozostřených koncích se ztratily hvězdy ({min} místo {max}). Povolení silně rozostřených hvězd je zachová.",
           "poorFit": "Proložení křivky je špatné (R² {r2}). Než snížíte jakýkoli práh, zkontrolujte expozici, mraky a seeing.",
-          "worseAfter": "Hvězdy byly po autofokusu větší ({initial} → {final}). Zkontrolujte vůli nebo prokluz ostřiče."
+          "worseAfter": "Hvězdy byly po autofokusu větší ({initial} → {final}). Zkontrolujte vůli nebo prokluz ostřiče.",
+          "edgesLost": "Na nejkrajnějších snímcích nebyly nalezeny žádné hvězdy: série šla daleko mimo ohnisko. Menší velikost kroku udrží hvězdy v záběru."
         },
         "fix": {
           "stepSize": "Nastavit velikost kroku na {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Dost dlouhá, aby bylo i mimo ohnisko vidět mnoho hvězd.",
           "stepSize": "Kroky ostřiče mezi dvěma body. Cílem jsou krajní hvězdy asi třikrát větší než v ohnisku.",
-          "offsetSteps": "Kolik bodů od aktuální polohy na každou stranu řada začíná. Asi čtyři jsou dobrý začátek.",
-          "pixelScale": "Jak velké se hvězdy na snímači jeví. Použijte návrh vypočtený z vaší optiky.",
-          "noiseLevel": "Zvyšte u zašuměných kamer nebo velmi světelně slabé optiky.",
-          "wideRange": "Zachová silně rozostřené hvězdy ve tvaru prstence. Užitečné pro široké řady a zrcadlové dalekohledy.",
-          "useOptimized": "Použije nastavení, která optimalizátor našel pro vaši sestavu, místo předvoleb.",
-          "saveRuns": "Uloží každý autofokus do zařízení. Optimalizátor a Aberration Inspector potřebují uložené autofokusy."
+          "offsetSteps": "Kolik bodů od aktuální polohy na každou stranu řada začíná. Asi čtyři jsou dobrý začátek."
         },
-        "stars": "Detekce hvězd",
-        "advancedActive": "Hocus Focus je v pokročilém režimu. Platí jeho podrobná nastavení detekce; vypněte jej v 'Detekce hvězd', abyste použili předvolby.",
-        "useOptimized": "Použít optimalizované nastavení",
-        "pixelScale": "Velikost hvězd na snímači",
         "usePixelScaleSuggestion": "Použít návrh: {preset}",
-        "noiseLevel": "Šum kamery",
-        "wideRange": "Povolit silně rozostřené hvězdy",
-        "runs": "Uložené autofokusy",
-        "saveRuns": "Ukládat autofokusy",
-        "savePath": "Složka pro uložené autofokusy",
-        "saveFailed": "Uložení se nezdařilo",
         "issues": {
           "missingOptics": "Chybí ohnisková vzdálenost nebo velikost pixelu. Návrh velikosti hvězd potřebuje obojí.",
-          "binningStacked": "Binning detekce i binning autofokusu jsou nad 1×1. Násobí se; obvykle by měl být nastaven jen jeden."
+          "binningStacked": "Binning detekce i binning autofokusu jsou nad 1×1. Násobí se; obvykle by měl být nastaven jen jeden.",
+          "offsetStepsUnusual": "Počet bodů na stranu je neobvyklý. Asi čtyři jsou dobrý začátek.",
+          "sweepTooLarge": "Série automatického zaostřování pokrývá velkou část rozsahu ostřiče. Velikost kroku je pravděpodobně příliš velká; změř ji v průvodci nastavením."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Široké pole (malé hvězdy)",
             "Typical": "Typické",
             "LongFocalLength": "Dlouhé ohnisko (velké hvězdy)"
-          },
-          "noiseLevel": {
-            "None": "Žádný",
-            "Low": "Nízký",
-            "Typical": "Typický",
-            "High": "Vysoký"
           }
         }
+      },
+      "hfSweep": {
+        "line": "Automatické zaostřování se pohybuje od {from} do {to} (±{half} kroků).",
+        "outOfRange": "To je mimo rozsah ostřiče."
       },
       "hfAssistant": {
         "title": "Nastavení autofokusu",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Hrubé zaostření",
             "description": "Pořizujte snímky a pohybujte ostřičem, dokud nejsou hvězdy malé a kulaté a HFR co nejnižší."
+          },
+          "measure": {
+            "title": "Velikost kroku",
+            "description": "Měří, jak rychle hvězdy rostou při pohybu ostřiče, a navrhne velikost kroku pro automatické zaostřování. Ostřič se pohybuje ven po rostoucích krocích a na konci se vrátí do výchozí polohy."
           },
           "run": {
             "title": "Zkušební běh",
@@ -4544,6 +4551,31 @@
           "current": "Aktuálně: HFR {hfr} px na pozici ostřiče {position} · {stars} hvězd",
           "best": "Zatím nejlepší: HFR {hfr} px na pozici ostřiče {position}",
           "failed": "Snímek se nepodařilo pořídit."
+        },
+        "measure": {
+          "current": "Aktuálně: velikost kroku {stepSize} · bodů na stranu: {offsetSteps}",
+          "start": "Změřit velikost kroku",
+          "restart": "Změřit znovu",
+          "stop": "Zastavit",
+          "phase": {
+            "reference": "Pořizuji snímek v aktuální poloze …",
+            "probe": "Posouvám ven a pořizuji snímek …",
+            "return": "Vracím se do výchozí polohy …"
+          },
+          "reference": "Výchozí poloha: HFR {hfr} px · hvězd: {stars}",
+          "probe": "Krok {offset} ven: HFR {hfr} px · hvězd: {stars} | Krok {offset} ven: HFR {hfr} px · hvězd: {stars}",
+          "result": "Návrh: velikost kroku {stepSize}, bodů na stranu: {offsetSteps}",
+          "limited": "Ponecháno menší, aby nejkrajnější bod stále ukazoval dost hvězd.",
+          "apply": "Použít",
+          "applied": "Použito. Příští automatické zaostřování použije nové hodnoty.",
+          "failure": {
+            "noSignal": "Hvězdy se nezvětšily ani daleko od ohniska. Zkontroluj hrubé zaostření a zda se ostřič opravdu pohybuje.",
+            "lost": "Hvězdy zmizely už jeden krok mimo ohnisko. Zkontroluj hrubé zaostření a expozici.",
+            "noReference": "Ve výchozí poloze nebyly nalezeny žádné hvězdy. Nejprve zaostři hrubě ručně.",
+            "timeout": "Ostřič nebo kamera neodpověděly včas.",
+            "error": "Měření selhalo.",
+            "returnFailed": "Ostřič se nepodařilo vrátit do výchozí polohy. Před dalším během zkontroluj jeho polohu."
+          }
         }
       }
     },

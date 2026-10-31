@@ -84,9 +84,9 @@
       <p
         v-if="v.SweepDetectionBinningRecommendationVisible && v.SweepDetectionBinningRecommendation"
         class="text-sm italic text-cyan-300"
-        :title="v.SweepDetectionBinningRecommendationDetail"
+        :title="translateBinningDetail(v.SweepDetectionBinningRecommendationDetail, t)"
       >
-        {{ v.SweepDetectionBinningRecommendation }}
+        {{ translateBinningHint(v.SweepDetectionBinningRecommendation, t) }}
       </p>
     </div>
 
@@ -143,6 +143,7 @@ import HfSelectField from '../fields/HfSelectField.vue';
 import HfToggleRow from '../fields/HfToggleRow.vue';
 import HfNumberField from '../fields/HfNumberField.vue';
 import DirectoryBrowser from '../DirectoryBrowser.vue';
+import { translateBinningHint, translateBinningDetail } from '@/utils/hocusFocusBinningHint';
 
 const props = defineProps({
   state: { type: Object, required: true },

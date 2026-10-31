@@ -3797,7 +3797,11 @@
         "StallDetection": "Detección de bloqueo",
         "USBCapacity": "Capacidad USB",
         "commandFailed": "Comando no soportado por este dispositivo",
-        "deviceSpecific": "Configuración del dispositivo"
+        "deviceSpecific": "Configuración del dispositivo",
+        "cropCardTitle": "Área de imagen y número de estrellas",
+        "cropCardHf": "Hocus Focus usa este recorte para cada medición de estrellas, incluido su autoenfoque, mientras 'Usar Recorte de Enfoque Automático' esté activado. El límite de estrellas más brillantes también se aplica a su autoenfoque.",
+        "starDetectionTitle": "Detección de estrellas (Hocus Focus)",
+        "starDetectionHf": "Cómo Hocus Focus encuentra y mide las estrellas en cada imagen."
       },
       "indi": {
         "settings": "Configuración del enfocador"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HocusEnfoque",
         "tabs": {
           "aberration": "Inspección de Aberraciones",
           "aberrationOptions": "Opciones de Inspección de Aberraciones",
-          "autoFocusOptions": "Opciones de Enfoque Automático",
           "starDetection": "Detección de Estrellas",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Activa el modo avanzado con control detallado de los parámetros de detección de estrellas. No recomendado salvo para expertos",
             "useHotpixelThresholding": "Una versión más sofisticada del filtrado de píxeles calientes que limita la sustitución a los píxeles cuya mediana está muy alejada del valor del píxel. Así se evita desenfocar toda la imagen, lo que puede perjudicar la precisión de las mediciones de HFR y PSF",
-            "useAutoFocusCrop": "Usa el recorte interior y exterior de las opciones de autoenfoque para las exposiciones normales (es decir, las que no se hacen durante el enfoque)",
+            "useAutoFocusCrop": "Activado, Hocus Focus mide las estrellas solo dentro del recorte interior y exterior, en su autoenfoque y en las tomas normales. Desactivado, usa la imagen completa.",
             "fitPSF": "Si se ajustan modelos PSF a las estrellas detectadas. Es necesario para FWHM y excentricidad",
             "debugMode": "Activa el modo de depuración, que guarda datos adicionales útiles para depurar. Mantenlo desactivado salvo que estés ajustando la detección de estrellas y quieras ver los mapas de estructura.",
             "detectionBinning": "Binning por software aplicado al fotograma solo para la detección de estrellas. La detección de estrellas está calibrada para estrellas enfocadas de aproximadamente 2 a 4 píxeles; con focales largas las estrellas son mucho mayores, lo que deja fuera de rango los ajustes basados en píxeles. Aplicar binning al fotograma para la detección devuelve el tamaño de las estrellas al rango y mejora la relación señal/ruido por píxel. La imagen que ves y los valores de HFR informados se mantienen en la resolución capturada por la cámara. No es el Binning de autoenfoque de NINA, que cambia cómo la cámara captura los fotogramas de autoenfoque y debe coincidir con el binning con el que capturas; ambos se multiplican",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Escala de Píxel",
           "focusRange": "Rango de enfoque",
           "useOptimizedSettings": "Utilice configuraciones optimizadas"
+        },
+        "binningHint": {
+          "none": "Ejecuta un autoenfoque para obtener una recomendación",
+          "recommended": "HFR medido en foco {hfr} px – se recomienda {factor}×{factor}",
+          "below": "HFR medido en foco {hfr} px – por debajo del rango de 2–4 px",
+          "right": "HFR medido en foco {hfr} px – {factor}×{factor} es correcto",
+          "detail": {
+            "none": "Aún no hay medición. Ejecuta un autoenfoque o un barrido en vivo en el optimizador de la detección de estrellas, y el HFR medido en foco aparecerá aquí con una recomendación. La escala de píxel por sí sola no predice el tamaño de las estrellas: el seeing varía más que la diferencia entre factores de binning.",
+            "measuredAt": "Medido el {when} en el último autoenfoque, en píxeles capturados.",
+            "measured": "Medido en el último autoenfoque, en píxeles capturados.",
+            "recommended": "La detección de estrellas está calibrada para estrellas en foco de unos 2 a 4 px; con {hfr} px, un binning {factor}×{factor} para la detección lo lleva a unos {binned} px.",
+            "below": "La detección de estrellas está calibrada para estrellas en foco de unos 2 a 4 px, y {hfr} px está por debajo. El binning de detección no ayuda aquí: solo divide, ningún factor agranda una estrella. El ajuste que sí ayuda es 'HFR mín.': bájalo para que no se descarten estrellas tan pequeñas, o ejecuta el optimizador, que lo ajusta a partir del barrido.",
+            "right": "La detección de estrellas está calibrada para estrellas en foco de unos 2 a 4 px, y {hfr} px ya está en ese rango, así que el binning no es necesario.",
+            "rigChange": "Cambiar la distancia focal, el tamaño de píxel o el binning de captura descarta esta medición, por lo que siempre describe el equipo actual."
+          }
         },
         "tilter": {
           "device": "Dispositivo",
@@ -4412,7 +4429,8 @@
           "tooSteep": "La curva es muy pronunciada ({ratio}×): los puntos extremos están muy desenfocados. Un tamaño del paso menor coloca más puntos cerca del foco.",
           "starsLost": "Se perdieron estrellas en los extremos desenfocados ({min} en lugar de {max}). Permitir estrellas muy desenfocadas las conserva.",
           "poorFit": "El ajuste de la curva es malo (R² {r2}). Revisa la exposición, las nubes y el seeing antes de bajar cualquier umbral.",
-          "worseAfter": "Las estrellas eran más grandes después del autoenfoque ({initial} → {final}). Revisa si el enfocador tiene holgura o patina."
+          "worseAfter": "Las estrellas eran más grandes después del autoenfoque ({initial} → {final}). Revisa si el enfocador tiene holgura o patina.",
+          "edgesLost": "Las tomas más exteriores no encontraron estrellas: el barrido se alejó mucho del foco. Un tamaño del paso menor mantiene las estrellas a la vista."
         },
         "fix": {
           "stepSize": "Ajustar el tamaño del paso a {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Lo bastante larga para ver muchas estrellas incluso desenfocadas.",
           "stepSize": "Pasos del enfocador entre dos puntos. Busca estrellas extremas unas tres veces más grandes que en foco.",
-          "offsetSteps": "Cuántos puntos empieza la serie a cada lado de la posición actual. Unos cuatro es un buen comienzo.",
-          "pixelScale": "El tamaño de las estrellas en el sensor. Usa la sugerencia basada en tu óptica.",
-          "noiseLevel": "Súbelo con cámaras ruidosas u ópticas muy lentas.",
-          "wideRange": "Conserva estrellas muy desenfocadas con forma de anillo. Útil para series amplias y reflectores.",
-          "useOptimized": "Usa los ajustes que el optimizador encontró para tu equipo en lugar de los preajustes.",
-          "saveRuns": "Guarda cada autoenfoque en el dispositivo. El optimizador y el Aberration Inspector necesitan autoenfoques guardados."
+          "offsetSteps": "Cuántos puntos empieza la serie a cada lado de la posición actual. Unos cuatro es un buen comienzo."
         },
-        "stars": "Detección de Estrellas",
-        "advancedActive": "Hocus Focus está en modo avanzado. Se aplican sus ajustes detallados de detección; desactívalo en 'Detección de Estrellas' para usar los preajustes.",
-        "useOptimized": "Usar ajustes optimizados",
-        "pixelScale": "Tamaño de estrella en el sensor",
         "usePixelScaleSuggestion": "Usar sugerencia: {preset}",
-        "noiseLevel": "Ruido de la cámara",
-        "wideRange": "Permitir estrellas muy desenfocadas",
-        "runs": "Autoenfoques guardados",
-        "saveRuns": "Guardar autoenfoques",
-        "savePath": "Carpeta de autoenfoques guardados",
-        "saveFailed": "Error al guardar",
         "issues": {
           "missingOptics": "Falta la distancia focal o el tamaño de píxel. La sugerencia de tamaño de estrella necesita ambos.",
-          "binningStacked": "El binning de detección y el de autoenfoque están ambos por encima de 1×1. Se multiplican; normalmente solo uno debería estar activo."
+          "binningStacked": "El binning de detección y el de autoenfoque están ambos por encima de 1×1. Se multiplican; normalmente solo uno debería estar activo.",
+          "offsetStepsUnusual": "El número de puntos por lado es inusual. Unos cuatro es un buen comienzo.",
+          "sweepTooLarge": "El barrido del autoenfoque cubre gran parte del recorrido del enfocador. Probablemente el tamaño del paso es demasiado grande; mídelo en el asistente de configuración."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Gran campo (estrellas pequeñas)",
             "Typical": "Típico",
             "LongFocalLength": "Focal larga (estrellas grandes)"
-          },
-          "noiseLevel": {
-            "None": "Ninguno",
-            "Low": "Bajo",
-            "Typical": "Típico",
-            "High": "Alto"
           }
         }
+      },
+      "hfSweep": {
+        "line": "El autoenfoque se mueve de {from} a {to} (±{half} pasos).",
+        "outOfRange": "Eso supera el recorrido del enfocador."
       },
       "hfAssistant": {
         "title": "Configuración del autoenfoque",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Enfoque aproximado",
             "description": "Toma imágenes y mueve el enfocador hasta que las estrellas sean pequeñas y redondas y el HFR sea lo más bajo posible."
+          },
+          "measure": {
+            "title": "Tamaño del paso",
+            "description": "Mide lo rápido que crecen las estrellas al mover el enfocador y sugiere un tamaño del paso para el autoenfoque. El enfocador se mueve hacia fuera en pasos crecientes y al final vuelve a su posición inicial."
           },
           "run": {
             "title": "Prueba",
@@ -4544,6 +4551,31 @@
           "current": "Actual: HFR {hfr} px en la posición del enfocador {position} · {stars} estrellas",
           "best": "Mejor hasta ahora: HFR {hfr} px en la posición del enfocador {position}",
           "failed": "No se pudo tomar la imagen."
+        },
+        "measure": {
+          "current": "Actual: tamaño del paso {stepSize} · {offsetSteps} puntos por lado",
+          "start": "Medir tamaño del paso",
+          "restart": "Medir de nuevo",
+          "stop": "Detener",
+          "phase": {
+            "reference": "Tomando una imagen en la posición actual …",
+            "probe": "Moviendo hacia fuera y tomando una imagen …",
+            "return": "Volviendo a la posición inicial …"
+          },
+          "reference": "Posición inicial: HFR {hfr} px · {stars} estrellas",
+          "probe": "{offset} paso hacia fuera: HFR {hfr} px · {stars} estrellas | {offset} pasos hacia fuera: HFR {hfr} px · {stars} estrellas",
+          "result": "Sugerido: tamaño del paso {stepSize} con {offsetSteps} puntos por lado",
+          "limited": "Se mantuvo menor para que el punto más exterior siga mostrando suficientes estrellas.",
+          "apply": "Aplicar",
+          "applied": "Aplicado. El próximo autoenfoque usa los nuevos valores.",
+          "failure": {
+            "noSignal": "Las estrellas no crecieron, ni siquiera lejos del foco. Comprueba el enfoque aproximado y que el enfocador realmente se mueve.",
+            "lost": "Las estrellas desaparecieron ya a un paso fuera de foco. Comprueba el enfoque aproximado y la exposición.",
+            "noReference": "No se encontraron estrellas en la posición inicial. Enfoca primero de forma aproximada a mano.",
+            "timeout": "El enfocador o la cámara no respondió a tiempo.",
+            "error": "La medición falló.",
+            "returnFailed": "El enfocador no pudo volver a su posición inicial. Comprueba su posición antes de la próxima ejecución."
+          }
         }
       }
     },

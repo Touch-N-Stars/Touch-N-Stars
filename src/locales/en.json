@@ -3878,17 +3878,19 @@
         "ResetPosition": "Set Position to Zero",
         "commandFailed": "Command not supported by this device",
         "FocuserAlias": "Focuser Alias",
-        "deviceSpecific": "Device Settings"
+        "deviceSpecific": "Device Settings",
+        "cropCardTitle": "Image area and star count",
+        "cropCardHf": "Hocus Focus uses this crop for every star measurement, its autofocus included, as long as Use AutoFocus Crop is on. The brightest stars limit also applies to its autofocus.",
+        "starDetectionTitle": "Star detection (Hocus Focus)",
+        "starDetectionHf": "How Hocus Focus finds and measures the stars in each image."
       },
       "indi": {
         "settings": "Focuser Settings"
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Aberration Inspector",
           "aberrationOptions": "Aberration Inspector Options",
-          "autoFocusOptions": "AutoFocus Options",
           "starDetection": "Star Detection",
           "tilter": "Tilter"
         },
@@ -4304,7 +4306,7 @@
           "help": {
             "advancedMode": "Enables advanced mode with fine-grained control over star detection parameters. Not recommended unless you're an expert",
             "useHotpixelThresholding": "A more sophisticated version of hotpixel filtering that limits pixel replacement to those where the median is far off of the pixel value. This prevents the whole image from being blurred, which can have a negative effect on HFR and PSF measurement accuracy",
-            "useAutoFocusCrop": "Uses the inner and outer crop from the Auto Focus options for regular exposures (ie, those that aren't done during focusing)",
+            "useAutoFocusCrop": "When on, Hocus Focus measures stars only inside the inner and outer crop, in its own autofocus and in regular exposures. When off, it uses the whole frame.",
             "fitPSF": "Whether to fit PSF models to detected stars. This is required for FWHM and Eccentricity",
             "debugMode": "Enables debug mode, which saves additional data useful for debugging. Keep this off unless you're tuning star detection and want to view structure maps.",
             "detectionBinning": "Software binning applied to the frame for star detection only. Star detection is calibrated for in-focus stars of roughly 2 to 4 pixels; at long focal lengths stars are much larger than that, which puts the pixel-based settings out of range. Binning the frame for detection brings star size back into range and improves signal to noise per pixel. The image you see and the HFR values reported stay at the resolution the camera captured. This is not NINA's Auto Focus Binning, which changes how the camera captures the auto-focus frames and should match the binning you image at; the two multiply",
@@ -4354,6 +4356,21 @@
             "rejectContaminatedStars": "When enabled (default), stars flagged as contaminated are rejected outright so their one-sided contamination does not skew HFR and PSF statistics. When disabled, contaminated stars are kept and only flagged. A smooth one-sided background gradient (galaxy/nebula) is removed before the test, so only genuine localized contaminants trip it.",
             "saveIntermediateImages": "If enabled, every step of star detection emits a debugging file to the intermediate path",
             "intermediateSavePath": "When Save Intermediate Files is enabled, they are written to this path the next time star detection runs"
+          }
+        },
+        "binningHint": {
+          "none": "Run an autofocus to get a recommendation",
+          "recommended": "Measured in-focus HFR {hfr} px – {factor}×{factor} recommended",
+          "below": "Measured in-focus HFR {hfr} px – below the 2–4 px range",
+          "right": "Measured in-focus HFR {hfr} px – {factor}×{factor} is right",
+          "detail": {
+            "none": "Nothing measured yet. Run an autofocus, or a live sweep in the star detection optimizer, and the measured in-focus HFR appears here with a recommendation. Pixel scale alone cannot predict star size: seeing varies more than the margin between binning factors.",
+            "measuredAt": "Measured {when} from your last autofocus, in captured pixels.",
+            "measured": "Measured from your last autofocus, in captured pixels.",
+            "recommended": "Star detection is calibrated for in-focus stars of roughly 2 to 4 px; at {hfr} px, binning {factor}×{factor} for detection brings that to about {binned} px.",
+            "below": "Star detection is calibrated for in-focus stars of roughly 2 to 4 px, and {hfr} px is below that range. Detection binning cannot help here: it only divides, so no factor makes a star larger. The setting that can is 'Min HFR': lower it so stars this small are not rejected, or run the optimizer, which sets it from the sweep.",
+            "right": "Star detection is calibrated for in-focus stars of roughly 2 to 4 px, and {hfr} px is already in that range, so binning is not needed.",
+            "rigChange": "Changing focal length, pixel size or capture binning discards this measurement, so it always describes the current rig."
           }
         },
         "tilter": {
@@ -4479,24 +4496,9 @@
         "help": {
           "exposure": "Long enough that plenty of stars are visible even when out of focus.",
           "stepSize": "Focuser steps between two points. Aim for outer stars about three times as large as in focus.",
-          "offsetSteps": "How many points the sweep starts away from the current position, on each side. About four is a good start.",
-          "pixelScale": "How large stars appear on the sensor. Use the suggestion based on your optics.",
-          "noiseLevel": "Raise it for noisy cameras or very slow optics.",
-          "wideRange": "Keeps heavily defocused, donut-shaped stars. Useful for wide sweeps and reflectors.",
-          "useOptimized": "Uses the settings the optimizer found for your setup instead of the presets.",
-          "saveRuns": "Keeps each run on the device, so the optimizer and the aberration inspector can analyse it again later."
+          "offsetSteps": "How many points the sweep starts away from the current position, on each side. About four is a good start."
         },
-        "stars": "Star detection",
-        "advancedActive": "Hocus Focus is in advanced mode. Its detailed star detection settings apply; switch it off under 'Star Detection' to use the presets.",
-        "useOptimized": "Use optimized settings",
-        "pixelScale": "Star size on the sensor",
         "usePixelScaleSuggestion": "Use suggestion: {preset}",
-        "noiseLevel": "Camera noise",
-        "wideRange": "Allow widely defocused stars",
-        "runs": "Saved runs",
-        "saveRuns": "Save autofocus runs",
-        "savePath": "Folder for saved runs",
-        "saveFailed": "Saving failed",
         "issues": {
           "missingOptics": "Focal length or pixel size is missing. The star size suggestion needs both.",
           "binningStacked": "Detection binning and autofocus binning are both above 1×1. They multiply; usually only one of them should be set.",
@@ -4508,12 +4510,6 @@
             "WideField": "Wide field (small stars)",
             "Typical": "Typical",
             "LongFocalLength": "Long focal length (large stars)"
-          },
-          "noiseLevel": {
-            "None": "None",
-            "Low": "Low",
-            "Typical": "Typical",
-            "High": "High"
           }
         }
       },

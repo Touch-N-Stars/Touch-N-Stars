@@ -3797,7 +3797,11 @@
         "StallDetection": "Wykrywanie zablokowania",
         "USBCapacity": "Pojemność USB",
         "commandFailed": "Polecenie nie jest obsługiwane przez to urządzenie",
-        "deviceSpecific": "Ustawienia urządzenia"
+        "deviceSpecific": "Ustawienia urządzenia",
+        "cropCardTitle": "Obszar obrazu i liczba gwiazd",
+        "cropCardHf": "Hocus Focus używa tego przycięcia przy każdym pomiarze gwiazd, również we własnym autofokusie, dopóki 'Użyj obcięcia autofokusu' jest włączone. Limit najjaśniejszych gwiazd dotyczy też jego autofokusu.",
+        "starDetectionTitle": "Wykrywanie gwiazd (Hocus Focus)",
+        "starDetectionHf": "Jak Hocus Focus znajduje i mierzy gwiazdy na każdym obrazie."
       },
       "indi": {
         "settings": "Ustawienia focusera"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HokusFokus",
         "tabs": {
           "aberration": "Inspektor aberracji",
           "aberrationOptions": "Opcje inspektora aberracji",
-          "autoFocusOptions": "Opcje autofokusu",
           "starDetection": "Wykrywanie gwiazd",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Włącza tryb zaawansowany ze szczegółową kontrolą parametrów wykrywania gwiazd. Niezalecane, jeśli nie jesteś ekspertem",
             "useHotpixelThresholding": "Bardziej zaawansowana wersja filtrowania gorących pikseli, która ogranicza zastępowanie pikseli do tych, których mediana znacznie odbiega od wartości piksela. Zapobiega to rozmyciu całego obrazu, które może negatywnie wpływać na dokładność pomiaru HFR i PSF",
-            "useAutoFocusCrop": "Używa wewnętrznego i zewnętrznego kadrowania z opcji autofokusu dla zwykłych ekspozycji (tj. tych niewykonywanych podczas ogniskowania)",
+            "useAutoFocusCrop": "Włączone: Hocus Focus mierzy gwiazdy tylko wewnątrz wewnętrznego i zewnętrznego przycięcia, we własnym autofokusie i przy zwykłych ekspozycjach. Wyłączone: używa całego obrazu.",
             "fitPSF": "Czy dopasowywać modele PSF do wykrytych gwiazd. Wymagane dla FWHM i ekscentryczności",
             "debugMode": "Włącza tryb debugowania, który zapisuje dodatkowe dane przydatne przy debugowaniu. Pozostaw wyłączony, chyba że dostrajasz wykrywanie gwiazd i chcesz oglądać mapy struktur.",
             "detectionBinning": "Programowy binning stosowany do klatki wyłącznie na potrzeby wykrywania gwiazd. Wykrywanie gwiazd jest skalibrowane dla ostrych gwiazd o wielkości ok. 2–4 pikseli; przy długich ogniskowych gwiazdy są znacznie większe, co wyprowadza ustawienia oparte na pikselach poza zakres. Binning klatki do wykrywania przywraca rozmiar gwiazd do zakresu i poprawia stosunek sygnału do szumu na piksel. Wyświetlany obraz i raportowane wartości HFR pozostają w rozdzielczości zarejestrowanej przez kamerę. To nie jest Auto Focus Binning w NINA, który zmienia sposób rejestrowania klatek autofokusu przez kamerę i powinien odpowiadać binningowi, z jakim fotografujesz; oba się mnożą",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Rozmiar piksela",
           "focusRange": "Zakres ostrości",
           "useOptimizedSettings": "Użyj zoptymalizowanych ustawień"
+        },
+        "binningHint": {
+          "none": "Uruchom autofokus, aby otrzymać zalecenie",
+          "recommended": "Zmierzony HFR w ostrości {hfr} px – zalecane {factor}×{factor}",
+          "below": "Zmierzony HFR w ostrości {hfr} px – poniżej zakresu 2–4 px",
+          "right": "Zmierzony HFR w ostrości {hfr} px – {factor}×{factor} jest właściwe",
+          "detail": {
+            "none": "Jeszcze nic nie zmierzono. Uruchom autofokus lub sweep na żywo w optymalizatorze wykrywania gwiazd, a tutaj pojawi się zmierzony HFR w ostrości z zaleceniem. Sama skala pikseli nie przewiduje rozmiaru gwiazd: seeing zmienia się bardziej niż różnica między współczynnikami binningu.",
+            "measuredAt": "Zmierzono {when} podczas ostatniego autofokusu, w przechwyconych pikselach.",
+            "measured": "Zmierzono podczas ostatniego autofokusu, w przechwyconych pikselach.",
+            "recommended": "Wykrywanie gwiazd jest skalibrowane dla gwiazd w ostrości o rozmiarze ok. 2–4 px; przy {hfr} px binning {factor}×{factor} dla wykrywania daje ok. {binned} px.",
+            "below": "Wykrywanie gwiazd jest skalibrowane dla gwiazd w ostrości o rozmiarze ok. 2–4 px, a {hfr} px jest poniżej tego zakresu. Binning wykrywania tu nie pomoże: tylko dzieli, żaden współczynnik nie powiększy gwiazdy. Pomóc może 'Min. HFR': obniż go, aby tak małe gwiazdy nie były odrzucane, albo uruchom optymalizator, który ustawi go na podstawie sweepu.",
+            "right": "Wykrywanie gwiazd jest skalibrowane dla gwiazd w ostrości o rozmiarze ok. 2–4 px, a {hfr} px jest już w tym zakresie, więc binning nie jest potrzebny.",
+            "rigChange": "Zmiana ogniskowej, rozmiaru piksela lub binningu rejestracji odrzuca ten pomiar, więc zawsze opisuje on bieżący zestaw."
+          }
         },
         "tilter": {
           "device": "Urządzenie",
@@ -4412,7 +4429,8 @@
           "tooSteep": "Krzywa jest bardzo stroma ({ratio}×): skrajne punkty są mocno nieostre. Mniejszy rozmiar kroku daje więcej punktów blisko ostrości.",
           "starsLost": "Na nieostrych końcach zgubiono gwiazdy ({min} zamiast {max}). Dopuszczenie mocno nieostrych gwiazd je zachowa.",
           "poorFit": "Dopasowanie krzywej jest słabe (R² {r2}). Sprawdź ekspozycję, chmury i seeing, zanim obniżysz jakikolwiek próg.",
-          "worseAfter": "Po autofokusie gwiazdy były większe ({initial} → {final}). Sprawdź luz lub poślizg fokusera."
+          "worseAfter": "Po autofokusie gwiazdy były większe ({initial} → {final}). Sprawdź luz lub poślizg fokusera.",
+          "edgesLost": "Na najbardziej zewnętrznych klatkach nie znaleziono gwiazd: seria wyszła daleko poza ostrość. Mniejszy rozmiar kroku utrzyma gwiazdy w polu widzenia."
         },
         "fix": {
           "stepSize": "Ustaw rozmiar kroku na {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Na tyle długa, by nawet bez ostrości było widać wiele gwiazd.",
           "stepSize": "Kroki fokusera między dwoma punktami. Celuj w skrajne gwiazdy około trzy razy większe niż w ostrości.",
-          "offsetSteps": "Od ilu punktów po każdej stronie bieżącej pozycji zaczyna się seria. Około czterech to dobry początek.",
-          "pixelScale": "Jak duże gwiazdy są na matrycy. Użyj sugestii wyliczonej z twojej optyki.",
-          "noiseLevel": "Zwiększ przy zaszumionych kamerach lub bardzo ciemnej optyce.",
-          "wideRange": "Zachowuje mocno nieostre gwiazdy w kształcie pierścieni. Przydatne przy szerokich seriach i reflektorach.",
-          "useOptimized": "Używa ustawień znalezionych przez optymalizator dla twojego zestawu zamiast ustawień wstępnych.",
-          "saveRuns": "Zapisuje każdy autofokus na urządzeniu. Optymalizator i Aberration Inspector potrzebują zapisanych autofokusów."
+          "offsetSteps": "Od ilu punktów po każdej stronie bieżącej pozycji zaczyna się seria. Około czterech to dobry początek."
         },
-        "stars": "Wykrywanie gwiazd",
-        "advancedActive": "Hocus Focus jest w trybie zaawansowanym. Obowiązują jego szczegółowe ustawienia wykrywania; wyłącz go w 'Wykrywanie gwiazd', aby użyć ustawień wstępnych.",
-        "useOptimized": "Użyj zoptymalizowanych ustawień",
-        "pixelScale": "Rozmiar gwiazd na matrycy",
         "usePixelScaleSuggestion": "Użyj sugestii: {preset}",
-        "noiseLevel": "Szum kamery",
-        "wideRange": "Dopuść mocno nieostre gwiazdy",
-        "runs": "Zapisane autofokusy",
-        "saveRuns": "Zapisuj autofokusy",
-        "savePath": "Folder zapisanych autofokusów",
-        "saveFailed": "Zapis nie powiódł się",
         "issues": {
           "missingOptics": "Brakuje ogniskowej lub rozmiaru piksela. Sugestia rozmiaru gwiazd wymaga obu.",
-          "binningStacked": "Binning wykrywania i binning autofokusu są oba powyżej 1×1. Mnożą się; zwykle ustawiony powinien być tylko jeden."
+          "binningStacked": "Binning wykrywania i binning autofokusu są oba powyżej 1×1. Mnożą się; zwykle ustawiony powinien być tylko jeden.",
+          "offsetStepsUnusual": "Liczba punktów na stronę jest nietypowa. Około czterech to dobry początek.",
+          "sweepTooLarge": "Seria autofokusu obejmuje dużą część zakresu ruchu fokusera. Rozmiar kroku jest prawdopodobnie zdecydowanie za duży; zmierz go w asystencie konfiguracji."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Szerokie pole (małe gwiazdy)",
             "Typical": "Typowa",
             "LongFocalLength": "Długa ogniskowa (duże gwiazdy)"
-          },
-          "noiseLevel": {
-            "None": "Brak",
-            "Low": "Niski",
-            "Typical": "Typowy",
-            "High": "Wysoki"
           }
         }
+      },
+      "hfSweep": {
+        "line": "Autofokus przesuwa się od {from} do {to} (±{half} kroków).",
+        "outOfRange": "To wykracza poza zakres ruchu fokusera."
       },
       "hfAssistant": {
         "title": "Konfiguracja autofokusu",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Zgrubne ostrzenie",
             "description": "Rób zdjęcia i przesuwaj fokuser, aż gwiazdy będą małe i okrągłe, a HFR jak najniższy."
+          },
+          "measure": {
+            "title": "Rozmiar kroku",
+            "description": "Mierzy, jak szybko rosną gwiazdy, gdy fokuser się porusza, i proponuje rozmiar kroku dla autofokusu. Fokuser przesuwa się na zewnątrz coraz większymi krokami, a na końcu wraca do pozycji startowej."
           },
           "run": {
             "title": "Próba",
@@ -4544,6 +4551,31 @@
           "current": "Bieżący: HFR {hfr} px przy pozycji fokusera {position} · {stars} gwiazd",
           "best": "Najlepszy dotąd: HFR {hfr} px przy pozycji fokusera {position}",
           "failed": "Nie udało się wykonać zdjęcia."
+        },
+        "measure": {
+          "current": "Bieżący: rozmiar kroku {stepSize} · punkty na stronę: {offsetSteps}",
+          "start": "Zmierz rozmiar kroku",
+          "restart": "Zmierz ponownie",
+          "stop": "Zatrzymaj",
+          "phase": {
+            "reference": "Wykonywanie klatki w bieżącej pozycji …",
+            "probe": "Przesuwanie na zewnątrz i wykonywanie klatki …",
+            "return": "Powrót do pozycji startowej …"
+          },
+          "reference": "Pozycja startowa: HFR {hfr} px · gwiazdy: {stars}",
+          "probe": "Krok {offset} na zewnątrz: HFR {hfr} px · gwiazdy: {stars} | Krok {offset} na zewnątrz: HFR {hfr} px · gwiazdy: {stars}",
+          "result": "Propozycja: rozmiar kroku {stepSize}, punkty na stronę: {offsetSteps}",
+          "limited": "Zmniejszono, aby najbardziej zewnętrzny punkt nadal pokazywał wystarczająco gwiazd.",
+          "apply": "Zastosuj",
+          "applied": "Zastosowano. Następny autofokus użyje nowych wartości.",
+          "failure": {
+            "noSignal": "Gwiazdy nie urosły nawet daleko od ostrości. Sprawdź zgrubne ostrzenie i czy fokuser naprawdę się porusza.",
+            "lost": "Gwiazdy zniknęły już jeden krok poza ostrością. Sprawdź zgrubne ostrzenie i ekspozycję.",
+            "noReference": "W pozycji startowej nie znaleziono gwiazd. Najpierw wyostrz zgrubnie ręcznie.",
+            "timeout": "Fokuser lub kamera nie odpowiedziały na czas.",
+            "error": "Pomiar się nie powiódł.",
+            "returnFailed": "Nie udało się przesunąć fokusera z powrotem do pozycji startowej. Sprawdź jego pozycję przed następnym uruchomieniem."
+          }
         }
       }
     },

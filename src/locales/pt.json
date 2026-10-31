@@ -3797,7 +3797,11 @@
         "StallDetection": "Detecção de bloqueio",
         "USBCapacity": "Capacidade USB",
         "commandFailed": "Comando não suportado por este dispositivo",
-        "deviceSpecific": "Configurações do dispositivo"
+        "deviceSpecific": "Configurações do dispositivo",
+        "cropCardTitle": "Área da imagem e número de estrelas",
+        "cropCardHf": "O Hocus Focus usa este corte em cada medição de estrelas, incluindo o seu autofoco, enquanto 'Usar Recorte de Autofoco' estiver ativo. O limite das estrelas mais brilhantes também se aplica ao seu autofoco.",
+        "starDetectionTitle": "Detecção de estrelas (Hocus Focus)",
+        "starDetectionHf": "Como o Hocus Focus encontra e mede as estrelas em cada imagem."
       },
       "indi": {
         "settings": "Configurações do focalizador"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Inspetor de Aberrações",
           "aberrationOptions": "Opções do Inspetor de Aberrações",
-          "autoFocusOptions": "Opções de Autofoco",
           "starDetection": "Detecção de Estrelas",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Ativa o modo avançado com controlo detalhado dos parâmetros de detecção de estrelas. Não recomendado a menos que seja especialista",
             "useHotpixelThresholding": "Uma versão mais sofisticada da filtragem de pixels quentes que limita a substituição aos pixels cuja mediana está muito afastada do valor do pixel. Isto evita que toda a imagem fique desfocada, o que pode ter um efeito negativo na precisão das medições de HFR e PSF",
-            "useAutoFocusCrop": "Usa o recorte interno e externo das opções de Autofoco para exposições normais (ou seja, as que não são feitas durante a focagem)",
+            "useAutoFocusCrop": "Ativo: o Hocus Focus mede as estrelas apenas dentro do corte interior e exterior, no seu autofoco e nas exposições normais. Inativo: usa a imagem inteira.",
             "fitPSF": "Se devem ser ajustados modelos de PSF às estrelas detetadas. É necessário para FWHM e Excentricidade",
             "debugMode": "Ativa o modo de depuração, que guarda dados adicionais úteis para depuração. Mantenha desligado a menos que esteja a afinar a detecção de estrelas e queira ver os mapas de estrutura.",
             "detectionBinning": "Binning por software aplicado ao quadro apenas para a detecção de estrelas. A detecção de estrelas está calibrada para estrelas em foco de cerca de 2 a 4 pixels; em distâncias focais longas as estrelas são muito maiores do que isso, o que coloca as configurações baseadas em pixels fora do intervalo. Aplicar binning ao quadro para a detecção traz o tamanho das estrelas de volta ao intervalo e melhora a relação sinal-ruído por pixel. A imagem que vê e os valores de HFR reportados mantêm a resolução com que a câmera capturou. Isto não é o Binning de Autofoco do NINA, que altera a forma como a câmera captura os quadros de autofoco e deve corresponder ao binning com que faz imagens; os dois multiplicam-se",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Escala de Pixel",
           "focusRange": "Faixa de Foco",
           "useOptimizedSettings": "Use configurações otimizadas"
+        },
+        "binningHint": {
+          "none": "Executa um autofoco para obter uma recomendação",
+          "recommended": "HFR medido em foco {hfr} px – recomendado {factor}×{factor}",
+          "below": "HFR medido em foco {hfr} px – abaixo do intervalo de 2–4 px",
+          "right": "HFR medido em foco {hfr} px – {factor}×{factor} está correto",
+          "detail": {
+            "none": "Ainda nada medido. Executa um autofoco ou um varrimento ao vivo no otimizador da detecção de estrelas, e o HFR medido em foco aparece aqui com uma recomendação. A escala de píxel sozinha não prevê o tamanho das estrelas: o seeing varia mais do que a diferença entre fatores de binning.",
+            "measuredAt": "Medido em {when} no último autofoco, em píxeis capturados.",
+            "measured": "Medido no último autofoco, em píxeis capturados.",
+            "recommended": "A detecção de estrelas está calibrada para estrelas em foco de cerca de 2 a 4 px; com {hfr} px, um binning {factor}×{factor} para a detecção leva isso a cerca de {binned} px.",
+            "below": "A detecção de estrelas está calibrada para estrelas em foco de cerca de 2 a 4 px, e {hfr} px está abaixo disso. O binning de detecção não ajuda aqui: só divide, nenhum fator torna uma estrela maior. A definição que ajuda é 'HFR Mín.': baixa-a para que estrelas tão pequenas não sejam rejeitadas, ou executa o otimizador, que a define a partir do varrimento.",
+            "right": "A detecção de estrelas está calibrada para estrelas em foco de cerca de 2 a 4 px, e {hfr} px já está nesse intervalo, por isso o binning não é necessário.",
+            "rigChange": "Alterar a distância focal, o tamanho do píxel ou o binning de captura descarta esta medição, por isso descreve sempre o equipamento atual."
+          }
         },
         "tilter": {
           "device": "Dispositivo",
@@ -4412,7 +4429,8 @@
           "tooSteep": "A curva é muito acentuada ({ratio}×): os pontos extremos estão muito desfocados. Um tamanho do passo menor coloca mais pontos perto do foco.",
           "starsLost": "Perderam-se estrelas nas extremidades desfocadas ({min} em vez de {max}). Permitir estrelas muito desfocadas mantém-nas.",
           "poorFit": "O ajuste da curva é fraco (R² {r2}). Verifique a exposição, as nuvens e o seeing antes de baixar qualquer limiar.",
-          "worseAfter": "As estrelas estavam maiores depois do autofoco ({initial} → {final}). Verifique se o focalizador tem folga ou escorrega."
+          "worseAfter": "As estrelas estavam maiores depois do autofoco ({initial} → {final}). Verifique se o focalizador tem folga ou escorrega.",
+          "edgesLost": "As imagens mais exteriores não encontraram estrelas: a série afastou-se muito do foco. Um tamanho do passo menor mantém as estrelas visíveis."
         },
         "fix": {
           "stepSize": "Definir o tamanho do passo para {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Longa o suficiente para ver muitas estrelas mesmo fora de foco.",
           "stepSize": "Passos do focalizador entre dois pontos. Procure estrelas extremas cerca de três vezes maiores do que em foco.",
-          "offsetSteps": "Quantos pontos a série começa de cada lado da posição atual. Cerca de quatro é um bom começo.",
-          "pixelScale": "O tamanho das estrelas no sensor. Use a sugestão baseada na sua ótica.",
-          "noiseLevel": "Aumente com câmaras ruidosas ou óticas muito lentas.",
-          "wideRange": "Mantém estrelas muito desfocadas em forma de anel. Útil para séries largas e refletores.",
-          "useOptimized": "Usa as definições que o otimizador encontrou para o seu equipamento em vez das predefinições.",
-          "saveRuns": "Guarda cada autofoco no dispositivo. O otimizador e o Aberration Inspector precisam de autofocos guardados."
+          "offsetSteps": "Quantos pontos a série começa de cada lado da posição atual. Cerca de quatro é um bom começo."
         },
-        "stars": "Detecção de Estrelas",
-        "advancedActive": "O Hocus Focus está em modo avançado. Aplicam-se as suas definições detalhadas de deteção; desative-o em 'Detecção de Estrelas' para usar as predefinições.",
-        "useOptimized": "Usar definições otimizadas",
-        "pixelScale": "Tamanho das estrelas no sensor",
         "usePixelScaleSuggestion": "Usar sugestão: {preset}",
-        "noiseLevel": "Ruído da câmara",
-        "wideRange": "Permitir estrelas muito desfocadas",
-        "runs": "Autofocos guardados",
-        "saveRuns": "Guardar autofocos",
-        "savePath": "Pasta dos autofocos guardados",
-        "saveFailed": "Falha ao guardar",
         "issues": {
           "missingOptics": "Falta a distância focal ou o tamanho do píxel. A sugestão de tamanho das estrelas precisa de ambos.",
-          "binningStacked": "O binning de deteção e o binning de autofoco estão ambos acima de 1×1. Multiplicam-se; normalmente só um deve estar definido."
+          "binningStacked": "O binning de deteção e o binning de autofoco estão ambos acima de 1×1. Multiplicam-se; normalmente só um deve estar definido.",
+          "offsetStepsUnusual": "O número de pontos por lado é invulgar. Cerca de quatro é um bom começo.",
+          "sweepTooLarge": "A série do autofoco cobre uma grande parte do curso do focalizador. O tamanho do passo é provavelmente demasiado grande; mede-o no assistente de configuração."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Grande campo (estrelas pequenas)",
             "Typical": "Típico",
             "LongFocalLength": "Focal longa (estrelas grandes)"
-          },
-          "noiseLevel": {
-            "None": "Nenhum",
-            "Low": "Baixo",
-            "Typical": "Típico",
-            "High": "Alto"
           }
         }
+      },
+      "hfSweep": {
+        "line": "O autofoco move-se de {from} a {to} (±{half} passos).",
+        "outOfRange": "Isso ultrapassa o curso do focalizador."
       },
       "hfAssistant": {
         "title": "Configuração do autofoco",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Focagem aproximada",
             "description": "Tire imagens e mova o focalizador até as estrelas ficarem pequenas e redondas e o HFR ser o mais baixo possível."
+          },
+          "measure": {
+            "title": "Tamanho do passo",
+            "description": "Mede a rapidez com que as estrelas crescem quando o focalizador se move e sugere um tamanho do passo para o autofoco. O focalizador move-se para fora em passos crescentes e no fim regressa à posição inicial."
           },
           "run": {
             "title": "Teste",
@@ -4544,6 +4551,31 @@
           "current": "Atual: HFR {hfr} px na posição do focalizador {position} · {stars} estrelas",
           "best": "Melhor até agora: HFR {hfr} px na posição do focalizador {position}",
           "failed": "Não foi possível tirar a imagem."
+        },
+        "measure": {
+          "current": "Atual: tamanho do passo {stepSize} · {offsetSteps} pontos por lado",
+          "start": "Medir tamanho do passo",
+          "restart": "Medir novamente",
+          "stop": "Parar",
+          "phase": {
+            "reference": "A captar uma imagem na posição atual …",
+            "probe": "A mover para fora e a captar uma imagem …",
+            "return": "A regressar à posição inicial …"
+          },
+          "reference": "Posição inicial: HFR {hfr} px · {stars} estrelas",
+          "probe": "{offset} passo para fora: HFR {hfr} px · {stars} estrelas | {offset} passos para fora: HFR {hfr} px · {stars} estrelas",
+          "result": "Sugerido: tamanho do passo {stepSize} com {offsetSteps} pontos por lado",
+          "limited": "Mantido menor para que o ponto mais exterior ainda mostre estrelas suficientes.",
+          "apply": "Aplicar",
+          "applied": "Aplicado. O próximo autofoco usa os novos valores.",
+          "failure": {
+            "noSignal": "As estrelas não cresceram, nem longe do foco. Verifica a focagem aproximada e se o focalizador se move mesmo.",
+            "lost": "As estrelas desapareceram logo a um passo fora de foco. Verifica a focagem aproximada e a exposição.",
+            "noReference": "Não foram encontradas estrelas na posição inicial. Faz primeiro uma focagem aproximada à mão.",
+            "timeout": "O focalizador ou a câmara não respondeu a tempo.",
+            "error": "A medição falhou.",
+            "returnFailed": "O focalizador não conseguiu regressar à posição inicial. Verifica a sua posição antes da próxima execução."
+          }
         }
       }
     },

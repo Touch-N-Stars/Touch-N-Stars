@@ -16,10 +16,12 @@
       </template>
     </SubNav>
 
-    <!-- Hocus Focus tab: wide layout, its components check the equipment themselves -->
+    <!-- Hocus Focus tools: wide layout, their components check the equipment themselves. Each
+         mounts only while its tab is active, so the inspector's polling stops elsewhere. -->
     <div v-if="isHfTab" class="container mt-4">
       <div class="max-w-7xl mx-auto">
-        <HfPanel />
+        <HfInspectorPanel v-if="currentTab === 'showInspector'" />
+        <HocusFocusTilterPanel v-else-if="currentTab === 'showTilter'" />
       </div>
     </div>
 
@@ -55,15 +57,9 @@
         <!-- Settings Tab -->
         <Transition name="slide-in" mode="out-in">
           <div v-if="currentTab === 'showSettings'" class="mt-4" key="settings">
-            <!-- With Hocus Focus the few settings that matter get the first sub-tab; the HF options
-                 live in the Hocus Focus tab. -->
-            <FocusSettingsPanel
-              :simpleLabel="hfStore.available ? $t('components.focuser.hfSimple.title') : ''"
-            >
-              <template #simple>
-                <HfSimpleSettings @open-assistant="showAssistant = true" />
-              </template>
-            </FocusSettingsPanel>
+            <!-- One set of sub-tabs for NINA and PINS; with Hocus Focus its fields replace the
+                 NINA values it duplicates. -->
+            <FocusSettingsPanel @open-assistant="showAssistant = true" />
           </div>
         </Transition>
       </div>
@@ -90,10 +86,10 @@ import { useImagetStore } from '@/store/imageStore';
 import { useFocuserStore } from '@/store/focuserStore';
 import { usePolling } from '@/composables/usePolling';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
-import HfSimpleSettings from '@/components/focuser/hocus/HfSimpleSettings.vue';
 import HfRunAdvice from '@/components/focuser/hocus/HfRunAdvice.vue';
 import HfSetupAssistant from '@/components/focuser/hocus/HfSetupAssistant.vue';
-import HfPanel from '@/components/focuser/hocus/HfPanel.vue';
+import HfInspectorPanel from '@/components/focuser/hocus/HfInspectorPanel.vue';
+import HocusFocusTilterPanel from '@/components/focuser/hocus/HocusFocusTilterPanel.vue';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -105,12 +101,25 @@ const currentTab = ref(store.focuserInfo.Connected ? 'showFocus' : 'showSettings
 const delayShowGraph = ref(false);
 const showAssistant = ref(false);
 
+// Hocus Focus tools, each a tab of its own next to the shared settings
+const HF_TABS = [
+  { value: 'showInspector', labelKey: 'aberration' },
+  { value: 'showTilter', labelKey: 'tilter' },
+];
+
 const navItems = computed(() => [
   { name: t('components.focuser.title'), value: 'showFocus' },
   { name: t('components.focuser.settings.title'), value: 'showSettings' },
-  ...(hfStore.available ? [{ name: t('components.focuser.hocus.title'), value: 'showHocus' }] : []),
+  ...(hfStore.available
+    ? HF_TABS.map((tab) => ({
+        name: t(`components.focuser.hocus.tabs.${tab.labelKey}`),
+        value: tab.value,
+      }))
+    : []),
 ]);
-const isHfTab = computed(() => hfStore.available && currentTab.value === 'showHocus');
+const isHfTab = computed(
+  () => hfStore.available && HF_TABS.some((tab) => tab.value === currentTab.value)
+);
 
 // Re-probe on every (re)connect and once the PINS check resolved: an instance switch can land on
 // a backend with or without Hocus Focus.
@@ -122,7 +131,9 @@ watch(
 watch(
   () => hfStore.available,
   (available) => {
-    if (!available && currentTab.value === 'showHocus') currentTab.value = 'showFocus';
+    if (!available && HF_TABS.some((tab) => tab.value === currentTab.value)) {
+      currentTab.value = 'showFocus';
+    }
   }
 );
 

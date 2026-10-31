@@ -3797,7 +3797,11 @@
         "StallDetection": "Détection de décrochage",
         "USBCapacity": "Capacité USB",
         "commandFailed": "Commande non prise en charge par cet appareil",
-        "deviceSpecific": "Paramètres de l'appareil"
+        "deviceSpecific": "Paramètres de l'appareil",
+        "cropCardTitle": "Zone d'image et nombre d'étoiles",
+        "cropCardHf": "Hocus Focus utilise ce recadrage pour chaque mesure d'étoiles, y compris son autofocus, tant que « Utiliser le Recadrage Autofocus » est activé. La limite des étoiles les plus brillantes s'applique aussi à son autofocus.",
+        "starDetectionTitle": "Détection d'étoiles (Hocus Focus)",
+        "starDetectionHf": "Comment Hocus Focus trouve et mesure les étoiles dans chaque image."
       },
       "indi": {
         "settings": "Paramètres du porte-oculaire"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "HocusFocus",
         "tabs": {
           "aberration": "Inspecteur d'Aberration",
           "aberrationOptions": "Options de l'Inspecteur d'Aberration",
-          "autoFocusOptions": "Options d'Autofocus",
           "starDetection": "Détection d'Étoiles",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "Active le mode avancé avec un contrôle fin des paramètres de détection d'étoiles. Déconseillé sauf si vous êtes expert",
             "useHotpixelThresholding": "Une version plus élaborée du filtrage des pixels chauds qui limite le remplacement aux pixels dont la médiane s'écarte fortement de la valeur du pixel. Cela évite de flouter toute l'image, ce qui peut nuire à la précision des mesures HFR et PSF",
-            "useAutoFocusCrop": "Utilise le recadrage intérieur et extérieur des options d'Autofocus pour les poses normales (c'est-à-dire celles qui ne sont pas faites pendant la mise au point)",
+            "useAutoFocusCrop": "Activé, Hocus Focus ne mesure les étoiles qu'à l'intérieur des recadrages intérieur et extérieur, dans son autofocus comme pour les poses normales. Désactivé, il utilise l'image entière.",
             "fitPSF": "Indique s'il faut ajuster des modèles PSF aux étoiles détectées. Nécessaire pour la FWHM et l'excentricité",
             "debugMode": "Active le mode débogage, qui enregistre des données supplémentaires utiles au débogage. Laissez-le désactivé sauf si vous ajustez la détection d'étoiles et souhaitez voir les cartes de structure.",
             "detectionBinning": "Binning logiciel appliqué à l'image uniquement pour la détection d'étoiles. La détection d'étoiles est calibrée pour des étoiles au point d'environ 2 à 4 pixels ; aux longues focales, les étoiles sont bien plus grandes, ce qui met les réglages basés sur les pixels hors de leur plage. Appliquer un binning à l'image pour la détection ramène la taille des étoiles dans la plage et améliore le rapport signal/bruit par pixel. L'image affichée et les valeurs HFR indiquées restent à la résolution d'acquisition de la caméra. Ce n'est pas le Binning d'Autofocus de NINA, qui modifie la façon dont la caméra acquiert les images d'Autofocus et doit correspondre au binning utilisé pour l'imagerie ; les deux se multiplient",
@@ -4314,6 +4316,21 @@
           "pixelScale": "Échelle Pixel",
           "focusRange": "Plage de mise au point",
           "useOptimizedSettings": "Utiliser les paramètres optimisés"
+        },
+        "binningHint": {
+          "none": "Lancez un autofocus pour obtenir une recommandation",
+          "recommended": "HFR mesurée au point {hfr} px – {factor}×{factor} recommandé",
+          "below": "HFR mesurée au point {hfr} px – sous la plage de 2–4 px",
+          "right": "HFR mesurée au point {hfr} px – {factor}×{factor} convient",
+          "detail": {
+            "none": "Rien de mesuré pour l'instant. Lancez un autofocus, ou un balayage en direct dans l'optimiseur de la détection d'étoiles, et la HFR mesurée au point apparaîtra ici avec une recommandation. L'échelle de pixel seule ne prédit pas la taille des étoiles : le seeing varie plus que l'écart entre deux facteurs de binning.",
+            "measuredAt": "Mesurée le {when} lors du dernier autofocus, en pixels capturés.",
+            "measured": "Mesurée lors du dernier autofocus, en pixels capturés.",
+            "recommended": "La détection d'étoiles est calibrée pour des étoiles au point d'environ 2 à 4 px ; à {hfr} px, un binning {factor}×{factor} pour la détection ramène cela à environ {binned} px.",
+            "below": "La détection d'étoiles est calibrée pour des étoiles au point d'environ 2 à 4 px, et {hfr} px est en dessous. Le binning de détection n'aide pas ici : il ne fait que diviser, aucun facteur ne grossit une étoile. Le réglage utile est « HFR min. » : baissez-le pour que des étoiles aussi petites ne soient pas rejetées, ou lancez l'optimiseur, qui le règle à partir du balayage.",
+            "right": "La détection d'étoiles est calibrée pour des étoiles au point d'environ 2 à 4 px, et {hfr} px est déjà dans cette plage, le binning n'est donc pas nécessaire.",
+            "rigChange": "Changer la focale, la taille des pixels ou le binning de capture annule cette mesure, elle décrit donc toujours l'équipement actuel."
+          }
         },
         "tilter": {
           "device": "Appareil",
@@ -4412,7 +4429,8 @@
           "tooSteep": "La courbe est très raide ({ratio}×) : les points extrêmes sont très défocalisés. Une taille du pas plus petite place plus de points près de la mise au point.",
           "starsLost": "Des étoiles ont été perdues aux extrémités floues ({min} au lieu de {max}). Autoriser les étoiles très défocalisées les conserve.",
           "poorFit": "L'ajustement de la courbe est mauvais (R² {r2}). Vérifiez la pose, les nuages et le seeing avant d'abaisser un seuil.",
-          "worseAfter": "Les étoiles étaient plus grandes après l'autofocus ({initial} → {final}). Vérifiez le jeu ou le glissement du focaliseur."
+          "worseAfter": "Les étoiles étaient plus grandes après l'autofocus ({initial} → {final}). Vérifiez le jeu ou le glissement du focaliseur.",
+          "edgesLost": "Les images les plus extérieures n'ont trouvé aucune étoile : la série est allée très loin de la mise au point. Un pas plus petit garde les étoiles visibles."
         },
         "fix": {
           "stepSize": "Régler la taille du pas sur {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "Assez longue pour voir beaucoup d’étoiles même hors mise au point.",
           "stepSize": "Pas du focaliseur entre deux points. Visez des étoiles extrêmes environ trois fois plus grandes qu’au point.",
-          "offsetSteps": "Combien de points la série commence de chaque côté de la position actuelle. Environ quatre est un bon début.",
-          "pixelScale": "La taille des étoiles sur le capteur. Utilisez la suggestion basée sur votre optique.",
-          "noiseLevel": "À augmenter pour les caméras bruitées ou les optiques très fermées (F/D élevé).",
-          "wideRange": "Conserve les étoiles très défocalisées en forme d’anneau. Utile pour les séries larges et les réflecteurs.",
-          "useOptimized": "Utilise les réglages trouvés par l'optimiseur pour votre configuration au lieu des préréglages.",
-          "saveRuns": "Conserve chaque autofocus sur l'appareil. L'optimiseur et l'Aberration Inspector ont besoin d'autofocus enregistrés."
+          "offsetSteps": "Combien de points la série commence de chaque côté de la position actuelle. Environ quatre est un bon début."
         },
-        "stars": "Détection d'Étoiles",
-        "advancedActive": "Hocus Focus est en mode avancé. Ses réglages détaillés de détection s'appliquent ; désactivez-le sous 'Détection d'Étoiles' pour utiliser les préréglages.",
-        "useOptimized": "Utiliser les réglages optimisés",
-        "pixelScale": "Taille des étoiles sur le capteur",
         "usePixelScaleSuggestion": "Utiliser la suggestion : {preset}",
-        "noiseLevel": "Bruit de la caméra",
-        "wideRange": "Autoriser les étoiles très défocalisées",
-        "runs": "Autofocus enregistrés",
-        "saveRuns": "Enregistrer les autofocus",
-        "savePath": "Dossier des autofocus enregistrés",
-        "saveFailed": "Échec de l'enregistrement",
         "issues": {
           "missingOptics": "La focale ou la taille des pixels manque. La suggestion de taille des étoiles a besoin des deux.",
-          "binningStacked": "Le binning de détection et le binning d'autofocus sont tous deux au-dessus de 1×1. Ils se multiplient ; en général un seul devrait être réglé."
+          "binningStacked": "Le binning de détection et le binning d'autofocus sont tous deux au-dessus de 1×1. Ils se multiplient ; en général un seul devrait être réglé.",
+          "offsetStepsUnusual": "Le nombre de points par côté est inhabituel. Environ quatre est un bon début.",
+          "sweepTooLarge": "La série d'autofocus couvre une grande partie de la course du focaliseur. La taille du pas est probablement beaucoup trop grande ; mesurez-la dans l'assistant de configuration."
         },
         "presets": {
           "pixelScale": {
             "WideField": "Grand champ (petites étoiles)",
             "Typical": "Typique",
             "LongFocalLength": "Longue focale (grosses étoiles)"
-          },
-          "noiseLevel": {
-            "None": "Aucun",
-            "Low": "Faible",
-            "Typical": "Typique",
-            "High": "Élevé"
           }
         }
+      },
+      "hfSweep": {
+        "line": "L'autofocus se déplace de {from} à {to} (±{half} pas).",
+        "outOfRange": "Cela dépasse la course du focaliseur."
       },
       "hfAssistant": {
         "title": "Configuration de l'autofocus",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "Mise au point grossière",
             "description": "Prenez des images et déplacez le focaliseur jusqu'à ce que les étoiles soient petites et rondes et que le HFR soit le plus bas possible."
+          },
+          "measure": {
+            "title": "Taille du pas",
+            "description": "Mesure la vitesse à laquelle les étoiles grossissent quand le focaliseur bouge et propose une taille de pas pour l'autofocus. Le focaliseur sort par pas croissants et revient à sa position de départ à la fin."
           },
           "run": {
             "title": "Essai",
@@ -4544,6 +4551,31 @@
           "current": "Actuel : HFR {hfr} px à la position du focaliseur {position} · {stars} étoiles",
           "best": "Meilleur jusqu’ici : HFR {hfr} px à la position du focaliseur {position}",
           "failed": "L'image n'a pas pu être prise."
+        },
+        "measure": {
+          "current": "Actuel : taille du pas {stepSize} · {offsetSteps} points par côté",
+          "start": "Mesurer la taille du pas",
+          "restart": "Mesurer à nouveau",
+          "stop": "Arrêter",
+          "phase": {
+            "reference": "Prise d'une image à la position actuelle …",
+            "probe": "Déplacement vers l'extérieur et prise d'une image …",
+            "return": "Retour à la position de départ …"
+          },
+          "reference": "Position de départ : HFR {hfr} px · {stars} étoiles",
+          "probe": "{offset} pas vers l'extérieur : HFR {hfr} px · {stars} étoiles | {offset} pas vers l'extérieur : HFR {hfr} px · {stars} étoiles",
+          "result": "Suggestion : taille du pas {stepSize} avec {offsetSteps} points par côté",
+          "limited": "Réduite pour que le point le plus extérieur montre encore assez d'étoiles.",
+          "apply": "Appliquer",
+          "applied": "Appliqué. Le prochain autofocus utilise les nouvelles valeurs.",
+          "failure": {
+            "noSignal": "Les étoiles n'ont pas grossi, même loin de la mise au point. Vérifiez la mise au point grossière et que le focaliseur bouge réellement.",
+            "lost": "Les étoiles avaient disparu dès un pas hors de la mise au point. Vérifiez la mise au point grossière et l'exposition.",
+            "noReference": "Aucune étoile trouvée à la position de départ. Faites d'abord une mise au point grossière à la main.",
+            "timeout": "Le focaliseur ou la caméra n'a pas répondu à temps.",
+            "error": "La mesure a échoué.",
+            "returnFailed": "Le focaliseur n'a pas pu revenir à sa position de départ. Vérifiez sa position avant le prochain essai."
+          }
         }
       }
     },

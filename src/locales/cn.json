@@ -3797,7 +3797,11 @@
         "StallDetection": "失速检测",
         "USBCapacity": "USB容量",
         "commandFailed": "该设备不支持命令",
-        "deviceSpecific": "设备设置"
+        "deviceSpecific": "设备设置",
+        "cropCardTitle": "图像区域与星点数量",
+        "cropCardHf": "只要“使用自动对焦裁剪”开启，Hocus Focus 的每次星点测量（包括其自动对焦）都使用此裁剪。最亮星数量限制同样适用于其自动对焦。",
+        "starDetectionTitle": "星星检测（Hocus Focus）",
+        "starDetectionHf": "Hocus Focus 如何在每张图像中查找并测量星点。"
       },
       "indi": {
         "settings": "对焦设置"
@@ -3843,11 +3847,9 @@
         }
       },
       "hocus": {
-        "title": "魔术焦点",
         "tabs": {
           "aberration": "像差检查器",
           "aberrationOptions": "像差检查器选项",
-          "autoFocusOptions": "自动对焦选项",
           "starDetection": "星星检测",
           "tilter": "Tilter"
         },
@@ -4242,7 +4244,7 @@
           "help": {
             "advancedMode": "启用高级模式，对星点检测参数进行细粒度控制。除非你是专家，否则不建议使用",
             "useHotpixelThresholding": "一种更精细的热像素滤波，仅在中值与像素值相差很大时才替换像素。这可以避免整幅图像被模糊，否则会对 HFR 和 PSF 测量精度产生不利影响",
-            "useAutoFocusCrop": "对常规曝光（即非对焦过程中拍摄的曝光）也使用自动对焦选项中的内部和外部裁剪",
+            "useAutoFocusCrop": "开启时，Hocus Focus 仅在内、外裁剪范围内测量星点，包括其自动对焦和普通曝光。关闭时，使用整幅图像。",
             "fitPSF": "是否对检测到的星点拟合 PSF 模型。计算 FWHM 和偏心率需要此项",
             "debugMode": "启用调试模式，会保存对调试有用的额外数据。除非你正在调校星点检测并希望查看结构图，否则请保持关闭。",
             "detectionBinning": "仅用于星点检测、对帧进行的软件像素合并。星点检测是针对约 2 到 4 像素的合焦星点校准的；在长焦距下星点远大于此，使基于像素的设置超出适用范围。对检测用的帧进行合并可以让星点尺寸回到适用范围，并提高每像素的信噪比。你看到的图像和报告的 HFR 值仍保持相机拍摄时的分辨率。这不同于 NINA 的自动对焦像素合并——后者改变相机拍摄自动对焦帧的方式，应与你成像时的像素合并一致；两者是相乘关系",
@@ -4314,6 +4316,21 @@
           "pixelScale": "像素比例",
           "focusRange": "对焦范围",
           "useOptimizedSettings": "Use Optimized Settings"
+        },
+        "binningHint": {
+          "none": "运行一次自动对焦以获取建议",
+          "recommended": "实测合焦 HFR {hfr} px – 建议 {factor}×{factor}",
+          "below": "实测合焦 HFR {hfr} px – 低于 2–4 px 范围",
+          "right": "实测合焦 HFR {hfr} px – {factor}×{factor} 合适",
+          "detail": {
+            "none": "尚未测量。运行一次自动对焦，或在星星检测优化器中运行实时扫描，这里就会显示实测合焦 HFR 及建议。仅凭像素比例无法预测星点大小：视宁度的变化大于两个合并系数之间的差距。",
+            "measuredAt": "于 {when} 在上次自动对焦中测得，单位为拍摄像素。",
+            "measured": "在上次自动对焦中测得，单位为拍摄像素。",
+            "recommended": "星星检测针对约 2 到 4 px 的合焦星点校准；在 {hfr} px 时，检测用 {factor}×{factor} 合并可将其变为约 {binned} px。",
+            "below": "星星检测针对约 2 到 4 px 的合焦星点校准，而 {hfr} px 低于该范围。检测合并在这里没有帮助：它只会缩小，任何系数都不会让星点变大。能起作用的是“最小 HFR”：调低它，使这么小的星点不被剔除，或运行优化器，它会根据扫描设置该值。",
+            "right": "星星检测针对约 2 到 4 px 的合焦星点校准，而 {hfr} px 已在该范围内，因此无需合并。",
+            "rigChange": "更改焦距、像素尺寸或拍摄合并会丢弃此测量，因此它始终描述当前设备。"
+          }
         },
         "tilter": {
           "device": "设备",
@@ -4412,7 +4429,8 @@
           "tooSteep": "曲线非常陡峭（{ratio}×）：两端的点严重失焦。减小步长可让更多点靠近焦点。",
           "starsLost": "在失焦的两端丢失了星点（{min} 颗，而非 {max} 颗）。允许严重失焦的星可保留它们。",
           "poorFit": "曲线拟合较差（R² {r2}）。在降低任何阈值之前，请检查曝光、云层和视宁度。",
-          "worseAfter": "自动对焦后星点变大了（{initial} → {final}）。请检查调焦器是否有回差或打滑。"
+          "worseAfter": "自动对焦后星点变大了（{initial} → {final}）。请检查调焦器是否有回差或打滑。",
+          "edgesLost": "最外侧的图像没有找到星点：扫描离焦太远。较小的步长可以让星点保持可见。"
         },
         "fix": {
           "stepSize": "将步长设为 {value}",
@@ -4437,41 +4455,26 @@
         "help": {
           "exposure": "足够长，使失焦时也能看到许多星。",
           "stepSize": "两点之间的调焦器步数。目标是两端的星约为焦点处的三倍大。",
-          "offsetSteps": "测量序列从当前位置每侧多少个点开始。约四个是不错的起点。",
-          "pixelScale": "星在传感器上的大小。请使用根据你的光学系统计算出的建议。",
-          "noiseLevel": "噪声大的相机或非常暗的光学系统请调高。",
-          "wideRange": "保留严重失焦的环状星点。适用于宽测量范围和反射望远镜。",
-          "useOptimized": "使用优化器为你的设备找到的设置，而不是预设。",
-          "saveRuns": "在设备上保存每次自动对焦。优化器和 Aberration Inspector 需要已保存的结果。"
+          "offsetSteps": "测量序列从当前位置每侧多少个点开始。约四个是不错的起点。"
         },
-        "stars": "星星检测",
-        "advancedActive": "Hocus Focus 处于高级模式，其详细的星点检测设置生效；请在 '星星检测' 中关闭它以使用预设。",
-        "useOptimized": "使用优化设置",
-        "pixelScale": "传感器上的星点大小",
         "usePixelScaleSuggestion": "使用建议：{preset}",
-        "noiseLevel": "相机噪声",
-        "wideRange": "允许严重失焦的星",
-        "runs": "已保存的自动对焦",
-        "saveRuns": "保存自动对焦",
-        "savePath": "保存文件夹",
-        "saveFailed": "保存失败",
         "issues": {
           "missingOptics": "缺少焦距或像素尺寸。星点大小建议需要两者。",
-          "binningStacked": "检测像素合并和自动对焦像素合并都大于 1×1。两者会相乘；通常只应设置其中一个。"
+          "binningStacked": "检测像素合并和自动对焦像素合并都大于 1×1。两者会相乘；通常只应设置其中一个。",
+          "offsetStepsUnusual": "每侧点数不太常见。大约四个是不错的起点。",
+          "sweepTooLarge": "自动对焦扫描覆盖了调焦器行程的很大一部分。步长可能太大了；请在设置助手中测量。"
         },
         "presets": {
           "pixelScale": {
             "WideField": "广角（星点小）",
             "Typical": "典型",
             "LongFocalLength": "长焦（星点大）"
-          },
-          "noiseLevel": {
-            "None": "无",
-            "Low": "低",
-            "Typical": "典型",
-            "High": "高"
           }
         }
+      },
+      "hfSweep": {
+        "line": "自动对焦从 {from} 移动到 {to}（±{half} 步）。",
+        "outOfRange": "这超出了调焦器的行程。"
       },
       "hfAssistant": {
         "title": "自动对焦设置",
@@ -4492,6 +4495,10 @@
           "rough": {
             "title": "粗调对焦",
             "description": "拍摄图像并移动调焦器，直到星点又小又圆、HFR 尽可能低。"
+          },
+          "measure": {
+            "title": "步长",
+            "description": "测量调焦器移动时星点变大的速度，并为自动对焦建议步长。调焦器以逐渐增大的步数向外移动，最后返回起始位置。"
           },
           "run": {
             "title": "测试运行",
@@ -4544,6 +4551,31 @@
           "current": "当前：HFR {hfr} px，调焦器位置 {position} · {stars} 颗星",
           "best": "目前最佳：HFR {hfr} px，调焦器位置 {position}",
           "failed": "无法拍摄图像。"
+        },
+        "measure": {
+          "current": "当前：步长 {stepSize} · 每侧 {offsetSteps} 个点",
+          "start": "测量步长",
+          "restart": "重新测量",
+          "stop": "停止",
+          "phase": {
+            "reference": "正在当前位置拍摄图像 …",
+            "probe": "正在向外移动并拍摄图像 …",
+            "return": "正在返回起始位置 …"
+          },
+          "reference": "起始位置：HFR {hfr} px · {stars} 颗星",
+          "probe": "向外 {offset} 步：HFR {hfr} px · {stars} 颗星 | 向外 {offset} 步：HFR {hfr} px · {stars} 颗星",
+          "result": "建议：步长 {stepSize}，每侧 {offsetSteps} 个点",
+          "limited": "已减小，以便最外侧的点仍有足够的星点。",
+          "apply": "应用",
+          "applied": "已应用。下一次自动对焦将使用新值。",
+          "failure": {
+            "noSignal": "即使远离焦点，星点也没有变大。请检查粗调对焦以及调焦器是否真的在移动。",
+            "lost": "仅离焦一步星点就消失了。请检查粗调对焦和曝光。",
+            "noReference": "起始位置未找到星点。请先手动粗调对焦。",
+            "timeout": "调焦器或相机未及时响应。",
+            "error": "测量失败。",
+            "returnFailed": "调焦器无法返回起始位置。请在下次运行前检查其位置。"
+          }
         }
       }
     },

@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cone Error (plugin, PINS): A guided measurement of the cone error of the mount. It checks the preconditions, suggests a target, shows every planned slew and meridian flip for confirmation before the mount moves, shows the progress with a one-tap abort and ends with the shim thickness, which end of the dovetail to shim and a comparison with the last measurement. A daytime flip check works without stars, with limit and sun checks for every move. Developed by @nitr57.
 - Livestack (PINS): The Livestack settings dialog now holds the plugin options that are otherwise out of reach on PINS: the working directory with free space warnings, bias and hot pixel calibration, a master library for bias, dark and flat frames, which files are saved, and the defaults for new stacks. Settings that cannot change while stacking are locked with a hint. Developed by @nitr57.
 
+### Changed
+
+- Focus (PINS): The focus settings have the same sub-tabs as on NINA, and the Hocus Focus fields sit right where they belong instead of in extra tabs, so no value appears twice any more. The setup assistant and the sweep are at the top of Autofocus, the saved runs at its end, and the Hocus Focus timeout, curve fitting and rejection settings in Advanced, where the expert sections start collapsed, and the star detection under Crop & Stars. Aberration Inspector and Tilter are now tabs of their own on the focus page.
+
 ## [App6.5.0 - beta 20] - 2026-10-28
 
 ### Changed
