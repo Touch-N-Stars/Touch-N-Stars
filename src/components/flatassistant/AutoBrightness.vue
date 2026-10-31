@@ -68,6 +68,28 @@ onMounted(() => {
 
 async function startAutoExposure() {
   console.log('Flats startAutoExposure: ');
+  if (await flatsStore.detectServerWorkflow()) {
+    await flatsStore.startServerRun({
+      mode: 'AutoBrightness',
+      keepClosed: settingsStore.flats.keepClosed,
+      darkCount: flatsStore.darkCount,
+      filters: [
+        {
+          filterId: selectedFilterId.value,
+          count: flatsStore.count,
+          gain: flatsStore.gain,
+          offset: flatsStore.offset,
+          binning: flatsStore.binning,
+          histogramMean: flatsStore.histogramMean * 100,
+          meanTolerance: flatsStore.meanTolerance * 100,
+          exposureTime: settingsStore.flats.exposureTime,
+          minBrightness: settingsStore.flats.minBrightness,
+          maxBrightness: settingsStore.flats.maxBrightness,
+        },
+      ],
+    });
+    return;
+  }
   try {
     await flatsStore.runFlatWorkflow({
       request: () =>

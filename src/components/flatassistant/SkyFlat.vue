@@ -64,6 +64,28 @@ onMounted(() => {
 
 async function startAutoExposure() {
   console.log('Flats startAutoExposure: ');
+  if (await flatsStore.detectServerWorkflow()) {
+    // Sky flats offer no dark count field, so none are taken (same as multi mode).
+    await flatsStore.startServerRun({
+      mode: 'SkyFlat',
+      keepClosed: settingsStore.flats.keepClosed,
+      darkCount: 0,
+      filters: [
+        {
+          filterId: selectedFilterId.value,
+          count: flatsStore.count,
+          gain: flatsStore.gain,
+          offset: flatsStore.offset,
+          binning: flatsStore.binning,
+          histogramMean: flatsStore.histogramMean * 100,
+          meanTolerance: flatsStore.meanTolerance * 100,
+          minExposure: flatsStore.minExposureTime,
+          maxExposure: flatsStore.maxExposureTime,
+        },
+      ],
+    });
+    return;
+  }
   try {
     await flatsStore.runFlatWorkflow({
       request: () =>

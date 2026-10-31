@@ -25,7 +25,7 @@
         </svg>
         <span>{{ runningStatusText }}</span>
       </div>
-      <div v-if="flatsStore.status.TotalFilters > 0" class="text-xs text-gray-400">
+      <div v-if="flatsStore.status.TotalFilters > 1" class="text-xs text-gray-400">
         {{
           $t('components.flatassistant.status_filter_progress', {
             completed: flatsStore.status.CompletedFilters + 1,
@@ -89,6 +89,9 @@ const runningStatusText = computed(() => {
     ? `${t('components.flatassistant.filter_label')} ${flatsStore.currentFilterName} — `
     : '';
 
+  if (flatsStore.status.WaitingForCover) {
+    return filterPrefix + t('components.flatassistant.status_waiting_cover');
+  }
   if (!iterationsTracked.value) {
     return filterPrefix + t('components.flatassistant.status_running_unknown');
   }

@@ -1102,12 +1102,14 @@ async function performResume() {
       // PINS/Headless mode: Use SignalR for real-time updates
       await dialogStore.initializeDialogSignalR();
       await messageboxStore.initializeMessageboxSignalR();
-      if (isPaused) return;
-      flatsStore.startFetchingFlats();
     } else {
       // WPF mode: Use polling
       dialogStore.startPolling();
     }
+    // Flat runs execute in the plugin under NINA and PINS alike; the poller picks up
+    // a run that progressed or finished while the app was in the background.
+    if (isPaused) return;
+    flatsStore.startFetchingFlats();
 
     // Clear any stale in-flight fetch flags from before the pause — connections
     // killed by the OS in background would otherwise leave isImageFetching stuck true.
@@ -1380,11 +1382,11 @@ onMounted(async () => {
     // PINS/Headless mode: Use SignalR for real-time updates
     await dialogStore.initializeDialogSignalR();
     await messageboxStore.initializeMessageboxSignalR();
-    flatsStore.startFetchingFlats();
   } else {
     // WPF mode: Use polling
     dialogStore.startPolling();
   }
+  flatsStore.startFetchingFlats();
 
   if (!sequenceStore.sequenceEdit) {
     sequenceStore.startFetching();
@@ -1480,13 +1482,12 @@ watch(
   async ([isReachable, isPINS]) => {
     // pauseApp() stopped everything; performResume() restarts it.
     if (!isReachable || isPaused) return;
+    flatsStore.startFetchingFlats();
     if (isPINS) {
       dialogStore.stopPolling();
-      flatsStore.startFetchingFlats();
       await dialogStore.initializeDialogSignalR();
       await messageboxStore.initializeMessageboxSignalR();
     } else {
-      flatsStore.stopFetchingFlats();
       dialogStore.startPolling();
     }
   }

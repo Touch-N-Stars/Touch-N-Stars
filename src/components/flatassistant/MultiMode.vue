@@ -534,6 +534,25 @@ async function startMultiMode() {
     (a, b) => wheelOrder.indexOf(a) - wheelOrder.indexOf(b)
   );
 
+  // The plugin runs every filter (and the darks) itself, so the run continues while the
+  // app is closed. The loop below is the fallback for plugins without that run.
+  if (await flatsStore.detectServerWorkflow()) {
+    const filters = sortedIds
+      .filter((id) => store.filterInfo.AvailableFilters?.some((f) => f.Id === id))
+      .map((filterId) => {
+        const cfg = state.filterConfigs[filterId];
+        return { filterId, ...cfg };
+      });
+    if (!filters.length) return;
+    await flatsStore.startServerRun({
+      mode: state.selectedMode,
+      keepClosed: state.keepClosed,
+      darkCount: state.selectedMode !== 'SkyFlat' ? flatsStore.darkCount : 0,
+      filters,
+    });
+    return;
+  }
+
   // Reset per-filter results
   for (const id of sortedIds) {
     flatsStore.filterResults[id] = null;

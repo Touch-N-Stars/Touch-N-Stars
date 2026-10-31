@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 22] - 2026-10-31
+
+### Changed
+
+- Flat assistant: Flat runs now run inside the Touch'N'Stars plugin on NINA and PINS. A multi-filter run moves on to the next filter and takes its darks while the app is closed or the phone is locked, and the result is shown once the app is opened again. When the darks need the telescope covered, the run waits for the confirmation, also if the app was closed in the meantime.
+- Flat assistant (NINA): Multi mode, darks after the flats, the live ADU meter and the flat target name now work on NINA as well. This needs the updated Touch'N'Stars plugin; with an older plugin the flat assistant behaves as before.
+
 ## [App6.5.0 - beta 21] - 2026-10-29
 
 ### Added

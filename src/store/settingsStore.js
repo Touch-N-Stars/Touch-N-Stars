@@ -152,6 +152,9 @@ export const useSettingsStore = defineStore('settings', {
       // Opt-in: the plugin-side hook stays a no-op while this is false.
       targetNameEnabled: false,
       targetName: 'Flat Wizard',
+      // RunId of the last plugin-side flat run whose outcome was shown, so a run that
+      // finished while the app was closed is reported exactly once.
+      lastSeenRunId: null,
       multiMode: {
         selectedMode: 'AutoExposure',
         keepClosed: false,
