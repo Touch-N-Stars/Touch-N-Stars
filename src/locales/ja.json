@@ -5502,6 +5502,7 @@
           "Fair": "まずまず",
           "Poor": "不良 — もう一度測定してください",
           "Insufficient": "ペア数不足",
+          "Single": "1ペアのみ",
           "DaytimeEstimate": "推定"
         },
         "beforeAfter": "以前 ({date}): {before}′ → 現在: {after}′",

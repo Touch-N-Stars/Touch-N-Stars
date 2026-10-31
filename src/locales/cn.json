@@ -5502,6 +5502,7 @@
           "Fair": "一般",
           "Poor": "较差 — 请重新测量",
           "Insufficient": "对数太少",
+          "Single": "仅一对",
           "DaytimeEstimate": "估算"
         },
         "beforeAfter": "之前 ({date})：{before}′ → 现在：{after}′",

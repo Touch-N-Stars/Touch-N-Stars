@@ -5502,6 +5502,7 @@
           "Fair": "Aceptable",
           "Poor": "Mala — vuelve a medir",
           "Insufficient": "Muy pocos pares",
+          "Single": "Un solo par",
           "DaytimeEstimate": "Estimación"
         },
         "beforeAfter": "Antes ({date}): {before}′ → ahora: {after}′",

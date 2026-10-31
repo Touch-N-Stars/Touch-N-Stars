@@ -5502,6 +5502,7 @@
           "Fair": "Średnia",
           "Poor": "Słaba — zmierz ponownie",
           "Insufficient": "Za mało par",
+          "Single": "Jedna para",
           "DaytimeEstimate": "Oszacowanie"
         },
         "beforeAfter": "Przed ({date}): {before}′ → teraz: {after}′",

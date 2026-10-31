@@ -5502,6 +5502,7 @@
           "Fair": "Redelijk",
           "Poor": "Slecht – meet opnieuw",
           "Insufficient": "Te weinig paren",
+          "Single": "Eén paar",
           "DaytimeEstimate": "Schatting"
         },
         "beforeAfter": "Voor ({date}): {before}′ → nu: {after}′",
