@@ -5308,6 +5308,8 @@
         "fullRange": "Escala completa",
         "statistics": "Estad.",
         "sourceInfo": "Dades en brut {width} × {height} px, {bitDepth} bits",
+        "sourceInfoDisplay": "JPEG de previsualització {width} × {height} px, {bitDepth} bits",
+        "displayImageHint": "Histograma del JPEG de previsualització. Actualitza el connector Touch'N'Stars per a les dades en brut del sensor.",
         "loading": "Carregant les dades en brut de la imatge…",
         "unsupported": "L'histograma de les dades en brut necessita un connector Touch'N'Stars més recent.",
         "noImage": "Encara no hi ha cap imatge.",
@@ -6957,6 +6959,10 @@
         "working": "Treballant..."
       },
       "settings": {
+        "tabs": {
+          "display": "Visualització",
+          "defaults": "Valors per defecte"
+        },
         "loading": "Carregant la configuració del Livestack...",
         "load_failed": "No s'ha pogut carregar la configuració del Livestack",
         "locked_hint": "Atura l'apilament en directe per canviar-ho",

@@ -5262,6 +5262,8 @@
         "fullRange": "Volledig bereik",
         "statistics": "Stats",
         "sourceInfo": "Ruwe data {width} × {height} px, {bitDepth} bit",
+        "sourceInfoDisplay": "Voorbeeld-JPEG {width} × {height} px, {bitDepth} bit",
+        "displayImageHint": "Histogram van de voorbeeld-JPEG. Werk de Touch'N'Stars-plugin bij voor de ruwe sensordata.",
         "loading": "Ruwe beelddata laden…",
         "unsupported": "Het histogram van de ruwe data vereist een nieuwere Touch'N'Stars-plugin.",
         "noImage": "Nog geen afbeelding beschikbaar.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Nog geen gestackte doelobjecten beschikbaar"
       },
       "settings": {
+        "tabs": {
+          "display": "Weergave",
+          "defaults": "Standaardwaarden"
+        },
         "loading": "Livestack-instellingen laden...",
         "load_failed": "De Livestack-instellingen konden niet worden geladen",
         "locked_hint": "Stop het live stacken om dit te wijzigen",

@@ -5308,6 +5308,8 @@
         "fullRange": "전체 범위",
         "statistics": "통계",
         "sourceInfo": "원본 데이터 {width} × {height} px, {bitDepth}비트",
+        "sourceInfoDisplay": "미리보기 JPEG {width} × {height} px, {bitDepth}비트",
+        "displayImageHint": "미리보기 JPEG의 히스토그램입니다. 센서 원시 데이터를 보려면 Touch'N'Stars 플러그인을 업데이트하세요.",
         "loading": "원본 이미지 데이터를 불러오는 중…",
         "unsupported": "원본 데이터 히스토그램에는 최신 Touch'N'Stars 플러그인이 필요합니다.",
         "noImage": "아직 이미지가 없습니다.",
@@ -6866,6 +6868,10 @@
         "no_targets": "아직 사용 가능한 스택 대상이 없습니다"
       },
       "settings": {
+        "tabs": {
+          "display": "표시",
+          "defaults": "기본값"
+        },
         "loading": "라이브스택 설정을 불러오는 중...",
         "load_failed": "라이브스택 설정을 불러올 수 없습니다",
         "locked_hint": "변경하려면 라이브 스태킹을 중지하세요",

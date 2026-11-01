@@ -5308,6 +5308,8 @@
         "fullRange": "Full range",
         "statistics": "Stats",
         "sourceInfo": "Raw data {width} × {height} px, {bitDepth} bit",
+        "sourceInfoDisplay": "Preview JPEG {width} × {height} px, {bitDepth} bit",
+        "displayImageHint": "Histogram of the preview JPEG. Update the Touch'N'Stars plugin for the raw sensor data.",
         "loading": "Loading raw image data…",
         "unsupported": "The histogram of the raw data needs a newer Touch'N'Stars plugin.",
         "noImage": "No image available yet.",

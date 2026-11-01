@@ -5303,6 +5303,8 @@
         "fullRange": "Volle Skala",
         "statistics": "Statistik",
         "sourceInfo": "Rohdaten {width} × {height} px, {bitDepth} Bit",
+        "sourceInfoDisplay": "Vorschau-JPEG {width} × {height} px, {bitDepth} Bit",
+        "displayImageHint": "Histogramm des Vorschau-JPEGs. Für die Rohdaten des Sensors das Touch'N'Stars-Plugin aktualisieren.",
         "loading": "Rohbilddaten werden geladen…",
         "unsupported": "Das Histogramm der Rohdaten braucht ein neueres Touch'N'Stars-Plugin.",
         "noImage": "Noch kein Bild vorhanden.",
@@ -6871,6 +6873,10 @@
         "no_targets": "Noch keine gestackten Ziele verfügbar"
       },
       "settings": {
+        "tabs": {
+          "display": "Anzeige",
+          "defaults": "Standardwerte"
+        },
         "loading": "Livestack-Einstellungen werden geladen...",
         "load_failed": "Die Livestack-Einstellungen konnten nicht geladen werden",
         "locked_hint": "Beende das Live-Stacking, um das zu ändern",

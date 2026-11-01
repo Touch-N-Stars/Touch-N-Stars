@@ -5262,6 +5262,8 @@
         "fullRange": "Escala completa",
         "statistics": "Estat.",
         "sourceInfo": "Dados brutos {width} × {height} px, {bitDepth} bits",
+        "sourceInfoDisplay": "JPEG de pré-visualização {width} × {height} px, {bitDepth} bits",
+        "displayImageHint": "Histograma do JPEG de pré-visualização. Atualize o plugin Touch'N'Stars para obter os dados brutos do sensor.",
         "loading": "Carregando os dados brutos da imagem…",
         "unsupported": "O histograma dos dados brutos requer um plugin Touch'N'Stars mais recente.",
         "noImage": "Ainda não há imagem.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Ainda não há alvos empilhados disponíveis"
       },
       "settings": {
+        "tabs": {
+          "display": "Exibição",
+          "defaults": "Predefinições"
+        },
         "loading": "Carregando as configurações do Livestack...",
         "load_failed": "Não foi possível carregar as configurações do Livestack",
         "locked_hint": "Pare o empilhamento ao vivo para alterar isto",
