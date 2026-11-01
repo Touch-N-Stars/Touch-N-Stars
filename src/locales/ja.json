@@ -5271,6 +5271,8 @@
         "fullRange": "全範囲",
         "statistics": "統計",
         "sourceInfo": "RAWデータ {width} × {height} px、{bitDepth} ビット",
+        "sourceInfoDisplay": "プレビュー JPEG {width} × {height} px、{bitDepth} ビット",
+        "displayImageHint": "プレビュー JPEG のヒストグラムです。センサーの RAW データを使うには Touch'N'Stars プラグインを更新してください。",
         "loading": "RAW画像データを読み込み中…",
         "unsupported": "RAWデータのヒストグラムには新しいTouch'N'Starsプラグインが必要です。",
         "noImage": "まだ画像がありません。",
@@ -6866,6 +6868,10 @@
         "no_targets": "スタック済みのターゲットがまだありません"
       },
       "settings": {
+        "tabs": {
+          "display": "表示",
+          "defaults": "デフォルト"
+        },
         "loading": "Livestackの設定を読み込み中...",
         "load_failed": "Livestackの設定を読み込めませんでした",
         "locked_hint": "変更するにはライブスタックを停止してください",

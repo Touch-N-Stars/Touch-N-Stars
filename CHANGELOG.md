@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 22] - 2026-11-01
+
+### Added
+
+- Guiding: With the internal guider, the dither settings show how far a dither moves the image on the main camera in pixels. Developed by @nitr57.
+
+### Changed
+
+- Cone Error (plugin, PINS): A single measurement pair is now allowed and is the default. Developed by @nitr57.
+- Livestack: The settings dialog is organised in tabs.
+- Histogram: With an older Touch'N'Stars plugin without raw image data, the histogram and stretch fall back to the preview image and a hint suggests updating the plugin.
+
+### Fixed
+
+- Mount (PINS): While no slew rate is known, the page asks to connect a mount instead of claiming the driver controls the slew rate. Developed by @nitr57.
+- Livestack: The zoomed image stays inside the rounded image window.
+
 ## [App6.5.0 - beta 21] - 2026-10-29
 
 ### Added

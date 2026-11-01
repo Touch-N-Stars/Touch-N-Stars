@@ -5262,6 +5262,8 @@
         "fullRange": "Pełny zakres",
         "statistics": "Statyst.",
         "sourceInfo": "Surowe dane {width} × {height} px, {bitDepth} bit",
+        "sourceInfoDisplay": "JPEG podglądu {width} × {height} px, {bitDepth} bit",
+        "displayImageHint": "Histogram JPEG podglądu. Zaktualizuj wtyczkę Touch'N'Stars, aby uzyskać surowe dane z sensora.",
         "loading": "Wczytywanie surowych danych obrazu…",
         "unsupported": "Histogram surowych danych wymaga nowszej wtyczki Touch'N'Stars.",
         "noImage": "Brak obrazu.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Brak dostępnych stackowanych celów"
       },
       "settings": {
+        "tabs": {
+          "display": "Wyświetlanie",
+          "defaults": "Domyślne"
+        },
         "loading": "Wczytywanie ustawień Livestack...",
         "load_failed": "Nie udało się wczytać ustawień Livestack",
         "locked_hint": "Zatrzymaj stackowanie na żywo, aby to zmienić",

@@ -5262,6 +5262,8 @@
         "fullRange": "Scala completa",
         "statistics": "Stat.",
         "sourceInfo": "Dati grezzi {width} × {height} px, {bitDepth} bit",
+        "sourceInfoDisplay": "JPEG di anteprima {width} × {height} px, {bitDepth} bit",
+        "displayImageHint": "Istogramma del JPEG di anteprima. Aggiorna il plugin Touch'N'Stars per i dati grezzi del sensore.",
         "loading": "Caricamento dei dati grezzi dell'immagine…",
         "unsupported": "L'istogramma dei dati grezzi richiede un plugin Touch'N'Stars più recente.",
         "noImage": "Ancora nessuna immagine.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Nessun target con stack ancora disponibile"
       },
       "settings": {
+        "tabs": {
+          "display": "Visualizzazione",
+          "defaults": "Predefiniti"
+        },
         "loading": "Caricamento delle impostazioni Livestack...",
         "load_failed": "Impossibile caricare le impostazioni Livestack",
         "locked_hint": "Interrompi lo stacking dal vivo per modificarlo",

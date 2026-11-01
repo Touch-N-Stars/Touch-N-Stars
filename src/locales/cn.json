@@ -5262,6 +5262,8 @@
         "fullRange": "完整范围",
         "statistics": "统计",
         "sourceInfo": "原始数据 {width} × {height} 像素，{bitDepth} 位",
+        "sourceInfoDisplay": "预览 JPEG {width} × {height} px，{bitDepth} 位",
+        "displayImageHint": "预览 JPEG 的直方图。请更新 Touch'N'Stars 插件以获取传感器原始数据。",
         "loading": "正在加载原始图像数据…",
         "unsupported": "原始数据直方图需要更新版本的 Touch'N'Stars 插件。",
         "noImage": "尚无图像。",
@@ -6755,6 +6757,10 @@
         "no_targets": "暂无可用的叠加目标"
       },
       "settings": {
+        "tabs": {
+          "display": "显示",
+          "defaults": "默认值"
+        },
         "loading": "正在加载 Livestack 设置...",
         "load_failed": "无法加载 Livestack 设置",
         "locked_hint": "停止实时叠加后才能更改",

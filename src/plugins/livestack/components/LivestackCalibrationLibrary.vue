@@ -1,42 +1,41 @@
 <template>
-  <section
-    v-if="!store.calibrationUnsupported"
-    class="flex flex-col gap-2 w-full border border-gray-500 p-2 rounded-lg bg-gray-800/70"
-  >
-    <h3 class="text-xs md:text-sm font-semibold text-gray-200 pl-2">
+  <section v-if="!store.calibrationUnsupported" class="tns-card flex flex-col gap-3">
+    <h3 class="text-base font-semibold text-content">
       {{ t('plugins.livestack.settings.masters.title') }}
     </h3>
-    <p class="text-xs text-gray-400 pl-2">{{ t('plugins.livestack.settings.masters.note') }}</p>
+    <p class="text-sm text-content-muted">{{ t('plugins.livestack.settings.masters.note') }}</p>
 
-    <p v-if="!library && store.calibrationLoadError" class="text-xs text-red-400 pl-2">
+    <p v-if="!library && store.calibrationLoadError" class="text-xs text-red-400">
       {{ loadErrorText }}
     </p>
-    <p v-else-if="!library" class="text-xs text-gray-400 pl-2">
+    <p v-else-if="!library" class="text-xs text-content-muted">
       {{ t('plugins.livestack.settings.masters.loading') }}
     </p>
 
     <template v-else>
       <!-- A failed reload keeps the list on screen -->
-      <p v-if="store.calibrationLoadError" class="text-xs text-red-400 pl-2">
+      <p v-if="store.calibrationLoadError" class="text-xs text-red-400">
         {{ loadErrorText }}
       </p>
       <div v-for="group in groups" :key="group.type" class="flex flex-col gap-1">
-        <h4 class="text-xs font-semibold text-gray-300 pl-2">
+        <h4 class="text-sm font-semibold text-content">
           {{ t(group.label) }} ({{ library[group.key].length }})
         </h4>
-        <p v-if="!library[group.key].length" class="text-xs text-gray-500 pl-2">
+        <p v-if="!library[group.key].length" class="text-xs text-content-muted">
           {{ t('plugins.livestack.settings.masters.none') }}
         </p>
         <!-- The index keeps keys unique: desktop Livestack allows the same file twice -->
         <div
           v-for="(master, index) in library[group.key]"
           :key="`${master.Path}|${index}`"
-          class="flex items-center gap-2 px-2 py-1 rounded-lg border border-gray-600/50 bg-gray-800/40"
+          class="flex items-center gap-2 px-2 py-1 rounded-control border border-line bg-surface-2"
         >
           <div class="flex-1 min-w-0">
-            <p class="text-xs font-mono text-gray-200 break-all">{{ master.FileName }}</p>
-            <p class="text-xs font-mono text-gray-500 break-all">{{ folderOf(master.Path) }}</p>
-            <p class="text-xs text-gray-400">{{ describe(master) }}</p>
+            <p class="text-xs font-mono text-content break-all">{{ master.FileName }}</p>
+            <p class="text-xs font-mono text-content-muted break-all">
+              {{ folderOf(master.Path) }}
+            </p>
+            <p class="text-xs text-content-muted">{{ describe(master) }}</p>
             <p v-if="!master.FileExists" class="text-xs text-amber-400">
               {{ t('plugins.livestack.settings.masters.missing_file') }}
             </p>
@@ -55,12 +54,12 @@
       <!-- Adding a master: pick the file, check what its header says, confirm -->
       <div
         v-if="draft"
-        class="flex flex-col gap-2 p-2 rounded-lg border border-cyan-700/60 bg-gray-900/60"
+        class="flex flex-col gap-2 p-2 rounded-control border border-accent/60 bg-surface-2"
       >
-        <p class="text-xs font-mono text-gray-200 break-all">{{ draft.FileName }}</p>
-        <p class="text-xs text-gray-400">{{ draft.Width }} × {{ draft.Height }}</p>
+        <p class="text-xs font-mono text-content break-all">{{ draft.FileName }}</p>
+        <p class="text-xs text-content-muted">{{ draft.Width }} × {{ draft.Height }}</p>
 
-        <label class="text-xs text-gray-300 pl-1" for="livestack_master_type">
+        <label class="text-xs text-content" for="livestack_master_type">
           {{ t('plugins.livestack.settings.masters.type') }}
         </label>
         <select id="livestack_master_type" v-model="draft.Type" class="tns-select w-full text-sm">
@@ -68,7 +67,7 @@
             {{ t(group.label) }}
           </option>
         </select>
-        <p v-if="!draft.Type" class="text-xs text-amber-400 pl-1">
+        <p v-if="!draft.Type" class="text-xs text-amber-400">
           {{ t('plugins.livestack.settings.masters.type_unknown') }}
         </p>
 
@@ -83,7 +82,6 @@
             :step="1"
             :decimal-places="0"
             :use-default-sentinel="false"
-            wrapper-class="pl-1"
           />
           <NumberInputPicker
             v-model="draft.Offset"
@@ -95,7 +93,6 @@
             :step="1"
             :decimal-places="0"
             :use-default-sentinel="false"
-            wrapper-class="pl-1"
           />
         </template>
         <template v-if="draft.Type === 'DARK'">
@@ -109,15 +106,14 @@
             :step="1"
             :decimal-places="3"
             :use-default-sentinel="false"
-            wrapper-class="pl-1"
           />
           <!-- Livestack's fallbacks for gain/offset "any" ignore the exposure time -->
-          <p v-if="draft.Gain === -1 || draft.Offset === -1" class="text-xs text-amber-400 pl-1">
+          <p v-if="draft.Gain === -1 || draft.Offset === -1" class="text-xs text-amber-400">
             {{ t('plugins.livestack.settings.masters.dark_any_hint') }}
           </p>
         </template>
         <template v-if="draft.Type === 'FLAT'">
-          <label class="text-xs text-gray-300 pl-1" for="livestack_master_filter">
+          <label class="text-xs text-content" for="livestack_master_filter">
             {{ t('plugins.livestack.settings.masters.filter_label') }}
           </label>
           <!-- Livestack matches the filter name exactly: no autocorrect, offer the wheel's names -->
@@ -138,7 +134,7 @@
           </datalist>
         </template>
 
-        <p v-if="store.calibrationBusy" class="text-xs text-gray-400 pl-1">
+        <p v-if="store.calibrationBusy" class="text-xs text-content-muted">
           {{ t('plugins.livestack.settings.masters.reading') }}
         </p>
 
@@ -169,8 +165,8 @@
         {{ t('plugins.livestack.settings.masters.add') }}
       </button>
 
-      <p v-if="errorText" class="text-xs text-red-400 pl-2 break-words">{{ errorText }}</p>
-      <p v-if="locked" class="text-xs text-gray-400 pl-2">
+      <p v-if="errorText" class="text-xs text-red-400 break-words">{{ errorText }}</p>
+      <p v-if="locked" class="text-xs text-content-muted">
         {{ t('plugins.livestack.settings.locked_hint') }}
       </p>
     </template>

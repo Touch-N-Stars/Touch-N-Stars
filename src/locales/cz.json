@@ -5262,6 +5262,8 @@
         "fullRange": "Celý rozsah",
         "statistics": "Statistika",
         "sourceInfo": "Surová data {width} × {height} px, {bitDepth} bit",
+        "sourceInfoDisplay": "Náhledový JPEG {width} × {height} px, {bitDepth} bit",
+        "displayImageHint": "Histogram náhledového JPEG. Pro surová data senzoru aktualizujte plugin Touch'N'Stars.",
         "loading": "Načítání surových dat snímku…",
         "unsupported": "Histogram surových dat vyžaduje novější plugin Touch'N'Stars.",
         "noImage": "Zatím není k dispozici žádný snímek.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Zatím nejsou k dispozici žádné stackované cíle"
       },
       "settings": {
+        "tabs": {
+          "display": "Zobrazení",
+          "defaults": "Výchozí"
+        },
         "loading": "Načítání nastavení Livestack...",
         "load_failed": "Nastavení Livestack se nepodařilo načíst",
         "locked_hint": "Pro změnu zastavte živé stackování",

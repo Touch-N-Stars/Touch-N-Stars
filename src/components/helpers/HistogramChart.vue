@@ -167,6 +167,11 @@
       <span>{{ view.hi - 1 }}</span>
     </div>
 
+    <!-- Older plugin: histogram and stretch run on the 8-bit preview JPEG -->
+    <div v-if="ready && entry.meta.displayImage" class="mt-1 text-[10px] text-status-warn">
+      {{ t('components.helpers.histogram.displayImageHint') }}
+    </div>
+
     <!-- Exact statistics of the full-resolution raw data -->
     <div v-if="ready && showStats" class="mt-2 overflow-x-auto">
       <table class="w-full text-xs font-mono tabular-nums">
@@ -209,11 +214,16 @@
       </table>
       <div class="mt-1 text-[10px] text-content-faint">
         {{
-          t('components.helpers.histogram.sourceInfo', {
-            width: entry.meta.sourceWidth,
-            height: entry.meta.sourceHeight,
-            bitDepth: entry.meta.bitDepth,
-          })
+          t(
+            entry.meta.displayImage
+              ? 'components.helpers.histogram.sourceInfoDisplay'
+              : 'components.helpers.histogram.sourceInfo',
+            {
+              width: entry.meta.sourceWidth,
+              height: entry.meta.sourceHeight,
+              bitDepth: entry.meta.bitDepth,
+            }
+          )
         }}
       </div>
     </div>

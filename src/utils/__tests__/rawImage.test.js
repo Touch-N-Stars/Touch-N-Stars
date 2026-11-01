@@ -180,3 +180,48 @@ test('autoViewRange() zooms onto the occupied band, fullViewRange() spans the bi
   assert.ok(view.hi > 1020 && view.hi < 2000);
   assert.deepEqual(fullViewRange(12), { lo: 0, hi: 4096 });
 });
+
+test('rawFromRgba turns a grey preview JPEG into one 8-bit channel with exact stats', async () => {
+  const { rawFromRgba } = await import('@/utils/rawImage/displayImage');
+  const values = [0, 10, 10, 20, 255];
+  const rgba = new Uint8ClampedArray(values.flatMap((v) => [v, v, v, 255]));
+  const { meta, histograms, planes } = rawFromRgba(rgba, 5, 1, {
+    sourceWidth: 50,
+    sourceHeight: 10,
+  });
+
+  assert.equal(meta.displayImage, true);
+  assert.equal(meta.channels, 1);
+  assert.equal(meta.bitDepth, 8);
+  assert.equal(meta.sourceWidth, 50);
+  assert.deepEqual([...planes[0]], values);
+  assert.equal(histograms[0].length, HISTOGRAM_BINS);
+  assert.equal(histograms[0][10], 2);
+  const [s] = meta.stats;
+  assert.equal(s.min, 0);
+  assert.equal(s.max, 255);
+  assert.equal(s.median, 10);
+  assert.equal(s.mad, 10);
+  assert.equal(s.mean, 59);
+  assert.equal(s.clipLow, 0.2);
+  assert.equal(s.clipHigh, 0.2);
+});
+
+test('rawFromRgba keeps three channels for a colour preview', async () => {
+  const { rawFromRgba } = await import('@/utils/rawImage/displayImage');
+  const rgba = new Uint8ClampedArray([10, 20, 30, 255, 12, 22, 32, 255]);
+  const { meta, planes } = rawFromRgba(rgba, 2, 1);
+  assert.equal(meta.channels, 3);
+  assert.deepEqual(
+    planes.map((p) => [...p]),
+    [
+      [10, 12],
+      [20, 22],
+      [30, 32],
+    ]
+  );
+  assert.deepEqual(
+    meta.stats.map((s) => s.median),
+    [10, 20, 30]
+  );
+});

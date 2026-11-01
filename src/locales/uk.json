@@ -5242,6 +5242,8 @@
         "fullRange": "Повний діапазон",
         "statistics": "Статистика",
         "sourceInfo": "Сирі дані {width} × {height} px, {bitDepth} біт",
+        "sourceInfoDisplay": "JPEG попереднього перегляду {width} × {height} px, {bitDepth} біт",
+        "displayImageHint": "Гістограма JPEG попереднього перегляду. Оновіть плагін Touch'N'Stars, щоб отримати сирі дані сенсора.",
         "loading": "Завантаження сирих даних зображення…",
         "unsupported": "Для гістограми сирих даних потрібен новіший плагін Touch'N'Stars.",
         "noImage": "Зображення ще немає.",
@@ -6545,6 +6547,10 @@
         "no_targets": "Ще немає доступних стекованих цілей"
       },
       "settings": {
+        "tabs": {
+          "display": "Відображення",
+          "defaults": "Типові значення"
+        },
         "loading": "Завантаження налаштувань Livestack...",
         "load_failed": "Не вдалося завантажити налаштування Livestack",
         "locked_hint": "Зупиніть живий стекінг, щоб змінити це",

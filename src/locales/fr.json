@@ -5262,6 +5262,8 @@
         "fullRange": "Plage complète",
         "statistics": "Stats",
         "sourceInfo": "Données brutes {width} × {height} px, {bitDepth} bits",
+        "sourceInfoDisplay": "JPEG d'aperçu {width} × {height} px, {bitDepth} bits",
+        "displayImageHint": "Histogramme du JPEG d'aperçu. Mettez à jour le plugin Touch'N'Stars pour les données brutes du capteur.",
         "loading": "Chargement des données brutes de l'image…",
         "unsupported": "L'histogramme des données brutes nécessite un plugin Touch'N'Stars plus récent.",
         "noImage": "Aucune image pour l'instant.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Aucune cible empilée disponible pour le moment"
       },
       "settings": {
+        "tabs": {
+          "display": "Affichage",
+          "defaults": "Valeurs par défaut"
+        },
         "loading": "Chargement des paramètres Livestack...",
         "load_failed": "Impossible de charger les paramètres Livestack",
         "locked_hint": "Arrêtez l'empilement en direct pour modifier ceci",

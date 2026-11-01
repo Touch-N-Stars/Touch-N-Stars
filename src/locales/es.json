@@ -5262,6 +5262,8 @@
         "fullRange": "Escala completa",
         "statistics": "Estad.",
         "sourceInfo": "Datos en bruto {width} × {height} px, {bitDepth} bits",
+        "sourceInfoDisplay": "JPEG de vista previa {width} × {height} px, {bitDepth} bits",
+        "displayImageHint": "Histograma del JPEG de vista previa. Actualiza el plugin Touch'N'Stars para obtener los datos en bruto del sensor.",
         "loading": "Cargando los datos en bruto de la imagen…",
         "unsupported": "El histograma de los datos en bruto necesita un plugin Touch'N'Stars más reciente.",
         "noImage": "Todavía no hay ninguna imagen.",
@@ -6755,6 +6757,10 @@
         "no_targets": "Aún no hay objetos apilados disponibles"
       },
       "settings": {
+        "tabs": {
+          "display": "Visualización",
+          "defaults": "Valores predeterminados"
+        },
         "loading": "Cargando la configuración de Livestack...",
         "load_failed": "No se pudo cargar la configuración de Livestack",
         "locked_hint": "Detén el apilado en vivo para cambiar esto",
