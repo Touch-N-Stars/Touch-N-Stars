@@ -7167,6 +7167,10 @@
         "no_targets": "No stacked targets available yet"
       },
       "settings": {
+        "tabs": {
+          "display": "Display",
+          "defaults": "Defaults"
+        },
         "loading": "Loading Livestack settings...",
         "load_failed": "Could not load the Livestack settings",
         "locked_hint": "Stop live stacking to change this",
