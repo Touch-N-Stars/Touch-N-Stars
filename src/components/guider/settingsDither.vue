@@ -16,7 +16,7 @@
         @change="setDitherPixels"
       />
     </div>
-    <p class="text-xs text-gray-400 text-right pr-1">
+    <p v-if="isNativeGuider" class="text-xs text-gray-400 text-right pr-1">
       {{ $t('components.guider.ditherMainCameraPixels', { pixels: ditherMainCameraPixels }) }}
     </p>
 
@@ -35,26 +35,54 @@ import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
+import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { arcsecPerPixel } from '@/utils/imageScale';
+import { isNativeGuiderInUse } from '@/utils/nativeGuider';
+
+const props = defineProps({
+  selectedGuiderDevice: { type: String, default: '' },
+});
 
 const store = apiStore();
+const nativeGuiderStore = useNativeGuiderStore();
 
 const ditherPixels = ref(3.0);
 
 const statusClassDitherPixels = ref('');
 
 // DitherPixels is in guide camera pixels; show what it amounts to on the imaging
-// camera, like NINA's guider panel. The guider reports its scale once connected.
+// camera, like NINA's guider panel. Internal guider only: its guide scale follows from
+// its own settings and the guide camera, so the guider need not be connected.
+const isNativeGuider = computed(() => isNativeGuiderInUse(store, props.selectedGuiderDevice));
+
+// Loaded by the NativeSettingsSheet in the same dialog.
+function nativeSetting(name) {
+  const setting = nativeGuiderStore.settings.find((s) => s.name === name);
+  return Number(String(setting?.value ?? '').replace(',', '.'));
+}
+
+// Same as the guider: PixelSizeUm 0 means the guide camera's own pixel size.
+const guideScale = computed(() => {
+  const pixelSizeSetting = nativeSetting('PixelSizeUm');
+  const pixelSize =
+    pixelSizeSetting > 0
+      ? pixelSizeSetting
+      : store.guideCameraInfo?.Connected
+        ? store.guideCameraInfo.PixelSize
+        : 0;
+
+  return arcsecPerPixel(pixelSize, nativeSetting('FocalLengthMm'), nativeSetting('Binning') || 1);
+});
+
 const ditherMainCameraPixels = computed(() => {
-  const guideScale = Number(store.guiderInfo?.Connected ? store.guiderInfo.PixelScale : 0);
   const mainScale = arcsecPerPixel(
     store.profileInfo?.CameraSettings?.PixelSize,
     store.profileInfo?.TelescopeSettings?.FocalLength
   );
   const pixels = Number(ditherPixels.value);
 
-  if (!(guideScale > 0) || !mainScale || !Number.isFinite(pixels)) return '—';
-  return ((pixels * guideScale) / mainScale).toFixed(1);
+  if (!guideScale.value || !mainScale || !Number.isFinite(pixels)) return '—';
+  return ((pixels * guideScale.value) / mainScale).toFixed(1);
 });
 
 const initializeSettings = () => {

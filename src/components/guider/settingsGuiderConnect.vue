@@ -9,7 +9,7 @@
         <settingsPhd2 v-else :selectedGuiderDevice="selectedGuiderDevice" />
 
         <!-- Dither Settings -->
-        <settingsDither />
+        <settingsDither :selectedGuiderDevice="selectedGuiderDevice" />
 
         <!-- Settle Settings -->
         <settingsSettle />
