@@ -1809,6 +1809,7 @@
       "phd2ServerPort": "PHD2 Server Port",
       "ditherPixels": "Dither Pixels (px)",
       "ditherRAOnly": "Dither in RA Only",
+      "ditherMainCameraPixels": "≈ {pixels} px on main camera",
       "settlePixels": "Settle Pixel Tolerance (px)",
       "settleTime": "Minimum Settle Time (s)",
       "settleTimeout": "Settle Timeout (s)",

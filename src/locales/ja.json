@@ -1777,6 +1777,7 @@
       "phd2ServerPort": "PHD2サーバー・ポート",
       "ditherPixels": "ディザリング幅 (px)",
       "ditherRAOnly": "赤経(RA)のみディザリング",
+      "ditherMainCameraPixels": "≈ メインカメラで {pixels} px",
       "settlePixels": "安定許容誤差 (px)",
       "settleTime": "最小安定時間 (秒)",
       "settleTimeout": "安定タイムアウト (秒)",

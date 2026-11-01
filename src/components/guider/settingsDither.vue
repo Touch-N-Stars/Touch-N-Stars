@@ -16,6 +16,9 @@
         @change="setDitherPixels"
       />
     </div>
+    <p class="text-xs text-gray-400 text-right pr-1">
+      {{ $t('components.guider.ditherMainCameraPixels', { pixels: ditherMainCameraPixels }) }}
+    </p>
 
     <ProfileToggle
       labelKey="components.guider.ditherRAOnly"
@@ -27,17 +30,32 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
+import { arcsecPerPixel } from '@/utils/imageScale';
 
 const store = apiStore();
 
 const ditherPixels = ref(3.0);
 
 const statusClassDitherPixels = ref('');
+
+// DitherPixels is in guide camera pixels; show what it amounts to on the imaging
+// camera, like NINA's guider panel. The guider reports its scale once connected.
+const ditherMainCameraPixels = computed(() => {
+  const guideScale = Number(store.guiderInfo?.Connected ? store.guiderInfo.PixelScale : 0);
+  const mainScale = arcsecPerPixel(
+    store.profileInfo?.CameraSettings?.PixelSize,
+    store.profileInfo?.TelescopeSettings?.FocalLength
+  );
+  const pixels = Number(ditherPixels.value);
+
+  if (!(guideScale > 0) || !mainScale || !Number.isFinite(pixels)) return '—';
+  return ((pixels * guideScale) / mainScale).toFixed(1);
+});
 
 const initializeSettings = () => {
   if (!store.profileInfo?.GuiderSettings) {

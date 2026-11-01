@@ -1768,6 +1768,7 @@
       "phd2ServerPort": "PHD2 server poort",
       "ditherPixels": "Ditherpixels (px)",
       "ditherRAOnly": "Dither alleen in RA",
+      "ditherMainCameraPixels": "≈ {pixels} px op de hoofdcamera",
       "settlePixels": "Stabilisatietolerantie (px)",
       "settleTime": "Minimale stabilisatietijd (s)",
       "settleTimeout": "Stabilisatie-time-out (s)",

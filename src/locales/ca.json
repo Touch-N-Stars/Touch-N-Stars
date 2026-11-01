@@ -1809,6 +1809,7 @@
       "phd2ServerPort": "Port del servidor PHD2",
       "ditherPixels": "Píxels de dither (px)",
       "ditherRAOnly": "Dither només en AR",
+      "ditherMainCameraPixels": "≈ {pixels} px a la càmera principal",
       "settlePixels": "Tolerància d'estabilització (px)",
       "settleTime": "Temps mín. d'estabilització (s)",
       "settleTimeout": "Temps d'espera d'estabilització (s)",
