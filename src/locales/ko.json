@@ -1809,6 +1809,7 @@
       "phd2ServerPort": "PHD2 서버 포트",
       "ditherPixels": "디더 픽셀 (px)",
       "ditherRAOnly": "RA 방향만 디더링",
+      "ditherMainCameraPixels": "≈ 메인 카메라 기준 {pixels} px",
       "settlePixels": "안정화 픽셀 허용 오차 (px)",
       "settleTime": "최소 안정화 시간 (s)",
       "settleTimeout": "안정화 타임아웃 (s)",

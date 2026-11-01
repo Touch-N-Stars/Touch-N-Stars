@@ -1768,6 +1768,7 @@
       "phd2ServerPort": "Porta do servidor PHD2",
       "ditherPixels": "Pixels de pontilhamento (px)",
       "ditherRAOnly": "Dither somente em RA",
+      "ditherMainCameraPixels": "≈ {pixels} px na câmera principal",
       "settlePixels": "Tolerância de pixels para estabilização (px)",
       "settleTime": "Tempo mínimo de estabilização (s)",
       "settleTimeout": "Tempo limite de estabilização (s)",

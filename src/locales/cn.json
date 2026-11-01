@@ -1768,6 +1768,7 @@
       "phd2ServerPort": "PHD2服务器端口",
       "ditherPixels": "抖动像素 (px)",
       "ditherRAOnly": "仅在 RA 中抖动",
+      "ditherMainCameraPixels": "≈ 主相机 {pixels} 像素",
       "settlePixels": "稳定像素容差 (px)",
       "settleTime": "最短稳定时间（秒）",
       "settleTimeout": "稳定超时（秒）",

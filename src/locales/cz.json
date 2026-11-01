@@ -1768,6 +1768,7 @@
       "phd2ServerPort": "Port serveru PHD2",
       "ditherPixels": "Pixely ditheringu (px)",
       "ditherRAOnly": "Dither pouze v RA",
+      "ditherMainCameraPixels": "≈ {pixels} px na hlavní kameře",
       "settlePixels": "Tolerance ustálení (px)",
       "settleTime": "Minimální doba ustálení (s)",
       "settleTimeout": "Časový limit ustálení (s)",

@@ -1748,6 +1748,7 @@
       "phd2ServerPort": "Порт сервера PHD2",
       "ditherPixels": "Дизерінг (пк)",
       "ditherRAOnly": "Дизерінг лише по RA",
+      "ditherMainCameraPixels": "≈ {pixels} px на основній камері",
       "settlePixels": "Допуск стабілізації (пк)",
       "settleTime": "Мінімальний час стабілізації (с)",
       "settleTimeout": "Таймаут стабілізації (с)",
