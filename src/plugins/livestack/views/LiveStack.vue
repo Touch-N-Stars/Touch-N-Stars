@@ -56,18 +56,21 @@
     </div>
     <!-- Main content when plugin is available -->
     <div v-else>
-      <!-- Fullscreen Image Display -->
-      <div class="fixed inset-0 z-10">
-        <!-- ZoomableImage Component - Full Screen -->
+      <!-- Image area fills exactly the stage window with its own rounded
+           clipping, so a zoomed image stays inside the frame (same as CameraPage). -->
+      <div
+        class="fixed z-10 rounded-[var(--stage-radius)] overflow-hidden bg-ground"
+        :style="stageWindowStyle"
+      >
         <ZoomableImage
           :imageData="stretchedImageUrl"
           :loading="isLoading || stretchRendering"
           :showDownload="true"
           :showFullscreen="false"
           :showHistogram="true"
-          controlsClass="right-2 bottom-above-statusbar left-2 landscape:left-(--nav-offset)"
+          controlsClass="right-2 bottom-2 left-2"
           :initialZoom="currentZoomLevel"
-          height="100vh"
+          height="100%"
           :altText="imageAltText"
           :placeholderText="imagePlaceholderText"
           @image-load="handleImageLoad"
@@ -93,7 +96,7 @@
         <!-- Histogram Overlay -->
         <div
           v-if="showHistogram && livestackStore.currentImageUrl"
-          class="absolute top-60 left-4 landscape:left-(--nav-offset) landscape:top-24 right-4 z-70"
+          class="absolute top-40 left-4 landscape:top-22 right-4 z-70"
         >
           <HistogramChart
             :imageUrl="livestackStore.currentImageUrl"
@@ -114,6 +117,7 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import apiService from '@/services/apiService';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
+import { useStageWindow } from '@/composables/useStageWindow';
 import HistogramChart from '@/components/helpers/HistogramChart.vue';
 import websocketChannelService from '@/services/websocketChannelSocket.js';
 import { useLivestackStore } from '../store/livestackStore.js';
@@ -128,6 +132,7 @@ import { timeSync } from '@/utils/timeSync';
 
 const { t } = useI18n();
 const livestackStore = useLivestackStore();
+const { stageWindowStyle } = useStageWindow();
 const store = apiStore();
 const settingsStore = useSettingsStore();
 const isLoading = ref(false);
