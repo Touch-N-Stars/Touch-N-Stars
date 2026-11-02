@@ -12,6 +12,7 @@ const { useSettingsStore } = await import('@/store/settingsStore');
 const original = {
   flatMultiStatus: apiService.flatMultiStatus,
   flatRunConfirmCover: apiService.flatRunConfirmCover,
+  getSetting: apiService.getSetting,
 };
 
 function setup(statusResponder) {
@@ -113,14 +114,41 @@ test('a finished run is reported exactly once, also after the app was closed', a
   assert.equal(flatsStore.lastRun?.success, true);
   assert.equal(flatsStore.lastRun?.total, 40);
   assert.deepEqual(flatsStore.filterResults, { 0: 'success', 1: 'success' });
-  assert.equal(useSettingsStore().flats.lastSeenRunId, 'run-1');
+  assert.deepEqual(useSettingsStore().seenFlatRunIds, ['run-1']);
 
   // Fresh app start: the same finished run must not be reported again.
-  const reported = useSettingsStore().flats.lastSeenRunId;
+  const reported = useSettingsStore().seenFlatRunIds;
   const restarted = setup(async () => ({ Response: status }));
-  useSettingsStore().flats.lastSeenRunId = reported;
+  useSettingsStore().seenFlatRunIds = reported;
   await restarted.fetchServerRunStatus({ force: true });
   assert.equal(restarted.lastRun, null);
+});
+
+test('the backend copy of the flat settings does not bring a reported run back', async () => {
+  const status = runStatus({
+    RunId: 'run-new',
+    State: 'Finished',
+    Filters: [
+      {
+        FilterId: 0,
+        FilterName: 'L',
+        State: 'success',
+        Completed: 20,
+        Count: 20,
+        DarkState: 'none',
+      },
+    ],
+  });
+  const flatsStore = setup(async () => ({ Response: status }));
+  const settingsStore = useSettingsStore();
+  settingsStore.seenFlatRunIds = ['run-new'];
+  // Older apps mirrored the seen marker inside `flats` to the backend.
+  apiService.getSetting = async () => ({
+    Response: { Value: JSON.stringify({ lastSeenRunId: 'run-old' }) },
+  });
+  await settingsStore.loadFlatsSettings();
+  await flatsStore.fetchServerRunStatus({ force: true });
+  assert.equal(flatsStore.lastRun, null);
 });
 
 test('the cover question is asked once per run and the answer goes to the plugin', async () => {

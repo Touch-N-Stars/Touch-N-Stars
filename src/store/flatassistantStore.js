@@ -22,6 +22,9 @@ const IDLE_STATUS_INTERVAL_MS = 5000;
 // update of the plugin is picked up without reconnecting.
 const SERVER_WORKFLOW_REPROBE_MS = 60000;
 
+// How many reported flat run ids a device remembers (the plugin keeps only its last run).
+const SEEN_RUN_IDS_MAX = 20;
+
 export const useFlatassistantStore = defineStore('flatassistantStore', {
   state: () => ({
     count: 20,
@@ -264,8 +267,9 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
 
       if (s.State === 'Finished' && s.RunId) {
         const settingsStore = useSettingsStore();
-        if (settingsStore.flats.lastSeenRunId !== s.RunId) {
-          settingsStore.flats.lastSeenRunId = s.RunId;
+        const seen = settingsStore.seenFlatRunIds ?? [];
+        if (!seen.includes(s.RunId)) {
+          settingsStore.seenFlatRunIds = [...seen, s.RunId].slice(-SEEN_RUN_IDS_MAX);
           const summary = buildServerRunSummary(s, {
             dimLabel: i18n.global.t('components.flatassistant.result_dim'),
             brightLabel: i18n.global.t('components.flatassistant.result_bright'),
