@@ -69,6 +69,7 @@
   "flatMultiMode": "function",
   "flatMultiStatus": "function",
   "flatMultiStop": "function",
+  "flatRunConfirmCover": "function",
   "flatSkyflat": "function",
   "flatTrainedDarkFlat": "function",
   "flatassistantAction": "function",

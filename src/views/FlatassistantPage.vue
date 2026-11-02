@@ -5,9 +5,8 @@
       <h1 class="text-xl text-center font-bold">{{ $t('components.flatassistant.title') }}</h1>
     </div>
 
-    <!-- Temporarily hide multi-mode there is a bug in the backend -->
     <SubNav
-      v-if="store.isPINS"
+      v-if="multiModeAvailable"
       :items="[
         { name: t('components.flatassistant.single_mode'), value: 'single' },
         { name: t('components.flatassistant.multi_mode'), value: 'multi' },
@@ -94,8 +93,13 @@ const selectedComponent = computed(() => {
   }
 });
 
-onMounted(() => {
-  if (!store.isPINS) {
+// Multi mode runs in the plugin (NINA and PINS); with an older plugin only PINS has it,
+// driven by the app's own per-filter loop.
+const multiModeAvailable = computed(() => store.isPINS || flatsStore.serverWorkflow === true);
+
+onMounted(async () => {
+  await flatsStore.detectServerWorkflow();
+  if (!multiModeAvailable.value) {
     settingsStore.flats.activeMode = 'single';
   }
 });
@@ -115,7 +119,8 @@ watch(
   (flatSettings) => {
     if (!flatSettings) return;
     flatsStore.count = flatSettings.FlatCount ?? flatsStore.count;
-    flatsStore.darkCount = flatSettings.DarkFlatCount ?? 0;
+    // Same condition as multi mode: dark flats need the plugin-side run or PINS.
+    flatsStore.darkCount = multiModeAvailable.value ? (flatSettings.DarkFlatCount ?? 0) : 0;
   },
   { immediate: true }
 );
