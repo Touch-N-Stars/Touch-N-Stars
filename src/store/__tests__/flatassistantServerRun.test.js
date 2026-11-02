@@ -188,5 +188,24 @@ test('a run the plugin ended for a sequence is a warning that names the reason',
     stopReason: 'Stopped because a sequence started',
   });
   assert.equal(flatsStore.lastRunOutcome.type, 'warning');
-  assert.match(flatsStore.lastRunOutcome.message, /\. Stopped because a sequence started$/);
+  assert.equal(
+    flatsStore.lastRunOutcome.message,
+    'Stopped early - 5 of 20 flats captured. Stopped because a sequence started'
+  );
+});
+
+test('a run the plugin ended before its first flat shows only the reason', () => {
+  const flatsStore = setup(async () => ({ Response: runStatus() }));
+  flatsStore.commitRunOutcome({
+    type: 'flats',
+    completed: 0,
+    total: 20,
+    success: false,
+    lastADU: null,
+    failedFilterNames: [],
+    darks: null,
+    stopReason: 'Stopped because a sequence started',
+  });
+  assert.equal(flatsStore.lastRunOutcome.type, 'warning');
+  assert.equal(flatsStore.lastRunOutcome.message, 'Stopped because a sequence started');
 });

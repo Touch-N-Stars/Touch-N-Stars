@@ -421,8 +421,22 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
     commitRunOutcome(run) {
       let type = 'info';
       let message;
+      // The plugin ended the run itself (a sequence started): not a failure of the flats, so no
+      // failure text - the frames taken so far, and the reason appended below.
+      const stoppedByPlugin = Boolean(run.stopReason) && !run.success;
 
-      if (run.total <= 0) {
+      if (stoppedByPlugin) {
+        type = 'warning';
+        message =
+          run.completed > 0
+            ? i18n.global.t(
+                run.type === 'darks'
+                  ? 'components.flatassistant.status_stopped_darks'
+                  : 'components.flatassistant.status_stopped_flats',
+                { completed: run.completed, total: run.total }
+              )
+            : '';
+      } else if (run.total <= 0) {
         if (this.workflowStopRequested) {
           type = 'info';
           message = i18n.global.t('components.flatassistant.status_completed_flats');
@@ -488,16 +502,15 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
       }
       // The flat messages carry no closing punctuation of their own.
       const appendNote = (note) => {
+        if (!message.trim()) {
+          message = note;
+          return;
+        }
         const closed = /[.!?。！？]$/.test(message.trim());
         message = `${message.trim()}${closed ? '' : '.'} ${note}`;
       };
       if (darksNote) appendNote(darksNote);
-
-      // The plugin ended the run itself (a sequence started): not a failure of the flats
-      if (run.stopReason && !run.success) {
-        if (type === 'error') type = 'warning';
-        appendNote(run.stopReason);
-      }
+      if (stoppedByPlugin) appendNote(run.stopReason);
 
       this.lastRunOutcome = { type, message };
 
