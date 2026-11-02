@@ -84,8 +84,8 @@ thresholds; those need runs on real optics.
 
 ## Open questions
 
-- The plugin server does not expose Hocus Focus' `ReverseInitialDirection`, so the assistant
-  has no SCT/backlash question; adding it needs a backend change. (user)
+- `ReverseInitialDirection` is now exposed via the AutoFocus options (toggle in the basic card), but the assistant
+  still has no SCT/backlash question that sets it. (user)
 - Thresholds need tuning on real optics (see above). (user)
 - If PINS does not preselect HF as Star Detector / Auto Focus, a plugin-server endpoint for
   `PluggableBehaviorSettings` is the real fix — follow-up feature. (user)
