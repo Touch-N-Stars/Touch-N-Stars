@@ -4606,6 +4606,7 @@
           "park": "Errore parcheggio",
           "sync": "Errore sincronizzazione",
           "stop_slew": "Errore arresto movimento",
+          "slew": "Errore nella rotazione della cupola",
           "home": "Errore posizione home",
           "follow": "Errore inseguimento telescopio"
         },
@@ -7860,6 +7861,7 @@
       "confirmStopMessage": "Tutte le misurazioni effettuate finora verranno scartate e il profilo verrà ripristinato allo stato precedente.",
       "confirmStopTitle": "Interrompere il calcolo?",
       "baseFilterUnmeasured": "Il primo filtro della corsa non ha prodotto alcuna misurazione AutoFocus utilizzabile, quindi non c'era nulla contro cui contrapporre gli altri filtri: ogni offset inferiore è 0 e il risultato non è utilizzabile. Scartarlo ed eseguire nuovamente il calcolo.",
+      "notMeasured": "Non misurato in questa esecuzione: viene mantenuto l'offset precedente.",
       "board": "Misurazioni della messa a fuoco automatica",
       "boardHint": "Una riga per filtro, una colonna per iterazione, che mostra la posizione di messa a fuoco trovata dalla messa a fuoco automatica. I valori barrati sono stati scartati come valori anomali; * contrassegna un'iterazione la cui prima messa a fuoco automatica non è riuscita ed è stata ripetuta.",
       "cutoffTooltip": "Per essere scartato, un campione doveva trovarsi a più di {cutoff} passi dalla mediana di {median}.",

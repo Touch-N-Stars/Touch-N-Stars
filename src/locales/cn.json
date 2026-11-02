@@ -4606,6 +4606,7 @@
           "park": "停靠错误",
           "sync": "同步错误",
           "stop_slew": "停止转动错误",
+          "slew": "圆顶转动出错",
           "home": "归位错误",
           "follow": "跟随望远镜错误"
         },
@@ -7855,6 +7856,7 @@
       "confirmStopMessage": "All measurements taken so far will be discarded and the profile is restored to its previous state.",
       "confirmStopTitle": "Stop the calculation?",
       "baseFilterUnmeasured": "The first filter of the run produced no usable AutoFocus measurement, so there was nothing to state the other filters against — every offset below is 0 and the result is not usable. Discard it and run the calculation again.",
+      "notMeasured": "本次运行未测量——保留之前的偏移量。",
       "board": "AutoFocus Measurements",
       "boardHint": "One row per filter, one column per iteration, showing the focus position AutoFocus found. Struck-through values were discarded as outliers; * marks an iteration whose first AutoFocus failed and was repeated.",
       "cutoffTooltip": "A sample had to be more than {cutoff} steps from the median of {median} to be discarded.",

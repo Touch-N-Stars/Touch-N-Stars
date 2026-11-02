@@ -486,10 +486,17 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
           if (type === 'success') type = 'warning';
         }
       }
-      if (darksNote) {
-        // The flat messages carry no closing punctuation of their own.
+      // The flat messages carry no closing punctuation of their own.
+      const appendNote = (note) => {
         const closed = /[.!?。！？]$/.test(message.trim());
-        message = `${message.trim()}${closed ? '' : '.'} ${darksNote}`;
+        message = `${message.trim()}${closed ? '' : '.'} ${note}`;
+      };
+      if (darksNote) appendNote(darksNote);
+
+      // The plugin ended the run itself (a sequence started): not a failure of the flats
+      if (run.stopReason && !run.success) {
+        if (type === 'error') type = 'warning';
+        appendNote(run.stopReason);
       }
 
       this.lastRunOutcome = { type, message };

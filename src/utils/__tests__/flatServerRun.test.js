@@ -87,3 +87,12 @@ test('buildServerRunSummary() flags darks the user declined to cover for', () =>
   });
   assert.equal(summary.darks.skipped, true);
 });
+
+test('buildServerRunSummary() carries the reason the plugin ended the run with', () => {
+  const summary = buildServerRunSummary({
+    Error: 'Stopped because a sequence started',
+    Filters: [filter({ State: 'stopped', Completed: 5 })],
+  });
+  assert.equal(summary.stopReason, 'Stopped because a sequence started');
+  assert.equal(buildServerRunSummary({ Error: '  ', Filters: [filter()] }).stopReason, null);
+});

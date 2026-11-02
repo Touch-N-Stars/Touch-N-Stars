@@ -4606,6 +4606,7 @@
           "park": "Fout Park",
           "sync": "Fout sync",
           "stop_slew": "Fout stop slew",
+          "slew": "Fout bij draaien van de koepel",
           "home": "Fout home",
           "follow": "Fout bij volgen Telescoop"
         },
@@ -7855,6 +7856,7 @@
       "confirmStopMessage": "Alle tot nu toe uitgevoerde metingen worden verwijderd en het profiel wordt hersteld naar de vorige staat.",
       "confirmStopTitle": "De berekening stopzetten?",
       "baseFilterUnmeasured": "Het eerste filter van de run leverde geen bruikbare AutoFocus-meting op, dus er was niets om de andere filters tegen te zeggen: elke offset daaronder is 0 en het resultaat is niet bruikbaar. Gooi het weg en voer de berekening opnieuw uit.",
+      "notMeasured": "Niet gemeten in deze run – de vorige offset blijft behouden.",
       "board": "Autofocus-metingen",
       "boardHint": "Eén rij per filter, één kolom per iteratie, die de gevonden focuspositie weergeeft die AutoFocus heeft gevonden. Doorgestreepte waarden werden als uitschieters weggegooid; * markeert een iteratie waarvan de eerste AutoFocus mislukte en werd herhaald.",
       "cutoffTooltip": "Een monster moest meer dan {cutoff} stappen verwijderd zijn van de mediaan van {median} om te worden weggegooid.",

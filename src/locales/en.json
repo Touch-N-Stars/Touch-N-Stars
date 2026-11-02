@@ -4647,6 +4647,7 @@
           "park": "Error Park",
           "sync": "Error sync",
           "stop_slew": "Error stop slew",
+          "slew": "Error slew",
           "home": "Error home",
           "follow": "Error follow Telescope"
         },
@@ -8241,7 +8242,8 @@
       "estimatedFocusTooltip": "Drift-corrected focus at the start of the run: {focus}.",
       "drift": "Focus drift over the run",
       "stepsPerLoop": "{value} steps/iteration",
-      "baseFilterUnmeasured": "The first filter of the run produced no usable AutoFocus measurement, so there was nothing to state the other filters against — every offset below is 0 and the result is not usable. Discard it and run the calculation again."
+      "baseFilterUnmeasured": "The first filter of the run produced no usable AutoFocus measurement, so there was nothing to state the other filters against — every offset below is 0 and the result is not usable. Discard it and run the calculation again.",
+      "notMeasured": "Not measured in this run - the previous offset is kept."
     },
     "groundStation": {
       "title": "Ground Station",

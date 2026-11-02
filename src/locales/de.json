@@ -4647,6 +4647,7 @@
           "park": "Fehler beim parken",
           "sync": "Fehler beim synchronisieren",
           "stop_slew": "Fehler beim stoppen",
+          "slew": "Fehler beim Schwenken der Kuppel",
           "home": "Fehler beim Heimkehren",
           "follow": "Fehler beim Folgen des Teleskops"
         },
@@ -7928,6 +7929,7 @@
       "confirmStopMessage": "Alle bisher durchgeführten Messungen werden verworfen und das Profil wird auf den vorherigen Zustand zurückgesetzt.",
       "confirmStopTitle": "Berechnung stoppen?",
       "baseFilterUnmeasured": "Der erste Filter des Laufs ergab keine brauchbare Autofokus-Messung, daher gab es für die anderen Filter nichts zu beanstanden – jeder Offset darunter ist 0 und das Ergebnis ist nicht brauchbar. Verwerfen Sie es und führen Sie die Berechnung erneut durch.",
+      "notMeasured": "In diesem Lauf nicht gemessen – der bisherige Offset bleibt erhalten.",
       "board": "Autofokus-Messungen",
       "boardHint": "Eine Zeile pro Filter, eine Spalte pro Iteration, die die vom AutoFocus gefundene Fokusposition anzeigt. Durchgestrichene Werte wurden als Ausreißer verworfen; * markiert eine Iteration, deren erster Autofokus fehlschlug und wiederholt wurde.",
       "cutoffTooltip": "Eine Stichprobe musste mehr als {cutoff} Schritte vom Median von {median} entfernt sein, um verworfen zu werden.",

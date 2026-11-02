@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
+import { runDomeAction } from './runDomeAction';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
@@ -13,16 +13,7 @@ const { t } = useI18n();
 const statusClass = ref('');
 
 async function homeDome() {
-  try {
-    await apiService.domeAction('home');
-    statusClass.value = 'glow-green';
-    console.log(t('components.dome.control.home'));
-  } catch (error) {
-    console.log(t('components.dome.control.errors.home'));
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('home', statusClass, t('components.dome.control.errors.home'));
 }
 </script>
 <style scoped>

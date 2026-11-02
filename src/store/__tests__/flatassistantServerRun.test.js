@@ -174,3 +174,19 @@ test('incomplete darks turn a successful flat run into a warning', () => {
   assert.equal(flatsStore.lastRunOutcome.type, 'warning');
   assert.match(flatsStore.lastRunOutcome.message, /Darks: 1 of 2 captured\.$/);
 });
+
+test('a run the plugin ended for a sequence is a warning that names the reason', () => {
+  const flatsStore = setup(async () => ({ Response: runStatus() }));
+  flatsStore.commitRunOutcome({
+    type: 'flats',
+    completed: 5,
+    total: 20,
+    success: false,
+    lastADU: null,
+    failedFilterNames: [],
+    darks: null,
+    stopReason: 'Stopped because a sequence started',
+  });
+  assert.equal(flatsStore.lastRunOutcome.type, 'warning');
+  assert.match(flatsStore.lastRunOutcome.message, /\. Stopped because a sequence started$/);
+});

@@ -4606,6 +4606,7 @@
           "park": "Błąd parkowania",
           "sync": "Błąd synchronizacji",
           "stop_slew": "Błąd zatrzymania obrotu",
+          "slew": "Błąd obrotu kopuły",
           "home": "Błąd powrotu do home",
           "follow": "Błąd podążania za teleskopem"
         },
@@ -7855,6 +7856,7 @@
       "confirmStopMessage": "Wszystkie dotychczasowe pomiary zostaną odrzucone, a profil zostanie przywrócony do poprzedniego stanu.",
       "confirmStopTitle": "Zatrzymać obliczenia?",
       "baseFilterUnmeasured": "Pierwszy filtr z serii nie dał żadnego użytecznego pomiaru AutoFocus, więc nie było nic, co można by przeciwstawić innym filtrom — każde przesunięcie poniżej wynosi 0, a wynik nie nadaje się do wykorzystania. Odrzuć go i wykonaj obliczenia ponownie.",
+      "notMeasured": "Nie zmierzono w tym przebiegu – zachowano poprzedni offset.",
       "board": "Pomiary autofokusa",
       "boardHint": "Jeden wiersz na filtr, jedna kolumna na iterację, pokazujące pozycję fokusa znalezioną przez funkcję AutoFocus. Wartości przekreślone odrzucono jako wartości odstające; * oznacza iterację, w której pierwszy AutoFocus nie powiódł się i został powtórzony.",
       "cutoffTooltip": "Próbka musiała być oddalona o więcej niż {cutoff} kroków od mediany {median}, aby została odrzucona.",

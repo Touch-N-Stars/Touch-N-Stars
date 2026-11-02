@@ -4606,6 +4606,7 @@
           "park": "Chyba Park",
           "sync": "Chyba synch.",
           "stop_slew": "Chyba zastavení přejezdu",
+          "slew": "Chyba při otáčení kopule",
           "home": "Chyba home",
           "follow": "Chyba sledování dalekohledu"
         },
@@ -7855,6 +7856,7 @@
       "confirmStopMessage": "All measurements taken so far will be discarded and the profile is restored to its previous state.",
       "confirmStopTitle": "Stop the calculation?",
       "baseFilterUnmeasured": "The first filter of the run produced no usable AutoFocus measurement, so there was nothing to state the other filters against — every offset below is 0 and the result is not usable. Discard it and run the calculation again.",
+      "notMeasured": "V tomto běhu neměřeno – předchozí offset zůstává zachován.",
       "board": "AutoFocus Measurements",
       "boardHint": "One row per filter, one column per iteration, showing the focus position AutoFocus found. Struck-through values were discarded as outliers; * marks an iteration whose first AutoFocus failed and was repeated.",
       "cutoffTooltip": "A sample had to be more than {cutoff} steps from the median of {median} to be discarded.",

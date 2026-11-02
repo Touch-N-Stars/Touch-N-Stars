@@ -34,20 +34,31 @@
 import { ref, onMounted } from 'vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
+import { useToastStore } from '@/store/toastStore';
 import { useI18n } from 'vue-i18n';
 import { StopCircleIcon } from '@heroicons/vue/24/outline';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const { t } = useI18n();
 const store = apiStore();
+const toastStore = useToastStore();
 const azimuth = ref(0);
 const isSlewing = ref(false);
 
 async function slewDome() {
   isSlewing.value = true;
   try {
-    await apiService.domeAction(`slew?waitToFinish=true&azimuth=${azimuth.value}`);
+    const response = await apiService.domeAction(`slew?waitToFinish=true&azimuth=${azimuth.value}`);
     isSlewing.value = false;
+    // A refused slew (e.g. 409 while the shutter is closing) comes back as HTTP 200
+    if (!response?.Success) {
+      toastStore.showToast({
+        type: 'error',
+        title: t('components.dome.control.errors.slew'),
+        message: response?.Error || t('components.dome.control.errors.slew'),
+      });
+      return;
+    }
     if (store.domeInfo.Azimuth.toFixed(0) === azimuth.value.toFixed(0)) {
       console.log('Slewing to the same azimuth, stopping slew.');
       isSlewing.value = false;

@@ -4606,6 +4606,7 @@
           "park": "Error aparcando",
           "sync": "Error sincronizando",
           "stop_slew": "Error parando movimiento",
+          "slew": "Error al girar la cúpula",
           "home": "Error en home",
           "follow": "Error al seguir el telescopio"
         },
@@ -7855,6 +7856,7 @@
       "confirmStopMessage": "Todas las medidas tomadas hasta el momento se descartarán y el perfil volverá a su estado anterior.",
       "confirmStopTitle": "¿Detener el cálculo?",
       "baseFilterUnmeasured": "El primer filtro de la ejecución no produjo ninguna medición de AutoFocus utilizable, por lo que no había nada contra lo que comparar los otros filtros: cada compensación a continuación es 0 y el resultado no es utilizable. Deséchelo y ejecute el cálculo nuevamente.",
+      "notMeasured": "No medido en esta ejecución: se mantiene el offset anterior.",
       "board": "Medidas de enfoque automático",
       "boardHint": "Una fila por filtro, una columna por iteración, que muestra la posición de enfoque encontrada por AutoFocus. Los valores tachados se descartaron como valores atípicos; * marca una iteración cuyo primer enfoque automático falló y se repitió.",
       "cutoffTooltip": "Una muestra tenía que estar a más de {cutoff} pasos de la mediana de {median} para ser descartada.",

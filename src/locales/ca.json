@@ -4647,6 +4647,7 @@
           "park": "Error en aparcar",
           "sync": "Error en sincronitzar",
           "stop_slew": "Error en aturar el desplaçament",
+          "slew": "Error en girar la cúpula",
           "home": "Error en anar a la posició inicial",
           "follow": "Error en seguir el telescopi"
         },
@@ -8011,6 +8012,7 @@
       "deviceFocuser": "Enfocador",
       "deviceFilterWheel": "Roda de filtres",
       "baseFilterUnmeasured": "El primer filtre de l'execució no va produir cap mesura d'enfocament automàtic utilitzable, de manera que no hi havia res per indicar els altres filtres: cada desplaçament a continuació és 0 i el resultat no es pot utilitzar. Descarteu-lo i torneu a executar el càlcul.",
+      "notMeasured": "No mesurat en aquesta execució: es manté l'offset anterior.",
       "board": "Mesures d'enfocament automàtic",
       "boardHint": "Una fila per filtre, una columna per iteració, que mostra la posició del focus Autofocus trobat. Els valors esborrats es van descartar com a valors atípics; * marca una iteració el primer enfocament automàtic de la qual va fallar i es va repetir.",
       "confirmStopMessage": "Es descartaran totes les mesures realitzades fins ara i el perfil es restaurarà al seu estat anterior.",

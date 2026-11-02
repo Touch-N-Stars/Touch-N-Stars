@@ -65,8 +65,13 @@ export function buildServerRunSummary(status, { dimLabel, brightLabel } = {}) {
     .reverse()
     .find((f) => f.LastADU !== null && f.LastADU !== undefined);
 
+  // The plugin's reason for ending a run on its own, e.g. "Stopped because a sequence started"
+  const stopReason =
+    typeof status?.Error === 'string' && status.Error.trim() ? status.Error.trim() : null;
+
   return {
     type: filters.length > 1 ? 'flats-multi' : 'flats',
+    stopReason,
     completed,
     total,
     success,

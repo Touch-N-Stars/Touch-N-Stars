@@ -368,6 +368,9 @@ const handlePowerLevelChange = async (portIndex, event, resolution) => {
   if (isNaN(absoluteValue) || !resolution) return;
 
   const success = await store.setDewPortPowerLevel(portIndex, absoluteValue);
+  // Hand the slider back to the polled SetPower, so a refused value springs back
+  if (isDraggingSlider.value === portIndex) isDraggingSlider.value = null;
+  delete localSliderValues.value[portIndex];
   if (!success) {
     console.error('Failed to set power level');
   }

@@ -4606,6 +4606,7 @@
           "park": "Erreur de parking",
           "sync": "Erreur de synchronisation",
           "stop_slew": "Erreur d'arrêt de déplacement",
+          "slew": "Erreur lors du déplacement du dôme",
           "home": "Erreur de position de référence",
           "follow": "Erreur de suivi du télescope"
         },
@@ -7855,6 +7856,7 @@
       "confirmStopMessage": "Toutes les mesures prises jusqu'à présent seront supprimées et le profil sera restauré à son état précédent.",
       "confirmStopTitle": "Arrêter le calcul ?",
       "baseFilterUnmeasured": "Le premier filtre de l'analyse n'a produit aucune mesure AutoFocus utilisable, il n'y avait donc rien à comparer aux autres filtres - chaque décalage ci-dessous est de 0 et le résultat n'est pas utilisable. Jetez-le et relancez le calcul.",
+      "notMeasured": "Non mesuré lors de cette analyse – l'offset précédent est conservé.",
       "board": "Mesures de mise au point automatique",
       "boardHint": "Une ligne par filtre, une colonne par itération, indiquant la position de mise au point trouvée par AutoFocus. Les valeurs barrées ont été écartées en tant que valeurs aberrantes ; * marque une itération dont le premier AutoFocus a échoué et a été répété.",
       "cutoffTooltip": "Un échantillon devait se trouver à plus de {cutoff} pas de la médiane de {median} pour être rejeté.",

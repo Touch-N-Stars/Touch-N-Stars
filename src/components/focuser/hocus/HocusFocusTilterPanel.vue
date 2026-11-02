@@ -439,8 +439,10 @@ const withDetail = (message, error) => {
   return detail ? `${message}: ${detail}` : message;
 };
 
-// The server refuses a new target while the actuators are still travelling
+// The server refuses a new target while the actuators are still travelling. The global
+// interceptor resolves refusals, so the ErrorCode usually sits on the returned body.
 const isStillMoving = (error) => error?.response?.data?.ErrorCode === 'moving';
+const isMovingRefusal = (response) => response?.ErrorCode === 'moving';
 
 const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value);
 const formatMm = (value) => (isFiniteNumber(value) ? `${value.toFixed(3)} mm` : '—');
@@ -619,6 +621,13 @@ async function disconnect() {
 async function refreshStatus() {
   try {
     const response = await apiService.hocusfocus.getTilterStatus(selectedDeviceId.value);
+    // The plugin answers 200 with an Error when the ETA's state cannot be read; its positions are
+    // then placeholders, not 0.000 mm
+    if (response?.Error) {
+      deviceStatus.value = null;
+      deviceError.value = `${L('statusFailed')}: ${response.Error}`;
+      return;
+    }
     if (response?.Response) {
       deviceStatus.value = response.Response;
       deviceError.value = '';
@@ -683,7 +692,9 @@ async function savePosition() {
       [`position${selectedPositionIndex.value}`]: value,
     });
     if (response?.Success === false) {
-      positionError.value = response.Error || response.Message || L('setPositionFailed');
+      positionError.value = isMovingRefusal(response)
+        ? L('stillMoving')
+        : response.Error || response.Message || L('setPositionFailed');
       return;
     }
     beginMove();
@@ -978,7 +989,9 @@ async function applyCalculatedPositions() {
       { position1: result.Position1, position2: result.Position2, position3: result.Position3 }
     );
     if (response?.Success === false) {
-      applyTiltPlaneError.value = response.Error || response.Message || L('applyFailed');
+      applyTiltPlaneError.value = isMovingRefusal(response)
+        ? L('stillMoving')
+        : response.Error || response.Message || L('applyFailed');
       return;
     }
     calculatedPositions.value = null;

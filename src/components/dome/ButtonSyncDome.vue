@@ -14,25 +14,17 @@
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
+import { runDomeAction } from './runDomeAction';
 import { apiStore } from '@/store/store';
+import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
+const { t } = useI18n();
 const store = apiStore();
 const statusClass = ref('');
 
 async function syncTelescope() {
-  try {
-    const response = await apiService.domeAction('sync');
-    console.log('syncing telescope', response);
-    statusClass.value = 'glow-green';
-    console.log('telescope synced');
-  } catch (error) {
-    console.log('telescope sync error');
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('sync', statusClass, t('components.dome.control.errors.sync'));
 }
 </script>
 <style scoped>
