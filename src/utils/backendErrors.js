@@ -31,8 +31,9 @@ export function reportBackendRefusal(response, titleKey) {
   return true;
 }
 
-// The plugin's /autofocus/start answers a refused start with HTTP 200 and a fixed German message
-// ("Fehler beim Starten des Autofokus: <reason>") instead of Success: false.
+// The plugin's /autofocus/start answers a refused start with HTTP 200. Current plugins add
+// Success: false and the Error; older ones only send a fixed German message
+// ("Fehler beim Starten des Autofokus: <reason>"), which stays the fallback.
 const AF_START_ERROR_PREFIX = 'Fehler beim Starten des Autofokus';
 
 /** The reason the autofocus start was refused ('' when none is given), or null if it started. */

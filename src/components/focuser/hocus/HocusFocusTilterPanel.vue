@@ -622,8 +622,9 @@ async function refreshStatus() {
   try {
     const response = await apiService.hocusfocus.getTilterStatus(selectedDeviceId.value);
     // The plugin answers 200 with an Error when the ETA's state cannot be read; its positions are
-    // then placeholders, not 0.000 mm
-    if (response?.Error) {
+    // then placeholders, not 0.000 mm. The interceptor's mocks for a canceled or failed request
+    // carry no Response: a blip of the 1s poll keeps the last status.
+    if (response?.Error && response.Response) {
       deviceStatus.value = null;
       deviceError.value = `${L('statusFailed')}: ${response.Error}`;
       return;

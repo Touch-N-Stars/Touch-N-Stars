@@ -98,9 +98,15 @@ const toastStore = useToastStore();
 let autoCloseTimer = null;
 
 // Watch für neue Toast-Nachrichten
+// toastSeq changes for every toast, also one replacing a toast that is still open: the old timer
+// must not close the new toast, and a new auto-close toast needs its own timer.
 watch(
-  () => toastStore.newMessage,
-  (newValue) => {
+  () => [toastStore.newMessage, toastStore.toastSeq],
+  ([newValue]) => {
+    if (autoCloseTimer) {
+      clearTimeout(autoCloseTimer);
+      autoCloseTimer = null;
+    }
     if (
       newValue &&
       !toastStore.isConfirmation &&
@@ -108,16 +114,9 @@ watch(
       toastStore.autoClose
     ) {
       // Timer für normale Toast-Nachrichten (nicht für Confirmations oder Critical)
-      if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-      }
       autoCloseTimer = setTimeout(() => {
         toastStore.closeToast();
       }, toastStore.autoCloseDelay);
-    } else if (!newValue && autoCloseTimer) {
-      // Timer löschen wenn Toast manuell geschlossen wird
-      clearTimeout(autoCloseTimer);
-      autoCloseTimer = null;
     }
   },
   { immediate: true }

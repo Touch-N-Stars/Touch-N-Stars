@@ -209,3 +209,22 @@ test('a run the plugin ended before its first flat shows only the reason', () =>
   assert.equal(flatsStore.lastRunOutcome.type, 'warning');
   assert.equal(flatsStore.lastRunOutcome.message, 'Stopped because a sequence started');
 });
+
+test('a run the plugin ended keeps the filters that had already failed', () => {
+  const flatsStore = setup(async () => ({ Response: runStatus() }));
+  flatsStore.commitRunOutcome({
+    type: 'flats-multi',
+    completed: 5,
+    total: 20,
+    success: false,
+    lastADU: null,
+    failedFilterNames: ['R'],
+    darks: null,
+    stopReason: 'Stopped because a sequence started',
+  });
+  assert.equal(flatsStore.lastRunOutcome.type, 'warning');
+  assert.equal(
+    flatsStore.lastRunOutcome.message,
+    'Stopped early - 5 of 20 flats captured. Failed filters: R. Stopped because a sequence started'
+  );
+});

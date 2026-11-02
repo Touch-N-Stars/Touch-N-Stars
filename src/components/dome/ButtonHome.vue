@@ -6,14 +6,12 @@
 
 <script setup>
 import { runDomeAction } from './runDomeAction';
-import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
-const { t } = useI18n();
 const statusClass = ref('');
 
 async function homeDome() {
-  await runDomeAction('home', statusClass, t('components.dome.control.errors.home'));
+  await runDomeAction('home', statusClass, 'components.dome.control.errors.home');
 }
 </script>
 <style scoped>

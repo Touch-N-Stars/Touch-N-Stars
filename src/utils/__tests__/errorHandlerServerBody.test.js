@@ -58,3 +58,10 @@ test('an HTML error body still gets the generic text', async (t) => {
   assert.equal(res.data.StatusCode, 404);
   assert.equal(res.data.Response, '');
 });
+
+test('a plugin body with a lowercase error key keeps its reason', async (t) => {
+  stubAdapter(t, 500, { error: 'Interner Fehler beim Starten des Autofokus' });
+  const res = await axios.get('http://10.0.0.5:5000/api/autofocus/start');
+  assert.equal(res.data.Success, false);
+  assert.equal(res.data.Error, 'Interner Fehler beim Starten des Autofokus');
+});

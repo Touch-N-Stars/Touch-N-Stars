@@ -16,15 +16,13 @@
 <script setup>
 import { runDomeAction } from './runDomeAction';
 import { apiStore } from '@/store/store';
-import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
 
-const { t } = useI18n();
 const store = apiStore();
 const statusClass = ref('');
 
 async function syncTelescope() {
-  await runDomeAction('sync', statusClass, t('components.dome.control.errors.sync'));
+  await runDomeAction('sync', statusClass, 'components.dome.control.errors.sync');
 }
 </script>
 <style scoped>

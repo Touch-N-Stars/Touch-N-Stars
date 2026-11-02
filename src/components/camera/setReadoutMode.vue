@@ -1,6 +1,7 @@
 <template>
+  <!-- The per-type routes set-readout/image and /snapshot arrived in ninaAPI 2.2.14.4 -->
   <div
-    v-if="!store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.14.3')"
+    v-if="!store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.14.4')"
     class="flex items-center justify-between border border-line-strong p-1 md:p-2 rounded-control"
   >
     <label for="setReadoutMode" class="text-xs md:text-sm text-content font-medium">

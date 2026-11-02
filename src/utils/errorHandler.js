@@ -187,10 +187,16 @@ export function setupErrorHandler() {
       let category = 'NETWORK';
 
       // A JSON error body carries the server's own reason (Error, ErrorCode); HTML or plain-text
-      // bodies from proxies and unknown routes do not.
+      // bodies from proxies and unknown routes do not. Some plugin controllers answer with
+      // lowercase keys ({ "error": "..." }).
       const body = error.response?.data;
       const serverBody = body && typeof body === 'object' && !Array.isArray(body) ? body : null;
-      const serverError = serverBody?.Error || serverBody?.Message || null;
+      const serverError =
+        serverBody?.Error ||
+        serverBody?.Message ||
+        serverBody?.error ||
+        serverBody?.message ||
+        null;
 
       if (status) {
         message = serverError || `${method} request failed`;

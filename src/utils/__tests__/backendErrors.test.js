@@ -75,4 +75,14 @@ test('the plugin autofocus start refusal is read from its message', () => {
     autofocusStartRefusal({ Success: false, StatusCode: 500, Error: 'GET request failed' }),
     'GET request failed'
   );
+  // Current plugins flag the refusal themselves, whatever the message says
+  assert.equal(
+    autofocusStartRefusal({
+      message: 'Fehler beim Starten des Autofokus: Autofocus already running',
+      Success: false,
+      Error: 'Autofocus already running',
+    }),
+    'Autofocus already running'
+  );
+  assert.equal(autofocusStartRefusal({ message: 'Autofokus gestartet', Success: true }), null);
 });

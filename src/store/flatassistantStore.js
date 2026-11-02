@@ -422,8 +422,15 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
       let type = 'info';
       let message;
       // The plugin ended the run itself (a sequence started): not a failure of the flats, so no
-      // failure text - the frames taken so far, and the reason appended below.
+      // failure text - the frames taken so far, filters that had already failed, and the reason
+      // appended below.
       const stoppedByPlugin = Boolean(run.stopReason) && !run.success;
+      const failedFiltersNote =
+        stoppedByPlugin && run.failedFilterNames?.length > 0
+          ? i18n.global.t('components.flatassistant.status_partial_flats_multi', {
+              filters: run.failedFilterNames.join(', '),
+            })
+          : null;
 
       if (stoppedByPlugin) {
         type = 'warning';
@@ -509,6 +516,7 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
         const closed = /[.!?。！？]$/.test(message.trim());
         message = `${message.trim()}${closed ? '' : '.'} ${note}`;
       };
+      if (failedFiltersNote) appendNote(failedFiltersNote);
       if (darksNote) appendNote(darksNote);
       if (stoppedByPlugin) appendNote(run.stopReason);
 
