@@ -12,7 +12,7 @@ import {
 import { atlasSearchResultToTarget } from '../contracts.js';
 import { atlasSelectionToCommandModel } from '../selectionModel.js';
 
-const ATLAS_REVISION = '36fa204eba85db903173fc05843d2366110796d7';
+const ATLAS_REVISION = 'e81c57ac57b409ea1a9e1e92eb8927fddf042d12';
 const TOLERANCE_DEG = 1e-10;
 
 function angularErrorDeg(actual, expected) {

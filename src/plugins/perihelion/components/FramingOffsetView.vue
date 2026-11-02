@@ -165,6 +165,7 @@ import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useFramingStore } from '@/store/framingStore';
 import { ninaObserverToAtlas } from '@/integrations/celestiaAtlas/contracts';
+import { projectAtlasPathPoint } from '@/integrations/celestiaAtlas/pathProjection';
 import { ATLAS_POSITION_ANGLE_CONVENTION } from '@/integrations/celestiaAtlas/positionAngle';
 import {
   createDssSkySurveySource,
@@ -243,26 +244,8 @@ function formatDecDeg(decDeg) {
 }
 
 // --- Orbital path overlay ---
-// Standard gnomonic (tangent-plane) projection: given the view's own center RA/Dec and an
-// arbitrary target RA/Dec, returns the target's tangent-plane offset in RADIANS from the center.
-// This is the same category of math FovFramingPreview.vue's own tangentFromWorld solves; best
-// understanding as of writing this, pending confirmation from that component's own author on
-// exact sign/orientation conventions -- flagged as the one part of this feature most likely to
-// need a calibration pass once seen rendered, same as the FOV overlay itself needed.
-const DEG2RAD = Math.PI / 180;
-function tangentPlaneOffset(raDeg, decDeg, centerRaDeg, centerDecDeg) {
-  const ra = raDeg * DEG2RAD;
-  const dec = decDeg * DEG2RAD;
-  const ra0 = centerRaDeg * DEG2RAD;
-  const dec0 = centerDecDeg * DEG2RAD;
-  const dRa = ra - ra0;
-  const cosc = Math.sin(dec0) * Math.sin(dec) + Math.cos(dec0) * Math.cos(dec) * Math.cos(dRa);
-  const xi = (Math.cos(dec) * Math.sin(dRa)) / cosc;
-  const eta =
-    (Math.cos(dec0) * Math.sin(dec) - Math.sin(dec0) * Math.cos(dec) * Math.cos(dRa)) / cosc;
-  return { xi, eta };
-}
-
+// Use the viewer's projection basis and focal length so the path follows both
+// the currently pinned Atlas and corrected east-left equatorial releases.
 async function loadPath() {
   try {
     pathPoints.value = await fetchPath({
@@ -290,30 +273,27 @@ function drawPath() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.clearRect(0, 0, width, height);
 
-  const view = viewer.getView();
-  const centerRaDeg = view.center.raDeg;
-  const centerDecDeg = view.center.decDeg;
-  // fovDeg is treated as the frame's horizontal extent -- matches how centerOnTarget() itself
-  // sets fovDeg (derived from the FOV box's own widthDeg/heightDeg), and pixels-per-radian is
-  // calibrated against the canvas's actual pixel width for that same horizontal extent.
-  const pixelsPerRadian = width / (view.fovDeg * DEG2RAD);
-
-  const screenPoints = pathPoints.value.map((p) => {
-    const { xi, eta } = tangentPlaneOffset(p.raHours * 15, p.decDeg, centerRaDeg, centerDecDeg);
-    return {
-      x: width / 2 + xi * pixelsPerRadian,
-      // eta increases toward celestial north (up); screen Y increases downward, hence the flip.
-      y: height / 2 - eta * pixelsPerRadian,
-    };
-  });
+  const screenPoints = pathPoints.value.map((point) =>
+    projectAtlasPathPoint(viewer, point, width, height)
+  );
 
   ctx.strokeStyle = '#a78bfa';
   ctx.lineWidth = 1.8;
   ctx.beginPath();
-  screenPoints.forEach((pt, i) => (i === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y)));
+  let continuing = false;
+  screenPoints.forEach((pt) => {
+    if (!pt) {
+      continuing = false;
+      return;
+    }
+    if (continuing) ctx.lineTo(pt.x, pt.y);
+    else ctx.moveTo(pt.x, pt.y);
+    continuing = true;
+  });
   ctx.stroke();
 
   screenPoints.forEach((pt, i) => {
+    if (!pt) return;
     ctx.beginPath();
     ctx.arc(pt.x, pt.y, i === 0 ? 3.5 : 2, 0, 2 * Math.PI);
     ctx.fillStyle = i === 0 ? '#22d3ee' : '#a78bfa';
@@ -326,7 +306,7 @@ function drawPath() {
   // semi-transparent pill treatment as the panToFrame/RA-Dec overlays above (bg-black/50,
   // text-white/80, normal weight, Tailwind's own default sans stack), just canvas-drawn since
   // this label's position is dynamic.
-  if (screenPoints.length) {
+  if (screenPoints[0]) {
     const tonight = screenPoints[0];
     const labelPad = 5;
     const labelGap = 8;
