@@ -3,10 +3,12 @@ import { markRaw } from 'vue';
 import apiService from '@/services/apiService';
 import { useSettingsStore } from '@/store/settingsStore';
 import { parseRawImage } from '@/utils/rawImage/parseRawImage';
+import { rawFromRgba } from '@/utils/rawImage/displayImage';
 import {
   autoStretch,
   buildLut,
   dataRangeLevels,
+  linearLevels,
   neutralizeBackground,
   renderRgba,
   shiftLevels,
@@ -202,10 +204,75 @@ function errorCode(error) {
   return 'error';
 }
 
+// Decodes the JPEG the view shows, downscaled through a canvas with high-quality smoothing
+// (iOS WebKit ignores createImageBitmap's resizeQuality and resamples blockily).
+async function decodeDisplayImage(imageUrl, maxDim) {
+  const img = await new Promise((resolve, reject) => {
+    const el = new Image();
+    el.crossOrigin = 'anonymous';
+    el.onload = () => resolve(el);
+    el.onerror = () => reject(new Error('Image load failed'));
+    el.src = imageUrl;
+  });
+  const sourceWidth = img.naturalWidth;
+  const sourceHeight = img.naturalHeight;
+  const scale = Math.min(1, maxDim / Math.max(sourceWidth, sourceHeight));
+  const width = Math.max(1, Math.round(sourceWidth * scale));
+  const height = Math.max(1, Math.round(sourceHeight * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  try {
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, width, height);
+    const { data } = ctx.getImageData(0, 0, width, height);
+    return rawFromRgba(data, width, height, { sourceWidth, sourceHeight });
+  } finally {
+    canvas.width = 0;
+    canvas.height = 0;
+  }
+}
+
+// Plugins up to 1.5.0.0 have no raw-image route; they get the histogram and stretch of the
+// displayed JPEG instead of only a hint. Any other error, or a failed fallback, stays as is.
+async function loadImageData(imageUrl, source, maxDim, signal) {
+  try {
+    return parseRawImage(await fetchRaw(source, maxDim, signal));
+  } catch (error) {
+    if (signal.aborted || errorCode(error) !== 'unsupported') throw error;
+    try {
+      return await decodeDisplayImage(imageUrl, maxDim);
+    } catch (fallbackError) {
+      console.warn('[HistogramStore] JPEG fallback failed', fallbackError);
+      throw error;
+    }
+  }
+}
+
+// NINA already stretched and colour balanced its JPEG: shifting the channels would tint it,
+// so a display image keeps its channels as they are.
+function background(meta) {
+  if (!meta.displayImage) return neutralizeBackground(meta.stats);
+  const { stats } = meta;
+  const average = (key) => stats.reduce((sum, s) => sum + s[key], 0) / stats.length;
+  return {
+    offsets: stats.map(() => 0),
+    reference: {
+      min: Math.min(...stats.map((s) => s.min)),
+      max: Math.max(...stats.map((s) => s.max)),
+      median: average('median'),
+      mad: average('mad'),
+    },
+  };
+}
+
 // Linked levels are one set for the background-neutralised data (see neutralizeBackground).
+// A display image is shown as delivered, which is the identity on its own pixels.
 function initialLevels(meta) {
-  const { reference } = neutralizeBackground(meta.stats);
-  return [autoStretch(reference, meta.bitDepth)];
+  if (meta.displayImage) return [linearLevels()];
+  return [autoStretch(background(meta).reference, meta.bitDepth)];
 }
 
 export const useHistogramStore = defineStore('histogramStore', {
@@ -259,9 +326,13 @@ export const useHistogramStore = defineStore('histogramStore', {
       );
 
       try {
-        const buffer = await fetchRaw(source, maxDim, controller.signal);
+        const { meta, histograms, planes } = await loadImageData(
+          imageUrl,
+          source,
+          maxDim,
+          controller.signal
+        );
         if (controller.signal.aborted) return;
-        const { meta, histograms, planes } = parseRawImage(buffer);
 
         // Histograms stay here, the preview planes move into the engine.
         const ownHistograms = histograms.map((h) => h.slice());
@@ -289,7 +360,7 @@ export const useHistogramStore = defineStore('histogramStore', {
         entry.stats = meta.stats;
         entry.histograms = markRaw(ownHistograms);
         entry.cums = markRaw(ownHistograms.map(cumulative));
-        entry.offsets = neutralizeBackground(meta.stats).offsets;
+        entry.offsets = background(meta).offsets;
         entry.levels = initialLevels(meta);
         entry.status = 'ready';
       } catch (error) {
@@ -334,7 +405,7 @@ export const useHistogramStore = defineStore('histogramStore', {
       const { stats, bitDepth } = entry.meta;
       const levels =
         entry.linked || stats.length === 1
-          ? [autoStretch(neutralizeBackground(stats).reference, bitDepth)]
+          ? [autoStretch(background(entry.meta).reference, bitDepth)]
           : stats.map((s) => autoStretch(s, bitDepth));
       this.setLevels(imageUrl, levels);
     },
@@ -346,7 +417,7 @@ export const useHistogramStore = defineStore('histogramStore', {
       const { stats, bitDepth } = entry.meta;
       const levels =
         entry.linked || stats.length === 1
-          ? [dataRangeLevels(neutralizeBackground(stats).reference, bitDepth)]
+          ? [dataRangeLevels(background(entry.meta).reference, bitDepth)]
           : stats.map((s) => dataRangeLevels(s, bitDepth));
       this.setLevels(imageUrl, levels);
     },

@@ -1,12 +1,23 @@
 <template>
   <div class="relative overflow-hidden rounded-control border border-line-strong bg-surface-2">
-    <!-- Scroll fades like SubNav, so tabs cut off at the edge read as scrollable -->
-    <div v-if="canScrollStart" class="scroll-fade scroll-fade-left pointer-events-none">
+    <!-- Scroll fades like SubNav, so tabs cut off at the edge read as scrollable. They also
+         page the bar: with a mouse there is no swipe to reach the hidden tabs. -->
+    <div
+      v-if="canScrollStart"
+      class="scroll-fade scroll-fade-left cursor-pointer"
+      aria-hidden="true"
+      @click="scrollPage(-1)"
+    >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </div>
-    <div v-if="canScrollEnd" class="scroll-fade scroll-fade-right pointer-events-none">
+    <div
+      v-if="canScrollEnd"
+      class="scroll-fade scroll-fade-right cursor-pointer"
+      aria-hidden="true"
+      @click="scrollPage(1)"
+    >
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 18l6-6-6-6" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
@@ -18,6 +29,7 @@
       class="flex gap-1 overflow-x-auto scrollbar-hide p-1"
       role="tablist"
       @scroll="updateScrollIndicators"
+      @wheel="onWheel"
     >
       <button
         v-for="tab in tabs"
@@ -62,6 +74,23 @@ function selectTab(value, event) {
   emit('update:modelValue', value);
   // Pull a half-hidden tab fully into view so it is not left under the fade
   event.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+}
+
+function scrollPage(direction) {
+  const el = scrollRef.value;
+  if (!el) return;
+  el.scrollBy({ left: direction * el.clientWidth * 0.7, behavior: 'smooth' });
+}
+
+// A plain mouse wheel only scrolls vertically: turn it sideways while the bar can still move
+// that way, otherwise leave it to the surrounding page or dialog
+function onWheel(event) {
+  const el = scrollRef.value;
+  if (!el || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return;
+  const canMove = event.deltaY < 0 ? canScrollStart.value : canScrollEnd.value;
+  if (!canMove) return;
+  event.preventDefault();
+  el.scrollLeft += event.deltaY;
 }
 
 // Width changes (rotation, split view) can add or remove the overflow without a scroll event

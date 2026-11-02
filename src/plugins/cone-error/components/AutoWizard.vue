@@ -89,7 +89,7 @@
         inputId="cone-repetitions"
         :label="$t('plugins.coneError.auto.repetitions')"
         labelKey="plugins.coneError.auto.repetitions"
-        :min="2"
+        :min="1"
         :max="10"
         :step="1"
         :decimalPlaces="0"
@@ -244,7 +244,7 @@ const status = computed(() => store.status ?? {});
 const plan = computed(() => store.autoPlan);
 
 const dovetailMm = ref(store.settings?.dovetailMm ?? 200);
-const repetitions = ref(store.settings?.repetitions ?? 5);
+const repetitions = ref(store.settings?.repetitions ?? 1);
 const exposure = ref(
   store.settings?.exposureSeconds ?? store.preconditions?.profile?.plateSolveExposureSeconds ?? 5
 );

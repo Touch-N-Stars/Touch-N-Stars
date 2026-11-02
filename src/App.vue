@@ -381,6 +381,7 @@ import ToastModal from '@/components/helpers/ToastModal.vue';
 import StatusBar from '@/components/status/StatusBar.vue';
 import LocationSyncModal from '@/components/helpers/LocationSyncModal.vue';
 import { useOrientation } from '@/composables/useOrientation';
+import { useStageWindow } from '@/composables/useStageWindow';
 import { useRoute } from 'vue-router';
 import DialogModal from '@/components/helpers/DialogModal.vue';
 import MessageBoxModal from '@/components/helpers/MessageBoxModal.vue';
@@ -710,27 +711,11 @@ const stageStyle = computed(() => ({
     : 'calc(100dvh - 82px - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))',
 }));
 
-// Viewport rect of the frame mask — mirrors the stage margins, plus
-// --status-panel-height so an open status-bar panel does not swallow the rounded
-// bottom corners. The panels sit above the mask (they are children of the z-20
-// bar container), so the window has to yield instead. The sheet keeps its
-// margins and simply scrolls on beneath the panel.
-const stageFrameStyle = computed(() =>
-  isLandscape.value
-    ? {
-        top: 'calc(var(--stage-inset) + var(--subnav-offset))',
-        left: 'calc(var(--nav-width) + var(--stage-inset))',
-        right: 'var(--stage-inset)',
-        bottom: 'calc(var(--statusbar-height) + var(--status-panel-height) + var(--stage-inset))',
-      }
-    : {
-        top: 'calc(82px + var(--subnav-offset))',
-        left: 'var(--stage-inset)',
-        right: 'var(--stage-inset)',
-        bottom:
-          'calc(var(--statusbar-height) + env(safe-area-inset-bottom) + var(--status-panel-height) + var(--stage-inset))',
-      }
-);
+// Viewport rect of the frame mask. The panels sit above the mask (they are
+// children of the z-20 bar container), so the window has to yield to an open
+// status-bar panel instead. The sheet keeps its margins and simply scrolls on
+// beneath the panel.
+const { stageWindowStyle: stageFrameStyle } = useStageWindow();
 
 // The frame mask paints with box-shadow, which needs a concrete color — read
 // the instance color off the frame div at runtime (same technique as the nav

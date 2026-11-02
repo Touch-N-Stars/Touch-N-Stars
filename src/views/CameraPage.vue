@@ -459,6 +459,7 @@
 import { ref, computed, watch, onMounted } from 'vue';
 import { useElementSize } from '@vueuse/core';
 import { useOrientation } from '@/composables/useOrientation';
+import { useStageWindow } from '@/composables/useStageWindow';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import { useImagetStore } from '@/store/imageStore';
@@ -528,24 +529,8 @@ const effectiveOffset = computed(() => {
 // Check if in landscape mode
 const { isLandscape } = useOrientation();
 
-// Viewport rect of the stage window — must mirror App.vue's stageFrameStyle
-// so the image area sits exactly inside the rounded frame mask.
-const stageWindowStyle = computed(() =>
-  isLandscape.value
-    ? {
-        top: 'calc(var(--stage-inset) + var(--subnav-offset))',
-        left: 'calc(var(--nav-width) + var(--stage-inset))',
-        right: 'var(--stage-inset)',
-        bottom: 'calc(var(--statusbar-height) + var(--status-panel-height) + var(--stage-inset))',
-      }
-    : {
-        top: 'calc(82px + var(--subnav-offset))',
-        left: 'var(--stage-inset)',
-        right: 'var(--stage-inset)',
-        bottom:
-          'calc(var(--statusbar-height) + env(safe-area-inset-bottom) + var(--status-panel-height) + var(--stage-inset))',
-      }
-);
+// Stage window rect, shared with App.vue's frame mask
+const { stageWindowStyle } = useStageWindow();
 
 // Docked histogram panel: always below the image. Portrait has the height to show
 // it in full (stats included); the cap only guards against tiny screens.

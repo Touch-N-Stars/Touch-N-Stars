@@ -25,7 +25,6 @@ stretch or the JPEG had clipped and posterised visibly.
 - No raw histogram for TPPA and focus images in the image modal (no source; button hidden).
 - Livestack colour combinations of separate mono filters: the plugin aligns them internally and
   saves only a stretched PNG, so there is no raw data. OSC colour stacks are supported.
-- No fallback to the old JPEG histogram: with an older plugin the panel says it needs an update.
 
 ## Design
 
@@ -62,6 +61,15 @@ Header: `version` (1), `imageId`, `width`, `height` (preview), `sourceWidth`, `s
 `channels` (1 or 3), `bitDepth`, `isBayered`, `bayerPattern`, `stats[]` with `min`, `max`,
 `mean`, `median`, `mad` (integer ADU, like NINA), `clipLow`, `clipHigh` (fractions).
 
+### Older plugins (1.5.0.0 and before)
+
+Without the raw-image route (`unsupported`), `histogramStore` decodes the JPEG the view shows and
+`rawFromRgba` (`src/utils/rawImage/displayImage.js`) builds the same `{ meta, histograms, planes }`
+as 8-bit data with `meta.displayImage = true`. Chart, statistics and stretch run unchanged. The
+JPEG is already stretched and colour balanced by NINA, so it starts with linear levels and no
+background offsets; the panel shows a hint to update the plugin. If decoding fails as well, the
+old `unsupported` message stays.
+
 ### Stretch
 
 Levels are normalised to the bit depth: black point, white point and the MTF midtone balance.
@@ -80,7 +88,8 @@ image from the backend; the levels shown match it.
 3. Moving black, midtone or white point re-renders from 16-bit data without tonal banding;
    Auto brings back a view like NINA's.
 4. Works for mono and OSC frames, on NINA and PINS, in browser, Android and iOS.
-5. Livestack without "Save stacked lights" and an older plugin both show a clear hint.
+5. Livestack without "Save stacked lights" shows a clear hint; an older plugin falls back to the
+   8-bit histogram and stretch of the preview JPEG with an update hint.
 
 ## Verification
 

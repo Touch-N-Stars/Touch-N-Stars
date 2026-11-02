@@ -1,43 +1,41 @@
 <template>
-  <div v-if="!store.settingsUnsupported" class="flex flex-col gap-2 w-full">
-    <p v-if="!settings && store.settingsLoadError" class="text-xs text-red-400 pl-2">
+  <div v-if="!store.settingsUnsupported" class="flex flex-col gap-4 w-full">
+    <p v-if="!settings && store.settingsLoadError" class="text-xs text-red-400">
       {{ t('plugins.livestack.settings.load_failed') }}
     </p>
-    <p v-else-if="!settings" class="text-xs text-gray-400 pl-2">
+    <p v-else-if="!settings" class="text-sm text-content-muted">
       {{ t('plugins.livestack.settings.loading') }}
     </p>
 
     <template v-else>
-      <p v-if="settings.LivestackLoaded === false" class="text-xs text-amber-400 pl-2">
+      <p v-if="settings.LivestackLoaded === false" class="text-xs text-amber-400">
         {{ t('plugins.livestack.settings.errors.livestack_unavailable') }}
       </p>
       <!-- A failed reload keeps the values on screen -->
-      <p v-if="store.settingsLoadError" class="text-xs text-red-400 pl-2">
+      <p v-if="store.settingsLoadError" class="text-xs text-red-400">
         {{ t('plugins.livestack.settings.load_failed') }}
       </p>
-      <p v-if="errorText('_')" class="text-xs text-red-400 pl-2 break-words">
+      <p v-if="errorText('_')" class="text-xs text-red-400 break-words">
         {{ errorText('_') }}
       </p>
 
       <!-- Storage -->
-      <section
-        class="flex flex-col gap-2 w-full border border-gray-500 p-2 rounded-lg bg-gray-800/70"
-      >
-        <h3 class="text-xs md:text-sm font-semibold text-gray-200 pl-2">
+      <section v-if="section === 'storage'" class="tns-card flex flex-col gap-3">
+        <h3 class="text-base font-semibold text-content">
           {{ t('plugins.livestack.settings.storage.title') }}
         </h3>
-        <span class="text-xs text-gray-300 pl-2">
+        <span class="text-sm font-medium text-content">
           {{ t('plugins.livestack.settings.storage.working_directory') }}
-          <span v-if="settings.WorkingDirectoryIsDefault" class="text-gray-500">
+          <span v-if="settings.WorkingDirectoryIsDefault" class="text-content-muted">
             ({{ t('plugins.livestack.settings.storage.default') }})
           </span>
         </span>
         <div class="flex items-center gap-2 min-w-0">
           <div
-            class="flex-1 overflow-x-auto scrollbar-thin px-3 py-2 rounded-lg border border-gray-600/50 bg-gray-800/40 min-w-0"
+            class="flex-1 overflow-x-auto scrollbar-thin px-3 py-2 rounded-control border border-line bg-surface-2 min-w-0"
             :class="{ 'glow-green': savedKey === 'WorkingDirectory' }"
           >
-            <span class="text-sm font-mono whitespace-nowrap text-gray-200">
+            <span class="text-sm font-mono whitespace-nowrap text-content">
               {{ settings.WorkingDirectory }}
             </span>
           </div>
@@ -51,90 +49,90 @@
             ...
           </button>
         </div>
-        <p class="text-xs text-gray-400 pl-2">
+        <p class="text-sm text-content-muted">
           {{ t('plugins.livestack.settings.storage.help') }}
         </p>
-        <p v-if="directoryStatus.FreeBytes != null" class="text-xs text-gray-400 pl-2">
+        <p v-if="directoryStatus.FreeBytes != null" class="text-sm text-content-muted">
           {{
             t('plugins.livestack.settings.storage.free', {
               size: formatSize(directoryStatus.FreeBytes),
             })
           }}
         </p>
-        <p v-if="directoryStatus.IsRamDisk" class="text-xs text-amber-400 pl-2">
+        <p v-if="directoryStatus.IsRamDisk" class="text-xs text-amber-400">
           {{ t('plugins.livestack.settings.storage.ram_disk') }}
         </p>
-        <p v-else-if="isLowOnSpace" class="text-xs text-amber-400 pl-2">
+        <p v-else-if="isLowOnSpace" class="text-xs text-amber-400">
           {{
             t('plugins.livestack.settings.storage.low_space', {
               size: formatSize(limits.LowFreeBytes),
             })
           }}
         </p>
-        <p v-if="directoryStatus.Problem" class="text-xs text-red-400 pl-2 break-words">
+        <p v-if="directoryStatus.Problem" class="text-xs text-red-400 break-words">
           {{ codeText(directoryStatus.Problem, 'WorkingDirectory') }}
         </p>
-        <p v-if="errorText('WorkingDirectory')" class="text-xs text-red-400 pl-2 break-words">
+        <p v-if="errorText('WorkingDirectory')" class="text-xs text-red-400 break-words">
           {{ errorText('WorkingDirectory') }}
         </p>
-        <p v-if="isLocked('WorkingDirectory')" class="text-xs text-gray-400 pl-2">
+        <p v-if="isLocked('WorkingDirectory')" class="text-sm text-content-muted">
           {{ t('plugins.livestack.settings.locked_hint') }}
         </p>
       </section>
 
       <!-- Toggle groups: calibration (followed by the master library), saved files -->
-      <template v-for="group in toggleGroups" :key="group.title">
-        <section
-          class="flex flex-col gap-2 w-full border border-gray-500 p-2 rounded-lg bg-gray-800/70"
-        >
-          <h3 class="text-xs md:text-sm font-semibold text-gray-200 pl-2">
-            {{ t(group.title) }}
-          </h3>
-          <div v-for="item in group.items" :key="item.key" class="flex flex-col gap-1">
-            <div class="flex flex-row items-center gap-4 min-h-touch">
-              <!-- The label toggles too: the switch alone is a small target, e.g. with gloves -->
-              <label
-                class="flex-1 text-xs md:text-sm text-gray-200 pl-2 cursor-pointer select-none"
-                :class="{ 'glow-green': savedKey === item.key }"
-                @click="toggle(item.key)"
-              >
-                {{ t(item.label) }}
-              </label>
-              <toggleButton
-                :id="`livestack_${item.key}`"
-                :status-value="settings[item.key]"
-                :disabled="isLocked(item.key) || store.settingsBusy"
-                class="ml-auto px-3 justify-center"
-                @update:status-value="(value) => save({ [item.key]: value })"
-              />
+      <template v-for="group in toggleGroups" :key="group.id">
+        <template v-if="section === group.id">
+          <section class="tns-card flex flex-col gap-3">
+            <h3 class="text-base font-semibold text-content">
+              {{ t(group.title) }}
+            </h3>
+            <div v-for="item in group.items" :key="item.key" class="flex flex-col gap-1">
+              <div class="flex items-center justify-between gap-3 min-h-touch">
+                <!-- The label toggles too: the switch alone is a small target, e.g. with gloves -->
+                <label
+                  class="flex-1 text-sm font-medium text-content cursor-pointer select-none"
+                  :class="{ 'glow-green': savedKey === item.key }"
+                  @click="toggle(item.key)"
+                >
+                  {{ t(item.label) }}
+                </label>
+                <toggleButton
+                  :id="`livestack_${item.key}`"
+                  :status-value="settings[item.key]"
+                  :disabled="isLocked(item.key) || store.settingsBusy"
+                  @update:status-value="(value) => save({ [item.key]: value })"
+                />
+              </div>
+              <p v-if="item.note" class="text-sm text-content-muted">{{ t(item.note) }}</p>
+              <p v-if="item.timing" class="text-sm text-content-muted">{{ t(item.timing) }}</p>
+              <p v-if="errorText(item.key)" class="text-xs text-red-400 break-words">
+                {{ errorText(item.key) }}
+              </p>
+              <p v-if="isLocked(item.key)" class="text-sm text-content-muted">
+                {{ t('plugins.livestack.settings.locked_hint') }}
+              </p>
             </div>
-            <p v-if="item.note" class="text-xs text-gray-400 pl-2">{{ t(item.note) }}</p>
-            <p v-if="item.timing" class="text-xs text-gray-400 pl-2">{{ t(item.timing) }}</p>
-            <p v-if="errorText(item.key)" class="text-xs text-red-400 pl-2 break-words">
-              {{ errorText(item.key) }}
-            </p>
-            <p v-if="isLocked(item.key)" class="text-xs text-gray-400 pl-2">
-              {{ t('plugins.livestack.settings.locked_hint') }}
-            </p>
-          </div>
-        </section>
-        <LivestackCalibrationLibrary v-if="group.withMasters" />
+          </section>
+          <LivestackCalibrationLibrary v-if="group.withMasters" />
+        </template>
       </template>
 
       <!-- Defaults for new stack tabs -->
-      <section
-        class="flex flex-col gap-2 w-full border border-gray-500 p-2 rounded-lg bg-gray-800/70"
-      >
-        <h3 class="text-xs md:text-sm font-semibold text-gray-200 pl-2">
+      <section v-if="section === 'defaults'" class="tns-card flex flex-col gap-3">
+        <h3 class="text-base font-semibold text-content">
           {{ t('plugins.livestack.settings.defaults.title') }}
         </h3>
-        <p class="text-xs text-gray-400 pl-2">
+        <p class="text-sm text-content-muted">
           {{ t('plugins.livestack.settings.defaults.note') }}
         </p>
         <div v-for="row in defaultRows" :key="row.key" class="flex flex-col gap-1">
-          <div v-if="row.kind === 'toggle'" class="flex flex-row items-center gap-4 min-h-touch">
+          <div
+            v-if="row.kind === 'toggle'"
+            class="flex items-center justify-between gap-3 min-h-touch"
+          >
             <label
-              class="flex-1 text-xs md:text-sm text-gray-200 pl-2 cursor-pointer select-none"
+              class="flex-1 text-sm font-medium text-content cursor-pointer select-none"
               :class="{ 'glow-green': savedKey === row.key }"
               @click="toggle(row.key)"
             >
@@ -144,7 +142,6 @@
               :id="`livestack_${row.key}`"
               :status-value="settings[row.key]"
               :disabled="store.settingsBusy"
-              class="ml-auto px-3 justify-center"
               @update:status-value="(value) => save({ [row.key]: value })"
             />
           </div>
@@ -159,12 +156,11 @@
             :step="limits[row.key].Step"
             :decimal-places="row.decimals"
             :use-default-sentinel="false"
-            wrapper-class="pl-2"
             @change="(value) => scheduleNumberSave(row.key, value)"
             @blur="flushNumberSave(row.key)"
           />
-          <p v-if="row.note" class="text-xs text-gray-400 pl-2">{{ t(row.note) }}</p>
-          <p v-if="errorText(row.key)" class="text-xs text-red-400 pl-2 break-words">
+          <p v-if="row.note" class="text-sm text-content-muted">{{ t(row.note) }}</p>
+          <p v-if="errorText(row.key)" class="text-xs text-red-400 break-words">
             {{ errorText(row.key) }}
           </p>
         </div>
@@ -194,6 +190,11 @@ import LivestackCalibrationLibrary from './LivestackCalibrationLibrary.vue';
 // /api/livestack/settings; ranges and locks come from that response, not from this file.
 const NUMBER_SAVE_DELAY_MS = 600;
 
+defineProps({
+  // Which group to show: 'storage' | 'calibration' | 'output' | 'defaults'
+  section: { type: String, default: 'storage' },
+});
+
 const store = useLivestackStore();
 const { t, te, locale } = useI18n();
 
@@ -218,6 +219,7 @@ const isLowOnSpace = computed(
 
 const toggleGroups = [
   {
+    id: 'calibration',
     title: 'plugins.livestack.settings.calibration.title',
     withMasters: true,
     items: [
@@ -226,6 +228,7 @@ const toggleGroups = [
     ],
   },
   {
+    id: 'output',
     title: 'plugins.livestack.settings.output.title',
     items: [
       {

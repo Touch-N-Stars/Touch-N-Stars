@@ -28,10 +28,12 @@ and offers the fix with one tap. Builds on
 
 ## Acceptance criteria
 
-1. Given HF is available, the Settings tab shows a simple card with: optics summary and image
-   scale, AF exposure, step size, points per side, pixel scale, noise level, focus range,
-   use optimized settings (only when available), save runs + folder. Each change lands in the
-   NINA profile or HF options and is visible under "Advanced" within one poll cycle (2 s).
+1. Given HF is available, the Autofocus sub-tab of the Settings tab opens first and shows the
+   assistant entry, the optics summary with image scale, and AF exposure, step size and points
+   per side in place of NINA's own sweep fields, followed by the remaining NINA autofocus values
+   and the HF storage card (save runs + folder). Pixel scale, noise level, focus range and use
+   optimized settings live only in the star detection under Crop & Stars. Every value is editable in exactly
+   one place; each change lands in the NINA profile or HF options within one poll cycle (2 s).
 2. The pixel-scale suggestion is computed from focal length, pixel size and AF binning and
    offered as a button; it is applied only when the user taps it.
 3. The assistant can be completed end to end; autofocus starts and focuser moves happen only on

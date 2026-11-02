@@ -60,9 +60,9 @@
           <p
             v-if="o.DetectionBinningRecommendationVisible && o.DetectionBinningHint"
             class="text-sm italic text-cyan-300"
-            :title="o.DetectionBinningHintDetail"
+            :title="translateBinningDetail(o.DetectionBinningHintDetail, t)"
           >
-            {{ o.DetectionBinningHint }}
+            {{ translateBinningHint(o.DetectionBinningHint, t) }}
           </p>
           <HfSelectField
             :model-value="o.MeasurementAverage"
@@ -117,6 +117,18 @@
             :error="errorOf('Simple_PixelScale')"
             @change="save('Simple_PixelScale', $event)"
           />
+          <!-- Preset computed from the optics; applied only on tap -->
+          <button
+            v-if="suggestedPixelScale && suggestedPixelScale.value !== o.Simple_PixelScale"
+            class="tns-btn-secondary min-h-touch"
+            @click="save('Simple_PixelScale', suggestedPixelScale.value)"
+          >
+            {{
+              $t('components.focuser.hfSimple.usePixelScaleSuggestion', {
+                preset: suggestedPixelScale.label,
+              })
+            }}
+          </button>
           <HfSelectField
             :model-value="o.Simple_FocusRange"
             :label="L('focusRange')"
@@ -244,6 +256,9 @@
 import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { apiStore } from '@/store/store';
+import { imageScale, suggestPixelScalePreset } from '@/utils/hocusFocusAdvisor';
+import { translateBinningHint, translateBinningDetail } from '@/utils/hocusFocusBinningHint';
 import apiService from '@/services/apiService';
 import Modal from '@/components/helpers/Modal.vue';
 import HfToggleRow from './fields/HfToggleRow.vue';
@@ -254,6 +269,8 @@ import StarDetectionOptimizer from './optimizer/StarDetectionOptimizer.vue';
 
 const props = defineProps({
   isTabActive: { type: Boolean, default: false },
+  // Option keys the host renders itself (e.g. UseAutoFocusCrop next to the NINA crop values)
+  omitKeys: { type: Array, default: () => [] },
 });
 
 const { t } = useI18n();
@@ -304,6 +321,18 @@ const pixelScaleOptions = [
   { value: 'WideField', label: 'Wide Field' },
   { value: 'LongFocalLength', label: 'Long Focal Length' },
 ];
+
+// Pixel-scale preset matching the optics in the NINA profile
+const profile = computed(() => apiStore().profileInfo);
+const suggestedPixelScale = computed(() => {
+  const scale = imageScale(
+    profile.value?.TelescopeSettings?.FocalLength,
+    profile.value?.CameraSettings?.PixelSize,
+    profile.value?.FocuserSettings?.AutoFocusBinning
+  );
+  const preset = suggestPixelScalePreset(scale);
+  return pixelScaleOptions.find((option) => option.value === preset) || null;
+});
 const focusRangeOptions = [
   { value: 'Typical', label: 'Typical' },
   { value: 'WideRange', label: 'Wide Range' },
@@ -316,14 +345,16 @@ const psfFitTypeOptions = [
   { value: 'MoffatFittable', label: 'Moffat (β fittable)' },
 ];
 
-// Toggles the plugin shows regardless of Advanced Mode.
-const generalToggles = [
-  { key: 'UseAdvanced', label: 'advancedMode' },
-  { key: 'HotpixelThresholdingEnabled', label: 'useHotpixelThresholding' },
-  { key: 'UseAutoFocusCrop', label: 'useAutoFocusCrop' },
-  { key: 'ModelPSF', label: 'fitPSF' },
-  { key: 'DebugMode', label: 'debugMode' },
-];
+// Toggles the plugin shows regardless of Advanced Mode. A host can take some over (omitKeys).
+const generalToggles = computed(() =>
+  [
+    { key: 'UseAdvanced', label: 'advancedMode' },
+    { key: 'HotpixelThresholdingEnabled', label: 'useHotpixelThresholding' },
+    { key: 'UseAutoFocusCrop', label: 'useAutoFocusCrop' },
+    { key: 'ModelPSF', label: 'fitPSF' },
+    { key: 'DebugMode', label: 'debugMode' },
+  ].filter((toggle) => !props.omitKeys.includes(toggle.key))
+);
 
 // Advanced fields, grouped for the touch layout. Ranges and steps follow the validation rules in
 // the plugin's own options page (Resources/OptionsDataTemplates.xaml) so TNS cannot offer a value

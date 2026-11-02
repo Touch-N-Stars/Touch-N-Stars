@@ -21,7 +21,7 @@
 
     <div v-if="o && !store.isLoadingAutoFocusOptions" class="space-y-6">
       <!-- Basic -->
-      <div :class="cardClass">
+      <div v-if="has('basic')" :class="cardClass">
         <h3 :class="headingClass">{{ L('basicSettings') }}</h3>
         <div class="flex flex-col gap-3">
           <HfNumberField
@@ -56,8 +56,8 @@
       </div>
 
       <!-- HFR validation -->
-      <div :class="cardClass">
-        <h3 :class="headingClass">{{ L('hfrValidation') }}</h3>
+      <component :is="expertCard" v-if="has('hfr')" v-bind="expertProps('hfr', 'hfrValidation')">
+        <h3 v-if="!collapseExpert" :class="headingClass">{{ L('hfrValidation') }}</h3>
         <div class="flex flex-col gap-3">
           <HfToggleRow
             :model-value="o.ValidateHfrImprovement"
@@ -81,11 +81,11 @@
             @change="save('HFRImprovementThreshold', $event)"
           />
         </div>
-      </div>
+      </component>
 
       <!-- Curve fitting -->
-      <div :class="cardClass">
-        <h3 :class="headingClass">{{ L('curveFitting') }}</h3>
+      <component :is="expertCard" v-if="has('fit')" v-bind="expertProps('fit', 'curveFitting')">
+        <h3 v-if="!collapseExpert" :class="headingClass">{{ L('curveFitting') }}</h3>
         <div class="flex flex-col gap-3">
           <HfSelectField
             :model-value="o.HyperbolicFitModel"
@@ -143,11 +143,15 @@
             @change="save('ReducedChiSquaredRejectionThreshold', $event)"
           />
         </div>
-      </div>
+      </component>
 
       <!-- Outlier rejection -->
-      <div :class="cardClass">
-        <h3 :class="headingClass">{{ L('outlierRejection') }}</h3>
+      <component
+        :is="expertCard"
+        v-if="has('outlier')"
+        v-bind="expertProps('outlier', 'outlierRejection')"
+      >
+        <h3 v-if="!collapseExpert" :class="headingClass">{{ L('outlierRejection') }}</h3>
         <div class="flex flex-col gap-3">
           <HfNumberField
             :model-value="Number(o.MaxOutlierRejections)"
@@ -176,10 +180,10 @@
             @change="save('OutlierRejectionConfidence', $event)"
           />
         </div>
-      </div>
+      </component>
 
       <!-- Storage -->
-      <div :class="cardClass">
+      <div v-if="has('storage')" :class="cardClass">
         <h3 :class="headingClass">{{ L('storage') }}</h3>
         <div class="flex flex-col gap-3">
           <HfToggleRow
@@ -212,7 +216,7 @@
       </div>
 
       <!-- Reset -->
-      <div class="flex justify-start">
+      <div v-if="has('reset')" class="flex justify-start">
         <button
           class="tns-btn-secondary w-auto px-6"
           :disabled="store.isLoadingAutoFocusOptions"
@@ -259,6 +263,17 @@ import DirectoryBrowser from './DirectoryBrowser.vue';
 import HfToggleRow from './fields/HfToggleRow.vue';
 import HfNumberField from './fields/HfNumberField.vue';
 import HfSelectField from './fields/HfSelectField.vue';
+import HfCollapsibleCard from './fields/HfCollapsibleCard.vue';
+
+const props = defineProps({
+  // Which cards to render, so the focus settings can spread them over their sub-tabs
+  sections: {
+    type: Array,
+    default: () => ['basic', 'hfr', 'fit', 'outlier', 'storage', 'reset'],
+  },
+  // Render the expert cards (HFR validation, curve fitting, outlier rejection) collapsed
+  collapseExpert: { type: Boolean, default: false },
+});
 
 const { t } = useI18n();
 const store = useHocusFocusStore();
@@ -267,10 +282,22 @@ const L = (key) => t(`components.focuser.hocus.autoFocusOptions.${key}`);
 const H = (key) => t(`components.focuser.hocus.autoFocusOptions.help.${key}`);
 
 const o = computed(() => store.autoFocusOptions);
+const has = (section) => props.sections.includes(section);
 
-const cardClass =
-  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
-const headingClass = 'font-bold text-base text-cyan-400';
+const cardClass = 'tns-card flex flex-col gap-3';
+const headingClass = 'text-base font-semibold text-content';
+
+// Expert cards are either plain cards or collapsible ones titled with their heading
+const expertOpen = reactive({ hfr: false, fit: false, outlier: false });
+const expertCard = computed(() => (props.collapseExpert ? HfCollapsibleCard : 'div'));
+const expertProps = (key, title) =>
+  props.collapseExpert
+    ? {
+        title: L(title),
+        open: expertOpen[key],
+        'onUpdate:open': (open) => (expertOpen[key] = open),
+      }
+    : { class: cardClass };
 
 // Ranges follow the validation rules on the plugin's own options page. 0 means "no limit" for
 // both MaxConcurrent and MaxBlindStepsPerDirection, so neither can start at 1.
@@ -461,7 +488,8 @@ async function executeReset() {
 
 onMounted(async () => {
   await loadAutoFocusOptions();
-  await loadInspectorOptions();
+  // Only the basic card shows the inspector-owned focuser direction
+  if (has('basic')) await loadInspectorOptions();
 });
 
 onBeforeUnmount(() => {
