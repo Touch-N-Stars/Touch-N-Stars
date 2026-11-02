@@ -61,6 +61,7 @@ import { onMounted, ref } from 'vue';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import apiService from '@/services/apiService';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 
 const store = apiStore();
 const cameraStore = useCameraStore();
@@ -89,6 +90,8 @@ async function setReadoutMode() {
   try {
     const data = await apiService.setReadoutMode(cameraStore.readoutMode);
     console.log(data);
+    // Refused while the camera is exposing: show the mode the camera still has.
+    if (reportBackendRefusal(data, 'components.backendErrors.readout')) initializeReadoutMode();
   } catch (error) {
     console.log('Error while setting readoutMode');
   }
@@ -98,6 +101,10 @@ async function setReadoutModeImage() {
   try {
     const response = await apiService.setReadoutModeType('image', readoutModeImage.value);
     console.log('[setReadoutMode] ', response);
+    if (reportBackendRefusal(response, 'components.backendErrors.readout')) {
+      initializeReadoutMode();
+      return;
+    }
     await apiService.profileChangeValue(
       'CameraSettings-ReadoutModeForNormalImages',
       readoutModeImage.value
@@ -111,6 +118,10 @@ async function setReadoutModeSnap() {
   try {
     const response = await apiService.setReadoutModeType('snapshot', readoutModeSnap.value);
     console.log('[setReadoutMode] ', response);
+    if (reportBackendRefusal(response, 'components.backendErrors.readout')) {
+      initializeReadoutMode();
+      return;
+    }
     await apiService.profileChangeValue(
       'CameraSettings-ReadoutModeForSnapImages',
       readoutModeSnap.value

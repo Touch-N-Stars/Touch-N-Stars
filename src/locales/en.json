@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} is installed, but PINS has to restart to load it.",
       "install": "Install now",
       "windowsHint": "Install {name} in the NINA plugin manager and restart NINA."
+    },
+    "backendErrors": {
+      "noReason": "The backend gave no reason.",
+      "mountPark": "Parking failed",
+      "mountUnpark": "Unparking failed",
+      "mountHome": "Homing failed",
+      "mountFlip": "Meridian flip failed",
+      "filterChange": "Filter change failed",
+      "focuserMove": "Focuser move failed",
+      "rotatorMove": "Rotator move failed",
+      "flatLight": "Switching the flat panel light failed",
+      "flatCover": "Moving the flat panel cover failed",
+      "flatBrightness": "Setting the flat panel brightness failed",
+      "domeShutter": "Dome shutter failed",
+      "domeOpen": "Opening the dome shutter failed",
+      "domeClose": "Closing the dome shutter failed",
+      "capture": "Capture failed",
+      "captureStart": "Capture could not be started",
+      "sequenceStart": "Sequence could not be started",
+      "guidingStart": "Guiding could not be started",
+      "autofocusStart": "Autofocus could not be started",
+      "binning": "Binning could not be changed",
+      "readout": "Readout mode could not be changed",
+      "switchSet": "Switch could not be set"
     }
   },
   "plugins": {

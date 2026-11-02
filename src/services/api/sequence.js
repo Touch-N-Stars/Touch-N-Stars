@@ -6,13 +6,7 @@ export default {
   sequenceAction(action) {
     const { BASE_URL } = getUrls();
     if (action === 'start') {
-      return simpleGetRequest(`${BASE_URL}/sequence/start?skipValidation=true`).then(
-        (response) => ({
-          ...response,
-          Response: 'Sequence start',
-          Success: true,
-        })
-      );
+      return simpleGetRequest(`${BASE_URL}/sequence/start?skipValidation=true`);
     }
     return simpleGetRequest(`${BASE_URL}/sequence/${action}`);
   },

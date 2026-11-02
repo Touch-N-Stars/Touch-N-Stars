@@ -99,6 +99,7 @@ import { useSequenceStore } from '@/store/sequenceStore';
 import { useImagetStore } from '@/store/imageStore';
 import AfFnishGraph from '@/components/focuser/AfFnishGraph.vue';
 import { apiStore } from '@/store/store';
+import { autofocusStartRefusal, toastBackendError } from '@/utils/backendErrors';
 import AfStatus from '@/components/focuser/AfStatus.vue';
 import AfShowGraph from '@/components/focuser/AfShowGraph.vue';
 import ButtonsFastChangePositon from '@/components/focuser/ButtonsFastChangePositon.vue';
@@ -116,7 +117,12 @@ const showImageModal = ref(false);
 
 async function startAutofocus() {
   try {
-    await apiService.focuserAfAction('start');
+    const response = await apiService.focuserAfAction('start');
+    const refusal = autofocusStartRefusal(response);
+    if (refusal !== null) {
+      toastBackendError({ Error: refusal }, 'components.backendErrors.autofocusStart');
+      return;
+    }
     store.afTimestampLastStart = Date.now();
     store.afCurveData = [];
   } catch (error) {

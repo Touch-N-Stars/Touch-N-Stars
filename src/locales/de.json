@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} ist installiert, aber PINS muss neu starten, um es zu laden.",
       "install": "Jetzt installieren",
       "windowsHint": "Installiere {name} im NINA-Plugin-Manager und starte NINA neu."
+    },
+    "backendErrors": {
+      "noReason": "Das Backend hat keinen Grund genannt.",
+      "mountPark": "Parken fehlgeschlagen",
+      "mountUnpark": "Entparken fehlgeschlagen",
+      "mountHome": "Home-Position fehlgeschlagen",
+      "mountFlip": "Meridian Flip fehlgeschlagen",
+      "filterChange": "Filterwechsel fehlgeschlagen",
+      "focuserMove": "Fokussierer-Bewegung fehlgeschlagen",
+      "rotatorMove": "Rotator-Bewegung fehlgeschlagen",
+      "flatLight": "Flat-Panel-Licht konnte nicht geschaltet werden",
+      "flatCover": "Flat-Panel-Abdeckung konnte nicht bewegt werden",
+      "flatBrightness": "Flat-Panel-Helligkeit konnte nicht gesetzt werden",
+      "domeShutter": "Kuppelspalt fehlgeschlagen",
+      "domeOpen": "Öffnen des Kuppelspalts fehlgeschlagen",
+      "domeClose": "Schließen des Kuppelspalts fehlgeschlagen",
+      "capture": "Aufnahme fehlgeschlagen",
+      "captureStart": "Aufnahme konnte nicht gestartet werden",
+      "sequenceStart": "Sequenz konnte nicht gestartet werden",
+      "guidingStart": "Guiding konnte nicht gestartet werden",
+      "autofocusStart": "Autofokus konnte nicht gestartet werden",
+      "binning": "Binning konnte nicht geändert werden",
+      "readout": "Auslesemodus konnte nicht geändert werden",
+      "switchSet": "Schalter konnte nicht gesetzt werden"
     }
   },
   "plugins": {

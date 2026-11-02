@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} 已安装，但需要重启 PINS 才能加载。",
       "install": "立即安装",
       "windowsHint": "请在 NINA 插件管理器中安装 {name} 并重启 NINA。"
+    },
+    "backendErrors": {
+      "noReason": "后端未给出原因。",
+      "mountPark": "停放失败",
+      "mountUnpark": "取消停放失败",
+      "mountHome": "回到原点失败",
+      "mountFlip": "中天翻转失败",
+      "filterChange": "切换滤镜失败",
+      "focuserMove": "调焦器移动失败",
+      "rotatorMove": "旋转器移动失败",
+      "flatLight": "无法开关平场板灯光",
+      "flatCover": "无法移动平场板盖",
+      "flatBrightness": "无法设置平场板亮度",
+      "domeShutter": "圆顶天窗失败",
+      "domeOpen": "打开圆顶天窗失败",
+      "domeClose": "关闭圆顶天窗失败",
+      "capture": "拍摄失败",
+      "captureStart": "无法开始拍摄",
+      "sequenceStart": "无法启动序列",
+      "guidingStart": "无法启动导星",
+      "autofocusStart": "无法启动自动对焦",
+      "binning": "无法更改像素合并",
+      "readout": "无法更改读出模式",
+      "switchSet": "无法设置开关"
     }
   },
   "plugins": {

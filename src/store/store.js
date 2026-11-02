@@ -29,6 +29,7 @@ import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTi
 import { createPoller } from '@/utils/poller';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
 import { takeProfileStale } from '@/services/api/profileStaleness';
+import { handleFailureEvent } from '@/utils/backendErrors';
 
 // Serialized snapshots of the last payload written per state key (module-level,
 // deliberately non-reactive). Used by setInfoIfChanged() so the 2s poll only
@@ -1344,6 +1345,7 @@ export const apiStore = defineStore('store', {
       // If a device connection event arrives via WebSocket, fetch event history immediately
       if (message.Response && message.Response.Event) {
         const event = message.Response.Event;
+        if (handleFailureEvent(message.Response)) return;
         const deviceEvents = [
           'MOUNT-CONNECTED',
           'MOUNT-DISCONNECTED',

@@ -1,9 +1,11 @@
 import { createSignalRService } from './signalRServiceFactory';
 
 /**
- * MessageBox hub. Thin adapter over the shared SignalR factory. The MessageBox
- * hub only emits 'ReceiveMessageBox'; the extra dialog-style setters are kept for
- * API parity with the dialog service but are unused by this hub.
+ * MessageBox hub. Thin adapter over the shared SignalR factory. The hub emits
+ * 'ReceiveMessageBox' and 'CloseMessageBox(id, result)'; the latter goes to every
+ * client once a box is done (answered by any client, timed out or ended by the
+ * backend), including the client that answered it. The other dialog-style setters
+ * are kept for API parity with the dialog service but are unused by this hub.
  */
 class SignalRMessageboxesService {
   constructor() {
@@ -23,6 +25,10 @@ class SignalRMessageboxesService {
         connection.on('ReceiveMessageBox', (data) => {
           if (ctx.getConnectionId() !== ctx.currentConnectionId()) return;
           if (this.dialogCallback) this.dialogCallback(data);
+        });
+        connection.on('CloseMessageBox', (id, result) => {
+          if (ctx.getConnectionId() !== ctx.currentConnectionId()) return;
+          if (this.clearDialogCallback) this.clearDialogCallback(id, result);
         });
       },
     });

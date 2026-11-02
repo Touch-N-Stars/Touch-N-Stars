@@ -96,6 +96,7 @@ import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 
 import { ref } from 'vue';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 
 const store = apiStore();
 const isProcessingStart = ref(false);
@@ -104,8 +105,9 @@ const isProcessingStartWithCal = ref(false);
 async function guiderStartStop(befehl) {
   isProcessingStart.value = true;
   try {
-    await apiService.guiderAction(befehl);
+    const response = await apiService.guiderAction(befehl);
     console.log('Guider Command:', befehl);
+    if (befehl === 'start') reportBackendRefusal(response, 'components.backendErrors.guidingStart');
   } catch (error) {
     console.error('Error:', error.response?.data || error);
   } finally {
@@ -116,8 +118,9 @@ async function guiderStartStop(befehl) {
 async function guiderStartWithCal() {
   isProcessingStartWithCal.value = true;
   try {
-    await apiService.guiderStart(true);
+    const response = await apiService.guiderStart(true);
     console.log('Guider Command: Start with cal');
+    reportBackendRefusal(response, 'components.backendErrors.guidingStart');
   } catch (error) {
     console.error('Error:', error.response?.data || error);
   } finally {

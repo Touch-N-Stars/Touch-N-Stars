@@ -151,8 +151,8 @@ export const useShortcutsStore = defineStore('shortcuts', {
 
           const startResponse = await apiService.sequenceAction('start');
 
-          if (!startResponse || startResponse.error) {
-            throw new Error('Error starting sequence');
+          if (!startResponse?.Success) {
+            throw new Error(startResponse?.Error || 'Error starting sequence');
           }
 
           toastStore.showToast({

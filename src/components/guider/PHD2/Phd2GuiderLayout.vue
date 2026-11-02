@@ -447,6 +447,7 @@ import SubNav from '@/components/SubNav.vue';
 import CalibrationAssistantModal from '@/components/guider/PHD2/CalibrationAssistantModal.vue';
 import CalibrationDataModal from '@/components/guider/PHD2/CalibrationDataModal.vue';
 import apiService from '@/services/apiService';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 import { useI18n } from 'vue-i18n';
 import { useOrientation } from '@/composables/useOrientation';
 
@@ -606,7 +607,8 @@ async function startGuiding() {
   if (guiderStore.isDarkLibraryBuildActive) return;
   isProcessing.value = true;
   try {
-    await apiService.guiderStart(settingsStore.guider.phd2ForceCalibration);
+    const response = await apiService.guiderStart(settingsStore.guider.phd2ForceCalibration);
+    if (reportBackendRefusal(response, 'components.backendErrors.guidingStart')) return;
     console.log(
       'Guider started',
       settingsStore.guider.phd2ForceCalibration

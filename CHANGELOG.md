@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dome: A refused action (e.g. while the shutter is closing) turns the button red and shows the reason instead of turning it green.
 - Hocus Focus (tilter): When the tilter state cannot be read, a warning is shown instead of 0.000 positions.
 - Filter offset calculator: Filters not measured in the run are shown in grey in the new offsets table.
+- Equipment: A failed park, unpark, meridian flip, filter change, focuser or rotator move, flat panel or dome shutter action now shows an error message.
+- Camera: A failed capture stops the waiting spinner at once and shows the reason.
+- Sequence, guiding, autofocus, binning and readout mode: A start or change the backend refuses now shows the reason instead of failing silently.
+- Message boxes: A box answered on another device or closed by the backend now disappears on every device.
 - PINS devices: A refused dew heater power level springs back on the slider.
 
 ## [App6.5.0 - beta 22] - 2026-11-01

@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} je nainstalován, ale PINS se musí restartovat, aby ho načetl.",
       "install": "Instalovat nyní",
       "windowsHint": "Nainstalujte {name} ve správci pluginů NINA a restartujte NINA."
+    },
+    "backendErrors": {
+      "noReason": "Backend neuvedl žádný důvod.",
+      "mountPark": "Parkování selhalo",
+      "mountUnpark": "Odparkování selhalo",
+      "mountHome": "Návrat do výchozí polohy selhal",
+      "mountFlip": "Meridian Flip selhal",
+      "filterChange": "Výměna filtru selhala",
+      "focuserMove": "Pohyb fokuséru selhal",
+      "rotatorMove": "Pohyb rotátoru selhal",
+      "flatLight": "Světlo flat panelu nelze přepnout",
+      "flatCover": "Kryt flat panelu nelze posunout",
+      "flatBrightness": "Jas flat panelu nelze nastavit",
+      "domeShutter": "Chyba štěrbiny kopule",
+      "domeOpen": "Otevření štěrbiny kopule selhalo",
+      "domeClose": "Zavření štěrbiny kopule selhalo",
+      "capture": "Snímek selhal",
+      "captureStart": "Snímek nelze spustit",
+      "sequenceStart": "Sekvenci nelze spustit",
+      "guidingStart": "Guiding nelze spustit",
+      "autofocusStart": "Autofokus nelze spustit",
+      "binning": "Binning nelze změnit",
+      "readout": "Režim vyčítání nelze změnit",
+      "switchSet": "Spínač nelze nastavit"
     }
   },
   "plugins": {

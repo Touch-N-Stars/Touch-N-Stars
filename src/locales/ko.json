@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name}이(가) 설치되었지만 로드하려면 PINS를 다시 시작해야 합니다.",
       "install": "지금 설치",
       "windowsHint": "NINA 플러그인 관리자에서 {name}을(를) 설치하고 NINA를 다시 시작하세요."
+    },
+    "backendErrors": {
+      "noReason": "백엔드가 이유를 알려주지 않았습니다.",
+      "mountPark": "파킹 실패",
+      "mountUnpark": "언파킹 실패",
+      "mountHome": "홈 위치 이동 실패",
+      "mountFlip": "자오선 반전 실패",
+      "filterChange": "필터 변경 실패",
+      "focuserMove": "포커서 이동 실패",
+      "rotatorMove": "로테이터 이동 실패",
+      "flatLight": "플랫 패널 조명을 전환할 수 없습니다",
+      "flatCover": "플랫 패널 커버를 움직일 수 없습니다",
+      "flatBrightness": "플랫 패널 밝기를 설정할 수 없습니다",
+      "domeShutter": "돔 셔터 오류",
+      "domeOpen": "돔 셔터 열기 실패",
+      "domeClose": "돔 셔터 닫기 실패",
+      "capture": "촬영 실패",
+      "captureStart": "촬영을 시작할 수 없습니다",
+      "sequenceStart": "시퀀스를 시작할 수 없습니다",
+      "guidingStart": "가이딩을 시작할 수 없습니다",
+      "autofocusStart": "오토포커스를 시작할 수 없습니다",
+      "binning": "비닝을 변경할 수 없습니다",
+      "readout": "읽기 모드를 변경할 수 없습니다",
+      "switchSet": "스위치를 설정할 수 없습니다"
     }
   },
   "plugins": {

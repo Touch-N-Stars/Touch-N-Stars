@@ -50,6 +50,7 @@
 <script setup>
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import SetValue from '@/components/switch/SetValue.vue';
 
@@ -58,13 +59,9 @@ const store = apiStore();
 async function setBool(id, value) {
   try {
     console.log('id: ', id, 'value: ', value);
-    if (value === 1.0) {
-      await apiService.setSwitch(id, 0);
-      console.log('Switch off ID: ', id);
-    } else {
-      await apiService.setSwitch(id, 1);
-      console.log('Switch on ID: ', id);
-    }
+    const response = await apiService.setSwitch(id, value === 1.0 ? 0 : 1);
+    console.log('Switch ID: ', id, 'set to', value === 1.0 ? 0 : 1);
+    reportBackendRefusal(response, 'components.backendErrors.switchSet');
   } catch (error) {
     console.log('Error while setting the switch');
   }
@@ -78,8 +75,9 @@ async function setValue(id, value, valueMin, valueMax) {
     if (value > valueMax) {
       value = valueMax;
     }
-    await apiService.setSwitch(id, value);
+    const response = await apiService.setSwitch(id, value);
     console.log('Value set: ', value);
+    reportBackendRefusal(response, 'components.backendErrors.switchSet');
   } catch (error) {
     console.log('Error while setting the switch');
   }

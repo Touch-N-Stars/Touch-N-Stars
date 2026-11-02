@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} はインストール済みですが、読み込むには PINS の再起動が必要です。",
       "install": "今すぐインストール",
       "windowsHint": "NINA のプラグインマネージャーで {name} をインストールし、NINA を再起動してください。"
+    },
+    "backendErrors": {
+      "noReason": "バックエンドから理由が返されませんでした。",
+      "mountPark": "パークに失敗しました",
+      "mountUnpark": "アンパークに失敗しました",
+      "mountHome": "ホーム位置への移動に失敗しました",
+      "mountFlip": "子午線反転に失敗しました",
+      "filterChange": "フィルター交換に失敗しました",
+      "focuserMove": "フォーカサーの移動に失敗しました",
+      "rotatorMove": "ローテーターの移動に失敗しました",
+      "flatLight": "フラットパネルのライトを切り替えられませんでした",
+      "flatCover": "フラットパネルのカバーを動かせませんでした",
+      "flatBrightness": "フラットパネルの明るさを設定できませんでした",
+      "domeShutter": "ドームシャッターのエラー",
+      "domeOpen": "ドームシャッターを開けられませんでした",
+      "domeClose": "ドームシャッターを閉じられませんでした",
+      "capture": "撮影に失敗しました",
+      "captureStart": "撮影を開始できませんでした",
+      "sequenceStart": "シーケンスを開始できませんでした",
+      "guidingStart": "ガイドを開始できませんでした",
+      "autofocusStart": "オートフォーカスを開始できませんでした",
+      "binning": "ビニングを変更できませんでした",
+      "readout": "読み出しモードを変更できませんでした",
+      "switchSet": "スイッチを設定できませんでした"
     }
   },
   "plugins": {

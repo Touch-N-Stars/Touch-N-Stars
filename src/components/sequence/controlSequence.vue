@@ -323,6 +323,7 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useOrientation } from '@/composables/useOrientation';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 import { useI18n } from 'vue-i18n';
 import {
   FolderOpenIcon,
@@ -525,6 +526,11 @@ async function startSequence() {
   try {
     const data = await apiService.sequenceAction('start');
     console.log('Response:', data);
+    // The status poll corrects the optimistic flag either way; reset it at once on a refusal.
+    if (reportBackendRefusal(data, 'components.backendErrors.sequenceStart')) {
+      sequenceStore.setSequenceRunning(false);
+      return;
+    }
     await sequenceStore.getSequenceInfo();
   } catch (error) {
     console.log('Error:', error);

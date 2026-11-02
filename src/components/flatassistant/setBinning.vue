@@ -21,6 +21,7 @@ import { onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import apiService from '@/services/apiService';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 
 const store = apiStore();
 const cameraStore = useCameraStore();
@@ -46,6 +47,8 @@ async function setBinnig() {
   try {
     const data = await apiService.setBinningMode(cameraStore.binningMode);
     console.log(data);
+    // Refused while the camera is exposing: show the binning the camera still has.
+    if (reportBackendRefusal(data, 'components.backendErrors.binning')) initializeBinningMode();
   } catch (error) {
     console.log('Error while setting binning');
   }

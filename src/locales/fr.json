@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} est installé, mais PINS doit redémarrer pour le charger.",
       "install": "Installer maintenant",
       "windowsHint": "Installe {name} dans le gestionnaire de plugins de NINA et redémarre NINA."
+    },
+    "backendErrors": {
+      "noReason": "Le backend n'a donné aucune raison.",
+      "mountPark": "Échec du parking",
+      "mountUnpark": "Échec du déparking",
+      "mountHome": "Échec du retour en position home",
+      "mountFlip": "Échec du Meridian Flip",
+      "filterChange": "Échec du changement de filtre",
+      "focuserMove": "Échec du déplacement du focuser",
+      "rotatorMove": "Échec du déplacement du rotateur",
+      "flatLight": "Impossible d'allumer/éteindre le panneau à flat",
+      "flatCover": "Impossible de déplacer le cache du panneau à flat",
+      "flatBrightness": "Impossible de régler la luminosité du panneau à flat",
+      "domeShutter": "Échec de l'obturateur du dôme",
+      "domeOpen": "Échec de l'ouverture de l'obturateur du dôme",
+      "domeClose": "Échec de la fermeture de l'obturateur du dôme",
+      "capture": "Échec de la capture",
+      "captureStart": "Impossible de démarrer la capture",
+      "sequenceStart": "Impossible de démarrer la séquence",
+      "guidingStart": "Impossible de démarrer le guidage",
+      "autofocusStart": "Impossible de démarrer l'autofocus",
+      "binning": "Impossible de modifier le binning",
+      "readout": "Impossible de modifier le mode de lecture",
+      "switchSet": "Impossible de régler l'interrupteur"
     }
   },
   "plugins": {

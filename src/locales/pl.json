@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} jest zainstalowana, ale PINS musi się zrestartować, aby ją wczytać.",
       "install": "Zainstaluj teraz",
       "windowsHint": "Zainstaluj {name} w menedżerze wtyczek NINA i zrestartuj NINA."
+    },
+    "backendErrors": {
+      "noReason": "Backend nie podał przyczyny.",
+      "mountPark": "Parkowanie nie powiodło się",
+      "mountUnpark": "Odparkowanie nie powiodło się",
+      "mountHome": "Powrót do pozycji home nie powiódł się",
+      "mountFlip": "Meridian Flip nie powiódł się",
+      "filterChange": "Zmiana filtra nie powiodła się",
+      "focuserMove": "Ruch fokusera nie powiódł się",
+      "rotatorMove": "Ruch rotatora nie powiódł się",
+      "flatLight": "Nie udało się przełączyć światła panelu flat",
+      "flatCover": "Nie udało się poruszyć osłony panelu flat",
+      "flatBrightness": "Nie udało się ustawić jasności panelu flat",
+      "domeShutter": "Błąd szczeliny kopuły",
+      "domeOpen": "Otwarcie szczeliny kopuły nie powiodło się",
+      "domeClose": "Zamknięcie szczeliny kopuły nie powiodło się",
+      "capture": "Zdjęcie nie powiodło się",
+      "captureStart": "Nie udało się rozpocząć zdjęcia",
+      "sequenceStart": "Nie udało się uruchomić sekwencji",
+      "guidingStart": "Nie udało się uruchomić guidingu",
+      "autofocusStart": "Nie udało się uruchomić autofokusu",
+      "binning": "Nie udało się zmienić binningu",
+      "readout": "Nie udało się zmienić trybu odczytu",
+      "switchSet": "Nie udało się ustawić przełącznika"
     }
   },
   "plugins": {

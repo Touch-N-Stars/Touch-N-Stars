@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} está instalado, pero PINS debe reiniciarse para cargarlo.",
       "install": "Instalar ahora",
       "windowsHint": "Instala {name} en el gestor de plugins de NINA y reinicia NINA."
+    },
+    "backendErrors": {
+      "noReason": "El backend no indicó ningún motivo.",
+      "mountPark": "Error al aparcar",
+      "mountUnpark": "Error al desaparcar",
+      "mountHome": "Error al ir a la posición home",
+      "mountFlip": "Error en el Meridian Flip",
+      "filterChange": "Error al cambiar de filtro",
+      "focuserMove": "Error al mover el enfocador",
+      "rotatorMove": "Error al mover el rotador",
+      "flatLight": "No se pudo conmutar la luz del panel de flats",
+      "flatCover": "No se pudo mover la tapa del panel de flats",
+      "flatBrightness": "No se pudo ajustar el brillo del panel de flats",
+      "domeShutter": "Error en la compuerta de la cúpula",
+      "domeOpen": "Error al abrir la compuerta de la cúpula",
+      "domeClose": "Error al cerrar la compuerta de la cúpula",
+      "capture": "Error en la captura",
+      "captureStart": "No se pudo iniciar la captura",
+      "sequenceStart": "No se pudo iniciar la secuencia",
+      "guidingStart": "No se pudo iniciar el guiado",
+      "autofocusStart": "No se pudo iniciar el autoenfoque",
+      "binning": "No se pudo cambiar el binning",
+      "readout": "No se pudo cambiar el modo de lectura",
+      "switchSet": "No se pudo ajustar el interruptor"
     }
   },
   "plugins": {

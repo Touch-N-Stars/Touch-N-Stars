@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} is geïnstalleerd, maar PINS moet herstarten om hem te laden.",
       "install": "Nu installeren",
       "windowsHint": "Installeer {name} in de pluginbeheerder van NINA en herstart NINA."
+    },
+    "backendErrors": {
+      "noReason": "De backend gaf geen reden op.",
+      "mountPark": "Parkeren mislukt",
+      "mountUnpark": "Ontparkeren mislukt",
+      "mountHome": "Naar home-positie gaan mislukt",
+      "mountFlip": "Meridian Flip mislukt",
+      "filterChange": "Filterwissel mislukt",
+      "focuserMove": "Focuserbeweging mislukt",
+      "rotatorMove": "Rotatorbeweging mislukt",
+      "flatLight": "Licht van het flatpanel kon niet worden geschakeld",
+      "flatCover": "Klep van het flatpanel kon niet worden bewogen",
+      "flatBrightness": "Helderheid van het flatpanel kon niet worden ingesteld",
+      "domeShutter": "Koepelluik mislukt",
+      "domeOpen": "Openen van het koepelluik mislukt",
+      "domeClose": "Sluiten van het koepelluik mislukt",
+      "capture": "Opname mislukt",
+      "captureStart": "Opname kon niet worden gestart",
+      "sequenceStart": "Sequentie kon niet worden gestart",
+      "guidingStart": "Guiding kon niet worden gestart",
+      "autofocusStart": "Autofocus kon niet worden gestart",
+      "binning": "Binning kon niet worden gewijzigd",
+      "readout": "Uitleesmodus kon niet worden gewijzigd",
+      "switchSet": "Schakelaar kon niet worden ingesteld"
     }
   },
   "plugins": {

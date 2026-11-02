@@ -5406,6 +5406,30 @@
       "pendingRestart": "{name} està instal·lat, però PINS s'ha de reiniciar per carregar-lo.",
       "install": "Instal·la ara",
       "windowsHint": "Instal·la {name} al gestor de connectors de NINA i reinicia NINA."
+    },
+    "backendErrors": {
+      "noReason": "El backend no ha indicat cap motiu.",
+      "mountPark": "Error en aparcar",
+      "mountUnpark": "Error en desaparcar",
+      "mountHome": "Error en anar a la posició home",
+      "mountFlip": "Error en el Meridian Flip",
+      "filterChange": "Error en canviar de filtre",
+      "focuserMove": "Error en moure l'enfocador",
+      "rotatorMove": "Error en moure el rotador",
+      "flatLight": "No s'ha pogut commutar la llum del panell de flats",
+      "flatCover": "No s'ha pogut moure la tapa del panell de flats",
+      "flatBrightness": "No s'ha pogut ajustar la brillantor del panell de flats",
+      "domeShutter": "Error de la comporta de la cúpula",
+      "domeOpen": "Error en obrir la comporta de la cúpula",
+      "domeClose": "Error en tancar la comporta de la cúpula",
+      "capture": "Error en la captura",
+      "captureStart": "No s'ha pogut iniciar la captura",
+      "sequenceStart": "No s'ha pogut iniciar la seqüència",
+      "guidingStart": "No s'ha pogut iniciar el guiatge",
+      "autofocusStart": "No s'ha pogut iniciar l'autoenfocament",
+      "binning": "No s'ha pogut canviar el binning",
+      "readout": "No s'ha pogut canviar el mode de lectura",
+      "switchSet": "No s'ha pogut ajustar l'interruptor"
     }
   },
   "plugins": {
