@@ -4191,6 +4191,7 @@
           "autoFocusTimeoutSeconds": "AutoFocus Timeout",
           "focuserOffset": "Focuser Offset",
           "maxBlindStepsPerDirection": "Max Blind Steps Per Direction",
+          "reverseInitialDirection": "Reverse Initial Direction",
           "focuserIncreasesTowardObjective": "Increasing focuser position",
           "focuserAwayFromObjective": "Moves camera away from objective (standard)",
           "focuserTowardObjective": "Moves camera toward objective (reversed)",
@@ -4211,6 +4212,7 @@
             "autoFocusTimeoutSeconds": "How long an Auto Focus operation can take before we cancel it and move on.",
             "focuserOffset": "Advanced Only! Moves the focuser this fixed amount at the end of an AutoFocus",
             "maxBlindStepsPerDirection": "Maximum number of blind AutoFocus steps attempted in each direction before reversing to try the other side. Set to 0 to disable the cap.",
+            "reverseInitialDirection": "Starts the AutoFocus run moving in the opposite direction. Useful when your focuser has to approach focus from the other side, e.g. SCTs with mirror shift or focusers with backlash.",
             "focuserIncreasesTowardObjective": "Which way your focuser travels: does a HIGHER focuser position move the camera away from the objective (standard), or toward it (reversed)? This affects direction LABELS AND DIAGRAMS ONLY — the \"move toward/away from the objective\" captions, the Telescope/Sensor labels on the sensor model, the spacer advice, and the up/down motion arrows in the tilt guidance. It can never change a measurement, a screw angle, or a correction: the tilt adapter's direction is measured in focuser units, and the focuser convention cancels out of that measurement entirely. So if these labels read backwards on your rig, flip this — nothing you have already calibrated is affected, and nothing will start turning the other way.",
             "validateHfrImprovement": "If enabled, takes an extra exposure before and after to ensure HFR improved. This check may be done in addition to the R² validation configured in NINA's Auto Focus options.",
             "hfrImprovementThreshold": "How much wiggle room when validating HFR improvements. The default value of 15% means that the Auto Focus fails if the initial HFR is 15% or more better than the final HFR",
@@ -4645,6 +4647,7 @@
           "park": "Error Park",
           "sync": "Error sync",
           "stop_slew": "Error stop slew",
+          "slew": "Error slew",
           "home": "Error home",
           "follow": "Error follow Telescope"
         },
@@ -4970,6 +4973,10 @@
       "result_dim": "too dim",
       "result_bright": "too bright",
       "status_failed_darks": "No darks captured - could not determine valid exposure",
+      "status_darks_taken": "{count} darks captured.",
+      "status_darks_incomplete": "Darks: {completed} of {total} captured.",
+      "status_darks_skipped": "Darks skipped.",
+      "status_waiting_cover": "Waiting for the scope to be covered before the darks",
       "status_adu_live": "Last measured ADU: {adu}",
       "target": "Target",
       "cover_scope_title": "Cover your scope now",
@@ -5399,6 +5406,30 @@
       "pendingRestart": "{name} is installed, but PINS has to restart to load it.",
       "install": "Install now",
       "windowsHint": "Install {name} in the NINA plugin manager and restart NINA."
+    },
+    "backendErrors": {
+      "noReason": "The backend gave no reason.",
+      "mountPark": "Parking failed",
+      "mountUnpark": "Unparking failed",
+      "mountHome": "Homing failed",
+      "mountFlip": "Meridian flip failed",
+      "filterChange": "Filter change failed",
+      "focuserMove": "Focuser move failed",
+      "rotatorMove": "Rotator move failed",
+      "flatLight": "Switching the flat panel light failed",
+      "flatCover": "Moving the flat panel cover failed",
+      "flatBrightness": "Setting the flat panel brightness failed",
+      "domeShutter": "Dome shutter failed",
+      "domeOpen": "Opening the dome shutter failed",
+      "domeClose": "Closing the dome shutter failed",
+      "capture": "Capture failed",
+      "captureStart": "Capture could not be started",
+      "sequenceStart": "Sequence could not be started",
+      "guidingStart": "Guiding could not be started",
+      "autofocusStart": "Autofocus could not be started",
+      "binning": "Binning could not be changed",
+      "readout": "Readout mode could not be changed",
+      "switchSet": "Switch could not be set"
     }
   },
   "plugins": {
@@ -8235,7 +8266,8 @@
       "estimatedFocusTooltip": "Drift-corrected focus at the start of the run: {focus}.",
       "drift": "Focus drift over the run",
       "stepsPerLoop": "{value} steps/iteration",
-      "baseFilterUnmeasured": "The first filter of the run produced no usable AutoFocus measurement, so there was nothing to state the other filters against — every offset below is 0 and the result is not usable. Discard it and run the calculation again."
+      "baseFilterUnmeasured": "The first filter of the run produced no usable AutoFocus measurement, so there was nothing to state the other filters against — every offset below is 0 and the result is not usable. Discard it and run the calculation again.",
+      "notMeasured": "Not measured in this run - the previous offset is kept."
     },
     "groundStation": {
       "title": "Ground Station",

@@ -268,6 +268,7 @@ import { useFramingStore } from '@/store/framingStore';
 import { useGuiderStore } from '@/store/guiderStore';
 import { degreesToHMS, degreesToDMS, getLST } from '@/utils/utils';
 import apiService from '@/services/apiService';
+import { isBackendRefusal } from '@/utils/backendErrors';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -548,7 +549,12 @@ async function startCalibration() {
 
   try {
     // Start PHD2 calibration with forced calibration
-    await apiService.guiderStart(true);
+    const response = await apiService.guiderStart(true);
+    if (isBackendRefusal(response)) {
+      calibrationStarted.value = false;
+      status.value = response.Error || t('components.guider.calibrationAssistant.calibrationError');
+      return;
+    }
 
     // Monitor calibration progress
     watchCalibrationProgress();

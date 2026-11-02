@@ -22,12 +22,14 @@ import { useSequenceStore } from '@/store/sequenceStore';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useDialogStore } from '@/store/dialogStore';
 import { useLogStore } from '@/store/logStore';
+import { useFlatassistantStore } from '@/store/flatassistantStore';
 import websocketMountControlService from '@/services/websocketMountControl';
 import websocketTppaService from '@/services/websocketTppa';
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { createPoller } from '@/utils/poller';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
 import { takeProfileStale } from '@/services/api/profileStaleness';
+import { handleFailureEvent } from '@/utils/backendErrors';
 
 // Serialized snapshots of the last payload written per state key (module-level,
 // deliberately non-reactive). Used by setInfoIfChanged() so the 2s poll only
@@ -992,6 +994,8 @@ export const apiStore = defineStore('store', {
       // another instance. A transient connection loss keeps them: same instance,
       // same indices.
       useImagetStore().clearThumbnailCache();
+      // Another instance may run another plugin version and its own flat run.
+      useFlatassistantStore().resetServerRun();
 
       // Re-arm the sockets that were live before the switch. connect() with a
       // null URL (apiPort is null right after teardown) arms the idle-recheck
@@ -1341,6 +1345,7 @@ export const apiStore = defineStore('store', {
       // If a device connection event arrives via WebSocket, fetch event history immediately
       if (message.Response && message.Response.Event) {
         const event = message.Response.Event;
+        if (handleFailureEvent(message.Response)) return;
         const deviceEvents = [
           'MOUNT-CONNECTED',
           'MOUNT-DISCONNECTED',

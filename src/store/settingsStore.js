@@ -229,6 +229,12 @@ export const useSettingsStore = defineStore('settings', {
     // up to now; null = the whole session). Per device on purpose: monitorViewSetting is shared with every
     // client of the rig, and zooming on one device must not move the view on the others.
     sessionTimelineZoom: null,
+    // RunIds of plugin-side flat runs whose outcome was shown, so a run that finished while the
+    // app was closed is reported exactly once. Per device and outside `flats` on purpose: `flats`
+    // is mirrored to the backend and restored on load, which brought back a stale id and showed
+    // the same outcome on every start. A list, not one id, so switching between rigs does not
+    // re-report each rig's last run.
+    seenFlatRunIds: [],
     // Screen lock (screen-lock plugin): guards against accidental touches.
     // Lives here, not in apiStore, because this store is persisted as a whole -
     // the lock has to survive a restart and an instance switch (which reloads

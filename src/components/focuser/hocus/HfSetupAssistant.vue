@@ -197,6 +197,7 @@ import HfRunAdvice from './HfRunAdvice.vue';
 import HfRoughFocusPreview from './HfRoughFocusPreview.vue';
 import HfStepSizeProbe from './HfStepSizeProbe.vue';
 import HfSweepPreview from './HfSweepPreview.vue';
+import { autofocusStartRefusal } from '@/utils/backendErrors';
 import HfSetupIssues from './HfSetupIssues.vue';
 import StarDetectionOptimizer from './optimizer/StarDetectionOptimizer.vue';
 
@@ -282,7 +283,12 @@ const runError = ref('');
 async function startRun() {
   runError.value = '';
   try {
-    await apiService.focuserAfAction('start');
+    const response = await apiService.focuserAfAction('start');
+    const refusal = autofocusStartRefusal(response);
+    if (refusal !== null) {
+      runError.value = refusal || L('runFailed');
+      return;
+    }
     store.afTimestampLastStart = Date.now();
     store.afCurveData = [];
     runStarted.value = true;

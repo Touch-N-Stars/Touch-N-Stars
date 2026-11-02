@@ -5,12 +5,25 @@ import { useToastStore } from '@/store/toastStore';
 import i18n from '@/i18n';
 import { createPoller } from '@/utils/poller';
 import { flatMaxADU } from '@/utils/flatAdu';
+import { useSettingsStore } from '@/store/settingsStore';
+import {
+  isServerWorkflowStatus,
+  mapFilterResults,
+  buildServerRunSummary,
+} from '@/utils/flatServerRun';
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // The poller ticks every second, but with no run active the status only has to
 // notice a run started elsewhere (NINA UI, sequence), so idle ticks are thinned out.
 const IDLE_STATUS_INTERVAL_MS = 5000;
+
+// A plugin without the plugin-side flat run is asked again this rarely, so an
+// update of the plugin is picked up without reconnecting.
+const SERVER_WORKFLOW_REPROBE_MS = 60000;
+
+// How many reported flat run ids a device remembers (the plugin keeps only its last run).
+const SEEN_RUN_IDS_MAX = 20;
 
 export const useFlatassistantStore = defineStore('flatassistantStore', {
   state: () => ({
@@ -54,6 +67,12 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
     filterResults: {},
     // Name of the filter currently being processed in multi-mode, null otherwise.
     currentFilterName: null,
+    // Whether the Touch'N'Stars plugin runs flat assistant runs itself (single and
+    // multi filter, dark flats) so they survive the app being closed.
+    // null = not probed yet, true/false = probed.
+    serverWorkflow: null,
+    // RunId of the plugin-side run the store currently tracks.
+    serverRunId: null,
   }),
   getters: {
     // Full-scale ADU that currentADU is measured against (see flatMaxADU).
@@ -70,6 +89,12 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
           console.warn('Backend is not reachable flats');
           return;
         }
+
+        if (await this.fetchServerRunStatus()) return;
+
+        // Without the plugin-side run only PINS has a flat status worth polling here;
+        // under NINA the legacy single-filter run is tracked by waitForCompletion.
+        if (!store.isPINS) return;
 
         const prevState = this.status.State;
 
@@ -126,6 +151,220 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
       } catch (error) {
         console.error('Error fetching information:', error);
       }
+    },
+
+    // ── Plugin-side runs (/api/flats/*) ─────────────────────────────────────────
+
+    /**
+     * Polls the plugin-side run. Returns true when the plugin runs flat assistant
+     * runs itself - the status was applied and the legacy path must be skipped.
+     */
+    async fetchServerRunStatus({ force = false } = {}) {
+      const now = Date.now();
+      if (
+        this.serverWorkflow === false &&
+        !force &&
+        now - (this._serverWorkflowProbeAt ?? 0) < SERVER_WORKFLOW_REPROBE_MS
+      ) {
+        return false;
+      }
+
+      const serverActive = this.status.State === 'Running' || this.status.WaitingForCover;
+      if (
+        this.serverWorkflow === true &&
+        !force &&
+        !serverActive &&
+        now - (this._lastIdleStatusFetch ?? 0) < IDLE_STATUS_INTERVAL_MS
+      ) {
+        return true;
+      }
+      this._lastIdleStatusFetch = now;
+
+      let payload;
+      try {
+        payload = (await apiService.flatMultiStatus())?.Response;
+      } catch (error) {
+        // 404: plugin without flat runs. Anything else (timeout, offline) says nothing.
+        if (error?.response?.status === 404) {
+          this.serverWorkflow = false;
+          this._serverWorkflowProbeAt = now;
+        }
+        return this.serverWorkflow === true;
+      }
+
+      if (!isServerWorkflowStatus(payload)) {
+        // Older PINS plugin: its multi-mode endpoint has no dark flats and no per-filter results.
+        this.serverWorkflow = false;
+        this._serverWorkflowProbeAt = now;
+        return false;
+      }
+
+      this.serverWorkflow = true;
+      this.applyServerStatus(payload);
+      return true;
+    },
+
+    /** Forgets the plugin-side run and its detection (instance switch). */
+    resetServerRun() {
+      this.serverWorkflow = null;
+      this.serverRunId = null;
+      this.filterResults = {};
+      this.currentFilterName = null;
+      this.status = {
+        State: '',
+        TotalIterations: 0,
+        CompletedIterations: -1,
+        TotalFilters: 0,
+        CompletedFilters: -1,
+      };
+      this._coverPromptRunId = null;
+      this._serverWorkflowProbeAt = 0;
+    },
+
+    /** Resolves whether the plugin-side run is available, probing once if unknown. */
+    async detectServerWorkflow() {
+      if (this.serverWorkflow === null) {
+        await this.fetchServerRunStatus({ force: true });
+      }
+      return this.serverWorkflow === true;
+    },
+
+    applyServerStatus(s) {
+      const isRunning = s.State === 'Running';
+
+      // A run this store has not tracked yet (started here, on another device or before the
+      // app was reopened): reset the per-run view state once.
+      if (s.RunId && s.RunId !== this.serverRunId) {
+        this.serverRunId = s.RunId;
+        this.workflowStopRequested = Boolean(s.StopRequested);
+        if (isRunning) {
+          this.lastRun = null;
+          this.lastRunOutcome = null;
+          this.currentADU = null;
+          this.currentADUBitDepth = null;
+          this.workflowStopRequested = false;
+        }
+      }
+
+      this.status = s;
+      const multiFilter = (s.Filters?.length ?? 0) > 1;
+      this.currentRunType = s.Type === 'darks' ? 'darks' : multiFilter ? 'flats-multi' : 'flats';
+      this.currentFilterName = isRunning && multiFilter ? (s.CurrentFilterName ?? null) : null;
+      if (s.StopRequested) this.workflowStopRequested = true;
+
+      if (isRunning && s.CurrentADU !== null && s.CurrentADU !== undefined) {
+        this.currentADU = Math.round(s.CurrentADU);
+        this.currentADUBitDepth = s.BitDepth ?? null;
+      }
+
+      if (s.Filters?.length) {
+        this.filterResults = { ...this.filterResults, ...mapFilterResults(s.Filters) };
+      }
+
+      if (isRunning && s.WaitingForCover) {
+        this.promptCoverConfirmation(s.RunId);
+      }
+
+      if (s.State === 'Finished' && s.RunId) {
+        const settingsStore = useSettingsStore();
+        const seen = settingsStore.seenFlatRunIds ?? [];
+        if (!seen.includes(s.RunId)) {
+          settingsStore.seenFlatRunIds = [...seen, s.RunId].slice(-SEEN_RUN_IDS_MAX);
+          const summary = buildServerRunSummary(s, {
+            dimLabel: i18n.global.t('components.flatassistant.result_dim'),
+            brightLabel: i18n.global.t('components.flatassistant.result_bright'),
+          });
+          // The App.vue watcher shows the outcome toast, but only for a null -> run change;
+          // a run that finished unseen while an older result was still shown is committed here.
+          const replacesShownRun = this.lastRun !== null;
+          this.lastRun = summary;
+          if (replacesShownRun) this.commitRunOutcome(summary);
+        }
+      }
+    },
+
+    /**
+     * The plugin waits for the user before its dark flats unless a flip-flat panel can
+     * cover the telescope itself. Asked once per run; the answer goes back to the plugin.
+     */
+    async promptCoverConfirmation(runId) {
+      if (!runId || this._coverPromptRunId === runId) return;
+      this._coverPromptRunId = runId;
+
+      const confirmed = await useToastStore().showConfirmation(
+        i18n.global.t('components.flatassistant.cover_scope_title'),
+        i18n.global.t('components.flatassistant.cover_scope_message'),
+        i18n.global.t('components.flatassistant.cover_scope_confirm'),
+        i18n.global.t('common.cancel')
+      );
+
+      try {
+        await apiService.flatRunConfirmCover(confirmed);
+      } catch (error) {
+        // 409: answered elsewhere or the run was stopped meanwhile - nothing left to do.
+        if (error?.response?.status !== 409) {
+          // Ask again on the next poll so the run does not wait forever.
+          this._coverPromptRunId = null;
+        }
+      }
+      this._lastIdleStatusFetch = 0;
+    },
+
+    /**
+     * Starts a plugin-side run. `filters` holds one config per filter in run order
+     * (filterId null = keep the current filter); percentages are 0-100.
+     */
+    async startServerRun({ mode, keepClosed, darkCount, filters }) {
+      const settingsStore = useSettingsStore();
+      this.startManagedRun(filters.length > 1 ? 'flats-multi' : 'flats');
+      for (const filter of filters) {
+        if (filter.filterId !== null && filter.filterId !== undefined) {
+          this.filterResults[filter.filterId] = null;
+        }
+      }
+
+      // The plugin deserializes into non-nullable ints/doubles: a null there fails the whole
+      // request, so every numeric field gets a concrete value (-1 = camera default).
+      const num = (value, fallback) =>
+        Number.isFinite(Number(value)) && value !== null ? Number(value) : fallback;
+      const int = (value, fallback) => Math.round(num(value, fallback));
+      const payload = {
+        mode,
+        keepClosed: Boolean(keepClosed),
+        darkCount: Math.max(0, int(darkCount, 0)),
+        targetName: settingsStore.flats.targetNameEnabled ? settingsStore.flats.targetName : '',
+        filters: filters.map((f) => ({
+          filterId:
+            f.filterId !== null && Number.isInteger(Number(f.filterId)) ? Number(f.filterId) : null,
+          count: Math.max(1, int(f.count, 1)),
+          gain: int(f.gain, -1),
+          offset: int(f.offset, -1),
+          binning: typeof f.binning === 'string' && f.binning ? f.binning : '1x1',
+          histogramMean: num(f.histogramMean, 50),
+          meanTolerance: num(f.meanTolerance, 10),
+          minExposure: num(f.minExposure, 0.01),
+          maxExposure: num(f.maxExposure, 20),
+          brightness: int(f.brightness, 50),
+          exposureTime: num(f.exposureTime, 2),
+          minBrightness: int(f.minBrightness, 0),
+          maxBrightness: int(f.maxBrightness, 32000),
+        })),
+      };
+
+      try {
+        const response = await apiService.flatMultiMode(payload);
+        if (response?.Success === false) {
+          this.notifyOperationIssue(response, 'warning');
+          return false;
+        }
+      } catch (error) {
+        this.notifyOperationIssue(error?.response?.data ?? error);
+        return false;
+      }
+
+      // Pick the new run up right away instead of waiting for the next idle tick.
+      await this.fetchServerRunStatus({ force: true });
+      return true;
     },
 
     startManagedRun(type = 'flats') {
@@ -186,8 +425,29 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
     commitRunOutcome(run) {
       let type = 'info';
       let message;
+      // The plugin ended the run itself (a sequence started): not a failure of the flats, so no
+      // failure text - the frames taken so far, filters that had already failed, and the reason
+      // appended below.
+      const stoppedByPlugin = Boolean(run.stopReason) && !run.success;
+      const failedFiltersNote =
+        stoppedByPlugin && run.failedFilterNames?.length > 0
+          ? i18n.global.t('components.flatassistant.status_partial_flats_multi', {
+              filters: run.failedFilterNames.join(', '),
+            })
+          : null;
 
-      if (run.total <= 0) {
+      if (stoppedByPlugin) {
+        type = 'warning';
+        message =
+          run.completed > 0
+            ? i18n.global.t(
+                run.type === 'darks'
+                  ? 'components.flatassistant.status_stopped_darks'
+                  : 'components.flatassistant.status_stopped_flats',
+                { completed: run.completed, total: run.total }
+              )
+            : '';
+      } else if (run.total <= 0) {
         if (this.workflowStopRequested) {
           type = 'info';
           message = i18n.global.t('components.flatassistant.status_completed_flats');
@@ -232,6 +492,37 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
               : 'components.flatassistant.status_failed_flats'
         );
       }
+
+      // Plugin-side runs report their dark flats in the same outcome (one toast slot).
+      let darksNote = null;
+      if (run.darks?.skipped) {
+        darksNote = i18n.global.t('components.flatassistant.status_darks_skipped');
+      } else if (run.darks?.total > 0) {
+        const { completed, total } = run.darks;
+        if (completed >= total) {
+          darksNote = i18n.global.t('components.flatassistant.status_darks_taken', {
+            count: completed,
+          });
+        } else {
+          darksNote = i18n.global.t('components.flatassistant.status_darks_incomplete', {
+            completed,
+            total,
+          });
+          if (type === 'success') type = 'warning';
+        }
+      }
+      // The flat messages carry no closing punctuation of their own.
+      const appendNote = (note) => {
+        if (!message.trim()) {
+          message = note;
+          return;
+        }
+        const closed = /[.!?。！？]$/.test(message.trim());
+        message = `${message.trim()}${closed ? '' : '.'} ${note}`;
+      };
+      if (failedFiltersNote) appendNote(failedFiltersNote);
+      if (darksNote) appendNote(darksNote);
+      if (stoppedByPlugin) appendNote(run.stopReason);
 
       this.lastRunOutcome = { type, message };
 

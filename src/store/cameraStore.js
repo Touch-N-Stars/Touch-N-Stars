@@ -8,6 +8,7 @@ import { useSettingsStore } from './settingsStore';
 import { useMountStore } from './mountStore';
 import apiService from '@/services/apiService';
 import { positionAngleFromNinaPlateSolve } from '@/integrations/celestiaAtlas/positionAngle';
+import { reportBackendRefusal, toastBackendError } from '@/utils/backendErrors';
 
 // Safety net for the wait between "exposure started" and "image download started" in
 // capturePhoto(). That download is normally triggered by the IMAGE-PREPARED event; when the
@@ -21,6 +22,18 @@ const CAPTURE_DONE_POLL_MS = 1000;
 const CAPTURE_DONE_CONFIRMATIONS = 2;
 const CAPTURE_HARD_LIMIT_MS = 90 * 1000;
 const CAPTURE_IN_PROGRESS = 'Capture already in progress';
+
+// A failed capture answers getResult with 500 "Capture failed: <reason>". Older ninaAPI versions
+// returned the previous image or "Unknown error" instead, so this never matches there.
+function isCaptureFailed(result) {
+  return result?.StatusCode === 500 && String(result.Error || '').startsWith('Capture failed');
+}
+
+// An aborted exposure (from this app, NINA or another client) also reports
+// "Capture failed: cancelled"; it ends the wait but is no error for the user.
+function isCaptureCancelled(result) {
+  return /cancel/i.test(String(result?.Error || ''));
+}
 
 export const useCameraStore = defineStore('cameraStore', () => {
   const framingStore = useFramingStore();
@@ -393,7 +406,18 @@ export const useCameraStore = defineStore('cameraStore', () => {
 
     try {
       // Phase 1: Start exposure (Server provides ExposureEndTime and IsExposing)
-      await apiService.startCapture(exposureTime, gain, solve, true, save, targetName);
+      const started = await apiService.startCapture(
+        exposureTime,
+        gain,
+        solve,
+        true,
+        save,
+        targetName
+      );
+      if (reportBackendRefusal(started, 'components.backendErrors.captureStart')) {
+        isLooping.value = false;
+        return;
+      }
       isLoadingImage.value = true;
       // Must honor aborts: resetCaptureState() (backend teardown) and abortExposure() set
       // isAbort while we may be waiting for an exposure that will never report back.
@@ -410,6 +434,10 @@ export const useCameraStore = defineStore('cameraStore', () => {
         while (attempts < maxAttempts && !isAbort.value) {
           try {
             const resImageData = await apiService.getImageData();
+            if (isCaptureFailed(resImageData)) {
+              reportCaptureFailure(resImageData);
+              return;
+            }
 
             // Check if new image is available
             if (previousImage !== imageStore.imageData) {
@@ -477,6 +505,14 @@ export const useCameraStore = defineStore('cameraStore', () => {
    * Waits until the image download of the capture has started (see CAPTURE_DONE_POLL_MS).
    * Returns false when the wait ended without an image: aborted or hard limit reached.
    */
+  // Ends a loop as well: the next capture would most likely fail for the same reason.
+  function reportCaptureFailure(result) {
+    console.error('[cameraStore] Capture failed:', result.Error);
+    isLooping.value = false;
+    if (isAbort.value || isCaptureCancelled(result)) return;
+    toastBackendError(result, 'components.backendErrors.capture');
+  }
+
   async function waitForImageFetch(apiService, imageStore, exposureTime) {
     const startedAt = Date.now();
     const exposureMs = exposureTime * 1000;
@@ -496,6 +532,10 @@ export const useCameraStore = defineStore('cameraStore', () => {
       if (elapsed >= exposureMs && Date.now() - lastCheck >= CAPTURE_DONE_POLL_MS) {
         lastCheck = Date.now();
         const result = await apiService.getImageData().catch(() => null);
+        if (isCaptureFailed(result)) {
+          reportCaptureFailure(result);
+          return false;
+        }
         const done = result?.Success === true && result.Response !== CAPTURE_IN_PROGRESS;
         doneAnswers = done ? doneAnswers + 1 : 0;
         if (doneAnswers >= CAPTURE_DONE_CONFIRMATIONS && !imageStore.isImageFetching) {

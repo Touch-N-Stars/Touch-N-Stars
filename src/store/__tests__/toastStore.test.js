@@ -63,3 +63,43 @@ test('a confirmation drops the action button of the toast before it', () => {
   assert.equal(toast.onAction, null);
   toast.cancelAction();
 });
+
+test('a persistent toast pushed aside by a newer one comes back once that one closes', async () => {
+  freshPinia();
+  const toast = useToastStore();
+
+  toast.showToast({ type: 'error', title: 'Parking failed', autoClose: false });
+  toast.showToast({ type: 'info', title: 'Sequence loaded' });
+  assert.equal(toast.title, 'Sequence loaded');
+
+  toast.closeToast();
+  await tick();
+  assert.equal(toast.newMessage, true);
+  assert.equal(toast.title, 'Parking failed');
+  assert.equal(toast.autoClose, false);
+});
+
+test('a persistent toast queued during a confirmation survives a later queued toast', async () => {
+  freshPinia();
+  const toast = useToastStore();
+
+  toast.showConfirmation('Stop guiding?', '');
+  toast.showToast({ type: 'error', title: 'Parking failed', autoClose: false });
+  toast.showToast({ type: 'error', title: 'Filter change failed' });
+  toast.cancelAction();
+
+  await tick();
+  assert.equal(toast.title, 'Filter change failed');
+  toast.closeToast();
+  await tick();
+  assert.equal(toast.title, 'Parking failed');
+});
+
+test('every shown toast bumps the sequence, also one replacing an open toast', () => {
+  freshPinia();
+  const toast = useToastStore();
+  toast.showToast({ title: 'First' });
+  const first = toast.toastSeq;
+  toast.showToast({ title: 'Second' });
+  assert.equal(toast.toastSeq, first + 1);
+});

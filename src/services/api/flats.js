@@ -336,4 +336,13 @@ export default {
     const { API_URL } = getUrls();
     return simpleGetRequest(`${API_URL}flats/stop`);
   },
+
+  // Answers the plugin-side run waiting for the telescope to be covered before its dark flats.
+  async flatRunConfirmCover(confirmed) {
+    const { API_URL } = getUrls();
+    const response = await axios.get(`${API_URL}flats/confirm-cover`, {
+      params: { confirmed: Boolean(confirmed) },
+    });
+    return response.data;
+  },
 };

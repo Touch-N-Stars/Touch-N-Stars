@@ -40,6 +40,16 @@
             :error="errorOf(f.key)"
             @change="save(f.key, $event)"
           />
+          <!-- Newer plugin versions only; hidden while the backend does not report it -->
+          <HfToggleRow
+            v-if="'ReverseInitialDirection' in o"
+            :model-value="o.ReverseInitialDirection"
+            :label="L('reverseInitialDirection')"
+            :help="H('reverseInitialDirection')"
+            :status="statusOf('ReverseInitialDirection')"
+            :error="errorOf('ReverseInitialDirection')"
+            @change="save('ReverseInitialDirection', $event)"
+          />
           <!-- Lives in InspectorOptions, but the plugin surfaces it here on the AutoFocus page
                because it is the focuser convention every AutoFocus direction label reads. -->
           <HfSelectField

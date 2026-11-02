@@ -7,6 +7,7 @@ installBrowserGlobals();
 const { apiStore } = await import('@/store/store');
 const { useCameraStore } = await import('@/store/cameraStore');
 const { useImagetStore } = await import('@/store/imageStore');
+const { useToastStore } = await import('@/store/toastStore');
 
 function setup(t) {
   freshPinia();
@@ -48,6 +49,44 @@ test('a finished capture without IMAGE-PREPARED loads its image instead of spinn
 
   assert.equal(loads.length, 1, 'the image was loaded once by the fallback');
   assert.equal(cameraStore.isLoadingImage, false);
+  assert.equal(cameraStore.loading, false);
+});
+
+test('a failed capture ends the wait at once and stops the loop', async (t) => {
+  const { cameraStore, loads } = setup(t);
+  const fakeApi = {
+    startCapture: async () => ({ Success: true }),
+    getImageData: async () => ({
+      Success: false,
+      StatusCode: 500,
+      Error: 'Capture failed: camera disconnected',
+    }),
+  };
+  cameraStore.isLooping = true;
+
+  await withTimeout(cameraStore.capturePhoto(fakeApi, 0.01, 100), 3000, 'kept waiting');
+
+  assert.equal(loads.length, 0);
+  assert.equal(cameraStore.isLooping, false);
+  assert.equal(cameraStore.loading, false);
+  assert.equal(useToastStore().message, 'Capture failed: camera disconnected');
+});
+
+test('an exposure aborted elsewhere ends the wait without an error toast', async (t) => {
+  const { cameraStore } = setup(t);
+  const toastStore = useToastStore();
+  const fakeApi = {
+    startCapture: async () => ({ Success: true }),
+    getImageData: async () => ({
+      Success: false,
+      StatusCode: 500,
+      Error: 'Capture failed: cancelled',
+    }),
+  };
+
+  await withTimeout(cameraStore.capturePhoto(fakeApi, 0.01, 100), 3000, 'kept waiting');
+
+  assert.equal(toastStore.newMessage, false);
   assert.equal(cameraStore.loading, false);
 });
 

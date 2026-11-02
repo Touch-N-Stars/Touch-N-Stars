@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
 import { useToastStore } from '@/store/toastStore';
+import { isBackendRefusal } from '@/utils/backendErrors';
 
 export const useShortcutsStore = defineStore('shortcuts', {
   state: () => ({
@@ -151,8 +152,9 @@ export const useShortcutsStore = defineStore('shortcuts', {
 
           const startResponse = await apiService.sequenceAction('start');
 
-          if (!startResponse || startResponse.error) {
-            throw new Error('Error starting sequence');
+          // A start canceled on app resume is no failure: it has most likely reached NINA.
+          if (!startResponse || isBackendRefusal(startResponse)) {
+            throw new Error(startResponse?.Error || 'Error starting sequence');
           }
 
           toastStore.showToast({

@@ -34,6 +34,7 @@
 import { ref, onMounted } from 'vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 import { useI18n } from 'vue-i18n';
 import { StopCircleIcon } from '@heroicons/vue/24/outline';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
@@ -46,8 +47,12 @@ const isSlewing = ref(false);
 async function slewDome() {
   isSlewing.value = true;
   try {
-    await apiService.domeAction(`slew?waitToFinish=true&azimuth=${azimuth.value}`);
+    const response = await apiService.domeAction(`slew?waitToFinish=true&azimuth=${azimuth.value}`);
     isSlewing.value = false;
+    // A refused slew (e.g. 409 while the shutter is closing) comes back as HTTP 200
+    if (reportBackendRefusal(response, 'components.dome.control.errors.slew')) return;
+    // Canceled on app resume: the dome keeps slewing and the polled Slewing flag shows it
+    if (!response?.Success) return;
     if (store.domeInfo.Azimuth.toFixed(0) === azimuth.value.toFixed(0)) {
       console.log('Slewing to the same azimuth, stopping slew.');
       isSlewing.value = false;

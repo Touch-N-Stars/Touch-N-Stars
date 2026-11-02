@@ -5,25 +5,14 @@
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
-import { useI18n } from 'vue-i18n';
+import { runDomeAction } from './runDomeAction';
 import { StopCircleIcon } from '@heroicons/vue/24/outline';
 import { ref } from 'vue';
 
-const { t } = useI18n();
 const statusClass = ref('');
 
 async function stopShutter() {
-  try {
-    await apiService.domeAction('stop');
-    statusClass.value = 'glow-green';
-    console.log(t('components.dome.control.stop'));
-  } catch (error) {
-    console.log(t('components.dome.control.errors.stop'));
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('stop', statusClass, 'components.dome.control.errors.stop');
 }
 </script>
 <style scoped>

@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Hocus Focus: New AutoFocus option to reverse the initial direction, for focusers that have to approach focus from the other side.
+
+### Changed
+
+- Flat assistant: Flat runs now run inside the Touch'N'Stars plugin on NINA and PINS. A multi-filter run moves on to the next filter and takes its darks while the app is closed or the phone is locked, and the result is shown once the app is opened again. When the darks need the telescope covered, the run waits for the confirmation, also if the app was closed in the meantime.
+- Flat assistant (NINA): Multi mode, darks after the flats, the live ADU meter and the flat target name now work on NINA as well. This needs the updated Touch'N'Stars plugin; with an older plugin the flat assistant behaves as before.
+- Flat assistant: A run stopped because a sequence started ends with a warning that names the reason.
+
+### Fixed
+
+- Error messages: When the backend refuses a request, the app shows the server's reason instead of "request failed".
+- Dome: A refused action (e.g. while the shutter is closing) turns the button red and shows the reason instead of turning it green.
+- Hocus Focus (tilter): When the tilter state cannot be read, a warning is shown instead of 0.000 positions.
+- Filter offset calculator: Filters not measured in the run are shown in grey in the new offsets table.
+- Equipment: A failed park, unpark, meridian flip, filter change, focuser or rotator move, flat panel or dome shutter action now shows an error message.
+- Camera: A failed capture stops the waiting spinner at once and shows the reason.
+- Sequence, guiding, autofocus, binning and readout mode: A start or change the backend refuses now shows the reason instead of failing silently.
+- Message boxes: A box answered on another device or closed by the backend now disappears on every device.
+- PINS devices: A refused dew heater power level springs back on the slider.
+
 ## [App6.5.0 - beta 22] - 2026-11-01
 
 ### Added

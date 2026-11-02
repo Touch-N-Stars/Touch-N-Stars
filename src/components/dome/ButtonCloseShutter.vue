@@ -5,24 +5,13 @@
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
-import { useI18n } from 'vue-i18n';
+import { runDomeAction } from './runDomeAction';
 import { ref } from 'vue';
 
-const { t } = useI18n();
 const statusClass = ref('');
 
 async function closeShutter() {
-  try {
-    await apiService.domeAction('close');
-    statusClass.value = 'glow-green';
-    console.log(t('components.dome.control.close'));
-  } catch (error) {
-    console.log(t('components.dome.control.errors.close'));
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('close', statusClass, 'components.dome.control.errors.close');
 }
 </script>
 <style scoped>

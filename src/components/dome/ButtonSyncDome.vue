@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
+import { runDomeAction } from './runDomeAction';
 import { apiStore } from '@/store/store';
 import { ref } from 'vue';
 
@@ -22,17 +22,7 @@ const store = apiStore();
 const statusClass = ref('');
 
 async function syncTelescope() {
-  try {
-    const response = await apiService.domeAction('sync');
-    console.log('syncing telescope', response);
-    statusClass.value = 'glow-green';
-    console.log('telescope synced');
-  } catch (error) {
-    console.log('telescope sync error');
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('sync', statusClass, 'components.dome.control.errors.sync');
 }
 </script>
 <style scoped>

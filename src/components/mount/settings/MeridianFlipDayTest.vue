@@ -258,6 +258,7 @@ import { apiStore } from '@/store/store';
 import { useMeridianFlipTestStore } from '@/store/meridianFlipTestStore';
 import { useMountStore } from '@/store/mountStore';
 import { useToastStore } from '@/store/toastStore';
+import { isBackendRefusal } from '@/utils/backendErrors';
 import { getSunEquatorial } from '@/utils/astronomy';
 import { createPoller } from '@/utils/poller';
 import {
@@ -571,7 +572,8 @@ async function startTest() {
     const loaded = await apiService.sequenceLoadJson(sequence);
     if (!loaded?.Success) throw new Error(loaded?.Error || 'load');
     const started = await apiService.sequenceAction('start');
-    if (!started?.Success) throw new Error(started?.Error || 'start');
+    // A start canceled on app resume has most likely reached NINA; the run poll follows it.
+    if (!started || isBackendRefusal(started)) throw new Error(started?.Error || 'start');
     startedAt = Date.now();
     step.value = 'running';
     flipTestStore.saveRun({

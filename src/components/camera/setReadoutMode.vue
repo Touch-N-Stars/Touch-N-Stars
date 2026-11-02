@@ -1,6 +1,7 @@
 <template>
+  <!-- The per-type routes set-readout/image and /snapshot arrived in ninaAPI 2.2.14.4 -->
   <div
-    v-if="!store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.14.3')"
+    v-if="!store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.14.4')"
     class="flex items-center justify-between border border-line-strong p-1 md:p-2 rounded-control"
   >
     <label for="setReadoutMode" class="text-xs md:text-sm text-content font-medium">
@@ -61,6 +62,7 @@ import { onMounted, ref } from 'vue';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import apiService from '@/services/apiService';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 
 const store = apiStore();
 const cameraStore = useCameraStore();
@@ -89,6 +91,8 @@ async function setReadoutMode() {
   try {
     const data = await apiService.setReadoutMode(cameraStore.readoutMode);
     console.log(data);
+    // Refused while the camera is exposing: show the mode the camera still has.
+    if (reportBackendRefusal(data, 'components.backendErrors.readout')) initializeReadoutMode();
   } catch (error) {
     console.log('Error while setting readoutMode');
   }
@@ -98,6 +102,10 @@ async function setReadoutModeImage() {
   try {
     const response = await apiService.setReadoutModeType('image', readoutModeImage.value);
     console.log('[setReadoutMode] ', response);
+    if (reportBackendRefusal(response, 'components.backendErrors.readout')) {
+      initializeReadoutMode();
+      return;
+    }
     await apiService.profileChangeValue(
       'CameraSettings-ReadoutModeForNormalImages',
       readoutModeImage.value
@@ -111,6 +119,10 @@ async function setReadoutModeSnap() {
   try {
     const response = await apiService.setReadoutModeType('snapshot', readoutModeSnap.value);
     console.log('[setReadoutMode] ', response);
+    if (reportBackendRefusal(response, 'components.backendErrors.readout')) {
+      initializeReadoutMode();
+      return;
+    }
     await apiService.profileChangeValue(
       'CameraSettings-ReadoutModeForSnapImages',
       readoutModeSnap.value
