@@ -2446,6 +2446,11 @@
             "explanation": "L'estrella no ha tornat a prop del punt de partida durant el calibratge; pot indicar joc o un embragatge que patina.",
             "fix": "Comproveu la mecànica de la muntura i torneu a calibrar."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "El rotador ha girat la càmera de guiatge",
+            "explanation": "El rotador gira la càmera de guiatge. Després d'un gir l'estrella de guiatge ja no hi és i el calibratge ja no serveix, i les preses fetes mentre gira surten mogudes. El guiatge espera que el rotador s'aturi i comença amb una nova estrella de guiatge i el calibratge girat amb el rotador.",
+            "fix": "No cal fer res. Si després de moure el rotador el guiatge allunya l'estrella, canvieu «El rotador gira la càmera de guiatge» entre Sí i «Sí, invertit», o poseu-lo en No si la càmera de guiatge no gira amb el rotador, i torneu a calibrar. Si el rotador no informa mai que s'ha aturat, reviseu-ne el controlador; el guiatge comença igualment al cap de 2 minuts."
+          },
           "PulseLimitReached": {
             "title": "Correcció limitada pel pols màx.",
             "explanation": "Diverses correccions consecutives s'han retallat a la durada màxima del puls.",
@@ -2751,6 +2756,11 @@
             "BacklashModel": {
               "Fixed": "Fix (com a PHD2)",
               "PlayModel": "Model de joc"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "No",
+              "Yes": "Sí",
+              "Reversed": "Sí, invertit"
             }
           },
           "labels": {
@@ -2804,6 +2814,7 @@
             "DecCompensation": "Compensació de declinació",
             "DecFlipRequired": "Inverteix Dec després del gir de meridià",
             "VerifyDecAfterFlip": "Autocomprovació de Dec després del gir",
+            "RotatorTurnsGuideCamera": "El rotador gira la càmera de guiatge",
             "DitherMode": "Mode de dither",
             "DitherScale": "Escala de dither",
             "FastRecenter": "Recentrat ràpid després del dither",
@@ -2870,6 +2881,7 @@
             "DecCompensation": "Adapta les correccions RA a la declinació actual, perquè una calibració feta en una declinació continuï servint en una altra. La muntura connectada ha d'informar de la seva posició; deixa-ho activat. No és el mateix que la compensació del backlash Dec.",
             "DecFlipRequired": "Ajust per muntura; el corregeix automàticament l'autocomprovació de Dec després del gir.",
             "VerifyDecAfterFlip": "Després d'un gir de meridià, comprova les primeres correccions Dec: si allunyen l'estrella en lloc d'apropar-la, el guiatge inverteix Dec per si mateix i corregeix «Inverteix Dec després del gir de meridià» per a aquesta muntura.",
+            "RotatorTurnsGuideCamera": "Si el rotador connectat també gira la càmera de guiatge: Sí quan el rotador és entre el telescopi i l'OAG, No amb un telescopi de guiatge o amb un rotador entre l'OAG i la càmera d'imatge. Amb Sí, el guiatge espera mentre el rotador gira i després comença amb una nova estrella de guiatge i el calibratge desat girat amb el rotador, així que no cal tornar a calibrar després d'un gir. Si amb Sí el guiatge allunya l'estrella després de moure el rotador, trieu «Sí, invertit» i torneu a calibrar. El rotador manual de NINA no se segueix.",
             "DitherMode": "Com es tria cada dither. Random: una distància i direcció aleatòries. Spiral: passos al llarg d'una espiral al voltant de la posició inicial, útil contra el soroll de patró fix de la càmera de captura.",
             "DitherScale": "Multiplica la distància de dither que demana el programari de captura: 2 fa el dither el doble de lluny, 0,5 la meitat.",
             "FastRecenter": "Després d'un dither, porta l'estrella a la nova posició de bloqueig amb grans polsos directes en lloc de passos de guiatge normals, perquè el dither s'estabilitzi abans. Millor deixar-ho activat.",

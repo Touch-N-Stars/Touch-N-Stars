@@ -2446,6 +2446,11 @@
             "explanation": "Der Stern ist während der Kalibrierung nicht in die Nähe seines Ausgangspunkts zurückgekehrt; das kann auf Backlash oder eine rutschende Klemme hindeuten.",
             "fix": "Prüfe die Mechanik der Montierung und kalibriere neu."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Rotator hat die Guide-Kamera gedreht",
+            "explanation": "Der Rotator dreht die Guide-Kamera mit. Nach einer Drehung ist der Guide-Stern weg und die Kalibrierung passt nicht mehr, und Aufnahmen während der Drehung sind verschmiert. Der Guider wartet, bis der Rotator steht, und startet dann mit einem neuen Guide-Stern und der mitgedrehten Kalibrierung.",
+            "fix": "Nichts zu tun. Schiebt das Guiding den Stern nach einer Rotatorbewegung weg, stelle „Rotator dreht die Guide-Kamera“ zwischen Ja und „Ja, gegenläufig“ um, oder auf Nein, wenn sich die Guide-Kamera nicht mitdreht, und kalibriere neu. Meldet der Rotator nie, dass er steht, prüfe seinen Treiber; nach 2 Minuten startet das Guiding trotzdem."
+          },
           "PulseLimitReached": {
             "title": "Korrektur durch max. Puls begrenzt",
             "explanation": "Mehrere aufeinanderfolgende Korrekturen wurden auf die maximale Pulslänge begrenzt.",
@@ -2751,6 +2756,11 @@
             "BacklashModel": {
               "Fixed": "Fest (wie PHD2)",
               "PlayModel": "Spielmodell"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "Nein",
+              "Yes": "Ja",
+              "Reversed": "Ja, gegenläufig"
             }
           },
           "labels": {
@@ -2804,6 +2814,7 @@
             "DecCompensation": "Deklinationskompensation",
             "DecFlipRequired": "Dec nach Meridian-Flip umkehren",
             "VerifyDecAfterFlip": "Dec-Selbsttest nach Flip",
+            "RotatorTurnsGuideCamera": "Rotator dreht die Guide-Kamera",
             "DitherMode": "Dither-Modus",
             "DitherScale": "Dither-Skalierung",
             "FastRecenter": "Schnelle Rückführung nach Dither",
@@ -2865,11 +2876,12 @@
             "BacklashPulseMs": "Länge des zusätzlichen Pulses bei einem Dec-Richtungswechsel. Ausgehend davon passt der Guider den Puls anhand der Reaktion des Sterns automatisch zwischen 20 ms und dem 1,5-Fachen dieses Werts an. Mit dem Spielmodell ist der Wert nur die erste Schätzung des Spiels, die das Modell dann selbst lernt.",
             "PulseModel": "Lernt aus den Dithers, wie weit ein Guide-Puls den Stern auf jeder Achse wirklich bewegt, und bemisst die Pulse danach, sodass eine ungenaue Kalibrierung nicht mehr zu Über- oder Unterkorrektur führt. Es startet mit den Kalibrierwerten, ändert nur, was die Dithers eindeutig zeigen, und behält das Gelernte pro Profil und Montierung bis zur nächsten Kalibrierung.",
             "CalibrationStepMs": "0 = automatisch aus Optik, Guide-Rate und Deklination.",
-            "ReuseCalibration": "Behält die letzte Kalibrierung über Sitzungen hinweg und passt sie an Deklination und Pierseite an, sodass du nicht jede Nacht kalibrieren musst. Kalibriere neu, nachdem du die Guiding-Kamera gedreht oder das Leitrohr gewechselt hast.",
+            "ReuseCalibration": "Behält die letzte Kalibrierung über Sitzungen hinweg und passt sie an Deklination und Pierseite an, sodass du nicht jede Nacht kalibrieren musst. Kalibriere neu, nachdem du die Guiding-Kamera von Hand gedreht oder das Leitrohr gewechselt hast.",
             "AssumeOrthogonal": "Die Kalibrierung misst die RA- und Dec-Richtung normalerweise unabhängig voneinander. Dies erzwingt, dass Dec genau senkrecht zu RA steht, was hilft, wenn großer periodischer Fehler, Dec-Backlash oder schlechtes Seeing die Dec-Kalibrierung verfälschen.",
             "DecCompensation": "Passt die RA-Korrekturen an die aktuelle Deklination an, sodass eine bei einer Deklination erstellte Kalibrierung auch bei einer anderen funktioniert. Die verbundene Montierung muss ihre Position melden; eingeschaltet lassen. Nicht dasselbe wie die Dec-Backlash-Kompensation.",
             "DecFlipRequired": "Einstellung pro Montierung; wird durch den Dec-Selbsttest nach Flip automatisch korrigiert.",
             "VerifyDecAfterFlip": "Prüft nach einem Meridian-Flip die ersten Dec-Korrekturen: Schieben sie den Stern weiter weg statt zurück, kehrt der Guider Dec selbst um und korrigiert „Dec nach Meridian-Flip umkehren“ für diese Montierung.",
+            "RotatorTurnsGuideCamera": "Ob der verbundene Rotator auch die Guide-Kamera dreht: Ja, wenn der Rotator zwischen Teleskop und OAG sitzt, Nein bei einem Guide-Teleskop oder einem Rotator zwischen OAG und Aufnahmekamera. Mit Ja wartet der Guider, solange sich der Rotator dreht, und startet dann mit einem neuen Guide-Stern und der mitgedrehten gespeicherten Kalibrierung, sodass du nach einer Drehung nicht neu kalibrieren musst. Schiebt das Guiding den Stern mit Ja nach einer Rotatorbewegung weg, wähle „Ja, gegenläufig“ und kalibriere noch einmal. Den manuellen Rotator von NINA verfolgt der Guider nicht.",
             "DitherMode": "Wie jeder Dither gewählt wird. Random: zufällige Distanz und Richtung. Spiral: Schritte entlang einer Spirale um die Startposition, nützlich gegen Fixed-Pattern-Noise der Aufnahmekamera.",
             "DitherScale": "Multipliziert die Dither-Distanz, die die Aufnahmesoftware anfordert: 2 dithert doppelt so weit, 0,5 halb so weit.",
             "FastRecenter": "Bewegt den Stern nach einem Dither mit großen direkten Pulsen statt normalen Guide-Schritten zur neuen Lock-Position, sodass sich der Dither schneller beruhigt. Am besten eingeschaltet lassen.",

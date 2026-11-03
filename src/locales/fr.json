@@ -2405,6 +2405,11 @@
             "explanation": "L'étoile n'est pas revenue près de son point de départ pendant la calibration ; cela peut indiquer du jeu ou un embrayage qui patine.",
             "fix": "Vérifiez la mécanique de la monture et recalibrez."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Le rotateur a tourné la caméra de guidage",
+            "explanation": "Le rotateur tourne la caméra de guidage. Après une rotation, l'étoile guide n'est plus là et la calibration ne correspond plus, et les poses prises pendant la rotation sont filées. Le guidage attend l'arrêt du rotateur, puis redémarre avec une nouvelle étoile guide et la calibration tournée avec le rotateur.",
+            "fix": "Aucune action requise. Si le guidage éloigne l'étoile après un mouvement du rotateur, basculez « Le rotateur tourne la caméra de guidage » entre Oui et « Oui, inversé », ou réglez-le sur Non si la caméra de guidage ne tourne pas avec le rotateur, puis recalibrez. Si le rotateur ne signale jamais son arrêt, vérifiez son pilote ; le guidage démarre quand même au bout de 2 minutes."
+          },
           "PulseLimitReached": {
             "title": "Correction limitée par l'impulsion max.",
             "explanation": "Plusieurs corrections consécutives ont été limitées à la durée d'impulsion maximale.",
@@ -2710,6 +2715,11 @@
             "BacklashModel": {
               "Fixed": "Fixe (comme PHD2)",
               "PlayModel": "Modèle de jeu"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "Non",
+              "Yes": "Oui",
+              "Reversed": "Oui, inversé"
             }
           },
           "labels": {
@@ -2763,6 +2773,7 @@
             "DecCompensation": "Compensation de déclinaison",
             "DecFlipRequired": "Inverser Dec après retournement",
             "VerifyDecAfterFlip": "Autotest Dec après retournement",
+            "RotatorTurnsGuideCamera": "Le rotateur tourne la caméra de guidage",
             "DitherMode": "Mode de dither",
             "DitherScale": "Échelle de dither",
             "FastRecenter": "Recentrage rapide après dither",
@@ -2829,6 +2840,7 @@
             "DecCompensation": "Adapte les corrections RA à la déclinaison actuelle, pour qu'une calibration faite à une déclinaison reste valable à une autre. La monture connectée doit indiquer sa position ; à laisser activé. Différent de la compensation du backlash Dec.",
             "DecFlipRequired": "Réglage propre à chaque monture ; corrigé automatiquement par l'autotest Dec après retournement.",
             "VerifyDecAfterFlip": "Après un retournement au méridien, vérifie les premières corrections Dec : si elles éloignent l'étoile au lieu de la ramener, le guidage inverse Dec de lui-même et corrige « Inverser Dec après retournement » pour cette monture.",
+            "RotatorTurnsGuideCamera": "Indique si le rotateur connecté tourne aussi la caméra de guidage : Oui quand le rotateur se trouve entre le télescope et l'OAG, Non avec une lunette de guidage ou un rotateur entre l'OAG et la caméra d'imagerie. Avec Oui, le guidage attend pendant que le rotateur tourne, puis démarre avec une nouvelle étoile guide et la calibration conservée tournée avec le rotateur ; il n'est donc pas nécessaire de recalibrer après une rotation. Si, avec Oui, le guidage éloigne l'étoile après un mouvement du rotateur, choisissez « Oui, inversé » et refaites une calibration. Le rotateur manuel de NINA n'est pas suivi.",
             "DitherMode": "Comment chaque dither est choisi. Random : une distance et une direction aléatoires. Spiral : des pas le long d'une spirale autour de la position de départ, utile contre le bruit à motif fixe de la caméra d'imagerie.",
             "DitherScale": "Multiplie la distance de dither demandée par le logiciel d'acquisition : 2 dithere deux fois plus loin, 0,5 moitié moins.",
             "FastRecenter": "Après un dither, amène l'étoile à la nouvelle position de verrouillage avec de grandes impulsions directes plutôt qu'avec des pas de guidage normaux, pour que le dither se stabilise plus vite. À laisser activé.",

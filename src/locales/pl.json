@@ -2405,6 +2405,11 @@
             "explanation": "Podczas kalibracji gwiazda nie wróciła w pobliże punktu startowego; może to wskazywać na luz lub ślizgające się sprzęgło.",
             "fix": "Sprawdź mechanikę montażu i skalibruj ponownie."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Rotator obrócił kamerę prowadzącą",
+            "explanation": "Rotator obraca kamerę prowadzącą. Po obrocie gwiazdy prowadzącej już nie ma i kalibracja przestaje pasować, a klatki zrobione w trakcie obrotu są rozmazane. Prowadzenie czeka, aż rotator się zatrzyma, i startuje od nowa z nową gwiazdą prowadzącą i kalibracją obróconą razem z rotatorem.",
+            "fix": "Nie trzeba nic robić. Jeśli po ruchu rotatora prowadzenie odpycha gwiazdę, przełącz „Rotator obraca kamerę prowadzącą” między Tak a „Tak, odwrotnie” albo ustaw Nie, jeśli kamera prowadząca nie obraca się z rotatorem, i skalibruj ponownie. Jeśli rotator nigdy nie zgłasza zatrzymania, sprawdź jego sterownik; po 2 minutach prowadzenie i tak wystartuje."
+          },
           "PulseLimitReached": {
             "title": "Korekta ograniczona przez maks. impuls",
             "explanation": "Kilka kolejnych korekt zostało obciętych do maksymalnej długości impulsu.",
@@ -2710,6 +2715,11 @@
             "BacklashModel": {
               "Fixed": "Stały (jak w PHD2)",
               "PlayModel": "Model luzu"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "Nie",
+              "Yes": "Tak",
+              "Reversed": "Tak, odwrotnie"
             }
           },
           "labels": {
@@ -2763,6 +2773,7 @@
             "DecCompensation": "Kompensacja deklinacji",
             "DecFlipRequired": "Odwróć Dec po flipie południkowym",
             "VerifyDecAfterFlip": "Samokontrola Dec po flipie",
+            "RotatorTurnsGuideCamera": "Rotator obraca kamerę prowadzącą",
             "DitherMode": "Tryb ditheringu",
             "DitherScale": "Skala ditheringu",
             "FastRecenter": "Szybkie centrowanie po ditheringu",
@@ -2829,6 +2840,7 @@
             "DecCompensation": "Dostosowuje korekty RA do bieżącej deklinacji, aby kalibracja wykonana przy jednej deklinacji działała też przy innej. Podłączony montaż musi podawać swoją pozycję; zostaw włączone. To nie to samo co kompensacja luzu Dec.",
             "DecFlipRequired": "Ustawienie osobne dla każdego montażu; korygowane automatycznie przez samokontrolę Dec po flipie.",
             "VerifyDecAfterFlip": "Po flipie południkowym sprawdza pierwsze korekty Dec: jeśli odpychają gwiazdę dalej zamiast ją przywracać, guider sam odwraca Dec i poprawia „Odwróć Dec po flipie południkowym” dla tego montażu.",
+            "RotatorTurnsGuideCamera": "Czy podłączony rotator obraca też kamerę prowadzącą: Tak, gdy rotator jest między teleskopem a OAG, Nie przy teleskopie prowadzącym lub rotatorze między OAG a kamerą główną. Przy Tak prowadzenie czeka, aż rotator przestanie się obracać, a potem startuje z nową gwiazdą prowadzącą i zapisaną kalibracją obróconą razem z rotatorem, więc po obrocie nie trzeba kalibrować od nowa. Jeśli przy Tak prowadzenie odpycha gwiazdę po ruchu rotatora, wybierz „Tak, odwrotnie” i skalibruj jeszcze raz. Ręczny rotator NINA nie jest śledzony.",
             "DitherMode": "Sposób wyboru każdego ditheru. Random: losowa odległość i kierunek. Spiral: kroki wzdłuż spirali wokół pozycji startowej, przydatne przeciw szumowi o stałym wzorze kamery głównej.",
             "DitherScale": "Mnoży odległość ditheru żądaną przez program do rejestracji: 2 przesuwa dwa razy dalej, 0,5 o połowę mniej.",
             "FastRecenter": "Po ditherze przesuwa gwiazdę do nowej pozycji blokady dużymi bezpośrednimi impulsami zamiast zwykłymi krokami guidingu, aby dither szybciej się ustabilizował. Najlepiej zostawić włączone.",

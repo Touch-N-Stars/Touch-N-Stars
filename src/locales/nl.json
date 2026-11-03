@@ -2405,6 +2405,11 @@
             "explanation": "De ster keerde tijdens de kalibratie niet terug in de buurt van zijn beginpunt; dat kan wijzen op speling of een slippende koppeling.",
             "fix": "Controleer de mechaniek van de montering en kalibreer opnieuw."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Rotator heeft de guide-camera gedraaid",
+            "explanation": "De rotator draait de guide-camera mee. Na een draaiing is de guide-ster weg en klopt de kalibratie niet meer, en zijn opnamen tijdens het draaien uitgesmeerd. Het guiden wacht tot de rotator stilstaat en start dan opnieuw met een nieuwe guide-ster en de meegedraaide kalibratie.",
+            "fix": "Geen actie nodig. Duwt het guiden de ster weg na een rotatorbeweging, wissel ‘Rotator draait de guide-camera mee’ dan tussen Ja en ‘Ja, omgekeerd’, of zet hem op Nee als de guide-camera niet meedraait, en kalibreer opnieuw. Meldt de rotator nooit dat hij stilstaat, controleer dan zijn driver; na 2 minuten start het guiden toch."
+          },
           "PulseLimitReached": {
             "title": "Correctie begrensd door max. puls",
             "explanation": "Meerdere opeenvolgende correcties zijn afgekapt op de maximale pulslengte.",
@@ -2710,6 +2715,11 @@
             "BacklashModel": {
               "Fixed": "Vast (zoals PHD2)",
               "PlayModel": "Spelingsmodel"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "Nee",
+              "Yes": "Ja",
+              "Reversed": "Ja, omgekeerd"
             }
           },
           "labels": {
@@ -2763,6 +2773,7 @@
             "DecCompensation": "Declinatiecompensatie",
             "DecFlipRequired": "Dec omkeren na meridiaanflip",
             "VerifyDecAfterFlip": "Dec-zelfcontrole na flip",
+            "RotatorTurnsGuideCamera": "Rotator draait de guide-camera mee",
             "DitherMode": "Dithermodus",
             "DitherScale": "Ditherschaal",
             "FastRecenter": "Snel hercentreren na dither",
@@ -2829,6 +2840,7 @@
             "DecCompensation": "Past de RA-correcties aan de huidige declinatie aan, zodat een kalibratie op één declinatie ook op een andere blijft werken. De verbonden montering moet haar positie melden; laat dit aan. Niet hetzelfde als Dec-backlashcompensatie.",
             "DecFlipRequired": "Instelling per montering; wordt automatisch gecorrigeerd door de Dec-zelfcontrole na de flip.",
             "VerifyDecAfterFlip": "Controleert na een meridiaanflip de eerste Dec-correcties: duwen ze de ster verder weg in plaats van terug, dan keert de guider Dec zelf om en corrigeert ‘Dec omkeren na meridiaanflip’ voor deze montering.",
+            "RotatorTurnsGuideCamera": "Of de verbonden rotator ook de guide-camera draait: Ja als de rotator tussen de telescoop en de OAG zit, Nee bij een guide-scoop of een rotator tussen de OAG en de opnamecamera. Met Ja wacht het guiden zolang de rotator draait en start daarna met een nieuwe guide-ster en de bewaarde kalibratie meegedraaid met de rotator, zodat je na een draaiing niet opnieuw hoeft te kalibreren. Duwt het guiden met Ja de ster weg na een rotatorbeweging, kies dan ‘Ja, omgekeerd’ en kalibreer nog een keer. De handmatige rotator van NINA wordt niet gevolgd.",
             "DitherMode": "Hoe elke dither gekozen wordt. Random: een willekeurige afstand en richting. Spiral: stappen langs een spiraal rond de startpositie, nuttig tegen fixed-pattern-ruis van de opnamecamera.",
             "DitherScale": "Vermenigvuldigt de ditherafstand die de opnamesoftware vraagt: 2 dithert twee keer zo ver, 0,5 half zo ver.",
             "FastRecenter": "Brengt de ster na een dither met grote directe pulsen naar de nieuwe lockpositie in plaats van met normale guidestappen, zodat de dither sneller tot rust komt. Laat dit best aan.",

@@ -2446,6 +2446,11 @@
             "explanation": "The star did not return near its starting point during calibration; this may indicate backlash or a slipping clutch.",
             "fix": "Check the mount mechanics and recalibrate."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Rotator turned the guide camera",
+            "explanation": "The rotator turns the guide camera. After a rotation the guide star is gone and the calibration no longer fits, and frames taken while it turns are smeared. Guiding waits until the rotator has stopped, then starts with a new guide star and the calibration turned with the rotator.",
+            "fix": "No action needed. If guiding pushes the star away after a rotator move, switch \"Rotator turns the guide camera\" between Yes and \"Yes, reversed\", or set it to No when the guide camera does not turn with the rotator, and calibrate again. If the rotator never reports that it stopped, check its driver; guiding starts anyway after 2 minutes."
+          },
           "PulseLimitReached": {
             "title": "Correction limited by max pulse",
             "explanation": "Several consecutive corrections were clamped to the maximum pulse length.",
@@ -2751,6 +2756,11 @@
             "BacklashModel": {
               "Fixed": "Fixed (as in PHD2)",
               "PlayModel": "Play model"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "No",
+              "Yes": "Yes",
+              "Reversed": "Yes, reversed"
             }
           },
           "labels": {
@@ -2804,6 +2814,7 @@
             "DecCompensation": "Declination compensation",
             "DecFlipRequired": "Reverse Dec after meridian flip",
             "VerifyDecAfterFlip": "Post-flip Dec self-check",
+            "RotatorTurnsGuideCamera": "Rotator turns the guide camera",
             "DitherMode": "Dither mode",
             "DitherScale": "Dither scale",
             "FastRecenter": "Fast recenter after dither",
@@ -2865,11 +2876,12 @@
             "BacklashPulseMs": "Length of the extra pulse on a Dec reversal. Starting from it, the guider adjusts the pulse automatically between 20 ms and 1.5 × this value, from how the star responds. With the play model, the value is only the first estimate of the play, which the model then learns.",
             "PulseModel": "Learns from the dithers how far a guide pulse really moves the star on each axis, and sizes the pulses by it, so a calibration that is off no longer makes the guiding over- or under-correct. It starts as calibrated, changes only what the dithers clearly show, and keeps what it learned per profile and mount until the next calibration.",
             "CalibrationStepMs": "Length of each pulse during calibration. 0 (default) calculates it from focal length, pixel size, guide rate and declination. Set it yourself only if the calibration takes far too few or too many steps.",
-            "ReuseCalibration": "Keeps the last calibration across sessions and adapts it to the declination and pier side, so you do not have to calibrate every night. Calibrate again after rotating the guide camera or changing the guide scope.",
+            "ReuseCalibration": "Keeps the last calibration across sessions and adapts it to the declination and pier side, so you do not have to calibrate every night. Calibrate again after turning the guide camera by hand or changing the guide scope.",
             "AssumeOrthogonal": "The calibration normally measures the RA and Dec directions independently. This forces Dec to be exactly perpendicular to RA, which helps when large periodic error, Dec backlash or poor seeing distort the Dec calibration.",
             "DecCompensation": "Adapts the RA corrections to the current declination, so a calibration made at one declination keeps working at another. Needs the connected mount to report its position; leave it on. Not the same as Dec backlash compensation.",
             "DecFlipRequired": "Whether the Dec corrections must be reversed after a meridian flip. Depends on the mount and is stored per mount; the post-flip Dec self-check corrects it automatically when it is wrong.",
             "VerifyDecAfterFlip": "After a meridian flip, checks the first Dec corrections: if they push the star further away instead of back, the guider reverses Dec on its own and corrects \"Reverse Dec after meridian flip\" for this mount.",
+            "RotatorTurnsGuideCamera": "Whether the connected rotator turns the guide camera as well: Yes when the rotator sits between the telescope and the off-axis guider, No for a guide scope or for a rotator between the off-axis guider and the imaging camera. With Yes, guiding waits while the rotator turns, then starts with a new guide star and the kept calibration turned with the rotator, so you do not have to calibrate again after a rotation. If, with Yes, guiding pushes the star away after a rotator move, choose \"Yes, reversed\" and calibrate once more. NINA's manual rotator is not followed.",
             "DitherMode": "How each dither is chosen. Random: a random distance and direction. Spiral: steps along a spiral around the start position, useful against fixed-pattern noise of the imaging camera.",
             "DitherScale": "Multiplies the dither distance the imaging software asks for: 2 dithers twice as far, 0.5 half as far.",
             "FastRecenter": "After a dither, moves the star to the new lock position with large direct pulses instead of normal guiding steps, so the dither settles sooner. Best left on.",

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Hocus Focus: New AutoFocus option to reverse the initial direction, for focusers that have to approach focus from the other side.
 - LuckyCapture (plugin, PINS): The save folder is now chosen with a folder browser, the same as the image save path in the settings, and can be reset to the default with one tap. If the chosen folder is not available when a recording or snapshot starts, for example because the USB drive was removed, is no longer mounted or is read-only, LuckyCapture saves to the image folder of the active profile instead (by default /home/pi/Documents/N.I.N.A) and shows a notice. The automatic fallback needs LuckyCapture 0.2.7.
 - LuckyCapture (plugin, PINS): Quick ROI presets set a centred capture area from 320 x 240 to 1024 x 768 in one step. On most planetary cameras the frame rate depends on the ROI height, so this is the quickest way to raise it.
+- Native Guider (PINS): Texts in all languages for the new setting "Rotator turns the guide camera" (No / Yes / "Yes, reversed") and its alert "Rotator turned the guide camera". With Yes, the guider waits while the rotator turns, then continues with a new guide star and the kept calibration turned with the rotator. In English, German and Spanish the "Reuse calibration" help now says to calibrate again after turning the guide camera by hand. This needs a PINS version with the setting.
 
 ### Changed
 
