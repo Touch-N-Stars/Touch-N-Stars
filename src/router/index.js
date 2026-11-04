@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useSettingsStore } from '@/store/settingsStore';
+import { firstVisibleRoute } from '@/utils/appMode';
 
 const EquipmentPage = () => import('@/views/EquipmentPage.vue');
 const CameraPage = () => import('@/views/CameraPage.vue');
@@ -73,12 +74,7 @@ const NAV_ITEM_ROUTES = {
 function getFirstVisibleRoute(settingsStore) {
   const order = settingsStore.navbar?.itemOrder ?? Object.keys(NAV_ITEM_ROUTES);
   const hidden = settingsStore.navbar?.hiddenItems ?? [];
-  for (const id of order) {
-    if (!hidden.includes(id) && NAV_ITEM_ROUTES[id]) {
-      return NAV_ITEM_ROUTES[id];
-    }
-  }
-  return '/settings';
+  return firstVisibleRoute(NAV_ITEM_ROUTES, order, hidden, settingsStore.appMode) ?? '/settings';
 }
 
 // First-run setup no longer gates routing: the setup wizard is a cancellable

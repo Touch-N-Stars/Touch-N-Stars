@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Settings: New Easy view next to the Expert view. Easy shows fewer menu entries, tabs and settings and keeps what a normal imaging night needs, including a filter tab in the settings, the simple sequence view and the setup assistant for Hocus Focus. Nothing is blocked or reset: hidden values keep working, and stop buttons, warnings and the status bar stay visible. Choose it in the setup wizard or under Settings, Interface. Existing installations stay in the Expert view.
 - Hocus Focus: New AutoFocus option to reverse the initial direction, for focusers that have to approach focus from the other side.
 - LuckyCapture (plugin, PINS): The save folder is now chosen with a folder browser, the same as the image save path in the settings, and can be reset to the default with one tap. If the chosen folder is not available when a recording or snapshot starts, for example because the USB drive was removed, is no longer mounted or is read-only, LuckyCapture saves to the image folder of the active profile instead (by default /home/pi/Documents/N.I.N.A) and shows a notice. The automatic fallback needs LuckyCapture 0.2.7.
 - LuckyCapture (plugin, PINS): Quick ROI presets set a centred capture area from 320 x 240 to 1024 x 768 in one step. On most planetary cameras the frame rate depends on the ROI height, so this is the quickest way to raise it.

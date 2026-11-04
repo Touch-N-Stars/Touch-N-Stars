@@ -85,7 +85,10 @@
       settingName="BinAverageEnabled"
       labelKey="components.camera.BinAverageEnabled"
     />
-    <div v-if="store.cameraInfo.ReadoutModes.length > 1" class="w-full">
+    <div
+      v-if="store.cameraInfo.ReadoutModes.length > 1 && !settingsStore.isEasyMode"
+      class="w-full"
+    >
       <setReadoutMode v-if="!store.isPINS" />
       <pinsSetReadoutMode v-else />
     </div>
@@ -110,7 +113,7 @@
       settingName="LEDLights"
       labelKey="components.camera.LEDLights"
     />
-    <div v-if="store.cameraInfo.CanSetUSBLimit" class="w-full">
+    <div v-if="store.cameraInfo.CanSetUSBLimit && !settingsStore.isEasyMode" class="w-full">
       <setCameraUsbLimit v-if="!store.isPINS" />
       <pinsSetCameraUsbLimit v-else />
     </div>

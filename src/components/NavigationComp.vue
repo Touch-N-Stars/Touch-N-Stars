@@ -523,6 +523,7 @@ import { useRoute } from 'vue-router';
 import { apiStore } from '@/store/store';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { useSettingsStore } from '@/store/settingsStore';
+import { isNavItemInMode } from '@/utils/appMode';
 import { useCameraStore } from '@/store/cameraStore';
 import exposureCountdown from '@/components/helpers/ExposureCountdown.vue';
 import { usePluginStore } from '@/store/pluginStore';
@@ -597,6 +598,7 @@ function getNavOrder(id) {
 }
 
 function isNavItemHidden(id) {
+  if (!isNavItemInMode(id, settingsStore.appMode)) return true;
   return settingsStore.navbar?.hiddenItems?.includes(id) ?? false;
 }
 
@@ -732,6 +734,7 @@ watch(
     () => store.guiderInfo.Connected,
     () => sequenceStore.sequenceIsLoaded,
     () => isLandscape.value,
+    () => settingsStore.appMode,
   ],
   () => {
     nextTick(() => {

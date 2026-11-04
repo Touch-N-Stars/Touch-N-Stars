@@ -18,6 +18,16 @@
       </select>
     </div>
 
+    <!-- Easy or expert view -->
+    <div
+      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+    >
+      <h3 class="font-bold text-base text-cyan-400">
+        {{ $t('components.settings.appMode.title') }}
+      </h3>
+      <AppModeSelector />
+    </div>
+
     <!-- Keep Screen Awake (mobile only) -->
     <div
       class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
@@ -109,6 +119,7 @@ import { apiStore } from '@/store/store';
 import { Capacitor } from '@capacitor/core';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
+import AppModeSelector from '@/components/settings/general/AppModeSelector.vue';
 import NavbarCustomizationSettings from '@/components/settings/general/NavbarCustomizationSettings.vue';
 import StatusBarCustomizationSettings from '@/components/settings/general/StatusBarCustomizationSettings.vue';
 

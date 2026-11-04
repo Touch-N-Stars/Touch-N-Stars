@@ -28,6 +28,9 @@
       <!-- Image Tab -->
       <SettingsImageTab v-if="activeTab === 'image'" />
 
+      <!-- Filter Tab: easy mode has no filter wheel page in the navbar -->
+      <SettingsFilterTab v-if="activeTab === 'filter'" />
+
       <!-- Meridian Flip Tab -->
       <SettingsMeridianFlipTab v-if="activeTab === 'meridianFlip'" />
 
@@ -49,7 +52,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -63,8 +66,10 @@ import SettingsPluginsTab from '@/components/settings/SettingsPluginsTab.vue';
 import SettingsPlateSolverTab from '@/components/settings/SettingsPlateSolverTab.vue';
 import SettingsEquipmentTab from '@/components/settings/SettingsEquipmentTab.vue';
 import SettingsImageTab from '@/components/settings/SettingsImageTab.vue';
+import SettingsFilterTab from '@/components/settings/SettingsFilterTab.vue';
 import SettingsMeridianFlipTab from '@/components/settings/SettingsMeridianFlipTab.vue';
 import { usePluginStore } from '@/store/pluginStore';
+import { filterTabsForMode, resolveActiveTab } from '@/utils/appMode';
 import SystemPowerModal from '@/components/system/SystemPowerModal.vue';
 
 const { t } = useI18n();
@@ -77,18 +82,35 @@ const emit = defineEmits(['navigate']);
 
 const activeTab = ref('connection');
 
-const subNavItems = computed(() => [
-  { name: t('components.settings.tabs.connection'), value: 'connection' },
-  { name: t('components.settings.tabs.interface'), value: 'interface' },
-  { name: t('components.settings.image.title'), value: 'image' },
-  { name: t('components.settings.equipment.title'), value: 'equipment' },
-  { name: t('components.settings.plugins.title'), value: 'plugins' },
-  { name: t('components.settings.plate_solver.title'), value: 'plateSolver' },
-  { name: t('components.mount.settings.meridian_flip_settings'), value: 'meridianFlip' },
-  { name: t('components.settings.tabs.system'), value: 'system' },
-  // The PINS device settings live on their own page; this entry only links there.
-  ...(store.isPINS ? [{ name: t('nav.pins'), value: 'pins' }] : []),
-]);
+const hasFilters = computed(
+  () => !!store.profileInfo?.FilterWheelSettings?.FilterWheelFilters?.length
+);
+
+const subNavItems = computed(() =>
+  filterTabsForMode(
+    'settings',
+    [
+      { name: t('components.settings.tabs.connection'), value: 'connection' },
+      { name: t('components.settings.tabs.interface'), value: 'interface' },
+      { name: t('components.settings.image.title'), value: 'image' },
+      ...(settingsStore.isEasyMode && hasFilters.value
+        ? [{ name: t('components.filterwheel.settings.title'), value: 'filter' }]
+        : []),
+      { name: t('components.settings.equipment.title'), value: 'equipment' },
+      { name: t('components.settings.plugins.title'), value: 'plugins' },
+      { name: t('components.settings.plate_solver.title'), value: 'plateSolver' },
+      { name: t('components.mount.settings.meridian_flip_settings'), value: 'meridianFlip' },
+      { name: t('components.settings.tabs.system'), value: 'system' },
+      // The PINS device settings live on their own page; this entry only links there.
+      ...(store.isPINS ? [{ name: t('nav.pins'), value: 'pins' }] : []),
+    ],
+    settingsStore.appMode
+  )
+);
+
+watch(subNavItems, (items) => {
+  activeTab.value = resolveActiveTab(items, activeTab.value);
+});
 
 function selectTab(value) {
   if (value === 'pins') {

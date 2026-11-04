@@ -4,7 +4,7 @@
     :hint="$t('components.settings.navbarCustomization.hint')"
     :items="orderedItems"
     :hiddenIds="settingsStore.navbar?.hiddenItems ?? []"
-    @reorder="settingsStore.setNavbarOrder($event)"
+    @reorder="onReorder"
     @toggle="settingsStore.toggleNavbarItem($event)"
   />
 </template>
@@ -14,6 +14,7 @@ import { computed } from 'vue';
 import { useSettingsStore } from '@/store/settingsStore';
 import { usePluginStore } from '@/store/pluginStore';
 import { apiStore } from '@/store/store';
+import { isNavItemInMode, mergeSubsetOrder } from '@/utils/appMode';
 import CustomizationList from './CustomizationList.vue';
 
 const settingsStore = useSettingsStore();
@@ -53,7 +54,9 @@ const allNavItems = computed(() => {
       label: item.title,
     }));
   const pinsItems = store.isPINS ? [{ id: 'pins', labelKey: 'nav.pins' }] : [];
-  return [...STATIC_NAV_ITEMS, ...pinsItems, ...pluginItems];
+  return [...STATIC_NAV_ITEMS, ...pinsItems, ...pluginItems].filter((item) =>
+    isNavItemInMode(item.id, settingsStore.appMode)
+  );
 });
 
 const orderedItems = computed(() => {
@@ -64,4 +67,9 @@ const orderedItems = computed(() => {
   const remaining = items.filter((i) => !order.includes(i.id));
   return [...inOrder, ...remaining];
 });
+
+// The list can be a subset in easy mode; the entries it does not show must survive a reorder.
+function onReorder(order) {
+  settingsStore.setNavbarOrder(mergeSubsetOrder(settingsStore.navbar?.itemOrder ?? [], order));
+}
 </script>

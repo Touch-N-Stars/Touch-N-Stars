@@ -4,7 +4,9 @@
     <div class="tns-card flex flex-col gap-4">
       <div class="flex flex-col gap-1">
         <h3 class="text-base font-semibold text-content">{{ L('title') }}</h3>
-        <p class="text-sm text-content-muted">{{ L('description') }}</p>
+        <p class="text-sm text-content-muted">
+          {{ L(settingsStore.isEasyMode ? 'descriptionEasy' : 'description') }}
+        </p>
       </div>
 
       <button class="tns-btn-primary min-h-touch" @click="emit('open-assistant')">
@@ -63,6 +65,7 @@ import { computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import { imageScale } from '@/utils/hocusFocusAdvisor';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 import HfSetupIssues from './HfSetupIssues.vue';
@@ -73,6 +76,7 @@ const emit = defineEmits(['open-assistant']);
 const { t } = useI18n();
 const L = (key, params) => t(`components.focuser.hfSimple.${key}`, params || {});
 const store = apiStore();
+const settingsStore = useSettingsStore();
 
 const focuser = computed(() => store.profileInfo?.FocuserSettings || {});
 const focalLength = computed(() => store.profileInfo?.TelescopeSettings?.FocalLength);

@@ -73,6 +73,8 @@
 
               <WizardLanguageStep v-else-if="currentStep.id === 'language'" />
 
+              <WizardAppModeStep v-else-if="currentStep.id === 'appMode'" />
+
               <WizardInfoStep v-else-if="currentStep.id === 'info'" />
 
               <WizardInstanceStep v-else-if="currentStep.id === 'instance'" />
@@ -156,6 +158,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import { usePinsStore } from '@/store/pinsStore';
 import WizardLanguageStep from './steps/WizardLanguageStep.vue';
+import WizardAppModeStep from './steps/WizardAppModeStep.vue';
 import WizardInfoStep from './steps/WizardInfoStep.vue';
 import WizardInstanceStep from './steps/WizardInstanceStep.vue';
 import WizardLocalizationStep from './steps/WizardLocalizationStep.vue';
@@ -197,6 +200,7 @@ function step(id) {
 const steps = computed(() => [
   step('welcome'),
   step('language'),
+  step('appMode'),
   step('info'),
   ...(isMobile ? [step('instance')] : []),
   // Set the rig's regional defaults before Wi-Fi regulatory settings are used.

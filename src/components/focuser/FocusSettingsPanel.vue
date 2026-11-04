@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4">
-    <SegmentTabs v-model="activeTab" :tabs="tabs" />
+    <SegmentTabs v-if="tabs.length > 1" v-model="activeTab" :tabs="tabs" />
 
     <!-- General Settings Container -->
     <div v-if="activeTab === 'general'" class="tns-card flex flex-col gap-3">
@@ -11,8 +11,9 @@
     <div v-if="activeTab === 'autofocus'" class="flex flex-col gap-4">
       <!-- With Hocus Focus its essentials (assistant, sweep) replace NINA's sweep fields -->
       <HfSimpleSettings v-if="hfActive" @open-assistant="emit('open-assistant')" />
-      <div class="tns-card flex flex-col gap-3">
-        <setFocuserUseFilterOffset />
+      <!-- Easy mode keeps the sweep values only, and Hocus Focus already shows those above -->
+      <div v-if="!settingsStore.isEasyMode || !hfActive" class="tns-card flex flex-col gap-3">
+        <setFocuserUseFilterOffset v-if="!settingsStore.isEasyMode" />
         <template v-if="!hfActive">
           <SettingInput
             labelKey="components.focuser.settings.AutoFocusExposureTime"
@@ -33,26 +34,28 @@
             :max="100000"
           />
         </template>
-        <SettingInput
-          labelKey="components.focuser.settings.FocuserSettleTime"
-          settingKey="FocuserSettings-FocuserSettleTime"
-          :modelValue="store.profileInfo.FocuserSettings.FocuserSettleTime"
-          :max="1000"
-        />
-        <SettingInput
-          labelKey="components.focuser.settings.AutoFocusTotalNumberOfAttempts"
-          settingKey="FocuserSettings-AutoFocusTotalNumberOfAttempts"
-          :modelValue="store.profileInfo.FocuserSettings.AutoFocusTotalNumberOfAttempts"
-          :max="50"
-        />
-        <SettingInput
-          labelKey="components.focuser.settings.AutoFocusNumberOfFramesPerPoint"
-          settingKey="FocuserSettings-AutoFocusNumberOfFramesPerPoint"
-          :modelValue="store.profileInfo.FocuserSettings.AutoFocusNumberOfFramesPerPoint"
-          :max="50"
-        />
+        <template v-if="!settingsStore.isEasyMode">
+          <SettingInput
+            labelKey="components.focuser.settings.FocuserSettleTime"
+            settingKey="FocuserSettings-FocuserSettleTime"
+            :modelValue="store.profileInfo.FocuserSettings.FocuserSettleTime"
+            :max="1000"
+          />
+          <SettingInput
+            labelKey="components.focuser.settings.AutoFocusTotalNumberOfAttempts"
+            settingKey="FocuserSettings-AutoFocusTotalNumberOfAttempts"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusTotalNumberOfAttempts"
+            :max="50"
+          />
+          <SettingInput
+            labelKey="components.focuser.settings.AutoFocusNumberOfFramesPerPoint"
+            settingKey="FocuserSettings-AutoFocusNumberOfFramesPerPoint"
+            :modelValue="store.profileInfo.FocuserSettings.AutoFocusNumberOfFramesPerPoint"
+            :max="50"
+          />
+        </template>
       </div>
-      <AutoFocusOptions v-if="hfActive" :sections="['storage']" />
+      <AutoFocusOptions v-if="hfActive && !settingsStore.isEasyMode" :sections="['storage']" />
     </div>
 
     <!-- Crop & Stars Container -->
@@ -232,6 +235,8 @@ import StarDetection from './hocus/StarDetection.vue';
 import HfToggleRow from './hocus/fields/HfToggleRow.vue';
 import { useFocuserStore } from '@/store/focuserStore';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { useSettingsStore } from '@/store/settingsStore';
+import { filterTabsForMode } from '@/utils/appMode';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -241,6 +246,7 @@ const { t } = useI18n();
 const store = apiStore();
 const focuserStore = useFocuserStore();
 const hfStore = useHocusFocusStore();
+const settingsStore = useSettingsStore();
 
 // Hocus Focus is the autofocus on PINS: its fields take the place of the NINA values it
 // duplicates or replaces. Feature-detected rather than isPINS, so a PINS without the HF routes
@@ -270,8 +276,9 @@ const hasDeviceSettings = computed(
   () => store.focuserInfo.Connected && focuserStore.focuserSettings != null
 );
 
-const tabs = computed(() =>
-  [
+const tabs = computed(() => {
+  // Built first: inline, the argument's contextual type reaches t() and crashes vue-tsc.
+  const items = [
     // General holds only the max step, which hides itself on focusers that cannot set it
     ...(store.isPINS && store.focuserInfo.CanSetMaxStep ? ['general'] : []),
     'autofocus',
@@ -279,8 +286,9 @@ const tabs = computed(() =>
     'backlash',
     'advanced',
     ...(store.isPINS && hasDeviceSettings.value ? ['deviceSpecific'] : []),
-  ].map((value) => ({ value, label: t(`components.focuser.settings.${value}`) }))
-);
+  ].map((value) => ({ value, label: t(`components.focuser.settings.${value}`) }));
+  return filterTabsForMode('focusSettings', items, settingsStore.appMode);
+});
 // With Hocus Focus the autofocus tab holds the setup assistant, the recommended start
 const activeTab = ref(hfActive.value ? 'autofocus' : tabs.value[0].value);
 

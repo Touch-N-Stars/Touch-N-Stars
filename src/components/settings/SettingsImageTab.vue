@@ -2,7 +2,7 @@
   <div class="space-y-6">
     <!-- Image settings -->
     <div
-      v-if="store.isBackendReachable"
+      v-if="store.isBackendReachable && !settingsStore.isEasyMode"
       class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
     >
       <h3 class="font-bold text-base text-cyan-400">
@@ -50,7 +50,7 @@
       <h3 class="font-bold text-base text-cyan-400">
         {{ $t('components.settings.imageFile.title') }}
       </h3>
-      <FilePatternBuilder />
+      <FilePatternBuilder v-if="!settingsStore.isEasyMode" />
       <setImgFileType class="mt-2" />
     </div>
   </div>
@@ -58,6 +58,7 @@
 
 <script setup>
 import { apiStore } from '@/store/store';
+import { useSettingsStore } from '@/store/settingsStore';
 import setImgStrechFactor from '@/components/settings/image/SetImgStrechFactor.vue';
 import setImgQuality from '@/components/settings/image/SetImgQuality.vue';
 import setImgBlackClipping from '@/components/settings/image/SetImgBlackClipping.vue';
@@ -68,6 +69,7 @@ import setImgFilePath from '@/components/settings/image/SetImgFilePath.vue';
 import FilePatternBuilder from '@/components/settings/image/FilePatternBuilder.vue';
 
 const store = apiStore();
+const settingsStore = useSettingsStore();
 
 const imageToggles = [
   {

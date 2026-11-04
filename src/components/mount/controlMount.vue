@@ -3,7 +3,7 @@
     <ButtonPark />
     <ButtonUnpark />
     <ButtonHome />
-    <ButtonSetAsPark />
+    <ButtonSetAsPark v-if="!settingsStore.isEasyMode" />
     <!-- Full width while stacked, compact in the row so the labelled buttons keep their space -->
     <ButtonSlewStop class="xs:w-16" />
   </div>
@@ -64,4 +64,7 @@ import ButtonTrackingMode from '@/components/mount/ButtonTrackingMode.vue';
 import ButtonTrackingStop from '@/components/mount/ButtonTrackingStop.vue';
 import MountParkedNotice from '@/components/mount/MountParkedNotice.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
+import { useSettingsStore } from '@/store/settingsStore';
+
+const settingsStore = useSettingsStore();
 </script>

@@ -12,6 +12,7 @@ import {
 } from '@/store/utils/celestiaAtlasSettingsMigration';
 import { serializeRigSharedSettings } from '@/services/rigSharedSettingsService';
 import { migrateNavbarIds } from '@/utils/navbarIdMigration';
+import { isEasyMode, normalizeAppMode } from '@/utils/appMode';
 
 // Upgrade the persisted state before Pinia's persistence plugin hydrates it.
 // Existing installations keep all Atlas preferences, while the obsolete key is
@@ -108,6 +109,9 @@ export const useSettingsStore = defineStore('settings', {
     framing: {
       useNinaCache: true,
     },
+    // Easy or expert view of the whole app. Per device and outside the backend-mirrored blocks on
+    // purpose: a beginner's phone and an expert's tablet can share one rig.
+    appMode: 'expert',
     // Sequence editor V2 layout: 'full' (default) or 'simple'. Per device, so it survives a
     // restart and an instance switch.
     sequence: {
@@ -244,6 +248,9 @@ export const useSettingsStore = defineStore('settings', {
     },
   }),
   getters: {
+    isEasyMode(state) {
+      return isEasyMode(state.appMode);
+    },
     currentImageRotation(state) {
       const instance = state.connection.instances.find((i) => i.id === state.selectedInstanceId);
       return instance?.imageRotation ?? 0;
@@ -254,6 +261,14 @@ export const useSettingsStore = defineStore('settings', {
     setSequenceViewMode(mode) {
       if (!this.sequence) this.sequence = { viewMode: mode };
       else this.sequence.viewMode = mode;
+    },
+    // The sequence layout follows a real change of the mode only: re-selecting the current mode
+    // must not undo a jump into the expert editor.
+    setAppMode(mode) {
+      const next = normalizeAppMode(mode);
+      if (next === normalizeAppMode(this.appMode)) return;
+      this.appMode = next;
+      this.setSequenceViewMode(next === 'easy' ? 'simple' : 'full');
     },
     async loadAllBackendSettings() {
       const sequenceStore = useSequenceStore();

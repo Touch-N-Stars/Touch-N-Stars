@@ -86,6 +86,8 @@ import { useImagetStore } from '@/store/imageStore';
 import { useFocuserStore } from '@/store/focuserStore';
 import { usePolling } from '@/composables/usePolling';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { useSettingsStore } from '@/store/settingsStore';
+import { filterTabsForMode, resolveActiveTab } from '@/utils/appMode';
 import HfRunAdvice from '@/components/focuser/hocus/HfRunAdvice.vue';
 import HfSetupAssistant from '@/components/focuser/hocus/HfSetupAssistant.vue';
 import HfInspectorPanel from '@/components/focuser/hocus/HfInspectorPanel.vue';
@@ -96,6 +98,7 @@ const store = apiStore();
 const imageStore = useImagetStore();
 const focuserStore = useFocuserStore();
 const hfStore = useHocusFocusStore();
+const settingsStore = useSettingsStore();
 // Without a focuser the focus tab has nothing to offer: start on the settings instead
 const currentTab = ref(store.focuserInfo.Connected ? 'showFocus' : 'showSettings');
 const delayShowGraph = ref(false);
@@ -107,16 +110,20 @@ const HF_TABS = [
   { value: 'showTilter', labelKey: 'tilter' },
 ];
 
-const navItems = computed(() => [
-  { name: t('components.focuser.title'), value: 'showFocus' },
-  { name: t('components.focuser.settings.title'), value: 'showSettings' },
-  ...(hfStore.available
-    ? HF_TABS.map((tab) => ({
-        name: t(`components.focuser.hocus.tabs.${tab.labelKey}`),
-        value: tab.value,
-      }))
-    : []),
-]);
+const navItems = computed(() => {
+  // Built first: inline, the argument's contextual type reaches t() and crashes vue-tsc.
+  const items = [
+    { name: t('components.focuser.title'), value: 'showFocus' },
+    { name: t('components.focuser.settings.title'), value: 'showSettings' },
+    ...(hfStore.available
+      ? HF_TABS.map((tab) => ({
+          name: t(`components.focuser.hocus.tabs.${tab.labelKey}`),
+          value: tab.value,
+        }))
+      : []),
+  ];
+  return filterTabsForMode('focus', items, settingsStore.appMode);
+});
 const isHfTab = computed(
   () => hfStore.available && HF_TABS.some((tab) => tab.value === currentTab.value)
 );
@@ -128,14 +135,9 @@ watch(
   () => hfStore.checkAvailability(),
   { immediate: true }
 );
-watch(
-  () => hfStore.available,
-  (available) => {
-    if (!available && HF_TABS.some((tab) => tab.value === currentTab.value)) {
-      currentTab.value = 'showFocus';
-    }
-  }
-);
+watch(navItems, (items) => {
+  currentTab.value = resolveActiveTab(items, currentTab.value);
+});
 
 usePolling(() => focuserStore.readSettings(), 2000);
 </script>

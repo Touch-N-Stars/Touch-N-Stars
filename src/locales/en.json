@@ -282,7 +282,8 @@
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Done",
-        "localization": "Regional settings"
+        "localization": "Regional settings",
+        "appMode": "View"
       },
       "driver": {
         "loading": "Loading drivers…",
@@ -472,6 +473,10 @@
       "localization": {
         "title": "Set the rig regional settings",
         "description": "Set these values before Wi-Fi so hotspot location, time and remote keyboard input match where the rig is used."
+      },
+      "appMode": {
+        "title": "How much do you want to see?",
+        "description": "You can change this at any time under Settings → Interface."
       }
     },
     "fileBrowser": {
@@ -798,6 +803,17 @@
         "loadError": "Could not read swap configuration: {message}",
         "saveError": "Could not save swap configuration: {message}",
         "missingJob": "The daemon did not return a swap job."
+      },
+      "appMode": {
+        "title": "View",
+        "mode": {
+          "easy": "Easy",
+          "expert": "Expert"
+        },
+        "hint": {
+          "easy": "Shows what you need for a normal imaging night. Device pages and special tools stay out of the way.",
+          "expert": "Shows every page, tab and setting."
+        }
       }
     },
     "alpacaDirect": {
@@ -4487,6 +4503,7 @@
       "hfSimple": {
         "title": "Autofocus essentials",
         "description": "The settings that matter most for Hocus Focus. Everything else is below under the detailed settings.",
+        "descriptionEasy": "The settings that matter most for Hocus Focus. The setup assistant finds them for you, step by step.",
         "startAssistant": "Start setup assistant",
         "ninaSettings": "NINA focuser settings",
         "optics": "Optics",

@@ -104,6 +104,8 @@ import OnStepXSettings from '@/components/mount/settings/OnStepXSettings.vue';
 import { apiStore } from '@/store/store';
 import { useTppaStore } from '@/store/tppaStore';
 import { useImagetStore } from '@/store/imageStore';
+import { useSettingsStore } from '@/store/settingsStore';
+import { filterTabsForMode, resolveActiveTab } from '@/utils/appMode';
 import SubNav from '@/components/SubNav.vue';
 import { useI18n } from 'vue-i18n';
 const showTppa = ref(false); // eslint-disable-line no-unused-vars
@@ -112,29 +114,35 @@ const { t } = useI18n();
 const store = apiStore();
 const tppaStore = useTppaStore();
 const imageStore = useImagetStore();
+const settingsStore = useSettingsStore();
 
 // pins' native OnStepX driver: its controller settings get their own tab
 const isNativeOnStepX = computed(
   () => store.mountInfo.Connected && store.mountInfo.DeviceId === 'OnStepX'
 );
 
-const subNavItems = computed(() => [
-  { name: t('components.mount.title'), value: 'showMount' },
-  { name: t('components.mount.slew'), value: 'showSlew' },
-  { name: t('components.tppa.tppa'), value: 'showTppa' },
-  { name: t('components.mount.settings.meridian_flip_settings'), value: 'showSettings' },
-  ...(isNativeOnStepX.value
-    ? [{ name: t('components.mount.onstepx.title'), value: 'showOnStepX' }]
-    : []),
-]);
+const subNavItems = computed(() =>
+  filterTabsForMode(
+    'mount',
+    [
+      { name: t('components.mount.title'), value: 'showMount' },
+      { name: t('components.mount.slew'), value: 'showSlew' },
+      { name: t('components.tppa.tppa'), value: 'showTppa' },
+      { name: t('components.mount.settings.meridian_flip_settings'), value: 'showSettings' },
+      ...(isNativeOnStepX.value
+        ? [{ name: t('components.mount.onstepx.title'), value: 'showOnStepX' }]
+        : []),
+    ],
+    settingsStore.appMode
+  )
+);
 
-// The tab disappears when the mount disconnects or another driver is chosen
+// A tab disappears when the mount disconnects, another driver is chosen or easy mode hides it.
+// The tab survives in the store, so this also has to run when the page opens.
 watch(
-  isNativeOnStepX,
-  (native) => {
-    if (!native && store.mount.currentTab === 'showOnStepX') {
-      store.mount.currentTab = 'showMount';
-    }
+  subNavItems,
+  (items) => {
+    store.mount.currentTab = resolveActiveTab(items, store.mount.currentTab);
   },
   { immediate: true }
 );

@@ -100,6 +100,8 @@ import { AcademicCapIcon } from '@heroicons/vue/24/outline';
 import SubNav from '@/components/SubNav.vue';
 import { useOrientation } from '@/composables/useOrientation';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { useSettingsStore } from '@/store/settingsStore';
+import { filterTabsForMode, isTabInMode } from '@/utils/appMode';
 import { isAppBackgrounded, useBackgroundAwarePolling } from '@/utils/appLifecycle';
 import NativeStateStrip from './NativeStateStrip.vue';
 import NativeGuiderControls from './NativeGuiderControls.vue';
@@ -129,6 +131,7 @@ const WIDE_MIN_WIDTH = 1024;
 
 const { t, te } = useI18n();
 const store = useNativeGuiderStore();
+const settingsStore = useSettingsStore();
 const { orientation } = useOrientation();
 
 const isWide = computed(() => orientation.value.width >= WIDE_MIN_WIDTH);
@@ -142,26 +145,38 @@ const incidentsTab = computed(() => ({
 }));
 
 const tabs = computed(() =>
-  isWide.value
-    ? [
-        { name: t('components.guider.native.tabs.dashboard'), value: 'dashboard' },
-        { name: t('components.guider.native.tabs.coach'), value: 'coach' },
-        incidentsTab.value,
-        { name: t('components.guider.native.tabs.settings'), value: 'settings' },
-      ]
-    : [
-        { name: t('components.guider.native.tabs.frame'), value: 'frame' },
-        { name: t('components.guider.native.tabs.graph'), value: 'graph' },
-        { name: t('components.guider.native.tabs.stats'), value: 'stats' },
-        { name: t('components.guider.native.tabs.calibration'), value: 'calibration' },
-        { name: t('components.guider.native.tabs.log'), value: 'log' },
-        { name: t('components.guider.native.tabs.coach'), value: 'coach' },
-        incidentsTab.value,
-        { name: t('components.guider.native.tabs.settings'), value: 'settings' },
-      ]
+  filterTabsForMode(
+    'nativeGuider',
+    isWide.value
+      ? [
+          { name: t('components.guider.native.tabs.dashboard'), value: 'dashboard' },
+          { name: t('components.guider.native.tabs.coach'), value: 'coach' },
+          incidentsTab.value,
+          { name: t('components.guider.native.tabs.settings'), value: 'settings' },
+        ]
+      : [
+          { name: t('components.guider.native.tabs.frame'), value: 'frame' },
+          { name: t('components.guider.native.tabs.graph'), value: 'graph' },
+          { name: t('components.guider.native.tabs.stats'), value: 'stats' },
+          { name: t('components.guider.native.tabs.calibration'), value: 'calibration' },
+          { name: t('components.guider.native.tabs.log'), value: 'log' },
+          { name: t('components.guider.native.tabs.coach'), value: 'coach' },
+          incidentsTab.value,
+          { name: t('components.guider.native.tabs.settings'), value: 'settings' },
+        ],
+    settingsStore.appMode
+  )
 );
 
-const currentTab = ref(isWide.value ? lastWideTab : lastPhoneTab);
+// The remembered tab can come from the expert view. Checked by id, not against `tabs`: that list
+// reads currentTab for the incidents badge, which does not exist yet on the first call.
+function rememberedTab(wide) {
+  const tab = wide ? lastWideTab : lastPhoneTab;
+  if (isTabInMode('nativeGuider', tab, settingsStore.appMode)) return tab;
+  return wide ? 'dashboard' : 'frame';
+}
+
+const currentTab = ref(rememberedTab(isWide.value));
 // Shared by the guide graph and the target plot.
 const graphWindow = ref(lastGraphWindow);
 const graphUnit = ref(lastGraphUnit);
@@ -170,7 +185,7 @@ watch(graphUnit, (value) => (lastGraphUnit = value));
 
 watch(isWide, (wide) => {
   if (['settings', 'coach', 'incidents'].includes(currentTab.value)) return;
-  currentTab.value = wide ? lastWideTab : lastPhoneTab;
+  currentTab.value = rememberedTab(wide);
 });
 watch(currentTab, (tab) => {
   if (isWide.value) lastWideTab = tab;
