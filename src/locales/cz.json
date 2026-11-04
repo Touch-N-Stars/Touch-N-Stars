@@ -2405,6 +2405,11 @@
             "explanation": "Hvězda se během kalibrace nevrátila poblíž výchozího bodu; může to ukazovat na vůli nebo prokluzující spojku.",
             "fix": "Zkontrolujte mechaniku montáže a překalibrujte."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Rotátor otočil naváděcí kamerou",
+            "explanation": "Rotátor otáčí naváděcí kamerou. Po otočení je naváděcí hvězda pryč a kalibrace už nesedí, a snímky pořízené během otáčení jsou rozmazané. Pointace počká, až se rotátor zastaví, a pak začne s novou naváděcí hvězdou a kalibrací otočenou s rotátorem.",
+            "fix": "Není třeba nic dělat. Pokud pointace po pohybu rotátoru odtlačuje hvězdu, přepněte „Rotátor otáčí naváděcí kamerou“ mezi Ano a „Ano, obráceně“, nebo nastavte Ne, pokud se naváděcí kamera s rotátorem neotáčí, a znovu kalibrujte. Pokud rotátor nikdy nehlásí, že se zastavil, zkontrolujte jeho ovladač; pointace po 2 minutách začne i tak."
+          },
           "PulseLimitReached": {
             "title": "Korekce omezena max. pulzem",
             "explanation": "Několik po sobě jdoucích korekcí bylo oříznuto na maximální délku pulzu.",
@@ -2710,6 +2715,11 @@
             "BacklashModel": {
               "Fixed": "Pevný (jako PHD2)",
               "PlayModel": "Model vůle"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "Ne",
+              "Yes": "Ano",
+              "Reversed": "Ano, obráceně"
             }
           },
           "labels": {
@@ -2763,6 +2773,7 @@
             "DecCompensation": "Kompenzace deklinace",
             "DecFlipRequired": "Otočit Dec po flipu přes poledník",
             "VerifyDecAfterFlip": "Samokontrola Dec po flipu",
+            "RotatorTurnsGuideCamera": "Rotátor otáčí naváděcí kamerou",
             "DitherMode": "Režim ditheru",
             "DitherScale": "Měřítko ditheru",
             "FastRecenter": "Rychlé vystředění po ditheru",
@@ -2829,6 +2840,7 @@
             "DecCompensation": "Přizpůsobí korekce RA aktuální deklinaci, takže kalibrace provedená na jedné deklinaci funguje i na jiné. Připojená montáž musí hlásit svou polohu; nechte zapnuté. Není totéž co kompenzace vůle Dec.",
             "DecFlipRequired": "Nastavení pro každou montáž zvlášť; automaticky ho opraví samokontrola Dec po flipu.",
             "VerifyDecAfterFlip": "Po flipu přes poledník zkontroluje první korekce Dec: pokud hvězdu odtlačují dál místo zpět, pointace sama obrátí Dec a opraví „Otočit Dec po flipu přes poledník“ pro tuto montáž.",
+            "RotatorTurnsGuideCamera": "Zda připojený rotátor otáčí i naváděcí kamerou: Ano, když je rotátor mezi dalekohledem a OAG, Ne u naváděcího dalekohledu nebo u rotátoru mezi OAG a snímací kamerou. S volbou Ano pointace čeká, dokud se rotátor otáčí, pak začne s novou naváděcí hvězdou a uloženou kalibrací otočenou s rotátorem, takže po otočení není nutné znovu kalibrovat. Pokud s volbou Ano pointace po pohybu rotátoru odtlačuje hvězdu, zvolte „Ano, obráceně“ a kalibrujte ještě jednou. Ruční rotátor NINA se nesleduje.",
             "DitherMode": "Jak se volí každý dither. Random: náhodná vzdálenost a směr. Spiral: kroky po spirále kolem výchozí polohy, užitečné proti šumu s pevným vzorem snímací kamery.",
             "DitherScale": "Násobí vzdálenost ditheru, kterou žádá snímací software: 2 dituje dvakrát dál, 0,5 o polovinu blíž.",
             "FastRecenter": "Po ditheru přesune hvězdu do nové zamčené polohy velkými přímými pulzy místo běžných pointačních kroků, takže se dither ustálí dříve. Nejlépe nechat zapnuté.",

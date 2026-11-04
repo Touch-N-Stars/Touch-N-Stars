@@ -2405,6 +2405,11 @@
             "explanation": "Durante la calibrazione la stella non è tornata vicino al punto di partenza; può indicare backlash o una frizione che slitta.",
             "fix": "Controlla la meccanica della montatura e ricalibra."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "Il rotatore ha ruotato la camera di guida",
+            "explanation": "Il rotatore ruota la camera di guida. Dopo una rotazione la stella guida non c'è più e la calibrazione non corrisponde più, e le pose riprese durante la rotazione sono mosse. La guida attende che il rotatore si fermi, poi riparte con una nuova stella guida e la calibrazione ruotata insieme al rotatore.",
+            "fix": "Nessuna azione necessaria. Se dopo un movimento del rotatore la guida allontana la stella, passa «Il rotatore ruota la camera di guida» da Sì a «Sì, invertito» o viceversa, oppure imposta No se la camera di guida non ruota con il rotatore, e ricalibra. Se il rotatore non segnala mai di essersi fermato, controlla il suo driver; la guida parte comunque dopo 2 minuti."
+          },
           "PulseLimitReached": {
             "title": "Correzione limitata dall'impulso max.",
             "explanation": "Diverse correzioni consecutive sono state limitate alla durata massima dell'impulso.",
@@ -2710,6 +2715,11 @@
             "BacklashModel": {
               "Fixed": "Fisso (come PHD2)",
               "PlayModel": "Modello del gioco"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "No",
+              "Yes": "Sì",
+              "Reversed": "Sì, invertito"
             }
           },
           "labels": {
@@ -2763,6 +2773,7 @@
             "DecCompensation": "Compensazione declinazione",
             "DecFlipRequired": "Inverti Dec dopo meridian flip",
             "VerifyDecAfterFlip": "Autoverifica Dec dopo flip",
+            "RotatorTurnsGuideCamera": "Il rotatore ruota la camera di guida",
             "DitherMode": "Modalità dither",
             "DitherScale": "Scala dither",
             "FastRecenter": "Ricentraggio rapido dopo dither",
@@ -2829,6 +2840,7 @@
             "DecCompensation": "Adatta le correzioni RA alla declinazione attuale, così una calibrazione fatta a una declinazione resta valida a un'altra. La montatura connessa deve riportare la propria posizione; lascialo attivo. Non è la stessa cosa della compensazione del backlash Dec.",
             "DecFlipRequired": "Impostazione per montatura; corretta automaticamente dall'autoverifica Dec dopo flip.",
             "VerifyDecAfterFlip": "Dopo un meridian flip controlla le prime correzioni Dec: se allontanano la stella invece di riportarla indietro, la guida inverte Dec da sola e corregge «Inverti Dec dopo meridian flip» per questa montatura.",
+            "RotatorTurnsGuideCamera": "Indica se il rotatore collegato ruota anche la camera di guida: Sì quando il rotatore è tra il telescopio e l'OAG, No con un telescopio guida o con un rotatore tra l'OAG e la camera di ripresa. Con Sì, la guida attende mentre il rotatore ruota, poi riparte con una nuova stella guida e la calibrazione salvata ruotata insieme al rotatore, quindi dopo una rotazione non serve ricalibrare. Se con Sì la guida allontana la stella dopo un movimento del rotatore, scegli «Sì, invertito» e calibra ancora una volta. Il rotatore manuale di NINA non viene seguito.",
             "DitherMode": "Come viene scelto ogni dither. Random: distanza e direzione casuali. Spiral: passi lungo una spirale attorno alla posizione iniziale, utile contro il rumore a pattern fisso della camera di ripresa.",
             "DitherScale": "Moltiplica la distanza di dither richiesta dal software di acquisizione: 2 fa il dither due volte più lontano, 0,5 a metà distanza.",
             "FastRecenter": "Dopo un dither porta la stella alla nuova posizione di aggancio con grandi impulsi diretti invece che con i normali passi di guida, così il dither si assesta prima. Meglio lasciarlo attivo.",

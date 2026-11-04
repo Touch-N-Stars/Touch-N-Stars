@@ -2405,6 +2405,11 @@
             "explanation": "La estrella no volvió cerca de su punto de partida durante la calibración; puede indicar holgura o un embrague que patina.",
             "fix": "Revisa la mecánica de la montura y recalibra."
           },
+          "RotatorTurnedGuideCamera": {
+            "title": "El rotador giró la cámara de guiado",
+            "explanation": "El rotador gira la cámara de guiado. Tras un giro la estrella guía ya no está y la calibración ya no sirve, y las tomas hechas mientras gira salen movidas. El guiado espera a que el rotador se detenga y empieza con una nueva estrella guía y la calibración girada con el rotador.",
+            "fix": "No hace falta hacer nada. Si después de mover el rotador el guiado aleja la estrella, cambia «El rotador gira la cámara de guiado» entre Sí y «Sí, invertido», o ponlo en No si la cámara de guiado no gira con el rotador, y vuelve a calibrar. Si el rotador nunca informa de que se ha detenido, revisa su controlador; el guiado empieza igualmente a los 2 minutos."
+          },
           "PulseLimitReached": {
             "title": "Corrección limitada por el pulso máx.",
             "explanation": "Varias correcciones consecutivas se recortaron a la duración máxima de pulso.",
@@ -2710,6 +2715,11 @@
             "BacklashModel": {
               "Fixed": "Fijo (como PHD2)",
               "PlayModel": "Modelo de holgura"
+            },
+            "RotatorTurnsGuideCamera": {
+              "No": "No",
+              "Yes": "Sí",
+              "Reversed": "Sí, invertido"
             }
           },
           "labels": {
@@ -2763,6 +2773,7 @@
             "DecCompensation": "Compensación de declinación",
             "DecFlipRequired": "Invertir Dec tras el giro de meridiano",
             "VerifyDecAfterFlip": "Autocomprobación de Dec tras el giro",
+            "RotatorTurnsGuideCamera": "El rotador gira la cámara de guiado",
             "DitherMode": "Modo de dither",
             "DitherScale": "Escala de dither",
             "FastRecenter": "Recentrado rápido tras dither",
@@ -2824,11 +2835,12 @@
             "BacklashPulseMs": "Duración del pulso extra en una inversión de Dec. A partir de ella, el guiado ajusta el pulso automáticamente entre 20 ms y 1,5 × este valor, según cómo responda la estrella. Con el modelo de holgura, el valor es solo la primera estimación de la holgura, que luego aprende el modelo.",
             "PulseModel": "Aprende de los dithers cuánto mueve realmente un pulso la estrella en cada eje y dimensiona los pulsos según eso, para que una calibración inexacta ya no haga que el guiado corrija de más o de menos. Empieza con los valores de calibración, cambia solo lo que los dithers muestran con claridad y conserva lo aprendido por perfil y montura hasta la próxima calibración.",
             "CalibrationStepMs": "0 = automático según la óptica, la velocidad de guiado y la declinación.",
-            "ReuseCalibration": "Conserva la última calibración entre sesiones y la adapta a la declinación y al lado del pilar, para que no tengas que calibrar cada noche. Vuelve a calibrar después de girar la cámara de guiado o cambiar el telescopio guía.",
+            "ReuseCalibration": "Conserva la última calibración entre sesiones y la adapta a la declinación y al lado del pilar, para que no tengas que calibrar cada noche. Vuelve a calibrar después de girar a mano la cámara de guiado o cambiar el telescopio guía.",
             "AssumeOrthogonal": "La calibración normalmente mide las direcciones RA y Dec por separado. Esto fuerza a que Dec sea exactamente perpendicular a RA, lo que ayuda cuando un gran error periódico, el backlash Dec o un mal seeing distorsionan la calibración Dec.",
             "DecCompensation": "Adapta las correcciones RA a la declinación actual, para que una calibración hecha en una declinación siga sirviendo en otra. La montura conectada debe informar su posición; déjalo activado. No es lo mismo que la compensación de backlash Dec.",
             "DecFlipRequired": "Ajuste por montura; lo corrige automáticamente la autocomprobación de Dec tras el giro.",
             "VerifyDecAfterFlip": "Tras un giro de meridiano, comprueba las primeras correcciones Dec: si alejan la estrella en lugar de acercarla, el guiado invierte Dec por sí mismo y corrige «Invertir Dec tras el giro de meridiano» para esta montura.",
+            "RotatorTurnsGuideCamera": "Si el rotador conectado gira también la cámara de guiado: Sí cuando el rotador está entre el telescopio y el OAG, No con un telescopio guía o con un rotador entre el OAG y la cámara de imagen. Con Sí, el guiado espera mientras gira el rotador y después empieza con una nueva estrella guía y la calibración guardada girada con el rotador, así que no hace falta volver a calibrar tras un giro. Si con Sí el guiado aleja la estrella después de mover el rotador, elige «Sí, invertido» y calibra otra vez. El rotador manual de NINA no se sigue.",
             "DitherMode": "Cómo se elige cada dither. Random: una distancia y dirección aleatorias. Spiral: pasos a lo largo de una espiral alrededor de la posición inicial, útil contra el ruido de patrón fijo de la cámara de captura.",
             "DitherScale": "Multiplica la distancia de dither que pide el software de captura: 2 hace el dither el doble de lejos, 0,5 la mitad.",
             "FastRecenter": "Tras un dither, lleva la estrella a la nueva posición de bloqueo con grandes pulsos directos en lugar de pasos de guiado normales, para que el dither se estabilice antes. Mejor dejarlo activado.",
