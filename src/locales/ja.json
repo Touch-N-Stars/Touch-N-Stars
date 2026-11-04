@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "録画とスナップショットを保存する PINS ホスト上のフォルダです(例: USB ドライブ上)。キャプチャ開始時に利用できない場合(ドライブの取り外し、未マウント、読み取り専用)、LuckyCapture は代わりにデフォルトフォルダへ保存します。",
+    "browseFolder": "フォルダを選択",
+    "chooseFolderTitle": "LuckyCapture の保存フォルダを選択",
+    "useDefaultFolder": "デフォルトを使用",
+    "outputDirectoryIsDefault": "デフォルトフォルダ: 有効なプロファイルの画像保存パスです。",
+    "outputDirectoryUnavailable": "選択したフォルダは利用できません。USB ドライブが取り外されていないか確認してください。復旧するまで、キャプチャは {path} に保存されます。",
+    "outputDirectoryFallbackUsed": "選択したフォルダを使用できませんでした(未マウントまたは書き込み不可)。直前のキャプチャは {path} に保存されました。",
+    "roiPreset": "クイック ROI",
+    "roiPresetFull": "センサー全体",
+    "roiPresetCustom": "カスタム",
+    "helpRoiPreset": "中央に配置されたキャプチャサイズです。多くの惑星用カメラでは、フレームレートは ROI の高さに依存するため、ROI を小さくするのがフレームレートを上げる最も手軽な方法です。",
+    "speedTipBitDepth": "8 ビット出力は 16 ビットの半分のデータ量で転送され、SV905C のような USB 2.0 カメラではフレームレートがほぼ 2 倍になります。追加のダイナミックレンジが必要な場合にのみ 16 ビットを使用してください。",
+    "useEightBit": "8 ビットを使用"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Папка на хості PINS для записів і знімків, наприклад на USB-накопичувачі. Якщо вона недоступна на початку захоплення (накопичувач вилучено, не змонтовано або лише для читання), LuckyCapture зберігає в папку за замовчуванням.",
+    "browseFolder": "Вибрати папку",
+    "chooseFolderTitle": "Виберіть папку збереження LuckyCapture",
+    "useDefaultFolder": "Типова папка",
+    "outputDirectoryIsDefault": "Папка за замовчуванням: шлях збереження зображень з активного профілю.",
+    "outputDirectoryUnavailable": "Вибрана папка недоступна. Чи вилучено USB-накопичувач? Захоплені кадри зберігаються в {path}, доки папка знову не стане доступною.",
+    "outputDirectoryFallbackUsed": "Не вдалося використати вибрану папку (не змонтовано або немає права запису). Останнє захоплення збережено в {path}.",
+    "roiPreset": "Швидкий ROI",
+    "roiPresetFull": "Весь сенсор",
+    "roiPresetCustom": "Власний",
+    "helpRoiPreset": "Центровані розміри захоплення. У більшості планетних камер частота кадрів залежить від висоти ROI, тож менший ROI — найшвидший спосіб її підвищити.",
+    "speedTipBitDepth": "8-бітний вивід передає вдвічі менше даних, ніж 16-бітний, і приблизно подвоює частоту кадрів на камерах USB 2.0, як-от SV905C. Використовуйте 16 біт, лише якщо потрібен додатковий динамічний діапазон.",
+    "useEightBit": "Використати 8 біт"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

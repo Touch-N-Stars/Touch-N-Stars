@@ -10,8 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Hocus Focus: New AutoFocus option to reverse the initial direction, for focusers that have to approach focus from the other side.
+- LuckyCapture (plugin, PINS): The save folder is now chosen with a folder browser, the same as the image save path in the settings, and can be reset to the default with one tap. If the chosen folder is not available when a recording or snapshot starts, for example because the USB drive was removed, is no longer mounted or is read-only, LuckyCapture saves to the image folder of the active profile instead (by default /home/pi/Documents/N.I.N.A) and shows a notice. The automatic fallback needs LuckyCapture 0.2.7.
+- LuckyCapture (plugin, PINS): Quick ROI presets set a centred capture area from 320 x 240 to 1024 x 768 in one step. On most planetary cameras the frame rate depends on the ROI height, so this is the quickest way to raise it.
 
 ### Changed
+
+- LuckyCapture (plugin, PINS): With 16-bit output selected, a hint explains that 8-bit roughly doubles the frame rate on USB 2.0 cameras such as the SV905C, with a button to switch.
+- LuckyCapture (plugin, PINS): Recordings buffer far more frames in memory while the disk catches up, so slow USB sticks drop fewer frames. This needs LuckyCapture 0.2.7.
 
 - Flat assistant: Flat runs now run inside the Touch'N'Stars plugin on NINA and PINS. A multi-filter run moves on to the next filter and takes its darks while the app is closed or the phone is locked, and the result is shown once the app is opened again. When the darks need the telescope covered, the run waits for the confirmation, also if the app was closed in the meantime.
 - Flat assistant (NINA): Multi mode, darks after the flats, the live ADU meter and the flat target name now work on NINA as well. This needs the updated Touch'N'Stars plugin; with an older plugin the flat assistant behaves as before.
@@ -28,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sequence, guiding, autofocus, binning and readout mode: A start or change the backend refuses now shows the reason instead of failing silently.
 - Message boxes: A box answered on another device or closed by the backend now disappears on every device.
 - PINS devices: A refused dew heater power level springs back on the slider.
+- LuckyCapture (plugin, PINS): The live preview refreshed only about once per second although the camera delivered more. It now updates with every preview frame, about eight times per second. This needs LuckyCapture 0.2.7.
+- LuckyCapture (plugin, PINS): SVBony cameras such as the SV905C occasionally deliver no first frame when a preview or recording starts. LuckyCapture now restarts the video stream automatically, which recovers about half of these starts; otherwise the message says that no first frame arrived, and starting again usually works. This needs LuckyCapture 0.2.7.
 
 ## [App6.5.0 - beta 22] - 2026-11-01
 

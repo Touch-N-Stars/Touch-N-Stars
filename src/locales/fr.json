@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Dossier sur l'hôte PINS pour les enregistrements et les clichés, par exemple sur un disque USB. S'il est indisponible au démarrage d'une capture (disque retiré, non monté ou en lecture seule), LuckyCapture enregistre dans le dossier par défaut.",
+    "browseFolder": "Choisir le dossier",
+    "chooseFolderTitle": "Choisir le dossier d'enregistrement de LuckyCapture",
+    "useDefaultFolder": "Utiliser le dossier par défaut",
+    "outputDirectoryIsDefault": "Dossier par défaut : le chemin d'enregistrement des images du profil actif.",
+    "outputDirectoryUnavailable": "Le dossier sélectionné n'est pas disponible. Le disque USB a-t-il été retiré ? Les captures sont enregistrées dans {path} jusqu'à son retour.",
+    "outputDirectoryFallbackUsed": "Le dossier sélectionné n'a pas pu être utilisé (non monté ou non inscriptible). La dernière capture a été enregistrée dans {path}.",
+    "roiPreset": "ROI rapide",
+    "roiPresetFull": "Capteur entier",
+    "roiPresetCustom": "Personnalisée",
+    "helpRoiPreset": "Tailles de capture centrées. Sur la plupart des caméras planétaires, la cadence d'images dépend de la hauteur de la ROI ; une ROI plus petite est donc le moyen le plus rapide de l'augmenter.",
+    "speedTipBitDepth": "La sortie 8 bits transfère deux fois moins de données que la 16 bits et double à peu près la cadence d'images sur les caméras USB 2.0 comme la SV905C. N'utilisez le 16 bits que si vous avez besoin de la dynamique supplémentaire.",
+    "useEightBit": "Utiliser 8 bits"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

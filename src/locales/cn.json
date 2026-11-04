@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "PINS 主机上用于保存录像和快照的文件夹，例如位于 USB 驱动器上。如果开始拍摄时该文件夹不可用（驱动器已移除、未挂载或只读），LuckyCapture 会改为保存到默认文件夹。",
+    "browseFolder": "选择文件夹",
+    "chooseFolderTitle": "选择 LuckyCapture 保存文件夹",
+    "useDefaultFolder": "使用默认值",
+    "outputDirectoryIsDefault": "默认文件夹：当前配置文件的图像保存路径。",
+    "outputDirectoryUnavailable": "所选文件夹不可用。USB 驱动器是否已被移除？在其恢复之前，拍摄内容将保存到 {path}。",
+    "outputDirectoryFallbackUsed": "无法使用所选文件夹（未挂载或不可写）。最近一次拍摄已保存到 {path}。",
+    "roiPreset": "快速 ROI",
+    "roiPresetFull": "整个传感器",
+    "roiPresetCustom": "自定义",
+    "helpRoiPreset": "居中的拍摄尺寸。在大多数行星相机上,帧率取决于 ROI 高度,因此缩小 ROI 是提高帧率的最快方法。",
+    "speedTipBitDepth": "8 位输出传输的数据量只有 16 位的一半,在 SV905C 等 USB 2.0 相机上帧率大约可翻倍。仅在需要额外动态范围时才使用 16 位。",
+    "useEightBit": "使用 8 位"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

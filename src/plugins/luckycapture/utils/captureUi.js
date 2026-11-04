@@ -39,3 +39,35 @@ export function selectionToRoi(source, selection) {
   );
   return { x, y, width, height };
 }
+
+// Common planetary capture sizes. Frame rate on most CMOS cameras scales with ROI height,
+// so these are the quickest way to trade field of view for speed.
+export const ROI_PRESET_SIZES = [
+  [320, 240],
+  [640, 480],
+  [800, 600],
+  [1024, 768],
+];
+
+export function centeredRoi(camera, settings, width, height) {
+  const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+  // Even coordinates keep the Bayer phase; multiples of the binning keep the driver happy.
+  const alignment = (bin) => (2 * bin) / gcd(2, bin);
+  const ax = alignment(settings?.binX || 1);
+  const ay = alignment(settings?.binY || 1);
+  const w = Math.floor(Math.min(width, camera.width) / ax) * ax;
+  const h = Math.floor(Math.min(height, camera.height) / ay) * ay;
+  return {
+    x: Math.floor((camera.width - w) / 2 / ax) * ax,
+    y: Math.floor((camera.height - h) / 2 / ay) * ay,
+    width: w,
+    height: h,
+  };
+}
+
+export function roiPresets(camera, settings) {
+  if (!camera?.width || !camera?.height) return [];
+  return ROI_PRESET_SIZES.filter(([w, h]) => w < camera.width && h < camera.height).map(
+    ([w, h]) => ({ key: `${w}x${h}`, roi: centeredRoi(camera, settings, w, h) })
+  );
+}

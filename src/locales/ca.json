@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Carpeta de l'amfitrió PINS per a enregistraments i captures, per exemple en una unitat USB. Si no està disponible quan s'inicia una captura (unitat retirada, no muntada o de només lectura), LuckyCapture desa a la carpeta per defecte.",
+    "browseFolder": "Tria la carpeta",
+    "chooseFolderTitle": "Tria la carpeta de desament de LuckyCapture",
+    "useDefaultFolder": "Usa la predeterminada",
+    "outputDirectoryIsDefault": "Carpeta predeterminada: la ruta de desament d'imatges del perfil actiu.",
+    "outputDirectoryUnavailable": "La carpeta seleccionada no està disponible. S'ha retirat la unitat USB? Les captures es desen a {path} fins que torni a estar disponible.",
+    "outputDirectoryFallbackUsed": "No s'ha pogut utilitzar la carpeta seleccionada (no muntada o no escrivible). L'última captura s'ha desat a {path}.",
+    "roiPreset": "ROI ràpida",
+    "roiPresetFull": "Sensor complet",
+    "roiPresetCustom": "Personalitzada",
+    "helpRoiPreset": "Mides de captura centrades. En la majoria de càmeres planetàries la velocitat de fotogrames depèn de l'alçada de la ROI, de manera que una ROI més petita és la forma més ràpida d'augmentar-la.",
+    "speedTipBitDepth": "La sortida de 8 bits transfereix la meitat de dades que la de 16 bits i duplica aproximadament la velocitat de fotogrames en càmeres USB 2.0 com la SV905C. Usa 16 bits només si necessites el rang dinàmic addicional.",
+    "useEightBit": "Usa 8 bits"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

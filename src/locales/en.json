@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "helpoutputDirectory": "Folder on the PINS host for recordings and snapshots, for example on a USB drive. If it is unavailable when a capture starts (drive removed, not mounted or read-only), LuckyCapture saves to the default folder instead.",
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "browseFolder": "Choose folder",
+    "chooseFolderTitle": "Choose the LuckyCapture save folder",
+    "useDefaultFolder": "Use default",
+    "outputDirectoryIsDefault": "Default folder: the image save path from the active profile.",
+    "outputDirectoryUnavailable": "The selected folder is not available. Was the USB drive removed? Captures are saved to {path} until it is back.",
+    "outputDirectoryFallbackUsed": "The selected folder could not be used (not mounted or not writable). The last capture was saved to {path}.",
+    "roiPreset": "Quick ROI",
+    "roiPresetFull": "Full sensor",
+    "roiPresetCustom": "Custom",
+    "helpRoiPreset": "Centred capture sizes. On most planetary cameras the frame rate depends on the ROI height, so a smaller ROI is the quickest way to raise it.",
+    "speedTipBitDepth": "8-bit output transfers half the data of 16-bit and roughly doubles the frame rate on USB 2.0 cameras such as the SV905C. Use 16-bit only when you need the extra dynamic range.",
+    "useEightBit": "Use 8-bit"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

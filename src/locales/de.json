@@ -9478,8 +9478,20 @@
     "rotatePreview": "Vorschau um 180° drehen",
     "previewOrientationHelp": "Nur die Anzeige wird gedreht. Aufnahmen und gespeicherte PNGs behalten die ursprüngliche Sensorausrichtung.",
     "outputDirectory": "Speicherordner auf PINS",
-    "helpoutputDirectory": "Optionaler absoluter Ordnerpfad auf dem PINS-Rechner, z. B. /media/pi/SSD/LuckyCapture. Leer lassen, um den angezeigten Standard zu verwenden. Der PINS-Dienstbenutzer benötigt Schreibrechte.",
-    "cameraPreferencesHelp": "Einstellungen, Vorschauausrichtung und Speicherordner werden in diesem Browser für diese Kamera gespeichert. Nur vom Treiber unterstützte Einstellungen lassen sich anwenden."
+    "cameraPreferencesHelp": "Einstellungen, Vorschauausrichtung und Speicherordner werden in diesem Browser für diese Kamera gespeichert. Nur vom Treiber unterstützte Einstellungen lassen sich anwenden.",
+    "helpoutputDirectory": "Ordner auf dem PINS-Rechner für Aufnahmen und Einzelbilder, zum Beispiel auf einem USB-Laufwerk. Ist er beim Start einer Aufnahme nicht verfügbar (Laufwerk entfernt, nicht eingebunden oder schreibgeschützt), speichert LuckyCapture stattdessen im Standardordner.",
+    "browseFolder": "Ordner wählen",
+    "chooseFolderTitle": "LuckyCapture-Speicherordner wählen",
+    "useDefaultFolder": "Standard verwenden",
+    "outputDirectoryIsDefault": "Standardordner: der Bildspeicherpfad des aktiven Profils.",
+    "outputDirectoryUnavailable": "Der gewählte Ordner ist nicht verfügbar. Wurde das USB-Laufwerk entfernt? Aufnahmen werden in {path} gespeichert, bis er wieder verfügbar ist.",
+    "outputDirectoryFallbackUsed": "Der gewählte Ordner konnte nicht verwendet werden (nicht eingebunden oder nicht beschreibbar). Die letzte Aufnahme wurde in {path} gespeichert.",
+    "roiPreset": "ROI-Schnellwahl",
+    "roiPresetFull": "Gesamter Sensor",
+    "roiPresetCustom": "Benutzerdefiniert",
+    "helpRoiPreset": "Zentrierte Aufnahmegrößen. Bei den meisten Planetenkameras hängt die Bildrate von der ROI-Höhe ab; eine kleinere ROI ist daher der schnellste Weg, sie zu erhöhen.",
+    "speedTipBitDepth": "Die 8-Bit-Ausgabe überträgt nur die halbe Datenmenge der 16-Bit-Ausgabe und verdoppelt die Bildrate bei USB-2.0-Kameras wie der SV905C ungefähr. Verwende 16 Bit nur, wenn du den zusätzlichen Dynamikumfang brauchst.",
+    "useEightBit": "8 Bit verwenden"
   },
   "luckycaptureFocus": {
     "tab": "Fokus",

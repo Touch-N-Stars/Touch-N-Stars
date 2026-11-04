@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Složka na hostiteli PINS pro záznamy a snímky, například na USB disku. Pokud je při zahájení snímání nedostupná (disk odpojen, nepřipojen nebo jen pro čtení), LuckyCapture ukládá do výchozí složky.",
+    "browseFolder": "Vybrat složku",
+    "chooseFolderTitle": "Vyberte složku pro ukládání LuckyCapture",
+    "useDefaultFolder": "Použít výchozí",
+    "outputDirectoryIsDefault": "Výchozí složka: cesta pro ukládání obrázků z aktivního profilu.",
+    "outputDirectoryUnavailable": "Vybraná složka není dostupná. Byl odpojen USB disk? Snímky se ukládají do {path}, dokud nebude opět dostupná.",
+    "outputDirectoryFallbackUsed": "Vybranou složku nebylo možné použít (není připojena nebo není zapisovatelná). Poslední snímek byl uložen do {path}.",
+    "roiPreset": "Rychlá ROI",
+    "roiPresetFull": "Celý senzor",
+    "roiPresetCustom": "Vlastní",
+    "helpRoiPreset": "Vystředěné velikosti snímání. U většiny planetárních kamer závisí snímková frekvence na výšce ROI, takže menší ROI je nejrychlejší způsob, jak ji zvýšit.",
+    "speedTipBitDepth": "8bitový výstup přenáší poloviční množství dat oproti 16bitovému a zhruba zdvojnásobí snímkovou frekvenci u kamer USB 2.0, jako je SV905C. 16 bitů používejte jen tehdy, když potřebujete větší dynamický rozsah.",
+    "useEightBit": "Použít 8 bitů"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

@@ -9478,8 +9478,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Cartella sull'host PINS per registrazioni e istantanee, ad esempio su un'unità USB. Se non è disponibile all'avvio di una cattura (unità rimossa, non montata o in sola lettura), LuckyCapture salva nella cartella predefinita.",
+    "browseFolder": "Scegli cartella",
+    "chooseFolderTitle": "Scegli la cartella di salvataggio di LuckyCapture",
+    "useDefaultFolder": "Usa predefinita",
+    "outputDirectoryIsDefault": "Cartella predefinita: il percorso di salvataggio delle immagini del profilo attivo.",
+    "outputDirectoryUnavailable": "La cartella selezionata non è disponibile. L'unità USB è stata rimossa? Le catture vengono salvate in {path} finché non torna disponibile.",
+    "outputDirectoryFallbackUsed": "Impossibile usare la cartella selezionata (non montata o non scrivibile). L'ultima cattura è stata salvata in {path}.",
+    "roiPreset": "ROI rapida",
+    "roiPresetFull": "Sensore intero",
+    "roiPresetCustom": "Personalizzata",
+    "helpRoiPreset": "Dimensioni di cattura centrate. Sulla maggior parte delle camere planetarie il frame rate dipende dall'altezza della ROI, quindi una ROI più piccola è il modo più rapido per aumentarlo.",
+    "speedTipBitDepth": "L'uscita a 8 bit trasferisce metà dei dati rispetto a quella a 16 bit e raddoppia circa il frame rate sulle camere USB 2.0 come la SV905C. Usa i 16 bit solo se ti serve la gamma dinamica aggiuntiva.",
+    "useEightBit": "Usa 8 bit"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

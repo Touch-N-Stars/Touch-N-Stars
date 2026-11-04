@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "녹화와 스냅샷을 저장하는 PINS 호스트의 폴더입니다(예: USB 드라이브). 캡처 시작 시 사용할 수 없으면(드라이브 제거, 마운트되지 않음 또는 읽기 전용) LuckyCapture는 대신 기본 폴더에 저장합니다.",
+    "browseFolder": "폴더 선택",
+    "chooseFolderTitle": "LuckyCapture 저장 폴더 선택",
+    "useDefaultFolder": "기본값 사용",
+    "outputDirectoryIsDefault": "기본 폴더: 활성 프로필의 이미지 저장 경로입니다.",
+    "outputDirectoryUnavailable": "선택한 폴더를 사용할 수 없습니다. USB 드라이브가 제거되었나요? 다시 사용할 수 있을 때까지 캡처는 {path}에 저장됩니다.",
+    "outputDirectoryFallbackUsed": "선택한 폴더를 사용할 수 없었습니다(마운트되지 않았거나 쓰기 불가). 마지막 캡처는 {path}에 저장되었습니다.",
+    "roiPreset": "빠른 ROI",
+    "roiPresetFull": "전체 센서",
+    "roiPresetCustom": "사용자 지정",
+    "helpRoiPreset": "중앙 기준 캡처 크기입니다. 대부분의 행성용 카메라에서 프레임 레이트는 ROI 높이에 따라 달라지므로, ROI를 작게 하는 것이 프레임 레이트를 높이는 가장 빠른 방법입니다.",
+    "speedTipBitDepth": "8비트 출력은 16비트의 절반 데이터를 전송하며 SV905C 같은 USB 2.0 카메라에서 프레임 레이트가 대략 두 배가 됩니다. 추가 다이내믹 레인지가 필요할 때만 16비트를 사용하세요.",
+    "useEightBit": "8비트 사용"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Folder na hoście PINS na nagrania i zdjęcia, na przykład na dysku USB. Jeśli jest niedostępny przy rozpoczęciu przechwytywania (dysk wyjęty, niezamontowany lub tylko do odczytu), LuckyCapture zapisuje w folderze domyślnym.",
+    "browseFolder": "Wybierz folder",
+    "chooseFolderTitle": "Wybierz folder zapisu LuckyCapture",
+    "useDefaultFolder": "Użyj domyślnego",
+    "outputDirectoryIsDefault": "Folder domyślny: ścieżka zapisu obrazów z aktywnego profilu.",
+    "outputDirectoryUnavailable": "Wybrany folder jest niedostępny. Czy dysk USB został wyjęty? Przechwycone obrazy są zapisywane w {path}, dopóki folder nie będzie ponownie dostępny.",
+    "outputDirectoryFallbackUsed": "Nie można było użyć wybranego folderu (niezamontowany lub bez prawa zapisu). Ostatnie przechwycenie zapisano w {path}.",
+    "roiPreset": "Szybkie ROI",
+    "roiPresetFull": "Cała matryca",
+    "roiPresetCustom": "Własne",
+    "helpRoiPreset": "Wyśrodkowane rozmiary przechwytywania. W większości kamer planetarnych liczba klatek na sekundę zależy od wysokości ROI, więc mniejsze ROI to najszybszy sposób na jej zwiększenie.",
+    "speedTipBitDepth": "Wyjście 8-bitowe przesyła o połowę mniej danych niż 16-bitowe i mniej więcej podwaja liczbę klatek na sekundę w kamerach USB 2.0, takich jak SV905C. Używaj 16 bitów tylko wtedy, gdy potrzebujesz dodatkowego zakresu dynamiki.",
+    "useEightBit": "Użyj 8 bitów"
   },
   "luckycaptureFocus": {
     "tab": "Focus",
