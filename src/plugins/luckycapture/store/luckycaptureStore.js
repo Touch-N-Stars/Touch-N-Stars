@@ -19,6 +19,7 @@ export const useLuckyCaptureStore = defineStore('luckycapture', {
     previewUrl: '',
     previewRoi: null,
     snapshotPath: '',
+    snapshotFallback: null,
     error: '',
     pending: false,
     streamConnected: false,
@@ -56,7 +57,12 @@ export const useLuckyCaptureStore = defineStore('luckycapture', {
         if (result?.state) this.status = result;
         if (path === 'preview/start' || path === 'recording/start')
           this.previewRoi = this.settings.roi ? { ...this.settings.roi } : null;
-        if (path === 'snapshot') this.snapshotPath = result.outputPath;
+        if (path === 'snapshot') {
+          this.snapshotPath = result.outputPath;
+          this.snapshotFallback = result.outputDirectoryFallback
+            ? { requested: result.requestedOutputDirectory, directory: result.outputDirectory }
+            : null;
+        }
         return result;
       } catch (error) {
         this.failure(error);

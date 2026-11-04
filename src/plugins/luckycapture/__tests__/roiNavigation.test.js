@@ -85,3 +85,25 @@ test('a rejected ROI does not restart preview or overwrite accepted settings', a
   assert.deepEqual(store.settings, original);
   assert.deepEqual(calls, ['preview/stop', 'settings']);
 });
+
+test('ROI presets are centred, aligned and only offered when smaller than the sensor', async () => {
+  const { roiPresets, centeredRoi } = await import('../utils/captureUi.js');
+  const camera = { width: 1280, height: 960 };
+  assert.deepEqual(
+    roiPresets(camera, { binX: 1, binY: 1 }).map((preset) => preset.key),
+    ['320x240', '640x480', '800x600', '1024x768']
+  );
+  assert.deepEqual(centeredRoi(camera, { binX: 1, binY: 1 }, 320, 240), {
+    x: 480,
+    y: 360,
+    width: 320,
+    height: 240,
+  });
+  const odd = centeredRoi({ width: 1281, height: 961 }, { binX: 3, binY: 3 }, 320, 240);
+  for (const value of Object.values(odd)) assert.equal(value % 6, 0);
+  assert.deepEqual(
+    roiPresets({ width: 640, height: 480 }, {}).map((preset) => preset.key),
+    ['320x240']
+  );
+  assert.deepEqual(roiPresets(null, {}), []);
+});

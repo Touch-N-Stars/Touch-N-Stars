@@ -13,7 +13,9 @@ import FocusPanel from '../components/FocusPanel.vue';
 import MountPanel from '../components/MountPanel.vue';
 import CameraControl from '../components/CameraControl.vue';
 import IntensityHistogram from '../components/IntensityHistogram.vue';
-import { readLimit, selectionToRoi, moveCaptureRoi } from '../utils/captureUi';
+import FileBrowser from '@/components/helpers/fileBrowser.vue';
+import apiService from '@/services/apiService';
+import { readLimit, selectionToRoi, moveCaptureRoi, roiPresets } from '../utils/captureUi';
 import { useLuckyCaptureStore } from '../store/luckycaptureStore';
 const store = useLuckyCaptureStore();
 const connectionSettings = useSettingsStore();
@@ -55,6 +57,33 @@ const form = reactive({
 const roi = reactive({ x: 0, y: 0, width: 512, height: 512 });
 const roiStep = ref(0.1);
 const appliedRoi = computed(() => store.settings.roi);
+const binning = computed(() => (form.binning || '1x1').split('x').map(Number));
+const roiPresetOptions = computed(() =>
+  store.camera?.roiSupported
+    ? roiPresets(store.camera, { binX: binning.value[0], binY: binning.value[1] })
+    : []
+);
+const roiPresetValue = computed(() => {
+  if (!useRoi.value) return 'full';
+  const match = roiPresetOptions.value.find(
+    (preset) =>
+      preset.roi.x === roi.x &&
+      preset.roi.y === roi.y &&
+      preset.roi.width === roi.width &&
+      preset.roi.height === roi.height
+  );
+  return match?.key || 'custom';
+});
+function applyRoiPreset(key) {
+  if (key === 'full') {
+    useRoi.value = false;
+    return;
+  }
+  const preset = roiPresetOptions.value.find((option) => option.key === key);
+  if (!preset) return;
+  useRoi.value = true;
+  Object.assign(roi, preset.roi);
+}
 const canChangeRoi = computed(
   () =>
     store.camera?.connected &&
@@ -120,8 +149,52 @@ const recording = reactive({
 });
 watch(
   () => recording.outputDirectory,
-  () => savePreferences()
+  () => {
+    savePreferences();
+    checkFolder();
+  }
 );
+const folderBrowserOpen = ref(false);
+const folderMissing = ref(false);
+const effectiveFolder = computed(
+  () => recording.outputDirectory || store.capabilities.defaultOutputDirectory || ''
+);
+// Quick check through the existing filesystem API; the plugin re-checks authoritatively
+// (mounted, writable) when a recording or snapshot starts and reports any fallback.
+async function checkFolder() {
+  const selected = recording.outputDirectory;
+  if (!selected) {
+    folderMissing.value = false;
+    return;
+  }
+  let missing;
+  try {
+    missing = !(await apiService.browseFilesystem(selected))?.success;
+  } catch {
+    missing = true;
+  }
+  if (recording.outputDirectory === selected) folderMissing.value = missing;
+}
+const folderFallback = computed(() => {
+  const status = store.status;
+  if (
+    status.outputDirectoryFallback &&
+    status.requestedOutputDirectory === recording.outputDirectory
+  )
+    return status.outputDirectory;
+  const snapshot = store.snapshotFallback;
+  return snapshot?.requested === recording.outputDirectory ? snapshot.directory : null;
+});
+const folderWarning = computed(() => {
+  if (!recording.outputDirectory) return '';
+  if (folderMissing.value)
+    return t('luckycapture.outputDirectoryUnavailable', {
+      path: store.capabilities.defaultOutputDirectory || '',
+    });
+  if (folderFallback.value)
+    return t('luckycapture.outputDirectoryFallbackUsed', { path: folderFallback.value });
+  return '';
+});
 const focusBusy = ref(false);
 const focusStatus = ref(null);
 const analysisBox = computed(() => {
@@ -256,6 +329,10 @@ const supportedControls = computed(() =>
       };
     })
 );
+const showEightBitTip = computed(() => {
+  const depth = supportedControls.value.find((c) => c.id === 'bitDepth');
+  return !!depth && !depth.readOnly && depth.options?.includes(8) && Number(form.bitDepth) > 8;
+});
 const controlKey = (id) => (id === 'exposure' ? 'exposureSeconds' : id);
 const number = (value, digits = 1) => (Number.isFinite(value) ? value.toFixed(digits) : '\u2014');
 async function invoke(action) {
@@ -281,6 +358,7 @@ async function load() {
     : saved?.settings || cameraDefaults(store.camera, store.controls, store.capabilities);
   rotatedPreview.value = saved?.rotatedPreview ?? connectionSettings.currentImageRotation === 180;
   recording.outputDirectory = saved?.outputDirectory || '';
+  checkFolder();
   Object.assign(form, values, {
     binning: `${values.binX || 1}x${values.binY || 1}`,
   });
@@ -760,6 +838,12 @@ onUnmounted(() => {
               v-model="form[controlKey(c.id)]"
               :invalid="invalidControl === c.id"
             />
+            <p v-if="showEightBitTip" class="field-help full-width speed-tip" role="note">
+              {{ text('speedTipBitDepth') }}
+              <button type="button" class="inline-action" @click="form.bitDepth = 8">
+                {{ text('useEightBit') }}
+              </button>
+            </p>
             <details class="full-width advanced-settings">
               <summary>{{ text('advancedCamera') }}</summary>
               <div class="settings-grid">
@@ -812,7 +896,30 @@ onUnmounted(() => {
               </div>
             </details>
             <template v-if="store.camera?.roiSupported"
-              ><label class="check full-width"
+              ><label v-if="roiPresetOptions.length" class="full-width"
+                >{{ text('roiPreset') }}
+                <select
+                  :value="roiPresetValue"
+                  aria-describedby="lc-roi-preset-help"
+                  @change="applyRoiPreset($event.target.value)"
+                >
+                  <option value="full">{{ text('roiPresetFull') }}</option>
+                  <option v-for="preset in roiPresetOptions" :key="preset.key" :value="preset.key">
+                    {{ preset.roi.width }} × {{ preset.roi.height }}
+                  </option>
+                  <option v-if="roiPresetValue === 'custom'" value="custom" disabled>
+                    {{ text('roiPresetCustom') }}
+                  </option>
+                </select></label
+              >
+              <p
+                v-if="roiPresetOptions.length"
+                id="lc-roi-preset-help"
+                class="field-help full-width"
+              >
+                {{ text('helpRoiPreset') }}
+              </p>
+              <label class="check full-width"
                 ><input v-model="useRoi" type="checkbox" aria-describedby="lc-roi-help" />
                 {{ text('roi') }}</label
               >
@@ -852,6 +959,42 @@ onUnmounted(() => {
         <p class="hint">{{ text('recordingHelp') }}</p>
         <fieldset class="settings-grid" :disabled="busy || recordingActive || finishing">
           <legend>{{ text('recording') }}</legend>
+          <div
+            v-if="store.capabilities.customOutputDirectory"
+            class="field full-width output-folder"
+          >
+            <span id="lc-folder-label" class="label">{{ text('outputDirectory') }}</span>
+            <div class="folder-row">
+              <output
+                class="folder-path"
+                aria-labelledby="lc-folder-label"
+                aria-describedby="lc-help-outputDirectory"
+                :class="{ unavailable: folderWarning }"
+                >{{ effectiveFolder || '—' }}</output
+              >
+              <button
+                type="button"
+                :title="text('chooseFolderTitle')"
+                @click="folderBrowserOpen = true"
+              >
+                {{ text('browseFolder') }}
+              </button>
+              <button
+                v-if="recording.outputDirectory"
+                type="button"
+                @click="recording.outputDirectory = ''"
+              >
+                {{ text('useDefaultFolder') }}
+              </button>
+            </div>
+            <p v-if="!recording.outputDirectory" class="field-help">
+              {{ text('outputDirectoryIsDefault') }}
+            </p>
+            <p v-if="folderWarning" class="notice folder-warning" role="status">
+              {{ folderWarning }}
+            </p>
+            <p id="lc-help-outputDirectory" class="field-help">{{ text('helpoutputDirectory') }}</p>
+          </div>
           <label
             >{{ text('format')
             }}<select v-model="recording.format" aria-describedby="lc-format-help">
@@ -884,15 +1027,8 @@ onUnmounted(() => {
             <summary>{{ text('fileSettings') }}</summary>
             <div class="settings-grid">
               <div
-                v-for="key in [
-                  'outputDirectory',
-                  'target',
-                  'filter',
-                  'relativeDirectory',
-                  'filenameTemplate',
-                ]"
+                v-for="key in ['target', 'filter', 'relativeDirectory', 'filenameTemplate']"
                 :key="key"
-                v-show="key !== 'outputDirectory' || store.capabilities.customOutputDirectory"
                 class="field"
               >
                 <label :for="`lc-file-${key}`">{{ text(key) }}</label>
@@ -900,11 +1036,6 @@ onUnmounted(() => {
                   :id="`lc-file-${key}`"
                   :aria-describedby="`lc-help-${key}`"
                   v-model="recording[key]"
-                  :placeholder="
-                    key === 'outputDirectory'
-                      ? store.capabilities.defaultOutputDirectory
-                      : undefined
-                  "
                   type="text"
                   autocomplete="off"
                 />
@@ -913,11 +1044,14 @@ onUnmounted(() => {
             </div>
           </details>
         </fieldset>
-        <p v-if="store.capabilities.defaultOutputDirectory" class="hint filename">
-          {{ text('outputDirectory') }}:
-          {{ recording.outputDirectory || store.capabilities.defaultOutputDirectory }}
-        </p>
         <p class="hint">{{ text('rawNote') }}</p>
+        <FileBrowser
+          v-model="folderBrowserOpen"
+          mode="directory"
+          :title="text('chooseFolderTitle')"
+          :initial-path="effectiveFolder"
+          @select="recording.outputDirectory = $event"
+        />
       </section>
       <section
         v-show="panel === 'focus'"
@@ -968,6 +1102,39 @@ onUnmounted(() => {
 }
 .field {
   min-width: 0;
+}
+.output-folder .label {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+.folder-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  min-width: 0;
+}
+.folder-path {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--lc-border);
+  border-radius: 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.875rem;
+}
+.folder-path.unavailable {
+  border-color: #f59e0b;
+}
+.folder-row button {
+  flex-shrink: 0;
+}
+.folder-warning {
+  margin-top: 0.5rem;
+}
+.speed-tip .inline-action {
+  margin-left: 0.25rem;
 }
 .lc {
   --lc-border: #69758a;

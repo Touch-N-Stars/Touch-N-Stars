@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Map op de PINS-host voor opnames en snapshots, bijvoorbeeld op een USB-schijf. Als deze bij de start van een opname niet beschikbaar is (schijf verwijderd, niet gekoppeld of alleen-lezen), slaat LuckyCapture op in de standaardmap.",
+    "browseFolder": "Map kiezen",
+    "chooseFolderTitle": "Kies de opslagmap van LuckyCapture",
+    "useDefaultFolder": "Standaard gebruiken",
+    "outputDirectoryIsDefault": "Standaardmap: het opslagpad voor beelden van het actieve profiel.",
+    "outputDirectoryUnavailable": "De geselecteerde map is niet beschikbaar. Is de USB-schijf verwijderd? Opnames worden opgeslagen in {path} totdat deze weer beschikbaar is.",
+    "outputDirectoryFallbackUsed": "De geselecteerde map kon niet worden gebruikt (niet gekoppeld of niet beschrijfbaar). De laatste opname is opgeslagen in {path}.",
+    "roiPreset": "Snelle ROI",
+    "roiPresetFull": "Volledige sensor",
+    "roiPresetCustom": "Aangepast",
+    "helpRoiPreset": "Gecentreerde opnameformaten. Bij de meeste planetaire camera's hangt de framesnelheid af van de ROI-hoogte, dus een kleinere ROI is de snelste manier om die te verhogen.",
+    "speedTipBitDepth": "8-bits uitvoer verzendt de helft van de data van 16-bits en verdubbelt ongeveer de framesnelheid bij USB 2.0-camera's zoals de SV905C. Gebruik 16-bits alleen als je het extra dynamisch bereik nodig hebt.",
+    "useEightBit": "8-bits gebruiken"
   },
   "luckycaptureFocus": {
     "tab": "Focus",

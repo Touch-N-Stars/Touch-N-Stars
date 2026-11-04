@@ -9473,8 +9473,20 @@
     "rotatePreview": "Rotate preview 180°",
     "previewOrientationHelp": "Display only. Recordings and saved PNGs keep their original sensor orientation.",
     "outputDirectory": "Save folder on PINS",
-    "helpoutputDirectory": "Optional absolute folder path on the PINS host, such as /media/pi/SSD/LuckyCapture. Leave blank for the default shown here. The PINS service user needs write access.",
-    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied."
+    "cameraPreferencesHelp": "Settings, preview orientation and save folder are remembered in this browser for this camera. Only driver-supported settings can be applied.",
+    "helpoutputDirectory": "Pasta no host PINS para gravações e capturas, por exemplo numa unidade USB. Se não estiver disponível quando uma captura começar (unidade removida, não montada ou só de leitura), o LuckyCapture guarda na pasta predefinida.",
+    "browseFolder": "Escolher pasta",
+    "chooseFolderTitle": "Escolher a pasta de gravação do LuckyCapture",
+    "useDefaultFolder": "Usar predefinida",
+    "outputDirectoryIsDefault": "Pasta predefinida: o caminho de gravação de imagens do perfil ativo.",
+    "outputDirectoryUnavailable": "A pasta selecionada não está disponível. A unidade USB foi removida? As capturas são guardadas em {path} até voltar a estar disponível.",
+    "outputDirectoryFallbackUsed": "Não foi possível usar a pasta selecionada (não montada ou sem permissão de escrita). A última captura foi guardada em {path}.",
+    "roiPreset": "ROI rápida",
+    "roiPresetFull": "Sensor completo",
+    "roiPresetCustom": "Personalizada",
+    "helpRoiPreset": "Tamanhos de captura centrados. Na maioria das câmaras planetárias a taxa de fotogramas depende da altura da ROI, por isso uma ROI menor é a forma mais rápida de a aumentar.",
+    "speedTipBitDepth": "A saída de 8 bits transfere metade dos dados da de 16 bits e duplica aproximadamente a taxa de fotogramas em câmaras USB 2.0 como a SV905C. Use 16 bits apenas quando precisar do alcance dinâmico adicional.",
+    "useEightBit": "Usar 8 bits"
   },
   "luckycaptureFocus": {
     "tab": "Focus",
