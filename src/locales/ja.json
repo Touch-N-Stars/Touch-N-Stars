@@ -817,7 +817,12 @@
           "ongoingReconnecting": "{rig} に接続中…",
           "stop": "停止",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "スマートフォンが機材のWi-Fiネットワークのいずれかに接続している間、アプリを閉じていてもiOSが機材との接続を維持し、スマートフォンに通知を表示します。アプリは機材に接続するたびにこれらのネットワークを記憶します。それ以外の場所ではntfyだけが届きます。",
+        "ssidList": "次のWi-Fiネットワークで動作します: {ssids}",
+        "ssidReset": "これらのWi-Fiネットワークを削除",
+        "noSsid": "スマートフォンを機材のWi-Fiに接続し、一度アプリを開いてネットワークを記憶させてください。",
+        "permissionDeniedIos": "Touch-N-Starsの通知がブロックされています。iOSの設定で許可してください。"
       }
     },
     "alpacaDirect": {

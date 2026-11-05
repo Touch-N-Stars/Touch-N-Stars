@@ -199,6 +199,8 @@ export const useSettingsStore = defineStore('settings', {
       background: false,
       catchUp: true,
       minSeverity: 'warning',
+      // iOS: Wi-Fi networks each rig (by host) was reached on, for NEAppPushManager.matchSSIDs
+      ssidsByHost: {},
     },
     _sharedRigSettingsReady: false,
     _sharedRigSettingsLoading: false,

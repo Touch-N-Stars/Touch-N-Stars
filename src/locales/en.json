@@ -849,7 +849,12 @@
           "ongoingReconnecting": "Connecting to {rig}…",
           "stop": "Stop",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "iOS keeps a connection to the rig whenever the phone is on one of the rig's Wi-Fi networks, also while the app is closed, and shows phone notifications. The app learns these networks each time it reaches the rig. Outside them only ntfy reaches you.",
+        "ssidList": "Works on these Wi-Fi networks: {ssids}",
+        "ssidReset": "Forget these Wi-Fi networks",
+        "noSsid": "Connect the phone to the rig's Wi-Fi and open the app once, so it can learn the network.",
+        "permissionDeniedIos": "Notifications are blocked for Touch-N-Stars. Allow them in the iOS settings."
       }
     },
     "alpacaDirect": {

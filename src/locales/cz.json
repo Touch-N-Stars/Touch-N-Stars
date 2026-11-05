@@ -808,7 +808,12 @@
           "ongoingReconnecting": "Připojování k {rig}…",
           "stop": "Zastavit",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "iOS udržuje spojení se sestavou, dokud je telefon v jedné ze sítí Wi-Fi sestavy, i když je aplikace zavřená, a zobrazuje oznámení na telefonu. Aplikace si tyto sítě zapamatuje pokaždé, když se ke sestavě připojí. Mimo ně tě zastihne jen ntfy.",
+        "ssidList": "Funguje v těchto sítích Wi-Fi: {ssids}",
+        "ssidReset": "Zapomenout tyto sítě Wi-Fi",
+        "noSsid": "Připoj telefon k Wi-Fi sestavy a jednou otevři aplikaci, aby se síť naučila.",
+        "permissionDeniedIos": "Oznámení jsou pro Touch-N-Stars zablokována. Povol je v nastavení iOS."
       }
     },
     "alpacaDirect": {

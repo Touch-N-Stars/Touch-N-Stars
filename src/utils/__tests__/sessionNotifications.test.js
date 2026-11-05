@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import {
   advanceCursor,
   isRelayResponse,
+  MAX_RIG_SSIDS,
+  mergeSsids,
   severityAtLeast,
   sinceForCursor,
+  ssidsFromWifiStatus,
   summarizeMissedEvents,
   toastTypeForSeverity,
 } from '../sessionNotifications.js';
@@ -79,4 +82,30 @@ test('toast types follow the worst severity', () => {
   assert.equal(toastTypeForSeverity('error'), 'error');
   assert.equal(toastTypeForSeverity('warning'), 'warning');
   assert.equal(toastTypeForSeverity('success'), 'info');
+});
+
+test('rig SSIDs are merged newest first, trimmed, without duplicates and capped', () => {
+  assert.deepEqual(mergeSsids(['pins-rig', 'Home'], [' Home ', 'Garden', '']), [
+    'Home',
+    'Garden',
+    'pins-rig',
+  ]);
+  const many = Array.from({ length: 15 }, (_, i) => `net${i}`);
+  assert.equal(mergeSsids([], many).length, MAX_RIG_SSIDS);
+  assert.deepEqual(mergeSsids(null, null), []);
+});
+
+test('SSIDs are read from the daemon Wi-Fi status and its connections', () => {
+  assert.deepEqual(
+    ssidsFromWifiStatus({
+      ssid: 'Home',
+      connections: [
+        { role: 'hotspot', ssid: 'pins-rig' },
+        { role: 'client', ssid: null },
+      ],
+    }),
+    ['Home', 'pins-rig']
+  );
+  assert.deepEqual(ssidsFromWifiStatus({ Success: false }), []);
+  assert.deepEqual(ssidsFromWifiStatus(null), []);
 });

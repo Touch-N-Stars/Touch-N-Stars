@@ -808,7 +808,12 @@
           "ongoingReconnecting": "正在连接 {rig}…",
           "stop": "停止",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "只要手机连接在设备的某个 Wi-Fi 网络上，即使应用已关闭，iOS 也会保持与设备的连接并在手机上显示通知。应用每次连接到设备时都会记住这些网络。在这些网络之外，只有 ntfy 能通知你。",
+        "ssidList": "在这些 Wi-Fi 网络上有效：{ssids}",
+        "ssidReset": "忘记这些 Wi-Fi 网络",
+        "noSsid": "请将手机连接到设备的 Wi-Fi 并打开一次应用，以便它记住该网络。",
+        "permissionDeniedIos": "Touch-N-Stars 的通知已被阻止。请在 iOS 设置中允许。"
       }
     },
     "alpacaDirect": {

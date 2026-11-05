@@ -808,7 +808,12 @@
           "ongoingReconnecting": "Verbinden met {rig}…",
           "stop": "Stoppen",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "iOS houdt een verbinding met de rig zolang de telefoon op een van de wifi-netwerken van de rig zit, ook als de app gesloten is, en toont meldingen op de telefoon. De app leert deze netwerken telkens als hij de rig bereikt. Daarbuiten bereikt alleen ntfy je.",
+        "ssidList": "Werkt op deze wifi-netwerken: {ssids}",
+        "ssidReset": "Deze wifi-netwerken vergeten",
+        "noSsid": "Verbind de telefoon met de wifi van de rig en open de app één keer, zodat hij het netwerk leert.",
+        "permissionDeniedIos": "Meldingen zijn geblokkeerd voor Touch-N-Stars. Sta ze toe in de iOS-instellingen."
       }
     },
     "alpacaDirect": {

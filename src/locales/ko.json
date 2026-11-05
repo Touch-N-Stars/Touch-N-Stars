@@ -849,7 +849,12 @@
           "ongoingReconnecting": "{rig}에 연결 중…",
           "stop": "중지",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "휴대폰이 장비의 Wi-Fi 네트워크 중 하나에 연결되어 있는 동안에는 앱이 닫혀 있어도 iOS가 장비와의 연결을 유지하고 휴대폰에 알림을 표시합니다. 앱은 장비에 연결할 때마다 이 네트워크를 기억합니다. 그 밖의 곳에서는 ntfy만 알림을 전달합니다.",
+        "ssidList": "다음 Wi-Fi 네트워크에서 작동: {ssids}",
+        "ssidReset": "이 Wi-Fi 네트워크 지우기",
+        "noSsid": "휴대폰을 장비의 Wi-Fi에 연결하고 앱을 한 번 열어 네트워크를 기억하게 하세요.",
+        "permissionDeniedIos": "Touch-N-Stars의 알림이 차단되어 있습니다. iOS 설정에서 허용하세요."
       }
     },
     "alpacaDirect": {

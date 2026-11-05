@@ -22,7 +22,7 @@
               <span class="text-sm text-content">{{ t(`${k}.background`) }}</span>
               <InfoModal
                 :title="t(`${k}.background`)"
-                :message="t(`${k}.backgroundInfo`)"
+                :message="t(isIos ? `${k}.backgroundInfoIos` : `${k}.backgroundInfo`)"
                 size="w-4 h-4"
               />
             </div>
@@ -55,6 +55,22 @@
             <p class="text-xs text-status-warning">{{ t(`${k}.batteryHint`) }}</p>
             <button class="tns-btn-secondary sm:w-auto!" @click="openBatterySettings">
               {{ t(`${k}.batteryButton`) }}
+            </button>
+          </div>
+          <!-- iOS runs the background connection only on these Wi-Fi networks -->
+          <div
+            v-if="isIos && settingsStore.sessionNotifications.background"
+            class="flex flex-col gap-2"
+          >
+            <p class="text-xs text-content-muted break-words">
+              {{
+                rigSsids.length
+                  ? t(`${k}.ssidList`, { ssids: rigSsids.join(', ') })
+                  : t(`${k}.noSsid`)
+              }}
+            </p>
+            <button v-if="rigSsids.length" class="tns-btn-secondary sm:w-auto!" @click="resetSsids">
+              {{ t(`${k}.ssidReset`) }}
             </button>
           </div>
         </div>
@@ -193,7 +209,8 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { Capacitor } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -206,6 +223,7 @@ import { SEVERITIES } from '@/utils/sessionNotifications';
 import {
   isBackgroundMonitorSupported,
   refreshMonitorStatus,
+  resetRigSsids,
   sessionNotificationState,
 } from '@/services/sessionNotificationService';
 
@@ -219,6 +237,10 @@ const settingsStore = useSettingsStore();
 // 'success' is only meaningful as part of "everything"; offer three levels.
 const severityOptions = SEVERITIES.filter((severity) => severity !== 'success');
 const backgroundSupported = isBackgroundMonitorSupported();
+const isIos = Capacitor.getPlatform() === 'ios';
+const rigSsids = computed(
+  () => settingsStore.sessionNotifications.ssidsByHost?.[settingsStore.connection.ip] || []
+);
 const monitor = ref(null);
 const rig = ref(null);
 const ntfyToken = ref('');
@@ -236,6 +258,11 @@ function messageFrom(error) {
 
 async function updateMonitor() {
   monitor.value = await refreshMonitorStatus();
+}
+
+async function resetSsids() {
+  await resetRigSsids();
+  await updateMonitor();
 }
 
 function toggleBackground(value) {

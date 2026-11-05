@@ -808,7 +808,12 @@
           "ongoingReconnecting": "Łączenie z {rig}…",
           "stop": "Zatrzymaj",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "iOS utrzymuje połączenie z zestawem, gdy telefon jest w jednej z sieci Wi-Fi zestawu, także przy zamkniętej aplikacji, i pokazuje powiadomienia na telefonie. Aplikacja zapamiętuje te sieci za każdym razem, gdy połączy się z zestawem. Poza nimi dotrze do ciebie tylko ntfy.",
+        "ssidList": "Działa w tych sieciach Wi-Fi: {ssids}",
+        "ssidReset": "Zapomnij te sieci Wi-Fi",
+        "noSsid": "Połącz telefon z Wi-Fi zestawu i raz otwórz aplikację, aby poznała sieć.",
+        "permissionDeniedIos": "Powiadomienia dla Touch-N-Stars są zablokowane. Zezwól na nie w ustawieniach iOS."
       }
     },
     "alpacaDirect": {

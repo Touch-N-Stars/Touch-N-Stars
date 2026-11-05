@@ -74,3 +74,26 @@ export function summarizeMissedEvents(events, minSeverity = 'warning') {
 export function toastTypeForSeverity(severity) {
   return severity === 'error' ? 'error' : severity === 'warning' ? 'warning' : 'info';
 }
+
+/** iOS only runs the background provider on these Wi-Fi networks (NEAppPushManager.matchSSIDs). */
+export const MAX_RIG_SSIDS = 10;
+
+/**
+ * Wi-Fi networks this rig was reached on: the stored ones plus newly seen ones, newest
+ * first, without duplicates or empty names.
+ */
+export function mergeSsids(stored, found) {
+  const result = [];
+  for (const ssid of [...(found || []), ...(stored || [])]) {
+    const name = typeof ssid === 'string' ? ssid.trim() : '';
+    if (name && !result.includes(name)) result.push(name);
+  }
+  return result.slice(0, MAX_RIG_SSIDS);
+}
+
+/** SSIDs the PINS daemon reports in GET /wifi/status (client Wi-Fi and its own hotspot). */
+export function ssidsFromWifiStatus(status) {
+  if (!status || typeof status !== 'object') return [];
+  const names = [status.ssid, ...(status.connections || []).map((entry) => entry?.ssid)];
+  return names.filter((name) => typeof name === 'string' && name.trim());
+}

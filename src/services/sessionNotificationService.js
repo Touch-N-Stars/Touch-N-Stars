@@ -6,12 +6,15 @@
  * The pinsdaemon notify relay keeps them in a buffer with a sequence number. Two
  * consumers here:
  *
- * - Android background monitor: a native foreground service (SessionMonitorPlugin)
- *   that keeps the daemon's notification stream open and posts phone notifications.
- *   It works on the PINS hotspot without internet because it is local network only.
+ * - Background monitor (SessionMonitor plugin), local network only, so it works on
+ *   the PINS hotspot without internet:
+ *   - Android: a foreground service keeps the daemon's notification stream open and
+ *     posts phone notifications.
+ *   - iOS: Local Push Connectivity. iOS runs the PushProvider extension while the
+ *     phone is on one of the rig's Wi-Fi networks, also when the app is closed. The
+ *     app collects those network names (matchSSIDs) whenever it reaches the rig.
  * - Catch-up (all platforms): on resume or cold start, a toast summarises what
- *   happened since this device last looked. That is the iOS fallback until an
- *   NEAppPushProvider extension exists.
+ *   happened since this device last looked.
  */
 import { reactive, watch } from 'vue';
 import { Capacitor } from '@capacitor/core';
@@ -23,11 +26,14 @@ import apiPinsService from '@/services/apiPinsService';
 import { resolvePinsDaemonApiToken } from '@/services/api/core';
 import { isAppBackgrounded } from '@/utils/appLifecycle';
 import { SessionMonitor } from '@/utils/sessionMonitor';
+import { WifiSignal } from '@/utils/wifiSignal';
 import { readStoredJson, writeStoredJson } from '@/utils/safeStorage';
 import {
   advanceCursor,
   isRelayResponse,
+  mergeSsids,
   sinceForCursor,
+  ssidsFromWifiStatus,
   summarizeMissedEvents,
   toastTypeForSeverity,
 } from '@/utils/sessionNotifications';
@@ -50,7 +56,48 @@ let initialized = false;
 let catchUpRunning = false;
 
 export function isBackgroundMonitorSupported() {
-  return Capacitor.getPlatform() === 'android';
+  const platform = Capacitor.getPlatform();
+  return platform === 'android' || platform === 'ios';
+}
+
+const isIos = () => Capacitor.getPlatform() === 'ios';
+
+/**
+ * iOS: the Wi-Fi networks this rig was reached on (the phone's current network and what
+ * the daemon reports), remembered per rig so the list survives a night on the hotspot.
+ */
+async function collectRigSsids(settingsStore) {
+  const host = settingsStore.connection.ip;
+  const found = [];
+  try {
+    const current = await WifiSignal.getCurrent();
+    if (current?.ssid) found.push(current.ssid);
+  } catch {
+    // no Wi-Fi info entitlement or not on Wi-Fi
+  }
+  try {
+    found.push(...ssidsFromWifiStatus(await apiPinsService.getPinsWifiStatus()));
+  } catch {
+    // older daemon or unreachable; keep what is stored
+  }
+  const stored = settingsStore.sessionNotifications.ssidsByHost?.[host] || [];
+  const merged = mergeSsids(stored, found);
+  if (merged.join('\n') !== stored.join('\n')) {
+    settingsStore.setSessionNotifications({
+      ssidsByHost: { ...(settingsStore.sessionNotifications.ssidsByHost || {}), [host]: merged },
+    });
+  }
+  return merged;
+}
+
+/** Forgets the Wi-Fi networks of the current rig (iOS) and collects them again. */
+export async function resetRigSsids() {
+  const settingsStore = useSettingsStore();
+  const host = settingsStore.connection.ip;
+  const ssidsByHost = { ...(settingsStore.sessionNotifications.ssidsByHost || {}) };
+  delete ssidsByHost[host];
+  settingsStore.setSessionNotifications({ ssidsByHost });
+  await applyBackgroundMonitor();
 }
 
 export function loadCursor() {
@@ -108,7 +155,7 @@ export async function refreshMonitorStatus() {
 }
 
 /**
- * Starts, restarts or stops the Android monitor to match the settings. Only stops on
+ * Starts, restarts or stops the background monitor to match the settings. Only stops on
  * an explicit user choice: `isPINS` drops while the app reconnects, and that must not
  * kill the monitor that is supposed to cover exactly those moments.
  */
@@ -129,8 +176,10 @@ export async function applyBackgroundMonitor() {
 
   const head = await fetchNotifications(HEAD_SINCE, 1);
   if (!head) return;
+  const ssids = isIos() ? await collectRigSsids(settingsStore) : undefined;
   try {
     sessionNotificationState.monitor = await SessionMonitor.start({
+      ssids,
       streamUrl: apiPinsService.getPinsNotificationStreamUrl(),
       token: resolvePinsDaemonApiToken(),
       minSeverity: settingsStore.sessionNotifications.minSeverity,
@@ -140,10 +189,17 @@ export async function applyBackgroundMonitor() {
       labels: monitorLabels(),
     });
   } catch (error) {
+    const t = i18n.global.t;
     sessionNotificationState.error =
       error?.code === 'PERMISSION_DENIED'
-        ? i18n.global.t('components.settings.sessionNotifications.permissionDenied')
-        : error?.message || String(error);
+        ? t(
+            isIos()
+              ? 'components.settings.sessionNotifications.permissionDeniedIos'
+              : 'components.settings.sessionNotifications.permissionDenied'
+          )
+        : error?.code === 'NO_SSID'
+          ? t('components.settings.sessionNotifications.noSsid')
+          : error?.message || String(error);
     if (error?.code === 'PERMISSION_DENIED') {
       settingsStore.setSessionNotifications({ background: false });
     }
@@ -262,6 +318,9 @@ export function initSessionNotifications() {
       if (store.isPINS) void rememberHead();
       return;
     }
-    if (await waitForBackend(store, RESUME_WAIT_MS)) void runCatchUp();
+    if (!(await waitForBackend(store, RESUME_WAIT_MS))) return;
+    void runCatchUp();
+    // iOS: the phone may be on a Wi-Fi network of the rig that is not in matchSSIDs yet.
+    if (isIos() && settingsStore.sessionNotifications.background) void applyBackgroundMonitor();
   });
 }

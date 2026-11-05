@@ -808,7 +808,12 @@
           "ongoingReconnecting": "Connexion à {rig}…",
           "stop": "Arrêter",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "iOS garde une connexion au setup tant que le téléphone est sur l'un des réseaux Wi-Fi du setup, même app fermée, et affiche des notifications sur le téléphone. L'app retient ces réseaux chaque fois qu'elle atteint le setup. En dehors, seul ntfy t'atteint.",
+        "ssidList": "Fonctionne sur ces réseaux Wi-Fi : {ssids}",
+        "ssidReset": "Oublier ces réseaux Wi-Fi",
+        "noSsid": "Connecte le téléphone au Wi-Fi du setup et ouvre l'app une fois pour qu'elle retienne le réseau.",
+        "permissionDeniedIos": "Les notifications sont bloquées pour Touch-N-Stars. Autorise-les dans les réglages iOS."
       }
     },
     "alpacaDirect": {

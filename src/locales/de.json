@@ -849,7 +849,12 @@
           "ongoingReconnecting": "Verbinde mit {rig}…",
           "stop": "Stopp",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "iOS hält eine Verbindung zum Rig, solange das Telefon in einem WLAN des Rigs ist, auch wenn die App geschlossen ist, und zeigt Benachrichtigungen auf dem Telefon. Die App merkt sich diese Netze jedes Mal, wenn sie das Rig erreicht. Außerhalb davon erreicht dich nur ntfy.",
+        "ssidList": "Funktioniert in diesen WLANs: {ssids}",
+        "ssidReset": "Diese WLANs vergessen",
+        "noSsid": "Verbinde das Telefon mit dem WLAN des Rigs und öffne die App einmal, damit sie das Netz kennenlernt.",
+        "permissionDeniedIos": "Benachrichtigungen sind für Touch-N-Stars blockiert. Erlaube sie in den iOS-Einstellungen."
       }
     },
     "alpacaDirect": {

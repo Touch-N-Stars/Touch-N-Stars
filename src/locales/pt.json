@@ -808,7 +808,12 @@
           "ongoingReconnecting": "A ligar a {rig}…",
           "stop": "Parar",
           "defaultTitle": "PINS"
-        }
+        },
+        "backgroundInfoIos": "O iOS mantém uma ligação ao equipamento enquanto o telefone estiver numa das redes Wi-Fi do equipamento, mesmo com a app fechada, e mostra notificações no telefone. A app aprende estas redes sempre que chega ao equipamento. Fora delas só o ntfy o alcança.",
+        "ssidList": "Funciona nestas redes Wi-Fi: {ssids}",
+        "ssidReset": "Esquecer estas redes Wi-Fi",
+        "noSsid": "Ligue o telefone ao Wi-Fi do equipamento e abra a app uma vez para que aprenda a rede.",
+        "permissionDeniedIos": "As notificações estão bloqueadas para o Touch-N-Stars. Permita-as nas definições do iOS."
       }
     },
     "alpacaDirect": {
