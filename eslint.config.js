@@ -37,6 +37,7 @@ export default defineConfig([
     rules: {
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'no-alert': 'error',
       'no-unused-vars': [
         'warn',
         {

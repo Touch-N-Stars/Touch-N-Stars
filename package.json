@@ -34,10 +34,12 @@
     "locale:entry:all": "node scripts/add-locale-entry-all.js",
     "locale:find-missing-keys": "node scripts/find-missing-keys.js",
     "i18n:check": "node scripts/check-i18n.mjs",
+    "ratchet:check": "node scripts/check-ui-ratchet.mjs",
+    "ratchet:update": "node scripts/check-ui-ratchet.mjs --update",
     "generate-plugins": "node scripts/generate-plugin-registry.js",
     "generate-whats-new": "node scripts/generate-whats-new.js",
     "create-plugin": "node scripts/generate-plugin.js",
-    "ci:verify": "npm run lint && npm run typecheck && npm run test:coverage && npm run format:check && npm run i18n:check && npm run build",
+    "ci:verify": "npm run lint && npm run typecheck && npm run test:coverage && npm run format:check && npm run i18n:check && npm run ratchet:check && npm run build",
     "postinstall": "node scripts/lockfile-https.mjs",
     "prepare": "husky"
   },
