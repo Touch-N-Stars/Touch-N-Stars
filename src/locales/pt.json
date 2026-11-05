@@ -6418,10 +6418,6 @@
         "yes": "Sim",
         "no": "Não",
         "notSet": "Não definido",
-        "noConfigurableParameters": "Esta ação não possui parâmetros configuráveis.",
-        "actionId": "ID da ação",
-        "category": "Categoria",
-        "parameters": "Parâmetros",
         "unparkTelescope": {
           "name": "Desestacionar telescópio",
           "description": "Desestacionar montagem do telescópio"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Ligar ou desligar o aquecedor de condensação da câmera"
         }
       },
-      "actionLibrary": {
-        "title": "Biblioteca de ações",
-        "description": "Clique para adicionar ações aos contêineres",
-        "startActions": "🚀 Ações de início",
-        "targetActions": "🎯 Ações de alvo",
-        "endActions": "🏁 Ações de fim"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Exportação JSON da sequência",
-          "previewDescription": "Visualize e baixe sua sequência como arquivo JSON",
-          "totalActions": "Ações totais",
-          "enabled": "Habilitada",
-          "categories": "Categorias",
-          "estimatedDuration": "Duração estimada",
-          "filenamePrompt": "Digite o nome do arquivo...",
-          "copyJson": "Copiar JSON",
-          "copied": "Copiado!",
-          "downloadJson": "Baixar JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

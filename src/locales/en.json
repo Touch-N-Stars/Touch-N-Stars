@@ -6830,10 +6830,6 @@
         "yes": "Yes",
         "no": "No",
         "notSet": "Not set",
-        "noConfigurableParameters": "This action has no configurable parameters.",
-        "actionId": "Action ID",
-        "category": "Category",
-        "parameters": "Parameters",
         "unparkTelescope": {
           "name": "Unpark Telescope",
           "description": "Unpark the telescope mount"
@@ -6919,28 +6915,9 @@
           "description": "Park the telescope mount"
         }
       },
-      "actionLibrary": {
-        "title": "Action Library",
-        "description": "Click to add actions to containers",
-        "startActions": "🚀 Start Actions",
-        "targetActions": "🎯 Target Actions",
-        "endActions": "🏁 End Actions"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Sequence JSON Export",
-          "previewDescription": "Preview and download your sequence as a JSON file",
-          "totalActions": "Total Actions",
-          "enabled": "Enabled",
-          "categories": "Categories",
-          "estimatedDuration": "Est. Duration",
-          "filenamePrompt": "Enter filename...",
-          "copyJson": "Copy JSON",
-          "copied": "Copied!",
-          "downloadJson": "Download JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

@@ -6208,10 +6208,6 @@
         "yes": "Так",
         "no": "Ні",
         "notSet": "Не встановлено",
-        "noConfigurableParameters": "Ця дія не має параметрів для налаштування.",
-        "actionId": "ID дії",
-        "category": "Категорія",
-        "parameters": "Параметри",
         "unparkTelescope": {
           "name": "Розпаркувати телескоп",
           "description": "Розпаркувати монтування телескопа"
@@ -6297,28 +6293,9 @@
           "onOffTooltip": "Увімкнути або вимкнути обігрівач від роси камери"
         }
       },
-      "actionLibrary": {
-        "title": "Бібліотека дій",
-        "description": "Натисніть, щоб додати дії до контейнерів",
-        "startActions": "🚀 Початкові дії",
-        "targetActions": "🎯 Дії для цілі",
-        "endActions": "🏁 Завершальні дії"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Експорт послідовності JSON",
-          "previewDescription": "Попередній перегляд та завантаження послідовності як JSON-файлу",
-          "totalActions": "Всього дій",
-          "enabled": "Увімкнено",
-          "categories": "Категорії",
-          "estimatedDuration": "Орієнт. тривалість",
-          "filenamePrompt": "Введіть ім'я файлу...",
-          "copyJson": "Копіювати JSON",
-          "copied": "Скопійовано!",
-          "downloadJson": "Завантажити JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

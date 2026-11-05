@@ -776,7 +776,6 @@ export const apiStore = defineStore('store', {
         phd2Cameras: [],
         phd2SelectedCameraIndex: null,
         phd2SelectedCameraName: null,
-        phd2Mounts: [],
         phd2SelectedMountIndex: null,
         phd2SelectedMountName: null,
       });

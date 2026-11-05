@@ -6418,10 +6418,6 @@
         "yes": "Ano",
         "no": "Ne",
         "notSet": "Není nastaveno",
-        "noConfigurableParameters": "Tato akce nemá žádné konfigurovatelné parametry.",
-        "actionId": "ID Akce",
-        "category": "Kategorie",
-        "parameters": "Parametery",
         "unparkTelescope": {
           "name": "Unpark Dalekohledu",
           "description": "Unpark montáže dalekohledu"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Turn the camera dew heater on or off"
         }
       },
-      "actionLibrary": {
-        "title": "Knihovna Akcí",
-        "description": "Kliknutím přidáte akce do kontejnerů",
-        "startActions": "🚀 Spustit Akce",
-        "targetActions": "🎯 Cílové Akce",
-        "endActions": "🏁 Ukončit Akce"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Export sekvence JSON",
-          "previewDescription": "Náhled a stažení sekvence jako souboru JSON",
-          "totalActions": "Celkem Akcí",
-          "enabled": "Zapnuto",
-          "categories": "Kategorie",
-          "estimatedDuration": "Přibližná délka trvání",
-          "filenamePrompt": "Zadejte název souboru...",
-          "copyJson": "Kopírovat JSON",
-          "copied": "Kopírováno!",
-          "downloadJson": "Stáhnout JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

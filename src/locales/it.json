@@ -6418,10 +6418,6 @@
         "yes": "Sì",
         "no": "NO",
         "notSet": "Non impostato",
-        "noConfigurableParameters": "Questa azione non ha parametri configurabili.",
-        "actionId": "ID azione",
-        "category": "Categoria",
-        "parameters": "Parametri",
         "unparkTelescope": {
           "name": "Rimuovi parcheggio telescopio",
           "description": "Rimuovi parcheggio montatura telescopio"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Accendi o spegni il riscaldatore anticondensa della fotocamera"
         }
       },
-      "actionLibrary": {
-        "title": "Libreria azioni",
-        "description": "Clicca per aggiungere azioni ai contenitori",
-        "startActions": "🚀 Azioni inizio",
-        "targetActions": "🎯 Azioni target",
-        "endActions": "🏁 Azioni fine"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Export JSON sequenza",
-          "previewDescription": "Visualizza in anteprima e scarica la tua sequenza come file JSON",
-          "totalActions": "Azioni totali",
-          "enabled": "Abilitata",
-          "categories": "Categorie",
-          "estimatedDuration": "Durata stimata",
-          "filenamePrompt": "Inserisci nome file...",
-          "copyJson": "Copia JSON",
-          "copied": "Copiato!",
-          "downloadJson": "Scarica JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

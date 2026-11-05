@@ -6418,10 +6418,6 @@
         "yes": "Ja",
         "no": "Nee",
         "notSet": "Niet ingesteld",
-        "noConfigurableParameters": "Deze actie heeft geen configureerbare parameters.",
-        "actionId": "Actie-ID",
-        "category": "Categorie",
-        "parameters": "Parameters",
         "unparkTelescope": {
           "name": "Unpark Telescoop",
           "description": "Unpark de telescoop montering"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Schakel de dauwverwarmer van de camera in of uit"
         }
       },
-      "actionLibrary": {
-        "title": "Acties Bibliotheek",
-        "description": "Click om acties toe te voegen",
-        "startActions": "🚀 Start Acties",
-        "targetActions": "🎯 Doelobject Acties",
-        "endActions": "🏁 Einde Acties"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Export sequentie naar JSON",
-          "previewDescription": "Toon en download sequentie naar JSON bestand",
-          "totalActions": "Totale Acties",
-          "enabled": "Aan",
-          "categories": "Categorieen",
-          "estimatedDuration": "Verwachte tijdsduur",
-          "filenamePrompt": "Bestandsnaam...",
-          "copyJson": "Kopieer JSON",
-          "copied": "Gekopieerd!",
-          "downloadJson": "JSON downloaden"
-        },
         "howToUse": {}
       },
       "targetSearch": {

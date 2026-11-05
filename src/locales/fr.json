@@ -6418,10 +6418,6 @@
         "yes": "Oui",
         "no": "Non",
         "notSet": "Non défini",
-        "noConfigurableParameters": "Cette action n'a pas de paramètres configurables.",
-        "actionId": "ID d'action",
-        "category": "Catégorie",
-        "parameters": "Paramètres",
         "unparkTelescope": {
           "name": "Déparquer le télescope",
           "description": "Déparquer la monture du télescope"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Allumer ou éteindre le chauffe-rosée de la caméra"
         }
       },
-      "actionLibrary": {
-        "title": "Bibliothèque d'actions",
-        "description": "Cliquez pour ajouter des actions aux conteneurs",
-        "startActions": "🚀 Actions de démarrage",
-        "targetActions": "🎯 Actions de cible",
-        "endActions": "🏁 Actions de fin"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Export JSON de séquence",
-          "previewDescription": "Prévisualiser et télécharger votre séquence en tant que fichier JSON",
-          "totalActions": "Actions totales",
-          "enabled": "Activé",
-          "categories": "Catégories",
-          "estimatedDuration": "Durée estimée",
-          "filenamePrompt": "Entrer le nom de fichier...",
-          "copyJson": "Copier JSON",
-          "copied": "Copié!",
-          "downloadJson": "Télécharger JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

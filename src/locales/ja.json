@@ -6529,10 +6529,6 @@
         "yes": "はい",
         "no": "いいえ",
         "notSet": "未設定",
-        "noConfigurableParameters": "このアクションには設定可能なパラメーターがありません。",
-        "actionId": "アクションID",
-        "category": "カテゴリー",
-        "parameters": "パラメーター",
         "unparkTelescope": {
           "name": "望遠鏡のパークを解除",
           "description": "赤道儀のパークを解除"
@@ -6618,28 +6614,9 @@
           "onOffTooltip": "カメラの結露ヒーターをオンまたはオフにする"
         }
       },
-      "actionLibrary": {
-        "title": "アクションライブラリ",
-        "description": "クリックしてコンテナにアクションを追加",
-        "startActions": "🚀 開始アクション",
-        "targetActions": "🎯 ターゲットアクション",
-        "endActions": "🏁 終了アクション"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "シーケンスJSONエクスポート",
-          "previewDescription": "シーケンスをJSONファイルとしてプレビューおよびダウンロード",
-          "totalActions": "総アクション数",
-          "enabled": "有効",
-          "categories": "カテゴリー",
-          "estimatedDuration": "推定所要時間",
-          "filenamePrompt": "ファイル名を入力...",
-          "copyJson": "JSONをコピー",
-          "copied": "コピーしました！",
-          "downloadJson": "JSONをダウンロード"
-        },
         "howToUse": {}
       },
       "targetSearch": {
