@@ -113,6 +113,7 @@ import {
 } from '@/utils/equipmentDevices';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 const equipmentStore = useEquipmentStore();
 const store = apiStore();
@@ -165,8 +166,8 @@ function scheduleEmptyRetry() {
   emptyRetryTimer = setTimeout(() => {
     emptyRetryTimer = null;
     // Do not fire into a dead backend; the reachability watcher refetches as soon as it
-    // comes back.
-    if (!store.isBackendReachable) {
+    // comes back. A backgrounded app just waits for the next round.
+    if (!store.isBackendReachable || isAppBackgrounded.value) {
       scheduleEmptyRetry();
       return;
     }

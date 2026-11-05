@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 const LAST_UPGRADE_JOB_ID_KEY = 'lastUpgradeJobId';
 const LAST_UPGRADE_JOB_RESULT_KEY = 'lastUpgradeJobResult';
@@ -137,7 +138,9 @@ export function usePinsUpgradeTracker({
 
     clearUpgradePollTimer();
     upgradePollTimer = setTimeout(() => {
-      pollUpgradeStatus(ip);
+      // Not with delayMs: it can be 0, which would spin until the app is back in the foreground.
+      if (isAppBackgrounded.value) scheduleUpgradePolling(ip);
+      else pollUpgradeStatus(ip);
     }, delayMs);
   }
 
