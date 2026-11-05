@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 24] - 2026-11-05
+
+### Fixed
+
+- Mount: Closing the plate solving dialog no longer stops tracking when the mount is not slewing, and on PINS the app no longer keeps showing a dialog that ended while it was away.
+
 ## [App6.5.0 - beta 23] - 2026-11-05
 
 ### Added
@@ -40,7 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Camera: When a captured image never arrives, the app now says so instead of silently giving up.
 - Dialogs: Questions before deleting something and error messages in the slew form, the profile selection and several plugins now appear in the app's own style instead of as browser pop-ups, which also keeps the app running while they are open.
 - Atlas: Updated to a newer Celestia Atlas version with corrected catalogue cross-references, for example Sh2-25 now belongs to M8. Developed by @acocalypso.
-- Mount: Closing the plate solving dialog no longer stops tracking when the mount is not slewing, and on PINS the app no longer keeps showing a dialog that ended while it was away.
 - Perihelion (plugin): The path in the framing view now uses the same projection as the Atlas, so it stays aligned with the sky background. Developed by @acocalypso.
 
 ## [App6.5.0 - beta 22] - 2026-11-01
