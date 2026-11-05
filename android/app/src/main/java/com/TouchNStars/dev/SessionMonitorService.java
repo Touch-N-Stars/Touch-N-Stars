@@ -12,6 +12,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -72,6 +76,7 @@ public class SessionMonitorService extends Service {
     private static final int ONGOING_NOTIFICATION_ID = 7301;
     private static final int EVENT_NOTIFICATION_BASE_ID = 7400;
     private static final int EVENT_NOTIFICATION_SLOTS = 50;
+    private static final int EVENT_SUMMARY_BASE_ID = 7390; // + severity rank (0-3)
 
     private static final long RECONNECT_MIN_MS = 2_000;
     private static final long RECONNECT_MAX_MS = 60_000;
@@ -350,7 +355,8 @@ public class SessionMonitorService extends Service {
             this, 1, stop, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         return new NotificationCompat.Builder(this, CHANNEL_SERVICE)
-            .setSmallIcon(R.drawable.ic_stat_icon)
+            .setSmallIcon(R.drawable.ic_stat_tns)
+            .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.tns_notification_logo))
             .setContentTitle(label("ongoingTitle", "Watching your session"))
             .setContentText(text)
             .setContentIntent(openAppIntent())
@@ -378,8 +384,14 @@ public class SessionMonitorService extends Service {
         if (!canPostNotifications()) return;
         boolean alert = severityRank(severity) >= 2;
         String heading = title.isEmpty() ? label("defaultTitle", "PINS") : title;
+        int icon = severityIcon(severity);
+        int color = severityColor(severity);
         Notification notification = new NotificationCompat.Builder(this, alert ? CHANNEL_ALERTS : CHANNEL_EVENTS)
-            .setSmallIcon(R.drawable.ic_stat_icon)
+            // The status bar always draws the small icon white; the colour shows in the
+            // shade, and the large icon carries it everywhere else.
+            .setSmallIcon(icon)
+            .setColor(color)
+            .setLargeIcon(tintedBitmap(icon, color))
             .setContentTitle(heading)
             .setContentText(message)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
@@ -388,14 +400,62 @@ public class SessionMonitorService extends Service {
             .setPriority(alert ? NotificationCompat.PRIORITY_HIGH : NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(alert ? NotificationCompat.CATEGORY_ERROR : NotificationCompat.CATEGORY_STATUS)
             .setWhen(System.currentTimeMillis())
+            .setGroup(groupKey(severity))
+            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
+            .build();
+        // One group per severity, each with its own summary. Without this Android bundles
+        // four or more notifications under one header with an arbitrary child's icon
+        // (a green check over a bundle that holds an error).
+        Notification summary = new NotificationCompat.Builder(this, alert ? CHANNEL_ALERTS : CHANNEL_EVENTS)
+            .setSmallIcon(icon)
+            .setColor(color)
+            .setContentTitle(label("defaultTitle", "PINS"))
+            .setContentText(heading)
+            .setContentIntent(openAppIntent())
+            .setAutoCancel(true)
+            .setGroup(groupKey(severity))
+            .setGroupSummary(true)
+            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_CHILDREN)
             .build();
         // A rotating set of ids: a long night keeps at most this many in the shade.
         int id = EVENT_NOTIFICATION_BASE_ID + (int) (seq % EVENT_NOTIFICATION_SLOTS);
         try {
-            NotificationManagerCompat.from(this).notify(id, notification);
+            NotificationManagerCompat manager = NotificationManagerCompat.from(this);
+            manager.notify(id, notification);
+            manager.notify(EVENT_SUMMARY_BASE_ID + severityRank(severity), summary);
         } catch (SecurityException e) {
             Log.w(TAG, "Notification permission revoked", e);
         }
+    }
+
+    private static String groupKey(String severity) {
+        return "tns-rig-" + (severityRank(severity) > 0 ? severity : "info");
+    }
+
+    static int severityIcon(String severity) {
+        if ("error".equals(severity)) return R.drawable.ic_stat_error;
+        if ("warning".equals(severity)) return R.drawable.ic_stat_warning;
+        if ("success".equals(severity)) return R.drawable.ic_stat_success;
+        return R.drawable.ic_stat_info;
+    }
+
+    static int severityColor(String severity) {
+        if ("error".equals(severity)) return 0xFFE53935; // red
+        if ("warning".equals(severity)) return 0xFFFFA000; // amber
+        if ("success".equals(severity)) return 0xFF43A047; // green
+        return 0xFF1E88E5; // blue
+    }
+
+    private Bitmap tintedBitmap(int drawableRes, int color) {
+        Drawable drawable = ContextCompat.getDrawable(this, drawableRes);
+        if (drawable == null) return null;
+        drawable = drawable.mutate();
+        drawable.setTint(color);
+        int size = Math.round(48 * getResources().getDisplayMetrics().density);
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        drawable.setBounds(0, 0, size, size);
+        drawable.draw(new Canvas(bitmap));
+        return bitmap;
     }
 
     private boolean canPostNotifications() {

@@ -72,4 +72,15 @@ enum SessionMonitorShared {
         default: return 0
         }
     }
+
+    /// iOS always shows the app icon on a notification, so the severity goes into the
+    /// title as a coloured symbol, matching the per-severity icons on Android.
+    static func severitySymbol(_ severity: String) -> String {
+        switch severity {
+        case "error": return "❌"
+        case "warning": return "⚠️"
+        case "success": return "✅"
+        default: return "ℹ️"
+        }
+    }
 }

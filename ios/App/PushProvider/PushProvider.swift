@@ -213,7 +213,8 @@ final class PushProvider: NEAppPushProvider {
 
     private func post(seq: Int, severity: String, title: String, message: String) {
         let content = UNMutableNotificationContent()
-        content.title = title.isEmpty ? label("defaultTitle", "PINS") : title
+        let heading = title.isEmpty ? label("defaultTitle", "PINS") : title
+        content.title = "\(SessionMonitorShared.severitySymbol(severity)) \(heading)"
         content.body = message
         content.threadIdentifier = "tns-rig"
         content.sound = SessionMonitorShared.severityRank(severity) >= 2 ? .default : nil
