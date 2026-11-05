@@ -4706,7 +4706,9 @@
       "tab_camera": "Kamera",
       "tab_cooler": "Chłodzenie",
       "tab_filter": "Filtr",
-      "tab_snapshot": "Zapisz i rozwiąż"
+      "tab_snapshot": "Zapisz i rozwiąż",
+      "imageTimeoutTitle": "Nie odebrano obrazu",
+      "imageTimeout": "Obraz nie dotarł na czas."
     },
     "tppa": {
       "title": "Wyrównanie biegunowe trzypunktowe",
@@ -4803,7 +4805,8 @@
         "apiResponseError": "Błąd w odpowiedzi API:",
         "mountInfoError": "Błąd pobierania informacji o montażu:",
         "invalidAltInput": "Nieprawidłowe dane wejściowe Alt.",
-        "invalidAzInput": "Nieprawidłowe dane wejściowe Az."
+        "invalidAzInput": "Nieprawidłowe dane wejściowe Az.",
+        "invalidInputTitle": "Nieprawidłowe dane"
       },
       "visibleStars": "Wyszukiwanie widocznych gwiazd",
       "alt": "Wysokość:",
@@ -5222,7 +5225,8 @@
       "cannotSwitchConnected": "Nie można przełączyć profilu, gdy urządzenia są podłączone",
       "cannotRemoveActive": "Nie można usunąć aktywnego profilu",
       "cannotRemoveLast": "Nie można usunąć ostatniego profilu",
-      "noProfiles": "Brak dostępnych profili"
+      "noProfiles": "Brak dostępnych profili",
+      "switchFailed": "Nie udało się zmienić profilu"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Nie udało się zmienić binningu",
       "readout": "Nie udało się zmienić trybu odczytu",
       "switchSet": "Nie udało się ustawić przełącznika"
+    },
+    "about": {
+      "devChannelUnlocked": "Odblokowano kanał aktualizacji dev.",
+      "devChannelHidden": "Ukryto kanał aktualizacji dev.",
+      "specialEnabled": "Włączono znacznik bólu oczu.",
+      "specialDisabled": "Koniec zabawy."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "Zapisz",
         "invalidCoordinates": "Nie udało się odczytać rektascensji lub deklinacji.",
         "invalidRotation": "Obrót musi być liczbą.",
-        "saveFailed": "Nie udało się zapisać zmiany."
+        "saveFailed": "Nie udało się zapisać zmiany.",
+        "framingFailed": "Nie udało się otworzyć asystenta kadrowania: {error}"
       }
     },
     "webcam": {

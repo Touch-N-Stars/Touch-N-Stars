@@ -80,6 +80,7 @@ import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import { useBackgroundAwarePolling } from '@/utils/appLifecycle';
 import {
   hmsToDegrees,
@@ -92,6 +93,7 @@ import setSequenceTarget from '@/components/framing/setSequenceTarget.vue';
 import ButtonSlewCenterRotate from '../mount/ButtonSlewCenterRotate.vue';
 
 const { t } = useI18n();
+const toastStore = useToastStore();
 const store = apiStore();
 const framingStore = useFramingStore();
 const props = defineProps({
@@ -160,6 +162,14 @@ function validateALT(input) {
   return val !== null && val >= -90 && val <= 90;
 }
 
+function showInputError(message) {
+  toastStore.showToast({
+    type: 'error',
+    title: t('components.slewAndCenter.errors.invalidInputTitle'),
+    message,
+  });
+}
+
 function handleBlurRA() {
   if (!localRAangleString.value) {
     return; // Nichts tun, wenn der Wert leer ist
@@ -167,7 +177,7 @@ function handleBlurRA() {
   if (validateRA(localRAangleString.value)) {
     updateRA();
   } else {
-    alert(t('components.slewAndCenter.errors.invalidRAInput'));
+    showInputError(t('components.slewAndCenter.errors.invalidRAInput'));
   }
 }
 
@@ -178,7 +188,7 @@ function handleBlurDEC() {
   if (validateDEC(localDECangleString.value)) {
     updateDec();
   } else {
-    alert(t('components.slewAndCenter.errors.invalidDECInput'));
+    showInputError(t('components.slewAndCenter.errors.invalidDECInput'));
   }
 }
 
@@ -189,7 +199,7 @@ function handleBlurAlt() {
   if (validateALT(localAltAngleString.value)) {
     updateAltAz();
   } else {
-    alert(t('components.slewAndCenter.errors.invalidAltInput'));
+    showInputError(t('components.slewAndCenter.errors.invalidAltInput'));
   }
   isEditingAltAz.value = false;
 }
@@ -201,7 +211,7 @@ function handleBlurAz() {
   if (validateAZ(localAzAngleString.value)) {
     updateAltAz();
   } else {
-    alert(t('components.slewAndCenter.errors.invalidAzInput'));
+    showInputError(t('components.slewAndCenter.errors.invalidAzInput'));
   }
   isEditingAltAz.value = false;
 }

@@ -49,14 +49,18 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { useToastStore } from '@/store/toastStore';
 import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/outline';
 import ProfilManagementModal from '@/components/profil/ProfilManagementModal.vue';
 
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
+const toastStore = useToastStore();
+const { t } = useI18n();
 const profiles = ref([]);
 const selectedProfileId = ref(null);
 const isLoading = ref(false);
@@ -95,6 +99,10 @@ async function fetchProfiles() {
   }
 }
 
+function showSwitchError(message) {
+  toastStore.showToast({ type: 'error', title: t('components.profile.switchFailed'), message });
+}
+
 async function updateProfile() {
   isLoading.value = true;
   try {
@@ -104,11 +112,11 @@ async function updateProfile() {
       await fetchProfiles();
       equipmentStore.triggerReload();
     } else {
-      alert('Error updating profile');
+      showSwitchError(response?.Error || '');
     }
   } catch (error) {
     console.error('Error updating profile:', error);
-    alert('Error updating profile');
+    showSwitchError(error.message);
   } finally {
     isLoading.value = false;
   }

@@ -106,3 +106,57 @@ test('no fallback load while NINA still reports the capture in progress', async 
   await withTimeout(capture, 2000, 'capture did not honour the abort');
   assert.equal(cameraStore.isLoadingImage, false);
 });
+
+// Drives a capture through its wait loops without waiting for real, one second per round.
+async function pumpUntilDone(t, capture, maxSeconds = 120) {
+  let done = false;
+  capture.finally(() => (done = true));
+  for (let second = 0; second < maxSeconds && !done; second++) {
+    await new Promise((resolve) => setImmediate(resolve));
+    t.mock.timers.tick(1000);
+  }
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(done, true, 'capture ended');
+}
+
+test('an image that never arrives after the download started tells the user', async (t) => {
+  const { cameraStore, imageStore } = setup(t);
+  const toastStore = useToastStore();
+  imageStore.isImageFetching = true;
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const fakeApi = { startCapture: async () => {}, getImageData: async () => IN_PROGRESS };
+
+  await pumpUntilDone(t, cameraStore.capturePhoto(fakeApi, 0.01, 100));
+
+  assert.equal(toastStore.newMessage, true);
+  assert.equal(toastStore.type, 'error');
+  assert.equal(cameraStore.isLoadingImage, false);
+});
+
+test('the hard limit of the wait for the download tells the user', async (t) => {
+  const { cameraStore } = setup(t);
+  const toastStore = useToastStore();
+  t.mock.timers.enable({ apis: ['setTimeout', 'Date'] });
+  const fakeApi = { startCapture: async () => {}, getImageData: async () => IN_PROGRESS };
+
+  await pumpUntilDone(t, cameraStore.capturePhoto(fakeApi, 0.01, 100));
+
+  assert.equal(toastStore.newMessage, true);
+  assert.equal(toastStore.type, 'error');
+});
+
+test('an aborted capture stays silent even though no image arrived', async (t) => {
+  const { cameraStore, imageStore } = setup(t);
+  const toastStore = useToastStore();
+  imageStore.isImageFetching = true;
+  t.mock.timers.enable({ apis: ['setTimeout'] });
+  const fakeApi = { startCapture: async () => {}, getImageData: async () => IN_PROGRESS };
+
+  const capture = cameraStore.capturePhoto(fakeApi, 0.01, 100);
+  await new Promise((resolve) => setImmediate(resolve));
+  t.mock.timers.tick(1000);
+  cameraStore.resetCaptureState();
+  await pumpUntilDone(t, capture);
+
+  assert.equal(toastStore.newMessage, false);
+});

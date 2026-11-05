@@ -4752,7 +4752,9 @@
       "tab_camera": "Camera",
       "tab_cooler": "Cooler",
       "tab_filter": "Filter",
-      "tab_snapshot": "Save & Solve"
+      "tab_snapshot": "Save & Solve",
+      "imageTimeoutTitle": "No image received",
+      "imageTimeout": "The image did not arrive in time."
     },
     "tppa": {
       "title": "Three Point Polar Alignment",
@@ -4849,7 +4851,8 @@
         "apiResponseError": "Error in API response:",
         "mountInfoError": "Error fetching mount information:",
         "invalidAltInput": "Invalid alt input.",
-        "invalidAzInput": "Invalid az input."
+        "invalidAzInput": "Invalid az input.",
+        "invalidInputTitle": "Invalid input"
       },
       "visibleStars": "Visible Star Search",
       "alt": "Alt:",
@@ -5268,7 +5271,8 @@
       "cannotSwitchConnected": "Cannot switch profile while devices are connected",
       "cannotRemoveActive": "Cannot remove the active profile",
       "cannotRemoveLast": "Cannot remove the last profile",
-      "noProfiles": "No profiles available"
+      "noProfiles": "No profiles available",
+      "switchFailed": "Could not switch profile"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Binning could not be changed",
       "readout": "Readout mode could not be changed",
       "switchSet": "Switch could not be set"
+    },
+    "about": {
+      "devChannelUnlocked": "Dev update channel unlocked.",
+      "devChannelHidden": "Dev update channel hidden.",
+      "specialEnabled": "Eyesore marker enabled.",
+      "specialDisabled": "The fun is over."
     }
   },
   "plugins": {
@@ -6563,7 +6573,8 @@
         "save": "Save",
         "invalidCoordinates": "Right ascension or declination could not be read.",
         "invalidRotation": "The rotation must be a number.",
-        "saveFailed": "The change could not be saved."
+        "saveFailed": "The change could not be saved.",
+        "framingFailed": "Could not open framing: {error}"
       },
       "import": {
         "title": "Import Targets from CSV",

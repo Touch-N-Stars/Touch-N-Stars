@@ -4752,7 +4752,9 @@
       "tab_camera": "카메라",
       "tab_cooler": "쿨러",
       "tab_filter": "필터",
-      "tab_snapshot": "저장 및 솔브"
+      "tab_snapshot": "저장 및 솔브",
+      "imageTimeoutTitle": "이미지를 받지 못했습니다",
+      "imageTimeout": "이미지가 제시간에 도착하지 않았습니다."
     },
     "tppa": {
       "title": "삼점 극축 정렬",
@@ -4849,7 +4851,8 @@
         "apiResponseError": "API 응답 오류:",
         "mountInfoError": "마운트 정보를 가져오는 중 오류:",
         "invalidAltInput": "잘못된 alt 입력입니다.",
-        "invalidAzInput": "잘못된 az 입력입니다."
+        "invalidAzInput": "잘못된 az 입력입니다.",
+        "invalidInputTitle": "잘못된 입력"
       },
       "visibleStars": "보이는 별 검색",
       "alt": "Alt:",
@@ -5268,7 +5271,8 @@
       "cannotSwitchConnected": "장치가 연결된 상태에서는 프로필을 전환할 수 없습니다",
       "cannotRemoveActive": "활성 프로필은 삭제할 수 없습니다",
       "cannotRemoveLast": "마지막 프로필은 삭제할 수 없습니다",
-      "noProfiles": "사용 가능한 프로필이 없습니다"
+      "noProfiles": "사용 가능한 프로필이 없습니다",
+      "switchFailed": "프로필을 전환하지 못했습니다"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "비닝을 변경할 수 없습니다",
       "readout": "읽기 모드를 변경할 수 없습니다",
       "switchSet": "스위치를 설정할 수 없습니다"
+    },
+    "about": {
+      "devChannelUnlocked": "개발 업데이트 채널이 잠금 해제되었습니다.",
+      "devChannelHidden": "개발 업데이트 채널을 숨겼습니다.",
+      "specialEnabled": "눈 아픈 마커가 활성화되었습니다.",
+      "specialDisabled": "재미는 여기까지입니다."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "저장",
         "invalidCoordinates": "적경 또는 적위를 읽을 수 없습니다.",
         "invalidRotation": "회전값은 숫자여야 합니다.",
-        "saveFailed": "변경 사항을 저장하지 못했습니다."
+        "saveFailed": "변경 사항을 저장하지 못했습니다.",
+        "framingFailed": "프레이밍 어시스턴트를 열지 못했습니다: {error}"
       }
     },
     "webcam": {

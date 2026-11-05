@@ -214,6 +214,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import {
   CameraIcon,
   Cog6ToothIcon,
@@ -230,6 +231,7 @@ import PinsAllSkyStatusModal from '../components/PinsAllSkyStatusModal.vue';
 import { usePinsAllSkyStore } from '../store/pinsAllskyStore';
 
 const { t } = useI18n({ useScope: 'global' });
+const toastStore = useToastStore();
 const store = usePinsAllSkyStore();
 const {
   status,
@@ -676,10 +678,13 @@ const formatSessionReason = (reason) => {
   }
 };
 
+const confirmDelete = (message) =>
+  toastStore.showConfirmation(t('common.confirm'), message, t('common.delete'), t('common.cancel'));
+
 const deleteSession = async (session) => {
   const sessionName =
     session?.label || session?.id || t('plugins.pinsAllSky.preview.noActiveSession');
-  if (!window.confirm(t('plugins.pinsAllSky.dialogs.deleteSession', { sessionName }))) {
+  if (!(await confirmDelete(t('plugins.pinsAllSky.dialogs.deleteSession', { sessionName })))) {
     return;
   }
 
@@ -687,7 +692,7 @@ const deleteSession = async (session) => {
 };
 
 const deleteAllSessions = async () => {
-  if (!window.confirm(t('plugins.pinsAllSky.dialogs.deleteAllSessions'))) {
+  if (!(await confirmDelete(t('plugins.pinsAllSky.dialogs.deleteAllSessions')))) {
     return;
   }
 
@@ -703,7 +708,7 @@ const deleteArtifact = async (session, artifact) => {
     artifact.name ||
     artifact.relativePath.split('/').pop() ||
     t('plugins.pinsAllSky.common.notGenerated');
-  if (!window.confirm(t('plugins.pinsAllSky.dialogs.deleteArtifact', { artifactName }))) {
+  if (!(await confirmDelete(t('plugins.pinsAllSky.dialogs.deleteArtifact', { artifactName })))) {
     return;
   }
 
@@ -719,7 +724,7 @@ const deleteFrame = async (session, frame) => {
     frame.name ||
     frame.relativePath.split('/').pop() ||
     t('plugins.pinsAllSky.common.notAvailable');
-  if (!window.confirm(t('plugins.pinsAllSky.dialogs.deleteFrame', { frameName }))) {
+  if (!(await confirmDelete(t('plugins.pinsAllSky.dialogs.deleteFrame', { frameName })))) {
     return;
   }
 

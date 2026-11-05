@@ -4752,7 +4752,9 @@
       "tab_camera": "Càmera",
       "tab_cooler": "Refrigerador",
       "tab_filter": "Filtre",
-      "tab_snapshot": "Desa i resol"
+      "tab_snapshot": "Desa i resol",
+      "imageTimeoutTitle": "No s'ha rebut cap imatge",
+      "imageTimeout": "La imatge no ha arribat a temps."
     },
     "tppa": {
       "title": "Alineació polar de tres punts",
@@ -4849,7 +4851,8 @@
         "apiResponseError": "Error en la resposta de l'API:",
         "mountInfoError": "Error en obtenir informació de la muntura:",
         "invalidAltInput": "Entrada d'altitud no vàlida.",
-        "invalidAzInput": "Entrada d'azimut no vàlida."
+        "invalidAzInput": "Entrada d'azimut no vàlida.",
+        "invalidInputTitle": "Entrada no vàlida"
       },
       "visibleStars": "Cerca d'estrelles visibles",
       "alt": "Alt:",
@@ -5268,7 +5271,8 @@
       "cannotSwitchConnected": "No es pot canviar de perfil mentre hi ha dispositius connectats",
       "cannotRemoveActive": "No es pot eliminar el perfil actiu",
       "cannotRemoveLast": "No es pot eliminar l'últim perfil",
-      "noProfiles": "Cap perfil disponible"
+      "noProfiles": "Cap perfil disponible",
+      "switchFailed": "No s'ha pogut canviar de perfil"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "No s'ha pogut canviar el binning",
       "readout": "No s'ha pogut canviar el mode de lectura",
       "switchSet": "No s'ha pogut ajustar l'interruptor"
+    },
+    "about": {
+      "devChannelUnlocked": "Canal d'actualització dev desbloquejat.",
+      "devChannelHidden": "Canal d'actualització dev amagat.",
+      "specialEnabled": "Marcador de mal d'ulls activat.",
+      "specialDisabled": "S'ha acabat la diversió."
     }
   },
   "plugins": {
@@ -6385,7 +6395,8 @@
         "save": "Desa",
         "invalidCoordinates": "No s'ha pogut llegir l'ascensió recta o la declinació.",
         "invalidRotation": "La rotació ha de ser un nombre.",
-        "saveFailed": "No s'ha pogut desar el canvi."
+        "saveFailed": "No s'ha pogut desar el canvi.",
+        "framingFailed": "No s'ha pogut obrir l'assistent d'enquadrament: {error}"
       }
     },
     "webcam": {

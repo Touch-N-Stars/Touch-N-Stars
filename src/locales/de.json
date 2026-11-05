@@ -4747,7 +4747,9 @@
       "tab_camera": "Kamera",
       "tab_cooler": "Kühlung",
       "tab_filter": "Filter",
-      "tab_snapshot": "Speichern & lösen"
+      "tab_snapshot": "Speichern & lösen",
+      "imageTimeoutTitle": "Kein Bild empfangen",
+      "imageTimeout": "Das Bild kam nicht rechtzeitig an."
     },
     "tppa": {
       "title": "Drei-Punkt-Polarausrichtung",
@@ -4844,7 +4846,8 @@
         "apiResponseError": "Fehler in API-Antwort:",
         "mountInfoError": "Fehler beim Abrufen der Montierungsinformationen:",
         "invalidAltInput": "Ungültige Alt-Eingabe.",
-        "invalidAzInput": "Ungültige Az-Eingabe."
+        "invalidAzInput": "Ungültige Az-Eingabe.",
+        "invalidInputTitle": "Ungültige Eingabe"
       },
       "visibleStars": "Sichtbare Sternsuche",
       "alt": "Alt:",
@@ -5263,7 +5266,8 @@
       "cannotSwitchConnected": "Profil kann nicht gewechselt werden, solange Geräte verbunden sind",
       "cannotRemoveActive": "Aktives Profil kann nicht entfernt werden",
       "cannotRemoveLast": "Letztes Profil kann nicht entfernt werden",
-      "noProfiles": "Keine Profile vorhanden"
+      "noProfiles": "Keine Profile vorhanden",
+      "switchFailed": "Profil konnte nicht gewechselt werden"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Binning konnte nicht geändert werden",
       "readout": "Auslesemodus konnte nicht geändert werden",
       "switchSet": "Schalter konnte nicht gesetzt werden"
+    },
+    "about": {
+      "devChannelUnlocked": "Dev-Update-Kanal freigeschaltet.",
+      "devChannelHidden": "Dev-Update-Kanal ausgeblendet.",
+      "specialEnabled": "Augenschmerz-Markierer aktiviert.",
+      "specialDisabled": "Vorbei der Spaß."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "Speichern",
         "invalidCoordinates": "Rektaszension oder Deklination konnten nicht gelesen werden.",
         "invalidRotation": "Die Drehung muss eine Zahl sein.",
-        "saveFailed": "Die Änderung konnte nicht gespeichert werden."
+        "saveFailed": "Die Änderung konnte nicht gespeichert werden.",
+        "framingFailed": "Framing-Assistent konnte nicht geöffnet werden: {error}"
       }
     },
     "webcam": {

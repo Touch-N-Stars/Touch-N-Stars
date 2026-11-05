@@ -321,6 +321,7 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import ApiKeyModal from '../components/ApiKeyModal.vue';
 import TargetModal from '../components/TargetModal.vue';
 import TargetListCard from '../components/TargetListCard.vue';
@@ -335,6 +336,7 @@ import { useRouter } from 'vue-router';
 import { useFramingStore } from '@/store/framingStore';
 
 const { t: $t } = useI18n();
+const toastStore = useToastStore();
 const showApiKeyModal = ref(false);
 const showImportModal = ref(false);
 const isInitializing = ref(true);
@@ -496,9 +498,13 @@ const handleListImported = (list) => {
 };
 
 const removeImportedList = async (list) => {
-  if (!window.confirm($t('plugins.telescopius.import.removeConfirm', { name: list.name }))) {
-    return;
-  }
+  const confirmed = await toastStore.showConfirmation(
+    $t('common.confirm'),
+    $t('plugins.telescopius.import.removeConfirm', { name: list.name }),
+    $t('common.delete'),
+    $t('common.cancel')
+  );
+  if (!confirmed) return;
 
   console.log(`[Telescopius] Removing imported list ${list.id}`);
   expandedLists.value = expandedLists.value.filter((id) => id !== list.id);
@@ -553,7 +559,11 @@ const saveTargetEdit = async (changes) => {
       ] ?? selectedTarget.value;
   } catch (error) {
     console.error('[Telescopius] Failed to save target edits:', error);
-    alert($t('plugins.telescopius.edit.saveFailed'));
+    toastStore.showToast({
+      type: 'error',
+      title: $t('plugins.telescopius.title'),
+      message: $t('plugins.telescopius.edit.saveFailed'),
+    });
   }
 };
 
@@ -585,7 +595,11 @@ const setFramingForTarget = (target) => {
     closeTargetModal();
   } catch (error) {
     console.error('[Telescopius] Failed to set framing:', error);
-    alert(`Failed to go to framing: ${error.message}`);
+    toastStore.showToast({
+      type: 'error',
+      title: $t('plugins.telescopius.title'),
+      message: $t('plugins.telescopius.edit.framingFailed', { error: error.message }),
+    });
   }
 };
 

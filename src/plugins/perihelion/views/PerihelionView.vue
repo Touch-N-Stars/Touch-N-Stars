@@ -1640,6 +1640,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, h } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
@@ -1776,6 +1777,7 @@ const AsteroidIcon = {
 };
 
 const { t } = useI18n();
+const toastStore = useToastStore();
 const store = apiStore();
 const framingStore = useFramingStore();
 const perihelionStore = usePerihelionStore();
@@ -1955,8 +1957,17 @@ async function onExportAsteroids() {
   });
 }
 
+function confirmClear(messageKey) {
+  return toastStore.showConfirmation(
+    t('common.confirm'),
+    t(messageKey),
+    t('common.delete'),
+    t('common.cancel')
+  );
+}
+
 async function onClearComets() {
-  if (!window.confirm(t('perihelion.settings.confirmClearComets'))) return;
+  if (!(await confirmClear('perihelion.settings.confirmClearComets'))) return;
   const result = await clearComets();
   dataSettingsStatus.value = result.message;
   if (result.ok) {
@@ -1969,7 +1980,7 @@ async function onClearComets() {
 }
 
 async function onClearAsteroids() {
-  if (!window.confirm(t('perihelion.settings.confirmClearAsteroids'))) return;
+  if (!(await confirmClear('perihelion.settings.confirmClearAsteroids'))) return;
   const result = await clearAsteroids();
   dataSettingsStatus.value = result.message;
   if (result.ok) {
@@ -1979,7 +1990,7 @@ async function onClearAsteroids() {
 }
 
 async function onClearCobs() {
-  if (!window.confirm(t('perihelion.settings.confirmClearCobs'))) return;
+  if (!(await confirmClear('perihelion.settings.confirmClearCobs'))) return;
   const result = await clearCobs();
   dataSettingsStatus.value = result.message;
   if (result.ok) {

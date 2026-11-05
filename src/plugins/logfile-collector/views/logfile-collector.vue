@@ -445,6 +445,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import Modal from '@/components/helpers/Modal.vue';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import { useLogStore } from '@/store/logStore';
 import { useLogCollectorStore } from '../store/logCollectorStore';
 import { generateTimestampLogToken } from '../utils/tokenGenerator';
@@ -499,6 +500,7 @@ const activeAction = ref(null); // 'upload' | 'save' | null - which action is cu
 const activeArchiveId = ref(null);
 const activeArchiveAction = ref(null); // 'upload' | 'download' | null - per-row spinner
 const { t } = useI18n();
+const toastStore = useToastStore();
 
 const diagnosticsApi = createDiagnosticsApi({
   getIp,
@@ -1144,8 +1146,14 @@ function removeSubmission(id) {
   }
 }
 
-function clearAllSubmissions() {
-  if (confirm(t('plugins.logfileCollector.confirmClearAll'))) {
+async function clearAllSubmissions() {
+  const confirmed = await toastStore.showConfirmation(
+    t('common.confirm'),
+    t('plugins.logfileCollector.confirmClearAll'),
+    t('common.delete'),
+    t('common.cancel')
+  );
+  if (confirmed) {
     logCollectorStore.clearAllSubmissions();
     resultMsg.value = t('plugins.logfileCollector.result.allSubmissionsCleared');
     resultOk.value = true;
