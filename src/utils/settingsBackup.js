@@ -13,6 +13,7 @@ export const BACKUP_SCHEMA_VERSION = 1;
 // or replay state belonging to the machine the backup came from.
 const DENY_EXACT = new Set([
   'tns.pins.network-transition.v1', // in-flight PINS network handover
+  'tns.sessionNotifications.cursor.v1', // last rig event this device has seen
   'hardwareDb_installId', // per-device submission identity, must stay unique
   'hardwareDb_submissions', // report tokens tied to that identity - denied with it
   'hardwareDb_knowledgeCache', // cache, refetched on demand

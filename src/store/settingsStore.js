@@ -192,6 +192,14 @@ export const useSettingsStore = defineStore('settings', {
     keepAwakeEnabled: false,
     // Android: bind app process to Wi-Fi when the instance IP is in its subnet
     wifiBindingEnabled: true,
+    // Rig notifications while the app is in the background (#1492), served by the
+    // pinsdaemon notify relay. `background`: Android foreground service that posts
+    // phone notifications. `catchUp`: toast summary of missed events on resume.
+    sessionNotifications: {
+      background: false,
+      catchUp: true,
+      minSeverity: 'warning',
+    },
     _sharedRigSettingsReady: false,
     _sharedRigSettingsLoading: false,
     _sharedRigSettingsSnapshot: '',
@@ -765,6 +773,10 @@ export const useSettingsStore = defineStore('settings', {
 
     setWifiBindingEnabled(value) {
       this.wifiBindingEnabled = value;
+    },
+
+    setSessionNotifications(update) {
+      this.sessionNotifications = { ...this.sessionNotifications, ...update };
     },
 
     setHistoryTimeRange(startIndex, endIndex) {

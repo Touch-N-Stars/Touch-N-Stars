@@ -17,6 +17,9 @@ public class MainActivity extends BridgeActivity {
         // internet-less Wi-Fi (PINS hotspot) while mobile data is active
         registerPlugin(WifiNetworkBinderPlugin.class);
 
+        // Phone notifications from the rig while the app is in the background (#1492)
+        registerPlugin(SessionMonitorPlugin.class);
+
         super.onCreate(savedInstanceState);
     }
 

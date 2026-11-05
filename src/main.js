@@ -17,6 +17,7 @@ import { setupErrorHandler, setupUnhandledRejectionLogging } from '@/utils/error
 import { ensureConsolePatched } from '@/utils/consoleCapture';
 import { markAppReady } from '@/services/updateService';
 import { initWifiBinding } from '@/services/wifiBindingService';
+import { initSessionNotifications } from '@/services/sessionNotificationService';
 import { installGlobalHaptics } from '@/services/globalHaptics';
 import { useHaptics } from '@/composables/useHaptics';
 import {
@@ -127,6 +128,8 @@ installGlobalHaptics(document, useHaptics());
 
   // Keep the backend reachable on internet-less Wi-Fi (PINS hotspot) on Android
   initWifiBinding();
+  // Rig notifications while the app is in the background (#1492)
+  initSessionNotifications();
   initializeRigSharedSettingsSync(settingsStore);
   void initializeRigConnectionSupervisor({
     settingsStore,
