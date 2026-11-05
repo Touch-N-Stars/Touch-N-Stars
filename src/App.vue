@@ -190,7 +190,7 @@
       maxWidth="max-w-lg"
       :disableClose="true"
       :closeOnBackdropClick="false"
-      zIndex="z-[80]"
+      zIndex="z-dialog"
     >
       <template #header>
         <h2 class="text-xl font-bold text-blue-300">

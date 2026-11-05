@@ -149,6 +149,11 @@ export async function openPage(devTools, { allowedOrigin, viewport, initScript }
     exceptions,
     evaluate,
     navigate: (url) => send('Page.navigate', { url }),
+    async pressEscape() {
+      const key = { key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 };
+      await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', ...key });
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', ...key });
+    },
     async waitFor(expression, description, timeoutMs = 15000) {
       const deadline = Date.now() + timeoutMs;
       while (Date.now() < deadline) {

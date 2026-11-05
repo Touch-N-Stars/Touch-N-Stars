@@ -12,7 +12,7 @@
     @close="closeModal"
     :closeOnBackdropClick="false"
     max-width="max-w-md"
-    z-index="z-50"
+    z-index="z-modal-raised"
   >
     <template #header>
       <h2 class="text-xl font-bold text-white">Plate Solve</h2>

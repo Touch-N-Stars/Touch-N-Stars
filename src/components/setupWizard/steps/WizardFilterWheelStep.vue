@@ -102,9 +102,9 @@
     </div>
 
     <!-- Filter wheel settings modal (same split as connectEquipment.vue).
-         zIndex must clear the wizard overlay (z-70) but stay under the PINS
-         upgrade overlay (z-[80]) - all of these teleport to body. -->
-    <Modal :show="showFilterSettings" zIndex="z-[75]" @close="showFilterSettings = false">
+         zIndex must clear the wizard overlay (z-overlay) but stay under the PINS
+         upgrade overlay (z-dialog) - all of these teleport to body. -->
+    <Modal :show="showFilterSettings" zIndex="z-overlay-modal" @close="showFilterSettings = false">
       <template #header>
         <h2 class="text-2xl font-semibold">{{ $t('components.filterwheel.indi.settings') }}</h2>
       </template>

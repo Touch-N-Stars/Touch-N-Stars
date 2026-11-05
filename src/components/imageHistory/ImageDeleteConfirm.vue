@@ -1,6 +1,6 @@
 <template>
   <!-- z-[80]: must sit above the full-size image modal (z-50), which can trigger it. -->
-  <Modal :show="pending.length > 0" max-width="max-w-md" z-index="z-[80]" @close="emit('cancel')">
+  <Modal :show="pending.length > 0" max-width="max-w-md" z-index="z-dialog" @close="emit('cancel')">
     <template #header>
       <h2 class="text-xl font-bold text-red-400">
         {{

@@ -329,7 +329,7 @@ const props = defineProps({
     default: false,
   },
   // Callers rendering this from inside a full-screen overlay (the PINS setup
-  // wizard sits at z-70) must raise this, or the dialog opens behind them.
+  // wizard sits at z-overlay) must raise this, or the dialog opens behind them.
   zIndex: {
     type: String,
     default: 'z-50',

@@ -98,8 +98,12 @@
       </p>
     </div>
 
-    <!-- zIndex must clear the wizard overlay (z-70), as in WizardCameraStep. -->
-    <Modal :show="showGuideCameraSettings" zIndex="z-[75]" @close="showGuideCameraSettings = false">
+    <!-- zIndex must clear the wizard overlay (z-overlay), as in WizardCameraStep. -->
+    <Modal
+      :show="showGuideCameraSettings"
+      zIndex="z-overlay-modal"
+      @close="showGuideCameraSettings = false"
+    >
       <template #header>
         <h2 class="text-2xl font-semibold">{{ $t('components.alpacaDirect.title') }}</h2>
       </template>

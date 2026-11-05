@@ -156,7 +156,7 @@
 
   <Modal
     :show="showDeleteConfirm"
-    zIndex="z-[75]"
+    zIndex="z-overlay-modal"
     maxWidth="max-w-md"
     @close="showDeleteConfirm = false"
   >

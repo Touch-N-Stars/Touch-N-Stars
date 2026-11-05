@@ -114,7 +114,7 @@
   <Modal
     :show="!!pending"
     maxWidth="max-w-md"
-    zIndex="z-50"
+    zIndex="z-modal-raised"
     :disableClose="true"
     :closeOnBackdropClick="false"
   >

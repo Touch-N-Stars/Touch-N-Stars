@@ -2,6 +2,7 @@
   <div>
     <!-- Trigger -->
     <button
+      data-testid="debug-console-toggle"
       @click="isModalOpen = true"
       class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md z-50"
     >
@@ -9,7 +10,7 @@
     </button>
 
     <!-- Modal using shared Modal component -->
-    <Modal :show="isModalOpen" @close="isModalOpen = false" z-index="z-50">
+    <Modal :show="isModalOpen" @close="isModalOpen = false" z-index="z-modal-raised">
       <template #header>
         <div class="flex justify-between items-center w-full">
           <h2 class="text-2xl font-bold">Debug Console</h2>
