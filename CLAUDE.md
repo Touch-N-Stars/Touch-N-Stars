@@ -94,8 +94,13 @@ Do not chase these as app-logic bugs.
 ## UI conventions
 
 Use the `tns-*` utilities from `src/assets/tailwind.css` (`tns-card`, `tns-btn-primary`,
-`tns-btn-secondary`, `tns-input`, `tns-select`, `min-h-touch`), not the legacy raw
-gray/cyan palette still present in older screens.
+`tns-btn-secondary`, `tns-input`, `tns-select`, `tns-section-title`, `tns-label`,
+`tns-field-row`, `min-h-touch`), not the legacy raw gray/cyan palette still present in older
+screens. `tns-select-compact` gives up the 48px touch height, so it is for dense rows like the
+sequence editor only.
+
+Loading and missing-device states use the helpers **`Spinner`** (`size` `sm`/`md`/`lg`, takes the
+current text color) and **`DeviceNotConnected`** (`messageKey`) from `src/components/helpers/`.
 
 Numeric fields use the helper **`NumberInputPicker`** (`src/components/helpers/`), never a raw
 `<input type="number">`: it brings the −/+ steppers, clamps to `min`/`max` and opens the touch
