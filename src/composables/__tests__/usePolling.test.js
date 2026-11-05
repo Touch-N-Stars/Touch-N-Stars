@@ -1,46 +1,23 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createRenderer, defineComponent, nextTick } from 'vue';
 import { usePolling } from '@/composables/usePolling';
 import { setAppBackgrounded } from '@/utils/appLifecycle';
+import {
+  advanceIntervals,
+  mountComposable,
+  setBackgrounded,
+} from '../../test-helpers/pollingTestEnv.js';
 
 const INTERVAL_MS = 1000;
-
-// No-op renderer: usePolling needs real mount/unmount hooks, but no DOM.
-const { createApp } = createRenderer({
-  patchProp() {},
-  insert() {},
-  remove() {},
-  createElement: () => ({}),
-  createText: () => ({}),
-  createComment: () => ({}),
-  setText() {},
-  setElementText() {},
-  parentNode: () => null,
-  nextSibling: () => null,
-});
 
 function setup(t, options) {
   t.mock.timers.enable({ apis: ['setInterval'] });
   setAppBackgrounded(false);
 
   const counter = { calls: 0 };
-  let poller;
-  const app = createApp(
-    defineComponent({
-      setup() {
-        poller = usePolling(() => counter.calls++, INTERVAL_MS, options);
-        return () => null;
-      },
-    })
+  const { result: poller, unmount } = mountComposable(() =>
+    usePolling(() => counter.calls++, INTERVAL_MS, options)
   );
-  app.mount({});
-
-  let mounted = true;
-  const unmount = () => {
-    if (mounted) app.unmount();
-    mounted = false;
-  };
   t.after(() => {
     unmount();
     setAppBackgrounded(false);
@@ -48,20 +25,7 @@ function setup(t, options) {
   return { counter, poller, unmount };
 }
 
-// One interval at a time, settling around each: a tick stays "in flight" until its await
-// resolves, and createPoller skips any tick that fires while the previous one is in flight.
-async function advance(t, intervals = 1) {
-  for (let i = 0; i < intervals; i++) {
-    await nextTick();
-    t.mock.timers.tick(INTERVAL_MS);
-    await nextTick();
-  }
-}
-
-async function setBackgrounded(value) {
-  setAppBackgrounded(value);
-  await nextTick();
-}
+const advance = (t, intervals) => advanceIntervals(t, INTERVAL_MS, intervals);
 
 test('polls immediately on mount and stops on unmount', async (t) => {
   const { counter, unmount } = setup(t);

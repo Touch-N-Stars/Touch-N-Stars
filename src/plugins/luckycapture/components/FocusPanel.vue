@@ -1,6 +1,7 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 import { luckyCaptureRequest } from '../services/luckycapture';
 import { useLuckyCaptureStore } from '../store/luckycaptureStore';
 const store = useLuckyCaptureStore();
@@ -145,6 +146,9 @@ async function perform(action) {
 }
 async function refresh() {
   if (!supported.value || closed || polling) return;
+  // Without a lease this is plain status polling. With one it also carries the heartbeat that
+  // keeps armed focus motion alive, so it has to keep running in the background.
+  if (isAppBackgrounded.value && !lease) return;
   polling = true;
   try {
     if (lease && ticks++ % 8 === 0) await call('focus/heartbeat', { leaseToken: lease });
