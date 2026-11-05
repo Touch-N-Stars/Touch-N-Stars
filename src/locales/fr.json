@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Seuil des pixels défectueux",
       "dewHeaterStrength": "Force du réchauffeur de rosée",
       "autoCoolOnConnect": "Refroidir à la connexion",
-      "autoCoolOnConnectHint": "S'applique au profil {profile} sur ce backend. Refroidit jusqu'à la température cible pendant le temps de refroidissement indiqué ci-dessus. Un refroidissement déjà actif reste inchangé.",
+      "autoCoolOnConnectInfo": "Dès que la caméra est connectée, elle refroidit jusqu'à la température cible pendant le temps de refroidissement réglé. Si cette option est choisie, l'antibuée est aussi activé.",
       "autoDewHeaterOnConnect": "Activer aussi l'antibuée",
       "autoStartTitle": "Caméra connectée",
       "autoCoolStarted": "Refroidissement à {temperature}°C.",

@@ -4701,7 +4701,7 @@
       "dew_heater_off": "결로 방지 히터 끄기",
       "dewHeaterStrength": "결로 방지 히터 세기",
       "autoCoolOnConnect": "연결 시 냉각",
-      "autoCoolOnConnectHint": "이 백엔드의 프로필 {profile}에 적용됩니다. 위에서 설정한 냉각 시간 동안 목표 온도까지 냉각합니다. 이미 켜져 있는 쿨러는 변경하지 않습니다.",
+      "autoCoolOnConnectInfo": "카메라가 연결되면 설정한 냉각 시간 동안 목표 온도까지 냉각합니다. 선택한 경우 결로 방지 히터도 켭니다.",
       "autoDewHeaterOnConnect": "결로 방지 히터도 켜기",
       "autoStartTitle": "카메라 연결됨",
       "autoCoolStarted": "{temperature}°C로 냉각 중입니다.",

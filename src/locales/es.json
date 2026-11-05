@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Umbral de píxeles defectuosos",
       "dewHeaterStrength": "Fuerza del calentador de rocío",
       "autoCoolOnConnect": "Enfriar al conectar",
-      "autoCoolOnConnectHint": "Se aplica al perfil {profile} en este backend. Enfría hasta la temperatura configurada durante el tiempo de enfriamiento indicado arriba. Un enfriamiento que ya está activo no se modifica.",
+      "autoCoolOnConnectInfo": "En cuanto se conecta la cámara, se enfría hasta la temperatura configurada durante el tiempo de enfriamiento ajustado. Si se elige, también se enciende la calefacción antivaho.",
       "autoDewHeaterOnConnect": "Encender también la calefacción antivaho",
       "autoStartTitle": "Cámara conectada",
       "autoCoolStarted": "Enfriando a {temperature}°C.",

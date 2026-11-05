@@ -4701,7 +4701,7 @@
       "dew_heater_off": "Dewheater Off",
       "dewHeaterStrength": "Dew Heater Strength",
       "autoCoolOnConnect": "Cool down on connect",
-      "autoCoolOnConnectHint": "Applies to profile {profile} on this backend. Cools to the target temperature over the cooling time above. A cooler that is already on stays as it is.",
+      "autoCoolOnConnectInfo": "As soon as the camera connects, it cools down to the target temperature over the set cooling time. If chosen, the dew heater is switched on as well.",
       "autoDewHeaterOnConnect": "Also switch on the dew heater",
       "autoStartTitle": "Camera connected",
       "autoCoolStarted": "Cooling down to {temperature}°C.",

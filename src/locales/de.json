@@ -4696,7 +4696,7 @@
       "dew_heater_off": "Tauheizer aus",
       "dewHeaterStrength": "Tauheizer-Stärke",
       "autoCoolOnConnect": "Beim Verbinden abkühlen",
-      "autoCoolOnConnectHint": "Gilt für Profil {profile} auf diesem Backend. Kühlt innerhalb der oben eingestellten Kühlzeit auf die Zieltemperatur. Eine bereits eingeschaltete Kühlung bleibt unverändert.",
+      "autoCoolOnConnectInfo": "Sobald die Kamera verbunden ist, kühlt sie innerhalb der eingestellten Kühlzeit auf die Zieltemperatur ab. Auf Wunsch wird auch der Tauheizer eingeschaltet.",
       "autoDewHeaterOnConnect": "Auch den Tauheizer einschalten",
       "autoStartTitle": "Kamera verbunden",
       "autoCoolStarted": "Kühlt auf {temperature}°C.",

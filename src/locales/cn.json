@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "坏点阈值",
       "dewHeaterStrength": "露水加热器强度",
       "autoCoolOnConnect": "连接时自动冷却",
-      "autoCoolOnConnectHint": "适用于此后端上的配置文件 {profile}。在上方设置的冷却时间内冷却至目标温度。已开启的冷却保持不变。",
+      "autoCoolOnConnectInfo": "相机连接后，会在设定的冷却时间内冷却至目标温度。如已选择，还会同时开启除露加热器。",
       "autoDewHeaterOnConnect": "同时开启除露加热器",
       "autoStartTitle": "相机已连接",
       "autoCoolStarted": "正在冷却至 {temperature}°C。",

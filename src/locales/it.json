@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Soglia pixel difettosi",
       "dewHeaterStrength": "Forza del riscaldatore di rugiada",
       "autoCoolOnConnect": "Raffredda alla connessione",
-      "autoCoolOnConnectHint": "Vale per il profilo {profile} su questo backend. Raffredda alla temperatura target nel tempo di raffreddamento indicato sopra. Un raffreddamento già acceso resta invariato.",
+      "autoCoolOnConnectInfo": "Appena la fotocamera si connette, si raffredda alla temperatura target nel tempo di raffreddamento impostato. Se scelto, si accende anche il riscaldatore rugiada.",
       "autoDewHeaterOnConnect": "Accendi anche il riscaldatore rugiada",
       "autoStartTitle": "Fotocamera connessa",
       "autoCoolStarted": "Raffreddamento a {temperature}°C.",

@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Próg martwych pikseli",
       "dewHeaterStrength": "Siła podgrzewacza rosy",
       "autoCoolOnConnect": "Schłodź po połączeniu",
-      "autoCoolOnConnectHint": "Dotyczy profilu {profile} na tym backendzie. Chłodzi do temperatury docelowej w czasie chłodzenia ustawionym powyżej. Włączone już chłodzenie pozostaje bez zmian.",
+      "autoCoolOnConnectInfo": "Gdy tylko kamera się połączy, schładza się do temperatury docelowej w ustawionym czasie chłodzenia. Jeśli wybrano, włącza się także grzałka rosy.",
       "autoDewHeaterOnConnect": "Włącz także grzałkę rosy",
       "autoStartTitle": "Kamera połączona",
       "autoCoolStarted": "Chłodzenie do {temperature}°C.",

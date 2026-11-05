@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Limite de pixels defeituosos",
       "dewHeaterStrength": "Força do aquecedor de orvalho",
       "autoCoolOnConnect": "Resfriar ao conectar",
-      "autoCoolOnConnectHint": "Aplica-se ao perfil {profile} neste backend. Resfria até a temperatura alvo durante o tempo de resfriamento indicado acima. Um resfriamento já ligado permanece inalterado.",
+      "autoCoolOnConnectInfo": "Assim que a câmera se conecta, ela resfria até a temperatura alvo durante o tempo de resfriamento definido. Se escolhido, o aquecedor de orvalho também é ligado.",
       "autoDewHeaterOnConnect": "Ligar também o aquecedor de orvalho",
       "autoStartTitle": "Câmera conectada",
       "autoCoolStarted": "Resfriando para {temperature}°C.",

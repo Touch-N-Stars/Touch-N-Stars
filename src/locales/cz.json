@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Práh vadných pixelů",
       "dewHeaterStrength": "Síla ohřívače rosy",
       "autoCoolOnConnect": "Zchladit při připojení",
-      "autoCoolOnConnectHint": "Platí pro profil {profile} na tomto backendu. Chladí na cílovou teplotu během výše nastavené doby chlazení. Již zapnuté chlazení zůstane beze změny.",
+      "autoCoolOnConnectInfo": "Jakmile se kamera připojí, zchladí se během nastavené doby chlazení na cílovou teplotu. Pokud je zvoleno, zapne se také topný pásek.",
       "autoDewHeaterOnConnect": "Zapnout také topný pásek",
       "autoStartTitle": "Kamera připojena",
       "autoCoolStarted": "Chlazení na {temperature}°C.",

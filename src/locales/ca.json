@@ -4701,7 +4701,7 @@
       "dew_heater_off": "Antirosada desactivat",
       "dewHeaterStrength": "Intensitat del calefactor antirosada",
       "autoCoolOnConnect": "Refreda en connectar",
-      "autoCoolOnConnectHint": "S'aplica al perfil {profile} en aquest backend. Refreda fins a la temperatura objectiu durant el temps de refrigeració indicat a dalt. Un refrigerador que ja està engegat no es modifica.",
+      "autoCoolOnConnectInfo": "Quan la càmera es connecta, es refreda fins a la temperatura objectiu durant el temps de refrigeració configurat. Si ho tries, també s'activa el calefactor antirosada.",
       "autoDewHeaterOnConnect": "Activa també el calefactor antirosada",
       "autoStartTitle": "Càmera connectada",
       "autoCoolStarted": "Refredant a {temperature}°C.",

@@ -4,9 +4,16 @@
     data-testid="auto-cool-on-connect"
   >
     <div class="flex items-center justify-between gap-3">
-      <span class="text-xs md:text-sm font-medium text-content">
-        {{ $t('components.camera.autoCoolOnConnect') }}
-      </span>
+      <div class="flex items-center gap-1">
+        <span class="text-xs md:text-sm font-medium text-content">
+          {{ $t('components.camera.autoCoolOnConnect') }}
+        </span>
+        <InfoModal
+          :title="$t('components.camera.autoCoolOnConnect')"
+          :message="$t('components.camera.autoCoolOnConnectInfo')"
+          size="w-4 h-4"
+        />
+      </div>
       <toggleButton
         @click="toggleAutoCool"
         :status-value="Boolean(config?.cool)"
@@ -14,11 +21,6 @@
         class="h-7 md:h-8"
       />
     </div>
-    <p class="text-xs text-content-muted">
-      {{
-        $t('components.camera.autoCoolOnConnectHint', { profile: store.profileInfo?.Name ?? '' })
-      }}
-    </p>
     <div
       v-if="config?.cool && store.cameraInfo.HasDewHeater"
       class="flex items-center justify-between gap-3"
@@ -40,6 +42,7 @@ import { computed, watch } from 'vue';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import toggleButton from '@/components/helpers/toggleButton.vue';
+import InfoModal from '@/components/helpers/infoModal.vue';
 
 const store = apiStore();
 const cameraStore = useCameraStore();

@@ -4695,7 +4695,7 @@
       "BadPixelCorrectionThreshold": "Slechte pixel drempel",
       "dewHeaterStrength": "Sterkte van de dauwverwarmer",
       "autoCoolOnConnect": "Afkoelen bij verbinden",
-      "autoCoolOnConnectHint": "Geldt voor profiel {profile} op deze backend. Koelt binnen de hierboven ingestelde koeltijd af naar de doeltemperatuur. Koeling die al aan staat, blijft ongewijzigd.",
+      "autoCoolOnConnectInfo": "Zodra de camera verbonden is, koelt deze binnen de ingestelde koeltijd af naar de doeltemperatuur. Indien gekozen wordt ook de dew heater ingeschakeld.",
       "autoDewHeaterOnConnect": "Ook de dew heater inschakelen",
       "autoStartTitle": "Camera verbonden",
       "autoCoolStarted": "Koelen naar {temperature}°C.",

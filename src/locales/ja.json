@@ -4664,7 +4664,7 @@
       "dew_heater_off": "結露防止ヒーター OFF",
       "dewHeaterStrength": "結露防止ヒーター強度",
       "autoCoolOnConnect": "接続時に冷却",
-      "autoCoolOnConnectHint": "このバックエンドのプロファイル {profile} に適用されます。上で設定した冷却時間で目標温度まで冷却します。すでにオンの冷却は変更しません。",
+      "autoCoolOnConnectInfo": "カメラが接続されると、設定した冷却時間で目標温度まで冷却します。選択している場合は、結露防止ヒーターもオンにします。",
       "autoDewHeaterOnConnect": "結露防止ヒーターもオンにする",
       "autoStartTitle": "カメラが接続されました",
       "autoCoolStarted": "{temperature}°C まで冷却しています。",
