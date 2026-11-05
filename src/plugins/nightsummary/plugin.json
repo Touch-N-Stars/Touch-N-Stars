@@ -9,6 +9,7 @@
   "isPins": false,
   "ninaPlugin": {
     "name": "NINA.Plugin.NightSummary",
+    "aliases": ["Night Summary"],
     "displayName": "Night Summary",
     "pinsPackage": "pins-plugin-nightsummary"
   }
