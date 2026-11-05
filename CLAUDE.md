@@ -120,7 +120,7 @@ callout — that one is `-webkit-user-select`. The image/link preview popup is
 app-wide on `body` in `src/assets/tailwind.css`, with `input`/`textarea`/`[contenteditable]`
 opted back into selection (without that, WebKit loses caret placement and paste inside form
 fields). Output the user wants to mark and copy carries Tailwind's plain `select-text`
-(`PinsTerminalOutput.vue`, `JsonPreviewModal.vue`, `Phd2LogView.vue`) — an element's own
+(`PinsTerminalOutput.vue`, `Phd2LogView.vue`) — an element's own
 `user-select` beats the inherited `body` value, so no custom utility is needed. Components normally do **not** need to
 set either property themselves any more; the older per-component blocks in `moveAxis.vue`,
 `NavigationComp.vue`, `ZoomableImage.vue` etc. are redundant leftovers.
