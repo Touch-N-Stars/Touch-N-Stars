@@ -28,6 +28,15 @@ npm run test:run
 needs Node ≥ 22.15 (`registerHooks`) — below that every test file fails at module
 instantiation, which looks alarming but says nothing about the code.
 
+`npm run test:browser` is separate because it needs Chrome and a built `dist/` (`npm run
+build:app`). The unit test loader stubs `.vue` files, so this is the only automated check that
+renders real pages: it opens every main route at phone and tablet size against the local fake
+backend in `scripts/lib/fakeBackend.mjs` and fails on uncaught exceptions, raw i18n keys, empty
+pages and horizontal overflow. No device is connected there, so it covers the disconnected state
+only; pages that need more get fixtures through `BACKEND_ROUTES` in `scripts/browser-test.mjs`.
+A pass proves nothing about real N.I.N.A., PINS or hardware. Screenshots land in
+`.cache/browser-tests/` for before/after comparisons of UI work.
+
 ## PINS is NINA, forked to Linux
 
 Not a separate headless backend. The same NINA runs there, so **everything the NINA

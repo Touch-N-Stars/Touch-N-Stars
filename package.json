@@ -27,6 +27,7 @@
     "format:check": "prettier --check \"src/**/*.{js,vue,json,css,md}\"",
     "test:run": "node --import ./scripts/test-loader.mjs --test \"src/**/__tests__/*.test.js\"",
     "test:coverage": "c8 --reporter=text --reporter=lcov node --import ./scripts/test-loader.mjs --test \"src/**/__tests__/*.test.js\"",
+    "test:browser": "node scripts/browser-test.mjs",
     "ionic:build": "npm run lint:eslint  && node scripts/generate-whats-new.js && npm run build:native",
     "ionic:serve": "npm run serve",
     "ios:run": "node scripts/run-ios.mjs",
