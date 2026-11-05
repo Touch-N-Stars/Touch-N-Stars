@@ -53,3 +53,6 @@ jobs:
 
       - name: Preview smoke test
         run: npm run preview:smoke
+
+      - name: Browser tests
+        run: npm run test:browser
