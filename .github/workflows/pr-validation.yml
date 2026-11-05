@@ -45,6 +45,9 @@ jobs:
       - name: Formatting check
         run: npm run format:check
 
+      - name: Translations check
+        run: npm run i18n:check
+
       - name: UI ratchet
         run: npm run ratchet:check
 
