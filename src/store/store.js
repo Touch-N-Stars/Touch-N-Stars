@@ -237,6 +237,9 @@ export const apiStore = defineStore('store', {
     pageReturnTime: null,
     isRedirecting: false,
     backendReachableTimeoutId: null,
+    // Set by the first event history of a session: only later histories can show a connect
+    // that really happened, the first one just lists what was connected already.
+    eventHistoryBaselineKnown: false,
     isMountConnected: false,
     isCameraConnected: false,
     isGuideCameraConnected: false,
@@ -667,6 +670,7 @@ export const apiStore = defineStore('store', {
       this.apiPort = null;
       this.attemptsToConnect = 0;
       this.lastEventHistoryFetch = 0;
+      this.eventHistoryBaselineKnown = false;
       this.lastProfileFetch = 0;
       this.isPINS = false;
       this.isPinsCheckDone = false;
@@ -1426,6 +1430,8 @@ export const apiStore = defineStore('store', {
         SAFETY: 'isSafetyConnected',
       };
 
+      const cameraWasConnected = this.isCameraConnected;
+
       // Initialize all devices as disconnected
       Object.values(deviceMap).forEach((key) => {
         this[key] = false;
@@ -1460,6 +1466,11 @@ export const apiStore = defineStore('store', {
         this[stateKey] = isConnected;
         //console.log(`Device ${deviceName}: ${event.Event} -> ${isConnected}`);
       });
+
+      if (this.eventHistoryBaselineKnown && !cameraWasConnected && this.isCameraConnected) {
+        useCameraStore().armAutoStart();
+      }
+      this.eventHistoryBaselineKnown = true;
 
       // Clear data for disconnected devices. Must go through setInfoIfChanged:
       // a direct write would leave the cache holding the pre-disconnect payload,
