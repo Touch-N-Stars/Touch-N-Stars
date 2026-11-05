@@ -1,7 +1,7 @@
 <template>
   <Modal
     :show="showMessageBox"
-    :zIndex="'z-[90]'"
+    :zIndex="'z-messagebox'"
     :disableClose="true"
     :closeOnBackdropClick="false"
   >

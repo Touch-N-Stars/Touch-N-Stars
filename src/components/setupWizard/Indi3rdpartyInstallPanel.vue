@@ -16,21 +16,21 @@
 
     <p v-if="installStatus" class="text-sm text-content-muted break-words">{{ installStatus }}</p>
 
-    <!-- zIndex must clear the wizard overlay (z-70) but stay under the PINS
-         upgrade overlay (z-[80]) - all of these teleport to body. -->
+    <!-- zIndex must clear the wizard overlay (z-overlay) but stay under the PINS
+         upgrade overlay (z-dialog) - all of these teleport to body. -->
     <PinsIndiInstallConfirmModal
       :show="showInstallModal"
       :selected-item="selectedDriver"
       :installing="isInstalling"
       :error-message="installError"
-      zIndex="z-[75]"
+      zIndex="z-overlay-modal"
       @close="closeInstallModal"
       @confirm="installDriver"
     />
 
     <PinsIndiRegistryEditModal
       :show="showRegistryModal"
-      zIndex="z-[75]"
+      zIndex="z-overlay-modal"
       @close="showRegistryModal = false"
     />
   </div>

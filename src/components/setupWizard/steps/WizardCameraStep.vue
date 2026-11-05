@@ -75,9 +75,9 @@
     <CameraSensorSettings />
 
     <!-- Camera settings modal: unlike the mount there is no serial/INDI form here.
-         zIndex must clear the wizard overlay (z-70) but stay under the PINS
-         upgrade overlay (z-[80]) - all of these teleport to body. -->
-    <Modal :show="showCameraSettings" zIndex="z-[75]" @close="showCameraSettings = false">
+         zIndex must clear the wizard overlay (z-overlay) but stay under the PINS
+         upgrade overlay (z-dialog) - all of these teleport to body. -->
+    <Modal :show="showCameraSettings" zIndex="z-overlay-modal" @close="showCameraSettings = false">
       <template #header>
         <h2 class="text-2xl font-semibold">{{ $t('components.alpacaDirect.title') }}</h2>
       </template>

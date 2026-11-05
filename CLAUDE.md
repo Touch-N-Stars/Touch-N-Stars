@@ -102,6 +102,11 @@ sequence editor only.
 Loading and missing-device states use the helpers **`Spinner`** (`size` `sm`/`md`/`lg`, takes the
 current text color) and **`DeviceNotConnected`** (`messageKey`) from `src/components/helpers/`.
 
+Overlays pick a layer from the `zIndex` scale in `tailwind.config.cjs` (`z-modal`, `z-dialog`, ...),
+not a raw number. `Modal` closes on Escape exactly when a backdrop tap would, so
+`closeOnBackdropClick="false"` also guards the keyboard. Keep that on any dialog whose close does
+more than hide it: closing the plate solving `DialogModal` cancels the solve and stops the slew.
+
 Numeric fields use the helper **`NumberInputPicker`** (`src/components/helpers/`), never a raw
 `<input type="number">`: it brings the −/+ steppers, clamps to `min`/`max` and opens the touch
 picker when `touchOptimized` is on. Traps: `-1` counts as "use default" whenever `min >= -1`,

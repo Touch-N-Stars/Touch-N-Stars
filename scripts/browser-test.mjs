@@ -77,6 +77,20 @@ const READ_PAGE_STATE = `({
   viewportWidth: window.innerWidth,
 })`;
 
+const DIALOG = `document.querySelector('[role="dialog"]')`;
+const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-toggle"]')`;
+const SET_DEBUG_CONSOLE = (visible) =>
+  `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value
+    .settings.showDebugConsole = ${visible}`;
+const READ_DIALOG = `({
+  ariaModal: ${DIALOG}.getAttribute('aria-modal'),
+  name: document.getElementById(${DIALOG}.getAttribute('aria-labelledby'))?.innerText.trim(),
+})`;
+// Stands in for the overlays that are no Modal, like the number picker or the screen lock.
+const COVER_SCREEN = `document.body.insertAdjacentHTML('beforeend',
+  '<div id="cover" class="fixed inset-0 z-lock"></div>')`;
+const SETTLE = 'new Promise((resolve) => setTimeout(resolve, 200))';
+
 function initScript(whatsNewVersion) {
   return `
     localStorage.setItem('setupCompleted', 'true');
@@ -110,6 +124,37 @@ async function visitRoutes(page, viewportName) {
   return failures;
 }
 
+// The debug console is the one Modal that opens without a connected device.
+async function checkModal(page, viewportName) {
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} modal: ${problem}`);
+    if (!passed) failures.push(`${viewportName} modal: ${problem}`);
+  };
+
+  await page.evaluate(SET_DEBUG_CONSOLE(true));
+  await page.waitFor(`!!${CONSOLE_TOGGLE}`, 'the debug console button');
+  await page.evaluate(`${CONSOLE_TOGGLE}.click()`);
+  await page.waitFor(`!!${DIALOG}`, 'the modal to open');
+
+  const dialog = await page.evaluate(READ_DIALOG);
+  expect(dialog.ariaModal === 'true', 'is marked as aria-modal');
+  expect(Boolean(dialog.name), 'is named by its header');
+
+  await page.evaluate(COVER_SCREEN);
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!!${DIALOG}`), 'stays open under another overlay');
+
+  await page.evaluate(`document.getElementById('cover').remove()`);
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!${DIALOG}`), 'closes on Escape');
+
+  await page.evaluate(SET_DEBUG_CONSOLE(false));
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -132,6 +177,7 @@ try {
     await page.navigate(`${backend.origin}/equipment`);
     await page.waitFor(`!!document.querySelector('.stage-frame')`, 'the app to connect');
     failures.push(...(await visitRoutes(page, viewportName)));
+    failures.push(...(await checkModal(page, viewportName)));
     await page.close();
   }
 } finally {

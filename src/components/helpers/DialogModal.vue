@@ -1,7 +1,7 @@
 <template>
   <Modal
     :show="showDialog"
-    :zIndex="'z-[80]'"
+    :zIndex="'z-dialog'"
     @close="handleClose"
     @restore="toggleMinimize"
     :closeOnBackdropClick="false"

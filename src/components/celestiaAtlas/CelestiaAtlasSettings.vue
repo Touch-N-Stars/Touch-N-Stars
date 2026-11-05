@@ -10,7 +10,7 @@
     <Cog6ToothIcon class="h-6 w-6" />
   </button>
 
-  <Modal :show="settingsVisible" @close="settingsVisible = false" zIndex="z-40">
+  <Modal :show="settingsVisible" @close="settingsVisible = false" zIndex="z-modal">
     <template #header>
       <h3>{{ $t('components.celestiaAtlas.settings.title') }}</h3>
     </template>

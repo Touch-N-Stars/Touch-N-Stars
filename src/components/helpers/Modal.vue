@@ -3,6 +3,7 @@
     <!-- Overlay (nur wenn nicht minimiert) -->
     <div
       v-if="show && !isMinimized"
+      ref="overlayElement"
       :class="[
         'fixed inset-0 flex items-center justify-center text-gray-200 p-2 bg-black/30',
         zIndexClass,
@@ -10,6 +11,10 @@
       @click="handleBackdropClick"
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        :aria-label="title || undefined"
+        :aria-labelledby="title ? undefined : headerId"
         :class="[
           'p-6 bg-gradient-to-br from-gray-950 bg-gray-800 rounded-lg shadow-lg w-full relative',
           props.maxWidth,
@@ -18,12 +23,16 @@
       >
         <!-- Header (relative + z-index so it paints above fixed descendants like SubNav) -->
         <div class="relative z-20 mb-4 border-b pb-2 flex justify-between items-center">
-          <slot name="header">
-            <h2 class="text-xl font-bold">Standard Titel</h2>
-          </slot>
+          <!-- contents: names the dialog without changing the flex layout of the slot -->
+          <div :id="headerId" class="contents">
+            <slot name="header">
+              <h2 class="text-xl font-bold">Standard Titel</h2>
+            </slot>
+          </div>
           <button
             v-if="!disableClose"
             @click="handleClose"
+            :aria-label="$t('common.close')"
             class="w-8 h-8 text-gray-400 hover:text-gray-600"
           >
             <XMarkIcon />
@@ -68,6 +77,7 @@
           <button
             v-if="!disableClose"
             @click.stop="handleClose"
+            :aria-label="$t('common.close')"
             class="w-6 h-6 shrink-0 flex items-center justify-center text-gray-400 hover:text-gray-200"
           >
             <XMarkIcon class="w-4 h-4" />
@@ -78,14 +88,16 @@
   </teleport>
 </template>
 <script setup>
-import { computed, ref, watch, onBeforeUnmount } from 'vue';
+import { computed, ref, watch, onBeforeUnmount, useId } from 'vue';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
+import { useModalEscape } from '@/composables/useModalEscape';
 
 const props = defineProps({
   show: Boolean,
+  // A layer from the zIndex scale in tailwind.config.cjs.
   zIndex: {
     type: String,
-    default: 'z-40',
+    default: 'z-modal',
   },
   disableClose: {
     type: Boolean,
@@ -124,6 +136,16 @@ function handleBackdropClick(event) {
     handleClose();
   }
 }
+
+const headerId = useId();
+const overlayElement = ref(null);
+
+// Escape is a backdrop tap on the keyboard, never more: closeOnBackdropClick="false" guards
+// dialogs whose close also ends a running operation, like the DialogModal for plate solving,
+// autofocus and the meridian flip.
+useModalEscape(overlayElement, () => {
+  if (props.closeOnBackdropClick) handleClose();
+});
 
 // Draggable minimized chip (same drag mechanics as ModalTransparent.vue's quick-access
 // panels), but always dropped back at the default spot above the status bar whenever the

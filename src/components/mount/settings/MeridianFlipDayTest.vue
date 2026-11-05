@@ -1,7 +1,7 @@
 <template>
   <Modal
     :show="true"
-    zIndex="z-50"
+    zIndex="z-modal-raised"
     maxWidth="max-w-lg"
     :disableClose="isActive"
     :closeOnBackdropClick="false"

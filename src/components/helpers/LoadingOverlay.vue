@@ -24,10 +24,10 @@ defineProps({
     type: String,
     default: '',
   },
-  // Above Modal.vue (z-40), below the setup wizard (z-70).
+  // Above modals, below the setup wizard.
   zIndex: {
     type: String,
-    default: 'z-[60]',
+    default: 'z-loading',
   },
 });
 </script>
