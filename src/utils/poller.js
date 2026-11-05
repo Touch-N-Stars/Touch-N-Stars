@@ -4,7 +4,8 @@
  * @param {() => Promise<void>|void} fetchFn - function to invoke on every tick
  * @param {number} intervalMs - polling interval in milliseconds
  * @param {{ immediate?: boolean }} [options] - immediate: run fetchFn once before starting the interval
- * @returns {{ start: () => void, stop: () => void, isRunning: () => boolean }}
+ * @returns {{ start: (startOptions?: { immediate?: boolean }) => void, stop: () => void, isRunning: () => boolean }}
+ *   start() can override `immediate` for a single start
  */
 export function createPoller(fetchFn, intervalMs, options = {}) {
   let intervalId = null;
@@ -21,9 +22,9 @@ export function createPoller(fetchFn, intervalMs, options = {}) {
   };
 
   return {
-    start() {
+    start({ immediate = options.immediate } = {}) {
       if (intervalId) return;
-      if (options.immediate) tick();
+      if (immediate) tick();
       intervalId = setInterval(tick, intervalMs);
     },
     stop() {
