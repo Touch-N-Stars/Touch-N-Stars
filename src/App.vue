@@ -618,7 +618,8 @@ useBackgroundAwarePolling(
   checkPinsPowerStatus,
   PINS_POWER_STATUS_INTERVAL_MS,
   pinsPowerMonitoringActive,
-  { immediate: true }
+  // At a 5 minute interval an under-voltage warning must not wait a full cycle after resume
+  { immediate: true, immediateOnResume: true }
 );
 // Reconnecting after being backgrounded routinely takes up to ~12s on its own (Android
 // radio/network wake-up after Doze, see websocketChannelSocket reconnect timing) - that
