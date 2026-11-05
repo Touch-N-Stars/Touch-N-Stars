@@ -5,21 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [App6.5.0 - beta 23] - 2026-11-05
 
 ### Added
 
 - Hocus Focus: New AutoFocus option to reverse the initial direction, for focusers that have to approach focus from the other side.
-- LuckyCapture (plugin, PINS): The save folder is now chosen with a folder browser, the same as the image save path in the settings, and can be reset to the default with one tap. If the chosen folder is not available when a recording or snapshot starts, for example because the USB drive was removed, is no longer mounted or is read-only, LuckyCapture saves to the image folder of the active profile instead (by default /home/pi/Documents/N.I.N.A) and shows a notice. The automatic fallback needs LuckyCapture 0.2.7.
-- LuckyCapture (plugin, PINS): Quick ROI presets set a centred capture area from 320 x 240 to 1024 x 768 in one step. On most planetary cameras the frame rate depends on the ROI height, so this is the quickest way to raise it.
-- Native Guider (PINS): Texts in all languages for the new setting "Rotator turns the guide camera" (No / Yes / "Yes, reversed") and its alert "Rotator turned the guide camera". With Yes, the guider waits while the rotator turns, then continues with a new guide star and the kept calibration turned with the rotator. In English, German and Spanish the "Reuse calibration" help now says to calibrate again after turning the guide camera by hand. This needs a PINS version with the setting.
+- LuckyCapture (plugin, PINS): The save folder is now chosen with a folder browser, the same as the image save path in the settings, and can be reset to the default with one tap. If the chosen folder is not available when a recording or snapshot starts, for example because the USB drive was removed, is no longer mounted or is read-only, LuckyCapture saves to the image folder of the active profile instead (by default /home/pi/Documents/N.I.N.A) and shows a notice. The automatic fallback needs LuckyCapture 0.2.7. Developed by @acocalypso.
+- LuckyCapture (plugin, PINS): Quick ROI presets set a centred capture area from 320 x 240 to 1024 x 768 in one step. On most planetary cameras the frame rate depends on the ROI height, so this is the quickest way to raise it. Developed by @acocalypso.
+- Native Guider (PINS): Texts in all languages for the new setting "Rotator turns the guide camera" (No / Yes / "Yes, reversed") and its alert "Rotator turned the guide camera". With Yes, the guider waits while the rotator turns, then continues with a new guide star and the kept calibration turned with the rotator. In English, German and Spanish the "Reuse calibration" help now says to calibrate again after turning the guide camera by hand. This needs a PINS version with the setting. Developed by @aduffeck.
 - Camera: New option in the cooler settings to cool down automatically when the camera connects, and to switch on the dew heater along with it. It is set separately for each profile on each backend. Opening the app with a camera that is already connected does not start anything, and a cooler that is already on is left alone.
 
 ### Changed
 
-- LuckyCapture (plugin, PINS): With 16-bit output selected, a hint explains that 8-bit roughly doubles the frame rate on USB 2.0 cameras such as the SV905C, with a button to switch.
-- LuckyCapture (plugin, PINS): Recordings buffer far more frames in memory while the disk catches up, so slow USB sticks drop fewer frames. This needs LuckyCapture 0.2.7.
-
+- LuckyCapture (plugin, PINS): With 16-bit output selected, a hint explains that 8-bit roughly doubles the frame rate on USB 2.0 cameras such as the SV905C, with a button to switch. Developed by @acocalypso.
+- LuckyCapture (plugin, PINS): Recordings buffer far more frames in memory while the disk catches up, so slow USB sticks drop fewer frames. This needs LuckyCapture 0.2.7. Developed by @acocalypso.
 - Flat assistant: Flat runs now run inside the Touch'N'Stars plugin on NINA and PINS. A multi-filter run moves on to the next filter and takes its darks while the app is closed or the phone is locked, and the result is shown once the app is opened again. When the darks need the telescope covered, the run waits for the confirmation, also if the app was closed in the meantime.
 - Flat assistant (NINA): Multi mode, darks after the flats, the live ADU meter and the flat target name now work on NINA as well. This needs the updated Touch'N'Stars plugin; with an older plugin the flat assistant behaves as before.
 - Flat assistant: A run stopped because a sequence started ends with a warning that names the reason.
@@ -35,11 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sequence, guiding, autofocus, binning and readout mode: A start or change the backend refuses now shows the reason instead of failing silently.
 - Message boxes: A box answered on another device or closed by the backend now disappears on every device.
 - PINS devices: A refused dew heater power level springs back on the slider.
-- LuckyCapture (plugin, PINS): The live preview refreshed only about once per second although the camera delivered more. It now updates with every preview frame, about eight times per second. This needs LuckyCapture 0.2.7.
-- LuckyCapture (plugin, PINS): SVBony cameras such as the SV905C occasionally deliver no first frame when a preview or recording starts. LuckyCapture now restarts the video stream automatically, which recovers about half of these starts; otherwise the message says that no first frame arrived, and starting again usually works. This needs LuckyCapture 0.2.7.
+- LuckyCapture (plugin, PINS): The live preview refreshed only about once per second although the camera delivered more. It now updates with every preview frame, about eight times per second. This needs LuckyCapture 0.2.7. Developed by @acocalypso.
+- LuckyCapture (plugin, PINS): SVBony cameras such as the SV905C occasionally deliver no first frame when a preview or recording starts. LuckyCapture now restarts the video stream automatically, which recovers about half of these starts; otherwise the message says that no first frame arrived, and starting again usually works. This needs LuckyCapture 0.2.7. Developed by @acocalypso.
 - Connection: Several pages (focuser, filter wheel, Wi-Fi, time sync and some plugins) kept asking the backend for status while the app was in the background. They now pause, which saves battery and keeps the connection free for the reconnect when you return. A focus session approved in LuckyCapture stays active in the background.
 - Camera: When a captured image never arrives, the app now says so instead of silently giving up.
 - Dialogs: Questions before deleting something and error messages in the slew form, the profile selection and several plugins now appear in the app's own style instead of as browser pop-ups, which also keeps the app running while they are open.
+- Atlas: Updated to a newer Celestia Atlas version with corrected catalogue cross-references, for example Sh2-25 now belongs to M8. Developed by @acocalypso.
+- Perihelion (plugin): The path in the framing view now uses the same projection as the Atlas, so it stays aligned with the sky background. Developed by @acocalypso.
 
 ## [App6.5.0 - beta 22] - 2026-11-01
 
