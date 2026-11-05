@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Mount: Closing the plate solving dialog no longer stops tracking when the mount is not slewing, and on PINS the app no longer keeps showing a dialog that ended while it was away.
+- Night Summary (plugin, NINA): On Windows, the plugin page reported Night Summary as missing even though it was installed and running in NINA. It is now recognised again and the page opens as usual.
 
 ## [App6.5.0 - beta 23] - 2026-11-05
 
