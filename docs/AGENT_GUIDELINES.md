@@ -308,9 +308,12 @@ Any new `setInterval`/recursive `setTimeout` poller (store action or component-o
 Required rules:
 
 - Do not add a raw `setInterval`/`setTimeout` poller. Use `createPoller` from `src/utils/poller.js` (guards against overlapping ticks) as the base primitive.
+- If the poller simply runs while its component is mounted, use `usePolling(fetchFn, intervalMs)` from `src/composables/usePolling.js`. It starts on mount, stops on unmount, and pauses on background. Pass `autoStart: false` to control it through the returned `start()`/`stop()`.
 - If the poller's active/inactive state is driven by a prop, `v-if`, or a computed condition (e.g. "only while this modal is open"), wrap it with `useBackgroundAwarePolling(fetchFn, intervalMs, activeRef)` from `src/utils/appLifecycle.js` instead of managing `onMounted`/`onUnmounted`/`watch` by hand. This automatically pauses on background and resumes on foreground without needing to be wired into `App.vue`.
+- Both helpers resume on the regular interval, without an immediate tick: `App.vue` aborts stale requests shortly after the foreground switch, and an aborted request resolves as an empty response that callers would write into their state. Set `immediateOnResume: true` (`useBackgroundAwarePolling` only) only if waiting a full interval after resume is worse and `fetchFn` tolerates that empty response.
 - If the poller is store-owned and view-scoped (started/stopped by a specific view's `onMounted`/`onUnmounted`, e.g. `guiderStore`, `pinsDeviceStore`, `sequenceV2Store`, `pinsAllSkyStore`), keep using `createPoller` directly, but register a `was<X>PollingBeforePause` flag and explicit `stop()`/`start()` calls in `App.vue`'s `pauseApp()`/`performResume()`, and add a `stop()` call to `store.js`'s `clearAllStates()`.
 - Never add a poller that only stops in `onUnmounted`/`onBeforeUnmount` without also reacting to background/foreground — that was the recurring bug class this rule exists to prevent.
+- Before pausing an existing timer, check whether it is also a heartbeat or a safety watchdog. Those must keep running for as long as the OS allows, and the code must say why. Examples: `FocusPanel.vue` in the LuckyCapture plugin keeps polling while it holds a lease because the poll carries the heartbeat for armed focus motion; `MeridianFlipDayTest.vue` keeps polling because the poll halts the mount when the flip is overdue.
 
 ## PINS And pinsdaemon Rules
 
@@ -528,7 +531,7 @@ Every reviewer must specifically check:
 - Did this preserve real-session safety?
 - Did this preserve N.I.N.A. Advanced API and Touch-N-Stars plugin server contracts?
 - Did this preserve connection handshake, dynamic port handling, polling, WebSocket, and SignalR behavior?
-- Does every new/changed poller pause on app background and resume on foreground (via `createPoller` + `useBackgroundAwarePolling`, or an explicit `App.vue` pause/resume hook)?
+- Does every new/changed poller pause on app background and resume on foreground (via `usePolling`, `useBackgroundAwarePolling`, or `createPoller` with an explicit `App.vue` pause/resume hook), unless it is a heartbeat or safety watchdog?
 - Did this preserve standard N.I.N.A., PINS/headless, and mock-mode semantics as relevant?
 - Did this avoid real hardware or system mutation in default tests?
 - Did this preserve mobile-first UX and Capacitor Android/iOS behavior?
