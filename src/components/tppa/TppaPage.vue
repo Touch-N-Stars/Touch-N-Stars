@@ -312,7 +312,7 @@ import { useImagetStore } from '@/store/imageStore';
 import TppaLastStatus from '@/components/tppa/TppaLastStatus.vue';
 import ActuellErrorModal from '@/components/tppa/ActuellErrorModal.vue';
 import ButtonPause from '@/components/tppa/ButtonPause.vue';
-import ErrorCircle from '@/components/tppa//ErrorCircle.vue';
+import ErrorCircle from '@/components/tppa/ErrorCircle.vue';
 import TppaSettings from './TppaSettings.vue';
 import PinsTppaSettings from './PinsTppaSettings.vue';
 import Modal from '../helpers/Modal.vue';
