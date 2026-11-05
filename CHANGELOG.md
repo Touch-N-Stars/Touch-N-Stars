@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS devices: A refused dew heater power level springs back on the slider.
 - LuckyCapture (plugin, PINS): The live preview refreshed only about once per second although the camera delivered more. It now updates with every preview frame, about eight times per second. This needs LuckyCapture 0.2.7.
 - LuckyCapture (plugin, PINS): SVBony cameras such as the SV905C occasionally deliver no first frame when a preview or recording starts. LuckyCapture now restarts the video stream automatically, which recovers about half of these starts; otherwise the message says that no first frame arrived, and starting again usually works. This needs LuckyCapture 0.2.7.
+- Connection: Several pages (focuser, filter wheel, Wi-Fi, time sync and some plugins) kept asking the backend for status while the app was in the background. They now pause, which saves battery and keeps the connection free for the reconnect when you return. A focus session approved in LuckyCapture stays active in the background.
 
 ## [App6.5.0 - beta 22] - 2026-11-01
 
