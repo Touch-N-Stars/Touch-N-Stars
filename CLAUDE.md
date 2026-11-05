@@ -21,10 +21,13 @@ npm run lint
 npm run format:check
 npm run build
 npm run i18n:check
+npm run ratchet:check
 npm run test:run
 ```
 
-`npm run ci:verify` chains all of them plus `typecheck`. `typecheck` can OOM, and `test:run`
+`npm run ci:verify` chains all of them plus `typecheck`. `ratchet:check` fails when legacy color
+classes or raw `type="number"` inputs exceed `scripts/ui-ratchet-baseline.json`; after a migration
+lower the limits with `npm run ratchet:update`, never raise them to get a PR through. `typecheck` can OOM, and `test:run`
 needs Node ≥ 22.15 (`registerHooks`) — below that every test file fails at module
 instantiation, which looks alarming but says nothing about the code.
 
