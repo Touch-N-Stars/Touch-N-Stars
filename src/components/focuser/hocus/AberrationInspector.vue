@@ -157,6 +157,7 @@ import EccentricityPlot from './EccentricityPlot.vue';
 import FwhmContourPlot from './FwhmContourPlot.vue';
 import HfCollapsibleCard from './fields/HfCollapsibleCard.vue';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 const props = defineProps({
   autoFocusChartActive: Boolean,
@@ -558,7 +559,9 @@ function startPolling() {
   const generation = pollGeneration;
   const poll = async () => {
     try {
-      if (props.autoFocusChartActive && !props.autoFocusCompleted) await refreshChart();
+      if (!isAppBackgrounded.value && props.autoFocusChartActive && !props.autoFocusCompleted) {
+        await refreshChart();
+      }
     } catch (err) {
       console.error('[AberrationInspector] Error polling focus points:', err);
     }

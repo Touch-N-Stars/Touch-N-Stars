@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 // Object URLs are only safe to revoke once no <img> still points at them.
 const revokeObjectUrl = (url) => {
@@ -191,7 +192,8 @@ export const useWebcamStore = defineStore('webcamStore', {
 
       if (this.autoRefresh && this.refreshInterval > 0) {
         this.autoRefreshTimer = setTimeout(() => {
-          this.refreshSnapshot();
+          if (isAppBackgrounded.value) this.scheduleNextRefresh();
+          else this.refreshSnapshot();
         }, this.refreshInterval);
       }
     },

@@ -259,6 +259,7 @@ import { useMeridianFlipTestStore } from '@/store/meridianFlipTestStore';
 import { useMountStore } from '@/store/mountStore';
 import { useToastStore } from '@/store/toastStore';
 import { isBackendRefusal } from '@/utils/backendErrors';
+import { useBackgroundAwarePolling } from '@/utils/appLifecycle';
 import { getSunEquatorial } from '@/utils/astronomy';
 import { createPoller } from '@/utils/poller';
 import {
@@ -516,21 +517,20 @@ refreshSequenceBusy();
 // Tracking on, so the time to the meridian counts down while the user drives.
 // NINA refreshes the mount state itself only every 2 s. Reading it more often while
 // positioning picks up each refresh at once instead of up to one global poll later.
-const positionPoller = createPoller(async () => {
-  try {
-    const response = await apiService.mountAction('info');
-    if (response?.Success && response.Response) {
-      store.setInfoIfChanged('mountInfo', response.Response);
+useBackgroundAwarePolling(
+  async () => {
+    try {
+      const response = await apiService.mountAction('info');
+      if (response?.Success && response.Response) {
+        store.setInfoIfChanged('mountInfo', response.Response);
+      }
+    } catch (error) {
+      console.error('Error reading the mount while positioning:', error);
     }
-  } catch (error) {
-    console.error('Error reading the mount while positioning:', error);
-  }
-}, 500);
-
-watch(step, (now) => {
-  if (now === 'positioning') positionPoller.start();
-  else positionPoller.stop();
-});
+  },
+  500,
+  computed(() => step.value === 'positioning')
+);
 
 async function startPositioning() {
   await refreshSequenceBusy();
@@ -620,6 +620,8 @@ function markFlipStarted() {
 
 // NINA keeps the flip trigger RUNNING through slew, settling and recentering; the flip is
 // over once it leaves RUNNING. Stopping the sequence earlier would cut NINA's routine off.
+// Deliberately not paused in the background: this poll also halts the mount when the flip
+// is overdue, so it has to keep running for as long as the OS lets it.
 const poller = createPoller(async () => {
   if (step.value !== 'running') return;
   try {
@@ -706,6 +708,5 @@ if (resumeRun) {
 
 onBeforeUnmount(() => {
   poller.stop();
-  positionPoller.stop();
 });
 </script>

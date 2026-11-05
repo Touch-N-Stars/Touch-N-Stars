@@ -107,6 +107,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 import InfoModal from '@/components/helpers/infoModal.vue';
 
 const { t } = useI18n();
@@ -203,7 +204,8 @@ function scheduleJobPoll(delayMs = 1500) {
   }
 
   pollTimer = setTimeout(() => {
-    pollJobStatus();
+    if (isAppBackgrounded.value) scheduleJobPoll();
+    else pollJobStatus();
   }, delayMs);
 }
 

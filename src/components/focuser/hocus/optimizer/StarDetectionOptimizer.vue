@@ -145,6 +145,7 @@
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiService from '@/services/apiService';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 import Modal from '@/components/helpers/Modal.vue';
 import OptimizerSourceStep from './OptimizerSourceStep.vue';
 import OptimizerProgressStep from './OptimizerProgressStep.vue';
@@ -264,9 +265,11 @@ function startPolling() {
   const generation = pollGeneration;
   const poll = async () => {
     try {
-      const next = await api.getState();
-      if (generation !== pollGeneration) return;
-      applyState(next);
+      if (!isAppBackgrounded.value) {
+        const next = await api.getState();
+        if (generation !== pollGeneration) return;
+        applyState(next);
+      }
     } catch (err) {
       if (generation === pollGeneration) requestError.value = err.message;
     }
