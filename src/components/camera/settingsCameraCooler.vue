@@ -156,6 +156,8 @@
             {{ isWarmingActive ? $t('general.cancel') : $t('components.camera.warm_up') }}
           </button>
         </div>
+
+        <settingsAutoCoolOnConnect v-if="!compact" class="mt-4" />
       </div>
     </div>
     <div v-if="store.cameraInfo.HasDewHeater" class="w-full">
@@ -200,6 +202,7 @@ import apiService from '@/services/apiService';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import pinsSetDewHeaterStrength from './settingsPins/pinsSetDewHeaterStrength.vue';
+import settingsAutoCoolOnConnect from './settingsAutoCoolOnConnect.vue';
 
 // Compact (status bar panel): target temperature, the two buttons and the dew heater.
 const { compact } = defineProps({
