@@ -6418,10 +6418,6 @@
         "yes": "是",
         "no": "否",
         "notSet": "未设置",
-        "noConfigurableParameters": "此操作没有可配置的参数。",
-        "actionId": "操作 ID",
-        "category": "类别",
-        "parameters": "参数",
         "unparkTelescope": {
           "name": "解除望远镜停靠",
           "description": "解除望远镜赤道仪停靠"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Turn the camera dew heater on or off"
         }
       },
-      "actionLibrary": {
-        "title": "操作库",
-        "description": "点击向容器添加操作",
-        "startActions": "🚀 开始操作",
-        "targetActions": "🎯 目标操作",
-        "endActions": "🏁 结束操作"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "序列 JSON 导出",
-          "previewDescription": "预览并将您的序列下载为 JSON 文件",
-          "totalActions": "总操作数",
-          "enabled": "已启用",
-          "categories": "类别",
-          "estimatedDuration": "预计持续时间",
-          "filenamePrompt": "输入文件名...",
-          "copyJson": "复制 JSON",
-          "copied": "已复制！",
-          "downloadJson": "下载 JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

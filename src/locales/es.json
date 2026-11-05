@@ -6418,10 +6418,6 @@
         "yes": "Sí",
         "no": "No",
         "notSet": "No establecido",
-        "noConfigurableParameters": "Esta acción no tiene parámetros configurables.",
-        "actionId": "ID de acción",
-        "category": "Categoría",
-        "parameters": "Parámetros",
         "unparkTelescope": {
           "name": "Desaparcar telescopio",
           "description": "Desaparcar la montura del telescopio"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Encender o apagar el calentador de rocío de la cámara"
         }
       },
-      "actionLibrary": {
-        "title": "Biblioteca de acción",
-        "description": "Haga clic para agregar acciones a contenedores",
-        "startActions": "🚀 Iniciar acciones",
-        "targetActions": "🎯 Acciones objetivo",
-        "endActions": "🏁 Acciones finales"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Exportar secuencia JSON",
-          "previewDescription": "Vista previa y descargue su secuencia como un archivo JSON",
-          "totalActions": "Total de acciones",
-          "enabled": "Activado",
-          "categories": "Categorías",
-          "estimatedDuration": "Duración estimada",
-          "filenamePrompt": "Ingrese el nombre de archivo ...",
-          "copyJson": "Copiar JSON",
-          "copied": "¡Copiado!",
-          "downloadJson": "Descargar json"
-        },
         "howToUse": {}
       },
       "targetSearch": {

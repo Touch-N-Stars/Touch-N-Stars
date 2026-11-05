@@ -6529,10 +6529,6 @@
         "yes": "예",
         "no": "아니요",
         "notSet": "설정 안 됨",
-        "noConfigurableParameters": "이 동작에는 설정 가능한 매개변수가 없습니다.",
-        "actionId": "동작 ID",
-        "category": "카테고리",
-        "parameters": "매개변수",
         "unparkTelescope": {
           "name": "망원경 파킹 해제",
           "description": "망원경 마운트 파킹을 해제합니다"
@@ -6618,28 +6614,9 @@
           "description": "망원경 마운트 파킹"
         }
       },
-      "actionLibrary": {
-        "title": "액션 라이브러리",
-        "description": "클릭하여 컨테이너에 액션 추가",
-        "startActions": "🚀 시작 액션",
-        "targetActions": "🎯 타깃 액션",
-        "endActions": "🏁 종료 액션"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "시퀀스 JSON 내보내기",
-          "previewDescription": "시퀀스를 JSON 파일로 미리보기 및 다운로드",
-          "totalActions": "전체 액션",
-          "enabled": "활성화됨",
-          "categories": "카테고리",
-          "estimatedDuration": "예상 소요 시간",
-          "filenamePrompt": "파일명 입력...",
-          "copyJson": "JSON 복사",
-          "copied": "복사됨!",
-          "downloadJson": "JSON 다운로드"
-        },
         "howToUse": {}
       },
       "targetSearch": {

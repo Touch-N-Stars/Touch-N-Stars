@@ -6418,10 +6418,6 @@
         "yes": "Tak",
         "no": "Nie",
         "notSet": "Nie ustawiono",
-        "noConfigurableParameters": "Ta akcja nie ma konfigurowalnych parametrów.",
-        "actionId": "ID akcji",
-        "category": "Kategoria",
-        "parameters": "Parametry",
         "unparkTelescope": {
           "name": "Odparkuj teleskop",
           "description": "Odparkuj montaż teleskopu"
@@ -6507,28 +6503,9 @@
           "onOffTooltip": "Włącz lub wyłącz podgrzewacz rosy w aparacie"
         }
       },
-      "actionLibrary": {
-        "title": "Biblioteka akcji",
-        "description": "Kliknij, aby dodać akcje do kontenerów",
-        "startActions": "🚀 Akcje startowe",
-        "targetActions": "🎯 Akcje celu",
-        "endActions": "🏁 Akcje końcowe"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Eksport JSON sekwencji",
-          "previewDescription": "Podgląd i pobierz swoją sekwencję jako plik JSON",
-          "totalActions": "Łączna liczba akcji",
-          "enabled": "Włączone",
-          "categories": "Kategorie",
-          "estimatedDuration": "Szac. czas trwania",
-          "filenamePrompt": "Wprowadź nazwę pliku...",
-          "copyJson": "Kopiuj JSON",
-          "copied": "Skopiowano!",
-          "downloadJson": "Pobierz JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {

@@ -6534,10 +6534,6 @@
         "yes": "Ja",
         "no": "Nein",
         "notSet": "Nicht gesetzt",
-        "noConfigurableParameters": "Diese Aktion hat keine konfigurierbaren Parameter.",
-        "actionId": "Aktions-ID",
-        "category": "Kategorie",
-        "parameters": "Parameter",
         "unparkTelescope": {
           "name": "Teleskop entparken",
           "description": "Das Teleskop-Mount entparken"
@@ -6623,28 +6619,9 @@
           "description": "Das Teleskop-Mount parken"
         }
       },
-      "actionLibrary": {
-        "title": "Aktions-Bibliothek",
-        "description": "Klicken Sie, um Aktionen zu Containern hinzuzufügen",
-        "startActions": "🚀 Start-Aktionen",
-        "targetActions": "🎯 Ziel-Aktionen",
-        "endActions": "🏁 End-Aktionen"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Sequenz JSON Export",
-          "previewDescription": "Vorschau und Download Ihrer Sequenz als JSON-Datei",
-          "totalActions": "Gesamtaktionen",
-          "enabled": "Aktiviert",
-          "categories": "Kategorien",
-          "estimatedDuration": "Geschätzte Dauer",
-          "filenamePrompt": "Dateiname eingeben...",
-          "copyJson": "JSON Kopieren",
-          "copied": "Kopiert!",
-          "downloadJson": "JSON Herunterladen"
-        },
         "howToUse": {}
       },
       "targetSearch": {

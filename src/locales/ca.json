@@ -6620,10 +6620,6 @@
         "yes": "Sí",
         "no": "No",
         "notSet": "No establert",
-        "noConfigurableParameters": "Aquesta acció no té paràmetres configurables.",
-        "actionId": "ID de l'acció",
-        "category": "Categoria",
-        "parameters": "Paràmetres",
         "unparkTelescope": {
           "name": "Desaparca el telescopi",
           "description": "Desaparca la muntura del telescopi"
@@ -6709,28 +6705,9 @@
           "description": "Aparca la muntura del telescopi"
         }
       },
-      "actionLibrary": {
-        "title": "Biblioteca d'accions",
-        "description": "Fes clic per afegir accions als contenidors",
-        "startActions": "🚀 Accions d'inici",
-        "targetActions": "🎯 Accions d'objectiu",
-        "endActions": "🏁 Accions de fi"
-      },
       "exportModal": {
         "buttons": {},
         "messages": {},
-        "jsonPreview": {
-          "sequenceJsonExport": "Exportació JSON de la seqüència",
-          "previewDescription": "Previsualitza i descarrega la teva seqüència com a fitxer JSON",
-          "totalActions": "Accions totals",
-          "enabled": "Activades",
-          "categories": "Categories",
-          "estimatedDuration": "Durada estimada",
-          "filenamePrompt": "Introdueix el nom del fitxer...",
-          "copyJson": "Copia el JSON",
-          "copied": "Copiat!",
-          "downloadJson": "Descarrega el JSON"
-        },
         "howToUse": {}
       },
       "targetSearch": {
