@@ -217,6 +217,27 @@
   }
 }
 
+/* Compact select for dense rows such as the sequence editor. It gives up the 48px touch
+   height, so keep it out of regular forms. Width and margin stay at the call site. */
+@utility tns-select-compact {
+  @apply tns-select min-h-8 px-2 py-1 text-xs;
+}
+
+/* Heading of a section inside a card or page */
+@utility tns-section-title {
+  @apply text-base font-bold text-accent;
+}
+
+/* Field label, on its own line or inside tns-field-row */
+@utility tns-label {
+  @apply text-xs text-content-muted;
+}
+
+/* Row with a label on the left and its control on the right */
+@utility tns-field-row {
+  @apply flex items-center justify-between gap-3;
+}
+
 /* Sequence editor field row. A nested sequence item has as little as ~140px of usable
    width, where a label plus a fixed-width control cannot share one line -- the control
    overflows the card and gets clipped. Below the threshold the row stacks and the control
