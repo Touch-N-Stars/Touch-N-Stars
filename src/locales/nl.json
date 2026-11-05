@@ -4706,7 +4706,9 @@
       "tab_camera": "Camera",
       "tab_cooler": "Koeling",
       "tab_filter": "Filter",
-      "tab_snapshot": "Opslaan en oplossen"
+      "tab_snapshot": "Opslaan en oplossen",
+      "imageTimeoutTitle": "Geen afbeelding ontvangen",
+      "imageTimeout": "De afbeelding kwam niet op tijd aan."
     },
     "tppa": {
       "title": "Driepuntspolaire uitlijning",
@@ -4803,7 +4805,8 @@
         "apiResponseError": "Fout in API antwoord:",
         "mountInfoError": "Fout bij ophalen monteringsinformatie:",
         "invalidAltInput": "Ongeldige alt input.",
-        "invalidAzInput": "Ongeldige az input."
+        "invalidAzInput": "Ongeldige az input.",
+        "invalidInputTitle": "Ongeldige invoer"
       },
       "visibleStars": "Zichtbare Ster zoeken",
       "alt": "Alt:",
@@ -5222,7 +5225,8 @@
       "cannotSwitchConnected": "Kan profiel niet wisselen terwijl apparaten verbonden zijn",
       "cannotRemoveActive": "Kan het actieve profiel niet verwijderen",
       "cannotRemoveLast": "Kan het laatste profiel niet verwijderen",
-      "noProfiles": "Geen profielen beschikbaar"
+      "noProfiles": "Geen profielen beschikbaar",
+      "switchFailed": "Kan niet van profiel wisselen"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Binning kon niet worden gewijzigd",
       "readout": "Uitleesmodus kon niet worden gewijzigd",
       "switchSet": "Schakelaar kon niet worden ingesteld"
+    },
+    "about": {
+      "devChannelUnlocked": "Dev Update Kanaal ontgrendeld.",
+      "devChannelHidden": "Dev Update Kanaal verborgen.",
+      "specialEnabled": "Oogpijn-markeerder ingeschakeld.",
+      "specialDisabled": "De lol is voorbij."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "Opslaan",
         "invalidCoordinates": "De rechte klimming of declinatie kon niet worden gelezen.",
         "invalidRotation": "De rotatie moet een getal zijn.",
-        "saveFailed": "De wijziging kon niet worden opgeslagen."
+        "saveFailed": "De wijziging kon niet worden opgeslagen.",
+        "framingFailed": "Kan Framing-assistent niet openen: {error}"
       }
     },
     "webcam": {

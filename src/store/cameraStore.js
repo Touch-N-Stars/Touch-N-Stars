@@ -638,19 +638,11 @@ export const useCameraStore = defineStore('cameraStore', () => {
           await wait(1000);
         }
 
-        try {
-          console.log('[cameraStore] Image successfully loaded');
-        } catch (error) {
-          console.error('[cameraStore] Image loading failed:', error.message);
-          if (!isAbort.value) {
-            alert('Image was not provided in time');
-          }
-        } finally {
-          // Clear timeout
-          if (loadingTimeout.value) {
-            clearTimeout(loadingTimeout.value);
-            loadingTimeout.value = null;
-          }
+        // The loop returns as soon as the image is there, so reaching this means it never came.
+        if (!isAbort.value) reportImageTimeout();
+        if (loadingTimeout.value) {
+          clearTimeout(loadingTimeout.value);
+          loadingTimeout.value = null;
         }
       }
     } catch (error) {
@@ -674,6 +666,16 @@ export const useCameraStore = defineStore('cameraStore', () => {
    * Returns false when the wait ended without an image: aborted or hard limit reached.
    */
   // Ends a loop as well: the next capture would most likely fail for the same reason.
+  function reportImageTimeout() {
+    console.error('[cameraStore] No image arrived for the capture');
+    const { t } = i18n.global;
+    useToastStore().showToast({
+      type: 'error',
+      title: t('components.camera.imageTimeoutTitle'),
+      message: t('components.camera.imageTimeout'),
+    });
+  }
+
   function reportCaptureFailure(result) {
     console.error('[cameraStore] Capture failed:', result.Error);
     isLooping.value = false;
@@ -691,9 +693,9 @@ export const useCameraStore = defineStore('cameraStore', () => {
       if (isAbort.value) return false;
       const elapsed = Date.now() - startedAt;
       if (elapsed > exposureMs + CAPTURE_HARD_LIMIT_MS) {
-        console.error('[cameraStore] No image arrived for the capture, giving up the wait');
         // A loop would only start the next capture into the same silence.
         isLooping.value = false;
+        reportImageTimeout();
         return false;
       }
 

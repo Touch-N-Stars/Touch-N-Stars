@@ -4706,7 +4706,9 @@
       "tab_camera": "Kamera",
       "tab_cooler": "Chlazení",
       "tab_filter": "Filtr",
-      "tab_snapshot": "Uložit a vyřešit"
+      "tab_snapshot": "Uložit a vyřešit",
+      "imageTimeoutTitle": "Nebyl přijat žádný snímek",
+      "imageTimeout": "Snímek nedorazil včas."
     },
     "tppa": {
       "title": "Tříbodové Polární Zarovnání",
@@ -4803,7 +4805,8 @@
         "apiResponseError": "Chyba v odpovědi API:",
         "mountInfoError": "Chyba při získávání informací o montáži:",
         "invalidAltInput": "Neplatný vstup alt.",
-        "invalidAzInput": "Neplatný vstup az."
+        "invalidAzInput": "Neplatný vstup az.",
+        "invalidInputTitle": "Neplatný vstup"
       },
       "visibleStars": "Hledání Viditelných Hvězd",
       "alt": "Alt:",
@@ -5222,7 +5225,8 @@
       "cannotSwitchConnected": "Nelze přepnout profil, pokud jsou zařízení připojena",
       "cannotRemoveActive": "Aktivní profil nelze odebrat",
       "cannotRemoveLast": "Nelze odstranit poslední profil",
-      "noProfiles": "Nejsou k dispozici žádné profily"
+      "noProfiles": "Nejsou k dispozici žádné profily",
+      "switchFailed": "Profil se nepodařilo přepnout"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Binning nelze změnit",
       "readout": "Režim vyčítání nelze změnit",
       "switchSet": "Spínač nelze nastavit"
+    },
+    "about": {
+      "devChannelUnlocked": "Vývojářský aktualizační kanál odemčen.",
+      "devChannelHidden": "Vývojářský aktualizační kanál skryt.",
+      "specialEnabled": "Značkovač bolesti očí zapnut.",
+      "specialDisabled": "Konec legrace."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "Uložit",
         "invalidCoordinates": "Rektascenzi nebo deklinaci se nepodařilo přečíst.",
         "invalidRotation": "Rotace musí být číslo.",
-        "saveFailed": "Změnu se nepodařilo uložit."
+        "saveFailed": "Změnu se nepodařilo uložit.",
+        "framingFailed": "Framing Asistenta se nepodařilo otevřít: {error}"
       }
     },
     "webcam": {

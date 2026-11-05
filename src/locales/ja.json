@@ -4715,7 +4715,9 @@
       "tab_camera": "カメラ",
       "tab_cooler": "冷却",
       "tab_filter": "フィルター",
-      "tab_snapshot": "保存 & ソルブ"
+      "tab_snapshot": "保存 & ソルブ",
+      "imageTimeoutTitle": "画像を受信できませんでした",
+      "imageTimeout": "画像が時間内に届きませんでした。"
     },
     "tppa": {
       "title": "3点極軸合わせ (TPPA)",
@@ -4812,7 +4814,8 @@
         "apiResponseError": "APIレスポンスエラー:",
         "mountInfoError": "架台情報の取得エラー:",
         "invalidAltInput": "不正な高度入力です。",
-        "invalidAzInput": "不正な方位入力です。"
+        "invalidAzInput": "不正な方位入力です。",
+        "invalidInputTitle": "不正な入力"
       },
       "visibleStars": "表示中の星を検索",
       "alt": "高度:",
@@ -5231,7 +5234,8 @@
       "cannotSwitchConnected": "デバイスが接続中はプロファイルを切り替えられません",
       "cannotRemoveActive": "アクティブなプロファイルは削除できません",
       "cannotRemoveLast": "最後のプロファイルは削除できません",
-      "noProfiles": "利用可能なプロファイルがありません"
+      "noProfiles": "利用可能なプロファイルがありません",
+      "switchFailed": "プロファイルを切り替えられませんでした"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "ビニングを変更できませんでした",
       "readout": "読み出しモードを変更できませんでした",
       "switchSet": "スイッチを設定できませんでした"
+    },
+    "about": {
+      "devChannelUnlocked": "開発版アップデート・チャンネルのロックを解除しました。",
+      "devChannelHidden": "開発版アップデート・チャンネルを非表示にしました。",
+      "specialEnabled": "目が痛いマーカーを有効にしました。",
+      "specialDisabled": "お楽しみはここまでです。"
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "保存",
         "invalidCoordinates": "赤経または赤緯を読み取れませんでした。",
         "invalidRotation": "回転角は数値で入力してください。",
-        "saveFailed": "変更を保存できませんでした。"
+        "saveFailed": "変更を保存できませんでした。",
+        "framingFailed": "フレーミングアシスタントを開けませんでした: {error}"
       }
     },
     "webcam": {

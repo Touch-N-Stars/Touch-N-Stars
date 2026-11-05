@@ -4706,7 +4706,9 @@
       "tab_camera": "Caméra",
       "tab_cooler": "Refroidissement",
       "tab_filter": "Filtre",
-      "tab_snapshot": "Enregistrer et résoudre"
+      "tab_snapshot": "Enregistrer et résoudre",
+      "imageTimeoutTitle": "Aucune image reçue",
+      "imageTimeout": "L'image n'est pas arrivée à temps."
     },
     "tppa": {
       "title": "Alignement polaire à trois points",
@@ -4803,7 +4805,8 @@
         "apiResponseError": "Erreur dans la réponse de l'API:",
         "mountInfoError": "Erreur lors de la récupération des informations de la monture:",
         "invalidAltInput": "Entrée Alt invalide.",
-        "invalidAzInput": "Entrée Az invalide."
+        "invalidAzInput": "Entrée Az invalide.",
+        "invalidInputTitle": "Entrée invalide"
       },
       "visibleStars": "Recherche d'étoiles visibles",
       "alt": "Alt :",
@@ -5222,7 +5225,8 @@
       "cannotSwitchConnected": "Impossible de changer de profil lorsque des appareils sont connectés",
       "cannotRemoveActive": "Impossible de supprimer le profil actif",
       "cannotRemoveLast": "Impossible de supprimer le dernier profil",
-      "noProfiles": "Aucun profil disponible"
+      "noProfiles": "Aucun profil disponible",
+      "switchFailed": "Impossible de changer de profil"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Impossible de modifier le binning",
       "readout": "Impossible de modifier le mode de lecture",
       "switchSet": "Impossible de régler l'interrupteur"
+    },
+    "about": {
+      "devChannelUnlocked": "Canal de mise à jour dev déverrouillé.",
+      "devChannelHidden": "Canal de mise à jour dev masqué.",
+      "specialEnabled": "Marqueur qui pique les yeux activé.",
+      "specialDisabled": "Fini de rire."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "Sauvegarder",
         "invalidCoordinates": "L'ascension droite ou la déclinaison n'a pas pu être lue.",
         "invalidRotation": "La rotation doit être un nombre.",
-        "saveFailed": "La modification n'a pas pu être enregistrée."
+        "saveFailed": "La modification n'a pas pu être enregistrée.",
+        "framingFailed": "Impossible d'ouvrir l'assistant de cadrage : {error}"
       }
     },
     "webcam": {

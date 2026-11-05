@@ -316,16 +316,24 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useToastStore } from '@/store/toastStore';
 import { getPreferredUpdateChannel } from '@/services/updateService';
 
 const settingsStore = useSettingsStore();
 const store = apiStore();
+const toastStore = useToastStore();
+const { t } = useI18n();
 const emit = defineEmits(['close']);
 const count = ref(0);
 const devTapCount = ref(0);
 const currentYear = new Date().getFullYear();
+
+function showInfo(messageKey) {
+  toastStore.showToast({ type: 'info', title: t('nav.about'), message: t(messageKey) });
+}
 
 // Hidden toggle for the dev update channel: 7 taps on the version reveal the setting,
 // 3 more hide it again (and leave the dev channel, so nobody stays on it unknowingly).
@@ -333,13 +341,13 @@ function handleVersionTap() {
   devTapCount.value++;
   if (devTapCount.value === 7) {
     settingsStore.devChannelUnlocked = true;
-    alert('Dev update channel unlocked.');
+    showInfo('components.about.devChannelUnlocked');
   }
   if (devTapCount.value === 10) {
     const wasOnDevChannel = settingsStore.useDevUpdateChannel;
     settingsStore.devChannelUnlocked = false;
     settingsStore.useDevUpdateChannel = false;
-    alert('Dev update channel hidden.');
+    showInfo('components.about.devChannelHidden');
     if (wasOnDevChannel) {
       window.dispatchEvent(
         new CustomEvent('check-app-update', {
@@ -357,11 +365,11 @@ function handleVersionTap() {
 function startBad() {
   count.value++;
   if (count.value === 3) {
-    alert('Augenschmerz Markierer aktiviert.');
+    showInfo('components.about.specialEnabled');
     settingsStore.showSpecial = true;
   }
   if (count.value === 4) {
-    alert('vorbei der spaß ');
+    showInfo('components.about.specialDisabled');
     settingsStore.showSpecial = false;
   }
 }

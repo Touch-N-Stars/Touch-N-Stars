@@ -4706,7 +4706,9 @@
       "tab_camera": "Fotocamera",
       "tab_cooler": "Raffreddamento",
       "tab_filter": "Filtro",
-      "tab_snapshot": "Salva e risolvi"
+      "tab_snapshot": "Salva e risolvi",
+      "imageTimeoutTitle": "Nessuna immagine ricevuta",
+      "imageTimeout": "L'immagine non è arrivata in tempo."
     },
     "tppa": {
       "title": "Allineamento polare a tre punti",
@@ -4803,7 +4805,8 @@
         "apiResponseError": "Errore risposta API:",
         "mountInfoError": "Errore recupero informazioni montatura:",
         "invalidAltInput": "Input Alt non valido.",
-        "invalidAzInput": "Input Az non valido."
+        "invalidAzInput": "Input Az non valido.",
+        "invalidInputTitle": "Input non valido"
       },
       "visibleStars": "Ricerca stelle visibili",
       "alt": "Alt:",
@@ -5222,7 +5225,8 @@
       "cannotSwitchConnected": "Impossibile cambiare profilo mentre i dispositivi sono connessi",
       "cannotRemoveActive": "Impossibile rimuovere il profilo attivo",
       "cannotRemoveLast": "Impossibile rimuovere l'ultimo profilo",
-      "noProfiles": "Nessun profilo disponibile"
+      "noProfiles": "Nessun profilo disponibile",
+      "switchFailed": "Impossibile cambiare profilo"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "Impossibile modificare il binning",
       "readout": "Impossibile modificare la modalità di lettura",
       "switchSet": "Impossibile impostare l'interruttore"
+    },
+    "about": {
+      "devChannelUnlocked": "Canale di aggiornamento dev sbloccato.",
+      "devChannelHidden": "Canale di aggiornamento dev nascosto.",
+      "specialEnabled": "Evidenziatore pugno in un occhio attivato.",
+      "specialDisabled": "Il divertimento è finito."
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "Salva",
         "invalidCoordinates": "Non è stato possibile leggere l'ascensione retta o la declinazione.",
         "invalidRotation": "La rotazione deve essere un numero.",
-        "saveFailed": "Impossibile salvare la modifica."
+        "saveFailed": "Impossibile salvare la modifica.",
+        "framingFailed": "Impossibile aprire l'assistente inquadratura: {error}"
       }
     },
     "webcam": {

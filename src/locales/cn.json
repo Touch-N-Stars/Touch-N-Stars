@@ -4706,7 +4706,9 @@
       "tab_camera": "相机",
       "tab_cooler": "冷却",
       "tab_filter": "滤镜",
-      "tab_snapshot": "保存并解析"
+      "tab_snapshot": "保存并解析",
+      "imageTimeoutTitle": "未收到图像",
+      "imageTimeout": "图像未能及时到达。"
     },
     "tppa": {
       "title": "三点极轴对准",
@@ -4803,7 +4805,8 @@
         "apiResponseError": "API 响应错误：",
         "mountInfoError": "获取赤道仪信息时出错：",
         "invalidAltInput": "无效的高度输入。",
-        "invalidAzInput": "无效的方位角输入。"
+        "invalidAzInput": "无效的方位角输入。",
+        "invalidInputTitle": "输入无效"
       },
       "visibleStars": "可见星搜索",
       "alt": "高度：",
@@ -5222,7 +5225,8 @@
       "cannotSwitchConnected": "无法在设备连接时切换配置文件",
       "cannotRemoveActive": "无法删除活动的配置文件",
       "cannotRemoveLast": "无法删除最后一个配置文件",
-      "noProfiles": "没有可用的配置文件"
+      "noProfiles": "没有可用的配置文件",
+      "switchFailed": "无法切换配置文件"
     },
     "notifications": {
       "modal": {
@@ -5451,6 +5455,12 @@
       "binning": "无法更改像素合并",
       "readout": "无法更改读出模式",
       "switchSet": "无法设置开关"
+    },
+    "about": {
+      "devChannelUnlocked": "开发版更新通道已解锁。",
+      "devChannelHidden": "开发版更新通道已隐藏。",
+      "specialEnabled": "辣眼睛标记已启用。",
+      "specialDisabled": "好戏结束了。"
     }
   },
   "plugins": {
@@ -6294,7 +6304,8 @@
         "save": "保存",
         "invalidCoordinates": "无法读取赤经或赤纬。",
         "invalidRotation": "旋转角度必须是数字。",
-        "saveFailed": "无法保存更改。"
+        "saveFailed": "无法保存更改。",
+        "framingFailed": "无法打开取景助手：{error}"
       }
     },
     "webcam": {
