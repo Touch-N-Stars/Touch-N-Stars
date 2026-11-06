@@ -47,7 +47,10 @@
              plain justify-center centres the overflow and cuts off the *left* edge,
              which scrolling can never reach. -->
         <div
-          class="flex justify-center-safe *:min-w-0 mb-4 max-h-[60vh] overflow-y-auto scrollbar-thin"
+          :class="[
+            'flex justify-center-safe *:min-w-0 mb-4 overflow-y-auto scrollbar-thin',
+            props.bodyMaxHeight,
+          ]"
         >
           <slot name="body">
             <p>Standard-Inhalt</p>
@@ -106,6 +109,10 @@ const props = defineProps({
   maxWidth: {
     type: String,
     default: 'max-w-2xl',
+  },
+  bodyMaxHeight: {
+    type: String,
+    default: 'max-h-[60vh]',
   },
   closeOnBackdropClick: {
     type: Boolean,

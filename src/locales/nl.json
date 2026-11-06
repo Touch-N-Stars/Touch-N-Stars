@@ -18,7 +18,9 @@
     "creating": "Creëren…",
     "help": "Help",
     "expand": "Uitvouwen",
-    "collapse": "Inklappen"
+    "collapse": "Inklappen",
+    "drag": "Sleep",
+    "showImage": "Toon beeld"
   },
   "general": {
     "cancel": "Annuleer",

@@ -18,7 +18,9 @@
     "refresh": "Refresh",
     "help": "Help",
     "expand": "Expand",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "drag": "Drag",
+    "showImage": "Show image"
   },
   "general": {
     "cancel": "Cancel",

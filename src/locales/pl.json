@@ -18,7 +18,9 @@
     "creating": "Tworzenie…",
     "help": "Pomoc",
     "expand": "Rozwiń",
-    "collapse": "Zwiń"
+    "collapse": "Zwiń",
+    "drag": "Przeciągnij",
+    "showImage": "Pokaż obraz"
   },
   "general": {
     "cancel": "Anuluj",

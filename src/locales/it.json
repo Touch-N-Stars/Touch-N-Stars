@@ -18,7 +18,9 @@
     "creating": "Creazione…",
     "help": "Aiuto",
     "expand": "Espandi",
-    "collapse": "Comprimi"
+    "collapse": "Comprimi",
+    "drag": "Trascina",
+    "showImage": "Mostra immagine"
   },
   "general": {
     "cancel": "Annulla",

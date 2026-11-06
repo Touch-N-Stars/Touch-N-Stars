@@ -60,11 +60,18 @@ const PLATE_SOLVING_DIALOG = {
   AvailableCommands: ['PART_CloseButton'],
   Content: {},
 };
+const TPPA_DIALOG = {
+  Title: 'Three Point Polar Alignment',
+  ContentType: 'NINA.Plugins.PolarAlignment.TPAPAVM',
+  AvailableCommands: ['PART_CloseButton'],
+  Content: {},
+};
 
 const BACKEND_ROUTES = {
   ...Object.fromEntries(
     DEVICES.map((device) => [`/v2/api/equipment/${device}/list-devices`, () => []])
   ),
+  '/v2/api/equipment/camera/info': () => ({ Connected: true, BinningModes: [], ReadoutModes: [] }),
   '/api/dialogs/list': () => ({ Count: ninaDialogs.length, Dialogs: ninaDialogs }),
   '/api/dialogs/count': () => ninaDialogs.length,
 };
@@ -95,9 +102,8 @@ const SUBNAV_BUTTONS = `document.querySelectorAll('.subnav-button')`;
 const INFO_TOGGLE = `document.querySelector('[data-testid="info-modal-toggle"]')`;
 const DIALOG = `document.querySelector('[role="dialog"]')`;
 const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-toggle"]')`;
-const SET_DEBUG_CONSOLE = (visible) =>
-  `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value
-    .settings.showDebugConsole = ${visible}`;
+const STORES = `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value`;
+const SET_DEBUG_CONSOLE = (visible) => `${STORES}.settings.showDebugConsole = ${visible}`;
 const DIALOG_BACKDROP = `${DIALOG}.parentElement`;
 const LOG_BUTTON = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Log')`;
 const MINIMIZED_CHIP = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === ${JSON.stringify(
@@ -113,6 +119,40 @@ const READ_DIALOG = `({
 const COVER_SCREEN = `document.body.insertAdjacentHTML('beforeend',
   '<div id="cover" class="fixed inset-0 z-lock"></div>')`;
 const SETTLE = 'new Promise((resolve) => setTimeout(resolve, 200))';
+
+const CONNECT_CAMERA = (connected) => `Object.assign(${STORES}.store, {
+  isCameraConnected: ${connected},
+  cameraInfo: { Connected: ${connected}, BinningModes: [], ReadoutModes: [] },
+})`;
+const TPPA_ACTIONS = `document.querySelector('[data-testid="tppa-actions"]')`;
+const TPPA_BUTTON = (index) => `${TPPA_ACTIONS}.querySelectorAll('button')[${index}]`;
+const SET_TPPA_RUNNING = (running) => `Object.assign(${STORES}.tppaStore, {
+  isRunning: ${running},
+  showAltitudeError: "00° 12' 34''",
+  showAzimuthError: "-00° 09' 21''",
+  showTotalError: "00° 15' 42''",
+  totalErrorDeg: 0.26,
+  AzimuthErrorDeg: 0.21,
+  AltitudeErrorDEG: 0.156,
+  initialErrorLarge: true,
+  declinationSpreadLarge: true,
+  declinationSpreadArcsec: 12.5,
+  currentMessage: { message: { Response: { Status: 'Capturing image', Progress: 0.4 } } },
+})`;
+// TppaPage also runs inside the NINA dialog, so its own dialogs can open over another one.
+const DIALOGS = `document.querySelectorAll('[role="dialog"]')`;
+const LAST_DIALOG = `[...${DIALOGS}].at(-1)`;
+const READ_LAST_DIALOG = `(() => {
+  const dialog = ${LAST_DIALOG};
+  const { left, right } = dialog.getBoundingClientRect();
+  const body = dialog.querySelector('.overflow-y-auto');
+  return {
+    onTop: dialog.contains(document.elementFromPoint(innerWidth / 2, innerHeight / 2)),
+    name: document.getElementById(dialog.getAttribute('aria-labelledby'))?.innerText.trim(),
+    fitsScreen: left >= 0 && right <= innerWidth,
+    fitsDialog: body.scrollWidth <= body.clientWidth,
+  };
+})()`;
 
 function initScript(whatsNewVersion) {
   return `
@@ -289,6 +329,78 @@ async function checkNinaDialog(page, viewportName, backend) {
   return failures;
 }
 
+// The alignment needs a connected camera and fills in its readouts from the socket, which the
+// fake backend never writes to. So this sets the stores directly and covers the UI only.
+async function checkTppa(page, viewportName, backend) {
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} TPPA: ${problem}`);
+    if (!passed) failures.push(`${viewportName} TPPA: ${problem}`);
+  };
+  const openDialog = async (button, count, label) => {
+    await page.evaluate(`${button}.click()`);
+    await page.waitFor(`${DIALOGS}.length === ${count}`, `${label} to open`);
+    await page.evaluate(SETTLE);
+    const screenshotName = `tppa-${label.replaceAll(' ', '-')}.png`;
+    await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, screenshotName));
+    const dialog = await page.evaluate(READ_LAST_DIALOG);
+    expect(dialog.onTop, `${label} paints on top`);
+    expect(Boolean(dialog.name), `${label} is named by its header`);
+    expect(dialog.fitsScreen, `${label} fits the screen`);
+    expect(dialog.fitsDialog, `${label} needs no sideways scrolling`);
+  };
+  const closeDialog = async (count, label) => {
+    await page.pressEscape();
+    await page.evaluate(SETTLE);
+    expect((await page.evaluate(`${DIALOGS}.length`)) === count, `${label} closes on Escape`);
+  };
+  const checkDialogs = async (openCount, prefix) => {
+    const count = openCount + 1;
+    await page.evaluate(SET_TPPA_RUNNING(true));
+    await page.waitFor(`${TPPA_ACTIONS}.querySelectorAll('button').length === 3`, 'TPPA to run');
+    await openDialog(TPPA_BUTTON(1), count, `${prefix}error readout`);
+    await closeDialog(openCount, `${prefix}error readout`);
+    await openDialog(TPPA_BUTTON(2), count, `${prefix}error circle`);
+    expect(
+      await page.evaluate(`${LAST_DIALOG}.innerText.includes('Capturing image')`),
+      `${prefix}error circle shows the status`
+    );
+    await closeDialog(openCount, `${prefix}error circle`);
+
+    await page.evaluate(SET_TPPA_RUNNING(false));
+    await page.waitFor(`${TPPA_ACTIONS}.querySelectorAll('button').length === 1`, 'TPPA to stop');
+    await openDialog(TPPA_BUTTON(0), count, `${prefix}settings`);
+    await closeDialog(openCount, `${prefix}settings`);
+  };
+
+  await openRoute(page, '/mount');
+  await page.evaluate(CONNECT_CAMERA(true));
+  await page.evaluate(`${STORES}.store.mount.currentTab = 'showTppa'`);
+  await page.waitFor(`!!${TPPA_ACTIONS}`, 'the TPPA page');
+  await page.evaluate(SET_TPPA_RUNNING(true));
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/mount TPPA', 'mount-tppa')));
+  await checkDialogs(0, '');
+
+  await page.evaluate(`${STORES}.store.isPINS = true`);
+  await openDialog(TPPA_BUTTON(0), 1, 'PINS settings');
+  await closeDialog(0, 'PINS settings');
+  await page.evaluate(`${STORES}.store.isPINS = false`);
+
+  // Over the NINA dialog these must come out on top, and closing them must not reach NINA.
+  await openRoute(page, '/equipment');
+  ninaDialogs = [TPPA_DIALOG];
+  await page.waitFor(`!!${TPPA_ACTIONS}`, 'the NINA dialog with the TPPA page');
+  await checkDialogs(1, 'nested ');
+  expect(ninaActions(backend).length === 0, 'sends nothing to NINA from the nested dialogs');
+
+  ninaDialogs = [];
+  await page.waitFor(`!${DIALOG}`, 'the NINA dialog to go away');
+  await page.evaluate(CONNECT_CAMERA(false));
+  await page.evaluate(`${STORES}.store.mount.currentTab = 'showMount'`);
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -315,6 +427,7 @@ try {
     failures.push(...(await checkInfoModal(page, viewportName)));
     failures.push(...(await checkModal(page, viewportName)));
     failures.push(...(await checkNinaDialog(page, viewportName, backend)));
+    failures.push(...(await checkTppa(page, viewportName, backend)));
     await page.close();
   }
 } finally {

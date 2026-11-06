@@ -18,7 +18,9 @@
     "refresh": "Actualitza",
     "help": "Ajuda",
     "expand": "Expandeix",
-    "collapse": "Replega"
+    "collapse": "Replega",
+    "drag": "Arrossega",
+    "showImage": "Mostra la imatge"
   },
   "general": {
     "cancel": "Cancel·la",

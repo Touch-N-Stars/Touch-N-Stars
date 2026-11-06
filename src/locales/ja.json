@@ -18,7 +18,9 @@
     "refresh": "更新",
     "help": "ヘルプ",
     "expand": "展開",
-    "collapse": "折りたたむ"
+    "collapse": "折りたたむ",
+    "drag": "ドラッグ",
+    "showImage": "画像を表示"
   },
   "general": {
     "cancel": "キャンセル",

@@ -18,7 +18,9 @@
     "refresh": "새로고침",
     "help": "도움말",
     "expand": "펼치기",
-    "collapse": "접기"
+    "collapse": "접기",
+    "drag": "드래그",
+    "showImage": "이미지 표시"
   },
   "general": {
     "cancel": "취소",

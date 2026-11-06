@@ -18,7 +18,9 @@
     "creating": "Vytváření…",
     "help": "Pomoc",
     "expand": "Rozbalit",
-    "collapse": "Sbalit"
+    "collapse": "Sbalit",
+    "drag": "Přetáhnout",
+    "showImage": "Zobrazit snímek"
   },
   "general": {
     "cancel": "Zrušit",
