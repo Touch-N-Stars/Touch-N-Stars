@@ -144,35 +144,6 @@
       </div>
     </div>
 
-    <!-- Logs Modal -->
-    <div
-      v-if="showLogsModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-    >
-      <div
-        class="bg-gray-900 rounded-lg p-4 sm:p-6 w-full sm:max-w-4xl h-full sm:h-auto sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0 scrollbar-hide"
-      >
-        <button
-          @click="showLogsModal = false"
-          class="fixed sm:absolute top-2 right-2 sm:top-4 sm:right-4 p-2 text-gray-400 hover:text-white bg-gray-900 rounded-full"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
     <!-- Tutorial Modal -->
     <TutorialModal v-if="showTutorial" :steps="tutorialSteps" @close="closeTutorial" />
     <!-- First-run setup wizard (cancellable) -->
@@ -577,7 +548,6 @@ const cameraStore = useCameraStore();
 const dialogStore = useDialogStore();
 const messageboxStore = useMessageboxStore();
 const imageStore = useImagetStore();
-const showLogsModal = ref(false);
 const showTutorial = ref(false);
 const showSplashScreen = ref(true);
 const showSettingsModal = ref(false);

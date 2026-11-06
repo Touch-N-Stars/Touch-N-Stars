@@ -1,45 +1,20 @@
 <template>
   <div>
-    <!-- Modal -->
-    <transition name="fade">
-      <div
-        v-if="showSettingsModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-      >
-        <div
-          class="bg-gray-800 rounded-lg p-6 max-w-sm w-full mx-4 relative shadow-xl shadow-black"
-        >
-          <!-- Schließen-Button oben rechts -->
-          <button
-            @click="showSettingsModal = false"
-            class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white bg-gray-900 rounded-full"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-
-          <!-- Modal-Inhalt -->
-          <h3 class="text-lg font-bold mb-4 text-gray-100">
-            {{ $t('components.sequence.monitor.settings.title') }}
-          </h3>
-          <div class="flex justify-end space-x-4">
-            <MonitorViewSetting class="w-full" />
-          </div>
-        </div>
-      </div>
-    </transition>
+    <Modal
+      :show="showSettingsModal"
+      zIndex="z-modal-raised"
+      maxWidth="max-w-sm"
+      @close="showSettingsModal = false"
+    >
+      <template #header>
+        <h2 class="text-xl font-bold">
+          {{ $t('components.sequence.monitor.settings.title') }}
+        </h2>
+      </template>
+      <template #body>
+        <MonitorViewSetting class="w-full" />
+      </template>
+    </Modal>
 
     <SubNav
       :items="[
@@ -140,6 +115,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import SubNav from '@/components/SubNav.vue';
+import Modal from '@/components/helpers/Modal.vue';
 import SessionTimeline from '@/components/sessionTimeline/SessionTimeline.vue';
 import SequenceImageHistory from '@/components/imageHistory/SequenceImageHistory.vue';
 import LastSequenceImg from '@/components/imageHistory/LastSequenceImg.vue';

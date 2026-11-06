@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div v-if="show" class="fixed inset-0 z-50 text-gray-200 p-2 pointer-events-none">
+    <div v-if="show" class="fixed inset-0 text-content p-2 pointer-events-none" :class="zIndex">
       <div
         ref="modalElement"
         class="bg-gradient-to-br rounded-lg shadow-lg relative pointer-events-auto touch-none"
@@ -17,7 +17,10 @@
           <slot name="header">
             <h2 class="text-lg sm:text-xl font-bold truncate">Standard Titel</h2>
           </slot>
-          <button @click="emit('close')" class="w-8 h-8 shrink-0 text-gray-400 hover:text-gray-600">
+          <button
+            @click="emit('close')"
+            class="w-8 h-8 shrink-0 text-content-muted hover:text-content"
+          >
             <XMarkIcon />
           </button>
         </div>
@@ -47,7 +50,7 @@ const props = defineProps({
   },
   zIndex: {
     type: String,
-    default: 'z-50',
+    default: 'z-modal-raised',
   },
   modalId: {
     type: String,

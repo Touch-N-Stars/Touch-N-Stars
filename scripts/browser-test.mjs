@@ -78,11 +78,14 @@ const READ_PAGE_STATE = `({
 })`;
 
 const SUBNAV_BUTTONS = `document.querySelectorAll('.subnav-button')`;
+const INFO_TOGGLE = `document.querySelector('[data-testid="info-modal-toggle"]')`;
 const DIALOG = `document.querySelector('[role="dialog"]')`;
 const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-toggle"]')`;
 const SET_DEBUG_CONSOLE = (visible) =>
   `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value
     .settings.showDebugConsole = ${visible}`;
+const DIALOG_ON_TOP = `${DIALOG}.contains(
+  document.elementFromPoint(innerWidth / 2, innerHeight / 2))`;
 const READ_DIALOG = `({
   ariaModal: ${DIALOG}.getAttribute('aria-modal'),
   name: document.getElementById(${DIALOG}.getAttribute('aria-labelledby'))?.innerText.trim(),
@@ -184,6 +187,32 @@ async function checkModal(page, viewportName) {
   return failures;
 }
 
+// infoModal is the Modal with the most call sites, and it opens from inside other overlays.
+async function checkInfoModal(page, viewportName) {
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} info modal: ${problem}`);
+    if (!passed) failures.push(`${viewportName} info modal: ${problem}`);
+  };
+
+  await openRoute(page, '/settings');
+  await page.evaluate(
+    `[...${SUBNAV_BUTTONS}].find((button) => button.title === 'Plate Solver').click()`
+  );
+  await page.waitFor(`!!${INFO_TOGGLE}`, 'an info button');
+  await page.evaluate(`${INFO_TOGGLE}.click()`);
+  await page.waitFor(`!!${DIALOG}`, 'the info modal to open');
+
+  expect(await page.evaluate(DIALOG_ON_TOP), 'paints on top');
+  const dialog = await page.evaluate(READ_DIALOG);
+  expect(Boolean(dialog.name), 'is named by its header');
+
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!${DIALOG}`), 'closes on Escape');
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -207,6 +236,7 @@ try {
     await page.waitFor(`!!document.querySelector('.stage-frame')`, 'the app to connect');
     failures.push(...(await visitRoutes(page, viewportName)));
     failures.push(...(await visitSettingsTabs(page, viewportName)));
+    failures.push(...(await checkInfoModal(page, viewportName)));
     failures.push(...(await checkModal(page, viewportName)));
     await page.close();
   }

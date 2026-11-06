@@ -169,17 +169,13 @@
     </div>
 
     <!-- Help Modal -->
-    <div v-if="showHelp" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div class="bg-surface-1 text-white p-4 m-4 rounded-lg max-w-xl max-h-[80vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-lg font-bold">
-            {{ $t('components.settings.imageFile.help.title') }}
-          </h2>
-          <button @click="showHelp = false" class="text-white hover:text-content">
-            <XMarkIcon class="w-6 h-6" />
-          </button>
-        </div>
-
+    <Modal :show="showHelp" zIndex="z-top" maxWidth="max-w-xl" @close="showHelp = false">
+      <template #header>
+        <h2 class="text-xl font-bold">
+          {{ $t('components.settings.imageFile.help.title') }}
+        </h2>
+      </template>
+      <template #body>
         <div class="space-y-3 text-sm text-content">
           <p>{{ $t('components.settings.imageFile.help.intro') }}</p>
 
@@ -219,14 +215,14 @@
             </code>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { InformationCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { InformationCircleIcon } from '@heroicons/vue/24/outline';
 import {
   defaultPattern,
   allTokenKeys,
@@ -234,6 +230,7 @@ import {
   tokenGroups,
   exampleValues,
 } from './patternConstants.js';
+import Modal from '@/components/helpers/Modal.vue';
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
