@@ -18,22 +18,12 @@
     >
       Favs
     </span>
-    <Teleport to="body">
-      <div
-        v-if="isModalOpen"
-        class="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center"
-        @click.self="isModalOpen = false"
-      >
-        <div
-          class="bg-gray-800 text-white p-6 rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto"
-          @click.stop
-        >
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">{{ $t('components.fav_target.titel') }}</h2>
-            <button @click="isModalOpen = false" class="text-white hover:text-gray-300">
-              <XMarkIcon class="w-6 h-6" />
-            </button>
-          </div>
+    <Modal :show="isModalOpen" zIndex="z-top" @close="isModalOpen = false">
+      <template #header>
+        <h2 class="text-xl font-bold">{{ $t('components.fav_target.titel') }}</h2>
+      </template>
+      <template #body>
+        <div class="w-full">
           <table
             v-if="hasAnyTarget"
             class="w-full text-sm text-left border border-gray-600 overflow-hidden"
@@ -124,8 +114,8 @@
 
           <p v-else>{{ $t('components.fav_target.no_fav') }}</p>
         </div>
-      </div>
-    </Teleport>
+      </template>
+    </Modal>
   </div>
 </template>
 <script setup>
@@ -134,7 +124,8 @@ import { useFavTargetStore } from '@/store/favTargetsStore';
 import { useFramingStore } from '@/store/framingStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import apiService from '@/services/apiService';
-import { TrashIcon, CheckIcon, HeartIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, CheckIcon, HeartIcon } from '@heroicons/vue/24/outline';
+import Modal from '@/components/helpers/Modal.vue';
 import { useToastStore } from '@/store/toastStore';
 import { useI18n } from 'vue-i18n';
 import { useTelescopiusFavorites } from '@/plugins/telescopius/composables/useTelescopiusFavorites';

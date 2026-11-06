@@ -70,35 +70,33 @@
       </span>
     </div>
 
-    <!-- Disable Info Modal -->
-    <div
-      v-if="showDisableModal"
-      class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-      @click.self="showDisableModal = false"
+    <!-- Disable Info Modal: also opens from the setup wizard, hence the raised layer -->
+    <Modal
+      :show="showDisableModal"
+      zIndex="z-overlay-modal"
+      maxWidth="max-w-xl"
+      @close="showDisableModal = false"
     >
-      <div class="bg-gray-800 text-white p-4 m-8 rounded-lg max-w-xl">
-        <div class="flex justify-end">
-          <button @click="showDisableModal = false" class="text-white hover:text-gray-300">
-            <XMarkIcon class="w-6 h-6" />
-          </button>
-        </div>
-        <h2 class="text-xl font-bold mb-4">Info</h2>
+      <template #header>
+        <h2 class="text-xl font-bold">Info</h2>
+      </template>
+      <template #body>
         <p>{{ disableConnectMessage }}</p>
-      </div>
-    </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import apiService from '@/services/apiService';
+import Modal from '@/components/helpers/Modal.vue';
 import {
   ArrowPathIcon,
   LinkIcon,
   LinkSlashIcon,
   Cog6ToothIcon,
   InformationCircleIcon,
-  XMarkIcon,
   XCircleIcon,
 } from '@heroicons/vue/24/outline';
 import { useEquipmentStore } from '@/store/equipmentStore';
