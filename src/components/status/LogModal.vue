@@ -1,28 +1,21 @@
 <template>
-  <div
-    class="fixed inset-0 z-top flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-    @click.self="handleOutsideClick"
-  >
-    <div
-      class="bg-gray-800/95 rounded-xl p-4 pt-2 max-w-2xl w-full m-4 relative overflow-hidden shadow-2xl transform transition-all duration-300 ease-out"
-      :class="{ 'scale-95 opacity-0': !isMounted, 'scale-100 opacity-100': isMounted }"
-      @click.stop
-    >
-      <div class="flex justify-between items-center pb-4">
-        <h1>LOG</h1>
+  <Modal show zIndex="z-top" @close="$emit('close')">
+    <template #header>
+      <div class="flex items-center gap-2">
+        <h2 class="text-xl font-bold">LOG</h2>
         <button
           @click="downloadLogs"
-          class="p-2 hover:bg-gray-700 rounded-lg"
+          class="p-2 hover:bg-surface-3 rounded-lg"
           :title="$t('components.lastLogs.download')"
         >
           <!-- Success indicator -->
           <div
             v-if="showSuccess"
-            class="absolute z-10 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center animate-fade-out opacity-0 pointer-events-none"
+            class="absolute z-10 w-6 h-6 bg-status-ok rounded-full flex items-center justify-center animate-fade-out opacity-0 pointer-events-none"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4 text-gray-300"
+              class="h-4 w-4 text-content"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -33,87 +26,82 @@
           </div>
           <ArrowDownTrayIcon class="w-6 h-6" />
         </button>
-        <button
-          @click="$emit('close')"
-          class="hover:bg-gray-700/50 rounded-full transition-all duration-200"
-          aria-label="Close modal"
-        >
-          <XMarkIcon class="w-7 h-7" />
-        </button>
       </div>
-      <!-- Level Filter -->
-      <div class="flex flex-wrap gap-1 pb-3">
-        <button
-          v-for="lvl in ['ALL', 'DEBUG', 'INFO', 'WARNING', 'ERROR']"
-          :key="lvl"
-          @click="toggleLevel(lvl)"
-          class="px-2 py-0.5 rounded text-xs font-medium transition-colors"
-          :class="
-            isLevelActive(lvl)
-              ? activeLevelClass(lvl)
-              : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-          "
-        >
-          {{ lvl }}
-        </button>
-      </div>
-      <!-- Tabelle anzeigen, wenn Daten verfügbar sind -->
-      <div class="w-full max-h-[50vh] overflow-y-auto relative scrollbar-thin">
-        <table
-          class="w-full table-fixed border-collapse border border-gray-800 text-gray-300 text-sm"
-        >
-          <thead class="sticky top-0 bg-gray-800 z-10">
-            <tr class="bg-gray-800">
-              <th class="border border-gray-300 px-2 py-2 text-left w-[30%]">
-                {{ $t('components.lastLogs.timestamp') }}
-              </th>
-              <th class="border border-gray-300 px-2 py-2 text-left w-[18%]">
-                {{ $t('components.lastLogs.level') }}
-              </th>
-              <th class="border border-gray-300 px-2 py-2 text-left w-[52%]">
-                {{ $t('components.lastLogs.message') }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(entry, index) in filteredLogs"
-              :key="index"
-              class="odd:bg-gray-900 even:bg-gray-600"
-            >
-              <td class="border border-gray-300 px-2 py-2 align-top">
-                {{ formatTimestamp(entry.timestamp) }}
-              </td>
-              <td
-                class="border border-gray-300 px-2 py-2 align-top whitespace-nowrap"
-                :class="{
-                  'text-green-600': entry.level === 'INFO',
-                  'text-red-600': entry.level === 'ERROR',
-                  'text-yellow-600': entry.level === 'WARNING',
-                }"
+    </template>
+    <template #body>
+      <div class="w-full">
+        <!-- Level Filter -->
+        <div class="flex flex-wrap gap-1 pb-3">
+          <button
+            v-for="lvl in ['ALL', 'DEBUG', 'INFO', 'WARNING', 'ERROR']"
+            :key="lvl"
+            @click="toggleLevel(lvl)"
+            class="px-2 py-0.5 rounded text-xs font-medium transition-colors"
+            :class="
+              isLevelActive(lvl)
+                ? activeLevelClass(lvl)
+                : 'bg-surface-3 text-content hover:bg-surface-2'
+            "
+          >
+            {{ lvl }}
+          </button>
+        </div>
+        <!-- Tabelle anzeigen, wenn Daten verfügbar sind -->
+        <div class="w-full max-h-[50vh] overflow-y-auto relative scrollbar-thin">
+          <table class="w-full table-fixed border-collapse border border-line text-content text-sm">
+            <thead class="sticky top-0 bg-surface-2 z-10">
+              <tr class="bg-surface-2">
+                <th class="border border-line px-2 py-2 text-left w-[30%]">
+                  {{ $t('components.lastLogs.timestamp') }}
+                </th>
+                <th class="border border-line px-2 py-2 text-left w-[18%]">
+                  {{ $t('components.lastLogs.level') }}
+                </th>
+                <th class="border border-line px-2 py-2 text-left w-[52%]">
+                  {{ $t('components.lastLogs.message') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(entry, index) in filteredLogs"
+                :key="index"
+                class="odd:bg-surface-1 even:bg-surface-2"
               >
-                {{ entry.level }}
-              </td>
-              <td class="border border-gray-300 px-2 py-2 align-top break-words">
-                {{ entry.message }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <td class="border border-line px-2 py-2 align-top">
+                  {{ formatTimestamp(entry.timestamp) }}
+                </td>
+                <td
+                  class="border border-line px-2 py-2 align-top whitespace-nowrap"
+                  :class="{
+                    'text-status-ok': entry.level === 'INFO',
+                    'text-status-danger': entry.level === 'ERROR',
+                    'text-status-warn': entry.level === 'WARNING',
+                  }"
+                >
+                  {{ entry.level }}
+                </td>
+                <td class="border border-line px-2 py-2 align-top break-words">
+                  {{ entry.message }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </Modal>
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref } from 'vue';
+import Modal from '@/components/helpers/Modal.vue';
 import { useLogStore } from '@/store/logStore';
 import { downloadLogs as downloadLogsHelper } from '@/utils/logDownloader';
-import { XMarkIcon, ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
 
 const logStore = useLogStore();
-const emit = defineEmits(['close']);
-const isMounted = ref(false);
+defineEmits(['close']);
 const showSuccess = ref(false);
 const selectedLevels = ref(new Set(['ALL']));
 
@@ -139,13 +127,13 @@ function isLevelActive(lvl) {
 
 function activeLevelClass(lvl) {
   const map = {
-    ALL: 'bg-gray-400 text-gray-900',
-    DEBUG: 'bg-gray-500 text-white',
-    INFO: 'bg-green-600 text-white',
-    WARNING: 'bg-yellow-600 text-white',
-    ERROR: 'bg-red-600 text-white',
+    ALL: 'bg-content-muted text-ground',
+    DEBUG: 'bg-surface-3 text-content',
+    INFO: 'bg-status-ok/20 text-status-ok',
+    WARNING: 'bg-status-warn/20 text-status-warn',
+    ERROR: 'bg-status-danger/20 text-status-danger',
   };
-  return map[lvl] ?? 'bg-gray-500 text-white';
+  return map[lvl] ?? 'bg-surface-3 text-content';
 }
 
 // Funktion zum Formatieren des Timestamps (optional)
@@ -162,14 +150,6 @@ const filteredLogs = computed(() =>
   )
 );
 
-function handleOutsideClick(event) {
-  emit('close');
-  if (event) {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-  }
-}
-
 async function downloadLogs() {
   const success = await downloadLogsHelper(filteredLogs.value, formatTimestamp);
 
@@ -178,10 +158,6 @@ async function downloadLogs() {
     setTimeout(() => (showSuccess.value = false), 2000);
   }
 }
-
-onMounted(() => {
-  isMounted.value = true;
-});
 </script>
 
 <style scoped>

@@ -1,56 +1,35 @@
 <template>
-  <div
-    class="fixed inset-0 z-top flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300"
-    @click.self="handleOutsideClick"
+  <Modal
+    show
+    zIndex="z-top"
+    maxWidth="max-w-md"
+    :title="$t('components.weatherModal.weatherInformation')"
+    @close="$emit('close')"
   >
-    <div
-      class="bg-gray-800/95 rounded-xl p-8 max-w-md w-full mx-4 relative shadow-2xl transform transition-all duration-300 ease-out"
-      :class="{ 'scale-95 opacity-0': !isMounted, 'scale-100 opacity-100': isMounted }"
-      @click.stop
-    >
-      <div class="flex justify-between items-center mb-8 pb-6 border-b border-gray-700/50">
-        <div>
-          <h2 class="text-2xl font-bold text-gray-100 tracking-tight">
-            {{ $t('components.weatherModal.weatherInformation') }}
-          </h2>
-          <p class="text-sm text-gray-400 mt-1">{{ weatherInfo.DisplayName }}</p>
-        </div>
-        <div class="flex items-center space-x-4">
-          <button
-            @click="toggleUnits"
-            class="text-sm font-medium text-gray-300 hover:text-gray-100 transition-colors"
-          >
-            {{
-              settingsStore.useImperialUnits
-                ? $t('components.weatherModal.imperial')
-                : $t('components.weatherModal.metric')
-            }}
-          </button>
-        </div>
-        <button
-          @click="$emit('close')"
-          class="p-2 hover:bg-gray-700/50 rounded-full transition-all duration-200"
-          aria-label="Close modal"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 transform hover:rotate-90 transition-transform duration-200"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+    <template #header>
+      <div>
+        <h2 class="text-xl font-bold">{{ $t('components.weatherModal.weatherInformation') }}</h2>
+        <p class="text-sm text-content-muted mt-1">{{ weatherInfo.DisplayName }}</p>
       </div>
-
-      <div class="space-y-6 overflow-y-auto max-h-[50vh] pr-3 scrollbar-thin">
+      <button
+        @click="toggleUnits"
+        class="text-sm font-medium text-content-muted hover:text-content transition-colors"
+      >
+        {{
+          settingsStore.useImperialUnits
+            ? $t('components.weatherModal.imperial')
+            : $t('components.weatherModal.metric')
+        }}
+      </button>
+    </template>
+    <template #body>
+      <div class="w-full space-y-6 pr-3">
         <!-- Temperature -->
         <div
           v-if="Number.isFinite(weatherInfo.Temperature)"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               fill="currentColor"
               class="size-6"
@@ -68,14 +47,14 @@
             </svg>
             <span>{{ $t('components.weatherModal.temperature') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ temperature }} {{ temperatureUnit }}</p>
+          <p class="text-content pl-7">{{ temperature }} {{ temperatureUnit }}</p>
         </div>
         <!-- Cloud Cover -->
         <div
           v-if="Number.isFinite(weatherInfo.CloudCover)"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -88,7 +67,7 @@
             </svg>
             <span>{{ $t('components.weatherModal.cloudCover') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ cloudCover }}</p>
+          <p class="text-content pl-7">{{ cloudCover }}</p>
         </div>
 
         <!-- Wind -->
@@ -96,9 +75,9 @@
           v-if="
             Number.isFinite(weatherInfo.WindSpeed) || Number.isFinite(weatherInfo.WindDirection)
           "
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -111,7 +90,7 @@
             </svg>
             <span>{{ $t('components.weatherModal.wind') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">
+          <p class="text-content pl-7">
             {{ windSpeed }} {{ windSpeedUnit }}
             {{ Number.isFinite(weatherInfo.WindDirection) ? `(${windDirection})` : '' }}
           </p>
@@ -120,9 +99,9 @@
         <!-- Humidity -->
         <div
           v-if="Number.isFinite(weatherInfo.Humidity)"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -154,15 +133,15 @@
             </svg>
             <span>{{ $t('components.weatherModal.humidity') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ humidity }}</p>
+          <p class="text-content pl-7">{{ humidity }}</p>
         </div>
 
         <!-- Pressure -->
         <div
           v-if="Number.isFinite(weatherInfo.Pressure)"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5 text-white"
@@ -195,15 +174,15 @@
             </svg>
             <span>{{ $t('components.weatherModal.pressure') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ pressure }}</p>
+          <p class="text-content pl-7">{{ pressure }}</p>
         </div>
 
         <!-- Dew Point -->
         <div
           v-if="Number.isFinite(weatherInfo.DewPoint)"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               fill="currentColor"
               class="size-6"
@@ -221,15 +200,15 @@
             </svg>
             <span>{{ $t('components.weatherModal.dewPoint') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ dewPoint }} {{ dewPointUnit }}</p>
+          <p class="text-content pl-7">{{ dewPoint }} {{ dewPointUnit }}</p>
         </div>
 
         <!-- Rain Rate -->
         <div
           v-if="Number.isFinite(Number(weatherInfo.RainRate))"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -245,15 +224,15 @@
             </svg>
             <span>{{ $t('components.weatherModal.rainRate') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ rainRate }}</p>
+          <p class="text-content pl-7">{{ rainRate }}</p>
         </div>
 
         <!-- Sky Quality -->
         <div
           v-if="Number.isFinite(Number(weatherInfo.SkyQuality))"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -269,15 +248,15 @@
             </svg>
             <span>{{ $t('components.weatherModal.skyQuality') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ skyQuality }}</p>
+          <p class="text-content pl-7">{{ skyQuality }}</p>
         </div>
 
         <!-- Sky Temperature -->
         <div
           v-if="Number.isFinite(Number(weatherInfo.SkyTemperature))"
-          class="bg-gray-700/20 p-5 rounded-xl hover:bg-gray-700/30 transition-colors duration-200"
+          class="bg-surface-2 p-5 rounded-xl hover:bg-surface-3 transition-colors duration-200"
         >
-          <h3 class="font-semibold text-gray-100 mb-3 flex items-center space-x-2">
+          <h3 class="font-semibold text-content mb-3 flex items-center space-x-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -293,15 +272,16 @@
             </svg>
             <span>{{ $t('components.weatherModal.skyTemperature') }}</span>
           </h3>
-          <p class="text-gray-300 pl-7">{{ skyTemperature }} {{ skyTemperatureUnit }}</p>
+          <p class="text-content pl-7">{{ skyTemperature }} {{ skyTemperatureUnit }}</p>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </Modal>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { computed } from 'vue';
+import Modal from '@/components/helpers/Modal.vue';
 import { useSettingsStore } from '@/store/settingsStore';
 
 const props = defineProps({
@@ -422,80 +402,5 @@ function toggleUnits() {
   settingsStore.toggleUnits();
 }
 
-const emit = defineEmits(['close']);
-
-function handleOutsideClick(event) {
-  emit('close');
-  if (event) {
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-  }
-}
-
-const isMounted = ref(false);
-
-onMounted(() => {
-  isMounted.value = true;
-});
+defineEmits(['close']);
 </script>
-
-<style scoped>
-/* Mobile optimization */
-@media (max-width: 640px) {
-  .max-w-md {
-    margin: 1rem;
-    padding: 1.5rem;
-  }
-}
-
-/* Smooth scroll behavior */
-.scrollbar-thin {
-  scrollbar-width: thin;
-}
-
-.scrollbar-thin::-webkit-scrollbar {
-  width: 6px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background-color: #4a5568;
-  border-radius: 20px;
-}
-
-/* Transition classes */
-.scale-95 {
-  transform: scale(0.95);
-}
-
-.scale-100 {
-  transform: scale(1);
-}
-
-.opacity-0 {
-  opacity: 0;
-}
-
-.opacity-100 {
-  opacity: 1;
-}
-
-/* Card hover effects */
-.bg-gray-700\/20:hover {
-  background-color: rgba(55, 65, 81, 0.3);
-}
-
-/* Ensure SVG icons are properly sized */
-.size-6 {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.h-5.w-5 {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-</style>
