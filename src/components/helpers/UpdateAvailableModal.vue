@@ -1,16 +1,22 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  <div
+    ref="overlayElement"
+    class="fixed inset-0 z-modal-raised flex items-center justify-center bg-black/60 backdrop-blur-sm"
+  >
     <div
-      class="relative mx-4 w-full max-w-xl overflow-hidden rounded-2xl border border-cyan-500/40 bg-gray-900 shadow-2xl"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="update-available-title"
+      class="relative mx-4 w-full max-w-xl overflow-hidden rounded-2xl border border-accent/40 bg-surface-1 shadow-2xl"
     >
       <div class="p-6 sm:p-8">
         <div class="mb-6 flex items-start gap-4">
           <div
-            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cyan-500/20"
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent/20"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-cyan-300"
+              class="h-6 w-6 text-accent"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -24,10 +30,10 @@
             </svg>
           </div>
           <div class="flex-1">
-            <h2 class="text-2xl font-semibold text-white">
+            <h2 id="update-available-title" class="text-2xl font-semibold text-white">
               {{ isDowngrade ? t('updates.downgradeTitle') : t('updates.title') }}
             </h2>
-            <p class="mt-2 text-sm text-gray-300">
+            <p class="mt-2 text-sm text-content">
               {{
                 isDowngrade
                   ? t('updates.downgradeDescription', { version })
@@ -39,62 +45,62 @@
 
         <div
           v-if="hasWhatsNew"
-          class="mb-6 max-h-52 overflow-y-auto rounded-xl border border-gray-700 bg-gray-800/60 p-4 text-sm text-gray-200"
+          class="mb-6 max-h-52 overflow-y-auto rounded-xl border border-line bg-surface-2 p-4 text-sm text-content"
         >
-          <p class="mb-2 font-semibold text-gray-100">{{ t('updates.whatsNew') }}</p>
+          <p class="mb-2 font-semibold text-content">{{ t('updates.whatsNew') }}</p>
           <p
             v-if="whatsNewTitle"
-            class="mb-3 text-xs font-medium uppercase tracking-wide text-gray-400"
+            class="mb-3 text-xs font-medium uppercase tracking-wide text-content-muted"
           >
             {{ whatsNewTitle }}
           </p>
           <div
             v-if="whatsNewHtml"
-            class="space-y-2 text-sm leading-relaxed text-gray-200"
+            class="space-y-2 text-sm leading-relaxed text-content"
             v-html="whatsNewHtml"
           ></div>
           <pre
             v-else-if="whatsNewText"
-            class="whitespace-pre-wrap font-sans leading-relaxed text-gray-300"
+            class="whitespace-pre-wrap font-sans leading-relaxed text-content"
             v-text="whatsNewText"
           ></pre>
         </div>
 
         <div
           v-if="releaseNotes"
-          class="mb-6 max-h-52 overflow-y-auto rounded-xl border border-gray-700 bg-gray-800/60 p-4 text-sm text-gray-200"
+          class="mb-6 max-h-52 overflow-y-auto rounded-xl border border-line bg-surface-2 p-4 text-sm text-content"
         >
-          <p class="mb-2 font-semibold text-gray-100">{{ t('updates.releaseNotes') }}</p>
+          <p class="mb-2 font-semibold text-content">{{ t('updates.releaseNotes') }}</p>
           <pre
-            class="whitespace-pre-wrap font-sans leading-relaxed text-gray-300"
+            class="whitespace-pre-wrap font-sans leading-relaxed text-content"
             v-text="releaseNotes"
           ></pre>
         </div>
 
         <div v-if="status === 'downloading'" class="mb-6">
-          <p class="mb-2 text-sm text-gray-300">
+          <p class="mb-2 text-sm text-content">
             {{ t('updates.downloading', { progress: formattedProgress }) }}
           </p>
-          <div class="h-2 w-full overflow-hidden rounded-full bg-gray-800">
+          <div class="h-2 w-full overflow-hidden rounded-full bg-surface-2">
             <div
-              class="h-full rounded-full bg-cyan-400 transition-all duration-200"
+              class="h-full rounded-full bg-accent transition-all duration-200"
               :style="{ width: `${progress}%` }"
             />
           </div>
         </div>
 
-        <div v-if="status === 'setting'" class="mb-4 text-sm text-gray-300">
+        <div v-if="status === 'setting'" class="mb-4 text-sm text-content">
           {{ t('updates.preparing') }}
         </div>
 
-        <p v-if="error" class="mb-4 rounded-lg bg-red-500/10 p-3 text-sm text-red-300">
+        <p v-if="error" class="mb-4 rounded-lg bg-status-danger/10 p-3 text-sm text-status-danger">
           {{ error }}
         </p>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <button
             type="button"
-            class="rounded-xl border border-gray-700 px-4 py-2 text-sm font-medium text-gray-200 transition hover:border-gray-500 hover:text-white disabled:cursor-not-allowed disabled:border-gray-800 disabled:text-gray-500"
+            class="rounded-xl border border-line px-4 py-2 text-sm font-medium text-content transition hover:border-line-strong hover:text-white disabled:cursor-not-allowed disabled:border-line disabled:text-content-faint"
             :disabled="isBusy"
             @click="$emit('cancel')"
           >
@@ -102,7 +108,7 @@
           </button>
           <button
             type="button"
-            class="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-semibold text-gray-900 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:bg-cyan-800 disabled:text-gray-200"
+            class="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-ground transition hover:bg-accent disabled:cursor-not-allowed disabled:bg-accent disabled:text-content"
             :disabled="isBusy"
             @click="$emit('confirm')"
           >
@@ -114,7 +120,7 @@
 
       <button
         type="button"
-        class="absolute right-4 top-4 rounded-full bg-gray-800/80 p-2 text-gray-400 transition hover:text-white"
+        class="absolute right-4 top-4 rounded-full bg-surface-2/80 p-2 text-content-muted transition hover:text-white"
         :disabled="isBusy"
         @click="$emit('cancel')"
       >
@@ -138,7 +144,8 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { useModalEscape } from '@/composables/useModalEscape';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
@@ -172,7 +179,10 @@ const props = defineProps({
   },
 });
 
-defineEmits(['confirm', 'cancel']);
+const emit = defineEmits(['confirm', 'cancel']);
+
+const overlayElement = ref(null);
+useModalEscape(overlayElement, () => emit('cancel'));
 
 const busyStatuses = new Set(['downloading', 'setting']);
 

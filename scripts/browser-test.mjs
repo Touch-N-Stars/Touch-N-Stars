@@ -51,9 +51,23 @@ const DEVICES = [
   'weather',
 ];
 
-const BACKEND_ROUTES = Object.fromEntries(
-  DEVICES.map((device) => [`/v2/api/equipment/${device}/list-devices`, () => []])
-);
+// Dialogs NINA reports as open. Closing one of them cancels what it stands for, so the
+// plate solving dialog below is the case that must never be closed by accident.
+let ninaDialogs = [];
+const PLATE_SOLVING_DIALOG = {
+  Title: 'Plate Solving',
+  ContentType: 'NINA.WPF.Base.ViewModel.PlateSolvingStatusVM',
+  AvailableCommands: ['PART_CloseButton'],
+  Content: {},
+};
+
+const BACKEND_ROUTES = {
+  ...Object.fromEntries(
+    DEVICES.map((device) => [`/v2/api/equipment/${device}/list-devices`, () => []])
+  ),
+  '/api/dialogs/list': () => ({ Count: ninaDialogs.length, Dialogs: ninaDialogs }),
+  '/api/dialogs/count': () => ninaDialogs.length,
+};
 
 // Resolves once the DOM stayed untouched for a moment, so lazy pages have finished rendering.
 const WAIT_FOR_QUIET_DOM = `new Promise((resolve) => {
@@ -84,6 +98,11 @@ const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-togg
 const SET_DEBUG_CONSOLE = (visible) =>
   `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value
     .settings.showDebugConsole = ${visible}`;
+const DIALOG_BACKDROP = `${DIALOG}.parentElement`;
+const LOG_BUTTON = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Log')`;
+const MINIMIZED_CHIP = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === ${JSON.stringify(
+  PLATE_SOLVING_DIALOG.Title
+)})`;
 const DIALOG_ON_TOP = `${DIALOG}.contains(
   document.elementFromPoint(innerWidth / 2, innerHeight / 2))`;
 const READ_DIALOG = `({
@@ -213,6 +232,63 @@ async function checkInfoModal(page, viewportName) {
   return failures;
 }
 
+// Requests that would reach NINA as a cancelled dialog or a stopped mount.
+function ninaActions(backend) {
+  return [...backend.unhandled].filter((request) =>
+    /dialogs\/(click-button|close)|slew\/stop/.test(request)
+  );
+}
+
+// A tap beside a dialog or Escape must never close a NINA dialog: that would cancel the solve.
+// Other dialogs can open over a minimized one, and closing those must not reach it either.
+async function checkNinaDialog(page, viewportName, backend) {
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} NINA dialog: ${problem}`);
+    if (!passed) failures.push(`${viewportName} NINA dialog: ${problem}`);
+  };
+  const closeWithoutButton = async (dismiss) => {
+    await page.evaluate(`${LOG_BUTTON}.click()`);
+    await page.waitFor(`!!${DIALOG}`, 'the log to open');
+    await dismiss();
+    await page.evaluate(SETTLE);
+  };
+
+  ninaDialogs = [PLATE_SOLVING_DIALOG];
+  await page.waitFor(`!!${DIALOG}`, 'the NINA dialog to open');
+
+  await page.evaluate(`${DIALOG_BACKDROP}.click()`);
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!!${DIALOG}`), 'stays open on a tap beside it');
+
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!!${DIALOG}`), 'stays open on Escape');
+  expect(ninaActions(backend).length === 0, 'sends nothing to NINA on either');
+
+  await page.evaluate(`document.querySelector('[title="Minimize"]').click()`);
+  await page.waitFor(`!${DIALOG}`, 'the NINA dialog to minimize');
+
+  await closeWithoutButton(() => page.evaluate(`${DIALOG_BACKDROP}.click()`));
+  expect(await page.evaluate(`!${DIALOG}`), 'a dialog over it closes on a tap beside it');
+  await closeWithoutButton(() => page.pressEscape());
+  expect(await page.evaluate(`!${DIALOG}`), 'a dialog over it closes on Escape');
+  expect(await page.evaluate(`!!${MINIMIZED_CHIP}`), 'stays minimized meanwhile');
+  expect(ninaActions(backend).length === 0, 'sends nothing to NINA meanwhile');
+
+  // Control: without this, the checks above would also pass if nothing could be observed.
+  await page.evaluate(`${MINIMIZED_CHIP}.click()`);
+  await page.waitFor(`!!${DIALOG}`, 'the NINA dialog to restore');
+  await page.evaluate(`${DIALOG}.querySelector('[aria-label="Close"]').click()`);
+  await page.evaluate(SETTLE);
+  expect(ninaActions(backend).length > 0, 'its close button does reach NINA');
+
+  ninaDialogs = [];
+  ninaActions(backend).forEach((request) => backend.unhandled.delete(request));
+  await page.waitFor(`!${DIALOG} && !${MINIMIZED_CHIP}`, 'the NINA dialog to go away');
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -238,6 +314,7 @@ try {
     failures.push(...(await visitSettingsTabs(page, viewportName)));
     failures.push(...(await checkInfoModal(page, viewportName)));
     failures.push(...(await checkModal(page, viewportName)));
+    failures.push(...(await checkNinaDialog(page, viewportName, backend)));
     await page.close();
   }
 } finally {

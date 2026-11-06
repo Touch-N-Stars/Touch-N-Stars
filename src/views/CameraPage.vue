@@ -291,14 +291,19 @@
       <!-- Slew Modal -->
       <div
         v-if="cameraStore.slewModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+        ref="slewOverlay"
+        class="fixed inset-0 z-modal-raised flex items-center justify-center bg-black/50"
       >
         <div
+          role="dialog"
+          aria-modal="true"
+          :aria-label="$t('components.sequence.simple.approachMode.center')"
           class="bg-surface-1 rounded-card p-4 overflow-y-auto max-h-[95vh] border border-line scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800/50"
         >
           <CenterHere />
           <button
             @click="cameraStore.slewModal = false"
+            :aria-label="$t('common.close')"
             class="fixed top-2 right-2 min-h-touch min-w-touch flex items-center justify-center text-content-muted hover:text-content bg-surface-1 rounded-full"
           >
             <svg
@@ -457,6 +462,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
+import { useModalEscape } from '@/composables/useModalEscape';
 import { useElementSize } from '@vueuse/core';
 import { useOrientation } from '@/composables/useOrientation';
 import { useStageWindow } from '@/composables/useStageWindow';
@@ -483,6 +489,10 @@ import { useSettingsStore } from '@/store/settingsStore';
 
 const store = apiStore();
 const cameraStore = useCameraStore();
+const slewOverlay = ref(null);
+useModalEscape(slewOverlay, () => {
+  cameraStore.slewModal = false;
+});
 const imageStore = useImagetStore();
 const settingsStore = useSettingsStore();
 
