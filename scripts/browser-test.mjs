@@ -77,6 +77,7 @@ const READ_PAGE_STATE = `({
   viewportWidth: window.innerWidth,
 })`;
 
+const SUBNAV_BUTTONS = `document.querySelectorAll('.subnav-button')`;
 const DIALOG = `document.querySelector('[role="dialog"]')`;
 const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-toggle"]')`;
 const SET_DEBUG_CONSOLE = (visible) =>
@@ -100,25 +101,53 @@ function initScript(whatsNewVersion) {
   `;
 }
 
+async function openRoute(page, route) {
+  page.exceptions.length = 0;
+  await page.evaluate(`history.pushState({}, '', ${JSON.stringify(route)});
+    dispatchEvent(new PopStateEvent('popstate', { state: {} }));`);
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+}
+
+async function checkPage(page, viewportName, label, screenshotName) {
+  const state = await page.evaluate(READ_PAGE_STATE);
+  const problems = findPageProblems({ ...state, exceptions: page.exceptions });
+  await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, `${screenshotName}.png`));
+
+  console.log(`${problems.length ? 'FAIL' : 'ok  '} ${viewportName} ${label}`);
+  problems.forEach((problem) => console.log(`     ${problem}`));
+  return problems.map((problem) => `${viewportName} ${label}: ${problem}`);
+}
+
 async function visitRoutes(page, viewportName) {
   const failures = [];
 
   for (const route of ROUTES) {
+    await openRoute(page, route);
+    failures.push(...(await checkPage(page, viewportName, route, route.slice(1))));
+  }
+
+  return failures;
+}
+
+// The settings page renders one tab at a time, so the route visit only sees the first one.
+async function visitSettingsTabs(page, viewportName) {
+  const failures = [];
+
+  await openRoute(page, '/settings');
+  await page.waitFor(`${SUBNAV_BUTTONS}.length > 1`, 'the settings tabs');
+  const tabCount = await page.evaluate(`${SUBNAV_BUTTONS}.length`);
+
+  for (let index = 1; index < tabCount; index++) {
     page.exceptions.length = 0;
-    await page.evaluate(`history.pushState({}, '', ${JSON.stringify(route)});
-      dispatchEvent(new PopStateEvent('popstate', { state: {} }));`);
+    const tab = await page.evaluate(`(() => {
+      const button = ${SUBNAV_BUTTONS}[${index}];
+      button.click();
+      return button.title;
+    })()`);
     await page.evaluate(WAIT_FOR_QUIET_DOM);
 
-    const state = await page.evaluate(READ_PAGE_STATE);
-    const problems = findPageProblems({ ...state, exceptions: page.exceptions });
-    const name = route.slice(1);
-    await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, `${name}.png`));
-
-    console.log(`${problems.length ? 'FAIL' : 'ok  '} ${viewportName} ${route}`);
-    problems.forEach((problem) => {
-      console.log(`     ${problem}`);
-      failures.push(`${viewportName} ${route}: ${problem}`);
-    });
+    const slug = tab.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    failures.push(...(await checkPage(page, viewportName, `/settings ${tab}`, `settings-${slug}`)));
   }
 
   return failures;
@@ -177,6 +206,7 @@ try {
     await page.navigate(`${backend.origin}/equipment`);
     await page.waitFor(`!!document.querySelector('.stage-frame')`, 'the app to connect');
     failures.push(...(await visitRoutes(page, viewportName)));
+    failures.push(...(await visitSettingsTabs(page, viewportName)));
     failures.push(...(await checkModal(page, viewportName)));
     await page.close();
   }

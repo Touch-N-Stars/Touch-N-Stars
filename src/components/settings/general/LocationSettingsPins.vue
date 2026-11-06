@@ -1,21 +1,18 @@
 <template>
   <!-- GPS Coordinates (PINS-only) -->
-  <div
-    v-if="store.isBackendReachable"
-    class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-  >
-    <h3 class="font-bold text-base text-cyan-400">
+  <div v-if="store.isBackendReachable" class="tns-card flex flex-col gap-2 sm:gap-3">
+    <h3 class="tns-section-title">
       {{ $t('components.settings.coordinates') }}
     </h3>
 
     <!-- Current stored coordinates (read-only) -->
     <div class="grid grid-cols-2 gap-2">
-      <div class="bg-gray-700/60 rounded-md p-2">
+      <div class="bg-surface-2 rounded-md p-2">
         <div class="flex items-center justify-between mb-1">
-          <p class="text-xs font-medium text-gray-400">{{ $t('setup.currentNinaCoords') }}</p>
+          <p class="text-xs font-medium text-content-muted">{{ $t('setup.currentNinaCoords') }}</p>
           <button
             @click="locationStore.loadFromAstrometrySettings()"
-            class="text-gray-500 hover:text-cyan-400 transition-colors"
+            class="text-content-faint hover:text-accent transition-colors"
             :title="$t('common.refresh')"
           >
             <svg
@@ -34,23 +31,23 @@
             </svg>
           </button>
         </div>
-        <p class="text-xs text-gray-300">
+        <p class="text-xs text-content">
           {{ $t('setup.coordLat') }}: {{ formatCoord(ninaCoords.latitude, 'lat') ?? '—' }}
         </p>
-        <p class="text-xs text-gray-300">
+        <p class="text-xs text-content">
           {{ $t('setup.coordLon') }}: {{ formatCoord(ninaCoords.longitude, 'lon') ?? '—' }}
         </p>
-        <p class="text-xs text-gray-300">
+        <p class="text-xs text-content">
           {{ $t('setup.coordAlt') }}: {{ ninaCoords.elevation ?? '—' }}
           {{ $t('setup.coordUnit') }}
         </p>
       </div>
-      <div class="bg-gray-700/60 rounded-md p-2">
+      <div class="bg-surface-2 rounded-md p-2">
         <div class="flex items-center justify-between mb-1">
-          <p class="text-xs font-medium text-gray-400">{{ $t('setup.currentMountCoords') }}</p>
+          <p class="text-xs font-medium text-content-muted">{{ $t('setup.currentMountCoords') }}</p>
           <button
             @click="locationStore.loadMountCoords()"
-            class="text-gray-500 hover:text-cyan-400 transition-colors"
+            class="text-content-faint hover:text-accent transition-colors"
             :class="{ 'animate-spin': mountCoordsLoading }"
             :title="$t('common.refresh')"
           >
@@ -71,22 +68,22 @@
           </button>
         </div>
         <template v-if="mountCoordsLoading">
-          <p class="text-xs text-gray-500">{{ $t('setup.loadingCoords') }}</p>
+          <p class="text-xs text-content-faint">{{ $t('setup.loadingCoords') }}</p>
         </template>
         <template v-else-if="!mountCoords.connected">
-          <p class="text-xs text-gray-500">{{ $t('setup.mountNotConnected') }}</p>
+          <p class="text-xs text-content-faint">{{ $t('setup.mountNotConnected') }}</p>
         </template>
         <template v-else-if="!mountCoords.siteLocationSupported">
-          <p class="text-xs text-amber-400">{{ $t('setup.coordsNotSupported') }}</p>
+          <p class="text-xs text-status-warn">{{ $t('setup.coordsNotSupported') }}</p>
         </template>
         <template v-else>
-          <p class="text-xs text-gray-300">
+          <p class="text-xs text-content">
             {{ $t('setup.coordLat') }}: {{ formatCoord(mountCoords.latitude, 'lat') ?? '—' }}
           </p>
-          <p class="text-xs text-gray-300">
+          <p class="text-xs text-content">
             {{ $t('setup.coordLon') }}: {{ formatCoord(mountCoords.longitude, 'lon') ?? '—' }}
           </p>
-          <p class="text-xs text-gray-300">
+          <p class="text-xs text-content">
             {{ $t('setup.coordAlt') }}: {{ mountCoords.elevation }} {{ $t('setup.coordUnit') }}
           </p>
         </template>
@@ -96,7 +93,7 @@
     <!-- Mismatch warning -->
     <div
       v-if="coordsMismatch"
-      class="flex items-start gap-2 rounded-md bg-amber-900/40 border border-amber-600/50 p-2 text-xs text-amber-300"
+      class="flex items-start gap-2 rounded-md bg-status-warn/10 border border-status-warn/40 p-2 text-xs text-status-warn"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +115,7 @@
     <!-- Editable inputs -->
     <div class="grid grid-cols-2 md:flex md:gap-4 md:items-end gap-2">
       <div class="flex flex-col min-w-0 md:flex-1">
-        <label class="text-xs md:text-sm text-gray-300 mb-1">Latitude</label>
+        <label class="text-xs md:text-sm text-content mb-1">Latitude</label>
         <NumberInputPicker
           v-model="latitude"
           :label="``"
@@ -133,7 +130,7 @@
         />
       </div>
       <div class="flex flex-col min-w-0 md:flex-1">
-        <label class="text-xs md:text-sm text-gray-300 mb-1">Longitude</label>
+        <label class="text-xs md:text-sm text-content mb-1">Longitude</label>
         <NumberInputPicker
           v-model="longitude"
           :label="``"
@@ -148,7 +145,7 @@
         />
       </div>
       <div class="flex flex-col min-w-0 md:flex-1">
-        <label class="text-xs md:text-sm text-gray-300 mb-1">Altitude</label>
+        <label class="text-xs md:text-sm text-content mb-1">Altitude</label>
         <NumberInputPicker
           v-model="altitude"
           :label="``"
@@ -169,7 +166,7 @@
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-6 w-6 text-gray-300"
+          class="h-6 w-6 text-content"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -189,17 +186,14 @@
         </svg>
       </button>
     </div>
-    <div v-if="gpsError" class="mt-2 text-sm text-red-400">
+    <div v-if="gpsError" class="mt-2 text-sm text-status-danger">
       {{ gpsError }}
     </div>
 
     <!-- Sync direction dropdown -->
     <div class="flex flex-col gap-1">
-      <label class="text-xs md:text-sm text-gray-300">{{ $t('setup.syncDirection') }}</label>
-      <select
-        v-model="syncDirection"
-        class="w-full px-3 py-2 bg-gray-700 text-gray-300 rounded-md text-sm focus:ring-2 focus:ring-cyan-500"
-      >
+      <label class="text-xs md:text-sm text-content">{{ $t('setup.syncDirection') }}</label>
+      <select v-model="syncDirection" class="tns-select text-sm">
         <option value="NOSYNC">{{ $t('setup.syncDirectionNosync') }}</option>
         <option value="TOAPPLICATION">{{ $t('setup.syncDirectionToApplication') }}</option>
         <option value="TOTELESCOPE">{{ $t('setup.syncDirectionToTelescope') }}</option>

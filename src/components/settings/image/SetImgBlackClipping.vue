@@ -1,6 +1,6 @@
 <template>
   <div class="block">
-    <label class="block text-sm font-medium text-gray-300 mb-2">{{
+    <label class="block text-sm font-medium text-content mb-2">{{
       $t('components.settings.image.black_clipping')
     }}</label>
     <NumberInputPicker

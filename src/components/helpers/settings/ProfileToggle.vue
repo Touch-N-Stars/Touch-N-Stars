@@ -37,7 +37,7 @@ const props = defineProps({
   },
   labelClass: {
     type: String,
-    default: 'text-sm font-medium text-gray-300',
+    default: 'text-sm font-medium text-content',
   },
   toggleClass: {
     type: String,
