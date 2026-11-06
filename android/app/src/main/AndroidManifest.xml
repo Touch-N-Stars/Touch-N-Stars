@@ -22,6 +22,11 @@
 
     <!-- Other permissions -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Session monitor: phone notifications from the rig while the app is in the background -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     
 
     <application
@@ -44,6 +49,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Keeps the notification stream to the PINS daemon open in the background.
+             connectedDevice: the rig is an external device on the local network; the
+             type's permission requirement is met by CHANGE_NETWORK_STATE above. -->
+        <service
+            android:name=".SessionMonitorService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
 
         <!-- FileProvider configuration -->
         <provider

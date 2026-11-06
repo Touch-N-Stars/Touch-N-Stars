@@ -841,6 +841,51 @@ export default {
     );
   },
 
+  //-------------------Session notifications (pinsdaemon notify relay)------------------------
+  // Buffered PINS hub notifications and host alerts, see pinsdaemon README "Session
+  // Notifications". Older daemons lack these routes; callers feature-detect on `bootId`.
+  getPinsNotifications(since = 0, limit = 200) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/notifications', {
+      baseUrl: PINSDAEMON_URL,
+      params: { since, limit },
+      timeout: 8000,
+    });
+  },
+
+  getPinsNotificationSettings() {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/notifications/settings', {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 8000,
+    });
+  },
+
+  updatePinsNotificationSettings(update) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPutRequest('/notifications/settings', update, {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 8000,
+    });
+  },
+
+  // delaySeconds (0-60) gives the user time to put the app in the background, where the
+  // phone shows the notification.
+  sendPinsTestNotification({ severity = 'warning', message, delaySeconds = 0 } = {}) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPostRequest(
+      '/notifications/test',
+      { severity, delaySeconds, ...(message ? { message } : {}) },
+      { baseUrl: PINSDAEMON_URL, timeout: 8000 }
+    );
+  },
+
+  /** ws:// URL of the daemon's live notification stream (the token is added natively). */
+  getPinsNotificationStreamUrl() {
+    const { PINSDAEMON_URL } = getUrls();
+    return `${PINSDAEMON_URL.replace(/^http/, 'ws')}/notifications/stream`;
+  },
+
   getPinsSystemLocalizationOptions() {
     const { PINSDAEMON_URL } = getUrls();
     return this._pinsDaemonGetRequest('/system/localization/options', {
