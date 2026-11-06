@@ -2,10 +2,10 @@
   <div class="space-y-6">
     <!-- set beta -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="tns-card flex flex-col gap-2 sm:gap-3"
       v-if="['android', 'ios'].includes(Capacitor.getPlatform())"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.beta.title') }}
       </h3>
       <SetBeta />
@@ -14,10 +14,8 @@
     </div>
 
     <!-- Tutorial Button -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">Tutorial</h3>
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">Tutorial</h3>
       <button @click="showTutorial" class="tns-btn-secondary w-full">
         {{ $t('components.settings.showTutorial') }}
       </button>
@@ -30,30 +28,26 @@
     <BackupRestoreSettings />
 
     <!-- Debug settings -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.debug.title') }}
       </h3>
       <SetDebug />
       <div v-if="store.isPINS" class="flex items-center justify-between">
-        <p class="text-gray-300 text-sm mr-4">{{ $t('components.settings.debug.logLevel') }}</p>
+        <p class="text-content text-sm mr-4">{{ $t('components.settings.debug.logLevel') }}</p>
         <SetLogLevel />
       </div>
     </div>
 
     <!-- System Controls -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.system.title') }}
       </h3>
-      <p class="text-gray-400 text-sm mb-2">
+      <p class="text-content-muted text-sm mb-2">
         {{ $t('components.settings.system.description') }}
       </p>
-      <p class="text-gray-400 text-sm mb-4">{{ $t('components.settings.system.info') }}</p>
+      <p class="text-content-muted text-sm mb-4">{{ $t('components.settings.system.info') }}</p>
 
       <div class="flex justify-center gap-3">
         <!-- Restart Button -->

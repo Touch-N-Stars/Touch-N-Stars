@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col gap-2 pt-1 border-t border-gray-700/60">
+  <div class="flex flex-col gap-2 pt-1 border-t border-line">
     <div class="flex items-center justify-between gap-3">
       <span class="flex items-center gap-1">
-        <span class="text-sm font-medium text-gray-300">
+        <span class="text-sm font-medium text-content">
           {{ $t('components.settings.plate_solver.astapDatabaseTitle') }}
         </span>
         <InfoModal
@@ -50,7 +50,7 @@
       </button>
     </div>
 
-    <div v-if="checkedAt" class="text-xs text-gray-500">
+    <div v-if="checkedAt" class="text-xs text-content-faint">
       {{
         $t('components.settings.plate_solver.astapDatabaseLastChecked', {
           value: formatCheckedAt(checkedAt),
@@ -58,7 +58,7 @@
       }}
     </div>
 
-    <div v-if="jobId" class="text-xs text-cyan-400">
+    <div v-if="jobId" class="text-xs text-accent">
       {{
         $t('components.settings.plate_solver.astapDatabaseJobStatus', {
           jobId,
@@ -68,7 +68,7 @@
     </div>
 
     <div v-if="isJobActive && progressPhase" class="flex flex-col gap-1" aria-live="polite">
-      <div class="flex items-center justify-between gap-2 text-xs text-gray-300">
+      <div class="flex items-center justify-between gap-2 text-xs text-content">
         <span class="capitalize">{{ progressPhase }}</span>
         <span v-if="progressBytes > 0">
           <template v-if="hasDeterminateProgress">{{ progressPercent }}% · </template>
@@ -79,7 +79,7 @@
         </span>
       </div>
       <div
-        class="h-2 overflow-hidden rounded-full bg-gray-700"
+        class="h-2 overflow-hidden rounded-full bg-surface-3"
         role="progressbar"
         :aria-label="$t('components.settings.plate_solver.astapDatabaseTitle')"
         :aria-valuemin="0"
@@ -87,12 +87,12 @@
         :aria-valuenow="hasDeterminateProgress ? progressPercent : undefined"
       >
         <div
-          class="h-full rounded-full bg-cyan-500 transition-[width] duration-300"
+          class="h-full rounded-full bg-accent transition-[width] duration-300"
           :class="{ 'animate-pulse': !hasDeterminateProgress }"
           :style="{ width: progressBarWidth }"
         ></div>
       </div>
-      <div v-if="isProgressStalled" class="text-xs text-amber-400">
+      <div v-if="isProgressStalled" class="text-xs text-status-warn">
         {{ $t('components.settings.plate_solver.astapDatabaseProgressStalled') }}
       </div>
     </div>
@@ -170,12 +170,12 @@ const installButtonLabel = computed(() => {
 
 const feedbackClass = computed(() => {
   if (feedbackTone.value === 'success') {
-    return 'text-green-400';
+    return 'text-status-ok';
   }
   if (feedbackTone.value === 'error') {
-    return 'text-red-400';
+    return 'text-status-danger';
   }
-  return 'text-gray-300';
+  return 'text-content';
 });
 
 function normalizeStatus(value) {

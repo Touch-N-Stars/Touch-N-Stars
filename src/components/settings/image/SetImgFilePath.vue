@@ -2,17 +2,17 @@
   <div class="flex flex-col gap-2">
     <div class="flex items-center gap-2 min-w-0">
       <div
-        class="flex-1 overflow-x-auto scrollbar-thin px-3 py-2 rounded-lg border border-gray-600/50 bg-gray-800/40 min-w-0"
+        class="flex-1 flex items-center min-h-touch overflow-x-auto scrollbar-thin px-3 py-2 rounded-lg border border-line bg-surface-2 min-w-0"
         :class="{ 'glow-green': saveSuccess }"
       >
         <span
           class="text-sm font-mono whitespace-nowrap"
-          :class="path ? 'text-gray-200' : 'text-gray-500 italic'"
+          :class="path ? 'text-content' : 'text-content-faint italic'"
           >{{ path || $t('components.settings.imageSavePath.placeholder') }}</span
         >
       </div>
       <button
-        class="px-3 py-2 bg-gray-700 hover:bg-gray-600 border border-gray-600 rounded text-sm text-gray-200 transition-colors shrink-0"
+        class="tns-btn-secondary w-auto! shrink-0"
         @click="showBrowser = true"
         :title="$t('components.settings.imageSavePath.selectTitle')"
       >
@@ -21,7 +21,7 @@
     </div>
 
     <!-- Status feedback -->
-    <p v-if="statusMsg" class="text-xs text-red-400">{{ statusMsg }}</p>
+    <p v-if="statusMsg" class="text-xs text-status-danger">{{ statusMsg }}</p>
 
     <!-- FileBrowser Dialog -->
     <FileBrowser v-model="showBrowser" :initial-path="path" @select="onPathSelected" />

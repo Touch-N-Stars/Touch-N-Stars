@@ -1,11 +1,8 @@
 <template>
   <div class="space-y-6">
     <!-- Image settings -->
-    <div
-      v-if="store.isBackendReachable"
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div v-if="store.isBackendReachable" class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.image.title') }}
       </h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -21,7 +18,7 @@
           class="w-full"
           :labelKey="toggle.labelKey"
           :settingKey="toggle.settingKey"
-          labelClass="text-gray-200"
+          labelClass="text-content"
           toggleClass="pr-5 pl-5 justify-center"
         />
       </div>
@@ -33,9 +30,9 @@
         store.isBackendReachable &&
         (store.isPINS || store.checkVersionNewerOrEqual(store.currentTnsPluginVersion, '1.2.7.0'))
       "
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="tns-card flex flex-col gap-2 sm:gap-3"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.imageSavePath.title') }}
       </h3>
 
@@ -43,11 +40,8 @@
     </div>
 
     <!-- File Name Pattern -->
-    <div
-      v-if="store.isBackendReachable"
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div v-if="store.isBackendReachable" class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.imageFile.title') }}
       </h3>
       <FilePatternBuilder />

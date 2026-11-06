@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-1">
     <div class="flex items-center justify-between">
       <span class="flex items-center gap-1">
-        <span class="text-sm font-medium text-gray-300">
+        <span class="text-sm font-medium text-content">
           {{ $t('components.settings.plate_solver.Filter') }}
         </span>
         <InfoModal

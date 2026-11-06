@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-  >
-    <h3 class="font-bold text-base text-cyan-400">
+  <div class="tns-card flex flex-col gap-2 sm:gap-3">
+    <h3 class="tns-section-title">
       {{ $t('components.camera.chip_settings.title') }}
     </h3>
 

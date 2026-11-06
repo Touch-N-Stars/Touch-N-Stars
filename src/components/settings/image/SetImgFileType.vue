@@ -1,13 +1,13 @@
 <template>
   <div>
-    <label class="block text-sm font-medium text-gray-300 mb-2">{{
+    <label class="block text-sm font-medium text-content mb-2">{{
       $t('components.settings.image.fileType')
     }}</label>
     <select
       :value="store.profileInfo.ImageFileSettings.FileType"
       @change="updateSetting($event.target.value)"
       :class="[statusClass]"
-      class="tns-input w-full py-2"
+      class="tns-select"
     >
       <option v-for="type in fileTypes" :key="type" :value="type">{{ type }}</option>
     </select>

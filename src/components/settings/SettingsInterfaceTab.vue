@@ -1,18 +1,16 @@
 <template>
   <div class="space-y-6">
     <!-- Language Selection -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.language') }}
       </h3>
       <select
         v-model="currentLanguage"
         @change="changeLanguage($event.target.value)"
-        class="tns-input w-full py-2"
+        class="tns-select"
       >
-        <option v-for="lang in languages" :key="lang.code" :value="lang.code" class="bg-gray-700">
+        <option v-for="lang in languages" :key="lang.code" :value="lang.code">
           {{ lang.name }}
         </option>
       </select>
@@ -20,14 +18,14 @@
 
     <!-- Keep Screen Awake (mobile only) -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="tns-card flex flex-col gap-2 sm:gap-3"
       v-if="['android', 'ios'].includes(Capacitor.getPlatform()) && keepAwakeSupported"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.keepAwake.title') }}
       </h3>
       <div class="flex items-center justify-between">
-        <p class="text-gray-300 text-sm mr-4">
+        <p class="text-content text-sm mr-4">
           {{ $t('components.settings.keepAwake.description') }}
         </p>
         <ToggleButton
@@ -38,15 +36,12 @@
     </div>
 
     <!-- Local Wi-Fi Binding (Android only) -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      v-if="Capacitor.getPlatform() === 'android'"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3" v-if="Capacitor.getPlatform() === 'android'">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.wifiBinding.title') }}
       </h3>
       <div class="flex items-center justify-between">
-        <p class="text-gray-300 text-sm mr-4">
+        <p class="text-content text-sm mr-4">
           {{ $t('components.settings.wifiBinding.description') }}
         </p>
         <ToggleButton
@@ -57,14 +52,12 @@
     </div>
 
     <!-- Touch Input Optimization -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.input.title') }}
       </h3>
       <div class="flex items-center justify-between">
-        <p class="text-gray-300 text-sm mr-4">
+        <p class="text-content text-sm mr-4">
           {{ $t('components.settings.input.touchOptimized') }}
         </p>
         <ToggleButton
@@ -76,14 +69,14 @@
 
     <!-- Haptic Feedback (mobile only) -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="tns-card flex flex-col gap-2 sm:gap-3"
       v-if="['android', 'ios'].includes(Capacitor.getPlatform())"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.haptics.title') }}
       </h3>
       <div class="flex items-center justify-between">
-        <p class="text-gray-300 text-sm mr-4">
+        <p class="text-content text-sm mr-4">
           {{ $t('components.settings.haptics.description') }}
         </p>
         <ToggleButton
