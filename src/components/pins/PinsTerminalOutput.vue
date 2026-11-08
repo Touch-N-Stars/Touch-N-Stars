@@ -1,10 +1,13 @@
 <template>
-  <div
-    class="border border-gray-700 rounded-lg bg-black overflow-hidden shadow-2xl flex flex-col h-[500px]"
-  >
-    <div class="bg-gray-900 px-4 py-2 border-b border-gray-700 flex justify-between items-center">
+  <div class="border border-line rounded-card bg-ground overflow-hidden flex flex-col h-[500px]">
+    <div class="bg-surface-1 px-4 py-2 border-b border-line flex justify-between items-center">
       <div class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          class="w-4 h-4 text-content-faint"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -12,22 +15,22 @@
             d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
           ></path>
         </svg>
-        <span class="text-xs text-gray-400 font-mono font-semibold tracking-wide">
+        <span class="text-xs text-content-muted font-mono font-semibold tracking-wide">
           {{ $t('plugins.pins.terminalOutput') }}
         </span>
       </div>
       <button
         @click="$emit('clear')"
-        class="text-xs text-blue-400 hover:text-white transition-colors hover:underline px-2 py-1 rounded"
+        class="min-h-touch text-xs text-accent hover:text-content transition-colors hover:underline px-2 rounded-control"
       >
         {{ $t('plugins.pins.clearOutput') }}
       </button>
     </div>
     <div
       ref="terminalRef"
-      class="flex-1 overflow-y-auto p-4 font-mono text-xs sm:text-sm space-y-1 scroll-smooth bg-black select-text"
+      class="flex-1 overflow-y-auto p-4 font-mono text-xs sm:text-sm space-y-1 scroll-smooth bg-ground select-text"
     >
-      <div v-if="logs.length === 0" class="text-gray-600 italic select-none opacity-50">
+      <div v-if="logs.length === 0" class="text-content-faint italic select-none">
         {{ $t('plugins.pins.waiting') }}
       </div>
       <div
@@ -36,7 +39,7 @@
         class="break-words whitespace-pre-wrap font-mono leading-relaxed"
         :class="getLogClass(log)"
       >
-        <span class="text-gray-600 select-none mr-2 text-[10px] align-middle">
+        <span class="text-content-faint select-none mr-2 text-[10px] align-middle">
           {{ new Date().toLocaleTimeString([], { hour12: false }) }}
         </span>
         <span class="mr-2 opacity-75">➜</span>
@@ -72,15 +75,15 @@ watch(
 );
 
 function getLogClass(log) {
-  if (typeof log !== 'string') return 'text-gray-300';
+  if (typeof log !== 'string') return 'text-content';
   const lower = log.toLowerCase();
-  if (lower.includes('error') || lower.includes('fail')) return 'text-red-400';
-  if (lower.includes('warn')) return 'text-yellow-400';
+  if (lower.includes('error') || lower.includes('fail')) return 'text-status-danger';
+  if (lower.includes('warn')) return 'text-status-warn';
   if (lower.includes('success') || lower.includes('done') || lower.includes('complete')) {
-    return 'text-green-400';
+    return 'text-status-ok';
   }
-  if (lower.includes('info')) return 'text-blue-300';
-  return 'text-gray-300';
+  if (lower.includes('info')) return 'text-accent';
+  return 'text-content';
 }
 
 function formatLog(log) {

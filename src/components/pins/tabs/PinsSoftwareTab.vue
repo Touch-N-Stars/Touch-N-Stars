@@ -22,7 +22,7 @@
 
     <Modal :show="Boolean(pendingAction)" maxWidth="max-w-md" @close="pendingAction = null">
       <template #header>
-        <h2 class="text-xl font-bold text-white">
+        <h2 class="text-xl font-bold text-content">
           {{
             pendingAction?.action === 'uninstall'
               ? $t('plugins.pins.pluginsUninstall')
@@ -32,9 +32,9 @@
       </template>
 
       <template #body>
-        <div class="w-full flex flex-col gap-4 text-sm text-gray-300">
+        <div class="w-full flex flex-col gap-4 text-sm text-content">
           <p class="font-medium break-all">{{ pendingAction?.packageName }}</p>
-          <p class="text-amber-300">
+          <p class="text-status-warn">
             {{
               pendingAction?.action === 'uninstall'
                 ? $t('plugins.pins.uninstallRestartWarning')
@@ -43,13 +43,17 @@
           </p>
           <div
             v-if="pendingAction?.action === 'uninstall' && sequenceStore.sequenceRunning"
-            class="flex flex-col gap-2 rounded-lg border border-amber-600/60 bg-amber-900/30 p-3"
+            class="flex flex-col gap-2 rounded-control border border-status-warn/40 bg-status-warn/10 p-3"
           >
-            <p class="text-amber-300 font-medium">
+            <p class="text-status-warn font-medium">
               {{ $t('components.ninaPluginInstall.sequenceWarning') }}
             </p>
             <label class="flex items-center gap-2 min-h-touch">
-              <input v-model="sequenceAbortConfirmed" type="checkbox" class="h-5 w-5" />
+              <input
+                v-model="sequenceAbortConfirmed"
+                type="checkbox"
+                class="h-5 w-5 accent-accent-action"
+              />
               {{ $t('plugins.pins.uninstallSequenceConfirm') }}
             </label>
           </div>

@@ -1,14 +1,10 @@
 <template>
   <section
     v-if="store.isPINS"
-    :class="
-      embedded
-        ? 'flex flex-col gap-4'
-        : 'p-2 sm:p-4 flex flex-col gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50'
-    "
+    :class="embedded ? 'flex flex-col gap-4' : 'tns-card flex flex-col gap-3'"
   >
     <div v-if="!embedded">
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ t('components.settings.localization.title') }}
       </h3>
       <p class="text-sm text-content-muted mt-1">

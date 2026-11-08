@@ -21,6 +21,16 @@ const CONTENT_TYPES = {
   '.webp': 'image/webp',
 };
 
+// The PINS daemon listens on a port of its own. Tests point that origin here, under this path.
+export const PINS_DAEMON_PATH = '/pins-daemon';
+
+// The daemon is cross-origin with an Authorization header, so the browser asks first.
+const PREFLIGHT_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE',
+};
+
 function advancedApiResponse(Response) {
   return { Response, Error: '', StatusCode: 200, Success: true, Type: 'API' };
 }
@@ -45,7 +55,7 @@ function serveStatic(rootDir, urlPath, response) {
   fs.createReadStream(filePath).pipe(response);
 }
 
-export async function startFakeBackend({ rootDir, routes = {} }) {
+export async function startFakeBackend({ rootDir, routes = {}, daemonRoutes = {} }) {
   const sockets = new Set();
   const unhandled = new Set();
   let port;
@@ -64,6 +74,19 @@ export async function startFakeBackend({ rootDir, routes = {} }) {
     // A route answering undefined is switched off and falls through to the 404 below.
     const body = advancedApiRoutes[pathname]?.(searchParams);
 
+    if (request.method === 'OPTIONS') {
+      response.writeHead(204, PREFLIGHT_HEADERS);
+      return response.end();
+    }
+    if (pathname.startsWith(`${PINS_DAEMON_PATH}/`)) {
+      // The daemon sends bare JSON. Its routes answer reads only, so writes stay unhandled.
+      const daemonPath = pathname.slice(PINS_DAEMON_PATH.length);
+      const daemonBody =
+        request.method === 'GET' ? daemonRoutes[daemonPath]?.(searchParams) : undefined;
+      if (daemonBody !== undefined) return sendJson(response, daemonBody);
+      unhandled.add(`${request.method} ${pathname}`);
+      return sendJson(response, { detail: 'Not found' }, 404);
+    }
     if (pluginRoutes[pathname]) return sendJson(response, pluginRoutes[pathname]());
     if (body !== undefined) {
       // The Advanced API sends images as the bare file, without its JSON envelope.
