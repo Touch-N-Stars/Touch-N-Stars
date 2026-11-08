@@ -5236,7 +5236,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, [OIII] line only (doubly ionised oxygen). Covers the sky north of −16° only; a separate download.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] line only (ionised sulphur). Covers the sky north of −16° only; a separate download."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] line only (ionised sulphur). Covers the sky north of −16° only; a separate download.",
+        "source_nsns_cont": "NSNS continuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, continuum light only: red, green and blue continuum without the emission lines, stars partially removed. Brings out reflection nebulae and dark clouds. Covers the sky north of −16° only, detail up to order 5; a separate download."
       },
       "toolbar": {
         "label": "Atlas controls",

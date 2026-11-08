@@ -39,23 +39,24 @@ export function resolveCelestiaAtlasDataBaseUrl({
 
 // Average stored bytes per NSNS tile (source PNGs re-encoded to JPEG q85 on the server),
 // the same tables the plugin server uses (SurveyDefinition.Nsns*): means of 25-40 random
-// tiles per order measured on 2026-10-03.
+// tiles per order measured on 2026-10-03 (continuum: 30 tiles on 2026-11-08).
 export const NSNS_SURVEY_AVERAGE_TILE_BYTES = Object.freeze({
   nsns: Object.freeze({ 3: 68_000, 4: 78_000, 5: 92_000, 6: 81_000 }),
   'nsns-ha': Object.freeze({ 3: 37_000, 4: 53_000, 5: 58_000, 6: 50_000 }),
   'nsns-oiii': Object.freeze({ 3: 61_000, 4: 79_000, 5: 78_000, 6: 65_000 }),
   'nsns-sii': Object.freeze({ 3: 79_000, 4: 98_000, 5: 95_000, 6: 74_000 }),
+  'nsns-cont': Object.freeze({ 3: 69_000, 4: 75_000, 5: 64_000 }),
 });
 
 // NSNS covers the sky north of Dec -16 deg only; tile counts per order inside its coverage
-// map (Moc.fits of DR0.2, identical for every product). Used for the size estimate before
-// the server reports exact counts.
+// map (Moc.fits of DR0.2, identical for every product up to order 5). Used for the size
+// estimate before the server reports exact counts.
 const NSNS_SURVEY_TILE_COUNTS = Object.freeze({ 3: 528, 4: 2016, 5: 8000, 6: 31872 });
 
 const NSNS_CREDIT =
   'Northern Sky Narrowband Survey DR0.2 — Stefan Ziegenbalg, CC BY-NC-SA 4.0 (doi:10.3847/2515-5172/adfec7).';
 
-function nsnsSurvey(id, product, label) {
+function nsnsSurvey(id, product, label, maxOrder = 6) {
   return Object.freeze({
     id,
     family: 'nsns',
@@ -64,7 +65,7 @@ function nsnsSurvey(id, product, label) {
     path: `/surveys/${id}`,
     minOrder: 3,
     baseOrder: 4,
-    maxOrder: 6,
+    maxOrder,
     averageTileBytes: NSNS_SURVEY_AVERAGE_TILE_BYTES[id],
     tileCounts: NSNS_SURVEY_TILE_COUNTS,
     credit: NSNS_CREDIT,
@@ -103,6 +104,8 @@ const SKY_SURVEYS = Object.freeze({
   'nsns-ha': nsnsSurvey('nsns-ha', 'halpha8', 'NSNS H-alpha (offline)'),
   'nsns-oiii': nsnsSurvey('nsns-oiii', 'oiii8', 'NSNS [OIII] (offline)'),
   'nsns-sii': nsnsSurvey('nsns-sii', 'sii8', 'NSNS [SII] (offline)'),
+  // The continuum HiPS (rgb8) stops at order 5.
+  'nsns-cont': nsnsSurvey('nsns-cont', 'rgb8', 'NSNS continuum (offline)', 5),
 });
 
 export const SKY_SURVEY_IDS = Object.freeze(Object.keys(SKY_SURVEYS));

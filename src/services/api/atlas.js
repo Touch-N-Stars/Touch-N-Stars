@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getUrls } from './core';
 
 // Plugin-server endpoints for the Atlas survey downloads (HipsSurveyController). `survey`
-// selects the survey ('dss' or 'nsns'); a plugin from before NSNS ignores it and always
+// selects the survey ('dss', 'nsns', ...); a plugin from before NSNS ignores it and always
 // answers for DSS. A plugin without the controller answers 404, which the global
 // interceptor turns into a resolved mock response with `status: 404`; the methods report
 // that as `supported: false` instead of throwing so the UI can show an "update the plugin"
@@ -29,10 +29,14 @@ export default {
       validateStatus: (status) => status < 500 || status === 404,
     });
     const result = unwrapSurveyResponse(response);
-    // An older plugin answers every status request with DSS and without a `survey` field;
-    // for any other survey that means the plugin cannot download it.
-    if (survey !== 'dss' && result.success !== false && result.survey !== survey) {
-      return { success: false, supported: false };
+    // A plugin from before NSNS answers every status request with DSS and without a
+    // `survey` field; a plugin that knows other surveys but not this one answers
+    // "Unknown survey." with code 400. Both mean the plugin cannot download it.
+    if (survey !== 'dss') {
+      const unknownSurvey = result.success === false && result.code === 400;
+      if (unknownSurvey || (result.success !== false && result.survey !== survey)) {
+        return { success: false, supported: false };
+      }
     }
     return result;
   },

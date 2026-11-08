@@ -14,6 +14,7 @@ import {
   resolveDssSurveyUrl,
   createSkySurveySource,
   estimateSkySurveyBytes,
+  getSkySurveyDefinition,
   loadSkySurveyOrder,
   normalizeSkySurveyId,
   skySurveyLocaleKey,
@@ -130,7 +131,14 @@ test('loadDssSurveyOrder reads the served properties and treats 404/network erro
 });
 
 test('NSNS is a second plugin-served survey with its own route, orders and credit', () => {
-  assert.deepEqual(SKY_SURVEY_IDS, ['dss', 'nsns', 'nsns-ha', 'nsns-oiii', 'nsns-sii']);
+  assert.deepEqual(SKY_SURVEY_IDS, [
+    'dss',
+    'nsns',
+    'nsns-ha',
+    'nsns-oiii',
+    'nsns-sii',
+    'nsns-cont',
+  ]);
   const source = createSkySurveySource('nsns', 'http://nina:5000/celestia-atlas-data', 6);
   assert.equal(source.url, 'http://nina:5000/celestia-atlas-data/surveys/nsns');
   assert.equal(source.key, 'local-nsns-ohs8');
@@ -174,4 +182,19 @@ test('the NSNS single-line products are separate surveys sharing the NSNS covera
   assert.equal(estimateSkySurveyBytes('nsns-ha', 3, 4), 528 * 37_000 + 2016 * 53_000);
   assert.equal(skySurveyLocaleKey('nsns-sii'), 'nsns_sii');
   assert.equal(skySurveyLocaleKey('bogus'), 'dss');
+});
+
+test('the NSNS continuum (rgb8) stops at order 5', () => {
+  const definition = getSkySurveyDefinition('nsns-cont');
+  assert.equal(definition.maxOrder, 5);
+  assert.equal(getSkySurveyDefinition('nsns').maxOrder, 6);
+  const source = createSkySurveySource('nsns-cont', '/celestia-atlas-data', 5);
+  assert.equal(source.url, '/celestia-atlas-data/surveys/nsns-cont');
+  assert.equal(source.key, 'local-nsns-rgb8');
+  assert.equal(
+    estimateSkySurveyBytes('nsns-cont', 3, 5),
+    528 * 69_000 + 2016 * 75_000 + 8000 * 64_000
+  );
+  assert.throws(() => estimateSkySurveyBytes('nsns-cont', 3, 6), RangeError);
+  assert.equal(skySurveyLocaleKey('nsns-cont'), 'nsns_cont');
 });
