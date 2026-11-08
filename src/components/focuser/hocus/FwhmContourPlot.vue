@@ -11,12 +11,12 @@
     </div>
 
     <!-- Colour scale: relative to this frame's FWHM range, as in HocusFocus -->
-    <div class="flex items-center gap-2 text-xs text-gray-400">
+    <div class="flex items-center gap-2 text-xs text-content-muted">
       <span class="tabular-nums">{{ formatValue(data.Min) }}</span>
       <div class="h-2 flex-1 rounded" :style="{ background: rampCss }"></div>
       <span class="tabular-nums">{{ formatValue(data.Max) }} {{ unitLabel }}</span>
     </div>
-    <p class="text-xs text-gray-400">{{ L('hint') }}</p>
+    <p class="text-xs text-content-muted">{{ L('hint') }}</p>
   </div>
 </template>
 

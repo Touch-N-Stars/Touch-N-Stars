@@ -39,10 +39,10 @@
 
       <template v-if="isConnected && selectedDeviceId">
         <div class="flex items-center justify-between text-sm">
-          <span class="text-gray-400">{{ L('status') }}</span>
+          <span class="text-content-muted">{{ L('status') }}</span>
           <span
             class="flex items-center gap-1.5 font-semibold"
-            :class="isMoving ? 'text-amber-400' : 'text-green-400'"
+            :class="isMoving ? 'text-status-warn' : 'text-status-ok'"
           >
             <ArrowPathIcon v-if="isMoving" class="h-4 w-4 animate-spin" />
             {{ isMoving ? L('moving') : L('idle') }}
@@ -51,20 +51,20 @@
 
         <div
           v-if="isMoving"
-          class="flex items-center gap-2 rounded-lg border border-amber-600/50 bg-amber-900/25 p-2 text-sm text-amber-200"
+          class="flex items-center gap-2 rounded-control border border-status-warn/40 bg-status-warn/10 p-2 text-sm text-status-warn"
         >
           <ArrowPathIcon class="h-5 w-5 shrink-0 animate-spin" />
           {{ L('movingHint') }}
         </div>
         <div
           v-else-if="moveDone"
-          class="flex items-center gap-2 rounded-lg border border-green-700/40 bg-green-900/15 p-2 text-sm text-green-300"
+          class="flex items-center gap-2 rounded-control border border-status-ok/40 bg-status-ok/10 p-2 text-sm text-status-ok"
         >
           <CheckCircleIcon class="h-5 w-5 shrink-0" />
           {{ L('moveDone') }}
         </div>
 
-        <p class="text-sm font-medium text-gray-300">{{ L('currentPositions') }}</p>
+        <p class="text-sm font-medium text-content">{{ L('currentPositions') }}</p>
         <div class="grid grid-cols-3 gap-2">
           <button
             v-for="n in [1, 2, 3]"
@@ -73,7 +73,7 @@
             :disabled="isMoving"
             @click="openPositionPicker(n)"
           >
-            <span class="text-xs text-gray-400">{{ L('positionN', { n }) }}</span>
+            <span class="text-xs text-content-muted">{{ L('positionN', { n }) }}</span>
             <span class="font-mono text-sm">{{
               formatMm(deviceStatus?.[`CurrentPosition${n}`])
             }}</span>
@@ -87,11 +87,11 @@
           :screw-count="3"
           :corner-values="etaCornerValues"
         />
-        <p class="text-center text-xs text-gray-500">{{ L('cornerOffsetsCaption') }}</p>
+        <p class="text-center text-xs text-content-faint">{{ L('cornerOffsetsCaption') }}</p>
       </template>
-      <p v-else class="text-sm text-gray-400">{{ L('manualModeHint') }}</p>
+      <p v-else class="text-sm text-content-muted">{{ L('manualModeHint') }}</p>
 
-      <p v-if="deviceError" class="text-sm text-red-400">{{ deviceError }}</p>
+      <p v-if="deviceError" class="text-sm text-status-danger">{{ deviceError }}</p>
     </div>
 
     <!-- Manual tilter geometry -->
@@ -103,7 +103,7 @@
         :sensor-height="Number(sensorConfig.SensorHeight) || 0"
         :screw-count="screwCount"
       />
-      <p class="text-center text-xs text-gray-500">
+      <p class="text-center text-xs text-content-faint">
         {{
           L('actuatorVisualizationLabel', {
             radius: (Number(sensorConfig.TilterOuterRadius) || 0).toFixed(1),
@@ -111,7 +111,7 @@
           })
         }}
       </p>
-      <p v-if="screwCount === 4" class="text-center text-xs text-amber-300/80">
+      <p v-if="screwCount === 4" class="text-center text-xs text-status-warn/80">
         {{ L('fourScrewHint') }}
       </p>
     </div>
@@ -214,13 +214,13 @@
           />
         </template>
       </div>
-      <p v-if="configError" class="text-sm text-red-400">{{ configError }}</p>
+      <p v-if="configError" class="text-sm text-status-danger">{{ configError }}</p>
     </div>
 
     <!-- Tilt plane: corner corrections in, screw targets out -->
     <div :class="cardClass">
       <h3 :class="headingClass">{{ L('applyTiltPlane') }}</h3>
-      <p class="text-xs text-gray-400">{{ L('tiltPlaneDescription') }}</p>
+      <p class="text-xs text-content-muted">{{ L('tiltPlaneDescription') }}</p>
       <div class="flex flex-col gap-3">
         <HfNumberField
           v-for="corner in CORNER_FIELDS"
@@ -242,7 +242,7 @@
         />
       </div>
 
-      <p v-if="fetchedReversed" class="text-xs text-amber-300/80">{{ L('fetchedReversed') }}</p>
+      <p v-if="fetchedReversed" class="text-xs text-status-warn/80">{{ L('fetchedReversed') }}</p>
 
       <div class="flex flex-wrap gap-2">
         <button
@@ -265,18 +265,21 @@
       <!-- Calculated positions -->
       <div
         v-if="calculatedPositions"
-        class="flex flex-col gap-2 rounded-lg border border-green-700/40 bg-green-900/15 p-3"
+        class="flex flex-col gap-2 rounded-control border border-status-ok/40 bg-status-ok/10 p-3"
       >
-        <p class="text-sm font-semibold text-green-400">{{ L('calculatedPositions') }}</p>
+        <p class="text-sm font-semibold text-status-ok">{{ L('calculatedPositions') }}</p>
         <div
           v-for="screw in calculatedScrews"
           :key="screw.label"
-          class="flex items-center justify-between gap-3 border-b border-gray-700/40 py-1 text-sm last:border-0"
+          class="flex items-center justify-between gap-3 border-b border-line py-1 text-sm last:border-0"
         >
-          <span class="font-semibold text-gray-300">{{ screw.label }}</span>
+          <span class="font-semibold text-content">{{ screw.label }}</span>
           <span class="text-right">
-            <span class="font-mono text-gray-100">{{ formatMm(screw.position) }}</span>
-            <span v-if="calculatedForManual && screw.showRaw" class="block text-xs text-gray-500">
+            <span class="font-mono text-content">{{ formatMm(screw.position) }}</span>
+            <span
+              v-if="calculatedForManual && screw.showRaw"
+              class="block text-xs text-content-faint"
+            >
               {{ L('calculatedRaw', { value: formatMm(screw.raw) }) }}
             </span>
             <span
@@ -284,10 +287,10 @@
               class="block text-xs font-semibold"
               :class="
                 screw.direction === 'inward'
-                  ? 'text-cyan-300'
+                  ? 'text-accent'
                   : screw.direction === 'outward'
-                    ? 'text-amber-300'
-                    : 'text-gray-400'
+                    ? 'text-status-warn'
+                    : 'text-content-muted'
               "
             >
               {{ screw.directionLabel }}
@@ -310,13 +313,13 @@
         </button>
       </div>
 
-      <p v-if="applyTiltPlaneError" class="text-sm text-red-400">{{ applyTiltPlaneError }}</p>
+      <p v-if="applyTiltPlaneError" class="text-sm text-status-danger">{{ applyTiltPlaneError }}</p>
     </div>
 
     <!-- Set one ETA actuator -->
     <Modal :show="showPositionPicker" maxWidth="max-w-sm" @close="closePositionPicker">
       <template #header>
-        <h2 class="text-xl font-bold text-white">
+        <h2 class="text-xl font-bold text-content">
           {{ L('setPositionTitle', { n: selectedPositionIndex }) }}
         </h2>
       </template>
@@ -332,7 +335,7 @@
             :decimals="3"
             inputId="hf-tilter-position"
           />
-          <p v-if="positionError" class="text-sm text-red-400">{{ positionError }}</p>
+          <p v-if="positionError" class="text-sm text-status-danger">{{ positionError }}</p>
           <div class="flex justify-end gap-2">
             <button
               class="tns-btn-secondary w-auto! px-4"
@@ -373,9 +376,8 @@ const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const L = (key, params) => t(`components.focuser.hocus.tilter.${key}`, params ?? {});
 
-const cardClass =
-  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
-const headingClass = 'font-bold text-base text-cyan-400';
+const cardClass = 'tns-card flex flex-col gap-2 sm:gap-3';
+const headingClass = 'tns-section-title';
 
 const CORNER_FIELDS = [
   { key: 'topLeftZ', label: 'cornerTopLeft' },

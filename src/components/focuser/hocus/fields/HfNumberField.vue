@@ -5,19 +5,19 @@
     <div class="flex items-center justify-between gap-3">
       <div class="flex min-w-0 flex-col">
         <div class="flex items-center gap-1">
-          <label :for="inputId" class="text-sm font-medium text-gray-300">{{ label }}</label>
+          <label :for="inputId" class="text-sm font-medium text-content">{{ label }}</label>
           <InfoModal v-if="help" :title="label" :message="help" size="w-4 h-4" />
         </div>
-        <span v-if="auto && isAuto" class="text-xs text-gray-500">{{ autoActiveLabel }}</span>
+        <span v-if="auto && isAuto" class="text-xs text-content-faint">{{ autoActiveLabel }}</span>
         <button
           v-else-if="auto"
           type="button"
-          class="self-start text-xs text-cyan-400 underline underline-offset-2 hover:text-cyan-300"
+          class="self-start text-xs text-accent underline underline-offset-2 hover:text-accent/80"
           @click="setAuto"
         >
           {{ autoResetLabel }}
         </button>
-        <span v-else-if="hint" class="text-xs text-gray-500">{{ hint }}</span>
+        <span v-else-if="hint" class="text-xs text-content-faint">{{ hint }}</span>
       </div>
       <!-- NumberInputPicker flashes its own green glow on a committed edit, so only the
            failure case needs decorating here. -->
@@ -40,8 +40,8 @@
         />
       </div>
     </div>
-    <p v-if="warning" class="mt-1 text-xs text-amber-400">{{ warning }}</p>
-    <p v-if="error" class="mt-1 text-xs text-red-400">{{ error }}</p>
+    <p v-if="warning" class="mt-1 text-xs text-status-warn">{{ warning }}</p>
+    <p v-if="error" class="mt-1 text-xs text-status-danger">{{ error }}</p>
   </div>
 </template>
 
