@@ -3011,6 +3011,8 @@
             "trialSeconds": "Duration per trial",
             "repeatBaseline": "Repeat the current settings at the end",
             "repeatBaselineHint": "Detects changing seeing or clouds during the trials.",
+            "exposureTrial": "Try a shorter exposure",
+            "exposureTrialHint": "From 1.5 s up, also guides once with half the exposure (at least 1 s). Many mounts guide better with shorter exposures.",
             "allowCalibration": "Calibrate when needed",
             "allowCalibrationHint": "Without a calibration, drift, mount response and trials cannot run.",
             "minutes": "{value} min",
@@ -3114,6 +3116,7 @@
               "current": "Current settings",
               "suggestion": "Coach suggestion",
               "variant": "Variant",
+              "exposure": "Shorter exposure",
               "currentRepeat": "Current settings again"
             },
             "winner": "Best",
@@ -3190,6 +3193,7 @@
           "hint": {
             "label": "Tip",
             "dismiss": "Dismiss tip",
+            "dismissForGood": "Don't show this tip again",
             "apply": "Apply",
             "applied": "Applied",
             "applyFailed": "Applying the tip failed"
@@ -3439,6 +3443,11 @@
                 "title": "Guiding is at the seeing limit",
                 "why": "Your RMS of {rmsArcsec} is close to what the atmosphere allows.",
                 "fix": "Nothing to tune right now."
+              },
+              "longExposure": {
+                "title": "Try a shorter guide exposure",
+                "why": "With {exposureSeconds} per frame the guider corrects late. Many mounts guide better with shorter exposures, because the corrections then follow the mount's own errors and the wind more closely.",
+                "fix": "Try {suggestedSeconds} and compare the RMS. The Guiding Coach can test it for you. This tip is shown only once."
               }
             },
             "coach": {

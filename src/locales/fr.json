@@ -2970,6 +2970,8 @@
             "trialSeconds": "Durée par essai",
             "repeatBaseline": "Répéter les réglages actuels à la fin",
             "repeatBaselineHint": "Détecte un seeing changeant ou des nuages pendant les essais.",
+            "exposureTrial": "Essayer une pose plus courte",
+            "exposureTrialHint": "À partir de 1,5 s, guide aussi une fois avec la moitié de la pose (au moins 1 s). Beaucoup de montures guident mieux avec des poses plus courtes.",
             "allowCalibration": "Calibrer si nécessaire",
             "allowCalibrationHint": "Sans calibration, la dérive, la réponse de la monture et les essais ne peuvent pas s'exécuter.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Réglages actuels",
               "suggestion": "Suggestion du coach",
               "variant": "Variante",
+              "exposure": "Pose plus courte",
               "currentRepeat": "Réglages actuels (bis)"
             },
             "winner": "Meilleur",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Astuce",
             "dismiss": "Ignorer l'astuce",
+            "dismissForGood": "Ne plus afficher ce conseil",
             "apply": "Appliquer",
             "applied": "Appliqué",
             "applyFailed": "Échec de l'application de l'astuce"
@@ -3398,6 +3402,11 @@
                 "title": "Le guidage est à la limite du seeing",
                 "why": "Votre RMS de {rmsArcsec} est proche de ce que permet l'atmosphère.",
                 "fix": "Rien à régler pour l'instant."
+              },
+              "longExposure": {
+                "title": "Essayez une pose de guidage plus courte",
+                "why": "Avec {exposureSeconds} par image, le guidage corrige tard. Beaucoup de montures guident mieux avec des poses plus courtes, car les corrections suivent alors de plus près les erreurs de la monture et le vent.",
+                "fix": "Essayez {suggestedSeconds} et comparez le RMS. Le coach de guidage peut le tester pour vous. Ce conseil ne s'affiche qu'une fois."
               }
             },
             "coach": {

@@ -2970,6 +2970,8 @@
             "trialSeconds": "Duração por ensaio",
             "repeatBaseline": "Repetir as definições atuais no fim",
             "repeatBaselineHint": "Deteta mudanças de seeing ou nuvens durante os ensaios.",
+            "exposureTrial": "Testar uma exposição mais curta",
+            "exposureTrialHint": "A partir de 1,5 s, guia também uma vez com metade da exposição (pelo menos 1 s). Muitas montagens guiam melhor com exposições mais curtas.",
             "allowCalibration": "Calibrar se necessário",
             "allowCalibrationHint": "Sem calibração, a deriva, a resposta da montagem e os ensaios não podem ser executados.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Definições atuais",
               "suggestion": "Sugestão do coach",
               "variant": "Variante",
+              "exposure": "Exposição mais curta",
               "currentRepeat": "Definições atuais (repetição)"
             },
             "winner": "Melhor",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Dica",
             "dismiss": "Dispensar dica",
+            "dismissForGood": "Não mostrar esta dica novamente",
             "apply": "Aplicar",
             "applied": "Aplicado",
             "applyFailed": "Não foi possível aplicar a dica"
@@ -3398,6 +3402,11 @@
                 "title": "A guiagem está no limite do seeing",
                 "why": "O seu RMS de {rmsArcsec} está perto do que a atmosfera permite.",
                 "fix": "Nada a ajustar de momento."
+              },
+              "longExposure": {
+                "title": "Experimente uma exposição de guiagem mais curta",
+                "why": "Com {exposureSeconds} por imagem, a guiagem corrige tarde. Muitas montagens guiam melhor com exposições mais curtas, porque as correções acompanham mais de perto os erros da montagem e o vento.",
+                "fix": "Experimente {suggestedSeconds} e compare o RMS. O assistente de guiagem pode testar isto automaticamente. Esta dica só aparece uma vez."
               }
             },
             "coach": {

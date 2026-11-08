@@ -2970,6 +2970,8 @@
             "trialSeconds": "Czas każdej próby",
             "repeatBaseline": "Powtórz bieżące ustawienia na końcu",
             "repeatBaselineHint": "Wykrywa zmiany seeingu lub chmury podczas prób.",
+            "exposureTrial": "Wypróbuj krótszą ekspozycję",
+            "exposureTrialHint": "Od 1,5 s prowadzi też raz z połową ekspozycji (co najmniej 1 s). Wiele montaży prowadzi lepiej przy krótszych ekspozycjach.",
             "allowCalibration": "Kalibruj w razie potrzeby",
             "allowCalibrationHint": "Bez kalibracji nie da się zmierzyć dryfu i reakcji montażu ani wykonać prób.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Bieżące ustawienia",
               "suggestion": "Sugestia Coacha",
               "variant": "Wariant",
+              "exposure": "Krótsza ekspozycja",
               "currentRepeat": "Bieżące ustawienia (powtórka)"
             },
             "winner": "Najlepsza",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Wskazówka",
             "dismiss": "Odrzuć wskazówkę",
+            "dismissForGood": "Nie pokazuj więcej tej wskazówki",
             "apply": "Zastosuj",
             "applied": "Zastosowano",
             "applyFailed": "Nie udało się zastosować wskazówki"
@@ -3398,6 +3402,11 @@
                 "title": "Prowadzenie na granicy seeingu",
                 "why": "RMS {rmsArcsec} jest bliski temu, na co pozwala atmosfera.",
                 "fix": "Na razie nie ma czego dostrajać."
+              },
+              "longExposure": {
+                "title": "Wypróbuj krótszą ekspozycję prowadzenia",
+                "why": "Przy {exposureSeconds} na klatkę korekty przychodzą z opóźnieniem. Wiele montaży prowadzi lepiej przy krótszych ekspozycjach, bo korekty dokładniej nadążają za błędami samego montażu i wiatrem.",
+                "fix": "Wypróbuj {suggestedSeconds} i porównaj RMS. Asystent prowadzenia może to przetestować. Ta wskazówka pojawia się tylko raz."
               }
             },
             "coach": {

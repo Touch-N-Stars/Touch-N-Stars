@@ -2970,6 +2970,8 @@
             "trialSeconds": "每次试验时长",
             "repeatBaseline": "最后再次测试当前设置",
             "repeatBaselineHint": "可检测试验期间视宁度变化或云层。",
+            "exposureTrial": "尝试更短的曝光",
+            "exposureTrialHint": "曝光为1.5秒及以上时，再用一半曝光（至少1秒）导星一次。许多赤道仪在较短曝光下导星效果更好。",
             "allowCalibration": "需要时进行校准",
             "allowCalibrationHint": "没有校准，漂移、赤道仪响应和试验都无法运行。",
             "minutes": "{value} 分钟",
@@ -3073,6 +3075,7 @@
               "current": "当前设置",
               "suggestion": "Coach 建议",
               "variant": "变体",
+              "exposure": "更短曝光",
               "currentRepeat": "再次测试当前设置"
             },
             "winner": "最佳",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "提示",
             "dismiss": "关闭提示",
+            "dismissForGood": "不再显示此提示",
             "apply": "应用",
             "applied": "已应用",
             "applyFailed": "应用提示失败"
@@ -3398,6 +3402,11 @@
                 "title": "导星已达视宁度极限",
                 "why": "您的 RMS {rmsArcsec} 已接近大气允许的水平。",
                 "fix": "目前无需调整。"
+              },
+              "longExposure": {
+                "title": "尝试更短的导星曝光",
+                "why": "每帧{exposureSeconds}时，导星修正较慢。曝光较短时，修正能更紧密地跟随赤道仪自身的误差和风，因此许多赤道仪导星效果更好。",
+                "fix": "尝试{suggestedSeconds}并比较RMS。导星教练可以替你测试。此提示只显示一次。"
               }
             },
             "coach": {

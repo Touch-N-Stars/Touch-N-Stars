@@ -2970,6 +2970,8 @@
             "trialSeconds": "Duur per test",
             "repeatBaseline": "Huidige instellingen aan het eind herhalen",
             "repeatBaselineHint": "Detecteert wisselende seeing of wolken tijdens de tests.",
+            "exposureTrial": "Kortere belichting proberen",
+            "exposureTrialHint": "Vanaf 1,5 s wordt ook één keer met de halve belichting geguided (minstens 1 s). Veel montages guiden beter met kortere belichtingen.",
             "allowCalibration": "Kalibreren indien nodig",
             "allowCalibrationHint": "Zonder kalibratie kunnen drift, monteringsreactie en tests niet lopen.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Huidige instellingen",
               "suggestion": "Voorstel coach",
               "variant": "Variant",
+              "exposure": "Kortere belichting",
               "currentRepeat": "Huidige instellingen opnieuw"
             },
             "winner": "Beste",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Tip",
             "dismiss": "Tip sluiten",
+            "dismissForGood": "Deze tip niet meer tonen",
             "apply": "Toepassen",
             "applied": "Toegepast",
             "applyFailed": "Tip toepassen mislukt"
@@ -3398,6 +3402,11 @@
                 "title": "Guiding zit op de seeinglimiet",
                 "why": "Je RMS van {rmsArcsec} ligt dicht bij wat de atmosfeer toelaat.",
                 "fix": "Nu niets af te stellen."
+              },
+              "longExposure": {
+                "title": "Probeer een kortere guidebelichting",
+                "why": "Met {exposureSeconds} per frame corrigeert de guider laat. Veel montages guiden beter met kortere belichtingen, omdat de correcties dan de eigen fouten van de montage en de wind beter volgen.",
+                "fix": "Probeer {suggestedSeconds} en vergelijk de RMS. De guiding-coach kan dit voor je testen. Deze tip verschijnt maar één keer."
               }
             },
             "coach": {

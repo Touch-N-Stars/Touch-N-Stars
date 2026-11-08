@@ -3011,6 +3011,8 @@
             "trialSeconds": "Dauer pro Testlauf",
             "repeatBaseline": "Aktuelle Einstellungen am Ende wiederholen",
             "repeatBaselineHint": "Erkennt wechselndes Seeing oder Wolken während der Testläufe.",
+            "exposureTrial": "Kürzere Belichtung testen",
+            "exposureTrialHint": "Ab 1,5 s wird zusätzlich einmal mit halber Belichtung geguidet (mindestens 1 s). Viele Montierungen guiden mit kürzeren Belichtungen besser.",
             "allowCalibration": "Bei Bedarf kalibrieren",
             "allowCalibrationHint": "Ohne Kalibrierung können Drift, Montierungsreaktion und Testläufe nicht laufen.",
             "minutes": "{value} min",
@@ -3114,6 +3116,7 @@
               "current": "Aktuelle Einstellungen",
               "suggestion": "Coach-Vorschlag",
               "variant": "Variante",
+              "exposure": "Kürzere Belichtung",
               "currentRepeat": "Aktuelle Einstellungen erneut"
             },
             "winner": "Bester",
@@ -3190,6 +3193,7 @@
           "hint": {
             "label": "Tipp",
             "dismiss": "Tipp verwerfen",
+            "dismissForGood": "Tipp nicht mehr anzeigen",
             "apply": "Übernehmen",
             "applied": "Übernommen",
             "applyFailed": "Übernehmen des Tipps fehlgeschlagen"
@@ -3439,6 +3443,11 @@
                 "title": "Guiding ist am Seeing-Limit",
                 "why": "Dein RMS von {rmsArcsec} liegt nah an dem, was die Atmosphäre zulässt.",
                 "fix": "Im Moment nichts einzustellen."
+              },
+              "longExposure": {
+                "title": "Kürzere Guiding-Belichtung probieren",
+                "why": "Mit {exposureSeconds} pro Frame korrigiert der Guider spät. Viele Montierungen guiden mit kürzeren Belichtungen besser, weil die Korrekturen dann den Fehlern der Montierung und dem Wind enger folgen.",
+                "fix": "Probier {suggestedSeconds} und vergleiche den RMS. Der Guiding-Coach kann das für dich testen. Dieser Tipp erscheint nur einmal."
               }
             },
             "coach": {

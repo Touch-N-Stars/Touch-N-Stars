@@ -3011,6 +3011,8 @@
             "trialSeconds": "Durada per prova",
             "repeatBaseline": "Repeteix els ajustos actuals al final",
             "repeatBaselineHint": "Detecta canvis de seeing o núvols durant les proves.",
+            "exposureTrial": "Provar una exposició més curta",
+            "exposureTrialHint": "A partir d'1,5 s, també guia un cop amb la meitat de l'exposició (com a mínim 1 s). Moltes muntures guien millor amb exposicions més curtes.",
             "allowCalibration": "Calibra si cal",
             "allowCalibrationHint": "Sense calibratge no es poden executar la deriva, la resposta de la muntura ni les proves.",
             "minutes": "{value} min",
@@ -3114,6 +3116,7 @@
               "current": "Ajustos actuals",
               "suggestion": "Suggeriment del Coach",
               "variant": "Variant",
+              "exposure": "Exposició més curta",
               "currentRepeat": "Ajustos actuals de nou"
             },
             "winner": "Millor",
@@ -3190,6 +3193,7 @@
           "hint": {
             "label": "Consell",
             "dismiss": "Descarta el consell",
+            "dismissForGood": "No tornar a mostrar aquest consell",
             "apply": "Aplica",
             "applied": "Aplicat",
             "applyFailed": "No s'ha pogut aplicar el consell"
@@ -3439,6 +3443,11 @@
                 "title": "El guiatge és al límit del seeing",
                 "why": "El vostre RMS de {rmsArcsec} és a prop del que permet l'atmosfera.",
                 "fix": "Ara mateix no cal ajustar res."
+              },
+              "longExposure": {
+                "title": "Proveu una exposició de guiatge més curta",
+                "why": "Amb {exposureSeconds} per imatge, el guiatge corregeix tard. Moltes muntures guien millor amb exposicions més curtes, perquè les correccions segueixen més de prop els errors de la muntura i el vent.",
+                "fix": "Proveu {suggestedSeconds} i compareu l'RMS. L'assistent de guiatge ho pot provar per vosaltres. Aquest consell només es mostra un cop."
               }
             },
             "coach": {

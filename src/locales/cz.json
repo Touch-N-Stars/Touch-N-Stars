@@ -2970,6 +2970,8 @@
             "trialSeconds": "Délka každého testu",
             "repeatBaseline": "Na konci zopakovat současné nastavení",
             "repeatBaselineHint": "Odhalí změnu seeingu nebo mraky během testů.",
+            "exposureTrial": "Vyzkoušet kratší expozici",
+            "exposureTrialHint": "Od 1,5 s navíc jednou navádí s poloviční expozicí (nejméně 1 s). Mnoho montáží navádí lépe s kratšími expozicemi.",
             "allowCalibration": "Kalibrovat v případě potřeby",
             "allowCalibrationHint": "Bez kalibrace nelze spustit drift, odezvu montáže ani testy.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Současné nastavení",
               "suggestion": "Navržené nastavení",
               "variant": "Varianta",
+              "exposure": "Kratší expozice",
               "currentRepeat": "Současné nastavení znovu"
             },
             "winner": "Nejlepší",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Tip",
             "dismiss": "Zahodit tip",
+            "dismissForGood": "Tento tip už nezobrazovat",
             "apply": "Použít",
             "applied": "Použito",
             "applyFailed": "Použití tipu selhalo"
@@ -3398,6 +3402,11 @@
                 "title": "Navádění je na hranici seeingu",
                 "why": "Vaše RMS {rmsArcsec} je blízko tomu, co atmosféra dovoluje.",
                 "fix": "Teď není co ladit."
+              },
+              "longExposure": {
+                "title": "Zkuste kratší expozici navádění",
+                "why": "S {exposureSeconds} na snímek koriguje navádění pozdě. Mnoho montáží navádí lépe s kratšími expozicemi, protože korekce pak lépe sledují vlastní chyby montáže a vítr.",
+                "fix": "Zkuste {suggestedSeconds} a porovnejte RMS. Pointační kouč to může otestovat za vás. Tento tip se zobrazí jen jednou."
               }
             },
             "coach": {

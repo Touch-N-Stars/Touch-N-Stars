@@ -43,7 +43,11 @@ export const FINDING_CODES = [
   'hint.lowSnr',
   'hint.decDrift',
   'hint.seeingBound',
+  'hint.longExposure',
 ];
+
+/** Hints that are shown once: dismissing one hides it for good (the guider remembers it). */
+export const ONE_TIME_HINTS = ['hint.longExposure'];
 
 /**
  * Failure/step message codes (AdvancedCoachStatus.MessageCode, AdvancedCoachStepStatus.MessageCode
@@ -276,7 +280,9 @@ const CALIBRATION_SECONDS = 120;
 /**
  * Estimated duration per step in seconds for the options on the start screen.
  * options: { exposureSeconds[], gains[], framesPerCombination, driftSeconds, trialSeconds,
- * repeatBaseline }; empty exposures/gains = the defaults (exposures 1/2/3 s, 3 gains).
+ * repeatBaseline, exposureTrial, currentExposureSeconds }; empty exposures/gains = the defaults
+ * (exposures 1/2/3 s, 3 gains). The exposure trial (E) runs when the current exposure is 1.5 s or
+ * longer.
  */
 export function estimateStepSeconds(step, options = {}) {
   const exposures = options.exposureSeconds?.length ? options.exposureSeconds : DEFAULT_EXPOSURES;
@@ -293,7 +299,8 @@ export function estimateStepSeconds(step, options = {}) {
       return MOUNT_RESPONSE_SECONDS;
     case 'Trials':
       return (
-        (options.repeatBaseline === false ? 3 : 4) *
+        ((options.repeatBaseline === false ? 3 : 4) +
+          (options.exposureTrial !== false && options.currentExposureSeconds >= 1.5 ? 1 : 0)) *
         ((options.trialSeconds || 120) + TRIAL_SETTLE_SECONDS)
       );
     default:
@@ -482,7 +489,7 @@ export function pulseResponse(pulses, seeing = null) {
 
 /** Trials in display order A, B, C, A2 (unknown ids after them). */
 export function orderedTrials(trials) {
-  const order = ['A', 'B', 'C', 'A2'];
+  const order = ['A', 'B', 'C', 'E', 'A2'];
   return [...(Array.isArray(trials) ? trials : [])].sort((a, b) => {
     const ia = order.indexOf(a.id);
     const ib = order.indexOf(b.id);

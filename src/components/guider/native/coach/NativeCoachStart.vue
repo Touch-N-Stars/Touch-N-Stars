@@ -186,6 +186,13 @@
             </div>
             <toggleButton v-model:statusValue="repeatBaseline" />
           </div>
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex min-w-0 flex-col">
+              <span class="text-sm text-content">{{ k('options.exposureTrial') }}</span>
+              <span class="text-xs text-content-faint">{{ k('options.exposureTrialHint') }}</span>
+            </div>
+            <toggleButton v-model:statusValue="exposureTrial" />
+          </div>
         </div>
 
         <div class="flex items-center justify-between gap-3">
@@ -264,6 +271,7 @@ const DEFAULTS = {
   driftSeconds: 180,
   trialSeconds: 120,
   repeatBaseline: true,
+  exposureTrial: true,
   allowCalibration: true,
 };
 
@@ -277,6 +285,7 @@ const frames = ref(stored.frames ?? DEFAULTS.frames);
 const driftSeconds = ref(stored.driftSeconds ?? DEFAULTS.driftSeconds);
 const trialSeconds = ref(stored.trialSeconds ?? DEFAULTS.trialSeconds);
 const repeatBaseline = ref(stored.repeatBaseline ?? DEFAULTS.repeatBaseline);
+const exposureTrial = ref(stored.exposureTrial ?? DEFAULTS.exposureTrial);
 const allowCalibration = ref(stored.allowCalibration ?? DEFAULTS.allowCalibration);
 const advancedOpen = ref(false);
 const starting = ref(false);
@@ -324,6 +333,7 @@ function writeStored() {
     driftSeconds: driftSeconds.value,
     trialSeconds: trialSeconds.value,
     repeatBaseline: repeatBaseline.value,
+    exposureTrial: exposureTrial.value,
     allowCalibration: allowCalibration.value,
     exposures: exposuresCustom.value ? exposures.value : undefined,
     gains: gainsCustom.value ? gains.value : undefined,
@@ -343,6 +353,7 @@ function resetOptions() {
   driftSeconds.value = DEFAULTS.driftSeconds;
   trialSeconds.value = DEFAULTS.trialSeconds;
   repeatBaseline.value = DEFAULTS.repeatBaseline;
+  exposureTrial.value = DEFAULTS.exposureTrial;
   allowCalibration.value = DEFAULTS.allowCalibration;
   exposures.value = [...DEFAULT_EXPOSURES];
   gains.value = suggestedGains.value;
@@ -356,6 +367,8 @@ const estimateOptions = computed(() => ({
   driftSeconds: driftSeconds.value,
   trialSeconds: trialSeconds.value,
   repeatBaseline: repeatBaseline.value,
+  exposureTrial: exposureTrial.value,
+  currentExposureSeconds: store.coach?.currentExposureSeconds,
   allowCalibration: allowCalibration.value,
 }));
 
@@ -417,6 +430,7 @@ async function start() {
       driftSeconds: driftSeconds.value,
       trialSeconds: trialSeconds.value,
       repeatBaseline: repeatBaseline.value,
+      exposureTrial: exposureTrial.value,
       allowCalibration: allowCalibration.value,
     });
     if (!result.ok && !result.cancelled) {

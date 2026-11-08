@@ -2970,6 +2970,8 @@
             "trialSeconds": "Duración por prueba",
             "repeatBaseline": "Repetir los ajustes actuales al final",
             "repeatBaselineHint": "Detecta cambios de seeing o nubes durante las pruebas.",
+            "exposureTrial": "Probar una exposición más corta",
+            "exposureTrialHint": "Desde 1,5 s, guía también una vez con la mitad de la exposición (mínimo 1 s). Muchas monturas guían mejor con exposiciones más cortas.",
             "allowCalibration": "Calibrar si hace falta",
             "allowCalibrationHint": "Sin calibración no se pueden ejecutar la deriva, la respuesta de la montura ni las pruebas.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Ajustes actuales",
               "suggestion": "Sugerencia del coach",
               "variant": "Variante",
+              "exposure": "Exposición más corta",
               "currentRepeat": "Ajustes actuales de nuevo"
             },
             "winner": "Mejor",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Consejo",
             "dismiss": "Descartar consejo",
+            "dismissForGood": "No volver a mostrar este consejo",
             "apply": "Aplicar",
             "applied": "Aplicado",
             "applyFailed": "No se pudo aplicar el consejo"
@@ -3398,6 +3402,11 @@
                 "title": "El guiado está en el límite del seeing",
                 "why": "Tu RMS de {rmsArcsec} está cerca de lo que permite la atmósfera.",
                 "fix": "Nada que ajustar por ahora."
+              },
+              "longExposure": {
+                "title": "Prueba una exposición de guiado más corta",
+                "why": "Con {exposureSeconds} por imagen, el guiado corrige tarde. Muchas monturas guían mejor con exposiciones más cortas, porque las correcciones siguen más de cerca los errores de la montura y el viento.",
+                "fix": "Prueba {suggestedSeconds} y compara el RMS. El asistente de guiado puede probarlo por ti. Este consejo solo se muestra una vez."
               }
             },
             "coach": {

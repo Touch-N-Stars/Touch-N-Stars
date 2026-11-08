@@ -2979,6 +2979,8 @@
             "trialSeconds": "試行ごとの時間",
             "repeatBaseline": "最後に現在の設定をもう一度試す",
             "repeatBaselineHint": "試行中のシーイングの変化や雲を検出します。",
+            "exposureTrial": "短い露出を試す",
+            "exposureTrialHint": "1.5秒以上のとき、露出を半分(最短1秒)にしてもう一度ガイドします。多くの赤道儀は短い露出の方がうまくガイドできます。",
             "allowCalibration": "必要に応じて校正する",
             "allowCalibrationHint": "校正がないと、ドリフト・赤道儀の応答・試行は実行できません。",
             "minutes": "{value} 分",
@@ -3082,6 +3084,7 @@
               "current": "現在の設定",
               "suggestion": "コーチの提案",
               "variant": "バリエーション",
+              "exposure": "短い露出",
               "currentRepeat": "現在の設定（再測定）"
             },
             "winner": "最良",
@@ -3158,6 +3161,7 @@
           "hint": {
             "label": "ヒント",
             "dismiss": "ヒントを閉じる",
+            "dismissForGood": "このヒントを今後表示しない",
             "apply": "適用",
             "applied": "適用済み",
             "applyFailed": "ヒントの適用に失敗しました"
@@ -3407,6 +3411,11 @@
                 "title": "ガイドはシーイングの限界に達しています",
                 "why": "RMS {rmsArcsec} は大気が許す限界に近い値です。",
                 "fix": "今のところ調整は不要です。"
+              },
+              "longExposure": {
+                "title": "ガイド露出を短くしてみてください",
+                "why": "1フレーム{exposureSeconds}では補正が遅れます。露出を短くすると補正が赤道儀自身の誤差や風により素早く追従するため、多くの赤道儀でガイドが改善します。",
+                "fix": "{suggestedSeconds}を試してRMSを比較してください。ガイドコーチで自動的にテストできます。このヒントは一度だけ表示されます。"
               }
             },
             "coach": {

@@ -2970,6 +2970,8 @@
             "trialSeconds": "Durata per prova",
             "repeatBaseline": "Ripeti le impostazioni attuali alla fine",
             "repeatBaselineHint": "Rileva variazioni di seeing o nuvole durante le prove.",
+            "exposureTrial": "Prova un'esposizione più breve",
+            "exposureTrialHint": "Da 1,5 s in su, guida anche una volta con metà dell'esposizione (almeno 1 s). Molte montature guidano meglio con esposizioni più brevi.",
             "allowCalibration": "Calibra se necessario",
             "allowCalibrationHint": "Senza calibrazione non si possono eseguire deriva, risposta della montatura e prove.",
             "minutes": "{value} min",
@@ -3073,6 +3075,7 @@
               "current": "Impostazioni attuali",
               "suggestion": "Suggerimento del coach",
               "variant": "Variante",
+              "exposure": "Esposizione più breve",
               "currentRepeat": "Impostazioni attuali (ripetute)"
             },
             "winner": "Migliore",
@@ -3149,6 +3152,7 @@
           "hint": {
             "label": "Suggerimento",
             "dismiss": "Ignora suggerimento",
+            "dismissForGood": "Non mostrare più questo suggerimento",
             "apply": "Applica",
             "applied": "Applicato",
             "applyFailed": "Impossibile applicare il suggerimento"
@@ -3398,6 +3402,11 @@
                 "title": "La guida è al limite del seeing",
                 "why": "Il tuo RMS di {rmsArcsec} è vicino a quanto consente l'atmosfera.",
                 "fix": "Per ora niente da regolare."
+              },
+              "longExposure": {
+                "title": "Prova un'esposizione di guida più breve",
+                "why": "Con {exposureSeconds} per frame la guida corregge in ritardo. Molte montature guidano meglio con esposizioni più brevi, perché le correzioni seguono più da vicino gli errori della montatura e il vento.",
+                "fix": "Prova {suggestedSeconds} e confronta l'RMS. Il coach di guida può testarlo per te. Questo suggerimento appare una sola volta."
               }
             },
             "coach": {

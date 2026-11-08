@@ -89,6 +89,7 @@ const SAMPLE_PARAMETERS = {
   'hint.lowSnr': { snr: 8 },
   'hint.decDrift': { driftArcsecPerMin: 1.5, arcmin: 6 },
   'hint.seeingBound': { rmsArcsec: 0.9 },
+  'hint.longExposure': { exposureSeconds: 2.5, suggestedSeconds: 1 },
 };
 
 const SEVERITIES = ['good', 'info', 'warning', 'problem'];
@@ -330,6 +331,17 @@ test('duration estimates cover every step and the calibration', () => {
   for (const step of COACH_STEPS) assert.ok(estimateStepSeconds(step, options) > 0, step);
   assert.equal(estimateStepSeconds('Trials', options), 4 * 140);
   assert.equal(estimateStepSeconds('Trials', { ...options, repeatBaseline: false }), 3 * 140);
+  // the exposure trial E runs from 1.5 s up, unless it is switched off
+  assert.equal(estimateStepSeconds('Trials', { ...options, currentExposureSeconds: 2.5 }), 5 * 140);
+  assert.equal(estimateStepSeconds('Trials', { ...options, currentExposureSeconds: 1 }), 4 * 140);
+  assert.equal(
+    estimateStepSeconds('Trials', {
+      ...options,
+      currentExposureSeconds: 2.5,
+      exposureTrial: false,
+    }),
+    4 * 140
+  );
   const all = estimateTotalSeconds(COACH_STEPS, options);
   // a default session is "about 15 minutes"
   assert.ok(all > 12 * 60 && all < 20 * 60, `total ${all}`);
@@ -487,10 +499,12 @@ test('ranked actions follow the report order and other findings group by step', 
   );
 });
 
-test('trials are ordered A, B, C, A2', () => {
+test('trials are ordered A, B, C, E, A2', () => {
   assert.deepEqual(
-    orderedTrials([{ id: 'A2' }, { id: 'C' }, { id: 'A' }, { id: 'B' }]).map((t) => t.id),
-    ['A', 'B', 'C', 'A2']
+    orderedTrials([{ id: 'A2' }, { id: 'E' }, { id: 'C' }, { id: 'A' }, { id: 'B' }]).map(
+      (t) => t.id
+    ),
+    ['A', 'B', 'C', 'E', 'A2']
   );
 });
 
