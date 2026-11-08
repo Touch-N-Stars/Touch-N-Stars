@@ -1,19 +1,6 @@
 <template>
   <div class="w-full flex items-center gap-2">
-    <!-- Loading Spinner Overlay -->
-    <teleport to="body">
-      <div
-        v-if="isLoading"
-        class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center pointer-events-auto"
-      >
-        <div class="flex flex-col items-center">
-          <div
-            class="w-16 h-16 border-4 border-gray-600 border-t-blue-500 rounded-full animate-spin"
-          ></div>
-          <p class="text-white mt-4">{{ $t('loading') }}</p>
-        </div>
-      </div>
-    </teleport>
+    <LoadingOverlay :show="isLoading" :message="$t('common.loading')" />
 
     <label class="mr-2 shrink-0" for="profileDropdown">{{ $t('components.profile.label') }} </label>
     <select
@@ -56,6 +43,7 @@ import { useEquipmentStore } from '@/store/equipmentStore';
 import { useToastStore } from '@/store/toastStore';
 import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/outline';
 import ProfilManagementModal from '@/components/profil/ProfilManagementModal.vue';
+import LoadingOverlay from '@/components/helpers/LoadingOverlay.vue';
 
 const store = apiStore();
 const equipmentStore = useEquipmentStore();

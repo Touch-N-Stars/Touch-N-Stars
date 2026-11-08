@@ -1,76 +1,73 @@
 <template>
   <div class="flex flex-col gap-3">
-    <div class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg gap-2">
-      <h4 class="text-sm font-semibold text-gray-200">
+    <div class="tns-card flex flex-col gap-2">
+      <h4 class="tns-section-title">
         {{ $t('components.alpacaDirect.title') }}
       </h4>
 
-      <p v-if="isSharedGuid" class="text-xs text-yellow-400">
+      <p v-if="isSharedGuid" class="text-xs text-status-warn">
         {{ $t('components.alpacaDirect.sharedGuidWarning') }}
       </p>
 
-      <p class="text-xs text-gray-400">
+      <p class="text-xs text-content-muted">
         {{ $t('components.alpacaDirect.noReconnectHint') }}
       </p>
 
-      <div class="flex flex-row items-center justify-between w-full mt-2">
-        <label for="adIpAddress" class="text-xs md:text-sm text-gray-200 mr-2 shrink-0">
-          {{ $t('components.alpacaDirect.ipAddress') }}
-        </label>
-        <input
-          id="adIpAddress"
-          v-model="ipAddress"
-          type="text"
-          class="tns-input text-xs md:text-sm w-48"
-          :disabled="isLoading"
+      <!-- One fieldset locks every field while the settings load; the number pickers have no
+           disabled prop of their own. -->
+      <fieldset :disabled="isLoading" class="flex flex-col gap-2 min-w-0 mt-2">
+        <div class="flex flex-row items-center justify-between w-full">
+          <label for="adIpAddress" class="text-xs md:text-sm text-content mr-2 shrink-0">
+            {{ $t('components.alpacaDirect.ipAddress') }}
+          </label>
+          <input
+            id="adIpAddress"
+            v-model="ipAddress"
+            type="text"
+            class="tns-input text-xs md:text-sm w-48"
+          />
+        </div>
+
+        <NumberInputPicker
+          v-model="port"
+          :label="$t('components.alpacaDirect.port')"
+          labelKey="components.alpacaDirect.port"
+          :min="1"
+          :max="65535"
+          :step="1"
+          :decimalPlaces="0"
+          :useDefaultSentinel="false"
+          inputId="adPort"
         />
-      </div>
 
-      <div class="flex flex-row items-center justify-between w-full">
-        <label for="adPort" class="text-xs md:text-sm text-gray-200 mr-2 shrink-0">
-          {{ $t('components.alpacaDirect.port') }}
-        </label>
-        <input
-          id="adPort"
-          v-model.number="port"
-          type="number"
-          min="1"
-          max="65535"
-          class="tns-input text-xs md:text-sm w-48"
-          :disabled="isLoading"
+        <NumberInputPicker
+          v-model="deviceNumber"
+          :label="$t('components.alpacaDirect.deviceNumber')"
+          labelKey="components.alpacaDirect.deviceNumber"
+          :min="0"
+          :max="99"
+          :step="1"
+          :decimalPlaces="0"
+          :useDefaultSentinel="false"
+          inputId="adDeviceNumber"
         />
-      </div>
 
-      <div class="flex flex-row items-center justify-between w-full">
-        <label for="adDeviceNumber" class="text-xs md:text-sm text-gray-200 mr-2 shrink-0">
-          {{ $t('components.alpacaDirect.deviceNumber') }}
-        </label>
-        <input
-          id="adDeviceNumber"
-          v-model.number="deviceNumber"
-          type="number"
-          min="0"
-          class="tns-input text-xs md:text-sm w-48"
-          :disabled="isLoading"
-        />
-      </div>
+        <div class="flex flex-row items-center justify-between w-full">
+          <label for="adServiceType" class="text-xs md:text-sm text-content mr-2 shrink-0">
+            {{ $t('components.alpacaDirect.serviceType') }}
+          </label>
+          <select
+            id="adServiceType"
+            v-model="serviceType"
+            class="tns-select text-xs md:text-sm w-48"
+          >
+            <option value="Http">Http</option>
+            <option value="Https">Https</option>
+          </select>
+        </div>
+      </fieldset>
 
-      <div class="flex flex-row items-center justify-between w-full">
-        <label for="adServiceType" class="text-xs md:text-sm text-gray-200 mr-2 shrink-0">
-          {{ $t('components.alpacaDirect.serviceType') }}
-        </label>
-        <select
-          id="adServiceType"
-          v-model="serviceType"
-          class="tns-input text-xs md:text-sm w-48"
-          :disabled="isLoading"
-        >
-          <option value="Http">Http</option>
-          <option value="Https">Https</option>
-        </select>
-      </div>
-
-      <p v-if="errorMessage" class="text-xs text-red-400 mt-1">{{ errorMessage }}</p>
+      <p v-if="errorMessage" class="text-xs text-status-danger mt-1">{{ errorMessage }}</p>
 
       <div class="flex justify-end gap-2 mt-2">
         <button
@@ -107,6 +104,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import apiService from '@/services/apiService';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { apiStore } from '@/store/store';
 
 const props = defineProps({

@@ -1,19 +1,19 @@
 <template>
-  <div v-if="isSV241Pro" class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg mt-2">
-    <div class="flex flex-row items-center justify-between w-full">
-      <label for="preConnectDelay" class="text-xs md:text-sm text-gray-200 mr-2">
-        {{ $t('components.switch.sv241pro.preConnectDelay') }}
-      </label>
-      <input
-        id="preConnectDelay"
-        v-model.number="preConnectDelay"
-        @change="setPreConnectDelay"
-        type="number"
-        min="0"
-        class="tns-input text-xs md:text-sm w-48"
-        :class="statusClassPre"
-      />
-    </div>
+  <div v-if="isSV241Pro" class="tns-card flex flex-col mt-2">
+    <!-- The row glows with the result of the profile write. -->
+    <NumberInputPicker
+      v-model="preConnectDelay"
+      @change="setPreConnectDelay"
+      :label="$t('components.switch.sv241pro.preConnectDelay')"
+      labelKey="components.switch.sv241pro.preConnectDelay"
+      :min="0"
+      :max="60000"
+      :step="100"
+      :decimalPlaces="0"
+      :useDefaultSentinel="false"
+      inputId="preConnectDelay"
+      :wrapperClass="statusClassPre"
+    />
   </div>
 </template>
 
@@ -21,6 +21,7 @@
 import { ref, computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const props = defineProps({
   selectedDevice: { type: String, default: '' },

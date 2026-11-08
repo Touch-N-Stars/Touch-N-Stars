@@ -1,7 +1,7 @@
 <template>
   <Modal :show="show" @close="$emit('close')" max-width="max-w-2xl">
     <template #header>
-      <h2 class="text-xl font-bold text-cyan-400">
+      <h2 class="text-xl font-bold">
         {{ $t('components.profile.manage') }}
       </h2>
     </template>
@@ -9,29 +9,10 @@
     <template #body>
       <div class="w-full flex flex-col gap-4">
         <!-- Profiles List -->
-        <div class="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
+        <div class="p-4 bg-surface-2 rounded-card border border-line">
           <!-- Loading Spinner -->
           <div v-if="operationInProgress" class="flex justify-center py-8">
-            <svg
-              class="animate-spin h-8 w-8 text-cyan-400"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+            <Spinner class="text-accent" />
           </div>
 
           <!-- Profiles -->
@@ -39,13 +20,13 @@
             <div
               v-for="profile in profiles"
               :key="profile.Id"
-              class="flex items-center gap-2 p-3 bg-gray-800 rounded border"
-              :class="profile.IsActive ? 'border-cyan-600' : 'border-gray-700'"
+              class="flex items-center gap-2 p-3 bg-surface-1 rounded-control border"
+              :class="profile.IsActive ? 'border-accent' : 'border-line'"
             >
               <!-- Active badge -->
               <span
                 v-if="profile.IsActive"
-                class="text-xs bg-cyan-700 text-cyan-100 px-2 py-0.5 rounded shrink-0"
+                class="text-xs bg-accent-action text-white px-2 py-0.5 rounded-chip shrink-0"
               >
                 ✓
               </span>
@@ -64,10 +45,10 @@
               </template>
               <span
                 v-else
-                class="flex-1 text-gray-200 truncate"
+                class="flex-1 text-content truncate"
                 :class="
                   !profile.IsActive && !operationInProgress && !anyDeviceConnected
-                    ? 'cursor-pointer hover:text-cyan-400 transition-colors'
+                    ? 'cursor-pointer hover:text-accent transition-colors'
                     : ''
                 "
                 @click="
@@ -133,11 +114,11 @@
                     @click="handleRemoveClick(profile)"
                     :disabled="profile.IsActive || profiles.length <= 1 || operationInProgress"
                     :class="[
-                      'w-10 h-10 flex items-center justify-center transition-colors',
+                      'w-12!',
                       removeConfirmFor === profile.Id
-                        ? 'bg-red-700 hover:bg-red-800 rounded'
+                        ? 'tns-btn bg-status-danger text-white hover:brightness-110'
                         : profile.IsActive || profiles.length <= 1
-                          ? 'tns-btn-secondary opacity-50 cursor-not-allowed'
+                          ? 'tns-btn-secondary'
                           : 'tns-btn-danger',
                     ]"
                     :title="
@@ -155,7 +136,7 @@
               </div>
             </div>
 
-            <div v-if="profiles.length === 0" class="text-center text-gray-400 py-4">
+            <div v-if="profiles.length === 0" class="text-center text-content-muted py-4">
               {{ $t('components.profile.noProfiles') }}
             </div>
           </div>
@@ -178,6 +159,7 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue';
 import Modal from '@/components/helpers/Modal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import {
