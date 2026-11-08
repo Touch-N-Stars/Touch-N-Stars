@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Monitor: The statistics and image history tabs now use the same cards and colours as the rest of the app. The buttons above the image history, the image rotation choice and the graph controls are larger and easier to tap.
 - Equipment: The equipment page, the device settings, the INDI setup and the profile management now use the same cards and colours as the rest of the app. Port and device number in the Alpaca Direct settings and the pre connect delay of the SV241 Pro now have plus and minus buttons and open the touch number pad.
 - PINS: The PINS page, its network, services, system, INDI, software and upgrade tabs and their dialogs now use the same cards and colours as the rest of the app. The priority of a saved Wi-Fi network now has plus and minus buttons and opens the touch number pad, and the refresh buttons are larger and easier to tap.
+- Guider: The PHD2 guider page, its settings and the calibration assistant, calibration review, dark library and profile management dialogs now use the same cards and colours as the rest of the app. Calibrating is shown in the app's accent colour, like on the native guider page.
 
 ### Fixed
 

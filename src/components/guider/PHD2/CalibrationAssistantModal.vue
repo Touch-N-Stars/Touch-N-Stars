@@ -8,15 +8,15 @@
     <template #body>
       <div class="flex flex-col gap-4 sm:gap-6 w-full min-w-0 max-w-full sm:min-w-[500px]">
         <!-- Info Section -->
-        <div class="p-3 sm:p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-          <p class="text-blue-300 text-sm">
+        <div class="p-3 sm:p-4 bg-accent/10 border border-accent/30 rounded-control">
+          <p class="text-content text-sm">
             {{ $t('components.guider.calibrationAssistant.info') }}
           </p>
         </div>
 
         <!-- Position Settings -->
-        <div class="bg-gray-700/50 p-3 rounded-lg space-y-3">
-          <h3 class="text-sm font-medium text-gray-300 mb-3">
+        <div class="bg-surface-2 p-3 rounded-control space-y-3">
+          <h3 class="text-sm font-medium text-content-muted mb-3">
             {{ $t('components.guider.calibrationAssistant.positionSettings') }}
           </h3>
           <div class="space-y-3">
@@ -80,21 +80,21 @@
 
             <!-- East/West Selection -->
             <div>
-              <label class="block text-xs text-gray-400 mb-1">
+              <label class="block tns-label mb-1">
                 {{ $t('components.guider.calibrationAssistant.direction') }}
               </label>
               <div class="flex gap-2">
                 <button
                   @click="setDirection('west')"
                   :class="['tns-btn-secondary', { 'border-accent': direction === 'west' }]"
-                  class="flex-1 px-2 py-1 text-xs sm:text-sm"
+                  class="flex-1"
                 >
                   {{ $t('components.guider.calibrationAssistant.west') }}
                 </button>
                 <button
                   @click="setDirection('east')"
                   :class="['tns-btn-secondary', { 'border-accent': direction === 'east' }]"
-                  class="flex-1 px-2 py-1 text-xs sm:text-sm"
+                  class="flex-1"
                 >
                   {{ $t('components.guider.calibrationAssistant.east') }}
                 </button>
@@ -104,15 +104,19 @@
         </div>
 
         <!-- Status -->
-        <div v-if="displayStatus" class="p-2 sm:p-3 rounded-lg" :class="statusClass">
+        <div v-if="displayStatus" class="p-2 sm:p-3 rounded-control" :class="statusClass">
           <div class="flex items-center gap-2">
-            <div v-if="isSlewing" class="spinner"></div>
+            <Spinner v-if="isSlewing" size="sm" />
             <span class="text-sm">{{ displayStatus }}</span>
           </div>
         </div>
 
         <!-- Calibration Result -->
-        <div v-if="calibrationResult" class="p-3 sm:p-4 rounded-lg" :class="calibrationResultClass">
+        <div
+          v-if="calibrationResult"
+          class="p-3 sm:p-4 rounded-control"
+          :class="calibrationResultClass"
+        >
           <h3 class="font-medium mb-2">
             {{ $t('components.guider.calibrationAssistant.calibrationResult') }}
           </h3>
@@ -121,16 +125,16 @@
               {{ $t('components.guider.calibrationAssistant.quality') }}:
               {{ calibrationResult.quality }}
             </div>
-            <div v-if="calibrationResult.explanation" class="mt-2 text-gray-300">
+            <div v-if="calibrationResult.explanation" class="mt-2 text-content-muted">
               {{ calibrationResult.explanation }}
             </div>
           </div>
         </div>
 
         <!-- Step Size Calculator (PINS only) -->
-        <div v-if="store.isPINS" class="bg-gray-700/50 rounded-lg">
+        <div v-if="store.isPINS" class="bg-surface-2 rounded-control">
           <button
-            class="w-full flex items-center justify-between p-3 text-sm font-medium text-gray-300 hover:text-white transition-colors"
+            class="w-full flex items-center justify-between min-h-touch p-3 text-sm font-medium text-content hover:text-accent transition-colors"
             @click="showCalc = !showCalc"
           >
             <span>
@@ -140,8 +144,8 @@
                 class="font-normal"
                 :class="
                   calcStepResult !== guiderStore.phd2CalibrationStep
-                    ? 'text-orange-400'
-                    : 'text-gray-400'
+                    ? 'text-status-warn'
+                    : 'text-content-muted'
                 "
               >
                 ({{ $t('components.guider.phd2.optimal') }}: {{ calcStepResult }} ms)
@@ -191,14 +195,14 @@
             />
 
             <!-- Result row -->
-            <div class="flex items-center justify-between pt-2 border-t border-gray-600">
-              <span class="text-sm font-semibold text-white">
+            <div class="flex items-center justify-between pt-2 border-t border-line">
+              <span class="text-sm font-semibold text-content">
                 {{ $t('components.guider.phd2.calculatedStep') }}:
                 {{ calcStepResult !== null ? calcStepResult + ' ms' : '—' }}
               </span>
               <button
                 :disabled="calcStepResult === null"
-                class="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded transition-colors"
+                class="tns-btn-primary w-auto!"
                 @click="applyCalcStep"
               >
                 {{ $t('components.guider.phd2.applyStep') }}
@@ -213,10 +217,7 @@
           <button
             @click="store.mountIsSlewing ? stopSlew() : slewToOptimalPosition()"
             :disabled="!store.mountIsSlewing && (!canSlew || isSlewing || isCalibrating)"
-            :class="[
-              'px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center gap-2 flex-1',
-              store.mountIsSlewing ? 'tns-btn-danger' : 'tns-btn-secondary',
-            ]"
+            :class="['flex-1', store.mountIsSlewing ? 'tns-btn-danger' : 'tns-btn-secondary']"
           >
             <StopIcon v-if="store.mountIsSlewing" class="w-5 h-5" />
             <svg v-else-if="!isSlewing" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -224,7 +225,7 @@
                 d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
               />
             </svg>
-            <div v-else class="spinner"></div>
+            <Spinner v-else size="sm" />
             {{
               store.mountIsSlewing
                 ? $t('components.guider.calibrationAssistant.stopSlew')
@@ -239,7 +240,7 @@
             :class="
               store.guiderInfo?.State === 'Calibrating' ? 'tns-btn-danger' : 'tns-btn-primary'
             "
-            class="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center gap-2 flex-1"
+            class="flex-1"
           >
             <StopIcon v-if="store.guiderInfo?.State === 'Calibrating'" class="w-5 h-5" />
             <svg v-else class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -262,6 +263,8 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { StopIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
+
+import Spinner from '@/components/helpers/Spinner.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
@@ -408,10 +411,11 @@ const displayStatus = computed(() => {
 const statusClass = computed(() => {
   const guiderState = store.guiderInfo?.State;
 
-  if (isSlewing.value) return 'bg-blue-500/20 border border-blue-500/30';
-  if (guiderState === 'Calibrating') return 'bg-yellow-500/20 border border-yellow-500/30';
-  if (guiderState === 'Guiding') return 'bg-green-500/20 border border-green-500/30';
-  return 'bg-gray-500/20 border border-gray-500/30';
+  if (isSlewing.value) return 'bg-accent/10 border border-accent/30 text-accent';
+  if (guiderState === 'Calibrating')
+    return 'bg-status-warn/10 border border-status-warn/40 text-status-warn';
+  if (guiderState === 'Guiding') return 'bg-status-ok/10 border border-status-ok/40 text-status-ok';
+  return 'bg-surface-2 border border-line text-content';
 });
 
 const calibrationResultClass = computed(() => {
@@ -419,13 +423,13 @@ const calibrationResultClass = computed(() => {
 
   switch (calibrationResult.value.quality) {
     case 'good':
-      return 'bg-green-500/20 border border-green-500/30';
+      return 'bg-status-ok/10 border border-status-ok/40 text-status-ok';
     case 'acceptable':
-      return 'bg-yellow-500/20 border border-yellow-500/30';
+      return 'bg-status-warn/10 border border-status-warn/40 text-status-warn';
     case 'poor':
-      return 'bg-red-500/20 border border-red-500/30';
+      return 'bg-status-danger/10 border border-status-danger/40 text-status-danger';
     default:
-      return 'bg-gray-500/20 border border-gray-500/30';
+      return 'bg-surface-2 border border-line text-content';
   }
 });
 
@@ -634,22 +638,3 @@ watch(
   { deep: true }
 );
 </script>
-
-<style scoped>
-.spinner {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  border: 2px solid #bbb;
-  border-top-color: #333;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  vertical-align: middle;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>

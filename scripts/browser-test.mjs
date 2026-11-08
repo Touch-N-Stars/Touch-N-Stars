@@ -139,6 +139,33 @@ const INDI_TYPES = [
 ];
 const rigRoute = (fixture) => () => (equipmentFixtures ? fixture : undefined);
 
+// PHD2 connected and looping on a camera and mount, served only while checkGuider runs.
+// Looping, not guiding, because the calibration assistant is hidden while PHD2 guides.
+let guiderFixtures = false;
+const guiderRoute = (fixture) => () => (guiderFixtures ? fixture : undefined);
+const GUIDER_PLUGIN_ROUTES = {
+  '/api/phd2/all-info': guiderRoute({
+    Success: true,
+    Response: {
+      Connection: { IsConnected: true },
+      Status: { AppState: 'Looping' },
+      StarLostInfo: null,
+      EquipmentProfiles: ['Main rig', 'Travel rig'],
+      StarImage: { Available: false },
+      StarInfo: null,
+    },
+  }),
+  '/api/phd2/get-current-equipment': guiderRoute({
+    Success: true,
+    Response: {
+      CurrentEquipment: {
+        camera: { name: 'ZWO ASI120MM Mini', connected: true },
+        mount: { name: 'On-camera', connected: true },
+      },
+    },
+  }),
+};
+
 // The PINS daemon answers only while checkPins runs; elsewhere it stays a 404.
 let pinsDaemon = false;
 const DAEMON_ROUTES = Object.fromEntries(
@@ -151,12 +178,15 @@ const PINS_DAEMON_PORT = 8000;
 
 // A loaded sequence, served only while checkSequence runs so /sequence stays empty elsewhere.
 let sequenceFixtures = false;
-const PLUGIN_ROUTES = Object.fromEntries(
-  Object.entries(SEQUENCE_ROUTES).map(([route, answer]) => [
-    route,
-    (query) => (sequenceFixtures ? answer(query) : undefined),
-  ])
-);
+const PLUGIN_ROUTES = {
+  ...Object.fromEntries(
+    Object.entries(SEQUENCE_ROUTES).map(([route, answer]) => [
+      route,
+      (query) => (sequenceFixtures ? answer(query) : undefined),
+    ])
+  ),
+  ...GUIDER_PLUGIN_ROUTES,
+};
 
 const BACKEND_ROUTES = {
   ...Object.fromEntries(
@@ -186,6 +216,13 @@ const BACKEND_ROUTES = {
     ])
   ),
   '/v2/api/equipment/camera/info': () => ({ Connected: true, BinningModes: [], ReadoutModes: [] }),
+  '/v2/api/equipment/guider/info': guiderRoute({
+    Connected: true,
+    Name: 'PHD2',
+    DisplayName: 'PHD2',
+    DeviceId: 'PHD2_Single',
+    State: 'Looping',
+  }),
   '/api/dialogs/list': () => ({ Count: ninaDialogs.length, Dialogs: ninaDialogs }),
   '/api/dialogs/count': () => ninaDialogs.length,
 };
@@ -719,6 +756,85 @@ async function checkEquipment(page, viewportName) {
   return failures;
 }
 
+// PHD2 comes from the fixtures above. Both settings tabs, NINA and PINS, plus the guiding
+// tab's dialogs. Each dialog is only opened and closed again, so nothing is started.
+async function checkGuider(page, viewportName) {
+  const viewport = VIEWPORTS[viewportName];
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} guider: ${problem}`);
+    if (!passed) failures.push(`${viewportName} guider: ${problem}`);
+  };
+  const buttonWithTitle = (title) =>
+    `document.querySelector('button[title=${JSON.stringify(title)}]')`;
+  const openTab = async (name) => {
+    page.exceptions.length = 0;
+    await page.evaluate(
+      `[...${SUBNAV_BUTTONS}].find((button) => button.title === ${JSON.stringify(name)}).click()`
+    );
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+  };
+  const openDialog = async (opener, label, screenshotName) => {
+    await page.waitFor(`!!${opener}`, `the ${label} button`);
+    await page.evaluate(`${opener}.click()`);
+    await page.waitFor(`!!${DIALOG}`, `${label} to open`);
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+    await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, `${screenshotName}.png`));
+    const dialog = await page.evaluate(READ_LAST_DIALOG);
+    expect(dialog.onTop, `${label} paints on top`);
+    expect(dialog.fitsScreen && dialog.fitsDialog, `${label} fits`);
+    await page.pressEscape();
+    await page.evaluate(SETTLE);
+    expect(await page.evaluate(`!${DIALOG}`), `${label} closes on Escape`);
+  };
+
+  guiderFixtures = true;
+  await page.evaluate(`${STORES}.store.isGuiderConnected = true`);
+  await openRoute(page, '/guider');
+  await page.waitFor(`!!${buttonWithTitle('Calibration Assistant')}`, 'the PHD2 controls');
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/guider PHD2', 'guider-phd2')));
+  await openDialog(
+    buttonWithTitle('Calibration Assistant'),
+    'calibration assistant',
+    'guider-calibration-assistant'
+  );
+
+  await openTab('Settings');
+  failures.push(...(await checkPage(page, viewportName, '/guider settings', 'guider-settings')));
+
+  await setPins(page, true);
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(
+    ...(await checkPage(page, viewportName, '/guider settings PINS', 'guider-settings-pins'))
+  );
+  await screenshotWholePage(
+    page,
+    viewport,
+    path.join(SCREENSHOT_DIR, viewportName, 'guider-settings-pins-full.png')
+  );
+  await openDialog(
+    `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Manage Dark Library')`,
+    'dark library',
+    'guider-dark-library'
+  );
+
+  await openTab('Guider');
+  await openDialog(
+    buttonWithTitle('Review Calibration'),
+    'calibration data',
+    'guider-calibration-data'
+  );
+
+  await setPins(page, false);
+  await page.evaluate(`Object.assign(${STORES}.store, {
+    isGuiderConnected: false,
+    guiderInfo: { Connected: false },
+  })`);
+  guiderFixtures = false;
+  return failures;
+}
+
 // Takes the whole page in one picture: the viewport grows until the app's scroller has nothing
 // left to scroll, then shrinks back. The scroller is the tallest element that scrolls; boxes
 // scrolling inside the page, like a log, keep their own height.
@@ -1073,6 +1189,7 @@ try {
     failures.push(...(await checkTppa(page, viewportName, backend)));
     failures.push(...(await checkImageHistory(page, viewportName, backend)));
     failures.push(...(await checkEquipment(page, viewportName)));
+    failures.push(...(await checkGuider(page, viewportName)));
     failures.push(...(await checkPins(page, viewportName, backend)));
     failures.push(...(await checkSequence(page, viewportName, backend)));
     await page.close();

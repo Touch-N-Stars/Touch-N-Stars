@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full flex flex-col text-white text-xs overflow-hidden">
+  <div class="w-full h-full flex flex-col text-content text-xs overflow-hidden">
     <!-- Header mit Star-Werten -->
     <div class="px-2 pt-1 pb-1 shrink-0">
       <h3 class="font-semibold text-center mb-1">Star Profile</h3>
@@ -20,19 +20,19 @@
           ref="profileCanvas"
           :width="canvasWidth"
           :height="canvasHeight"
-          class="border border-gray-500 bg-black rounded"
+          class="border border-line-strong bg-black rounded"
         ></canvas>
 
         <!-- Crosshair overlay -->
         <div class="absolute inset-0 pointer-events-none">
-          <div class="absolute bg-green-400 opacity-50" :style="crosshairVerticalStyle"></div>
-          <div class="absolute bg-green-400 opacity-50" :style="crosshairHorizontalStyle"></div>
+          <div class="absolute bg-status-ok opacity-50" :style="crosshairVerticalStyle"></div>
+          <div class="absolute bg-status-ok opacity-50" :style="crosshairHorizontalStyle"></div>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="px-2 pb-1 shrink-0 text-gray-400 text-center">Mass: {{ massValue }}</div>
+    <div class="px-2 pb-1 shrink-0 text-content-muted text-center">Mass: {{ massValue }}</div>
   </div>
 </template>
 
@@ -90,23 +90,23 @@ const massValue = computed(() => {
 // Color coding for SNR (Signal-to-Noise Ratio)
 const snrClass = computed(() => {
   const snr = starInfo.value?.SNR;
-  if (!snr) return 'text-gray-400';
+  if (!snr) return 'text-content-muted';
 
-  if (snr >= 50) return 'text-green-400'; // Excellent
-  if (snr >= 20) return 'text-yellow-400'; // Good
-  if (snr >= 10) return 'text-orange-400'; // Fair
-  return 'text-red-400'; // Poor
+  if (snr >= 50) return 'text-status-ok'; // Excellent
+  if (snr >= 20) return 'text-content'; // Good
+  if (snr >= 10) return 'text-status-warn'; // Fair
+  return 'text-status-danger'; // Poor
 });
 
 // Color coding for HFD (Half Flux Diameter) - smaller is better for stars
 const hfdClass = computed(() => {
   const hfd = starInfo.value?.HFD;
-  if (!hfd) return 'text-gray-400';
+  if (!hfd) return 'text-content-muted';
 
-  if (hfd <= 2.0) return 'text-green-400'; // Excellent focus
-  if (hfd <= 3.0) return 'text-yellow-400'; // Good focus
-  if (hfd <= 4.0) return 'text-orange-400'; // Fair focus
-  return 'text-red-400'; // Poor focus
+  if (hfd <= 2.0) return 'text-status-ok'; // Excellent focus
+  if (hfd <= 3.0) return 'text-content'; // Good focus
+  if (hfd <= 4.0) return 'text-status-warn'; // Fair focus
+  return 'text-status-danger'; // Poor focus
 });
 
 // Crosshair styles (centered)

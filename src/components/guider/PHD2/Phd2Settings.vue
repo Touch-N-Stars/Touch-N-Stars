@@ -3,17 +3,20 @@
     <!-- Dark Library Build Banner -->
     <div
       v-if="store.isPINS && guiderStore.isDarkLibraryBuildActive"
-      class="p-3 rounded-lg bg-yellow-500/20 border border-yellow-500/40"
+      class="p-3 rounded-control bg-status-warn/10 border border-status-warn/40"
     >
       <div class="flex items-center justify-between gap-2 flex-wrap">
         <div class="flex-1 min-w-0">
-          <div class="text-sm font-semibold text-yellow-200">
+          <div class="text-sm font-semibold text-status-warn">
             {{ $t('components.guider.phd2.darkLibrary.buildActive') }}
           </div>
-          <div class="text-xs text-yellow-100/80">
+          <div class="text-xs text-content">
             {{ $t('components.guider.phd2.darkLibrary.buildActiveMessage') }}
           </div>
-          <div v-if="guiderStore.phd2DarkLibraryBuildStatus" class="text-xs text-gray-200 mt-1">
+          <div
+            v-if="guiderStore.phd2DarkLibraryBuildStatus"
+            class="text-xs text-content-muted mt-1"
+          >
             {{
               $t('components.guider.phd2.darkLibrary.buildProgress', {
                 frame: guiderStore.phd2DarkLibraryBuildStatus.Frame ?? 0,
@@ -27,7 +30,7 @@
         </div>
         <button
           @click="guiderStore.cancelPHD2DarkLibraryBuild()"
-          class="tns-btn-danger px-3 py-1 text-xs"
+          class="tns-btn-danger w-auto! px-3! text-xs!"
         >
           {{ $t('components.guider.phd2.darkLibrary.cancel') }}
         </button>
@@ -35,11 +38,8 @@
     </div>
 
     <!-- PHD2 Profile -->
-    <div
-      v-if="!store.isPINS"
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div v-if="!store.isPINS" class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.guider.phd2.profile') }}
       </h3>
       <PHD2Profil />
@@ -47,14 +47,12 @@
 
     <template v-if="guiderStore.phd2IsConnected">
       <!-- Calibration Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.calibration') }}
         </h3>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-300">
+          <span class="text-sm font-medium text-content">
             {{ $t('components.guider.phd2.forceCalibration') }}
           </span>
           <toggleButton
@@ -67,30 +65,24 @@
       </div>
 
       <!-- Exposure Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.exposure') }}
         </h3>
         <SetExposure />
       </div>
 
       <!-- RA Algorithm -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.raAlgorithm') }}
         </h3>
         <SetRaAlgoPara />
       </div>
 
       <!-- DEC Algorithm -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.decAlgorithm') }}
         </h3>
         <SetDecAlgoPara />
@@ -98,19 +90,16 @@
     </template>
 
     <!-- Image Display Settings -->
-    <div
-      v-if="showImageDisplay"
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div v-if="showImageDisplay" class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.guider.phd2.imageDisplay') }}
       </h3>
       <div class="flex flex-col gap-1">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-300">
+          <span class="text-sm font-medium text-content">
             {{ $t('components.guider.phd2.imageGamma') }}
           </span>
-          <span class="text-sm text-gray-400">{{
+          <span class="text-sm text-content-muted">{{
             settingsStore.guider.phd2ImageGamma.toFixed(2)
           }}</span>
         </div>
@@ -121,9 +110,9 @@
           step="0.05"
           :value="settingsStore.guider.phd2ImageGamma"
           @input="settingsStore.setPhd2ImageGamma(parseFloat($event.target.value))"
-          class="w-full accent-cyan-400"
+          class="w-full accent-accent"
         />
-        <div class="flex justify-between text-xs text-gray-500">
+        <div class="flex justify-between text-xs text-content-faint">
           <span>{{ $t('components.guider.phd2.imageGammaHint') }}</span>
         </div>
       </div>
@@ -131,10 +120,8 @@
 
     <template v-if="store.isPINS">
       <!-- Shared Parameters (always visible) -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.shared_prarmeters') }}
         </h3>
         <Phd2Toggle
@@ -155,10 +142,8 @@
       </div>
 
       <!-- Guide Star Tracking -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.starDetection') }}
         </h3>
         <Phd2SearchRegion />
@@ -167,8 +152,8 @@
         <Phd2Toggle labelKey="components.guider.phd2.beepForLostStar" field="phd2BeepForLostStar" />
 
         <!-- Star Mass Detection sub-group -->
-        <div class="p-2 flex flex-col gap-2 bg-gray-900/40 rounded-md border border-gray-700/50">
-          <h4 class="text-sm font-semibold text-gray-200">
+        <div class="p-2 flex flex-col gap-2 bg-surface-2 rounded-control border border-line">
+          <h4 class="text-sm font-semibold text-content">
             {{ $t('components.guider.phd2.starMassDetection') }}
           </h4>
           <Phd2Toggle
@@ -189,10 +174,8 @@
       </div>
 
       <!-- Camera Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.camera') }}
         </h3>
         <Phd2CameraGain />
@@ -206,10 +189,8 @@
       </div>
 
       <!-- Calibration Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.calibration') }}
         </h3>
         <Phd2FocalLength />
@@ -228,10 +209,8 @@
       </div>
 
       <!-- Backlash Compensation -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.backlash.title') }}
         </h3>
         <Phd2Toggle
@@ -247,10 +226,8 @@
       </div>
 
       <!-- Guide Algorithm Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.guideAlgorithm') }}
         </h3>
         <Phd2GuideAlgorithmRA />
@@ -258,10 +235,8 @@
       </div>
 
       <!-- Dither Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.dither') }}
         </h3>
         <Phd2DitherMode />
@@ -274,20 +249,16 @@
       </div>
 
       <!-- Mount Settings -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.mountSettings') }}
         </h3>
         <MountGuideRate />
       </div>
 
       <!-- Dark Library -->
-      <div
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.darkLibrary.title') }}
         </h3>
         <Phd2DarkLibrary />

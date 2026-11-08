@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div class="flex flex-col w-full border border-line-strong p-1 md:p-2 rounded-lg">
     <!-- Dither Pixels -->
     <div class="flex flex-row items-center justify-between">
       <NumberInputPicker
@@ -16,14 +16,14 @@
         @change="setDitherPixels"
       />
     </div>
-    <p v-if="isNativeGuider" class="text-xs text-gray-400 text-right pr-1">
+    <p v-if="isNativeGuider" class="text-xs text-content-muted text-right pr-1">
       {{ $t('components.guider.ditherMainCameraPixels', { pixels: ditherMainCameraPixels }) }}
     </p>
 
     <ProfileToggle
       labelKey="components.guider.ditherRAOnly"
       settingKey="GuiderSettings-DitherRAOnly"
-      labelClass="text-xs md:text-sm text-gray-200"
+      labelClass="text-xs md:text-sm text-content"
       toggleClass="pr-5 pl-5 justify-center h-7 md:h-8"
     />
   </div>
