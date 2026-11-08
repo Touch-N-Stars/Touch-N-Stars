@@ -1,8 +1,8 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono truncate">{{ item.Variable }}</span>
-      <span v-if="item.Expr?.Definition" class="text-xs text-slate-500 font-mono truncate"
+      <span class="text-xs text-content-muted font-mono truncate">{{ item.Variable }}</span>
+      <span v-if="item.Expr?.Definition" class="text-xs text-content-faint font-mono truncate"
         >= {{ item.Expr.Definition }}</span
       >
     </template>
@@ -10,12 +10,12 @@
     <template #editor="{ save }">
       <!-- Variable name -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.expressionVariable.identifier')
         }}</label>
         <TextInput
           :modelValue="item.Variable"
-          inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          inputClass="tns-input-compact ml-auto w-36 md:w-40"
           @change="save('Variable', $event)"
         />
       </div>

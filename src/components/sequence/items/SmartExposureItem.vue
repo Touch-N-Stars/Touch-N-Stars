@@ -1,12 +1,16 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span v-if="currentFilter" class="text-xs text-slate-400 shrink-0">{{ currentFilter }}</span>
+      <span v-if="currentFilter" class="text-xs text-content-muted shrink-0">{{
+        currentFilter
+      }}</span>
       <template v-if="exposure">
-        <span class="text-xs text-slate-400 font-mono shrink-0">{{ exposure.ExposureTime }}s</span>
-        <span class="text-xs text-slate-500 shrink-0">G{{ exposure.Gain }}</span>
+        <span class="text-xs text-content-muted font-mono shrink-0"
+          >{{ exposure.ExposureTime }}s</span
+        >
+        <span class="text-xs text-content-faint shrink-0">G{{ exposure.Gain }}</span>
       </template>
-      <span v-if="loopCondition" class="text-xs text-slate-400 font-mono shrink-0">
+      <span v-if="loopCondition" class="text-xs text-content-muted font-mono shrink-0">
         {{ loopCondition.CompletedIterations }}/{{ loopCondition.Iterations }}
       </span>
     </template>
@@ -14,7 +18,7 @@
     <template v-if="switchFilter && exposure && loopCondition" #editor>
       <!-- Filter -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.switchFilter.filter')
         }}</label>
         <select
@@ -80,7 +84,7 @@
 
       <!-- Binning -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.binning')
         }}</label>
         <select
@@ -97,7 +101,7 @@
 
       <!-- Image Type -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.imageType')
         }}</label>
         <select

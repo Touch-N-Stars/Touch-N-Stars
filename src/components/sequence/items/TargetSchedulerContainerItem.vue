@@ -3,7 +3,7 @@
        gets no editor: its public properties are internal pause/sync switches. -->
   <ItemShell :item="item">
     <template v-if="currentTarget" #summary>
-      <span class="text-xs text-slate-400 truncate">{{ currentTarget }}</span>
+      <span class="text-xs text-content-muted truncate">{{ currentTarget }}</span>
     </template>
   </ItemShell>
 </template>
