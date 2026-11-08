@@ -8,7 +8,7 @@
         id="slotNum"
         v-model.number="slotNum"
         @change="setSlotNum"
-        class="tns-input text-xs md:text-sm w-48"
+        class="tns-select text-xs md:text-sm w-48"
         :class="statusClass"
       >
         <option :value="-1">{{ $t('components.filterwheel.settings.slotNumDefault') }}</option>

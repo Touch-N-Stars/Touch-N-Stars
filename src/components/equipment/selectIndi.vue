@@ -1,33 +1,14 @@
 <template>
-  <div class="flex flex-col gap-1 w-full border border-gray-600 rounded-lg p-3">
+  <div class="tns-card flex flex-col gap-1 w-full">
     <!-- Loading Spinner -->
     <div v-if="loading" class="flex items-center justify-center py-4">
-      <svg
-        class="animate-spin h-6 w-6 text-blue-500"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <Spinner class="text-accent" />
     </div>
 
     <template v-else>
       <!-- Camera -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-camera" class="mr-3 text-gray-200">
+        <label for="indi-camera" class="mr-3 text-content">
           {{ $t('components.connectEquipment.camera.name') }}
         </label>
         <select
@@ -46,7 +27,7 @@
       <!-- Guide camera (PINS' second camera slot, same driver list as the camera). Only the
            native guider uses it; PHD2 picks its camera with its own drivers. -->
       <div v-if="showGuideCamera" class="flex flex-row w-full items-center">
-        <label for="indi-guide-camera" class="mr-3 text-gray-200">
+        <label for="indi-guide-camera" class="mr-3 text-content">
           {{ $t('components.connectEquipment.guideCamera.name') }}
         </label>
         <select
@@ -64,7 +45,7 @@
 
       <!-- Focuser -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-focuser" class="mr-3 text-gray-200">
+        <label for="indi-focuser" class="mr-3 text-content">
           {{ $t('components.connectEquipment.focuser.name') }}
         </label>
         <select
@@ -82,7 +63,7 @@
 
       <!-- Filterwheel -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-filterwheel" class="mr-3 text-gray-200">
+        <label for="indi-filterwheel" class="mr-3 text-content">
           {{ $t('components.connectEquipment.filter.name') }}
         </label>
         <select
@@ -100,7 +81,7 @@
 
       <!-- Rotator -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-rotator" class="mr-3 text-gray-200">
+        <label for="indi-rotator" class="mr-3 text-content">
           {{ $t('components.connectEquipment.rotator.name') }}
         </label>
         <select
@@ -118,7 +99,7 @@
 
       <!-- Telescope -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-telescope" class="mr-3 text-gray-200">
+        <label for="indi-telescope" class="mr-3 text-content">
           {{ $t('components.connectEquipment.mount.name') }}
         </label>
         <select
@@ -136,7 +117,7 @@
 
       <!-- Weather -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-weather" class="mr-3 text-gray-200">
+        <label for="indi-weather" class="mr-3 text-content">
           {{ $t('components.connectEquipment.weather.name') }}
         </label>
         <select
@@ -154,7 +135,7 @@
 
       <!-- Switches -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-switches" class="mr-3 text-gray-200">
+        <label for="indi-switches" class="mr-3 text-content">
           {{ $t('components.connectEquipment.switch.name') }}
         </label>
         <select
@@ -172,7 +153,7 @@
 
       <!-- Flatpanel -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-flatpanel" class="mr-3 text-gray-200">
+        <label for="indi-flatpanel" class="mr-3 text-content">
           {{ $t('components.connectEquipment.flat.name') }}
         </label>
         <select
@@ -190,7 +171,7 @@
 
       <!-- Dome -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-dome" class="mr-3 text-gray-200">
+        <label for="indi-dome" class="mr-3 text-content">
           {{ $t('components.connectEquipment.dome.name') }}
         </label>
         <select
@@ -208,7 +189,7 @@
 
       <!-- Safety Monitor -->
       <div class="flex flex-row w-full items-center">
-        <label for="indi-safetymonitor" class="mr-3 text-gray-200">
+        <label for="indi-safetymonitor" class="mr-3 text-content">
           {{ $t('components.connectEquipment.safety.name') }}
         </label>
         <select
@@ -229,6 +210,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
+import Spinner from '@/components/helpers/Spinner.vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';

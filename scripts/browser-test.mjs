@@ -91,10 +91,73 @@ const IMAGE_HISTORY = Array.from({ length: 6 }, (_, index) => ({
   RmsText: 'Tot: 0.62"',
 }));
 
+// The PINS version the backend reports, undefined for plain NINA. Setting store.isPINS alone
+// does not stick: the store probes again every 15 s and falls back to NINA on two misses.
+let pinsVersion;
+
+// A rig with an INDI camera and mount, served only while checkEquipment runs so every other
+// page keeps its plain disconnected state.
+let equipmentFixtures = false;
+const NO_DEVICE = { Id: 'No_Device', DisplayName: 'No Device', Category: 'N.I.N.A.' };
+const RIG_DEVICES = {
+  camera: [NO_DEVICE, { Id: 'cam-1', DisplayName: 'ZWO ASI2600MM Pro', Category: 'INDI' }],
+  mount: [
+    NO_DEVICE,
+    { Id: 'mount-1', DisplayName: 'EQMod Mount (INDI)', Category: 'INDI', HasSetupDialog: true },
+  ],
+};
+const RIG_PROFILE = {
+  Id: 'profile-1',
+  Name: 'Main rig',
+  CameraSettings: { Id: 'cam-1', IndiDriver: 'indi_asi_ccd' },
+  TelescopeSettings: {
+    Id: 'mount-1',
+    IndiDriver: 'indi_eqmod_telescope',
+    IndiConnectionMode: 'CONNECTION_SERIAL',
+    IndiPort: '/dev/ttyUSB0',
+    IndiBaudRate: 9600,
+    IndiAutoSearch: true,
+  },
+};
+const RIG_PROFILES = [
+  { Id: 'profile-1', Name: 'Main rig', IsActive: true },
+  { Id: 'profile-2', Name: 'Travel rig', IsActive: false },
+];
+const INDI_TYPES = [
+  'camera',
+  'focuser',
+  'filterwheel',
+  'rotator',
+  'telescope',
+  'weather',
+  'switches',
+  'flatpanel',
+  'dome',
+  'safetymonitor',
+];
+const rigRoute = (fixture) => () => (equipmentFixtures ? fixture : undefined);
+
 const BACKEND_ROUTES = {
   ...Object.fromEntries(
-    DEVICES.map((device) => [`/v2/api/equipment/${device}/list-devices`, () => []])
+    DEVICES.map((device) => [
+      `/v2/api/equipment/${device}/list-devices`,
+      () => (equipmentFixtures && RIG_DEVICES[device]) || [],
+    ])
   ),
+  ...Object.fromEntries(
+    INDI_TYPES.map((type) => [
+      `/api/indi/${type}`,
+      rigRoute([{ Name: `indi_${type}_a`, Label: `${type} A` }]),
+    ])
+  ),
+  '/api/indi/serialports': rigRoute({
+    Ports: [{ Port: '/dev/ttyUSB0', Description: 'FT232R' }],
+    ByIdLinks: [],
+    ByPathLinks: [],
+  }),
+  '/v2/api/version/pins': () => pinsVersion,
+  '/v2/api/profile/show': (query) =>
+    equipmentFixtures ? (query.get('active') === 'true' ? RIG_PROFILE : RIG_PROFILES) : undefined,
   ...Object.fromEntries(
     IMAGE_HISTORY.flatMap((_, index) => [
       [`/v2/api/image/${index}`, () => fs.readFileSync(HISTORY_IMAGE)],
@@ -205,6 +268,11 @@ function initScript(whatsNewVersion) {
     localStorage.setItem('tutorialCompleted', 'true');
     localStorage.setItem('tns.whatsnew.version', ${JSON.stringify(whatsNewVersion)});
   `;
+}
+
+async function setPins(page, enabled) {
+  pinsVersion = enabled ? '1.0.0' : undefined;
+  await page.evaluate(`${STORES}.store.isPINS = ${enabled}`);
 }
 
 async function openRoute(page, route) {
@@ -518,7 +586,7 @@ async function checkImageHistory(page, viewportName, backend) {
   await page.evaluate(SETTLE);
   failures.push(...(await checkPage(page, viewportName, '/seq-mon history', 'seq-mon-history')));
 
-  await page.evaluate(`${STORES}.store.isPINS = true`);
+  await setPins(page, true);
   await page.waitFor(
     `!!document.querySelector('[data-testid="image-history-select-mode"]')`,
     'the select button'
@@ -554,8 +622,78 @@ async function checkImageHistory(page, viewportName, backend) {
   await page.evaluate(
     `[...document.querySelectorAll('[data-testid="image-history-selection-bar"] button')].at(-1).click()`
   );
-  await page.evaluate(`${STORES}.store.isPINS = false`);
+  await setPins(page, false);
   await page.evaluate(`${API_STORE}.imageHistoryInfo = null`);
+  return failures;
+}
+
+// The rig comes from the fixtures above; the camera reports itself connected through
+// camera/info. The PINS part only opens dialogs and writes nothing.
+async function checkEquipment(page, viewportName) {
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} equipment: ${problem}`);
+    if (!passed) failures.push(`${viewportName} equipment: ${problem}`);
+  };
+  const buttonWithText = (text) =>
+    `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === ${JSON.stringify(text)})`;
+  const deviceRow = (name) =>
+    `[...document.querySelectorAll('label[for="deviceSelect"]')].find((label) => label.innerText.trim() === ${JSON.stringify(`${name}:`)}).parentElement`;
+  const manageProfiles = `document.querySelector('[title="Manage Profiles"]')`;
+  const openDialog = async (opener, label, screenshotName, inspect) => {
+    await page.evaluate(`${opener}.click()`);
+    await page.waitFor(`!!${DIALOG}`, `${label} to open`);
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+    await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, `${screenshotName}.png`));
+    const dialog = await page.evaluate(READ_LAST_DIALOG);
+    expect(dialog.onTop, `${label} paints on top`);
+    expect(dialog.fitsScreen && dialog.fitsDialog, `${label} fits`);
+    await inspect?.();
+    await page.pressEscape();
+    await page.evaluate(SETTLE);
+    expect(await page.evaluate(`!${DIALOG}`), `${label} closes on Escape`);
+  };
+
+  equipmentFixtures = true;
+  await openRoute(page, '/equipment');
+  await page.waitFor(
+    `${deviceRow('Camera')}.querySelector('select').value === 'ZWO ASI2600MM Pro'`,
+    'the camera list'
+  );
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/equipment rig', 'equipment-rig')));
+
+  await setPins(page, true);
+  await page.waitFor(
+    `!!${buttonWithText('INDI Setup')} && !!${manageProfiles}`,
+    'the PINS controls'
+  );
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/equipment PINS', 'equipment-pins')));
+  expect(
+    await page.evaluate(`${manageProfiles}.getBoundingClientRect().width <= 64`),
+    'the profile manage button stays a square'
+  );
+
+  await openDialog(manageProfiles, 'profile management', 'equipment-profiles', async () => {
+    expect(
+      await page.evaluate(`${LAST_DIALOG}.innerText.includes('Travel rig')`),
+      'profile management lists the profiles'
+    );
+  });
+  await openDialog(buttonWithText('INDI Setup'), 'INDI setup', 'equipment-indi');
+  // The cog stays disabled while the row is still fetching its device list.
+  const mountCog = `${deviceRow('Mount')}.querySelector('button')`;
+  await page.waitFor(`!${mountCog}.disabled`, 'the mount settings button');
+  await openDialog(mountCog, 'mount settings', 'equipment-mount-settings', async () => {
+    expect(
+      await page.evaluate(`${LAST_DIALOG}.querySelector('#devicePort').disabled`),
+      'auto search locks the port'
+    );
+  });
+
+  await setPins(page, false);
+  equipmentFixtures = false;
   return failures;
 }
 
@@ -587,6 +725,7 @@ try {
     failures.push(...(await checkNinaDialog(page, viewportName, backend)));
     failures.push(...(await checkTppa(page, viewportName, backend)));
     failures.push(...(await checkImageHistory(page, viewportName, backend)));
+    failures.push(...(await checkEquipment(page, viewportName)));
     await page.close();
   }
 } finally {

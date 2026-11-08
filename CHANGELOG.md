@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings: All settings tabs now use the same cards, headings and colours as the rest of the app. The folder buttons next to path fields are larger and easier to tap.
 - TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.
 - Monitor: The statistics and image history tabs now use the same cards and colours as the rest of the app. The buttons above the image history, the image rotation choice and the graph controls are larger and easier to tap.
+- Equipment: The equipment page, the device settings, the INDI setup and the profile management now use the same cards and colours as the rest of the app. Port and device number in the Alpaca Direct settings and the pre connect delay of the SV241 Pro now have plus and minus buttons and open the touch number pad.
 
 ### Fixed
 
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TPPA: Until the first measurement arrives, errors show a question mark instead of an empty value, the error dialogs say they are waiting, and the circle no longer appears green without a result. The empty status frame is gone as well.
 - Camera, Focus and TPPA: The Drag and Show image labels are now translated.
 - Monitor: The loading hint of the last image is now translated, and "No data available yet" is no longer shown in red like an error.
+- Equipment: The loading message shown while switching profiles is now translated.
 
 ## [App6.5.0 - beta 24] - 2026-11-05
 

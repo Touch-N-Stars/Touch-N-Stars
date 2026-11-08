@@ -8,27 +8,7 @@
       :disabled="isConnecting || allConnected"
     >
       <span>{{ $t('components.connectEquipment.connectAll') }}</span>
-      <svg
-        v-if="isConnecting"
-        class="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <Spinner v-if="isConnecting" size="sm" />
     </button>
 
     <!-- Disconnect All Button -->
@@ -38,27 +18,7 @@
       :disabled="isDisconnecting || !hasAnyConnection"
     >
       <span>{{ $t('components.connectEquipment.disconnectAll') }}</span>
-      <svg
-        v-if="isDisconnecting"
-        class="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <Spinner v-if="isDisconnecting" size="sm" />
     </button>
   </div>
   <div class="flex flex-col gap-2">
@@ -198,7 +158,7 @@
         :selectedDevice="selectedCameraDevice"
         :deviceId="selectedCameraObj?.Id"
       />
-      <p v-else class="text-sm text-gray-300">
+      <p v-else class="text-sm text-content">
         {{ $t('components.alpacaDirect.cameraNoSettings') }}
       </p>
     </template>
@@ -218,7 +178,7 @@
         :selectedDevice="selectedGuideCameraDevice"
         :deviceId="selectedGuideCameraObj?.Id"
       />
-      <p v-else class="text-sm text-gray-300">
+      <p v-else class="text-sm text-content">
         {{ $t('components.alpacaDirect.cameraNoSettings') }}
       </p>
     </template>
@@ -416,6 +376,7 @@ import apiService from '@/services/apiService';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import selectGuiderCam from '@/components/guider/PHD2/selectGuiderCam.vue';
 import Modal from '@/components/helpers/Modal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import settingsGuiderConnect from '@/components/guider/settingsGuiderConnect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsOnStepXConnection from '@/components/equipment/SettingsOnStepXConnection.vue';

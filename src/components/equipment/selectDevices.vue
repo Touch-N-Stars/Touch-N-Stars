@@ -1,7 +1,7 @@
 <template>
   <div
     :class="borderClass"
-    class="flex flex-col sm:flex-row border p-2 rounded-lg h-full gap-2 sm:items-center transition-all duration-300"
+    class="flex flex-col sm:flex-row border p-2 rounded-control h-full gap-2 sm:items-center transition-all duration-300"
   >
     <label class="text-sm sm:w-36 shrink-0" for="deviceSelect">{{ deviceName }}:</label>
     <div class="flex flex-col gap-1 w-full">
@@ -30,19 +30,16 @@
             v-if="store.isPINS && !props.hideConfig"
             @click="configDevice"
             :disabled="configDisabled"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-70"
+            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-70"
           >
-            <Cog6ToothIcon class="w-6 h-6" :class="{ 'text-gray-400': configDisabled }" />
+            <Cog6ToothIcon class="w-6 h-6" :class="{ 'text-content-faint': configDisabled }" />
           </button>
           <button
             @click="rescanDevices"
             :disabled="isScanning || isConnected"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-70"
+            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-70"
           >
-            <ArrowPathIcon
-              class="w-6 h-6"
-              :class="{ 'text-green-500 spin': isScanning, 'text-white': !isScanning }"
-            />
+            <ArrowPathIcon class="w-6 h-6" :class="{ 'text-status-ok spin': isScanning }" />
           </button>
           <button
             @click="
@@ -53,15 +50,15 @@
                   : toggleConnection()
             "
             :disabled="isToggleCon && !store.isPINS"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-30"
+            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-30"
           >
-            <XCircleIcon v-if="isToggleCon && store.isPINS" class="w-6 h-6 text-yellow-500" />
+            <XCircleIcon v-if="isToggleCon && store.isPINS" class="w-6 h-6 text-status-warn" />
             <InformationCircleIcon
               v-else-if="disableConnect && disableConnectMessage"
-              class="w-6 h-6 text-yellow-500"
+              class="w-6 h-6 text-status-warn"
             />
             <LinkIcon v-else-if="!isConnected" class="w-6 h-6" />
-            <LinkSlashIcon v-else class="w-6 h-6 text-red-600" />
+            <LinkSlashIcon v-else class="w-6 h-6 text-status-danger" />
           </button>
         </div>
       </div>
@@ -139,7 +136,7 @@ const error = ref(false);
 const isScanning = ref(false);
 const isToggleCon = ref(false);
 const isReloadingDriver = ref(false);
-const borderClass = ref('border-gray-500');
+const borderClass = ref('border-line-strong');
 const showDisableModal = ref(false);
 
 // After a backend restart App.vue remounts this page in the very tick isBackendReachable
@@ -477,11 +474,11 @@ async function cancelConnect() {
 
 function updateBorderClass() {
   if (error.value) {
-    borderClass.value = 'border-red-500 error-glow';
+    borderClass.value = 'border-status-danger error-glow';
   } else if (props.isConnected) {
-    borderClass.value = 'border-green-500 connected-glow';
+    borderClass.value = 'border-status-ok connected-glow';
   } else {
-    borderClass.value = 'border-gray-500';
+    borderClass.value = 'border-line-strong';
   }
 }
 

@@ -60,11 +60,12 @@ export async function startFakeBackend({ rootDir, routes = {} }) {
   };
 
   const server = http.createServer((request, response) => {
-    const { pathname } = new URL(request.url, 'http://localhost');
+    const { pathname, searchParams } = new URL(request.url, 'http://localhost');
+    // A route answering undefined is switched off and falls through to the 404 below.
+    const body = advancedApiRoutes[pathname]?.(searchParams);
 
     if (pluginRoutes[pathname]) return sendJson(response, pluginRoutes[pathname]());
-    if (advancedApiRoutes[pathname]) {
-      const body = advancedApiRoutes[pathname]();
+    if (body !== undefined) {
       // The Advanced API sends images as the bare file, without its JSON envelope.
       if (Buffer.isBuffer(body)) {
         response.writeHead(200, {
