@@ -940,6 +940,7 @@
       "targetNotFound": "在序列中未找到目标，请重试。",
       "filter": "滤镜",
       "triggers": "触发器",
+      "globalTriggers": "全局触发器",
       "expandAll": "展开全部",
       "collapseAll": "折叠全部",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "时间",
       "noRunningItems": "序列已停止",
+      "noConditions": "没有条件",
       "targetOfTotal": "目标 {current} / {total}",
       "status": "序列状态",
       "instructions": "操作提示",

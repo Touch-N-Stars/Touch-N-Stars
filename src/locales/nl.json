@@ -940,6 +940,7 @@
       "targetNotFound": "Doel niet gevonden in de sequentie. Probeer het opnieuw.",
       "filter": "Filter",
       "triggers": "Triggers",
+      "globalTriggers": "Globale triggers",
       "expandAll": "Alles uitvouwen",
       "collapseAll": "Alles inklappen",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Tijd",
       "noRunningItems": "Sequentie gestopt",
+      "noConditions": "Geen condities",
       "targetOfTotal": "Doel {current} van {total}",
       "status": "Sequentie status",
       "instructions": "Instructies",

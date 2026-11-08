@@ -1057,6 +1057,7 @@
       },
       "filter": "Filter",
       "triggers": "Triggers",
+      "globalTriggers": "Global Trigger",
       "expandAll": "Expand All",
       "collapseAll": "Collapse All",
       "addTypeButton": {
@@ -1138,6 +1139,7 @@
       },
       "time": "Time",
       "noRunningItems": "Sequence stopped",
+      "noConditions": "No conditions",
       "targetOfTotal": "Target {current} of {total}",
       "status": "Sequence status",
       "instructions": "Instructions",

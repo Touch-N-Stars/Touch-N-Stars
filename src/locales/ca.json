@@ -984,6 +984,7 @@
       "targetNotFound": "No s'ha trobat l'objectiu a la seqüència. Torna-ho a provar.",
       "filter": "Filtre",
       "triggers": "Activadors",
+      "globalTriggers": "Activadors globals",
       "expandAll": "Expandeix-ho tot",
       "collapseAll": "Replega-ho tot",
       "addTypeButton": {
@@ -1065,6 +1066,7 @@
       },
       "time": "Temps",
       "noRunningItems": "Seqüència aturada",
+      "noConditions": "Cap condició",
       "targetOfTotal": "Objectiu {current} de {total}",
       "status": "Estat de la seqüència",
       "instructions": "Instruccions",

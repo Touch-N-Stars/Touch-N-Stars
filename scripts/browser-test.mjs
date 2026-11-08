@@ -10,6 +10,7 @@ import { launchChrome, openPage } from './lib/chrome.mjs';
 import { PINS_DAEMON_PATH, startFakeBackend } from './lib/fakeBackend.mjs';
 import { findPageProblems } from './lib/browserChecks.mjs';
 import { PINS_DAEMON_ROUTES } from './lib/pinsDaemonFixtures.mjs';
+import { SEQUENCE_ROUTES } from './lib/sequenceFixtures.mjs';
 
 const DIST_DIR = path.resolve('dist');
 const SCREENSHOT_DIR = path.resolve('.cache/browser-tests');
@@ -147,6 +148,15 @@ const DAEMON_ROUTES = Object.fromEntries(
   ])
 );
 const PINS_DAEMON_PORT = 8000;
+
+// A loaded sequence, served only while checkSequence runs so /sequence stays empty elsewhere.
+let sequenceFixtures = false;
+const PLUGIN_ROUTES = Object.fromEntries(
+  Object.entries(SEQUENCE_ROUTES).map(([route, answer]) => [
+    route,
+    (query) => (sequenceFixtures ? answer(query) : undefined),
+  ])
+);
 
 const BACKEND_ROUTES = {
   ...Object.fromEntries(
@@ -869,6 +879,164 @@ async function checkPins(page, viewportName, backend) {
   return failures;
 }
 
+// The id-based editor with a loaded sequence: full tree, its popovers and dialogs, the simple
+// view, the locked state and the settings tab. Nothing is confirmed, so no edit may go out.
+async function checkSequence(page, viewportName, backend) {
+  const viewport = VIEWPORTS[viewportName];
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} sequence: ${problem}`);
+    if (!passed) failures.push(`${viewportName} sequence: ${problem}`);
+  };
+  const store = (id) =>
+    `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia._s.get('${id}')`;
+  const setViewMode = (mode) =>
+    page.evaluate(`${store('settings')}.setSequenceViewMode('${mode}')`);
+  const shot = (name) => page.screenshot(path.join(SCREENSHOT_DIR, viewportName, `${name}.png`));
+  // A teleported popover has no dialog role; it has to be the topmost element at its centre
+  // and stay inside the screen.
+  const readPopover = (element) => `(() => {
+    const popover = ${element};
+    if (!popover) return { found: false };
+    const rect = popover.getBoundingClientRect();
+    const hit = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    return {
+      found: true,
+      onTop: popover.contains(hit),
+      fits: rect.left >= 0 && rect.top >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight,
+    };
+  })()`;
+  const checkPopover = async (opener, element, label, screenshotName) => {
+    await page.evaluate(`${opener}.scrollIntoView({ block: 'center' })`);
+    await page.evaluate(SETTLE);
+    await page.evaluate(`${opener}.click()`);
+    await page.waitFor(`!!${element}`, `${label} to open`);
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+    await shot(screenshotName);
+    const popover = await page.evaluate(readPopover(element));
+    expect(popover.onTop, `${label} paints on top`);
+    expect(popover.fits, `${label} fits`);
+    await page.evaluate(`document.body.click()`);
+    await page.waitFor(`!${element}`, `${label} to close`);
+  };
+  const sequenceWrites = () =>
+    [...backend.unhandled].filter((request) =>
+      /^(POST|PUT|PATCH|DELETE) \/api\/sequence\//.test(request)
+    );
+
+  const editorWasSupported = await page.evaluate(`${API_STORE}.sequenceEditorSupported`);
+  const viewMode = await page.evaluate(`${STORES}.settings.sequence?.viewMode ?? null`);
+  sequenceFixtures = true;
+  await page.evaluate(`${API_STORE}.sequenceEditorSupported = true`);
+  await setViewMode('full');
+  await openRoute(page, '/sequence');
+  await page.waitFor(
+    `document.body.innerText.includes('Calibration frames') && document.body.innerText.includes('Park Scope')`,
+    'the sequence tree'
+  );
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/sequence editor', 'sequence-editor')));
+  await screenshotWholePage(
+    page,
+    viewport,
+    path.join(SCREENSHOT_DIR, viewportName, 'sequence-editor-all.png')
+  );
+
+  const moreButton = `[...document.querySelectorAll('[title="More"]')].at(-1)`;
+  await checkPopover(
+    moreButton,
+    `document.querySelector('.menu-item')?.parentElement`,
+    'item menu',
+    'sequence-item-menu'
+  );
+  const issuesBadge = `document.querySelector('[data-testid="sequence-item-issues"]')`;
+  await checkPopover(
+    issuesBadge,
+    `[...document.body.children].find((element) => element.innerText?.trim() === 'Camera is not connected')`,
+    'issues popover',
+    'sequence-issues'
+  );
+  await page.evaluate(`${issuesBadge}.parentElement.querySelector('[title="Edit"]').click()`);
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  await page.evaluate(`${issuesBadge}.scrollIntoView({ block: 'start' })`);
+  await page.evaluate(SETTLE);
+  failures.push(
+    ...(await checkPage(page, viewportName, '/sequence item editor', 'sequence-item-editor'))
+  );
+  await page.evaluate(`${issuesBadge}.parentElement.querySelector('[title="Edit"]').click()`);
+
+  // The target container's editor holds the coordinate fields.
+  const dsoEdit = `[...document.querySelectorAll('[class~="@container"]')]
+    .find((element) => element.innerText.trim().startsWith('NGC 7000'))
+    .querySelector('[title="Edit"]')`;
+  await page.evaluate(`${dsoEdit}.click()`);
+  await page.waitFor(
+    `[...document.querySelectorAll('label')].some((label) => label.innerText.trim() === 'Target Name')`,
+    'the target editor'
+  );
+  await page.evaluate(`${dsoEdit}.scrollIntoView({ block: 'start' })`);
+  await page.evaluate(SETTLE);
+  failures.push(
+    ...(await checkPage(page, viewportName, '/sequence target editor', 'sequence-target-editor'))
+  );
+  await page.evaluate(`${dsoEdit}.click()`);
+
+  await checkPopover(
+    `[...document.querySelectorAll('[title="Add item"]')].at(-1)`,
+    `document.querySelector('input[inputmode="search"]')?.parentElement.parentElement`,
+    'add menu',
+    'sequence-add-menu'
+  );
+
+  const manageButton = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Load / save sequences')`;
+  await page.evaluate(`${manageButton}.click()`);
+  await page.waitFor(`!!${DIALOG} && ${DIALOG}.innerText.includes('Flats.json')`, 'the file list');
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  await shot('sequence-files');
+  const files = await page.evaluate(READ_LAST_DIALOG);
+  expect(files.onTop, 'file manager paints on top');
+  expect(files.fitsScreen && files.fitsDialog, 'file manager fits');
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!${DIALOG}`), 'file manager closes on Escape');
+
+  await page.evaluate(`${store('sequenceStore')}.setSequenceControlsLocked(true)`);
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  await screenshotWholePage(
+    page,
+    viewport,
+    path.join(SCREENSHOT_DIR, viewportName, 'sequence-locked-all.png')
+  );
+  await page.evaluate(`${store('sequenceStore')}.setSequenceControlsLocked(false)`);
+
+  await setViewMode('simple');
+  await page.waitFor(`document.body.innerText.includes('NGC 7000')`, 'the simple view');
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/sequence simple', 'sequence-simple')));
+  await screenshotWholePage(
+    page,
+    viewport,
+    path.join(SCREENSHOT_DIR, viewportName, 'sequence-simple-all.png')
+  );
+
+  page.exceptions.length = 0;
+  await page.evaluate(`${SUBNAV_BUTTONS}[1].click()`);
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(
+    ...(await checkPage(page, viewportName, '/sequence settings', 'sequence-settings'))
+  );
+  await page.evaluate(`${SUBNAV_BUTTONS}[0].click()`);
+
+  expect(sequenceWrites().length === 0, `sends no edit (${sequenceWrites()})`);
+  await openRoute(page, '/equipment');
+  if (viewMode) await setViewMode(viewMode);
+  await page.evaluate(
+    `${API_STORE}.sequenceEditorSupported = ${JSON.stringify(editorWasSupported)}`
+  );
+  sequenceFixtures = false;
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -881,6 +1049,7 @@ const backend = await startFakeBackend({
   rootDir: DIST_DIR,
   routes: BACKEND_ROUTES,
   daemonRoutes: DAEMON_ROUTES,
+  pluginRoutes: PLUGIN_ROUTES,
 });
 const daemonOrigin = backend.origin.replace(/:\d+$/, `:${PINS_DAEMON_PORT}`);
 const chrome = await launchChrome();
@@ -905,6 +1074,7 @@ try {
     failures.push(...(await checkImageHistory(page, viewportName, backend)));
     failures.push(...(await checkEquipment(page, viewportName)));
     failures.push(...(await checkPins(page, viewportName, backend)));
+    failures.push(...(await checkSequence(page, viewportName, backend)));
     await page.close();
   }
 } finally {

@@ -1,14 +1,14 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span v-if="item.ForceCalibration" class="text-xs text-cyan-400">
+      <span v-if="item.ForceCalibration" class="text-xs text-accent">
         {{ $t('components.sequence.items.startGuiding.forceCalibrationLabel') }}
       </span>
     </template>
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">
+        <label class="tns-label shrink-0">
           {{ $t('components.sequence.items.startGuiding.forceCalibrationLabel') }}
         </label>
         <div class="ml-auto">

@@ -1,19 +1,19 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono truncate">{{
+      <span class="text-xs text-content-muted font-mono truncate">{{
         item.PredicateDefinition || item.Predicate
       }}</span>
     </template>
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.waitUntil.predicate')
         }}</label>
         <TextInput
           :modelValue="item.PredicateDefinition"
-          inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          inputClass="tns-input-compact ml-auto w-36 md:w-40"
           @change="save('PredicateDefinition', $event)"
         />
       </div>

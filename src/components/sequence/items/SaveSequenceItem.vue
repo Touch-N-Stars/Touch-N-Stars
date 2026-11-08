@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono truncate">
+      <span class="text-xs text-content-muted font-mono truncate">
         {{ item.FilePath || $t('components.sequence.items.saveSequence.notSet') }}
       </span>
     </template>
@@ -39,7 +39,7 @@
             @keydown.enter="applyNewFileName(save)"
           />
           <button
-            class="shrink-0 text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1.5 rounded border border-cyan-500/40 hover:bg-cyan-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="shrink-0 text-xs text-accent px-2 py-1.5 rounded border border-accent/40 hover:bg-accent/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="!newFileName.trim()"
             @click="applyNewFileName(save)"
           >

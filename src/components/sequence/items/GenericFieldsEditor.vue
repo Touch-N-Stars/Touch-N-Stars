@@ -15,13 +15,13 @@
 
     <!-- Boolean -->
     <div v-else-if="f.type === 'boolean'" class="seq-field-row">
-      <label class="text-xs text-slate-400">{{ f.key }}</label>
+      <label class="tns-label">{{ f.key }}</label>
       <button
         class="ml-auto px-3 py-1 rounded text-xs font-medium border transition-colors"
         :class="
           f.value
-            ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30'
-            : 'bg-slate-700/60 text-slate-400 border-slate-600 hover:bg-slate-700'
+            ? 'bg-accent/20 text-accent border-accent/40 hover:bg-accent/30'
+            : 'bg-surface-2 text-content-muted border-line-strong hover:bg-surface-3'
         "
         @click="save(f.key, !f.value)"
       >
@@ -31,9 +31,9 @@
 
     <!-- Choice (enum or a string with a list of valid values) -->
     <div v-else-if="f.type === 'choice'" class="seq-field-row">
-      <label class="text-xs text-slate-400 shrink-0">{{ f.key }}</label>
+      <label class="tns-label shrink-0">{{ f.key }}</label>
       <select
-        class="tns-select ml-auto w-36 md:w-40 text-xs"
+        class="tns-select-compact ml-auto w-36 md:w-40"
         :value="f.value"
         @change="save(f.key, $event.target.value)"
       >
@@ -43,10 +43,10 @@
 
     <!-- String -->
     <div v-else class="seq-field-row">
-      <label class="text-xs text-slate-400 shrink-0">{{ f.key }}</label>
+      <label class="tns-label shrink-0">{{ f.key }}</label>
       <TextInput
         :modelValue="f.value"
-        inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+        inputClass="tns-input-compact ml-auto w-36 md:w-40"
         @change="save(f.key, $event)"
       />
     </div>
@@ -54,8 +54,8 @@
 
   <!-- Values NINA owns (runtime state, complex plugin objects) are shown but not editable -->
   <div v-for="f in readOnlyFields" :key="f.key" class="seq-field-row">
-    <label class="text-xs text-slate-400 shrink-0">{{ f.key }}</label>
-    <span class="ml-auto min-w-0 truncate text-xs text-slate-500 select-text" :title="f.text">
+    <label class="tns-label shrink-0">{{ f.key }}</label>
+    <span class="ml-auto min-w-0 truncate text-xs text-content-faint select-text" :title="f.text">
       {{ f.text }}
     </span>
   </div>

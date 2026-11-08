@@ -940,6 +940,7 @@
       "targetNotFound": "Nie znaleziono celu w sekwencji. Spróbuj ponownie.",
       "filter": "Filtr",
       "triggers": "Wyzwalacze",
+      "globalTriggers": "Wyzwalacze globalne",
       "expandAll": "Rozwiń wszystko",
       "collapseAll": "Zwiń wszystko",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Czas",
       "noRunningItems": "Sekwencja zatrzymana",
+      "noConditions": "Brak warunków",
       "targetOfTotal": "Cel {current} z {total}",
       "status": "Status sekwencji",
       "instructions": "Instrukcje",

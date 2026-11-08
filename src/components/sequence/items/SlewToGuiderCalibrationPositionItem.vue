@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         HA±{{ item.HaOffsetDegrees ?? 5 }}° Dec{{ (item.TargetDec ?? 0) >= 0 ? '+' : ''
         }}{{ item.TargetDec ?? 0 }}°
         {{
@@ -16,7 +16,7 @@
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 flex-shrink-0">
+        <label class="tns-label flex-shrink-0">
           {{ $t('components.sequence.items.slewToGuiderCalibrationPosition.haOffset') }}
         </label>
         <NumberInputPicker
@@ -33,7 +33,7 @@
       </div>
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 flex-shrink-0">
+        <label class="tns-label flex-shrink-0">
           {{ $t('components.sequence.items.slewToGuiderCalibrationPosition.dec') }}
         </label>
         <NumberInputPicker
@@ -50,12 +50,12 @@
       </div>
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 flex-shrink-0">
+        <label class="tns-label flex-shrink-0">
           {{ $t('components.sequence.items.slewToGuiderCalibrationPosition.side') }}
         </label>
         <select
           :value="item.PointingSide"
-          class="ml-auto bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-auto"
           @change="save('PointingSide', $event.target.value)"
         >
           <option value="Stay">
@@ -71,7 +71,7 @@
       </div>
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 flex-shrink-0">
+        <label class="tns-label flex-shrink-0">
           {{ $t('components.sequence.items.slewToGuiderCalibrationPosition.clearBacklash') }}
         </label>
         <div class="ml-auto">

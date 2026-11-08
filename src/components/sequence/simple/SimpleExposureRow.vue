@@ -130,7 +130,7 @@
             @change="saveExposure('Offset', $event)"
           />
           <div class="flex items-center gap-3">
-            <label :for="`simple-type-${row.id}`" class="flex-1 text-xs text-slate-400">
+            <label :for="`simple-type-${row.id}`" class="flex-1 text-xs text-content-muted">
               {{ $t('components.sequence.items.takeExposure.imageType') }}
             </label>
             <select
@@ -143,7 +143,7 @@
             </select>
           </div>
           <div class="flex items-center gap-3">
-            <label :for="`simple-binning-${row.id}`" class="flex-1 text-xs text-slate-400">
+            <label :for="`simple-binning-${row.id}`" class="flex-1 text-xs text-content-muted">
               {{ $t('components.sequence.items.takeExposure.binning') }}
             </label>
             <select

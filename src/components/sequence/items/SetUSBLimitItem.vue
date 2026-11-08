@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ item.USBLimit }}</span>
+      <span class="text-xs text-content-muted font-mono">{{ item.USBLimit }}</span>
     </template>
 
     <template #editor="{ save }">

@@ -1,17 +1,17 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ raStr }} {{ decStr }}</span>
-      <span class="text-xs text-slate-500 font-mono">{{ displayPositionAngle }}°</span>
+      <span class="text-xs text-content-muted font-mono">{{ raStr }} {{ decStr }}</span>
+      <span class="text-xs text-content-faint font-mono">{{ displayPositionAngle }}°</span>
     </template>
 
     <template #editor>
       <!-- Container Name -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{ $t('common.name') }}</label>
+        <label class="tns-label shrink-0">{{ $t('common.name') }}</label>
         <TextInput
           :modelValue="item.Name ?? ''"
-          inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          inputClass="tns-input-compact ml-auto w-36 md:w-40"
           @change="store.setProperty(item.Id, 'Name', $event)"
         />
       </div>
@@ -21,11 +21,11 @@
 
       <!-- Load from favorites -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.dso.loadFromFavorites')
         }}</label>
         <button
-          class="ml-auto flex items-center gap-1 px-2 py-1 bg-slate-700/60 border border-slate-600 rounded text-xs text-gray-200 hover:bg-slate-600"
+          class="ml-auto flex items-center gap-1 px-2 py-1 bg-surface-2 border border-line-strong rounded text-xs text-content hover:bg-surface-3"
           @click="openFavPicker"
         >
           <HeartIcon class="w-4 h-4 text-pink-400" />
@@ -34,15 +34,15 @@
 
       <!-- Load this target into the framing assistant -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.dso.loadIntoFraming')
         }}</label>
         <button
-          class="ml-auto flex items-center gap-1 px-2 py-1 bg-slate-700/60 border border-slate-600 rounded text-xs text-gray-200 hover:bg-slate-600 disabled:opacity-40 disabled:cursor-not-allowed"
+          class="ml-auto flex items-center gap-1 px-2 py-1 bg-surface-2 border border-line-strong rounded text-xs text-content hover:bg-surface-3 disabled:opacity-40 disabled:cursor-not-allowed"
           :disabled="!canLoadIntoFraming"
           @click="loadIntoFraming"
         >
-          <CameraFramingIcon class="w-4 h-4 text-cyan-400" />
+          <CameraFramingIcon class="w-4 h-4 text-accent" />
         </button>
       </div>
 
@@ -54,9 +54,7 @@
         "
         class="seq-field-row"
       >
-        <label class="text-xs text-slate-400 shrink-0">{{
-          $t('components.fitsPlatesolve.buttonTitle')
-        }}</label>
+        <label class="tns-label shrink-0">{{ $t('components.fitsPlatesolve.buttonTitle') }}</label>
         <FitsPlateSolve
           class="ml-auto"
           variant="inline"

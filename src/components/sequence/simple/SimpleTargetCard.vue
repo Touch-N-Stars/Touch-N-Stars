@@ -59,7 +59,7 @@
         :disabled="!canLoadIntoFraming"
         @click="loadIntoFraming"
       >
-        <CameraFramingIcon class="w-4 h-4 text-cyan-400" />
+        <CameraFramingIcon class="w-4 h-4 text-accent" />
         {{ $t('components.sequence.simple.framing') }}
       </button>
       <button

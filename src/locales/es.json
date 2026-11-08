@@ -940,6 +940,7 @@
       "targetNotFound": "No se encontró el objetivo en la secuencia. Inténtalo de nuevo.",
       "filter": "Filtro",
       "triggers": "Desencadenantes",
+      "globalTriggers": "Desencadenantes globales",
       "expandAll": "Expandir todo",
       "collapseAll": "Contraer todo",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Tiempo",
       "noRunningItems": "Secuencia detenida",
+      "noConditions": "Sin condiciones",
       "targetOfTotal": "Objetivo {current} de {total}",
       "status": "Estado de secuencia",
       "instructions": "Instrucciones",

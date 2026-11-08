@@ -1,16 +1,14 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs font-mono" :class="item.OnOff ? 'text-emerald-400' : 'text-slate-400'">
+      <span class="text-xs font-mono" :class="item.OnOff ? 'text-status-ok' : 'text-content-muted'">
         {{ item.OnOff ? $t('components.sequence.items.on') : $t('components.sequence.items.off') }}
       </span>
     </template>
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400">{{
-          $t('components.sequence.items.dewHeater.onOff')
-        }}</label>
+        <label class="tns-label">{{ $t('components.sequence.items.dewHeater.onOff') }}</label>
         <div class="ml-auto">
           <ToggleButton :statusValue="item.OnOff" @update:statusValue="save('OnOff', $event)" />
         </div>
