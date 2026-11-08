@@ -4721,6 +4721,7 @@
       "azimuth_error": "Erreur d'azimut:",
       "total_error": "Erreur totale:",
       "error_values_missing": "Valeurs d'erreur manquantes",
+      "waiting_for_values": "En attente de la première mesure…",
       "unknown_response_format": "Format de réponse inconnu",
       "east": "Est",
       "west": "Ouest",

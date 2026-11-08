@@ -29,7 +29,7 @@
         v-if="store.focuserAfInfo.autofocus_running"
         @click="showImageModal = true"
         class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md hover:bg-cyan-600 transition-colors"
-        title="Show Image"
+        :title="$t('common.showImage')"
       >
         <PhotoIcon class="w-6 h-6" />
       </button>

@@ -4767,6 +4767,7 @@
       "azimuth_error": "방위 오차:",
       "total_error": "전체 오차:",
       "error_values_missing": "오차 값 누락",
+      "waiting_for_values": "첫 측정값을 기다리는 중…",
       "unknown_response_format": "알 수 없는 응답 형식",
       "east": "동",
       "west": "서",

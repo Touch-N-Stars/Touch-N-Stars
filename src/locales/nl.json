@@ -4721,6 +4721,7 @@
       "azimuth_error": "Azimuth afwijking:",
       "total_error": "Totale afwijking:",
       "error_values_missing": "Geen waardes gevonden",
+      "waiting_for_values": "Wachten op de eerste meting…",
       "unknown_response_format": "Respons formaat niet correct",
       "east": "Oost",
       "west": "Westen",

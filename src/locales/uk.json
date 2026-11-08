@@ -4701,6 +4701,7 @@
       "azimuth_error": "Похибка азимута:",
       "total_error": "Загальна похибка:",
       "error_values_missing": "Значення похибок відсутні",
+      "waiting_for_values": "Очікування першого вимірювання…",
       "unknown_response_format": "Невідомий формат відповіді",
       "east": "Схід",
       "west": "Захід",

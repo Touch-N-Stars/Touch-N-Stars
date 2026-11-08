@@ -4721,6 +4721,7 @@
       "azimuth_error": "Błąd azymutu:",
       "total_error": "Błąd całkowity:",
       "error_values_missing": "Brakujące wartości błędów",
+      "waiting_for_values": "Oczekiwanie na pierwszy pomiar…",
       "unknown_response_format": "Nieznany format odpowiedzi",
       "east": "Wschód",
       "west": "Zachód",

@@ -4721,6 +4721,7 @@
       "azimuth_error": "方位误差：",
       "total_error": "总误差：",
       "error_values_missing": "缺少误差值",
+      "waiting_for_values": "等待首次测量结果…",
       "unknown_response_format": "未知的响应格式",
       "east": "东",
       "west": "西",

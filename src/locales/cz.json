@@ -4721,6 +4721,7 @@
       "azimuth_error": "Chyba v Azimutu:",
       "total_error": "Celková Chyba:",
       "error_values_missing": "Chybějící hodnoty chyby",
+      "waiting_for_values": "Čekání na první měření…",
       "unknown_response_format": "Neznámý formát odpovědi",
       "east": "Východ",
       "west": "Západ",

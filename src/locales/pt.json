@@ -4721,6 +4721,7 @@
       "azimuth_error": "Erro de azimute:",
       "total_error": "Erro total:",
       "error_values_missing": "Valores de erro ausentes",
+      "waiting_for_values": "A aguardar a primeira medição…",
       "unknown_response_format": "Formato de resposta desconhecido",
       "east": "Leste",
       "west": "Oeste",

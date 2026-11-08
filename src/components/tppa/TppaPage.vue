@@ -55,7 +55,7 @@
               <p class="w-52">
                 <strong>{{ $t('components.tppa.altitude_error') }}</strong>
               </p>
-              <p class="whitespace-nowrap">{{ tppaStore.showAltitudeError }}</p>
+              <p class="whitespace-nowrap">{{ tppaStore.showAltitudeError || '?' }}</p>
               <div v-if="tppaStore.showAltitudeError">
                 <div
                   v-if="tppaStore.altitudeCorDirectionTop && !tppaStore.isSouthernHemisphere"
@@ -91,7 +91,7 @@
               <p class="w-52">
                 <strong>{{ $t('components.tppa.azimuth_error') }}</strong>
               </p>
-              <p class="whitespace-nowrap">{{ tppaStore.showAzimuthError }}</p>
+              <p class="whitespace-nowrap">{{ tppaStore.showAzimuthError || '?' }}</p>
               <div v-if="tppaStore.showAzimuthError">
                 <div
                   v-if="tppaStore.azimuthCorDirectionLeft && !tppaStore.isSouthernHemisphere"
@@ -127,7 +127,7 @@
               <p class="w-52">
                 <strong>{{ $t('components.tppa.total_error') }}</strong>
               </p>
-              <p class="whitespace-nowrap">{{ tppaStore.showTotalError }}</p>
+              <p class="whitespace-nowrap">{{ tppaStore.showTotalError || '?' }}</p>
               <!-- Smiley Display -->
               <span v-if="tppaStore.showTotalError">
                 <span v-if="tppaStore.isWithinTolerance">
@@ -240,12 +240,7 @@
       </div>
     </div>
   </div>
-  <div
-    v-if="tppaStore.isRunning"
-    class="bg-surface-1/80 p-5 m-5 border border-line-strong rounded-card"
-  >
-    <TppaLastStatus />
-  </div>
+  <TppaLastStatus class="bg-surface-1/80 p-5 m-5" />
   <div></div>
 
   <!-- Settings Modal -->

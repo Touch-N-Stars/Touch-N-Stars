@@ -17,7 +17,8 @@
       </template>
       <template #body>
         <div class="w-full">
-          <div v-if="tppaStore.currentMessage && tppaStore.showAzimuthError">
+          <TppaWaitingForValues />
+          <div>
             <div class="space-y-4">
               <div class="flex flex-col bg-surface-2 p-2 rounded-card w-full">
                 <!-- AltitudeError -->
@@ -27,7 +28,7 @@
                 <div
                   class="flex flex-row justify-between text-5xl xs:text-6xl sm:text-7xl md:text-8xl xl:text-9xl"
                 >
-                  <p>{{ tppaStore.showAltitudeError }}</p>
+                  <p>{{ tppaStore.showAltitudeError || '?' }}</p>
                   <div v-if="tppaStore.showAltitudeError">
                     <div
                       v-if="tppaStore.altitudeCorDirectionTop && !tppaStore.isSouthernHemisphere"
@@ -73,7 +74,7 @@
                   <div
                     class="flex flex-row justify-between text-5xl xs:text-6xl sm:text-7xl md:text-8xl xl:text-9xl"
                   >
-                    <p>{{ tppaStore.showAzimuthError }}</p>
+                    <p>{{ tppaStore.showAzimuthError || '?' }}</p>
                     <div v-if="tppaStore.showAzimuthError">
                       <div
                         v-if="tppaStore.azimuthCorDirectionLeft && !tppaStore.isSouthernHemisphere"
@@ -120,7 +121,7 @@
                   <div
                     class="flex flex-row justify-between text-5xl xs:text-6xl sm:text-7xl md:text-8xl xl:text-9xl"
                   >
-                    <p>{{ tppaStore.showTotalError }}</p>
+                    <p>{{ tppaStore.showTotalError || '?' }}</p>
                     <!-- Smiley Display -->
                     <span v-if="tppaStore.showTotalError">
                       <span v-if="tppaStore.isWithinTolerance">
@@ -188,9 +189,7 @@
           <div v-if="tppaStore.showAzimuthError" class="flex justify-center pt-2">
             <ButtonPause class="w-28 h-28" />
           </div>
-          <div v-if="tppaStore.isRunning" class="mt-4 p-3 border border-line-strong rounded-card">
-            <TppaLastStatus />
-          </div>
+          <TppaLastStatus class="mt-4 p-3" />
         </div>
       </template>
     </Modal>
@@ -208,6 +207,7 @@ import {
   ArrowRightIcon,
 } from '@heroicons/vue/24/outline';
 import TppaLastStatus from '@/components/tppa/TppaLastStatus.vue';
+import TppaWaitingForValues from '@/components/tppa/TppaWaitingForValues.vue';
 import ButtonPause from '@/components/tppa/ButtonPause.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import QuickAccessButton from '@/components/helpers/QuickAccessButton.vue';

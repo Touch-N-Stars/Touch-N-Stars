@@ -4762,6 +4762,7 @@
       "azimuth_error": "Azimutfehler:",
       "total_error": "Gesamtfehler:",
       "error_values_missing": "Fehlende Fehlerwerte",
+      "waiting_for_values": "Warte auf die erste Messung…",
       "unknown_response_format": "Unbekanntes Antwortformat",
       "east": "Osten",
       "west": "Westen",

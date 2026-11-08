@@ -55,8 +55,12 @@
       </template>
       <template #body>
         <div class="w-full">
+          <TppaWaitingForValues />
           <!-- Error Circle Representation -->
-          <div class="flex justify-center items-center py-4 relative">
+          <div
+            v-if="tppaStore.showTotalError"
+            class="flex justify-center items-center py-4 relative"
+          >
             <svg
               class="max-w-full h-auto"
               :width="circleSize"
@@ -103,21 +107,19 @@
           </div>
 
           <div class="text-center text-xl">
-            <p>{{ $t('components.tppa.total_error') }} {{ tppaStore.showTotalError }}</p>
+            <p>{{ $t('components.tppa.total_error') }} {{ tppaStore.showTotalError || '?' }}</p>
             <p class="text-sm text-content-muted">
-              {{ $t('components.tppa.azimuth_error') }} {{ tppaStore.showAzimuthError }}
+              {{ $t('components.tppa.azimuth_error') }} {{ tppaStore.showAzimuthError || '?' }}
             </p>
             <p class="text-sm text-content-muted">
-              {{ $t('components.tppa.altitude_error') }} {{ tppaStore.showAltitudeError }}
+              {{ $t('components.tppa.altitude_error') }} {{ tppaStore.showAltitudeError || '?' }}
             </p>
           </div>
 
           <div v-if="tppaStore.showAzimuthError" class="flex items-center justify-center pt-2">
             <ButtonPause class="w-12 h-12" />
           </div>
-          <div v-if="tppaStore.isRunning" class="mt-4 p-3 border border-line-strong rounded-card">
-            <TppaLastStatus />
-          </div>
+          <TppaLastStatus class="mt-4 p-3" />
         </div>
       </template>
     </Modal>
@@ -129,6 +131,7 @@ import { ref, computed } from 'vue';
 import { useTppaStore } from '@/store/tppaStore';
 import ButtonPause from '@/components/tppa/ButtonPause.vue';
 import TppaLastStatus from '@/components/tppa/TppaLastStatus.vue';
+import TppaWaitingForValues from '@/components/tppa/TppaWaitingForValues.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import QuickAccessButton from '@/components/helpers/QuickAccessButton.vue';
 

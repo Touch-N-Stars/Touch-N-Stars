@@ -139,6 +139,18 @@ const SET_TPPA_RUNNING = (running) => `Object.assign(${STORES}.tppaStore, {
   declinationSpreadArcsec: 12.5,
   currentMessage: { message: { Response: { Status: 'Capturing image', Progress: 0.4 } } },
 })`;
+const SET_TPPA_WAITING = `Object.assign(${STORES}.tppaStore, {
+  isRunning: true,
+  showAltitudeError: '',
+  showAzimuthError: '',
+  showTotalError: '',
+  totalErrorDeg: 0,
+  AzimuthErrorDeg: 0,
+  AltitudeErrorDEG: 0,
+  initialErrorLarge: false,
+  declinationSpreadLarge: false,
+  currentMessage: null,
+})`;
 // TppaPage also runs inside the NINA dialog, so its own dialogs can open over another one.
 const DIALOGS = `document.querySelectorAll('[role="dialog"]')`;
 const LAST_DIALOG = `[...${DIALOGS}].at(-1)`;
@@ -354,10 +366,32 @@ async function checkTppa(page, viewportName, backend) {
     await page.evaluate(SETTLE);
     expect((await page.evaluate(`${DIALOGS}.length`)) === count, `${label} closes on Escape`);
   };
+  const checkWaiting = async (button, count, label) => {
+    await openDialog(button, count, label);
+    const dialog = await page.evaluate(`(() => {
+      const dialog = ${LAST_DIALOG};
+      return {
+        waits: dialog.innerText.includes('Waiting for the first measurement'),
+        unknownValues: dialog.innerText.split('?').length === 4,
+        noCircle: !dialog.querySelector('circle'),
+        noEmptyFrame: !dialog.querySelector('.border-line-strong.rounded-card'),
+      };
+    })()`);
+    expect(dialog.waits, `${label} says it is waiting`);
+    expect(dialog.unknownValues, `${label} marks all three values as unknown`);
+    expect(dialog.noCircle, `${label} draws no error circle`);
+    expect(dialog.noEmptyFrame, `${label} shows no empty status frame`);
+  };
   const checkDialogs = async (openCount, prefix) => {
     const count = openCount + 1;
-    await page.evaluate(SET_TPPA_RUNNING(true));
+    await page.evaluate(SET_TPPA_WAITING);
     await page.waitFor(`${TPPA_ACTIONS}.querySelectorAll('button').length === 3`, 'TPPA to run');
+    await checkWaiting(TPPA_BUTTON(1), count, `${prefix}waiting readout`);
+    await closeDialog(openCount, `${prefix}waiting readout`);
+    await checkWaiting(TPPA_BUTTON(2), count, `${prefix}waiting circle`);
+    await closeDialog(openCount, `${prefix}waiting circle`);
+
+    await page.evaluate(SET_TPPA_RUNNING(true));
     await openDialog(TPPA_BUTTON(1), count, `${prefix}error readout`);
     await closeDialog(openCount, `${prefix}error readout`);
     await openDialog(TPPA_BUTTON(2), count, `${prefix}error circle`);
