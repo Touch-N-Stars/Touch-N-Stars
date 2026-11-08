@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row w-full items-center min-w-28">
-    <label for="Exposuretime" class="text-sm sm:text-xs mr-3 mb-1 text-gray-200">
+    <label for="Exposuretime" class="text-sm sm:text-xs mr-3 mb-1 text-content">
       {{ $t('components.guider.phd2.Exposuretime') }}
     </label>
     <select v-model="exposureTime" class="tns-select w-28 ml-auto" @change="setExposureTime">

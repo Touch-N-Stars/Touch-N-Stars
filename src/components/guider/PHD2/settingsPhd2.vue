@@ -1,8 +1,8 @@
 <template>
-  <div v-if="isPHD2Selected" class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div v-if="isPHD2Selected" class="flex flex-col border border-line-strong p-1 md:p-2 rounded-lg">
     <!-- PHD2 Path -->
     <div class="flex flex-row items-center justify-between w-full">
-      <label for="phd2Path" class="text-xs md:text-sm text-gray-200">
+      <label for="phd2Path" class="text-xs md:text-sm text-content">
         {{ $t('components.guider.phd2Path') }}
       </label>
       <input
@@ -18,7 +18,7 @@
 
     <!-- PHD2 Server Hostname -->
     <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-      <label for="phd2ServerHost" class="text-xs md:text-sm text-gray-200 mr-2">
+      <label for="phd2ServerHost" class="text-xs md:text-sm text-content mr-2">
         {{ $t('components.guider.phd2ServerHost') }}
       </label>
       <input

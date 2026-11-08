@@ -14,9 +14,9 @@
       <div class="relative z-30 p-4 pointer-events-none" :class="buttonContainerClass">
         <div
           v-if="!store.guiderInfo.Connected"
-          class="p-4 bg-red-500/20 border border-red-500/30 rounded-lg backdrop-blur-sm pointer-events-auto"
+          class="p-4 bg-status-danger/10 border border-status-danger/40 rounded-control backdrop-blur-sm pointer-events-auto"
         >
-          <p class="text-red-400 font-medium text-center">
+          <p class="text-status-danger font-medium text-center">
             {{ $t('components.guider.notConnected') }}
           </p>
         </div>
@@ -339,9 +339,9 @@
         <!-- Calibration step message overlay -->
         <div
           v-if="guiderStore.phd2CalibrationMessage"
-          class="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-black/70 rounded-lg border border-yellow-500/50 backdrop-blur-sm pointer-events-none"
+          class="absolute top-4 left-1/2 -translate-x-1/2 z-20 px-4 py-2 bg-black/70 rounded-control border border-status-warn/50 backdrop-blur-sm pointer-events-none"
         >
-          <span class="text-yellow-300 text-xs font-medium tracking-wide">{{
+          <span class="text-status-warn text-xs font-medium tracking-wide">{{
             guiderStore.phd2CalibrationMessage
           }}</span>
         </div>
@@ -358,7 +358,7 @@
               <!-- Star Image links -->
               <div
                 :style="responsiveStarImageStyle"
-                class="relative shrink-0 bg-black/80 rounded border border-gray-600"
+                class="relative shrink-0 bg-black/80 rounded border border-line-strong"
               >
                 <Phd2Guidstar :show="true" class="opacity-95" />
               </div>
@@ -366,7 +366,7 @@
               <!-- Star Profile rechts -->
               <div
                 :style="responsiveStarProfileStyle"
-                class="relative shrink-0 bg-black/80 rounded border border-gray-600 overflow-hidden"
+                class="relative shrink-0 bg-black/80 rounded border border-line-strong overflow-hidden"
               >
                 <Phd2StarProfile
                   :containerWidth="responsiveStarSize.width"
@@ -385,7 +385,7 @@
               <!-- Star Image links -->
               <div
                 :style="responsiveStarImageStyle"
-                class="relative shrink-0 bg-black/80 rounded border border-gray-600"
+                class="relative shrink-0 bg-black/80 rounded border border-line-strong"
               >
                 <Phd2Guidstar :show="true" class="opacity-95" />
               </div>
@@ -393,7 +393,7 @@
               <!-- Star Profile rechts -->
               <div
                 :style="responsiveStarProfileStyle"
-                class="relative shrink-0 bg-black/80 rounded border border-gray-600 overflow-hidden"
+                class="relative shrink-0 bg-black/80 rounded border border-line-strong overflow-hidden"
               >
                 <Phd2StarProfile
                   :containerWidth="responsiveStarSize.width"
@@ -407,18 +407,9 @@
     </div>
 
     <!-- Settings Tab: normal page flow, the App stage already offsets navbar and SubNav -->
-    <div
-      v-if="currentTab === 'showSettings'"
-      class="container py-4 flex items-center justify-center"
-    >
-      <div class="container max-w-md landscape:max-w-xl">
-        <div class="border border-line rounded-card shadow-lg bg-surface-1">
-          <div class="container pl-5 pb-5 pr-5">
-            <div class="mt-5">
-              <Phd2Settings />
-            </div>
-          </div>
-        </div>
+    <div v-if="currentTab === 'showSettings'" class="p-2 sm:p-4 flex justify-center">
+      <div class="w-full max-w-md landscape:max-w-xl">
+        <Phd2Settings />
       </div>
     </div>
 
@@ -593,12 +584,12 @@ const statusClasses = computed(() => {
 const statusTextClasses = computed(() => {
   const state = store.guiderInfo?.State;
   return {
-    'text-green-400': state === 'Guiding',
-    'text-blue-400': state === 'Calibrating',
-    'text-yellow-400': state === 'Looping',
-    'text-red-400': state === 'LostLock',
-    'text-gray-400': state === 'Stopped',
-    'text-gray-500': !state,
+    'text-status-ok': state === 'Guiding',
+    'text-accent': state === 'Calibrating',
+    'text-status-warn': state === 'Looping',
+    'text-status-danger': state === 'LostLock',
+    'text-content-muted': state === 'Stopped',
+    'text-content-faint': !state,
   };
 });
 
@@ -676,28 +667,28 @@ async function autoSelectStar() {
 }
 
 .status-guiding .status-dot {
-  @apply bg-green-500 shadow-lg shadow-green-500/50;
+  @apply bg-status-ok shadow-lg shadow-status-ok/50;
 }
 
 .status-calibrating .status-dot {
-  @apply bg-blue-500 shadow-lg shadow-blue-500/50;
+  @apply bg-accent shadow-lg shadow-accent/50;
 }
 
 .status-looping .status-dot {
-  @apply bg-yellow-500 shadow-lg shadow-yellow-500/50;
+  @apply bg-status-warn shadow-lg shadow-status-warn/50;
 }
 
 .status-error .status-dot {
-  @apply bg-red-500 shadow-lg shadow-red-500/50;
+  @apply bg-status-danger shadow-lg shadow-status-danger/50;
 }
 
 .status-stopped .status-dot {
-  @apply bg-gray-500 shadow-lg shadow-gray-500/50;
+  @apply bg-content-muted shadow-lg shadow-content-muted/50;
   animation: none;
 }
 
 .status-unknown .status-dot {
-  @apply bg-gray-600 shadow-lg shadow-gray-600/50;
+  @apply bg-content-faint shadow-lg shadow-content-faint/50;
   animation: none;
 }
 </style>

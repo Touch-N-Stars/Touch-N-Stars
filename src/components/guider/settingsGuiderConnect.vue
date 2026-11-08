@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <div class="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
+    <div class="tns-card">
       <div class="space-y-3">
         <!-- PINS native guider: guide camera and optics live in its own settings -->
         <NativeSettingsSheet v-if="isNativeGuider" :names="NATIVE_CONNECT_SETTINGS" compact />

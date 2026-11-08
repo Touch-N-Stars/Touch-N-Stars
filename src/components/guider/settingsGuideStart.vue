@@ -1,10 +1,10 @@
 <template>
-  <div class="flex flex-col w-full border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div class="flex flex-col w-full border border-line-strong p-1 md:p-2 rounded-lg">
     <!-- Guiding Start Retry -->
     <ProfileToggle
       labelKey="components.guider.guidingStartRetry"
       settingKey="GuiderSettings-AutoRetryStartGuiding"
-      labelClass="text-xs md:text-sm text-gray-200"
+      labelClass="text-xs md:text-sm text-content"
       toggleClass="pr-5 pl-5 justify-center h-7 md:h-8"
     />
 

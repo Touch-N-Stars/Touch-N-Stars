@@ -1,7 +1,7 @@
 <template>
   <div class="tns-card flex flex-col gap-3" data-testid="guide-camera-card">
     <div class="flex items-center justify-between gap-2">
-      <h6 class="text-lg font-semibold text-white">{{ $t('components.guideCamera.title') }}</h6>
+      <h6 class="text-lg font-semibold text-content">{{ $t('components.guideCamera.title') }}</h6>
       <span class="text-sm text-content-muted truncate" :title="info.Name">{{ info.Name }}</span>
     </div>
 

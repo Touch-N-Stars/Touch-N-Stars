@@ -14,7 +14,7 @@
     <!-- Non-PHD2 Mode: Original layout -->
     <template v-else>
       <div class="container max-w-3xl mx-auto p-4">
-        <h5 class="text-xl text-center font-bold text-white mb-4">
+        <h5 class="text-xl text-center font-bold text-content mb-4">
           {{ $t('components.guider.title') }}
         </h5>
         <!-- PINS' guide camera slot, usable without a guider, e.g. to focus the guide camera -->

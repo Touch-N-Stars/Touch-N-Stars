@@ -1,7 +1,7 @@
 <template>
   <Modal :show="show" @close="$emit('close')" max-width="max-w-2xl">
     <template #header>
-      <h2 class="text-xl font-bold text-cyan-400">
+      <h2 class="text-xl font-bold text-accent">
         {{ $t('components.guider.phd2.profileManagement.title') }}
       </h2>
     </template>
@@ -9,8 +9,8 @@
     <template #body>
       <div class="w-full flex flex-col gap-4">
         <!-- Create New Profile Section -->
-        <div class="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
-          <h3 class="text-sm font-semibold text-gray-300 mb-3">
+        <div class="p-4 bg-surface-2 rounded-control border border-line">
+          <h3 class="text-sm font-semibold text-content mb-3">
             {{ $t('components.guider.phd2.profileManagement.createNew') }}
           </h3>
           <div class="flex gap-2">
@@ -30,39 +30,20 @@
               {{ $t('components.guider.phd2.profileManagement.create') }}
             </button>
           </div>
-          <p v-if="newProfileNameError" class="text-xs text-red-400 mt-2">
+          <p v-if="newProfileNameError" class="text-xs text-status-danger mt-2">
             {{ newProfileNameError }}
           </p>
         </div>
 
         <!-- Profiles List -->
-        <div class="p-4 bg-gray-900/50 rounded-lg border border-gray-700">
-          <h3 class="text-sm font-semibold text-gray-300 mb-3">
+        <div class="p-4 bg-surface-2 rounded-control border border-line">
+          <h3 class="text-sm font-semibold text-content mb-3">
             {{ $t('components.guider.phd2.profileManagement.profilesList') }}
           </h3>
 
           <!-- Loading Spinner -->
-          <div v-if="operationInProgress" class="flex justify-center py-8">
-            <svg
-              class="animate-spin h-8 w-8 text-cyan-400"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+          <div v-if="operationInProgress" class="flex justify-center py-8 text-accent">
+            <Spinner />
           </div>
 
           <!-- Profiles -->
@@ -70,7 +51,7 @@
             <div
               v-for="(profile, index) in profiles"
               :key="profile"
-              class="flex items-center gap-2 p-3 bg-gray-800 rounded border border-gray-700"
+              class="flex items-center gap-2 p-3 bg-surface-1 rounded-control border border-line"
             >
               <!-- Profile Name (editable if editing) -->
               <input
@@ -82,7 +63,7 @@
                 @keyup.escape="cancelEdit"
                 ref="renameInput"
               />
-              <span v-else class="flex-1 text-gray-200">
+              <span v-else class="flex-1 text-content">
                 {{ profile }}
               </span>
 
@@ -123,11 +104,11 @@
                   @click="handleDeleteClick(profile)"
                   :disabled="profiles.length <= 1"
                   :class="[
-                    'w-10 h-10 flex items-center justify-center transition-colors',
+                    'w-12',
                     deleteConfirmFor === profile
-                      ? 'bg-red-700 hover:bg-red-800'
+                      ? 'tns-btn-danger bg-status-danger/25!'
                       : profiles.length <= 1
-                        ? 'tns-btn-secondary opacity-50 cursor-not-allowed'
+                        ? 'tns-btn-secondary'
                         : 'tns-btn-danger',
                   ]"
                 >
@@ -138,7 +119,7 @@
             </div>
 
             <!-- No profiles message -->
-            <div v-if="profiles.length === 0" class="text-center text-gray-400 py-4">
+            <div v-if="profiles.length === 0" class="text-center text-content-muted py-4">
               No profiles available
             </div>
           </div>
@@ -152,6 +133,7 @@
 import { ref, computed, watch, nextTick } from 'vue';
 import { useGuiderStore } from '@/store/guiderStore';
 import Modal from '@/components/helpers/Modal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { PencilIcon, TrashIcon, XMarkIcon, CheckIcon } from '@heroicons/vue/24/outline';
 
 const props = defineProps({

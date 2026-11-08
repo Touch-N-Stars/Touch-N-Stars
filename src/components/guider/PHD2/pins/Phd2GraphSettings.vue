@@ -1,8 +1,8 @@
 <template>
-  <div class="flex flex-col gap-1 w-full border border-gray-600 rounded-lg p-3">
+  <div class="flex flex-col gap-1 w-full border border-line-strong rounded-lg p-3">
     <!-- Guider Scale -->
     <div class="flex flex-row w-full items-center">
-      <label for="phd2-guider-scale" class="text-sm sm:text-xs mr-3 text-gray-200">
+      <label for="phd2-guider-scale" class="text-sm sm:text-xs mr-3 text-content">
         {{ $t('components.guider.phd2.guiderScale') }}
       </label>
       <select
@@ -20,7 +20,7 @@
 
     <!-- Max Y -->
     <div class="flex flex-row w-full items-center">
-      <label for="phd2-max-y" class="text-sm sm:text-xs mr-3 text-gray-200">
+      <label for="phd2-max-y" class="text-sm sm:text-xs mr-3 text-content">
         {{ $t('components.guider.phd2.maxY') }}
       </label>
       <select
@@ -38,7 +38,7 @@
 
     <!-- History Size -->
     <div class="flex flex-row w-full items-center">
-      <label for="phd2-history-size" class="text-sm sm:text-xs mr-3 text-gray-200">
+      <label for="phd2-history-size" class="text-sm sm:text-xs mr-3 text-content">
         {{ $t('components.guider.phd2.historySize') }}
       </label>
       <select

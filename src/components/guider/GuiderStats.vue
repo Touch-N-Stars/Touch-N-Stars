@@ -3,17 +3,19 @@
   <div class="shrink-0 text-sm">
     <p class="font-bold">{{ $t('components.guider.rms_error') }}:</p>
     <div class="grid grid-cols-3 gap-x-3 tabular-nums w-fit">
-      <span class="text-gray-400">RA</span>
+      <span class="text-content-muted">RA</span>
       <span>{{ store.guiderInfo?.RMSError?.RA.Pixel.toFixed(2) }} px</span>
-      <span class="text-gray-400">{{ store.guiderInfo?.RMSError?.RA.Arcseconds.toFixed(2) }}"</span>
-      <span class="text-gray-400">DEC</span>
+      <span class="text-content-muted"
+        >{{ store.guiderInfo?.RMSError?.RA.Arcseconds.toFixed(2) }}"</span
+      >
+      <span class="text-content-muted">DEC</span>
       <span>{{ store.guiderInfo?.RMSError?.Dec.Pixel.toFixed(2) }} px</span>
-      <span class="text-gray-400"
+      <span class="text-content-muted"
         >{{ store.guiderInfo?.RMSError?.Dec.Arcseconds.toFixed(2) }}"</span
       >
-      <span class="text-gray-400">Total</span>
+      <span class="text-content-muted">Total</span>
       <span class="font-semibold">{{ store.guiderInfo?.RMSError?.Total.Pixel.toFixed(2) }} px</span>
-      <span class="text-gray-400"
+      <span class="text-content-muted"
         >{{ store.guiderInfo?.RMSError?.Total.Arcseconds.toFixed(2) }}"</span
       >
     </div>
@@ -26,7 +28,7 @@
       <div class="grid grid-cols-2 gap-x-3 w-fit">
         <template v-for="(val, name) in algoParams.ra" :key="name">
           <template v-if="!EXCLUDED_PARAMS.includes(String(name))">
-            <span class="text-gray-400">{{ name }}</span>
+            <span class="text-content-muted">{{ name }}</span>
             <span
               v-if="typeof val === 'number'"
               class="cursor-pointer"
@@ -45,7 +47,7 @@
       <div class="grid grid-cols-2 gap-x-3 w-fit">
         <template v-for="(val, name) in algoParams.dec" :key="name">
           <template v-if="!EXCLUDED_PARAMS.includes(String(name))">
-            <span class="text-gray-400">{{ name }}</span>
+            <span class="text-content-muted">{{ name }}</span>
             <span
               v-if="typeof val === 'number'"
               class="cursor-pointer"
@@ -63,18 +65,18 @@
     <div class="shrink-0 text-sm">
       <p class="font-bold">Guide Algorithms:</p>
       <div class="grid grid-cols-4 gap-x-3 w-fit">
-        <span class="text-gray-400">RA algo</span>
+        <span class="text-content-muted">RA algo</span>
         <span>{{ guiderStore.phd2GuideAlgorithmRA }}</span>
-        <span class="text-gray-400">DEC algo</span>
+        <span class="text-content-muted">DEC algo</span>
         <span>{{ guiderStore.phd2GuideAlgorithmDEC }}</span>
-        <span class="text-gray-400">Max RA</span>
+        <span class="text-content-muted">Max RA</span>
         <span
           class="cursor-pointer"
           style="color: rgba(100, 170, 230, 1)"
           @click="openMaxDurationPicker('ra')"
           >{{ maxRaDuration }}</span
         >
-        <span class="text-gray-400">Max DEC</span>
+        <span class="text-content-muted">Max DEC</span>
         <span
           class="cursor-pointer"
           style="color: rgba(255, 80, 100, 1)"
@@ -83,7 +85,7 @@
         >
         <span></span>
         <span></span>
-        <span class="text-gray-400">Dec mode</span>
+        <span class="text-content-muted">Dec mode</span>
         <span
           class="cursor-pointer"
           style="color: rgba(255, 80, 100, 1)"
@@ -99,10 +101,10 @@
       <span
         :class="
           guiderStore.phd2DarkLibraryInfo?.Loaded
-            ? 'bg-green-500/20 text-green-400 border-green-500/40'
-            : 'bg-red-500/20 text-red-400 border-red-500/40'
+            ? 'bg-status-ok/10 text-status-ok border-status-ok/40'
+            : 'bg-status-danger/10 text-status-danger border-status-danger/40'
         "
-        class="inline-block px-2 py-0.5 text-xs font-bold rounded border"
+        class="inline-block px-2 py-0.5 text-xs font-bold rounded-chip border"
         :title="
           guiderStore.phd2DarkLibraryInfo?.Loaded
             ? $t('components.guider.phd2.darkLibrary.loaded')

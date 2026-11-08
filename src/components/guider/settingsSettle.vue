@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col w-full border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div class="flex flex-col w-full border border-line-strong p-1 md:p-2 rounded-lg">
     <!-- Settle Pixel Tolerance -->
     <div class="flex flex-row items-center justify-between">
       <NumberInputPicker

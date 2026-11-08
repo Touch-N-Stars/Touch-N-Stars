@@ -19,7 +19,7 @@
       class="absolute inset-0 pointer-events-none"
       :style="imageBoundsStyle"
     >
-      <div class="absolute border-2 border-green-500" :style="lockRectangleStyle"></div>
+      <div class="absolute border-2 border-status-ok" :style="lockRectangleStyle"></div>
     </div>
 
     <!-- Guiding Cross Overlay -->
@@ -32,13 +32,13 @@
       <div
         class="absolute opacity-70"
         :style="guidingCrossVerticalStyle"
-        :class="isCalibrating ? 'border-l-2 border-dashed border-green-500' : 'bg-green-500'"
+        :class="isCalibrating ? 'border-l-2 border-dashed border-status-ok' : 'bg-status-ok'"
       ></div>
       <!-- Horizontal line -->
       <div
         class="absolute opacity-70"
         :style="guidingCrossHorizontalStyle"
-        :class="isCalibrating ? 'border-t-2 border-dashed border-green-500' : 'bg-green-500'"
+        :class="isCalibrating ? 'border-t-2 border-dashed border-status-ok' : 'bg-status-ok'"
       ></div>
     </div>
 
@@ -51,7 +51,7 @@
       <div
         v-for="(star, i) in secondaryStarStyles"
         :key="i"
-        class="absolute rounded-full border-2 border-green-400 opacity-80"
+        class="absolute rounded-full border-2 border-status-ok opacity-80"
         :style="star"
       ></div>
     </div>
@@ -60,7 +60,7 @@
     <button
       v-if="isZoomed"
       @click.stop="resetZoom"
-      class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-gray-800/90 hover:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors"
+      class="absolute left-4 top-1/2 -translate-y-1/2 z-20 min-w-touch min-h-touch bg-surface-1/90 hover:bg-surface-2 text-content rounded-control shadow-lg flex items-center justify-center transition-colors"
       :title="$t('components.guider.phd2.resetZoom')"
     >
       <ArrowsPointingInIcon class="w-5 h-5" />
