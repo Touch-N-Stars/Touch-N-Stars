@@ -51,10 +51,11 @@
       class="w-full relative z-10 rounded-card border border-line bg-surface-2 p-4 flex flex-col gap-3"
     >
       <div>
-        <h4 class="text-base font-semibold text-content">Rig network mode</h4>
+        <h4 class="text-base font-semibold text-content">
+          {{ $t('plugins.pins.networkMode.title') }}
+        </h4>
         <p class="text-content-muted text-xs">
-          Automatic uses your configured Wi-Fi when available and starts the field hotspot when it
-          is not. Field hotspot keeps the rig reachable at 10.42.0.1.
+          {{ $t('plugins.pins.networkMode.description') }}
         </p>
       </div>
 
@@ -84,14 +85,19 @@
       <p class="text-xs text-content-muted">{{ selectedNetworkModeHint }}</p>
 
       <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-content-muted">
-        <span>Configured: {{ desiredNetworkMode }}</span>
-        <span>Active: {{ observedNetworkMode }}</span>
-        <span v-if="connectionState.activeHost">Endpoint: {{ connectionState.activeHost }}</span>
+        <span>{{
+          $t('plugins.pins.networkMode.configured', { mode: networkModeName(desiredNetworkMode) })
+        }}</span>
+        <span>{{
+          $t('plugins.pins.networkMode.active', { mode: networkModeName(observedNetworkMode) })
+        }}</span>
+        <span v-if="connectionState.activeHost">{{
+          $t('plugins.pins.networkMode.endpoint', { host: connectionState.activeHost })
+        }}</span>
       </div>
 
       <p v-if="!allowConcurrentMode" class="text-xs text-status-warn">
-        This rig has one Wi-Fi radio. Switching modes briefly disconnects this screen while the app
-        finds the rig again.
+        {{ $t('plugins.pins.networkMode.singleRadioWarning') }}
       </p>
 
       <div
@@ -106,12 +112,16 @@
         <p class="font-semibold">
           {{
             connectionState.phase === 'failed'
-              ? 'The rig could not be found after the network change.'
-              : 'Network changed as expected. Looking for this rig again…'
+              ? $t('plugins.pins.networkMode.notFound')
+              : $t('plugins.pins.networkMode.searching')
           }}
         </p>
         <p v-if="connectionState.attemptedHosts?.length" class="text-xs mt-1 break-all opacity-80">
-          Tried: {{ connectionState.attemptedHosts.join(', ') }}
+          {{
+            $t('plugins.pins.networkMode.tried', {
+              hosts: connectionState.attemptedHosts.join(', '),
+            })
+          }}
         </p>
         <p v-if="connectionState.error" class="text-xs mt-1 opacity-80">
           {{ connectionState.error }}
@@ -121,7 +131,7 @@
           class="tns-btn-primary w-auto! mt-3"
           @click="$emit('retry-network-recovery')"
         >
-          Find rig again
+          {{ $t('plugins.pins.networkMode.retry') }}
         </button>
       </div>
     </div>
@@ -790,17 +800,33 @@ const desiredNetworkMode = computed(
 const observedNetworkMode = computed(
   () => props.wifiMode?.observedMode || props.wifiStatus?.observedMode || 'unknown'
 );
-const networkModeOptions = [
+const networkModeOptions = computed(() => [
   {
     value: 'auto',
-    label: 'Automatic fallback',
-    hint: 'Home Wi-Fi first, hotspot if unavailable.',
+    label: t('plugins.pins.networkMode.autoLabel'),
+    hint: t('plugins.pins.networkMode.autoHint'),
   },
-  { value: 'hotspot', label: 'Field hotspot', hint: 'Stay in AP mode at 10.42.0.1.' },
-];
+  {
+    value: 'hotspot',
+    label: t('plugins.pins.networkMode.hotspotLabel'),
+    hint: t('plugins.pins.networkMode.hotspotHint'),
+  },
+]);
 const selectedNetworkModeHint = computed(
-  () => networkModeOptions.find((mode) => mode.value === desiredNetworkMode.value)?.hint || ''
+  () => networkModeOptions.value.find((mode) => mode.value === desiredNetworkMode.value)?.hint || ''
 );
+// Daemon reports auto/hotspot/client/dual/unknown; an unexpected value is shown as-is.
+const networkModeNames = {
+  auto: 'modeAuto',
+  hotspot: 'modeHotspot',
+  client: 'modeClient',
+  dual: 'modeDual',
+  unknown: 'modeUnknown',
+};
+function networkModeName(mode) {
+  const key = networkModeNames[mode];
+  return key ? t(`plugins.pins.networkMode.${key}`) : mode;
+}
 const networkTransitionActive = computed(() =>
   ['network-transition', 'probing', 'reconnecting'].includes(props.connectionState.phase)
 );
