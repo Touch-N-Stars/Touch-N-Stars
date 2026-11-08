@@ -110,7 +110,11 @@ export async function launchChrome() {
 // Opens a page that can only reach allowedOrigin over HTTP: every other request fails in the
 // browser, so a test can never touch a real device. Fetch interception does not see WebSockets,
 // but the app derives their host from its connection settings, which stay on the fake backend.
-export async function openPage(devTools, { allowedOrigin, viewport, initScript }) {
+// originAliases maps a further origin onto a URL prefix of allowedOrigin, unseen by the page.
+export async function openPage(
+  devTools,
+  { allowedOrigin, originAliases = {}, viewport, initScript }
+) {
   const { targetId } = await devTools.send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await devTools.send('Target.attachToTarget', { targetId, flatten: true });
   const send = (method, params) => devTools.send(method, params, sessionId);
@@ -122,6 +126,12 @@ export async function openPage(devTools, { allowedOrigin, viewport, initScript }
   });
   devTools.on('Fetch.requestPaused', ({ requestId, request }, eventSessionId) => {
     if (eventSessionId !== sessionId) return;
+    const alias = Object.keys(originAliases).find((origin) => request.url.startsWith(`${origin}/`));
+    if (alias) {
+      const url = originAliases[alias] + request.url.slice(alias.length);
+      send('Fetch.continueRequest', { requestId, url }).catch(() => {});
+      return;
+    }
     const allowed = request.url.startsWith(`${allowedOrigin}/`);
     const command = allowed ? 'Fetch.continueRequest' : 'Fetch.failRequest';
     send(command, allowed ? { requestId } : { requestId, errorReason: 'BlockedByClient' }).catch(
@@ -149,6 +159,8 @@ export async function openPage(devTools, { allowedOrigin, viewport, initScript }
     exceptions,
     evaluate,
     navigate: (url) => send('Page.navigate', { url }),
+    setViewport: (size) =>
+      send('Emulation.setDeviceMetricsOverride', { ...viewport, ...size, deviceScaleFactor: 1 }),
     async pressEscape() {
       const key = { key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 };
       await send('Input.dispatchKeyEvent', { type: 'rawKeyDown', ...key });

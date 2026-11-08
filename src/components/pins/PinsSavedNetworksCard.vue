@@ -1,54 +1,64 @@
 <template>
-  <section class="border border-gray-700 rounded-lg bg-gray-800 shadow-xl p-6 space-y-4">
+  <section class="tns-card space-y-4">
     <div class="flex items-center justify-between gap-3">
-      <h3 class="text-xl font-bold text-white">{{ $t('plugins.pins.savedWifi.title') }}</h3>
-      <button class="tns-btn-secondary" :disabled="busy || disabled" @click="load">
+      <h3 class="tns-section-title min-w-0">{{ $t('plugins.pins.savedWifi.title') }}</h3>
+      <button class="tns-btn-secondary w-auto! shrink-0" :disabled="busy || disabled" @click="load">
         {{ $t('common.refresh') }}
       </button>
     </div>
-    <p class="text-sm text-gray-400">{{ $t('plugins.pins.savedWifi.description') }}</p>
-    <p class="text-xs text-gray-400">{{ $t('plugins.pins.savedWifi.retryHint') }}</p>
+    <p class="text-sm text-content-muted">{{ $t('plugins.pins.savedWifi.description') }}</p>
+    <p class="text-xs text-content-muted">{{ $t('plugins.pins.savedWifi.retryHint') }}</p>
     <button class="tns-btn-secondary" :disabled="busy || disabled" @click="$emit('retry')">
       {{ $t('plugins.pins.savedWifi.retry') }}
     </button>
-    <p v-if="loading" class="text-gray-400">{{ $t('common.loading') }}</p>
-    <p v-if="error" role="alert" class="text-red-300">{{ error }}</p>
-    <p v-if="!loading && !error && !networks.length" class="text-gray-400">
+    <p v-if="loading" class="flex items-center gap-2 text-content-muted">
+      <Spinner size="sm" />
+      {{ $t('common.loading') }}
+    </p>
+    <p v-if="error" role="alert" class="text-status-danger">{{ error }}</p>
+    <p v-if="!loading && !error && !networks.length" class="text-content-muted">
       {{ $t('plugins.pins.savedWifi.empty') }}
     </p>
     <div
       v-for="network in networks"
       :key="network.uuid"
-      class="border-t border-gray-700 pt-4 space-y-3"
+      class="border-t border-line pt-4 space-y-3"
     >
       <div class="flex flex-wrap items-center gap-2">
-        <strong class="text-white break-all">{{ network.ssid }}</strong>
-        <span v-if="network.connected" class="text-emerald-300 text-sm">
+        <strong class="text-content break-all">{{ network.ssid }}</strong>
+        <span v-if="network.connected" class="text-status-ok text-sm">
           {{ $t('plugins.pins.wifiConnectedAction') }}
         </span>
-        <span v-if="!network.compatible" class="text-amber-300 text-sm">
+        <span v-if="!network.compatible" class="text-status-warn text-sm">
           {{ $t('plugins.pins.savedWifi.otherAdapter', { interface: network.interface }) }}
         </span>
       </div>
-      <p v-if="network.name !== network.ssid" class="text-xs text-gray-400 break-all">
+      <p v-if="network.name !== network.ssid" class="text-xs text-content-muted break-all">
         {{ network.name }}
       </p>
-      <label class="flex items-center gap-2 text-sm text-white">
-        <input v-model="network.editedAutoConnect" type="checkbox" :disabled="busy || disabled" />
+      <label class="flex items-center gap-2 min-h-touch text-sm text-content">
+        <input
+          v-model="network.editedAutoConnect"
+          type="checkbox"
+          class="h-5 w-5 accent-accent-action"
+          :disabled="busy || disabled"
+        />
         {{ $t('plugins.pins.autoConnect') }}
       </label>
-      <label class="flex items-center gap-3 text-sm text-white">
-        {{ $t('plugins.pins.savedWifi.priority') }}
-        <input
-          v-model.number="network.editedPriority"
-          type="number"
-          min="-999"
-          max="999"
-          step="1"
-          :disabled="busy || disabled"
-          class="w-24 bg-gray-900 border border-gray-600 rounded p-2"
+      <!-- The picker has no disabled prop, so the fieldset locks it during an operation. -->
+      <fieldset :disabled="busy || disabled" class="min-w-0">
+        <NumberInputPicker
+          v-model="network.editedPriority"
+          :label="$t('plugins.pins.savedWifi.priority')"
+          labelKey="plugins.pins.savedWifi.priority"
+          :min="-999"
+          :max="999"
+          :step="1"
+          :decimalPlaces="0"
+          :useDefaultSentinel="false"
+          :inputId="`pinsPriority-${network.uuid}`"
         />
-      </label>
+      </fieldset>
       <div class="flex flex-wrap gap-2">
         <button class="tns-btn-secondary" :disabled="busy || disabled" @click="save(network)">
           {{ $t('general.save') }}
@@ -61,14 +71,14 @@
           {{ $t('plugins.pins.wifiConnect') }}
         </button>
         <button
-          class="tns-btn-secondary text-red-300"
+          class="tns-btn-danger"
           :disabled="busy || disabled || network.connected"
           @click="confirmForget = network.uuid"
         >
           {{ $t('plugins.pins.savedWifi.forget') }}
         </button>
       </div>
-      <div v-if="confirmForget === network.uuid" class="space-y-2 text-sm text-gray-300">
+      <div v-if="confirmForget === network.uuid" class="space-y-2 text-sm text-content">
         <p>{{ $t('plugins.pins.savedWifi.forgetConfirm', { ssid: network.ssid }) }}</p>
         <button
           class="tns-btn-secondary mr-2"
@@ -89,6 +99,8 @@
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { savedNetworkSettings, waitForSavedNetworkJob } from './composables/savedWifiNetworks';
 
 const props = defineProps({ disabled: Boolean, wifiStatus: { type: Object, default: null } });

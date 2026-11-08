@@ -7,8 +7,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { launchChrome, openPage } from './lib/chrome.mjs';
-import { startFakeBackend } from './lib/fakeBackend.mjs';
+import { PINS_DAEMON_PATH, startFakeBackend } from './lib/fakeBackend.mjs';
 import { findPageProblems } from './lib/browserChecks.mjs';
+import { PINS_DAEMON_ROUTES } from './lib/pinsDaemonFixtures.mjs';
 
 const DIST_DIR = path.resolve('dist');
 const SCREENSHOT_DIR = path.resolve('.cache/browser-tests');
@@ -137,6 +138,16 @@ const INDI_TYPES = [
 ];
 const rigRoute = (fixture) => () => (equipmentFixtures ? fixture : undefined);
 
+// The PINS daemon answers only while checkPins runs; elsewhere it stays a 404.
+let pinsDaemon = false;
+const DAEMON_ROUTES = Object.fromEntries(
+  Object.entries(PINS_DAEMON_ROUTES).map(([route, answer]) => [
+    route,
+    (query) => (pinsDaemon ? answer(query) : undefined),
+  ])
+);
+const PINS_DAEMON_PORT = 8000;
+
 const BACKEND_ROUTES = {
   ...Object.fromEntries(
     DEVICES.map((device) => [
@@ -252,7 +263,8 @@ const LAST_DIALOG = `[...${DIALOGS}].at(-1)`;
 const READ_LAST_DIALOG = `(() => {
   const dialog = ${LAST_DIALOG};
   const { left, right } = dialog.getBoundingClientRect();
-  const body = dialog.querySelector('.overflow-y-auto');
+  // Dialogs that are no Modal have no scrolling body of their own.
+  const body = dialog.querySelector('.overflow-y-auto') ?? dialog;
   return {
     onTop: dialog.contains(document.elementFromPoint(innerWidth / 2, innerHeight / 2)),
     name: document.getElementById(dialog.getAttribute('aria-labelledby'))?.innerText.trim(),
@@ -697,6 +709,166 @@ async function checkEquipment(page, viewportName) {
   return failures;
 }
 
+// Takes the whole page in one picture: the viewport grows until the app's scroller has nothing
+// left to scroll, then shrinks back. The scroller is the tallest element that scrolls; boxes
+// scrolling inside the page, like a log, keep their own height.
+async function screenshotWholePage(page, viewport, filePath) {
+  const overflow = await page.evaluate(`(() => {
+    const scroller = [document.scrollingElement, ...document.querySelectorAll('*')]
+      .filter((element) => element.scrollHeight > element.clientHeight &&
+        (element === document.scrollingElement ||
+          /auto|scroll/.test(getComputedStyle(element).overflowY)))
+      .sort((a, b) => b.clientHeight - a.clientHeight)[0];
+    if (!scroller) return 0;
+    scroller.scrollTo(0, 0);
+    return scroller.scrollHeight - scroller.clientHeight;
+  })()`);
+  await page.setViewport({ height: viewport.height + overflow });
+  await page.evaluate(SETTLE);
+  await page.screenshot(filePath);
+  await page.setViewport({ height: viewport.height });
+  await page.evaluate(SETTLE);
+}
+
+// Every tab with the daemon answering, plus each confirmation the PINS page has. None of them is
+// confirmed, so nothing may reach the daemon but reads.
+async function checkPins(page, viewportName, backend) {
+  const viewport = VIEWPORTS[viewportName];
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} PINS: ${problem}`);
+    if (!passed) failures.push(`${viewportName} PINS: ${problem}`);
+  };
+  const buttonWithText = (text) =>
+    `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === ${JSON.stringify(text)})`;
+  const openTab = async (name) => {
+    page.exceptions.length = 0;
+    await page.evaluate(
+      `[...${SUBNAV_BUTTONS}].find((button) => button.title === ${JSON.stringify(name)}).click()`
+    );
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+  };
+  const checkTab = async (name, ready, readyLabel) => {
+    const slug = `pins-${name.toLowerCase()}`;
+    await openTab(name);
+    try {
+      await page.waitFor(ready, readyLabel);
+    } catch (error) {
+      // Shows what the tab rendered instead.
+      await screenshotWholePage(
+        page,
+        viewport,
+        path.join(SCREENSHOT_DIR, viewportName, `${slug}-timeout.png`)
+      );
+      throw error;
+    }
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+    failures.push(...(await checkPage(page, viewportName, `/pins ${name}`, slug)));
+    await screenshotWholePage(
+      page,
+      viewport,
+      path.join(SCREENSHOT_DIR, viewportName, `${slug}-all.png`)
+    );
+  };
+  const openDialog = async (opener, label, screenshotName, inspect) => {
+    await page.evaluate(`${opener}.scrollIntoView({ block: 'center' }); ${opener}.click()`);
+    await page.waitFor(`!!${DIALOG}`, `${label} to open`);
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+    await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, `${screenshotName}.png`));
+    const dialog = await page.evaluate(READ_LAST_DIALOG);
+    expect(dialog.onTop, `${label} paints on top`);
+    expect(dialog.fitsScreen && dialog.fitsDialog, `${label} fits`);
+    await inspect?.();
+    await page.pressEscape();
+    await page.evaluate(SETTLE);
+    const closed = await page.evaluate(`!${DIALOG}`);
+    expect(closed, `${label} closes on Escape`);
+    // Clears the way for the next check.
+    if (!closed) {
+      await page.evaluate(`${LAST_DIALOG}.querySelector('[aria-label="Close"]')?.click()`);
+      await page.waitFor(`!${DIALOG}`, `${label} to close`);
+    }
+  };
+  const daemonWrites = () =>
+    [...backend.unhandled].filter((request) =>
+      new RegExp(`^(POST|PUT|PATCH|DELETE) ${PINS_DAEMON_PATH}/`).test(request)
+    );
+
+  pinsDaemon = true;
+  await setPins(page, true);
+  await openRoute(page, '/pins');
+  await checkTab(
+    'Network',
+    `!!document.querySelector('[title="Rescan WiFi networks"]') && document.body.innerText.includes('Star party') && document.body.innerText.includes('Hotspot')`,
+    'the Wi-Fi status'
+  );
+  await page.evaluate(`document.querySelector('[title="Rescan WiFi networks"]').click()`);
+  await page.waitFor(`!!document.querySelector('option[value="Neighbour 5G"]')`, 'the scan result');
+  await page.evaluate(`(() => {
+    const select = document.querySelector('option[value="Neighbour 5G"]').parentElement;
+    select.value = 'Neighbour 5G';
+    select.dispatchEvent(new Event('change'));
+  })()`);
+  await page.waitFor(`!!document.querySelector('input[type="password"]')`, 'the password field');
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  await screenshotWholePage(
+    page,
+    viewport,
+    path.join(SCREENSHOT_DIR, viewportName, 'pins-network-scan-all.png')
+  );
+  await openDialog(buttonWithText('Disconnect WiFi'), 'Wi-Fi disconnect', 'pins-disconnect');
+
+  await checkTab('Services', `document.body.innerText.includes('Samba')`, 'the services');
+  await checkTab(
+    'System',
+    `!!document.querySelector('select option[value="Europe/Berlin"]')`,
+    'the localization'
+  );
+  await checkTab(
+    'INDI',
+    `!!document.querySelector('option[value^="indi-eqmod"]')`,
+    'the INDI drivers'
+  );
+  await page.evaluate(`(() => {
+    const select = document.querySelector('option[value^="indi-eqmod"]').parentElement;
+    select.value = select.querySelector('option[value^="indi-eqmod"]').value;
+    select.dispatchEvent(new Event('change'));
+  })()`);
+  await openDialog(buttonWithText('Install driver'), 'driver install', 'pins-indi-install');
+  await openDialog(buttonWithText('Edit config'), 'driver config', 'pins-indi-registry');
+
+  await checkTab(
+    'Software',
+    `document.body.innerText.includes('pins-plugin-alpaca')`,
+    'the plugins'
+  );
+  await openDialog(buttonWithText('Install'), 'plugin install', 'pins-plugin-install');
+  await openDialog(buttonWithText('Uninstall'), 'plugin uninstall', 'pins-plugin-uninstall');
+  await openDialog(
+    buttonWithText('Switch to unstable repository'),
+    'unstable repository',
+    'pins-repository-confirm'
+  );
+
+  await checkTab('Upgrade', `!!${buttonWithText('Updates available (2)')}`, 'the update hint');
+  await openDialog(
+    buttonWithText('Updates available (2)'),
+    'update list',
+    'pins-updates',
+    async () => {
+      expect(
+        await page.evaluate(`${LAST_DIALOG}.innerText.includes('pins-daemon')`),
+        'update list names the packages'
+      );
+    }
+  );
+
+  expect(daemonWrites().length === 0, `sends nothing to the daemon but reads (${daemonWrites()})`);
+  await setPins(page, false);
+  pinsDaemon = false;
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -705,7 +877,12 @@ if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
 const { version } = JSON.parse(fs.readFileSync(path.join(DIST_DIR, 'whats-new.json'), 'utf8'));
 fs.rmSync(SCREENSHOT_DIR, { recursive: true, force: true });
 
-const backend = await startFakeBackend({ rootDir: DIST_DIR, routes: BACKEND_ROUTES });
+const backend = await startFakeBackend({
+  rootDir: DIST_DIR,
+  routes: BACKEND_ROUTES,
+  daemonRoutes: DAEMON_ROUTES,
+});
+const daemonOrigin = backend.origin.replace(/:\d+$/, `:${PINS_DAEMON_PORT}`);
 const chrome = await launchChrome();
 const failures = [];
 
@@ -713,6 +890,7 @@ try {
   for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
     const page = await openPage(chrome.devTools, {
       allowedOrigin: backend.origin,
+      originAliases: { [daemonOrigin]: `${backend.origin}${PINS_DAEMON_PATH}` },
       viewport,
       initScript: initScript(version),
     });
@@ -726,6 +904,7 @@ try {
     failures.push(...(await checkTppa(page, viewportName, backend)));
     failures.push(...(await checkImageHistory(page, viewportName, backend)));
     failures.push(...(await checkEquipment(page, viewportName)));
+    failures.push(...(await checkPins(page, viewportName, backend)));
     await page.close();
   }
 } finally {

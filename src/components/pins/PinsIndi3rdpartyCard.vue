@@ -1,7 +1,7 @@
 <template>
-  <div class="border border-gray-700 rounded-lg bg-gray-800 shadow-xl p-6 relative overflow-hidden">
+  <div class="tns-card relative overflow-hidden">
     <div class="absolute top-0 right-20 p-4 opacity-10 pointer-events-none">
-      <svg class="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg class="w-16 h-16 text-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -12,17 +12,17 @@
     </div>
 
     <div class="relative z-10 flex flex-col gap-4">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div>
-          <h3 class="text-xl font-bold text-white mb-1">
+      <div class="flex flex-row items-start justify-between gap-2">
+        <div class="min-w-0">
+          <h3 class="tns-section-title mb-1">
             {{ $t('plugins.pins.indi3rdpartyTitle') }}
           </h3>
-          <p class="text-gray-400 text-sm">{{ $t('plugins.pins.indi3rdpartyDescription') }}</p>
+          <p class="text-content-muted text-sm">{{ $t('plugins.pins.indi3rdpartyDescription') }}</p>
         </div>
 
-        <div class="flex items-center gap-2 self-end sm:self-auto">
+        <div class="flex items-center gap-2 shrink-0">
           <button
-            class="text-blue-400 hover:text-white transition-colors p-2"
+            class="min-h-touch min-w-touch flex items-center justify-center text-accent hover:text-content transition-colors disabled:opacity-50"
             :disabled="loading || disabled"
             :title="$t('plugins.pins.indi3rdpartyRefresh')"
             @click="$emit('refresh')"
@@ -50,31 +50,30 @@
           :value="searchQuery"
           @input="$emit('update:searchQuery', $event.target.value)"
           @keyup.enter="$emit('search')"
-          class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+          class="tns-input"
           :placeholder="$t('plugins.pins.indi3rdpartySearchPlaceholder')"
           :disabled="disabled"
         />
-        <button
-          @click="$emit('search')"
-          :disabled="disabled"
-          class="px-4 py-3 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-all disabled:opacity-50"
-        >
+        <button @click="$emit('search')" :disabled="disabled" class="tns-btn-secondary sm:w-auto!">
           {{ $t('plugins.pins.indi3rdpartySearch') }}
         </button>
       </div>
 
-      <div v-if="loading" class="text-blue-400 text-sm">{{ $t('plugins.pins.scanning') }}</div>
+      <div v-if="loading" class="flex items-center gap-2 text-accent text-sm">
+        <Spinner size="sm" />{{ $t('plugins.pins.scanning') }}
+      </div>
 
       <!-- The picker stays mounted even with an empty result list, so a fruitless
            search never hides the driver selection or the config editor. -->
       <div class="flex flex-col gap-3">
-        <label class="text-gray-400 text-xs uppercase font-bold">{{
+        <label for="pinsIndiDriver" class="tns-label">{{
           $t('plugins.pins.indi3rdpartySelect')
         }}</label>
         <select
+          id="pinsIndiDriver"
           :value="selectedAsset"
           @change="$emit('update:selectedAsset', $event.target.value)"
-          class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full disabled:opacity-50"
+          class="tns-select"
           :disabled="disabled || drivers.length === 0"
         >
           <option value="" disabled>{{ $t('plugins.pins.indi3rdpartySelect') }}</option>
@@ -83,14 +82,14 @@
           </option>
         </select>
 
-        <p v-if="!loading && drivers.length === 0" class="text-gray-400 italic">
+        <p v-if="!loading && drivers.length === 0" class="text-content-muted italic">
           {{ $t('plugins.pins.indi3rdpartyNoDrivers') }}
         </p>
 
         <button
           @click="$emit('install')"
           :disabled="disabled || installing || !selectedAsset"
-          class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold rounded-lg shadow-lg shadow-blue-900/20 transition-all disabled:opacity-50"
+          class="tns-btn-primary"
         >
           {{
             installing
@@ -100,7 +99,7 @@
         </button>
 
         <button
-          class="w-full px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium rounded-lg transition-all disabled:opacity-50"
+          class="tns-btn-secondary"
           :disabled="loading || disabled"
           @click="$emit('edit-config')"
         >
@@ -112,6 +111,8 @@
 </template>
 
 <script setup>
+import Spinner from '@/components/helpers/Spinner.vue';
+
 defineProps({
   drivers: {
     type: Array,

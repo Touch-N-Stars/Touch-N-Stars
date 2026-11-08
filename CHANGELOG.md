@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.
 - Monitor: The statistics and image history tabs now use the same cards and colours as the rest of the app. The buttons above the image history, the image rotation choice and the graph controls are larger and easier to tap.
 - Equipment: The equipment page, the device settings, the INDI setup and the profile management now use the same cards and colours as the rest of the app. Port and device number in the Alpaca Direct settings and the pre connect delay of the SV241 Pro now have plus and minus buttons and open the touch number pad.
+- PINS: The PINS page, its network, services, system, INDI, software and upgrade tabs and their dialogs now use the same cards and colours as the rest of the app. The priority of a saved Wi-Fi network now has plus and minus buttons and opens the touch number pad, and the refresh buttons are larger and easier to tap.
 
 ### Fixed
 
@@ -22,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Camera, Focus and TPPA: The Drag and Show image labels are now translated.
 - Monitor: The loading hint of the last image is now translated, and "No data available yet" is no longer shown in red like an error.
 - Equipment: The loading message shown while switching profiles is now translated.
+- PINS: The INDI registry editor now closes with the Escape key, like the other dialogs.
+- PINS: The hotspot no longer shows a Wi-Fi signal of 0 percent. It reports no signal, so the card now says the signal is unavailable.
+- PINS: After saving the hotspot settings, the result shows Yes or No instead of an untranslated text.
+- PINS: The swap size notes about a pending reboot and a successful save are now shown in the warning and success colours.
 
 ## [App6.5.0 - beta 24] - 2026-11-05
 

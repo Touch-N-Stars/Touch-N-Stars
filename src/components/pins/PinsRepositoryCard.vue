@@ -1,10 +1,10 @@
 <template>
-  <section class="bg-gray-800 rounded-lg p-4 space-y-3" aria-labelledby="pins-repository-title">
-    <h3 id="pins-repository-title" class="text-lg font-semibold text-white">
+  <section class="tns-card space-y-3" aria-labelledby="pins-repository-title">
+    <h3 id="pins-repository-title" class="tns-section-title">
       {{ $t('plugins.pins.repositoryTitle') }}
     </h3>
-    <p class="text-sm text-gray-300">{{ $t('plugins.pins.repositoryDescription') }}</p>
-    <p v-if="repository?.channel" class="text-sm text-white" aria-live="polite">
+    <p class="text-sm text-content-muted">{{ $t('plugins.pins.repositoryDescription') }}</p>
+    <p v-if="repository?.channel" class="text-sm text-content" aria-live="polite">
       {{ $t('plugins.pins.repositoryCurrent') }}:
       {{
         repository.channel === 'unstable'
@@ -12,10 +12,10 @@
           : $t('plugins.pins.repositoryStable')
       }}
     </p>
-    <p v-if="repository?.channel === 'unstable'" class="text-sm text-amber-300">
+    <p v-if="repository?.channel === 'unstable'" class="text-sm text-status-warn">
       {{ $t('plugins.pins.repositoryFallback') }}
     </p>
-    <p v-if="error" class="text-sm text-red-300" role="alert">{{ error }}</p>
+    <p v-if="error" class="text-sm text-status-danger" role="alert">{{ error }}</p>
     <div class="flex flex-wrap gap-3">
       <button
         ref="switchButton"
@@ -42,20 +42,15 @@
     </div>
     <Modal :show="confirmationStep > 0" maxWidth="max-w-md" @close="cancelConfirmation">
       <template #header>
-        <h2 id="pins-unstable-confirm-title" class="text-xl font-bold text-white">
+        <h2 id="pins-unstable-confirm-title" class="text-xl font-bold text-content">
           {{ $t('plugins.pins.repositoryConfirmTitle') }}
         </h2>
       </template>
       <template #body>
-        <div
-          class="w-full space-y-6"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="pins-unstable-confirm-title"
-          aria-describedby="pins-unstable-confirm-message"
-          @keydown.esc.stop.prevent="cancelConfirmation"
-        >
-          <p id="pins-unstable-confirm-message" class="text-amber-300" aria-live="polite">
+        <!-- Modal is the dialog and names it by this header; a second role="dialog" in here
+             would nest one dialog inside the other. -->
+        <div class="w-full space-y-6" @keydown.esc.stop.prevent="cancelConfirmation">
+          <p class="text-status-warn" aria-live="polite">
             {{
               confirmationStep === 1
                 ? $t('plugins.pins.repositoryConfirmWarning')

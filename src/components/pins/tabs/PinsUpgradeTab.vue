@@ -3,7 +3,7 @@
     <div v-if="availableUpdatePackages.length > 0" class="text-center">
       <button
         @click="showUpdatesModal = true"
-        class="text-amber-300 hover:text-amber-200 underline underline-offset-4 transition-colors"
+        class="min-h-touch text-status-warn hover:brightness-110 underline underline-offset-4 transition"
       >
         {{ $t('plugins.pins.updatesAvailable', { count: availableUpdatePackages.length }) }}
       </button>
@@ -20,14 +20,14 @@
 
     <Modal :show="showUpdatesModal" @close="showUpdatesModal = false" maxWidth="max-w-2xl">
       <template #header>
-        <h2 class="text-xl font-bold text-white">
+        <h2 class="text-xl font-bold text-content">
           {{ $t('plugins.pins.updatesModalTitle') }}
         </h2>
       </template>
 
       <template #body>
         <div class="w-full flex flex-col gap-4">
-          <div class="flex items-center justify-between gap-2 text-sm text-gray-400">
+          <div class="flex items-center justify-between gap-2 text-sm text-content-muted">
             <span>
               {{ $t('plugins.pins.updatesCheckedAt') }}:
               {{
@@ -38,7 +38,7 @@
             </span>
             <button
               @click="checkUpdates()"
-              class="text-blue-400 hover:text-white transition-colors disabled:opacity-50"
+              class="min-h-touch shrink-0 text-accent hover:text-content transition-colors disabled:opacity-50"
               :disabled="isCheckingUpdates"
             >
               {{
@@ -51,14 +51,14 @@
 
           <div
             v-if="availableUpdatePackages.length === 0"
-            class="text-gray-300 text-sm py-6 text-center"
+            class="text-content-muted text-sm py-6 text-center"
           >
             {{ $t('plugins.pins.noUpdatesAvailable') }}
           </div>
 
-          <div v-else class="max-h-80 overflow-y-auto border border-gray-700 rounded-lg">
+          <div v-else class="max-h-80 overflow-auto border border-line rounded-card">
             <table class="w-full text-left text-sm">
-              <thead class="bg-gray-900 text-gray-300 sticky top-0">
+              <thead class="bg-surface-2 text-content-muted sticky top-0">
                 <tr>
                   <th class="px-4 py-3">{{ $t('plugins.pins.updatesPackage') }}</th>
                   <th class="px-4 py-3">{{ $t('plugins.pins.updatesInstalled') }}</th>
@@ -69,7 +69,7 @@
                 <tr
                   v-for="pkg in availableUpdatePackages"
                   :key="pkg.name"
-                  class="border-t border-gray-700 text-gray-200"
+                  class="border-t border-line text-content"
                 >
                   <td class="px-4 py-3 font-medium">{{ pkg.name }}</td>
                   <td class="px-4 py-3">{{ pkg.installedVersion || '-' }}</td>
@@ -80,7 +80,7 @@
           </div>
 
           <div class="flex justify-end">
-            <button @click="showUpdatesModal = false" class="tns-btn-secondary">
+            <button @click="showUpdatesModal = false" class="tns-btn-secondary w-auto!">
               {{ $t('common.cancel') }}
             </button>
           </div>
