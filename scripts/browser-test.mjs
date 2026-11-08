@@ -166,6 +166,58 @@ const GUIDER_PLUGIN_ROUTES = {
   }),
 };
 
+// A connected EAF-style focuser with the PINS-only settings and Hocus Focus installed, served only
+// while checkFocuser runs. Hocus Focus is probed under PINS only, so the NINA pass never sees it.
+let focuserFixtures = false;
+const focuserRoute = (fixture) => () => (focuserFixtures ? fixture : undefined);
+const FOCUSER_INFO = {
+  Connected: true,
+  Name: 'ZWO EAF',
+  DisplayName: 'ZWO EAF',
+  Position: 12345,
+  Temperature: 4.2,
+  IsMoving: false,
+  CanReverse: true,
+  CanSetMaxStep: true,
+};
+// checkEquipment leaves its rig profile behind, which has no focuser section.
+const FOCUSER_PROFILE_SETTINGS = {
+  Id: 'focuser-1',
+  AutoFocusExposureTime: 4,
+  AutoFocusInitialOffsetSteps: 4,
+  AutoFocusStepSize: 50,
+  FocuserSettleTime: 0,
+  AutoFocusTotalNumberOfAttempts: 1,
+  AutoFocusNumberOfFramesPerPoint: 1,
+  AutoFocusInnerCropRatio: 1,
+  AutoFocusOuterCropRatio: 1,
+  AutoFocusUseBrightestStars: 0,
+  AutoFocusBinning: 1,
+  AutoFocusCurveFitting: 'HYPERBOLIC',
+  AutoFocusTimeoutSeconds: 600,
+  BacklashCompensationModel: 'OVERSHOOT',
+  BacklashIn: 0,
+  BacklashOut: 0,
+  RSquaredThreshold: 0.7,
+};
+const FOCUSER_PINS_SETTINGS = {
+  IsStalled: false,
+  HeatingPower: 35,
+  BoardTemperature: 18.4,
+  DcPower: true,
+  StepSize: 2.5,
+  MaxStep: 60000,
+  HeatingTemperature: 5,
+  FocuserAlias: 'Main EAF',
+  HasMotorSpeedControl: true,
+  MotorSpeeds: ['Slow', 'Normal', 'Fast'],
+  MotorSpeed: 1,
+};
+const FOCUSER_PLUGIN_ROUTES = {
+  '/api/autofocus/info': focuserRoute({ Success: true, autofocus_running: false, afError: false }),
+  '/api/hocusfocus/status': focuserRoute({ Success: true }),
+};
+
 // The PINS daemon answers only while checkPins runs; elsewhere it stays a 404.
 let pinsDaemon = false;
 const DAEMON_ROUTES = Object.fromEntries(
@@ -186,6 +238,7 @@ const PLUGIN_ROUTES = {
     ])
   ),
   ...GUIDER_PLUGIN_ROUTES,
+  ...FOCUSER_PLUGIN_ROUTES,
 };
 
 const BACKEND_ROUTES = {
@@ -223,6 +276,9 @@ const BACKEND_ROUTES = {
     DeviceId: 'PHD2_Single',
     State: 'Looping',
   }),
+  '/v2/api/equipment/focuser/info': focuserRoute(FOCUSER_INFO),
+  '/v2/api/equipment/focuser/get-settings': () =>
+    focuserFixtures && pinsVersion ? FOCUSER_PINS_SETTINGS : undefined,
   '/api/dialogs/list': () => ({ Count: ninaDialogs.length, Dialogs: ninaDialogs }),
   '/api/dialogs/count': () => ninaDialogs.length,
 };
@@ -835,6 +891,84 @@ async function checkGuider(page, viewportName) {
   return failures;
 }
 
+// The focus tab and every settings tab with a connected focuser, first under NINA, then under
+// PINS where the focuser's own settings and the Hocus Focus tabs join in.
+async function checkFocuser(page, viewportName) {
+  const viewport = VIEWPORTS[viewportName];
+  const failures = [];
+  // Most of these tabs outgrow the phone screen, so each also gets a whole-page picture.
+  const check = async (label, screenshotName) => {
+    failures.push(...(await checkPage(page, viewportName, label, screenshotName)));
+    await screenshotWholePage(
+      page,
+      viewport,
+      path.join(SCREENSHOT_DIR, viewportName, `${screenshotName}-full.png`)
+    );
+  };
+  const SEGMENT_TABS = `document.querySelectorAll('[role="tab"]')`;
+  const openTab = async (name) => {
+    page.exceptions.length = 0;
+    await page.waitFor(
+      `[...${SUBNAV_BUTTONS}].some((button) => button.title === ${JSON.stringify(name)})`,
+      `the ${name} tab`
+    );
+    await page.evaluate(
+      `[...${SUBNAV_BUTTONS}].find((button) => button.title === ${JSON.stringify(name)}).click()`
+    );
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+  };
+  const visitSettingsTabs = async (label, screenshotPrefix) => {
+    await page.waitFor(`${SEGMENT_TABS}.length > 1`, 'the focuser settings tabs');
+    const tabCount = await page.evaluate(`${SEGMENT_TABS}.length`);
+    for (let index = 0; index < tabCount; index++) {
+      page.exceptions.length = 0;
+      const tab = await page.evaluate(`(() => {
+        const button = ${SEGMENT_TABS}[${index}];
+        button.click();
+        return button.innerText.trim();
+      })()`);
+      await page.evaluate(WAIT_FOR_QUIET_DOM);
+      const slug = tab.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      await check(`${label} ${tab}`, `${screenshotPrefix}-${slug}`);
+    }
+  };
+
+  focuserFixtures = true;
+  // The page picks its first tab from the connection state, so it has to be there before.
+  await page.evaluate(`Object.assign(${STORES}.store, {
+    isFocuserConnected: true,
+    focuserInfo: ${JSON.stringify(FOCUSER_INFO)},
+  });
+  ${STORES}.store.profileInfo.FocuserSettings = ${JSON.stringify(FOCUSER_PROFILE_SETTINGS)}`);
+  await openRoute(page, '/autofocus');
+  await page.waitFor(`!!document.querySelector('#focuser-position')`, 'the focuser controls');
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  await check('/autofocus focuser', 'focuser');
+  await openTab('Settings');
+  await visitSettingsTabs('/autofocus settings', 'focuser-settings');
+
+  await setPins(page, true);
+  await page.waitFor(`${STORES}.hocusfocus.available === true`, 'Hocus Focus to be detected');
+  await openTab('Focuser');
+  await page.waitFor(`!!${STORES}.focuserStore.focuserSettings`, 'the PINS focuser settings');
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  await check('/autofocus PINS', 'focuser-pins');
+  await openTab('Settings');
+  await visitSettingsTabs('/autofocus settings PINS', 'focuser-settings-pins');
+  await openTab('Aberration Inspector');
+  await check('/autofocus inspector', 'focuser-inspector');
+  await openTab('Tilter');
+  await check('/autofocus tilter', 'focuser-tilter');
+
+  await setPins(page, false);
+  await page.evaluate(`Object.assign(${STORES}.store, {
+    isFocuserConnected: false,
+    focuserInfo: { Connected: false, CanReverse: false, CanSetMaxStep: false },
+  })`);
+  focuserFixtures = false;
+  return failures;
+}
+
 // Takes the whole page in one picture: the viewport grows until the app's scroller has nothing
 // left to scroll, then shrinks back. The scroller is the tallest element that scrolls; boxes
 // scrolling inside the page, like a log, keep their own height.
@@ -1190,6 +1324,7 @@ try {
     failures.push(...(await checkImageHistory(page, viewportName, backend)));
     failures.push(...(await checkEquipment(page, viewportName)));
     failures.push(...(await checkGuider(page, viewportName)));
+    failures.push(...(await checkFocuser(page, viewportName)));
     failures.push(...(await checkPins(page, viewportName, backend)));
     failures.push(...(await checkSequence(page, viewportName, backend)));
     await page.close();

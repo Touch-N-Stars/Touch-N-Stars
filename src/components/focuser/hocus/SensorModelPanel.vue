@@ -5,37 +5,37 @@
       <div
         v-for="row in summaryRows"
         :key="row.key"
-        class="flex items-center justify-between gap-3 border-b border-gray-700/40 py-1.5 text-sm"
+        class="flex items-center justify-between gap-3 border-b border-line py-1.5 text-sm"
       >
-        <span class="flex items-center gap-1 text-gray-400">
+        <span class="flex items-center gap-1 text-content-muted">
           {{ L(row.key) }}
           <InfoModal v-if="row.help" :title="L(row.key)" :message="H(row.key)" size="w-4 h-4" />
         </span>
-        <span class="text-gray-100 tabular-nums">{{ row.value }}</span>
+        <span class="text-content tabular-nums">{{ row.value }}</span>
       </div>
     </div>
 
     <!-- HocusFocus' own verdict for each aspect of the model -->
     <div v-if="analysisResults.length > 0" class="flex flex-col gap-2">
-      <h4 class="text-sm font-semibold text-gray-300">{{ L('assessment') }}</h4>
+      <h4 class="text-sm font-semibold text-content">{{ L('assessment') }}</h4>
       <div
         v-for="(result, idx) in analysisResults"
         :key="idx"
         class="flex gap-3 rounded-lg border p-2 text-sm"
         :class="
           result.Acceptable
-            ? 'border-green-700/40 bg-green-900/15'
-            : 'border-amber-600/50 bg-amber-900/20'
+            ? 'border-status-ok/40 bg-status-ok/10'
+            : 'border-status-warn/40 bg-status-warn/10'
         "
       >
-        <CheckCircleIcon v-if="result.Acceptable" class="h-5 w-5 shrink-0 text-green-400" />
-        <ExclamationTriangleIcon v-else class="h-5 w-5 shrink-0 text-amber-400" />
+        <CheckCircleIcon v-if="result.Acceptable" class="h-5 w-5 shrink-0 text-status-ok" />
+        <ExclamationTriangleIcon v-else class="h-5 w-5 shrink-0 text-status-warn" />
         <div class="min-w-0">
           <div class="flex flex-wrap items-baseline gap-x-2">
-            <span class="font-medium text-gray-100">{{ result.Name }}</span>
-            <span v-if="result.Value" class="text-gray-300 tabular-nums">{{ result.Value }}</span>
+            <span class="font-medium text-content">{{ result.Name }}</span>
+            <span v-if="result.Value" class="text-content tabular-nums">{{ result.Value }}</span>
           </div>
-          <p v-if="result.Details" class="mt-0.5 text-gray-400">{{ result.Details }}</p>
+          <p v-if="result.Details" class="mt-0.5 text-content-muted">{{ result.Details }}</p>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
     <!-- Registration/fit warnings HocusFocus raised while building the model -->
     <div
       v-if="registrationReport.length > 0"
-      class="rounded-lg border border-amber-600/50 bg-amber-900/25 p-3 text-sm text-amber-200"
+      class="rounded-control border border-status-warn/40 bg-status-warn/10 p-3 text-sm text-status-warn"
     >
       <h4 class="mb-1 font-semibold">{{ L('registrationWarnings') }}</h4>
       <ul class="list-disc space-y-0.5 pl-5">

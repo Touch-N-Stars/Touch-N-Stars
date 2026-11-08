@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4">
-    <p class="text-sm text-gray-300">{{ v.IsLive ? L('liveIntro') : L('replayIntro') }}</p>
+    <p class="text-sm text-content">{{ v.IsLive ? L('liveIntro') : L('replayIntro') }}</p>
 
     <div class="flex flex-col gap-3">
       <HfSelectField
@@ -57,9 +57,9 @@
 
     <!-- Saved run: the same attempt folders "Load Saved AF" offers -->
     <div v-if="v.IsReplay" class="flex flex-col gap-2">
-      <label class="text-sm font-medium text-gray-300">{{ L('savedRun') }}</label>
-      <p v-if="loadingRuns" class="text-sm text-gray-400">{{ L('loadingRuns') }}</p>
-      <p v-else-if="savedRuns.length === 0" class="text-sm text-amber-300">
+      <label class="text-sm font-medium text-content">{{ L('savedRun') }}</label>
+      <p v-if="loadingRuns" class="text-sm text-content-muted">{{ L('loadingRuns') }}</p>
+      <p v-else-if="savedRuns.length === 0" class="text-sm text-status-warn">
         {{ L('noSavedRuns') }}
       </p>
       <select
@@ -83,7 +83,7 @@
       />
       <p
         v-if="v.SweepDetectionBinningRecommendationVisible && v.SweepDetectionBinningRecommendation"
-        class="text-sm italic text-cyan-300"
+        class="text-sm italic text-accent"
         :title="translateBinningDetail(v.SweepDetectionBinningRecommendationDetail, t)"
       >
         {{ translateBinningHint(v.SweepDetectionBinningRecommendation, t) }}
@@ -94,14 +94,14 @@
     <div v-if="v.IsLive" class="flex flex-col gap-3">
       <p
         v-if="state.SequenceRunning"
-        class="rounded-lg border border-amber-600/50 bg-amber-900/25 p-2 text-sm text-amber-200"
+        class="rounded-control border border-status-warn/40 bg-status-warn/10 p-2 text-sm text-status-warn"
       >
         {{ L('sequenceRunningLive') }}
       </p>
       <div class="grid grid-cols-1 gap-x-6 gap-y-1 md:grid-cols-2">
         <div v-for="row in liveReadouts" :key="row.key" :class="readoutRowClass">
-          <span class="text-gray-400">{{ L(row.key) }}</span>
-          <span class="text-gray-100 tabular-nums">{{ row.value ?? '--' }}</span>
+          <span class="text-content-muted">{{ L(row.key) }}</span>
+          <span class="text-content tabular-nums">{{ row.value ?? '--' }}</span>
         </div>
       </div>
       <HfNumberField
@@ -159,7 +159,7 @@ const H = (key) => t(`components.focuser.hocus.optimizer.help.${key}`);
 
 const v = computed(() => props.state.Values || {});
 const readoutRowClass =
-  'flex items-center justify-between gap-3 border-b border-gray-700/40 py-1.5 text-sm';
+  'flex items-center justify-between gap-3 border-b border-line py-1.5 text-sm';
 
 // Options for the wizard's enum inputs, with its own display text where it has one.
 function enumOptions(name) {

@@ -22,11 +22,11 @@
           {{ L('clearAnalyses') }}
         </button>
       </div>
-      <p v-if="!cameraConnected || !focuserConnected" class="text-xs text-gray-400">
+      <p v-if="!cameraConnected || !focuserConnected" class="text-xs text-content-muted">
         {{ L('needsCameraAndFocuser') }}
       </p>
       <!-- A live run would move the focuser mid-sequence; replaying a saved run is fine -->
-      <p v-else-if="sequenceRunning && !analysisRunning" class="text-xs text-amber-300">
+      <p v-else-if="sequenceRunning && !analysisRunning" class="text-xs text-status-warn">
         {{ L('sequenceRunningHint') }}
       </p>
     </div>
@@ -34,10 +34,13 @@
     <!-- Action errors (run / cancel / load saved / clear) -->
     <div
       v-if="error"
-      class="flex items-start justify-between gap-3 rounded-lg border border-red-700/50 bg-red-900/40 p-3 text-sm text-red-200"
+      class="flex items-start justify-between gap-3 rounded-control border border-status-danger/30 bg-status-danger/10 p-3 text-sm text-status-danger"
     >
       <span>{{ error }}</span>
-      <button class="shrink-0 text-red-300 hover:text-red-100" @click="$emit('dismiss-error')">
+      <button
+        class="shrink-0 text-status-danger hover:text-content"
+        @click="$emit('dismiss-error')"
+      >
         <XMarkIcon class="h-5 w-5" />
       </button>
     </div>
@@ -55,20 +58,20 @@
       <h3 :class="headingClass">{{ L('finalFocusDataSummary') }}</h3>
       <div class="grid grid-cols-1 gap-x-6 gap-y-1 md:grid-cols-2">
         <div :class="summaryRowClass">
-          <span class="text-gray-400">{{ L('backfocusError') }}</span>
-          <span class="text-right text-gray-100 tabular-nums">{{ backfocusText }}</span>
+          <span class="text-content-muted">{{ L('backfocusError') }}</span>
+          <span class="text-right text-content tabular-nums">{{ backfocusText }}</span>
         </div>
         <div :class="summaryRowClass">
-          <span class="text-gray-400">{{ L('backfocusAdjustment') }}</span>
-          <span class="text-right text-gray-100">{{ backfocusDirectionText }}</span>
+          <span class="text-content-muted">{{ L('backfocusAdjustment') }}</span>
+          <span class="text-right text-content">{{ backfocusDirectionText }}</span>
         </div>
         <div :class="summaryRowClass">
-          <span class="text-gray-400">{{ L('hfrDifference') }}</span>
-          <span class="text-gray-100 tabular-nums">{{ fixed(finalFocusData?.BackfocusHFR) }}</span>
+          <span class="text-content-muted">{{ L('hfrDifference') }}</span>
+          <span class="text-content tabular-nums">{{ fixed(finalFocusData?.BackfocusHFR) }}</span>
         </div>
         <div :class="summaryRowClass">
-          <span class="text-gray-400">{{ L('innerOuterHFR') }}</span>
-          <span class="text-gray-100 tabular-nums">
+          <span class="text-content-muted">{{ L('innerOuterHFR') }}</span>
+          <span class="text-content tabular-nums">
             {{ fixed(finalFocusData?.InnerHFR) }} / {{ fixed(finalFocusData?.OuterHFR) }}
           </span>
         </div>
@@ -90,7 +93,7 @@
       <div class="flex items-center justify-between gap-3">
         <h3 :class="headingClass">{{ L('tiltMeasurementHistory') }}</h3>
         <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-400">{{ L('showFitQuality') }}</span>
+          <span class="text-xs text-content-muted">{{ L('showFitQuality') }}</span>
           <toggleButton
             :status-value="showFitQuality"
             @update:statusValue="showFitQuality = $event"
@@ -116,7 +119,7 @@
       @update:open="store.resultSections.sensorModel = $event"
     >
       <SensorModelPanel v-if="sensorModel?.ModelLoaded" :model="sensorModel" />
-      <p v-else class="text-sm text-gray-400">{{ L('sensorModelMissing') }}</p>
+      <p v-else class="text-sm text-content-muted">{{ L('sensorModelMissing') }}</p>
     </HfCollapsibleCard>
 
     <!-- The two plots from the run's final exposure. Collapsed by default and fetched only while
@@ -127,9 +130,11 @@
         :open="store.resultSections.fwhmContour"
         @update:open="store.resultSections.fwhmContour = $event"
       >
-        <p v-if="loadingPlots.fwhmContour" class="text-sm text-gray-400">{{ L('loadingPlot') }}</p>
+        <p v-if="loadingPlots.fwhmContour" class="text-sm text-content-muted">
+          {{ L('loadingPlot') }}
+        </p>
         <FwhmContourPlot v-else-if="fwhmContour?.Available" :data="fwhmContour" />
-        <p v-else class="text-sm text-gray-400">{{ L('noPlotData') }}</p>
+        <p v-else class="text-sm text-content-muted">{{ L('noPlotData') }}</p>
       </HfCollapsibleCard>
 
       <HfCollapsibleCard
@@ -137,9 +142,11 @@
         :open="store.resultSections.eccentricity"
         @update:open="store.resultSections.eccentricity = $event"
       >
-        <p v-if="loadingPlots.eccentricity" class="text-sm text-gray-400">{{ L('loadingPlot') }}</p>
+        <p v-if="loadingPlots.eccentricity" class="text-sm text-content-muted">
+          {{ L('loadingPlot') }}
+        </p>
         <EccentricityPlot v-else-if="eccentricity?.Available" :data="eccentricity" />
-        <p v-else class="text-sm text-gray-400">{{ L('noPlotData') }}</p>
+        <p v-else class="text-sm text-content-muted">{{ L('noPlotData') }}</p>
       </HfCollapsibleCard>
     </template>
   </div>
@@ -197,11 +204,10 @@ const { t } = useI18n();
 const L = (key) => t(`components.focuser.hocus.aberrationInspector.${key}`);
 const store = useHocusFocusStore();
 
-const cardClass =
-  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
-const headingClass = 'font-bold text-base text-cyan-400';
+const cardClass = 'tns-card flex flex-col gap-2 sm:gap-3';
+const headingClass = 'tns-section-title';
 const summaryRowClass =
-  'flex items-center justify-between gap-3 border-b border-gray-700/40 py-1.5 text-sm';
+  'flex items-center justify-between gap-3 border-b border-line py-1.5 text-sm';
 
 // An Inspector run is in progress: the backend refuses a new one while both devices are connected.
 const analysisRunning = computed(

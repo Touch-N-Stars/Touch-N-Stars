@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
-      <p class="text-base font-semibold text-gray-100">{{ L('complete') }}</p>
-      <p v-if="v.HasSummaryFilter" class="text-sm text-gray-400">
-        {{ L('filter') }}: <span class="text-gray-200">{{ v.SummaryFilterName }}</span>
+      <p class="text-base font-semibold text-content">{{ L('complete') }}</p>
+      <p v-if="v.HasSummaryFilter" class="text-sm text-content-muted">
+        {{ L('filter') }}: <span class="text-content">{{ v.SummaryFilterName }}</span>
       </p>
     </div>
 
@@ -30,16 +30,16 @@
 
     <div class="flex flex-col">
       <div :class="rowClass">
-        <span class="text-gray-400">{{ L('focusPrecision') }}</span>
-        <span class="text-right text-gray-100">{{ v.FocusPrecisionText || '--' }}</span>
+        <span class="text-content-muted">{{ L('focusPrecision') }}</span>
+        <span class="text-right text-content">{{ v.FocusPrecisionText || '--' }}</span>
       </div>
       <div v-if="summary.HasFeedbackComparison" :class="rowClass">
-        <span class="text-gray-400">{{ L('vsOptimized') }}</span>
-        <span class="text-right text-gray-100">{{ summary.FeedbackVsOptimizedText }}</span>
+        <span class="text-content-muted">{{ L('vsOptimized') }}</span>
+        <span class="text-right text-content">{{ summary.FeedbackVsOptimizedText }}</span>
       </div>
       <div v-if="v.HasRunDuration" :class="rowClass">
-        <span class="text-gray-400">{{ L('optimizationTime') }}</span>
-        <span class="text-right text-gray-100 tabular-nums">{{ v.RunDurationText }}</span>
+        <span class="text-content-muted">{{ L('optimizationTime') }}</span>
+        <span class="text-right text-content tabular-nums">{{ v.RunDurationText }}</span>
       </div>
     </div>
 
@@ -56,28 +56,28 @@
         <InfoModal :title="L('starSignal')" :message="H('starSignal')" size="w-4 h-4" />
       </h4>
       <div v-if="v.HasRecommendedExposure" :class="rowClass">
-        <span class="text-gray-400">{{ L('recommendedExposure') }}</span>
-        <span class="text-right text-gray-100" :title="v.ExposureDerivationDetail">
+        <span class="text-content-muted">{{ L('recommendedExposure') }}</span>
+        <span class="text-right text-content" :title="v.ExposureDerivationDetail">
           {{ v.RecommendedExposureText }}
         </span>
       </div>
-      <p v-if="v.HasExposureBody" class="text-sm text-gray-300">{{ v.ExposureBodyText }}</p>
+      <p v-if="v.HasExposureBody" class="text-sm text-content">{{ v.ExposureBodyText }}</p>
     </div>
 
     <!-- Auto-focus sweep settings the run recommends -->
     <div class="flex flex-col gap-2">
       <h4 :class="subheadingClass">{{ L('autoFocusSettings') }}</h4>
       <div :class="rowClass">
-        <span class="text-gray-400">{{ L('recommendedStepSize') }}</span>
-        <span class="text-right text-gray-100">{{ summary.StepSizeText || '--' }}</span>
+        <span class="text-content-muted">{{ L('recommendedStepSize') }}</span>
+        <span class="text-right text-content">{{ summary.StepSizeText || '--' }}</span>
       </div>
       <div :class="rowClass">
-        <span class="text-gray-400">{{ L('recommendedOffsetSteps') }}</span>
-        <span class="text-right text-gray-100">{{ summary.OffsetStepsText || '--' }}</span>
+        <span class="text-content-muted">{{ L('recommendedOffsetSteps') }}</span>
+        <span class="text-right text-content">{{ summary.OffsetStepsText || '--' }}</span>
       </div>
       <div v-if="v.CanApplyExposureTime" :class="rowClass">
-        <span class="text-gray-400">{{ L('exposure') }}</span>
-        <span class="text-right text-gray-100">{{ v.SweepExposureChangeText }}</span>
+        <span class="text-content-muted">{{ L('exposure') }}</span>
+        <span class="text-right text-content">{{ v.SweepExposureChangeText }}</span>
       </div>
       <HfToggleRow
         :model-value="!!v.ApplyRecommendedStepSize"
@@ -90,7 +90,7 @@
 
     <!-- Live runs: re-capture at a better exposure and optimize again -->
     <div v-if="v.ShowCaptureNewSweep" class="flex flex-col gap-2">
-      <p v-if="v.CaptureNewSweepCarriesText" class="text-sm text-gray-300">
+      <p v-if="v.CaptureNewSweepCarriesText" class="text-sm text-content">
         {{ v.CaptureNewSweepCarriesText }}
       </p>
       <HfNumberField
@@ -117,10 +117,10 @@
     <div v-if="v.HasDetectionBinningBlock" class="flex flex-col gap-2">
       <h4 :class="subheadingClass">{{ L('detectionBinning') }}</h4>
       <div :class="rowClass">
-        <span class="text-gray-400">{{ L('recommendedFactor') }}</span>
-        <span class="text-right text-gray-100">{{ v.DetectionBinningRecommendationText }}</span>
+        <span class="text-content-muted">{{ L('recommendedFactor') }}</span>
+        <span class="text-right text-content">{{ v.DetectionBinningRecommendationText }}</span>
       </div>
-      <p v-if="v.HasDetectionBinningBody" class="text-sm text-gray-300">
+      <p v-if="v.HasDetectionBinningBody" class="text-sm text-content">
         {{ v.DetectionBinningBodyText }}
       </p>
       <button
@@ -133,14 +133,14 @@
       </button>
     </div>
 
-    <p v-if="v.HasContinueOptimizingAdvice" class="text-sm text-gray-300">
+    <p v-if="v.HasContinueOptimizingAdvice" class="text-sm text-content">
       {{ v.ContinueOptimizingAdviceText }}
     </p>
 
     <!-- What the optimizer changed -->
     <div class="flex flex-col gap-2">
       <h4 :class="subheadingClass">{{ L('changedParameters') }}</h4>
-      <p v-if="v.HasRoundsSummary" class="text-sm text-gray-400">{{ v.RoundsSummaryText }}</p>
+      <p v-if="v.HasRoundsSummary" class="text-sm text-content-muted">{{ v.RoundsSummaryText }}</p>
       <HfDataTable
         :columns="changedColumns"
         :rows="state.ChangedParameters || []"
@@ -148,7 +148,7 @@
       />
     </div>
 
-    <p class="text-xs text-gray-400">{{ L('acceptHint') }}</p>
+    <p class="text-xs text-content-muted">{{ L('acceptHint') }}</p>
   </div>
 </template>
 
@@ -175,11 +175,10 @@ const H = (key) => t(`components.focuser.hocus.optimizer.help.${key}`);
 const v = computed(() => props.state.Values || {});
 const summary = computed(() => props.state.Summary || {});
 
-const rowClass =
-  'flex items-center justify-between gap-3 border-b border-gray-700/40 py-1.5 text-sm';
-const subheadingClass = 'flex items-center gap-1 text-sm font-semibold text-gray-300';
+const rowClass = 'flex items-center justify-between gap-3 border-b border-line py-1.5 text-sm';
+const subheadingClass = 'flex items-center gap-1 text-sm font-semibold text-content';
 const noteClass =
-  'rounded-lg border border-amber-600/50 bg-amber-900/25 p-2 text-sm text-amber-200';
+  'rounded-control border border-status-warn/40 bg-status-warn/10 p-2 text-sm text-status-warn';
 
 const canRun = (name) => !!props.state.Commands?.[name]?.CanExecute;
 

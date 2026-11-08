@@ -3,12 +3,15 @@
     <!-- Loading -->
     <div v-if="isLoading" class="flex items-center justify-center py-12">
       <div class="spinner"></div>
-      <p class="ml-4 text-gray-400">{{ L('loading') }}</p>
+      <p class="ml-4 text-content-muted">{{ L('loading') }}</p>
     </div>
 
     <!-- Error -->
-    <div v-if="error" class="rounded-lg border border-red-700/50 bg-red-900/40 p-4">
-      <p class="text-red-200">
+    <div
+      v-if="error"
+      class="rounded-control border border-status-danger/30 bg-status-danger/10 p-4"
+    >
+      <p class="text-status-danger">
         <span class="font-semibold">{{ L('error') }}</span> {{ error }}
       </p>
       <button class="tns-btn-secondary mt-3 w-auto px-4" @click="loadOptions()">
@@ -74,11 +77,11 @@
     <!-- Reset confirmation -->
     <Modal :show="showResetConfirm" maxWidth="max-w-sm" @close="showResetConfirm = false">
       <template #header>
-        <h2 class="text-xl font-bold text-white">{{ L('resetTitle') }}</h2>
+        <h2 class="text-xl font-bold text-content">{{ L('resetTitle') }}</h2>
       </template>
       <template #body>
         <div class="flex w-full flex-col gap-6">
-          <p class="text-sm text-gray-300">{{ L('resetPrompt') }}</p>
+          <p class="text-sm text-content">{{ L('resetPrompt') }}</p>
           <div class="flex justify-end gap-3">
             <button class="tns-btn-secondary w-auto px-4" @click="showResetConfirm = false">
               {{ L('cancel') }}
@@ -110,9 +113,8 @@ const { t } = useI18n();
 const L = (key) => t(`components.focuser.hocus.aberrationInspectorOptions.${key}`);
 const H = (key) => t(`components.focuser.hocus.aberrationInspectorOptions.help.${key}`);
 
-const cardClass =
-  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
-const headingClass = 'font-bold text-base text-cyan-400';
+const cardClass = 'tns-card flex flex-col gap-2 sm:gap-3';
+const headingClass = 'tns-section-title';
 
 const options = reactive({});
 const isLoading = ref(false);

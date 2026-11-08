@@ -1,20 +1,16 @@
 <template>
   <div>
     <div class="flex items-center justify-between pr-1">
-      <span class="text-sm font-medium text-gray-300">
+      <span class="text-sm font-medium text-content">
         {{ $t('components.focuser.settings.UseFilterWheelOffsets') }}
       </span>
       <toggleButton @click="updateSetting" :status-value="isEnabled" />
     </div>
     <div v-if="isEnabled && filters.length > 0" class="mt-2 flex items-center justify-between pr-1">
-      <span class="text-sm font-medium text-gray-300">
+      <span class="text-sm font-medium text-content">
         {{ $t('components.focuser.settings.AutoFocusFilter') }}
       </span>
-      <select
-        v-model="selectedFilterIndex"
-        @change="updateAutoFocusFilter"
-        class="bg-gray-700 text-gray-200 text-sm rounded px-2 py-1 border border-gray-600 focus:outline-none focus:border-blue-500"
-      >
+      <select v-model="selectedFilterIndex" @change="updateAutoFocusFilter" class="tns-select w-40">
         <option :value="-1">{{ $t('components.focuser.settings.AutoFocusFilterNone') }}</option>
         <option v-for="(filter, index) in filters" :key="index" :value="index">
           {{ filter.Name }}

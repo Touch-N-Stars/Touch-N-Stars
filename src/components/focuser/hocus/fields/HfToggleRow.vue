@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-1 min-w-0">
-        <span class="text-sm font-medium text-gray-300">{{ label }}</span>
+        <span class="text-sm font-medium text-content">{{ label }}</span>
         <InfoModal v-if="help" :title="label" :message="help" size="w-4 h-4" />
       </div>
       <toggleButton
@@ -12,7 +12,7 @@
         @update:statusValue="onToggle"
       />
     </div>
-    <p v-if="error" class="mt-1 text-xs text-red-400">{{ error }}</p>
+    <p v-if="error" class="mt-1 text-xs text-status-danger">{{ error }}</p>
   </div>
 </template>
 

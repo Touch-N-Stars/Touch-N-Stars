@@ -3,7 +3,7 @@
     <!-- AutoFocus directory picker for "Load Saved AF" -->
     <Modal :show="showAFDirectoryModal" maxWidth="max-w-md" @close="showAFDirectoryModal = false">
       <template #header>
-        <h2 class="text-xl font-bold text-white">
+        <h2 class="text-xl font-bold text-content">
           {{ $t('components.focuser.hocus.modal.selectDirectory') }}
         </h2>
       </template>
@@ -11,7 +11,7 @@
         <div class="flex w-full flex-col gap-4">
           <div
             v-if="loadingAFDirectories"
-            class="flex items-center justify-center gap-3 py-4 text-gray-400"
+            class="flex items-center justify-center gap-3 py-4 text-content-muted"
           >
             <div class="spinner"></div>
             <span>{{ $t('components.focuser.hocus.modal.loading') }}</span>

@@ -3,15 +3,15 @@
     <!-- Loading -->
     <div v-if="store.isLoadingAutoFocusOptions" class="flex items-center justify-center py-12">
       <div class="spinner"></div>
-      <p class="ml-4 text-gray-400">{{ L('loading') }}</p>
+      <p class="ml-4 text-content-muted">{{ L('loading') }}</p>
     </div>
 
     <!-- Error -->
     <div
       v-if="store.autoFocusOptionsError"
-      class="rounded-lg border border-red-700/50 bg-red-900/40 p-4"
+      class="rounded-control border border-status-danger/30 bg-status-danger/10 p-4"
     >
-      <p class="text-red-200">
+      <p class="text-status-danger">
         <span class="font-semibold">{{ L('error') }}</span> {{ store.autoFocusOptionsError }}
       </p>
       <button class="tns-btn-secondary mt-3 w-auto px-4" @click="loadAutoFocusOptions()">
@@ -218,7 +218,7 @@
               :label="L('savePath')"
               @update:model-value="save('SavePath', $event)"
             />
-            <p v-if="errorOf('SavePath')" class="mt-1 text-xs text-red-400">
+            <p v-if="errorOf('SavePath')" class="mt-1 text-xs text-status-danger">
               {{ errorOf('SavePath') }}
             </p>
           </div>
@@ -240,11 +240,11 @@
     <!-- Reset confirmation -->
     <Modal :show="showResetConfirm" maxWidth="max-w-sm" @close="showResetConfirm = false">
       <template #header>
-        <h2 class="text-xl font-bold text-white">{{ L('resetTitle') }}</h2>
+        <h2 class="text-xl font-bold text-content">{{ L('resetTitle') }}</h2>
       </template>
       <template #body>
         <div class="flex w-full flex-col gap-6">
-          <p class="text-sm text-gray-300">{{ L('resetPrompt') }}</p>
+          <p class="text-sm text-content">{{ L('resetPrompt') }}</p>
           <div class="flex justify-end gap-3">
             <button class="tns-btn-secondary w-auto px-4" @click="showResetConfirm = false">
               {{ L('cancel') }}

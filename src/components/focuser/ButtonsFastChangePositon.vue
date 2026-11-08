@@ -1,37 +1,25 @@
 <template>
   <div class="flex gap-1 focuser-buttons">
     <button class="tns-btn-secondary" @click="changeBigMinus" :disabled="isMoving">
-      <div
-        v-if="loadingButton === 'changeBigMinus'"
-        class="ml-2 w-5 h-5 sm:w-6 sm:h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
-      ></div>
+      <Spinner v-if="loadingButton === 'changeBigMinus'" size="sm" class="text-accent" />
       <label v-else
         ><ChevronDoubleLeftIcon class="w-5 h-5 sm:w-7 sm:h-7 landscape:w-4 landscape:h-4"
       /></label>
     </button>
     <button class="tns-btn-secondary" @click="changeSmallMinus" :disabled="isMoving">
-      <div
-        v-if="loadingButton === 'changeSmallMinus'"
-        class="ml-2 w-5 h-5 sm:w-6 sm:h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
-      ></div>
+      <Spinner v-if="loadingButton === 'changeSmallMinus'" size="sm" class="text-accent" />
       <label v-else
         ><ChevronLeftIcon class="w-5 h-5 sm:w-7 sm:h-7 landscape:w-4 landscape:h-4"
       /></label>
     </button>
     <button class="tns-btn-secondary" @click="changeSmallPlus" :disabled="isMoving">
-      <div
-        v-if="loadingButton === 'changeSmallPlus'"
-        class="ml-2 w-5 h-5 sm:w-6 sm:h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
-      ></div>
+      <Spinner v-if="loadingButton === 'changeSmallPlus'" size="sm" class="text-accent" />
       <label v-else
         ><ChevronRightIcon class="w-5 h-5 sm:w-7 sm:h-7 landscape:w-4 landscape:h-4"
       /></label>
     </button>
     <button class="tns-btn-secondary" @click="changeBigPlus" :disabled="isMoving">
-      <div
-        v-if="loadingButton === 'changeBigPlus'"
-        class="ml-2 w-5 h-5 sm:w-6 sm:h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
-      ></div>
+      <Spinner v-if="loadingButton === 'changeBigPlus'" size="sm" class="text-accent" />
       <label v-else
         ><ChevronDoubleRightIcon class="w-5 h-5 sm:w-7 sm:h-7 landscape:w-4 landscape:h-4"
       /></label>
@@ -42,6 +30,7 @@
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import { computed, ref, watch } from 'vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import {
   ChevronRightIcon,
   ChevronLeftIcon,

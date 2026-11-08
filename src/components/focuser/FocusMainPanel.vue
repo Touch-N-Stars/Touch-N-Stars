@@ -1,6 +1,6 @@
 <template>
   <div v-if="store.focuserInfo.Connected" class="flex flex-col text-left">
-    <div class="border border-gray-400/50 p-2 sm:p-3 rounded-md">
+    <div class="tns-card p-2! sm:p-3!">
       <MoveFocuser />
       <div class="pt-1 sm:pt-2">
         <ButtonsFastChangePositon />
@@ -28,7 +28,7 @@
       <button
         v-if="store.focuserAfInfo.autofocus_running"
         @click="showImageModal = true"
-        class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md hover:bg-cyan-600 transition-colors"
+        class="p-2 bg-surface-3 border border-accent-action rounded-full shadow-md hover:bg-accent-action transition-colors"
         :title="$t('common.showImage')"
       >
         <PhotoIcon class="w-6 h-6" />
@@ -36,15 +36,15 @@
     </div>
 
     <div class="flex items-center space-x-2 sm:space-x-3 mt-2 sm:mt-4">
-      <div class="w-3 h-[1px] bg-gray-700"></div>
+      <div class="w-3 h-[1px] bg-line-strong"></div>
       <!-- kurze Linie -->
       <button
         @click="store.showAfGraph = !store.showAfGraph"
-        class="w-7 h-7 bg-gray-700 active:bg-cyan-700 hover:bg-cyan-600 rounded-md border border-cyan-500/20 flex items-center justify-center"
+        class="w-7 h-7 bg-surface-3 active:bg-accent-action hover:bg-accent-action rounded-md border border-accent/20 flex items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 text-white transition-transform duration-300"
+          class="h-5 w-5 text-content transition-transform duration-300"
           :class="{ 'rotate-90': store.showAfGraph }"
           fill="none"
           viewBox="0 0 24 24"
@@ -54,7 +54,7 @@
         </svg>
       </button>
       <p class="text-xs sm:text-sm italic">{{ $t('components.focuser.autofocus_graph') }}</p>
-      <div class="grow h-[1px] bg-gray-700"></div>
+      <div class="grow h-[1px] bg-line-strong"></div>
       <!-- lange Linie -->
     </div>
 
@@ -64,9 +64,7 @@
         <div>
           <AfShowGraph />
         </div>
-        <div
-          class="flex flex-col items-center mt-2 p-4 min-h-28 bg-gray-800/50 rounded-lg border border-gray-700/50"
-        >
+        <div class="tns-card flex flex-col items-center mt-2 min-h-28">
           <AfStatus />
         </div>
       </div>
@@ -76,7 +74,7 @@
           <AfFnishGraph />
         </div>
       </div>
-      <div v-else class="text-center text-red-600">
+      <div v-else class="text-center text-status-danger">
         <p>{{ $t('components.focuser.autofocus_error') }}</p>
         <p class="italic">{{ store.focuserAfInfo.afErrorText }}</p>
       </div>
