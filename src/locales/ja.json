@@ -18,7 +18,9 @@
     "refresh": "更新",
     "help": "ヘルプ",
     "expand": "展開",
-    "collapse": "折りたたむ"
+    "collapse": "折りたたむ",
+    "drag": "ドラッグ",
+    "showImage": "画像を表示"
   },
   "general": {
     "cancel": "キャンセル",
@@ -4728,6 +4730,7 @@
       "azimuth_error": "方位誤差:",
       "total_error": "総合誤差:",
       "error_values_missing": "誤差データが見つかりません",
+      "waiting_for_values": "最初の測定を待っています…",
       "unknown_response_format": "不明なレスポンス形式",
       "east": "東",
       "west": "西",

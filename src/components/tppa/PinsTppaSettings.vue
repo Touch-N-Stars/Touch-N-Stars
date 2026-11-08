@@ -1,35 +1,14 @@
 <template>
   <div v-if="loading" class="flex items-center justify-center py-8">
-    <div class="animate-spin">
-      <svg
-        class="w-8 h-8 text-cyan-400"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
-    </div>
+    <Spinner class="text-accent" />
   </div>
 
   <div v-else class="flex flex-col gap-2 w-full">
     <!-- NINA TPPA Settings -->
-    <div class="border border-gray-500 p-2 rounded-lg">
+    <div class="tns-card p-2!">
       <div class="space-y-2">
-        <div class="flex flex-row items-center justify-between w-full">
-          <label class="text-gray-300 text-sm">{{
+        <div class="tns-field-row">
+          <label class="text-sm text-content">{{
             $t('components.tppa.settings.StartFromCurrentPosition')
           }}</label>
           <toggleButton
@@ -43,9 +22,9 @@
         </div>
         <div
           v-if="store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.10.0')"
-          class="flex flex-row items-center justify-between w-full"
+          class="tns-field-row"
         >
-          <label class="text-gray-300 text-sm">{{
+          <label class="text-sm text-content">{{
             $t('components.tppa.settings.ManualMode')
           }}</label>
           <toggleButton
@@ -54,11 +33,11 @@
             class="pr-3 pl-3"
           />
         </div>
-        <div class="border-t border-gray-600 pt-2 mt-2">
-          <h4 class="text-gray-200 text-sm mb-1">
+        <div class="border-t border-line pt-2 mt-2">
+          <h4 class="tns-section-title mb-1">
             {{ $t('components.tppa.settings.camera_settings') }}
           </h4>
-          <p class="text-gray-400 text-xs mb-3">
+          <p class="tns-label mb-3">
             {{ $t('components.tppa.settings.camera_settings_hint') }}
           </p>
 
@@ -93,7 +72,7 @@
 
           <!-- Filter -->
           <div v-if="store.filterInfo.Connected" class="mt-2">
-            <label for="tppa-filter" class="text-xs mb-1 text-gray-400 block">
+            <label for="tppa-filter" class="tns-label mb-1 block">
               {{ $t('components.tppa.settings.filter') }}
             </label>
             <select id="tppa-filter" v-model="tppaStore.settings.Filter" class="tns-select w-full">
@@ -112,21 +91,21 @@
     </div>
 
     <!-- Movement Section -->
-    <div class="border border-gray-500 p-2 rounded-lg">
-      <h4 class="text-gray-200 text-sm font-semibold mb-2">
+    <div class="tns-card p-2!">
+      <h4 class="tns-section-title mb-2">
         {{ $t('components.tppa.pins_settings.movement') }}
       </h4>
       <div class="space-y-2">
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.default_move_rate')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.default_move_rate')"
               :message="$t('components.tppa.pins_settings.help_default_move_rate')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -141,16 +120,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.default_east_direction')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.default_east_direction')"
               :message="$t('components.tppa.pins_settings.help_default_east_direction')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <toggleButton
@@ -160,16 +139,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.move_timeout_factor')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.move_timeout_factor')"
               :message="$t('components.tppa.pins_settings.help_move_timeout_factor')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -184,16 +163,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.default_target_distance')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.default_target_distance')"
               :message="$t('components.tppa.pins_settings.help_default_target_distance')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -208,16 +187,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.default_search_radius')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.default_search_radius')"
               :message="$t('components.tppa.pins_settings.help_default_search_radius')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -235,21 +214,21 @@
     </div>
 
     <!-- Offsets Section -->
-    <div class="border border-gray-500 p-2 rounded-lg">
-      <h4 class="text-gray-200 text-sm font-semibold mb-2">
+    <div class="tns-card p-2!">
+      <h4 class="tns-section-title mb-2">
         {{ $t('components.tppa.pins_settings.offsets') }}
       </h4>
       <div class="space-y-2">
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.default_azimuth_offset')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.default_azimuth_offset')"
               :message="$t('components.tppa.pins_settings.help_default_azimuth_offset')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -264,16 +243,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.default_altitude_offset')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.default_altitude_offset')"
               :message="$t('components.tppa.pins_settings.help_default_altitude_offset')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -288,16 +267,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.alignment_tolerance')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.alignment_tolerance')"
               :message="$t('components.tppa.pins_settings.help_alignment_tolerance')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -315,21 +294,21 @@
     </div>
 
     <!-- Behavior Section -->
-    <div class="border border-gray-500 p-2 rounded-lg">
-      <h4 class="text-gray-200 text-sm font-semibold mb-2">
+    <div class="tns-card p-2!">
+      <h4 class="tns-section-title mb-2">
         {{ $t('components.tppa.pins_settings.behavior') }}
       </h4>
       <div class="space-y-2">
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.refraction_adjustment')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.refraction_adjustment')"
               :message="$t('components.tppa.pins_settings.help_refraction_adjustment')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <toggleButton
@@ -339,16 +318,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.stop_tracking_when_done')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.stop_tracking_when_done')"
               :message="$t('components.tppa.pins_settings.help_stop_tracking_when_done')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <toggleButton
@@ -358,16 +337,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.settle_time')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.settle_time')"
               :message="$t('components.tppa.pins_settings.help_settle_time')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <NumberInputPicker
@@ -384,16 +363,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.auto_pause')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.auto_pause')"
               :message="$t('components.tppa.pins_settings.help_auto_pause')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <toggleButton
@@ -403,16 +382,16 @@
           />
         </div>
 
-        <div class="flex items-center justify-between w-full">
+        <div class="tns-field-row">
           <div class="flex items-center gap-1">
-            <label class="text-gray-300 text-sm">{{
+            <label class="text-sm text-content">{{
               $t('components.tppa.pins_settings.log_error')
             }}</label>
             <InfoModal
               :title="$t('components.tppa.pins_settings.log_error')"
               :message="$t('components.tppa.pins_settings.help_log_error')"
               :size="'w-5 h-5'"
-              :iconTextColour="'text-cyan-400'"
+              :iconTextColour="'text-accent'"
             />
           </div>
           <toggleButton
@@ -438,6 +417,7 @@ import { apiStore } from '@/store/store';
 import toggleButton from '../helpers/toggleButton.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 
 const tppaStore = useTppaStore();
 const store = apiStore();

@@ -18,7 +18,9 @@
     "creating": "正在创建…",
     "help": "帮助",
     "expand": "展开",
-    "collapse": "收起"
+    "collapse": "收起",
+    "drag": "拖拽",
+    "showImage": "显示图像"
   },
   "general": {
     "cancel": "取消",
@@ -4719,6 +4721,7 @@
       "azimuth_error": "方位误差：",
       "total_error": "总误差：",
       "error_values_missing": "缺少误差值",
+      "waiting_for_values": "等待首次测量结果…",
       "unknown_response_format": "未知的响应格式",
       "east": "东",
       "west": "西",

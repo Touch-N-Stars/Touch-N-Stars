@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Interface: Dialogs now share one look across the app, including About, Log, Weather, the instance switcher and the favorites. More of them also close with the Escape key, and the small info dialogs close with a tap beside them.
 - Settings: All settings tabs now use the same cards, headings and colours as the rest of the app. The folder buttons next to path fields are larger and easier to tap.
+- TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.
+
+### Fixed
+
+- TPPA: When the polar alignment runs in the dialog opened by NINA, its settings no longer open hidden behind that dialog.
+- TPPA: Until the first measurement arrives, errors show a question mark instead of an empty value, the error dialogs say they are waiting, and the circle no longer appears green without a result. The empty status frame is gone as well.
+- Camera, Focus and TPPA: The Drag and Show image labels are now translated.
 
 ## [App6.5.0 - beta 24] - 2026-11-05
 

@@ -18,7 +18,9 @@
     "creating": "Creando…",
     "help": "Ayuda",
     "expand": "Expandir",
-    "collapse": "Contraer"
+    "collapse": "Contraer",
+    "drag": "Arrastrar",
+    "showImage": "Mostrar imagen"
   },
   "general": {
     "cancel": "Cancelar",
@@ -4719,6 +4721,7 @@
       "azimuth_error": "Error Acimut:",
       "total_error": "Error total:",
       "error_values_missing": "Error faltan valores",
+      "waiting_for_values": "Esperando la primera medición…",
       "unknown_response_format": "Formato respuesta desconocido",
       "east": "Este",
       "west": "Oeste",

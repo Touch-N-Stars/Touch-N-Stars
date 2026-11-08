@@ -18,7 +18,9 @@
     "creating": "Creazione…",
     "help": "Aiuto",
     "expand": "Espandi",
-    "collapse": "Comprimi"
+    "collapse": "Comprimi",
+    "drag": "Trascina",
+    "showImage": "Mostra immagine"
   },
   "general": {
     "cancel": "Annulla",
@@ -4719,6 +4721,7 @@
       "azimuth_error": "Errore azimut:",
       "total_error": "Errore totale:",
       "error_values_missing": "Valori errore mancanti",
+      "waiting_for_values": "In attesa della prima misura…",
       "unknown_response_format": "Formato risposta sconosciuto",
       "east": "Est",
       "west": "Ovest",

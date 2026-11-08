@@ -18,7 +18,9 @@
     "refresh": "Actualitza",
     "help": "Ajuda",
     "expand": "Expandeix",
-    "collapse": "Replega"
+    "collapse": "Replega",
+    "drag": "Arrossega",
+    "showImage": "Mostra la imatge"
   },
   "general": {
     "cancel": "Cancel·la",
@@ -4765,6 +4767,7 @@
       "azimuth_error": "Error d'azimut:",
       "total_error": "Error total:",
       "error_values_missing": "Valors d'error que falten",
+      "waiting_for_values": "Esperant la primera mesura…",
       "unknown_response_format": "Format de resposta desconegut",
       "east": "Est",
       "west": "Oest",
