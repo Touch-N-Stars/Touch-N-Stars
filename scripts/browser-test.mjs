@@ -67,9 +67,39 @@ const TPPA_DIALOG = {
   Content: {},
 };
 
+// A finished session of six frames. Each Id makes an entry deletable under PINS.
+const HISTORY_IMAGE = path.join(DIST_DIR, 'Logo_TouchNStars_150x150.png');
+const IMAGE_HISTORY = Array.from({ length: 6 }, (_, index) => ({
+  Id: `fixture-${index}`,
+  Filename: `M31_${index % 2 ? 'Ha' : 'L'}_${String(index + 1).padStart(4, '0')}.fits`,
+  Date: new Date(Date.UTC(2026, 10, 7, 21, index * 5)).toISOString(),
+  ImageType: 'LIGHT',
+  TargetName: 'M 31',
+  Filter: index % 2 ? 'Ha' : 'L',
+  ExposureTime: 120,
+  HFR: 2.1 + index * 0.05,
+  HFRStDev: 0.4,
+  Stars: 900 + index * 10,
+  Mean: 1200.5,
+  Median: 1180,
+  StDev: 85.2,
+  Min: 400,
+  Max: 65535,
+  Temperature: -10,
+  Gain: 100,
+  Offset: 50,
+  RmsText: 'Tot: 0.62"',
+}));
+
 const BACKEND_ROUTES = {
   ...Object.fromEntries(
     DEVICES.map((device) => [`/v2/api/equipment/${device}/list-devices`, () => []])
+  ),
+  ...Object.fromEntries(
+    IMAGE_HISTORY.flatMap((_, index) => [
+      [`/v2/api/image/${index}`, () => fs.readFileSync(HISTORY_IMAGE)],
+      [`/v2/api/image/thumbnail/${index}`, () => fs.readFileSync(HISTORY_IMAGE)],
+    ])
   ),
   '/v2/api/equipment/camera/info': () => ({ Connected: true, BinningModes: [], ReadoutModes: [] }),
   '/api/dialogs/list': () => ({ Count: ninaDialogs.length, Dialogs: ninaDialogs }),
@@ -103,6 +133,8 @@ const INFO_TOGGLE = `document.querySelector('[data-testid="info-modal-toggle"]')
 const DIALOG = `document.querySelector('[role="dialog"]')`;
 const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-toggle"]')`;
 const STORES = `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value`;
+// imageHistoryInfo is no declared state, so it lives on the store instance only.
+const API_STORE = `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia._s.get('store')`;
 const SET_DEBUG_CONSOLE = (visible) => `${STORES}.settings.showDebugConsole = ${visible}`;
 const DIALOG_BACKDROP = `${DIALOG}.parentElement`;
 const LOG_BUTTON = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Log')`;
@@ -435,6 +467,98 @@ async function checkTppa(page, viewportName, backend) {
   return failures;
 }
 
+// The history arrives once after the socket connects, which the fake backend never does, so
+// this sets the store directly. Deleting needs PINS and goes no further than the confirmation.
+async function checkImageHistory(page, viewportName, backend) {
+  const failures = [];
+  const expect = (passed, problem) => {
+    console.log(`${passed ? 'ok  ' : 'FAIL'} ${viewportName} image history: ${problem}`);
+    if (!passed) failures.push(`${viewportName} image history: ${problem}`);
+  };
+  const loadedImages = (selector) =>
+    `[...document.querySelectorAll('${selector}')].filter((image) => image.complete && image.naturalWidth > 0).length`;
+  const deleteRequests = () =>
+    [...backend.unhandled].filter((request) => request.startsWith('DELETE'));
+
+  await page.evaluate(`${API_STORE}.imageHistoryInfo = ${JSON.stringify(IMAGE_HISTORY)}`);
+  await openRoute(page, '/seq-mon');
+  await page.waitFor(`${loadedImages('.image-container img')} === 1`, 'the last image');
+  const graphControls = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Graph Controls')`;
+  await page.evaluate(`${graphControls}.click()`);
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  failures.push(...(await checkPage(page, viewportName, '/seq-mon stats', 'seq-mon-stats')));
+  // Graph controls, sequence status and exposure totals sit below the first screen.
+  await page.evaluate(`${graphControls}.scrollIntoView({ block: 'start' })`);
+  await page.evaluate(SETTLE);
+  await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, 'seq-mon-stats-lower.png'));
+
+  await page.evaluate(`document.querySelector('[aria-label="View settings"]').click()`);
+  await page.waitFor(`!!${DIALOG}`, 'the view settings to open');
+  await page.evaluate(SETTLE);
+  await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, 'seq-mon-settings.png'));
+  const settings = await page.evaluate(READ_LAST_DIALOG);
+  expect(settings.onTop && settings.fitsScreen, 'view settings fit on top');
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!${DIALOG}`), 'view settings close on Escape');
+
+  await page.evaluate(`${SUBNAV_BUTTONS}[1].click()`);
+  const tileImages = '.grid .image-container img';
+  await page.waitFor(
+    `${loadedImages(tileImages)} === ${IMAGE_HISTORY.length}`,
+    'the history thumbnails'
+  );
+  await page.evaluate(WAIT_FOR_QUIET_DOM);
+  // The tab keeps the scroll position of the stats tab; the toolbar sits at the top.
+  await page.evaluate(`(() => {
+    let scroller = document.querySelector('.grid');
+    while (scroller && scroller.scrollHeight <= scroller.clientHeight) scroller = scroller.parentElement;
+    scroller?.scrollTo(0, 0);
+  })()`);
+  await page.evaluate(SETTLE);
+  failures.push(...(await checkPage(page, viewportName, '/seq-mon history', 'seq-mon-history')));
+
+  await page.evaluate(`${STORES}.store.isPINS = true`);
+  await page.waitFor(
+    `!!document.querySelector('[data-testid="image-history-select-mode"]')`,
+    'the select button'
+  );
+  await page.evaluate(
+    `document.querySelector('[data-testid="image-history-select-mode"]').click()`
+  );
+  await page.evaluate(`document.querySelector('[data-testid="image-history-select"]').click()`);
+  await page.waitFor(
+    `!document.querySelector('[data-testid="image-history-delete-selected"]').disabled`,
+    'a tile to be selected'
+  );
+  await page.evaluate(SETTLE);
+  failures.push(
+    ...(await checkPage(page, viewportName, '/seq-mon selection', 'seq-mon-selection'))
+  );
+
+  await page.evaluate(
+    `document.querySelector('[data-testid="image-history-delete-selected"]').click()`
+  );
+  await page.waitFor(`!!${DIALOG}`, 'the delete confirmation to open');
+  await page.evaluate(SETTLE);
+  await page.screenshot(path.join(SCREENSHOT_DIR, viewportName, 'seq-mon-delete.png'));
+  const confirmation = await page.evaluate(READ_LAST_DIALOG);
+  expect(confirmation.onTop, 'delete confirmation paints on top');
+  expect(confirmation.name?.includes('Delete'), 'delete confirmation is named by its header');
+  expect(confirmation.fitsScreen && confirmation.fitsDialog, 'delete confirmation fits');
+  await page.pressEscape();
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!${DIALOG}`), 'delete confirmation closes on Escape');
+  expect(deleteRequests().length === 0, 'cancelling deletes nothing');
+
+  await page.evaluate(
+    `[...document.querySelectorAll('[data-testid="image-history-selection-bar"] button')].at(-1).click()`
+  );
+  await page.evaluate(`${STORES}.store.isPINS = false`);
+  await page.evaluate(`${API_STORE}.imageHistoryInfo = null`);
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -462,6 +586,7 @@ try {
     failures.push(...(await checkModal(page, viewportName)));
     failures.push(...(await checkNinaDialog(page, viewportName, backend)));
     failures.push(...(await checkTppa(page, viewportName, backend)));
+    failures.push(...(await checkImageHistory(page, viewportName, backend)));
     await page.close();
   }
 } finally {

@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-wrap items-center gap-2 px-2 py-2 bg-gray-800/50 rounded-lg border border-gray-700/50"
-  >
+  <div class="tns-card flex flex-wrap items-center gap-2 p-2!">
     <select
       :value="filter.selectedTarget"
       @change="
@@ -50,8 +48,9 @@
 
     <button
       v-if="isAnyFilterActive"
+      type="button"
       @click="settingsStore.resetImageFilter()"
-      class="px-3 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-all duration-150 whitespace-nowrap"
+      class="tns-btn-secondary w-auto! px-3! text-xs! whitespace-nowrap"
     >
       {{ $t('components.sequence.imageFilter.reset') }}
     </button>
