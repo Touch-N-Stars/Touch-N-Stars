@@ -64,7 +64,16 @@ export async function startFakeBackend({ rootDir, routes = {} }) {
 
     if (pluginRoutes[pathname]) return sendJson(response, pluginRoutes[pathname]());
     if (advancedApiRoutes[pathname]) {
-      return sendJson(response, advancedApiResponse(advancedApiRoutes[pathname]()));
+      const body = advancedApiRoutes[pathname]();
+      // The Advanced API sends images as the bare file, without its JSON envelope.
+      if (Buffer.isBuffer(body)) {
+        response.writeHead(200, {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'image/png',
+        });
+        return response.end(body);
+      }
+      return sendJson(response, advancedApiResponse(body));
     }
     if (pathname.startsWith('/v2/api/') || pathname.startsWith('/api/')) {
       unhandled.add(`${request.method} ${pathname}`);

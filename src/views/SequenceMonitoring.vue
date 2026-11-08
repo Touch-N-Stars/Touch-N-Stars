@@ -32,12 +32,12 @@
       <div v-if="currentTab == 'showStats'">
         <button
           type="button"
-          class="z-10 p-2 rounded-full bg-gray-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 fixed right-4"
+          class="fixed right-4 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-full bg-surface-3 border border-line-strong text-content focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
           style="bottom: var(--above-statusbar)"
           @click="showSettingsModal = true"
-          aria-label="Open settings"
+          :aria-label="$t('components.sequence.monitor.settings.title')"
         >
-          <Cog6ToothIcon class="icon" />
+          <Cog6ToothIcon class="w-6 h-6" />
         </button>
 
         <div
@@ -58,7 +58,7 @@
           </div>
           <div
             v-else-if="settingsStore.monitorViewSetting.showImgStatsGraph"
-            class="w-full p-1 border border-cyan-700 bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl"
+            class="tns-card w-full p-1!"
           >
             <SequenzGraph />
           </div>
@@ -66,33 +66,29 @@
           <!-- Sequence current status -->
           <div
             v-if="settingsStore.monitorViewSetting.showSequenceCurrentState"
-            class="w-full border border-cyan-700 bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl p-5"
+            class="tns-card w-full"
           >
             <div class="flex items-center gap-2 pb-1">
-              <div class="w-2 h-2 bg-green-300 rounded-full shadow-purple-400/50 shadow-sm"></div>
-              <h2 class="font-medium text-lg text-purple-200">
-                {{ $t('components.sequence.status') }}:
-              </h2>
+              <span class="tns-dot bg-status-ok"></span>
+              <h2 class="tns-section-title">{{ $t('components.sequence.status') }}:</h2>
             </div>
             <div class="pb-4">
               <SequenceRunningItem />
             </div>
-            <div
-              class="p-5 bg-slate-800/60 backdrop-blur-sm border border-slate-600/50 rounded-lg mb-3 shadow-lg transition-all duration-200 hover:shadow-xl"
-            >
+            <div class="p-4 bg-surface-2 border border-line rounded-control mb-3">
               <SequenceRunningConditions />
             </div>
-            <div class="border-t border-slate-600/50 my-4"></div>
+            <div class="border-t border-line my-4"></div>
             <div>
-              <h4 class="text-purple-200">
+              <h3 class="text-sm font-semibold text-content-muted">
                 {{ $t('components.sequence.totalExposureTime.title') }}:
-              </h4>
+              </h3>
               <totalExposureTime />
             </div>
           </div>
 
           <div
-            class="flex flex-col w-full min-h-80 border border-cyan-700 bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl p-2"
+            class="tns-card flex flex-col w-full min-h-80 p-2!"
             v-if="settingsStore.monitorViewSetting.showGuiderAfGraph && store.focuserInfo.Connected"
           >
             <p class="mb-4 text-center">{{ $t('components.focuser.last_autofocus') }}</p>
@@ -100,8 +96,10 @@
           </div>
           <div class="p-5"></div>
         </div>
-        <div v-else class="p-4 mt-20 bg-red-500/10 border border-red-500/30 rounded-lg">
-          <p class="text-red-400 font-medium">{{ $t('components.sequence.noSequenceData') }}</p>
+        <div v-else class="tns-card mt-20">
+          <p class="text-content-muted font-medium">
+            {{ $t('components.sequence.noSequenceData') }}
+          </p>
         </div>
       </div>
 
@@ -143,10 +141,3 @@ const showsTimeline = computed(
   () => store.isPINS && settingsStore.monitorViewSetting.showImgStatsGraph
 );
 </script>
-
-<style>
-.icon {
-  width: 24px;
-  height: 24px;
-}
-</style>

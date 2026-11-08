@@ -1,9 +1,11 @@
 <template>
-  <div class="flex flex-col bg-gray-800/50 rounded-lg border border-gray-700/50 overflow-hidden">
+  <div class="flex flex-col bg-surface-2 rounded-control border border-line overflow-hidden">
     <!-- Header Button -->
     <button
       @click="toggleControls"
-      class="flex items-center gap-2 px-3 py-2 h-8 text-sm font-semibold text-gray-200 hover:bg-gray-700/50 transition-colors w-full text-left"
+      type="button"
+      class="flex items-center gap-2 px-3 min-h-touch text-sm font-semibold text-content hover:bg-surface-3 transition-colors w-full text-left"
+      :aria-expanded="isControlsOpen"
     >
       <ChevronRightIcon
         class="w-4 h-4 shrink-0 transition-transform duration-200"
@@ -15,25 +17,25 @@
 
     <!-- Collapsible Controls Section -->
     <transition name="slide-fade">
-      <div v-if="isControlsOpen" class="flex flex-col gap-3 p-3 border-t border-gray-700/50">
+      <div v-if="isControlsOpen" class="flex flex-col gap-3 p-3 border-t border-line">
         <!-- Time Display -->
-        <div class="flex justify-between items-center text-xs text-gray-400">
+        <div class="flex justify-between items-center text-xs text-content-muted">
           <span>{{ formatTime(currentStartIndex) }}</span>
           <span>{{ formatTime(currentEndIndexValue) }}</span>
         </div>
 
-        <!-- Range Slider Bar mit zwei Griffen -->
+        <!-- Range slider with two handles -->
         <div v-if="dataLength > 0" class="flex flex-col gap-3">
           <!-- Dual Range Slider -->
           <div class="relative pt-2 pb-2">
             <!-- Background Track -->
             <div
-              class="absolute top-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full -translate-y-1/2"
+              class="absolute top-1/2 left-0 right-0 h-1 bg-surface-3 rounded-full -translate-y-1/2"
             ></div>
 
             <!-- Highlight Track (selected range) -->
             <div
-              class="absolute top-1/2 h-1 bg-cyan-800 rounded-full pointer-events-none -translate-y-1/2"
+              class="absolute top-1/2 h-1 bg-accent-action rounded-full pointer-events-none -translate-y-1/2"
               :style="{
                 left: dataLength > 1 ? `${(currentStartIndex / (dataLength - 1)) * 100}%` : '0%',
                 right:
@@ -45,7 +47,7 @@
 
             <!-- Start Thumb (visual only) -->
             <div
-              class="absolute top-1/2 w-2 rounded-md h-6 bg-cyan-500 -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
+              class="absolute top-1/2 w-2 rounded-md h-6 bg-accent -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
               :style="{
                 left: dataLength > 1 ? `${(currentStartIndex / (dataLength - 1)) * 100}%` : '0%',
               }"
@@ -53,7 +55,7 @@
 
             <!-- End Thumb (visual only) -->
             <div
-              class="absolute top-1/2 w-2 rounded-md h-6 bg-cyan-500 -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
+              class="absolute top-1/2 w-2 rounded-md h-6 bg-accent -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
               :style="{
                 left: dataLength > 1 ? `${(currentEndIndexValue / (dataLength - 1)) * 100}%` : '0%',
               }"
@@ -86,35 +88,30 @@
           <button
             v-if="currentStartIndex !== 0 || currentEndIndex !== null"
             @click="resetTimeRange"
-            class="px-3 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-all duration-150"
+            type="button"
+            class="tns-btn-secondary text-xs!"
           >
             {{ $t('components.sequence.graphControls.reset') }}
           </button>
         </div>
 
-        <div v-else class="text-xs text-gray-500">
+        <div v-else class="text-xs text-content-faint">
           {{ $t('components.sequence.graphControls.noDataAvailable') }}
         </div>
 
         <!-- Divider -->
-        <div class="border-t border-gray-700/50"></div>
+        <div class="border-t border-line"></div>
 
         <!-- Data Source Selector -->
         <div class="flex flex-col gap-2">
-          <div class="text-xs text-gray-300 font-semibold">
+          <div class="text-xs text-content font-semibold">
             {{ $t('components.sequence.graphControls.dataSources') }}
           </div>
           <div class="grid grid-cols-2 gap-3">
             <!-- First Data Source -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs text-gray-400">{{
-                $t('components.sequence.graphControls.source1')
-              }}</label>
-              <select
-                :value="dataSource1"
-                @change="updateDataSource1"
-                class="w-full px-2 py-1 text-sm bg-gray-700 text-gray-300 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:border-cyan-500 transition-colors"
-              >
+              <label class="tns-label">{{ $t('components.sequence.graphControls.source1') }}</label>
+              <select :value="dataSource1" @change="updateDataSource1" class="tns-select text-sm">
                 <option v-for="source in availableSources" :key="source" :value="source">
                   {{ source }}
                 </option>
@@ -123,14 +120,8 @@
 
             <!-- Second Data Source -->
             <div class="flex flex-col gap-1">
-              <label class="text-xs text-gray-400">{{
-                $t('components.sequence.graphControls.source2')
-              }}</label>
-              <select
-                :value="dataSource2"
-                @change="updateDataSource2"
-                class="w-full px-2 py-1 text-sm bg-gray-700 text-gray-300 border border-gray-600 rounded hover:bg-gray-600 focus:outline-none focus:border-cyan-500 transition-colors"
-              >
+              <label class="tns-label">{{ $t('components.sequence.graphControls.source2') }}</label>
+              <select :value="dataSource2" @change="updateDataSource2" class="tns-select text-sm">
                 <option v-for="source in availableSources" :key="source" :value="source">
                   {{ source }}
                 </option>
@@ -184,7 +175,7 @@ const dataSource2 = computed(() => settingsStore.monitorViewSetting.graphDataSou
 
 function updateStartIndex(event) {
   const newStart = parseInt(event.target.value, 10);
-  // Wenn Start über End geht, swap sie
+  // A start dragged past the end swaps the two
   if (newStart > currentEndIndexValue.value) {
     settingsStore.setHistoryTimeRange(currentEndIndexValue.value, newStart);
   } else {
@@ -194,7 +185,7 @@ function updateStartIndex(event) {
 
 function updateEndIndex(event) {
   const newEnd = parseInt(event.target.value, 10);
-  // Wenn End unter Start geht, swap sie
+  // An end dragged before the start swaps the two
   if (newEnd < currentStartIndex.value) {
     settingsStore.setHistoryTimeRange(newEnd, currentStartIndex.value);
   } else {

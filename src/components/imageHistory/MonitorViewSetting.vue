@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col gap-1">
     <div
-      class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+      class="flex flex-row items-center justify-between w-full border border-line p-2 rounded-control"
     >
-      <label for="showImage" class="text-gray-400">
+      <label for="showImage" class="text-content-muted">
         {{ $t('components.sequence.monitor.settings.showImage') }}
       </label>
       <div>
@@ -16,9 +16,9 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-2 border border-gray-500 p-2 rounded-lg">
+    <div class="flex flex-col gap-2 border border-line p-2 rounded-control">
       <div class="flex items-center justify-between w-full">
-        <label for="showImageStats" class="text-gray-400">
+        <label for="showImageStats" class="text-content-muted">
           {{ $t('components.sequence.monitor.settings.showImageStats') }}
         </label>
         <div>
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="flex items-center justify-between w-full">
-        <label for="showImageStats" class="text-gray-400">
+        <label for="showImageStats" class="text-content-muted">
           {{ $t('components.sequence.monitor.settings.display_status_under_image') }}
         </label>
         <div>
@@ -48,9 +48,9 @@
     </div>
 
     <div
-      class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+      class="flex flex-row items-center justify-between w-full border border-line p-2 rounded-control"
     >
-      <label for="showImgStatsGraph" class="text-gray-400">
+      <label for="showImgStatsGraph" class="text-content-muted">
         {{
           store.isPINS
             ? $t('components.sequence.monitor.settings.showTimeline')
@@ -69,9 +69,9 @@
     </div>
 
     <div
-      class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+      class="flex flex-row items-center justify-between w-full border border-line p-2 rounded-control"
     >
-      <label for="showSequenceCurrentState" class="text-gray-400">
+      <label for="showSequenceCurrentState" class="text-content-muted">
         {{ $t('components.sequence.monitor.settings.sequenceCurrentState') }}
       </label>
       <div>
@@ -86,9 +86,9 @@
     </div>
 
     <div
-      class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+      class="flex flex-row items-center justify-between w-full border border-line p-2 rounded-control"
     >
-      <label for="showGuiderAfGraph" class="text-gray-400">
+      <label for="showGuiderAfGraph" class="text-content-muted">
         {{ $t('components.sequence.monitor.settings.showGuiderAfGraph') }}
       </label>
       <div>
@@ -102,20 +102,22 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-1 border border-gray-500 p-2 rounded-lg">
-      <label class="text-gray-400">{{
+    <div class="flex flex-col gap-1 border border-line p-2 rounded-control">
+      <label class="text-content-muted">{{
         $t('components.sequence.monitor.settings.imageRotation')
       }}</label>
       <div class="flex gap-2">
         <button
           v-for="deg in [0, 90, 180, 270]"
           :key="deg"
+          type="button"
           @click="settingsStore.setImageRotation(deg)"
+          :aria-pressed="settingsStore.currentImageRotation === deg"
           :class="[
-            'flex-1 py-1 rounded text-sm font-medium border',
+            'flex-1 min-h-touch rounded-control text-sm font-medium border',
             settingsStore.currentImageRotation === deg
-              ? 'bg-cyan-700 border-cyan-500 text-white'
-              : 'bg-gray-700 border-gray-500 text-gray-300',
+              ? 'bg-accent-action border-accent text-white'
+              : 'bg-surface-3 border-line-strong text-content',
           ]"
         >
           {{ deg }}°

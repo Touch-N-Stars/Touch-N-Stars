@@ -1,8 +1,8 @@
 <template>
-  <!-- z-[80]: must sit above the full-size image modal (z-50), which can trigger it. -->
+  <!-- z-dialog: must sit above the full-size image modal, which can trigger it. -->
   <Modal :show="pending.length > 0" max-width="max-w-md" z-index="z-dialog" @close="emit('cancel')">
     <template #header>
-      <h2 class="text-xl font-bold text-red-400">
+      <h2 class="text-xl font-bold text-status-danger">
         {{
           pending.length === 1
             ? t('components.sequence.imageHistoryDelete.confirmTitle')
@@ -21,16 +21,16 @@
               : t('components.sequence.imageHistoryDelete.confirmMessageMany')
           }}
         </p>
-        <ul class="text-sm text-gray-300 break-all flex flex-col gap-1">
+        <ul class="text-sm text-content break-all flex flex-col gap-1">
           <li v-for="item in listed" :key="item.index">
-            <span v-if="item.stats?.Filename" class="font-medium text-gray-100">
+            <span v-if="item.stats?.Filename" class="font-medium text-content">
               {{ item.stats.Filename }}
             </span>
-            <span v-if="item.stats?.Date" class="block text-gray-400">
+            <span v-if="item.stats?.Date" class="block text-content-muted">
               {{ formatDateTime(item.stats.Date) }}
             </span>
           </li>
-          <li v-if="pending.length > listed.length" class="text-gray-400">
+          <li v-if="pending.length > listed.length" class="text-content-muted">
             {{
               t('components.sequence.imageHistoryDelete.moreFiles', {
                 count: pending.length - listed.length,
