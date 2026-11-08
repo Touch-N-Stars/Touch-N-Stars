@@ -4,12 +4,10 @@
   <div class="@container space-y-2">
     <!-- Target Name -->
     <div class="seq-field-row">
-      <label class="text-xs text-slate-400 shrink-0">{{
-        $t('components.sequence.items.dso.targetName')
-      }}</label>
+      <label class="tns-label shrink-0">{{ $t('components.sequence.items.dso.targetName') }}</label>
       <input
         type="text"
-        class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+        class="tns-input-compact ml-auto w-36 md:w-40"
         :value="parsedTarget?.TargetName ?? item.Target?.TargetName"
         @blur="saveTargetName($event.target.value)"
         @keydown.enter="$event.target.blur()"
@@ -30,7 +28,7 @@
     />
 
     <!-- RA -->
-    <div class="text-xs text-slate-400 font-medium">
+    <div class="tns-label font-medium">
       {{ $t('components.sequence.items.center.ra') }}
     </div>
     <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">
@@ -77,7 +75,7 @@
     </div>
 
     <!-- Dec -->
-    <div class="text-xs text-slate-400 font-medium pt-1">
+    <div class="tns-label font-medium pt-1">
       {{ $t('components.sequence.items.center.dec') }}
     </div>
     <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">

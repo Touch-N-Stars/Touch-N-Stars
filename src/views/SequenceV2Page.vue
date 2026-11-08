@@ -8,7 +8,7 @@
       v-model:activeItem="sequenceStore.currentTab"
     />
 
-    <div class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-4 md:p-6">
+    <div class="min-h-screen p-4 md:p-6">
       <LoadingOverlay
         :show="sequenceStore.sequenceLoading"
         :message="$t('components.sequence.loadingSequence')"

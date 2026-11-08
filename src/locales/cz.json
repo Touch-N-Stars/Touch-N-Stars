@@ -940,6 +940,7 @@
       "targetNotFound": "Cíl nebyl v sekvenci nalezen. Zkuste to znovu.",
       "filter": "Filtr",
       "triggers": "Spouštěče:",
+      "globalTriggers": "Globální spouštěče",
       "expandAll": "Rozbalit vše",
       "collapseAll": "Sbalit vše",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Čas",
       "noRunningItems": "Sekvence zastavena",
+      "noConditions": "Žádné podmínky",
       "targetOfTotal": "Cíl {current} z {total}",
       "status": "Stav sekvence",
       "instructions": "Pokyny",

@@ -2,10 +2,10 @@
   <div class="space-y-6">
     <!-- Layout of the sequence tab: simple cards or the expert tree -->
     <div class="flex flex-col gap-2 sm:gap-3">
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.sequence.simple.viewMode') }}
       </h3>
-      <p class="text-gray-300 text-sm">
+      <p class="text-content-muted text-sm">
         {{ $t('components.sequence.simple.viewModeHint') }}
       </p>
       <div
@@ -34,11 +34,11 @@
 
     <!-- Auto-lock the sequence controls on start -->
     <div class="flex flex-col gap-2 sm:gap-3">
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.sequenceAutoLock.title') }}
       </h3>
       <div class="flex items-center justify-between">
-        <p class="text-gray-300 text-sm mr-4">
+        <p class="text-content-muted text-sm mr-4">
           {{ $t('components.settings.sequenceAutoLock.description') }}
         </p>
         <ToggleButton

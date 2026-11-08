@@ -55,14 +55,21 @@ function serveStatic(rootDir, urlPath, response) {
   fs.createReadStream(filePath).pipe(response);
 }
 
-export async function startFakeBackend({ rootDir, routes = {}, daemonRoutes = {} }) {
+export async function startFakeBackend({
+  rootDir,
+  routes = {},
+  daemonRoutes = {},
+  pluginRoutes: extraPluginRoutes = {},
+}) {
   const sockets = new Set();
   const unhandled = new Set();
   let port;
 
+  // The plugin server sends bare JSON, without the Advanced API envelope.
   const pluginRoutes = {
     '/api/version': () => ({ version: '99.0.0.0' }),
     '/api/get-api-port': () => port,
+    ...extraPluginRoutes,
   };
   const advancedApiRoutes = {
     '/v2/api/version': () => '99.0.0.0',
@@ -87,7 +94,10 @@ export async function startFakeBackend({ rootDir, routes = {}, daemonRoutes = {}
       unhandled.add(`${request.method} ${pathname}`);
       return sendJson(response, { detail: 'Not found' }, 404);
     }
-    if (pluginRoutes[pathname]) return sendJson(response, pluginRoutes[pathname]());
+    // Plugin routes answer reads only, so an edit sent to one of them stays unhandled.
+    const pluginBody =
+      request.method === 'GET' ? pluginRoutes[pathname]?.(searchParams) : undefined;
+    if (pluginBody !== undefined) return sendJson(response, pluginBody);
     if (body !== undefined) {
       // The Advanced API sends images as the bare file, without its JSON envelope.
       if (Buffer.isBuffer(body)) {

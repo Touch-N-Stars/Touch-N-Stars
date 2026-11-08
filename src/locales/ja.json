@@ -949,6 +949,7 @@
       "targetNotFound": "シーケンス内にターゲットが見つかりません。もう一度お試しください。",
       "filter": "フィルター",
       "triggers": "トリガー",
+      "globalTriggers": "グローバルトリガー",
       "expandAll": "すべて展開",
       "collapseAll": "すべて折りたたむ",
       "addTypeButton": {
@@ -1030,6 +1031,7 @@
       },
       "time": "時刻",
       "noRunningItems": "シーケンス停止中",
+      "noConditions": "条件なし",
       "targetOfTotal": "ターゲット {current} / {total}",
       "status": "シーケンス・ステータス",
       "instructions": "インストラクション",

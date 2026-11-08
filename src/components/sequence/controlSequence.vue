@@ -152,7 +152,7 @@
     <!-- File Manager Modal -->
     <Modal :show="showFileManager" max-width="max-w-lg" @close="showFileManager = false">
       <template #header>
-        <h2 class="text-xl font-bold text-cyan-400">
+        <h2 class="text-xl font-bold text-accent">
           {{ $t('components.sequence.manageSequences') }}
         </h2>
       </template>
@@ -160,31 +160,31 @@
         <div class="w-full flex flex-col gap-4">
           <!-- File list -->
           <div class="flex flex-col gap-1 max-h-64 overflow-y-auto">
-            <div v-if="filesLoading" class="text-slate-400 text-sm text-center py-4">
+            <div v-if="filesLoading" class="text-content-muted text-sm text-center py-4">
               {{ $t('components.sequence.sequenceLoading') }}
             </div>
             <div
               v-else-if="sequenceFiles.length === 0"
-              class="text-slate-500 text-sm text-center py-4"
+              class="text-content-faint text-sm text-center py-4"
             >
               {{ $t('components.sequence.sequenceNoFiles') }}
             </div>
             <div
               v-for="file in sequenceFiles"
               :key="file.FilePath"
-              class="flex items-center justify-between gap-2 px-2 py-1.5 rounded hover:bg-slate-700/40"
+              class="flex items-center justify-between gap-2 px-2 py-1.5 rounded hover:bg-surface-3"
             >
-              <span class="text-sm text-gray-200 truncate">{{ file.FileName }}</span>
+              <span class="text-sm text-content truncate">{{ file.FileName }}</span>
               <div class="flex gap-1 shrink-0">
                 <button
                   v-if="!sequenceStore.sequenceRunning"
-                  class="text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded hover:bg-cyan-900/20 transition-colors"
+                  class="text-xs text-accent px-2 py-1 rounded hover:bg-accent/10 transition-colors"
                   @click="loadFile(file.FilePath)"
                 >
                   {{ $t('components.sequence.sequenceLoad') }}
                 </button>
                 <button
-                  class="text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded hover:bg-cyan-900/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="text-xs text-accent px-2 py-1 rounded hover:bg-accent/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   :disabled="saveLoading"
                   :title="$t('components.sequence.sequenceSave')"
                   @click="overwriteFile(file.FilePath, file.FileName)"
@@ -196,7 +196,7 @@
                   </svg>
                 </button>
                 <button
-                  class="text-xs text-red-400 hover:text-red-300 px-2 py-1 rounded hover:bg-red-900/20 transition-colors"
+                  class="text-xs text-status-danger px-2 py-1 rounded hover:bg-status-danger/10 transition-colors"
                   @click="deleteFile(file.FilePath, file.FileName)"
                 >
                   <TrashIcon class="w-3.5 h-3.5" />
@@ -206,10 +206,8 @@
           </div>
 
           <!-- Save section -->
-          <div class="border-t border-slate-700 pt-3 flex flex-col gap-2">
-            <label class="text-xs text-slate-400">{{
-              $t('components.sequence.saveSequenceAs')
-            }}</label>
+          <div class="border-t border-line pt-3 flex flex-col gap-2">
+            <label class="tns-label">{{ $t('components.sequence.saveSequenceAs') }}</label>
             <div class="flex gap-2">
               <input
                 v-model="saveFileName"
@@ -219,7 +217,7 @@
                 @keydown.enter="saveFile"
               />
               <button
-                class="text-xs text-cyan-400 hover:text-cyan-300 px-3 py-1.5 rounded border border-cyan-500/40 hover:bg-cyan-900/20 shrink-0 transition-colors"
+                class="text-xs text-accent px-3 py-1.5 rounded border border-accent/40 hover:bg-accent/10 shrink-0 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="!saveFileName.trim() || saveLoading"
                 @click="saveFile"
               >
@@ -244,7 +242,7 @@
         <div class="w-full flex flex-col gap-6">
           <p>
             {{ $t('components.sequence.deleteConfirmationMessage') }}
-            <span class="text-gray-200 font-medium">{{ fileToDelete?.name }}</span
+            <span class="text-content font-medium">{{ fileToDelete?.name }}</span
             >?
           </p>
           <div class="flex justify-end space-x-4">
@@ -274,7 +272,7 @@
         <div class="w-full flex flex-col gap-6">
           <p>
             {{ $t('components.sequence.overwriteConfirmationMessage') }}
-            <span class="text-gray-200 font-medium">{{ fileToOverwrite?.name }}</span
+            <span class="text-content font-medium">{{ fileToOverwrite?.name }}</span
             >?
           </p>
           <div class="flex justify-end space-x-4">

@@ -984,6 +984,7 @@
       "targetNotFound": "Ziel in der Sequenz nicht gefunden. Bitte erneut versuchen.",
       "filter": "Filter",
       "triggers": "Trigger",
+      "globalTriggers": "Globale Trigger",
       "expandAll": "Alle erweitern",
       "collapseAll": "Alle zuklappen",
       "addTypeButton": {
@@ -1065,6 +1066,7 @@
       },
       "time": "Zeit",
       "noRunningItems": "Sequenz gestoppt",
+      "noConditions": "Keine Bedingungen",
       "targetOfTotal": "Ziel {current} von {total}",
       "status": "Sequenzstatus",
       "instructions": "Anweisungen",

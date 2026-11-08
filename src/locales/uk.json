@@ -901,6 +901,7 @@
       "targetNotFound": "Ціль не знайдено в послідовності. Спробуйте ще раз.",
       "filter": "Фільтр",
       "triggers": "Тригери",
+      "globalTriggers": "Глобальні тригери",
       "expandAll": "Розгорнути все",
       "collapseAll": "Згорнути все",
       "addTypeButton": {
@@ -980,6 +981,7 @@
       },
       "time": "Час",
       "noRunningItems": "Послідовність зупинена",
+      "noConditions": "Немає умов",
       "targetOfTotal": "Ціль {current} з {total}",
       "status": "Статус послідовності",
       "instructions": "Інструкції",

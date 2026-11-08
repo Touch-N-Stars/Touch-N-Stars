@@ -96,8 +96,13 @@ Do not chase these as app-logic bugs.
 Use the `tns-*` utilities from `src/assets/tailwind.css` (`tns-card`, `tns-btn-primary`,
 `tns-btn-secondary`, `tns-input`, `tns-select`, `tns-section-title`, `tns-label`,
 `tns-field-row`, `min-h-touch`), not the legacy raw gray/cyan palette still present in older
-screens. `tns-select-compact` gives up the 48px touch height, so it is for dense rows like the
-sequence editor only.
+screens. `tns-select-compact` and `tns-input-compact` give up the 48px touch height, so they are
+for dense rows like the sequence editor only.
+
+The sequence editor keeps a few raw Tailwind colors on purpose: they tell categories apart, which
+the design tokens have no slot for (item icon colors in `ItemShell`, the nesting-depth borders and
+the cyan/amber/blue trigger, condition and instruction lists in `SequenceItem`, the area dots and
+the purple global triggers in `SequenceCurrentView`). Do not migrate them to tokens.
 
 Loading and missing-device states use the helpers **`Spinner`** (`size` `sm`/`md`/`lg`, takes the
 current text color) and **`DeviceNotConnected`** (`messageKey`) from `src/components/helpers/`.

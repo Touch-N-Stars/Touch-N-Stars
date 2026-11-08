@@ -940,6 +940,7 @@
       "targetNotFound": "Target non trovato nella sequenza. Riprova.",
       "filter": "Filtro",
       "triggers": "Trigger",
+      "globalTriggers": "Trigger globali",
       "expandAll": "Espandi tutto",
       "collapseAll": "Comprimi tutto",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Tempo",
       "noRunningItems": "La sequenza si è interrotta",
+      "noConditions": "Nessuna condizione",
       "targetOfTotal": "Target {current} di {total}",
       "status": "Stato di sequenza",
       "instructions": "Istruzioni",

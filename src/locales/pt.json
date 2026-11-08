@@ -940,6 +940,7 @@
       "targetNotFound": "Alvo não encontrado na sequência. Tente novamente.",
       "filter": "Filtro",
       "triggers": "Gatilhos",
+      "globalTriggers": "Gatilhos globais",
       "expandAll": "Expandir tudo",
       "collapseAll": "Recolher tudo",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Tempo",
       "noRunningItems": "Sequência interrompida",
+      "noConditions": "Sem condições",
       "targetOfTotal": "Alvo {current} de {total}",
       "status": "Status da sequência",
       "instructions": "Instruções",

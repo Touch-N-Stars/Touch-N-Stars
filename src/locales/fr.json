@@ -940,6 +940,7 @@
       "targetNotFound": "Cible introuvable dans la séquence. Veuillez réessayer.",
       "filter": "Filtre",
       "triggers": "Déclencheurs",
+      "globalTriggers": "Déclencheurs globaux",
       "expandAll": "Tout développer",
       "collapseAll": "Tout réduire",
       "addTypeButton": {
@@ -1019,6 +1020,7 @@
       },
       "time": "Temps",
       "noRunningItems": "Séquence arrêtée",
+      "noConditions": "Aucune condition",
       "targetOfTotal": "Cible {current} sur {total}",
       "status": "Statut de séquence",
       "instructions": "Instructions",
