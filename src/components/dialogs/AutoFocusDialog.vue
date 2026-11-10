@@ -6,7 +6,7 @@
     </div>
 
     <!-- Autofocus Status -->
-    <div class="flex flex-col items-center p-3 bg-gray-800/50 rounded-lg border border-gray-700/50">
+    <div class="flex flex-col items-center p-3 bg-surface-2 rounded-lg border border-line">
       <AfStatus />
     </div>
   </div>

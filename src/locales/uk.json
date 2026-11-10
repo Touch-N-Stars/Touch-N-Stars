@@ -5147,7 +5147,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, лише лінія [OIII] (двічі іонізований кисень). Охоплює лише небо на північ від −16°; окреме завантаження.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, лише лінія [SII] (іонізована сірка). Охоплює лише небо на північ від −16°; окреме завантаження."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, лише лінія [SII] (іонізована сірка). Охоплює лише небо на північ від −16°; окреме завантаження.",
+        "source_nsns_cont": "NSNS континуум",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, лише світло континууму: червоний, зелений і синій континуум без емісійних ліній, зорі частково видалено. Підкреслює відбивні туманності й темні хмари. Охоплює лише небо на північ від −16°, деталізація до порядку 5; окреме завантаження."
       },
       "object_types": {
         "_ass": "Зоряна асоціація",
@@ -8779,6 +8781,10 @@
       "status": "Статус",
       "error": "Відстань помилки",
       "rotation": "Поворот"
+    },
+    "manualRotator": {
+      "currentPosition": "Поточна позиція",
+      "targetPosition": "Цільова позиція"
     }
   },
   "loading": "завантаження",

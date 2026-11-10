@@ -5167,7 +5167,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, raie [OIII] uniquement (oxygène doublement ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, raie [SII] uniquement (soufre ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, raie [SII] uniquement (soufre ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé.",
+        "source_nsns_cont": "NSNS continuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, lumière du continuum uniquement : continuum rouge, vert et bleu sans les raies d'émission, étoiles partiellement retirées. Fait ressortir les nébuleuses par réflexion et les nuages sombres. Couvre uniquement le ciel au nord de −16°, détails jusqu'à l'ordre 5 ; téléchargement séparé."
       },
       "object_types": {
         "_ass": "Association stellaire",
@@ -8853,6 +8855,10 @@
       "status": "Statut",
       "error": "Distance d'erreur",
       "rotation": "Rotation"
+    },
+    "manualRotator": {
+      "currentPosition": "Position actuelle",
+      "targetPosition": "Position cible"
     }
   },
   "loading": "chargement",

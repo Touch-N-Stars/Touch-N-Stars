@@ -8855,6 +8855,10 @@
       "status": "Status",
       "error": "Error Distance",
       "rotation": "Rotation"
+    },
+    "manualRotator": {
+      "currentPosition": "Current position",
+      "targetPosition": "Target position"
     }
   },
   "loading": "loading",

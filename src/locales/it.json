@@ -5167,7 +5167,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, solo linea [OIII] (ossigeno doppiamente ionizzato). Copre solo il cielo a nord di −16°; download separato.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, solo linea [SII] (zolfo ionizzato). Copre solo il cielo a nord di −16°; download separato."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, solo linea [SII] (zolfo ionizzato). Copre solo il cielo a nord di −16°; download separato.",
+        "source_nsns_cont": "NSNS continuo",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, solo luce del continuo: continuo rosso, verde e blu senza le righe di emissione, stelle parzialmente rimosse. Fa risaltare le nebulose a riflessione e le nubi oscure. Copre solo il cielo a nord di −16°, dettaglio fino all'ordine 5; download separato."
       },
       "object_types": {
         "_ass": "Associazione stellare",
@@ -8858,6 +8860,10 @@
       "status": "Stato",
       "error": "Distanza di Errore",
       "rotation": "Rotazione"
+    },
+    "manualRotator": {
+      "currentPosition": "Posizione attuale",
+      "targetPosition": "Posizione obiettivo"
     }
   },
   "loading": "caricamento",

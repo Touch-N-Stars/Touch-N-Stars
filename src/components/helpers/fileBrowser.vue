@@ -70,7 +70,7 @@
             class="flex items-center justify-center gap-2 min-h-[140px] text-content-faint text-sm"
           >
             <span
-              class="w-4 h-4 border-2 border-line border-t-cyan-700 rounded-full animate-spin shrink-0"
+              class="w-4 h-4 border-2 border-line border-t-accent-action rounded-full animate-spin shrink-0"
             ></span>
             <span>{{ $t('components.fileBrowser.loading') }}</span>
           </div>
@@ -94,7 +94,7 @@
               class="flex items-center gap-2 px-3 py-2 cursor-pointer border-l-2 transition-all group"
               :class="
                 selectedPath === dir.path
-                  ? 'bg-accent/10 border-l-cyan-700'
+                  ? 'bg-accent/10 border-l-accent-action'
                   : 'border-l-transparent hover:bg-surface-2'
               "
               @click="selectDirectory(dir)"
@@ -153,7 +153,7 @@
               class="flex items-center gap-2 px-3 py-2 border-l-2 transition-all group cursor-pointer hover:bg-surface-2"
               :class="
                 selectedPath === file.path
-                  ? 'bg-accent/10 border-l-cyan-700'
+                  ? 'bg-accent/10 border-l-accent-action'
                   : 'border-l-transparent'
               "
               @click="selectFile(file)"

@@ -68,6 +68,69 @@ const TPPA_DIALOG = {
   AvailableCommands: ['PART_CloseButton'],
   Content: {},
 };
+// Extra fields NINA's dialog list carries next to Dialogs while a flip or a centering runs.
+let ninaDialogExtras = {};
+const SLEW_AND_CENTER = {
+  Active: true,
+  Status: 'Solving image 3 of 5',
+  CurrentMeasurement: {
+    Time: '22:14:08',
+    Success: true,
+    ErrorDistance: 'RA: 00° 00\' 41"; Dec: 00° 00\' 12"; Distance: 00° 00\' 43"',
+    Rotation: 91.4,
+  },
+  Measurements: [
+    { Time: '22:13:21', Success: true, ErrorDistance: 'Distance: 01° 12\' 05"', Rotation: 91.2 },
+    { Time: '22:13:44', Success: false, ErrorDistance: '--', Rotation: 0 },
+    { Time: '22:14:08', Success: true, ErrorDistance: 'Distance: 00° 00\' 43"', Rotation: 91.4 },
+  ],
+};
+const MERIDIAN_FLIP = {
+  Steps: [
+    { Id: 'pass', Title: 'Pass meridian', Finished: true },
+    { Id: 'flip', Title: 'Flip', Finished: false },
+    { Id: 'recenter', Title: 'Recenter', Finished: false },
+    { Id: 'settle', Title: 'Settle', Finished: false },
+  ],
+};
+// One dialog per migrated dialog component, with the extras each one reads.
+const NINA_CONTENT_DIALOGS = [
+  {
+    name: 'slew-and-center',
+    dialog: PLATE_SOLVING_DIALOG,
+    extras: { SlewAndCenter: SLEW_AND_CENTER },
+  },
+  {
+    name: 'meridian-flip',
+    dialog: {
+      Title: 'Meridian Flip',
+      ContentType: 'NINA.WPF.Base.ViewModel.MeridianFlipVM',
+      AvailableCommands: ['PART_CloseButton'],
+      Content: { RemainingTime: '00:01:30' },
+    },
+    extras: { MeridianFlip: MERIDIAN_FLIP },
+  },
+  {
+    name: 'manual-rotator',
+    dialog: {
+      Title: 'Manual Rotator',
+      ContentType: 'NINA.Equipment.Equipment.MyRotator.ManualRotator',
+      AvailableCommands: ['PART_CloseButton'],
+      Content: {
+        Text1: 'Current position',
+        Text2: '12.5',
+        Text3: '°',
+        Text4: 'Target position',
+        Text5: '97.25',
+        Text6: '°',
+        Text7: '84.75',
+        Text8: '°',
+        Text9: 'Rotate clockwise',
+      },
+    },
+    extras: {},
+  },
+];
 
 // A finished session of six frames. Each Id makes an entry deletable under PINS.
 const HISTORY_IMAGE = path.join(DIST_DIR, 'Logo_TouchNStars_150x150.png');
@@ -279,7 +342,11 @@ const BACKEND_ROUTES = {
   '/v2/api/equipment/focuser/info': focuserRoute(FOCUSER_INFO),
   '/v2/api/equipment/focuser/get-settings': () =>
     focuserFixtures && pinsVersion ? FOCUSER_PINS_SETTINGS : undefined,
-  '/api/dialogs/list': () => ({ Count: ninaDialogs.length, Dialogs: ninaDialogs }),
+  '/api/dialogs/list': () => ({
+    Count: ninaDialogs.length,
+    Dialogs: ninaDialogs,
+    ...ninaDialogExtras,
+  }),
   '/api/dialogs/count': () => ninaDialogs.length,
 };
 
@@ -312,6 +379,7 @@ const CONSOLE_TOGGLE = `document.querySelector('[data-testid="debug-console-togg
 const STORES = `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia.state.value`;
 // imageHistoryInfo is no declared state, so it lives on the store instance only.
 const API_STORE = `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia._s.get('store')`;
+const TOAST_STORE = `document.querySelector('#app').__vue_app__.config.globalProperties.$pinia._s.get('toastStore')`;
 const SET_DEBUG_CONSOLE = (visible) => `${STORES}.settings.showDebugConsole = ${visible}`;
 const DIALOG_BACKDROP = `${DIALOG}.parentElement`;
 const LOG_BUTTON = `[...document.querySelectorAll('button')].find((button) => button.innerText.trim() === 'Log')`;
@@ -553,6 +621,39 @@ async function checkNinaDialog(page, viewportName, backend) {
   ninaDialogs = [];
   ninaActions(backend).forEach((request) => backend.unhandled.delete(request));
   await page.waitFor(`!${DIALOG} && !${MINIMIZED_CHIP}`, 'the NINA dialog to go away');
+  return failures;
+}
+
+// The NINA dialogs and a toast with real content, so the screenshots show their readouts.
+async function checkDialogContent(page, viewportName) {
+  const failures = [];
+
+  for (const { name, dialog, extras } of NINA_CONTENT_DIALOGS) {
+    page.exceptions.length = 0;
+    ninaDialogExtras = extras;
+    ninaDialogs = [dialog];
+    await page.waitFor(`!!${DIALOG}`, `the ${name} dialog to open`);
+    await page.evaluate(WAIT_FOR_QUIET_DOM);
+    failures.push(...(await checkPage(page, viewportName, `${name} dialog`, `dialog-${name}`)));
+
+    ninaDialogs = [];
+    ninaDialogExtras = {};
+    await page.waitFor(`!${DIALOG}`, `the ${name} dialog to go away`);
+  }
+
+  for (const type of ['success', 'error']) {
+    page.exceptions.length = 0;
+    await page.evaluate(`${TOAST_STORE}.showToast({
+      type: '${type}',
+      title: 'Exposure finished',
+      message: 'M 31, 120 s, saved to the image folder',
+      autoClose: false,
+    })`);
+    await page.evaluate(SETTLE);
+    failures.push(...(await checkPage(page, viewportName, `${type} toast`, `toast-${type}`)));
+    await page.evaluate(`${TOAST_STORE}.closeToast()`);
+  }
+
   return failures;
 }
 
@@ -1320,6 +1421,7 @@ try {
     failures.push(...(await checkInfoModal(page, viewportName)));
     failures.push(...(await checkModal(page, viewportName)));
     failures.push(...(await checkNinaDialog(page, viewportName, backend)));
+    failures.push(...(await checkDialogContent(page, viewportName)));
     failures.push(...(await checkTppa(page, viewportName, backend)));
     failures.push(...(await checkImageHistory(page, viewportName, backend)));
     failures.push(...(await checkEquipment(page, viewportName)));

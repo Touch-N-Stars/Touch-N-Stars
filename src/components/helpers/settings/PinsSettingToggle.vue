@@ -1,7 +1,7 @@
 <template>
   <div v-if="settings?.[settingName] !== undefined" class="w-full">
-    <div class="flex items-center justify-between border border-gray-500 p-1 md:p-2 rounded-lg">
-      <label :for="settingName" class="text-xs md:text-sm text-gray-200 font-medium">
+    <div class="flex items-center justify-between border border-line-strong p-1 md:p-2 rounded-lg">
+      <label :for="settingName" class="text-xs md:text-sm text-content font-medium">
         {{ $t(labelKey) }}
       </label>
       <toggleButton @click="toggleMode" :status-value="settings[settingName]" class="h-7 md:h-8" />
