@@ -1,15 +1,11 @@
 <template>
   <div class="gap-2 grid grid-cols-1 sm:grid-cols-2 landscape:grid-cols-3">
-    <div
-      v-for="item in displayItems"
-      :key="item.id"
-      class="bg-white dark:bg-gray-800 rounded-lg shadow p-2"
-    >
+    <div v-for="item in displayItems" :key="item.id" class="bg-surface-2 rounded-lg shadow p-2">
       <div class="text-sm font-semibold">{{ item.source }}</div>
-      <div class="text-xs text-gray-600 dark:text-gray-400">{{ item.status }}</div>
+      <div class="text-xs text-content-muted">{{ item.status }}</div>
 
       <div v-if="item.showProgress" class="mt-2">
-        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+        <div class="w-full bg-surface-3 rounded-full h-2">
           <div
             :class="item.color"
             class="h-2 rounded-full transition-all duration-300"
@@ -18,7 +14,7 @@
         </div>
       </div>
 
-      <div class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+      <div class="text-xs text-content-muted mt-2">
         {{ new Date(item.timestamp).toLocaleTimeString() }}
       </div>
     </div>

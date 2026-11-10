@@ -1,8 +1,8 @@
 <template>
   <div
-    class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+    class="flex flex-row items-center justify-between w-full border border-line-strong p-2 rounded-lg"
   >
-    <label for="rotator-reverse" class="text-gray-400"> Reverse </label>
+    <label for="rotator-reverse" class="text-content-muted"> Reverse </label>
     <div>
       <toggleButton
         @click="reverseRotator"

@@ -438,7 +438,7 @@ const safetyState = computed(() => (store.safetyInfo.IsSafe ? 'ok' : 'danger'));
 const wsState = computed(() => (store.isWebSocketConnected ? 'ok' : 'danger'));
 
 // Fixed frame surface color, independent of the selected instance.
-const activeInstanceColor = 'bg-gray-900/95';
+const activeInstanceColor = 'bg-surface-1/95';
 
 const activeInstanceName = computed(() => {
   return settingsStore.getInstance(selectedInstanceId.value)?.name ?? '';

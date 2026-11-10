@@ -114,7 +114,7 @@
           :selectedDevice="selectedGuideCameraDevice"
           :deviceId="selectedGuideCameraObj?.Id"
         />
-        <p v-else class="text-sm text-gray-300">
+        <p v-else class="text-sm text-content">
           {{ $t('components.alpacaDirect.cameraNoSettings') }}
         </p>
       </template>

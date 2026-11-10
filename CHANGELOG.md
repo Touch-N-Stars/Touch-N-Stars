@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mount: The mount controls, the slew rate sliders, the slew and center options and the mount info now use the same colours as the rest of the app, and the mount shows the same notice as the other devices when it is not connected.
 - Camera: The camera settings, the cooler panel and the capture controls now use the same colours as the rest of the app; cooling, holding and warming keep their own colours.
 - Interface: The navigation bar, the connection screen at startup and the PINS upgrade and time warning dialogs now use the same colours as the rest of the app.
+- Interface: The flat device, filter wheel, rotator and dome controls and settings, the status bar with its progress panel, the instance switcher, the favourite targets, the session timeline, the plugin install dialog, the power dialog and the camera and guider steps of the setup wizard now use the same colours as the rest of the app. Resetting the rotator position uses the same red button as other stopping actions.
 
 ### Fixed
 

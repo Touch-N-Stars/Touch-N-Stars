@@ -114,7 +114,7 @@
             settingsStore.getInstanceColorByIndex(index),
             selectedInstance === instance.id
               ? 'ring-2 ring-accent border-accent/50'
-              : 'border-line-strong hover:border-line-strong',
+              : 'border-line-strong hover:border-content-faint',
           ]"
         >
           <!-- Selected Badge -->

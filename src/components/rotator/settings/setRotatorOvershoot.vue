@@ -1,7 +1,7 @@
 <template>
   <div v-if="isWandererRotator" class="flex flex-col gap-2">
-    <div class="flex items-center justify-between border border-gray-500 p-2 rounded-lg">
-      <div class="text-sm font-medium text-gray-300">
+    <div class="flex items-center justify-between border border-line-strong p-2 rounded-lg">
+      <div class="text-sm font-medium text-content">
         {{ $t('components.rotator.settings.Overshoot') }}
       </div>
       <toggleButton :status-value="overshootEnabled" @click="toggleOvershoot" />
@@ -9,15 +9,15 @@
 
     <div
       v-if="overshootEnabled"
-      class="flex items-center justify-between border border-gray-500 p-2 rounded-lg"
+      class="flex items-center justify-between border border-line-strong p-2 rounded-lg"
     >
-      <div class="text-sm font-medium text-gray-300">
+      <div class="text-sm font-medium text-content">
         {{ $t('components.rotator.settings.OvershootDirection') }}
       </div>
       <toggleButton :status-value="overshootDirection" @click="toggleOvershootDirection" />
     </div>
 
-    <div v-if="overshootEnabled" class="border border-gray-500 p-2 rounded-lg bg-gray-800/40">
+    <div v-if="overshootEnabled" class="border border-line-strong p-2 rounded-lg bg-surface-2/40">
       <SettingInput
         labelKey="components.rotator.settings.OvershootAngle"
         settingKey="RotatorSettings-OvershootAngle"
@@ -29,11 +29,7 @@
       />
     </div>
 
-    <button
-      v-if="store.rotatorInfo?.Connected"
-      class="px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-sm text-white"
-      @click="resetZero"
-    >
+    <button v-if="store.rotatorInfo?.Connected" class="tns-btn-danger w-auto!" @click="resetZero">
       {{ $t('components.rotator.settings.ResetPosition') }}
     </button>
   </div>

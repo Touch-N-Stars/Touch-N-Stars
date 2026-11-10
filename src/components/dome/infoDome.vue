@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!store.domeInfo.Connected" class="text-red-500">
+  <div v-if="!store.domeInfo.Connected" class="text-status-danger">
     <p>{{ $t('components.dome.please_connect_dome') }}</p>
   </div>
   <div

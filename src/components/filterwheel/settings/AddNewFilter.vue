@@ -1,9 +1,9 @@
 <template>
   <button
     @click="addNewFilter"
-    class="w-full h-32 border-2 border-dashed border-gray-500 hover:border-cyan-500 rounded-lg flex items-center justify-center transition-colors"
+    class="w-full h-32 border-2 border-dashed border-line-strong hover:border-accent rounded-lg flex items-center justify-center transition-colors"
   >
-    <span class="text-4xl text-gray-500 hover:text-cyan-500 transition-colors">+</span>
+    <span class="text-4xl text-content-faint hover:text-accent transition-colors">+</span>
   </button>
 </template>
 <script setup>

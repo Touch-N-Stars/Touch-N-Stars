@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!store.rotatorInfo.Connected" class="text-red-500">
+  <div v-if="!store.rotatorInfo.Connected" class="text-status-danger">
     <p>{{ $t('components.rotator.please_connect_rotator') }}</p>
   </div>
   <div

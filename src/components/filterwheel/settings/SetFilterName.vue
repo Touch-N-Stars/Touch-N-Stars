@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row w-full items-center">
-    <label class="text-sm text-gray-200 mr-10 whitespace-nowrap">
+    <label class="text-sm text-content mr-10 whitespace-nowrap">
       {{ $t('components.filterwheel.settings.FilterWheelFilters.Name') }}
     </label>
     <input
