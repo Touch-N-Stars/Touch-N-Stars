@@ -44,7 +44,7 @@ Download, storage and serving follow the DSS survey feature
 
 - No blending of NSNS over DSS and no DSS fallback south of Dec −16° (needs an engine
   change in celestia_atlas).
-- No other NSNS products than `ohs8` and the three 8-bit single lines (no `hbr8`, `rgb8`, no linear FITS data).
+- No other NSNS products than `ohs8`, the three 8-bit single lines and the `rgb8` continuum (no `hbr8`, no linear FITS data).
 - No mixing of single lines in the app; each product is its own download.
 - The Perihelion framing-offset view keeps using DSS.
 - The DSS behaviour, endpoints and stored files stay unchanged; an app that does not send
@@ -95,6 +95,16 @@ and downloads. Source tiles are 8-bit greyscale PNGs (~120–190 kB); stored as 
 (a greyscale JPEG saves only ~2 %, so the RGB path is kept). Means of 25 random tiles per
 order: Hα 37 / 53 / 58 / 50 kB (≈ 2.2 GB up to order 6), [OIII] 61 / 79 / 78 / 65 kB
 (≈ 2.9 GB), [SII] 79 / 98 / 95 / 74 kB (≈ 3.4 GB).
+
+## Continuum product (added 2026-11-08)
+
+`nsns-cont` downloads `rgb8`, the red/green/blue continuum with partially subtracted stars.
+Its HiPS stops at order 5 (`hips_order = 5`, order 6 tiles answer 404), so the survey offers
+orders 3–5 only. Its `Moc.fits` differs from the line products at order 6 only; orders 3–5
+have the same 528 / 2016 / 8000 tiles. Source PNGs ~610–660 kB; means of 30 random tiles
+per order converted to JPEG q85: 69 / 75 / 64 kB (≈ 0.7 GB up to order 5). A plugin that
+knows NSNS but not `nsns-cont` answers "Unknown survey." (code 400); the app shows the
+"update the plugin" hint for it.
 
 ## Open questions
 
