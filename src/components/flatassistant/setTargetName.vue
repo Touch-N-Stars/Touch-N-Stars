@@ -23,7 +23,7 @@
         :disabled="!settingsStore.flats.targetNameEnabled"
       />
       <button
-        class="flex shrink-0 self-stretch items-center justify-center gap-1.5 px-3 bg-slate-700/60 border border-slate-600 rounded-control text-xs md:text-sm text-gray-200 hover:bg-slate-600 disabled:opacity-50"
+        class="flex shrink-0 self-stretch items-center justify-center gap-1.5 px-3 bg-surface-3/60 border border-line-strong rounded-control text-xs md:text-sm text-content hover:bg-surface-3 disabled:opacity-50"
         :disabled="!settingsStore.flats.targetNameEnabled"
         :title="$t('components.flatassistant.target_name_from_favorites')"
         @click="openFavPicker"
@@ -41,9 +41,9 @@
         <div class="w-full">
           <table
             v-if="favStore.favoriteTargets.length"
-            class="w-full text-xs text-left border border-slate-600"
+            class="w-full text-xs text-left border border-line-strong"
           >
-            <thead class="bg-slate-700 text-slate-300">
+            <thead class="bg-surface-3 text-content">
               <tr>
                 <th class="px-3 py-2">{{ $t('components.fav_target.table.name') }}</th>
                 <th class="px-3 py-2">{{ $t('components.fav_target.table.load') }}</th>
@@ -53,21 +53,18 @@
               <tr
                 v-for="target in favStore.favoriteTargets"
                 :key="target.Id"
-                class="border-t border-slate-700 hover:bg-slate-700 transition-colors"
+                class="border-t border-line hover:bg-surface-3 transition-colors"
               >
                 <td class="px-3 py-2">{{ target.Name }}</td>
                 <td class="px-3 py-2">
-                  <button
-                    class="hover:text-green-400 text-slate-300"
-                    @click="applyFavTarget(target)"
-                  >
+                  <button class="hover:text-status-ok text-content" @click="applyFavTarget(target)">
                     <CheckIcon class="w-4 h-4" />
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <p v-else class="text-sm text-slate-400">
+          <p v-else class="text-sm text-content-muted">
             {{ $t('components.fav_target.no_fav') }}
           </p>
         </div>

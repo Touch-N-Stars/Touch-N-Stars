@@ -1,7 +1,7 @@
 <template>
   <button
     @click="openSolveModal"
-    class="w-10 h-10 bg-gray-800/90 hover:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors"
+    class="w-10 h-10 bg-surface-1/90 hover:bg-surface-2 text-content rounded-lg shadow-lg flex items-center justify-center transition-colors"
     title="Plate Solve"
   >
     <NinaPlateSolveIcon />
@@ -21,7 +21,7 @@
     <template #body>
       <div v-if="isSolving" class="loading-spinner">
         <div class="spinner"></div>
-        <p class="text-gray-300">{{ $t('components.platesolve.solving') }}</p>
+        <p class="text-content">{{ $t('components.platesolve.solving') }}</p>
       </div>
 
       <div v-else-if="solveResult" class="solve-result space-y-4">
@@ -30,10 +30,10 @@
           <div
             :class="[
               'w-4 h-4 rounded-full',
-              solveResult.Response?.Success ? 'bg-green-500' : 'bg-red-500',
+              solveResult.Response?.Success ? 'bg-status-ok' : 'bg-status-danger',
             ]"
           ></div>
-          <span :class="solveResult.Response?.Success ? 'text-green-400' : 'text-red-400'">
+          <span :class="solveResult.Response?.Success ? 'text-status-ok' : 'text-status-danger'">
             {{
               solveResult.Response?.Success
                 ? $t('components.platesolve.solve_successful')
@@ -42,14 +42,14 @@
           </span>
         </div>
 
-        <div class="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+        <div class="bg-surface-1/50 rounded-lg p-4 border border-line">
           <div class="space-y-3">
             <div
               v-if="solveResult.Response?.Orientation !== undefined"
               class="flex justify-between items-center"
             >
-              <span class="text-gray-400">{{ $t('components.platesolve.orientation') }}</span>
-              <span class="text-cyan-400 font-semibold"
+              <span class="text-content-muted">{{ $t('components.platesolve.orientation') }}</span>
+              <span class="text-accent font-semibold"
                 >{{ formatValue(solveResult.Response.Orientation) }}°</span
               >
             </div>
@@ -57,8 +57,8 @@
               v-if="solveResult.Response?.PositionAngle !== undefined"
               class="flex justify-between items-center"
             >
-              <span class="text-gray-400">{{ $t('components.platesolve.ra') }}</span>
-              <span class="text-cyan-400 font-semibold"
+              <span class="text-content-muted">{{ $t('components.platesolve.ra') }}</span>
+              <span class="text-accent font-semibold"
                 >{{ formatValue(solveResult.Response.Coordinates.RAString) }}°</span
               >
             </div>
@@ -66,8 +66,8 @@
               v-if="solveResult.Response?.Pixscale !== undefined"
               class="flex justify-between items-center"
             >
-              <span class="text-gray-400">{{ $t('components.platesolve.dec') }}</span>
-              <span class="text-cyan-400 font-semibold"
+              <span class="text-content-muted">{{ $t('components.platesolve.dec') }}</span>
+              <span class="text-accent font-semibold"
                 >{{ formatValue(solveResult.Response.Coordinates.DecString) }}"</span
               >
             </div>
@@ -75,20 +75,20 @@
               v-if="solveResult.Response?.Pixscale !== undefined"
               class="flex justify-between items-center"
             >
-              <span class="text-gray-400">{{ $t('components.platesolve.pixel_scale') }}</span>
-              <span class="text-cyan-400 font-semibold"
+              <span class="text-content-muted">{{ $t('components.platesolve.pixel_scale') }}</span>
+              <span class="text-accent font-semibold"
                 >{{ formatValue(solveResult.Response.Pixscale) }}"</span
               >
             </div>
             <div v-if="calculatedFocalLength !== null" class="flex justify-between items-center">
-              <span class="text-gray-400">{{ $t('components.platesolve.focal_length') }}</span>
-              <span class="text-cyan-400 font-semibold"
+              <span class="text-content-muted">{{ $t('components.platesolve.focal_length') }}</span>
+              <span class="text-accent font-semibold"
                 >{{ calculatedFocalLength.toFixed(1) }} mm</span
               >
             </div>
-            <div class="flex justify-between items-center pt-2 border-t border-gray-600">
-              <span class="text-gray-400">{{ $t('components.platesolve.flipped') }}</span>
-              <span class="text-cyan-400 font-semibold">{{
+            <div class="flex justify-between items-center pt-2 border-t border-line-strong">
+              <span class="text-content-muted">{{ $t('components.platesolve.flipped') }}</span>
+              <span class="text-accent font-semibold">{{
                 solveResult.Response?.Flipped ? $t('general.yes') : $t('general.no')
               }}</span>
             </div>
@@ -102,8 +102,8 @@
       </div>
 
       <div v-else-if="solveError" class="solve-error space-y-4">
-        <div class="bg-red-900/20 rounded-lg p-4 border border-red-700/50">
-          <p class="text-red-400">{{ solveError }}</p>
+        <div class="bg-status-danger/15 rounded-lg p-4 border border-status-danger/50">
+          <p class="text-status-danger">{{ solveError }}</p>
         </div>
         <button class="tns-btn-primary w-full px-4 py-2" @click="closeModal">Close</button>
       </div>

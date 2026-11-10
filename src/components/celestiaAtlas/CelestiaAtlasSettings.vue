@@ -71,14 +71,10 @@
             </div>
           </div>
           <div class="grid gap-2" v-if="settingsStore.celestiaAtlas.landscapesVisible">
-            <label for="landscapeSourceMode" class="text-gray-400 block mb-1">
+            <label for="landscapeSourceMode" class="text-content-muted block mb-1">
               {{ $t('components.celestiaAtlas.settings.landscape_source_mode') }}
             </label>
-            <select
-              id="landscapeSourceMode"
-              v-model="landscapeSourceSelection"
-              class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
-            >
+            <select id="landscapeSourceMode" v-model="landscapeSourceSelection" class="tns-select">
               <option value="default">
                 {{ $t('components.celestiaAtlas.settings.landscape_source_default') }}
               </option>
@@ -109,14 +105,14 @@
               class="mt-2 grid gap-2"
             >
               <div>
-                <label for="customLandscapeUrl" class="text-gray-400 block mb-1 text-sm">
+                <label for="customLandscapeUrl" class="text-content-muted block mb-1 text-sm">
                   {{ $t('components.celestiaAtlas.settings.custom_landscape_url') }}
                 </label>
                 <input
                   id="customLandscapeUrl"
                   v-model="settingsStore.celestiaAtlas.customLandscapeUrl"
                   type="text"
-                  class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
+                  class="tns-input"
                   :placeholder="
                     $t('components.celestiaAtlas.settings.custom_landscape_url_placeholder')
                   "
@@ -124,14 +120,14 @@
               </div>
 
               <div>
-                <label for="customLandscapeKey" class="text-gray-400 block mb-1 text-sm">
+                <label for="customLandscapeKey" class="text-content-muted block mb-1 text-sm">
                   {{ $t('components.celestiaAtlas.settings.custom_landscape_key') }}
                 </label>
                 <input
                   id="customLandscapeKey"
                   v-model="settingsStore.celestiaAtlas.customLandscapeKey"
                   type="text"
-                  class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
+                  class="tns-input"
                   :placeholder="
                     $t('components.celestiaAtlas.settings.custom_landscape_key_placeholder')
                   "
@@ -141,7 +137,7 @@
 
             <div class="mt-3 flex justify-end">
               <button
-                class="px-3 py-1 rounded bg-cyan-700 hover:bg-cyan-600 text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-3 py-1 rounded bg-accent-action hover:brightness-110 text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="!landscapeSourceDirty"
                 @click="saveLandscapeSourceSettings"
               >
@@ -149,14 +145,14 @@
               </button>
             </div>
 
-            <div class="mt-3 border border-gray-600 rounded-lg p-2 bg-gray-800/40">
+            <div class="mt-3 border border-line-strong rounded-lg p-2 bg-surface-2/40">
               <div class="flex items-center justify-between gap-2">
-                <p class="text-gray-300 text-sm font-medium">
+                <p class="text-content text-sm font-medium">
                   {{ $t('components.celestiaAtlas.settings.available_landscapes') }}
                 </p>
                 <button
                   type="button"
-                  class="px-2 py-1 rounded border border-gray-500 bg-gray-700 hover:bg-gray-600 text-xs text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="px-2 py-1 rounded border border-line-strong bg-surface-3 hover:bg-surface-2 text-xs text-content disabled:opacity-50 disabled:cursor-not-allowed"
                   :disabled="landscapeListLoading"
                   @click="fetchAvailableLandscapes"
                 >
@@ -165,15 +161,15 @@
               </div>
 
               <div class="mt-2 text-sm">
-                <p v-if="landscapeListLoading" class="text-gray-400">
+                <p v-if="landscapeListLoading" class="text-content-muted">
                   {{ $t('common.loading') }}
                 </p>
-                <p v-else-if="landscapeListError" class="text-red-400">
+                <p v-else-if="landscapeListError" class="text-status-danger">
                   {{ landscapeListError }}
                 </p>
                 <p
                   v-else-if="landscapeListLoaded && availableLandscapes.length === 0"
-                  class="text-gray-400"
+                  class="text-content-muted"
                 >
                   {{ $t('components.celestiaAtlas.settings.no_landscapes_available') }}
                 </p>
@@ -182,10 +178,10 @@
                   <li
                     v-for="(landscape, index) in availableLandscapes"
                     :key="`${landscape.folderName || 'unknown'}-${landscape.serviceUrl || index}`"
-                    class="rounded border border-gray-700 bg-gray-900/60 p-2"
+                    class="rounded border border-line bg-surface-1/60 p-2"
                   >
                     <div class="flex items-center justify-between gap-2">
-                      <p class="text-gray-100 font-medium truncate">
+                      <p class="text-content font-medium truncate">
                         {{
                           landscape.title ||
                           landscape.folderName ||
@@ -196,8 +192,8 @@
                         class="text-[10px] px-2 py-0.5 rounded-full"
                         :class="
                           landscape.hasAllsky
-                            ? 'bg-green-900 text-green-200'
-                            : 'bg-yellow-900 text-yellow-200'
+                            ? 'bg-status-ok/15 text-status-ok'
+                            : 'bg-status-warn/15 text-status-warn'
                         "
                       >
                         {{
@@ -207,11 +203,11 @@
                         }}
                       </span>
                     </div>
-                    <p class="text-xs text-gray-400 mt-1 break-all">
+                    <p class="text-xs text-content-muted mt-1 break-all">
                       {{ $t('components.celestiaAtlas.settings.folder_name_label') }}:
                       {{ landscape.folderName || '—' }}
                     </p>
-                    <p class="text-xs text-gray-400 mt-1 break-all">
+                    <p class="text-xs text-content-muted mt-1 break-all">
                       {{ $t('components.celestiaAtlas.settings.service_url_label') }}:
                       {{ landscape.serviceUrl || '—' }}
                     </p>
@@ -229,12 +225,12 @@
             <div class="min-w-0 max-w-full">
               <label
                 for="skySurveyVisible"
-                class="block break-words whitespace-normal text-gray-300"
+                class="block break-words whitespace-normal text-content"
               >
                 {{ $t('components.celestiaAtlas.settings.sky_survey_visible') }}
               </label>
               <p
-                class="mt-1 max-w-full break-words whitespace-normal text-xs leading-5 text-gray-400"
+                class="mt-1 max-w-full break-words whitespace-normal text-xs leading-5 text-content-muted"
               >
                 {{ $t('components.celestiaAtlas.settings.sky_survey_hint') }}
               </p>
@@ -250,7 +246,7 @@
             </div>
           </div>
           <div class="grid gap-2">
-            <label for="skySurveySource" class="text-sm text-gray-300">
+            <label for="skySurveySource" class="text-sm text-content">
               {{ $t('components.celestiaAtlas.survey.source_label') }}
             </label>
             <select id="skySurveySource" v-model="surveySource" class="tns-select w-full">
@@ -258,7 +254,7 @@
                 {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
               </option>
             </select>
-            <p class="text-xs text-gray-400">
+            <p class="text-xs text-content-muted">
               {{
                 $t(
                   `components.celestiaAtlas.survey.source_${skySurveyLocaleKey(activeSurveyId)}_hint`
@@ -291,16 +287,16 @@
           />
           <div class="grid gap-3">
             <div>
-              <p class="text-gray-200 font-medium">
+              <p class="text-content font-medium">
                 {{ $t('components.celestiaAtlas.settings.brightness_filters') }}
               </p>
-              <p class="text-xs text-gray-400">
+              <p class="text-xs text-content-muted">
                 {{ $t('components.celestiaAtlas.settings.magnitude_limit_hint') }}
               </p>
             </div>
 
             <label class="grid gap-1" for="starMagnitudeLimit">
-              <span class="flex justify-between gap-2 text-sm text-gray-300">
+              <span class="flex justify-between gap-2 text-sm text-content">
                 <span>{{ $t('components.celestiaAtlas.settings.star_magnitude_limit') }}</span>
                 <output>{{ formatMagnitudeLimit(starMagnitudeLimit) }}</output>
               </span>
@@ -311,12 +307,12 @@
                 min="-2"
                 max="20"
                 step="0.1"
-                class="w-full h-11 accent-cyan-500"
+                class="w-full h-11 accent-accent-action"
               />
             </label>
 
             <label class="grid gap-1" for="galaxyMagnitudeLimit">
-              <span class="flex justify-between gap-2 text-sm text-gray-300">
+              <span class="flex justify-between gap-2 text-sm text-content">
                 <span>{{ $t('components.celestiaAtlas.settings.galaxy_magnitude_limit') }}</span>
                 <output>{{ formatMagnitudeLimit(galaxyMagnitudeLimit) }}</output>
               </span>
@@ -327,12 +323,12 @@
                 min="-2"
                 max="30"
                 step="0.5"
-                class="w-full h-11 accent-cyan-500"
+                class="w-full h-11 accent-accent-action"
               />
             </label>
 
             <label class="grid gap-1" for="deepSkyMagnitudeLimit">
-              <span class="flex justify-between gap-2 text-sm text-gray-300">
+              <span class="flex justify-between gap-2 text-sm text-content">
                 <span>{{ $t('components.celestiaAtlas.settings.dso_magnitude_limit') }}</span>
                 <output>{{ formatMagnitudeLimit(deepSkyMagnitudeLimit) }}</output>
               </span>
@@ -343,7 +339,7 @@
                 min="-2"
                 max="30"
                 step="0.5"
-                class="w-full h-11 accent-cyan-500"
+                class="w-full h-11 accent-accent-action"
               />
             </label>
           </div>
@@ -351,10 +347,10 @@
             class="grid min-h-24 w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-line pt-3"
           >
             <div class="min-w-0 max-w-full">
-              <div class="block break-words whitespace-normal text-gray-300">
+              <div class="block break-words whitespace-normal text-content">
                 {{ $t('components.celestiaAtlas.settings.comet_data_title') }}
               </div>
-              <p class="mt-1 max-w-full break-words whitespace-normal text-xs text-gray-400">
+              <p class="mt-1 max-w-full break-words whitespace-normal text-xs text-content-muted">
                 <template v-if="cometRefreshState === 'success'">
                   {{
                     $t('components.celestiaAtlas.settings.comet_data_updated', {

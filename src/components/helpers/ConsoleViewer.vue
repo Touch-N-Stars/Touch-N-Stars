@@ -4,7 +4,7 @@
     <button
       data-testid="debug-console-toggle"
       @click="isModalOpen = true"
-      class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md z-50"
+      class="p-2 bg-surface-3 border border-accent-action rounded-full shadow-md z-50"
     >
       <CommandLineIcon class="w-6 h-6 text-white" />
     </button>
@@ -16,11 +16,11 @@
           <h2 class="text-2xl font-bold">Debug Console</h2>
           <button
             @click="downloadLogs"
-            class="text-white hover:text-cyan-300 text-sm border border-cyan-500 px-4 py-2 rounded flex items-center gap-2"
+            class="text-content hover:text-accent text-sm border border-accent-action px-4 py-2 rounded flex items-center gap-2"
           >
             <ArrowDownTrayIcon
               class="w-5 h-5"
-              :class="showSuccess ? 'text-green-400' : 'text-white'"
+              :class="showSuccess ? 'text-status-ok' : 'text-content'"
             />
             <span>Download</span>
           </button>
@@ -29,7 +29,7 @@
 
       <template #body>
         <div
-          class="space-y-1 text-sm font-mono bg-gray-900 rounded p-4 border border-gray-700 max-h-[60vh] overflow-y-auto scrollbar-thin"
+          class="space-y-1 text-sm font-mono bg-ground rounded p-4 border border-line max-h-[60vh] overflow-y-auto scrollbar-thin"
         >
           <div
             v-for="(log, index) in logs"
@@ -39,7 +39,7 @@
           >
             [{{ log.type.toUpperCase() }}] {{ log.message }}
           </div>
-          <div v-if="logs.length === 0" class="text-gray-400 text-center py-4">
+          <div v-if="logs.length === 0" class="text-content-muted text-center py-4">
             No console logs yet...
           </div>
         </div>
@@ -110,15 +110,15 @@ async function downloadLogs() {
 function getClassForType(type) {
   switch (type) {
     case 'log':
-      return 'text-green-400';
+      return 'text-status-ok';
     case 'warn':
-      return 'text-yellow-300';
+      return 'text-status-warn';
     case 'error':
-      return 'text-red-400';
+      return 'text-status-danger';
     case 'info':
-      return 'text-cyan-300';
+      return 'text-accent';
     case 'debug':
-      return 'text-gray-400';
+      return 'text-content-muted';
     default:
       return '';
   }

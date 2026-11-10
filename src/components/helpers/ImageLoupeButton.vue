@@ -2,8 +2,10 @@
   <button
     @click.stop="$emit('toggle')"
     :class="[
-      'w-10 h-10 rounded-lg shadow-lg flex items-center justify-center transition-colors text-white',
-      active ? 'bg-cyan-700 hover:bg-cyan-600' : 'bg-gray-800/90 hover:bg-gray-700',
+      'w-10 h-10 rounded-lg shadow-lg flex items-center justify-center transition-colors',
+      active
+        ? 'bg-accent-action text-white hover:brightness-110'
+        : 'bg-surface-1/90 hover:bg-surface-2 text-content',
     ]"
     :title="label"
     :aria-label="label"

@@ -3,15 +3,15 @@
     <!-- Current and Target Position -->
     <div class="grid grid-cols-2 gap-4">
       <!-- Current Position -->
-      <div class="bg-gray-800 p-4 rounded-lg text-center">
-        <p class="text-gray-400 text-sm mb-2">{{ content.Text1 }}</p>
+      <div class="bg-surface-2 p-4 rounded-lg text-center">
+        <p class="text-content-muted text-sm mb-2">{{ content.Text1 }}</p>
         <p class="text-4xl font-bold text-white">
           {{ formattedCurrentPosition }}{{ content.Text3 }}
         </p>
       </div>
       <!-- Target Position -->
-      <div class="bg-gray-800 p-4 rounded-lg text-center">
-        <p class="text-gray-400 text-sm mb-2">{{ content.Text4 }}</p>
+      <div class="bg-surface-2 p-4 rounded-lg text-center">
+        <p class="text-content-muted text-sm mb-2">{{ content.Text4 }}</p>
         <p class="text-4xl font-bold text-white">
           {{ formattedTargetPosition }}{{ content.Text6 }}
         </p>
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Rotation Visualization (Clock-style) -->
-    <div class="bg-gray-800 p-6 rounded-lg flex flex-col items-center">
+    <div class="bg-surface-2 p-6 rounded-lg flex flex-col items-center">
       <!-- Clock Display -->
       <svg width="200" height="200" viewBox="0 0 200 200" class="mb-4">
         <!-- Clock Circle -->
@@ -33,7 +33,7 @@
           :y="100 - Math.cos((angle * Math.PI) / 180) * 70"
           text-anchor="middle"
           dominant-baseline="middle"
-          class="fill-gray-400 text-xs"
+          class="fill-content-muted text-xs"
         >
           {{ angle }}°
         </text>
@@ -85,11 +85,11 @@
       <div class="flex gap-4 mb-3 text-xs">
         <div class="flex items-center gap-1">
           <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-          <span class="text-gray-400">{{ content.Text1 }}</span>
+          <span class="text-content-muted">{{ content.Text1 }}</span>
         </div>
         <div class="flex items-center gap-1">
           <div class="w-3 h-3 border-2 border-green-500 border-dashed rounded-full"></div>
-          <span class="text-gray-400">{{ content.Text4 }}</span>
+          <span class="text-content-muted">{{ content.Text4 }}</span>
         </div>
       </div>
 
@@ -97,7 +97,7 @@
       <p class="text-2xl font-bold text-yellow-500 mb-1">
         {{ formattedRotationAmount }}{{ content.Text8 }}
       </p>
-      <p class="text-gray-400 text-sm">{{ content.Text9 }}</p>
+      <p class="text-content-muted text-sm">{{ content.Text9 }}</p>
     </div>
   </div>
 </template>

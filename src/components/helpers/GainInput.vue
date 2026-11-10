@@ -5,9 +5,9 @@
     numeric input driven by GainMin/GainMax.
   -->
   <div v-if="hasGainList" class="flex items-center gap-3">
-    <label class="text-xs text-slate-400 shrink-0">{{ label }}</label>
+    <label class="tns-label shrink-0">{{ label }}</label>
     <select
-      class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+      class="tns-select-compact ml-auto w-36 md:w-40"
       :value="modelValue"
       @change="emit('change', Number($event.target.value))"
     >

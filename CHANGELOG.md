@@ -21,12 +21,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: The PINS page, its network, services, system, INDI, software and upgrade tabs and their dialogs now use the same cards and colours as the rest of the app. The priority of a saved Wi-Fi network now has plus and minus buttons and opens the touch number pad, and the refresh buttons are larger and easier to tap.
 - Guider: The PHD2 guider page, its settings and the calibration assistant, calibration review, dark library and profile management dialogs now use the same cards and colours as the rest of the app. Calibrating is shown in the app's accent colour, like on the native guider page.
 - Focus: The focus page, its settings and the Hocus Focus aberration inspector, tilter, star detection and optimizer now use the same cards and colours as the rest of the app. The motor speed and USB capacity choices of PINS focusers are wide enough for their full names on phones.
+- Interface: The plate solving, meridian flip, manual rotator and autofocus dialogs opened by NINA, the notifications, the switches, the number fields with their touch number pad, the image viewer and the location sync question now use the same colours as the rest of the app. The three location sync choices are larger buttons.
+- Atlas: The atlas settings, the sky survey download, the catalogue filters and the about page now use the same colours as the rest of the app. The landscape source and the custom landscape fields are larger and easier to tap.
+- Interface: The dome, filter wheel, flat device, rotator, flat assistant, framing and sequence pages now use the same cards and colours as the rest of the app, and they show the same notice when their device is not connected.
+- Flats: The flat assistant with its sky flat, auto exposure, auto brightness and multi mode now uses the same cards and colours as the rest of the app. The zenith altitude choice is larger and easier to tap.
+- Framing: The framing image controls, the mosaic and rotation settings, the target search and the altitude chart now use the same cards and colours as the rest of the app.
+- Plate solving: The FITS file solver in framing, the atlas and the sequence target now shows its settings, progress and result in the same colours as the rest of the app.
+- Mount: The mount controls, the slew rate sliders, the slew and center options and the mount info now use the same colours as the rest of the app, and the mount shows the same notice as the other devices when it is not connected.
+- Camera: The camera settings, the cooler panel and the capture controls now use the same colours as the rest of the app; cooling, holding and warming keep their own colours.
+- Interface: The navigation bar, the connection screen at startup and the PINS upgrade and time warning dialogs now use the same colours as the rest of the app.
+- Interface: The flat device, filter wheel, rotator and dome controls and settings, the status bar with its progress panel, the instance switcher, the favourite targets, the session timeline, the plugin install dialog, the power dialog and the camera and guider steps of the setup wizard now use the same colours as the rest of the app. Resetting the rotator position uses the same red button as other stopping actions.
 
 ### Fixed
 
 - TPPA: When the polar alignment runs in the dialog opened by NINA, its settings no longer open hidden behind that dialog.
 - TPPA: Until the first measurement arrives, errors show a question mark instead of an empty value, the error dialogs say they are waiting, and the circle no longer appears green without a result. The empty status frame is gone as well.
 - Camera, Focus and TPPA: The Drag and Show image labels are now translated.
+- Rotator: Under PINS, the manual rotator dialog now shows current and target position in the app language instead of always in English.
 - Monitor: The loading hint of the last image is now translated, and "No data available yet" is no longer shown in red like an error.
 - Equipment: The loading message shown while switching profiles is now translated.
 - PINS: The INDI registry editor now closes with the Escape key, like the other dialogs.

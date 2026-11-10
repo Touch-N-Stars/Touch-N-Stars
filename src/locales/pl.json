@@ -5167,7 +5167,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, tylko linia [OIII] (dwukrotnie zjonizowany tlen). Obejmuje tylko niebo na północ od −16°; osobne pobieranie.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, tylko linia [SII] (zjonizowana siarka). Obejmuje tylko niebo na północ od −16°; osobne pobieranie."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, tylko linia [SII] (zjonizowana siarka). Obejmuje tylko niebo na północ od −16°; osobne pobieranie.",
+        "source_nsns_cont": "NSNS kontinuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, tylko światło kontinuum: czerwone, zielone i niebieskie kontinuum bez linii emisyjnych, gwiazdy częściowo usunięte. Uwydatnia mgławice refleksyjne i ciemne obłoki. Obejmuje tylko niebo na północ od −16°, szczegóły do rzędu 5; osobne pobieranie."
       },
       "object_types": {
         "_ass": "Asocjacja gwiazdowa",
@@ -8853,6 +8855,10 @@
       "status": "Stan",
       "error": "Odległość Błędu",
       "rotation": "Rotacja"
+    },
+    "manualRotator": {
+      "currentPosition": "Aktualna pozycja",
+      "targetPosition": "Pozycja docelowa"
     }
   },
   "loading": "ładowanie",

@@ -1,9 +1,9 @@
 <template>
   <div class="">
     <div
-      class="flex flex-col bg-gray-900/90 border border-line-strong p-1 pb-2 rounded-control h-full"
+      class="flex flex-col bg-surface-1/90 border border-line-strong p-1 pb-2 rounded-control h-full"
     >
-      <label for="filter" class="text-xs mb-1 text-gray-400"
+      <label for="filter" class="text-xs mb-1 text-content-muted"
         >{{ $t('components.filterwheel.filter') }}
       </label>
 

@@ -5213,7 +5213,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, només línia [OIII] (oxigen doblement ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, només línia [SII] (sofre ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, només línia [SII] (sofre ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
+        "source_nsns_cont": "NSNS continu",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, només llum del continu: continu vermell, verd i blau sense les línies d'emissió, amb les estrelles parcialment eliminades. Fa ressaltar les nebuloses de reflexió i els núvols foscos. Cobreix només el cel al nord de −16°, amb detall fins a l'ordre 5; és una descàrrega a part."
       },
       "object_types": {
         "_ass": "Associació estel·lar",
@@ -8780,6 +8782,10 @@
       "status": "Estat",
       "error": "Distància d'error",
       "rotation": "Rotació"
+    },
+    "manualRotator": {
+      "currentPosition": "Posició actual",
+      "targetPosition": "Posició objectiu"
     }
   },
   "nav": {

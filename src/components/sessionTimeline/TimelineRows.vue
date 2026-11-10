@@ -25,7 +25,7 @@
           :y="rowIndex * ROW_HEIGHT + ROW_HEIGHT / 2"
           text-anchor="end"
           dominant-baseline="middle"
-          class="fill-gray-300"
+          class="fill-content"
           font-size="11"
         >
           {{ $t(`components.sequence.timeline.rows.${row.key}`) }}
@@ -45,7 +45,7 @@
           :x="xOf(tick)"
           :y="rowsHeight + 16"
           text-anchor="middle"
-          class="fill-gray-400"
+          class="fill-content-muted"
           font-size="11"
         >
           {{ formatClock(tick, { seconds: tickSeconds }) }}

@@ -5213,7 +5213,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, [OIII] 선만 (이중 이온화된 산소). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] 선만 (이온화된 황). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] 선만 (이온화된 황). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다.",
+        "source_nsns_cont": "NSNS 연속광",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey의 연속광만 사용: 발광선을 제외한 빨강, 초록, 파랑 연속광이며 별은 일부 제거되었습니다. 반사성운과 암흑성운이 잘 드러납니다. −16° 북쪽 하늘만 포함하며 세부 수준은 오더 5까지입니다. 별도로 다운로드합니다."
       },
       "object_types": {
         "_ass": "성협",
@@ -8853,6 +8855,10 @@
       "status": "상태",
       "error": "오차 거리",
       "rotation": "회전"
+    },
+    "manualRotator": {
+      "currentPosition": "현재 위치",
+      "targetPosition": "목표 위치"
     }
   },
   "loading": "로딩 중",

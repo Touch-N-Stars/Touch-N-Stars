@@ -1,12 +1,10 @@
 <template>
   <div class="flex flex-col w-full max-w-md space-y-3 mt-4">
     <!-- Global settings -->
-    <div
-      class="border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5 space-y-3"
-    >
+    <div class="tns-card space-y-3">
       <!-- Mode selector -->
       <div class="flex flex-row w-full items-center">
-        <label class="text-sm text-gray-300 mr-3 shrink-0">{{
+        <label class="text-sm text-content mr-3 shrink-0">{{
           $t('components.flatassistant.mode')
         }}</label>
         <select v-model="state.selectedMode" class="tns-select ml-auto w-48">
@@ -20,7 +18,7 @@
 
       <!-- Keep Closed -->
       <div class="flex items-center justify-between">
-        <span class="text-sm text-gray-300">{{ $t('components.flatassistant.keep_closed') }}</span>
+        <span class="text-sm text-content">{{ $t('components.flatassistant.keep_closed') }}</span>
         <toggleButton
           :statusValue="state.keepClosed"
           @update:statusValue="state.keepClosed = $event"
@@ -35,7 +33,7 @@
       <div
         v-for="filter in store.filterInfo.AvailableFilters"
         :key="filter.Id"
-        class="border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-4 space-y-3"
+        class="tns-card space-y-3"
       >
         <!-- Filter header with toggle -->
         <div
@@ -50,7 +48,7 @@
             <!-- Chevron (only when active) -->
             <svg
               v-if="isActive(filter.Id)"
-              class="w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200"
+              class="w-4 h-4 text-content-muted shrink-0 transition-transform duration-200"
               :class="isExpanded(filter.Id) ? 'rotate-90' : ''"
               viewBox="0 0 24 24"
               fill="none"
@@ -63,7 +61,7 @@
             <!-- Per-filter run result indicator -->
             <svg
               v-if="flatsStore.filterResults[filter.Id] === 'success'"
-              class="w-4 h-4 text-green-400 shrink-0"
+              class="w-4 h-4 text-status-ok shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -75,7 +73,7 @@
               v-else-if="['failed', 'dim', 'bright'].includes(flatsStore.filterResults[filter.Id])"
             >
               <svg
-                class="w-4 h-4 text-red-400 shrink-0"
+                class="w-4 h-4 text-status-danger shrink-0"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -85,12 +83,12 @@
               </svg>
               <span
                 v-if="flatsStore.filterResults[filter.Id] === 'dim'"
-                class="text-xs text-red-400 shrink-0"
+                class="text-xs text-status-danger shrink-0"
                 >{{ $t('components.flatassistant.result_dim') }}</span
               >
               <span
                 v-else-if="flatsStore.filterResults[filter.Id] === 'bright'"
-                class="text-xs text-red-400 shrink-0"
+                class="text-xs text-status-danger shrink-0"
                 >{{ $t('components.flatassistant.result_bright') }}</span
               >
             </template>
@@ -104,7 +102,7 @@
         <!-- Settings (only when active AND expanded AND config ready) -->
         <div
           v-if="isActive(filter.Id) && isExpanded(filter.Id) && state.filterConfigs[filter.Id]"
-          class="space-y-2 pt-2 border-t border-gray-700"
+          class="space-y-2 pt-2 border-t border-line"
         >
           <!-- Count -->
           <NumberInputPicker
@@ -121,9 +119,9 @@
           <!-- Gain: dropdown if camera has gain list, otherwise free input -->
           <div
             v-if="store.cameraInfo.Gains?.length > 0"
-            class="flex flex-row w-full items-center min-w-28 border border-gray-500 p-1 rounded-lg"
+            class="flex flex-row w-full items-center min-w-28 border border-line-strong p-1 rounded-lg"
           >
-            <label class="text-xs mr-3 mb-1 text-gray-200">
+            <label class="text-xs mr-3 mb-1 text-content">
               {{ $t('components.camera.gain_iso') }}
             </label>
             <select
@@ -162,9 +160,9 @@
           <!-- Binning -->
           <div
             v-if="(store.cameraInfo?.BinningModes?.length || 0) > 1"
-            class="flex flex-row w-full items-center min-w-28 border border-gray-500 p-1 rounded-lg"
+            class="flex flex-row w-full items-center min-w-28 border border-line-strong p-1 rounded-lg"
           >
-            <label class="text-xs mr-3 mb-1 text-gray-400">
+            <label class="text-xs mr-3 mb-1 text-content-muted">
               {{ $t('components.camera.binning_mode') }}
             </label>
             <select
@@ -299,10 +297,7 @@
     </template>
 
     <!-- No filter wheel -->
-    <div
-      v-else
-      class="border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 p-4 text-center text-gray-400 text-sm"
-    >
+    <div v-else class="tns-card text-center text-content-muted text-sm">
       {{ $t('components.flatassistant.multi_mode_no_filters') }}
     </div>
 

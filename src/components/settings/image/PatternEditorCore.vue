@@ -126,19 +126,19 @@
       <div class="flex flex-wrap gap-1 mt-1">
         <button
           @click="addSegment('/')"
-          class="px-3 py-1 text-xs rounded bg-amber-900/60 hover:bg-amber-800/60 text-amber-200 border border-amber-700/50 transition-colors font-mono"
+          class="px-3 py-1 text-xs rounded bg-status-warn/15 hover:bg-status-warn/15 text-status-warn border border-amber-700/50 transition-colors font-mono"
         >
           \ {{ $t('components.settings.imageFile.folder') }}
         </button>
         <button
           @click="addSegment('_')"
-          class="px-3 py-1 text-xs rounded bg-amber-900/60 hover:bg-amber-800/60 text-amber-200 border border-amber-700/50 transition-colors font-mono"
+          class="px-3 py-1 text-xs rounded bg-status-warn/15 hover:bg-status-warn/15 text-status-warn border border-amber-700/50 transition-colors font-mono"
         >
           _ {{ $t('components.settings.imageFile.separator') }}
         </button>
         <button
           @click="addSegment('-')"
-          class="px-3 py-1 text-xs rounded bg-amber-900/60 hover:bg-amber-800/60 text-amber-200 border border-amber-700/50 transition-colors font-mono"
+          class="px-3 py-1 text-xs rounded bg-status-warn/15 hover:bg-status-warn/15 text-status-warn border border-amber-700/50 transition-colors font-mono"
         >
           - {{ $t('components.settings.imageFile.separator') }}
         </button>
@@ -187,7 +187,7 @@
           </div>
 
           <div>
-            <h3 class="text-amber-400 font-semibold mb-1">
+            <h3 class="text-status-warn font-semibold mb-1">
               {{ $t('components.settings.imageFile.help.separatorsTitle') }}
             </h3>
             <p>{{ $t('components.settings.imageFile.help.separatorsDesc') }}</p>
@@ -308,7 +308,7 @@ function segmentClass(segment) {
     return 'bg-accent/15 text-accent border border-accent/40';
   }
   if (isSeparator(segment)) {
-    return 'bg-amber-900/60 text-amber-200 border border-amber-700/50';
+    return 'bg-status-warn/15 text-status-warn border border-amber-700/50';
   }
   return 'bg-surface-2 text-content border border-line';
 }

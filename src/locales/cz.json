@@ -5167,7 +5167,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, pouze čára [OIII] (dvakrát ionizovaný kyslík). Pokrývá jen oblohu severně od −16°; samostatné stažení.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, pouze čára [SII] (ionizovaná síra). Pokrývá jen oblohu severně od −16°; samostatné stažení."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, pouze čára [SII] (ionizovaná síra). Pokrývá jen oblohu severně od −16°; samostatné stažení.",
+        "source_nsns_cont": "NSNS kontinuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, jen světlo kontinua: červené, zelené a modré kontinuum bez emisních čar, hvězdy částečně odstraněny. Zvýrazní reflexní mlhoviny a temná mračna. Pokrývá jen oblohu severně od −16°, detail až do řádu 5; samostatné stažení."
       },
       "object_types": {
         "_ass": "Hvězdná asociace",
@@ -8853,6 +8855,10 @@
       "status": "Stav",
       "error": "Chyba Vzdálenosti",
       "rotation": "Rotace"
+    },
+    "manualRotator": {
+      "currentPosition": "Současná pozice",
+      "targetPosition": "Cílová pozice"
     }
   },
   "loading": "načítání",

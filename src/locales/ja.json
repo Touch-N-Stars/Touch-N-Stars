@@ -5176,7 +5176,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey、[OIII] 輝線のみ（二重電離酸素）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey、[SII] 輝線のみ（電離硫黄）。−16° より北の空のみが対象です。別途ダウンロードが必要です。"
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey、[SII] 輝線のみ（電離硫黄）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
+        "source_nsns_cont": "NSNS 連続光",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey の連続光のみ：輝線を除いた赤・緑・青の連続光で、恒星は一部除去されています。反射星雲や暗黒星雲が際立ちます。−16° より北の空のみが対象で、詳細はオーダー 5 まで。別途ダウンロードが必要です。"
       },
       "object_types": {
         "_ass": "アソシエーション",
@@ -8853,6 +8855,10 @@
       "status": "ステータス",
       "error": "誤差の距離",
       "rotation": "回転"
+    },
+    "manualRotator": {
+      "currentPosition": "現在位置",
+      "targetPosition": "目標位置"
     }
   },
   "loading": "読み込み中",

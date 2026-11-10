@@ -1,10 +1,10 @@
 <template>
   <div v-if="state === 'checking'" class="flex flex-col items-center justify-center h-64">
     <span
-      class="h-10 w-10 rounded-full border-4 border-gray-500 border-t-transparent animate-spin"
+      class="h-10 w-10 rounded-full border-4 border-line-strong border-t-transparent animate-spin"
       aria-hidden="true"
     ></span>
-    <p class="text-gray-500 mt-2">{{ $t('common.loading') }}</p>
+    <p class="text-content-faint mt-2">{{ $t('common.loading') }}</p>
   </div>
 
   <div v-else-if="state === 'missing'" class="max-w-xl mx-auto p-4">
@@ -12,7 +12,7 @@
       <h2 class="text-xl font-bold text-white">{{ $t('components.ninaPluginGate.title') }}</h2>
 
       <template v-if="canInstall">
-        <p class="text-gray-300">
+        <p class="text-content">
           {{
             pendingRestart
               ? $t('components.ninaPluginGate.pendingRestart', { name: requirement.displayName })
@@ -29,10 +29,10 @@
       </template>
 
       <template v-else>
-        <p class="text-gray-300">
+        <p class="text-content">
           {{ $t('components.ninaPluginGate.missing', { name: requirement.displayName }) }}
         </p>
-        <p class="text-gray-400 text-sm">
+        <p class="text-content-muted text-sm">
           {{ $t('components.ninaPluginGate.windowsHint', { name: requirement.displayName }) }}
         </p>
       </template>

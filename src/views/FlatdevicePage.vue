@@ -15,14 +15,10 @@
       </template>
     </SubNav>
 
-    <div
+    <DeviceNotConnected
       v-if="!store.flatdeviceInfo.Connected"
-      class="p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
-    >
-      <p class="text-red-400 font-medium text-center">
-        {{ $t('components.flat.please_connect_flatDevice') }}
-      </p>
-    </div>
+      messageKey="components.flat.please_connect_flatDevice"
+    />
     <div v-else class="container flex items-center justify-center pt-4">
       <div class="container max-w-3xl">
         <!-- Flat Tab -->
@@ -31,9 +27,7 @@
             <div>
               <InfoFlatdevice compact class="p-3 bg-surface-1 rounded-card border border-line" />
             </div>
-            <div
-              class="mt-4 border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5"
-            >
+            <div class="mt-4 tns-card">
               <controlFlatdevice class="w-full" />
             </div>
           </div>
@@ -51,6 +45,7 @@
 </template>
 
 <script setup>
+import DeviceNotConnected from '@/components/helpers/DeviceNotConnected.vue';
 import { ref } from 'vue';
 import { EyeIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import InfoFlatdevice from '@/components/flatdevice/InfoFlatdevice.vue';

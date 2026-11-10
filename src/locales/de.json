@@ -5208,7 +5208,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, nur [OIII]-Linie (doppelt ionisierter Sauerstoff). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, nur [SII]-Linie (ionisierter Schwefel). Deckt nur den Himmel nördlich von −16° ab; separater Download."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, nur [SII]-Linie (ionisierter Schwefel). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
+        "source_nsns_cont": "NSNS Kontinuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, nur Kontinuumslicht: Rot-, Grün- und Blaukontinuum ohne die Emissionslinien, Sterne teilweise entfernt. Hebt Reflexionsnebel und Dunkelwolken hervor. Deckt nur den Himmel nördlich von −16° ab, Details bis Order 5; ein eigener Download."
       },
       "object_types": {
         "_ass": "Sternassoziation",
@@ -8858,6 +8860,10 @@
       "status": "Status",
       "error": "Fehlerdistanz",
       "rotation": "Rotation"
+    },
+    "manualRotator": {
+      "currentPosition": "Aktuelle Position",
+      "targetPosition": "Zielposition"
     }
   },
   "loading": "Laden",

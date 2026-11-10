@@ -12,12 +12,12 @@
     </template>
 
     <template #body>
-      <div class="w-full flex flex-col gap-4 text-sm text-gray-300">
+      <div class="w-full flex flex-col gap-4 text-sm text-content">
         <template v-if="phase === 'confirm'">
           <p>
             {{ $t('components.ninaPluginInstall.confirm', { plugin: pluginName, name: ninaName }) }}
           </p>
-          <p class="text-amber-300">
+          <p class="text-status-warn">
             {{ $t('components.ninaPluginInstall.confirmRestartHint') }}
             {{ $t('components.ninaPluginInstall.restartHint') }}
           </p>
@@ -42,7 +42,7 @@
         </template>
 
         <template v-else-if="phase === 'failed'">
-          <p class="text-red-400">
+          <p class="text-status-danger">
             {{ $t('components.ninaPluginInstall.failed', { message: installStore.errorMessage }) }}
           </p>
           <div class="flex justify-end gap-3">
@@ -57,12 +57,12 @@
 
         <template v-else-if="phase === 'restartPrompt'">
           <p>{{ $t('components.ninaPluginInstall.installed', { name: ninaName }) }}</p>
-          <p class="text-gray-400">{{ $t('components.ninaPluginInstall.restartHint') }}</p>
+          <p class="text-content-muted">{{ $t('components.ninaPluginInstall.restartHint') }}</p>
           <div
             v-if="sequenceStore.sequenceRunning"
-            class="flex flex-col gap-2 rounded-lg border border-amber-600/60 bg-amber-900/30 p-3"
+            class="flex flex-col gap-2 rounded-lg border border-status-warn/60 bg-status-warn/15 p-3"
           >
-            <p class="text-amber-300 font-medium">
+            <p class="text-status-warn font-medium">
               {{ $t('components.ninaPluginInstall.sequenceWarning') }}
             </p>
             <label class="flex items-center gap-2 min-h-touch">
@@ -70,7 +70,7 @@
               {{ $t('components.ninaPluginInstall.sequenceConfirm') }}
             </label>
           </div>
-          <p v-if="installStore.errorMessage" class="text-red-400">
+          <p v-if="installStore.errorMessage" class="text-status-danger">
             {{
               $t('components.ninaPluginInstall.restartFailed', {
                 message: installStore.errorMessage,
@@ -111,7 +111,7 @@
         </template>
 
         <template v-else-if="phase === 'done'">
-          <p class="text-emerald-300">
+          <p class="text-status-ok">
             {{ $t('components.ninaPluginInstall.done', { name: ninaName }) }}
           </p>
           <div class="flex justify-end">
@@ -124,7 +124,7 @@
         <pre
           v-if="installStore.logLines.length && (phase === 'installing' || phase === 'failed')"
           ref="logEl"
-          class="select-text max-h-48 overflow-auto rounded bg-black p-2 font-mono text-xs text-gray-300 whitespace-pre-wrap"
+          class="select-text max-h-48 overflow-auto rounded bg-black p-2 font-mono text-xs text-content whitespace-pre-wrap"
           >{{ installStore.logLines.join('\n') }}</pre>
       </div>
     </template>

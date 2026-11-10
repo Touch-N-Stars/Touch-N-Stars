@@ -58,7 +58,7 @@
       data-testid="atlas-survey-offer"
     >
       <template v-if="surveyBannerMode === 'progress'">
-        <p class="text-sm text-gray-100">
+        <p class="text-sm text-content">
           {{
             t('components.celestiaAtlas.survey.offer_progress', {
               percent: Math.round(surveyStore.progressFraction * 100),
@@ -70,7 +70,7 @@
         </div>
       </template>
       <template v-else>
-        <p class="text-sm text-gray-100">
+        <p class="text-sm text-content">
           {{
             t(
               surveyStore.legacyFormat
@@ -84,7 +84,7 @@
             )
           }}
         </p>
-        <p v-if="surveyStore.actionError" class="text-xs text-red-300">
+        <p v-if="surveyStore.actionError" class="text-xs text-status-danger">
           {{ surveyStore.actionError }}
         </p>
         <div class="flex flex-wrap gap-2">
@@ -185,7 +185,7 @@
           <input
             id="atlas-clock-speed"
             v-model.number="clockSpeedPower"
-            class="h-11 w-full accent-cyan-500"
+            class="h-11 w-full accent-accent-action"
             type="range"
             min="-10"
             max="10"

@@ -5167,7 +5167,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, alleen [OIII]-lijn (dubbel geïoniseerde zuurstof). Dekt alleen de hemel ten noorden van −16°; aparte download.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, alleen [SII]-lijn (geïoniseerde zwavel). Dekt alleen de hemel ten noorden van −16°; aparte download."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, alleen [SII]-lijn (geïoniseerde zwavel). Dekt alleen de hemel ten noorden van −16°; aparte download.",
+        "source_nsns_cont": "NSNS continuüm",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, alleen continuümlicht: rood, groen en blauw continuüm zonder de emissielijnen, sterren gedeeltelijk verwijderd. Laat reflectienevels en donkere wolken goed uitkomen. Dekt alleen de hemel ten noorden van −16°, detail tot orde 5; een aparte download."
       },
       "object_types": {
         "_ass": "Sterassociatie",
@@ -8853,6 +8855,10 @@
       "status": "Status",
       "error": "Foutafstand",
       "rotation": "Rotatie"
+    },
+    "manualRotator": {
+      "currentPosition": "Huidige positie",
+      "targetPosition": "Doelpositie"
     }
   },
   "loading": "laden",

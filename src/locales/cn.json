@@ -5167,7 +5167,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey，仅 [OIII] 谱线（双电离氧）。仅覆盖 −16° 以北的天空；需单独下载。",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey，仅 [SII] 谱线（电离硫）。仅覆盖 −16° 以北的天空；需单独下载。"
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey，仅 [SII] 谱线（电离硫）。仅覆盖 −16° 以北的天空；需单独下载。",
+        "source_nsns_cont": "NSNS 连续谱",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey，仅含连续谱光：去除发射线的红、绿、蓝连续谱，恒星已部分移除。可突出反射星云和暗星云。仅覆盖 −16° 以北的天空，细节最高至 5 级；需单独下载。"
       },
       "object_types": {
         "_ass": "星协",
@@ -8853,6 +8855,10 @@
       "status": "状态",
       "error": "误差距离",
       "rotation": "旋转"
+    },
+    "manualRotator": {
+      "currentPosition": "当前位置",
+      "targetPosition": "目标位置"
     }
   },
   "loading": "加载中",

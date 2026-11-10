@@ -5,34 +5,37 @@
       <!-- Status Header -->
       <div
         v-show="slewAndCenterStatus"
-        class="bg-gradient-to-r from-blue-900/50 to-cyan-900/50 w-full p-3 rounded-lg border border-blue-500/30"
+        class="bg-accent/10 w-full p-3 rounded-lg border border-accent/30"
       >
         <div class="flex items-center justify-between">
-          <span class="text-xs text-gray-400">{{ slewAndCenterStatus }}</span>
+          <span class="text-xs text-content">{{ slewAndCenterStatus }}</span>
         </div>
       </div>
 
       <!-- Current Measurement -->
       <div v-if="currentMeasurement" class="grid grid-cols-3 gap-2">
-        <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-          <p class="text-xs text-gray-400 mb-1">{{ $t('dialogs.plateSolving.time') }}</p>
-          <p class="text-white font-semibold">{{ currentMeasurement.time }}</p>
+        <div class="bg-surface-2 p-3 rounded-lg border border-line">
+          <p class="tns-label mb-1">{{ $t('dialogs.plateSolving.time') }}</p>
+          <p class="text-content font-semibold">{{ currentMeasurement.time }}</p>
         </div>
         <div
           class="p-3 rounded-lg border"
           :class="[
             isErrorWithinThreshold
-              ? 'bg-green-900/30 border-green-500/50'
-              : 'bg-gray-800 border-gray-700',
+              ? 'bg-status-ok/10 border-status-ok/50'
+              : 'bg-surface-2 border-line',
           ]"
         >
           <p
             class="text-xs mb-2"
-            :class="isErrorWithinThreshold ? 'text-green-400' : 'text-gray-400'"
+            :class="isErrorWithinThreshold ? 'text-status-ok' : 'text-content-muted'"
           >
             {{ $t('dialogs.plateSolving.error') }}
           </p>
-          <div class="space-y-1" :class="isErrorWithinThreshold ? 'text-green-300' : 'text-white'">
+          <div
+            class="space-y-1"
+            :class="isErrorWithinThreshold ? 'text-status-ok' : 'text-content'"
+          >
             <p
               v-for="(line, idx) in parseErrorDistance(currentMeasurement.errorDistance)"
               :key="idx"
@@ -42,46 +45,42 @@
             </p>
           </div>
         </div>
-        <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-          <p class="text-xs text-gray-400 mb-1">{{ $t('dialogs.plateSolving.rotation') }}</p>
-          <p class="text-white font-semibold">{{ Math.round(currentMeasurement.rotation) }}°</p>
+        <div class="bg-surface-2 p-3 rounded-lg border border-line">
+          <p class="tns-label mb-1">{{ $t('dialogs.plateSolving.rotation') }}</p>
+          <p class="text-content font-semibold">{{ Math.round(currentMeasurement.rotation) }}°</p>
         </div>
       </div>
 
       <!-- Measurements History -->
       <div v-if="measurements.length > 0" class="overflow-x-auto">
         <table class="w-full text-xs">
-          <thead class="bg-gray-800">
+          <thead class="bg-surface-2">
             <tr>
-              <th class="px-2 py-2 text-left text-gray-400 border-b border-gray-700">
+              <th class="px-2 py-2 text-left text-content-muted border-b border-line">
                 {{ $t('dialogs.plateSolving.time') }}
               </th>
-              <th class="px-2 py-2 text-left text-gray-400 border-b border-gray-700">
+              <th class="px-2 py-2 text-left text-content-muted border-b border-line">
                 {{ $t('dialogs.plateSolving.status') }}
               </th>
-              <th class="px-2 py-2 text-left text-gray-400 border-b border-gray-700">
+              <th class="px-2 py-2 text-left text-content-muted border-b border-line">
                 {{ $t('dialogs.plateSolving.error') }}
               </th>
-              <th class="px-2 py-2 text-left text-gray-400 border-b border-gray-700">
+              <th class="px-2 py-2 text-left text-content-muted border-b border-line">
                 {{ $t('dialogs.plateSolving.rotation') }}
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(measurement, idx) in measurements"
-              :key="idx"
-              class="border-b border-gray-700/50"
-            >
-              <td class="px-2 py-2 text-gray-300">{{ measurement.time }}</td>
+            <tr v-for="(measurement, idx) in measurements" :key="idx" class="border-b border-line">
+              <td class="px-2 py-2 text-content">{{ measurement.time }}</td>
               <td class="px-2 py-2 flex justify-center">
-                <CheckIcon v-if="measurement.success" class="w-5 h-5 text-green-400" />
-                <XMarkIcon v-else class="w-5 h-5 text-red-400" />
+                <CheckIcon v-if="measurement.success" class="w-5 h-5 text-status-ok" />
+                <XMarkIcon v-else class="w-5 h-5 text-status-danger" />
               </td>
-              <td class="px-2 py-2 text-gray-300">
+              <td class="px-2 py-2 text-content">
                 {{ extractDistance(measurement.errorDistance) }}
               </td>
-              <td class="px-2 py-2 text-gray-300">{{ Math.round(measurement.rotation) }}°</td>
+              <td class="px-2 py-2 text-content">{{ Math.round(measurement.rotation) }}°</td>
             </tr>
           </tbody>
         </table>

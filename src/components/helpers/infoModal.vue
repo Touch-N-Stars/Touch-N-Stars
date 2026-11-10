@@ -2,7 +2,7 @@
   <div class="flex items-center">
     <button
       @click="openModal"
-      class="text-blue-500 hover:text-gray-300"
+      class="text-accent hover:text-content"
       :aria-label="props.title"
       data-testid="info-modal-toggle"
     >
@@ -40,7 +40,7 @@ const props = defineProps({
   link: { type: String, default: '' },
   linkText: { type: String, default: '' },
   size: { type: String, default: 'w-6 h-6' },
-  iconTextColour: { type: String, default: 'text-blue-500' },
+  iconTextColour: { type: String, default: 'text-accent' },
   icon: {
     type: [Object, Function], // Accepts component
     default: InformationCircleIcon,

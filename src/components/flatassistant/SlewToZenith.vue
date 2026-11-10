@@ -1,9 +1,6 @@
 <template>
   <div class="flex w-full items-center gap-2 p-4">
-    <select
-      v-model="settingsStore.flats.altitudeSite"
-      class="w-28 border border-gray-500 rounded-lg bg-gray-800 p-2 text-white"
-    >
+    <select v-model="settingsStore.flats.altitudeSite" class="tns-select w-28!">
       <option value="EAST">{{ $t('components.tppa.east') }}</option>
       <option value="WEST">{{ $t('components.tppa.west') }}</option>
     </select>

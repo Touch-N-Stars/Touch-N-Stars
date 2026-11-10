@@ -3,7 +3,7 @@
     <div v-if="store.cameraInfo.CanSetTemperature" class="w-full">
       <div
         class="flex flex-col min-w-36"
-        :class="{ 'border border-slate-600/40 p-3 rounded-lg': !compact }"
+        :class="{ 'border border-line-strong/40 p-3 rounded-lg': !compact }"
       >
         <!-- Cooler status indicator, driven by the central cameraStore.coolingState.
              Compact mode leaves it out: the status bar panel shows the state next to it. -->
@@ -11,29 +11,29 @@
           v-if="!compact"
           class="flex items-center justify-center gap-2 px-3 py-2 mb-3 rounded-lg"
           :class="{
-            'bg-slate-700/40': coolingState === 'off',
-            'bg-blue-600/20 border border-blue-500/40': coolingState === 'cooling',
-            'bg-green-600/20 border border-green-500/40': coolingState === 'holding',
-            'bg-orange-600/20 border border-orange-500/40': coolingState === 'warming',
+            'bg-surface-3/40': coolingState === 'off',
+            'bg-accent/15 border border-accent/40': coolingState === 'cooling',
+            'bg-status-ok/15 border border-status-ok/40': coolingState === 'holding',
+            'bg-status-warn/15 border border-status-warn/40': coolingState === 'warming',
           }"
         >
-          <span class="text-xs text-gray-300 font-medium">
+          <span class="text-xs text-content font-medium">
             {{ $t('components.camera.cooler_status') }}:
           </span>
           <span
             class="text-xs font-semibold"
             :class="{
-              'text-gray-400': coolingState === 'off',
-              'text-blue-400': coolingState === 'cooling',
-              'text-green-400': coolingState === 'holding',
-              'text-orange-400': coolingState === 'warming',
+              'text-content-muted': coolingState === 'off',
+              'text-accent': coolingState === 'cooling',
+              'text-status-ok': coolingState === 'holding',
+              'text-status-warn': coolingState === 'warming',
             }"
           >
             {{ coolerStatusText }}
           </span>
         </div>
 
-        <div v-if="!compact" class="border-t border-slate-600/40 mb-3"></div>
+        <div v-if="!compact" class="border-t border-line-strong/40 mb-3"></div>
 
         <div class="flex flex-col justify-between sm:flex-row gap-2">
           <NumberInputPicker
@@ -84,7 +84,7 @@
           />
         </div>
 
-        <div v-if="!compact" class="border-t border-slate-600/40 my-4"></div>
+        <div v-if="!compact" class="border-t border-line-strong/40 my-4"></div>
 
         <!-- Action buttons like NINA: the running action turns into a cancel button -->
         <div class="grid grid-cols-2 gap-2" :class="{ 'mt-2': compact }">
@@ -94,8 +94,8 @@
             class="flex items-center justify-center gap-2 rounded-control border px-3 py-1.5 h-7 md:h-8 text-xs md:text-sm font-medium text-content disabled:opacity-50 disabled:cursor-not-allowed"
             :class="
               isCoolingActive
-                ? 'border-blue-500/60 bg-blue-600/20 text-blue-300'
-                : 'border-line-strong bg-slate-700/40'
+                ? 'border-accent/60 bg-accent/15 text-accent'
+                : 'border-line-strong bg-surface-3/40'
             "
           >
             <svg
@@ -128,8 +128,8 @@
             class="flex items-center justify-center gap-2 rounded-control border px-3 py-1.5 h-7 md:h-8 text-xs md:text-sm font-medium text-content disabled:opacity-50 disabled:cursor-not-allowed"
             :class="
               isWarmingActive
-                ? 'border-orange-500/60 bg-orange-600/20 text-orange-300'
-                : 'border-line-strong bg-slate-700/40'
+                ? 'border-status-warn/60 bg-status-warn/15 text-status-warn'
+                : 'border-line-strong bg-surface-3/40'
             "
           >
             <svg
@@ -163,7 +163,7 @@
     <div v-if="store.cameraInfo.HasDewHeater" class="w-full">
       <div
         class="flex flex-col min-w-36"
-        :class="{ 'border border-slate-600/40 p-3 rounded-lg': !compact }"
+        :class="{ 'border border-line-strong/40 p-3 rounded-lg': !compact }"
       >
         <!-- Compact rows use the switch panel's row style so the status bar panels match -->
         <div

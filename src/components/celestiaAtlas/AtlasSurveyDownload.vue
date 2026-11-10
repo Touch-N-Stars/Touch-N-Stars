@@ -1,43 +1,43 @@
 <template>
   <div class="grid gap-3" :data-testid="`atlas-survey-download-${surveyId}`">
     <div>
-      <p class="text-gray-200 font-medium">
+      <p class="text-content font-medium">
         {{ $t('components.celestiaAtlas.survey.title') }}
       </p>
-      <p class="text-xs text-gray-400">
+      <p class="text-xs text-content-muted">
         {{ $t(surveyKey('hint')) }}
       </p>
     </div>
 
-    <p v-if="surveyStore.supported === false" class="text-sm text-yellow-300">
+    <p v-if="surveyStore.supported === false" class="text-sm text-status-warn">
       {{ $t(surveyKey('plugin_update_required')) }}
     </p>
-    <p v-else-if="!surveyStore.loaded" class="text-sm text-gray-400">
+    <p v-else-if="!surveyStore.loaded" class="text-sm text-content-muted">
       {{ $t('common.loading') }}
     </p>
-    <p v-else-if="surveyStore.error" class="text-sm text-red-400">
+    <p v-else-if="surveyStore.error" class="text-sm text-status-danger">
       {{ surveyStore.error }}
     </p>
     <template v-else>
       <dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm">
-        <dt class="text-gray-400">
+        <dt class="text-content-muted">
           {{ $t('components.celestiaAtlas.survey.installed') }}
         </dt>
-        <dd class="text-gray-100 break-words">{{ installedSummary }}</dd>
-        <dt class="text-gray-400">
+        <dd class="text-content break-words">{{ installedSummary }}</dd>
+        <dt class="text-content-muted">
           {{ $t('components.celestiaAtlas.survey.free_space') }}
         </dt>
-        <dd class="text-gray-100">{{ formatSurveyBytes(surveyStore.freeBytes) }}</dd>
+        <dd class="text-content">{{ formatSurveyBytes(surveyStore.freeBytes) }}</dd>
       </dl>
 
       <div v-if="surveyStore.isRunning" class="grid gap-2">
-        <div class="h-2 overflow-hidden rounded-full bg-gray-700">
+        <div class="h-2 overflow-hidden rounded-full bg-surface-3">
           <div
-            class="h-full bg-cyan-500 transition-[width] duration-300"
+            class="h-full bg-accent transition-[width] duration-300"
             :style="{ width: `${surveyStore.progressFraction * 100}%` }"
           />
         </div>
-        <p class="text-sm text-gray-200">
+        <p class="text-sm text-content">
           {{
             $t('components.celestiaAtlas.survey.progress', {
               order: surveyStore.job.currentOrder,
@@ -61,12 +61,12 @@
         <p v-if="jobOutcomeMessage" class="text-sm" :class="jobOutcomeClass">
           {{ jobOutcomeMessage }}
         </p>
-        <p v-if="surveyStore.legacyFormat" class="text-sm text-yellow-300">
+        <p v-if="surveyStore.legacyFormat" class="text-sm text-status-warn">
           {{ $t('components.celestiaAtlas.survey.legacy_format') }}
         </p>
 
         <label class="grid gap-1" :for="`${surveyId}SurveyTargetOrder`">
-          <span class="text-sm text-gray-300">
+          <span class="text-sm text-content">
             {{ $t('components.celestiaAtlas.survey.target_order') }}
           </span>
           <select
@@ -85,7 +85,7 @@
           </select>
         </label>
 
-        <p v-if="!hasEnoughSpace" class="text-xs text-red-300">
+        <p v-if="!hasEnoughSpace" class="text-xs text-status-danger">
           {{
             $t('components.celestiaAtlas.survey.not_enough_space', {
               needed: formatSurveyBytes(selectedRequiredBytes),
@@ -105,9 +105,9 @@
           </button>
         </div>
 
-        <div v-if="surveyStore.hasAnyData" class="grid gap-2 border-t border-gray-600 pt-3">
+        <div v-if="surveyStore.hasAnyData" class="grid gap-2 border-t border-line-strong pt-3">
           <label class="grid gap-1" :for="`${surveyId}SurveyDeleteTarget`">
-            <span class="text-sm text-gray-300">
+            <span class="text-sm text-content">
               {{ $t('components.celestiaAtlas.survey.delete_target') }}
             </span>
             <select
@@ -136,14 +136,14 @@
         </div>
       </template>
 
-      <p v-if="surveyStore.actionError" class="text-xs text-red-300">
+      <p v-if="surveyStore.actionError" class="text-xs text-status-danger">
         {{ surveyStore.actionError }}
       </p>
 
-      <p class="text-xs leading-5 text-gray-500">
+      <p class="text-xs leading-5 text-content-faint">
         {{ $t(surveyKey('terms')) }}
         <a
-          class="text-cyan-500 hover:underline"
+          class="text-accent hover:underline"
           :href="termsUrl"
           target="_blank"
           rel="noopener noreferrer"
@@ -161,13 +161,13 @@
     @close="showDeleteConfirm = false"
   >
     <template #header>
-      <h2 class="text-lg font-bold text-red-500">
+      <h2 class="text-lg font-bold text-status-danger">
         {{ $t('components.celestiaAtlas.survey.delete_confirm_title') }}
       </h2>
     </template>
     <template #body>
       <div class="flex flex-col gap-4">
-        <p class="text-gray-300 text-sm">{{ deleteConfirmMessage }}</p>
+        <p class="text-content text-sm">{{ deleteConfirmMessage }}</p>
         <div class="flex gap-3 justify-end">
           <button @click="showDeleteConfirm = false" class="tns-btn-secondary w-auto!">
             {{ $t('common.cancel') }}
@@ -299,7 +299,7 @@ const jobOutcomeMessage = computed(() => {
   return '';
 });
 const jobOutcomeClass = computed(() =>
-  surveyStore.job?.state === 'failed' ? 'text-red-300' : 'text-gray-300'
+  surveyStore.job?.state === 'failed' ? 'text-status-danger' : 'text-content'
 );
 
 function orderName(order) {
