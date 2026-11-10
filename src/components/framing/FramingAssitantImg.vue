@@ -9,7 +9,7 @@
       }"
     >
       <div
-        class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+        class="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"
       ></div>
     </div>
     <div
@@ -32,13 +32,13 @@
       <!-- Pan-Steuerung (oben links) -->
       <div class="absolute top-3 left-3 z-10">
         <div
-          class="bg-gray-800/90 border border-gray-600 rounded-lg p-1 grid grid-cols-3 grid-rows-3 gap-1"
+          class="bg-surface-1/90 border border-line-strong rounded-lg p-1 grid grid-cols-3 grid-rows-3 gap-1"
         >
           <div></div>
           <button
             @click="pan(0, 1)"
             aria-label="Pan up"
-            class="w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
+            class="w-8 h-8 bg-surface-3 hover:bg-surface-2 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
           >
             ↑
           </button>
@@ -46,7 +46,7 @@
           <button
             @click="pan(-1, 0)"
             aria-label="Pan left"
-            class="w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
+            class="w-8 h-8 bg-surface-3 hover:bg-surface-2 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
           >
             ←
           </button>
@@ -54,7 +54,7 @@
           <button
             @click="pan(1, 0)"
             aria-label="Pan right"
-            class="w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
+            class="w-8 h-8 bg-surface-3 hover:bg-surface-2 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
           >
             →
           </button>
@@ -62,7 +62,7 @@
           <button
             @click="pan(0, -1)"
             aria-label="Pan down"
-            class="w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
+            class="w-8 h-8 bg-surface-3 hover:bg-surface-2 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
           >
             ↓
           </button>
@@ -74,20 +74,20 @@
       <div class="absolute top-3 right-3 z-10 flex gap-2">
         <!-- FOV Steuerung -->
         <div
-          class="bg-gray-800/90 border border-gray-600 rounded-lg p-2 flex items-center space-x-2"
+          class="bg-surface-1/90 border border-line-strong rounded-lg p-2 flex items-center space-x-2"
         >
           <button
             @click="adjustFov(-1)"
-            class="w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
+            class="w-8 h-8 bg-surface-3 hover:bg-surface-2 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
           >
             -
           </button>
-          <span class="text-xs text-gray-300 font-medium min-w-[2.5rem] text-center"
+          <span class="text-xs text-content font-medium min-w-[2.5rem] text-center"
             >{{ Math.round(framingStore.fov) }}°</span
           >
           <button
             @click="adjustFov(1)"
-            class="w-8 h-8 bg-gray-600 hover:bg-gray-500 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
+            class="w-8 h-8 bg-surface-3 hover:bg-surface-2 rounded text-white text-sm font-bold transition-colors flex items-center justify-center"
           >
             +
           </button>
@@ -95,14 +95,14 @@
         <!-- Rotation readout: the target angle and, once available, the angle
              measured by the last plate solve -->
         <div
-          class="bg-gray-800/90 border min-w-14 border-gray-600 rounded-lg px-3 py-2 flex flex-col items-center justify-center leading-tight"
+          class="bg-surface-1/90 border min-w-14 border-line-strong rounded-lg px-3 py-2 flex flex-col items-center justify-center leading-tight"
         >
-          <span class="text-xs text-gray-300 font-medium"
+          <span class="text-xs text-content font-medium"
             >{{ Math.round(framingStore.rotationAngle) }}°</span
           >
           <span
             v-if="framingStore.hasSolvedRotation"
-            class="text-[10px] text-cyan-300 font-medium whitespace-nowrap"
+            class="text-[10px] text-accent font-medium whitespace-nowrap"
             :title="$t('components.framing.solvedRotation.tooltip')"
             >{{ $t('components.framing.solvedRotation.short') }}
             {{ Math.round(framingStore.solvedRotationAngle) }}°</span
@@ -113,7 +113,7 @@
       <!-- RA/DEC Anzeige (Mitte der Kamera-Box, debug/diagnostik) -->
       <div class="absolute bottom-3 right-3 z-10">
         <div
-          class="bg-gray-800/90 border border-gray-600 rounded-lg px-3 py-2 font-mono text-xs text-gray-300 leading-tight text-right"
+          class="bg-surface-1/90 border border-line-strong rounded-lg px-3 py-2 font-mono text-xs text-content leading-tight text-right"
         >
           <div>RA: {{ framingStore.RAangleString }}</div>
           <div>DEC: {{ framingStore.DECangleString }}</div>
