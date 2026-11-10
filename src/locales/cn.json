@@ -2801,7 +2801,7 @@
           },
           "descriptions": {
             "GuideSource": "导星帧的来源。导星相机：设备中导星相机槽位里的相机。模拟器：内置的赤道仪、天空和相机模拟，可在没有硬件或白天时试用导星。",
-            "ExposureSeconds": "每个导星帧的曝光时间。1–4 秒可平均掉大部分视宁度；更短的曝光反应更快，但会追逐视宁度，更长的曝光对风和赤道仪误差反应较慢。",
+            "ExposureSeconds": "每张导星图像的曝光时间。较短的曝光对风和赤道仪误差反应更快；最小移动量能防止它们追逐视宁度。1 s 适合大多数赤道仪；导星太暗时请使用更长的曝光。",
             "Gain": "-1 保持驱动当前的增益。（PHD2 的增益是百分比，因此不会沿用。）",
             "Offset": "-1 保持驱动当前的偏移。",
             "Binning": "导星帧的硬件合并。2×2 让相机更灵敏、帧传输更快，但会降低分辨率；适合小像素或长导星焦距。更改后请重新校准。",
@@ -2971,7 +2971,7 @@
             "repeatBaseline": "最后再次测试当前设置",
             "repeatBaselineHint": "可检测试验期间视宁度变化或云层。",
             "exposureTrial": "尝试更短的曝光",
-            "exposureTrialHint": "曝光为1.5秒及以上时，再用一半曝光（至少1秒）导星一次。许多赤道仪在较短曝光下导星效果更好。",
+            "exposureTrialHint": "从 1.5 s 起，还会用 1 s 和介于 1 s 与当前曝光中间的曝光导星（例如 2.5 s 时为 1.5 s）。许多赤道仪用更短的曝光导星效果更好。",
             "allowCalibration": "需要时进行校准",
             "allowCalibrationHint": "没有校准，漂移、赤道仪响应和试验都无法运行。",
             "minutes": "{value} 分钟",
@@ -2985,6 +2985,13 @@
           "notConnected": "请连接 PINS 自动导星仪以使用 Coach。",
           "calibratingBlock": "请等待校准完成。",
           "darksBlock": "请等待暗场库构建完成。",
+          "slewingBlock": "赤道仪正在转到校准位置。到达后 Coach 开始；导星控制中的停止可取消转动。",
+          "position": {
+            "title": "赤道仪指向 Coach 测量不佳的位置",
+            "nearPole": "Dec {declination} 接近天极。在那里 RA 导星脉冲几乎移动不了星点，因此校准和 RA 结果变得不可靠。超过 {maxDeclination} 时 Coach 不会启动。",
+            "low": "赤道仪仅指向地平线以上 {altitude}。那里的大气会更多地模糊和移动星点，从而破坏测量。",
+            "slewNeeded": "请选择转动：超过 Dec {maxDeclination} 时 Coach 不会启动。"
+          },
           "start": "启动 Coach",
           "starting": "正在启动…",
           "startFailed": "Coach 无法启动",
@@ -3254,7 +3261,7 @@
                 "title": "视宁度：{rmsArcsec}（{level}）",
                 "why": "即使关闭导星，星点仍因大气而晃动 {rmsArcsec}。任何导星都跟不上这种快速运动：它是导星 RMS 的下限。",
                 "fix_good": "条件良好：赤道仪的小误差现在会显现，精细调整值得一做。",
-                "fix": "不要追逐视宁度：使用 2 s 或更长的导星曝光，并将最小移动量设为略高于视宁度。"
+                "fix": "用略高于视宁度的最小移动量防止导星仪追逐视宁度。过滤视宁度的是它，而不是长曝光：短曝光（约 1 s）对赤道仪自身的误差反应更快。"
               },
               "minMove": {
                 "title": "按视宁度设定最小移动量：RA {raPx}，Dec {decPx}",
@@ -3419,6 +3426,11 @@
                 "title": "导星仪未连接",
                 "why": "Coach 需要已连接的原生导星仪及其相机和赤道仪。",
                 "fix": "连接导星仪（脉冲导星还需连接赤道仪）后重试。"
+              },
+              "nearPole": {
+                "title": "离天极太近",
+                "why": "赤道仪指向 Dec {declinationDeg}。在那里 RA 导星脉冲几乎移动不了星点，因此校准会失败或主要测到噪声。",
+                "fix": "转到 ±{maxDeclinationDeg} 以内的赤纬，最好靠近天赤道，或在启动 Coach 时选择转到校准位置。"
               },
               "noStar": {
                 "title": "未找到导星星点",

@@ -2801,7 +2801,7 @@
           },
           "descriptions": {
             "GuideSource": "De onde vêm as imagens de guiagem. Câmara de guiagem: a câmara na posição de câmara de guiagem do equipamento. Simulador: uma simulação integrada de montagem, céu e câmara, para experimentar a guiagem sem hardware ou de dia.",
-            "ExposureSeconds": "Tempo de exposição de cada imagem de guiagem. 1–4 s fazem a média da maior parte do seeing; exposições mais curtas reagem mais depressa mas perseguem o seeing, as mais longas reagem devagar ao vento e aos erros da montagem.",
+            "ExposureSeconds": "Tempo de exposição de cada imagem de guiagem. Exposições mais curtas reagem mais depressa ao vento e aos erros da montagem; o movimento mínimo impede que persigam o seeing. 1 s serve para a maioria das montagens; use exposições mais longas quando a estrela guia for fraca demais.",
             "Gain": "-1 mantém o ganho atual do driver. (O ganho do PHD2 é uma percentagem, por isso não é transferido.)",
             "Offset": "-1 mantém o desvio atual do driver.",
             "Binning": "Binning por hardware das imagens de guiagem. 2×2 torna a câmara mais sensível e a transferência mais rápida, à custa da resolução; útil com píxeis pequenos ou uma focal de guiagem longa. Calibre de novo após uma alteração.",
@@ -2970,8 +2970,8 @@
             "trialSeconds": "Duração por ensaio",
             "repeatBaseline": "Repetir as definições atuais no fim",
             "repeatBaselineHint": "Deteta mudanças de seeing ou nuvens durante os ensaios.",
-            "exposureTrial": "Testar uma exposição mais curta",
-            "exposureTrialHint": "A partir de 1,5 s, guia também uma vez com metade da exposição (pelo menos 1 s). Muitas montagens guiam melhor com exposições mais curtas.",
+            "exposureTrial": "Testar exposições mais curtas",
+            "exposureTrialHint": "A partir de 1,5 s, guia também com 1 s e com uma exposição a meio caminho da atual (p. ex. 1,5 s com 2,5 s). Muitas montagens guiam melhor com exposições mais curtas.",
             "allowCalibration": "Calibrar se necessário",
             "allowCalibrationHint": "Sem calibração, a deriva, a resposta da montagem e os ensaios não podem ser executados.",
             "minutes": "{value} min",
@@ -2985,6 +2985,13 @@
           "notConnected": "Ligue o PINS Native Guider para usar o coach.",
           "calibratingBlock": "Aguarde até a calibração terminar.",
           "darksBlock": "Aguarde até a biblioteca de darks estar criada.",
+          "slewingBlock": "A montagem está a mover-se para a posição de calibração. O coach começa quando ela chegar; Parar nos controlos da guiagem cancela o movimento.",
+          "position": {
+            "title": "A montagem aponta para onde o coach mede mal",
+            "nearPole": "Dec {declination} está perto do polo. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração e os resultados em AR deixam de ser fiáveis. Além de {maxDeclination} o coach não começa.",
+            "low": "A montagem aponta só {altitude} acima do horizonte. O ar ali desfoca e desloca mais a estrela, o que estraga as medições.",
+            "slewNeeded": "Escolha um movimento: além de Dec {maxDeclination} o coach não começa."
+          },
           "start": "Iniciar coach",
           "starting": "A iniciar…",
           "startFailed": "Não foi possível iniciar o coach",
@@ -3254,7 +3261,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Com a guiagem desligada, a estrela continua a dançar {rmsArcsec} por causa da atmosfera. Nenhuma guiagem consegue seguir este movimento rápido: é o limite mínimo do seu RMS guiado.",
                 "fix_good": "Boas condições: agora notam-se pequenos erros da montagem, por isso o ajuste fino compensa.",
-                "fix": "Não persiga o seeing: guie com 2 s ou mais e um movimento mínimo ligeiramente acima do seeing."
+                "fix": "Impeça a guiagem de perseguir o seeing com um movimento mínimo logo acima dele. É isso, e não uma exposição longa, que filtra o seeing: uma exposição curta (cerca de 1 s) reage mais depressa aos erros próprios da montagem."
               },
               "minMove": {
                 "title": "Movimento mín. pelo seeing: RA {raPx}, Dec {decPx}",
@@ -3419,6 +3426,11 @@
                 "title": "Guiador não ligado",
                 "why": "O coach precisa do guiador nativo ligado, com a sua câmara e montagem.",
                 "fix": "Ligue o guiador (e a montagem para guiagem por pulsos) e tente novamente."
+              },
+              "nearPole": {
+                "title": "Perto demais do polo",
+                "why": "A montagem aponta para Dec {declinationDeg}. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração falha ou mede sobretudo ruído.",
+                "fix": "Mova a montagem para uma declinação dentro de ±{maxDeclinationDeg}, de preferência perto do equador celeste, ou escolha um movimento para uma posição de calibração ao iniciar o coach."
               },
               "noStar": {
                 "title": "Nenhuma estrela guia encontrada",

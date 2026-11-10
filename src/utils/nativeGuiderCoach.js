@@ -56,6 +56,7 @@ export const ONE_TIME_HINTS = ['hint.longExposure'];
 export const MESSAGE_CODES = [
   'coach.busy',
   'coach.notConnected',
+  'coach.nearPole',
   'coach.noStar',
   'coach.noCalibration',
   'coach.calibrationFailed',
@@ -119,6 +120,7 @@ export function parameterUnit(name) {
   if (/(^a|A)rcsec$/.test(n)) return { unit: '″', digits: 2 };
   if (/(^a|A)rcmin$/.test(n)) return { unit: '′', digits: 1 };
   if (/(^p|P)x$/.test(n)) return { unit: ' px', digits: 2 };
+  if (/(^d|D)eg$/.test(n)) return { unit: '°', digits: 1 };
   if (/(^m|M)s$/.test(n)) return { unit: ' ms', digits: 0 };
   if (/(^s|S)econds$/.test(n)) return { unit: ' s', digits: 1 };
   if (/(^p|P)ercent$/.test(n)) return { unit: ' %', digits: 0 };
@@ -237,6 +239,39 @@ export function messageText({ t, te }, messageCode, fallbackMessage = '', parame
   };
 }
 
+// --- Mount position ------------------------------------------------------------------
+
+/**
+ * Where the coach measures well: above WARN_DECLINATION RA pulses move the star by cos(Dec) of their
+ * equatorial distance (half at 60°), so calibration and the RA results get unreliable; above
+ * MAX_DECLINATION the guider refuses the session (coach.nearPole). Below MIN_ALTITUDE the seeing
+ * and the refraction spoil the measurements.
+ */
+export const COACH_POSITION = { warnDeclination: 60, maxDeclination: 80, minAltitude: 30 };
+
+/**
+ * The mount's position as the coach sees it, from the NINA mount info: { declination, altitude,
+ * issues: ['nearPole', 'low'], refused } or null without a connected mount. refused = the guider
+ * will not start a session there.
+ */
+export function coachPosition(mountInfo) {
+  if (!mountInfo?.Connected) return null;
+  const finite = (value) => (typeof value === 'number' && Number.isFinite(value) ? value : null);
+  const declination = finite(mountInfo.Declination);
+  const altitude = finite(mountInfo.Altitude);
+  const issues = [];
+  if (declination !== null && Math.abs(declination) > COACH_POSITION.warnDeclination) {
+    issues.push('nearPole');
+  }
+  if (altitude !== null && altitude < COACH_POSITION.minAltitude) issues.push('low');
+  return {
+    declination,
+    altitude,
+    issues,
+    refused: declination !== null && Math.abs(declination) > COACH_POSITION.maxDeclination,
+  };
+}
+
 // --- Options and estimates -----------------------------------------------------------
 
 export const DEFAULT_EXPOSURES = [1, 2, 3];
@@ -271,6 +306,17 @@ export function defaultGains({ gainMin, gainMax, currentGain } = {}) {
   return gains.sort((a, b) => a - b);
 }
 
+/**
+ * Exposures of the shorter-exposure trials E and E2, as the guider picks them: 1 s and, when it lies
+ * at least 0.5 s below the current exposure, the middle between the two rounded down to 0.5 s (at
+ * least 1.5 s). 2.5 s -> [1, 1.5], 3 s -> [1, 2], 1.5 s -> [1]; none below 1.5 s or when unknown.
+ */
+export function shorterTrialExposures(currentSeconds) {
+  if (!(typeof currentSeconds === 'number' && currentSeconds >= 1.5 - 1e-6)) return [];
+  const middle = Math.floor(currentSeconds + 1 + 1e-6) / 2;
+  return middle >= 1.5 && middle <= currentSeconds - 0.5 + 1e-6 ? [1, middle] : [1];
+}
+
 /** Overhead per camera check frame (download, processing), seconds. */
 const FRAME_OVERHEAD_SECONDS = 0.7;
 const TRIAL_SETTLE_SECONDS = 20;
@@ -281,7 +327,7 @@ const CALIBRATION_SECONDS = 120;
  * Estimated duration per step in seconds for the options on the start screen.
  * options: { exposureSeconds[], gains[], framesPerCombination, driftSeconds, trialSeconds,
  * repeatBaseline, exposureTrial, currentExposureSeconds }; empty exposures/gains = the defaults
- * (exposures 1/2/3 s, 3 gains). The exposure trial (E) runs when the current exposure is 1.5 s or
+ * (exposures 1/2/3 s, 3 gains). The exposure trials (E, E2) run when the current exposure is 1.5 s or
  * longer.
  */
 export function estimateStepSeconds(step, options = {}) {
@@ -300,7 +346,9 @@ export function estimateStepSeconds(step, options = {}) {
     case 'Trials':
       return (
         ((options.repeatBaseline === false ? 3 : 4) +
-          (options.exposureTrial !== false && options.currentExposureSeconds >= 1.5 ? 1 : 0)) *
+          (options.exposureTrial === false
+            ? 0
+            : shorterTrialExposures(options.currentExposureSeconds).length)) *
         ((options.trialSeconds || 120) + TRIAL_SETTLE_SECONDS)
       );
     default:
@@ -487,9 +535,9 @@ export function pulseResponse(pulses, seeing = null) {
     });
 }
 
-/** Trials in display order A, B, C, A2 (unknown ids after them). */
+/** Trials in display order A, B, C, E, E2, A2 (unknown ids after them). */
 export function orderedTrials(trials) {
-  const order = ['A', 'B', 'C', 'E', 'A2'];
+  const order = ['A', 'B', 'C', 'E', 'E2', 'A2'];
   return [...(Array.isArray(trials) ? trials : [])].sort((a, b) => {
     const ia = order.indexOf(a.id);
     const ib = order.indexOf(b.id);

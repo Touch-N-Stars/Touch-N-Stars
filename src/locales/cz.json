@@ -2801,7 +2801,7 @@
           },
           "descriptions": {
             "GuideSource": "Odkud pocházejí pointační snímky. Pointační kamera: kamera ve slotu pointační kamery ve vybavení. Simulátor: vestavěná simulace montáže, oblohy a kamery, pro vyzkoušení pointace bez hardwaru nebo za denního světla.",
-            "ExposureSeconds": "Expoziční čas každého pointačního snímku. 1–4 s vyprůměrují většinu seeingu; kratší expozice reagují rychleji, ale honí seeing, delší reagují pomalu na vítr a chyby montáže.",
+            "ExposureSeconds": "Doba expozice každého naváděcího snímku. Kratší expozice reagují rychleji na vítr a chyby montáže; min. pohyb jim brání honit seeing. 1 s vyhovuje většině montáží; delší expozice použijte, když je naváděcí hvězda příliš slabá.",
             "Gain": "-1 ponechá aktuální zesílení nastavené v ovladači. (Zesílení v PHD2 je v procentech, proto se nepřebírá.)",
             "Offset": "-1 ponechá aktuální offset nastavený v ovladači.",
             "Binning": "Hardwarový binning pointačních snímků. 2×2 zvýší citlivost kamery a zrychlí přenos snímků za cenu rozlišení; užitečné s malými pixely nebo dlouhou ohniskovou vzdáleností pointace. Po změně znovu kalibrujte.",
@@ -2970,8 +2970,8 @@
             "trialSeconds": "Délka každého testu",
             "repeatBaseline": "Na konci zopakovat současné nastavení",
             "repeatBaselineHint": "Odhalí změnu seeingu nebo mraky během testů.",
-            "exposureTrial": "Vyzkoušet kratší expozici",
-            "exposureTrialHint": "Od 1,5 s navíc jednou navádí s poloviční expozicí (nejméně 1 s). Mnoho montáží navádí lépe s kratšími expozicemi.",
+            "exposureTrial": "Vyzkoušet kratší expozice",
+            "exposureTrialHint": "Od 1,5 s navádí také s 1 s a s expozicí v polovině cesty k současné (např. 1,5 s při 2,5 s). Mnoho montáží navádí lépe s kratšími expozicemi.",
             "allowCalibration": "Kalibrovat v případě potřeby",
             "allowCalibrationHint": "Bez kalibrace nelze spustit drift, odezvu montáže ani testy.",
             "minutes": "{value} min",
@@ -2985,6 +2985,13 @@
           "notConnected": "Připojte PINS Native Guider, abyste mohli použít Coach.",
           "calibratingBlock": "Počkejte na dokončení kalibrace.",
           "darksBlock": "Počkejte, až bude knihovna darků vytvořena.",
+          "slewingBlock": "Montáž najíždí do kalibrační pozice. Coach začne, až tam dorazí; Stop v ovládání guideru najetí zruší.",
+          "position": {
+            "title": "Montáž míří tam, kde Coach měří špatně",
+            "nearPole": "Dec {declination} je blízko pólu. Naváděcí pulzy v RA tam hvězdou téměř nepohnou, takže kalibrace a výsledky RA jsou nespolehlivé. Za {maxDeclination} Coach nezačne.",
+            "low": "Montáž míří jen {altitude} nad obzor. Vzduch tam hvězdu víc rozmazává a posouvá, což kazí měření.",
+            "slewNeeded": "Zvolte najetí: za Dec {maxDeclination} Coach nezačne."
+          },
           "start": "Spustit Coach",
           "starting": "Spouští se…",
           "startFailed": "Coach se nepodařilo spustit",
@@ -3254,7 +3261,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "I s vypnutým naváděním hvězda kvůli atmosféře poskakuje o {rmsArcsec}. Tento rychlý pohyb žádné navádění nedokáže sledovat: je to spodní hranice vašeho RMS navádění.",
                 "fix_good": "Dobré podmínky: teď se projeví i malé chyby montáže, takže jemné ladění se vyplatí.",
-                "fix": "Nehoňte seeing: navádějte s expozicí 2 s nebo delší a s min. pohybem těsně nad seeingem."
+                "fix": "Zabraňte guideru honit seeing min. pohybem těsně nad seeingem. Ten, ne dlouhá expozice, seeing filtruje: krátká expozice (kolem 1 s) reaguje rychleji na vlastní chyby montáže."
               },
               "minMove": {
                 "title": "Min. pohyb podle seeingu: RA {raPx}, Dec {decPx}",
@@ -3419,6 +3426,11 @@
                 "title": "Guider není připojen",
                 "why": "Coach potřebuje připojený nativní guider s kamerou a montáží.",
                 "fix": "Připojte guider (a montáž pro pulzní navádění) a zkuste to znovu."
+              },
+              "nearPole": {
+                "title": "Příliš blízko pólu",
+                "why": "Montáž míří na Dec {declinationDeg}. Naváděcí pulzy v RA tam hvězdou téměř nepohnou, takže kalibrace selže nebo měří hlavně šum.",
+                "fix": "Najeďte na deklinaci v rozsahu ±{maxDeclinationDeg}, nejlépe blízko nebeského rovníku, nebo při spuštění Coache zvolte najetí do kalibrační pozice."
               },
               "noStar": {
                 "title": "Nenalezena naváděcí hvězda",

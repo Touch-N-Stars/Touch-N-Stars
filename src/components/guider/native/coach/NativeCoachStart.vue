@@ -18,6 +18,61 @@
       <span>{{ k('guidingWarning') }}</span>
     </div>
 
+    <!-- The mount points where the coach measures badly: offer the slew to a calibration position -->
+    <div
+      v-if="positionWarning"
+      class="flex flex-col gap-3 rounded-control border border-status-warn/50 bg-status-warn/10 p-3"
+      data-testid="native-coach-position"
+    >
+      <div class="flex items-start gap-2 text-sm">
+        <ExclamationTriangleIcon class="mt-0.5 h-5 w-5 shrink-0 text-status-warn" />
+        <div class="flex min-w-0 flex-col gap-1">
+          <span class="font-semibold text-status-warn">{{ k('position.title') }}</span>
+          <span v-for="issue in positionWarning.issues" :key="issue" class="text-content">
+            {{ k(`position.${issue}`, positionParams) }}
+          </span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span id="native-coach-slew-label" class="text-sm font-medium text-content">
+          {{ t('components.guider.native.controls.calibrationSlew') }}
+        </span>
+        <div
+          class="grid grid-cols-2 gap-1 rounded-control bg-surface-1 border border-line p-1"
+          role="radiogroup"
+          aria-labelledby="native-coach-slew-label"
+        >
+          <button
+            v-for="choice in SLEW_CHOICES"
+            :key="choice"
+            type="button"
+            role="radio"
+            class="min-h-touch rounded-chip px-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="
+              coachSlew === choice
+                ? 'bg-accent-action text-white'
+                : 'text-content-muted hover:bg-surface-2'
+            "
+            :aria-checked="coachSlew === choice"
+            :disabled="choice !== 'none' && !!slewBlocker"
+            :data-testid="`native-coach-slew-${choice}`"
+            @click="coachSlew = choice"
+          >
+            {{ t(`components.guider.native.controls.calibrationSlewChoices.${choice}`) }}
+          </button>
+        </div>
+        <p v-if="slewBlocker" class="text-xs text-status-warn">
+          {{ t(`components.guider.native.controls.${slewBlocker}`) }}
+        </p>
+        <p v-else-if="slewMissing" class="text-xs text-status-danger">
+          {{ k('position.slewNeeded', positionParams) }}
+        </p>
+        <p v-else class="text-xs text-content-muted">
+          {{ t('components.guider.native.controls.calibrationSlewHint') }}
+        </p>
+      </div>
+    </div>
+
     <!-- Steps -->
     <div class="flex flex-col gap-1.5">
       <span class="text-xs font-bold uppercase tracking-wider text-content-faint">
@@ -249,10 +304,13 @@ import {
 } from '@heroicons/vue/24/outline';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import {
+  COACH_POSITION,
   COACH_STEPS,
   DEFAULT_EXPOSURES,
+  coachPosition,
   defaultGains,
   estimateStepSeconds,
   estimateTotalSeconds,
@@ -265,6 +323,9 @@ const OPTIONS_KEY = 'nativeGuider.coach.options';
 const FRAME_CHOICES = [3, 5, 8, 10];
 const DRIFT_CHOICES = [120, 180, 300, 600];
 const TRIAL_CHOICES = [60, 120, 180, 300];
+// Slew before the session: none, or to the calibration position on the mount's current side (stay)
+// or on the east or west side of the sky, as in the Calibrate dialog.
+const SLEW_CHOICES = ['none', 'stay', 'east', 'west'];
 const DEFAULTS = {
   steps: [...COACH_STEPS],
   frames: 5,
@@ -276,6 +337,7 @@ const DEFAULTS = {
 };
 
 const store = useNativeGuiderStore();
+const mainStore = apiStore();
 const { t } = useI18n();
 const { k, stepName, duration, message } = useCoachText();
 
@@ -390,8 +452,44 @@ const guidingActive = computed(() =>
   ['Guiding', 'Paused', 'LostLock', 'Reacquiring'].includes(store.state)
 );
 
+// Mount position: only the steps after the camera check guide the mount, so only they care.
+const position = computed(() => coachPosition(mainStore.mountInfo));
+const positionWarning = computed(() =>
+  position.value?.issues.length && selected.value.some((s) => s !== 'CameraCheck')
+    ? position.value
+    : null
+);
+const positionParams = computed(() => ({
+  declination:
+    position.value?.declination == null ? '' : `${position.value.declination.toFixed(1)}°`,
+  altitude: position.value?.altitude == null ? '' : `${Math.round(position.value.altitude)}°`,
+  maxDeclination: `${COACH_POSITION.maxDeclination}°`,
+}));
+/** Locale key (under controls) of why the mount cannot slew, or null. */
+const slewBlocker = computed(() => {
+  if (!mainStore.mountInfo?.Connected) return 'calibrationSlewNoMount';
+  if (mainStore.mountInfo.AtPark) return 'calibrationSlewParked';
+  return null;
+});
+// No slew unless the guider would refuse the position: a slew moves the mount off the target.
+const coachSlew = ref('none');
+watch(
+  () => positionWarning.value?.refused === true,
+  (refused) => {
+    coachSlew.value = refused && !slewBlocker.value ? 'stay' : 'none';
+  },
+  { immediate: true }
+);
+const slewChosen = computed(() =>
+  positionWarning.value && !slewBlocker.value && coachSlew.value !== 'none' ? coachSlew.value : null
+);
+// Too close to the pole and no slew chosen: the guider would refuse the session.
+const slewMissing = computed(() => positionWarning.value?.refused === true && !slewChosen.value);
+const slewing = computed(() => store.summary.calibrationSlew === true);
+
 const blocker = computed(() => {
   if (!store.isAvailable) return k('notConnected');
+  if (slewing.value) return k('slewingBlock');
   if (store.state === 'Calibrating') return k('calibratingBlock');
   if (store.darksRunning) return k('darksBlock');
   return '';
@@ -403,6 +501,7 @@ const canStart = computed(
     !blocker.value &&
     selected.value.length > 0 &&
     !combinationsError.value &&
+    !slewMissing.value &&
     !store.coachPending
 );
 
@@ -422,7 +521,8 @@ async function start() {
   starting.value = true;
   writeStored();
   try {
-    const result = await store.startCoach({
+    const slew = slewChosen.value;
+    const options = {
       steps: COACH_STEPS.filter((s) => selected.value.includes(s)),
       exposureSeconds: exposuresCustom.value ? exposures.value : [],
       gains: gainsCustom.value ? gains.value : [],
@@ -432,7 +532,10 @@ async function start() {
       repeatBaseline: repeatBaseline.value,
       exposureTrial: exposureTrial.value,
       allowCalibration: allowCalibration.value,
-    });
+    };
+    const result = slew
+      ? await store.startCoach(options, { slew })
+      : await store.startCoach(options);
     if (!result.ok && !result.cancelled) {
       const text = message(result.messageCode, result.message, result.messageParameters);
       startError.value = {

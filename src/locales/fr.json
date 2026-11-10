@@ -2801,7 +2801,7 @@
           },
           "descriptions": {
             "GuideSource": "D'où viennent les images de guidage. Caméra de guidage : la caméra de l'emplacement caméra de guidage de l'équipement. Simulateur : une simulation intégrée de la monture, du ciel et de la caméra, pour essayer le guidage sans matériel ou en plein jour.",
-            "ExposureSeconds": "Temps de pose de chaque image de guidage. 1–4 s lissent l'essentiel du seeing ; des poses plus courtes réagissent plus vite mais poursuivent le seeing, des poses plus longues réagissent lentement au vent et aux erreurs de monture.",
+            "ExposureSeconds": "Temps de pose de chaque image de guidage. Les poses plus courtes réagissent plus vite au vent et aux erreurs de la monture ; le mouvement min. les empêche de courir après le seeing. 1 s convient à la plupart des montures ; utilisez des poses plus longues quand l'étoile guide est trop faible.",
             "Gain": "-1 conserve le gain actuel du pilote. (Le gain de PHD2 est un pourcentage, il n'est donc pas repris.)",
             "Offset": "-1 conserve l'offset actuel du pilote.",
             "Binning": "Binning matériel des images de guidage. 2×2 rend la caméra plus sensible et le transfert des images plus rapide, au prix de la résolution ; utile avec de petits pixels ou une longue focale de guidage. Recalibrer après un changement.",
@@ -2970,8 +2970,8 @@
             "trialSeconds": "Durée par essai",
             "repeatBaseline": "Répéter les réglages actuels à la fin",
             "repeatBaselineHint": "Détecte un seeing changeant ou des nuages pendant les essais.",
-            "exposureTrial": "Essayer une pose plus courte",
-            "exposureTrialHint": "À partir de 1,5 s, guide aussi une fois avec la moitié de la pose (au moins 1 s). Beaucoup de montures guident mieux avec des poses plus courtes.",
+            "exposureTrial": "Essayer des poses plus courtes",
+            "exposureTrialHint": "À partir de 1,5 s, guide aussi avec 1 s et avec une pose à mi-chemin de la pose actuelle (p. ex. 1,5 s pour 2,5 s). Beaucoup de montures guident mieux avec des poses plus courtes.",
             "allowCalibration": "Calibrer si nécessaire",
             "allowCalibrationHint": "Sans calibration, la dérive, la réponse de la monture et les essais ne peuvent pas s'exécuter.",
             "minutes": "{value} min",
@@ -2985,6 +2985,13 @@
           "notConnected": "Connectez l'autoguideur natif PINS pour utiliser le coach.",
           "calibratingBlock": "Attendez la fin de la calibration.",
           "darksBlock": "Attendez la fin de la création de la bibliothèque de darks.",
+          "slewingBlock": "La monture se déplace vers la position de calibration. Le coach démarre à son arrivée ; Arrêter dans les commandes de l'autoguideur annule le déplacement.",
+          "position": {
+            "title": "La monture pointe là où le coach mesure mal",
+            "nearPole": "Dec {declination} est proche du pôle. Les impulsions de guidage en AD y déplacent à peine l'étoile, la calibration et les résultats en AD deviennent donc peu fiables. Au-delà de {maxDeclination}, le coach ne démarre pas.",
+            "low": "La monture ne pointe qu'à {altitude} au-dessus de l'horizon. L'air y brouille et déplace davantage l'étoile, ce qui fausse les mesures.",
+            "slewNeeded": "Choisissez un déplacement : au-delà de Dec {maxDeclination}, le coach ne démarre pas."
+          },
           "start": "Lancer le coach",
           "starting": "Démarrage…",
           "startFailed": "Le coach n'a pas pu démarrer",
@@ -3254,7 +3261,7 @@
                 "title": "Seeing : {rmsArcsec} ({level})",
                 "why": "Guidage coupé, l'étoile danse encore de {rmsArcsec} à cause de l'atmosphère. Aucun guidage ne peut suivre ce mouvement rapide : c'est le plancher de votre RMS guidé.",
                 "fix_good": "Bonnes conditions : les petites erreurs de la monture deviennent visibles, un réglage fin est donc payant.",
-                "fix": "Ne courez pas après le seeing : guidez avec des poses de 2 s ou plus et un mouvement min. juste au-dessus du seeing."
+                "fix": "Empêchez l'autoguideur de courir après le seeing avec un mouvement min. juste au-dessus. C'est cela, et non une pose longue, qui filtre le seeing : une pose courte (environ 1 s) réagit plus vite aux erreurs propres de la monture."
               },
               "minMove": {
                 "title": "Mouvement min. selon le seeing : RA {raPx}, Dec {decPx}",
@@ -3419,6 +3426,11 @@
                 "title": "Autoguideur non connecté",
                 "why": "Le coach a besoin de l'autoguideur natif connecté, avec sa caméra et sa monture.",
                 "fix": "Connectez l'autoguideur (et la monture pour le guidage par impulsions) et réessayez."
+              },
+              "nearPole": {
+                "title": "Trop près du pôle",
+                "why": "La monture pointe à Dec {declinationDeg}. Les impulsions de guidage en AD y déplacent à peine l'étoile, la calibration échoue donc ou mesure surtout du bruit.",
+                "fix": "Déplacez-vous vers une déclinaison comprise dans ±{maxDeclinationDeg}, idéalement près de l'équateur céleste, ou choisissez un déplacement vers une position de calibration au démarrage du coach."
               },
               "noStar": {
                 "title": "Aucune étoile guide trouvée",

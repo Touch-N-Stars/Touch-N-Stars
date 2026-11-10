@@ -2801,7 +2801,7 @@
           },
           "descriptions": {
             "GuideSource": "Da dove arrivano i frame di guida. Camera di guida: la camera nello slot camera di guida dell'attrezzatura. Simulatore: una simulazione integrata di montatura, cielo e camera, per provare la guida senza hardware o di giorno.",
-            "ExposureSeconds": "Tempo di esposizione di ogni frame di guida. 1–4 s mediano gran parte del seeing; esposizioni più brevi reagiscono prima ma inseguono il seeing, quelle più lunghe reagiscono lentamente al vento e agli errori della montatura.",
+            "ExposureSeconds": "Tempo di esposizione di ogni immagine di guida. Le esposizioni più brevi reagiscono più in fretta al vento e agli errori della montatura; il movimento minimo impedisce loro di inseguire il seeing. 1 s va bene per la maggior parte delle montature; usa esposizioni più lunghe quando la stella guida è troppo debole.",
             "Gain": "-1 mantiene il guadagno attuale del driver. (Il guadagno di PHD2 è una percentuale, quindi non viene importato.)",
             "Offset": "-1 mantiene l'offset attuale del driver.",
             "Binning": "Binning hardware dei frame di guida. 2×2 rende la camera più sensibile e il trasferimento più rapido, a scapito della risoluzione; utile con pixel piccoli o una focale di guida lunga. Ricalibrare dopo una modifica.",
@@ -2970,8 +2970,8 @@
             "trialSeconds": "Durata per prova",
             "repeatBaseline": "Ripeti le impostazioni attuali alla fine",
             "repeatBaselineHint": "Rileva variazioni di seeing o nuvole durante le prove.",
-            "exposureTrial": "Prova un'esposizione più breve",
-            "exposureTrialHint": "Da 1,5 s in su, guida anche una volta con metà dell'esposizione (almeno 1 s). Molte montature guidano meglio con esposizioni più brevi.",
+            "exposureTrial": "Prova esposizioni più brevi",
+            "exposureTrialHint": "Da 1,5 s in su guida anche con 1 s e con un'esposizione a metà strada da quella attuale (ad es. 1,5 s con 2,5 s). Molte montature guidano meglio con esposizioni più brevi.",
             "allowCalibration": "Calibra se necessario",
             "allowCalibrationHint": "Senza calibrazione non si possono eseguire deriva, risposta della montatura e prove.",
             "minutes": "{value} min",
@@ -2985,6 +2985,13 @@
           "notConnected": "Connetti il PINS Native Guider per usare il coach.",
           "calibratingBlock": "Attendi la fine della calibrazione.",
           "darksBlock": "Attendi che la libreria dark sia creata.",
+          "slewingBlock": "La montatura si sta spostando alla posizione di calibrazione. Il coach parte quando arriva; Stop nei comandi della guida annulla lo spostamento.",
+          "position": {
+            "title": "La montatura punta dove il coach misura male",
+            "nearPole": "Dec {declination} è vicina al polo. Lì gli impulsi di guida in AR spostano appena la stella, quindi la calibrazione e i risultati in AR diventano inaffidabili. Oltre {maxDeclination} il coach non parte.",
+            "low": "La montatura punta solo {altitude} sopra l'orizzonte. Lì l'aria sfoca e sposta di più la stella, il che rovina le misure.",
+            "slewNeeded": "Scegli uno spostamento: oltre Dec {maxDeclination} il coach non parte."
+          },
           "start": "Avvia coach",
           "starting": "Avvio…",
           "startFailed": "Impossibile avviare il coach",
@@ -3254,7 +3261,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Con la guida disattivata la stella balla comunque di {rmsArcsec} a causa dell'atmosfera. Nessuna guida può seguire questo movimento rapido: è il limite minimo del tuo RMS guidato.",
                 "fix_good": "Buone condizioni: ora si vedono i piccoli errori della montatura, quindi la regolazione fine ripaga.",
-                "fix": "Non inseguire il seeing: guida con 2 s o più e un movimento minimo appena sopra il seeing."
+                "fix": "Impedisci alla guida di inseguire il seeing con un movimento minimo appena sopra. È questo, non un'esposizione lunga, a filtrare il seeing: un'esposizione breve (circa 1 s) reagisce più in fretta agli errori propri della montatura."
               },
               "minMove": {
                 "title": "Movimento min. dal seeing: RA {raPx}, Dec {decPx}",
@@ -3419,6 +3426,11 @@
                 "title": "Guida non connessa",
                 "why": "Il coach richiede il native guider connesso, con la sua camera e la montatura.",
                 "fix": "Connetti la guida (e la montatura per il pulse guiding) e riprova."
+              },
+              "nearPole": {
+                "title": "Troppo vicino al polo",
+                "why": "La montatura punta a Dec {declinationDeg}. Lì gli impulsi di guida in AR spostano appena la stella, quindi la calibrazione fallisce o misura soprattutto rumore.",
+                "fix": "Sposta la montatura a una declinazione entro ±{maxDeclinationDeg}, idealmente vicino all'equatore celeste, oppure scegli uno spostamento a una posizione di calibrazione all'avvio del coach."
               },
               "noStar": {
                 "title": "Nessuna stella guida trovata",

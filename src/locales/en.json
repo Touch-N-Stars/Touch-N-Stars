@@ -2842,7 +2842,7 @@
           },
           "descriptions": {
             "GuideSource": "Where the guide frames come from. Guide camera: the camera in the guide camera slot of the equipment. Simulator: a built-in simulation of mount, sky and camera, to try the guider without hardware or in daylight.",
-            "ExposureSeconds": "Exposure time of each guide frame. 1–4 s average out most of the seeing; shorter exposures react faster but chase the seeing, longer ones react slowly to wind and mount errors.",
+            "ExposureSeconds": "Exposure time of each guide frame. Shorter exposures react faster to wind and mount errors; the min-move keeps them from chasing the seeing. 1 s suits most mounts; use longer exposures when the guide star is too faint.",
             "Gain": "Gain of the guide camera for the guide frames. -1 (default) uses the gain of the guide camera's settings. Higher gain brightens faint stars but adds noise. PHD2's gain is a percentage, so it is not carried over.",
             "Offset": "Offset (black level) of the guide camera. -1 (default) uses the offset of the guide camera's settings. Raise it only if the background of the guide frames is clipped to black.",
             "Binning": "Hardware binning of the guide frames. 2×2 makes the camera more sensitive and the frames faster to transfer, at the cost of resolution; useful with small pixels or a long guide focal length. Calibrate again after a change.",
@@ -3011,8 +3011,8 @@
             "trialSeconds": "Duration per trial",
             "repeatBaseline": "Repeat the current settings at the end",
             "repeatBaselineHint": "Detects changing seeing or clouds during the trials.",
-            "exposureTrial": "Try a shorter exposure",
-            "exposureTrialHint": "From 1.5 s up, also guides once with half the exposure (at least 1 s). Many mounts guide better with shorter exposures.",
+            "exposureTrial": "Try shorter exposures",
+            "exposureTrialHint": "From 1.5 s up, also guides with 1 s and with an exposure halfway to the current one (e.g. 1.5 s at 2.5 s). Many mounts guide better with shorter exposures.",
             "allowCalibration": "Calibrate when needed",
             "allowCalibrationHint": "Without a calibration, drift, mount response and trials cannot run.",
             "minutes": "{value} min",
@@ -3026,6 +3026,13 @@
           "notConnected": "Connect the PINS Native Guider to use the coach.",
           "calibratingBlock": "Wait until the calibration has finished.",
           "darksBlock": "Wait until the dark library is built.",
+          "slewingBlock": "The mount is slewing to the calibration position. The coach starts when it arrives; Stop in the guider controls cancels the slew.",
+          "position": {
+            "title": "The mount points where the coach measures badly",
+            "nearPole": "Dec {declination} is close to the pole. RA guide pulses barely move the star there, so the calibration and the RA results get unreliable. Beyond {maxDeclination} the coach does not start.",
+            "low": "The mount points only {altitude} above the horizon. The air there blurs and shifts the star more, which spoils the measurements.",
+            "slewNeeded": "Choose a slew: beyond Dec {maxDeclination} the coach does not start."
+          },
           "start": "Start coach",
           "starting": "Starting…",
           "startFailed": "The coach could not start",
@@ -3295,7 +3302,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "With guiding switched off the star still dances by {rmsArcsec} because of the atmosphere. No guiding can follow this fast movement: it is the floor of your guided RMS.",
                 "fix_good": "Good conditions: small errors of the mount now show, so fine-tuning pays off.",
-                "fix": "Do not chase the seeing: guide with 2 s or longer and a min-move just above the seeing."
+                "fix": "Keep the guider from chasing the seeing with a min-move just above it. That, not a long exposure, is what filters the seeing: a short exposure (around 1 s) reacts faster to the mount's own errors."
               },
               "minMove": {
                 "title": "Min-move from the seeing: RA {raPx}, Dec {decPx}",
@@ -3460,6 +3467,11 @@
                 "title": "Guider not connected",
                 "why": "The coach needs the connected native guider with its camera and mount.",
                 "fix": "Connect the guider (and the mount for pulse guiding) and try again."
+              },
+              "nearPole": {
+                "title": "Too close to the pole",
+                "why": "The mount points at Dec {declinationDeg}. RA guide pulses barely move the star there, so the calibration fails or measures mostly noise.",
+                "fix": "Slew to a declination within ±{maxDeclinationDeg}, ideally near the celestial equator, or choose a slew to a calibration position when you start the coach."
               },
               "noStar": {
                 "title": "No guide star found",

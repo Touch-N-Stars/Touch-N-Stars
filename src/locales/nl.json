@@ -2801,7 +2801,7 @@
           },
           "descriptions": {
             "GuideSource": "Waar de guideframes vandaan komen. Guidecamera: de camera in het guidecameraslot van de apparatuur. Simulator: een ingebouwde simulatie van montering, hemel en camera, om de guider zonder hardware of bij daglicht te proberen.",
-            "ExposureSeconds": "Belichtingstijd van elk guideframe. 1–4 s middelen het grootste deel van de seeing uit; kortere belichtingen reageren sneller maar jagen de seeing na, langere reageren traag op wind en monteringsfouten.",
+            "ExposureSeconds": "Belichtingstijd van elk guidebeeld. Kortere belichtingen reageren sneller op wind en fouten van de montering; de min-move voorkomt dat ze de seeing achternajagen. 1 s past bij de meeste monteringen; gebruik langere belichtingen als de guidester te zwak is.",
             "Gain": "-1 behoudt de huidige gain van het stuurprogramma. (De gain van PHD2 is een percentage en wordt daarom niet overgenomen.)",
             "Offset": "-1 behoudt de huidige offset van het stuurprogramma.",
             "Binning": "Hardwarebinning van de guideframes. 2×2 maakt de camera gevoeliger en de frames sneller over te dragen, ten koste van resolutie; nuttig bij kleine pixels of een lange guidebrandpuntsafstand. Kalibreer opnieuw na een wijziging.",
@@ -2970,8 +2970,8 @@
             "trialSeconds": "Duur per test",
             "repeatBaseline": "Huidige instellingen aan het eind herhalen",
             "repeatBaselineHint": "Detecteert wisselende seeing of wolken tijdens de tests.",
-            "exposureTrial": "Kortere belichting proberen",
-            "exposureTrialHint": "Vanaf 1,5 s wordt ook één keer met de halve belichting geguided (minstens 1 s). Veel montages guiden beter met kortere belichtingen.",
+            "exposureTrial": "Kortere belichtingen proberen",
+            "exposureTrialHint": "Vanaf 1,5 s wordt ook met 1 s geguided en met een belichting halverwege de huidige (bijv. 1,5 s bij 2,5 s). Veel monteringen guiden beter met kortere belichtingen.",
             "allowCalibration": "Kalibreren indien nodig",
             "allowCalibrationHint": "Zonder kalibratie kunnen drift, monteringsreactie en tests niet lopen.",
             "minutes": "{value} min",
@@ -2985,6 +2985,13 @@
           "notConnected": "Verbind de PINS Native Guider om de coach te gebruiken.",
           "calibratingBlock": "Wacht tot de kalibratie klaar is.",
           "darksBlock": "Wacht tot de dark-bibliotheek is opgebouwd.",
+          "slewingBlock": "De montering draait naar de kalibratiepositie. De coach start zodra ze er is; Stop in de guiderbediening breekt het draaien af.",
+          "position": {
+            "title": "De montering wijst naar een plek waar de coach slecht meet",
+            "nearPole": "Dec {declination} ligt dicht bij de pool. RA-guidepulsen bewegen de ster daar nauwelijks, dus de kalibratie en de RA-resultaten worden onbetrouwbaar. Voorbij {maxDeclination} start de coach niet.",
+            "low": "De montering wijst maar {altitude} boven de horizon. De lucht daar vervaagt en verschuift de ster meer, wat de metingen bederft.",
+            "slewNeeded": "Kies een draaibeweging: voorbij Dec {maxDeclination} start de coach niet."
+          },
           "start": "Coach starten",
           "starting": "Starten…",
           "startFailed": "De coach kon niet starten",
@@ -3254,7 +3261,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Met guiding uit danst de ster nog steeds {rmsArcsec} door de atmosfeer. Geen guiding kan deze snelle beweging volgen: dit is de ondergrens van je guide-RMS.",
                 "fix_good": "Goede omstandigheden: kleine fouten van de montering worden nu zichtbaar, dus fijnafstemming loont.",
-                "fix": "Jaag de seeing niet na: guide met 2 s of langer en een min-move net boven de seeing."
+                "fix": "Voorkom met een min-move net boven de seeing dat de guider de seeing achternajaagt. Dat filtert de seeing, niet een lange belichting: een korte belichting (rond 1 s) reageert sneller op de eigen fouten van de montering."
               },
               "minMove": {
                 "title": "Min-move uit de seeing: RA {raPx}, Dec {decPx}",
@@ -3419,6 +3426,11 @@
                 "title": "Guider niet verbonden",
                 "why": "De coach heeft de verbonden native guider met zijn camera en montering nodig.",
                 "fix": "Verbind de guider (en de montering voor pulse guiding) en probeer het opnieuw."
+              },
+              "nearPole": {
+                "title": "Te dicht bij de pool",
+                "why": "De montering wijst naar Dec {declinationDeg}. RA-guidepulsen bewegen de ster daar nauwelijks, dus de kalibratie mislukt of meet vooral ruis.",
+                "fix": "Draai naar een declinatie binnen ±{maxDeclinationDeg}, liefst dicht bij de hemelequator, of kies bij het starten van de coach een draaibeweging naar een kalibratiepositie."
               },
               "noStar": {
                 "title": "Geen guide-ster gevonden",
