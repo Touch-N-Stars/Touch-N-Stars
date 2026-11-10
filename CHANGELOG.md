@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Framing: The framing image controls, the mosaic and rotation settings, the target search and the altitude chart now use the same cards and colours as the rest of the app.
 - Plate solving: The FITS file solver in framing, the atlas and the sequence target now shows its settings, progress and result in the same colours as the rest of the app.
 - Mount: The mount controls, the slew rate sliders, the slew and center options and the mount info now use the same colours as the rest of the app, and the mount shows the same notice as the other devices when it is not connected.
+- Camera: The camera settings, the cooler panel and the capture controls now use the same colours as the rest of the app; cooling, holding and warming keep their own colours.
 
 ### Fixed
 
