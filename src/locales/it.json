@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Elaborazione frame lenta",
-            "explanation": "L'elaborazione di un frame di guida ha richiesto più tempo del previsto, ritardando le correzioni.",
-            "fix": "Riduci il numero massimo di stelle guida, usa il binning o un subframe, oppure controlla il carico della CPU."
+            "explanation": "Nell'ultimo minuto, almeno la metà dei frame di guida ha richiesto troppo tempo per l'elaborazione, quindi le correzioni sono arrivate in ritardo alla montatura. Un singolo frame lento ogni tanto è normale e viene solo annotato nel log.",
+            "fix": "Controlla cos'altro tiene occupato il computer, come il live stacking o altri programmi. Altrimenti riduci «Max stelle guida», usa il binning o un subframe, oppure disattiva la riduzione rumore."
+          },
+          "SlowGuideFrame": {
+            "title": "Frame di guida lento",
+            "explanation": "L'elaborazione di un frame di guida ha richiesto più tempo del solito, quindi la sua correzione è arrivata un po' in ritardo. Succede ogni tanto quando il computer è impegnato in altro, come il salvataggio, il plate solving o lo stacking di un'immagine della camera principale, e non crea problemi.",
+            "fix": "Nessuna azione necessaria. La guida avvisa se i frame restano lenti per un minuto."
           },
           "SettleTimeout": {
             "title": "Timeout di assestamento",

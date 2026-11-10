@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Pomalé zpracování snímků",
-            "explanation": "Zpracování naváděcího snímku trvalo déle, než se čekalo, což zpožďuje korekce.",
-            "fix": "Snižte max. počet naváděcích hvězd, použijte binning nebo výřez snímku, nebo zkontrolujte zatížení CPU."
+            "explanation": "Během poslední minuty trvalo zpracování nejméně poloviny naváděcích snímků příliš dlouho, takže korekce dorazily k montáži pozdě. Jednotlivý pomalý snímek občas je normální a jen se zapíše do logu.",
+            "fix": "Zkontrolujte, co dalšího vytěžuje počítač, třeba live stacking nebo jiné programy. Jinak snižte „Max. naváděcích hvězd“, použijte binning nebo výřez snímku, nebo vypněte redukci šumu."
+          },
+          "SlowGuideFrame": {
+            "title": "Pomalý naváděcí snímek",
+            "explanation": "Zpracování jednoho naváděcího snímku trvalo déle než obvykle, takže jeho korekce přišla o něco později. Občas se to stane, když je počítač zaneprázdněn jinou prací, například ukládáním, platesolvingem nebo skládáním snímku z hlavní kamery, a nic to nevadí.",
+            "fix": "Není třeba nic dělat. Guider upozorní, když snímky zůstanou pomalé celou minutu."
           },
           "SettleTimeout": {
             "title": "Vypršel čas ustálení",

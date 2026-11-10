@@ -2522,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Frame-Verarbeitung langsam",
-            "explanation": "Die Verarbeitung eines Guide-Frames hat länger gedauert als erwartet, was die Korrekturen verzögert.",
-            "fix": "Verringere die maximale Anzahl an Guide-Sternen, nutze Binning oder einen Bildausschnitt oder prüfe die CPU-Last."
+            "explanation": "In der letzten Minute hat die Verarbeitung von mindestens der Hälfte der Guide-Frames zu lange gedauert, daher kamen die Korrekturen verspätet bei der Montierung an. Ein einzelner langsamer Frame ab und zu ist normal und wird nur im Log vermerkt.",
+            "fix": "Prüfe, was den Rechner sonst noch beschäftigt, etwa Live-Stacking oder andere Programme. Ansonsten verringere „Max. Guide-Sterne“, nutze Binning oder einen Bildausschnitt oder schalte die Rauschreduzierung aus."
+          },
+          "SlowGuideFrame": {
+            "title": "Langsamer Guide-Frame",
+            "explanation": "Die Verarbeitung eines Guide-Frames hat länger gedauert als sonst, daher kam seine Korrektur etwas später. Das passiert ab und zu, wenn der Rechner mit anderem beschäftigt ist, etwa mit dem Speichern, Plate-Solving oder Stacken eines Bildes der Hauptkamera, und schadet nicht.",
+            "fix": "Nichts zu tun. Der Guider warnt, wenn Frames eine Minute lang langsam bleiben."
           },
           "SettleTimeout": {
             "title": "Zeitlimit beim Einpendeln",

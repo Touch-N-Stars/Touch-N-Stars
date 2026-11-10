@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Wolne przetwarzanie klatek",
-            "explanation": "Przetwarzanie klatki prowadzenia trwało dłużej niż oczekiwano, co opóźnia korekty.",
-            "fix": "Zmniejsz maks. liczbę gwiazd prowadzących, użyj binningu lub wycinka klatki albo sprawdź obciążenie CPU."
+            "explanation": "W ciągu ostatniej minuty przetwarzanie co najmniej połowy klatek prowadzenia trwało zbyt długo, więc korekty docierały do montażu z opóźnieniem. Pojedyncza wolna klatka od czasu do czasu jest normalna i jest tylko odnotowywana w logu.",
+            "fix": "Sprawdź, co jeszcze obciąża komputer, np. live stacking lub inne programy. W przeciwnym razie zmniejsz „Maks. gwiazd prowadzących”, użyj binningu lub wycinka klatki albo wyłącz redukcję szumu."
+          },
+          "SlowGuideFrame": {
+            "title": "Wolna klatka prowadzenia",
+            "explanation": "Przetwarzanie jednej klatki prowadzenia trwało dłużej niż zwykle, więc jej korekta przyszła nieco później. Zdarza się to od czasu do czasu, gdy komputer jest zajęty czymś innym, np. zapisywaniem, plate solvingiem lub stackowaniem zdjęcia z kamery głównej, i nie szkodzi.",
+            "fix": "Nie trzeba nic robić. Guider ostrzega, gdy klatki pozostają wolne przez minutę."
           },
           "SettleTimeout": {
             "title": "Przekroczony czas stabilizacji",

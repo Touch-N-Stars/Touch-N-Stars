@@ -2522,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Processament de fotogrames lent",
-            "explanation": "Processar un fotograma de guiatge ha trigat més del previst, cosa que retarda les correccions.",
-            "fix": "Reduïu el nombre màxim d'estrelles de guiatge, useu binning o un subfotograma, o comproveu la càrrega de la CPU."
+            "explanation": "Durant l'últim minut, almenys la meitat dels fotogrames de guiatge han trigat massa a processar-se, de manera que les correccions han arribat tard a la muntura. Un fotograma lent de tant en tant és normal i només s'anota al registre.",
+            "fix": "Comproveu què més manté ocupat l'ordinador, com l'apilament en directe o altres programes. Si no, reduïu «Màx. estrelles de guiatge», useu binning o un subfotograma, o desactiveu la reducció de soroll."
+          },
+          "SlowGuideFrame": {
+            "title": "Fotograma de guiatge lent",
+            "explanation": "Un fotograma de guiatge ha trigat més del que és habitual a processar-se, de manera que la seva correcció ha arribat una mica tard. Passa de tant en tant quan l'ordinador està ocupat amb altres feines, com desar, fer el plate solving o apilar una imatge de la càmera principal, i no fa cap mal.",
+            "fix": "No cal fer res. El guiador avisa quan els fotogrames continuen lents durant un minut."
           },
           "SettleTimeout": {
             "title": "Temps d'estabilització esgotat",
