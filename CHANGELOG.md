@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Focus: The focus page, its settings and the Hocus Focus aberration inspector, tilter, star detection and optimizer now use the same cards and colours as the rest of the app. The motor speed and USB capacity choices of PINS focusers are wide enough for their full names on phones.
 - Interface: The plate solving, meridian flip, manual rotator and autofocus dialogs opened by NINA, the notifications, the switches, the number fields with their touch number pad, the image viewer and the location sync question now use the same colours as the rest of the app. The three location sync choices are larger buttons.
 - Atlas: The atlas settings, the sky survey download, the catalogue filters and the about page now use the same colours as the rest of the app. The landscape source and the custom landscape fields are larger and easier to tap.
+- Interface: The dome, filter wheel, flat device, rotator, flat assistant, framing and sequence pages now use the same cards and colours as the rest of the app, and they show the same notice when their device is not connected.
 
 ### Fixed
 

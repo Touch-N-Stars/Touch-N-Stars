@@ -12,14 +12,10 @@
         <h5 class="text-xl text-center font-bold text-white mb-4">
           {{ $t('components.filterwheel.title') }}
         </h5>
-        <div
+        <DeviceNotConnected
           v-if="!store.filterInfo.Connected && currentTab === 'showFilterwheel'"
-          class="p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
-        >
-          <p class="text-red-400 font-medium text-center">
-            {{ $t('components.filterwheel.please_connect_filterwheel') }}
-          </p>
-        </div>
+          messageKey="components.filterwheel.please_connect_filterwheel"
+        />
 
         <Transition name="slide-in" mode="out-in">
           <div
@@ -33,9 +29,7 @@
               />
             </div>
 
-            <div
-              class="mt-4 border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5"
-            >
+            <div class="mt-4 tns-card">
               <strong>{{ $t('components.filterwheel.filter') }}</strong>
               <changeFilter />
               <PinsSettingToggle
@@ -51,9 +45,7 @@
 
         <Transition name="slide-in" mode="out-in">
           <div v-if="currentTab === 'showSettings'" key="settings-tab">
-            <div
-              class="mt-4 border border-gray-700 rounded-lg shadow-lg bg-gradient-to-br from-gray-800 to-gray-900"
-            >
+            <div class="mt-4 tns-card p-0!">
               <div class="container pl-5 pb-5 pr-5">
                 <div class="mt-5">
                   <FilterSettings />
@@ -67,6 +59,7 @@
   </div>
 </template>
 <script setup>
+import DeviceNotConnected from '@/components/helpers/DeviceNotConnected.vue';
 import { ref } from 'vue';
 import changeFilter from '@/components/filterwheel/changeFilter.vue';
 import InfoFilterwheel from '@/components/filterwheel/InfoFilterwheel.vue';

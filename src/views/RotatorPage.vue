@@ -15,14 +15,10 @@
       </template>
     </SubNav>
 
-    <div
+    <DeviceNotConnected
       v-if="!store.rotatorInfo.Connected"
-      class="p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
-    >
-      <p class="text-red-400 font-medium text-center">
-        {{ $t('components.rotator.please_connect_rotator') }}
-      </p>
-    </div>
+      messageKey="components.rotator.please_connect_rotator"
+    />
     <div v-else class="container flex items-center justify-center pt-4">
       <div class="container max-w-3xl">
         <!-- Rotator Tab -->
@@ -31,9 +27,7 @@
             <div>
               <infoRotator compact class="p-3 bg-surface-1 rounded-card border border-line" />
             </div>
-            <div
-              class="mt-4 border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5"
-            >
+            <div class="mt-4 tns-card">
               <strong>{{ $t('components.rotator.control') }}</strong>
               <controlRotator />
             </div>
@@ -51,6 +45,7 @@
   </div>
 </template>
 <script setup>
+import DeviceNotConnected from '@/components/helpers/DeviceNotConnected.vue';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { EyeIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
