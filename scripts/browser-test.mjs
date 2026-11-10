@@ -1115,7 +1115,14 @@ async function checkPins(page, viewportName, backend) {
     try {
       await page.waitFor(ready, readyLabel);
     } catch (error) {
-      // Shows what the tab rendered instead.
+      // Shows what the tab rendered instead, also in the CI log where screenshots are not at hand.
+      const state = await page.evaluate(`JSON.stringify({
+        isPINS: ${STORES}.store.isPINS,
+        path: location.pathname,
+        text: document.body.innerText.slice(0, 1500),
+      })`);
+      console.error(`${viewportName} PINS ${name} timed out, page state: ${state}`);
+      console.error(`Unanswered requests: ${[...backend.unhandled].sort().join(', ')}`);
       await screenshotWholePage(
         page,
         viewport,
