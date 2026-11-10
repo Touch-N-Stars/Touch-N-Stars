@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Guider: The PHD2 guider page, its settings and the calibration assistant, calibration review, dark library and profile management dialogs now use the same cards and colours as the rest of the app. Calibrating is shown in the app's accent colour, like on the native guider page.
 - Focus: The focus page, its settings and the Hocus Focus aberration inspector, tilter, star detection and optimizer now use the same cards and colours as the rest of the app. The motor speed and USB capacity choices of PINS focusers are wide enough for their full names on phones.
 - Interface: The plate solving, meridian flip, manual rotator and autofocus dialogs opened by NINA, the notifications, the switches, the number fields with their touch number pad, the image viewer and the location sync question now use the same colours as the rest of the app. The three location sync choices are larger buttons.
+- Atlas: The atlas settings, the sky survey download, the catalogue filters and the about page now use the same colours as the rest of the app. The landscape source and the custom landscape fields are larger and easier to tap.
 
 ### Fixed
 
