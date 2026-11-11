@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- MLAstro RPA (plugin): Connect an MLAstro One RPA to PINS over USB or Wi-Fi, nudge altitude and azimuth in fixed steps, and let TPPA correct the polar alignment automatically. It needs the MLAstro RPA plugin on PINS, which the app offers to install. Developed by @ydutertre.
 - Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
 
 ### Changed
 
+- Atlas: The Celestia Atlas button in the navigation bar now shows the W of Cassiopeia instead of the sparkles.
 - Interface: Dialogs now share one look across the app, including About, Log, Weather, the instance switcher and the favorites. More of them also close with the Escape key, and the small info dialogs close with a tap beside them.
 - Settings: All settings tabs now use the same cards, headings and colours as the rest of the app. The folder buttons next to path fields are larger and easier to tap.
 - TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.

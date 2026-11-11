@@ -428,7 +428,7 @@
             :class="{ 'active-nav-button': store.showSkyAtlas }"
             @click="handleSkyViewClick"
           >
-            <SparklesIcon class="icon force-visible" />
+            <CassiopeiaIcon class="icon force-visible" />
             <span class="nav-label">{{ t('nav.skyView') }}</span>
           </router-link>
         </div>
@@ -511,11 +511,11 @@ import {
   Cog6ToothIcon,
   LightBulbIcon,
   AdjustmentsVerticalIcon,
-  SparklesIcon,
   InformationCircleIcon,
   LinkSlashIcon,
 } from '@heroicons/vue/24/outline';
 import CameraFramingIcon from '@/components/icons/CameraFramingIcon.vue';
+import CassiopeiaIcon from '@/components/icons/CassiopeiaIcon.vue';
 import PinsIcon from '@/components/icons/PinsIcon.vue';
 import { watch, computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
