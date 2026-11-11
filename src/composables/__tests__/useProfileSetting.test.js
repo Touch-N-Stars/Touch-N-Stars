@@ -183,3 +183,17 @@ test('glowClass mirrors the save outcome', async (t) => {
   t.mock.timers.tick(STATUS_RESET_MS);
   assert.equal(setting.glowClass.value, '');
 });
+
+test('error carries the reason of the last failed save', async (t) => {
+  const env = setup(t, { TelescopeSettings: { Name: 'A' } });
+  const setting = env.use('TelescopeSettings-Name');
+  env.respondWith(() => Promise.resolve({ Success: false, Error: 'Unknown error' }));
+  await setting.save('B');
+  assert.equal(setting.error.value, 'Unknown error');
+  env.respondWith(() => Promise.reject(new Error('Network Error')));
+  await setting.save('C');
+  assert.equal(setting.error.value, 'Network Error');
+  env.respondWith(() => Promise.resolve({ Success: true }));
+  await setting.save('D');
+  assert.equal(setting.error.value, '');
+});

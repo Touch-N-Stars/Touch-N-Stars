@@ -4,10 +4,11 @@
       {{ $t('components.settings.telescope.titel') }}
     </h3>
     <div class="flex flex-row items-center justify-between w-full">
-      <label class="text-sm text-content whitespace-nowrap">
+      <label for="telescope-name" class="text-sm text-content whitespace-nowrap">
         {{ $t('components.settings.telescope.name') }}
       </label>
       <input
+        id="telescope-name"
         v-model="telescopeName"
         type="text"
         class="tns-input text-xs md:text-sm w-48"
@@ -41,52 +42,21 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
-const store = apiStore();
-
-const focalLength = ref(0);
-const focalRatio = ref(5.0);
-const telescopeName = ref('');
-const nameStatusClass = ref('');
-
-async function updateTelescopeName() {
-  try {
-    await apiService.profileChangeValue('TelescopeSettings-Name', telescopeName.value);
-    nameStatusClass.value = 'glow-green';
-  } catch (error) {
-    console.error('Error updating telescope name:', error);
-    nameStatusClass.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      nameStatusClass.value = '';
-    }, 2000);
-  }
-}
-
-async function updateFocalLength() {
-  try {
-    await apiService.profileChangeValue('TelescopeSettings-FocalLength', focalLength.value);
-  } catch (error) {
-    console.error('Error updating FocalLength:', error);
-  }
-}
-
-async function updateFocalRatio() {
-  try {
-    await apiService.profileChangeValue('TelescopeSettings-FocalRatio', focalRatio.value);
-  } catch (error) {
-    console.error('Error updating FocalRatio:', error);
-  }
-}
-
-onMounted(() => {
-  const profile = store.profileInfo;
-  focalLength.value = profile?.TelescopeSettings?.FocalLength || 500;
-  focalRatio.value = profile?.TelescopeSettings?.FocalRatio || 5.0;
-  telescopeName.value = profile?.TelescopeSettings?.Name ?? '';
-});
+const {
+  value: telescopeName,
+  save: updateTelescopeName,
+  glowClass: nameStatusClass,
+} = useProfileSetting('TelescopeSettings-Name', { fallback: '' });
+// An empty or zero profile value shows the old defaults, as before.
+const { value: focalLength, save: updateFocalLength } = useProfileSetting(
+  'TelescopeSettings-FocalLength',
+  { fallback: 500, fromProfile: (v) => v || 500 }
+);
+const { value: focalRatio, save: updateFocalRatio } = useProfileSetting(
+  'TelescopeSettings-FocalRatio',
+  { fallback: 5.0, fromProfile: (v) => v || 5.0 }
+);
 </script>

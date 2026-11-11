@@ -26,6 +26,8 @@ export function readProfilePath(profileInfo, settingKey) {
  *   NINA did not take.
  * - `status` is 'saved' or 'error' for STATUS_RESET_MS after a save, '' otherwise;
  *   `glowClass` is the matching 'glow-green' / 'glow-red' class.
+ * - `error` holds why the last save failed (NINA's error text or the request error), '' after
+ *   a successful one.
  *
  * @param {string|import('vue').Ref<string>|() => string} settingKey  NINA setting path
  * @param {object} [options]
@@ -58,6 +60,7 @@ export function useProfileSetting(settingKey, options = {}) {
   const pendingSaves = ref(0);
   const saving = computed(() => pendingSaves.value > 0);
   const status = ref('');
+  const error = ref('');
 
   let statusTimer = null;
   function setStatus(next) {
@@ -83,9 +86,11 @@ export function useProfileSetting(settingKey, options = {}) {
     try {
       const response = await apiService.profileChangeValue(key.value, toProfile(next));
       ok = response?.Success === true;
+      error.value = ok ? '' : response?.Error || 'rejected';
       if (!ok) console.warn(`[useProfileSetting] ${key.value} rejected:`, response?.Error);
-    } catch (error) {
-      console.error(`[useProfileSetting] Error saving ${key.value}:`, error);
+    } catch (err) {
+      error.value = err?.message || String(err);
+      console.error(`[useProfileSetting] Error saving ${key.value}:`, err);
     } finally {
       pendingSaves.value--;
     }
@@ -100,5 +105,5 @@ export function useProfileSetting(settingKey, options = {}) {
 
   onScopeDispose(() => clearTimeout(statusTimer));
 
-  return { value, save, saving, status, glowClass };
+  return { value, save, saving, status, glowClass, error };
 }

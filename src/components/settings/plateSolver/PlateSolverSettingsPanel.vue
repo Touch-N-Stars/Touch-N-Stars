@@ -116,48 +116,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import SetPlateSolverFilterPins from './SetPlateSolverFilterPins.vue';
 import SetPlateSolverAstapDatabasePins from './SetPlateSolverAstapDatabasePins.vue';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const store = apiStore();
 
-const astapLocation = ref('');
-const statusClassAstapLocation = ref('');
-
-const initializeSettings = () => {
-  if (!store.profileInfo?.PlateSolveSettings) {
-    console.warn('PlateSolveSettings not loaded');
-    return;
-  }
-
-  astapLocation.value = store.profileInfo.PlateSolveSettings.ASTAPLocation ?? '';
-};
-
-async function setAstapLocation() {
-  try {
-    const data = await apiService.profileChangeValue(
-      'PlateSolveSettings-ASTAPLocation',
-      astapLocation.value
-    );
-    console.log(data);
-    statusClassAstapLocation.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting ASTAP location:', error);
-    statusClassAstapLocation.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassAstapLocation.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(() => {
-  initializeSettings();
-});
+const {
+  value: astapLocation,
+  save: setAstapLocation,
+  glowClass: statusClassAstapLocation,
+} = useProfileSetting('PlateSolveSettings-ASTAPLocation', { fallback: '' });
 </script>
