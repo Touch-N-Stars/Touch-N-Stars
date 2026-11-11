@@ -5,6 +5,8 @@ import apiService from '@/services/apiService';
 // How long the saved/error status stays set, e.g. for a glow on the control.
 export const STATUS_RESET_MS = 2000;
 
+const GLOW_CLASSES = { saved: 'glow-green', error: 'glow-red' };
+
 // Reads a NINA profile setting key such as 'FilterWheelSettings-FilterWheelFilters-2-FocusOffset'
 // from profileInfo. The key doubles as the path, so array indices work as plain segments.
 export function readProfilePath(profileInfo, settingKey) {
@@ -18,10 +20,12 @@ export function readProfilePath(profileInfo, settingKey) {
  *   setting (a preset, another client, NINA itself). It does not follow while a save of
  *   its own is in flight or while `hold()` is true, so neither a stale poll nor a remote
  *   change overwrites what the user is typing.
- * - `save(next)` writes the value. A rejected write (`Success !== true`) or a request
+ * - `save(next)` writes the value; it can be bound to @change directly (a DOM event
+ *   argument means "save the current value"). A rejected write (`Success !== true`) or a request
  *   error puts `value` back to what the profile says, so the control never shows a value
  *   NINA did not take.
- * - `status` is 'saved' or 'error' for STATUS_RESET_MS after a save, '' otherwise.
+ * - `status` is 'saved' or 'error' for STATUS_RESET_MS after a save, '' otherwise;
+ *   `glowClass` is the matching 'glow-green' / 'glow-red' class.
  *
  * @param {string|import('vue').Ref<string>|() => string} settingKey  NINA setting path
  * @param {object} [options]
@@ -70,6 +74,9 @@ export function useProfileSetting(settingKey, options = {}) {
   });
 
   async function save(next = value.value) {
+    // Bound straight to a native @change, the argument is the DOM event, not a value;
+    // v-model has already put the new value into `value` by then.
+    if (typeof Event !== 'undefined' && next instanceof Event) next = value.value;
     value.value = next;
     pendingSaves.value++;
     let ok = false;
@@ -88,7 +95,10 @@ export function useProfileSetting(settingKey, options = {}) {
     return ok;
   }
 
+  // The app's save feedback classes, for controls that show the outcome themselves.
+  const glowClass = computed(() => GLOW_CLASSES[status.value] ?? '');
+
   onScopeDispose(() => clearTimeout(statusTimer));
 
-  return { value, save, saving, status };
+  return { value, save, saving, status, glowClass };
 }

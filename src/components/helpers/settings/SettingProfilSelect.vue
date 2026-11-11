@@ -16,7 +16,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const props = defineProps({
@@ -42,13 +41,13 @@ const props = defineProps({
   },
 });
 
-const { value, save, status } = useProfileSetting(() => props.settingKey, {
+const {
+  value,
+  save,
+  glowClass: statusClass,
+} = useProfileSetting(() => props.settingKey, {
   source: () => props.modelValue,
 });
-
-const statusClass = computed(
-  () => ({ saved: 'glow-green', error: 'glow-red' })[status.value] ?? ''
-);
 
 function updateSetting() {
   save();

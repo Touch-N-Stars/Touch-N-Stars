@@ -163,3 +163,23 @@ test('a reactive key reads and writes the current path', async (t) => {
   await setting.save(8);
   assert.deepEqual(env.calls, [['List-1-V', 8]]);
 });
+
+test('save bound to a native @change saves the current value, not the event', async (t) => {
+  const env = setup(t, { GuiderSettings: { PHD2Path: '/old' } });
+  const setting = env.use('GuiderSettings-PHD2Path');
+  setting.value.value = '/new';
+  await setting.save(new Event('change'));
+  assert.deepEqual(env.calls, [['GuiderSettings-PHD2Path', '/new']]);
+});
+
+test('glowClass mirrors the save outcome', async (t) => {
+  const env = setup(t, { CameraSettings: { Gain: 1 } });
+  const setting = env.use('CameraSettings-Gain');
+  await setting.save(2);
+  assert.equal(setting.glowClass.value, 'glow-green');
+  env.respondWith(() => Promise.resolve({ Success: false }));
+  await setting.save(3);
+  assert.equal(setting.glowClass.value, 'glow-red');
+  t.mock.timers.tick(STATUS_RESET_MS);
+  assert.equal(setting.glowClass.value, '');
+});

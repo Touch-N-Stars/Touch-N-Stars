@@ -30,9 +30,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed } from 'vue';
 import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
@@ -46,9 +46,10 @@ const props = defineProps({
 const store = apiStore();
 const nativeGuiderStore = useNativeGuiderStore();
 
-const ditherPixels = ref(3.0);
-
-const statusClassDitherPixels = ref('');
+const { value: ditherPixels, save: setDitherPixels } = useProfileSetting(
+  'GuiderSettings-DitherPixels',
+  { fallback: 3.0 }
+);
 
 // DitherPixels is in guide camera pixels; show what it amounts to on the imaging
 // camera, like NINA's guider panel. Internal guider only: its guide scale follows from
@@ -83,32 +84,5 @@ const ditherMainCameraPixels = computed(() => {
 
   if (!guideScale.value || !mainScale || !Number.isFinite(pixels)) return '—';
   return ((pixels * guideScale.value) / mainScale).toFixed(1);
-});
-
-const initializeSettings = () => {
-  if (!store.profileInfo?.GuiderSettings) {
-    console.warn('GuiderSettings not loaded');
-    return;
-  }
-
-  ditherPixels.value = store.profileInfo.GuiderSettings.DitherPixels ?? 3.0;
-};
-
-async function setDitherPixels() {
-  try {
-    await apiService.profileChangeValue('GuiderSettings-DitherPixels', ditherPixels.value);
-    statusClassDitherPixels.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting dither pixels:', error);
-    statusClassDitherPixels.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassDitherPixels.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(() => {
-  initializeSettings();
 });
 </script>
