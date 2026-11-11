@@ -34,17 +34,16 @@ export function createStructuredLog(level, category, data) {
     }
   }
 
+  // Drop entries older than 30 seconds. Pruning here instead of with a timer
+  // per logged message keeps no timers pending between log calls.
+  for (const [key, timestamp] of errorCache) {
+    if (now - timestamp > 30000) {
+      errorCache.delete(key);
+    }
+  }
+
   // Update cache and log
   errorCache.set(cacheKey, now);
-
-  // Clean up old entries (older than 30 seconds)
-  setTimeout(() => {
-    for (const [key, timestamp] of errorCache.entries()) {
-      if (now - timestamp > 30000) {
-        errorCache.delete(key);
-      }
-    }
-  }, 30000);
 
   // Route to the matching console method so errors/warnings stand out (in
   // devtools and in the captured log download) instead of hiding among the

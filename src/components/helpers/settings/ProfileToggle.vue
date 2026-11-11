@@ -9,9 +9,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
 
@@ -45,40 +43,11 @@ const props = defineProps({
   },
 });
 
-const store = apiStore();
-const isEnabled = ref(false);
-const isWriting = ref(false);
+const { value: isEnabled, save } = useProfileSetting(() => props.settingKey, {
+  fallback: false,
+});
 
-const profileValue = computed(
-  () => props.settingKey.split('-').reduce((obj, key) => obj?.[key], store.profileInfo) ?? false
-);
-
-async function updateSetting() {
-  isEnabled.value = !isEnabled.value;
-  isWriting.value = true;
-  try {
-    const response = await apiService.profileChangeValue(props.settingKey, isEnabled.value);
-    if (!response.Success) {
-      // Revert on error
-      isEnabled.value = !isEnabled.value;
-    }
-  } catch (error) {
-    console.error(`Error saving setting ${props.settingKey}:`, error);
-    // Revert on error
-    isEnabled.value = !isEnabled.value;
-  } finally {
-    isWriting.value = false;
-  }
+function updateSetting() {
+  save(!isEnabled.value);
 }
-
-onMounted(() => {
-  isEnabled.value = profileValue.value;
-});
-
-// Follow the profile when something else writes the setting (a preset, another client).
-// Skipped while our own write is in flight so a stale poll does not flip the toggle back.
-watch(profileValue, (v) => {
-  if (isWriting.value) return;
-  isEnabled.value = v;
-});
 </script>

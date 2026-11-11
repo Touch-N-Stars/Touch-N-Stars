@@ -7,7 +7,7 @@
       <div>
         <toggleButton
           @click="toggleSave"
-          :status-value="store.profileInfo.SnapShotControlSettings.Save"
+          :status-value="saveSnapshots"
           class="pr-5 pl-5 justify-center h-7 md:h-8"
         />
       </div>
@@ -21,7 +21,7 @@
         v-model="settingsStore.camera.snapshotTargetName"
         type="text"
         class="tns-input flex-1 text-xs md:text-sm"
-        :disabled="!store.profileInfo.SnapShotControlSettings.Save"
+        :disabled="!saveSnapshots"
       />
     </div>
   </div>
@@ -29,11 +29,9 @@
 <script setup>
 import { watch } from 'vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import { useSettingsStore } from '@/store/settingsStore';
 
-const store = apiStore();
 const settingsStore = useSettingsStore();
 
 let saveDebounce;
@@ -45,13 +43,11 @@ watch(
   }
 );
 
-async function toggleSave() {
-  if (store.profileInfo.SnapShotControlSettings.Save) {
-    await apiService.profileChangeValue('SnapShotControlSettings-Save', false);
-    console.log('Save snapshots off');
-  } else {
-    await apiService.profileChangeValue('SnapShotControlSettings-Save', true);
-    console.log('Save snapshots on');
-  }
+const { value: saveSnapshots, save } = useProfileSetting('SnapShotControlSettings-Save', {
+  fallback: false,
+});
+
+function toggleSave() {
+  save(!saveSnapshots.value);
 }
 </script>

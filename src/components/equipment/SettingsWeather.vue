@@ -89,9 +89,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { computed } from 'vue';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 
@@ -99,8 +98,6 @@ const props = defineProps({
   selectedDevice: { type: String, default: '' },
   selectedDeviceObj: { type: Object, default: null },
 });
-
-const store = apiStore();
 
 const isOpenWeatherMap = computed(() => props.selectedDevice === 'OpenWeatherMap');
 const isTheWeatherCompany = computed(() => props.selectedDevice === 'TheWeatherCompany');
@@ -115,78 +112,26 @@ const isIndiDevice = computed(
     props.selectedDevice !== ''
 );
 
-const openWeatherMapApiKey = ref('');
-const theWeatherCompanyApiKey = ref('');
-const weatherUndergroundApiKey = ref('');
-const weatherUndergroundStation = ref('');
+const weatherSetting = (name) => useProfileSetting(`WeatherDataSettings-${name}`, { fallback: '' });
 
-const statusClassOwm = ref('');
-const statusClassTwc = ref('');
-const statusClassWuKey = ref('');
-const statusClassWuStation = ref('');
-
-function applyGlowFeedback(statusRef, success) {
-  statusRef.value = success ? 'glow-green' : 'glow-red';
-  setTimeout(() => {
-    statusRef.value = '';
-  }, 2000);
-}
-
-async function setOpenWeatherMapApiKey() {
-  try {
-    await apiService.profileChangeValue(
-      'WeatherDataSettings-OpenWeatherMapAPIKey',
-      openWeatherMapApiKey.value
-    );
-    applyGlowFeedback(statusClassOwm, true);
-  } catch {
-    applyGlowFeedback(statusClassOwm, false);
-  }
-}
-
-async function setTheWeatherCompanyApiKey() {
-  try {
-    await apiService.profileChangeValue(
-      'WeatherDataSettings-TheWeatherCompanyAPIKey',
-      theWeatherCompanyApiKey.value
-    );
-    applyGlowFeedback(statusClassTwc, true);
-  } catch {
-    applyGlowFeedback(statusClassTwc, false);
-  }
-}
-
-async function setWeatherUndergroundApiKey() {
-  try {
-    await apiService.profileChangeValue(
-      'WeatherDataSettings-WeatherUndergroundAPIKey',
-      weatherUndergroundApiKey.value
-    );
-    applyGlowFeedback(statusClassWuKey, true);
-  } catch {
-    applyGlowFeedback(statusClassWuKey, false);
-  }
-}
-
-async function setWeatherUndergroundStation() {
-  try {
-    await apiService.profileChangeValue(
-      'WeatherDataSettings-WeatherUndergroundStation',
-      weatherUndergroundStation.value
-    );
-    applyGlowFeedback(statusClassWuStation, true);
-  } catch {
-    applyGlowFeedback(statusClassWuStation, false);
-  }
-}
-
-onMounted(() => {
-  const settings = store.profileInfo?.WeatherDataSettings;
-  if (settings) {
-    openWeatherMapApiKey.value = settings.OpenWeatherMapAPIKey ?? '';
-    theWeatherCompanyApiKey.value = settings.TheWeatherCompanyAPIKey ?? '';
-    weatherUndergroundApiKey.value = settings.WeatherUndergroundAPIKey ?? '';
-    weatherUndergroundStation.value = settings.WeatherUndergroundStation ?? '';
-  }
-});
+const {
+  value: openWeatherMapApiKey,
+  save: setOpenWeatherMapApiKey,
+  glowClass: statusClassOwm,
+} = weatherSetting('OpenWeatherMapAPIKey');
+const {
+  value: theWeatherCompanyApiKey,
+  save: setTheWeatherCompanyApiKey,
+  glowClass: statusClassTwc,
+} = weatherSetting('TheWeatherCompanyAPIKey');
+const {
+  value: weatherUndergroundApiKey,
+  save: setWeatherUndergroundApiKey,
+  glowClass: statusClassWuKey,
+} = weatherSetting('WeatherUndergroundAPIKey');
+const {
+  value: weatherUndergroundStation,
+  save: setWeatherUndergroundStation,
+  glowClass: statusClassWuStation,
+} = weatherSetting('WeatherUndergroundStation');
 </script>

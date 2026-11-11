@@ -52,92 +52,30 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { computed } from 'vue';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const props = defineProps({
   selectedGuiderDevice: { type: String, default: '' },
 });
 
-const store = apiStore();
-
 const isPHD2Selected = computed(() => {
   return props.selectedGuiderDevice === 'PHD2' || props.selectedGuiderDevice === 'PHD2_Single';
 });
 
-const phd2Path = ref('');
-const phd2ServerHost = ref('localhost');
-const phd2ServerPort = ref(4400);
-
-const statusClassPhd2Path = ref('');
-const statusClassPhd2ServerHost = ref('');
-const statusClassPhd2ServerPort = ref('');
-
-const initializeSettings = () => {
-  if (!store.profileInfo?.GuiderSettings) {
-    console.warn('GuiderSettings not loaded');
-    return;
-  }
-
-  phd2Path.value = store.profileInfo.GuiderSettings.PHD2Path ?? '';
-  phd2ServerHost.value = store.profileInfo.GuiderSettings.PHD2ServerUrl ?? 'localhost';
-  phd2ServerPort.value = store.profileInfo.GuiderSettings.PHD2ServerPort ?? 4400;
-};
-
-async function setPhd2Path() {
-  try {
-    const data = await apiService.profileChangeValue('GuiderSettings-PHD2Path', phd2Path.value);
-    console.log(data);
-    statusClassPhd2Path.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting PHD2 path:', error);
-    statusClassPhd2Path.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassPhd2Path.value = '';
-    }, 2000);
-  }
-}
-
-async function setPhd2ServerHost() {
-  try {
-    const data = await apiService.profileChangeValue(
-      'GuiderSettings-PHD2ServerUrl',
-      phd2ServerHost.value
-    );
-    console.log(data);
-    statusClassPhd2ServerHost.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting PHD2 server host:', error);
-    statusClassPhd2ServerHost.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassPhd2ServerHost.value = '';
-    }, 2000);
-  }
-}
-
-async function setPhd2ServerPort() {
-  try {
-    const data = await apiService.profileChangeValue(
-      'GuiderSettings-PHD2ServerPort',
-      phd2ServerPort.value
-    );
-    console.log(data);
-    statusClassPhd2ServerPort.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting PHD2 server port:', error);
-    statusClassPhd2ServerPort.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassPhd2ServerPort.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(() => {
-  initializeSettings();
-});
+const {
+  value: phd2Path,
+  save: setPhd2Path,
+  glowClass: statusClassPhd2Path,
+} = useProfileSetting('GuiderSettings-PHD2Path', { fallback: '' });
+const {
+  value: phd2ServerHost,
+  save: setPhd2ServerHost,
+  glowClass: statusClassPhd2ServerHost,
+} = useProfileSetting('GuiderSettings-PHD2ServerUrl', { fallback: 'localhost' });
+const { value: phd2ServerPort, save: setPhd2ServerPort } = useProfileSetting(
+  'GuiderSettings-PHD2ServerPort',
+  { fallback: 4400 }
+);
 </script>

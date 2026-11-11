@@ -38,7 +38,7 @@
         <div class="flex flex-col justify-between sm:flex-row gap-2">
           <NumberInputPicker
             class="border border-line-strong p-1 md:p-2 rounded-control"
-            v-model="store.profileInfo.CameraSettings.Temperature"
+            v-model="coolingTemp"
             :label="$t('components.camera.target_temperature')"
             labelKey="components.camera.target_temperature"
             :min="-50"
@@ -54,7 +54,7 @@
           <NumberInputPicker
             v-if="!compact"
             class="border border-line-strong p-1 md:p-2 rounded-control"
-            v-model="store.profileInfo.CameraSettings.CoolingDuration"
+            v-model="coolingDuration"
             :label="$t('components.camera.cooling_time')"
             labelKey="components.camera.cooling_time"
             :min="0"
@@ -71,7 +71,7 @@
         <div v-if="!compact" class="flex flex-col justify-between sm:flex-row gap-2 mt-2">
           <NumberInputPicker
             class="border border-line-strong p-1 md:p-2 rounded-control"
-            v-model="store.profileInfo.CameraSettings.WarmingDuration"
+            v-model="warmingDuration"
             :label="$t('components.camera.warm_up_time')"
             labelKey="components.camera.warm_up_time"
             :min="0"
@@ -199,6 +199,7 @@ import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import pinsSetDewHeaterStrength from './settingsPins/pinsSetDewHeaterStrength.vue';
@@ -212,6 +213,18 @@ const { compact } = defineProps({
 const store = apiStore();
 const cameraStore = useCameraStore();
 const { t } = useI18n();
+
+// Edited locally and written on change. Bound to profileInfo directly before, which changed
+// the store under the poller and was overwritten by the next profile fetch.
+const { value: coolingTemp, save: setCoolingTemp } = useProfileSetting(
+  'CameraSettings-Temperature'
+);
+const { value: coolingDuration, save: setCoolingTime } = useProfileSetting(
+  'CameraSettings-CoolingDuration'
+);
+const { value: warmingDuration, save: setWarmingTime } = useProfileSetting(
+  'CameraSettings-WarmingDuration'
+);
 
 const coolingState = computed(() => cameraStore.coolingState);
 const isCoolingActive = computed(() => coolingState.value === 'cooling');
@@ -255,49 +268,13 @@ const coolerStatusText = computed(() => {
   }
 });
 
-async function setCoolingTime() {
-  try {
-    await apiService.profileChangeValue(
-      'CameraSettings-CoolingDuration',
-      store.profileInfo.CameraSettings.CoolingDuration
-    );
-  } catch (error) {
-    console.log('[Camera] setCoolingTime error:', error);
-  }
-}
-
-async function setWarmingTime() {
-  try {
-    await apiService.profileChangeValue(
-      'CameraSettings-WarmingDuration',
-      store.profileInfo.CameraSettings.WarmingDuration
-    );
-  } catch (error) {
-    console.log('[Camera] setWarmingTime error:', error);
-  }
-}
-
-async function setCoolingTemp() {
-  try {
-    await apiService.profileChangeValue(
-      'CameraSettings-Temperature',
-      store.profileInfo.CameraSettings.Temperature
-    );
-  } catch (error) {
-    console.log('[Camera] setCoolingTemp error:', error);
-  }
-}
-
 async function onCoolDown() {
   try {
     if (isCoolingActive.value) {
       await cameraStore.cancelTempChange();
       return;
     }
-    await cameraStore.startCooling(
-      store.profileInfo.CameraSettings.Temperature,
-      store.profileInfo.CameraSettings.CoolingDuration
-    );
+    await cameraStore.startCooling(coolingTemp.value, coolingDuration.value);
   } catch (error) {
     console.log('[Camera] onCoolDown error:', error);
   }
@@ -309,7 +286,7 @@ async function onWarmUp() {
       await cameraStore.cancelTempChange();
       return;
     }
-    await cameraStore.startWarming(store.profileInfo.CameraSettings.WarmingDuration);
+    await cameraStore.startWarming(warmingDuration.value);
   } catch (error) {
     console.log('[Camera] onWarmUp error:', error);
   }

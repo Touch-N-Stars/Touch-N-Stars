@@ -39,33 +39,30 @@
 import { computed } from 'vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 
 const store = apiStore();
 
-// derived/reactive values from profile (single source of truth)
 const isWandererRotator = computed(() => store.rotatorInfo?.Name?.includes('Wanderer') ?? false);
-const overshootEnabled = computed({
-  get: () => store.profileInfo?.RotatorSettings?.Overshoot ?? false,
-  set: async (v) => {
-    await apiService.profileChangeValue('RotatorSettings-Overshoot', String(v));
-  },
-});
-const overshootDirection = computed({
-  get: () => store.profileInfo?.RotatorSettings?.OvershootDirection ?? false,
-  set: async (v) => {
-    await apiService.profileChangeValue('RotatorSettings-OvershootDirection', String(v));
-  },
-});
+
+// NINA stores these as booleans but takes them as 'true' / 'false' strings.
+const { value: overshootEnabled, save: saveOvershoot } = useProfileSetting(
+  'RotatorSettings-Overshoot',
+  { fallback: false, toProfile: String }
+);
+const { value: overshootDirection, save: saveOvershootDirection } = useProfileSetting(
+  'RotatorSettings-OvershootDirection',
+  { fallback: false, toProfile: String }
+);
 const angleFromProfile = computed(() => store.profileInfo?.RotatorSettings?.OvershootAngle ?? 0);
 
-// toggle handlers use the computed setters so UI and profile stay in sync
 function toggleOvershoot() {
-  overshootEnabled.value = !overshootEnabled.value;
+  saveOvershoot(!overshootEnabled.value);
 }
 function toggleOvershootDirection() {
-  overshootDirection.value = !overshootDirection.value;
+  saveOvershootDirection(!overshootDirection.value);
 }
 
 async function resetZero() {

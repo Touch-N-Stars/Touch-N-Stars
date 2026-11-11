@@ -16,8 +16,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const props = defineProps({
   labelKey: {
@@ -42,23 +41,15 @@ const props = defineProps({
   },
 });
 
-const value = ref('');
-const statusClass = ref('');
-
-async function updateSetting() {
-  try {
-    const response = await apiService.profileChangeValue(props.settingKey, value.value);
-    if (!response.Success) return;
-    statusClass.value = 'glow-green';
-  } catch (error) {
-    console.log('Error save setting');
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
-}
-
-onMounted(() => {
-  value.value = props.modelValue;
+const {
+  value,
+  save,
+  glowClass: statusClass,
+} = useProfileSetting(() => props.settingKey, {
+  source: () => props.modelValue,
 });
+
+function updateSetting() {
+  save();
+}
 </script>

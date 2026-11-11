@@ -54,75 +54,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
-const store = apiStore();
-
-const settlePixels = ref(1.5);
-const settleTime = ref(10);
-const settleTimeout = ref(30);
-
-const statusClassSettlePixels = ref('');
-const statusClassSettleTime = ref('');
-const statusClassSettleTimeout = ref('');
-
-const initializeSettings = () => {
-  if (!store.profileInfo?.GuiderSettings) {
-    console.warn('GuiderSettings not loaded');
-    return;
-  }
-
-  settlePixels.value = store.profileInfo.GuiderSettings.SettlePixels ?? 1.5;
-  settleTime.value = store.profileInfo.GuiderSettings.SettleTime ?? 10;
-  settleTimeout.value = store.profileInfo.GuiderSettings.SettleTimeout ?? 30;
-};
-
-async function setSettlePixels() {
-  try {
-    await apiService.profileChangeValue('GuiderSettings-SettlePixels', settlePixels.value);
-    statusClassSettlePixels.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting settle pixels:', error);
-    statusClassSettlePixels.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassSettlePixels.value = '';
-    }, 2000);
-  }
-}
-
-async function setSettleTime() {
-  try {
-    await apiService.profileChangeValue('GuiderSettings-SettleTime', settleTime.value);
-    statusClassSettleTime.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting settle time:', error);
-    statusClassSettleTime.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassSettleTime.value = '';
-    }, 2000);
-  }
-}
-
-async function setSettleTimeout() {
-  try {
-    await apiService.profileChangeValue('GuiderSettings-SettleTimeout', settleTimeout.value);
-    statusClassSettleTimeout.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting settle timeout:', error);
-    statusClassSettleTimeout.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassSettleTimeout.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(() => {
-  initializeSettings();
+const { value: settlePixels, save: setSettlePixels } = useProfileSetting(
+  'GuiderSettings-SettlePixels',
+  { fallback: 1.5 }
+);
+const { value: settleTime, save: setSettleTime } = useProfileSetting('GuiderSettings-SettleTime', {
+  fallback: 10,
 });
+const { value: settleTimeout, save: setSettleTimeout } = useProfileSetting(
+  'GuiderSettings-SettleTimeout',
+  { fallback: 30 }
+);
 </script>
