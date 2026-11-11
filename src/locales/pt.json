@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Processamento de imagens lento",
-            "explanation": "O processamento de uma imagem de guiagem demorou mais do que o esperado, o que atrasa as correções.",
-            "fix": "Reduza o número máximo de estrelas guia, use binning ou uma subimagem, ou verifique a carga da CPU."
+            "explanation": "No último minuto, pelo menos metade das imagens de guiagem demorou demasiado a ser processada, por isso as correções chegaram atrasadas à montagem. Uma imagem lenta de vez em quando é normal e só fica anotada no registo.",
+            "fix": "Verifique o que mais está a ocupar o computador, como o empilhamento ao vivo ou outros programas. Caso contrário, baixe «Máx. estrelas guia», use binning ou uma subimagem, ou desative a redução de ruído."
+          },
+          "SlowGuideFrame": {
+            "title": "Imagem de guiagem lenta",
+            "explanation": "O processamento de uma imagem de guiagem demorou mais do que o habitual, por isso a sua correção chegou um pouco tarde. Isto acontece de vez em quando, quando o computador está ocupado com outras tarefas, como guardar, fazer plate solving ou empilhar uma imagem da câmara principal, e não faz mal.",
+            "fix": "Não é necessária nenhuma ação. O guiador avisa quando as imagens continuam lentas durante um minuto."
           },
           "SettleTimeout": {
             "title": "Tempo de estabilização esgotado",

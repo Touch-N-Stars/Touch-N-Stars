@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Procesado de cuadros lento",
-            "explanation": "Procesar un cuadro de guiado tardó más de lo esperado, lo que retrasa las correcciones.",
-            "fix": "Reduce el número máximo de estrellas guía, usa binning o un subcuadro, o revisa la carga de la CPU."
+            "explanation": "Durante el último minuto, al menos la mitad de los cuadros de guiado tardaron demasiado en procesarse, así que las correcciones llegaron tarde a la montura. Un cuadro lento de vez en cuando es normal y solo se anota en el registro.",
+            "fix": "Comprueba qué más mantiene ocupado el ordenador, como el apilado en vivo u otros programas. Si no, baja «Máx. estrellas guía», usa binning o un subcuadro, o desactiva la reducción de ruido."
+          },
+          "SlowGuideFrame": {
+            "title": "Cuadro de guiado lento",
+            "explanation": "Un cuadro de guiado tardó más de lo habitual en procesarse, así que su corrección llegó un poco tarde. Esto pasa de vez en cuando si el ordenador está ocupado con otras tareas, como guardar, hacer platesolve o apilar una imagen de la cámara principal, y no causa ningún problema.",
+            "fix": "No hace falta hacer nada. El guiador avisa si los cuadros siguen lentos durante un minuto."
           },
           "SettleTimeout": {
             "title": "Tiempo de estabilización agotado",

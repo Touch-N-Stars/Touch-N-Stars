@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Traitement des images lent",
-            "explanation": "Le traitement d'une image de guidage a pris plus de temps que prévu, ce qui retarde les corrections.",
-            "fix": "Réduisez le nombre max. d'étoiles guides, utilisez le binning ou une sous-image, ou vérifiez la charge du processeur."
+            "explanation": "Au cours de la dernière minute, au moins la moitié des images de guidage ont mis trop de temps à être traitées, si bien que les corrections sont arrivées en retard à la monture. Une image lente de temps en temps est normale et n'est notée que dans le journal.",
+            "fix": "Vérifiez ce qui occupe encore l'ordinateur, comme l'empilement en direct ou d'autres programmes. Sinon, réduisez « Étoiles guides max. », utilisez le binning ou une sous-image, ou désactivez la réduction du bruit."
+          },
+          "SlowGuideFrame": {
+            "title": "Image de guidage lente",
+            "explanation": "Le traitement d'une image de guidage a pris plus de temps que d'habitude, sa correction est donc arrivée un peu tard. Cela arrive de temps en temps quand l'ordinateur est occupé à autre chose, comme l'enregistrement, le plate solving ou l'empilement d'une image de la caméra principale, et ne pose aucun problème.",
+            "fix": "Aucune action requise. Le guideur avertit si les images restent lentes pendant une minute."
           },
           "SettleTimeout": {
             "title": "Délai de stabilisation dépassé",

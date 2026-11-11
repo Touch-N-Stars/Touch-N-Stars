@@ -2522,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Frame processing slow",
-            "explanation": "Processing a guide frame took longer than expected, which delays corrections.",
-            "fix": "Reduce the max number of guide stars, use binning or a subframe, or check CPU load."
+            "explanation": "Over the last minute, at least half of the guide frames took too long to process, so the corrections reached the mount late. A single slow frame now and then is normal and is only noted in the log.",
+            "fix": "Check what else keeps the computer busy, such as live stacking or other programs. Otherwise lower \"Max guide stars\", use binning or a subframe, or turn off noise reduction."
+          },
+          "SlowGuideFrame": {
+            "title": "Slow guide frame",
+            "explanation": "One guide frame took longer than usual to process, so its correction came a little late. This happens now and then when the computer is busy with other work, such as saving, plate solving or stacking an image of the main camera, and does no harm.",
+            "fix": "No action needed. The guider warns when frames stay slow for a minute."
           },
           "SettleTimeout": {
             "title": "Settling timed out",

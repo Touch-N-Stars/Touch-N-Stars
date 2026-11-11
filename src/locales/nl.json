@@ -2481,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Beeldverwerking traag",
-            "explanation": "Het verwerken van een guidebeeld duurde langer dan verwacht, wat de correcties vertraagt.",
-            "fix": "Verlaag het max. aantal guide-sterren, gebruik binning of een uitsnede, of controleer de CPU-belasting."
+            "explanation": "In de afgelopen minuut duurde het verwerken van minstens de helft van de guidebeelden te lang, waardoor de correcties te laat bij de montering aankwamen. Een enkel traag beeld af en toe is normaal en wordt alleen in het log vermeld.",
+            "fix": "Controleer wat de computer verder nog bezighoudt, zoals live stacking of andere programma's. Verlaag anders ‘Max. guide-sterren’, gebruik binning of een uitsnede, of zet de ruisonderdrukking uit."
+          },
+          "SlowGuideFrame": {
+            "title": "Traag guidebeeld",
+            "explanation": "Het verwerken van een guidebeeld duurde langer dan normaal, waardoor de correctie wat later kwam. Dit gebeurt af en toe als de computer met iets anders bezig is, zoals het opslaan, platesolven of stacken van een beeld van de hoofdcamera, en kan geen kwaad.",
+            "fix": "Geen actie nodig. De guider waarschuwt als beelden een minuut lang traag blijven."
           },
           "SettleTimeout": {
             "title": "Stabiliseren duurde te lang",
