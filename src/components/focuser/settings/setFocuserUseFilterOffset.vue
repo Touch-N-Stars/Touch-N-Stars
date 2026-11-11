@@ -23,28 +23,19 @@
 import { ref, computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 
 const store = apiStore();
-const isEnabled = ref(false);
+const { value: isEnabled, save } = useProfileSetting('FocuserSettings-UseFilterWheelOffsets', {
+  fallback: false,
+});
 const selectedFilterIndex = ref(0);
 
 const filters = computed(() => store.profileInfo?.FilterWheelSettings?.FilterWheelFilters ?? []);
 
-async function updateSetting() {
-  isEnabled.value = !isEnabled.value;
-  try {
-    const response = await apiService.profileChangeValue(
-      'FocuserSettings-UseFilterWheelOffsets',
-      isEnabled.value
-    );
-    if (!response.Success) {
-      isEnabled.value = !isEnabled.value;
-    }
-  } catch (error) {
-    console.log('Error save setting');
-    isEnabled.value = !isEnabled.value;
-  }
+function updateSetting() {
+  save(!isEnabled.value);
 }
 
 async function updateAutoFocusFilter() {
@@ -62,7 +53,6 @@ async function updateAutoFocusFilter() {
 }
 
 onMounted(() => {
-  isEnabled.value = store.profileInfo?.FocuserSettings?.UseFilterWheelOffsets ?? false;
   const idx = filters.value.findIndex((f) => f.AutoFocusFilter);
   selectedFilterIndex.value = idx >= 0 ? idx : -1;
 });
