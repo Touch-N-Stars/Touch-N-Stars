@@ -85,7 +85,7 @@ class WebSocketTppaService {
   }
 
   sendMessage(message) {
-    this._rws.send(message);
+    return this._rws.send(message);
   }
 }
 
