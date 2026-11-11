@@ -2711,6 +2711,10 @@
           "actionCancel": "取消",
           "actionOptionConfirm": "执行“{option}”？",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "齿数",
+              "Seconds": "秒"
+            },
             "GuideSource": {
               "GuideCamera": "导星相机",
               "Simulator": "模拟器"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "RA 最小移动量",
             "RaCorrectionPace": "RA 校正节奏",
             "PeriodicErrorPrediction": "周期误差预测",
+            "WormPeriodUnit": "RA 蜗杆输入方式",
             "WormTeeth": "RA 蜗轮齿数",
+            "WormPeriodSeconds": "RA 蜗杆周期",
             "ForgetPeriodicError": "忘记周期误差",
             "DecAlgorithm": "Dec 算法",
             "DecAggression": "Dec 激进度",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = 根据像素比例自动设定。",
             "RaCorrectionPace": "Predictive 算法每帧校正的剩余误差比例：0.5 在 2–3 帧内消除偏移且不越过零点，1 一次全部校正。漂移和周期误差始终完全校正。",
             "PeriodicErrorPrediction": "学习 RA 蜗杆的周期误差，并在其显现之前加以校正。学得的曲线按配置文件和赤道仪保存。",
+            "WormPeriodUnit": "用蜗轮齿数或以秒为单位的周期来指定 RA 蜗杆，例如来自赤道仪说明书或 PEC 工具。秒也适用于周期不是整数齿数的传动（谐波减速器、皮带）。只使用所选的那一项。",
             "WormTeeth": "RA 蜗轮的齿数（例如 EQ6-R 为 180，HEQ5 为 135），可得出精确的蜗杆周期。0 = 从导星帧中检测周期。",
+            "WormPeriodSeconds": "RA 蜗杆的周期，单位为秒（例如 180 齿为 478.7）；此时不再检测周期。中天翻转后会重新学习其相位，与不知道齿数时相同。0（默认）= 从导星帧中检测周期；导星接受 180 到 1200 秒。",
             "ForgetPeriodicError": "忘记为此赤道仪学得的周期误差，例如在调整蜗杆之后；之后会重新学习。",
             "DecAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
             "DecAggression": "每帧校正的已测 Dec 误差比例：1.0 全部校正。若 Dec 过冲就调小。",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "当赤道仪移动超过此值或更换中天侧后开始导星时，间隙模型会先重新测量间隙：Dec 向北脉冲直到星点跟随，然后向南回到起点。之后齿轮靠在已知的一侧，模型即掌握新目标处的间隙。约需 10 到 20 个导星帧。0 = 从不。"
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。"
+            "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。",
+            "wormPeriodTooShort": "短于 180 秒：导星会忽略此周期，并从导星帧中检测周期。"
           }
         },
         "darks": {

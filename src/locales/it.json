@@ -2711,6 +2711,10 @@
           "actionCancel": "Annulla",
           "actionOptionConfirm": "Eseguire “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Denti",
+              "Seconds": "Secondi"
+            },
             "GuideSource": {
               "GuideCamera": "Camera di guida",
               "Simulator": "Simulatore"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Movimento min. RA",
             "RaCorrectionPace": "Ritmo di correzione RA",
             "PeriodicErrorPrediction": "Previsione errore periodico",
+            "WormPeriodUnit": "Vite RA indicata in",
             "WormTeeth": "Denti della corona RA",
+            "WormPeriodSeconds": "Periodo della vite RA",
             "ForgetPeriodicError": "Dimentica errore periodico",
             "DecAlgorithm": "Algoritmo Dec",
             "DecAggression": "Aggressività Dec",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatico dalla scala dell'immagine.",
             "RaCorrectionPace": "Quota dell'errore residuo che l'algoritmo Predictive corregge per frame: 0,5 elimina uno scostamento in 2–3 frame senza oltrepassare lo zero, 1 corregge tutto in una volta. Deriva ed errore periodico sono sempre corretti per intero.",
             "PeriodicErrorPrediction": "Impara l'errore periodico della vite senza fine RA e lo corregge prima che si veda. La curva appresa viene salvata per profilo e montatura.",
+            "WormPeriodUnit": "Indica la vite senza fine RA con i denti della sua corona o con il suo periodo in secondi, ad es. dal manuale della montatura o da uno strumento PEC. I secondi vanno bene anche per un azionamento il cui periodo non corrisponde a un numero intero di denti (riduttore armonico, cinghia). Viene usato solo il valore scelto.",
             "WormTeeth": "Denti della corona RA (es. 180 su una EQ6-R, 135 su una HEQ5); dà il periodo esatto della vite senza fine. 0 = rileva il periodo dai frame di guida.",
+            "WormPeriodSeconds": "Periodo della vite senza fine RA in secondi (ad es. 478,7 per 180 denti); allora non viene rilevato. Dopo un flip al meridiano la sua fase viene riappresa, come senza numero di denti. 0 (predefinito) = rileva il periodo dai frame di guida; la guida accetta da 180 a 1200 s.",
             "ForgetPeriodicError": "Dimentica l'errore periodico appreso per questa montatura, es. dopo aver regolato la vite senza fine; viene poi appreso di nuovo.",
             "DecAlgorithm": "Predictive (sperimentale) impara il seeing e il moto proprio della montatura dai frame di guida e corregge l'errore che prevede per il frame successivo, quindi aggressività, isteresi e movimento min. non si applicano.",
             "DecAggression": "Quota dell'errore Dec misurato corretta a ogni frame: 1,0 corregge tutto. Abbassala se Dec va oltre.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quando la guida parte dopo che la montatura si è spostata più di questo valore o ha cambiato lato del pilastro, il modello del gioco rimisura prima il gioco: la Dec invia impulsi verso nord finché la stella segue, poi verso sud fino al punto di partenza. L'ingranaggio poggia allora su un lato noto e il modello conosce il gioco sul nuovo obiettivo. Richiede circa 10–20 frame di guida. 0 = mai."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Il modello del gioco funziona solo con l'algoritmo Dec Predictive; per ora viene usato l'impulso fisso. Per usarlo, imposta «Algoritmo Dec» su Predictive in queste impostazioni."
+            "backlashModelNeedsPredictive": "Il modello del gioco funziona solo con l'algoritmo Dec Predictive; per ora viene usato l'impulso fisso. Per usarlo, imposta «Algoritmo Dec» su Predictive in queste impostazioni.",
+            "wormPeriodTooShort": "Meno di 180 s: la guida ignora questo periodo e lo rileva dai frame di guida."
           }
         },
         "darks": {

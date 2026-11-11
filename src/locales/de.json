@@ -2752,6 +2752,10 @@
           "actionCancel": "Abbrechen",
           "actionOptionConfirm": "„{option}“ ausführen?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Zähne",
+              "Seconds": "Sekunden"
+            },
             "GuideSource": {
               "GuideCamera": "Guide-Kamera",
               "Simulator": "Simulator"
@@ -2801,7 +2805,9 @@
             "RaMinMove": "RA-Min-Move",
             "RaCorrectionPace": "RA-Korrekturtempo",
             "PeriodicErrorPrediction": "Vorhersage periodischer Fehler",
+            "WormPeriodUnit": "RA-Schnecke angeben in",
             "WormTeeth": "RA-Schneckenradzähne",
+            "WormPeriodSeconds": "RA-Schneckenperiode",
             "ForgetPeriodicError": "Periodischen Fehler vergessen",
             "DecAlgorithm": "Dec-Algorithmus",
             "DecAggression": "Dec-Aggression",
@@ -2868,7 +2874,9 @@
             "RaMinMove": "0 = automatisch aus dem Abbildungsmaßstab.",
             "RaCorrectionPace": "Anteil des verbleibenden Fehlers, den der Predictive-Algorithmus pro Frame korrigiert: 0,5 baut einen Versatz über 2–3 Frames ab, ohne über null hinauszuschwingen, 1 korrigiert alles auf einmal. Drift und periodischer Fehler werden immer vollständig korrigiert.",
             "PeriodicErrorPrediction": "Lernt den periodischen Fehler der RA-Schnecke und korrigiert ihn, bevor er sichtbar wird. Die gelernte Kurve wird pro Profil und Montierung gespeichert.",
+            "WormPeriodUnit": "Die RA-Schnecke über die Zähne ihres Rads oder ihre Periode in Sekunden angeben, z. B. aus dem Handbuch der Montierung oder einem PEC-Werkzeug. Sekunden passen auch für Antriebe, deren Periode keiner ganzen Zahnzahl entspricht (Wellgetriebe, Riemen). Verwendet wird nur die gewählte Angabe.",
             "WormTeeth": "Zähne des RA-Schneckenrads (z. B. 180 bei einer EQ6-R, 135 bei einer HEQ5); ergibt die genaue Schneckenperiode. 0 = Periode aus den Guide-Frames bestimmen.",
+            "WormPeriodSeconds": "Periode der RA-Schnecke in Sekunden (z. B. 478,7 bei 180 Zähnen); sie wird dann nicht bestimmt. Nach einem Meridian-Flip wird ihre Phase neu gelernt, wie ohne Zahnzahl. 0 (Standard) = Periode aus den Guide-Frames bestimmen; der Guider nimmt 180 bis 1200 s.",
             "ForgetPeriodicError": "Vergisst den für diese Montierung gelernten periodischen Fehler, z. B. nachdem die Schnecke justiert wurde; er wird dann neu gelernt.",
             "DecAlgorithm": "Predictive (experimentell) lernt aus den Guide-Frames das Seeing und die Eigenbewegung der Montierung und korrigiert den Fehler, den es für den nächsten Frame vorhersagt; Aggression, Hysterese und Min-Move gelten dafür daher nicht.",
             "DecAggression": "Anteil des gemessenen Dec-Fehlers, der in jedem Frame korrigiert wird: 1,0 korrigiert alles. Senken, wenn Dec überschießt.",
@@ -2908,7 +2916,8 @@
             "BacklashRemeasureAfterSlewDeg": "Startet das Guiding, nachdem die Montierung weiter als dieser Wert geschwenkt hat oder die Pierseite gewechselt hat, misst das Spielmodell das Spiel zuerst neu: Dec pulst nach Norden, bis der Stern folgt, dann nach Süden zurück zum Start. Danach liegt das Zahnrad an einer bekannten Seite an und das Modell kennt das Spiel am neuen Ziel. Dauert etwa 10 bis 20 Guide-Frames. 0 = nie."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Das Spielmodell wirkt nur mit dem Dec-Algorithmus Predictive; aktuell wird der feste Puls verwendet. Stelle dazu in diesen Einstellungen „Dec-Algorithmus“ auf Predictive."
+            "backlashModelNeedsPredictive": "Das Spielmodell wirkt nur mit dem Dec-Algorithmus Predictive; aktuell wird der feste Puls verwendet. Stelle dazu in diesen Einstellungen „Dec-Algorithmus“ auf Predictive.",
+            "wormPeriodTooShort": "Kürzer als 180 s: Der Guider ignoriert diese Periode und bestimmt sie aus den Guide-Frames."
           }
         },
         "darks": {

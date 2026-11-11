@@ -2711,6 +2711,10 @@
           "actionCancel": "Anuluj",
           "actionOptionConfirm": "Wykonać „{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Zęby",
+              "Seconds": "Sekundy"
+            },
             "GuideSource": {
               "GuideCamera": "Kamera guidingowa",
               "Simulator": "Symulator"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Min. ruch RA",
             "RaCorrectionPace": "Tempo korekty RA",
             "PeriodicErrorPrediction": "Przewidywanie błędu okresowego",
+            "WormPeriodUnit": "Ślimak RA podany w",
             "WormTeeth": "Liczba zębów ślimacznicy RA",
+            "WormPeriodSeconds": "Okres ślimaka RA",
             "ForgetPeriodicError": "Zapomnij błąd okresowy",
             "DecAlgorithm": "Algorytm Dec",
             "DecAggression": "Agresja Dec",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatycznie na podstawie skali obrazu.",
             "RaCorrectionPace": "Udział pozostałego błędu, który algorytm Predictive koryguje na klatkę: 0,5 usuwa przesunięcie w ciągu 2–3 klatek bez przechodzenia przez zero, 1 koryguje wszystko naraz. Dryf i błąd okresowy są zawsze korygowane w całości.",
             "PeriodicErrorPrediction": "Uczy się błędu okresowego ślimaka RA i koryguje go, zanim stanie się widoczny. Nauczona krzywa jest zapisywana dla profilu i montażu.",
+            "WormPeriodUnit": "Podaj ślimak RA liczbą zębów jego koła albo okresem w sekundach, np. z instrukcji montażu lub narzędzia PEC. Sekundy pasują też do napędu, którego okres nie odpowiada całkowitej liczbie zębów (przekładnia falowa, pasek). Używana jest tylko wybrana wartość.",
             "WormTeeth": "Liczba zębów ślimacznicy RA (np. 180 w EQ6-R, 135 w HEQ5); daje dokładny okres ślimaka. 0 = wykrywanie okresu na podstawie klatek prowadzenia.",
+            "WormPeriodSeconds": "Okres ślimaka RA w sekundach (np. 478,7 dla 180 zębów); nie jest wtedy wykrywany. Po przejściu przez południk jego faza jest uczona od nowa, jak bez liczby zębów. 0 (domyślnie) = wykryj okres z klatek prowadzenia; guider przyjmuje od 180 do 1200 s.",
             "ForgetPeriodicError": "Zapomina błąd okresowy nauczony dla tego montażu, np. po regulacji ślimaka; zostanie on nauczony od nowa.",
             "DecAlgorithm": "Predictive (eksperymentalny) uczy się seeingu i własnego ruchu montażu na podstawie klatek prowadzenia i koryguje błąd przewidywany dla następnej klatki, dlatego agresja, histereza i min. ruch go nie dotyczą.",
             "DecAggression": "Udział zmierzonego błędu Dec korygowany w każdej klatce: 1,0 koryguje całość. Zmniejsz, jeśli Dec przestrzeliwuje.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Gdy guiding startuje po tym, jak montaż przesunął się dalej niż ta wartość lub zmienił stronę kolumny, model luzu najpierw ponownie mierzy luz: Dec wysyła impulsy na północ, aż gwiazda zacznie podążać, a potem na południe z powrotem do startu. Koło opiera się wtedy o znaną stronę, a model zna luz przy nowym celu. Trwa to około 10–20 klatek guidingu. 0 = nigdy."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Model luzu działa tylko z algorytmem Dec Predictive; obecnie używany jest stały impuls. Aby go użyć, ustaw w tych ustawieniach „Algorytm Dec” na Predictive."
+            "backlashModelNeedsPredictive": "Model luzu działa tylko z algorytmem Dec Predictive; obecnie używany jest stały impuls. Aby go użyć, ustaw w tych ustawieniach „Algorytm Dec” na Predictive.",
+            "wormPeriodTooShort": "Krócej niż 180 s: guider ignoruje ten okres i wykrywa go z klatek prowadzenia."
           }
         },
         "darks": {

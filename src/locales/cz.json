@@ -2711,6 +2711,10 @@
           "actionCancel": "Zrušit",
           "actionOptionConfirm": "Spustit „{option}“?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Zuby",
+              "Seconds": "Sekundy"
+            },
             "GuideSource": {
               "GuideCamera": "Pointační kamera",
               "Simulator": "Simulátor"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Min. pohyb RA",
             "RaCorrectionPace": "Tempo korekce RA",
             "PeriodicErrorPrediction": "Předpověď periodické chyby",
+            "WormPeriodUnit": "Šnek RA zadat v",
             "WormTeeth": "Počet zubů šnekového kola RA",
+            "WormPeriodSeconds": "Perioda šneku RA",
             "ForgetPeriodicError": "Zapomenout periodickou chybu",
             "DecAlgorithm": "Algoritmus Dec",
             "DecAggression": "Agresivita Dec",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automaticky z měřítka snímku.",
             "RaCorrectionPace": "Podíl zbývající chyby, který algoritmus Predictive koriguje za snímek: 0,5 odstraní posun během 2–3 snímků bez překmitnutí přes nulu, 1 koriguje vše najednou. Drift a periodická chyba se vždy korigují celé.",
             "PeriodicErrorPrediction": "Učí se periodickou chybu šneku v RA a koriguje ji dřív, než se projeví. Naučená křivka se ukládá pro profil a montáž.",
+            "WormPeriodUnit": "Zadejte šnek RA počtem zubů šnekového kola nebo jeho periodou v sekundách, např. z návodu k montáži nebo z nástroje PEC. Sekundy se hodí i pro pohon, jehož perioda neodpovídá celému počtu zubů (vlnový převod, řemen). Použije se jen zvolená hodnota.",
             "WormTeeth": "Počet zubů šnekového kola RA (např. 180 u EQ6-R, 135 u HEQ5); dává přesnou periodu šneku. 0 = zjistit periodu z naváděcích snímků.",
+            "WormPeriodSeconds": "Perioda šneku RA v sekundách (např. 478,7 pro 180 zubů); pak se nezjišťuje. Po otočení přes poledník se její fáze učí znovu, jako bez počtu zubů. 0 (výchozí) = zjistit periodu z naváděcích snímků; naváděč přijímá 180 až 1200 s.",
             "ForgetPeriodicError": "Zapomene periodickou chybu naučenou pro tuto montáž, např. po seřízení šneku; poté se naučí znovu.",
             "DecAlgorithm": "Predictive (experimentální) se z naváděcích snímků učí seeing a vlastní pohyb montáže a koriguje chybu, kterou předpovídá pro další snímek; agresivita, hystereze a min. pohyb se na něj proto nevztahují.",
             "DecAggression": "Podíl změřené chyby Dec korigovaný v každém snímku: 1,0 koriguje vše. Snižte, pokud Dec přestřeluje.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Když pointace začne poté, co se montáž posunula dál než o tuto hodnotu nebo změnila stranu sloupu, model vůle nejprve vůli znovu změří: Dec pulzuje na sever, dokud hvězda nezačne sledovat, pak na jih zpět na začátek. Kolo se pak opírá o známou stranu a model zná vůli u nového cíle. Trvá asi 10 až 20 pointačních snímků. 0 = nikdy."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Model vůle funguje jen s algoritmem Dec Predictive; nyní se používá pevný pulz. Chcete-li ho použít, nastavte v tomto nastavení „Algoritmus Dec“ na Predictive."
+            "backlashModelNeedsPredictive": "Model vůle funguje jen s algoritmem Dec Predictive; nyní se používá pevný pulz. Chcete-li ho použít, nastavte v tomto nastavení „Algoritmus Dec“ na Predictive.",
+            "wormPeriodTooShort": "Kratší než 180 s: naváděč tuto periodu ignoruje a zjistí ji z naváděcích snímků."
           }
         },
         "darks": {

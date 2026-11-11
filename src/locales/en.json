@@ -2752,6 +2752,10 @@
           "actionCancel": "Cancel",
           "actionOptionConfirm": "Run “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Teeth",
+              "Seconds": "Seconds"
+            },
             "GuideSource": {
               "GuideCamera": "Guide camera",
               "Simulator": "Simulator"
@@ -2801,7 +2805,9 @@
             "RaMinMove": "RA min move",
             "RaCorrectionPace": "RA correction pace",
             "PeriodicErrorPrediction": "Periodic error prediction",
+            "WormPeriodUnit": "RA worm given in",
             "WormTeeth": "RA worm wheel teeth",
+            "WormPeriodSeconds": "RA worm period",
             "ForgetPeriodicError": "Forget periodic error",
             "DecAlgorithm": "Dec algorithm",
             "DecAggression": "Dec aggression",
@@ -2868,7 +2874,9 @@
             "RaMinMove": "Smallest RA error, in pixels, that gets a correction; smaller errors are ignored so the guider does not chase the seeing. 0 (default) calculates a value from the image scale. The setting most worth adjusting to the night's seeing.",
             "RaCorrectionPace": "Share of the remaining error the Predictive algorithm corrects per frame: 0.5 takes an offset out over 2–3 frames without swinging past zero, 1 corrects all of it at once. Drift and periodic error are always corrected in full.",
             "PeriodicErrorPrediction": "Learns the periodic error of the RA worm and corrects it before it shows. The learned curve is kept per profile and mount.",
+            "WormPeriodUnit": "Give the RA worm as the teeth of its wheel or as its period in seconds, e.g. from the mount's manual or a PEC tool. Seconds also suit a drive whose period is no whole tooth count (a strain wave gear, a belt). Only the chosen one is used.",
             "WormTeeth": "Teeth of the RA worm wheel (e.g. 180 on an EQ6-R, 135 on an HEQ5); gives the exact worm period. 0 (default) detects the period from the guide frames.",
+            "WormPeriodSeconds": "Period of the RA worm in seconds (e.g. 478.7 for 180 teeth); it is then not detected. After a meridian flip its phase is learned anew, as without a tooth count. 0 (default) detects the period from the guide frames; the guider takes 180 to 1200 s.",
             "ForgetPeriodicError": "Forgets the periodic error learned for this mount, e.g. after the worm was adjusted; it is then learned anew.",
             "DecAlgorithm": "How the measured Dec error becomes a correction. ResistSwitch (default) reverses the Dec direction only when the error clearly asks for it, so Dec backlash does not make the guiding swing. Hysteresis, Lowpass2 and Lowpass work as on RA, None sends no Dec corrections. Predictive (experimental) learns the seeing and the mount's own motion from the guide frames and corrects the error it predicts for the next frame; aggression, hysteresis and min move do not apply to it.",
             "DecAggression": "Share of the measured Dec error corrected in each frame: 1.0 corrects all of it. Lower it if Dec overshoots.",
@@ -2908,7 +2916,8 @@
             "BacklashRemeasureAfterSlewDeg": "When guiding starts after the mount moved farther than this or changed pier side, the play model measures the play again first: Dec pulses North until the star follows, then South back to the start. The gear then rests on a known side and the model knows the play at the new target. Takes about 10 to 20 guide frames. 0 = never."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "The play model works only with the Predictive Dec algorithm; the fixed pulse is used for now. Switch \"Dec algorithm\" to Predictive in these settings to use it."
+            "backlashModelNeedsPredictive": "The play model works only with the Predictive Dec algorithm; the fixed pulse is used for now. Switch \"Dec algorithm\" to Predictive in these settings to use it.",
+            "wormPeriodTooShort": "Shorter than 180 s: the guider ignores this period and detects it from the guide frames."
           }
         },
         "darks": {

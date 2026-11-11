@@ -2752,6 +2752,10 @@
           "actionCancel": "취소",
           "actionOptionConfirm": "“{option}”을(를) 실행할까요?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "톱니 수",
+              "Seconds": "초"
+            },
             "GuideSource": {
               "GuideCamera": "가이드 카메라",
               "Simulator": "시뮬레이터"
@@ -2801,7 +2805,9 @@
             "RaMinMove": "RA 최소 이동",
             "RaCorrectionPace": "RA 보정 속도",
             "PeriodicErrorPrediction": "주기 오차 예측",
+            "WormPeriodUnit": "RA 웜 지정 방식",
             "WormTeeth": "RA 웜 휠 톱니 수",
+            "WormPeriodSeconds": "RA 웜 주기",
             "ForgetPeriodicError": "주기 오차 잊기",
             "DecAlgorithm": "Dec 알고리즘",
             "DecAggression": "Dec 적극성",
@@ -2868,7 +2874,9 @@
             "RaMinMove": "0 = 이미지 스케일에서 자동으로 결정.",
             "RaCorrectionPace": "Predictive 알고리즘이 프레임마다 보정하는 남은 오차의 비율. 0.5는 0을 넘어가지 않고 2–3프레임에 걸쳐 오프셋을 없애고, 1은 한 번에 모두 보정합니다. 드리프트와 주기 오차는 항상 전부 보정됩니다.",
             "PeriodicErrorPrediction": "RA 웜의 주기 오차를 학습해 드러나기 전에 교정합니다. 학습한 곡선은 프로필과 마운트별로 저장됩니다.",
+            "WormPeriodUnit": "RA 웜을 웜 휠의 톱니 수 또는 초 단위 주기로 지정합니다(예: 마운트 설명서나 PEC 도구). 초는 주기가 정수 톱니 수가 아닌 구동(하모닉 감속기, 벨트)에도 맞습니다. 선택한 값만 사용됩니다.",
             "WormTeeth": "RA 웜 휠의 톱니 수(예: EQ6-R은 180, HEQ5는 135)로, 정확한 웜 주기를 알 수 있습니다. 0 = 가이드 프레임에서 주기를 감지.",
+            "WormPeriodSeconds": "RA 웜의 주기(초, 예: 180톱니는 478.7). 이 경우 주기를 감지하지 않습니다. 자오선 전환 후에는 톱니 수가 없을 때처럼 위상을 다시 학습합니다. 0(기본값) = 가이드 프레임에서 주기 감지. 가이더는 180~1200초를 받습니다.",
             "ForgetPeriodicError": "이 마운트에 대해 학습한 주기 오차를 잊습니다(예: 웜을 조정한 후). 이후 새로 학습합니다.",
             "DecAlgorithm": "Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습하고 다음 프레임에 대해 예측한 오차를 교정합니다. 따라서 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
             "DecAggression": "각 프레임에서 보정하는 측정된 Dec 오차의 비율. 1.0은 전부 보정합니다. Dec가 지나치면 낮추세요.",
@@ -2908,7 +2916,8 @@
             "BacklashRemeasureAfterSlewDeg": "마운트가 이 값보다 멀리 이동했거나 피어 사이드가 바뀐 뒤 가이딩을 시작하면, 유격 모델은 먼저 유격을 다시 측정합니다. 별이 따라올 때까지 Dec를 북쪽으로 펄스한 뒤, 남쪽으로 시작 위치까지 되돌립니다. 그러면 기어가 알려진 쪽에 닿고 모델은 새 대상에서의 유격을 알게 됩니다. 가이드 프레임 약 10~20장이 걸립니다. 0 = 사용 안 함."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "유격 모델은 Dec 알고리즘 Predictive에서만 동작합니다. 현재는 고정 펄스를 사용합니다. 사용하려면 이 설정에서 \"Dec 알고리즘\"을 Predictive로 바꾸세요."
+            "backlashModelNeedsPredictive": "유격 모델은 Dec 알고리즘 Predictive에서만 동작합니다. 현재는 고정 펄스를 사용합니다. 사용하려면 이 설정에서 \"Dec 알고리즘\"을 Predictive로 바꾸세요.",
+            "wormPeriodTooShort": "180초 미만: 가이더가 이 주기를 무시하고 가이드 프레임에서 감지합니다."
           }
         },
         "darks": {
