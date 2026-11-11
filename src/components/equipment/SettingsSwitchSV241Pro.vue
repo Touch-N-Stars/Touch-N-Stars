@@ -18,9 +18,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const props = defineProps({
@@ -42,33 +42,12 @@ const isSV241Pro = computed(() => {
   return candidates.some((s) => s.includes('svbony') && s.includes('powerbox'));
 });
 
-const preConnectDelay = ref(0);
-const statusClassPre = ref('');
+const {
+  value: preConnectDelay,
+  save: setPreConnectDelay,
+  glowClass: statusClassPre,
+} = useProfileSetting('SwitchSettings-IndiPreConnectDelay', { fallback: 0 });
 
-function initializeSettings() {
-  const settings = store.profileInfo?.SwitchSettings;
-  if (!settings) return;
-  preConnectDelay.value = settings.IndiPreConnectDelay ?? 0;
-}
-
-async function setPreConnectDelay() {
-  try {
-    await apiService.profileChangeValue(
-      'SwitchSettings-IndiPreConnectDelay',
-      preConnectDelay.value
-    );
-    statusClassPre.value = 'glow-green';
-  } catch {
-    statusClassPre.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassPre.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(async () => {
-  await store.fetchProfilInfos();
-  initializeSettings();
-});
+// Opened right after a driver change: fetch the profile now instead of waiting for the poller.
+onMounted(() => store.fetchProfilInfos());
 </script>
