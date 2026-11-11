@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ item.PositionAngle }}°</span>
+      <span class="text-xs text-content-muted font-mono">{{ item.PositionAngle }}°</span>
     </template>
 
     <template #editor="{ save }">
@@ -17,7 +17,7 @@
           @change="save('PositionAngle', $event)"
         />
       </template>
-      <div v-else class="text-xs text-blue-400/80">
+      <div v-else class="text-xs text-accent/80">
         {{ $t('components.sequence.items.center.inherited') }}
       </div>
     </template>

@@ -18,7 +18,9 @@
     "creating": "Creazione…",
     "help": "Aiuto",
     "expand": "Espandi",
-    "collapse": "Comprimi"
+    "collapse": "Comprimi",
+    "drag": "Trascina",
+    "showImage": "Mostra immagine"
   },
   "general": {
     "cancel": "Annulla",
@@ -938,6 +940,7 @@
       "targetNotFound": "Target non trovato nella sequenza. Riprova.",
       "filter": "Filtro",
       "triggers": "Trigger",
+      "globalTriggers": "Trigger globali",
       "expandAll": "Espandi tutto",
       "collapseAll": "Comprimi tutto",
       "addTypeButton": {
@@ -1017,6 +1020,7 @@
       },
       "time": "Tempo",
       "noRunningItems": "La sequenza si è interrotta",
+      "noConditions": "Nessuna condizione",
       "targetOfTotal": "Target {current} di {total}",
       "status": "Stato di sequenza",
       "instructions": "Istruzioni",
@@ -2477,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Elaborazione frame lenta",
-            "explanation": "L'elaborazione di un frame di guida ha richiesto più tempo del previsto, ritardando le correzioni.",
-            "fix": "Riduci il numero massimo di stelle guida, usa il binning o un subframe, oppure controlla il carico della CPU."
+            "explanation": "Nell'ultimo minuto, almeno la metà dei frame di guida ha richiesto troppo tempo per l'elaborazione, quindi le correzioni sono arrivate in ritardo alla montatura. Un singolo frame lento ogni tanto è normale e viene solo annotato nel log.",
+            "fix": "Controlla cos'altro tiene occupato il computer, come il live stacking o altri programmi. Altrimenti riduci «Max stelle guida», usa il binning o un subframe, oppure disattiva la riduzione rumore."
+          },
+          "SlowGuideFrame": {
+            "title": "Frame di guida lento",
+            "explanation": "L'elaborazione di un frame di guida ha richiesto più tempo del solito, quindi la sua correzione è arrivata un po' in ritardo. Succede ogni tanto quando il computer è impegnato in altro, come il salvataggio, il plate solving o lo stacking di un'immagine della camera principale, e non crea problemi.",
+            "fix": "Nessuna azione necessaria. La guida avvisa se i frame restano lenti per un minuto."
           },
           "SettleTimeout": {
             "title": "Timeout di assestamento",
@@ -4719,6 +4728,7 @@
       "azimuth_error": "Errore azimut:",
       "total_error": "Errore totale:",
       "error_values_missing": "Valori errore mancanti",
+      "waiting_for_values": "In attesa della prima misura…",
       "unknown_response_format": "Formato risposta sconosciuto",
       "east": "Est",
       "west": "Ovest",
@@ -5162,7 +5172,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, solo linea [OIII] (ossigeno doppiamente ionizzato). Copre solo il cielo a nord di −16°; download separato.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, solo linea [SII] (zolfo ionizzato). Copre solo il cielo a nord di −16°; download separato."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, solo linea [SII] (zolfo ionizzato). Copre solo il cielo a nord di −16°; download separato.",
+        "source_nsns_cont": "NSNS continuo",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, solo luce del continuo: continuo rosso, verde e blu senza le righe di emissione, stelle parzialmente rimosse. Fa risaltare le nebulose a riflessione e le nubi oscure. Copre solo il cielo a nord di −16°, dettaglio fino all'ordine 5; download separato."
       },
       "object_types": {
         "_ass": "Associazione stellare",
@@ -5713,6 +5725,27 @@
         "loadFailed": "Impossibile caricare le reti salvate. Controlla la connessione e, se serve, aggiorna pinsdaemon.",
         "operationFailed": "Operazione sulla rete salvata non riuscita. Aggiorna l'elenco e riprova.",
         "invalidPriority": "La priorità deve essere un numero intero tra -999 e 999."
+      },
+      "networkMode": {
+        "title": "Modalità di rete del setup",
+        "description": "Automatica usa il Wi-Fi configurato quando è disponibile e altrimenti avvia l'hotspot da campo. L'hotspot da campo mantiene il setup raggiungibile su 10.42.0.1.",
+        "autoLabel": "Automatica",
+        "autoHint": "Prima il WiFi domestico, altrimenti l'hotspot.",
+        "hotspotLabel": "Hotspot da campo",
+        "hotspotHint": "Resta in modalità AP su 10.42.0.1.",
+        "configured": "Impostata: {mode}",
+        "active": "Attiva: {mode}",
+        "endpoint": "Indirizzo: {host}",
+        "modeAuto": "Automatica",
+        "modeHotspot": "Hotspot",
+        "modeClient": "WiFi domestico",
+        "modeDual": "Wi-Fi + hotspot",
+        "modeUnknown": "Sconosciuta",
+        "singleRadioWarning": "Questo setup ha una sola radio Wi-Fi. Cambiando modalità questa schermata si disconnette brevemente finché l'app non ritrova il setup.",
+        "searching": "Rete cambiata come previsto. Ricerca del setup in corso…",
+        "notFound": "Il setup non è stato trovato dopo il cambio di rete.",
+        "tried": "Provati: {hosts}",
+        "retry": "Cerca di nuovo il setup"
       },
       "autoConnect": "Connessione automatica al Wi-Fi selezionato dopo l'avvio",
       "wifiConnect": "Collegare",
@@ -8832,6 +8865,10 @@
       "status": "Stato",
       "error": "Distanza di Errore",
       "rotation": "Rotazione"
+    },
+    "manualRotator": {
+      "currentPosition": "Posizione attuale",
+      "targetPosition": "Posizione obiettivo"
     }
   },
   "loading": "caricamento",

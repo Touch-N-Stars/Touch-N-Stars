@@ -18,7 +18,9 @@
     "refresh": "Actualitza",
     "help": "Ajuda",
     "expand": "Expandeix",
-    "collapse": "Replega"
+    "collapse": "Replega",
+    "drag": "Arrossega",
+    "showImage": "Mostra la imatge"
   },
   "general": {
     "cancel": "Cancel·la",
@@ -982,6 +984,7 @@
       "targetNotFound": "No s'ha trobat l'objectiu a la seqüència. Torna-ho a provar.",
       "filter": "Filtre",
       "triggers": "Activadors",
+      "globalTriggers": "Activadors globals",
       "expandAll": "Expandeix-ho tot",
       "collapseAll": "Replega-ho tot",
       "addTypeButton": {
@@ -1063,6 +1066,7 @@
       },
       "time": "Temps",
       "noRunningItems": "Seqüència aturada",
+      "noConditions": "Cap condició",
       "targetOfTotal": "Objectiu {current} de {total}",
       "status": "Estat de la seqüència",
       "instructions": "Instruccions",
@@ -2518,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Processament de fotogrames lent",
-            "explanation": "Processar un fotograma de guiatge ha trigat més del previst, cosa que retarda les correccions.",
-            "fix": "Reduïu el nombre màxim d'estrelles de guiatge, useu binning o un subfotograma, o comproveu la càrrega de la CPU."
+            "explanation": "Durant l'últim minut, almenys la meitat dels fotogrames de guiatge han trigat massa a processar-se, de manera que les correccions han arribat tard a la muntura. Un fotograma lent de tant en tant és normal i només s'anota al registre.",
+            "fix": "Comproveu què més manté ocupat l'ordinador, com l'apilament en directe o altres programes. Si no, reduïu «Màx. estrelles de guiatge», useu binning o un subfotograma, o desactiveu la reducció de soroll."
+          },
+          "SlowGuideFrame": {
+            "title": "Fotograma de guiatge lent",
+            "explanation": "Un fotograma de guiatge ha trigat més del que és habitual a processar-se, de manera que la seva correcció ha arribat una mica tard. Passa de tant en tant quan l'ordinador està ocupat amb altres feines, com desar, fer el plate solving o apilar una imatge de la càmera principal, i no fa cap mal.",
+            "fix": "No cal fer res. El guiador avisa quan els fotogrames continuen lents durant un minut."
           },
           "SettleTimeout": {
             "title": "Temps d'estabilització esgotat",
@@ -4765,6 +4774,7 @@
       "azimuth_error": "Error d'azimut:",
       "total_error": "Error total:",
       "error_values_missing": "Valors d'error que falten",
+      "waiting_for_values": "Esperant la primera mesura…",
       "unknown_response_format": "Format de resposta desconegut",
       "east": "Est",
       "west": "Oest",
@@ -5208,7 +5218,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, només línia [OIII] (oxigen doblement ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, només línia [SII] (sofre ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, només línia [SII] (sofre ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
+        "source_nsns_cont": "NSNS continu",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, només llum del continu: continu vermell, verd i blau sense les línies d'emissió, amb les estrelles parcialment eliminades. Fa ressaltar les nebuloses de reflexió i els núvols foscos. Cobreix només el cel al nord de −16°, amb detall fins a l'ordre 5; és una descàrrega a part."
       },
       "object_types": {
         "_ass": "Associació estel·lar",
@@ -5747,6 +5759,27 @@
         "loadFailed": "No s'han pogut carregar les xarxes desades. Comprova la connexió i actualitza pinsdaemon si cal.",
         "operationFailed": "L'operació amb la xarxa desada ha fallat. Actualitza la llista i torna-ho a provar.",
         "invalidPriority": "La prioritat ha de ser un nombre enter entre -999 i 999."
+      },
+      "networkMode": {
+        "title": "Mode de xarxa de l'equip",
+        "description": "Automàtic fa servir la Wi-Fi configurada quan està disponible i, si no, inicia el punt d'accés de camp. El punt d'accés de camp manté l'equip accessible a 10.42.0.1.",
+        "autoLabel": "Automàtic",
+        "autoHint": "Primer la Wi-Fi de casa, si no, punt d'accés.",
+        "hotspotLabel": "Punt d'accés de camp",
+        "hotspotHint": "Es manté en mode AP a 10.42.0.1.",
+        "configured": "Configurat: {mode}",
+        "active": "Actiu: {mode}",
+        "endpoint": "Adreça: {host}",
+        "modeAuto": "Automàtic",
+        "modeHotspot": "Punt d'accés",
+        "modeClient": "Wi-Fi de casa",
+        "modeDual": "Wi-Fi + punt d'accés",
+        "modeUnknown": "Desconegut",
+        "singleRadioWarning": "Aquest equip només té una ràdio Wi-Fi. En canviar de mode, aquesta pantalla es desconnecta breument fins que l'aplicació torna a trobar l'equip.",
+        "searching": "La xarxa ha canviat com s'esperava. Tornant a cercar l'equip…",
+        "notFound": "No s'ha trobat l'equip després del canvi de xarxa.",
+        "tried": "Provat: {hosts}",
+        "retry": "Torna a cercar l'equip"
       },
       "autoConnect": "Connecta automàticament al Wi-Fi seleccionat en arrencar",
       "wifiConnect": "Connecta",
@@ -8754,6 +8787,10 @@
       "status": "Estat",
       "error": "Distància d'error",
       "rotation": "Rotació"
+    },
+    "manualRotator": {
+      "currentPosition": "Posició actual",
+      "targetPosition": "Posició objectiu"
     }
   },
   "nav": {

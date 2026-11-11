@@ -1,17 +1,16 @@
 <template>
-  <div
-    v-if="store.isBackendReachable"
-    class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-  >
+  <div v-if="store.isBackendReachable" class="tns-card flex flex-col gap-3">
     <div class="flex items-center justify-between">
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.timeSync.title') }}
       </h3>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-      <div class="bg-gray-900/60 rounded p-2">
-        <div class="text-gray-400 mb-1">{{ $t('components.settings.timeSync.backendTime') }}</div>
-        <div class="text-gray-100 font-mono">
+      <div class="bg-surface-2 rounded-control p-2">
+        <div class="text-content-muted mb-1">
+          {{ $t('components.settings.timeSync.backendTime') }}
+        </div>
+        <div class="text-content font-mono">
           {{
             timeInfo.backendUtc
               ? new Date(timeInfo.backendUtc).toLocaleString(undefined, { timeZoneName: 'short' })
@@ -19,28 +18,30 @@
           }}
         </div>
       </div>
-      <div class="bg-gray-900/60 rounded p-2">
-        <div class="text-gray-400 mb-1">{{ $t('components.settings.timeSync.mountTime') }}</div>
-        <div v-if="!timeInfo.mountConnected" class="text-gray-500 italic">
+      <div class="bg-surface-2 rounded-control p-2">
+        <div class="text-content-muted mb-1">
+          {{ $t('components.settings.timeSync.mountTime') }}
+        </div>
+        <div v-if="!timeInfo.mountConnected" class="text-content-faint italic">
           {{ $t('components.settings.timeSync.mountNotConnected') }}
         </div>
-        <div v-else-if="timeInfo.mountUtc" class="text-gray-100 font-mono">
+        <div v-else-if="timeInfo.mountUtc" class="text-content font-mono">
           {{ new Date(timeInfo.mountUtc).toLocaleString(undefined, { timeZoneName: 'short' }) }}
         </div>
-        <div v-else class="text-gray-500 italic">
+        <div v-else class="text-content-faint italic">
           {{ $t('components.settings.timeSync.notSupported') }}
         </div>
       </div>
-      <div class="bg-gray-900/60 rounded p-2">
-        <div class="text-gray-400 mb-1">{{ $t('plugins.pins.deviceTime') }}</div>
-        <div class="text-gray-100 font-mono">
+      <div class="bg-surface-2 rounded-control p-2">
+        <div class="text-content-muted mb-1">{{ $t('plugins.pins.deviceTime') }}</div>
+        <div class="text-content font-mono">
           {{ clientTime }}
         </div>
       </div>
     </div>
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1">
-        <p class="text-gray-300 text-sm">{{ $t('components.settings.timeSync.syncLabel') }}</p>
+        <p class="text-content text-sm">{{ $t('components.settings.timeSync.syncLabel') }}</p>
         <InfoModal
           :title="$t('components.settings.timeSync.syncLabel')"
           :message="$t('components.settings.timeSync.syncLabelInfo')"
@@ -50,7 +51,7 @@
       <ToggleButton :statusValue="timeInfo.timeSyncEnabled" @update:statusValue="toggleTimeSync" />
     </div>
     <div class="flex items-center justify-between">
-      <p class="text-gray-300 text-sm mr-4">{{ $t('plugins.pins.autoSync') }}</p>
+      <p class="text-content text-sm mr-4">{{ $t('plugins.pins.autoSync') }}</p>
       <ToggleButton
         :statusValue="pinsStore.timeSyncEnabled"
         @update:statusValue="togglePinsTimeSync"
@@ -58,30 +59,16 @@
     </div>
     <div class="flex items-center justify-between gap-2">
       <button
-        class="tns-btn-secondary flex items-center gap-2"
+        class="tns-btn-secondary"
         :disabled="pinsTimeActionLoading"
         @click="manualPinsTimeSync"
       >
-        <svg
-          v-if="pinsTimeActionLoading"
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-4 w-4 animate-spin"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-          />
-        </svg>
+        <Spinner v-if="pinsTimeActionLoading" size="sm" />
         {{ $t('plugins.pins.syncNow') }}
       </button>
       <button
         v-if="pinsStore.suppressTimeWarning"
-        class="text-xs text-yellow-400 hover:text-yellow-300 underline"
+        class="min-h-touch shrink-0 text-xs text-status-warn hover:brightness-110 underline"
         @click="pinsStore.setSuppressTimeWarning(false)"
       >
         {{ $t('plugins.pins.timeWarning.reenable') }}
@@ -101,6 +88,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { useToastStore } from '@/store/toastStore';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import apiService from '@/services/apiService';
 import axios from 'axios';
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';

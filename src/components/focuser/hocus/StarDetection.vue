@@ -3,15 +3,15 @@
     <!-- Loading -->
     <div v-if="store.isLoadingDetectionOptions" class="flex items-center justify-center py-12">
       <div class="spinner"></div>
-      <p class="ml-4 text-gray-400">{{ L('loading') }}</p>
+      <p class="ml-4 text-content-muted">{{ L('loading') }}</p>
     </div>
 
     <!-- Error -->
     <div
       v-if="store.detectionOptionsError"
-      class="rounded-lg border border-red-700/50 bg-red-900/40 p-4"
+      class="rounded-control border border-status-danger/30 bg-status-danger/10 p-4"
     >
-      <p class="text-red-200">
+      <p class="text-status-danger">
         <span class="font-semibold">{{ L('error') }}</span> {{ store.detectionOptionsError }}
       </p>
       <button class="tns-btn-secondary mt-3 w-auto px-4" @click="loadStarDetectionOptions()">
@@ -24,7 +24,7 @@
            edits go into one filter's snapshot instead of the global settings. -->
       <div
         v-if="o.PersistToProfile === false"
-        class="rounded-lg border border-amber-600/50 bg-amber-900/25 p-3 text-sm text-amber-200"
+        class="rounded-control border border-status-warn/40 bg-status-warn/10 p-3 text-sm text-status-warn"
       >
         {{ L('perFilterActive') }}
       </div>
@@ -34,7 +34,7 @@
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div class="min-w-0">
             <h3 :class="headingClass">{{ L('optimizer') }}</h3>
-            <p class="text-sm text-gray-400">
+            <p class="text-sm text-content-muted">
               {{ optimizerRunning ? L('optimizerRunning') : L('optimizerDescription') }}
             </p>
           </div>
@@ -59,7 +59,7 @@
           />
           <p
             v-if="o.DetectionBinningRecommendationVisible && o.DetectionBinningHint"
-            class="text-sm italic text-cyan-300"
+            class="text-sm italic text-accent"
             :title="translateBinningDetail(o.DetectionBinningHintDetail, t)"
           >
             {{ translateBinningHint(o.DetectionBinningHint, t) }}
@@ -229,11 +229,11 @@
     <!-- Reset confirmation -->
     <Modal :show="showResetConfirm" maxWidth="max-w-sm" @close="showResetConfirm = false">
       <template #header>
-        <h2 class="text-xl font-bold text-white">{{ L('resetTitle') }}</h2>
+        <h2 class="text-xl font-bold text-content">{{ L('resetTitle') }}</h2>
       </template>
       <template #body>
         <div class="flex w-full flex-col gap-6">
-          <p class="text-sm text-gray-300">{{ L('resetPrompt') }}</p>
+          <p class="text-sm text-content">{{ L('resetPrompt') }}</p>
           <div class="flex justify-end gap-3">
             <button class="tns-btn-secondary w-auto px-4" @click="showResetConfirm = false">
               {{ L('cancel') }}
@@ -300,9 +300,8 @@ function onOptimizerClosed() {
   refreshOptimizerStatus();
 }
 
-const cardClass =
-  'p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50';
-const headingClass = 'font-bold text-base text-cyan-400';
+const cardClass = 'tns-card flex flex-col gap-2 sm:gap-3';
+const headingClass = 'tns-section-title';
 
 // --- Enum choices. Values are the backend enum names; labels mirror the plugin's own wording. ---
 const detectionBinningOptions = [

@@ -3,11 +3,11 @@
     <!-- Collapsed: Pattern string + Preview -->
     <template v-if="!localShowTokens">
       <div class="flex flex-col gap-1">
-        <label class="text-xs text-gray-400">{{
+        <label class="text-xs text-content-muted">{{
           $t('components.settings.imageFile.preview')
         }}</label>
         <div
-          class="bg-gray-900/50 border border-gray-700/50 rounded-lg px-3 py-2 font-mono text-xs text-cyan-300 break-all"
+          class="bg-ground/50 border border-line rounded-lg px-3 py-2 font-mono text-xs text-accent break-all"
         >
           {{ previewResult || '—' }}
         </div>
@@ -19,15 +19,15 @@
       <!-- Pattern Chips -->
       <div class="flex flex-col gap-1">
         <div class="flex items-center gap-1">
-          <label class="text-xs text-gray-400">{{
+          <label class="text-xs text-content-muted">{{
             $t('components.settings.imageFile.pattern')
           }}</label>
-          <button @click="showHelp = true" class="text-blue-500 hover:text-gray-300 p-1">
+          <button @click="showHelp = true" class="text-accent hover:text-content p-1">
             <InformationCircleIcon class="w-5 h-5" />
           </button>
         </div>
         <div
-          class="flex flex-wrap items-center bg-gray-900/50 border border-gray-700/50 rounded-lg px-1 py-2 min-h-[40px]"
+          class="flex flex-wrap items-center bg-ground/50 border border-line rounded-lg px-1 py-2 min-h-[40px]"
         >
           <template v-if="patternSegments.length === 0">
             <button
@@ -50,7 +50,7 @@
                 <span class="px-1.5 py-0.5">{{ segmentLabel(segment) }}</span>
                 <button
                   @click="removeSegment(index)"
-                  class="px-1 py-0.5 hover:text-red-400 transition-colors opacity-60 hover:opacity-100"
+                  class="px-1 py-0.5 hover:text-status-danger transition-colors opacity-60 hover:opacity-100"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -78,11 +78,11 @@
 
       <!-- Preview -->
       <div class="flex flex-col gap-1">
-        <label class="text-xs text-gray-400">{{
+        <label class="text-xs text-content-muted">{{
           $t('components.settings.imageFile.preview')
         }}</label>
         <div
-          class="bg-gray-900/50 border border-gray-700/50 rounded-lg px-3 py-2 font-mono text-xs text-cyan-300 break-all"
+          class="bg-ground/50 border border-line rounded-lg px-3 py-2 font-mono text-xs text-accent break-all"
         >
           {{ previewResult || '—' }}
         </div>
@@ -92,7 +92,7 @@
     <!-- Toggle edit -->
     <button
       @click="toggleShowTokens"
-      class="flex items-center justify-between w-full text-xs text-gray-400 hover:text-gray-200 transition-colors"
+      class="flex items-center justify-between w-full text-xs text-content-muted hover:text-content transition-colors"
     >
       <span>{{ $t('components.settings.imageFile.editTokens') }}</span>
       <svg
@@ -109,13 +109,13 @@
 
     <div v-if="localShowTokens" class="flex flex-col gap-2">
       <div v-for="group in tokenGroups" :key="group.label" class="flex flex-col gap-1">
-        <label class="text-xs text-gray-500">{{ $t(group.label) }}</label>
+        <label class="text-xs text-content-faint">{{ $t(group.label) }}</label>
         <div class="flex flex-wrap gap-1">
           <button
             v-for="token in group.tokens"
             :key="token.key"
             @click="addSegment(token.key)"
-            class="px-2 py-1 text-xs rounded bg-gray-700/80 hover:bg-gray-600 text-gray-200 border border-gray-600/50 transition-colors"
+            class="px-2 py-1 text-xs rounded bg-surface-3 hover:bg-surface-2 text-content border border-line transition-colors"
           >
             {{ token.display }}
           </button>
@@ -126,19 +126,19 @@
       <div class="flex flex-wrap gap-1 mt-1">
         <button
           @click="addSegment('/')"
-          class="px-3 py-1 text-xs rounded bg-amber-900/60 hover:bg-amber-800/60 text-amber-200 border border-amber-700/50 transition-colors font-mono"
+          class="px-3 py-1 text-xs rounded bg-status-warn/15 hover:bg-status-warn/15 text-status-warn border border-amber-700/50 transition-colors font-mono"
         >
           \ {{ $t('components.settings.imageFile.folder') }}
         </button>
         <button
           @click="addSegment('_')"
-          class="px-3 py-1 text-xs rounded bg-amber-900/60 hover:bg-amber-800/60 text-amber-200 border border-amber-700/50 transition-colors font-mono"
+          class="px-3 py-1 text-xs rounded bg-status-warn/15 hover:bg-status-warn/15 text-status-warn border border-amber-700/50 transition-colors font-mono"
         >
           _ {{ $t('components.settings.imageFile.separator') }}
         </button>
         <button
           @click="addSegment('-')"
-          class="px-3 py-1 text-xs rounded bg-amber-900/60 hover:bg-amber-800/60 text-amber-200 border border-amber-700/50 transition-colors font-mono"
+          class="px-3 py-1 text-xs rounded bg-status-warn/15 hover:bg-status-warn/15 text-status-warn border border-amber-700/50 transition-colors font-mono"
         >
           - {{ $t('components.settings.imageFile.separator') }}
         </button>
@@ -146,7 +146,7 @@
 
       <!-- Free Text Input -->
       <div class="flex flex-col gap-1 mt-2">
-        <label class="text-xs text-gray-500">{{
+        <label class="text-xs text-content-faint">{{
           $t('components.settings.imageFile.freeText') || 'Free Text'
         }}</label>
         <div class="flex gap-1">
@@ -155,12 +155,12 @@
             type="text"
             @keyup.enter="addFreeText"
             placeholder="Enter text..."
-            class="flex-1 px-2 py-1 text-xs rounded bg-gray-800 border border-gray-600/50 text-gray-200 placeholder-gray-500 focus:outline-none focus:border-gray-500"
+            class="flex-1 px-2 py-1 text-xs rounded bg-surface-2 border border-line text-content placeholder:text-content-faint focus:outline-none focus:border-line-strong"
           />
           <button
             @click="addFreeText"
             :disabled="!freeTextInput.trim()"
-            class="px-3 py-1 text-xs rounded bg-green-900/60 hover:bg-green-800/60 disabled:bg-gray-700/40 disabled:text-gray-500 text-green-200 border border-green-700/50 disabled:border-gray-600/50 transition-colors"
+            class="px-3 py-1 text-xs rounded bg-accent/15 hover:bg-accent/25 disabled:bg-surface-2 disabled:text-content-faint text-accent border border-accent/40 disabled:border-line transition-colors"
           >
             {{ $t('components.settings.imageFile.addText') || 'Add' }}
           </button>
@@ -169,64 +169,60 @@
     </div>
 
     <!-- Help Modal -->
-    <div v-if="showHelp" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div class="bg-gray-800 text-white p-4 m-4 rounded-lg max-w-xl max-h-[80vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-lg font-bold">
-            {{ $t('components.settings.imageFile.help.title') }}
-          </h2>
-          <button @click="showHelp = false" class="text-white hover:text-gray-300">
-            <XMarkIcon class="w-6 h-6" />
-          </button>
-        </div>
-
-        <div class="space-y-3 text-sm text-gray-300">
+    <Modal :show="showHelp" zIndex="z-top" maxWidth="max-w-xl" @close="showHelp = false">
+      <template #header>
+        <h2 class="text-xl font-bold">
+          {{ $t('components.settings.imageFile.help.title') }}
+        </h2>
+      </template>
+      <template #body>
+        <div class="space-y-3 text-sm text-content">
           <p>{{ $t('components.settings.imageFile.help.intro') }}</p>
 
           <div>
-            <h3 class="text-cyan-400 font-semibold mb-1">
+            <h3 class="text-accent font-semibold mb-1">
               {{ $t('components.settings.imageFile.help.tokensTitle') }}
             </h3>
             <p>{{ $t('components.settings.imageFile.help.tokensDesc') }}</p>
           </div>
 
           <div>
-            <h3 class="text-amber-400 font-semibold mb-1">
+            <h3 class="text-status-warn font-semibold mb-1">
               {{ $t('components.settings.imageFile.help.separatorsTitle') }}
             </h3>
             <p>{{ $t('components.settings.imageFile.help.separatorsDesc') }}</p>
           </div>
 
           <div>
-            <h3 class="text-cyan-400 font-semibold mb-1">
+            <h3 class="text-accent font-semibold mb-1">
               {{ $t('components.settings.imageFile.help.cursorTitle') }}
             </h3>
             <p>{{ $t('components.settings.imageFile.help.cursorDesc') }}</p>
           </div>
 
           <div>
-            <h3 class="text-cyan-400 font-semibold mb-1">
+            <h3 class="text-accent font-semibold mb-1">
               {{ $t('components.settings.imageFile.help.exampleTitle') }}
             </h3>
-            <code class="block bg-gray-900 rounded px-3 py-2 text-xs text-cyan-300 break-all">
+            <code class="block bg-ground rounded px-3 py-2 text-xs text-accent break-all">
               $$DATEMINUS12$$\$$IMAGETYPE$$\$$DATETIME$$_$$FILTER$$_$$EXPOSURETIME$$s
             </code>
-            <p class="mt-1 text-xs text-gray-400">
+            <p class="mt-1 text-xs text-content-muted">
               {{ $t('components.settings.imageFile.help.exampleResult') }}
             </p>
-            <code class="block bg-gray-900 rounded px-3 py-1 text-xs text-green-300 break-all">
+            <code class="block bg-ground rounded px-3 py-1 text-xs text-content break-all">
               2024-01-15\LIGHT\2024-01-15_21-30-00_Ha_300s
             </code>
           </div>
         </div>
-      </div>
-    </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import { InformationCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { InformationCircleIcon } from '@heroicons/vue/24/outline';
 import {
   defaultPattern,
   allTokenKeys,
@@ -234,6 +230,7 @@ import {
   tokenGroups,
   exampleValues,
 } from './patternConstants.js';
+import Modal from '@/components/helpers/Modal.vue';
 
 const props = defineProps({
   modelValue: { type: String, default: '' },
@@ -308,12 +305,12 @@ function segmentLabel(segment) {
 
 function segmentClass(segment) {
   if (isToken(segment)) {
-    return 'bg-cyan-900/60 text-cyan-200 border border-cyan-700/50';
+    return 'bg-accent/15 text-accent border border-accent/40';
   }
   if (isSeparator(segment)) {
-    return 'bg-amber-900/60 text-amber-200 border border-amber-700/50';
+    return 'bg-status-warn/15 text-status-warn border border-amber-700/50';
   }
-  return 'bg-gray-700/60 text-gray-300 border border-gray-600/50';
+  return 'bg-surface-2 text-content border border-line';
 }
 
 function setInsertPos(index) {

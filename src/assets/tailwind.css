@@ -223,6 +223,11 @@
   @apply tns-select min-h-8 px-2 py-1 text-xs;
 }
 
+/* Text field to match tns-select-compact in the same dense rows. */
+@utility tns-input-compact {
+  @apply tns-input min-h-8 px-2 py-1 text-xs;
+}
+
 /* Heading of a section inside a card or page */
 @utility tns-section-title {
   @apply text-base font-bold text-accent;

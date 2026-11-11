@@ -16,10 +16,12 @@
             :class="itemIconColor"
           />
           <span
-            class="text-sm font-medium text-gray-200 truncate min-w-0 @max-[18rem]:whitespace-normal @max-[18rem]:line-clamp-2"
+            class="text-sm font-medium text-content truncate min-w-0 @max-[18rem]:whitespace-normal @max-[18rem]:line-clamp-2"
             >{{ displayName }}</span
           >
-          <span v-if="label" class="shrink-0 text-xs text-slate-500 font-normal">{{ label }}</span>
+          <span v-if="label" class="shrink-0 text-xs text-content-faint font-normal">{{
+            label
+          }}</span>
         </div>
         <div v-if="$slots.summary" class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-0.5">
           <slot name="summary" />
@@ -32,7 +34,8 @@
         <button
           v-if="issues.length"
           ref="issuesRef"
-          class="flex items-center gap-1 bg-red-500/20 text-red-300 border border-red-500/30 rounded-full px-1.5 py-0.5 text-xs hover:bg-red-500/30 transition-colors"
+          data-testid="sequence-item-issues"
+          class="flex items-center gap-1 bg-status-danger/20 text-status-danger border border-status-danger/30 rounded-full px-1.5 py-0.5 text-xs hover:bg-status-danger/30 transition-colors"
           @click.stop="toggleIssues"
         >
           <ExclamationTriangleIcon class="w-3 h-3" />
@@ -41,14 +44,14 @@
         <Teleport to="body">
           <div
             v-if="issuesOpen"
-            class="fixed z-[9999] bg-gray-800 border border-red-700/40 rounded-lg shadow-xl py-2 px-3 min-w-max max-w-xs"
+            class="fixed z-top bg-surface-1 border border-status-danger/40 rounded-lg shadow-xl py-2 px-3 min-w-max max-w-xs"
             :style="issuesStyle"
             @click.stop
           >
             <p
               v-for="(iss, i) in issues"
               :key="i"
-              class="text-red-300 text-xs flex items-start gap-1.5 py-0.5"
+              class="text-status-danger text-xs flex items-start gap-1.5 py-0.5"
             >
               <ExclamationTriangleIcon class="w-3.5 h-3.5 shrink-0 mt-0.5" />
               {{ iss }}
@@ -71,10 +74,10 @@
           class="p-1 rounded transition-colors"
           :class="
             isRunning
-              ? 'text-slate-700 cursor-not-allowed'
+              ? 'text-content-faint opacity-50 cursor-not-allowed'
               : editing
-                ? 'text-cyan-400 hover:bg-slate-600/40'
-                : 'text-slate-500 hover:text-slate-300 hover:bg-slate-600/40'
+                ? 'text-accent hover:bg-surface-3'
+                : 'text-content-faint hover:text-content-muted hover:bg-surface-3'
           "
           :disabled="isRunning"
           :title="isRunning ? $t('components.sequence.runningLocked') : $t('common.edit')"
@@ -86,13 +89,17 @@
     </div>
 
     <!-- Edit panel -->
-    <div v-if="editing && hasEditor" class="border-t border-slate-700/50 mt-1 pt-2 space-y-2">
+    <div v-if="editing && hasEditor" class="border-t border-line mt-1 pt-2 space-y-2">
       <!-- Issues list -->
       <div
         v-if="issues.length"
-        class="bg-red-900/20 border border-red-700/40 rounded-lg p-2 space-y-0.5"
+        class="bg-status-danger/10 border border-status-danger/40 rounded-lg p-2 space-y-0.5"
       >
-        <p v-for="(iss, i) in issues" :key="i" class="text-red-300 text-xs flex items-start gap-1">
+        <p
+          v-for="(iss, i) in issues"
+          :key="i"
+          class="text-status-danger text-xs flex items-start gap-1"
+        >
           <ExclamationTriangleIcon class="w-3.5 h-3.5 shrink-0 mt-0.5" />
           {{ iss }}
         </p>
@@ -102,18 +109,8 @@
       <slot name="editor" :save="save" :saving="saving" />
 
       <!-- Saving indicator -->
-      <div v-if="saving" class="text-xs text-cyan-400 flex items-center gap-1">
-        <svg class="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none">
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          />
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-        </svg>
+      <div v-if="saving" class="text-xs text-accent flex items-center gap-1">
+        <Spinner size="sm" />
         {{ $t('components.sequence.items.saving') }}
       </div>
     </div>
@@ -156,6 +153,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { displayIssues, displayStatus } from '@/utils/sequenceStatus';
+import Spinner from '@/components/helpers/Spinner.vue';
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -205,6 +203,8 @@ watch(isRunning, (running) => {
 const status = computed(() => displayStatus(props.item));
 const issues = computed(() => displayIssues(props.item));
 
+// The icon color tells the item categories apart at a glance, so it stays outside the
+// design tokens. Neutral entries use the muted text token.
 const ICON_MAP = [
   // Containers
   ['NINA.Sequencer.Container.DeepSkyObjectContainer', StarIcon, 'text-violet-400'],
@@ -237,21 +237,21 @@ const ICON_MAP = [
   // Rotator
   ['Rotator', ArrowPathIcon, 'text-indigo-400'],
   // Dome
-  ['Dome', HomeIcon, 'text-slate-300'],
+  ['Dome', HomeIcon, 'text-content-muted'],
   // Connect / Profile
-  ['Connect', LinkIcon, 'text-slate-400'],
-  ['SwitchProfile', LinkIcon, 'text-slate-400'],
+  ['Connect', LinkIcon, 'text-content-muted'],
+  ['SwitchProfile', LinkIcon, 'text-content-muted'],
   // Utility – Wait items
   ['Utility.Wait', ClockIcon, 'text-amber-400'],
   ['Utility.WaitFor', ClockIcon, 'text-amber-400'],
   // Utility – Annotation / MessageBox
-  ['Utility.Annotation', ChatBubbleLeftIcon, 'text-slate-400'],
-  ['Utility.MessageBox', ChatBubbleLeftIcon, 'text-slate-400'],
-  ['Utility.ExternalScript', CommandLineIcon, 'text-slate-400'],
+  ['Utility.Annotation', ChatBubbleLeftIcon, 'text-content-muted'],
+  ['Utility.MessageBox', ChatBubbleLeftIcon, 'text-content-muted'],
+  ['Utility.ExternalScript', CommandLineIcon, 'text-content-muted'],
   // Expressions / Variables
   ['Expressions', CodeBracketIcon, 'text-pink-400'],
   // Conditions
-  ['Conditions.Moon', MoonIcon, 'text-slate-300'],
+  ['Conditions.Moon', MoonIcon, 'text-content-muted'],
   ['Conditions.Sun', SunIcon, 'text-yellow-300'],
   ['Conditions.Altitude', ChartBarIcon, 'text-amber-300'],
   ['Conditions.AboveHorizon', ChartBarIcon, 'text-amber-300'],
@@ -261,8 +261,8 @@ const ICON_MAP = [
   // Triggers
   ['Trigger.Platesolving', ViewfinderCircleIcon, 'text-cyan-300'],
   ['Trigger.MeridianFlip', ArrowPathIcon, 'text-orange-300'],
-  ['Trigger.Connect', LinkIcon, 'text-slate-400'],
-  ['Trigger.Dome', HomeIcon, 'text-slate-300'],
+  ['Trigger.Connect', LinkIcon, 'text-content-muted'],
+  ['Trigger.Dome', HomeIcon, 'text-content-muted'],
   ['ninaAPI', BoltIcon, 'text-red-400'],
   // Polar Alignment
   ['PolarAlignment', ArrowsPointingOutIcon, 'text-blue-300'],
@@ -289,7 +289,7 @@ const itemIconColor = computed(() => {
   for (const [pattern, , color] of ICON_MAP) {
     if (t.includes(pattern)) return color;
   }
-  return 'text-slate-400';
+  return 'text-content-muted';
 });
 
 const displayName = computed(() => {
@@ -308,17 +308,15 @@ async function save(key, value) {
 function statusColor(status) {
   switch (status) {
     case 'FINISHED':
-      return 'bg-emerald-500/30 text-emerald-200 border border-emerald-400/50';
+      return 'bg-status-ok/20 text-status-ok border border-status-ok/50';
     case 'RUNNING':
-      return 'bg-cyan-500/30 text-cyan-200 border border-cyan-400/50';
+      return 'bg-accent/20 text-accent border border-accent/50';
     case 'FAILED':
-      return 'bg-red-500/30 text-red-200 border border-red-400/50';
-    case 'SKIPPED':
-      return 'bg-gray-500/30 text-gray-300 border border-gray-400/50';
+      return 'bg-status-danger/20 text-status-danger border border-status-danger/50';
     case 'DISABLED':
-      return 'bg-gray-700/50 text-gray-500 border border-gray-600/50';
+      return 'bg-surface-2 text-content-faint border border-line';
     default:
-      return 'bg-gray-600/30 text-gray-300 border border-gray-500/50';
+      return 'bg-surface-3 text-content-muted border border-line-strong';
   }
 }
 </script>

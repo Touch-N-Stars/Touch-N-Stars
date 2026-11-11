@@ -3,7 +3,7 @@
     <!-- Label left / control right, matching HfToggleRow and HfNumberField. -->
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-1 min-w-0">
-        <label class="text-sm font-medium text-gray-300">{{ label }}</label>
+        <label class="text-sm font-medium text-content">{{ label }}</label>
         <InfoModal v-if="help" :title="label" :message="help" size="w-4 h-4" />
       </div>
       <select
@@ -16,7 +16,7 @@
         <option v-for="opt in options" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
       </select>
     </div>
-    <p v-if="error" class="mt-1 text-xs text-red-400">{{ error }}</p>
+    <p v-if="error" class="mt-1 text-xs text-status-danger">{{ error }}</p>
   </div>
 </template>
 

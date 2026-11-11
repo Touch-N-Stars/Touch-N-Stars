@@ -8,37 +8,27 @@
     <button
       v-else
       @click="openModal"
-      class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md z-10"
+      class="p-2 bg-surface-3 border border-accent-action rounded-full shadow-md z-10"
     >
       <HeartIcon class="w-6 h-6 text-white" />
     </button>
     <span
       v-if="showBadgeLabel"
-      class="absolute left-1/2 -translate-x-1/2 top-[calc(100%-20px)] text-[8.5px] font-semibold text-white/80 text-center leading-tight bg-slate-900/60 border border-slate-500/30 rounded px-1 py-0.5 whitespace-nowrap"
+      class="absolute left-1/2 -translate-x-1/2 top-[calc(100%-20px)] text-[8.5px] font-semibold text-white/80 text-center leading-tight bg-surface-1/60 border border-line-strong/30 rounded px-1 py-0.5 whitespace-nowrap"
     >
       Favs
     </span>
-    <Teleport to="body">
-      <div
-        v-if="isModalOpen"
-        class="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center"
-        @click.self="isModalOpen = false"
-      >
-        <div
-          class="bg-gray-800 text-white p-6 rounded-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto"
-          @click.stop
-        >
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">{{ $t('components.fav_target.titel') }}</h2>
-            <button @click="isModalOpen = false" class="text-white hover:text-gray-300">
-              <XMarkIcon class="w-6 h-6" />
-            </button>
-          </div>
+    <Modal :show="isModalOpen" zIndex="z-top" @close="isModalOpen = false">
+      <template #header>
+        <h2 class="text-xl font-bold">{{ $t('components.fav_target.titel') }}</h2>
+      </template>
+      <template #body>
+        <div class="w-full">
           <table
             v-if="hasAnyTarget"
-            class="w-full text-sm text-left border border-gray-600 overflow-hidden"
+            class="w-full text-sm text-left border border-line-strong overflow-hidden"
           >
-            <thead class="bg-gray-700 text-gray-200">
+            <thead class="bg-surface-3 text-content">
               <tr>
                 <th class="px-4 py-2">{{ $t('components.fav_target.table.name') }}</th>
                 <th class="px-4 py-2 hidden sm:table-cell">
@@ -58,10 +48,10 @@
               </tr>
             </thead>
             <tbody v-for="group in targetGroups" :key="group.key">
-              <tr v-if="group.targets.length" class="bg-gray-700/50">
+              <tr v-if="group.targets.length" class="bg-surface-3/50">
                 <td
                   :colspan="columnCount"
-                  class="px-4 py-1 text-xs font-semibold uppercase tracking-wider text-gray-300"
+                  class="px-4 py-1 text-xs font-semibold uppercase tracking-wider text-content"
                 >
                   {{ group.label }}
                 </td>
@@ -69,13 +59,13 @@
               <tr
                 v-for="target in group.targets"
                 :key="target.Id"
-                class="border-t border-gray-700 hover:bg-gray-700 transition-colors"
+                class="border-t border-line hover:bg-surface-3 transition-colors"
               >
                 <td class="px-4 py-2">
                   {{ target.Name }}
                   <span
                     v-if="target.MosaicCols > 1"
-                    class="ml-1 text-xs bg-blue-700 text-white px-1 rounded"
+                    class="ml-1 text-xs bg-accent-action text-white px-1 rounded"
                     >{{ target.MosaicCols }}×{{ target.MosaicRows }}</span
                   >
                   <span
@@ -83,7 +73,7 @@
                     class="ml-1 text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full px-1.5 py-0.5"
                     >{{ $t('components.fav_target.groups.telescopius') }}</span
                   >
-                  <div v-if="target.listName" class="text-xs text-gray-400">
+                  <div v-if="target.listName" class="text-xs text-content-muted">
                     {{ target.listName }}
                   </div>
                 </td>
@@ -93,18 +83,18 @@
                   {{ target.Rotation == null ? '–' : Number(target.Rotation).toFixed(1) }}
                 </td>
                 <td class="px-4 py-2" v-if="showFramning">
-                  <button @click="loadTarget(target)" class="hover:text-green-400">
+                  <button @click="loadTarget(target)" class="hover:text-status-ok">
                     <CheckIcon
                       class="w-4 h-4"
-                      :class="selectedTargetId === target.Id ? 'text-green-500' : ''"
+                      :class="selectedTargetId === target.Id ? 'text-status-ok' : ''"
                     />
                   </button>
                 </td>
                 <td class="px-4 py-2" v-if="showSeqTarget">
-                  <button @click="setSequenceTarget(target)" class="hover:text-green-400">
+                  <button @click="setSequenceTarget(target)" class="hover:text-status-ok">
                     <CheckIcon
                       class="w-4 h-4"
-                      :class="selectedTargetId === target.Id ? 'text-green-500' : ''"
+                      :class="selectedTargetId === target.Id ? 'text-status-ok' : ''"
                     />
                   </button>
                 </td>
@@ -113,7 +103,7 @@
                   <button
                     v-if="target.source !== 'telescopius'"
                     @click="removeTarget(target.Id)"
-                    class="hover:text-red-400"
+                    class="hover:text-status-danger"
                   >
                     <TrashIcon class="w-4 h-4" />
                   </button>
@@ -124,8 +114,8 @@
 
           <p v-else>{{ $t('components.fav_target.no_fav') }}</p>
         </div>
-      </div>
-    </Teleport>
+      </template>
+    </Modal>
   </div>
 </template>
 <script setup>
@@ -134,7 +124,8 @@ import { useFavTargetStore } from '@/store/favTargetsStore';
 import { useFramingStore } from '@/store/framingStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import apiService from '@/services/apiService';
-import { TrashIcon, CheckIcon, HeartIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { TrashIcon, CheckIcon, HeartIcon } from '@heroicons/vue/24/outline';
+import Modal from '@/components/helpers/Modal.vue';
 import { useToastStore } from '@/store/toastStore';
 import { useI18n } from 'vue-i18n';
 import { useTelescopiusFavorites } from '@/plugins/telescopius/composables/useTelescopiusFavorites';

@@ -1,9 +1,9 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 shrink-0 font-mono">{{ item.ExposureTime }}s</span>
-      <span class="text-xs text-slate-500 shrink-0">G{{ item.Gain }}</span>
-      <span class="text-xs text-slate-500 shrink-0">{{ item.ImageType }}</span>
+      <span class="text-xs text-content-muted shrink-0 font-mono">{{ item.ExposureTime }}s</span>
+      <span class="text-xs text-content-faint shrink-0">G{{ item.Gain }}</span>
+      <span class="text-xs text-content-faint shrink-0">{{ item.ImageType }}</span>
     </template>
 
     <template #editor="{ save }">
@@ -36,11 +36,11 @@
 
       <!-- Binning -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.binning')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="binningValue"
           @change="save('Binning', $event.target.value)"
         >
@@ -53,11 +53,11 @@
 
       <!-- Image Type -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.imageType')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="item.ImageType"
           @change="save('ImageType', $event.target.value)"
         >

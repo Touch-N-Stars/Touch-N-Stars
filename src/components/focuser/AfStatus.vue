@@ -1,5 +1,5 @@
 <template>
-  <div class="text-md text-gray-400 pb-2">{{ $t('components.tppa.last_messages') }}:</div>
+  <div class="text-base text-content-muted pb-2">{{ $t('components.tppa.last_messages') }}:</div>
   <ul>
     <li
       v-for="(msg, index) in lastMessages.slice().reverse()"
@@ -7,7 +7,7 @@
       :style="{ color: msg.color }"
     >
       <template v-if="index === 0">
-        <span class="spinner"></span>
+        <Spinner size="sm" class="align-middle text-content-muted" />
       </template>
       <template v-else> {{ formatTime(msg.timestamp) }} - </template>
       {{ msg.message }}
@@ -20,6 +20,7 @@ import { ref, watch } from 'vue';
 import { useLogStore } from '@/store/logStore';
 import { useI18n } from 'vue-i18n';
 import { formatTime } from '@/utils/utils';
+import Spinner from '@/components/helpers/Spinner.vue';
 
 const { t } = useI18n();
 const logStore = useLogStore();
@@ -49,10 +50,10 @@ watch(
         message = t('components.tppa.capture_running');
       } else if (entry.message.includes('AutoFocus complete')) {
         message = entry.message;
-        color = 'green';
+        color = 'var(--color-status-ok)';
       } else if (entry.message.includes('AutoFocus did not complete successfully')) {
         message = entry.message;
-        color = 'orange';
+        color = 'var(--color-status-warn)';
       } else {
         // Nicht relevante Logs überspringen
         continue;
@@ -74,22 +75,3 @@ watch(
   { deep: true }
 );
 </script>
-
-<style scoped>
-.spinner {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  border: 2px solid #bbb;
-  border-top-color: #333;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-  vertical-align: middle;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>

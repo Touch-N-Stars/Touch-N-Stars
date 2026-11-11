@@ -2,32 +2,31 @@
   <teleport to="body">
     <div
       v-if="show"
+      ref="overlayRef"
       class="fixed inset-0 bg-black/60 px-3 py-4 sm:px-6 sm:py-8 flex items-start sm:items-center justify-center"
       :class="zIndex"
       @click="onBackdropClick"
     >
       <div
-        class="w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden rounded-xl border border-gray-700 bg-gray-900 text-white shadow-2xl"
+        class="w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden rounded-card border border-line bg-surface-1 text-content shadow-lg"
         role="dialog"
         aria-modal="true"
         aria-labelledby="pins-indi-registry-edit-title"
         @click.stop
       >
-        <div
-          class="flex items-center justify-between gap-3 border-b border-gray-700 px-4 py-3 sm:px-5"
-        >
-          <div>
+        <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5">
+          <div class="min-w-0">
             <h2 id="pins-indi-registry-edit-title" class="text-lg sm:text-xl font-semibold">
               {{ t('plugins.pins.indiRegistryModalTitle') }}
             </h2>
-            <p class="text-xs sm:text-sm text-gray-400 mt-1">
+            <p class="text-xs sm:text-sm text-content-muted mt-1">
               {{ t('plugins.pins.indiRegistryModalDescription') }}
             </p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 shrink-0">
             <button
               type="button"
-              class="rounded px-3 py-2 text-xs sm:text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 disabled:opacity-50"
+              class="tns-btn-secondary w-auto! px-3! text-xs!"
               :disabled="loading || disabled || anySaving"
               @click="loadRegistry"
             >
@@ -39,7 +38,7 @@
             </button>
             <button
               type="button"
-              class="rounded p-1 text-gray-300 hover:text-white hover:bg-gray-800 disabled:opacity-50"
+              class="min-h-touch min-w-touch flex items-center justify-center rounded-control text-content-muted hover:text-content hover:bg-surface-2 disabled:opacity-50"
               :disabled="anySaving"
               @click="closeModal"
               aria-label="Close"
@@ -61,7 +60,7 @@
         </div>
 
         <div class="px-4 py-4 sm:px-5 sm:py-5 space-y-4 overflow-y-auto">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-300">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-content-muted">
             <p>
               {{ t('plugins.pins.indiRegistryModalUpdatedAt') }}:
               {{ registryUpdatedAtLabel }}
@@ -74,25 +73,26 @@
 
           <p
             v-if="globalInfo"
-            class="rounded-md border border-emerald-700/70 bg-emerald-900/20 px-3 py-2 text-sm text-emerald-300"
+            class="rounded-control border border-status-ok/40 bg-status-ok/10 px-3 py-2 text-sm text-status-ok"
           >
             {{ globalInfo }}
           </p>
 
           <p
             v-if="loadError"
-            class="rounded-md border border-red-800/60 bg-red-900/20 px-3 py-2 text-sm text-red-300"
+            class="rounded-control border border-status-danger/40 bg-status-danger/10 px-3 py-2 text-sm text-status-danger"
           >
             {{ loadError }}
           </p>
 
-          <div v-if="loading" class="text-blue-400 text-sm">
+          <div v-if="loading" class="flex items-center gap-2 text-accent text-sm">
+            <Spinner size="sm" />
             {{ t('plugins.pins.indiRegistryModalLoading') }}
           </div>
 
           <div
             v-else-if="rows.length === 0"
-            class="rounded-lg border border-gray-700 bg-gray-800/50 p-4 text-sm text-gray-300"
+            class="rounded-card border border-line bg-surface-2 p-4 text-sm text-content-muted"
           >
             {{ t('plugins.pins.indiRegistryModalEmpty') }}
           </div>
@@ -102,53 +102,49 @@
               <div
                 v-for="row in rows"
                 :key="row.originalName"
-                class="rounded-lg border border-gray-700 bg-gray-800/40 p-3 space-y-3"
+                class="rounded-card border border-line bg-surface-2 p-3 space-y-3"
               >
                 <div>
-                  <label
-                    class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-300"
-                  >
+                  <label class="tns-label mb-1 block">
                     {{ t('plugins.pins.indiRegistryModalName') }}
                   </label>
                   <input
                     v-model="row.name"
                     type="text"
                     maxlength="200"
-                    class="w-full rounded-md border border-gray-600 bg-gray-800 px-2.5 py-2 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+                    class="tns-input"
                     :disabled="isRowSaving(row) || disabled"
                     autocomplete="off"
                   />
-                  <div class="mt-1 text-xs text-gray-400">{{ getTrimmedLength(row.name) }}/200</div>
+                  <div class="mt-1 text-xs text-content-muted">
+                    {{ getTrimmedLength(row.name) }}/200
+                  </div>
                 </div>
 
                 <div>
-                  <label
-                    class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-300"
-                  >
+                  <label class="tns-label mb-1 block">
                     {{ t('plugins.pins.indiRegistryModalLabel') }}
                   </label>
                   <input
                     v-model="row.label"
                     type="text"
                     maxlength="200"
-                    class="w-full rounded-md border border-gray-600 bg-gray-800 px-2.5 py-2 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+                    class="tns-input"
                     :disabled="isRowSaving(row) || disabled"
                     autocomplete="off"
                   />
-                  <div class="mt-1 text-xs text-gray-400">
+                  <div class="mt-1 text-xs text-content-muted">
                     {{ getTrimmedLength(row.label) }}/200
                   </div>
                 </div>
 
                 <div>
-                  <label
-                    class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-300"
-                  >
+                  <label class="tns-label mb-1 block">
                     {{ t('plugins.pins.indiRegistryModalType') }}
                   </label>
                   <select
                     v-model="row.type"
-                    class="w-full rounded-md border border-gray-600 bg-gray-800 px-2.5 py-2 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+                    class="tns-select"
                     :disabled="isRowSaving(row) || disabled"
                   >
                     <option v-for="type in TYPE_OPTIONS" :key="type" :value="type">
@@ -159,7 +155,7 @@
 
                 <button
                   type="button"
-                  class="tns-btn-primary w-full inline-flex items-center justify-center disabled:opacity-50"
+                  class="tns-btn-primary"
                   :disabled="isRowSaving(row) || disabled || !canSaveRow(row)"
                   @click="saveRow(row)"
                 >
@@ -172,10 +168,10 @@
                 <p
                   v-if="rowMessages[row.originalName]"
                   :class="[
-                    'rounded-md px-3 py-2 text-xs',
+                    'rounded-control px-3 py-2 text-xs',
                     rowMessages[row.originalName].type === 'error'
-                      ? 'border border-red-800/60 bg-red-900/20 text-red-300'
-                      : 'border border-emerald-700/70 bg-emerald-900/20 text-emerald-300',
+                      ? 'border border-status-danger/40 bg-status-danger/10 text-status-danger'
+                      : 'border border-status-ok/40 bg-status-ok/10 text-status-ok',
                   ]"
                 >
                   {{ rowMessages[row.originalName].text }}
@@ -183,11 +179,9 @@
               </div>
             </div>
 
-            <div
-              class="hidden md:block max-h-[58vh] overflow-auto border border-gray-700 rounded-lg"
-            >
+            <div class="hidden md:block max-h-[58vh] overflow-auto border border-line rounded-card">
               <table class="w-full min-w-[840px] text-sm">
-                <thead class="bg-gray-900 text-gray-300 sticky top-0 z-10">
+                <thead class="bg-surface-2 text-content-muted sticky top-0 z-10">
                   <tr>
                     <th class="px-3 py-3 text-left font-semibold">
                       {{ t('plugins.pins.indiRegistryModalName') }}
@@ -205,17 +199,17 @@
                 </thead>
                 <tbody>
                   <template v-for="row in rows" :key="row.originalName">
-                    <tr class="border-t border-gray-700 align-top">
+                    <tr class="border-t border-line align-top">
                       <td class="px-3 py-3">
                         <input
                           v-model="row.name"
                           type="text"
                           maxlength="200"
-                          class="w-full rounded-md border border-gray-600 bg-gray-800 px-2.5 py-2 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+                          class="tns-input"
                           :disabled="isRowSaving(row) || disabled"
                           autocomplete="off"
                         />
-                        <div class="mt-1 text-xs text-gray-400">
+                        <div class="mt-1 text-xs text-content-muted">
                           {{ getTrimmedLength(row.name) }}/200
                         </div>
                       </td>
@@ -224,18 +218,18 @@
                           v-model="row.label"
                           type="text"
                           maxlength="200"
-                          class="w-full rounded-md border border-gray-600 bg-gray-800 px-2.5 py-2 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+                          class="tns-input"
                           :disabled="isRowSaving(row) || disabled"
                           autocomplete="off"
                         />
-                        <div class="mt-1 text-xs text-gray-400">
+                        <div class="mt-1 text-xs text-content-muted">
                           {{ getTrimmedLength(row.label) }}/200
                         </div>
                       </td>
                       <td class="px-3 py-3">
                         <select
                           v-model="row.type"
-                          class="w-full rounded-md border border-gray-600 bg-gray-800 px-2.5 py-2 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+                          class="tns-select"
                           :disabled="isRowSaving(row) || disabled"
                         >
                           <option v-for="type in TYPE_OPTIONS" :key="type" :value="type">
@@ -246,7 +240,7 @@
                       <td class="px-3 py-3 text-right">
                         <button
                           type="button"
-                          class="tns-btn-primary inline-flex min-w-[112px] items-center justify-center disabled:opacity-50"
+                          class="tns-btn-primary w-auto! min-w-28 ml-auto"
                           :disabled="isRowSaving(row) || disabled || !canSaveRow(row)"
                           @click="saveRow(row)"
                         >
@@ -257,14 +251,14 @@
                         </button>
                       </td>
                     </tr>
-                    <tr v-if="rowMessages[row.originalName]" class="border-t border-gray-800">
+                    <tr v-if="rowMessages[row.originalName]" class="border-t border-line">
                       <td colspan="4" class="px-3 py-2">
                         <p
                           :class="[
-                            'rounded-md px-3 py-2 text-xs sm:text-sm',
+                            'rounded-control px-3 py-2 text-xs sm:text-sm',
                             rowMessages[row.originalName].type === 'error'
-                              ? 'border border-red-800/60 bg-red-900/20 text-red-300'
-                              : 'border border-emerald-700/70 bg-emerald-900/20 text-emerald-300',
+                              ? 'border border-status-danger/40 bg-status-danger/10 text-status-danger'
+                              : 'border border-status-ok/40 bg-status-ok/10 text-status-ok',
                           ]"
                         >
                           {{ rowMessages[row.originalName].text }}
@@ -278,11 +272,11 @@
           </div>
         </div>
 
-        <div class="border-t border-gray-700 px-4 py-3 sm:px-5">
+        <div class="border-t border-line px-4 py-3 sm:px-5">
           <div class="flex justify-end">
             <button
               type="button"
-              class="tns-btn-secondary w-full sm:w-auto"
+              class="tns-btn-secondary sm:w-auto!"
               :disabled="anySaving"
               @click="closeModal"
             >
@@ -299,6 +293,8 @@
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
+import Spinner from '@/components/helpers/Spinner.vue';
+import { useModalEscape } from '@/composables/useModalEscape';
 
 const TYPE_OPTIONS = Object.freeze([
   'camera',
@@ -332,7 +328,7 @@ const props = defineProps({
   // wizard sits at z-overlay) must raise this, or the dialog opens behind them.
   zIndex: {
     type: String,
-    default: 'z-50',
+    default: 'z-modal-raised',
   },
 });
 
@@ -688,6 +684,10 @@ function closeModal() {
 function onBackdropClick() {
   closeModal();
 }
+
+// Escape closes like a backdrop tap, the same as in every Modal.
+const overlayRef = ref(null);
+useModalEscape(overlayRef, closeModal);
 
 watch(
   () => props.show,

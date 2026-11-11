@@ -18,7 +18,9 @@
     "refresh": "更新",
     "help": "ヘルプ",
     "expand": "展開",
-    "collapse": "折りたたむ"
+    "collapse": "折りたたむ",
+    "drag": "ドラッグ",
+    "showImage": "画像を表示"
   },
   "general": {
     "cancel": "キャンセル",
@@ -947,6 +949,7 @@
       "targetNotFound": "シーケンス内にターゲットが見つかりません。もう一度お試しください。",
       "filter": "フィルター",
       "triggers": "トリガー",
+      "globalTriggers": "グローバルトリガー",
       "expandAll": "すべて展開",
       "collapseAll": "すべて折りたたむ",
       "addTypeButton": {
@@ -1028,6 +1031,7 @@
       },
       "time": "時刻",
       "noRunningItems": "シーケンス停止中",
+      "noConditions": "条件なし",
       "targetOfTotal": "ターゲット {current} / {total}",
       "status": "シーケンス・ステータス",
       "instructions": "インストラクション",
@@ -2486,8 +2490,13 @@
           },
           "FrameProcessingSlow": {
             "title": "フレーム処理が遅い",
-            "explanation": "ガイドフレームの処理に想定より時間がかかり、補正が遅れています。",
-            "fix": "最大ガイド星数を減らす、ビニングやサブフレームを使う、または CPU 負荷を確認してください。"
+            "explanation": "直近1分間で、ガイドフレームの少なくとも半数の処理に時間がかかりすぎたため、補正が赤道儀に遅れて届きました。ときどき1フレームだけ遅くなるのは正常で、ログに記録されるだけです。",
+            "fix": "ライブスタックや他のプログラムなど、ほかにコンピューターに負荷をかけているものがないか確認してください。それ以外の場合は「最大ガイド星数」を減らす、ビニングやサブフレームを使う、またはノイズ低減をオフにしてください。"
+          },
+          "SlowGuideFrame": {
+            "title": "遅いガイドフレーム",
+            "explanation": "ガイドフレーム1枚の処理に通常より時間がかかり、その補正が少し遅れました。メインカメラの画像の保存、プレートソルブ、スタックなど、コンピューターがほかの作業で忙しいときにときどき起こるもので、問題はありません。",
+            "fix": "対処は不要です。遅いフレームが1分間続くとガイダーが警告します。"
           },
           "SettleTimeout": {
             "title": "安定タイムアウト",
@@ -4728,6 +4737,7 @@
       "azimuth_error": "方位誤差:",
       "total_error": "総合誤差:",
       "error_values_missing": "誤差データが見つかりません",
+      "waiting_for_values": "最初の測定を待っています…",
       "unknown_response_format": "不明なレスポンス形式",
       "east": "東",
       "west": "西",
@@ -5171,7 +5181,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey、[OIII] 輝線のみ（二重電離酸素）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey、[SII] 輝線のみ（電離硫黄）。−16° より北の空のみが対象です。別途ダウンロードが必要です。"
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey、[SII] 輝線のみ（電離硫黄）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
+        "source_nsns_cont": "NSNS 連続光",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey の連続光のみ：輝線を除いた赤・緑・青の連続光で、恒星は一部除去されています。反射星雲や暗黒星雲が際立ちます。−16° より北の空のみが対象で、詳細はオーダー 5 まで。別途ダウンロードが必要です。"
       },
       "object_types": {
         "_ass": "アソシエーション",
@@ -5713,6 +5725,27 @@
         "loadFailed": "保存済みネットワークを読み込めませんでした。接続を確認し、必要なら pinsdaemon を更新してください。",
         "operationFailed": "保存済みネットワークの操作に失敗しました。一覧を更新してもう一度試してください。",
         "invalidPriority": "優先度は -999 から 999 までの整数にしてください。"
+      },
+      "networkMode": {
+        "title": "機材のネットワークモード",
+        "description": "自動は設定済みの Wi-Fi が使えるときはそれを使い、使えないときはフィールド用ホットスポットを起動します。フィールド用ホットスポットでは機材に 10.42.0.1 で常にアクセスできます。",
+        "autoLabel": "自動切り替え",
+        "autoHint": "まずホームWiFi、使えなければホットスポット。",
+        "hotspotLabel": "フィールド用ホットスポット",
+        "hotspotHint": "10.42.0.1 の AP モードを維持します。",
+        "configured": "設定：{mode}",
+        "active": "現在：{mode}",
+        "endpoint": "接続先：{host}",
+        "modeAuto": "自動",
+        "modeHotspot": "ホットスポット",
+        "modeClient": "ホームWiFi",
+        "modeDual": "Wi-Fi + ホットスポット",
+        "modeUnknown": "不明",
+        "singleRadioWarning": "この機材の Wi-Fi 無線は 1 つだけです。モードを切り替えると、アプリが機材を再検出するまでこの画面の接続が一時的に切れます。",
+        "searching": "ネットワークは想定どおり切り替わりました。機材を再検索しています…",
+        "notFound": "ネットワーク切り替え後に機材が見つかりませんでした。",
+        "tried": "試行先：{hosts}",
+        "retry": "機材を再検索"
       },
       "autoConnect": "起動後に選択したWiFiへ自動接続",
       "wifiConnect": "接続",
@@ -8827,6 +8860,10 @@
       "status": "ステータス",
       "error": "誤差の距離",
       "rotation": "回転"
+    },
+    "manualRotator": {
+      "currentPosition": "現在位置",
+      "targetPosition": "目標位置"
     }
   },
   "loading": "読み込み中",

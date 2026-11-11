@@ -4,8 +4,8 @@
       <h5 class="text-xl font-bold text-white mb-4">{{ $t('components.slewAndCenter.title') }}</h5>
 
       <div v-if="!hasSkyAtlasSource" class="flex justify-center items-center pb-2">
-        <div class="w-full p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-          <p class="text-red-400 text-center font-medium">
+        <div class="w-full p-4 bg-status-danger/10 border border-status-danger/30 rounded-lg">
+          <p class="text-status-danger text-center font-medium">
             {{ $t('components.slewAndCenter.LastSelectedImageSource_wrong') }}
           </p>
         </div>

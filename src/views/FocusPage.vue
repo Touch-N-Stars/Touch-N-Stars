@@ -28,14 +28,11 @@
     <div v-else class="container flex items-center justify-center">
       <div class="w-full max-w-6xl mx-auto">
         <!-- Focus Tab: the only one that needs the focuser; the settings are profile values -->
-        <div
+        <DeviceNotConnected
           v-if="currentTab === 'showFocus' && !store.focuserInfo.Connected"
-          class="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg"
-        >
-          <p class="text-red-400 font-medium text-center">
-            {{ $t('components.focuser.please_connect_focuser') }}
-          </p>
-        </div>
+          messageKey="components.focuser.please_connect_focuser"
+          class="mt-4"
+        />
         <Transition name="slide-in" mode="out-in">
           <div
             v-if="currentTab === 'showFocus' && store.focuserInfo.Connected"
@@ -81,6 +78,7 @@ import infoFocuser from '@/components/focuser/infoFocuser.vue';
 import FocusMainPanel from '@/components/focuser/FocusMainPanel.vue';
 import FocusSettingsPanel from '@/components/focuser/FocusSettingsPanel.vue';
 import SubNav from '@/components/SubNav.vue';
+import DeviceNotConnected from '@/components/helpers/DeviceNotConnected.vue';
 import { apiStore } from '@/store/store';
 import { useImagetStore } from '@/store/imageStore';
 import { useFocuserStore } from '@/store/focuserStore';

@@ -8,69 +8,45 @@
     </template>
     <template #body>
       <div class="text-center">
-        <p class="text-gray-300 mb-6">
+        <p class="text-content mb-6">
           {{ $t('components.mount.location_sync.confirmationMessage') }}
         </p>
 
         <!-- Sync Options -->
         <div class="space-y-3 mb-6">
           <!-- Sync to Telescope -->
-          <button
-            @click="selectOption(2)"
-            class="w-full p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors text-left group"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center group-hover:bg-green-400"
-              >
-                <ArrowUpIcon class="w-3 h-3" />
-              </div>
-              <div class="font-medium">
-                {{ $t('components.mount.location_sync.toTelescope.label') }}
-              </div>
-            </div>
+          <button @click="selectOption(2)" class="tns-btn-secondary justify-start! text-left!">
+            <span
+              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-status-ok/20 text-status-ok"
+            >
+              <ArrowUpIcon class="w-3.5 h-3.5" />
+            </span>
+            {{ $t('components.mount.location_sync.toTelescope.label') }}
           </button>
 
           <!-- Sync to Application -->
-          <button
-            @click="selectOption(1)"
-            class="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-left group"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center group-hover:bg-blue-400"
-              >
-                <ArrowDownIcon class="w-3 h-3" />
-              </div>
-              <div class="font-medium">
-                {{ $t('components.mount.location_sync.toApplication.label') }}
-              </div>
-            </div>
+          <button @click="selectOption(1)" class="tns-btn-secondary justify-start! text-left!">
+            <span
+              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-accent/20 text-accent"
+            >
+              <ArrowDownIcon class="w-3.5 h-3.5" />
+            </span>
+            {{ $t('components.mount.location_sync.toApplication.label') }}
           </button>
 
           <!-- No Sync -->
-          <button
-            @click="selectOption(3)"
-            class="w-full p-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors text-left group"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="w-5 h-5 bg-gray-500 rounded-full flex items-center justify-center group-hover:bg-gray-400"
-              >
-                <XMarkIcon class="w-3 h-3" />
-              </div>
-              <div class="font-medium">
-                {{ $t('components.mount.location_sync.noSync.label') }}
-              </div>
-            </div>
+          <button @click="selectOption(3)" class="tns-btn-secondary justify-start! text-left!">
+            <span
+              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-surface-1 text-content-muted"
+            >
+              <XMarkIcon class="w-3.5 h-3.5" />
+            </span>
+            {{ $t('components.mount.location_sync.noSync.label') }}
           </button>
         </div>
 
         <!-- Cancel Button -->
-        <button
-          @click="cancelLocationSync"
-          class="px-6 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-colors border border-gray-600"
-        >
+        <button @click="cancelLocationSync" class="tns-btn-secondary w-auto! mx-auto px-6!">
           {{ $t('general.cancel') }}
         </button>
       </div>

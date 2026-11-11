@@ -18,7 +18,9 @@
     "creating": "Creëren…",
     "help": "Help",
     "expand": "Uitvouwen",
-    "collapse": "Inklappen"
+    "collapse": "Inklappen",
+    "drag": "Sleep",
+    "showImage": "Toon beeld"
   },
   "general": {
     "cancel": "Annuleer",
@@ -938,6 +940,7 @@
       "targetNotFound": "Doel niet gevonden in de sequentie. Probeer het opnieuw.",
       "filter": "Filter",
       "triggers": "Triggers",
+      "globalTriggers": "Globale triggers",
       "expandAll": "Alles uitvouwen",
       "collapseAll": "Alles inklappen",
       "addTypeButton": {
@@ -1017,6 +1020,7 @@
       },
       "time": "Tijd",
       "noRunningItems": "Sequentie gestopt",
+      "noConditions": "Geen condities",
       "targetOfTotal": "Doel {current} van {total}",
       "status": "Sequentie status",
       "instructions": "Instructies",
@@ -2477,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Beeldverwerking traag",
-            "explanation": "Het verwerken van een guidebeeld duurde langer dan verwacht, wat de correcties vertraagt.",
-            "fix": "Verlaag het max. aantal guide-sterren, gebruik binning of een uitsnede, of controleer de CPU-belasting."
+            "explanation": "In de afgelopen minuut duurde het verwerken van minstens de helft van de guidebeelden te lang, waardoor de correcties te laat bij de montering aankwamen. Een enkel traag beeld af en toe is normaal en wordt alleen in het log vermeld.",
+            "fix": "Controleer wat de computer verder nog bezighoudt, zoals live stacking of andere programma's. Verlaag anders ‘Max. guide-sterren’, gebruik binning of een uitsnede, of zet de ruisonderdrukking uit."
+          },
+          "SlowGuideFrame": {
+            "title": "Traag guidebeeld",
+            "explanation": "Het verwerken van een guidebeeld duurde langer dan normaal, waardoor de correctie wat later kwam. Dit gebeurt af en toe als de computer met iets anders bezig is, zoals het opslaan, platesolven of stacken van een beeld van de hoofdcamera, en kan geen kwaad.",
+            "fix": "Geen actie nodig. De guider waarschuwt als beelden een minuut lang traag blijven."
           },
           "SettleTimeout": {
             "title": "Stabiliseren duurde te lang",
@@ -4719,6 +4728,7 @@
       "azimuth_error": "Azimuth afwijking:",
       "total_error": "Totale afwijking:",
       "error_values_missing": "Geen waardes gevonden",
+      "waiting_for_values": "Wachten op de eerste meting…",
       "unknown_response_format": "Respons formaat niet correct",
       "east": "Oost",
       "west": "Westen",
@@ -5162,7 +5172,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, alleen [OIII]-lijn (dubbel geïoniseerde zuurstof). Dekt alleen de hemel ten noorden van −16°; aparte download.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, alleen [SII]-lijn (geïoniseerde zwavel). Dekt alleen de hemel ten noorden van −16°; aparte download."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, alleen [SII]-lijn (geïoniseerde zwavel). Dekt alleen de hemel ten noorden van −16°; aparte download.",
+        "source_nsns_cont": "NSNS continuüm",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, alleen continuümlicht: rood, groen en blauw continuüm zonder de emissielijnen, sterren gedeeltelijk verwijderd. Laat reflectienevels en donkere wolken goed uitkomen. Dekt alleen de hemel ten noorden van −16°, detail tot orde 5; een aparte download."
       },
       "object_types": {
         "_ass": "Sterassociatie",
@@ -5713,6 +5725,27 @@
         "loadFailed": "Opgeslagen netwerken konden niet worden geladen. Controleer de verbinding en werk pinsdaemon zo nodig bij.",
         "operationFailed": "De bewerking op het opgeslagen netwerk is mislukt. Vernieuw de lijst en probeer het opnieuw.",
         "invalidPriority": "Prioriteit moet een geheel getal tussen -999 en 999 zijn."
+      },
+      "networkMode": {
+        "title": "Netwerkmodus van de opstelling",
+        "description": "Automatisch gebruikt je ingestelde wifi als die beschikbaar is en start anders de veldhotspot. Met de veldhotspot blijft de opstelling bereikbaar op 10.42.0.1.",
+        "autoLabel": "Automatisch",
+        "autoHint": "Eerst thuis-wifi, anders hotspot.",
+        "hotspotLabel": "Veldhotspot",
+        "hotspotHint": "Blijft in AP-modus op 10.42.0.1.",
+        "configured": "Ingesteld: {mode}",
+        "active": "Actief: {mode}",
+        "endpoint": "Adres: {host}",
+        "modeAuto": "Automatisch",
+        "modeHotspot": "Hotspot",
+        "modeClient": "Thuis-wifi",
+        "modeDual": "Wifi + hotspot",
+        "modeUnknown": "Onbekend",
+        "singleRadioWarning": "Deze opstelling heeft één wifi-radio. Bij het wisselen van modus verliest dit scherm kort de verbinding tot de app de opstelling terugvindt.",
+        "searching": "Netwerk gewisseld zoals verwacht. Opstelling wordt opnieuw gezocht…",
+        "notFound": "De opstelling is na de netwerkwissel niet gevonden.",
+        "tried": "Geprobeerd: {hosts}",
+        "retry": "Opstelling opnieuw zoeken"
       },
       "autoConnect": "Maak automatisch verbinding met geselecteerde wifi na het opstarten",
       "wifiConnect": "Verbinden",
@@ -8827,6 +8860,10 @@
       "status": "Status",
       "error": "Foutafstand",
       "rotation": "Rotatie"
+    },
+    "manualRotator": {
+      "currentPosition": "Huidige positie",
+      "targetPosition": "Doelpositie"
     }
   },
   "loading": "laden",

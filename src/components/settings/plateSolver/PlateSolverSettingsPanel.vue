@@ -1,10 +1,8 @@
 <template>
   <div class="flex flex-col gap-2 sm:gap-4">
     <!-- Basic Settings Container -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.plate_solver.basic') }}
       </h3>
       <SettingInput
@@ -25,7 +23,7 @@
       />
       <div class="flex flex-row items-center justify-between w-full">
         <span class="flex items-center gap-1">
-          <label for="astapLocation" class="text-xs sm:text-sm text-gray-200">
+          <label for="astapLocation" class="text-xs sm:text-sm text-content">
             {{ $t('components.settings.plate_solver.ASTAPLocation') }}
           </label>
           <InfoModal
@@ -51,10 +49,8 @@
     </div>
 
     <!-- Search Settings Container -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.plate_solver.search') }}
       </h3>
       <SettingInput
@@ -92,10 +88,8 @@
     </div>
 
     <!-- Retry Settings Container -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.plate_solver.retry') }}
       </h3>
       <SettingInput
@@ -122,48 +116,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import SetPlateSolverFilterPins from './SetPlateSolverFilterPins.vue';
 import SetPlateSolverAstapDatabasePins from './SetPlateSolverAstapDatabasePins.vue';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const store = apiStore();
 
-const astapLocation = ref('');
-const statusClassAstapLocation = ref('');
-
-const initializeSettings = () => {
-  if (!store.profileInfo?.PlateSolveSettings) {
-    console.warn('PlateSolveSettings not loaded');
-    return;
-  }
-
-  astapLocation.value = store.profileInfo.PlateSolveSettings.ASTAPLocation ?? '';
-};
-
-async function setAstapLocation() {
-  try {
-    const data = await apiService.profileChangeValue(
-      'PlateSolveSettings-ASTAPLocation',
-      astapLocation.value
-    );
-    console.log(data);
-    statusClassAstapLocation.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting ASTAP location:', error);
-    statusClassAstapLocation.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassAstapLocation.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(() => {
-  initializeSettings();
-});
+const {
+  value: astapLocation,
+  save: setAstapLocation,
+  glowClass: statusClassAstapLocation,
+} = useProfileSetting('PlateSolveSettings-ASTAPLocation', { fallback: '' });
 </script>

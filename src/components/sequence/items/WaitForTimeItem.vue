@@ -1,21 +1,21 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span v-if="item.SelectedProvider" class="text-xs text-slate-300 font-mono">
+      <span v-if="item.SelectedProvider" class="text-xs text-content font-mono">
         {{ item.SelectedProvider.Name }}
       </span>
-      <span class="text-xs text-slate-400 font-mono ml-2">
+      <span class="text-xs text-content-muted font-mono ml-2">
         {{ pad(item.Hours) }}:{{ pad(item.Minutes) }}:{{ pad(item.Seconds) }}
       </span>
     </template>
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <span class="text-xs text-slate-400">{{
+        <span class="text-xs text-content-muted">{{
           $t('components.sequence.items.timeCondition.provider')
         }}</span>
         <select
-          class="ml-auto w-48 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-48"
           :value="item.SelectedProvider?.FullTypeName"
           @change="save('SelectedProvider', $event.target.value)"
         >
@@ -25,7 +25,7 @@
         </select>
       </div>
       <template v-if="isTimeProvider">
-        <div class="text-xs text-slate-400 font-medium">
+        <div class="text-xs text-content-muted font-medium">
           {{ $t('components.sequence.items.expressionVariable.time') }}
         </div>
         <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">
@@ -66,10 +66,10 @@
       </template>
       <template v-else>
         <div class="seq-field-row">
-          <span class="text-xs text-slate-400">{{
+          <span class="text-xs text-content-muted">{{
             $t('components.sequence.items.timeCondition.calculatedTime')
           }}</span>
-          <span class="ml-auto text-xs text-slate-300 font-mono">
+          <span class="ml-auto text-xs text-content font-mono">
             {{ pad(item.Hours) }}:{{ pad(item.Minutes) }}:{{ pad(item.Seconds) }}
           </span>
         </div>

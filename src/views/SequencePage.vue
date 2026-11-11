@@ -3,12 +3,12 @@
 
   <div
     v-else-if="store.sequenceEditorDetectionPending"
-    class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center"
+    class="min-h-screen flex items-center justify-center text-accent"
   >
-    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-400"></div>
+    <Spinner size="lg" />
   </div>
 
-  <div v-else class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-4 md:p-6">
+  <div v-else class="min-h-screen p-4 md:p-6">
     <LoadingOverlay
       :show="sequenceStore.sequenceLoading"
       :message="$t('components.sequence.loadingSequence')"
@@ -72,6 +72,7 @@ import FavTargets from '@/components/favTargets/FavTargets.vue';
 import FitsPlateSolve from '@/components/fitsPlatesolve/FitsPlateSolve.vue';
 import LoadSequence from '@/components/sequence/LoadSequence.vue';
 import LoadingOverlay from '@/components/helpers/LoadingOverlay.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import SequenceV2Page from '@/views/SequenceV2Page.vue';
 import { apiStore } from '@/store/store';
 import { useI18n } from 'vue-i18n';

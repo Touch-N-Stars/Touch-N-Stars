@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col rounded-lg border border-gray-700/50 bg-gray-800/50">
+  <div class="flex flex-col rounded-card border border-line bg-surface-1">
     <button
       type="button"
       class="flex w-full items-center justify-between gap-3 p-2 text-left sm:p-4"
       :aria-expanded="open"
       @click="emit('update:open', !open)"
     >
-      <h3 class="text-base font-bold text-cyan-400">{{ title }}</h3>
+      <h3 class="tns-section-title">{{ title }}</h3>
       <ChevronDownIcon
-        class="h-5 w-5 shrink-0 text-gray-400 transition-transform duration-200"
+        class="h-5 w-5 shrink-0 text-content-muted transition-transform duration-200"
         :class="open ? 'rotate-180' : ''"
       />
     </button>

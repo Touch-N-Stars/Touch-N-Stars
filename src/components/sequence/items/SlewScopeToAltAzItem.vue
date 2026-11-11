@@ -1,12 +1,12 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">Az {{ azStr }} Alt {{ altStr }}</span>
+      <span class="text-xs text-content-muted font-mono">Az {{ azStr }} Alt {{ altStr }}</span>
     </template>
 
     <template #editor>
       <!-- Az -->
-      <div class="text-xs text-slate-400 font-medium">
+      <div class="text-xs text-content-muted font-medium">
         {{ $t('components.sequence.items.slewScopeToAltAz.azimuth') }}
       </div>
       <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">
@@ -47,7 +47,7 @@
       </div>
 
       <!-- Alt -->
-      <div class="text-xs text-slate-400 font-medium pt-1">
+      <div class="text-xs text-content-muted font-medium pt-1">
         {{ $t('components.sequence.items.slewScopeToAltAz.altitude') }}
       </div>
       <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">

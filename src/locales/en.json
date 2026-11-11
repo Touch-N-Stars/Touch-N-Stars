@@ -18,7 +18,9 @@
     "refresh": "Refresh",
     "help": "Help",
     "expand": "Expand",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "drag": "Drag",
+    "showImage": "Show image"
   },
   "general": {
     "cancel": "Cancel",
@@ -1055,6 +1057,7 @@
       },
       "filter": "Filter",
       "triggers": "Triggers",
+      "globalTriggers": "Global Trigger",
       "expandAll": "Expand All",
       "collapseAll": "Collapse All",
       "addTypeButton": {
@@ -1136,6 +1139,7 @@
       },
       "time": "Time",
       "noRunningItems": "Sequence stopped",
+      "noConditions": "No conditions",
       "targetOfTotal": "Target {current} of {total}",
       "status": "Sequence status",
       "instructions": "Instructions",
@@ -2518,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Frame processing slow",
-            "explanation": "Processing a guide frame took longer than expected, which delays corrections.",
-            "fix": "Reduce the max number of guide stars, use binning or a subframe, or check CPU load."
+            "explanation": "Over the last minute, at least half of the guide frames took too long to process, so the corrections reached the mount late. A single slow frame now and then is normal and is only noted in the log.",
+            "fix": "Check what else keeps the computer busy, such as live stacking or other programs. Otherwise lower \"Max guide stars\", use binning or a subframe, or turn off noise reduction."
+          },
+          "SlowGuideFrame": {
+            "title": "Slow guide frame",
+            "explanation": "One guide frame took longer than usual to process, so its correction came a little late. This happens now and then when the computer is busy with other work, such as saving, plate solving or stacking an image of the main camera, and does no harm.",
+            "fix": "No action needed. The guider warns when frames stay slow for a minute."
           },
           "SettleTimeout": {
             "title": "Settling timed out",
@@ -4765,6 +4774,7 @@
       "azimuth_error": "Azimuth Error:",
       "total_error": "Total Error:",
       "error_values_missing": "Missing error values",
+      "waiting_for_values": "Waiting for the first measurement…",
       "unknown_response_format": "Unknown response format",
       "east": "East",
       "west": "West",
@@ -5236,7 +5246,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, [OIII] line only (doubly ionised oxygen). Covers the sky north of −16° only; a separate download.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] line only (ionised sulphur). Covers the sky north of −16° only; a separate download."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] line only (ionised sulphur). Covers the sky north of −16° only; a separate download.",
+        "source_nsns_cont": "NSNS continuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, continuum light only: red, green and blue continuum without the emission lines, stars partially removed. Brings out reflection nebulae and dark clouds. Covers the sky north of −16° only, detail up to order 5; a separate download."
       },
       "toolbar": {
         "label": "Atlas controls",
@@ -5888,6 +5900,27 @@
         "loadFailed": "Could not load saved networks. Check the connection and update pinsdaemon if needed.",
         "operationFailed": "The saved network operation failed. Refresh the list and try again.",
         "invalidPriority": "Priority must be a whole number between -999 and 999."
+      },
+      "networkMode": {
+        "title": "Rig network mode",
+        "description": "Automatic uses your configured Wi-Fi when available and starts the field hotspot when it is not. Field hotspot keeps the rig reachable at 10.42.0.1.",
+        "autoLabel": "Automatic fallback",
+        "autoHint": "Home Wi-Fi first, hotspot if unavailable.",
+        "hotspotLabel": "Field hotspot",
+        "hotspotHint": "Stay in AP mode at 10.42.0.1.",
+        "configured": "Configured: {mode}",
+        "active": "Active: {mode}",
+        "endpoint": "Endpoint: {host}",
+        "modeAuto": "Automatic",
+        "modeHotspot": "Hotspot",
+        "modeClient": "Home Wi-Fi",
+        "modeDual": "Wi-Fi + hotspot",
+        "modeUnknown": "Unknown",
+        "singleRadioWarning": "This rig has one Wi-Fi radio. Switching modes briefly disconnects this screen while the app finds the rig again.",
+        "searching": "Network changed as expected. Looking for this rig again…",
+        "notFound": "The rig could not be found after the network change.",
+        "tried": "Tried: {hosts}",
+        "retry": "Find rig again"
       },
       "autoConnect": "Autoconnect to selected wifi after boot",
       "wifiConnect": "Connect",
@@ -8827,6 +8860,10 @@
       "status": "Status",
       "error": "Error Distance",
       "rotation": "Rotation"
+    },
+    "manualRotator": {
+      "currentPosition": "Current position",
+      "targetPosition": "Target position"
     }
   },
   "loading": "loading",

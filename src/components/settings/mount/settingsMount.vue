@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-  >
-    <h3 class="font-bold text-base text-cyan-400">
+  <div class="tns-card flex flex-col gap-2 sm:gap-3">
+    <h3 class="tns-section-title">
       {{ $t('components.settings.mount.titel') }}
     </h3>
     <NumberInputPicker
@@ -26,29 +24,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
 import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
 
 const store = apiStore();
 
-const indiMaxSlewRateDps = ref(3.0);
-
-async function updateIndiMaxSlewRateDps() {
-  try {
-    await apiService.profileChangeValue(
-      'TelescopeSettings-IndiMaxSlewRateDps',
-      indiMaxSlewRateDps.value
-    );
-  } catch (error) {
-    console.error('Error updating IndiMaxSlewRateDps:', error);
-  }
-}
-
-onMounted(() => {
-  const profile = store.profileInfo;
-  indiMaxSlewRateDps.value = profile?.TelescopeSettings?.IndiMaxSlewRateDps ?? 3.0;
-});
+const { value: indiMaxSlewRateDps, save: updateIndiMaxSlewRateDps } = useProfileSetting(
+  'TelescopeSettings-IndiMaxSlewRateDps',
+  { fallback: 3.0 }
+);
 </script>

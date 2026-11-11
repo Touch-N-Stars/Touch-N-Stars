@@ -18,11 +18,11 @@
            the class is what actually stops a drag of this single row while its siblings
            stay draggable. -->
       <span
-        class="shrink-0 p-1 text-slate-600 transition-colors touch-none @max-[16rem]:p-0.5"
+        class="shrink-0 p-1 text-content-faint transition-colors touch-none @max-[16rem]:p-0.5"
         :class="
           dragDisabled
             ? 'cursor-not-allowed opacity-40'
-            : 'drag-handle cursor-grab active:cursor-grabbing hover:text-slate-400'
+            : 'drag-handle cursor-grab active:cursor-grabbing hover:text-content-muted'
         "
         :title="
           isRunning ? $t('components.sequence.runningLocked') : $t('components.sequence.move')
@@ -38,11 +38,11 @@
       <!-- Collapse chevron -->
       <button
         v-if="hasChildren"
-        class="shrink-0 p-0.5 rounded hover:bg-slate-600/40 transition-colors"
+        class="shrink-0 p-0.5 rounded hover:bg-surface-3 transition-colors"
         @click.stop="collapsed = !collapsed"
       >
         <ChevronRightIcon
-          class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+          class="w-3.5 h-3.5 text-content-muted transition-transform duration-200"
           :class="{ 'rotate-90': !collapsed }"
         />
       </button>
@@ -55,7 +55,7 @@
       <!-- More menu -->
       <div class="shrink-0" ref="moreRef">
         <button
-          class="p-1 rounded text-slate-500 hover:text-slate-300 hover:bg-slate-600/40 transition-colors @max-[16rem]:p-0.5"
+          class="p-1 rounded text-content-faint hover:text-content-muted hover:bg-surface-3 transition-colors @max-[16rem]:p-0.5"
           :title="$t('components.sequence.more')"
           :disabled="isLocked"
           @click.stop="toggleMore"
@@ -65,11 +65,11 @@
         <Teleport to="body">
           <div
             v-if="moreOpen"
-            class="fixed z-[9999] bg-gray-800 border border-slate-600 rounded-lg shadow-xl py-1 min-w-max"
+            class="fixed z-top bg-surface-1 border border-line-strong rounded-lg shadow-xl py-1 min-w-max"
             :style="moreStyle"
             @click.stop
           >
-            <p v-if="isRunning" class="px-3 py-1 text-xs text-slate-500 max-w-56">
+            <p v-if="isRunning" class="px-3 py-1 text-xs text-content-faint max-w-56">
               {{ $t('components.sequence.runningLocked') }}
             </p>
             <button class="menu-item" :disabled="isLocked" @click="doAction('duplicate')">
@@ -93,9 +93,9 @@
             <button class="menu-item" :disabled="isLocked || isRunning" @click="doAction('reset')">
               <ArrowPathIcon class="w-4 h-4" /> {{ $t('components.sequence.resetStatus') }}
             </button>
-            <div class="border-t border-slate-700 my-1" />
+            <div class="border-t border-line my-1" />
             <button
-              class="menu-item text-red-400 hover:text-red-300 hover:bg-red-900/20"
+              class="menu-item text-status-danger! hover:bg-status-danger/10!"
               :disabled="isLocked || isRunning"
               @click="doAction('remove')"
             >
@@ -119,7 +119,8 @@
         class="mb-1.5"
       />
 
-      <!-- Triggers -->
+      <!-- Triggers (cyan), conditions (amber) and instructions (blue) keep their own colors:
+           they tell the three kinds of list apart, which the design tokens have no slot for. -->
       <div
         v-if="item.Triggers !== undefined"
         class="mb-1.5 rounded-lg p-1.5 space-y-1 transition-all duration-200 @max-[16rem]:p-1"
@@ -370,6 +371,7 @@ const dsoTarget = computed(() => {
 });
 const typeComponent = computed(() => ITEM_COMPONENTS[props.item.FullTypeName] ?? GenericItem);
 
+// Nesting depth is told apart by color, so these stay outside the design tokens.
 const DEPTH_BORDERS = [
   'border-l-2 border-l-blue-500/60',
   'border-l-2 border-l-violet-500/60',
@@ -381,11 +383,11 @@ const depthLeftBorder = computed(() => DEPTH_BORDERS[(props.depth - 1) % DEPTH_B
 
 const borderClass = computed(() => {
   const s = displayStatus(props.item);
-  if (s === 'RUNNING') return 'border-green-500/50 shadow-lg shadow-green-500/35';
-  if (s === 'FINISHED') return 'border-emerald-600/30 bg-emerald-950/10';
-  if (s === 'FAILED') return 'border-red-500/40 bg-red-950/10';
-  if (s === 'DISABLED') return 'border-slate-700/30 bg-slate-900/20 opacity-60';
-  return 'border-slate-600/30 bg-slate-800/30';
+  if (s === 'RUNNING') return 'border-status-ok/50 shadow-lg shadow-status-ok/35';
+  if (s === 'FINISHED') return 'border-status-ok/30 bg-status-ok/5';
+  if (s === 'FAILED') return 'border-status-danger/40 bg-status-danger/5';
+  if (s === 'DISABLED') return 'border-line bg-surface-1/20 opacity-60';
+  return 'border-line bg-surface-3/30';
 });
 
 async function doAction(action) {
@@ -427,7 +429,7 @@ onUnmounted(() => document.removeEventListener('click', onOutsideClick));
 <style scoped>
 @reference '../../assets/tailwind.css';
 .menu-item {
-  @apply flex items-center gap-2 w-full px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-700/60 transition-colors;
+  @apply flex items-center gap-2 w-full px-3 py-1.5 text-sm text-content-muted hover:bg-surface-2 transition-colors;
   @apply disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent;
 }
 </style>

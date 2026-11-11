@@ -272,7 +272,7 @@ test('persists touch-sized brightness controls for all three Atlas categories', 
   assert.match(settingsView, /v-model\.number="starMagnitudeLimit"/);
   assert.match(settingsView, /v-model\.number="galaxyMagnitudeLimit"/);
   assert.match(settingsView, /v-model\.number="deepSkyMagnitudeLimit"/);
-  assert.match(settingsView, /class="w-full h-11 accent-cyan-500"/);
+  assert.match(settingsView, /class="w-full h-11 accent-accent-action"/);
   const messages = JSON.parse(englishLocale).components.celestiaAtlas.settings;
   assert.equal(messages.magnitude_limit_auto, 'Auto');
   assert.match(messages.magnitude_limit_hint, /Lower values show only brighter objects/);
@@ -383,7 +383,7 @@ test('routes every Atlas view-center action through the J2000 command boundary',
 });
 
 test('reuses the complete selected-target workflow at the Atlas J2000 command boundary', async () => {
-  const [view, selectedObject, selectionModel, favorites, sheet] = await Promise.all([
+  const [view, selectedObject, selectionModel, favorites, sheet, modal] = await Promise.all([
     readFile(new URL('../../../views/CelestiaAtlasView.vue', import.meta.url), 'utf8'),
     readFile(
       new URL('../../../components/celestiaAtlas/AtlasTargetPanel.vue', import.meta.url),
@@ -392,6 +392,7 @@ test('reuses the complete selected-target workflow at the Atlas J2000 command bo
     readFile(new URL('../selectionModel.js', import.meta.url), 'utf8'),
     readFile(new URL('../../../components/favTargets/SaveFavTargets.vue', import.meta.url), 'utf8'),
     readFile(new URL('../../../components/celestiaAtlas/AtlasSheet.vue', import.meta.url), 'utf8'),
+    readFile(new URL('../../../components/helpers/Modal.vue', import.meta.url), 'utf8'),
   ]);
 
   // One target panel serves both the tapped object and the view centre.
@@ -424,5 +425,7 @@ test('reuses the complete selected-target workflow at the Atlas J2000 command bo
   assert.match(selectedObject, /defineEmits\(\['clear-selection', 'scrub'\]\)/);
   assert.match(sheet, /atlas-sheet-landscape/);
   assert.match(sheet, /overflow-y: auto/);
-  assert.match(favorites, /<Teleport to="body">/);
+  // The save dialog has to escape the scrolling sheet, which Modal does by teleporting.
+  assert.match(favorites, /<Modal\b/);
+  assert.match(modal, /<teleport to="body">/);
 });

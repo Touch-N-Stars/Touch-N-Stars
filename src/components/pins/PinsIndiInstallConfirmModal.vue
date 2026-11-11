@@ -8,7 +8,7 @@
     >
       <div
         ref="dialogRef"
-        class="w-full max-w-xl rounded-xl border border-gray-700 bg-gray-900 text-white shadow-2xl"
+        class="w-full max-w-xl rounded-card border border-line bg-surface-1 text-content shadow-lg"
         role="dialog"
         aria-modal="true"
         aria-labelledby="pins-indi-install-title"
@@ -16,15 +16,13 @@
         @keydown="onKeydown"
         @click.stop
       >
-        <div
-          class="flex items-center justify-between gap-3 border-b border-gray-700 px-4 py-3 sm:px-5"
-        >
+        <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5">
           <h2 id="pins-indi-install-title" class="text-lg sm:text-xl font-semibold">
             {{ t('plugins.pins.indiInstallModalTitle') }}
           </h2>
           <button
             type="button"
-            class="rounded p-1 text-gray-300 hover:text-white hover:bg-gray-800 disabled:opacity-50"
+            class="min-h-touch min-w-touch flex items-center justify-center rounded-control text-content-muted hover:text-content hover:bg-surface-2 disabled:opacity-50"
             :disabled="installing"
             @click="closeModal"
             aria-label="Close"
@@ -45,15 +43,15 @@
         </div>
 
         <div class="px-4 py-4 sm:px-5 sm:py-5 space-y-4">
-          <div class="rounded-lg border border-gray-700 bg-gray-800/60 p-3 text-sm">
-            <p class="text-gray-300">
-              <span class="font-semibold text-gray-100"
+          <div class="rounded-control border border-line bg-surface-2 p-3 text-sm">
+            <p class="text-content-muted">
+              <span class="font-semibold text-content"
                 >{{ t('plugins.pins.indiInstallModalDriverPackage') }}:</span
               >
               {{ selectedDisplayName || '-' }}
             </p>
-            <p class="mt-1 text-gray-300 break-all">
-              <span class="font-semibold text-gray-100"
+            <p class="mt-1 text-content-muted break-all">
+              <span class="font-semibold text-content"
                 >{{ t('plugins.pins.indiInstallModalAssetName') }}:</span
               >
               {{ selectedAssetName || '-' }}
@@ -61,31 +59,25 @@
           </div>
 
           <div>
-            <label
-              for="pins-indi-type"
-              class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-300"
-            >
+            <label for="pins-indi-type" class="tns-label mb-1 block">
               {{ t('plugins.pins.indiInstallModalType') }}
             </label>
             <select
               id="pins-indi-type"
               ref="typeFieldRef"
               v-model="form.type"
-              class="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2.5 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+              class="tns-select"
               :disabled="installing"
             >
               <option v-for="type in typeOptions" :key="type" :value="type">{{ type }}</option>
             </select>
-            <p v-if="validation.typeError" class="mt-1 text-xs text-red-400">
+            <p v-if="validation.typeError" class="mt-1 text-xs text-status-danger">
               {{ validation.typeError }}
             </p>
           </div>
 
           <div>
-            <label
-              for="pins-indi-label"
-              class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-300"
-            >
+            <label for="pins-indi-label" class="tns-label mb-1 block">
               {{ t('plugins.pins.indiInstallModalLabel') }}
             </label>
             <input
@@ -94,31 +86,31 @@
               v-model="form.label"
               type="text"
               maxlength="200"
-              class="w-full rounded-lg border border-gray-600 bg-gray-800 px-3 py-2.5 text-white outline-none focus:border-blue-500 disabled:opacity-60"
+              class="tns-input"
               :disabled="installing"
               autocomplete="off"
             />
             <div class="mt-1 flex items-center justify-between gap-2">
-              <p v-if="validation.labelError" class="text-xs text-red-400">
+              <p v-if="validation.labelError" class="text-xs text-status-danger">
                 {{ validation.labelError }}
               </p>
-              <span class="ml-auto text-xs text-gray-400">{{ trimmedLabelLength }}/200</span>
+              <span class="ml-auto text-xs text-content-muted">{{ trimmedLabelLength }}/200</span>
             </div>
           </div>
 
           <p
             v-if="errorMessage"
-            class="rounded-md border border-red-800/60 bg-red-900/20 px-3 py-2 text-sm text-red-300"
+            class="rounded-control border border-status-danger/40 bg-status-danger/10 px-3 py-2 text-sm text-status-danger"
           >
             {{ errorMessage }}
           </p>
         </div>
 
-        <div class="border-t border-gray-700 px-4 py-3 sm:px-5">
+        <div class="border-t border-line px-4 py-3 sm:px-5">
           <div class="grid grid-cols-2 gap-3 w-full sm:min-w-[18rem]">
             <button
               type="button"
-              class="tns-btn-secondary w-full inline-flex items-center justify-center text-center"
+              class="tns-btn-secondary"
               :disabled="installing"
               @click="closeModal"
             >
@@ -126,7 +118,7 @@
             </button>
             <button
               type="button"
-              class="tns-btn-primary w-full inline-flex items-center justify-center text-center disabled:opacity-50"
+              class="tns-btn-primary"
               :disabled="installing || !validation.isValid"
               @click="submit"
             >
@@ -174,7 +166,7 @@ const props = defineProps({
   // wizard sits at z-overlay) must raise this, or the dialog opens behind them.
   zIndex: {
     type: String,
-    default: 'z-50',
+    default: 'z-modal-raised',
   },
 });
 

@@ -9,9 +9,9 @@
     >
       <div class="flex flex-col items-center">
         <div
-          class="w-16 h-16 border-4 border-gray-600 border-t-cyan-400 rounded-full animate-spin"
+          class="w-16 h-16 border-4 border-line-strong border-t-accent rounded-full animate-spin"
         ></div>
-        <p v-if="message" class="text-white mt-4 px-4 text-center">{{ message }}</p>
+        <p v-if="message" class="text-content mt-4 px-4 text-center">{{ message }}</p>
       </div>
     </div>
   </teleport>

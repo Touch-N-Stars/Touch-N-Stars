@@ -18,7 +18,9 @@
     "refresh": "새로고침",
     "help": "도움말",
     "expand": "펼치기",
-    "collapse": "접기"
+    "collapse": "접기",
+    "drag": "드래그",
+    "showImage": "이미지 표시"
   },
   "general": {
     "cancel": "취소",
@@ -982,6 +984,7 @@
       "targetNotFound": "시퀀스에서 대상을 찾을 수 없습니다. 다시 시도하세요.",
       "filter": "필터",
       "triggers": "트리거",
+      "globalTriggers": "전역 트리거",
       "expandAll": "모두 펼치기",
       "collapseAll": "모두 접기",
       "addTypeButton": {
@@ -1063,6 +1066,7 @@
       },
       "time": "시간",
       "noRunningItems": "시퀀스 정지됨",
+      "noConditions": "조건 없음",
       "targetOfTotal": "타깃 {current} / {total}",
       "status": "시퀀스 상태",
       "instructions": "지침",
@@ -2518,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "프레임 처리 느림",
-            "explanation": "가이드 프레임 처리가 예상보다 오래 걸려 교정이 지연됩니다.",
-            "fix": "최대 가이드 별 수를 줄이거나, 비닝이나 서브프레임을 사용하거나, CPU 부하를 확인하세요."
+            "explanation": "지난 1분 동안 가이드 프레임의 절반 이상이 처리에 너무 오래 걸려 교정이 마운트에 늦게 전달되었습니다. 가끔 프레임 하나가 느린 것은 정상이며 로그에만 기록됩니다.",
+            "fix": "라이브 스태킹이나 다른 프로그램 등 컴퓨터를 바쁘게 하는 다른 작업이 있는지 확인하세요. 그렇지 않으면 ‘최대 가이드 별 수’를 줄이거나, 비닝이나 서브프레임을 사용하거나, 노이즈 감소를 끄세요."
+          },
+          "SlowGuideFrame": {
+            "title": "느린 가이드 프레임",
+            "explanation": "가이드 프레임 하나의 처리가 평소보다 오래 걸려 해당 교정이 조금 늦었습니다. 메인 카메라 이미지의 저장, 플레이트 솔브, 스태킹처럼 컴퓨터가 다른 작업으로 바쁠 때 가끔 생기는 일이며 문제가 되지 않습니다.",
+            "fix": "조치가 필요 없습니다. 프레임이 1분 동안 계속 느리면 가이더가 경고합니다."
           },
           "SettleTimeout": {
             "title": "안정화 시간 초과",
@@ -4765,6 +4774,7 @@
       "azimuth_error": "방위 오차:",
       "total_error": "전체 오차:",
       "error_values_missing": "오차 값 누락",
+      "waiting_for_values": "첫 측정값을 기다리는 중…",
       "unknown_response_format": "알 수 없는 응답 형식",
       "east": "동",
       "west": "서",
@@ -5208,7 +5218,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, [OIII] 선만 (이중 이온화된 산소). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] 선만 (이온화된 황). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, [SII] 선만 (이온화된 황). −16° 북쪽 하늘만 포함하며 별도로 다운로드합니다.",
+        "source_nsns_cont": "NSNS 연속광",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey의 연속광만 사용: 발광선을 제외한 빨강, 초록, 파랑 연속광이며 별은 일부 제거되었습니다. 반사성운과 암흑성운이 잘 드러납니다. −16° 북쪽 하늘만 포함하며 세부 수준은 오더 5까지입니다. 별도로 다운로드합니다."
       },
       "object_types": {
         "_ass": "성협",
@@ -5730,6 +5742,27 @@
         "loadFailed": "저장된 네트워크를 불러오지 못했습니다. 연결을 확인하고 필요하면 pinsdaemon을 업데이트하세요.",
         "operationFailed": "저장된 네트워크 작업에 실패했습니다. 목록을 새로 고친 뒤 다시 시도하세요.",
         "invalidPriority": "우선순위는 -999에서 999 사이의 정수여야 합니다."
+      },
+      "networkMode": {
+        "title": "장비 네트워크 모드",
+        "description": "자동은 설정된 Wi-Fi를 사용할 수 있으면 그것을 쓰고, 없으면 현장 핫스팟을 시작합니다. 현장 핫스팟을 쓰면 장비에 항상 10.42.0.1로 접속할 수 있습니다.",
+        "autoLabel": "자동 전환",
+        "autoHint": "가정용 WiFi 우선, 없으면 핫스팟.",
+        "hotspotLabel": "현장 핫스팟",
+        "hotspotHint": "10.42.0.1에서 AP 모드를 유지합니다.",
+        "configured": "설정: {mode}",
+        "active": "현재: {mode}",
+        "endpoint": "주소: {host}",
+        "modeAuto": "자동",
+        "modeHotspot": "핫스팟",
+        "modeClient": "가정용 WiFi",
+        "modeDual": "Wi-Fi + 핫스팟",
+        "modeUnknown": "알 수 없음",
+        "singleRadioWarning": "이 장비에는 Wi-Fi 무선 장치가 하나뿐입니다. 모드를 바꾸면 앱이 장비를 다시 찾을 때까지 이 화면의 연결이 잠시 끊깁니다.",
+        "searching": "예상대로 네트워크가 바뀌었습니다. 장비를 다시 찾는 중…",
+        "notFound": "네트워크 변경 후 장비를 찾지 못했습니다.",
+        "tried": "시도한 주소: {hosts}",
+        "retry": "장비 다시 찾기"
       },
       "autoConnect": "부팅 후 선택한 WiFi에 자동 연결",
       "wifiConnect": "연결",
@@ -8827,6 +8860,10 @@
       "status": "상태",
       "error": "오차 거리",
       "rotation": "회전"
+    },
+    "manualRotator": {
+      "currentPosition": "현재 위치",
+      "targetPosition": "목표 위치"
     }
   },
   "loading": "로딩 중",

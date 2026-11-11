@@ -1,18 +1,18 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 truncate">{{ paramLabel }}</span>
+      <span class="text-xs text-content-muted truncate">{{ paramLabel }}</span>
     </template>
 
     <template #editor="{ save }">
       <!-- Parameter type select -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.changePHD2Parameters.parameter')
         }}</label>
         <select
           :value="item.Phd2Parameter"
-          class="ml-auto bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-auto"
           @change="save('Phd2Parameter', Number($event.target.value))"
         >
           <option v-for="p in parameters" :key="p.value" :value="p.value">{{ p.label }}</option>
@@ -34,7 +34,7 @@
 
       <!-- Dither in RA Only -->
       <div v-else-if="item.Phd2Parameter === 1" class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.changePHD2Parameters.ditherRAOnly')
         }}</label>
         <div class="ml-auto">

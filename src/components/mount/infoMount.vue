@@ -1,10 +1,6 @@
 <template>
   <div v-if="!store.mountInfo.Connected" class="flex justify-center items-center pb-2">
-    <div class="w-full p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-      <p class="text-red-400 text-center font-medium">
-        {{ $t('components.mount.info.notConnected') }}
-      </p>
-    </div>
+    <DeviceNotConnected messageKey="components.mount.info.notConnected" class="w-full" />
   </div>
   <!-- compact (device page): states share one line, values flow in two quiet
        columns. Default (status bar panel): stat tile grid. -->
@@ -82,6 +78,7 @@
 </template>
 
 <script setup>
+import DeviceNotConnected from '@/components/helpers/DeviceNotConnected.vue';
 import StatusBool from '@/components/helpers/StatusBool.vue';
 import StatusString from '@/components/helpers/StatusString.vue';
 import { apiStore } from '@/store/store';

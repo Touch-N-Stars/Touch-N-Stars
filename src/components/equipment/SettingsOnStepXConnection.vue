@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div class="tns-card flex flex-col">
     <!-- Serial port -->
     <div class="flex flex-row items-center justify-between w-full">
-      <label for="onstepxPort" class="text-xs md:text-sm text-gray-200 mr-2">
+      <label for="onstepxPort" class="text-xs md:text-sm text-content mr-2">
         {{ $t('indi.config.devicePort') }}
       </label>
       <select
         id="onstepxPort"
         v-model="selectedPort"
-        class="tns-input text-xs md:text-sm w-48"
+        class="tns-select text-xs md:text-sm w-48"
         :class="statusClassPort"
       >
         <option value="" disabled>{{ $t('indi.config.selectPort') }}</option>
@@ -27,7 +27,7 @@
       v-if="manualPortMode"
       class="flex flex-row items-center justify-between w-full mt-2 md:mt-3"
     >
-      <label for="onstepxManualPort" class="text-xs md:text-sm text-gray-200 mr-2">
+      <label for="onstepxManualPort" class="text-xs md:text-sm text-content mr-2">
         {{ $t('indi.config.manualPortPath') }}
       </label>
       <input
@@ -43,14 +43,14 @@
 
     <!-- Baud rate -->
     <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-      <label for="onstepxBaudRate" class="text-xs md:text-sm text-gray-200 mr-2">
+      <label for="onstepxBaudRate" class="text-xs md:text-sm text-content mr-2">
         {{ $t('indi.config.baudRate') }}
       </label>
       <select
         id="onstepxBaudRate"
         v-model.number="baudRate"
         @change="saveBaudRate"
-        class="tns-input text-xs md:text-sm w-48"
+        class="tns-select text-xs md:text-sm w-48"
         :class="statusClassBaudRate"
       >
         <option v-for="rate in baudOptions" :key="rate" :value="rate">{{ rate }}</option>

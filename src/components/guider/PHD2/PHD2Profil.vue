@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row w-full items-center min-w-28">
-    <label for="binning" class="text-sm sm:text-xs mr-3 mb-1 text-gray-200">
+    <label for="binning" class="text-sm sm:text-xs mr-3 mb-1 text-content">
       {{ $t('components.guider.phd2.profile') }}
     </label>
     <div class="relative ml-auto">
@@ -17,28 +17,9 @@
       </select>
       <div
         v-if="isChangingProfile"
-        class="absolute inset-0 flex items-center justify-center bg-gray-800/50 rounded pointer-events-none"
+        class="absolute inset-0 flex items-center justify-center bg-surface-1/50 rounded-control text-accent pointer-events-none"
       >
-        <svg
-          class="animate-spin h-5 w-5 text-cyan-400"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
+        <Spinner size="sm" />
       </div>
     </div>
     <div class="flex flex-row gap-1 ml-1">
@@ -47,14 +28,14 @@
         class="tns-btn-primary w-12"
         v-show="!guiderStore.phd2IsConnected"
       >
-        <LinkIcon class="w-7 h-7 text-gray-300" />
+        <LinkIcon class="w-7 h-7 text-content" />
       </button>
       <button
         @click="disconnectEquipment"
         class="tns-btn-danger w-12"
         v-show="guiderStore.phd2IsConnected"
       >
-        <LinkSlashIcon class="w-full h-7 text-gray-300" />
+        <LinkSlashIcon class="w-full h-7 text-content" />
       </button>
       <button
         v-if="store.isPINS"
@@ -62,7 +43,7 @@
         class="tns-btn-secondary w-12"
         :disabled="guiderStore.phd2IsConnected"
       >
-        <Cog6ToothIcon class="w-7 h-7 text-gray-300" />
+        <Cog6ToothIcon class="w-7 h-7 text-content" />
       </button>
     </div>
   </div>
@@ -76,6 +57,7 @@ import { useGuiderStore } from '@/store/guiderStore';
 import { onMounted, ref } from 'vue';
 import { LinkSlashIcon, LinkIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import PHD2ProfileManagementModal from './PHD2ProfileManagementModal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { apiStore } from '@/store/store';
 
 const guiderStore = useGuiderStore();

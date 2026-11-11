@@ -1,10 +1,6 @@
 <template>
-  <section
-    v-if="store.isPINS"
-    class="p-2 sm:p-4 flex flex-col gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    :aria-busy="loading || saving"
-  >
-    <h3 class="font-bold text-base text-cyan-400">{{ t('components.settings.swap.title') }}</h3>
+  <section v-if="store.isPINS" class="tns-card flex flex-col gap-3" :aria-busy="loading || saving">
+    <h3 class="tns-section-title">{{ t('components.settings.swap.title') }}</h3>
     <p class="text-sm text-content-muted">{{ t('components.settings.swap.description') }}</p>
     <p v-if="loading" class="text-sm text-content-muted">
       {{ t('components.settings.swap.loading') }}
@@ -14,12 +10,10 @@
         {{ t('components.settings.swap.current', { size: status.activeSwapSizeMb / 1024 }) }}
       </p>
       <label class="flex flex-col gap-1">
-        <span class="text-sm font-semibold">{{ t('components.settings.swap.size') }}</span>
-        <select
-          v-model.number="selected"
-          class="w-full min-h-11 bg-gray-900 border border-gray-600 rounded px-3 py-2 text-white"
-          :disabled="saving"
-        >
+        <span class="text-sm font-semibold text-content">{{
+          t('components.settings.swap.size')
+        }}</span>
+        <select v-model.number="selected" class="tns-select" :disabled="saving">
           <option disabled :value="0">{{ t('components.settings.swap.choose') }}</option>
           <option v-for="size in [2, 4, 8]" :key="size" :value="size">
             {{
@@ -39,14 +33,14 @@
           })
         }}
       </p>
-      <p v-if="status.pendingReboot" role="status" class="text-sm text-status-warning">
+      <p v-if="status.pendingReboot" role="status" class="text-sm text-status-warn">
         {{ t('components.settings.swap.pending', { size: status.configuredSizeMb / 1024 }) }}
       </p>
-      <p v-if="saved" role="status" class="text-sm text-status-success">
+      <p v-if="saved" role="status" class="text-sm text-status-ok">
         {{ t('components.settings.swap.saved') }}
       </p>
       <button
-        class="min-h-11 w-full sm:w-auto px-4 py-2 bg-cyan-700 rounded disabled:opacity-50"
+        class="tns-btn-primary sm:w-auto!"
         :disabled="loading || saving || !dirty"
         @click="save"
       >
@@ -60,7 +54,7 @@
       {{ errorMessage }}
     </p>
     <button
-      class="min-h-11 self-start text-cyan-400 disabled:opacity-50"
+      class="min-h-touch self-start text-accent hover:text-content transition-colors disabled:opacity-50"
       :disabled="loading || saving"
       @click="load"
     >

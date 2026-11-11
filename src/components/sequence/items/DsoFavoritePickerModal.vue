@@ -7,8 +7,8 @@
     </template>
     <template #body>
       <div class="w-full">
-        <table v-if="hasAnyFavTarget" class="w-full text-xs text-left border border-slate-600">
-          <thead class="bg-slate-700 text-slate-300">
+        <table v-if="hasAnyFavTarget" class="w-full text-xs text-left border border-line-strong">
+          <thead class="bg-surface-3 text-content-muted">
             <tr>
               <th class="px-3 py-2">{{ $t('components.fav_target.table.name') }}</th>
               <th class="px-3 py-2 hidden sm:table-cell">
@@ -22,10 +22,10 @@
             </tr>
           </thead>
           <tbody v-for="group in favTargetGroups" :key="group.key">
-            <tr v-if="group.targets.length" class="bg-slate-700/50">
+            <tr v-if="group.targets.length" class="bg-surface-3/50">
               <td
                 colspan="5"
-                class="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-300"
+                class="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-content-muted"
               >
                 {{ group.label }}
               </td>
@@ -33,23 +33,24 @@
             <tr
               v-for="target in group.targets"
               :key="target.Id"
-              class="border-t border-slate-700 hover:bg-slate-700 transition-colors"
+              class="border-t border-line hover:bg-surface-3 transition-colors"
             >
               <td class="px-3 py-2">
                 {{ target.Name }}
+                <!-- Same source badge as in FavTargets, which keeps its own color there. -->
                 <span
                   v-if="target.source === 'telescopius'"
                   class="ml-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full px-1.5 py-0.5"
                   >{{ $t('components.fav_target.groups.telescopius') }}</span
                 >
-                <div v-if="target.listName" class="text-slate-400">{{ target.listName }}</div>
+                <div v-if="target.listName" class="text-content-muted">{{ target.listName }}</div>
               </td>
               <td class="px-3 py-2 hidden sm:table-cell">{{ target.RaString }}</td>
               <td class="px-3 py-2 hidden sm:table-cell">{{ target.DecString }}</td>
               <td class="px-3 py-2">{{ target.Rotation == null ? '–' : target.Rotation }}</td>
               <td class="px-3 py-2">
                 <button
-                  class="hover:text-green-400 text-slate-300"
+                  class="hover:text-accent text-content-muted"
                   @click="$emit('select', target)"
                 >
                   <CheckIcon class="w-4 h-4" />
@@ -58,7 +59,7 @@
             </tr>
           </tbody>
         </table>
-        <p v-else class="text-sm text-slate-400">
+        <p v-else class="text-sm text-content-muted">
           {{ $t('components.fav_target.no_fav') }}
         </p>
       </div>

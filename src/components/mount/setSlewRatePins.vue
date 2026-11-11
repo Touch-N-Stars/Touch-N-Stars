@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col w-full gap-1">
     <div class="flex items-baseline justify-between">
-      <p class="text-xs sm:text-sm min-w-24 sm:min-w-32 font-medium text-gray-500">
+      <p class="text-xs sm:text-sm min-w-24 sm:min-w-32 font-medium text-content-faint">
         {{ $t('components.mount.control.slewRate') }}
       </p>
-      <p v-if="currentLabel" class="text-xs sm:text-sm text-cyan-400 font-medium">
+      <p v-if="currentLabel" class="text-xs sm:text-sm text-accent font-medium">
         {{ currentLabel }}
       </p>
     </div>
@@ -12,20 +12,20 @@
     <!-- Discrete: driver-provided named steps (e.g. Guide / Center / Find / Max) -->
     <div v-if="kind === 'discrete'" class="relative pt-3 pb-5">
       <div
-        class="absolute top-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full -translate-y-1/2"
+        class="absolute top-1/2 left-0 right-0 h-1 bg-surface-3 rounded-full -translate-y-1/2"
       ></div>
       <div
-        class="absolute top-1/2 left-0 h-1 bg-cyan-800 rounded-full -translate-y-1/2 pointer-events-none"
+        class="absolute top-1/2 left-0 h-1 bg-accent-action rounded-full -translate-y-1/2 pointer-events-none"
         :style="{ width: `${trackFillPercent}%` }"
       ></div>
       <div
         v-for="i in options.length"
         :key="`tick-${i}`"
-        class="absolute top-1/2 w-px h-2 bg-gray-500 -translate-y-1/2 pointer-events-none"
+        class="absolute top-1/2 w-px h-2 bg-content-faint -translate-y-1/2 pointer-events-none"
         :style="{ left: `${ratioPercent(i - 1)}%` }"
       ></div>
       <div
-        class="absolute top-1/2 w-2 h-6 rounded-md bg-cyan-500 -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
+        class="absolute top-1/2 w-2 h-6 rounded-md bg-accent -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
         :style="{ left: `${trackFillPercent}%` }"
       ></div>
       <input
@@ -43,14 +43,14 @@
     <!-- Continuous: numeric °/s range provided by the driver -->
     <div v-else-if="kind === 'continuous'" class="relative pt-3 pb-5">
       <div
-        class="absolute top-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full -translate-y-1/2"
+        class="absolute top-1/2 left-0 right-0 h-1 bg-surface-3 rounded-full -translate-y-1/2"
       ></div>
       <div
-        class="absolute top-1/2 left-0 h-1 bg-cyan-800 rounded-full -translate-y-1/2 pointer-events-none"
+        class="absolute top-1/2 left-0 h-1 bg-accent-action rounded-full -translate-y-1/2 pointer-events-none"
         :style="{ width: `${trackFillPercent}%` }"
       ></div>
       <div
-        class="absolute top-1/2 w-2 h-6 rounded-md bg-cyan-500 -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
+        class="absolute top-1/2 w-2 h-6 rounded-md bg-accent -translate-y-1/2 -translate-x-1/2 pointer-events-none shadow-lg"
         :style="{ left: `${trackFillPercent}%` }"
       ></div>
       <input
@@ -66,7 +66,7 @@
     </div>
 
     <!-- No rate control exposed by the driver ('none'), or none known yet ('unavailable') -->
-    <p v-else class="text-xs text-gray-500 italic py-2">
+    <p v-else class="text-xs text-content-faint italic py-2">
       {{
         kind === 'none'
           ? $t('components.mount.control.slewRateDriverControlled')

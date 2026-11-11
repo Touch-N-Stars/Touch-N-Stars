@@ -1,7 +1,7 @@
 <template>
-  <div class="border border-gray-700 rounded-lg bg-gray-800 shadow-xl p-6 relative overflow-hidden">
+  <div class="tns-card relative overflow-hidden">
     <div class="absolute top-0 right-20 p-4 opacity-10 pointer-events-none">
-      <svg class="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg class="w-16 h-16 text-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -12,14 +12,14 @@
     </div>
 
     <div class="relative z-10 flex flex-col gap-4">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div>
-          <h3 class="text-xl font-bold text-white mb-1">{{ $t('plugins.pins.pluginsTitle') }}</h3>
-          <p class="text-gray-400 text-sm">{{ $t('plugins.pins.pluginsDescription') }}</p>
+      <div class="flex flex-row items-start justify-between gap-2">
+        <div class="min-w-0">
+          <h3 class="tns-section-title mb-1">{{ $t('plugins.pins.pluginsTitle') }}</h3>
+          <p class="text-content-muted text-sm">{{ $t('plugins.pins.pluginsDescription') }}</p>
         </div>
 
         <button
-          class="text-blue-400 hover:text-white transition-colors p-2 self-end sm:self-auto"
+          class="min-h-touch min-w-touch shrink-0 flex items-center justify-center text-accent hover:text-content transition-colors disabled:opacity-50"
           :disabled="loading || disabled"
           :title="$t('plugins.pins.pluginsRefresh')"
           @click="$emit('refresh')"
@@ -41,20 +41,22 @@
         </button>
       </div>
 
-      <div class="text-xs text-gray-400">
+      <div class="text-xs text-content-muted">
         {{ $t('plugins.pins.pluginsCheckedAt') }}:
         {{ checkedAt ? new Date(checkedAt).toLocaleString() : '-' }}
       </div>
 
-      <div v-if="loading" class="text-blue-400 text-sm">{{ $t('plugins.pins.scanning') }}</div>
+      <div v-if="loading" class="flex items-center gap-2 text-accent text-sm">
+        <Spinner size="sm" />{{ $t('plugins.pins.scanning') }}
+      </div>
 
-      <div v-else-if="plugins.length === 0" class="text-gray-400 italic py-2">
+      <div v-else-if="plugins.length === 0" class="text-content-muted italic py-2">
         {{ $t('plugins.pins.pluginsEmpty') }}
       </div>
 
-      <div v-else class="max-h-96 overflow-auto border border-gray-700 rounded-lg">
+      <div v-else class="max-h-96 overflow-auto border border-line rounded-card">
         <table class="w-full text-left text-sm">
-          <thead class="bg-gray-900 text-gray-300 sticky top-0">
+          <thead class="bg-surface-2 text-content-muted sticky top-0">
             <tr>
               <th class="px-4 py-3">{{ $t('plugins.pins.pluginsPackage') }}</th>
               <th class="px-4 py-3">{{ $t('plugins.pins.pluginsInstalled') }}</th>
@@ -66,16 +68,16 @@
             <tr
               v-for="plugin in plugins"
               :key="plugin.packageName"
-              class="border-t border-gray-700 text-gray-200"
+              class="border-t border-line text-content"
             >
               <td class="px-4 py-3 font-medium break-all">{{ plugin.packageName }}</td>
               <td class="px-4 py-3">
                 <span
-                  class="inline-flex items-center rounded px-2 py-1 text-xs font-semibold"
+                  class="inline-flex items-center rounded-chip px-2 py-1 text-xs font-semibold border"
                   :class="
                     plugin.installed
-                      ? 'bg-emerald-700/40 text-emerald-200 border border-emerald-500/40'
-                      : 'bg-gray-700/60 text-gray-300 border border-gray-500/40'
+                      ? 'bg-status-ok/10 text-status-ok border-status-ok/40'
+                      : 'bg-surface-3 text-content-muted border-line-strong'
                   "
                 >
                   {{
@@ -90,7 +92,7 @@
                 <div class="flex justify-end">
                   <button
                     v-if="!plugin.installed"
-                    class="px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white rounded transition-colors disabled:opacity-50"
+                    class="tns-btn-primary w-auto! px-3!"
                     :disabled="disabled || busyPackage === plugin.packageName"
                     @click="$emit('install', plugin.packageName)"
                   >
@@ -102,7 +104,7 @@
                   </button>
                   <button
                     v-else
-                    class="px-3 py-1.5 bg-red-700 hover:bg-red-600 text-white rounded transition-colors disabled:opacity-50"
+                    class="tns-btn-danger w-auto! px-3!"
                     :disabled="disabled || busyPackage === plugin.packageName"
                     @click="$emit('uninstall', plugin.packageName)"
                   >
@@ -123,6 +125,8 @@
 </template>
 
 <script setup>
+import Spinner from '@/components/helpers/Spinner.vue';
+
 function formatPluginVersion(plugin) {
   if (!plugin) {
     return '-';

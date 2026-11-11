@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-if="!rows || rows.length === 0" class="py-4 text-center text-sm text-gray-400">
+    <p v-if="!rows || rows.length === 0" class="py-4 text-center text-sm text-content-muted">
       {{ emptyText }}
     </p>
 
@@ -9,7 +9,7 @@
       <div class="hidden overflow-x-auto md:block">
         <table class="w-full text-sm">
           <thead>
-            <tr class="border-b border-gray-700 text-xs text-gray-400">
+            <tr class="border-b border-line text-xs text-content-muted">
               <th
                 v-for="col in columns"
                 :key="col.key"
@@ -24,12 +24,12 @@
             <tr
               v-for="(row, idx) in rows"
               :key="rowKey ? row[rowKey] : idx"
-              class="border-b border-gray-700/50 last:border-b-0"
+              class="border-b border-line last:border-b-0"
             >
               <td
                 v-for="col in columns"
                 :key="col.key"
-                class="px-2 py-2 text-gray-200 tabular-nums"
+                class="px-2 py-2 text-content tabular-nums"
                 :class="col.align === 'left' ? 'text-left' : 'text-right'"
               >
                 {{ format(row[col.key], col) }}
@@ -44,15 +44,15 @@
         <div
           v-for="(row, idx) in rows"
           :key="rowKey ? row[rowKey] : idx"
-          class="rounded-lg border border-gray-700/50 bg-gray-900/40 p-2"
+          class="rounded-control border border-line bg-surface-2 p-2"
         >
           <div
             v-for="col in columns"
             :key="col.key"
             class="flex items-center justify-between gap-3 py-0.5 text-sm"
           >
-            <span class="text-gray-400">{{ col.label }}</span>
-            <span class="text-gray-200 tabular-nums">{{ format(row[col.key], col) }}</span>
+            <span class="text-content-muted">{{ col.label }}</span>
+            <span class="text-content tabular-nums">{{ format(row[col.key], col) }}</span>
           </div>
         </div>
       </div>

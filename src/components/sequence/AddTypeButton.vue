@@ -7,10 +7,7 @@
       :disabled="sequenceStore.sequenceControlsLocked || loading"
       @click.stop="toggle"
     >
-      <svg v-if="loading" class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-      </svg>
+      <Spinner v-if="loading" size="sm" />
       <PlusIcon v-else class="w-3.5 h-3.5" />
       <span v-if="containerName" class="text-xs opacity-50">{{ containerName }}</span>
       <span class="text-xs">{{ shortLabel }}</span>
@@ -19,18 +16,18 @@
     <Teleport to="body">
       <div
         v-if="open"
-        class="fixed z-[9999] bg-gray-800 border border-slate-600 rounded-lg shadow-xl w-64"
+        class="fixed z-top bg-surface-1 border border-line-strong rounded-lg shadow-xl w-64"
         :style="dropdownStyle"
         @click.stop
       >
         <!-- Search -->
-        <div class="p-2 border-b border-slate-700">
+        <div class="p-2 border-b border-line">
           <input
             v-model="search"
             type="text"
             inputmode="search"
             :placeholder="t('components.sequence.addTypeButton.searchPlaceholder')"
-            class="w-full bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200 placeholder-slate-500 outline-none focus:border-cyan-500/50"
+            class="tns-input-compact"
             @click.stop
             @focus="updateDropdownPosition"
           />
@@ -41,25 +38,25 @@
           <template v-if="filteredTypes.length">
             <template v-for="(group, cat) in grouped" :key="cat">
               <button
-                class="flex items-center gap-1.5 w-full px-3 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide hover:bg-slate-700/40 transition-colors text-left"
+                class="flex items-center gap-1.5 w-full px-3 py-1.5 text-xs font-semibold text-content-muted uppercase tracking-wide hover:bg-surface-2 transition-colors text-left"
                 @click="toggleCategory(cat)"
               >
                 <ChevronDownIcon v-if="isExpanded(cat)" class="w-3 h-3 shrink-0" />
                 <ChevronRightIcon v-else class="w-3 h-3 shrink-0" />
                 <span class="truncate">{{ cat }}</span>
-                <span class="ml-auto font-normal text-slate-500">{{ group.length }}</span>
+                <span class="ml-auto font-normal text-content-faint">{{ group.length }}</span>
               </button>
               <template v-if="isExpanded(cat)">
                 <button
                   v-for="t in group"
                   :key="t.FullTypeName"
-                  class="flex items-center w-full pl-7 pr-4 py-1.5 text-xs text-slate-300 hover:bg-slate-700/60 transition-colors text-left"
+                  class="flex items-center w-full pl-7 pr-4 py-1.5 text-xs text-content hover:bg-surface-2 transition-colors text-left"
                   @click="select(t)"
                 >
                   <span class="truncate">{{ t.Name }}</span>
                   <span
                     v-if="mode === 'item' && !hasOwnEditor(t)"
-                    class="ml-auto pl-2 shrink-0 text-[10px] text-slate-500"
+                    class="ml-auto pl-2 shrink-0 text-[10px] text-content-faint"
                   >
                     {{ $t('components.sequence.items.generic') }}
                   </span>
@@ -67,7 +64,7 @@
               </template>
             </template>
           </template>
-          <div v-else class="px-3 py-3 text-xs text-slate-500 text-center">
+          <div v-else class="px-3 py-3 text-xs text-content-faint text-center">
             {{ t('components.sequence.addTypeButton.noResults') }}
           </div>
         </div>
@@ -83,6 +80,7 @@ import { PlusIcon, ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/24/o
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { ITEM_COMPONENTS } from './items/index.js';
+import Spinner from '@/components/helpers/Spinner.vue';
 
 const { t } = useI18n();
 
@@ -121,8 +119,9 @@ const shortLabel = computed(
     })[props.mode] ?? t('components.sequence.addTypeButton.add')
 );
 
+// Trigger and condition keep the colors of their lists in SequenceItem.
 const MODE_COLOR_CLASSES = {
-  item: 'text-slate-400 hover:text-slate-200 hover:bg-slate-600/40',
+  item: 'text-content-muted hover:text-content hover:bg-surface-3',
   trigger: 'text-cyan-500/70 hover:text-cyan-400 hover:bg-cyan-900/30',
   condition: 'text-amber-500/70 hover:text-amber-400 hover:bg-amber-900/30',
 };

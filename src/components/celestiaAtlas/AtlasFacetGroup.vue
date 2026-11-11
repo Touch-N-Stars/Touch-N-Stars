@@ -1,10 +1,10 @@
 <template>
-  <details class="rounded-md border border-gray-600 bg-gray-900/40" :data-filter-kind="kind">
+  <details class="rounded-md border border-line-strong bg-surface-1/40" :data-filter-kind="kind">
     <summary
-      class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm text-gray-200"
+      class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-3 py-2 text-sm text-content"
     >
       <span>{{ title }}</span>
-      <span class="shrink-0 text-xs text-cyan-300">
+      <span class="shrink-0 text-xs text-accent">
         {{
           t('components.celestiaAtlas.settings.catalog_filter_selected', {
             selected: selectedCount,
@@ -14,12 +14,12 @@
       </span>
     </summary>
 
-    <div class="border-t border-gray-700 p-2">
+    <div class="border-t border-line p-2">
       <div class="mb-2 grid grid-cols-2 gap-2">
         <button
           type="button"
           data-filter-action="all"
-          class="min-h-11 rounded-md border border-cyan-700 bg-cyan-950/60 px-3 text-sm text-cyan-100"
+          class="min-h-11 rounded-md border border-accent-action bg-accent/15 px-3 text-sm text-content"
           @click="$emit('selectAll')"
         >
           {{ t('components.celestiaAtlas.settings.catalog_filter_all') }}
@@ -27,7 +27,7 @@
         <button
           type="button"
           data-filter-action="none"
-          class="min-h-11 rounded-md border border-gray-600 bg-gray-800 px-3 text-sm text-gray-200"
+          class="min-h-11 rounded-md border border-line-strong bg-surface-2 px-3 text-sm text-content"
           @click="$emit('selectNone')"
         >
           {{ t('components.celestiaAtlas.settings.catalog_filter_none') }}
@@ -38,7 +38,7 @@
         <label
           v-for="facet in facets"
           :key="facet.key"
-          class="flex min-h-11 cursor-pointer items-center gap-3 rounded-md px-2 py-1 hover:bg-gray-800"
+          class="flex min-h-11 cursor-pointer items-center gap-3 rounded-md px-2 py-1 hover:bg-surface-2"
         >
           <input
             :id="`atlas-${kind}-${facet.key}`"
@@ -46,15 +46,17 @@
             type="checkbox"
             :value="facet.key"
             :data-facet-key="facet.key"
-            class="h-5 w-5 shrink-0 accent-cyan-500"
+            class="h-5 w-5 shrink-0 accent-accent-action"
             :checked="isSelected(facet.key)"
             @change="toggle(facet.key, $event.target.checked)"
           />
-          <span class="min-w-0 flex-1 text-sm text-gray-200">
+          <span class="min-w-0 flex-1 text-sm text-content">
             <span class="block truncate">{{ facet.label }}</span>
-            <span class="block font-mono text-[10px] uppercase text-gray-500">{{ facet.key }}</span>
+            <span class="block font-mono text-[10px] uppercase text-content-faint">{{
+              facet.key
+            }}</span>
           </span>
-          <span class="shrink-0 text-xs tabular-nums text-gray-400">
+          <span class="shrink-0 text-xs tabular-nums text-content-muted">
             {{ numberFormatter.format(facet.count) }}
           </span>
         </label>

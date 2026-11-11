@@ -8,7 +8,7 @@
         id="slotNum"
         v-model.number="slotNum"
         @change="setSlotNum"
-        class="tns-input text-xs md:text-sm w-48"
+        class="tns-select text-xs md:text-sm w-48"
         :class="statusClass"
       >
         <option :value="-1">{{ $t('components.filterwheel.settings.slotNumDefault') }}</option>
@@ -19,9 +19,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const props = defineProps({
   selectedDevice: { type: String, default: '' },
@@ -29,8 +29,11 @@ const props = defineProps({
 });
 
 const store = apiStore();
-const slotNum = ref(-1);
-const statusClass = ref('');
+const {
+  value: slotNum,
+  save: setSlotNum,
+  glowClass: statusClass,
+} = useProfileSetting('FilterWheelSettings-SlotNum', { fallback: -1 });
 
 const isVisible = computed(() => {
   if (props.selectedDeviceObj?.Category === 'ASCOM Alpaca') return false;
@@ -40,22 +43,7 @@ const isVisible = computed(() => {
   return !(deviceName.includes('indi') || driverInfo.includes('indi') || category.includes('indi'));
 });
 
-onMounted(async () => {
-  await store.fetchProfilInfos();
-  slotNum.value = store.profileInfo?.FilterWheelSettings?.SlotNum ?? -1;
-});
-
-async function setSlotNum() {
-  try {
-    await apiService.profileChangeValue('FilterWheelSettings-SlotNum', slotNum.value);
-    statusClass.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting filter wheel slot num:', error);
-    statusClass.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClass.value = '';
-    }, 2000);
-  }
-}
+// The modal can open right after a driver change: fetch the profile now instead of waiting
+// for the poller, so the select starts on the current slot count.
+onMounted(() => store.fetchProfilInfos());
 </script>

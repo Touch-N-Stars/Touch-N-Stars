@@ -1,20 +1,24 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+  <div
+    ref="overlayElement"
+    class="fixed inset-0 z-modal-raised flex items-center justify-center bg-black/60"
+  >
     <div
-      class="bg-gray-900 text-white w-full h-full sm:w-[min(720px,95vw)] sm:h-auto sm:max-h-[85vh] rounded-none sm:rounded-xl overflow-hidden shadow-2xl"
+      class="bg-surface-1 text-white w-full h-full sm:w-[min(720px,95vw)] sm:h-auto sm:max-h-[85vh] rounded-none sm:rounded-xl overflow-hidden shadow-2xl"
       role="dialog"
       aria-modal="true"
+      :aria-label="data?.title || $t('whatsnew.title')"
     >
       <!-- Header -->
       <div
-        class="sticky top-0 flex items-center justify-between gap-2 px-4 py-3 border-b border-gray-700 bg-gray-900/95 backdrop-blur"
+        class="sticky top-0 flex items-center justify-between gap-2 px-4 py-3 border-b border-line bg-surface-1/95 backdrop-blur"
       >
         <h2 class="text-base sm:text-lg font-semibold truncate">
           {{ data?.title || $t('whatsnew.title') }}
         </h2>
         <button
           @click="$emit('close')"
-          class="p-2 rounded-full hover:bg-gray-800 text-gray-300 hover:text-white"
+          class="p-2 rounded-full hover:bg-surface-2 text-content hover:text-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -39,20 +43,20 @@
           <!-- Render HTML from generator; it's sanitized/minimal from generator -->
           <div v-html="data.html"></div>
         </div>
-        <div v-else class="text-gray-300">
+        <div v-else class="text-content">
           {{ $t('whatsnew.loading') }}
         </div>
       </div>
 
       <!-- Footer -->
       <div
-        class="sticky bottom-0 px-4 py-3 border-t border-gray-700 bg-gray-900/95 backdrop-blur flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center sm:justify-between"
+        class="sticky bottom-0 px-4 py-3 border-t border-line bg-surface-1/95 backdrop-blur flex flex-col sm:flex-row gap-2 sm:gap-3 sm:items-center sm:justify-between"
       >
-        <div class="text-xs sm:text-sm text-gray-400" v-if="data?.date">{{ data.date }}</div>
+        <div class="text-xs sm:text-sm text-content-muted" v-if="data?.date">{{ data.date }}</div>
         <div class="flex items-center gap-2">
           <button
             @click="$emit('close')"
-            class="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white text-sm"
+            class="px-4 py-2 rounded-lg bg-surface-2 hover:bg-surface-3 text-white text-sm"
           >
             {{ $t('common.close') }}
           </button>
@@ -63,10 +67,15 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { useModalEscape } from '@/composables/useModalEscape';
 defineProps({
   data: { type: Object, default: null },
 });
-defineEmits(['close']);
+const emit = defineEmits(['close']);
+
+const overlayElement = ref(null);
+useModalEscape(overlayElement, () => emit('close'));
 </script>
 
 <style scoped>

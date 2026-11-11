@@ -58,7 +58,7 @@
           <li
             v-for="(item, index) in framingStore.targetSearchResult"
             :key="index"
-            class="p-2 hover:bg-blue-800 cursor-pointer"
+            class="p-2 hover:bg-surface-3 cursor-pointer"
             :class="{ 'opacity-50': item.Type === 'Star' && item.altAz.alt <= 0 }"
             @click="selectTarget(item)"
           >
@@ -67,11 +67,11 @@
             <span v-if="item['M']"> (M {{ item['M'] }})</span>
             <span
               v-if="item.Type === 'Star'"
-              class="ml-1 px-1.5 py-0.5 rounded text-xs bg-gray-700 text-gray-200 align-middle"
+              class="ml-1 px-1.5 py-0.5 rounded text-xs bg-surface-3 text-content align-middle"
             >
               {{ $t('components.framing.search.objectTypes.Star') }}
             </span>
-            <span v-if="item.Type === 'Star'" class="block text-xs text-gray-400">
+            <span v-if="item.Type === 'Star'" class="block text-xs text-content-muted">
               Mag: {{ item.star.magnitude }} · Alt: {{ item.altAz.alt.toFixed(1) }}° · Az:
               {{ item.altAz.az.toFixed(1) }}° ({{ item.altAz.direction }})
             </span>
@@ -98,8 +98,8 @@
       </div>
 
       <!-- Additional Control -->
-      <div class="flex min-w-36 items-center border border-gray-500 p-1 mt-2 rounded-lg">
-        <label for="DewHeater" class="text-sm mb-1 text-gray-400">
+      <div class="flex min-w-36 items-center border border-line-strong p-1 mt-2 rounded-lg">
+        <label for="DewHeater" class="text-sm mb-1 text-content-muted">
           {{ $t('components.framing.useNinaCache') }}
         </label>
         <div class="flex ml-auto items-center space-x-2">
@@ -110,7 +110,7 @@
       <!-- Selected Item Details -->
       <div
         v-if="framingStore.selectedItem"
-        class="grid grid-cols-2 mt-4 p-4 border border-gray-700 rounded shadow"
+        class="grid grid-cols-2 mt-4 p-4 border border-line rounded shadow"
       >
         <div class="flex flex-col justify-between">
           <div class="text-xs">
@@ -125,7 +125,7 @@
           </div>
         </div>
         <div>
-          <TargetPic class="border border-gray-500 rounded-md" />
+          <TargetPic class="border border-line-strong rounded-md" />
         </div>
       </div>
 

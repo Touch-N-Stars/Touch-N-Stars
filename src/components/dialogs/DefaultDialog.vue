@@ -1,5 +1,5 @@
 <template>
-  <p class="text-gray-200 whitespace-pre-wrap">{{ message }}</p>
+  <p class="text-content whitespace-pre-wrap">{{ message }}</p>
 </template>
 
 <script setup>

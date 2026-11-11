@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 25] - 2026-11-06
+
+### Added
+
+- Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
+
+### Changed
+
+- Interface: Dialogs now share one look across the app, including About, Log, Weather, the instance switcher and the favorites. More of them also close with the Escape key, and the small info dialogs close with a tap beside them.
+- Settings: All settings tabs now use the same cards, headings and colours as the rest of the app. The folder buttons next to path fields are larger and easier to tap.
+- TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.
+- Monitor: The statistics and image history tabs now use the same cards and colours as the rest of the app. The buttons above the image history, the image rotation choice and the graph controls are larger and easier to tap.
+- Equipment: The equipment page, the device settings, the INDI setup and the profile management now use the same cards and colours as the rest of the app. Port and device number in the Alpaca Direct settings and the pre connect delay of the SV241 Pro now have plus and minus buttons and open the touch number pad.
+- PINS: The PINS page, its network, services, system, INDI, software and upgrade tabs and their dialogs now use the same cards and colours as the rest of the app. The priority of a saved Wi-Fi network now has plus and minus buttons and opens the touch number pad, and the refresh buttons are larger and easier to tap.
+- Guider: The PHD2 guider page, its settings and the calibration assistant, calibration review, dark library and profile management dialogs now use the same cards and colours as the rest of the app. Calibrating is shown in the app's accent colour, like on the native guider page.
+- Focus: The focus page, its settings and the Hocus Focus aberration inspector, tilter, star detection and optimizer now use the same cards and colours as the rest of the app. The motor speed and USB capacity choices of PINS focusers are wide enough for their full names on phones.
+- Interface: The plate solving, meridian flip, manual rotator and autofocus dialogs opened by NINA, the notifications, the switches, the number fields with their touch number pad, the image viewer and the location sync question now use the same colours as the rest of the app. The three location sync choices are larger buttons.
+- Atlas: The atlas settings, the sky survey download, the catalogue filters and the about page now use the same colours as the rest of the app. The landscape source and the custom landscape fields are larger and easier to tap.
+- Interface: The dome, filter wheel, flat device, rotator, flat assistant, framing and sequence pages now use the same cards and colours as the rest of the app, and they show the same notice when their device is not connected.
+- Flats: The flat assistant with its sky flat, auto exposure, auto brightness and multi mode now uses the same cards and colours as the rest of the app. The zenith altitude choice is larger and easier to tap.
+- Framing: The framing image controls, the mosaic and rotation settings, the target search and the altitude chart now use the same cards and colours as the rest of the app.
+- Plate solving: The FITS file solver in framing, the atlas and the sequence target now shows its settings, progress and result in the same colours as the rest of the app.
+- Mount: The mount controls, the slew rate sliders, the slew and center options and the mount info now use the same colours as the rest of the app, and the mount shows the same notice as the other devices when it is not connected.
+- Camera: The camera settings, the cooler panel and the capture controls now use the same colours as the rest of the app; cooling, holding and warming keep their own colours.
+- Interface: The navigation bar, the connection screen at startup and the PINS upgrade and time warning dialogs now use the same colours as the rest of the app.
+- Interface: The flat device, filter wheel, rotator and dome controls and settings, the status bar with its progress panel, the instance switcher, the favourite targets, the session timeline, the plugin install dialog, the power dialog and the camera and guider steps of the setup wizard now use the same colours as the rest of the app. Resetting the rotator position uses the same red button as other stopping actions.
+
+### Fixed
+
+- TPPA: When the polar alignment runs in the dialog opened by NINA, its settings no longer open hidden behind that dialog.
+- TPPA: Until the first measurement arrives, errors show a question mark instead of an empty value, the error dialogs say they are waiting, and the circle no longer appears green without a result. The empty status frame is gone as well.
+- Camera, Focus and TPPA: The Drag and Show image labels are now translated.
+- Rotator: Under PINS, the manual rotator dialog now shows current and target position in the app language instead of always in English.
+- Monitor: The loading hint of the last image is now translated, and "No data available yet" is no longer shown in red like an error.
+- Equipment: The loading message shown while switching profiles is now translated.
+- PINS: The INDI registry editor now closes with the Escape key, like the other dialogs.
+- PINS: The hotspot no longer shows a Wi-Fi signal of 0 percent. It reports no signal, so the card now says the signal is unavailable.
+- PINS: After saving the hotspot settings, the result shows Yes or No instead of an untranslated text.
+- PINS: The swap size notes about a pending reboot and a successful save are now shown in the warning and success colours.
+
 ## [App6.5.0 - beta 24] - 2026-11-05
 
 ### Fixed

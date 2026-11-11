@@ -15,7 +15,7 @@
         </h2>
         <button
           @click="toggleMinimize"
-          class="w-8 h-8 flex items-center justify-center hover:bg-slate-700/50 rounded transition-colors ml-2 text-white"
+          class="w-8 h-8 flex items-center justify-center hover:bg-surface-3 rounded transition-colors ml-2 text-content"
           :title="isMinimized ? 'Restore' : 'Minimize'"
         >
           <MinusIcon v-if="!isMinimized" class="w-5 h-5" />

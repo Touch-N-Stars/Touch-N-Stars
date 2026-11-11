@@ -1,28 +1,18 @@
 <template>
   <div class="flex flex-col items-center w-full px-4">
     <div class="flex flex-col w-full max-w-lg landscape:max-w-3xl items-center justify-center">
-      <h5 class="text-xl font-bold text-white mb-4">{{ $t('pages.equipment.title') }}</h5>
+      <h5 class="text-xl font-bold text-content mb-4">{{ $t('pages.equipment.title') }}</h5>
       <div class="flex flex-col w-full items-center justify-center">
-        <div
-          class="flex items-center justify-center mb-4 w-full space-y-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-4 shadow-lg"
-        >
+        <div class="tns-card flex items-center justify-center mb-4 w-full">
           <profilSelect />
         </div>
-        <div
-          v-if="store.isPINS"
-          class="flex items-center justify-center mb-4 w-full space-y-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-6 shadow-lg"
-        >
-          <button
-            @click="showIndiModal = true"
-            class="tns-btn-secondary w-full flex items-center justify-center gap-2"
-          >
+        <div v-if="store.isPINS" class="tns-card flex items-center justify-center mb-4 w-full">
+          <button @click="showIndiModal = true" class="tns-btn-secondary">
             <Cog6ToothIcon class="w-5 h-5" />
             {{ $t('pages.equipment.indiSetup') }}
           </button>
         </div>
-        <div
-          class="mb-24 w-full space-y-2 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-lg p-6 shadow-lg"
-        >
+        <div class="tns-card mb-24 w-full">
           <connectEquipment />
         </div>
       </div>

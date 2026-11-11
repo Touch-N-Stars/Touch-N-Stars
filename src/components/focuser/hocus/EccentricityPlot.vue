@@ -3,7 +3,7 @@
     <!-- One cell per grid region, in image orientation. Each line runs along the stars' elongation. -->
     <svg
       :viewBox="`${-PAD} ${-PAD} ${data.Columns + 2 * PAD} ${data.Rows + 2 * PAD}`"
-      class="w-full rounded-lg bg-gray-900/60"
+      class="w-full rounded-control bg-ground/60"
       :style="{ aspectRatio: `${data.Columns + 2 * PAD} / ${data.Rows + 2 * PAD}` }"
       role="img"
       :aria-label="L('title')"
@@ -37,24 +37,24 @@
 
     <!-- Tap a cell for its values; the plot's hover readout, made touch-friendly -->
     <div class="min-h-[1.5rem] text-sm">
-      <p v-if="selectedCell" class="text-gray-300">
-        <span class="text-gray-400">{{ L('eccentricity') }}</span>
-        <span class="ml-1 text-gray-100 tabular-nums">{{
+      <p v-if="selectedCell" class="text-content">
+        <span class="text-content-muted">{{ L('eccentricity') }}</span>
+        <span class="ml-1 text-content tabular-nums">{{
           selectedCell.Eccentricity.toFixed(2)
         }}</span>
-        <span class="ml-4 text-gray-400">{{ L('angle') }}</span>
-        <span class="ml-1 text-gray-100 tabular-nums">
+        <span class="ml-4 text-content-muted">{{ L('angle') }}</span>
+        <span class="ml-1 text-content tabular-nums">
           {{ selectedCell.AngleDegrees.toFixed(0) }}°
         </span>
-        <span class="ml-4 text-gray-400">{{ L('stars') }}</span>
-        <span class="ml-1 text-gray-100 tabular-nums">{{ selectedCell.StarCount }}</span>
+        <span class="ml-4 text-content-muted">{{ L('stars') }}</span>
+        <span class="ml-1 text-content tabular-nums">{{ selectedCell.StarCount }}</span>
       </p>
-      <p v-else-if="selected" class="text-gray-400">{{ L('noStarsInCell') }}</p>
-      <p v-else class="text-gray-400">{{ L('tapHint') }}</p>
+      <p v-else-if="selected" class="text-content-muted">{{ L('noStarsInCell') }}</p>
+      <p v-else class="text-content-muted">{{ L('tapHint') }}</p>
     </div>
 
     <!-- Colour scale, only when HocusFocus' colour map option is on -->
-    <div v-if="data.ColorMapEnabled" class="flex items-center gap-2 text-xs text-gray-400">
+    <div v-if="data.ColorMapEnabled" class="flex items-center gap-2 text-xs text-content-muted">
       <span class="tabular-nums">≤ {{ COLOR_MIN_E }}</span>
       <div
         class="h-2 flex-1 rounded"

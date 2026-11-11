@@ -18,7 +18,9 @@
     "creating": "Erstellen…",
     "help": "Hilfe",
     "expand": "Erweitern",
-    "collapse": "Minimieren"
+    "collapse": "Minimieren",
+    "drag": "Ziehen",
+    "showImage": "Bild anzeigen"
   },
   "general": {
     "cancel": "Abbrechen",
@@ -982,6 +984,7 @@
       "targetNotFound": "Ziel in der Sequenz nicht gefunden. Bitte erneut versuchen.",
       "filter": "Filter",
       "triggers": "Trigger",
+      "globalTriggers": "Globale Trigger",
       "expandAll": "Alle erweitern",
       "collapseAll": "Alle zuklappen",
       "addTypeButton": {
@@ -1063,6 +1066,7 @@
       },
       "time": "Zeit",
       "noRunningItems": "Sequenz gestoppt",
+      "noConditions": "Keine Bedingungen",
       "targetOfTotal": "Ziel {current} von {total}",
       "status": "Sequenzstatus",
       "instructions": "Anweisungen",
@@ -2518,8 +2522,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Frame-Verarbeitung langsam",
-            "explanation": "Die Verarbeitung eines Guide-Frames hat länger gedauert als erwartet, was die Korrekturen verzögert.",
-            "fix": "Verringere die maximale Anzahl an Guide-Sternen, nutze Binning oder einen Bildausschnitt oder prüfe die CPU-Last."
+            "explanation": "In der letzten Minute hat die Verarbeitung von mindestens der Hälfte der Guide-Frames zu lange gedauert, daher kamen die Korrekturen verspätet bei der Montierung an. Ein einzelner langsamer Frame ab und zu ist normal und wird nur im Log vermerkt.",
+            "fix": "Prüfe, was den Rechner sonst noch beschäftigt, etwa Live-Stacking oder andere Programme. Ansonsten verringere „Max. Guide-Sterne“, nutze Binning oder einen Bildausschnitt oder schalte die Rauschreduzierung aus."
+          },
+          "SlowGuideFrame": {
+            "title": "Langsamer Guide-Frame",
+            "explanation": "Die Verarbeitung eines Guide-Frames hat länger gedauert als sonst, daher kam seine Korrektur etwas später. Das passiert ab und zu, wenn der Rechner mit anderem beschäftigt ist, etwa mit dem Speichern, Plate-Solving oder Stacken eines Bildes der Hauptkamera, und schadet nicht.",
+            "fix": "Nichts zu tun. Der Guider warnt, wenn Frames eine Minute lang langsam bleiben."
           },
           "SettleTimeout": {
             "title": "Zeitlimit beim Einpendeln",
@@ -4760,6 +4769,7 @@
       "azimuth_error": "Azimutfehler:",
       "total_error": "Gesamtfehler:",
       "error_values_missing": "Fehlende Fehlerwerte",
+      "waiting_for_values": "Warte auf die erste Messung…",
       "unknown_response_format": "Unbekanntes Antwortformat",
       "east": "Osten",
       "west": "Westen",
@@ -5203,7 +5213,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, nur [OIII]-Linie (doppelt ionisierter Sauerstoff). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, nur [SII]-Linie (ionisierter Schwefel). Deckt nur den Himmel nördlich von −16° ab; separater Download."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, nur [SII]-Linie (ionisierter Schwefel). Deckt nur den Himmel nördlich von −16° ab; separater Download.",
+        "source_nsns_cont": "NSNS Kontinuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, nur Kontinuumslicht: Rot-, Grün- und Blaukontinuum ohne die Emissionslinien, Sterne teilweise entfernt. Hebt Reflexionsnebel und Dunkelwolken hervor. Deckt nur den Himmel nördlich von −16° ab, Details bis Order 5; ein eigener Download."
       },
       "object_types": {
         "_ass": "Sternassoziation",
@@ -5730,6 +5742,27 @@
         "loadFailed": "Gespeicherte WLANs konnten nicht geladen werden. Verbindung prüfen und pinsdaemon gegebenenfalls aktualisieren.",
         "operationFailed": "Die WLAN-Aktion ist fehlgeschlagen. Liste aktualisieren und erneut versuchen.",
         "invalidPriority": "Die Priorität muss eine ganze Zahl zwischen -999 und 999 sein."
+      },
+      "networkMode": {
+        "title": "Netzwerkmodus des Rigs",
+        "description": "Automatisch nutzt dein eingerichtetes WLAN, wenn es verfügbar ist, und startet sonst den Feld-Hotspot. Mit dem Feld-Hotspot bleibt das Rig unter 10.42.0.1 erreichbar.",
+        "autoLabel": "Automatisch",
+        "autoHint": "Zuerst Heim-WLAN, sonst Hotspot.",
+        "hotspotLabel": "Feld-Hotspot",
+        "hotspotHint": "Bleibt im AP-Modus unter 10.42.0.1.",
+        "configured": "Eingestellt: {mode}",
+        "active": "Aktiv: {mode}",
+        "endpoint": "Adresse: {host}",
+        "modeAuto": "Automatisch",
+        "modeHotspot": "Hotspot",
+        "modeClient": "Heim-WLAN",
+        "modeDual": "WLAN + Hotspot",
+        "modeUnknown": "Unbekannt",
+        "singleRadioWarning": "Dieses Rig hat nur einen WLAN-Funk. Beim Moduswechsel verliert dieser Bildschirm kurz die Verbindung, bis die App das Rig wiederfindet.",
+        "searching": "Netzwerk wie erwartet gewechselt. Das Rig wird erneut gesucht…",
+        "notFound": "Das Rig wurde nach dem Netzwerkwechsel nicht gefunden.",
+        "tried": "Versucht: {hosts}",
+        "retry": "Rig erneut suchen"
       },
       "autoConnect": "Nach dem Start automatisch mit ausgewähltem WLAN verbinden",
       "wifiConnect": "Verbinden",
@@ -8832,6 +8865,10 @@
       "status": "Status",
       "error": "Fehlerdistanz",
       "rotation": "Rotation"
+    },
+    "manualRotator": {
+      "currentPosition": "Aktuelle Position",
+      "targetPosition": "Zielposition"
     }
   },
   "loading": "Laden",

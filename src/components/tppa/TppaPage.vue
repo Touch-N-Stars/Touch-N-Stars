@@ -1,33 +1,32 @@
 <template>
   <div class="container flex items-center justify-center">
     <div class="container max-w-md">
-      <div v-if="!isConnected" class="text-gray-600">
+      <div v-if="!isConnected" class="text-content-muted">
         {{ $t('components.tppa.not_available') }}
       </div>
       <div v-else>
-        <h5 class="text-xl text-center font-bold text-gray-300 mb-4">
+        <h5 class="text-xl text-center font-bold text-content mb-4">
           {{ $t('components.tppa.title') }}
         </h5>
         <div v-if="!store.cameraInfo.Connected">
-          <p class="text-red-800">{{ $t('components.tppa.camera_mount_required') }}</p>
+          <p class="text-status-danger">{{ $t('components.tppa.camera_mount_required') }}</p>
         </div>
         <div v-else>
-          <div class="pb-2 flex justify-center gap-2">
-            <button
+          <div data-testid="tppa-actions" class="pb-2 flex justify-center gap-2">
+            <QuickAccessButton
               v-if="!tppaStore.isRunning"
+              :title="$t('components.tppa.settings.title')"
               @click="showSettings = true"
-              class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md hover:bg-cyan-600 transition-colors"
             >
               <Cog6ToothIcon class="w-6 h-6" />
-            </button>
-            <button
+            </QuickAccessButton>
+            <QuickAccessButton
               v-if="tppaStore.isRunning"
+              :title="$t('common.showImage')"
               @click="showImageModal = true"
-              class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md hover:bg-cyan-600 transition-colors"
-              title="Show Image"
             >
               <PhotoIcon class="w-6 h-6" />
-            </button>
+            </QuickAccessButton>
             <MountButton
               v-if="store.mountInfo.Connected && tppaStore.settings.ManualMode"
               :isActive="showMount"
@@ -56,34 +55,34 @@
               <p class="w-52">
                 <strong>{{ $t('components.tppa.altitude_error') }}</strong>
               </p>
-              <p class="whitespace-nowrap">{{ tppaStore.showAltitudeError }}</p>
+              <p class="whitespace-nowrap">{{ tppaStore.showAltitudeError || '?' }}</p>
               <div v-if="tppaStore.showAltitudeError">
                 <div
                   v-if="tppaStore.altitudeCorDirectionTop && !tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowUpIcon class="size-6 text-blue-500" />
+                  <ArrowUpIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.up') }}</p>
                 </div>
                 <div
                   v-if="!tppaStore.altitudeCorDirectionTop && !tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowDownIcon class="size-6 text-blue-500" />
+                  <ArrowDownIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.down') }}</p>
                 </div>
                 <div
                   v-if="!tppaStore.altitudeCorDirectionTop && tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowUpIcon class="size-6 text-blue-500" />
+                  <ArrowUpIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.up') }}</p>
                 </div>
                 <div
                   v-if="tppaStore.altitudeCorDirectionTop && tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowDownIcon class="size-6 text-blue-500" />
+                  <ArrowDownIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.down') }}</p>
                 </div>
               </div>
@@ -92,34 +91,34 @@
               <p class="w-52">
                 <strong>{{ $t('components.tppa.azimuth_error') }}</strong>
               </p>
-              <p class="whitespace-nowrap">{{ tppaStore.showAzimuthError }}</p>
+              <p class="whitespace-nowrap">{{ tppaStore.showAzimuthError || '?' }}</p>
               <div v-if="tppaStore.showAzimuthError">
                 <div
                   v-if="tppaStore.azimuthCorDirectionLeft && !tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowLeftIcon class="size-6 text-blue-500" />
+                  <ArrowLeftIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.west') }}</p>
                 </div>
                 <div
                   v-if="!tppaStore.azimuthCorDirectionLeft && !tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowRightIcon class="size-6 text-blue-500" />
+                  <ArrowRightIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.east') }}</p>
                 </div>
                 <div
                   v-if="!tppaStore.azimuthCorDirectionLeft && tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowRightIcon class="size-6 text-blue-500" />
+                  <ArrowRightIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.west') }}</p>
                 </div>
                 <div
                   v-if="tppaStore.azimuthCorDirectionLeft && tppaStore.isSouthernHemisphere"
                   class="flex flex-row space-x-2"
                 >
-                  <ArrowLeftIcon class="size-6 text-blue-500" />
+                  <ArrowLeftIcon class="size-6 text-accent" />
                   <p>{{ $t('components.tppa.east') }}</p>
                 </div>
               </div>
@@ -128,7 +127,7 @@
               <p class="w-52">
                 <strong>{{ $t('components.tppa.total_error') }}</strong>
               </p>
-              <p class="whitespace-nowrap">{{ tppaStore.showTotalError }}</p>
+              <p class="whitespace-nowrap">{{ tppaStore.showTotalError || '?' }}</p>
               <!-- Smiley Display -->
               <span v-if="tppaStore.showTotalError">
                 <span v-if="tppaStore.isWithinTolerance">
@@ -136,7 +135,7 @@
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="h-6 w-6 text-green-500"
+                    class="h-6 w-6 text-status-ok"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
@@ -178,7 +177,7 @@
                     stroke-width="10"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class="h-6 w-6 text-red-500"
+                    class="h-6 w-6 text-status-danger"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <circle cx="128" cy="128" r="100" stroke="currentColor" />
@@ -195,23 +194,25 @@
         <!-- Warning banners -->
         <div
           v-if="tppaStore.initialErrorHuge"
-          class="mt-4 p-3 bg-red-900/60 border border-red-500 rounded-md text-red-200 text-sm"
+          class="mt-4 p-3 bg-surface-2 border border-status-danger/50 rounded-card text-content text-sm"
         >
-          <p class="font-bold">{{ $t('components.tppa.warn_huge_title') }}</p>
+          <p class="font-bold text-status-danger">{{ $t('components.tppa.warn_huge_title') }}</p>
           <p>{{ $t('components.tppa.warn_huge_body') }}</p>
         </div>
         <div
           v-else-if="tppaStore.initialErrorLarge"
-          class="mt-4 p-3 bg-yellow-900/60 border border-yellow-500 rounded-md text-yellow-200 text-sm"
+          class="mt-4 p-3 bg-surface-2 border border-status-warn/50 rounded-card text-content text-sm"
         >
-          <p class="font-bold">{{ $t('components.tppa.warn_large_title') }}</p>
+          <p class="font-bold text-status-warn">{{ $t('components.tppa.warn_large_title') }}</p>
           <p>{{ $t('components.tppa.warn_large_body') }}</p>
         </div>
         <div
           v-if="tppaStore.declinationSpreadLarge"
-          class="mt-2 p-3 bg-yellow-900/60 border border-yellow-500 rounded-md text-yellow-200 text-sm"
+          class="mt-2 p-3 bg-surface-2 border border-status-warn/50 rounded-card text-content text-sm"
         >
-          <p class="font-bold">{{ $t('components.tppa.warn_dec_spread_title') }}</p>
+          <p class="font-bold text-status-warn">
+            {{ $t('components.tppa.warn_dec_spread_title') }}
+          </p>
           <p>
             {{
               $t('components.tppa.warn_dec_spread_body', {
@@ -222,9 +223,9 @@
         </div>
         <div
           v-if="tppaStore.nearEastWest"
-          class="mt-2 p-3 bg-yellow-900/60 border border-yellow-500 rounded-md text-yellow-200 text-sm"
+          class="mt-2 p-3 bg-surface-2 border border-status-warn/50 rounded-card text-content text-sm"
         >
-          <p class="font-bold">
+          <p class="font-bold text-status-warn">
             {{
               $t('components.tppa.warn_east_west_title', {
                 deg:
@@ -239,13 +240,11 @@
       </div>
     </div>
   </div>
-  <div v-if="tppaStore.isRunning" class="bg-gray-800/80 p-5 m-5 border border-gray-500 rounded-md">
-    <TppaLastStatus />
-  </div>
+  <TppaLastStatus class="bg-surface-1/80 p-5 m-5" />
   <div></div>
 
   <!-- Settings Modal -->
-  <Modal :show="showSettings" @close="showSettings = false">
+  <Modal :show="showSettings" zIndex="z-dialog" @close="showSettings = false">
     <template #header>
       <h2 class="text-xl font-bold">{{ $t('components.tppa.settings.title') }}</h2>
     </template>
@@ -264,11 +263,16 @@
   />
 
   <!-- Mount Modal -->
-  <ModalTransparent :show="showMount" @close="showMount = false" modal-id="tppa-mount">
+  <ModalTransparent
+    :show="showMount"
+    zIndex="z-dialog"
+    @close="showMount = false"
+    modal-id="tppa-mount"
+  >
     <template #header>
       <div class="flex items-center justify-between w-full">
         <h2 class="text-1xl font-semibold">{{ $t('components.mount.title') }}</h2>
-        <div class="flex items-center gap-2 text-gray-400">
+        <div class="flex items-center gap-2 text-content-muted">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -283,7 +287,7 @@
               d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
             />
           </svg>
-          <span class="text-xs">Drag</span>
+          <span class="text-xs">{{ $t('common.drag') }}</span>
         </div>
       </div>
     </template>
@@ -319,6 +323,7 @@ import Modal from '../helpers/Modal.vue';
 import ModalTransparent from '@/components/helpers/ModalTransparent.vue';
 import ImageModal from '@/components/helpers/imageModal.vue';
 import MountButton from '@/components/helpers/quickAccessButtons/MountButton.vue';
+import QuickAccessButton from '@/components/helpers/QuickAccessButton.vue';
 import moveAxis from '@/components/mount/moveAxis.vue';
 import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import { timeSync } from '@/utils/timeSync';

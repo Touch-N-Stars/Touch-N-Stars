@@ -28,11 +28,11 @@
 
     <!-- Advanced: the raw minute values -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-surface-2/50 rounded-lg border border-line/50"
     >
       <button
         type="button"
-        class="flex items-center justify-between min-h-touch font-bold text-base text-cyan-400"
+        class="flex items-center justify-between min-h-touch font-bold text-base text-accent"
         :aria-expanded="showAdvanced"
         data-haptic="none"
         @click="showAdvanced = !showAdvanced"
@@ -71,9 +71,9 @@
 
     <!-- Behavior Container -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-surface-2/50 rounded-lg border border-line/50"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="font-bold text-base text-accent">
         {{ $t('components.mount.settings.meridian_flip.behavior') }}
       </h3>
       <SettingInput
@@ -97,9 +97,9 @@
 
     <!-- Post-Flip Actions Container -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-surface-2/50 rounded-lg border border-line/50"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="font-bold text-base text-accent">
         {{ $t('components.mount.settings.meridian_flip.post_flip_actions') }}
       </h3>
       <ProfileToggle

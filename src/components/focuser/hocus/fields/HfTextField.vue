@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-2 flex items-center gap-1">
-      <label class="block text-sm font-medium text-gray-300">{{ label }}</label>
+      <label class="block text-sm font-medium text-content">{{ label }}</label>
       <InfoModal v-if="help" :title="label" :message="help" size="w-4 h-4" />
     </div>
     <input
@@ -13,7 +13,7 @@
       :class="status === 'saved' ? 'glow-green' : status === 'error' ? 'glow-red' : ''"
       @change="onChange"
     />
-    <p v-if="error" class="mt-1 text-xs text-red-400">{{ error }}</p>
+    <p v-if="error" class="mt-1 text-xs text-status-danger">{{ error }}</p>
   </div>
 </template>
 

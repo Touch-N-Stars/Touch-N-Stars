@@ -18,7 +18,9 @@
     "creating": "Criando…",
     "help": "Ajuda",
     "expand": "Expandir",
-    "collapse": "Recolher"
+    "collapse": "Recolher",
+    "drag": "Arrastar",
+    "showImage": "Mostrar imagem"
   },
   "general": {
     "cancel": "Cancelar",
@@ -938,6 +940,7 @@
       "targetNotFound": "Alvo não encontrado na sequência. Tente novamente.",
       "filter": "Filtro",
       "triggers": "Gatilhos",
+      "globalTriggers": "Gatilhos globais",
       "expandAll": "Expandir tudo",
       "collapseAll": "Recolher tudo",
       "addTypeButton": {
@@ -1017,6 +1020,7 @@
       },
       "time": "Tempo",
       "noRunningItems": "Sequência interrompida",
+      "noConditions": "Sem condições",
       "targetOfTotal": "Alvo {current} de {total}",
       "status": "Status da sequência",
       "instructions": "Instruções",
@@ -2477,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Processamento de imagens lento",
-            "explanation": "O processamento de uma imagem de guiagem demorou mais do que o esperado, o que atrasa as correções.",
-            "fix": "Reduza o número máximo de estrelas guia, use binning ou uma subimagem, ou verifique a carga da CPU."
+            "explanation": "No último minuto, pelo menos metade das imagens de guiagem demorou demasiado a ser processada, por isso as correções chegaram atrasadas à montagem. Uma imagem lenta de vez em quando é normal e só fica anotada no registo.",
+            "fix": "Verifique o que mais está a ocupar o computador, como o empilhamento ao vivo ou outros programas. Caso contrário, baixe «Máx. estrelas guia», use binning ou uma subimagem, ou desative a redução de ruído."
+          },
+          "SlowGuideFrame": {
+            "title": "Imagem de guiagem lenta",
+            "explanation": "O processamento de uma imagem de guiagem demorou mais do que o habitual, por isso a sua correção chegou um pouco tarde. Isto acontece de vez em quando, quando o computador está ocupado com outras tarefas, como guardar, fazer plate solving ou empilhar uma imagem da câmara principal, e não faz mal.",
+            "fix": "Não é necessária nenhuma ação. O guiador avisa quando as imagens continuam lentas durante um minuto."
           },
           "SettleTimeout": {
             "title": "Tempo de estabilização esgotado",
@@ -4719,6 +4728,7 @@
       "azimuth_error": "Erro de azimute:",
       "total_error": "Erro total:",
       "error_values_missing": "Valores de erro ausentes",
+      "waiting_for_values": "A aguardar a primeira medição…",
       "unknown_response_format": "Formato de resposta desconhecido",
       "east": "Leste",
       "west": "Oeste",
@@ -5162,7 +5172,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, apenas linha [OIII] (oxigénio duplamente ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, apenas linha [SII] (enxofre ionizado). Cobre apenas o céu a norte de −16°; descarga separada."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, apenas linha [SII] (enxofre ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
+        "source_nsns_cont": "NSNS contínuo",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, apenas luz do contínuo: contínuo vermelho, verde e azul sem as linhas de emissão, com as estrelas parcialmente removidas. Realça as nebulosas de reflexão e as nuvens escuras. Cobre apenas o céu a norte de −16°, com detalhe até à ordem 5; é um download separado."
       },
       "object_types": {
         "_ass": "Associação estelar",
@@ -5713,6 +5725,27 @@
         "loadFailed": "Não foi possível carregar as redes guardadas. Verifica a ligação e atualiza o pinsdaemon se necessário.",
         "operationFailed": "A operação na rede guardada falhou. Atualiza a lista e tenta de novo.",
         "invalidPriority": "A prioridade tem de ser um número inteiro entre -999 e 999."
+      },
+      "networkMode": {
+        "title": "Modo de rede do equipamento",
+        "description": "Automático usa o Wi-Fi configurado quando está disponível e, caso contrário, inicia o ponto de acesso de campo. O ponto de acesso de campo mantém o equipamento acessível em 10.42.0.1.",
+        "autoLabel": "Automático",
+        "autoHint": "Primeiro o Wi-Fi doméstico, senão ponto de acesso.",
+        "hotspotLabel": "Ponto de acesso de campo",
+        "hotspotHint": "Manter em modo AP em 10.42.0.1.",
+        "configured": "Configurado: {mode}",
+        "active": "Ativo: {mode}",
+        "endpoint": "Endereço: {host}",
+        "modeAuto": "Automático",
+        "modeHotspot": "Ponto de acesso",
+        "modeClient": "Wi-Fi doméstico",
+        "modeDual": "Wi-Fi + ponto de acesso",
+        "modeUnknown": "Desconhecido",
+        "singleRadioWarning": "Este equipamento tem apenas um rádio Wi-Fi. Ao mudar de modo, este ecrã desliga-se brevemente até a app voltar a encontrar o equipamento.",
+        "searching": "A rede mudou como previsto. A procurar o equipamento de novo…",
+        "notFound": "O equipamento não foi encontrado após a mudança de rede.",
+        "tried": "Tentado: {hosts}",
+        "retry": "Procurar o equipamento de novo"
       },
       "autoConnect": "Conecte-se automaticamente ao wifi selecionado após a inicialização",
       "wifiConnect": "Conectar",
@@ -8827,6 +8860,10 @@
       "status": "Status",
       "error": "Distância de Erro",
       "rotation": "Rotação"
+    },
+    "manualRotator": {
+      "currentPosition": "Posição atual",
+      "targetPosition": "Posição alvo"
     }
   },
   "loading": "carregando",

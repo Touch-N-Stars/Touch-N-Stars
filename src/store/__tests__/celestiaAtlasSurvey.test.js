@@ -301,6 +301,20 @@ test('a plugin from before NSNS answers with DSS status, which counts as unsuppo
   assert.equal(nsns.status, null);
 });
 
+test('a plugin that knows NSNS but not this survey answers "Unknown survey", which counts as unsupported', async (t) => {
+  t.mock.method(axios, 'get', async () => ({
+    status: 200,
+    data: { success: false, error: 'Unknown survey.', code: 400 },
+  }));
+  const continuum = useCelestiaAtlasSurveyStore('nsns-cont');
+  continuum.reset();
+
+  await continuum.refresh();
+
+  assert.equal(continuum.supported, false);
+  assert.equal(continuum.error, '');
+});
+
 test('NSNS actions carry the survey id', async (t) => {
   const posts = [];
   t.mock.method(axios, 'get', async () => ({ status: 200, data: nsnsStatus() }));

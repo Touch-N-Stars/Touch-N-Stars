@@ -7,29 +7,29 @@
         :key="entry.filterName"
         class="flex justify-between items-center px-3 py-1"
       >
-        <span class="text-xs text-gray-400">{{
+        <span class="text-xs text-content-muted">{{
           entry.filterName || $t('components.sequence.totalExposureTime.noFilter')
         }}</span>
         <span class="text-right">
-          <span class="text-xs text-gray-500 mr-2"
+          <span class="text-xs text-content-faint mr-2"
             >{{ entry.imageCount }} {{ $t('components.sequence.totalExposureTime.Pictures') }}</span
           >
-          <span class="font-mono text-sm text-gray-300 font-bold">{{
+          <span class="font-mono text-sm text-content font-bold">{{
             formatExposureTime(entry.totalTime)
           }}</span>
         </span>
       </div>
       <!-- Total row -->
-      <div class="flex justify-between items-center px-3 py-1 border-t border-gray-700 mt-1 pt-2">
-        <span class="text-xs text-gray-400">{{
+      <div class="flex justify-between items-center px-3 py-1 border-t border-line mt-1 pt-2">
+        <span class="text-xs text-content-muted">{{
           $t('components.sequence.totalExposureTime.total')
         }}</span>
         <span class="text-right">
-          <span class="text-xs text-gray-500 mr-2"
+          <span class="text-xs text-content-faint mr-2"
             >{{ totalData.imageCount }}
             {{ $t('components.sequence.totalExposureTime.Pictures') }}</span
           >
-          <span class="font-mono text-sm text-gray-300 font-bold">{{
+          <span class="font-mono text-sm text-content font-bold">{{
             formatExposureTime(totalData.totalTime)
           }}</span>
         </span>
@@ -38,13 +38,13 @@
 
     <!-- Single row when a filter is selected or only one filter exists -->
     <div v-else-if="totalData" class="flex justify-between items-center px-3 py-1">
-      <span class="text-xs text-gray-400">{{ displayLabel }}</span>
+      <span class="text-xs text-content-muted">{{ displayLabel }}</span>
       <span class="text-right">
-        <span class="text-xs text-gray-500 mr-2"
+        <span class="text-xs text-content-faint mr-2"
           >{{ totalData.imageCount }}
           {{ $t('components.sequence.totalExposureTime.Pictures') }}</span
         >
-        <span class="font-mono text-sm text-gray-300 font-bold">{{
+        <span class="font-mono text-sm text-content font-bold">{{
           formatExposureTime(totalData.totalTime)
         }}</span>
       </span>

@@ -21,6 +21,16 @@ const CONTENT_TYPES = {
   '.webp': 'image/webp',
 };
 
+// The PINS daemon listens on a port of its own. Tests point that origin here, under this path.
+export const PINS_DAEMON_PATH = '/pins-daemon';
+
+// The daemon is cross-origin with an Authorization header, so the browser asks first.
+const PREFLIGHT_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE',
+};
+
 function advancedApiResponse(Response) {
   return { Response, Error: '', StatusCode: 200, Success: true, Type: 'API' };
 }
@@ -45,14 +55,21 @@ function serveStatic(rootDir, urlPath, response) {
   fs.createReadStream(filePath).pipe(response);
 }
 
-export async function startFakeBackend({ rootDir, routes = {} }) {
+export async function startFakeBackend({
+  rootDir,
+  routes = {},
+  daemonRoutes = {},
+  pluginRoutes: extraPluginRoutes = {},
+}) {
   const sockets = new Set();
   const unhandled = new Set();
   let port;
 
+  // The plugin server sends bare JSON, without the Advanced API envelope.
   const pluginRoutes = {
     '/api/version': () => ({ version: '99.0.0.0' }),
     '/api/get-api-port': () => port,
+    ...extraPluginRoutes,
   };
   const advancedApiRoutes = {
     '/v2/api/version': () => '99.0.0.0',
@@ -60,11 +77,37 @@ export async function startFakeBackend({ rootDir, routes = {} }) {
   };
 
   const server = http.createServer((request, response) => {
-    const { pathname } = new URL(request.url, 'http://localhost');
+    const { pathname, searchParams } = new URL(request.url, 'http://localhost');
+    // A route answering undefined is switched off and falls through to the 404 below.
+    const body = advancedApiRoutes[pathname]?.(searchParams);
 
-    if (pluginRoutes[pathname]) return sendJson(response, pluginRoutes[pathname]());
-    if (advancedApiRoutes[pathname]) {
-      return sendJson(response, advancedApiResponse(advancedApiRoutes[pathname]()));
+    if (request.method === 'OPTIONS') {
+      response.writeHead(204, PREFLIGHT_HEADERS);
+      return response.end();
+    }
+    if (pathname.startsWith(`${PINS_DAEMON_PATH}/`)) {
+      // The daemon sends bare JSON. Its routes answer reads only, so writes stay unhandled.
+      const daemonPath = pathname.slice(PINS_DAEMON_PATH.length);
+      const daemonBody =
+        request.method === 'GET' ? daemonRoutes[daemonPath]?.(searchParams) : undefined;
+      if (daemonBody !== undefined) return sendJson(response, daemonBody);
+      unhandled.add(`${request.method} ${pathname}`);
+      return sendJson(response, { detail: 'Not found' }, 404);
+    }
+    // Plugin routes answer reads only, so an edit sent to one of them stays unhandled.
+    const pluginBody =
+      request.method === 'GET' ? pluginRoutes[pathname]?.(searchParams) : undefined;
+    if (pluginBody !== undefined) return sendJson(response, pluginBody);
+    if (body !== undefined) {
+      // The Advanced API sends images as the bare file, without its JSON envelope.
+      if (Buffer.isBuffer(body)) {
+        response.writeHead(200, {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'image/png',
+        });
+        return response.end(body);
+      }
+      return sendJson(response, advancedApiResponse(body));
     }
     if (pathname.startsWith('/v2/api/') || pathname.startsWith('/api/')) {
       unhandled.add(`${request.method} ${pathname}`);

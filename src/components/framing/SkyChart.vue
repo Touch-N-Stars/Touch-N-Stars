@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800/50 rounded-lg p-2 relative h-40">
+  <div class="bg-surface-2/50 rounded-lg p-2 relative h-40">
     <canvas ref="canvasRef"></canvas>
 
     <!-- One strip in the top right corner: the values sit next to the button
@@ -22,7 +22,7 @@
       >
         <span
           class="rounded-control bg-surface-1/80 p-1.5 transition-colors"
-          :class="showMoon ? 'text-amber-400' : 'text-content-muted'"
+          :class="showMoon ? 'text-status-warn' : 'text-content-muted'"
         >
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
             <path

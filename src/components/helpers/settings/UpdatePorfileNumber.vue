@@ -20,8 +20,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import apiService from '@/services/apiService';
+import { ref, computed } from 'vue';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const props = defineProps({
@@ -66,9 +66,7 @@ const props = defineProps({
   },
 });
 
-const value = ref(0);
 const isFocused = ref(false);
-const isWriting = ref(false);
 
 const decimalPlaces = computed(() => {
   const stepStr = String(props.step);
@@ -80,30 +78,16 @@ function resolveValue(v) {
   return v === -1 && props.modelDefaultValue !== null ? props.modelDefaultValue : v;
 }
 
-async function updateSetting() {
-  let settingValue = String(value.value).replace(',', '.');
-  isWriting.value = true;
-  try {
-    await apiService.profileChangeValue(`${props.settingKey}`, settingValue);
-  } catch (error) {
-    console.error('Error updating setting:', error);
-  } finally {
-    isWriting.value = false;
-  }
-}
-
-onMounted(() => {
-  value.value = resolveValue(props.modelValue);
+// The caller passes the profile value in, because some show it converted (rotator overshoot)
+// or read it from a filter entry. Following it pauses while the field is focused, so a remote
+// change does not overwrite what the user is typing.
+const { value, save } = useProfileSetting(() => props.settingKey, {
+  source: () => resolveValue(props.modelValue),
+  toProfile: (v) => String(v).replace(',', '.'),
+  hold: () => isFocused.value,
 });
 
-// Keep the input in sync when the profile changes underneath us (another client or a plugin writing
-// the setting). profileInfo is refreshed by the polling loop, so an in-flight response can still
-// carry the pre-edit value -- don't fight the user by re-seeding an input they are editing.
-watch(
-  () => props.modelValue,
-  (v) => {
-    if (isFocused.value || isWriting.value) return;
-    value.value = resolveValue(v);
-  }
-);
+function updateSetting() {
+  save();
+}
 </script>

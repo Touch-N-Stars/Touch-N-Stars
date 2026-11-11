@@ -14,7 +14,7 @@
       <Transition name="splash">
         <div
           v-if="shouldShowConnectionSplash"
-          class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-gray-900 p-4"
+          class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-surface-1 p-4"
         >
           <!-- Reconnect status: calm spinner-only while just lost, escalates to a
                fuller message + actions after a few seconds (connectionPhase) -->
@@ -24,23 +24,23 @@
           >
             <div
               class="w-8 h-8 border-4 border-t-transparent border-solid rounded-full animate-spin"
-              :class="connectionIsStalled ? 'border-amber-400' : 'border-blue-400'"
+              :class="connectionIsStalled ? 'border-status-warn' : 'border-accent'"
             ></div>
 
             <p
               v-if="connectionPhase === 'connecting'"
-              class="text-gray-300 text-sm sm:text-base font-medium text-center"
+              class="text-content text-sm sm:text-base font-medium text-center"
             >
               {{ connectionConnectingMessage }}
             </p>
 
             <p
               v-if="connectionPhase === 'attention'"
-              class="text-sm sm:text-base font-medium bg-gray-800 px-4 py-2 rounded-lg max-w-[calc(100%-2rem)] text-center"
+              class="text-sm sm:text-base font-medium bg-surface-2 px-4 py-2 rounded-lg max-w-[calc(100%-2rem)] text-center"
               :class="
                 connectionIsStalled
-                  ? 'text-amber-300 border border-amber-500/30'
-                  : 'text-blue-300 border border-blue-500/30'
+                  ? 'text-status-warn border border-status-warn/30'
+                  : 'text-accent border border-accent/30'
               "
             >
               {{ connectionAttentionMessage }}
@@ -50,11 +50,11 @@
               <button
                 v-if="!showConnectionDetails"
                 @click="showConnectionDetails = true"
-                class="text-xs text-gray-400 hover:text-gray-300 underline"
+                class="text-xs text-content-muted hover:text-content underline"
               >
                 {{ $t('app.connection_splash.show_details') }}
               </button>
-              <p v-else class="text-xs text-gray-400 mt-1">
+              <p v-else class="text-xs text-content-muted mt-1">
                 {{
                   $t('app.connection_splash.details', {
                     endpoint: connectionTargetLabel,
@@ -72,13 +72,13 @@
           >
             <button
               @click="retryConnectionNow"
-              class="px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm sm:text-base rounded-lg transition-colors flex items-center gap-2"
+              class="px-4 py-2 sm:px-6 sm:py-3 bg-accent-action hover:brightness-110 text-white text-sm sm:text-base rounded-lg transition-colors flex items-center gap-2"
             >
               {{ $t('app.connection_splash.retry_now') }}
             </button>
             <button
               @click="showSettingsModal = true"
-              class="px-4 py-2 sm:px-6 sm:py-3 bg-gray-700 hover:bg-gray-600 text-white text-sm sm:text-base rounded-lg border border-gray-600 hover:border-gray-500 transition-colors flex items-center gap-2"
+              class="px-4 py-2 sm:px-6 sm:py-3 bg-surface-3 hover:bg-surface-2 text-white text-sm sm:text-base rounded-lg border border-line-strong hover:border-content-faint transition-colors flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@
             </button>
           </div>
 
-          <h1 class="text-3xl sm:text-4xl md:text-5xl text-yellow-50 font-mono font-bold mb-4">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl text-content font-mono font-bold mb-4">
             {{ $t('app.title') }}
           </h1>
           <img
@@ -144,35 +144,6 @@
       </div>
     </div>
 
-    <!-- Logs Modal -->
-    <div
-      v-if="showLogsModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-    >
-      <div
-        class="bg-gray-900 rounded-lg p-4 sm:p-6 w-full sm:max-w-4xl h-full sm:h-auto sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0 scrollbar-hide"
-      >
-        <button
-          @click="showLogsModal = false"
-          class="fixed sm:absolute top-2 right-2 sm:top-4 sm:right-4 p-2 text-gray-400 hover:text-white bg-gray-900 rounded-full"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
     <!-- Tutorial Modal -->
     <TutorialModal v-if="showTutorial" :steps="tutorialSteps" @close="closeTutorial" />
     <!-- First-run setup wizard (cancellable) -->
@@ -193,14 +164,14 @@
       zIndex="z-dialog"
     >
       <template #header>
-        <h2 class="text-xl font-bold text-blue-300">
+        <h2 class="text-xl font-bold text-accent">
           {{ $t('plugins.pins.upgradeOverlay.title') }}
         </h2>
       </template>
       <template #body>
         <div class="flex flex-col items-center text-center gap-4 w-full">
           <svg
-            class="h-10 w-10 text-blue-400"
+            class="h-10 w-10 text-accent"
             :class="pinsStore.isUpgradeRunning ? 'animate-spin' : 'animate-pulse'"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -220,18 +191,18 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
-          <p class="text-gray-200 text-sm sm:text-base">
+          <p class="text-content text-sm sm:text-base">
             {{ pinsUpgradeOverlayMessage }}
           </p>
-          <p class="text-xs text-gray-400">
+          <p class="text-xs text-content-muted">
             {{ $t('plugins.pins.upgradeOverlay.keepOpen') }}
           </p>
-          <p v-if="pinsStore.currentJobId" class="text-xs text-blue-300 font-mono break-all">
+          <p v-if="pinsStore.currentJobId" class="text-xs text-accent font-mono break-all">
             {{ $t('plugins.pins.upgradeOverlay.jobId', { jobId: pinsStore.currentJobId }) }}
           </p>
           <button
             @click="closePinsUpgradeOverlay"
-            class="mt-2 px-4 py-2 text-sm text-gray-300 hover:text-white border border-gray-600 hover:border-gray-400 rounded transition-colors"
+            class="mt-2 px-4 py-2 text-sm text-content hover:text-white border border-line-strong hover:border-content-faint rounded transition-colors"
           >
             {{ $t('plugins.pins.upgradeOverlay.close') }}
           </button>
@@ -284,13 +255,13 @@
       :closeOnBackdropClick="false"
     >
       <template #header>
-        <h2 class="text-xl font-bold text-yellow-400">
+        <h2 class="text-xl font-bold text-status-warn">
           {{ $t('plugins.pins.timeWarning.title') }}
         </h2>
       </template>
       <template #body>
         <div class="flex flex-col gap-4 w-full text-sm">
-          <p class="text-gray-300">
+          <p class="text-content">
             {{
               $t('plugins.pins.timeWarning.message', {
                 clientTime: timeWarningClientTime,
@@ -303,11 +274,11 @@
               syncPinsTimeToClient();
               showTimeWarningModal = false;
             "
-            class="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+            class="w-full py-2 rounded bg-accent-action hover:brightness-110 text-white font-semibold transition-colors"
           >
             {{ $t('plugins.pins.timeWarning.setTime') }}
           </button>
-          <label class="flex items-center gap-2 cursor-pointer text-gray-300">
+          <label class="flex items-center gap-2 cursor-pointer text-content">
             <input
               type="checkbox"
               :checked="pinsStore.suppressTimeWarning"
@@ -318,7 +289,7 @@
           </label>
           <button
             @click="showTimeWarningModal = false"
-            class="w-full py-2 rounded bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+            class="w-full py-2 rounded bg-surface-3 hover:bg-surface-2 text-white transition-colors"
           >
             {{ $t('plugins.pins.timeWarning.dismiss') }}
           </button>
@@ -577,7 +548,6 @@ const cameraStore = useCameraStore();
 const dialogStore = useDialogStore();
 const messageboxStore = useMessageboxStore();
 const imageStore = useImagetStore();
-const showLogsModal = ref(false);
 const showTutorial = ref(false);
 const showSplashScreen = ref(true);
 const showSettingsModal = ref(false);
@@ -685,7 +655,7 @@ const appLayoutClasses = computed(() => ({
 }));
 
 // Fixed frame surface color, independent of the selected instance.
-const frameColor = 'bg-gray-900/95';
+const frameColor = 'bg-surface-1/95';
 
 const navContainerClasses = computed(() => ({
   'z-20 fixed top-0 w-full': !isLandscape.value,

@@ -1,6 +1,6 @@
 <template>
   <teleport to="body">
-    <div v-if="show" class="fixed inset-0 z-50 text-gray-200 p-2 pointer-events-none">
+    <div v-if="show" class="fixed inset-0 text-content p-2 pointer-events-none" :class="zIndex">
       <div
         ref="modalElement"
         class="bg-gradient-to-br rounded-lg shadow-lg relative pointer-events-auto touch-none"
@@ -17,7 +17,10 @@
           <slot name="header">
             <h2 class="text-lg sm:text-xl font-bold truncate">Standard Titel</h2>
           </slot>
-          <button @click="emit('close')" class="w-8 h-8 shrink-0 text-gray-400 hover:text-gray-600">
+          <button
+            @click="emit('close')"
+            class="w-8 h-8 shrink-0 text-content-muted hover:text-content"
+          >
             <XMarkIcon />
           </button>
         </div>
@@ -47,7 +50,7 @@ const props = defineProps({
   },
   zIndex: {
     type: String,
-    default: 'z-50',
+    default: 'z-modal-raised',
   },
   modalId: {
     type: String,
@@ -192,15 +195,15 @@ watch(
 // Dynamische Klasse basierend auf Opacity
 function getOpacityClass() {
   const opacity = props.opacity;
-  if (opacity <= 20) return 'from-gray-950/20';
-  if (opacity <= 30) return 'from-gray-950/30';
-  if (opacity <= 40) return 'from-gray-950/40';
-  if (opacity <= 50) return 'from-gray-950/50';
-  if (opacity <= 60) return 'from-gray-950/60';
-  if (opacity <= 70) return 'from-gray-950/70';
-  if (opacity <= 80) return 'from-gray-950/80';
-  if (opacity <= 90) return 'from-gray-950/90';
-  return 'from-gray-950/95';
+  if (opacity <= 20) return 'from-ground/20';
+  if (opacity <= 30) return 'from-ground/30';
+  if (opacity <= 40) return 'from-ground/40';
+  if (opacity <= 50) return 'from-ground/50';
+  if (opacity <= 60) return 'from-ground/60';
+  if (opacity <= 70) return 'from-ground/70';
+  if (opacity <= 80) return 'from-ground/80';
+  if (opacity <= 90) return 'from-ground/90';
+  return 'from-ground/95';
 }
 </script>
 

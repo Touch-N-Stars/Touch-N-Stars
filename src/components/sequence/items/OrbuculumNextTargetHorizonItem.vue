@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         {{ (item.Data?.Offset ?? 0) >= 0 ? '+' : '' }}{{ item.Data?.Offset ?? 0 }}°
       </span>
       <span
@@ -23,9 +23,9 @@
         @change="save('Data.Offset', $event)"
       />
 
-      <div v-if="item.NextTargetName" class="text-xs text-slate-500">
+      <div v-if="item.NextTargetName" class="text-xs text-content-faint">
         {{ $t('components.sequence.items.orbuculum.nextTarget') }}
-        <span class="text-slate-300">{{ item.NextTargetName }}</span>
+        <span class="text-content">{{ item.NextTargetName }}</span>
       </div>
     </template>
   </ItemShell>

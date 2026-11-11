@@ -16,7 +16,7 @@
         @change="onGuideRateChange"
       />
     </div>
-    <p v-if="!guiderStore.mountCanSetGuideRate" class="text-xs text-gray-400 italic">
+    <p v-if="!guiderStore.mountCanSetGuideRate" class="text-xs text-content-muted italic">
       {{ $t('components.guider.phd2.guideRateReadOnly') }}
     </p>
   </div>

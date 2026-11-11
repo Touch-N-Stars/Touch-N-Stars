@@ -9,16 +9,13 @@
       <LocationSettingsPins />
     </template>
     <template v-else>
-      <div
-        v-if="store.isBackendReachable"
-        class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-      >
-        <h3 class="font-bold text-base text-cyan-400">
+      <div v-if="store.isBackendReachable" class="tns-card flex flex-col gap-2 sm:gap-3">
+        <h3 class="tns-section-title">
           {{ $t('components.settings.coordinates') }}
         </h3>
         <div class="grid grid-cols-2 md:flex md:gap-4 md:items-end gap-2">
           <div class="flex flex-col min-w-0 md:flex-1">
-            <label class="text-xs md:text-sm text-gray-300 mb-1">Latitude</label>
+            <label class="text-xs md:text-sm text-content mb-1">Latitude</label>
             <NumberInputPicker
               v-model="latitude"
               :label="``"
@@ -33,7 +30,7 @@
             />
           </div>
           <div class="flex flex-col min-w-0 md:flex-1">
-            <label class="text-xs md:text-sm text-gray-300 mb-1">Longitude</label>
+            <label class="text-xs md:text-sm text-content mb-1">Longitude</label>
             <NumberInputPicker
               v-model="longitude"
               :label="``"
@@ -48,7 +45,7 @@
             />
           </div>
           <div class="flex flex-col min-w-0 md:flex-1">
-            <label class="text-xs md:text-sm text-gray-300 mb-1">Altitude</label>
+            <label class="text-xs md:text-sm text-content mb-1">Altitude</label>
             <NumberInputPicker
               v-model="altitude"
               :label="``"
@@ -69,7 +66,7 @@
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-gray-300"
+              class="h-6 w-6 text-content"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -89,7 +86,7 @@
             </svg>
           </button>
         </div>
-        <div v-if="gpsError" class="mt-2 text-sm text-red-400">
+        <div v-if="gpsError" class="mt-2 text-sm text-status-danger">
           {{ gpsError }}
         </div>
         <button
@@ -102,7 +99,7 @@
           {{ $t('components.settings.save') }}
         </button>
         <div v-else>
-          <p class="text-red-500 text-sm mt-2">
+          <p class="text-status-danger text-sm mt-2">
             {{ $t('components.settings.infoSetLocationSync') }}
           </p>
           <ButtonSetLocationSyncToMount class="mt-3" />
@@ -111,10 +108,8 @@
     </template>
 
     <!-- Connection Settings -->
-    <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-    >
-      <h3 class="font-bold text-base text-cyan-400">
+    <div class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.connection') }}
       </h3>
       <SetInstance />
@@ -123,9 +118,9 @@
     <!-- Horizon File Path -->
     <div
       v-if="store.isBackendReachable && store.isPINS"
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="tns-card flex flex-col gap-2 sm:gap-3"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="tns-section-title">
         {{ $t('components.settings.horizonFilePath.title') }}
       </h3>
       <SetHorizonFilePath />

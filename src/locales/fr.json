@@ -18,7 +18,9 @@
     "creating": "Création…",
     "help": "Aide",
     "expand": "Développer",
-    "collapse": "Réduire"
+    "collapse": "Réduire",
+    "drag": "Glisser",
+    "showImage": "Afficher l'image"
   },
   "general": {
     "cancel": "Annuler",
@@ -938,6 +940,7 @@
       "targetNotFound": "Cible introuvable dans la séquence. Veuillez réessayer.",
       "filter": "Filtre",
       "triggers": "Déclencheurs",
+      "globalTriggers": "Déclencheurs globaux",
       "expandAll": "Tout développer",
       "collapseAll": "Tout réduire",
       "addTypeButton": {
@@ -1017,6 +1020,7 @@
       },
       "time": "Temps",
       "noRunningItems": "Séquence arrêtée",
+      "noConditions": "Aucune condition",
       "targetOfTotal": "Cible {current} sur {total}",
       "status": "Statut de séquence",
       "instructions": "Instructions",
@@ -2477,8 +2481,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Traitement des images lent",
-            "explanation": "Le traitement d'une image de guidage a pris plus de temps que prévu, ce qui retarde les corrections.",
-            "fix": "Réduisez le nombre max. d'étoiles guides, utilisez le binning ou une sous-image, ou vérifiez la charge du processeur."
+            "explanation": "Au cours de la dernière minute, au moins la moitié des images de guidage ont mis trop de temps à être traitées, si bien que les corrections sont arrivées en retard à la monture. Une image lente de temps en temps est normale et n'est notée que dans le journal.",
+            "fix": "Vérifiez ce qui occupe encore l'ordinateur, comme l'empilement en direct ou d'autres programmes. Sinon, réduisez « Étoiles guides max. », utilisez le binning ou une sous-image, ou désactivez la réduction du bruit."
+          },
+          "SlowGuideFrame": {
+            "title": "Image de guidage lente",
+            "explanation": "Le traitement d'une image de guidage a pris plus de temps que d'habitude, sa correction est donc arrivée un peu tard. Cela arrive de temps en temps quand l'ordinateur est occupé à autre chose, comme l'enregistrement, le plate solving ou l'empilement d'une image de la caméra principale, et ne pose aucun problème.",
+            "fix": "Aucune action requise. Le guideur avertit si les images restent lentes pendant une minute."
           },
           "SettleTimeout": {
             "title": "Délai de stabilisation dépassé",
@@ -4719,6 +4728,7 @@
       "azimuth_error": "Erreur d'azimut:",
       "total_error": "Erreur totale:",
       "error_values_missing": "Valeurs d'erreur manquantes",
+      "waiting_for_values": "En attente de la première mesure…",
       "unknown_response_format": "Format de réponse inconnu",
       "east": "Est",
       "west": "Ouest",
@@ -5162,7 +5172,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, raie [OIII] uniquement (oxygène doublement ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, raie [SII] uniquement (soufre ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, raie [SII] uniquement (soufre ionisé). Couvre uniquement le ciel au nord de −16° ; téléchargement séparé.",
+        "source_nsns_cont": "NSNS continuum",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, lumière du continuum uniquement : continuum rouge, vert et bleu sans les raies d'émission, étoiles partiellement retirées. Fait ressortir les nébuleuses par réflexion et les nuages sombres. Couvre uniquement le ciel au nord de −16°, détails jusqu'à l'ordre 5 ; téléchargement séparé."
       },
       "object_types": {
         "_ass": "Association stellaire",
@@ -5713,6 +5725,27 @@
         "loadFailed": "Impossible de charger les réseaux enregistrés. Vérifie la connexion et mets à jour pinsdaemon si nécessaire.",
         "operationFailed": "L'opération sur le réseau enregistré a échoué. Actualise la liste et réessaie.",
         "invalidPriority": "La priorité doit être un nombre entier entre -999 et 999."
+      },
+      "networkMode": {
+        "title": "Mode réseau du setup",
+        "description": "Automatique utilise ton Wi-Fi configuré s'il est disponible et démarre sinon le point d'accès de terrain. Le point d'accès de terrain garde le setup joignable à 10.42.0.1.",
+        "autoLabel": "Automatique",
+        "autoHint": "Wi-Fi domestique d'abord, sinon point d'accès.",
+        "hotspotLabel": "Point d'accès terrain",
+        "hotspotHint": "Rester en mode AP à 10.42.0.1.",
+        "configured": "Configuré : {mode}",
+        "active": "Actif : {mode}",
+        "endpoint": "Adresse : {host}",
+        "modeAuto": "Automatique",
+        "modeHotspot": "Point d'accès",
+        "modeClient": "Wi-Fi domestique",
+        "modeDual": "Wi-Fi + point d'accès",
+        "modeUnknown": "Inconnu",
+        "singleRadioWarning": "Ce setup n'a qu'une seule radio Wi-Fi. Changer de mode coupe brièvement cet écran, le temps que l'application retrouve le setup.",
+        "searching": "Réseau changé comme prévu. Nouvelle recherche du setup…",
+        "notFound": "Le setup est introuvable après le changement de réseau.",
+        "tried": "Essayé : {hosts}",
+        "retry": "Rechercher à nouveau le setup"
       },
       "autoConnect": "Connexion automatique au wifi sélectionné après le démarrage",
       "wifiConnect": "Connecter",
@@ -8827,6 +8860,10 @@
       "status": "Statut",
       "error": "Distance d'erreur",
       "rotation": "Rotation"
+    },
+    "manualRotator": {
+      "currentPosition": "Position actuelle",
+      "targetPosition": "Position cible"
     }
   },
   "loading": "chargement",

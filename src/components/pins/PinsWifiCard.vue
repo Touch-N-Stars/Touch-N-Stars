@@ -1,9 +1,7 @@
 <template>
-  <div
-    class="border border-gray-700 rounded-lg bg-gray-800 shadow-xl p-6 relative overflow-hidden flex flex-col gap-4"
-  >
+  <div class="tns-card relative overflow-hidden flex flex-col gap-4">
     <div class="absolute top-0 right-20 p-4 opacity-10 pointer-events-none">
-      <svg class="w-16 h-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg class="w-16 h-16 text-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -13,16 +11,16 @@
       </svg>
     </div>
 
-    <div class="flex flex-row items-center justify-between w-full relative z-10">
-      <div>
-        <h3 class="text-xl font-bold text-white mb-1">{{ $t('plugins.pins.wifiTitle') }}</h3>
-        <p class="text-gray-400 text-sm">{{ $t('plugins.pins.stationaryDescription') }}</p>
+    <div class="flex flex-row items-center justify-between gap-3 w-full relative z-10">
+      <div class="min-w-0">
+        <h3 class="tns-section-title mb-1">{{ $t('plugins.pins.wifiTitle') }}</h3>
+        <p class="text-content-muted text-sm">{{ $t('plugins.pins.stationaryDescription') }}</p>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 shrink-0">
         <button
           v-if="stationaryMode || allowConcurrentMode"
           @click="$emit('scan-wifi')"
-          class="text-blue-400 hover:text-white transition-colors p-2"
+          class="min-h-touch min-w-touch flex items-center justify-center text-accent hover:text-content transition-colors disabled:opacity-50"
           :disabled="isScanning"
           :title="$t('plugins.pins.rescan')"
         >
@@ -50,13 +48,14 @@
     </div>
 
     <div
-      class="w-full relative z-10 border border-gray-700 rounded-lg bg-gray-900/40 p-4 flex flex-col gap-3"
+      class="w-full relative z-10 rounded-card border border-line bg-surface-2 p-4 flex flex-col gap-3"
     >
       <div>
-        <h4 class="text-base font-bold text-white">Rig network mode</h4>
-        <p class="text-gray-400 text-xs">
-          Automatic uses your configured Wi-Fi when available and starts the field hotspot when it
-          is not. Field hotspot keeps the rig reachable at 10.42.0.1.
+        <h4 class="text-base font-semibold text-content">
+          {{ $t('plugins.pins.networkMode.title') }}
+        </h4>
+        <p class="text-content-muted text-xs">
+          {{ $t('plugins.pins.networkMode.description') }}
         </p>
       </div>
 
@@ -85,59 +84,70 @@
       </div>
       <p class="text-xs text-content-muted">{{ selectedNetworkModeHint }}</p>
 
-      <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
-        <span>Configured: {{ desiredNetworkMode }}</span>
-        <span>Active: {{ observedNetworkMode }}</span>
-        <span v-if="connectionState.activeHost">Endpoint: {{ connectionState.activeHost }}</span>
+      <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-content-muted">
+        <span>{{
+          $t('plugins.pins.networkMode.configured', { mode: networkModeName(desiredNetworkMode) })
+        }}</span>
+        <span>{{
+          $t('plugins.pins.networkMode.active', { mode: networkModeName(observedNetworkMode) })
+        }}</span>
+        <span v-if="connectionState.activeHost">{{
+          $t('plugins.pins.networkMode.endpoint', { host: connectionState.activeHost })
+        }}</span>
       </div>
 
-      <p v-if="!allowConcurrentMode" class="text-xs text-amber-300">
-        This rig has one Wi-Fi radio. Switching modes briefly disconnects this screen while the app
-        finds the rig again.
+      <p v-if="!allowConcurrentMode" class="text-xs text-status-warn">
+        {{ $t('plugins.pins.networkMode.singleRadioWarning') }}
       </p>
 
       <div
         v-if="networkTransitionActive || connectionState.phase === 'failed'"
-        class="rounded-lg border p-3 text-sm"
+        class="rounded-control border p-3 text-sm text-content"
         :class="
           connectionState.phase === 'failed'
-            ? 'border-red-700 bg-red-900/20 text-red-100'
-            : 'border-blue-700 bg-blue-900/20 text-blue-100'
+            ? 'border-status-danger/40 bg-status-danger/10'
+            : 'border-accent/40 bg-accent/10'
         "
       >
         <p class="font-semibold">
           {{
             connectionState.phase === 'failed'
-              ? 'The rig could not be found after the network change.'
-              : 'Network changed as expected. Looking for this rig again…'
+              ? $t('plugins.pins.networkMode.notFound')
+              : $t('plugins.pins.networkMode.searching')
           }}
         </p>
         <p v-if="connectionState.attemptedHosts?.length" class="text-xs mt-1 break-all opacity-80">
-          Tried: {{ connectionState.attemptedHosts.join(', ') }}
+          {{
+            $t('plugins.pins.networkMode.tried', {
+              hosts: connectionState.attemptedHosts.join(', '),
+            })
+          }}
         </p>
         <p v-if="connectionState.error" class="text-xs mt-1 opacity-80">
           {{ connectionState.error }}
         </p>
         <button
           v-if="connectionState.phase === 'failed'"
-          class="mt-3 px-3 py-2 rounded bg-blue-600 hover:bg-blue-500 text-white font-semibold"
+          class="tns-btn-primary w-auto! mt-3"
           @click="$emit('retry-network-recovery')"
         >
-          Find rig again
+          {{ $t('plugins.pins.networkMode.retry') }}
         </button>
       </div>
     </div>
 
     <div
-      class="w-full relative z-10 border border-gray-700 rounded-lg bg-gray-900/40 p-4 flex flex-col gap-3"
+      class="w-full relative z-10 rounded-card border border-line bg-surface-2 p-4 flex flex-col gap-3"
     >
       <div class="flex items-start justify-between gap-3">
-        <div>
-          <h4 class="text-base font-bold text-white">{{ $t('plugins.pins.wifiAdaptersTitle') }}</h4>
-          <p class="text-gray-400 text-xs">{{ $t('plugins.pins.wifiAdaptersDescription') }}</p>
+        <div class="min-w-0">
+          <h4 class="text-base font-semibold text-content">
+            {{ $t('plugins.pins.wifiAdaptersTitle') }}
+          </h4>
+          <p class="text-content-muted text-xs">{{ $t('plugins.pins.wifiAdaptersDescription') }}</p>
         </div>
         <button
-          class="text-blue-400 hover:text-white transition-colors p-2"
+          class="min-h-touch min-w-touch shrink-0 flex items-center justify-center text-accent hover:text-content transition-colors disabled:opacity-50"
           :disabled="interfacesLoading || interfacesSaving || disabled"
           :title="$t('plugins.pins.wifiAdapterRefresh')"
           @click="$emit('refresh-interfaces')"
@@ -159,19 +169,20 @@
         </button>
       </div>
 
-      <div v-if="wifiAdapters.length === 0" class="text-sm text-gray-400 italic">
+      <div v-if="wifiAdapters.length === 0" class="text-sm text-content-muted italic">
         {{ $t('plugins.pins.wifiNoAdapters') }}
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div class="flex flex-col gap-2">
-          <label class="text-gray-400 text-xs uppercase font-bold">{{
+          <label for="pinsClientInterface" class="tns-label">{{
             $t('plugins.pins.wifiClientInterface')
           }}</label>
           <select
+            id="pinsClientInterface"
             :value="selectedClientInterface"
             @change="$emit('update:selectedClientInterface', $event.target.value)"
-            class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+            class="tns-select"
             :disabled="interfacesLoading || interfacesSaving || disabled"
           >
             <option value="">{{ $t('plugins.pins.wifiAutoInterface') }}</option>
@@ -186,13 +197,14 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="text-gray-400 text-xs uppercase font-bold">{{
+          <label for="pinsHotspotInterface" class="tns-label">{{
             $t('plugins.pins.wifiHotspotInterface')
           }}</label>
           <select
+            id="pinsHotspotInterface"
             :value="selectedHotspotInterface"
             @change="$emit('update:selectedHotspotInterface', $event.target.value)"
-            class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+            class="tns-select"
             :disabled="interfacesLoading || interfacesSaving || disabled"
           >
             <option value="">{{ $t('plugins.pins.wifiAutoInterface') }}</option>
@@ -208,7 +220,7 @@
       </div>
 
       <button
-        class="w-full py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold rounded-lg shadow-md shadow-blue-900/20 transition-all disabled:opacity-50"
+        class="tns-btn-primary"
         :disabled="interfacesLoading || interfacesSaving || disabled"
         @click="$emit('save-interfaces')"
       >
@@ -225,18 +237,18 @@
       class="w-full relative z-10 flex flex-col gap-3 mt-2 animate-fade-in-up"
     >
       <div
-        class="rounded-lg border p-3 text-sm"
+        class="rounded-control border p-3 text-sm"
         :class="
           wifiIsConnected
-            ? 'border-emerald-700 bg-emerald-900/20 text-emerald-100'
-            : 'border-gray-700 bg-gray-900/40 text-gray-300'
+            ? 'border-status-ok/40 bg-status-ok/10 text-content'
+            : 'border-line bg-surface-2 text-content-muted'
         "
       >
         <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div class="flex items-center gap-2">
             <span
-              class="h-2.5 w-2.5 rounded-full"
-              :class="wifiIsConnected ? 'bg-emerald-400' : 'bg-gray-500'"
+              class="tns-dot"
+              :class="wifiIsConnected ? 'bg-status-ok' : 'bg-content-faint'"
             ></span>
             <span class="font-semibold">
               {{
@@ -246,7 +258,7 @@
               }}
             </span>
           </div>
-          <div v-if="wifiIsConnected" class="text-xs text-emerald-200 sm:text-right">
+          <div v-if="wifiIsConnected" class="text-xs text-content-muted sm:text-right">
             <span>{{ wifiStatusLabel }}</span>
           </div>
         </div>
@@ -256,23 +268,23 @@
         <div
           v-for="connection in wifiConnectionRows"
           :key="connection.key"
-          class="rounded-lg border border-gray-700 bg-gray-900/40 p-3 flex flex-col gap-2"
+          class="rounded-card border border-line bg-surface-2 p-3 flex flex-col gap-2"
         >
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <div class="text-xs uppercase font-bold text-gray-400">
+              <div class="tns-label">
                 {{ formatConnectionRole(connection.role) }}
               </div>
-              <div class="text-white font-semibold truncate">
+              <div class="text-content font-semibold truncate">
                 {{ connection.ssid || connection.connectionName || connection.interface || '-' }}
               </div>
             </div>
             <span
-              class="text-xs px-2 py-1 rounded border"
+              class="text-xs px-2 py-1 rounded-chip border"
               :class="
                 connection.connected
-                  ? 'border-emerald-700 bg-emerald-900/30 text-emerald-200'
-                  : 'border-gray-700 bg-gray-800 text-gray-400'
+                  ? 'border-status-ok/40 bg-status-ok/10 text-status-ok'
+                  : 'border-line bg-surface-1 text-content-muted'
               "
             >
               {{
@@ -283,7 +295,7 @@
             </span>
           </div>
 
-          <div class="text-xs text-gray-400 flex flex-wrap gap-x-3 gap-y-1">
+          <div class="text-xs text-content-muted flex flex-wrap gap-x-3 gap-y-1">
             <span v-if="connection.interface">{{ connection.interface }}</span>
             <span v-if="connection.ipAddress">{{ connection.ipAddress }}</span>
             <span v-if="connection.band">{{ connection.band }}</span>
@@ -293,7 +305,7 @@
           </div>
 
           <div v-if="hasSignal(connection)" class="flex flex-col gap-1">
-            <div class="flex items-center justify-between text-xs text-gray-300">
+            <div class="flex items-center justify-between text-xs text-content">
               <span>
                 {{
                   connection.measuredOnMobile
@@ -305,7 +317,7 @@
                 $t('plugins.pins.wifiSignalValue', { value: connection.signalStrength })
               }}</span>
             </div>
-            <div class="h-2 rounded-full bg-gray-800 overflow-hidden">
+            <div class="h-2 rounded-full bg-surface-1 overflow-hidden">
               <div
                 class="h-full rounded-full"
                 :class="signalBarClass(connection.signalStrength)"
@@ -325,50 +337,30 @@
                 :style="{ height: `${Math.max(15, sample)}%` }"
               ></span>
             </div>
-            <div v-if="connection.rssiDbm" class="text-[11px] text-gray-500">
+            <div v-if="connection.rssiDbm" class="text-[11px] text-content-faint">
               {{ $t('plugins.pins.wifiRssiValue', { value: connection.rssiDbm }) }}
             </div>
           </div>
 
-          <div v-else class="text-xs text-gray-500">
+          <div v-else class="text-xs text-content-faint">
             {{ $t('plugins.pins.wifiSignalUnavailable') }}
           </div>
         </div>
       </div>
 
-      <div v-if="isScanning" class="flex items-center gap-2 text-blue-400 py-4 justify-center">
-        <svg
-          class="animate-spin h-6 w-6"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            class="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            stroke-width="4"
-          ></circle>
-          <path
-            class="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          ></path>
-        </svg>
+      <div v-if="isScanning" class="flex items-center gap-2 text-accent py-4 justify-center">
+        <Spinner size="md" />
         <span>{{ $t('plugins.pins.scanning') }}</span>
       </div>
 
       <div v-else-if="wifiList.length > 0" class="flex flex-col gap-4">
         <div class="flex flex-col gap-2">
-          <label class="text-gray-400 text-xs uppercase font-bold">{{
-            $t('plugins.pins.wifiSelect')
-          }}</label>
+          <label for="pinsWifiSsid" class="tns-label">{{ $t('plugins.pins.wifiSelect') }}</label>
           <select
+            id="pinsWifiSsid"
             :value="selectedSsid"
             @change="$emit('update:selectedSsid', $event.target.value)"
-            class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+            class="tns-select"
           >
             <option value="" disabled>{{ $t('plugins.pins.wifiSelect') }}</option>
             <option v-for="net in wifiList" :key="net.ssid" :value="net.ssid">
@@ -378,76 +370,55 @@
         </div>
 
         <div class="flex flex-col gap-2" v-if="selectedSsid">
-          <label class="text-gray-400 text-xs uppercase font-bold">{{
-            $t('plugins.pins.wifiBand')
-          }}</label>
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
+          <span class="tns-label">{{ $t('plugins.pins.wifiBand') }}</span>
+          <div class="flex flex-wrap gap-x-4">
+            <label
+              v-for="band in bandOptions"
+              :key="band.value"
+              class="flex items-center gap-2 min-h-touch cursor-pointer"
+            >
               <input
                 type="radio"
-                value="auto"
-                :checked="selectedBand === 'auto'"
-                @change="$emit('update:selectedBand', 'auto')"
-                class="text-blue-500 bg-gray-900 border-gray-600 focus:ring-blue-500 focus:ring-2"
+                :value="band.value"
+                :checked="selectedBand === band.value"
+                @change="$emit('update:selectedBand', band.value)"
+                class="h-5 w-5 accent-accent-action"
               />
-              <span class="text-white text-sm">{{ $t('plugins.pins.bandAuto') }}</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                value="2.4GHz"
-                :checked="selectedBand === '2.4GHz'"
-                @change="$emit('update:selectedBand', '2.4GHz')"
-                class="text-blue-500 bg-gray-900 border-gray-600 focus:ring-blue-500 focus:ring-2"
-              />
-              <span class="text-white text-sm">{{ $t('plugins.pins.band24') }}</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input
-                type="radio"
-                value="5GHz"
-                :checked="selectedBand === '5GHz'"
-                @change="$emit('update:selectedBand', '5GHz')"
-                class="text-blue-500 bg-gray-900 border-gray-600 focus:ring-blue-500 focus:ring-2"
-              />
-              <span class="text-white text-sm">{{ $t('plugins.pins.band5') }}</span>
+              <span class="text-content text-sm">{{ band.label }}</span>
             </label>
           </div>
         </div>
 
         <div class="flex flex-col gap-2" v-if="selectedSsid">
-          <label class="text-gray-400 text-xs uppercase font-bold">{{
+          <label for="pinsWifiPassword" class="tns-label">{{
             $t('plugins.pins.wifiPassword')
           }}</label>
           <input
+            id="pinsWifiPassword"
             :value="wifiPassword"
             @input="$emit('update:wifiPassword', $event.target.value)"
             type="password"
-            class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+            class="tns-input"
             placeholder="********"
           />
         </div>
 
-        <div v-if="selectedSsid" class="flex flex-row items-center gap-2 mt-2">
+        <label v-if="selectedSsid" class="flex flex-row items-center gap-2 min-h-touch">
           <input
             type="checkbox"
             :checked="autoConnect"
             @change="$emit('update:autoConnect', $event.target.checked)"
-            id="autoConnect"
-            class="w-4 h-4 text-blue-600 bg-gray-900 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+            class="h-5 w-5 accent-accent-action"
           />
-          <label for="autoConnect" class="text-white text-sm cursor-pointer select-none">
-            {{ $t('plugins.pins.autoConnect') }}
-          </label>
-        </div>
+          <span class="text-content text-sm">{{ $t('plugins.pins.autoConnect') }}</span>
+        </label>
 
         <button
           v-if="selectedSsid"
-          class="mt-2 w-full py-3 font-bold rounded-lg transition-all disabled:opacity-50"
           :class="
             isSelectedNetworkConnected
-              ? 'bg-gray-700 text-gray-300 border border-emerald-700/60'
-              : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white shadow-lg shadow-blue-900/20'
+              ? 'tns-btn-secondary border-status-ok/40 text-content-muted'
+              : 'tns-btn-primary'
           "
           :disabled="disabled || isSelectedNetworkConnected"
           @click="$emit('connect-wifi')"
@@ -459,32 +430,23 @@
           }}
         </button>
 
-        <button
-          class="w-full py-3 font-bold rounded-lg transition-all disabled:opacity-50"
-          :class="
-            wifiIsConnected
-              ? 'bg-gray-800 border border-red-700/70 text-red-200 hover:bg-red-900/30'
-              : 'bg-gradient-to-r from-red-700 to-red-800 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-900/20'
-          "
-          :disabled="disabled"
-          @click="$emit('disconnect-wifi')"
-        >
+        <button class="tns-btn-danger" :disabled="disabled" @click="$emit('disconnect-wifi')">
           {{ $t('plugins.pins.wifiDisconnect') }}
         </button>
       </div>
 
-      <div v-else class="text-gray-400 italic py-4 text-center">
+      <div v-else class="text-content-muted italic py-4 text-center">
         {{ $t('plugins.pins.noNetworks') }}
       </div>
     </div>
 
-    <div class="w-full relative z-10 border-t border-gray-700 pt-4 mt-1 flex flex-col gap-3">
+    <div class="w-full relative z-10 border-t border-line pt-4 mt-1 flex flex-col gap-3">
       <div class="flex items-start justify-between gap-4">
-        <div>
-          <h4 class="text-base font-bold text-white">
+        <div class="min-w-0">
+          <h4 class="text-base font-semibold text-content">
             {{ $t('plugins.pins.hotspotPasswordTitle') }}
           </h4>
-          <div class="text-gray-400 text-xs space-y-1">
+          <div class="text-content-muted text-xs space-y-1">
             <p>
               {{
                 hotspotConfigured
@@ -505,7 +467,7 @@
           </div>
         </div>
         <button
-          class="text-blue-400 hover:text-white transition-colors p-2"
+          class="min-h-touch min-w-touch shrink-0 flex items-center justify-center text-accent hover:text-content transition-colors disabled:opacity-50"
           :disabled="hotspotLoading || hotspotSaving || disabled"
           :title="$t('plugins.pins.hotspotRefresh')"
           @click="$emit('load-hotspot')"
@@ -528,13 +490,14 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="text-gray-400 text-xs uppercase font-bold">
+        <label for="pinsHotspotBand" class="tns-label">
           {{ $t('plugins.pins.hotspotBandLabel') }}
         </label>
         <select
+          id="pinsHotspotBand"
           :value="hotspotBand"
           @change="$emit('update:hotspotBand', $event.target.value)"
-          class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+          class="tns-select"
           :disabled="hotspotSaving || hotspotLoading || disabled"
         >
           <option value="auto">{{ $t('plugins.pins.hotspotBandAuto') }}</option>
@@ -544,16 +507,19 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="text-gray-400 text-xs uppercase font-bold">
+        <label for="pinsHotspotChannel" class="tns-label">
           {{ $t('plugins.pins.hotspotChannelLabel') }}
         </label>
+        <!-- Stays a plain field: empty means "no channel set", which NumberInputPicker cannot
+             represent. The chips below cover the channels the adapter reports. -->
         <input
+          id="pinsHotspotChannel"
           :value="hotspotChannel"
           @input="$emit('update:hotspotChannel', sanitizePositiveInteger($event.target.value))"
           type="number"
           min="1"
           step="1"
-          class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+          class="tns-input"
           :placeholder="$t('plugins.pins.hotspotChannelPlaceholder')"
           :disabled="hotspotSaving || hotspotLoading || disabled"
         />
@@ -563,11 +529,11 @@
             v-for="channel in selectedBandChannels"
             :key="`hotspot-channel-${channel}`"
             type="button"
-            class="px-3 py-1 rounded-full text-xs border transition-colors"
+            class="min-w-10 min-h-10 px-3 rounded-chip text-xs border transition-colors disabled:opacity-50"
             :class="
               String(channel) === hotspotChannel
-                ? 'bg-blue-600 border-blue-500 text-white'
-                : 'bg-gray-900 border-gray-600 text-gray-300 hover:text-white hover:border-blue-400'
+                ? 'bg-accent-action border-accent-action text-white'
+                : 'bg-surface-2 border-line-strong text-content-muted hover:text-content hover:border-accent'
             "
             :disabled="hotspotSaving || hotspotLoading || disabled"
             @click="$emit('update:hotspotChannel', String(channel))"
@@ -576,33 +542,34 @@
           </button>
         </div>
 
-        <p v-if="selectedBandCapabilitiesEmpty" class="text-xs text-amber-300">
+        <p v-if="selectedBandCapabilitiesEmpty" class="text-xs text-status-warn">
           {{ $t('plugins.pins.hotspotCapabilitiesUnavailable') }}
         </p>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label class="text-gray-400 text-xs uppercase font-bold">{{
+        <label for="pinsHotspotPassword" class="tns-label">{{
           $t('plugins.pins.hotspotNewPassword')
         }}</label>
         <input
+          id="pinsHotspotPassword"
           :value="hotspotPassword"
           @input="$emit('update:hotspotPassword', $event.target.value)"
           type="password"
-          class="bg-gray-900 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 outline-none w-full"
+          class="tns-input"
           placeholder="********"
           :disabled="hotspotSaving || hotspotLoading || disabled"
         />
-        <p class="text-xs text-gray-500">{{ $t('plugins.pins.hotspotPasswordHint') }}</p>
+        <p class="text-xs text-content-faint">{{ $t('plugins.pins.hotspotPasswordHint') }}</p>
       </div>
 
       <div
         v-if="hotspotSaveResult"
-        class="rounded-lg border p-3 text-sm"
+        class="rounded-control border p-3 text-sm"
         :class="
           hotspotSaveResult.appliedToActiveHotspot
-            ? 'border-emerald-700 bg-emerald-900/20 text-emerald-200'
-            : 'border-amber-700 bg-amber-900/20 text-amber-200'
+            ? 'border-status-ok/40 bg-status-ok/10 text-status-ok'
+            : 'border-status-warn/40 bg-status-warn/10 text-status-warn'
         "
       >
         <p class="font-semibold">{{ hotspotSaveResult.message }}</p>
@@ -610,8 +577,8 @@
           {{
             $t('plugins.pins.hotspotAppliedStatus', {
               applied: hotspotSaveResult.appliedToActiveHotspot
-                ? $t('common.yes')
-                : $t('common.no'),
+                ? $t('general.yes')
+                : $t('general.no'),
               band: hotspotSaveResult.band || 'unset',
               channel:
                 hotspotSaveResult.channel === null ||
@@ -624,7 +591,7 @@
       </div>
 
       <button
-        class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-bold rounded-lg shadow-lg shadow-blue-900/20 transition-all disabled:opacity-50"
+        class="tns-btn-primary"
         :disabled="hotspotSaving || hotspotLoading || disabled || !canSaveHotspot"
         @click="$emit('save-hotspot')"
       >
@@ -638,8 +605,15 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import toggleButton from '@/components/helpers/toggleButton.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 
 const { t } = useI18n();
+
+const bandOptions = computed(() => [
+  { value: 'auto', label: t('plugins.pins.bandAuto') },
+  { value: '2.4GHz', label: t('plugins.pins.band24') },
+  { value: '5GHz', label: t('plugins.pins.band5') },
+]);
 
 const props = defineProps({
   stationaryMode: {
@@ -826,17 +800,33 @@ const desiredNetworkMode = computed(
 const observedNetworkMode = computed(
   () => props.wifiMode?.observedMode || props.wifiStatus?.observedMode || 'unknown'
 );
-const networkModeOptions = [
+const networkModeOptions = computed(() => [
   {
     value: 'auto',
-    label: 'Automatic fallback',
-    hint: 'Home Wi-Fi first, hotspot if unavailable.',
+    label: t('plugins.pins.networkMode.autoLabel'),
+    hint: t('plugins.pins.networkMode.autoHint'),
   },
-  { value: 'hotspot', label: 'Field hotspot', hint: 'Stay in AP mode at 10.42.0.1.' },
-];
+  {
+    value: 'hotspot',
+    label: t('plugins.pins.networkMode.hotspotLabel'),
+    hint: t('plugins.pins.networkMode.hotspotHint'),
+  },
+]);
 const selectedNetworkModeHint = computed(
-  () => networkModeOptions.find((mode) => mode.value === desiredNetworkMode.value)?.hint || ''
+  () => networkModeOptions.value.find((mode) => mode.value === desiredNetworkMode.value)?.hint || ''
 );
+// Daemon reports auto/hotspot/client/dual/unknown; an unexpected value is shown as-is.
+const networkModeNames = {
+  auto: 'modeAuto',
+  hotspot: 'modeHotspot',
+  client: 'modeClient',
+  dual: 'modeDual',
+  unknown: 'modeUnknown',
+};
+function networkModeName(mode) {
+  const key = networkModeNames[mode];
+  return key ? t(`plugins.pins.networkMode.${key}`) : mode;
+}
 const networkTransitionActive = computed(() =>
   ['network-transition', 'probing', 'reconnecting'].includes(props.connectionState.phase)
 );
@@ -924,8 +914,12 @@ function normalizeWifiConnection(connection) {
   const mobileSignal =
     role === 'hotspot' && mobileSignalMatchesConnection(connection) ? props.mobileWifiSignal : null;
   const rawSignal = mobileSignal?.signalStrength ?? connection.signalStrength;
+  // The hotspot reports null, which Number() would turn into a signal of 0%.
   const signal =
-    Number.isFinite(Number(rawSignal)) && Number(rawSignal) >= 0
+    rawSignal !== null &&
+    rawSignal !== '' &&
+    Number.isFinite(Number(rawSignal)) &&
+    Number(rawSignal) >= 0
       ? Math.min(100, Math.max(0, Number(rawSignal)))
       : null;
 
@@ -982,12 +976,12 @@ function signalHistory(connection) {
 
 function signalBarClass(value) {
   if (value >= 70) {
-    return 'bg-emerald-400';
+    return 'bg-status-ok';
   }
   if (value >= 40) {
-    return 'bg-amber-400';
+    return 'bg-status-warn';
   }
-  return 'bg-red-400';
+  return 'bg-status-danger';
 }
 
 function formatConnectionRole(role) {

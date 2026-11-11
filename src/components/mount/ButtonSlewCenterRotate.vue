@@ -77,7 +77,7 @@
       <template #body>
         <div class="space-y-4">
           <div
-            class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600/30"
+            class="flex items-center justify-between p-3 bg-surface-3/30 rounded-lg border border-line-strong/30"
           >
             <div class="flex items-center gap-3">
               <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
@@ -92,7 +92,7 @@
           </div>
 
           <div
-            class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg border border-gray-600/30"
+            class="flex items-center justify-between p-3 bg-surface-3/30 rounded-lg border border-line-strong/30"
           >
             <div class="flex items-center gap-3">
               <div class="w-2 h-2 rounded-full bg-purple-400"></div>
@@ -107,7 +107,7 @@
             </div>
           </div>
 
-          <div class="border-t border-gray-600/30 pt-4">
+          <div class="border-t border-line-strong/30 pt-4">
             <SettingInput
               labelKey="components.mount.settings.telescope_settle_time"
               settingKey="TelescopeSettings-SettleTime"

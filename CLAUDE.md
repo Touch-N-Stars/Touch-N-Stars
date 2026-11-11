@@ -45,12 +45,12 @@ A pass proves nothing about real N.I.N.A., PINS or hardware. Screenshots land in
 Not a separate headless backend. The same NINA runs there, so **everything the NINA
 side offers exists in PINS mode too** - the Advanced API on `/v2/api`, the Touch'N'Stars
 plugin server, equipment devices, the whole `/v2/api/equipment/*` surface. The PINS
-daemon on port 8000 is *additional*, and only for host/system concerns (Wi-Fi, timezone,
+daemon on port 8000 is _additional_, and only for host/system concerns (Wi-Fi, timezone,
 keyboard layout, updates).
 
 The HLD's phrase "PINS/headless mode with additional daemon APIs" is easy to misread as
 "PINS has no NINA". It does. Never design a PINS fallback around the assumption that
-`/v2/api` is unavailable there - the correct question is almost always whether a *device*
+`/v2/api` is unavailable there - the correct question is almost always whether a _device_
 is connected, not which runtime mode is active (see the feature-detect rule in
 `.claude/skills/api-endpoint/SKILL.md`).
 
@@ -67,15 +67,15 @@ The recurring procedures are documented as on-demand skills in `.claude/skills/`
 here, so they cost no context until they are actually needed. Load the skill
 before working in these areas — the details are not repeated in this file.
 
-| Skill | Covers |
-| --- | --- |
-| `feature-kickoff` | new feature: interview the goal, agree acceptance criteria, write `docs/features/<slug>.md` |
-| `equipment` | device map, INDI driver changes, OFFLINE reload, connect ordering, every `<X>Settings-…` profile trap |
-| `setup-wizard` | wizard steps and their order, z-index staffing, location and coordinate handling |
-| `api-endpoint` | plugin-server controllers, the five base URLs, the apiService facade and its surface snapshot |
-| `changelog` | CHANGELOG entries and the What's New parser contract |
-| `i18n` | locale keys, the checker's rules, translation workflow |
-| `tns-review` | three parallel review agents: functionality, UI, maintainability |
+| Skill             | Covers                                                                                                |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `feature-kickoff` | new feature: interview the goal, agree acceptance criteria, write `docs/features/<slug>.md`           |
+| `equipment`       | device map, INDI driver changes, OFFLINE reload, connect ordering, every `<X>Settings-…` profile trap |
+| `setup-wizard`    | wizard steps and their order, z-index staffing, location and coordinate handling                      |
+| `api-endpoint`    | plugin-server controllers, the five base URLs, the apiService facade and its surface snapshot         |
+| `changelog`       | CHANGELOG entries and the What's New parser contract                                                  |
+| `i18n`            | locale keys, the checker's rules, translation workflow                                                |
+| `tns-review`      | three parallel review agents: functionality, UI, maintainability                                      |
 
 ## Android networking: two confirmed non-bugs
 
@@ -96,8 +96,14 @@ Do not chase these as app-logic bugs.
 Use the `tns-*` utilities from `src/assets/tailwind.css` (`tns-card`, `tns-btn-primary`,
 `tns-btn-secondary`, `tns-input`, `tns-select`, `tns-section-title`, `tns-label`,
 `tns-field-row`, `min-h-touch`), not the legacy raw gray/cyan palette still present in older
-screens. `tns-select-compact` gives up the 48px touch height, so it is for dense rows like the
-sequence editor only.
+screens. `tns-select-compact` and `tns-input-compact` give up the 48px touch height, so they are
+for dense rows like the sequence editor only.
+
+The sequence editor keeps a few raw Tailwind colors on purpose: they tell categories apart, which
+the design tokens have no slot for (item icon colors in `ItemShell`, the nesting-depth borders and
+the cyan/amber/blue trigger, condition and instruction lists in `SequenceItem`, the area dots and
+the purple global triggers in `SequenceCurrentView`, the amber expected/remaining times in the
+condition and wait items). Do not migrate them to tokens.
 
 Loading and missing-device states use the helpers **`Spinner`** (`size` `sm`/`md`/`lg`, takes the
 current text color) and **`DeviceNotConnected`** (`messageKey`) from `src/components/helpers/`.
@@ -136,7 +142,7 @@ creates a containing block for `position: fixed`, which misplaces Sortable.js's 
 Chrome. Do **not** use `forceFallback: true`.
 
 Long-press on iOS: WebKit has **two** different native menus and they are driven by two
-different properties. "Copy / Look Up / Share" with the magnifier is the *text selection*
+different properties. "Copy / Look Up / Share" with the magnifier is the _text selection_
 callout — that one is `-webkit-user-select`. The image/link preview popup is
 `-webkit-touch-callout`. `@contextmenu.prevent` stops neither. Both are now switched off
 app-wide on `body` in `src/assets/tailwind.css`, with `input`/`textarea`/`[contenteditable]`

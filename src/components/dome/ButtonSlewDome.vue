@@ -20,7 +20,7 @@
         <label>{{ $t('components.dome.control.slew') }}</label>
         <div
           v-if="store.domeInfo.Slewing || isSlewing"
-          class="ml-2 w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+          class="ml-2 w-6 h-6 border-4 border-accent border-t-transparent rounded-full animate-spin"
         ></div>
       </button>
       <button @click="stopSlew" class="tns-btn-danger w-16 mr-1">

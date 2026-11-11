@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="store.focuserInfo.CanReverse"
-    class="flex items-center justify-between border border-gray-500 p-2 rounded-lg"
+    class="flex items-center justify-between border border-line-strong p-2 rounded-control"
   >
-    <span class="text-sm font-medium text-gray-300">
+    <span class="text-sm font-medium text-content">
       {{ $t('components.focuser.settings.Reverse') }}
     </span>
     <toggleButton

@@ -72,21 +72,21 @@
       maxWidth="max-w-md"
     >
       <template #header>
-        <h2 class="text-xl font-bold text-white">
+        <h2 class="text-xl font-bold text-content">
           {{ $t('plugins.pins.disconnectConfirmTitle') }}
         </h2>
       </template>
 
       <template #body>
         <div class="w-full">
-          <p class="text-gray-300 text-sm leading-relaxed mb-6">
+          <p class="text-content text-sm leading-relaxed mb-6">
             {{ $t('plugins.pins.disconnectConfirmMessage') }}
           </p>
           <div class="flex justify-end gap-3">
-            <button @click="showDisconnectWifiModal = false" class="tns-btn-secondary">
+            <button @click="showDisconnectWifiModal = false" class="tns-btn-secondary w-auto!">
               {{ $t('common.cancel') }}
             </button>
-            <button @click="confirmDisableWifi" class="tns-btn-danger">
+            <button @click="confirmDisableWifi" class="tns-btn-danger w-auto!">
               {{ $t('common.confirm') }}
             </button>
           </div>

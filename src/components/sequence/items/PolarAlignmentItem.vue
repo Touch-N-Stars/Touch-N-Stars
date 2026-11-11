@@ -1,11 +1,11 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ item.ExposureTime }}s</span>
-      <span v-if="item.Filter?.Name" class="text-xs text-slate-400 shrink-0">{{
+      <span class="text-xs text-content-muted font-mono">{{ item.ExposureTime }}s</span>
+      <span v-if="item.Filter?.Name" class="text-xs text-content-muted shrink-0">{{
         item.Filter.Name
       }}</span>
-      <span v-if="item.ManualMode" class="text-xs text-slate-500">{{
+      <span v-if="item.ManualMode" class="text-xs text-content-faint">{{
         $t('components.sequence.items.polarAlignment.manual')
       }}</span>
     </template>
@@ -24,11 +24,11 @@
 
       <!-- Filter -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.switchFilter.filter')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="item.Filter?.Name ?? ''"
           @change="save('Filter', $event.target.value || null)"
         >
@@ -63,11 +63,11 @@
       />
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.binning')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="binningValue"
           @change="save('Binning', $event.target.value)"
         >
@@ -123,7 +123,7 @@
       />
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.polarAlignment.eastDirection')
         }}</label>
         <div class="ml-auto">
@@ -135,7 +135,7 @@
       </div>
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.polarAlignment.manualMode')
         }}</label>
         <div class="ml-auto">
@@ -147,7 +147,7 @@
       </div>
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.polarAlignment.startFromCurrentPosition')
         }}</label>
         <div class="ml-auto">

@@ -15,6 +15,15 @@ const { useSettingsStore } = await import('@/store/settingsStore');
 const { apiStore } = await import('@/store/store');
 const { default: apiService } = await import('@/services/apiService');
 
+// Several tests reach loadHistory without stubbing it. The real calls would
+// go out to the fake host and keep the process alive until their 10s timeout.
+// Tests that care override these via stubApi, which restores these defaults.
+Object.assign(apiService, {
+  getNativeGuiderSteps: async () => [],
+  getNativeGuiderAlerts: async () => [],
+  getNativeGuiderCalibration: async () => null,
+});
+
 function setup(t) {
   resetSockets();
   freshPinia();
@@ -821,6 +830,9 @@ test('an older status answer does not undo a newer state event or a newer poll',
     getNativeGuiderStatus: () => new Promise((resolve) => answers.push(resolve)),
   });
   const guiding = { available: true, connected: true, status: { state: 'Guiding' } };
+  // Event and request times compare at millisecond resolution: a frozen clock
+  // keeps the outcome independent of how fast the test runs.
+  t.mock.timers.enable({ apis: ['Date'], now: 1_000_000 });
 
   const first = store.refreshStatus();
   store.handleMessage({ type: 'state', payload: 'Stopped' });
@@ -828,6 +840,8 @@ test('an older status answer does not undo a newer state event or a newer poll',
   await first;
   assert.equal(store.state, 'Stopped', 'the state event after the request wins');
 
+  // The next polls are sent after the event.
+  t.mock.timers.tick(1);
   const older = store.refreshStatus();
   const newer = store.refreshStatus();
   answers[2]({ available: true, connected: true, status: { state: 'Looping' } });

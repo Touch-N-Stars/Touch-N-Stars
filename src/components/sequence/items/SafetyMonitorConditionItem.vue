@@ -1,7 +1,10 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs font-mono" :class="item.IsSafe ? 'text-emerald-400' : 'text-red-400'">
+      <span
+        class="text-xs font-mono"
+        :class="item.IsSafe ? 'text-status-ok' : 'text-status-danger'"
+      >
         {{ item.IsSafe ? '✓ Safe' : '✗ Unsafe' }}
       </span>
     </template>

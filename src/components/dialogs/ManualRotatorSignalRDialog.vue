@@ -3,19 +3,23 @@
     <!-- Current and Target Position -->
     <div class="grid grid-cols-2 gap-4">
       <!-- Current Position -->
-      <div class="bg-gray-800 p-4 rounded-lg text-center">
-        <p class="text-gray-400 text-sm mb-2">Current position</p>
+      <div class="bg-surface-2 p-4 rounded-lg text-center">
+        <p class="text-content-muted text-sm mb-2">
+          {{ $t('dialogs.manualRotator.currentPosition') }}
+        </p>
         <p class="text-4xl font-bold text-white">{{ currentPosition }}°</p>
       </div>
       <!-- Target Position -->
-      <div class="bg-gray-800 p-4 rounded-lg text-center">
-        <p class="text-gray-400 text-sm mb-2">Target position</p>
+      <div class="bg-surface-2 p-4 rounded-lg text-center">
+        <p class="text-content-muted text-sm mb-2">
+          {{ $t('dialogs.manualRotator.targetPosition') }}
+        </p>
         <p class="text-4xl font-bold text-white">{{ targetPosition }}°</p>
       </div>
     </div>
 
     <!-- Rotation Visualization (Clock-style) -->
-    <div class="bg-gray-800 p-6 rounded-lg flex flex-col items-center">
+    <div class="bg-surface-2 p-6 rounded-lg flex flex-col items-center">
       <!-- Clock Display -->
       <svg width="200" height="200" viewBox="0 0 200 200" class="mb-4">
         <!-- Clock Circle -->
@@ -29,7 +33,7 @@
           :y="100 - Math.cos((angle * Math.PI) / 180) * 70"
           text-anchor="middle"
           dominant-baseline="middle"
-          class="fill-gray-400 text-xs"
+          class="fill-content-muted text-xs"
         >
           {{ angle }}°
         </text>
@@ -81,17 +85,17 @@
       <div class="flex gap-4 mb-3 text-xs">
         <div class="flex items-center gap-1">
           <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-          <span class="text-gray-400">Current position</span>
+          <span class="text-content-muted">{{ $t('dialogs.manualRotator.currentPosition') }}</span>
         </div>
         <div class="flex items-center gap-1">
           <div class="w-3 h-3 border-2 border-green-500 border-dashed rounded-full"></div>
-          <span class="text-gray-400">Target position</span>
+          <span class="text-content-muted">{{ $t('dialogs.manualRotator.targetPosition') }}</span>
         </div>
       </div>
 
       <!-- Rotation Info -->
       <p class="text-2xl font-bold text-yellow-500 mb-1">{{ rotationAmount }}°</p>
-      <p class="text-gray-400 text-sm">{{ direction }}</p>
+      <p class="text-content-muted text-sm">{{ direction }}</p>
     </div>
   </div>
 </template>

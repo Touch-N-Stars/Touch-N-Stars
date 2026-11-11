@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span v-if="item.CurrentAltitude !== undefined" class="text-xs text-slate-400 font-mono">
+      <span v-if="item.CurrentAltitude !== undefined" class="text-xs text-content-muted font-mono">
         {{ item.CurrentAltitude?.toFixed(1) }}°
       </span>
       <span v-if="item.ExpectedTime" class="text-xs text-amber-400/80 font-mono ml-2">

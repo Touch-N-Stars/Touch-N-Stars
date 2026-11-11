@@ -26,7 +26,7 @@ const emit = defineEmits(['click']);
 const { isLandscape } = useOrientation();
 
 const buttonClasses = computed(() => ({
-  'rounded-full bg-gray-600 flex items-center justify-center shadow-md shadow-black border border-cyan-500 transition-colors duration-200': true,
+  'rounded-full bg-surface-3 flex items-center justify-center shadow-md shadow-black border border-accent transition-colors duration-200': true,
   'w-12 h-12': !isLandscape.value,
   'w-10 h-10': isLandscape.value,
   'glow-green': props.isActive,

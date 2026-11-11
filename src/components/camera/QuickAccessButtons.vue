@@ -60,7 +60,7 @@ const store = apiStore();
 const { isLandscape } = useOrientation();
 
 const quickButtonsClasses = computed(() => ({
-  'fixed flex gap-2 text-gray-300 z-10': true,
+  'fixed flex gap-2 text-content z-10': true,
   'top-24 left-5 flex-col': !isLandscape.value,
   'top-5 left-(--nav-offset) flex-row': isLandscape.value,
 }));

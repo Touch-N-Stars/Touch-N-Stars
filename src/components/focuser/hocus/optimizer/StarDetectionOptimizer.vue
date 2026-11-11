@@ -1,26 +1,26 @@
 <template>
   <Modal :show="show" maxWidth="max-w-3xl" :closeOnBackdropClick="false" @close="onDismiss">
     <template #header>
-      <h2 class="text-xl font-bold text-white">{{ L('title') }}</h2>
+      <h2 class="text-xl font-bold text-content">{{ L('title') }}</h2>
     </template>
     <template #body>
       <div class="flex w-full flex-col gap-4">
         <!-- Request errors, the wizard's own validation message, and command failures -->
         <p
           v-if="errorText"
-          class="rounded-lg border border-red-700/50 bg-red-900/40 p-3 text-sm text-red-200"
+          class="rounded-control border border-status-danger/30 bg-status-danger/10 p-3 text-sm text-status-danger"
         >
           {{ errorText }}
         </p>
 
         <p
           v-if="notice"
-          class="rounded-lg border border-amber-600/50 bg-amber-900/25 p-3 text-sm text-amber-200"
+          class="rounded-control border border-status-warn/40 bg-status-warn/10 p-3 text-sm text-status-warn"
         >
           {{ notice }}
         </p>
 
-        <p v-if="!state" class="py-6 text-center text-gray-400">{{ L('starting') }}</p>
+        <p v-if="!state" class="py-6 text-center text-content-muted">{{ L('starting') }}</p>
 
         <template v-else-if="state.Active">
           <OptimizerSourceStep
@@ -41,11 +41,11 @@
             @set="setProperty"
             @command="runCommand"
           />
-          <p v-else class="text-sm text-gray-400">{{ L('reviewDesktopOnly') }}</p>
+          <p v-else class="text-sm text-content-muted">{{ L('reviewDesktopOnly') }}</p>
 
           <!-- Actions for the current step -->
           <div
-            class="sticky bottom-0 flex flex-wrap justify-end gap-2 border-t border-gray-700/60 bg-gray-800 pt-3"
+            class="sticky bottom-0 flex flex-wrap justify-end gap-2 border-t border-line bg-surface-1 pt-3"
           >
             <template v-if="step === 'SelectSource'">
               <button class="tns-btn-secondary w-auto px-4" @click="endSession">
@@ -119,11 +119,11 @@
     :closeOnBackdropClick="false"
   >
     <template #header>
-      <h2 class="text-xl font-bold text-white">{{ pending?.Title }}</h2>
+      <h2 class="text-xl font-bold text-content">{{ pending?.Title }}</h2>
     </template>
     <template #body>
       <div class="flex w-full flex-col gap-6">
-        <p class="whitespace-pre-line text-sm text-gray-300">{{ pending?.Message }}</p>
+        <p class="whitespace-pre-line text-sm text-content">{{ pending?.Message }}</p>
         <div class="flex justify-end gap-3">
           <button
             class="tns-btn-secondary w-auto px-4"

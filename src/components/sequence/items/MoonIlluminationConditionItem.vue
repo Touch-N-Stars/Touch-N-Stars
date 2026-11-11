@@ -1,10 +1,10 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         {{ comparatorLabel }} {{ item.UserMoonIllumination }}%
       </span>
-      <span class="text-xs text-slate-500 font-mono ml-1">
+      <span class="text-xs text-content-faint font-mono ml-1">
         ({{ item.CurrentMoonIllumination?.toFixed(1) }}%)
       </span>
     </template>
@@ -12,12 +12,12 @@
     <template #editor="{ save }">
       <!-- Comparator -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.moonAltitude.comparator')
         }}</label>
         <select
           :key="comparatorValue"
-          class="ml-auto bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-auto"
           @change="save('Comparator', Number($event.target.value))"
         >
           <option value="1" :selected="comparatorValue === 1">

@@ -3,9 +3,9 @@
     <div
       v-for="row in rows"
       :key="row.key"
-      class="flex items-center justify-between gap-3 border-b border-gray-700/40 py-1.5 text-sm"
+      class="flex items-center justify-between gap-3 border-b border-line py-1.5 text-sm"
     >
-      <span class="flex items-center gap-1 text-gray-400">
+      <span class="flex items-center gap-1 text-content-muted">
         {{ L(row.key) }}
         <InfoModal
           v-if="row.help"
@@ -14,7 +14,7 @@
           size="w-4 h-4"
         />
       </span>
-      <span class="text-right text-gray-100 tabular-nums">{{ row.value }}</span>
+      <span class="text-right text-content tabular-nums">{{ row.value }}</span>
     </div>
   </div>
 </template>
