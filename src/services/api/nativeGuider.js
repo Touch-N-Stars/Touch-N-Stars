@@ -183,6 +183,38 @@ export default {
     return request('post', 'hints/dismiss', { data: { id } });
   },
 
+  // --- Guide logs (log viewer) -------------------------------------------------------
+
+  /**
+   * AdvancedGuideLogFile[]: { name, night, sizeBytes, modifiedUtc, active, timeZone,
+   * utcOffsetMinutes }, newest night first. Also while the guider is not connected; 501 for a
+   * guider without guide logs, 404 for a backend without the route.
+   */
+  getNativeGuiderLogs() {
+    return request('get', 'logs');
+  },
+
+  /** One guide log as text (PHD2 format); `onProgress(loadedBytes)` while it downloads. */
+  async getNativeGuiderLog(name, { onProgress, signal } = {}) {
+    const { API_URL } = getUrls();
+    try {
+      const response = await nativeGuiderHttp.get(
+        `${API_URL}internal-guider/logs/${encodeURIComponent(name)}`,
+        {
+          responseType: 'text',
+          // keep the text as it is (axios would try JSON.parse on it)
+          transformResponse: [(data) => data],
+          timeout: 120000,
+          signal,
+          onDownloadProgress: onProgress ? (e) => onProgress(e.loaded ?? 0) : undefined,
+        }
+      );
+      return typeof response.data === 'string' ? response.data : String(response.data ?? '');
+    } catch (error) {
+      throw mapNativeGuiderError(error, 'Guide log download failed');
+    }
+  },
+
   // --- Flight recorder (incidents) --------------------------------------------------
 
   /**
