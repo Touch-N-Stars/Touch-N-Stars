@@ -15,6 +15,15 @@ const { useSettingsStore } = await import('@/store/settingsStore');
 const { apiStore } = await import('@/store/store');
 const { default: apiService } = await import('@/services/apiService');
 
+// Several tests reach loadHistory without stubbing it. The real calls would
+// go out to the fake host and keep the process alive until their 10s timeout.
+// Tests that care override these via stubApi, which restores these defaults.
+Object.assign(apiService, {
+  getNativeGuiderSteps: async () => [],
+  getNativeGuiderAlerts: async () => [],
+  getNativeGuiderCalibration: async () => null,
+});
+
 function setup(t) {
   resetSockets();
   freshPinia();
