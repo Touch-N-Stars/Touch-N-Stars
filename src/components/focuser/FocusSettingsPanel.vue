@@ -213,7 +213,7 @@
 
 <script setup>
 import { apiStore } from '@/store/store';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import SettingSelect from '@/components/helpers/settings/SettingProfilSelect.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import setFocuserUseFilterOffset from './settings/setFocuserUseFilterOffset.vue';

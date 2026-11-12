@@ -131,7 +131,7 @@ import { useI18n } from 'vue-i18n';
 import { wait } from '@/utils/utils';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import Modal from '@/components/helpers/Modal.vue';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import { StopCircleIcon } from '@heroicons/vue/24/outline';
 
 const store = apiStore();

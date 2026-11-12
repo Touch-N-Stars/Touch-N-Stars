@@ -41,7 +41,7 @@ import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 
 const { t } = useI18n();
 const store = apiStore();

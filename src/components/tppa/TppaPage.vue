@@ -32,7 +32,7 @@
               :isActive="showMount"
               @click="toggleMount"
             />
-            <ActuellErrorModal />
+            <CurrentErrorModal />
             <ErrorCircle />
           </div>
           <div class="flex gap-2">
@@ -314,7 +314,7 @@ import { apiStore } from '@/store/store';
 import { useTppaStore } from '@/store/tppaStore';
 import { useImagetStore } from '@/store/imageStore';
 import TppaLastStatus from '@/components/tppa/TppaLastStatus.vue';
-import ActuellErrorModal from '@/components/tppa/ActuellErrorModal.vue';
+import CurrentErrorModal from '@/components/tppa/CurrentErrorModal.vue';
 import ButtonPause from '@/components/tppa/ButtonPause.vue';
 import ErrorCircle from '@/components/tppa/ErrorCircle.vue';
 import TppaSettings from './TppaSettings.vue';

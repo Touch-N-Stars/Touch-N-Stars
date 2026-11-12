@@ -41,7 +41,7 @@ import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 import toggleButton from '@/components/helpers/toggleButton.vue';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 
 const store = apiStore();
 

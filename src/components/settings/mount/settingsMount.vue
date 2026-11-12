@@ -27,7 +27,7 @@
 import { apiStore } from '@/store/store';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 
 const store = apiStore();
 

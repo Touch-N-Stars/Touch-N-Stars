@@ -117,7 +117,7 @@
 
 <script setup>
 import { apiStore } from '@/store/store';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import SetPlateSolverFilterPins from './SetPlateSolverFilterPins.vue';

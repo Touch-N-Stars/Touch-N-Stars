@@ -64,7 +64,7 @@
 import { computed } from 'vue';
 import { apiStore } from '@/store/store';
 import { useFilterStore } from '@/store/filterStore';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import SetFilterName from './SetFilterName.vue';
 import AddNewFilter from './AddNewFilter.vue';
 import RemoveFilter from './RemoveFilter.vue';
