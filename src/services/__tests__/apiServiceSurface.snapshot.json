@@ -133,6 +133,8 @@
   "getNativeGuiderIncidentDownloadUrl": "function",
   "getNativeGuiderIncidentImageUrl": "function",
   "getNativeGuiderIncidents": "function",
+  "getNativeGuiderLog": "function",
+  "getNativeGuiderLogs": "function",
   "getNativeGuiderSettings": "function",
   "getNativeGuiderStatus": "function",
   "getNativeGuiderSteps": "function",
