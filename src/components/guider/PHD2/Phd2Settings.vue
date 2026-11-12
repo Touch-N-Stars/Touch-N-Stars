@@ -77,7 +77,7 @@
         <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.raAlgorithm') }}
         </h3>
-        <SetRaAlgoPara />
+        <SetAlgoPara axis="ra" />
       </div>
 
       <!-- DEC Algorithm -->
@@ -85,7 +85,7 @@
         <h3 class="tns-section-title">
           {{ $t('components.guider.phd2.decAlgorithm') }}
         </h3>
-        <SetDecAlgoPara />
+        <SetAlgoPara axis="dec" />
       </div>
     </template>
 
@@ -271,8 +271,7 @@
 import { useGuiderStore } from '@/store/guiderStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import SetExposure from '@/components/guider/PHD2/SetExposure.vue';
-import SetRaAlgoPara from '@/components/guider/PHD2/SetRaAlgoPara.vue';
-import SetDecAlgoPara from '@/components/guider/PHD2/SetDecAlgoPara.vue';
+import SetAlgoPara from '@/components/guider/PHD2/SetAlgoPara.vue';
 import PHD2Profil from '@/components/guider/PHD2/PHD2Profil.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import Phd2FocalLength from '@/components/guider/PHD2/pins/Phd2FocalLength.vue';

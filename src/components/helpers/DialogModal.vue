@@ -40,7 +40,6 @@
         />
 
         <!-- Manual Rotator Dialog -->
-        <ManualRotatorSignalRDialog v-else-if="isSignalRRotatorDialog" :dialog="currentDialog" />
         <ManualRotatorDialog v-else-if="isManualRotatorDialog" :dialog="currentDialog" />
 
         <!-- AutoFocus Dialog -->
@@ -85,7 +84,7 @@ import TppaPage from '@/components/tppa/TppaPage.vue';
 import PlateSolvingDialog from '@/components/dialogs/PlateSolvingDialog.vue';
 import PlateSolvingSignalRDialog from '@/components/dialogs/PlateSolvingSignalRDialog.vue';
 import ManualRotatorDialog from '@/components/dialogs/ManualRotatorDialog.vue';
-import ManualRotatorSignalRDialog from '@/components/dialogs/ManualRotatorSignalRDialog.vue';
+import { isWpfRotatorContent } from '@/utils/manualRotatorContent';
 import AutoFocusDialog from '@/components/dialogs/AutoFocusDialog.vue';
 import MeridianFlipDialog from '@/components/dialogs/MeridianFlipDialog.vue';
 import MeridianFlipSignalRDialog from '@/components/dialogs/MeridianFlipSignalRDialog.vue';
@@ -148,12 +147,11 @@ const isManualRotatorDialog = computed(() => {
   return currentDialog.value?.ContentType === 'NINA.Equipment.Equipment.MyRotator.ManualRotator';
 });
 
-// Check if using SignalR (for choosing correct rotator component)
+// SignalR rotator dialog (PINS, no Text1-Text9): its "cancel" button is labelled "ok".
+// ManualRotatorDialog itself handles both content shapes.
 const isSignalRRotatorDialog = computed(() => {
   if (!isManualRotatorDialog.value) return false;
-  // Check if we're in PINS mode (SignalR) and the dialog doesn't have Text1-Text9 properties
-  const content = currentDialog.value?.Content || {};
-  return store.isPINS && (!content.Text1 || !content.Text2);
+  return store.isPINS && !isWpfRotatorContent(currentDialog.value?.Content);
 });
 
 // AutoFocus Dialog Detection
