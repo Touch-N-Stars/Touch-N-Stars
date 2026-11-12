@@ -51,7 +51,7 @@
 <script setup>
 import { ref } from 'vue';
 import { CommandLineIcon, ArrowDownTrayIcon } from '@heroicons/vue/24/outline';
-import Modal from './Modal.vue';
+import Modal from '@/components/helpers/Modal.vue';
 import { downloadLogs as downloadLogsHelper } from '@/utils/logDownloader';
 
 const isModalOpen = ref(false);
