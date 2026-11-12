@@ -1,4 +1,11 @@
 {
   "legacyColors": 4060,
-  "rawNumberInputs": 126
+  "rawNumberInputs": 126,
+  "pollingTimers": 25,
+  "adHocSpinners": 101,
+  "adHocOverlays": 30,
+  "rawOverlayZIndex": 64,
+  "webkitSelectionBlocks": 19,
+  "draggableWithoutFallbackOnBody": 2,
+  "forceFallback": 4
 }
