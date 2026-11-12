@@ -2700,6 +2700,7 @@
             "Safety": "Bezpieczeństwo",
             "Incidents": "Incydenty"
           },
+          "settleHint": "Po ditherze lub starcie prowadzenia następna ekspozycja czeka, aż błąd prowadzenia utrzyma się poniżej tolerancji (piksele kamery prowadzącej) przez minimalny czas stabilizacji. Jeśli wcześniej upłynie limit czasu, ekspozycja i tak się rozpocznie.",
           "confirmReconnectTitle": "Połączyć ponownie guider?",
           "confirmReconnect": "Guider rozłączy się i połączy ponownie. W tym czasie guiding jest zatrzymany, więc trwająca ekspozycja nie jest już prowadzona.",
           "reconnectNeeded": "Połącz ponownie guider, aby użyć nowych ustawień kamery.",

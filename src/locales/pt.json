@@ -2700,6 +2700,7 @@
             "Safety": "Segurança",
             "Incidents": "Incidentes"
           },
+          "settleHint": "Após um dither ou o início da guiagem, a exposição seguinte espera até o erro de guiagem ficar abaixo da tolerância (píxeis da câmara de guiagem) durante o tempo mínimo de estabilização. Se o tempo limite se esgotar antes, a exposição começa na mesma.",
           "confirmReconnectTitle": "Religar o guiador?",
           "confirmReconnect": "O guiador desliga-se e volta a ligar-se. A guiagem para entretanto, pelo que uma exposição em curso deixa de ser guiada.",
           "reconnectNeeded": "Reconecte o guiador para usar as novas configurações da câmera.",

@@ -2741,6 +2741,7 @@
             "Safety": "Seguretat",
             "Incidents": "Incidències"
           },
+          "settleHint": "Després d'un dither o de l'inici del guiatge, l'exposició següent espera que l'error de guiatge es mantingui per sota de la tolerància (píxels de la càmera de guiatge) durant el temps mínim d'estabilització. Si abans s'esgota el temps d'espera, l'exposició comença igualment.",
           "confirmReconnectTitle": "Tornar a connectar el guiador?",
           "confirmReconnect": "El guiador es desconnecta i es torna a connectar. Mentrestant el guiatge s'atura, així que una exposició en curs deixa d'estar guiada.",
           "reconnectNeeded": "Torna a connectar el guiatge per fer servir la nova configuració de càmera.",

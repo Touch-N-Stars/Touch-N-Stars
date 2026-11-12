@@ -2700,6 +2700,7 @@
             "Safety": "Sicurezza",
             "Incidents": "Anomalie"
           },
+          "settleHint": "Dopo un dither o l'avvio della guida, la posa successiva attende che l'errore di guida resti sotto la tolleranza (pixel della camera di guida) per il tempo minimo di assestamento. Se il timeout scade prima, la posa parte comunque.",
           "confirmReconnectTitle": "Riconnettere il guider?",
           "confirmReconnect": "Il guider si disconnette e si riconnette. Nel frattempo la guida si ferma, quindi un’esposizione in corso non è più guidata.",
           "reconnectNeeded": "Riconnetti la guida per usare le nuove impostazioni della camera.",

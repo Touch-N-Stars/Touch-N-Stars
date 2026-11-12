@@ -2700,6 +2700,7 @@
             "Safety": "Sécurité",
             "Incidents": "Incidents"
           },
+          "settleHint": "Après un dither ou le démarrage du guidage, la pose suivante attend que l'erreur de guidage reste sous la tolérance (pixels de la caméra de guidage) pendant le temps de stabilisation minimum. Si le délai expire avant, la pose démarre quand même.",
           "confirmReconnectTitle": "Reconnecter l'autoguideur ?",
           "confirmReconnect": "L'autoguideur se déconnecte puis se reconnecte. Le guidage s'arrête pendant ce temps, une pose en cours n'est donc plus guidée.",
           "reconnectNeeded": "Reconnectez le guideur pour utiliser les nouveaux réglages de caméra.",

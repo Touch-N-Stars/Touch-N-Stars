@@ -2700,6 +2700,7 @@
             "Safety": "Veiligheid",
             "Incidents": "Incidenten"
           },
+          "settleHint": "Na een dither of de start van het guiden wacht de volgende opname tot de guidefout gedurende de minimale stabilisatietijd onder de tolerantie (pixels van de guidecamera) blijft. Verloopt de time-out eerder, dan start de opname toch.",
           "confirmReconnectTitle": "Guider opnieuw verbinden?",
           "confirmReconnect": "De guider verbreekt de verbinding en maakt opnieuw verbinding. Guiding stopt intussen, dus een lopende opname wordt niet meer gestuurd.",
           "reconnectNeeded": "Verbind de guider opnieuw om de nieuwe camera-instellingen te gebruiken.",

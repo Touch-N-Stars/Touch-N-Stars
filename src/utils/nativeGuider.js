@@ -432,6 +432,23 @@ export function groupSettings(settings, { advanced = false } = {}) {
 }
 
 /**
+ * groupSettings() result with `group` present even when the backend has no visible setting
+ * for it, at its place in SETTING_GROUP_ORDER. The sheet uses this for groups that also hold
+ * profile settings of their own (Dither: the settle criteria).
+ */
+export function withGroup(groups, group) {
+  if (groups.some((g) => g.group === group)) return groups;
+  const rank = (g) => {
+    const i = SETTING_GROUP_ORDER.indexOf(g);
+    return i >= 0 ? i : SETTING_GROUP_ORDER.length;
+  };
+  const at = groups.findIndex((g) => rank(g.group) > rank(group));
+  const result = [...groups];
+  result.splice(at < 0 ? result.length : at, 0, { group, settings: [] });
+  return result;
+}
+
+/**
  * Validates a user entry against the setting metadata.
  * @returns {{ ok: true, value: string|number|boolean } | { ok: false, error: string, params?: object }}
  *   error is an i18n key suffix under components.guider.native.settings.errors.
