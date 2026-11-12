@@ -2720,6 +2720,10 @@
           "actionCancel": "キャンセル",
           "actionOptionConfirm": "「{option}」を実行しますか？",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "歯数",
+              "Seconds": "秒"
+            },
             "GuideSource": {
               "GuideCamera": "ガイドカメラ",
               "Simulator": "シミュレーター"
@@ -2769,7 +2773,9 @@
             "RaMinMove": "RA 最小移動量",
             "RaCorrectionPace": "RA 補正ペース",
             "PeriodicErrorPrediction": "周期誤差の予測",
+            "WormPeriodUnit": "RA ウォームの指定方法",
             "WormTeeth": "RA ウォームホイール歯数",
+            "WormPeriodSeconds": "RA ウォーム周期",
             "ForgetPeriodicError": "周期誤差をリセット",
             "DecAlgorithm": "Dec アルゴリズム",
             "DecAggression": "Dec Aggression（補正強度）",
@@ -2836,7 +2842,9 @@
             "RaMinMove": "0 = 画像スケールから自動設定。",
             "RaCorrectionPace": "Predictive アルゴリズムがフレームごとに補正する残り誤差の割合。0.5 はゼロを越えずに 2～3 フレームでずれを解消し、1 は一度にすべて補正します。ドリフトとピリオディックエラーは常に完全に補正されます。",
             "PeriodicErrorPrediction": "RA ウォームの周期誤差を学習し、現れる前に補正します。学習したカーブはプロファイルと赤道儀ごとに保存されます。",
+            "WormPeriodUnit": "RA ウォームをウォームホイールの歯数、または秒単位の周期で指定します（例：架台のマニュアルや PEC ツールから）。秒は、周期が整数の歯数にならない駆動（波動歯車、ベルト）にも使えます。選んだ方だけが使われます。",
             "WormTeeth": "RA ウォームホイールの歯数（例: EQ6-R は 180、HEQ5 は 135）。正確なウォーム周期がわかります。0 = ガイドフレームから周期を検出。",
+            "WormPeriodSeconds": "RA ウォームの周期（秒、例：180 歯なら 478.7）。この場合、周期は検出されません。子午線反転の後は、歯数がない場合と同じく位相を学習し直します。0（既定）= ガイドフレームから周期を検出。ガイダーは 180〜1200 秒を受け付けます。",
             "ForgetPeriodicError": "この赤道儀について学習した周期誤差を破棄します（ウォームを調整した後など）。その後、改めて学習されます。",
             "DecAlgorithm": "Predictive（実験的）はガイドフレームからシーイングと赤道儀自身の動きを学習し、次のフレームで予測される誤差を補正します。そのため補正強度、ヒステリシス、最小移動量は適用されません。",
             "DecAggression": "各フレームで補正する測定 Dec 誤差の割合。1.0 はすべて補正します。Dec が行き過ぎる場合は下げてください。",
@@ -2876,7 +2884,8 @@
             "BacklashRemeasureAfterSlewDeg": "架台がこの値より大きく移動した後、またはピア側が変わった後にガイドを開始すると、ガタモデルはまずガタを再測定します。星が追従するまで Dec を北へパルスし、その後南へ戻して開始位置に戻ります。これでギアは既知の側に当たり、モデルは新しい対象でのガタを把握します。ガイドフレーム約 10～20 枚分かかります。0 = 行わない。"
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "ガタモデルは Dec アルゴリズム Predictive でのみ有効です。現在は固定パルスを使用しています。 使うには、この設定で「Dec アルゴリズム」を Predictive にしてください。"
+            "backlashModelNeedsPredictive": "ガタモデルは Dec アルゴリズム Predictive でのみ有効です。現在は固定パルスを使用しています。 使うには、この設定で「Dec アルゴリズム」を Predictive にしてください。",
+            "wormPeriodOutOfRange": "180～1200 秒の範囲外：ガイダーはこの周期を使わず、ガイドフレームから検出します。"
           }
         },
         "darks": {

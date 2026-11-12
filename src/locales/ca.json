@@ -2752,6 +2752,10 @@
           "actionCancel": "Cancel·la",
           "actionOptionConfirm": "Voleu executar «{option}»?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dents",
+              "Seconds": "Segons"
+            },
             "GuideSource": {
               "GuideCamera": "Càmera de guiatge",
               "Simulator": "Simulador"
@@ -2801,7 +2805,9 @@
             "RaMinMove": "Moviment mín. RA",
             "RaCorrectionPace": "Ritme de correcció RA",
             "PeriodicErrorPrediction": "Predicció de l'error periòdic",
+            "WormPeriodUnit": "Vis RA indicat en",
             "WormTeeth": "Dents de la corona RA",
+            "WormPeriodSeconds": "Període del vis RA",
             "ForgetPeriodicError": "Oblida l'error periòdic",
             "DecAlgorithm": "Algorisme Dec",
             "DecAggression": "Agressivitat Dec",
@@ -2868,7 +2874,9 @@
             "RaMinMove": "0 = automàtic segons l'escala d'imatge.",
             "RaCorrectionPace": "Part de l'error restant que l'algorisme Predictive corregeix per imatge: 0,5 elimina un desplaçament en 2–3 imatges sense passar de zero, 1 ho corregeix tot de cop. La deriva i l'error periòdic sempre es corregeixen del tot.",
             "PeriodicErrorPrediction": "Aprèn l'error periòdic del vis sens fi d'RA i el corregeix abans que es noti. La corba apresa es desa per perfil i muntura.",
+            "WormPeriodUnit": "Indica el vis sens fi d'RA per les dents de la seva corona o pel seu període en segons, p. ex. del manual de la muntura o d'una eina PEC. Els segons també serveixen per a una transmissió el període de la qual no és un nombre enter de dents (reductora harmònica, corretja). Només es fa servir el valor triat.",
             "WormTeeth": "Dents de la corona d'RA (p. ex. 180 en una EQ6-R, 135 en una HEQ5); dona el període exacte del vis sens fi. 0 = detecta el període a partir dels fotogrames de guiatge.",
+            "WormPeriodSeconds": "Període del vis sens fi d'RA en segons (p. ex. 478,7 per a 180 dents); llavors no es detecta. Després d'un gir de meridià la seva fase es torna a aprendre, com sense nombre de dents. 0 (per defecte) = detecta el període a partir de les imatges de guiatge; el guiador accepta de 180 a 1200 s.",
             "ForgetPeriodicError": "Oblida l'error periòdic après per a aquesta muntura, p. ex. després d'ajustar el vis sens fi; després es torna a aprendre.",
             "DecAlgorithm": "Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent, de manera que l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
             "DecAggression": "Part de l'error Dec mesurat que es corregeix a cada imatge: 1,0 ho corregeix tot. Baixa-ho si Dec es passa.",
@@ -2908,7 +2916,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quan el guiatge comença després que la muntura s'hagi mogut més d'aquest valor o hagi canviat de costat del pilar, el model de joc torna a mesurar primer el joc: Dec fa polsos cap al nord fins que l'estrella segueix, i després cap al sud fins al punt d'inici. L'engranatge queda llavors contra un costat conegut i el model coneix el joc al nou objectiu. Triga uns 10 a 20 fotogrames de guiatge. 0 = mai."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "El model de joc només funciona amb l'algorisme Dec Predictive; ara s'utilitza el pols fix. Per utilitzar-lo, poseu «Algorisme Dec» a Predictive en aquesta configuració."
+            "backlashModelNeedsPredictive": "El model de joc només funciona amb l'algorisme Dec Predictive; ara s'utilitza el pols fix. Per utilitzar-lo, poseu «Algorisme Dec» a Predictive en aquesta configuració.",
+            "wormPeriodOutOfRange": "Fora de 180 a 1200 s: el guiador no fa servir aquest període i el detecta a partir de les imatges de guiatge."
           }
         },
         "darks": {

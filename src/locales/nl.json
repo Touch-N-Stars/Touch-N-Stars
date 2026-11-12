@@ -2711,6 +2711,10 @@
           "actionCancel": "Annuleren",
           "actionOptionConfirm": "“{option}” uitvoeren?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Tanden",
+              "Seconds": "Seconden"
+            },
             "GuideSource": {
               "GuideCamera": "Guidecamera",
               "Simulator": "Simulator"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Min-move RA",
             "RaCorrectionPace": "RA-correctietempo",
             "PeriodicErrorPrediction": "Periodieke fout voorspellen",
+            "WormPeriodUnit": "RA-worm opgeven in",
             "WormTeeth": "Tanden RA-wormwiel",
+            "WormPeriodSeconds": "Periode RA-worm",
             "ForgetPeriodicError": "Periodieke fout vergeten",
             "DecAlgorithm": "Dec-algoritme",
             "DecAggression": "Dec-agressie",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatisch uit de beeldschaal.",
             "RaCorrectionPace": "Deel van de resterende fout dat het Predictive-algoritme per frame corrigeert: 0,5 werkt een verschuiving weg over 2–3 frames zonder voorbij nul te zwaaien, 1 corrigeert alles in één keer. Drift en periodieke fout worden altijd volledig gecorrigeerd.",
             "PeriodicErrorPrediction": "Leert de periodieke fout van de RA-worm en corrigeert die voordat hij zichtbaar wordt. De geleerde curve wordt per profiel en montering bewaard.",
+            "WormPeriodUnit": "Geef de RA-worm op via het aantal tanden van het wormwiel of via de periode in seconden, bijv. uit de handleiding van de montering of een PEC-tool. Seconden passen ook bij een aandrijving waarvan de periode geen geheel aantal tanden is (strain-wave-overbrenging, riem). Alleen de gekozen waarde wordt gebruikt.",
             "WormTeeth": "Aantal tanden van het RA-wormwiel (bijv. 180 bij een EQ6-R, 135 bij een HEQ5); geeft de exacte wormperiode. 0 = periode bepalen uit de guidebeelden.",
+            "WormPeriodSeconds": "Periode van de RA-worm in seconden (bijv. 478,7 bij 180 tanden); die wordt dan niet bepaald. Na een meridiaanflip wordt de fase opnieuw geleerd, zoals zonder aantal tanden. 0 (standaard) = periode uit de guideframes bepalen; de guider neemt 180 tot 1200 s.",
             "ForgetPeriodicError": "Vergeet de voor deze montering geleerde periodieke fout, bijv. nadat de worm is afgesteld; die wordt daarna opnieuw geleerd.",
             "DecAlgorithm": "Predictive (experimenteel) leert de seeing en de eigen beweging van de montering uit de guidebeelden en corrigeert de fout die het voor het volgende beeld voorspelt; agressie, hysterese en min-move gelden er daarom niet voor.",
             "DecAggression": "Deel van de gemeten Dec-fout dat in elk frame wordt gecorrigeerd: 1,0 corrigeert alles. Verlaag het als Dec doorschiet.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Start de guiding nadat de montering verder dan deze waarde is gezwenkt of van pierzijde is gewisseld, dan meet het spelingsmodel eerst de speling opnieuw: Dec pulst naar het noorden tot de ster volgt en daarna naar het zuiden terug naar het begin. Het tandwiel ligt dan tegen een bekende kant en het model kent de speling bij het nieuwe doel. Duurt ongeveer 10 tot 20 guideframes. 0 = nooit."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Het spelingsmodel werkt alleen met het Dec-algoritme Predictive; nu wordt de vaste puls gebruikt. Zet hiervoor in deze instellingen ‘Dec-algoritme’ op Predictive."
+            "backlashModelNeedsPredictive": "Het spelingsmodel werkt alleen met het Dec-algoritme Predictive; nu wordt de vaste puls gebruikt. Zet hiervoor in deze instellingen ‘Dec-algoritme’ op Predictive.",
+            "wormPeriodOutOfRange": "Buiten 180 tot 1200 s: de guider gebruikt deze periode niet en bepaalt ze uit de guideframes."
           }
         },
         "darks": {
