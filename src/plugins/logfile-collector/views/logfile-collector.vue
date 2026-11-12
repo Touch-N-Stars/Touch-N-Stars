@@ -745,7 +745,7 @@ async function collectAndUpload() {
   } catch (err) {
     console.error('Log upload failed', err);
     resultOk.value = false;
-    resultMsg.value = t('plugins.logfileCollector.result.failed');
+    resultMsg.value = uploadFailureMessage(err);
     lastGeneratedToken.value = ''; // Clear token on failure
   } finally {
     busy.value = false;
@@ -847,7 +847,7 @@ async function uploadSavedArchive(archive) {
   } catch (err) {
     console.error('Log upload failed', err);
     resultOk.value = false;
-    resultMsg.value = t('plugins.logfileCollector.result.failed');
+    resultMsg.value = uploadFailureMessage(err);
   } finally {
     busy.value = false;
     activeArchiveId.value = null;
@@ -1090,6 +1090,22 @@ async function uploadZipBlob(zipBlob, zipFileName, uploadDescription, logToken) 
   }
 
   throw new Error(`Upload failed with status ${res.status}`);
+}
+
+// The server says why it refused an archive (e.g. a size limit); show that instead of a
+// bare "Upload failed" so a user can report something actionable.
+function uploadFailureMessage(error) {
+  const status = error?.response?.status;
+  if (!status) {
+    const reason = error?.message?.trim();
+    const failed = t('plugins.logfileCollector.result.failed');
+    return reason ? `${failed}: ${reason}` : failed;
+  }
+  const failed = t('plugins.logfileCollector.result.failedWithStatus', { status });
+  const reason = extractErrorMessage({ response: error.response }, '').trim();
+  // A proxy error page (HTML) is not a readable reason.
+  if (!reason || reason.startsWith('<')) return failed;
+  return `${failed}: ${reason.slice(0, 300)}`;
 }
 
 function extractErrorMessage(error, fallback) {

@@ -8,9 +8,30 @@
 // to Errors carrying { status, code } - the page shows the real reason instead of "HTTP 409".
 import axios from 'axios';
 import { DEFAULT_TIMEOUT, getUrls, rawHttp } from './core';
+import { getHttpAbortSignal } from '@/utils/httpLifecycle';
 
 /** The HTTP instance of this module (core's rawHttp; tests mock its methods). */
 export const nativeGuiderHttp = rawHttp;
+
+/**
+ * A signal that aborts when any of the given ones does, and `release()` to drop its listeners
+ * once the request is over. Built by hand because AbortSignal.any() (Chrome 116+, Safari 17.4+)
+ * is missing in some of the webviews the app runs in.
+ */
+export function anyAbortSignal(...signals) {
+  const present = signals.filter(Boolean);
+  const controller = new AbortController();
+  const onAbort = (event) => controller.abort(event?.target?.reason);
+  const release = () => present.forEach((s) => s.removeEventListener('abort', onAbort));
+  for (const s of present) {
+    if (s.aborted) {
+      controller.abort(s.reason);
+      break;
+    }
+    s.addEventListener('abort', onAbort);
+  }
+  return { signal: controller.signal, release };
+}
 
 /** Maps an axios failure to an Error with the backend's message, status and code. */
 export function mapNativeGuiderError(error, fallbackMessage = 'Native guider request failed') {
@@ -149,12 +170,18 @@ export default {
 
   /**
    * Starts a session. options = AdvancedCoachOptions ({ steps, exposureSeconds, gains,
-   * framesPerCombination, driftSeconds, trialSeconds, repeatBaseline, allowCalibration });
-   * empty lists mean the guider's defaults. Resolves { action, accepted, pending, status };
-   * a rejection carries the guider's messageCode (e.g. coach.busy).
+   * framesPerCombination, driftSeconds, trialSeconds, repeatBaseline, exposureTrial,
+   * allowCalibration }); empty lists mean the guider's defaults. Resolves { action, accepted,
+   * pending, status }; a rejection carries the guider's messageCode (e.g. coach.busy).
+   * slew (stay | east | west) slews to the calibration position on that side first; the answer is
+   * then mostly 202 (pending) and a failure follows as an 'action' event.
    */
-  startNativeGuiderCoach(options = {}) {
-    return request('post', 'coach/start', { data: options, timeout: 20000 });
+  startNativeGuiderCoach(options = {}, { slew } = {}) {
+    return request('post', 'coach/start', {
+      data: options,
+      params: slew ? { slew } : undefined,
+      timeout: 20000,
+    });
   },
 
   skipNativeGuiderCoachStep() {
@@ -181,6 +208,42 @@ export default {
   /** Hides a live hint for the rest of the guiding session; resolves { dismissed, hints }. */
   dismissNativeGuiderHint(id) {
     return request('post', 'hints/dismiss', { data: { id } });
+  },
+
+  // --- Guide logs (log viewer) -------------------------------------------------------
+
+  /**
+   * AdvancedGuideLogFile[]: { name, night, sizeBytes, modifiedUtc, active, timeZone,
+   * utcOffsetMinutes }, newest night first. Also while the guider is not connected; 501 for a
+   * guider without guide logs, 404 for a backend without the route.
+   */
+  getNativeGuiderLogs() {
+    return request('get', 'logs');
+  },
+
+  /** One guide log as text (PHD2 format); `onProgress(loadedBytes)` while it downloads. */
+  async getNativeGuiderLog(name, { onProgress, signal } = {}) {
+    const { API_URL } = getUrls();
+    // core only adds the app's resume abort when a request brings no signal of its own
+    const abort = anyAbortSignal(signal, getHttpAbortSignal());
+    try {
+      const response = await nativeGuiderHttp.get(
+        `${API_URL}internal-guider/logs/${encodeURIComponent(name)}`,
+        {
+          responseType: 'text',
+          // keep the text as it is (axios would try JSON.parse on it)
+          transformResponse: [(data) => data],
+          timeout: 120000,
+          signal: abort.signal,
+          onDownloadProgress: onProgress ? (e) => onProgress(e.loaded ?? 0) : undefined,
+        }
+      );
+      return typeof response.data === 'string' ? response.data : String(response.data ?? '');
+    } catch (error) {
+      throw mapNativeGuiderError(error, 'Guide log download failed');
+    } finally {
+      abort.release();
+    }
   },
 
   // --- Flight recorder (incidents) --------------------------------------------------

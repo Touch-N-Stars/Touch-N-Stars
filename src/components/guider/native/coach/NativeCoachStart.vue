@@ -18,6 +18,61 @@
       <span>{{ k('guidingWarning') }}</span>
     </div>
 
+    <!-- The mount points where the coach measures badly: offer the slew to a calibration position -->
+    <div
+      v-if="positionWarning"
+      class="flex flex-col gap-3 rounded-control border border-status-warn/50 bg-status-warn/10 p-3"
+      data-testid="native-coach-position"
+    >
+      <div class="flex items-start gap-2 text-sm">
+        <ExclamationTriangleIcon class="mt-0.5 h-5 w-5 shrink-0 text-status-warn" />
+        <div class="flex min-w-0 flex-col gap-1">
+          <span class="font-semibold text-status-warn">{{ k('position.title') }}</span>
+          <span v-for="issue in positionWarning.issues" :key="issue" class="text-content">
+            {{ k(`position.${issue}`, positionParams) }}
+          </span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <span id="native-coach-slew-label" class="text-sm font-medium text-content">
+          {{ t('components.guider.native.controls.calibrationSlew') }}
+        </span>
+        <div
+          class="grid grid-cols-2 gap-1 rounded-control bg-surface-1 border border-line p-1"
+          role="radiogroup"
+          aria-labelledby="native-coach-slew-label"
+        >
+          <button
+            v-for="choice in SLEW_CHOICES"
+            :key="choice"
+            type="button"
+            role="radio"
+            class="min-h-touch rounded-chip px-2 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="
+              coachSlew === choice
+                ? 'bg-accent-action text-white'
+                : 'text-content-muted hover:bg-surface-2'
+            "
+            :aria-checked="coachSlew === choice"
+            :disabled="choice !== 'none' && !!slewBlocker"
+            :data-testid="`native-coach-slew-${choice}`"
+            @click="coachSlew = choice"
+          >
+            {{ t(`components.guider.native.controls.calibrationSlewChoices.${choice}`) }}
+          </button>
+        </div>
+        <p v-if="slewBlocker" class="text-xs text-status-warn">
+          {{ k(`position.slewBlock.${slewBlocker}`) }}
+        </p>
+        <p v-else-if="slewMissing" class="text-xs text-status-danger">
+          {{ k('position.slewNeeded', positionParams) }}
+        </p>
+        <p v-else class="text-xs text-content-muted">
+          {{ t('components.guider.native.controls.calibrationSlewHint') }}
+        </p>
+      </div>
+    </div>
+
     <!-- Steps -->
     <div class="flex flex-col gap-1.5">
       <span class="text-xs font-bold uppercase tracking-wider text-content-faint">
@@ -186,6 +241,13 @@
             </div>
             <toggleButton v-model:statusValue="repeatBaseline" />
           </div>
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex min-w-0 flex-col">
+              <span class="text-sm text-content">{{ k('options.exposureTrial') }}</span>
+              <span class="text-xs text-content-faint">{{ k('options.exposureTrialHint') }}</span>
+            </div>
+            <toggleButton v-model:statusValue="exposureTrial" />
+          </div>
         </div>
 
         <div class="flex items-center justify-between gap-3">
@@ -221,7 +283,7 @@
       <button type="button" class="tns-btn-primary" :disabled="!canStart" @click="start">
         <ArrowPathIcon v-if="starting" class="h-5 w-5 animate-spin" />
         <PlayIcon v-else class="h-5 w-5" />
-        {{ starting ? k('starting') : k('start') }}
+        {{ starting ? k('starting') : slewChosen ? k('position.startWithSlew') : k('start') }}
       </button>
     </div>
   </section>
@@ -241,11 +303,20 @@ import {
   XCircleIcon,
 } from '@heroicons/vue/24/outline';
 import toggleButton from '@/components/helpers/toggleButton.vue';
+import { getBackendLanguageCode } from '@/i18n';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { useSequenceStore } from '@/store/sequenceStore';
+import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import {
+  COACH_POSITION,
   COACH_STEPS,
   DEFAULT_EXPOSURES,
+  coachPosition,
+  coachPositionWarning,
+  coachSlewBlocker,
+  coachSlewPlan,
+  defaultCoachSlew,
   defaultGains,
   estimateStepSeconds,
   estimateTotalSeconds,
@@ -258,17 +329,23 @@ const OPTIONS_KEY = 'nativeGuider.coach.options';
 const FRAME_CHOICES = [3, 5, 8, 10];
 const DRIFT_CHOICES = [120, 180, 300, 600];
 const TRIAL_CHOICES = [60, 120, 180, 300];
+// Slew before the session: none, or to the calibration position on the mount's current side (stay)
+// or on the east or west side of the sky, as in the Calibrate dialog.
+const SLEW_CHOICES = ['none', 'stay', 'east', 'west'];
 const DEFAULTS = {
   steps: [...COACH_STEPS],
   frames: 5,
   driftSeconds: 180,
   trialSeconds: 120,
   repeatBaseline: true,
+  exposureTrial: true,
   allowCalibration: true,
 };
 
 const store = useNativeGuiderStore();
-const { t } = useI18n();
+const mainStore = apiStore();
+const sequenceStore = useSequenceStore();
+const { t, locale } = useI18n();
 const { k, stepName, duration, message } = useCoachText();
 
 const stored = readStored();
@@ -277,6 +354,7 @@ const frames = ref(stored.frames ?? DEFAULTS.frames);
 const driftSeconds = ref(stored.driftSeconds ?? DEFAULTS.driftSeconds);
 const trialSeconds = ref(stored.trialSeconds ?? DEFAULTS.trialSeconds);
 const repeatBaseline = ref(stored.repeatBaseline ?? DEFAULTS.repeatBaseline);
+const exposureTrial = ref(stored.exposureTrial ?? DEFAULTS.exposureTrial);
 const allowCalibration = ref(stored.allowCalibration ?? DEFAULTS.allowCalibration);
 const advancedOpen = ref(false);
 const starting = ref(false);
@@ -324,6 +402,7 @@ function writeStored() {
     driftSeconds: driftSeconds.value,
     trialSeconds: trialSeconds.value,
     repeatBaseline: repeatBaseline.value,
+    exposureTrial: exposureTrial.value,
     allowCalibration: allowCalibration.value,
     exposures: exposuresCustom.value ? exposures.value : undefined,
     gains: gainsCustom.value ? gains.value : undefined,
@@ -343,6 +422,7 @@ function resetOptions() {
   driftSeconds.value = DEFAULTS.driftSeconds;
   trialSeconds.value = DEFAULTS.trialSeconds;
   repeatBaseline.value = DEFAULTS.repeatBaseline;
+  exposureTrial.value = DEFAULTS.exposureTrial;
   allowCalibration.value = DEFAULTS.allowCalibration;
   exposures.value = [...DEFAULT_EXPOSURES];
   gains.value = suggestedGains.value;
@@ -356,6 +436,8 @@ const estimateOptions = computed(() => ({
   driftSeconds: driftSeconds.value,
   trialSeconds: trialSeconds.value,
   repeatBaseline: repeatBaseline.value,
+  exposureTrial: exposureTrial.value,
+  currentExposureSeconds: store.coach?.currentExposureSeconds,
   allowCalibration: allowCalibration.value,
 }));
 
@@ -377,8 +459,51 @@ const guidingActive = computed(() =>
   ['Guiding', 'Paused', 'LostLock', 'Reacquiring'].includes(store.state)
 );
 
+// Mount position: only the steps after the camera check guide the mount, so only they care.
+const position = computed(() => coachPosition(mainStore.mountInfo));
+const positionWarning = computed(() => coachPositionWarning(position.value, selected.value));
+function formatDegrees(value, digits) {
+  const format = new Intl.NumberFormat(getBackendLanguageCode(locale.value) ?? undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+  return `${format.format(value)}°`;
+}
+const positionParams = computed(() => ({
+  declination:
+    position.value?.declination == null ? '' : formatDegrees(position.value.declination, 1),
+  altitude: position.value?.altitude == null ? '' : formatDegrees(position.value.altitude, 0),
+  maxDeclination: formatDegrees(COACH_POSITION.maxDeclination, 0),
+}));
+/** Why the mount cannot slew (a key under coach.position.slewBlock), or null. */
+const slewBlocker = computed(() =>
+  coachSlewBlocker({
+    mountInfo: mainStore.mountInfo,
+    sequenceRunning: sequenceStore.sequenceRunning === true,
+    cameraExposing: mainStore.cameraInfo?.IsExposing === true,
+  })
+);
+// No slew unless the guider would refuse the position: a slew moves the mount off the target. Also
+// re-evaluated when the mount becomes able to slew (e.g. unparked) while the position stays refused.
+const coachSlew = ref('none');
+watch(
+  () => defaultCoachSlew(positionWarning.value, slewBlocker.value),
+  (slew) => {
+    coachSlew.value = slew;
+  },
+  { immediate: true }
+);
+const slewPlan = computed(() =>
+  coachSlewPlan(positionWarning.value, slewBlocker.value, coachSlew.value)
+);
+const slewChosen = computed(() => slewPlan.value.slew);
+// Too close to the pole and no slew chosen: the guider would refuse the session.
+const slewMissing = computed(() => slewPlan.value.missing);
+const slewing = computed(() => store.summary.calibrationSlew === true);
+
 const blocker = computed(() => {
   if (!store.isAvailable) return k('notConnected');
+  if (slewing.value) return k('slewingBlock');
   if (store.state === 'Calibrating') return k('calibratingBlock');
   if (store.darksRunning) return k('darksBlock');
   return '';
@@ -390,13 +515,25 @@ const canStart = computed(
     !blocker.value &&
     selected.value.length > 0 &&
     !combinationsError.value &&
+    !slewMissing.value &&
     !store.coachPending
 );
 
 async function start() {
   if (!canStart.value) return;
-  // The coach takes over guiding: a running sub would be disturbed, so ask like Stop does.
-  if (guidingActive.value) {
+  // A slew moves the mount off its target: say so and where it goes before anything moves.
+  if (slewChosen.value) {
+    const ok = await useToastStore().showConfirmation(
+      k('position.confirmSlewTitle'),
+      k('position.confirmSlew', {
+        side: t(`components.guider.native.controls.calibrationSlewChoices.${slewChosen.value}`),
+      }) + (guidingActive.value ? ` ${k('guidingWarning')}` : ''),
+      k('position.startWithSlew'),
+      t('common.cancel')
+    );
+    if (!ok) return;
+  } else if (guidingActive.value) {
+    // The coach takes over guiding: a running sub would be disturbed, so ask like Stop does.
     const ok = await useToastStore().showConfirmation(
       k('confirmStartTitle'),
       k('guidingWarning'),
@@ -409,7 +546,8 @@ async function start() {
   starting.value = true;
   writeStored();
   try {
-    const result = await store.startCoach({
+    const slew = slewChosen.value;
+    const options = {
       steps: COACH_STEPS.filter((s) => selected.value.includes(s)),
       exposureSeconds: exposuresCustom.value ? exposures.value : [],
       gains: gainsCustom.value ? gains.value : [],
@@ -417,8 +555,12 @@ async function start() {
       driftSeconds: driftSeconds.value,
       trialSeconds: trialSeconds.value,
       repeatBaseline: repeatBaseline.value,
+      exposureTrial: exposureTrial.value,
       allowCalibration: allowCalibration.value,
-    });
+    };
+    const result = slew
+      ? await store.startCoach(options, { slew })
+      : await store.startCoach(options);
     if (!result.ok && !result.cancelled) {
       const text = message(result.messageCode, result.message, result.messageParameters);
       startError.value = {

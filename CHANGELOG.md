@@ -9,10 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- MLAstro RPA (plugin): Connect an MLAstro One RPA to PINS over USB or Wi-Fi, nudge altitude and azimuth in fixed steps, and let TPPA correct the polar alignment automatically. It needs the MLAstro RPA plugin on PINS, which the app offers to install. The page warns that moving the RPA is not blocked during exposures, guiding or a running sequence, and a command that gets no answer in time is reported as possibly executed. Developed by @ydutertre.
+- Guide Log Viewer (PINS plugin): Reviews the guiding of any night from the native guider's guide logs, also with no equipment connected: a night overview coloured by guiding quality, the sessions, the moments worth a look with one tap to each of them, a zoomable guide graph with the total RMS, pulses, settling, dithers, lost stars and the light frames, statistics of any time range with an explanation for every value, a target plot, the periodic error of the mount and the calibrations. PHD2 guide logs can be opened from the device too. Needs the updated PINS and Touch'N'Stars plugin.
+- Native Guider (PINS): The Guiding Coach can also try shorter exposures (1 s and one halfway to the current exposure), since many mounts guide better with them. It needs the updated PINS guider.
+- Native Guider (PINS): A one-time tip suggests a shorter guide exposure when it is longer than 2 s.
+- Native Guider (PINS): The coach's start screen warns when the mount points close to the pole or low above the horizon, and can slew to a calibration position first. A slew is confirmed before the mount moves and is not offered while a sequence runs, the imaging camera exposes or the mount is already slewing. It needs the updated PINS guider and Touch'N'Stars plugin.
+- Native Guider (PINS): The RA worm can be given as its period in seconds instead of the wheel's tooth count. A period outside the 180 to 1200 s the guider takes is flagged.
 - Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
+- Native Guider (PINS): The guider's Settings tab now shows the settle settings (pixel tolerance, minimum settle time and timeout) in the Dither group, in Basic and Advanced. Until now they were only in the guider settings on the equipment page. A short note explains that the tolerance is in guide camera pixels and that the exposure starts anyway once the timeout runs out.
 
 ### Changed
 
+- Atlas: The Celestia Atlas button in the navigation bar now shows the W of Cassiopeia instead of the sparkles.
 - Interface: Dialogs now share one look across the app, including About, Log, Weather, the instance switcher and the favorites. More of them also close with the Escape key, and the small info dialogs close with a tap beside them.
 - Settings: All settings tabs now use the same cards, headings and colours as the rest of the app. The folder buttons next to path fields are larger and easier to tap.
 - TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.

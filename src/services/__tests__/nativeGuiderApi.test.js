@@ -156,6 +156,17 @@ test('coach calls use the coach routes, bodies and history limit', async (t) => 
   assert.deepEqual(calls[6].data, { id: 'hint.raOscillation' });
 });
 
+test('a coach start with a slew sends it as a query parameter', async (t) => {
+  const calls = recordRequests(t, { success: true, response: { pending: true } });
+
+  await apiService.startNativeGuiderCoach({ steps: ['Drift'] }, { slew: 'east' });
+  await apiService.startNativeGuiderCoach({});
+
+  assert.deepEqual(calls[0].params, { slew: 'east' });
+  assert.deepEqual(calls[0].data, { steps: ['Drift'] });
+  assert.equal(calls[1].params, undefined);
+});
+
 test('a coach rejection keeps the guider message code', async (t) => {
   t.mock.method(nativeGuiderHttp, 'request', async () => {
     const error = new Error('Request failed with status code 409');
@@ -179,4 +190,55 @@ test('a coach rejection keeps the guider message code', async (t) => {
     assert.deepEqual(error.messageParameters, { sessionId: 's1' });
     return true;
   });
+});
+
+test('guide log list uses the logs route', async (t) => {
+  const calls = recordRequests(t, { success: true, response: [{ name: 'a.txt' }] });
+  const logs = await apiService.getNativeGuiderLogs();
+  assert.deepEqual(logs, [{ name: 'a.txt' }]);
+  assert.equal(calls[0].method, 'get');
+  assert.equal(calls[0].url, 'http://10.0.0.5:5000/api/internal-guider/logs');
+});
+
+test('a guide log downloads as text with its name encoded', async (t) => {
+  const calls = [];
+  t.mock.method(nativeGuiderHttp, 'get', async (url, config) => {
+    calls.push({ url, config });
+    config.onDownloadProgress?.({ loaded: 42 });
+    return { status: 200, data: config.transformResponse[0]('{"not":"json"}\nFrame,Time') };
+  });
+  const progress = [];
+  const text = await apiService.getNativeGuiderLog('Guide Log 2026-11-12#1.txt', {
+    onProgress: (n) => progress.push(n),
+  });
+
+  assert.equal(text, '{"not":"json"}\nFrame,Time');
+  assert.equal(
+    calls[0].url,
+    'http://10.0.0.5:5000/api/internal-guider/logs/Guide%20Log%202026-11-12%231.txt'
+  );
+  assert.equal(calls[0].config.responseType, 'text');
+  assert.deepEqual(progress, [42]);
+});
+
+test('a guide log download stops with the caller and with the app resume abort', async (t) => {
+  const { abortInFlightRequests } = await import('@/utils/httpLifecycle');
+  t.mock.method(nativeGuiderHttp, 'get', (url, config) => {
+    return new Promise((resolve, reject) => {
+      config.signal.addEventListener('abort', () => {
+        const error = new Error('canceled');
+        error.code = 'ERR_CANCELED';
+        reject(error);
+      });
+    });
+  });
+
+  const own = new AbortController();
+  const first = apiService.getNativeGuiderLog('a.txt', { signal: own.signal });
+  own.abort();
+  await assert.rejects(first, (error) => error.cancelled === true);
+
+  const second = apiService.getNativeGuiderLog('a.txt', { signal: new AbortController().signal });
+  abortInFlightRequests();
+  await assert.rejects(second, (error) => error.cancelled === true);
 });

@@ -400,15 +400,32 @@ export function isBasicSetting(setting) {
 /**
  * Whether a setting applies with the current value of the one it depends on: with `dependsOn`
  * it applies only while that setting has one of the `appliesTo` values (e.g. RA aggression only
- * for the Hysteresis algorithm). Settings without the metadata, or whose dependency is not in
- * the list, always apply.
+ * for the Hysteresis algorithm), and only while that setting applies itself (the worm teeth
+ * behind the worm period unit, which applies only to Predictive). Settings without the metadata,
+ * or whose dependency is not in the list, always apply.
  */
-export function settingApplies(setting, allSettings = []) {
+export function settingApplies(setting, allSettings = [], seen = new Set()) {
   if (!setting?.dependsOn || !Array.isArray(setting.appliesTo)) return true;
   const dependency = (allSettings || []).find((s) => s.name === setting.dependsOn);
-  if (!dependency) return true;
+  if (!dependency || seen.has(dependency.name)) return true;
   const value = String(dependency.value ?? '').toLowerCase();
-  return setting.appliesTo.some((v) => String(v).toLowerCase() === value);
+  if (!setting.appliesTo.some((v) => String(v).toLowerCase() === value)) return false;
+  seen.add(setting.name);
+  return settingApplies(dependency, allSettings, seen);
+}
+
+// enum settings shown as a segmented switch instead of a list: a choice between two ways to
+// give the same value (the RA worm in teeth or in seconds)
+const SEGMENTED_SETTINGS = new Set(['WormPeriodUnit']);
+
+/** Whether an enum setting is shown as a segmented switch (see SEGMENTED_SETTINGS). */
+export function isSegmentedSetting(setting) {
+  return (
+    String(setting?.type || '').toLowerCase() === 'enum' &&
+    SEGMENTED_SETTINGS.has(String(setting?.name || '')) &&
+    Array.isArray(setting?.options) &&
+    setting.options.length > 1
+  );
 }
 
 /** Groups settings for the settings sheet, Basic only unless advanced is set; settings that don't apply are left out. */
@@ -429,6 +446,23 @@ export function groupSettings(settings, { advanced = false } = {}) {
   return [...groups.entries()]
     .sort((a, b) => rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0]))
     .map(([group, items]) => ({ group, settings: items }));
+}
+
+/**
+ * groupSettings() result with `group` present even when the backend has no visible setting
+ * for it, at its place in SETTING_GROUP_ORDER. The sheet uses this for groups that also hold
+ * profile settings of their own (Dither: the settle criteria).
+ */
+export function withGroup(groups, group) {
+  if (groups.some((g) => g.group === group)) return groups;
+  const rank = (g) => {
+    const i = SETTING_GROUP_ORDER.indexOf(g);
+    return i >= 0 ? i : SETTING_GROUP_ORDER.length;
+  };
+  const at = groups.findIndex((g) => rank(g.group) > rank(group));
+  const result = [...groups];
+  result.splice(at < 0 ? result.length : at, 0, { group, settings: [] });
+  return result;
 }
 
 /**
@@ -673,9 +707,17 @@ export function decBacklash(status) {
 /**
  * A warning about a setting's value with the other settings (an i18n key suffix under
  * components.guider.native.settings.warnings), or null: the Dec backlash play model works only
- * with the Predictive Dec algorithm, otherwise the guider keeps the fixed pulse.
+ * with the Predictive Dec algorithm, otherwise the guider keeps the fixed pulse; a worm period
+ * outside the range the guider takes counts as "detect".
  */
 export function settingWarning(setting, allSettings = []) {
+  if (setting?.name === 'WormPeriodSeconds') {
+    // the guider takes a period outside what it can detect for "detect"
+    const seconds = Number(String(setting.value ?? '').replace(',', '.'));
+    const max = Number(setting.max ?? MAX_WORM_PERIOD_SECONDS);
+    const outside = seconds < MIN_WORM_PERIOD_SECONDS || seconds > max;
+    return seconds > 0 && outside ? 'wormPeriodOutOfRange' : null;
+  }
   if (setting?.name !== 'BacklashModel') return null;
   if (String(setting.value ?? '').toLowerCase() !== 'playmodel') return null;
   const algorithm = (allSettings || []).find((s) => s.name === 'DecAlgorithm');
@@ -684,6 +726,11 @@ export function settingWarning(setting, allSettings = []) {
     ? null
     : 'backlashModelNeedsPredictive';
 }
+
+/** Shortest RA worm period the guider takes (PeriodicErrorEstimator.MinPeriodSeconds). */
+export const MIN_WORM_PERIOD_SECONDS = 180;
+/** Longest RA worm period the guider takes, when the setting doesn't name its maximum. */
+export const MAX_WORM_PERIOD_SECONDS = 1200;
 
 /** Guider states in which the guide loop takes frames, so its timing is current. */
 export const LOOP_STATES = [

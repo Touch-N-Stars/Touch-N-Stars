@@ -2700,6 +2700,7 @@
             "Safety": "Bezpečnost",
             "Incidents": "Incidenty"
           },
+          "settleHint": "Po ditheru nebo spuštění pointace čeká další expozice, dokud chyba pointace nezůstane pod tolerancí (pixely pointační kamery) po minimální dobu ustálení. Pokud dřív vyprší časový limit, expozice se přesto spustí.",
           "confirmReconnectTitle": "Znovu připojit guider?",
           "confirmReconnect": "Guider se odpojí a znovu připojí. Pointace se mezitím zastaví, takže probíhající expozice už není pointována.",
           "reconnectNeeded": "Znovu připojte pointer, aby se použilo nové nastavení kamery.",
@@ -2710,6 +2711,10 @@
           "actionCancel": "Zrušit",
           "actionOptionConfirm": "Spustit „{option}“?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Zuby",
+              "Seconds": "Sekundy"
+            },
             "GuideSource": {
               "GuideCamera": "Pointační kamera",
               "Simulator": "Simulátor"
@@ -2759,7 +2764,9 @@
             "RaMinMove": "Min. pohyb RA",
             "RaCorrectionPace": "Tempo korekce RA",
             "PeriodicErrorPrediction": "Předpověď periodické chyby",
+            "WormPeriodUnit": "Šnek RA zadat v",
             "WormTeeth": "Počet zubů šnekového kola RA",
+            "WormPeriodSeconds": "Perioda šneku RA",
             "ForgetPeriodicError": "Zapomenout periodickou chybu",
             "DecAlgorithm": "Algoritmus Dec",
             "DecAggression": "Agresivita Dec",
@@ -2800,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "Odkud pocházejí pointační snímky. Pointační kamera: kamera ve slotu pointační kamery ve vybavení. Simulátor: vestavěná simulace montáže, oblohy a kamery, pro vyzkoušení pointace bez hardwaru nebo za denního světla.",
-            "ExposureSeconds": "Expoziční čas každého pointačního snímku. 1–4 s vyprůměrují většinu seeingu; kratší expozice reagují rychleji, ale honí seeing, delší reagují pomalu na vítr a chyby montáže.",
+            "ExposureSeconds": "Doba expozice každého naváděcího snímku. Kratší expozice reagují rychleji na vítr a chyby montáže; min. pohyb jim brání honit seeing. 1 s vyhovuje většině montáží; delší expozice použijte, když je naváděcí hvězda příliš slabá.",
             "Gain": "-1 ponechá aktuální zesílení nastavené v ovladači. (Zesílení v PHD2 je v procentech, proto se nepřebírá.)",
             "Offset": "-1 ponechá aktuální offset nastavený v ovladači.",
             "Binning": "Hardwarový binning pointačních snímků. 2×2 zvýší citlivost kamery a zrychlí přenos snímků za cenu rozlišení; užitečné s malými pixely nebo dlouhou ohniskovou vzdáleností pointace. Po změně znovu kalibrujte.",
@@ -2826,7 +2833,9 @@
             "RaMinMove": "0 = automaticky z měřítka snímku.",
             "RaCorrectionPace": "Podíl zbývající chyby, který algoritmus Predictive koriguje za snímek: 0,5 odstraní posun během 2–3 snímků bez překmitnutí přes nulu, 1 koriguje vše najednou. Drift a periodická chyba se vždy korigují celé.",
             "PeriodicErrorPrediction": "Učí se periodickou chybu šneku v RA a koriguje ji dřív, než se projeví. Naučená křivka se ukládá pro profil a montáž.",
+            "WormPeriodUnit": "Zadejte šnek RA počtem zubů šnekového kola nebo jeho periodou v sekundách, např. z návodu k montáži nebo z nástroje PEC. Sekundy se hodí i pro pohon, jehož perioda neodpovídá celému počtu zubů (vlnový převod, řemen). Použije se jen zvolená hodnota.",
             "WormTeeth": "Počet zubů šnekového kola RA (např. 180 u EQ6-R, 135 u HEQ5); dává přesnou periodu šneku. 0 = zjistit periodu z naváděcích snímků.",
+            "WormPeriodSeconds": "Perioda šneku RA v sekundách (např. 478,7 pro 180 zubů); pak se nezjišťuje. Po otočení přes poledník se její fáze učí znovu, jako bez počtu zubů. 0 (výchozí) = zjistit periodu z naváděcích snímků; naváděč přijímá 180 až 1200 s.",
             "ForgetPeriodicError": "Zapomene periodickou chybu naučenou pro tuto montáž, např. po seřízení šneku; poté se naučí znovu.",
             "DecAlgorithm": "Predictive (experimentální) se z naváděcích snímků učí seeing a vlastní pohyb montáže a koriguje chybu, kterou předpovídá pro další snímek; agresivita, hystereze a min. pohyb se na něj proto nevztahují.",
             "DecAggression": "Podíl změřené chyby Dec korigovaný v každém snímku: 1,0 koriguje vše. Snižte, pokud Dec přestřeluje.",
@@ -2857,7 +2866,7 @@
             "MaxPulseDutyPercent": "Navádění se zastaví, když osa dostává pulzy déle než tento podíl minuty (ochrana proti útěku).",
             "PauseWhenSlewing": "Pozastaví korekce, dokud montáž hlásí přesun/zaparkování. Vypněte jen tehdy, když ovladač montáže trvale hlásí 'přesouvá se'.",
             "PauseWhenTrackingOff": "Pozastaví korekce, dokud montáž hlásí vypnuté sledování. Vypněte, pokud ovladač montáže neumí hlásit stav sledování.",
-            "SaveGuideLog": "Log navádění kompatibilní s PHD2 v ~/.local/share/NINA/InternalGuider/Logs.",
+            "SaveGuideLog": "Log navádění kompatibilní s PHD2 v ~/.local/share/NINA/InternalGuider/Logs. Plugin Logy navádění ho zobrazí v aplikaci.",
             "IncidentRecorder": "Drží v paměti naváděcí snímky z posledních minut a ukládá je kolem ztráty hvězdy, útěků, problémů s montáží a kamerou a skoků chyby, pro přehrání a stažení.",
             "IncidentBudgetMb": "Místo na disku pro zaznamenané incidenty; nejdřív se mažou nejstarší neponechané. Incidenty simulátoru mají vlastních 200 MB.",
             "SimulatorScenario": "Montáž, obloha a kamera, které vestavěný simulátor simuluje.",
@@ -2866,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Když pointace začne poté, co se montáž posunula dál než o tuto hodnotu nebo změnila stranu sloupu, model vůle nejprve vůli znovu změří: Dec pulzuje na sever, dokud hvězda nezačne sledovat, pak na jih zpět na začátek. Kolo se pak opírá o známou stranu a model zná vůli u nového cíle. Trvá asi 10 až 20 pointačních snímků. 0 = nikdy."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Model vůle funguje jen s algoritmem Dec Predictive; nyní se používá pevný pulz. Chcete-li ho použít, nastavte v tomto nastavení „Algoritmus Dec“ na Predictive."
+            "backlashModelNeedsPredictive": "Model vůle funguje jen s algoritmem Dec Predictive; nyní se používá pevný pulz. Chcete-li ho použít, nastavte v tomto nastavení „Algoritmus Dec“ na Predictive.",
+            "wormPeriodOutOfRange": "Mimo rozsah 180 až 1200 s: naváděč tuto periodu nepoužije a zjistí ji z naváděcích snímků."
           }
         },
         "darks": {
@@ -2969,6 +2979,8 @@
             "trialSeconds": "Délka každého testu",
             "repeatBaseline": "Na konci zopakovat současné nastavení",
             "repeatBaselineHint": "Odhalí změnu seeingu nebo mraky během testů.",
+            "exposureTrial": "Vyzkoušet kratší expozice",
+            "exposureTrialHint": "Od 1,5 s navádí také s 1 s a s expozicí v polovině cesty k současné (např. 1,5 s při 2,5 s). Mnoho montáží navádí lépe s kratšími expozicemi.",
             "allowCalibration": "Kalibrovat v případě potřeby",
             "allowCalibrationHint": "Bez kalibrace nelze spustit drift, odezvu montáže ani testy.",
             "minutes": "{value} min",
@@ -2982,6 +2994,23 @@
           "notConnected": "Připojte PINS Native Guider, abyste mohli použít Coach.",
           "calibratingBlock": "Počkejte na dokončení kalibrace.",
           "darksBlock": "Počkejte, až bude knihovna darků vytvořena.",
+          "slewingBlock": "Montáž najíždí do kalibrační pozice. Coach začne, až tam dorazí; Stop v ovládání guideru najetí zruší.",
+          "position": {
+            "title": "Montáž míří tam, kde Coach měří špatně",
+            "nearPole": "Dec {declination} je blízko pólu. Naváděcí pulzy v RA tam hvězdou téměř nepohnou, takže kalibrace a výsledky RA jsou nespolehlivé. Za {maxDeclination} Coach nezačne.",
+            "low": "Montáž míří jen {altitude} nad obzor. Vzduch tam hvězdu víc rozmazává a posouvá, což kazí měření.",
+            "slewNeeded": "Zvolte najetí: za Dec {maxDeclination} Coach nezačne.",
+            "slewBlock": {
+              "noMount": "Připojte montáž, aby mohla najet do kalibrační pozice.",
+              "parked": "Odparkujte montáž, aby mohla najet do kalibrační pozice.",
+              "slewing": "Počkejte, až montáž dokončí najíždění.",
+              "sequence": "Běží sekvence. Najetí by montáž odvedlo od cíle; nejprve sekvenci zastavte.",
+              "exposing": "Hlavní kamera exponuje. Najetí by snímek zkazilo; počkejte, až skončí."
+            },
+            "startWithSlew": "Najet a spustit Coach",
+            "confirmSlewTitle": "Najet s montáží?",
+            "confirmSlew": "Montáž opustí aktuální cíl a najede do kalibrační pozice ({side}). Coach se spustí, jakmile dorazí."
+          },
           "start": "Spustit Coach",
           "starting": "Spouští se…",
           "startFailed": "Coach se nepodařilo spustit",
@@ -3072,6 +3101,7 @@
               "current": "Současné nastavení",
               "suggestion": "Navržené nastavení",
               "variant": "Varianta",
+              "exposure": "Kratší expozice",
               "currentRepeat": "Současné nastavení znovu"
             },
             "winner": "Nejlepší",
@@ -3148,6 +3178,7 @@
           "hint": {
             "label": "Tip",
             "dismiss": "Zahodit tip",
+            "dismissForGood": "Tento tip už nezobrazovat",
             "apply": "Použít",
             "applied": "Použito",
             "applyFailed": "Použití tipu selhalo"
@@ -3249,7 +3280,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "I s vypnutým naváděním hvězda kvůli atmosféře poskakuje o {rmsArcsec}. Tento rychlý pohyb žádné navádění nedokáže sledovat: je to spodní hranice vašeho RMS navádění.",
                 "fix_good": "Dobré podmínky: teď se projeví i malé chyby montáže, takže jemné ladění se vyplatí.",
-                "fix": "Nehoňte seeing: navádějte s expozicí 2 s nebo delší a s min. pohybem těsně nad seeingem."
+                "fix": "Zabraňte guideru honit seeing min. pohybem těsně nad seeingem. Ten, ne dlouhá expozice, seeing filtruje: krátká expozice (kolem 1 s) reaguje rychleji na vlastní chyby montáže."
               },
               "minMove": {
                 "title": "Min. pohyb podle seeingu: RA {raPx}, Dec {decPx}",
@@ -3397,6 +3428,11 @@
                 "title": "Navádění je na hranici seeingu",
                 "why": "Vaše RMS {rmsArcsec} je blízko tomu, co atmosféra dovoluje.",
                 "fix": "Teď není co ladit."
+              },
+              "longExposure": {
+                "title": "Zkuste kratší expozici navádění",
+                "why": "S {exposureSeconds} na snímek koriguje navádění pozdě. Mnoho montáží navádí lépe s kratšími expozicemi, protože korekce pak lépe sledují vlastní chyby montáže a vítr.",
+                "fix": "Zkuste {suggestedSeconds} a porovnejte RMS. Pointační kouč to může otestovat za vás. Tento tip se zobrazí jen jednou."
               }
             },
             "coach": {
@@ -3409,6 +3445,11 @@
                 "title": "Guider není připojen",
                 "why": "Coach potřebuje připojený nativní guider s kamerou a montáží.",
                 "fix": "Připojte guider (a montáž pro pulzní navádění) a zkuste to znovu."
+              },
+              "nearPole": {
+                "title": "Příliš blízko pólu",
+                "why": "Montáž míří na Dec {declinationDeg}. Naváděcí pulzy v RA tam hvězdou téměř nepohnou, takže kalibrace selže nebo měří hlavně šum.",
+                "fix": "Najeďte na deklinaci v rozsahu ±{maxDeclinationDeg}, nejlépe blízko nebeského rovníku, nebo při spuštění Coache zvolte najetí do kalibrační pozice."
               },
               "noStar": {
                 "title": "Nenalezena naváděcí hvězda",
@@ -8778,6 +8819,242 @@
       "queryComplete": "Dotaz dokončen",
       "invalidArguments": "Argumenty musí být objekt JSON",
       "planStopped": "Dokončená akce zůstává zachována. Zbytek plánu se zastavil; odešli nový požadavek."
+    },
+    "guideLogViewer": {
+      "navTitle": "Logy navádění",
+      "title": "Logy navádění",
+      "night": "Noc",
+      "loadingList": "Načítání logů navádění…",
+      "noLogs": "Zatím žádné logy navádění",
+      "live": "zapisuje se",
+      "reload": "Znovu načíst",
+      "openFile": "Otevřít soubor logu navádění (PINS nebo PHD2)",
+      "downloading": "Stahování logu navádění… {size}",
+      "analyzing": "Analýza…",
+      "notSupported": "Tato verze PINS zatím nenabízí své logy navádění. Soubor logu z tohoto zařízení ale otevřít můžete.",
+      "notAGuideLog": "Tento soubor neobsahuje navádění ani kalibraci z logu navádění ve formátu PHD2.",
+      "noSessions": "Tento log navádění zatím neobsahuje navádění ani kalibraci.",
+      "pickNight": "Vyberte noc a uvidíte, jak navádění probíhalo.",
+      "emptyHint": "Nativní naváděč při navádění zapisuje jeden log za noc. Naveďte jednu noc, nebo otevřete log PHD2 z tohoto zařízení.",
+      "kpi": {
+        "guided": "Naváděno",
+        "sessions": "Relace: {count}",
+        "rms": "Typické RMS",
+        "rmsHint": "Medián RMS přes 30 snímků za celou noc: jaké bylo navádění většinu času. Chvíle, kdy byla hvězda ztracena nebo bylo vypnuté sledování, ho nezkreslují.",
+        "rmsOverall": "{value} ze všech snímků",
+        "dithers": "Ditheringy",
+        "settleMedian": "ustáleno za {time} (medián)",
+        "starLost": "Ztracená hvězda",
+        "frames": "snímky",
+        "findings": "Problémy",
+        "findingsSub": "vážné / stojí za pohled",
+        "hints": {
+          "guided": "Jak dlouho naváděč této noci naváděl, sečteno přes jeho relace (relace trvá od spuštění po zastavení navádění; kalibrace se nepočítají).",
+          "dithers": "Kolikrát naváděč provedl dithering a jak dlouho po ditheringu trvalo, než se hvězda vrátila do limitu ustálení (medián). Pomalé ustalování stojí expoziční čas mezi snímky.",
+          "starLost": "Naváděcí snímky, ve kterých naváděč nenašel použitelnou naváděcí hvězdu, a proto neposlal korekci. Pár jednotlivých snímků nevadí; dlouhé řady znamenají mraky, rosu, odplouvající hvězdu nebo pohnutou montáž.",
+          "findings": "Chvíle, které analýza označila: vážné (červeně) a stojící za pohled (oranžově). Jsou uvedeny v části „Stojí za pohled“ a vykresleny jako trojúhelníky v přehledu a v grafu navádění."
+        }
+      },
+      "grade": {
+        "good": "Dobré",
+        "fair": "Slušné",
+        "poor": "Slabé",
+        "bad": "Špatné",
+        "lost": "Ztracená hvězda"
+      },
+      "overview": {
+        "title": "Přehled noci",
+        "aria": "Kvalita navádění během noci: klouzavé RMS v každém okamžiku, obarvené vůči typickému RMS noci",
+        "hint": "Tažením vyberete časový úsek, tažením rámečku ho posunete, klepnutím na relaci ji zobrazíte, dvojitým klepnutím celou noc.",
+        "rolling": "klouzavé RMS",
+        "lightFrame": "Light snímek {seconds} s",
+        "barsAre": "Sloupce: klouzavé RMS"
+      },
+      "chart": {
+        "title": "Navádění",
+        "pulses": "Pulzy",
+        "free": "Bez korekcí",
+        "freeHint": "Kam by hvězda odešla bez naváděcích pulzů (odhadnuto z pulzů a kalibračních rychlostí; začíná znovu při každém ditheringu). Ukazuje vlastní drift a periodickou chybu montáže.",
+        "earlier": "Dříve",
+        "later": "Později",
+        "zoomIn": "Přiblížit",
+        "zoomOut": "Oddálit",
+        "whole": "Celá noc",
+        "hint": "Najeďte na graf nebo se ho dotkněte a přečtete snímek a jeho značky. Tažením přes graf (nebo sevřením) přiblížíte, rolováním měníte měřítko, dvojklikem zobrazíte celou noc.",
+        "dropped": "Bez hvězdy",
+        "dither": "Dithering",
+        "starLost": "Ztracená hvězda",
+        "exposures": "Light snímky",
+        "rms": "RMS",
+        "rmsLine": "RMS (30 snímků)",
+        "legendFindings": "Stojí za pohled",
+        "ditherBy": "Dithering o {dx}, {dy} px",
+        "exposureAt": "Light snímek {seconds} s, {filter}: RMS {rms}"
+      },
+      "stats": {
+        "title": "Vybraný úsek",
+        "excludeSettling": "Bez ustalování",
+        "frames": "Snímky: {count}",
+        "empty": "V tomto úseku nejsou žádné naváděcí kroky.",
+        "total": "Celkem",
+        "peak": "Špička",
+        "mean": "Průměrný posun",
+        "drift": "Drift",
+        "pulses": "Snímky s pulzem",
+        "limited": "Pulzy na limitu",
+        "polar": "Polární ustavení",
+        "polarUnknown": "vyžaduje ≥ 5 min",
+        "oscillation": "Oscilace RA",
+        "decReversals": "Obraty Dec",
+        "starLost": "Snímky bez hvězdy",
+        "settling": "Snímky ustalování",
+        "snr": "SNR hvězdy (medián)",
+        "totalTitle": "Celkové RMS",
+        "raTitle": "RMS RA",
+        "decTitle": "RMS Dec",
+        "hints": {
+          "excludeSettling": "Vynechá snímky po ditheringu, dokud naváděč nehlásí ustálenou hvězdu, stejně jako PHD2 a živý graf navádění. Hvězda se v tu chvíli posouvá záměrně, takže tyto snímky neříkají nic o tom, jak dobře je držena.",
+          "total": "Jak daleko hvězda bloudila kolem své průměrné polohy, RA a Dec dohromady (odmocnina z RMS RA² + RMS Dec²). Podle tohoto čísla se navádění obvykle porovnává. Podle pravidla palce zůstávají hvězdy kulaté, dokud je pod zhruba polovinou až jednonásobkem měřítka pixelu hlavní kamery (″/px). Stejně jako v PHD2 se měří kolem průměru, takže stálý posun (viz „Průměrný posun“) se nezapočítává.",
+          "ra": "RMS samotné chyby RA, kolem jejího průměru. RA nese periodickou chybu montáže a většinu poryvů větru.",
+          "dec": "RMS samotné chyby Dec, kolem jejího průměru. Vysoké RMS Dec při nízkém RMS RA často ukazuje na vůli (backlash) v Dec, špatné polární ustavení nebo kabel.",
+          "peak": "Největší jednotlivá chyba v tomto úseku, se znaménkem. Jedna velká špička je poryv, zadrhnutí nebo skok; pravidelně se vracející špičky ukazují na periodickou chybu nebo oscilaci.",
+          "mean": "Průměrná chyba v tomto úseku. Ideálně blízko 0: v průměru byla hvězda na zamčené pozici. Stálý posun znamená, že naváděč zaostával za driftem (příliš velký minimální pohyb, malá agresivita, Dec naváděná jen jedním směrem). Sám hvězdy nerozmazává, to dělá RMS, ale velký ukazuje, že naváděč nestíhá.",
+          "drift": "Jak rychle se montáž pohybovala sama, za minutu: sklon pohybu „bez korekcí“, proložený mezi ditheringy. Rovnoměrný drift Dec pochází z chyby polárního ustavení; drift RA z mírně nesprávné rychlosti sledování nebo z průhybu. Odhadnuto z pulzů a kalibračních rychlostí.",
+          "pulses": "Podíl naváděcích snímků, ve kterých naváděč na této ose poslal korekci. Velmi vysoké hodnoty spolu s vysokou oscilací RA znamenají, že honí seeing.",
+          "limited": "Korekce, které dosáhly maximální délky pulzu. Znamenají, že montáž nestíhala (velký skok, zadrhnutí, chybná kalibrace), nebo že hvězda byla ztracena a znovu nalezena.",
+          "polar": "Chyba polárního ustavení odhadnutá z driftu Dec, v obloukových minutách: 3,8 × drift (″/min) ÷ cos(Dec), vzorec Guiding Assistantu z PHD2. Vyžaduje relaci alespoň 5 minut a cíl daleko od pólu. Hrubý odhad; rutina polárního ustavení je přesnější.",
+          "oscillation": "Podíl snímků, ve kterých chyba RA změní znaménko z jednoho snímku na další. Kolem 0,5 je normální seeing; výrazně nad tím (0,65 a více) jsou korekce RA příliš silné a posouvají hvězdu sem a tam.",
+          "decReversals": "Jak často korekce Dec změnily směr (ze severu na jih nebo zpět). Každý obrat musí vymezit vůli Dec; mnoho obratů spolu s velkým RMS Dec ukazuje na vůli.",
+          "starLost": "Snímky bez použitelné naváděcí hvězdy v tomto úseku; neposlala se pro ně žádná korekce.",
+          "settling": "Snímky v tomto úseku, během kterých se naváděč po ditheringu ustaloval. Ze statistiky jsou vynechány, dokud je zapnuto „Bez ustalování“.",
+          "snr": "Poměr signálu k šumu naváděcí hvězdy, medián za úsek. Poklesy ukazují na mraky, rosu nebo opar; pod zhruba 10 naváděč hvězdu snadno ztratí."
+        }
+      },
+      "scatter": {
+        "title": "Terč",
+        "radius": "Kruh RMS {value}",
+        "hint": "Každý naváděcí krok z úseku, nejnovější nejjasnější. Čárkovaný kruh je celkové RMS.",
+        "outside": "Kroky mimo graf: {count}."
+      },
+      "findings": {
+        "title": "Stojí za pohled",
+        "intro": "Chvíle, které analýza vybrala, měřené vůči typickým hodnotám této noci. Jsou to trojúhelníky v přehledu a v grafu navádění. Klepnutím na jednu se tam přiblížíte.",
+        "filter": "Zobrazit",
+        "filters": {
+          "problems": "Problémy",
+          "all": "Vše"
+        },
+        "times": "{count}×",
+        "none": "V tomto logu nic není.",
+        "noProblems": "Žádné problémy. Navádění vypadá celou noc stabilně.",
+        "kinds": {
+          "starLost": "Ztracená hvězda",
+          "badStretch": "Neklidný úsek",
+          "jump": "Skok",
+          "clouds": "Hvězda zeslábla",
+          "settle": "Ustalování",
+          "pulseLimit": "Limit pulzu",
+          "alert": "Upozornění",
+          "flip": "Meridian flip",
+          "gap": "Přestávka",
+          "param": "Změna nastavení",
+          "calibration": "Kalibrace",
+          "incident": "Incident"
+        },
+        "detail": {
+          "starLost": "Snímky bez použitelné hvězdy: {frames} během {duration}.",
+          "badStretch": "RMS až {rms}, {ratio}× typická hodnota noci {typical}, po dobu {duration}.",
+          "jump": "Chyba {axis} {value} v jednom snímku (typicky {typical}): poryv, kabel nebo montáž.",
+          "clouds": "SNR hvězdy kleslo na {snr} (typicky {typical}) po dobu {duration}: mraky, rosa nebo odplouvající hvězda.",
+          "settleFailed": "Ustalování selhalo po {duration}.",
+          "settleSlow": "Ustalování trvalo {duration} (typicky {typical}).",
+          "pulseLimit": "Pulzy s maximální délkou: {frames}. Montáž nestíhala, nebo byla hvězda ztracena.",
+          "flip": "Strana pilíře {from} → {to}.",
+          "gap": "Navádění zastaveno na {duration}.",
+          "calibration": "Kalibrováno, počet kroků: {steps}.",
+          "calibrationFailed": "Kalibrace selhala.",
+          "incident": "Pravděpodobná příčina: {cause}."
+        },
+        "arcsec": "{value}″",
+        "px": "{value} px"
+      },
+      "spectrum": {
+        "title": "Periody",
+        "source": "Signál",
+        "sources": {
+          "raFree": "RA montáž",
+          "ra": "RA naváděno",
+          "dec": "Dec naváděno"
+        },
+        "hints": {
+          "raFree": "Pohyb RA bez korekcí: špičky jsou periodická chyba montáže, čárkovaná čára perioda jejího šneku.",
+          "ra": "Co zbylo po navádění: špička zde je periodická chyba, kterou navádění nezachytilo, nebo oscilace.",
+          "dec": "Co zbylo v Dec: špičky často pocházejí od větru, kabelů nebo ventilátoru."
+        },
+        "tooShort": "Vyberte alespoň {minutes} min navádění.",
+        "peak": "Nejsilnější: {period}, {amplitude}",
+        "worm": "Šnek {period}",
+        "amplitude": "{amplitude}"
+      },
+      "sessions": {
+        "title": "Relace",
+        "calibration": "Kalibrace",
+        "failed": "selhala",
+        "details": "Podrobnosti",
+        "drops": "ztraceno: {count}",
+        "pier": {
+          "East": "Východ",
+          "West": "Západ"
+        },
+        "end": {
+          "stopped": "Zastaveno",
+          "closed": "Log uzavřen",
+          "truncated": "Log zde končí",
+          "complete": "Dokončeno",
+          "failed": "Selhalo"
+        },
+        "facts": {
+          "profile": "Profil",
+          "camera": "Naváděcí kamera",
+          "scale": "Měřítko pixelu",
+          "mount": "Montáž",
+          "raAlgorithm": "Algoritmus RA",
+          "decAlgorithm": "Algoritmus Dec",
+          "decMode": "Režim navádění Dec",
+          "backlash": "Komp. vůle",
+          "off": "vyp.",
+          "maxPulse": "Max. pulz RA / Dec",
+          "calibration": "Kalibrace",
+          "guideSpeed": "Rychlost navádění RA / Dec",
+          "dithers": "Ditheringy",
+          "frames": "Snímky",
+          "lost": "ztraceno",
+          "endReason": "Konec",
+          "calStep": "Krok / vzdálenost",
+          "raLeg": "Úsek RA",
+          "decLeg": "Úsek Dec",
+          "ortho": "Chyba kolmosti",
+          "pointing": "Zaměření",
+          "exposure": "{seconds} s",
+          "gain": "gain {gain}",
+          "framesValue": "{frames} (ztraceno: {lost})",
+          "legValue": "{angle}° · kroky: {count}"
+        },
+        "target": "RA {hours}h{minutes} · Dec {dec}°"
+      },
+      "exposures": {
+        "title": "Light snímky",
+        "intro": "Navádění během každého light snímku této relace PINS, hodnocené vůči jejich typickému RMS {typical}. Klepnutím na jeden ho zobrazíte.",
+        "sort": "Řadit",
+        "sorts": {
+          "time": "Podle času",
+          "worst": "Nejhorší první"
+        },
+        "time": "Začátek",
+        "filter": "Filtr",
+        "rms": "RMS",
+        "peak": "Špička"
+      }
     }
   },
   "pinsDevices": {

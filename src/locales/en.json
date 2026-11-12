@@ -2741,6 +2741,7 @@
             "Safety": "Safety",
             "Incidents": "Incidents"
           },
+          "settleHint": "After a dither or guiding start, the next exposure waits until the guide error stays below the pixel tolerance (guide camera pixels) for the minimum settle time. When the timeout runs out first, the exposure starts anyway.",
           "confirmReconnectTitle": "Reconnect the guider?",
           "confirmReconnect": "The guider disconnects and connects again. Guiding stops meanwhile, so a running exposure is no longer guided.",
           "reconnectNeeded": "The changed setting applies after the guider reconnects.",
@@ -2751,6 +2752,10 @@
           "actionCancel": "Cancel",
           "actionOptionConfirm": "Run “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Teeth",
+              "Seconds": "Seconds"
+            },
             "GuideSource": {
               "GuideCamera": "Guide camera",
               "Simulator": "Simulator"
@@ -2800,7 +2805,9 @@
             "RaMinMove": "RA min move",
             "RaCorrectionPace": "RA correction pace",
             "PeriodicErrorPrediction": "Periodic error prediction",
+            "WormPeriodUnit": "RA worm given in",
             "WormTeeth": "RA worm wheel teeth",
+            "WormPeriodSeconds": "RA worm period",
             "ForgetPeriodicError": "Forget periodic error",
             "DecAlgorithm": "Dec algorithm",
             "DecAggression": "Dec aggression",
@@ -2841,7 +2848,7 @@
           },
           "descriptions": {
             "GuideSource": "Where the guide frames come from. Guide camera: the camera in the guide camera slot of the equipment. Simulator: a built-in simulation of mount, sky and camera, to try the guider without hardware or in daylight.",
-            "ExposureSeconds": "Exposure time of each guide frame. 1–4 s average out most of the seeing; shorter exposures react faster but chase the seeing, longer ones react slowly to wind and mount errors.",
+            "ExposureSeconds": "Exposure time of each guide frame. Shorter exposures react faster to wind and mount errors; the min-move keeps them from chasing the seeing. 1 s suits most mounts; use longer exposures when the guide star is too faint.",
             "Gain": "Gain of the guide camera for the guide frames. -1 (default) uses the gain of the guide camera's settings. Higher gain brightens faint stars but adds noise. PHD2's gain is a percentage, so it is not carried over.",
             "Offset": "Offset (black level) of the guide camera. -1 (default) uses the offset of the guide camera's settings. Raise it only if the background of the guide frames is clipped to black.",
             "Binning": "Hardware binning of the guide frames. 2×2 makes the camera more sensitive and the frames faster to transfer, at the cost of resolution; useful with small pixels or a long guide focal length. Calibrate again after a change.",
@@ -2867,7 +2874,9 @@
             "RaMinMove": "Smallest RA error, in pixels, that gets a correction; smaller errors are ignored so the guider does not chase the seeing. 0 (default) calculates a value from the image scale. The setting most worth adjusting to the night's seeing.",
             "RaCorrectionPace": "Share of the remaining error the Predictive algorithm corrects per frame: 0.5 takes an offset out over 2–3 frames without swinging past zero, 1 corrects all of it at once. Drift and periodic error are always corrected in full.",
             "PeriodicErrorPrediction": "Learns the periodic error of the RA worm and corrects it before it shows. The learned curve is kept per profile and mount.",
+            "WormPeriodUnit": "Give the RA worm as the teeth of its wheel or as its period in seconds, e.g. from the mount's manual or a PEC tool. Seconds also suit a drive whose period is no whole tooth count (a strain wave gear, a belt). Only the chosen one is used.",
             "WormTeeth": "Teeth of the RA worm wheel (e.g. 180 on an EQ6-R, 135 on an HEQ5); gives the exact worm period. 0 (default) detects the period from the guide frames.",
+            "WormPeriodSeconds": "Period of the RA worm in seconds (e.g. 478.7 for 180 teeth); it is then not detected. After a meridian flip its phase is learned anew, as without a tooth count. 0 (default) detects the period from the guide frames; the guider takes 180 to 1200 s.",
             "ForgetPeriodicError": "Forgets the periodic error learned for this mount, e.g. after the worm was adjusted; it is then learned anew.",
             "DecAlgorithm": "How the measured Dec error becomes a correction. ResistSwitch (default) reverses the Dec direction only when the error clearly asks for it, so Dec backlash does not make the guiding swing. Hysteresis, Lowpass2 and Lowpass work as on RA, None sends no Dec corrections. Predictive (experimental) learns the seeing and the mount's own motion from the guide frames and corrects the error it predicts for the next frame; aggression, hysteresis and min move do not apply to it.",
             "DecAggression": "Share of the measured Dec error corrected in each frame: 1.0 corrects all of it. Lower it if Dec overshoots.",
@@ -2898,7 +2907,7 @@
             "MaxPulseDutyPercent": "Guiding stops when an axis is pulsed for more than this share of a minute. Protects against a runaway, e.g. after a wrong calibration or with Dec reversed.",
             "PauseWhenSlewing": "Pauses the corrections while the mount reports slewing or parked. Turn it off only if the mount driver reports 'slewing' permanently.",
             "PauseWhenTrackingOff": "Pauses the corrections while the mount reports tracking off. Turn it off if the mount driver cannot report its tracking state.",
-            "SaveGuideLog": "Writes a PHD2-compatible guide log to ~/.local/share/NINA/InternalGuider/Logs, which the PHD2 Log Viewer and other PHD2 tools can open.",
+            "SaveGuideLog": "Writes a PHD2-compatible guide log to ~/.local/share/NINA/InternalGuider/Logs. The Guide Logs plugin shows it in the app; the PHD2 Log Viewer program and other PHD2 tools can open it as well.",
             "IncidentRecorder": "Keeps the last minutes of guide frames in memory and saves them around star losses, runaways, mount and camera problems and spikes, for a replay and a download.",
             "IncidentBudgetMb": "Disk space for recorded incidents; the oldest ones that are not kept are deleted first. Simulator incidents have their own 200 MB.",
             "SimulatorScenario": "Mount, sky and camera the built-in simulator simulates.",
@@ -2907,7 +2916,8 @@
             "BacklashRemeasureAfterSlewDeg": "When guiding starts after the mount moved farther than this or changed pier side, the play model measures the play again first: Dec pulses North until the star follows, then South back to the start. The gear then rests on a known side and the model knows the play at the new target. Takes about 10 to 20 guide frames. 0 = never."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "The play model works only with the Predictive Dec algorithm; the fixed pulse is used for now. Switch \"Dec algorithm\" to Predictive in these settings to use it."
+            "backlashModelNeedsPredictive": "The play model works only with the Predictive Dec algorithm; the fixed pulse is used for now. Switch \"Dec algorithm\" to Predictive in these settings to use it.",
+            "wormPeriodOutOfRange": "Outside 180 to 1200 s: the guider doesn't use this period and detects it from the guide frames."
           }
         },
         "darks": {
@@ -3010,6 +3020,8 @@
             "trialSeconds": "Duration per trial",
             "repeatBaseline": "Repeat the current settings at the end",
             "repeatBaselineHint": "Detects changing seeing or clouds during the trials.",
+            "exposureTrial": "Try shorter exposures",
+            "exposureTrialHint": "From 1.5 s up, also guides with 1 s and with an exposure halfway to the current one (e.g. 1.5 s at 2.5 s). Many mounts guide better with shorter exposures.",
             "allowCalibration": "Calibrate when needed",
             "allowCalibrationHint": "Without a calibration, drift, mount response and trials cannot run.",
             "minutes": "{value} min",
@@ -3023,6 +3035,23 @@
           "notConnected": "Connect the PINS Native Guider to use the coach.",
           "calibratingBlock": "Wait until the calibration has finished.",
           "darksBlock": "Wait until the dark library is built.",
+          "slewingBlock": "The mount is slewing to the calibration position. The coach starts when it arrives; Stop in the guider controls cancels the slew.",
+          "position": {
+            "title": "The mount points where the coach measures badly",
+            "nearPole": "Dec {declination} is close to the pole. RA guide pulses barely move the star there, so the calibration and the RA results get unreliable. Beyond {maxDeclination} the coach does not start.",
+            "low": "The mount points only {altitude} above the horizon. The air there blurs and shifts the star more, which spoils the measurements.",
+            "slewNeeded": "Choose a slew: beyond Dec {maxDeclination} the coach does not start.",
+            "slewBlock": {
+              "noMount": "Connect the mount to slew to a calibration position.",
+              "parked": "Unpark the mount to slew to a calibration position.",
+              "slewing": "Wait until the mount has stopped slewing.",
+              "sequence": "A sequence is running. A slew would move the mount off its target; stop the sequence first.",
+              "exposing": "The imaging camera is exposing. A slew would ruin the exposure; wait until it has finished."
+            },
+            "startWithSlew": "Slew and start coach",
+            "confirmSlewTitle": "Slew the mount?",
+            "confirmSlew": "The mount leaves its current target and slews to the calibration position ({side}). The coach starts when it arrives."
+          },
           "start": "Start coach",
           "starting": "Starting…",
           "startFailed": "The coach could not start",
@@ -3113,6 +3142,7 @@
               "current": "Current settings",
               "suggestion": "Coach suggestion",
               "variant": "Variant",
+              "exposure": "Shorter exposure",
               "currentRepeat": "Current settings again"
             },
             "winner": "Best",
@@ -3189,6 +3219,7 @@
           "hint": {
             "label": "Tip",
             "dismiss": "Dismiss tip",
+            "dismissForGood": "Don't show this tip again",
             "apply": "Apply",
             "applied": "Applied",
             "applyFailed": "Applying the tip failed"
@@ -3290,7 +3321,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "With guiding switched off the star still dances by {rmsArcsec} because of the atmosphere. No guiding can follow this fast movement: it is the floor of your guided RMS.",
                 "fix_good": "Good conditions: small errors of the mount now show, so fine-tuning pays off.",
-                "fix": "Do not chase the seeing: guide with 2 s or longer and a min-move just above the seeing."
+                "fix": "Keep the guider from chasing the seeing with a min-move just above it. That, not a long exposure, is what filters the seeing: a short exposure (around 1 s) reacts faster to the mount's own errors."
               },
               "minMove": {
                 "title": "Min-move from the seeing: RA {raPx}, Dec {decPx}",
@@ -3438,6 +3469,11 @@
                 "title": "Guiding is at the seeing limit",
                 "why": "Your RMS of {rmsArcsec} is close to what the atmosphere allows.",
                 "fix": "Nothing to tune right now."
+              },
+              "longExposure": {
+                "title": "Try a shorter guide exposure",
+                "why": "With {exposureSeconds} per frame the guider corrects late. Many mounts guide better with shorter exposures, because the corrections then follow the mount's own errors and the wind more closely.",
+                "fix": "Try {suggestedSeconds} and compare the RMS. The Guiding Coach can test it for you. This tip is shown only once."
               }
             },
             "coach": {
@@ -3450,6 +3486,11 @@
                 "title": "Guider not connected",
                 "why": "The coach needs the connected native guider with its camera and mount.",
                 "fix": "Connect the guider (and the mount for pulse guiding) and try again."
+              },
+              "nearPole": {
+                "title": "Too close to the pole",
+                "why": "The mount points at Dec {declinationDeg}. RA guide pulses barely move the star there, so the calibration fails or measures mostly noise.",
+                "fix": "Slew to a declination within ±{maxDeclinationDeg}, ideally near the celestial equator, or choose a slew to a calibration position when you start the coach."
               },
               "noStar": {
                 "title": "No guide star found",
@@ -8778,6 +8819,242 @@
       "queryComplete": "Query complete",
       "invalidArguments": "Arguments must be a JSON object",
       "planStopped": "The completed action is preserved. The remaining plan stopped; submit a new request."
+    },
+    "guideLogViewer": {
+      "navTitle": "Guide Logs",
+      "title": "Guide Logs",
+      "night": "Night",
+      "loadingList": "Loading guide logs…",
+      "noLogs": "No guide logs yet",
+      "live": "being written",
+      "reload": "Reload",
+      "openFile": "Open a guide log file (PINS or PHD2)",
+      "downloading": "Downloading the guide log… {size}",
+      "analyzing": "Analysing…",
+      "notSupported": "This PINS version does not offer its guide logs yet. You can still open a guide log file from this device.",
+      "notAGuideLog": "This file holds no guiding or calibration of a PHD2-format guide log.",
+      "noSessions": "This guide log holds no guiding or calibration yet.",
+      "pickNight": "Pick a night to see how guiding went.",
+      "emptyHint": "The native guider writes one guide log per night while it guides. Guide a night, or open a PHD2 guide log from this device.",
+      "kpi": {
+        "guided": "Guided",
+        "sessions": "{count} session | {count} sessions",
+        "rms": "Typical RMS",
+        "rmsHint": "The median of the RMS over 30 frames across the night: what guiding was like most of the time. Moments when the star was lost or tracking was off do not distort it.",
+        "rmsOverall": "{value} over all frames",
+        "dithers": "Dithers",
+        "settleMedian": "settled in {time} (median)",
+        "starLost": "Star lost",
+        "frames": "frame | frames",
+        "findings": "Problems",
+        "findingsSub": "serious / worth a look",
+        "hints": {
+          "guided": "How long the guider guided this night, summed over its sessions (a session runs from start to stop of guiding; calibrations are not counted).",
+          "dithers": "How often the guider dithered, and how long it took after a dither until the star was back within the settle limit (median). Slow settling costs imaging time between exposures.",
+          "starLost": "Guide frames in which the guider found no usable guide star, so it sent no correction. A few single frames are harmless; long runs mean clouds, dew, a star drifting off or the mount having moved.",
+          "findings": "Moments that the analysis marked: serious ones (red) and ones worth a look (amber). They are listed under \"Worth a look\" and drawn as triangles on the overview and the guide graph."
+        }
+      },
+      "grade": {
+        "good": "Good",
+        "fair": "Fair",
+        "poor": "Poor",
+        "bad": "Bad",
+        "lost": "Star lost"
+      },
+      "overview": {
+        "title": "Night overview",
+        "aria": "Guiding quality over the night: the rolling RMS per moment, coloured against the night's typical RMS",
+        "hint": "Drag to pick a time range, drag the frame to move it, tap a session to show it, double-tap for the whole night.",
+        "rolling": "rolling RMS",
+        "lightFrame": "Light frame {seconds} s",
+        "barsAre": "Bars: rolling RMS"
+      },
+      "chart": {
+        "title": "Guiding",
+        "pulses": "Pulses",
+        "free": "Without corrections",
+        "freeHint": "Where the star would have gone without the guide pulses (estimated from the pulses and the calibration rates; restarts at every dither). Shows the mount's own drift and periodic error.",
+        "earlier": "Earlier",
+        "later": "Later",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "whole": "Whole night",
+        "hint": "Hover or touch the graph to read a frame and what its markers are. Drag across it (or pinch) to zoom in, scroll to zoom, double-click for the whole night.",
+        "dropped": "No star",
+        "dither": "Dither",
+        "starLost": "Star lost",
+        "exposures": "Light frames",
+        "rms": "RMS",
+        "rmsLine": "RMS (30 frames)",
+        "legendFindings": "Worth a look",
+        "ditherBy": "Dither by {dx}, {dy} px",
+        "exposureAt": "Light frame {seconds} s, {filter}: RMS {rms}"
+      },
+      "stats": {
+        "title": "Selected range",
+        "excludeSettling": "Without settling",
+        "frames": "{count} frame | {count} frames",
+        "empty": "No guide steps in this range.",
+        "total": "Total",
+        "peak": "Peak",
+        "mean": "Mean offset",
+        "drift": "Drift",
+        "pulses": "Frames with a pulse",
+        "limited": "Pulses at the limit",
+        "polar": "Polar alignment",
+        "polarUnknown": "needs ≥ 5 min",
+        "oscillation": "RA oscillation",
+        "decReversals": "Dec reversals",
+        "starLost": "Frames without star",
+        "settling": "Settling frames",
+        "snr": "Star SNR (median)",
+        "totalTitle": "Total RMS",
+        "raTitle": "RA RMS",
+        "decTitle": "Dec RMS",
+        "hints": {
+          "excludeSettling": "Leaves out the frames after a dither until the guider reported the star settled, as PHD2 and the live guide graph do. The star is moved on purpose then, so those frames say nothing about how well it is held.",
+          "total": "How far the star wandered around its average position, RA and Dec together (the square root of RA RMS² + Dec RMS²). It is the number guiding is usually compared by. As a rule of thumb stars stay round while it is below about half to one times the pixel scale of the imaging camera (″/px). Like PHD2 it is measured around the mean, so a steady offset (see \"Mean offset\") does not count in.",
+          "ra": "The RMS of the RA error alone, around its mean. RA carries the mount's periodic error and most wind gusts.",
+          "dec": "The RMS of the Dec error alone, around its mean. A high Dec RMS with a low RA RMS often points at Dec backlash, a poor polar alignment or a cable.",
+          "peak": "The largest single error in this range, with its sign. One big peak is a gust, a snag or a jump; peaks that come back regularly hint at periodic error or oscillation.",
+          "mean": "The average error in this range. Ideally close to 0: on average the star sat on the lock position. A steady offset means the guider kept lagging behind a drift (minimum move too large, too little aggression, Dec guided in one direction only). It does not blur stars by itself, the RMS does, but a large one shows that the guider is not keeping up.",
+          "drift": "How fast the mount moved on its own, per minute: the slope of the \"without corrections\" motion, fitted between dithers. A steady Dec drift comes from polar alignment error; an RA drift from a tracking rate slightly off or from flexure. Estimated from the pulses and the calibration rates.",
+          "pulses": "The share of guide frames in which the guider sent a correction on that axis. Very high values together with a high RA oscillation mean that it chases the seeing.",
+          "limited": "Corrections that hit the maximum pulse duration. They mean that the mount could not keep up (a big jump, a snag, a wrong calibration) or that the star was lost and found again.",
+          "polar": "The polar alignment error estimated from the Dec drift, in arcminutes: 3.8 × drift (″/min) ÷ cos(Dec), the formula of PHD2's Guiding Assistant. Needs one session of at least 5 minutes and a target away from the pole. A rough estimate; a polar alignment routine is more exact.",
+          "oscillation": "The share of frames in which the RA error changes sign from one frame to the next. About 0.5 is normal seeing; well above it (0.65 and more) the RA corrections are too strong and push the star back and forth.",
+          "decReversals": "How often the Dec corrections changed direction (north to south or back). Each reversal has to take up the Dec backlash; many of them together with a large Dec RMS point at backlash.",
+          "starLost": "Frames without a usable guide star in this range; no correction was sent for them.",
+          "settling": "Frames in this range while the guider settled after a dither. They are left out of the statistics while \"Without settling\" is on.",
+          "snr": "The guide star's signal to noise ratio, median over the range. Drops point at clouds, dew or haze; below about 10 the guider loses the star easily."
+        }
+      },
+      "scatter": {
+        "title": "Target",
+        "radius": "RMS circle {value}",
+        "hint": "Every guide step of the range, the newest brightest. The dashed circle is the total RMS.",
+        "outside": "{count} step lies outside the plot. | {count} steps lie outside the plot."
+      },
+      "findings": {
+        "title": "Worth a look",
+        "intro": "Moments the analysis picked out, measured against this night's own typical values. They are the triangles on the overview and the guide graph. Tap one to zoom there.",
+        "filter": "Show",
+        "filters": {
+          "problems": "Problems",
+          "all": "Everything"
+        },
+        "times": "{count}×",
+        "none": "Nothing in this log.",
+        "noProblems": "No problems found. Guiding looks steady all night.",
+        "kinds": {
+          "starLost": "Star lost",
+          "badStretch": "Rough stretch",
+          "jump": "Jump",
+          "clouds": "Star faded",
+          "settle": "Settling",
+          "pulseLimit": "Pulse limit",
+          "alert": "Alert",
+          "flip": "Meridian flip",
+          "gap": "Break",
+          "param": "Setting changed",
+          "calibration": "Calibration",
+          "incident": "Incident"
+        },
+        "detail": {
+          "starLost": "{frames} frame without a usable star over {duration}. | {frames} frames without a usable star over {duration}.",
+          "badStretch": "RMS up to {rms}, {ratio}× the night's typical {typical}, for {duration}.",
+          "jump": "{axis} error of {value} in one frame (typical {typical}): a gust, a cable or the mount.",
+          "clouds": "The star's SNR fell to {snr} (typically {typical}) for {duration}: clouds, dew or the star drifting off.",
+          "settleFailed": "Settling failed after {duration}.",
+          "settleSlow": "Settling took {duration} (typically {typical}).",
+          "pulseLimit": "{frames} pulse at the maximum duration: the mount could not keep up, or the star was lost. | {frames} pulses at the maximum duration: the mount could not keep up, or the star was lost.",
+          "flip": "Pier side {from} → {to}.",
+          "gap": "Guiding stopped for {duration}.",
+          "calibration": "Calibrated with {steps} step. | Calibrated with {steps} steps.",
+          "calibrationFailed": "Calibration failed.",
+          "incident": "Likely cause: {cause}."
+        },
+        "arcsec": "{value}″",
+        "px": "{value} px"
+      },
+      "spectrum": {
+        "title": "Periods",
+        "source": "Signal",
+        "sources": {
+          "raFree": "RA mount",
+          "ra": "RA guided",
+          "dec": "Dec guided"
+        },
+        "hints": {
+          "raFree": "The RA motion without the corrections: peaks are the mount's periodic error, the dashed line its worm period.",
+          "ra": "What remained after guiding: a peak here is periodic error the guiding did not catch, or an oscillation.",
+          "dec": "What remained in Dec: peaks often come from wind, cables or a fan."
+        },
+        "tooShort": "Pick at least {minutes} minute of guiding. | Pick at least {minutes} minutes of guiding.",
+        "peak": "Strongest: {period}, {amplitude}",
+        "worm": "Worm {period}",
+        "amplitude": "{amplitude}"
+      },
+      "sessions": {
+        "title": "Sessions",
+        "calibration": "Calibration",
+        "failed": "failed",
+        "details": "Details",
+        "drops": "{count} lost | {count} lost",
+        "pier": {
+          "East": "East",
+          "West": "West"
+        },
+        "end": {
+          "stopped": "Stopped",
+          "closed": "Log closed",
+          "truncated": "Log ends here",
+          "complete": "Complete",
+          "failed": "Failed"
+        },
+        "facts": {
+          "profile": "Profile",
+          "camera": "Guide camera",
+          "scale": "Pixel scale",
+          "mount": "Mount",
+          "raAlgorithm": "RA algorithm",
+          "decAlgorithm": "Dec algorithm",
+          "decMode": "Dec guide mode",
+          "backlash": "Backlash comp.",
+          "off": "off",
+          "maxPulse": "Max pulse RA / Dec",
+          "calibration": "Calibration",
+          "guideSpeed": "Guide speed RA / Dec",
+          "dithers": "Dithers",
+          "frames": "Frames",
+          "lost": "lost",
+          "endReason": "End",
+          "calStep": "Step / distance",
+          "raLeg": "RA leg",
+          "decLeg": "Dec leg",
+          "ortho": "Orthogonality error",
+          "pointing": "Pointing",
+          "exposure": "{seconds} s",
+          "gain": "gain {gain}",
+          "framesValue": "{frames} ({lost} lost)",
+          "legValue": "{angle}° · {count} step | {angle}° · {count} steps"
+        },
+        "target": "RA {hours}h{minutes} · Dec {dec}°"
+      },
+      "exposures": {
+        "title": "Light frames",
+        "intro": "Guiding during each light frame of this PINS session, graded against their typical RMS of {typical}. Tap one to see it.",
+        "sort": "Sort",
+        "sorts": {
+          "time": "By time",
+          "worst": "Worst first"
+        },
+        "time": "Start",
+        "filter": "Filter",
+        "rms": "RMS",
+        "peak": "Peak"
+      }
     }
   },
   "pinsDevices": {
