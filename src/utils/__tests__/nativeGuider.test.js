@@ -17,6 +17,7 @@ import {
   formatMs,
   guideTiming,
   groupSettings,
+  withGroup,
   alertText,
   framePointFromTap,
   starSelectionAvailability,
@@ -394,6 +395,24 @@ test('groupSettings orders known groups first and filters basic', () => {
   assert.deepEqual(
     groupSettings(settings, { advanced: true }).map((g) => g.group),
     ['Camera', 'Algorithms', 'Safety', 'Zeta']
+  );
+});
+
+test('withGroup adds a missing group at its place and keeps an existing one', () => {
+  const groups = [
+    { group: 'Camera', settings: [{ name: 'A' }] },
+    { group: 'Safety', settings: [{ name: 'B' }] },
+    { group: 'Zeta', settings: [{ name: 'C' }] },
+  ];
+  assert.deepEqual(
+    withGroup(groups, 'Dither').map((g) => g.group),
+    ['Camera', 'Dither', 'Safety', 'Zeta']
+  );
+  assert.deepEqual(withGroup(groups, 'Dither')[1].settings, []);
+  assert.equal(withGroup(groups, 'Camera'), groups);
+  assert.deepEqual(
+    withGroup([], 'Dither').map((g) => g.group),
+    ['Dither']
   );
 });
 

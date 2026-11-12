@@ -2700,6 +2700,7 @@
             "Safety": "安全",
             "Incidents": "异常事件"
           },
+          "settleHint": "抖动（Dither）或开始导星后，下一次曝光会等待导星误差在最短稳定时间内保持低于像素容差（导星相机像素）。如果先到达超时时间，曝光仍会开始。",
           "confirmReconnectTitle": "重新连接导星？",
           "confirmReconnect": "导星将断开并重新连接。在此期间导星会停止，正在进行的曝光将不再受导星控制。",
           "reconnectNeeded": "重新连接导星器以使用新的相机设置。",

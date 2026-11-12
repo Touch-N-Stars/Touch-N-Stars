@@ -2741,6 +2741,7 @@
             "Safety": "Sicherheit",
             "Incidents": "Vorfälle"
           },
+          "settleHint": "Nach einem Dither oder Guiding-Start wartet die nächste Belichtung, bis der Guiding-Fehler für die minimale Einpendelzeit unter der Pixeltoleranz (Pixel der Guiding-Kamera) bleibt. Läuft vorher das Timeout ab, startet die Belichtung trotzdem.",
           "confirmReconnectTitle": "Guider neu verbinden?",
           "confirmReconnect": "Der Guider trennt die Verbindung und verbindet sich neu. Das Guiding stoppt währenddessen, eine laufende Belichtung wird also nicht mehr geführt.",
           "reconnectNeeded": "Guider neu verbinden, um die neuen Kameraeinstellungen zu übernehmen.",

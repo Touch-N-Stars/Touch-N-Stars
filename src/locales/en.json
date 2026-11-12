@@ -2741,6 +2741,7 @@
             "Safety": "Safety",
             "Incidents": "Incidents"
           },
+          "settleHint": "After a dither or guiding start, the next exposure waits until the guide error stays below the pixel tolerance (guide camera pixels) for the minimum settle time. When the timeout runs out first, the exposure starts anyway.",
           "confirmReconnectTitle": "Reconnect the guider?",
           "confirmReconnect": "The guider disconnects and connects again. Guiding stops meanwhile, so a running exposure is no longer guided.",
           "reconnectNeeded": "The changed setting applies after the guider reconnects.",

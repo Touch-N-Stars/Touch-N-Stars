@@ -2700,6 +2700,7 @@
             "Safety": "Bezpečnost",
             "Incidents": "Incidenty"
           },
+          "settleHint": "Po ditheru nebo spuštění pointace čeká další expozice, dokud chyba pointace nezůstane pod tolerancí (pixely pointační kamery) po minimální dobu ustálení. Pokud dřív vyprší časový limit, expozice se přesto spustí.",
           "confirmReconnectTitle": "Znovu připojit guider?",
           "confirmReconnect": "Guider se odpojí a znovu připojí. Pointace se mezitím zastaví, takže probíhající expozice už není pointována.",
           "reconnectNeeded": "Znovu připojte pointer, aby se použilo nové nastavení kamery.",

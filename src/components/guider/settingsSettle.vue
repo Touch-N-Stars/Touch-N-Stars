@@ -1,5 +1,8 @@
 <template>
-  <div class="flex flex-col w-full border border-line-strong p-1 md:p-2 rounded-lg">
+  <div
+    class="flex flex-col w-full"
+    :class="embedded ? '' : 'border border-line-strong p-1 md:p-2 rounded-lg'"
+  >
     <!-- Settle Pixel Tolerance -->
     <div class="flex flex-row items-center justify-between">
       <NumberInputPicker
@@ -56,6 +59,11 @@
 <script setup>
 import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
+
+defineProps({
+  /** Inside a section that already has a frame (internal guider settings sheet). */
+  embedded: { type: Boolean, default: false },
+});
 
 const { value: settlePixels, save: setSettlePixels } = useProfileSetting(
   'GuiderSettings-SettlePixels',
