@@ -2711,6 +2711,10 @@
           "actionCancel": "Annuler",
           "actionOptionConfirm": "Exécuter « {option} » ?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dents",
+              "Seconds": "Secondes"
+            },
             "GuideSource": {
               "GuideCamera": "Caméra de guidage",
               "Simulator": "Simulateur"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Mouvement min. RA",
             "RaCorrectionPace": "Rythme de correction RA",
             "PeriodicErrorPrediction": "Prédiction de l'erreur périodique",
+            "WormPeriodUnit": "Vis RA indiquée en",
             "WormTeeth": "Dents de la roue RA",
+            "WormPeriodSeconds": "Période de la vis RA",
             "ForgetPeriodicError": "Oublier l'erreur périodique",
             "DecAlgorithm": "Algorithme Dec",
             "DecAggression": "Agressivité Dec",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatique selon l'échantillonnage.",
             "RaCorrectionPace": "Part de l'erreur restante que l'algorithme Predictive corrige par image : 0,5 résorbe un décalage en 2–3 images sans dépasser zéro, 1 corrige tout d'un coup. La dérive et l'erreur périodique sont toujours corrigées entièrement.",
             "PeriodicErrorPrediction": "Apprend l'erreur périodique de la vis sans fin RA et la corrige avant qu'elle ne se voie. La courbe apprise est conservée par profil et par monture.",
+            "WormPeriodUnit": "Indiquer la vis RA par le nombre de dents de sa roue ou par sa période en secondes, p. ex. d'après le manuel de la monture ou un outil PEC. Les secondes conviennent aussi à un entraînement dont la période ne correspond pas à un nombre entier de dents (réducteur harmonique, courroie). Seule la valeur choisie est utilisée.",
             "WormTeeth": "Nombre de dents de la roue de la vis sans fin RA (p. ex. 180 sur une EQ6-R, 135 sur une HEQ5) ; donne la période exacte de la vis. 0 = détecter la période à partir des images de guidage.",
+            "WormPeriodSeconds": "Période de la vis RA en secondes (p. ex. 478,7 pour 180 dents) ; elle n'est alors pas détectée. Après un retournement au méridien, sa phase est réapprise, comme sans nombre de dents. 0 (par défaut) = détecter la période à partir des images de guidage ; le guideur accepte 180 à 1200 s.",
             "ForgetPeriodicError": "Oublie l'erreur périodique apprise pour cette monture, p. ex. après un réglage de la vis sans fin ; elle est ensuite réapprise.",
             "DecAlgorithm": "Predictive (expérimental) apprend le seeing et le mouvement propre de la monture à partir des images de guidage et corrige l'erreur qu'il prédit pour l'image suivante ; l'agressivité, l'hystérésis et le mouvement min. ne s'appliquent donc pas à lui.",
             "DecAggression": "Part de l'erreur Dec mesurée corrigée à chaque image : 1,0 corrige tout. À baisser si Dec dépasse.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quand le guidage démarre après que la monture s'est déplacée de plus que cette valeur ou a changé de côté du pilier, le modèle de jeu remesure d'abord le jeu : la Dec envoie des impulsions vers le nord jusqu'à ce que l'étoile suive, puis vers le sud jusqu'au point de départ. L'engrenage repose alors sur un côté connu et le modèle connaît le jeu sur la nouvelle cible. Cela prend environ 10 à 20 images de guidage. 0 = jamais."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Le modèle de jeu ne fonctionne qu'avec l'algorithme Dec Predictive ; l'impulsion fixe est utilisée pour l'instant. Pour l'utiliser, réglez « Algorithme Dec » sur Predictive dans ces paramètres."
+            "backlashModelNeedsPredictive": "Le modèle de jeu ne fonctionne qu'avec l'algorithme Dec Predictive ; l'impulsion fixe est utilisée pour l'instant. Pour l'utiliser, réglez « Algorithme Dec » sur Predictive dans ces paramètres.",
+            "wormPeriodOutOfRange": "En dehors de 180 à 1200 s : le guideur n'utilise pas cette période et la détecte à partir des images de guidage."
           }
         },
         "darks": {

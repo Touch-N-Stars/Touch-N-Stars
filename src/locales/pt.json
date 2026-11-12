@@ -2711,6 +2711,10 @@
           "actionCancel": "Cancelar",
           "actionOptionConfirm": "Executar “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dentes",
+              "Seconds": "Segundos"
+            },
             "GuideSource": {
               "GuideCamera": "Câmara de guiagem",
               "Simulator": "Simulador"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Movimento mín. RA",
             "RaCorrectionPace": "Ritmo de correção RA",
             "PeriodicErrorPrediction": "Previsão do erro periódico",
+            "WormPeriodUnit": "Sem-fim RA indicado em",
             "WormTeeth": "Dentes da coroa RA",
+            "WormPeriodSeconds": "Período do sem-fim RA",
             "ForgetPeriodicError": "Esquecer erro periódico",
             "DecAlgorithm": "Algoritmo Dec",
             "DecAggression": "Agressividade Dec",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automático a partir da escala de imagem.",
             "RaCorrectionPace": "Parte do erro restante que o algoritmo Predictive corrige por imagem: 0,5 elimina um desvio em 2–3 imagens sem passar do zero, 1 corrige tudo de uma vez. A deriva e o erro periódico são sempre corrigidos por completo.",
             "PeriodicErrorPrediction": "Aprende o erro periódico do sem-fim de RA e corrige-o antes que se note. A curva aprendida é guardada por perfil e montagem.",
+            "WormPeriodUnit": "Indique o sem-fim de RA pelos dentes da sua coroa ou pelo seu período em segundos, p. ex. do manual da montagem ou de uma ferramenta PEC. Os segundos também servem para um acionamento cujo período não é um número inteiro de dentes (redutor harmónico, correia). Só o valor escolhido é usado.",
             "WormTeeth": "Dentes da coroa de RA (ex.: 180 numa EQ6-R, 135 numa HEQ5); dá o período exato do sem-fim. 0 = detetar o período a partir das imagens de guiagem.",
+            "WormPeriodSeconds": "Período do sem-fim de RA em segundos (p. ex. 478,7 para 180 dentes); deixa então de ser detetado. Após um flip de meridiano a sua fase é reaprendida, como sem número de dentes. 0 (predefinição) = detetar o período a partir dos frames de guiagem; o guiador aceita 180 a 1200 s.",
             "ForgetPeriodicError": "Esquece o erro periódico aprendido para esta montagem (ex.: depois de ajustar o sem-fim); depois volta a ser aprendido.",
             "DecAlgorithm": "Predictive (experimental) aprende o seeing e o movimento próprio da montagem a partir das imagens de guiagem e corrige o erro que prevê para a imagem seguinte, pelo que a agressividade, a histerese e o movimento mínimo não se lhe aplicam.",
             "DecAggression": "Parte do erro Dec medido corrigida em cada imagem: 1,0 corrige tudo. Baixe se Dec ultrapassar.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quando a guiagem começa depois de a montagem se ter movido mais do que este valor ou mudado de lado do pilar, o modelo de folga volta primeiro a medir a folga: Dec envia pulsos para norte até a estrela seguir e depois para sul até ao ponto de partida. A engrenagem fica então encostada a um lado conhecido e o modelo conhece a folga no novo alvo. Demora cerca de 10 a 20 imagens de guiagem. 0 = nunca."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições."
+            "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições.",
+            "wormPeriodOutOfRange": "Fora de 180 a 1200 s: o guiador não usa este período e deteta-o a partir dos frames de guiagem."
           }
         },
         "darks": {

@@ -2711,6 +2711,10 @@
           "actionCancel": "Cancelar",
           "actionOptionConfirm": "¿Ejecutar «{option}»?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dientes",
+              "Seconds": "Segundos"
+            },
             "GuideSource": {
               "GuideCamera": "Cámara de guiado",
               "Simulator": "Simulador"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Movimiento mín. RA",
             "RaCorrectionPace": "Ritmo de corrección RA",
             "PeriodicErrorPrediction": "Predicción del error periódico",
+            "WormPeriodUnit": "Tornillo RA indicado en",
             "WormTeeth": "Dientes de la corona RA",
+            "WormPeriodSeconds": "Período del tornillo RA",
             "ForgetPeriodicError": "Olvidar error periódico",
             "DecAlgorithm": "Algoritmo Dec",
             "DecAggression": "Agresividad Dec",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automático según la escala de imagen.",
             "RaCorrectionPace": "Parte del error restante que el algoritmo Predictive corrige por imagen: 0,5 elimina un desplazamiento en 2–3 imágenes sin pasarse de cero, 1 lo corrige todo de una vez. La deriva y el error periódico se corrigen siempre por completo.",
             "PeriodicErrorPrediction": "Aprende el error periódico del tornillo sin fin de RA y lo corrige antes de que se note. La curva aprendida se guarda por perfil y montura.",
+            "WormPeriodUnit": "Indica el tornillo sin fin de RA por los dientes de su corona o por su período en segundos, p. ej. del manual de la montura o de una herramienta PEC. Los segundos también sirven para una transmisión cuyo período no es un número entero de dientes (reductora armónica, correa). Solo se usa el valor elegido.",
             "WormTeeth": "Dientes de la corona de RA (p. ej. 180 en una EQ6-R, 135 en una HEQ5); da el periodo exacto del tornillo sin fin. 0 = detectar el periodo a partir de los cuadros de guiado.",
+            "WormPeriodSeconds": "Período del tornillo sin fin de RA en segundos (p. ej. 478,7 para 180 dientes); entonces no se detecta. Tras un giro de meridiano su fase se vuelve a aprender, como sin número de dientes. 0 (predeterminado) = detectar el período a partir de las imágenes de guiado; el guiador acepta de 180 a 1200 s.",
             "ForgetPeriodicError": "Olvida el error periódico aprendido para esta montura, p. ej. después de ajustar el tornillo sin fin; luego se aprende de nuevo.",
             "DecAlgorithm": "Predictive (experimental) aprende el seeing y el movimiento propio de la montura a partir de los cuadros de guiado y corrige el error que predice para el siguiente cuadro, por lo que la agresividad, la histéresis y el movimiento mínimo no se le aplican.",
             "DecAggression": "Parte del error Dec medido que se corrige en cada imagen: 1,0 lo corrige todo. Bájalo si Dec se pasa.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Cuando el guiado empieza después de que la montura se haya movido más que este valor o haya cambiado de lado del pilar, el modelo de holgura vuelve a medir primero la holgura: Dec envía pulsos al norte hasta que la estrella sigue y luego al sur hasta el punto de partida. El engranaje queda entonces contra un lado conocido y el modelo conoce la holgura en el nuevo objetivo. Tarda unos 10 a 20 fotogramas de guiado. 0 = nunca."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "El modelo de holgura solo funciona con el algoritmo Dec Predictive; por ahora se usa el pulso fijo. Para usarlo, pon «Algoritmo Dec» en Predictive en estos ajustes."
+            "backlashModelNeedsPredictive": "El modelo de holgura solo funciona con el algoritmo Dec Predictive; por ahora se usa el pulso fijo. Para usarlo, pon «Algoritmo Dec» en Predictive en estos ajustes.",
+            "wormPeriodOutOfRange": "Fuera de 180 a 1200 s: el guiador no usa este período y lo detecta a partir de las imágenes de guiado."
           }
         },
         "darks": {
