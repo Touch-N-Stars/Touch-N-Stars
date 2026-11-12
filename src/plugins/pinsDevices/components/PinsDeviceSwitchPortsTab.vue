@@ -5,10 +5,10 @@
       <p class="text-red-400 font-medium">{{ store.error }}</p>
     </div>
 
-    <!-- USB Ports Grid -->
-    <div v-if="store.usbPorts.Ports.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <!-- Ports Grid -->
+    <div v-if="ports.length > 0" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <div
-        v-for="port in store.usbPorts.Ports"
+        v-for="port in ports"
         :key="port.Index"
         class="border rounded-lg p-4 transition-all"
         :class="[
@@ -102,7 +102,7 @@
             </span>
           </div>
 
-          <div v-if="Number.isFinite(port.Voltage)" class="flex justify-between">
+          <div v-if="kind === 'usb' && Number.isFinite(port.Voltage)" class="flex justify-between">
             <span class="text-gray-400">{{ $t('plugins.pinsDevices.ports.voltage') }}</span>
             <span class="text-gray-200">{{ port.Voltage.toFixed(2) }}V</span>
           </div>
@@ -196,10 +196,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { usePinsDeviceStore } from '../store/pinsDevicesStore.js';
 
+// Power and USB ports share one layout; only the store slice and setters differ.
+const props = defineProps({
+  kind: {
+    type: String,
+    required: true,
+    validator: (value) => ['power', 'usb'].includes(value),
+  },
+});
+
 const store = usePinsDeviceStore();
+
+const ports = computed(() =>
+  props.kind === 'usb' ? store.usbPorts.Ports : store.powerPorts.Ports
+);
+
+const setPortName = (index, name) =>
+  props.kind === 'usb' ? store.setUsbPortName(index, name) : store.setPowerPortName(index, name);
+const setPortState = (index, enabled) =>
+  props.kind === 'usb'
+    ? store.setUsbPortState(index, enabled)
+    : store.setPowerPortState(index, enabled);
+const setPortBootState = (index, enabled) =>
+  props.kind === 'usb'
+    ? store.setUsbPortBootState(index, enabled)
+    : store.setPowerPortBootState(index, enabled);
+
 const isToggling = ref(false);
 const isTogglingBootState = ref(false);
 const isRenamingPort = ref(false);
@@ -207,7 +232,7 @@ const editingPortIndex = ref(null);
 const editingPortName = ref('');
 
 const startEditingName = (portIndex) => {
-  const port = store.usbPorts.Ports.find((p) => p.Index === portIndex);
+  const port = ports.value.find((p) => p.Index === portIndex);
   if (port) {
     editingPortIndex.value = portIndex;
     editingPortName.value = port.Name;
@@ -226,7 +251,7 @@ const savePortName = async (portIndex) => {
   }
 
   isRenamingPort.value = true;
-  const success = await store.setUsbPortName(portIndex, editingPortName.value);
+  const success = await setPortName(portIndex, editingPortName.value);
   if (!success) {
     console.error('Failed to rename port');
   }
@@ -236,7 +261,7 @@ const savePortName = async (portIndex) => {
 
 const togglePort = async (port) => {
   isToggling.value = true;
-  const success = await store.setUsbPortState(port.Index, !port.Enabled);
+  const success = await setPortState(port.Index, !port.Enabled);
   if (!success) {
     console.error('Failed to toggle port');
   }
@@ -245,7 +270,7 @@ const togglePort = async (port) => {
 
 const toggleBootState = async (port) => {
   isTogglingBootState.value = true;
-  const success = await store.setUsbPortBootState(port.Index, !port.BootState);
+  const success = await setPortBootState(port.Index, !port.BootState);
   if (!success) {
     console.error('Failed to toggle boot state');
   }

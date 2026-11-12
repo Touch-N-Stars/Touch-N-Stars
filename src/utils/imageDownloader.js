@@ -2,209 +2,18 @@ import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Media } from '@capacitor-community/media';
 import { MediaScanner } from './mediaScanner';
+import { createDownloadNotifier } from './downloadNotifications';
 
 // Note: MediaStoreImageSaver plugin removed to fix performance issues on Android
 
-// Create a notification manager instance for image downloads.
-let notificationManager;
-
-// Initialize notification manager
-const initNotificationManager = () => {
-  if (!notificationManager) {
-    class ImageNotificationManager {
-      constructor() {
-        this.container = null;
-        this.createContainer();
-      }
-
-      createContainer() {
-        if (document.getElementById('image-download-notifications')) return;
-
-        this.container = document.createElement('div');
-        this.container.id = 'image-download-notifications';
-        this.container.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-            pointer-events: none;
-          `;
-        document.body.appendChild(this.container);
-      }
-
-      showProgress() {
-        const notification = document.createElement('div');
-        notification.id = 'image-download-progress';
-        notification.innerHTML = `
-            <div style="
-              background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-              border: 1px solid #06b6d4;
-              border-radius: 12px;
-              padding: 16px 20px;
-              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
-              backdrop-filter: blur(10px);
-              min-width: 280px;
-              animation: slideInRight 0.3s ease-out;
-              pointer-events: auto;
-            ">
-              <div style="display: flex; align-items: center; gap: 12px; color: white;">
-                <div style="
-                  width: 20px;
-                  height: 20px;
-                  border: 2px solid #06b6d4;
-                  border-top: 2px solid transparent;
-                  border-radius: 50%;
-                  animation: spin 1s linear infinite;
-                "></div>
-                <div>
-                  <div style="font-weight: 600; font-size: 14px;">Saving Image</div>
-                  <div style="font-size: 12px; color: #9ca3af; margin-top: 2px;">Processing image file...</div>
-                </div>
-              </div>
-            </div>
-          `;
-
-        this.container.appendChild(notification);
-        return notification;
-      }
-
-      showSuccess(message, details) {
-        const existingProgress = document.getElementById('image-download-progress');
-        if (existingProgress) {
-          existingProgress.remove();
-        }
-
-        const notification = document.createElement('div');
-        notification.innerHTML = `
-            <div style="
-              background: linear-gradient(135deg, #065f46 0%, #059669 100%);
-              border: 1px solid #10b981;
-              border-radius: 12px;
-              padding: 16px 20px;
-              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(16, 185, 129, 0.3);
-              backdrop-filter: blur(10px);
-              min-width: 280px;
-              animation: slideInRight 0.3s ease-out, pulse 0.5s ease-in-out;
-              pointer-events: auto;
-              cursor: pointer;
-            " onclick="this.parentElement.removeChild(this)">
-              <div style="display: flex; align-items: flex-start; gap: 12px; color: white;">
-                <div style="
-                  width: 24px;
-                  height: 24px;
-                  background: #10b981;
-                  border-radius: 50%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  flex-shrink: 0;
-                  animation: checkmark 0.5s ease-in-out 0.2s both;
-                ">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
-                    <path d="M20 6L9 17l-5-5"/>
-                  </svg>
-                </div>
-                <div style="flex: 1;">
-                  <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Image Saved!</div>
-                  <div style="font-size: 12px; color: #d1fae5; line-height: 1.4;">
-                    ${message}
-                  </div>
-                  ${details ? `<div style="font-size: 11px; color: #a7f3d0; margin-top: 4px; opacity: 0.8;">${details}</div>` : ''}
-                  <div style="font-size: 10px; color: #a7f3d0; margin-top: 6px; opacity: 0.6;">
-                    Click to dismiss
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-
-        this.container.appendChild(notification);
-
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-          if (notification.parentElement) {
-            notification.style.animation = 'slideOutRight 0.3s ease-in';
-            setTimeout(() => {
-              if (notification.parentElement) {
-                notification.parentElement.removeChild(notification);
-              }
-            }, 300);
-          }
-        }, 5000);
-      }
-
-      showError(message) {
-        const existingProgress = document.getElementById('image-download-progress');
-        if (existingProgress) {
-          existingProgress.remove();
-        }
-
-        const notification = document.createElement('div');
-        notification.innerHTML = `
-            <div style="
-              background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%);
-              border: 1px solid #ef4444;
-              border-radius: 12px;
-              padding: 16px 20px;
-              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(239, 68, 68, 0.3);
-              backdrop-filter: blur(10px);
-              min-width: 280px;
-              animation: slideInRight 0.3s ease-out, shake 0.5s ease-in-out;
-              pointer-events: auto;
-              cursor: pointer;
-            " onclick="this.parentElement.removeChild(this)">
-              <div style="display: flex; align-items: flex-start; gap: 12px; color: white;">
-                <div style="
-                  width: 24px;
-                  height: 24px;
-                  background: #ef4444;
-                  border-radius: 50%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  flex-shrink: 0;
-                ">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="15" y1="9" x2="9" y2="15"/>
-                    <line x1="9" y1="9" x2="15" y2="15"/>
-                  </svg>
-                </div>
-                <div style="flex: 1;">
-                  <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Save Failed</div>
-                  <div style="font-size: 12px; color: #fecaca; line-height: 1.4;">
-                    ${message}
-                  </div>
-                  <div style="font-size: 10px; color: #fecaca; margin-top: 6px; opacity: 0.6;">
-                    Click to dismiss
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-
-        this.container.appendChild(notification);
-
-        // Auto remove after 7 seconds for errors
-        setTimeout(() => {
-          if (notification.parentElement) {
-            notification.style.animation = 'slideOutRight 0.3s ease-in';
-            setTimeout(() => {
-              if (notification.parentElement) {
-                notification.parentElement.removeChild(notification);
-              }
-            }, 300);
-          }
-        }, 7000);
-      }
-    }
-
-    notificationManager = new ImageNotificationManager();
-  }
-};
-
-// Initialize immediately
-initNotificationManager();
+const notificationManager = createDownloadNotifier({
+  containerId: 'image-download-notifications',
+  progressId: 'image-download-progress',
+  progressTitle: 'Saving Image',
+  progressText: 'Processing image file...',
+  successTitle: 'Image Saved!',
+  errorTitle: 'Save Failed',
+});
 
 /**
  * Helper function to detect and handle different image data formats with size validation
@@ -340,17 +149,8 @@ async function processImageData(imageData) {
 export async function downloadImage(imageData, imageDate = '0000-00-00', options = {}) {
   const { folderPrefix = 'TNS-Images', filePrefix = 'TNS' } = options;
 
-  // Ensure notification manager is available
-  if (!notificationManager) {
-    initNotificationManager();
-    // Give it a moment to initialize
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
-
   // Show progress notification
-  if (notificationManager) {
-    notificationManager.showProgress();
-  }
+  notificationManager.showProgress();
   let fileName; // Declare fileName in outer scope for fallback access
 
   try {
@@ -476,13 +276,7 @@ export async function downloadImage(imageData, imageDate = '0000-00-00', options
       console.log(`[ImageDownloader] Processing ${sizeMB}MB image file...`);
 
       // Update progress notification for large files
-      if (size > 10 * 1024 * 1024 && notificationManager) {
-        // Remove existing progress notification
-        const existingProgress = document.getElementById('image-download-progress');
-        if (existingProgress) {
-          existingProgress.remove();
-        }
-
+      if (size > 10 * 1024 * 1024) {
         // Determine processing type based on size
         let processingType = 'Large Image';
         let statusText = `Processing ${sizeMB}MB file...`;
@@ -496,40 +290,7 @@ export async function downloadImage(imageData, imageDate = '0000-00-00', options
         }
 
         // Show updated progress with file size
-        const notification = document.createElement('div');
-        notification.id = 'image-download-progress';
-        notification.innerHTML = `
-          <div style="
-            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-            border: 1px solid #06b6d4;
-            border-radius: 12px;
-            padding: 16px 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(6, 182, 212, 0.2);
-            backdrop-filter: blur(10px);
-            min-width: 280px;
-            animation: slideInRight 0.3s ease-out;
-            pointer-events: auto;
-          ">
-            <div style="display: flex; align-items: center; gap: 12px; color: white;">
-              <div style="
-                width: 20px;
-                height: 20px;
-                border: 2px solid #06b6d4;
-                border-top: 2px solid transparent;
-                border-radius: 50%;
-                animation: spin 1s linear infinite;
-              "></div>
-              <div>
-                <div style="font-weight: 600; font-size: 14px;">Saving ${processingType}</div>
-                <div style="font-size: 12px; color: #9ca3af; margin-top: 2px;">${statusText}</div>
-              </div>
-            </div>
-          </div>
-        `;
-
-        if (notificationManager.container) {
-          notificationManager.container.appendChild(notification);
-        }
+        notificationManager.showProgress(`Saving ${processingType}`, statusText);
       }
 
       // For Android, construct the full path including Pictures folder

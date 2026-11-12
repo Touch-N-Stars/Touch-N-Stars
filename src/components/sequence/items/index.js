@@ -8,7 +8,6 @@ import SetBrightnessItem from './SetBrightnessItem.vue';
 import AutoBrightnessFlatItem from './AutoBrightnessFlatItem.vue';
 import AutoExposureFlatItem from './AutoExposureFlatItem.vue';
 import SkyFlatItem from './SkyFlatItem.vue';
-import TrainedDarkFlatExposureItem from './TrainedDarkFlatExposureItem.vue';
 import TrainedFlatExposureItem from './TrainedFlatExposureItem.vue';
 import PolarAlignmentItem from './PolarAlignmentItem.vue';
 import MoveRotatorMechanicalItem from './MoveRotatorMechanicalItem.vue';
@@ -146,7 +145,8 @@ export const ITEM_COMPONENTS = {
   'NINA.Sequencer.SequenceItem.FlatDevice.AutoBrightnessFlat': AutoBrightnessFlatItem,
   'NINA.Sequencer.SequenceItem.FlatDevice.AutoExposureFlat': AutoExposureFlatItem,
   'NINA.Sequencer.SequenceItem.FlatDevice.SkyFlat': SkyFlatItem,
-  'NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure': TrainedDarkFlatExposureItem,
+  // Dark flats share the trained flat layout: same inner loop, filter and exposure.
+  'NINA.Sequencer.SequenceItem.FlatDevice.TrainedDarkFlatExposure': TrainedFlatExposureItem,
   'NINA.Sequencer.SequenceItem.FlatDevice.TrainedFlatExposure': TrainedFlatExposureItem,
   'NINA.Plugins.PolarAlignment.Instructions.PolarAlignment': PolarAlignmentItem,
   'NINA.Sequencer.SequenceItem.Rotator.MoveRotatorMechanical': MoveRotatorMechanicalItem,
