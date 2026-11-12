@@ -1,4 +1,3 @@
-<!-- src/components/helpers/LocationSyncModal.vue -->
 <template>
   <!-- Blocks the mount connect until answered, so it has to sit above every other
        surface it can be triggered from - including the PINS setup wizard (z-overlay). -->

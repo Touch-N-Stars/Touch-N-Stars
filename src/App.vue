@@ -348,14 +348,14 @@ import { useDialogStore } from './store/dialogStore';
 import { useMessageboxStore } from './store/messageboxStore';
 import { usePickerStore } from '@/store/pickerStore';
 import { useI18n } from 'vue-i18n';
-import ToastModal from '@/components/helpers/ToastModal.vue';
+import ToastModal from '@/components/app/ToastModal.vue';
 import StatusBar from '@/components/status/StatusBar.vue';
-import LocationSyncModal from '@/components/helpers/LocationSyncModal.vue';
+import LocationSyncModal from '@/components/app/LocationSyncModal.vue';
 import { useOrientation } from '@/composables/useOrientation';
 import { useStageWindow } from '@/composables/useStageWindow';
 import { useRoute } from 'vue-router';
-import DialogModal from '@/components/helpers/DialogModal.vue';
-import MessageBoxModal from '@/components/helpers/MessageBoxModal.vue';
+import DialogModal from '@/components/app/DialogModal.vue';
+import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
 import PickerOverlay from '@/components/helpers/PickerOverlay.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import { usePinsStore } from '@/store/pinsStore';
@@ -395,14 +395,14 @@ const MeridianFlipDayTest = defineAsyncComponent(
   () => import('@/components/mount/settings/MeridianFlipDayTest.vue')
 );
 const SetupWizard = defineAsyncComponent(() => import('@/components/setupWizard/SetupWizard.vue'));
-const ConsoleViewer = defineAsyncComponent(() => import('@/components/helpers/ConsoleViewer.vue'));
+const ConsoleViewer = defineAsyncComponent(() => import('@/components/app/ConsoleViewer.vue'));
 const SettingsComp = defineAsyncComponent(() => import('@/components/SettingsComp.vue'));
 const NinaPluginInstallDialog = defineAsyncComponent(
   () => import('@/components/ninaPlugins/NinaPluginInstallDialog.vue')
 );
-const WhatsNewModal = defineAsyncComponent(() => import('@/components/helpers/WhatsNewModal.vue'));
+const WhatsNewModal = defineAsyncComponent(() => import('@/components/app/WhatsNewModal.vue'));
 const UpdateAvailableModal = defineAsyncComponent(
-  () => import('@/components/helpers/UpdateAvailableModal.vue')
+  () => import('@/components/app/UpdateAvailableModal.vue')
 );
 const ScreenLockOverlay = defineAsyncComponent(
   () => import('@/plugins/screen-lock/components/ScreenLockOverlay.vue')
