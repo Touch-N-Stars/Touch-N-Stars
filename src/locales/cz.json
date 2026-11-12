@@ -2990,7 +2990,17 @@
             "title": "Montáž míří tam, kde Coach měří špatně",
             "nearPole": "Dec {declination} je blízko pólu. Naváděcí pulzy v RA tam hvězdou téměř nepohnou, takže kalibrace a výsledky RA jsou nespolehlivé. Za {maxDeclination} Coach nezačne.",
             "low": "Montáž míří jen {altitude} nad obzor. Vzduch tam hvězdu víc rozmazává a posouvá, což kazí měření.",
-            "slewNeeded": "Zvolte najetí: za Dec {maxDeclination} Coach nezačne."
+            "slewNeeded": "Zvolte najetí: za Dec {maxDeclination} Coach nezačne.",
+            "slewBlock": {
+              "noMount": "Připojte montáž, aby mohla najet do kalibrační pozice.",
+              "parked": "Odparkujte montáž, aby mohla najet do kalibrační pozice.",
+              "slewing": "Počkejte, až montáž dokončí najíždění.",
+              "sequence": "Běží sekvence. Najetí by montáž odvedlo od cíle; nejprve sekvenci zastavte.",
+              "exposing": "Hlavní kamera exponuje. Najetí by snímek zkazilo; počkejte, až skončí."
+            },
+            "startWithSlew": "Najet a spustit Coach",
+            "confirmSlewTitle": "Najet s montáží?",
+            "confirmSlew": "Montáž opustí aktuální cíl a najede do kalibrační pozice ({side}). Coach se spustí, jakmile dorazí."
           },
           "start": "Spustit Coach",
           "starting": "Spouští se…",

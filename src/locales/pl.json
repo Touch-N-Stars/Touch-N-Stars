@@ -2990,7 +2990,17 @@
             "title": "Montaż wskazuje miejsce, w którym Coach mierzy źle",
             "nearPole": "Dec {declination} jest blisko bieguna. Impulsy prowadzenia w RA ledwo tam przesuwają gwiazdę, więc kalibracja i wyniki RA stają się niewiarygodne. Powyżej {maxDeclination} Coach nie wystartuje.",
             "low": "Montaż wskazuje tylko {altitude} nad horyzontem. Powietrze rozmywa tam i przesuwa gwiazdę bardziej, co psuje pomiary.",
-            "slewNeeded": "Wybierz obrót: powyżej Dec {maxDeclination} Coach nie wystartuje."
+            "slewNeeded": "Wybierz obrót: powyżej Dec {maxDeclination} Coach nie wystartuje.",
+            "slewBlock": {
+              "noMount": "Podłącz montaż, aby obrócić go do pozycji kalibracji.",
+              "parked": "Odparkuj montaż, aby obrócić go do pozycji kalibracji.",
+              "slewing": "Poczekaj, aż montaż przestanie się obracać.",
+              "sequence": "Trwa sekwencja. Obrót odsunąłby montaż od celu; najpierw zatrzymaj sekwencję.",
+              "exposing": "Kamera główna naświetla. Obrót zepsułby klatkę; poczekaj, aż się skończy."
+            },
+            "startWithSlew": "Obróć i uruchom Coach",
+            "confirmSlewTitle": "Obrócić montaż?",
+            "confirmSlew": "Montaż opuszcza bieżący cel i obraca się do pozycji kalibracji ({side}). Coach startuje, gdy dotrze na miejsce."
           },
           "start": "Rozpocznij sesję",
           "starting": "Uruchamianie…",

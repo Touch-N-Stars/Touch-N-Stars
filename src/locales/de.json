@@ -3031,7 +3031,17 @@
             "title": "Die Montierung zeigt dorthin, wo der Coach schlecht misst",
             "nearPole": "Dec {declination} liegt nahe am Pol. RA-Guide-Pulse bewegen den Stern dort kaum, daher werden die Kalibrierung und die RA-Ergebnisse unzuverlässig. Jenseits von {maxDeclination} startet der Coach nicht.",
             "low": "Die Montierung zeigt nur {altitude} über den Horizont. Die Luft dort verschmiert und verschiebt den Stern stärker, was die Messungen verdirbt.",
-            "slewNeeded": "Wähle ein Schwenken: Jenseits von Dec {maxDeclination} startet der Coach nicht."
+            "slewNeeded": "Wähle ein Schwenken: Jenseits von Dec {maxDeclination} startet der Coach nicht.",
+            "slewBlock": {
+              "noMount": "Verbinden Sie die Montierung, um zu einer Kalibrierposition zu schwenken.",
+              "parked": "Parken Sie die Montierung aus, um zu einer Kalibrierposition zu schwenken.",
+              "slewing": "Warte, bis die Montierung nicht mehr schwenkt.",
+              "sequence": "Eine Sequenz läuft. Ein Schwenken würde die Montierung vom Ziel wegbewegen; beende zuerst die Sequenz.",
+              "exposing": "Die Hauptkamera belichtet. Ein Schwenken würde die Aufnahme verderben; warte, bis sie fertig ist."
+            },
+            "startWithSlew": "Schwenken und Coach starten",
+            "confirmSlewTitle": "Montierung schwenken?",
+            "confirmSlew": "Die Montierung verlässt das aktuelle Ziel und schwenkt zur Kalibrierposition ({side}). Der Coach startet, sobald sie angekommen ist."
           },
           "start": "Coach starten",
           "starting": "Startet…",

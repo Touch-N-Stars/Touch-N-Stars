@@ -2990,7 +2990,17 @@
             "title": "La montatura punta dove il coach misura male",
             "nearPole": "Dec {declination} è vicina al polo. Lì gli impulsi di guida in AR spostano appena la stella, quindi la calibrazione e i risultati in AR diventano inaffidabili. Oltre {maxDeclination} il coach non parte.",
             "low": "La montatura punta solo {altitude} sopra l'orizzonte. Lì l'aria sfoca e sposta di più la stella, il che rovina le misure.",
-            "slewNeeded": "Scegli uno spostamento: oltre Dec {maxDeclination} il coach non parte."
+            "slewNeeded": "Scegli uno spostamento: oltre Dec {maxDeclination} il coach non parte.",
+            "slewBlock": {
+              "noMount": "Collegare la montatura per spostarsi in una posizione di calibrazione.",
+              "parked": "Rimuovere il parcheggio della montatura per spostarsi in una posizione di calibrazione.",
+              "slewing": "Attendi che la montatura abbia finito di muoversi.",
+              "sequence": "È in corso una sequenza. Uno spostamento allontanerebbe la montatura dal suo target; ferma prima la sequenza.",
+              "exposing": "La camera di ripresa sta esponendo. Uno spostamento rovinerebbe la posa; attendi che sia terminata."
+            },
+            "startWithSlew": "Sposta e avvia il coach",
+            "confirmSlewTitle": "Spostare la montatura?",
+            "confirmSlew": "La montatura lascia il target attuale e si sposta nella posizione di calibrazione ({side}). Il coach parte quando arriva."
           },
           "start": "Avvia coach",
           "starting": "Avvio…",

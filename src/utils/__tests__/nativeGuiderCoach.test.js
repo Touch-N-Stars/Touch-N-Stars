@@ -10,6 +10,10 @@ import {
   activeHint,
   cameraGrid,
   coachPosition,
+  coachPositionWarning,
+  coachSlewBlocker,
+  coachSlewPlan,
+  defaultCoachSlew,
   compareReports,
   defaultGains,
   describeChange,
@@ -634,6 +638,47 @@ test('setting changes use labels and units from the settings metadata', () => {
     describeChange({ name: 'BacklashModel', value: 'PlayModel' }, settings).to,
     'PlayModel',
     'without a localizer the raw option'
+  );
+});
+
+test('coachPositionWarning warns only for steps that guide the mount', () => {
+  const position = coachPosition({ Connected: true, Declination: 85, Altitude: 50 });
+  assert.equal(coachPositionWarning(position, ['CameraCheck']), null);
+  assert.equal(coachPositionWarning(position, ['CameraCheck', 'Drift']), position);
+  assert.equal(coachPositionWarning(position, []), null);
+  const fine = coachPosition({ Connected: true, Declination: 10, Altitude: 50 });
+  assert.equal(coachPositionWarning(fine, ['Drift']), null);
+  assert.equal(coachPositionWarning(null, ['Drift']), null);
+});
+
+test('coachSlewBlocker refuses a slew the mount or the imaging run cannot take', () => {
+  const mount = (extra = {}) => ({ Connected: true, AtPark: false, Slewing: false, ...extra });
+  assert.equal(coachSlewBlocker({ mountInfo: null }), 'noMount');
+  assert.equal(coachSlewBlocker({ mountInfo: { Connected: false } }), 'noMount');
+  assert.equal(coachSlewBlocker({ mountInfo: mount({ AtPark: true }) }), 'parked');
+  assert.equal(coachSlewBlocker({ mountInfo: mount({ Slewing: true }) }), 'slewing');
+  assert.equal(coachSlewBlocker({ mountInfo: mount(), sequenceRunning: true }), 'sequence');
+  assert.equal(coachSlewBlocker({ mountInfo: mount(), cameraExposing: true }), 'exposing');
+  assert.equal(coachSlewBlocker({ mountInfo: mount() }), null);
+});
+
+test('the coach slew is preselected only where the guider refuses, and sent only when possible', () => {
+  const refused = { issues: ['nearPole'], refused: true };
+  const warned = { issues: ['nearPole'], refused: false };
+  assert.equal(defaultCoachSlew(refused, null), 'stay');
+  assert.equal(defaultCoachSlew(refused, 'parked'), 'none', 'cannot slew');
+  assert.equal(defaultCoachSlew(warned, null), 'none', 'a slew leaves the target');
+  assert.equal(defaultCoachSlew(null, null), 'none');
+
+  assert.deepEqual(coachSlewPlan(refused, null, 'east'), { slew: 'east', missing: false });
+  assert.deepEqual(coachSlewPlan(refused, null, 'none'), { slew: null, missing: true });
+  assert.deepEqual(coachSlewPlan(refused, 'sequence', 'stay'), { slew: null, missing: true });
+  assert.deepEqual(coachSlewPlan(warned, null, 'west'), { slew: 'west', missing: false });
+  assert.deepEqual(coachSlewPlan(warned, null, 'none'), { slew: null, missing: false });
+  assert.deepEqual(
+    coachSlewPlan(null, null, 'stay'),
+    { slew: null, missing: false },
+    'no warning shown: no slew'
   );
 });
 

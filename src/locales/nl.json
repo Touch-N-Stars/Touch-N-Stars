@@ -2990,7 +2990,17 @@
             "title": "De montering wijst naar een plek waar de coach slecht meet",
             "nearPole": "Dec {declination} ligt dicht bij de pool. RA-guidepulsen bewegen de ster daar nauwelijks, dus de kalibratie en de RA-resultaten worden onbetrouwbaar. Voorbij {maxDeclination} start de coach niet.",
             "low": "De montering wijst maar {altitude} boven de horizon. De lucht daar vervaagt en verschuift de ster meer, wat de metingen bederft.",
-            "slewNeeded": "Kies een draaibeweging: voorbij Dec {maxDeclination} start de coach niet."
+            "slewNeeded": "Kies een draaibeweging: voorbij Dec {maxDeclination} start de coach niet.",
+            "slewBlock": {
+              "noMount": "Sluit de montering aan om naar een kalibratiepositie te slewen.",
+              "parked": "Parkeer de montering uit om naar een kalibratiepositie te slewen.",
+              "slewing": "Wacht tot de montering klaar is met slewen.",
+              "sequence": "Er loopt een sequentie. Slewen zou de montering van het doel weg bewegen; stop eerst de sequentie.",
+              "exposing": "De opnamecamera belicht. Slewen zou de opname bederven; wacht tot ze klaar is."
+            },
+            "startWithSlew": "Slewen en coach starten",
+            "confirmSlewTitle": "Montering slewen?",
+            "confirmSlew": "De montering verlaat het huidige doel en slewt naar de kalibratiepositie ({side}). De coach start zodra ze aankomt."
           },
           "start": "Coach starten",
           "starting": "Starten…",

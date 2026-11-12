@@ -272,6 +272,50 @@ export function coachPosition(mountInfo) {
   };
 }
 
+/**
+ * The coach position worth a warning on the start screen, or null: only the steps after the camera
+ * check guide the mount, so only they care where it points.
+ */
+export function coachPositionWarning(position, steps = []) {
+  return position?.issues?.length && steps.some((s) => s !== 'CameraCheck') ? position : null;
+}
+
+/**
+ * Why the coach must not slew the mount now, or null: 'noMount', 'parked', 'slewing' (the mount
+ * is already moving), 'sequence' (a running sequence would lose its target) or 'exposing' (a sub of
+ * the imaging camera would be ruined). The guider only checks its own state before a slew.
+ */
+export function coachSlewBlocker({
+  mountInfo,
+  sequenceRunning = false,
+  cameraExposing = false,
+} = {}) {
+  if (!mountInfo?.Connected) return 'noMount';
+  if (mountInfo.AtPark) return 'parked';
+  if (mountInfo.Slewing) return 'slewing';
+  if (sequenceRunning) return 'sequence';
+  if (cameraExposing) return 'exposing';
+  return null;
+}
+
+/**
+ * The slew the start screen preselects: 'stay' only when the guider would refuse the position and the
+ * mount can slew, else 'none' (a slew moves the mount off the target).
+ */
+export function defaultCoachSlew(warning, blocker) {
+  return warning?.refused === true && !blocker ? 'stay' : 'none';
+}
+
+/**
+ * The slew the coach start sends ({ slew, missing }): slew = 'stay' | 'east' | 'west' when one is
+ * chosen, shown (the position warns) and possible, else null; missing = the guider would refuse the
+ * position and no slew fixes it, so the start stays disabled.
+ */
+export function coachSlewPlan(warning, blocker, choice) {
+  const slew = warning && !blocker && choice && choice !== 'none' ? choice : null;
+  return { slew, missing: warning?.refused === true && !slew };
+}
+
 // --- Options and estimates -----------------------------------------------------------
 
 export const DEFAULT_EXPOSURES = [1, 2, 3];

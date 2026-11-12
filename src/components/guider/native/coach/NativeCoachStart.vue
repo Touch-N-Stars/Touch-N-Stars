@@ -62,7 +62,7 @@
           </button>
         </div>
         <p v-if="slewBlocker" class="text-xs text-status-warn">
-          {{ t(`components.guider.native.controls.${slewBlocker}`) }}
+          {{ k(`position.slewBlock.${slewBlocker}`) }}
         </p>
         <p v-else-if="slewMissing" class="text-xs text-status-danger">
           {{ k('position.slewNeeded', positionParams) }}
@@ -283,7 +283,7 @@
       <button type="button" class="tns-btn-primary" :disabled="!canStart" @click="start">
         <ArrowPathIcon v-if="starting" class="h-5 w-5 animate-spin" />
         <PlayIcon v-else class="h-5 w-5" />
-        {{ starting ? k('starting') : k('start') }}
+        {{ starting ? k('starting') : slewChosen ? k('position.startWithSlew') : k('start') }}
       </button>
     </div>
   </section>
@@ -303,7 +303,9 @@ import {
   XCircleIcon,
 } from '@heroicons/vue/24/outline';
 import toggleButton from '@/components/helpers/toggleButton.vue';
+import { getBackendLanguageCode } from '@/i18n';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { useSequenceStore } from '@/store/sequenceStore';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import {
@@ -311,6 +313,10 @@ import {
   COACH_STEPS,
   DEFAULT_EXPOSURES,
   coachPosition,
+  coachPositionWarning,
+  coachSlewBlocker,
+  coachSlewPlan,
+  defaultCoachSlew,
   defaultGains,
   estimateStepSeconds,
   estimateTotalSeconds,
@@ -338,7 +344,8 @@ const DEFAULTS = {
 
 const store = useNativeGuiderStore();
 const mainStore = apiStore();
-const { t } = useI18n();
+const sequenceStore = useSequenceStore();
+const { t, locale } = useI18n();
 const { k, stepName, duration, message } = useCoachText();
 
 const stored = readStored();
@@ -454,37 +461,44 @@ const guidingActive = computed(() =>
 
 // Mount position: only the steps after the camera check guide the mount, so only they care.
 const position = computed(() => coachPosition(mainStore.mountInfo));
-const positionWarning = computed(() =>
-  position.value?.issues.length && selected.value.some((s) => s !== 'CameraCheck')
-    ? position.value
-    : null
-);
+const positionWarning = computed(() => coachPositionWarning(position.value, selected.value));
+function formatDegrees(value, digits) {
+  const format = new Intl.NumberFormat(getBackendLanguageCode(locale.value) ?? undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+  return `${format.format(value)}°`;
+}
 const positionParams = computed(() => ({
   declination:
-    position.value?.declination == null ? '' : `${position.value.declination.toFixed(1)}°`,
-  altitude: position.value?.altitude == null ? '' : `${Math.round(position.value.altitude)}°`,
-  maxDeclination: `${COACH_POSITION.maxDeclination}°`,
+    position.value?.declination == null ? '' : formatDegrees(position.value.declination, 1),
+  altitude: position.value?.altitude == null ? '' : formatDegrees(position.value.altitude, 0),
+  maxDeclination: formatDegrees(COACH_POSITION.maxDeclination, 0),
 }));
-/** Locale key (under controls) of why the mount cannot slew, or null. */
-const slewBlocker = computed(() => {
-  if (!mainStore.mountInfo?.Connected) return 'calibrationSlewNoMount';
-  if (mainStore.mountInfo.AtPark) return 'calibrationSlewParked';
-  return null;
-});
-// No slew unless the guider would refuse the position: a slew moves the mount off the target.
+/** Why the mount cannot slew (a key under coach.position.slewBlock), or null. */
+const slewBlocker = computed(() =>
+  coachSlewBlocker({
+    mountInfo: mainStore.mountInfo,
+    sequenceRunning: sequenceStore.sequenceRunning === true,
+    cameraExposing: mainStore.cameraInfo?.IsExposing === true,
+  })
+);
+// No slew unless the guider would refuse the position: a slew moves the mount off the target. Also
+// re-evaluated when the mount becomes able to slew (e.g. unparked) while the position stays refused.
 const coachSlew = ref('none');
 watch(
-  () => positionWarning.value?.refused === true,
-  (refused) => {
-    coachSlew.value = refused && !slewBlocker.value ? 'stay' : 'none';
+  () => defaultCoachSlew(positionWarning.value, slewBlocker.value),
+  (slew) => {
+    coachSlew.value = slew;
   },
   { immediate: true }
 );
-const slewChosen = computed(() =>
-  positionWarning.value && !slewBlocker.value && coachSlew.value !== 'none' ? coachSlew.value : null
+const slewPlan = computed(() =>
+  coachSlewPlan(positionWarning.value, slewBlocker.value, coachSlew.value)
 );
+const slewChosen = computed(() => slewPlan.value.slew);
 // Too close to the pole and no slew chosen: the guider would refuse the session.
-const slewMissing = computed(() => positionWarning.value?.refused === true && !slewChosen.value);
+const slewMissing = computed(() => slewPlan.value.missing);
 const slewing = computed(() => store.summary.calibrationSlew === true);
 
 const blocker = computed(() => {
@@ -507,8 +521,19 @@ const canStart = computed(
 
 async function start() {
   if (!canStart.value) return;
-  // The coach takes over guiding: a running sub would be disturbed, so ask like Stop does.
-  if (guidingActive.value) {
+  // A slew moves the mount off its target: say so and where it goes before anything moves.
+  if (slewChosen.value) {
+    const ok = await useToastStore().showConfirmation(
+      k('position.confirmSlewTitle'),
+      k('position.confirmSlew', {
+        side: t(`components.guider.native.controls.calibrationSlewChoices.${slewChosen.value}`),
+      }) + (guidingActive.value ? ` ${k('guidingWarning')}` : ''),
+      k('position.startWithSlew'),
+      t('common.cancel')
+    );
+    if (!ok) return;
+  } else if (guidingActive.value) {
+    // The coach takes over guiding: a running sub would be disturbed, so ask like Stop does.
     const ok = await useToastStore().showConfirmation(
       k('confirmStartTitle'),
       k('guidingWarning'),

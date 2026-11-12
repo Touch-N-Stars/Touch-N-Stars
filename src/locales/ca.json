@@ -3031,7 +3031,17 @@
             "title": "La muntura apunta on el Coach mesura malament",
             "nearPole": "Dec {declination} és a prop del pol. Els polsos de guiatge en AR gairebé no hi mouen l'estrella, així que el calibratge i els resultats d'AR deixen de ser fiables. Més enllà de {maxDeclination} el Coach no comença.",
             "low": "La muntura apunta només {altitude} sobre l'horitzó. L'aire allà difumina i desplaça més l'estrella, cosa que espatlla les mesures.",
-            "slewNeeded": "Trieu un desplaçament: més enllà de Dec {maxDeclination} el Coach no comença."
+            "slewNeeded": "Trieu un desplaçament: més enllà de Dec {maxDeclination} el Coach no comença.",
+            "slewBlock": {
+              "noMount": "Connecta la muntura per desplaçar-la a una posició de calibratge.",
+              "parked": "Desaparca la muntura per desplaçar-la a una posició de calibratge.",
+              "slewing": "Espereu que la muntura acabi de desplaçar-se.",
+              "sequence": "Hi ha una seqüència en marxa. Un desplaçament allunyaria la muntura del seu objectiu; atureu primer la seqüència.",
+              "exposing": "La càmera d'imatge està exposant. Un desplaçament espatllaria l'exposició; espereu que acabi."
+            },
+            "startWithSlew": "Desplaça i inicia el Coach",
+            "confirmSlewTitle": "Desplaçar la muntura?",
+            "confirmSlew": "La muntura deixa l'objectiu actual i es desplaça a la posició de calibratge ({side}). El Coach comença quan hi arriba."
           },
           "start": "Inicia el Coach",
           "starting": "Iniciant…",

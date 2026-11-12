@@ -2990,7 +2990,17 @@
             "title": "La montura apunta donde el coach mide mal",
             "nearPole": "Dec {declination} está cerca del polo. Los pulsos de guiado en AR apenas mueven la estrella allí, así que la calibración y los resultados de AR dejan de ser fiables. Más allá de {maxDeclination} el coach no empieza.",
             "low": "La montura apunta solo {altitude} sobre el horizonte. El aire ahí difumina y desplaza más la estrella, lo que estropea las mediciones.",
-            "slewNeeded": "Elige un movimiento: más allá de Dec {maxDeclination} el coach no empieza."
+            "slewNeeded": "Elige un movimiento: más allá de Dec {maxDeclination} el coach no empieza.",
+            "slewBlock": {
+              "noMount": "Conecte la montura para desplazarla a una posición de calibración.",
+              "parked": "Desaparque la montura para desplazarla a una posición de calibración.",
+              "slewing": "Espera a que la montura termine de moverse.",
+              "sequence": "Hay una secuencia en marcha. Un movimiento alejaría la montura de su objetivo; detén primero la secuencia.",
+              "exposing": "La cámara de imagen está exponiendo. Un movimiento arruinaría la exposición; espera a que termine."
+            },
+            "startWithSlew": "Mover e iniciar el coach",
+            "confirmSlewTitle": "¿Mover la montura?",
+            "confirmSlew": "La montura deja su objetivo actual y se mueve a la posición de calibración ({side}). El coach empieza cuando llega."
           },
           "start": "Iniciar coach",
           "starting": "Iniciando…",

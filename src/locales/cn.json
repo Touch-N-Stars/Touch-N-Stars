@@ -2990,7 +2990,17 @@
             "title": "赤道仪指向 Coach 测量不佳的位置",
             "nearPole": "Dec {declination} 接近天极。在那里 RA 导星脉冲几乎移动不了星点，因此校准和 RA 结果变得不可靠。超过 {maxDeclination} 时 Coach 不会启动。",
             "low": "赤道仪仅指向地平线以上 {altitude}。那里的大气会更多地模糊和移动星点，从而破坏测量。",
-            "slewNeeded": "请选择转动：超过 Dec {maxDeclination} 时 Coach 不会启动。"
+            "slewNeeded": "请选择转动：超过 Dec {maxDeclination} 时 Coach 不会启动。",
+            "slewBlock": {
+              "noMount": "请连接赤道仪以转到校准位置。",
+              "parked": "请将赤道仪解除停放以转到校准位置。",
+              "slewing": "请等待赤道仪停止转动。",
+              "sequence": "序列正在运行。转动会使赤道仪离开目标；请先停止序列。",
+              "exposing": "主相机正在曝光。转动会毁掉这次曝光；请等待曝光结束。"
+            },
+            "startWithSlew": "转动并启动 Coach",
+            "confirmSlewTitle": "转动赤道仪？",
+            "confirmSlew": "赤道仪将离开当前目标并转到校准位置（{side}）。到达后 Coach 开始。"
           },
           "start": "启动 Coach",
           "starting": "正在启动…",

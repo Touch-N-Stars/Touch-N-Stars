@@ -3031,7 +3031,17 @@
             "title": "The mount points where the coach measures badly",
             "nearPole": "Dec {declination} is close to the pole. RA guide pulses barely move the star there, so the calibration and the RA results get unreliable. Beyond {maxDeclination} the coach does not start.",
             "low": "The mount points only {altitude} above the horizon. The air there blurs and shifts the star more, which spoils the measurements.",
-            "slewNeeded": "Choose a slew: beyond Dec {maxDeclination} the coach does not start."
+            "slewNeeded": "Choose a slew: beyond Dec {maxDeclination} the coach does not start.",
+            "slewBlock": {
+              "noMount": "Connect the mount to slew to a calibration position.",
+              "parked": "Unpark the mount to slew to a calibration position.",
+              "slewing": "Wait until the mount has stopped slewing.",
+              "sequence": "A sequence is running. A slew would move the mount off its target; stop the sequence first.",
+              "exposing": "The imaging camera is exposing. A slew would ruin the exposure; wait until it has finished."
+            },
+            "startWithSlew": "Slew and start coach",
+            "confirmSlewTitle": "Slew the mount?",
+            "confirmSlew": "The mount leaves its current target and slews to the calibration position ({side}). The coach starts when it arrives."
           },
           "start": "Start coach",
           "starting": "Starting…",

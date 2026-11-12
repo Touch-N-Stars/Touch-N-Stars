@@ -2990,7 +2990,17 @@
             "title": "A montagem aponta para onde o coach mede mal",
             "nearPole": "Dec {declination} está perto do polo. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração e os resultados em AR deixam de ser fiáveis. Além de {maxDeclination} o coach não começa.",
             "low": "A montagem aponta só {altitude} acima do horizonte. O ar ali desfoca e desloca mais a estrela, o que estraga as medições.",
-            "slewNeeded": "Escolha um movimento: além de Dec {maxDeclination} o coach não começa."
+            "slewNeeded": "Escolha um movimento: além de Dec {maxDeclination} o coach não começa.",
+            "slewBlock": {
+              "noMount": "Conecte a montagem para movê-la para uma posição de calibração.",
+              "parked": "Desestacione a montagem para movê-la para uma posição de calibração.",
+              "slewing": "Aguarde até a montagem parar de se mover.",
+              "sequence": "Está a decorrer uma sequência. Um movimento afastaria a montagem do alvo; pare primeiro a sequência.",
+              "exposing": "A câmara de imagem está a expor. Um movimento estragaria a exposição; aguarde até terminar."
+            },
+            "startWithSlew": "Mover e iniciar o coach",
+            "confirmSlewTitle": "Mover a montagem?",
+            "confirmSlew": "A montagem deixa o alvo atual e move-se para a posição de calibração ({side}). O coach começa quando chegar."
           },
           "start": "Iniciar coach",
           "starting": "A iniciar…",

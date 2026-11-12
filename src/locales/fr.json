@@ -2990,7 +2990,17 @@
             "title": "La monture pointe là où le coach mesure mal",
             "nearPole": "Dec {declination} est proche du pôle. Les impulsions de guidage en AD y déplacent à peine l'étoile, la calibration et les résultats en AD deviennent donc peu fiables. Au-delà de {maxDeclination}, le coach ne démarre pas.",
             "low": "La monture ne pointe qu'à {altitude} au-dessus de l'horizon. L'air y brouille et déplace davantage l'étoile, ce qui fausse les mesures.",
-            "slewNeeded": "Choisissez un déplacement : au-delà de Dec {maxDeclination}, le coach ne démarre pas."
+            "slewNeeded": "Choisissez un déplacement : au-delà de Dec {maxDeclination}, le coach ne démarre pas.",
+            "slewBlock": {
+              "noMount": "Connectez la monture pour vous déplacer vers une position de calibration.",
+              "parked": "Déparquez la monture pour vous déplacer vers une position de calibration.",
+              "slewing": "Attendez que la monture ait fini son déplacement.",
+              "sequence": "Une séquence est en cours. Un déplacement éloignerait la monture de sa cible ; arrêtez d'abord la séquence.",
+              "exposing": "La caméra d'imagerie est en pose. Un déplacement gâcherait la pose ; attendez qu'elle soit terminée."
+            },
+            "startWithSlew": "Se déplacer et lancer le coach",
+            "confirmSlewTitle": "Déplacer la monture ?",
+            "confirmSlew": "La monture quitte sa cible actuelle et se déplace vers la position de calibration ({side}). Le coach démarre à son arrivée."
           },
           "start": "Lancer le coach",
           "starting": "Démarrage…",
