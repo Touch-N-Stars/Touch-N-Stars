@@ -2807,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "De dónde vienen las imágenes de guiado. Cámara de guiado: la cámara de la ranura de cámara de guiado del equipo. Simulador: una simulación integrada de montura, cielo y cámara, para probar el guiado sin hardware o de día.",
-            "ExposureSeconds": "Tiempo de exposición de cada imagen de guiado. 1–4 s promedian la mayor parte del seeing; exposiciones más cortas reaccionan más rápido pero persiguen el seeing, las más largas reaccionan despacio al viento y a los errores de la montura.",
+            "ExposureSeconds": "Tiempo de exposición de cada imagen de guiado. Las exposiciones más cortas reaccionan más rápido al viento y a los errores de la montura; el movimiento mínimo evita que persigan el seeing. 1 s va bien para la mayoría de las monturas; usa exposiciones más largas cuando la estrella guía sea demasiado débil.",
             "Gain": "-1 mantiene la ganancia actual del controlador. (La ganancia de PHD2 es un porcentaje, por eso no se traslada.)",
             "Offset": "-1 mantiene el offset actual del controlador.",
             "Binning": "Binning por hardware de las imágenes de guiado. 2×2 hace la cámara más sensible y la transferencia más rápida, a costa de resolución; útil con píxeles pequeños o una focal de guiado larga. Vuelve a calibrar tras un cambio.",
@@ -2979,6 +2979,8 @@
             "trialSeconds": "Duración por prueba",
             "repeatBaseline": "Repetir los ajustes actuales al final",
             "repeatBaselineHint": "Detecta cambios de seeing o nubes durante las pruebas.",
+            "exposureTrial": "Probar exposiciones más cortas",
+            "exposureTrialHint": "A partir de 1,5 s, guía también con 1 s y con una exposición a medio camino de la actual (p. ej. 1,5 s con 2,5 s). Muchas monturas guían mejor con exposiciones más cortas.",
             "allowCalibration": "Calibrar si hace falta",
             "allowCalibrationHint": "Sin calibración no se pueden ejecutar la deriva, la respuesta de la montura ni las pruebas.",
             "minutes": "{value} min",
@@ -2992,6 +2994,23 @@
           "notConnected": "Conecta el PINS Native Guider para usar el coach.",
           "calibratingBlock": "Espera a que termine la calibración.",
           "darksBlock": "Espera a que se cree la biblioteca de darks.",
+          "slewingBlock": "La montura se está moviendo a la posición de calibración. El coach empieza cuando llegue; Detener en los controles del guiado cancela el movimiento.",
+          "position": {
+            "title": "La montura apunta donde el coach mide mal",
+            "nearPole": "Dec {declination} está cerca del polo. Los pulsos de guiado en AR apenas mueven la estrella allí, así que la calibración y los resultados de AR dejan de ser fiables. Más allá de {maxDeclination} el coach no empieza.",
+            "low": "La montura apunta solo {altitude} sobre el horizonte. El aire ahí difumina y desplaza más la estrella, lo que estropea las mediciones.",
+            "slewNeeded": "Elige un movimiento: más allá de Dec {maxDeclination} el coach no empieza.",
+            "slewBlock": {
+              "noMount": "Conecte la montura para desplazarla a una posición de calibración.",
+              "parked": "Desaparque la montura para desplazarla a una posición de calibración.",
+              "slewing": "Espera a que la montura termine de moverse.",
+              "sequence": "Hay una secuencia en marcha. Un movimiento alejaría la montura de su objetivo; detén primero la secuencia.",
+              "exposing": "La cámara de imagen está exponiendo. Un movimiento arruinaría la exposición; espera a que termine."
+            },
+            "startWithSlew": "Mover e iniciar el coach",
+            "confirmSlewTitle": "¿Mover la montura?",
+            "confirmSlew": "La montura deja su objetivo actual y se mueve a la posición de calibración ({side}). El coach empieza cuando llega."
+          },
           "start": "Iniciar coach",
           "starting": "Iniciando…",
           "startFailed": "No se pudo iniciar el coach",
@@ -3082,6 +3101,7 @@
               "current": "Ajustes actuales",
               "suggestion": "Sugerencia del coach",
               "variant": "Variante",
+              "exposure": "Exposición más corta",
               "currentRepeat": "Ajustes actuales de nuevo"
             },
             "winner": "Mejor",
@@ -3158,6 +3178,7 @@
           "hint": {
             "label": "Consejo",
             "dismiss": "Descartar consejo",
+            "dismissForGood": "No volver a mostrar este consejo",
             "apply": "Aplicar",
             "applied": "Aplicado",
             "applyFailed": "No se pudo aplicar el consejo"
@@ -3259,7 +3280,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Con el guiado desactivado, la estrella sigue bailando {rmsArcsec} por la atmósfera. Ningún guiado puede seguir este movimiento rápido: es el límite inferior de tu RMS guiado.",
                 "fix_good": "Buenas condiciones: ahora se notan los pequeños errores de la montura, así que el ajuste fino merece la pena.",
-                "fix": "No persigas el seeing: guía con 2 s o más y un movimiento mínimo justo por encima del seeing."
+                "fix": "Evita que el guiado persiga el seeing con un movimiento mínimo justo por encima. Eso, y no una exposición larga, es lo que filtra el seeing: una exposición corta (alrededor de 1 s) reacciona más rápido a los errores propios de la montura."
               },
               "minMove": {
                 "title": "Mov. mínimo según el seeing: RA {raPx}, Dec {decPx}",
@@ -3407,6 +3428,11 @@
                 "title": "El guiado está en el límite del seeing",
                 "why": "Tu RMS de {rmsArcsec} está cerca de lo que permite la atmósfera.",
                 "fix": "Nada que ajustar por ahora."
+              },
+              "longExposure": {
+                "title": "Prueba una exposición de guiado más corta",
+                "why": "Con {exposureSeconds} por imagen, el guiado corrige tarde. Muchas monturas guían mejor con exposiciones más cortas, porque las correcciones siguen más de cerca los errores de la montura y el viento.",
+                "fix": "Prueba {suggestedSeconds} y compara el RMS. El asistente de guiado puede probarlo por ti. Este consejo solo se muestra una vez."
               }
             },
             "coach": {
@@ -3419,6 +3445,11 @@
                 "title": "Guiador no conectado",
                 "why": "El coach necesita el guiador nativo conectado con su cámara y su montura.",
                 "fix": "Conecta el guiador (y la montura para el guiado por pulsos) y vuelve a intentarlo."
+              },
+              "nearPole": {
+                "title": "Demasiado cerca del polo",
+                "why": "La montura apunta a Dec {declinationDeg}. Los pulsos de guiado en AR apenas mueven la estrella allí, así que la calibración falla o mide sobre todo ruido.",
+                "fix": "Mueve la montura a una declinación dentro de ±{maxDeclinationDeg}, idealmente cerca del ecuador celeste, o elige un movimiento a una posición de calibración al iniciar el coach."
               },
               "noStar": {
                 "title": "No se encontró estrella guía",

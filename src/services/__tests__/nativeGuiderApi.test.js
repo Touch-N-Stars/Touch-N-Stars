@@ -156,6 +156,17 @@ test('coach calls use the coach routes, bodies and history limit', async (t) => 
   assert.deepEqual(calls[6].data, { id: 'hint.raOscillation' });
 });
 
+test('a coach start with a slew sends it as a query parameter', async (t) => {
+  const calls = recordRequests(t, { success: true, response: { pending: true } });
+
+  await apiService.startNativeGuiderCoach({ steps: ['Drift'] }, { slew: 'east' });
+  await apiService.startNativeGuiderCoach({});
+
+  assert.deepEqual(calls[0].params, { slew: 'east' });
+  assert.deepEqual(calls[0].data, { steps: ['Drift'] });
+  assert.equal(calls[1].params, undefined);
+});
+
 test('a coach rejection keeps the guider message code', async (t) => {
   t.mock.method(nativeGuiderHttp, 'request', async () => {
     const error = new Error('Request failed with status code 409');

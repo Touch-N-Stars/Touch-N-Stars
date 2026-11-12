@@ -435,6 +435,23 @@ test('startCoach passes the options and returns the localized rejection code', a
   assert.equal(store.coachPending, null);
 });
 
+test('startCoach passes a slew to the calibration position along', async (t) => {
+  const store = setup(t);
+  const sent = [];
+  stubApi(t, {
+    startNativeGuiderCoach: async (...args) => {
+      sent.push(args);
+      return { action: 'coach-start', pending: true, status: { phase: 'Idle' } };
+    },
+    getNativeGuiderStatus: async () => null,
+  });
+
+  assert.equal((await store.startCoach({ steps: ['Drift'] }, { slew: 'stay' })).ok, true);
+  assert.equal((await store.startCoach({})).ok, true);
+
+  assert.deepEqual(sent, [[{ steps: ['Drift'] }, { slew: 'stay' }], [{}]]);
+});
+
 test('startCoach applies the accepted status', async (t) => {
   const store = setup(t);
   stubApi(t, {

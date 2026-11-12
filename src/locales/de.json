@@ -2848,7 +2848,7 @@
           },
           "descriptions": {
             "GuideSource": "Woher die Guide-Frames kommen. Guide-Kamera: die Kamera im Guide-Kamera-Slot der Ausrüstung. Simulator: eine eingebaute Simulation von Montierung, Himmel und Kamera, um den Guider ohne Hardware oder bei Tageslicht auszuprobieren.",
-            "ExposureSeconds": "Belichtungszeit jedes Guide-Frames. 1–4 s mitteln den Großteil des Seeings heraus; kürzere Belichtungen reagieren schneller, jagen aber dem Seeing hinterher, längere reagieren langsam auf Wind und Montierungsfehler.",
+            "ExposureSeconds": "Belichtungszeit jedes Guide-Bilds. Kürzere Belichtungen reagieren schneller auf Wind und Fehler der Montierung; der Min-Move hält sie davon ab, dem Seeing hinterherzulaufen. 1 s passt für die meisten Montierungen; nimm längere Belichtungen, wenn der Leitstern zu schwach ist.",
             "Gain": "-1 behält den aktuellen Gain des Treibers bei. (Der Gain von PHD2 ist ein Prozentwert und wird daher nicht übernommen.)",
             "Offset": "-1 behält den aktuellen Offset des Treibers bei.",
             "Binning": "Hardware-Binning der Guide-Frames. 2×2 macht die Kamera empfindlicher und die Übertragung der Frames schneller, kostet aber Auflösung; sinnvoll bei kleinen Pixeln oder langer Guide-Brennweite. Nach einer Änderung neu kalibrieren.",
@@ -3020,6 +3020,8 @@
             "trialSeconds": "Dauer pro Testlauf",
             "repeatBaseline": "Aktuelle Einstellungen am Ende wiederholen",
             "repeatBaselineHint": "Erkennt wechselndes Seeing oder Wolken während der Testläufe.",
+            "exposureTrial": "Kürzere Belichtungen testen",
+            "exposureTrialHint": "Ab 1,5 s wird zusätzlich mit 1 s und mit einer Belichtung auf halbem Weg zur aktuellen geguidet (z. B. 1,5 s bei 2,5 s). Viele Montierungen guiden mit kürzeren Belichtungen besser.",
             "allowCalibration": "Bei Bedarf kalibrieren",
             "allowCalibrationHint": "Ohne Kalibrierung können Drift, Montierungsreaktion und Testläufe nicht laufen.",
             "minutes": "{value} min",
@@ -3033,6 +3035,23 @@
           "notConnected": "Verbinde den PINS Native Guider, um den Coach zu nutzen.",
           "calibratingBlock": "Warte, bis die Kalibrierung abgeschlossen ist.",
           "darksBlock": "Warte, bis die Dark-Bibliothek erstellt ist.",
+          "slewingBlock": "Die Montierung schwenkt zur Kalibrierposition. Der Coach startet, sobald sie angekommen ist; Stopp in der Guider-Steuerung bricht das Schwenken ab.",
+          "position": {
+            "title": "Die Montierung zeigt dorthin, wo der Coach schlecht misst",
+            "nearPole": "Dec {declination} liegt nahe am Pol. RA-Guide-Pulse bewegen den Stern dort kaum, daher werden die Kalibrierung und die RA-Ergebnisse unzuverlässig. Jenseits von {maxDeclination} startet der Coach nicht.",
+            "low": "Die Montierung zeigt nur {altitude} über den Horizont. Die Luft dort verschmiert und verschiebt den Stern stärker, was die Messungen verdirbt.",
+            "slewNeeded": "Wähle ein Schwenken: Jenseits von Dec {maxDeclination} startet der Coach nicht.",
+            "slewBlock": {
+              "noMount": "Verbinden Sie die Montierung, um zu einer Kalibrierposition zu schwenken.",
+              "parked": "Parken Sie die Montierung aus, um zu einer Kalibrierposition zu schwenken.",
+              "slewing": "Warte, bis die Montierung nicht mehr schwenkt.",
+              "sequence": "Eine Sequenz läuft. Ein Schwenken würde die Montierung vom Ziel wegbewegen; beende zuerst die Sequenz.",
+              "exposing": "Die Hauptkamera belichtet. Ein Schwenken würde die Aufnahme verderben; warte, bis sie fertig ist."
+            },
+            "startWithSlew": "Schwenken und Coach starten",
+            "confirmSlewTitle": "Montierung schwenken?",
+            "confirmSlew": "Die Montierung verlässt das aktuelle Ziel und schwenkt zur Kalibrierposition ({side}). Der Coach startet, sobald sie angekommen ist."
+          },
           "start": "Coach starten",
           "starting": "Startet…",
           "startFailed": "Der Coach konnte nicht starten",
@@ -3123,6 +3142,7 @@
               "current": "Aktuelle Einstellungen",
               "suggestion": "Coach-Vorschlag",
               "variant": "Variante",
+              "exposure": "Kürzere Belichtung",
               "currentRepeat": "Aktuelle Einstellungen erneut"
             },
             "winner": "Bester",
@@ -3199,6 +3219,7 @@
           "hint": {
             "label": "Tipp",
             "dismiss": "Tipp verwerfen",
+            "dismissForGood": "Tipp nicht mehr anzeigen",
             "apply": "Übernehmen",
             "applied": "Übernommen",
             "applyFailed": "Übernehmen des Tipps fehlgeschlagen"
@@ -3300,7 +3321,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Auch bei ausgeschaltetem Guiding tanzt der Stern wegen der Atmosphäre um {rmsArcsec}. Dieser schnellen Bewegung kann kein Guiding folgen: Sie ist die Untergrenze deines Guiding-RMS.",
                 "fix_good": "Gute Bedingungen: Jetzt zeigen sich kleine Fehler der Montierung, Feintuning lohnt sich.",
-                "fix": "Lauf dem Seeing nicht hinterher: Guide mit 2 s oder länger und einem Min-Move knapp über dem Seeing."
+                "fix": "Halte den Guider mit einem Min-Move knapp über dem Seeing davon ab, dem Seeing hinterherzulaufen. Das filtert das Seeing, nicht eine lange Belichtung: Eine kurze Belichtung (um 1 s) reagiert schneller auf die eigenen Fehler der Montierung."
               },
               "minMove": {
                 "title": "Min-Move aus dem Seeing: RA {raPx}, Dec {decPx}",
@@ -3448,6 +3469,11 @@
                 "title": "Guiding ist am Seeing-Limit",
                 "why": "Dein RMS von {rmsArcsec} liegt nah an dem, was die Atmosphäre zulässt.",
                 "fix": "Im Moment nichts einzustellen."
+              },
+              "longExposure": {
+                "title": "Kürzere Guiding-Belichtung probieren",
+                "why": "Mit {exposureSeconds} pro Frame korrigiert der Guider spät. Viele Montierungen guiden mit kürzeren Belichtungen besser, weil die Korrekturen dann den Fehlern der Montierung und dem Wind enger folgen.",
+                "fix": "Probier {suggestedSeconds} und vergleiche den RMS. Der Guiding-Coach kann das für dich testen. Dieser Tipp erscheint nur einmal."
               }
             },
             "coach": {
@@ -3460,6 +3486,11 @@
                 "title": "Guider nicht verbunden",
                 "why": "Der Coach braucht den verbundenen nativen Guider mit Kamera und Montierung.",
                 "fix": "Verbinde den Guider (und die Montierung für Pulse Guiding) und versuche es erneut."
+              },
+              "nearPole": {
+                "title": "Zu nah am Pol",
+                "why": "Die Montierung zeigt auf Dec {declinationDeg}. RA-Guide-Pulse bewegen den Stern dort kaum, daher schlägt die Kalibrierung fehl oder misst vor allem Rauschen.",
+                "fix": "Schwenke auf eine Deklination innerhalb von ±{maxDeclinationDeg}, am besten nahe dem Himmelsäquator, oder wähle beim Start des Coachs ein Schwenken zu einer Kalibrierposition."
               },
               "noStar": {
                 "title": "Kein Guide-Stern gefunden",
