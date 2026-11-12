@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "Il modello del gioco funziona solo con l'algoritmo Dec Predictive; per ora viene usato l'impulso fisso. Per usarlo, imposta «Algoritmo Dec» su Predictive in queste impostazioni.",
-            "wormPeriodTooShort": "Meno di 180 s: la guida ignora questo periodo e lo rileva dai frame di guida."
+            "wormPeriodOutOfRange": "Fuori dall'intervallo 180–1200 s: la guida non usa questo periodo e lo rileva dai frame di guida."
           }
         },
         "darks": {

@@ -125,12 +125,15 @@
       :style="{ gridTemplateColumns: `repeat(${optionList.length}, minmax(0, 1fr))` }"
       role="radiogroup"
       :aria-label="label"
+      @keydown="onSegmentKey"
     >
       <button
-        v-for="option in optionList"
+        v-for="(option, index) in optionList"
         :key="option"
+        ref="segmentButtons"
         type="button"
         role="radio"
+        :tabindex="index === segmentFocusIndex ? 0 : -1"
         class="min-h-touch rounded-chip px-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         :class="
           String(draft) === option
@@ -449,6 +452,24 @@ function onChoose(option) {
   if (saving.value || String(draft.value) === option) return;
   draft.value = option;
   save(option);
+}
+
+/** Buttons of the segmented switch, for the arrow keys. */
+const segmentButtons = ref([]);
+/** The one switch button in the tab order: the chosen option, else the first. */
+const segmentFocusIndex = computed(() =>
+  Math.max(0, optionList.value.indexOf(String(draft.value)))
+);
+
+/** Arrow keys move through the segmented switch and choose, like a native radio group. */
+function onSegmentKey(event) {
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+  if (!step || saving.value) return;
+  event.preventDefault();
+  const count = optionList.value.length;
+  const index = (segmentFocusIndex.value + step + count) % count;
+  onChoose(optionList.value[index]);
+  segmentButtons.value[index]?.focus();
 }
 
 function onToggle(value) {

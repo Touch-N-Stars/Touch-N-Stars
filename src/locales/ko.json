@@ -2917,7 +2917,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "유격 모델은 Dec 알고리즘 Predictive에서만 동작합니다. 현재는 고정 펄스를 사용합니다. 사용하려면 이 설정에서 \"Dec 알고리즘\"을 Predictive로 바꾸세요.",
-            "wormPeriodTooShort": "180초 미만: 가이더가 이 주기를 무시하고 가이드 프레임에서 감지합니다."
+            "wormPeriodOutOfRange": "180~1200초 범위 밖: 가이더가 이 주기를 사용하지 않고 가이드 프레임에서 감지합니다."
           }
         },
         "darks": {

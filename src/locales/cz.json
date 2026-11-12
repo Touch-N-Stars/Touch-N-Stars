@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "Model vůle funguje jen s algoritmem Dec Predictive; nyní se používá pevný pulz. Chcete-li ho použít, nastavte v tomto nastavení „Algoritmus Dec“ na Predictive.",
-            "wormPeriodTooShort": "Kratší než 180 s: naváděč tuto periodu ignoruje a zjistí ji z naváděcích snímků."
+            "wormPeriodOutOfRange": "Mimo rozsah 180 až 1200 s: naváděč tuto periodu nepoužije a zjistí ji z naváděcích snímků."
           }
         },
         "darks": {

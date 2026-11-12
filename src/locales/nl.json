@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "Het spelingsmodel werkt alleen met het Dec-algoritme Predictive; nu wordt de vaste puls gebruikt. Zet hiervoor in deze instellingen ‘Dec-algoritme’ op Predictive.",
-            "wormPeriodTooShort": "Korter dan 180 s: de guider negeert deze periode en bepaalt ze uit de guideframes."
+            "wormPeriodOutOfRange": "Buiten 180 tot 1200 s: de guider gebruikt deze periode niet en bepaalt ze uit de guideframes."
           }
         },
         "darks": {

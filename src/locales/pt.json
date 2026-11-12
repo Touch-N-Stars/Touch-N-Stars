@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições.",
-            "wormPeriodTooShort": "Menos de 180 s: o guiador ignora este período e deteta-o a partir dos frames de guiagem."
+            "wormPeriodOutOfRange": "Fora de 180 a 1200 s: o guiador não usa este período e deteta-o a partir dos frames de guiagem."
           }
         },
         "darks": {

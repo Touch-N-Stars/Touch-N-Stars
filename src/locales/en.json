@@ -2917,7 +2917,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "The play model works only with the Predictive Dec algorithm; the fixed pulse is used for now. Switch \"Dec algorithm\" to Predictive in these settings to use it.",
-            "wormPeriodTooShort": "Shorter than 180 s: the guider ignores this period and detects it from the guide frames."
+            "wormPeriodOutOfRange": "Outside 180 to 1200 s: the guider doesn't use this period and detects it from the guide frames."
           }
         },
         "darks": {

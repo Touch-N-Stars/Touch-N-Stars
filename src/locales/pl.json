@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "Model luzu działa tylko z algorytmem Dec Predictive; obecnie używany jest stały impuls. Aby go użyć, ustaw w tych ustawieniach „Algorytm Dec” na Predictive.",
-            "wormPeriodTooShort": "Krócej niż 180 s: guider ignoruje ten okres i wykrywa go z klatek prowadzenia."
+            "wormPeriodOutOfRange": "Poza zakresem 180–1200 s: guider nie używa tego okresu i wykrywa go z klatek prowadzenia."
           }
         },
         "darks": {

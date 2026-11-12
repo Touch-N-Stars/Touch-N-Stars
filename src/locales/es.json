@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "El modelo de holgura solo funciona con el algoritmo Dec Predictive; por ahora se usa el pulso fijo. Para usarlo, pon «Algoritmo Dec» en Predictive en estos ajustes.",
-            "wormPeriodTooShort": "Menos de 180 s: el guiador ignora este período y lo detecta a partir de las imágenes de guiado."
+            "wormPeriodOutOfRange": "Fuera de 180 a 1200 s: el guiador no usa este período y lo detecta a partir de las imágenes de guiado."
           }
         },
         "darks": {

@@ -645,11 +645,14 @@ test('settingWarning flags the play model without the Predictive Dec algorithm',
 });
 
 test('settingWarning flags a worm period the guider takes for "detect"', () => {
-  const period = (value) => ({ name: 'WormPeriodSeconds', value });
-  assert.equal(settingWarning(period('120'), []), 'wormPeriodTooShort');
-  assert.equal(settingWarning(period('179,9'), []), 'wormPeriodTooShort');
+  const period = (value, max) => ({ name: 'WormPeriodSeconds', value, max });
+  assert.equal(settingWarning(period('120'), []), 'wormPeriodOutOfRange');
+  assert.equal(settingWarning(period('179,9'), []), 'wormPeriodOutOfRange');
   assert.equal(settingWarning(period('180'), []), null);
   assert.equal(settingWarning(period('478.7'), []), null);
+  assert.equal(settingWarning(period('1200'), []), null);
+  assert.equal(settingWarning(period('1200.5'), []), 'wormPeriodOutOfRange');
+  assert.equal(settingWarning(period('1300', 1500), []), null, 'maximum from the setting');
   assert.equal(settingWarning(period('0'), []), null, '0 = detect, as meant');
 });
 

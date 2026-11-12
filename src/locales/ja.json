@@ -2885,7 +2885,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "ガタモデルは Dec アルゴリズム Predictive でのみ有効です。現在は固定パルスを使用しています。 使うには、この設定で「Dec アルゴリズム」を Predictive にしてください。",
-            "wormPeriodTooShort": "180 秒未満：ガイダーはこの周期を無視し、ガイドフレームから検出します。"
+            "wormPeriodOutOfRange": "180～1200 秒の範囲外：ガイダーはこの周期を使わず、ガイドフレームから検出します。"
           }
         },
         "darks": {

@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "Le modèle de jeu ne fonctionne qu'avec l'algorithme Dec Predictive ; l'impulsion fixe est utilisée pour l'instant. Pour l'utiliser, réglez « Algorithme Dec » sur Predictive dans ces paramètres.",
-            "wormPeriodTooShort": "Moins de 180 s : le guideur ignore cette période et la détecte à partir des images de guidage."
+            "wormPeriodOutOfRange": "En dehors de 180 à 1200 s : le guideur n'utilise pas cette période et la détecte à partir des images de guidage."
           }
         },
         "darks": {

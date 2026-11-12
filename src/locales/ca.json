@@ -2917,7 +2917,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "El model de joc només funciona amb l'algorisme Dec Predictive; ara s'utilitza el pols fix. Per utilitzar-lo, poseu «Algorisme Dec» a Predictive en aquesta configuració.",
-            "wormPeriodTooShort": "Menys de 180 s: el guiador ignora aquest període i el detecta a partir de les imatges de guiatge."
+            "wormPeriodOutOfRange": "Fora de 180 a 1200 s: el guiador no fa servir aquest període i el detecta a partir de les imatges de guiatge."
           }
         },
         "darks": {

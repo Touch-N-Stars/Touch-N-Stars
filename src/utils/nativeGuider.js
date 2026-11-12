@@ -708,13 +708,15 @@ export function decBacklash(status) {
  * A warning about a setting's value with the other settings (an i18n key suffix under
  * components.guider.native.settings.warnings), or null: the Dec backlash play model works only
  * with the Predictive Dec algorithm, otherwise the guider keeps the fixed pulse; a worm period
- * shorter than the guider takes counts as "detect".
+ * outside the range the guider takes counts as "detect".
  */
 export function settingWarning(setting, allSettings = []) {
   if (setting?.name === 'WormPeriodSeconds') {
-    // the guider takes a period shorter than it can detect for "detect"
+    // the guider takes a period outside what it can detect for "detect"
     const seconds = Number(String(setting.value ?? '').replace(',', '.'));
-    return seconds > 0 && seconds < MIN_WORM_PERIOD_SECONDS ? 'wormPeriodTooShort' : null;
+    const max = Number(setting.max ?? MAX_WORM_PERIOD_SECONDS);
+    const outside = seconds < MIN_WORM_PERIOD_SECONDS || seconds > max;
+    return seconds > 0 && outside ? 'wormPeriodOutOfRange' : null;
   }
   if (setting?.name !== 'BacklashModel') return null;
   if (String(setting.value ?? '').toLowerCase() !== 'playmodel') return null;
@@ -727,6 +729,8 @@ export function settingWarning(setting, allSettings = []) {
 
 /** Shortest RA worm period the guider takes (PeriodicErrorEstimator.MinPeriodSeconds). */
 export const MIN_WORM_PERIOD_SECONDS = 180;
+/** Longest RA worm period the guider takes, when the setting doesn't name its maximum. */
+export const MAX_WORM_PERIOD_SECONDS = 1200;
 
 /** Guider states in which the guide loop takes frames, so its timing is current. */
 export const LOOP_STATES = [

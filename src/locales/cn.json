@@ -2876,7 +2876,7 @@
           },
           "warnings": {
             "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。",
-            "wormPeriodTooShort": "短于 180 秒：导星会忽略此周期，并从导星帧中检测周期。"
+            "wormPeriodOutOfRange": "不在 180 到 1200 秒之间：导星不会使用此周期，而是从导星帧中检测周期。"
           }
         },
         "darks": {
