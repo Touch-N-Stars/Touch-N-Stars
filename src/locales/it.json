@@ -2711,6 +2711,10 @@
           "actionCancel": "Annulla",
           "actionOptionConfirm": "Eseguire “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Denti",
+              "Seconds": "Secondi"
+            },
             "GuideSource": {
               "GuideCamera": "Camera di guida",
               "Simulator": "Simulatore"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Movimento min. RA",
             "RaCorrectionPace": "Ritmo di correzione RA",
             "PeriodicErrorPrediction": "Previsione errore periodico",
+            "WormPeriodUnit": "Vite RA indicata in",
             "WormTeeth": "Denti della corona RA",
+            "WormPeriodSeconds": "Periodo della vite RA",
             "ForgetPeriodicError": "Dimentica errore periodico",
             "DecAlgorithm": "Algoritmo Dec",
             "DecAggression": "Aggressività Dec",
@@ -2801,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "Da dove arrivano i frame di guida. Camera di guida: la camera nello slot camera di guida dell'attrezzatura. Simulatore: una simulazione integrata di montatura, cielo e camera, per provare la guida senza hardware o di giorno.",
-            "ExposureSeconds": "Tempo di esposizione di ogni frame di guida. 1–4 s mediano gran parte del seeing; esposizioni più brevi reagiscono prima ma inseguono il seeing, quelle più lunghe reagiscono lentamente al vento e agli errori della montatura.",
+            "ExposureSeconds": "Tempo di esposizione di ogni immagine di guida. Le esposizioni più brevi reagiscono più in fretta al vento e agli errori della montatura; il movimento minimo impedisce loro di inseguire il seeing. 1 s va bene per la maggior parte delle montature; usa esposizioni più lunghe quando la stella guida è troppo debole.",
             "Gain": "-1 mantiene il guadagno attuale del driver. (Il guadagno di PHD2 è una percentuale, quindi non viene importato.)",
             "Offset": "-1 mantiene l'offset attuale del driver.",
             "Binning": "Binning hardware dei frame di guida. 2×2 rende la camera più sensibile e il trasferimento più rapido, a scapito della risoluzione; utile con pixel piccoli o una focale di guida lunga. Ricalibrare dopo una modifica.",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatico dalla scala dell'immagine.",
             "RaCorrectionPace": "Quota dell'errore residuo che l'algoritmo Predictive corregge per frame: 0,5 elimina uno scostamento in 2–3 frame senza oltrepassare lo zero, 1 corregge tutto in una volta. Deriva ed errore periodico sono sempre corretti per intero.",
             "PeriodicErrorPrediction": "Impara l'errore periodico della vite senza fine RA e lo corregge prima che si veda. La curva appresa viene salvata per profilo e montatura.",
+            "WormPeriodUnit": "Indica la vite senza fine RA con i denti della sua corona o con il suo periodo in secondi, ad es. dal manuale della montatura o da uno strumento PEC. I secondi vanno bene anche per un azionamento il cui periodo non corrisponde a un numero intero di denti (riduttore armonico, cinghia). Viene usato solo il valore scelto.",
             "WormTeeth": "Denti della corona RA (es. 180 su una EQ6-R, 135 su una HEQ5); dà il periodo esatto della vite senza fine. 0 = rileva il periodo dai frame di guida.",
+            "WormPeriodSeconds": "Periodo della vite senza fine RA in secondi (ad es. 478,7 per 180 denti); allora non viene rilevato. Dopo un flip al meridiano la sua fase viene riappresa, come senza numero di denti. 0 (predefinito) = rileva il periodo dai frame di guida; la guida accetta da 180 a 1200 s.",
             "ForgetPeriodicError": "Dimentica l'errore periodico appreso per questa montatura, es. dopo aver regolato la vite senza fine; viene poi appreso di nuovo.",
             "DecAlgorithm": "Predictive (sperimentale) impara il seeing e il moto proprio della montatura dai frame di guida e corregge l'errore che prevede per il frame successivo, quindi aggressività, isteresi e movimento min. non si applicano.",
             "DecAggression": "Quota dell'errore Dec misurato corretta a ogni frame: 1,0 corregge tutto. Abbassala se Dec va oltre.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quando la guida parte dopo che la montatura si è spostata più di questo valore o ha cambiato lato del pilastro, il modello del gioco rimisura prima il gioco: la Dec invia impulsi verso nord finché la stella segue, poi verso sud fino al punto di partenza. L'ingranaggio poggia allora su un lato noto e il modello conosce il gioco sul nuovo obiettivo. Richiede circa 10–20 frame di guida. 0 = mai."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Il modello del gioco funziona solo con l'algoritmo Dec Predictive; per ora viene usato l'impulso fisso. Per usarlo, imposta «Algoritmo Dec» su Predictive in queste impostazioni."
+            "backlashModelNeedsPredictive": "Il modello del gioco funziona solo con l'algoritmo Dec Predictive; per ora viene usato l'impulso fisso. Per usarlo, imposta «Algoritmo Dec» su Predictive in queste impostazioni.",
+            "wormPeriodOutOfRange": "Fuori dall'intervallo 180–1200 s: la guida non usa questo periodo e lo rileva dai frame di guida."
           }
         },
         "darks": {
@@ -2970,6 +2979,8 @@
             "trialSeconds": "Durata per prova",
             "repeatBaseline": "Ripeti le impostazioni attuali alla fine",
             "repeatBaselineHint": "Rileva variazioni di seeing o nuvole durante le prove.",
+            "exposureTrial": "Prova esposizioni più brevi",
+            "exposureTrialHint": "Da 1,5 s in su guida anche con 1 s e con un'esposizione a metà strada da quella attuale (ad es. 1,5 s con 2,5 s). Molte montature guidano meglio con esposizioni più brevi.",
             "allowCalibration": "Calibra se necessario",
             "allowCalibrationHint": "Senza calibrazione non si possono eseguire deriva, risposta della montatura e prove.",
             "minutes": "{value} min",
@@ -2983,6 +2994,23 @@
           "notConnected": "Connetti il PINS Native Guider per usare il coach.",
           "calibratingBlock": "Attendi la fine della calibrazione.",
           "darksBlock": "Attendi che la libreria dark sia creata.",
+          "slewingBlock": "La montatura si sta spostando alla posizione di calibrazione. Il coach parte quando arriva; Stop nei comandi della guida annulla lo spostamento.",
+          "position": {
+            "title": "La montatura punta dove il coach misura male",
+            "nearPole": "Dec {declination} è vicina al polo. Lì gli impulsi di guida in AR spostano appena la stella, quindi la calibrazione e i risultati in AR diventano inaffidabili. Oltre {maxDeclination} il coach non parte.",
+            "low": "La montatura punta solo {altitude} sopra l'orizzonte. Lì l'aria sfoca e sposta di più la stella, il che rovina le misure.",
+            "slewNeeded": "Scegli uno spostamento: oltre Dec {maxDeclination} il coach non parte.",
+            "slewBlock": {
+              "noMount": "Collegare la montatura per spostarsi in una posizione di calibrazione.",
+              "parked": "Rimuovere il parcheggio della montatura per spostarsi in una posizione di calibrazione.",
+              "slewing": "Attendi che la montatura abbia finito di muoversi.",
+              "sequence": "È in corso una sequenza. Uno spostamento allontanerebbe la montatura dal suo target; ferma prima la sequenza.",
+              "exposing": "La camera di ripresa sta esponendo. Uno spostamento rovinerebbe la posa; attendi che sia terminata."
+            },
+            "startWithSlew": "Sposta e avvia il coach",
+            "confirmSlewTitle": "Spostare la montatura?",
+            "confirmSlew": "La montatura lascia il target attuale e si sposta nella posizione di calibrazione ({side}). Il coach parte quando arriva."
+          },
           "start": "Avvia coach",
           "starting": "Avvio…",
           "startFailed": "Impossibile avviare il coach",
@@ -3073,6 +3101,7 @@
               "current": "Impostazioni attuali",
               "suggestion": "Suggerimento del coach",
               "variant": "Variante",
+              "exposure": "Esposizione più breve",
               "currentRepeat": "Impostazioni attuali (ripetute)"
             },
             "winner": "Migliore",
@@ -3149,6 +3178,7 @@
           "hint": {
             "label": "Suggerimento",
             "dismiss": "Ignora suggerimento",
+            "dismissForGood": "Non mostrare più questo suggerimento",
             "apply": "Applica",
             "applied": "Applicato",
             "applyFailed": "Impossibile applicare il suggerimento"
@@ -3250,7 +3280,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Con la guida disattivata la stella balla comunque di {rmsArcsec} a causa dell'atmosfera. Nessuna guida può seguire questo movimento rapido: è il limite minimo del tuo RMS guidato.",
                 "fix_good": "Buone condizioni: ora si vedono i piccoli errori della montatura, quindi la regolazione fine ripaga.",
-                "fix": "Non inseguire il seeing: guida con 2 s o più e un movimento minimo appena sopra il seeing."
+                "fix": "Impedisci alla guida di inseguire il seeing con un movimento minimo appena sopra. È questo, non un'esposizione lunga, a filtrare il seeing: un'esposizione breve (circa 1 s) reagisce più in fretta agli errori propri della montatura."
               },
               "minMove": {
                 "title": "Movimento min. dal seeing: RA {raPx}, Dec {decPx}",
@@ -3398,6 +3428,11 @@
                 "title": "La guida è al limite del seeing",
                 "why": "Il tuo RMS di {rmsArcsec} è vicino a quanto consente l'atmosfera.",
                 "fix": "Per ora niente da regolare."
+              },
+              "longExposure": {
+                "title": "Prova un'esposizione di guida più breve",
+                "why": "Con {exposureSeconds} per frame la guida corregge in ritardo. Molte montature guidano meglio con esposizioni più brevi, perché le correzioni seguono più da vicino gli errori della montatura e il vento.",
+                "fix": "Prova {suggestedSeconds} e confronta l'RMS. Il coach di guida può testarlo per te. Questo suggerimento appare una sola volta."
               }
             },
             "coach": {
@@ -3410,6 +3445,11 @@
                 "title": "Guida non connessa",
                 "why": "Il coach richiede il native guider connesso, con la sua camera e la montatura.",
                 "fix": "Connetti la guida (e la montatura per il pulse guiding) e riprova."
+              },
+              "nearPole": {
+                "title": "Troppo vicino al polo",
+                "why": "La montatura punta a Dec {declinationDeg}. Lì gli impulsi di guida in AR spostano appena la stella, quindi la calibrazione fallisce o misura soprattutto rumore.",
+                "fix": "Sposta la montatura a una declinazione entro ±{maxDeclinationDeg}, idealmente vicino all'equatore celeste, oppure scegli uno spostamento a una posizione di calibrazione all'avvio del coach."
               },
               "noStar": {
                 "title": "Nessuna stella guida trovata",

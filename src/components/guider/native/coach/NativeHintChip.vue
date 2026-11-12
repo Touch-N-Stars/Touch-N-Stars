@@ -21,8 +21,8 @@
       <button
         type="button"
         class="flex h-touch w-touch shrink-0 items-center justify-center rounded-full text-content-muted hover:bg-surface-2"
-        :aria-label="k('hint.dismiss')"
-        :title="k('hint.dismiss')"
+        :aria-label="dismissLabel"
+        :title="dismissLabel"
         @click="dismiss"
       >
         <XMarkIcon class="h-4 w-4" />
@@ -73,7 +73,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useToastStore } from '@/store/toastStore';
-import { findingTone } from '@/utils/nativeGuiderCoach';
+import { findingTone, ONE_TIME_HINTS } from '@/utils/nativeGuiderCoach';
 import { useCoachText } from './useCoachText';
 
 const store = useNativeGuiderStore();
@@ -86,6 +86,10 @@ const applied = ref(false);
 /** One hint at a time: the most severe active one (store.currentHint). */
 const hint = computed(() => store.currentHint);
 const text = computed(() => (hint.value ? findingTextOf(hint.value) : { title: '' }));
+// A one-time hint does not come back once dismissed: say so on the button.
+const dismissLabel = computed(() =>
+  ONE_TIME_HINTS.includes(hint.value?.code) ? k('hint.dismissForGood') : k('hint.dismiss')
+);
 
 // Setting labels for the diff (the settings sheet may not have been opened yet).
 watch(open, (value) => {

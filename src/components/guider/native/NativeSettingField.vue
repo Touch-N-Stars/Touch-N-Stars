@@ -118,6 +118,37 @@
       />
     </div>
 
+    <!-- enum with a segmented switch (the app's segmented control): two ways to give a value -->
+    <div
+      v-else-if="segmented"
+      class="grid gap-1 rounded-control border border-line bg-surface-1 p-1"
+      :style="{ gridTemplateColumns: `repeat(${optionList.length}, minmax(0, 1fr))` }"
+      role="radiogroup"
+      :aria-label="label"
+      @keydown="onSegmentKey"
+    >
+      <button
+        v-for="(option, index) in optionList"
+        :key="option"
+        ref="segmentButtons"
+        type="button"
+        role="radio"
+        :tabindex="index === segmentFocusIndex ? 0 : -1"
+        class="min-h-touch rounded-chip px-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        :class="
+          String(draft) === option
+            ? 'bg-accent-action text-white'
+            : 'text-content-muted hover:bg-surface-2'
+        "
+        :aria-checked="String(draft) === option"
+        :disabled="saving"
+        :data-testid="`native-guider-setting-${setting.name}-${option}`"
+        @click="onChoose(option)"
+      >
+        {{ optionLabel(option) }}
+      </button>
+    </div>
+
     <!-- enum -->
     <select
       v-else-if="type === 'enum'"
@@ -220,6 +251,7 @@ import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { apiStore } from '@/store/store';
 import {
   defaultSentinel,
+  isSegmentedSetting,
   numericPickerSpec,
   sentinelEffectiveValue,
   settingDescription,
@@ -242,6 +274,7 @@ const store = useNativeGuiderStore();
 const inputId = computed(() => `native-guider-setting-${props.setting.name}`);
 const type = computed(() => String(props.setting.type || 'string').toLowerCase());
 const isNumeric = computed(() => type.value === 'int' || type.value === 'double');
+const segmented = computed(() => isSegmentedSetting(props.setting));
 
 const optionList = computed(() =>
   Array.isArray(props.setting.options) ? props.setting.options.map(String) : []
@@ -413,6 +446,30 @@ async function runAction(option = null) {
   } finally {
     saving.value = false;
   }
+}
+
+function onChoose(option) {
+  if (saving.value || String(draft.value) === option) return;
+  draft.value = option;
+  save(option);
+}
+
+/** Buttons of the segmented switch, for the arrow keys. */
+const segmentButtons = ref([]);
+/** The one switch button in the tab order: the chosen option, else the first. */
+const segmentFocusIndex = computed(() =>
+  Math.max(0, optionList.value.indexOf(String(draft.value)))
+);
+
+/** Arrow keys move through the segmented switch and choose, like a native radio group. */
+function onSegmentKey(event) {
+  const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+  if (!step || saving.value) return;
+  event.preventDefault();
+  const count = optionList.value.length;
+  const index = (segmentFocusIndex.value + step + count) % count;
+  onChoose(optionList.value[index]);
+  segmentButtons.value[index]?.focus();
 }
 
 function onToggle(value) {

@@ -2711,6 +2711,10 @@
           "actionCancel": "Cancelar",
           "actionOptionConfirm": "Executar “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dentes",
+              "Seconds": "Segundos"
+            },
             "GuideSource": {
               "GuideCamera": "Câmara de guiagem",
               "Simulator": "Simulador"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Movimento mín. RA",
             "RaCorrectionPace": "Ritmo de correção RA",
             "PeriodicErrorPrediction": "Previsão do erro periódico",
+            "WormPeriodUnit": "Sem-fim RA indicado em",
             "WormTeeth": "Dentes da coroa RA",
+            "WormPeriodSeconds": "Período do sem-fim RA",
             "ForgetPeriodicError": "Esquecer erro periódico",
             "DecAlgorithm": "Algoritmo Dec",
             "DecAggression": "Agressividade Dec",
@@ -2801,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "De onde vêm as imagens de guiagem. Câmara de guiagem: a câmara na posição de câmara de guiagem do equipamento. Simulador: uma simulação integrada de montagem, céu e câmara, para experimentar a guiagem sem hardware ou de dia.",
-            "ExposureSeconds": "Tempo de exposição de cada imagem de guiagem. 1–4 s fazem a média da maior parte do seeing; exposições mais curtas reagem mais depressa mas perseguem o seeing, as mais longas reagem devagar ao vento e aos erros da montagem.",
+            "ExposureSeconds": "Tempo de exposição de cada imagem de guiagem. Exposições mais curtas reagem mais depressa ao vento e aos erros da montagem; o movimento mínimo impede que persigam o seeing. 1 s serve para a maioria das montagens; use exposições mais longas quando a estrela guia for fraca demais.",
             "Gain": "-1 mantém o ganho atual do driver. (O ganho do PHD2 é uma percentagem, por isso não é transferido.)",
             "Offset": "-1 mantém o desvio atual do driver.",
             "Binning": "Binning por hardware das imagens de guiagem. 2×2 torna a câmara mais sensível e a transferência mais rápida, à custa da resolução; útil com píxeis pequenos ou uma focal de guiagem longa. Calibre de novo após uma alteração.",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automático a partir da escala de imagem.",
             "RaCorrectionPace": "Parte do erro restante que o algoritmo Predictive corrige por imagem: 0,5 elimina um desvio em 2–3 imagens sem passar do zero, 1 corrige tudo de uma vez. A deriva e o erro periódico são sempre corrigidos por completo.",
             "PeriodicErrorPrediction": "Aprende o erro periódico do sem-fim de RA e corrige-o antes que se note. A curva aprendida é guardada por perfil e montagem.",
+            "WormPeriodUnit": "Indique o sem-fim de RA pelos dentes da sua coroa ou pelo seu período em segundos, p. ex. do manual da montagem ou de uma ferramenta PEC. Os segundos também servem para um acionamento cujo período não é um número inteiro de dentes (redutor harmónico, correia). Só o valor escolhido é usado.",
             "WormTeeth": "Dentes da coroa de RA (ex.: 180 numa EQ6-R, 135 numa HEQ5); dá o período exato do sem-fim. 0 = detetar o período a partir das imagens de guiagem.",
+            "WormPeriodSeconds": "Período do sem-fim de RA em segundos (p. ex. 478,7 para 180 dentes); deixa então de ser detetado. Após um flip de meridiano a sua fase é reaprendida, como sem número de dentes. 0 (predefinição) = detetar o período a partir dos frames de guiagem; o guiador aceita 180 a 1200 s.",
             "ForgetPeriodicError": "Esquece o erro periódico aprendido para esta montagem (ex.: depois de ajustar o sem-fim); depois volta a ser aprendido.",
             "DecAlgorithm": "Predictive (experimental) aprende o seeing e o movimento próprio da montagem a partir das imagens de guiagem e corrige o erro que prevê para a imagem seguinte, pelo que a agressividade, a histerese e o movimento mínimo não se lhe aplicam.",
             "DecAggression": "Parte do erro Dec medido corrigida em cada imagem: 1,0 corrige tudo. Baixe se Dec ultrapassar.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quando a guiagem começa depois de a montagem se ter movido mais do que este valor ou mudado de lado do pilar, o modelo de folga volta primeiro a medir a folga: Dec envia pulsos para norte até a estrela seguir e depois para sul até ao ponto de partida. A engrenagem fica então encostada a um lado conhecido e o modelo conhece a folga no novo alvo. Demora cerca de 10 a 20 imagens de guiagem. 0 = nunca."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições."
+            "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições.",
+            "wormPeriodOutOfRange": "Fora de 180 a 1200 s: o guiador não usa este período e deteta-o a partir dos frames de guiagem."
           }
         },
         "darks": {
@@ -2970,6 +2979,8 @@
             "trialSeconds": "Duração por ensaio",
             "repeatBaseline": "Repetir as definições atuais no fim",
             "repeatBaselineHint": "Deteta mudanças de seeing ou nuvens durante os ensaios.",
+            "exposureTrial": "Testar exposições mais curtas",
+            "exposureTrialHint": "A partir de 1,5 s, guia também com 1 s e com uma exposição a meio caminho da atual (p. ex. 1,5 s com 2,5 s). Muitas montagens guiam melhor com exposições mais curtas.",
             "allowCalibration": "Calibrar se necessário",
             "allowCalibrationHint": "Sem calibração, a deriva, a resposta da montagem e os ensaios não podem ser executados.",
             "minutes": "{value} min",
@@ -2983,6 +2994,23 @@
           "notConnected": "Ligue o PINS Native Guider para usar o coach.",
           "calibratingBlock": "Aguarde até a calibração terminar.",
           "darksBlock": "Aguarde até a biblioteca de darks estar criada.",
+          "slewingBlock": "A montagem está a mover-se para a posição de calibração. O coach começa quando ela chegar; Parar nos controlos da guiagem cancela o movimento.",
+          "position": {
+            "title": "A montagem aponta para onde o coach mede mal",
+            "nearPole": "Dec {declination} está perto do polo. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração e os resultados em AR deixam de ser fiáveis. Além de {maxDeclination} o coach não começa.",
+            "low": "A montagem aponta só {altitude} acima do horizonte. O ar ali desfoca e desloca mais a estrela, o que estraga as medições.",
+            "slewNeeded": "Escolha um movimento: além de Dec {maxDeclination} o coach não começa.",
+            "slewBlock": {
+              "noMount": "Conecte a montagem para movê-la para uma posição de calibração.",
+              "parked": "Desestacione a montagem para movê-la para uma posição de calibração.",
+              "slewing": "Aguarde até a montagem parar de se mover.",
+              "sequence": "Está a decorrer uma sequência. Um movimento afastaria a montagem do alvo; pare primeiro a sequência.",
+              "exposing": "A câmara de imagem está a expor. Um movimento estragaria a exposição; aguarde até terminar."
+            },
+            "startWithSlew": "Mover e iniciar o coach",
+            "confirmSlewTitle": "Mover a montagem?",
+            "confirmSlew": "A montagem deixa o alvo atual e move-se para a posição de calibração ({side}). O coach começa quando chegar."
+          },
           "start": "Iniciar coach",
           "starting": "A iniciar…",
           "startFailed": "Não foi possível iniciar o coach",
@@ -3073,6 +3101,7 @@
               "current": "Definições atuais",
               "suggestion": "Sugestão do coach",
               "variant": "Variante",
+              "exposure": "Exposição mais curta",
               "currentRepeat": "Definições atuais (repetição)"
             },
             "winner": "Melhor",
@@ -3149,6 +3178,7 @@
           "hint": {
             "label": "Dica",
             "dismiss": "Dispensar dica",
+            "dismissForGood": "Não mostrar esta dica novamente",
             "apply": "Aplicar",
             "applied": "Aplicado",
             "applyFailed": "Não foi possível aplicar a dica"
@@ -3250,7 +3280,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Com a guiagem desligada, a estrela continua a dançar {rmsArcsec} por causa da atmosfera. Nenhuma guiagem consegue seguir este movimento rápido: é o limite mínimo do seu RMS guiado.",
                 "fix_good": "Boas condições: agora notam-se pequenos erros da montagem, por isso o ajuste fino compensa.",
-                "fix": "Não persiga o seeing: guie com 2 s ou mais e um movimento mínimo ligeiramente acima do seeing."
+                "fix": "Impeça a guiagem de perseguir o seeing com um movimento mínimo logo acima dele. É isso, e não uma exposição longa, que filtra o seeing: uma exposição curta (cerca de 1 s) reage mais depressa aos erros próprios da montagem."
               },
               "minMove": {
                 "title": "Movimento mín. pelo seeing: RA {raPx}, Dec {decPx}",
@@ -3398,6 +3428,11 @@
                 "title": "A guiagem está no limite do seeing",
                 "why": "O seu RMS de {rmsArcsec} está perto do que a atmosfera permite.",
                 "fix": "Nada a ajustar de momento."
+              },
+              "longExposure": {
+                "title": "Experimente uma exposição de guiagem mais curta",
+                "why": "Com {exposureSeconds} por imagem, a guiagem corrige tarde. Muitas montagens guiam melhor com exposições mais curtas, porque as correções acompanham mais de perto os erros da montagem e o vento.",
+                "fix": "Experimente {suggestedSeconds} e compare o RMS. O assistente de guiagem pode testar isto automaticamente. Esta dica só aparece uma vez."
               }
             },
             "coach": {
@@ -3410,6 +3445,11 @@
                 "title": "Guiador não ligado",
                 "why": "O coach precisa do guiador nativo ligado, com a sua câmara e montagem.",
                 "fix": "Ligue o guiador (e a montagem para guiagem por pulsos) e tente novamente."
+              },
+              "nearPole": {
+                "title": "Perto demais do polo",
+                "why": "A montagem aponta para Dec {declinationDeg}. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração falha ou mede sobretudo ruído.",
+                "fix": "Mova a montagem para uma declinação dentro de ±{maxDeclinationDeg}, de preferência perto do equador celeste, ou escolha um movimento para uma posição de calibração ao iniciar o coach."
               },
               "noStar": {
                 "title": "Nenhuma estrela guia encontrada",

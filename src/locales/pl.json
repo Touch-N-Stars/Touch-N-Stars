@@ -2711,6 +2711,10 @@
           "actionCancel": "Anuluj",
           "actionOptionConfirm": "Wykonać „{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Zęby",
+              "Seconds": "Sekundy"
+            },
             "GuideSource": {
               "GuideCamera": "Kamera guidingowa",
               "Simulator": "Symulator"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Min. ruch RA",
             "RaCorrectionPace": "Tempo korekty RA",
             "PeriodicErrorPrediction": "Przewidywanie błędu okresowego",
+            "WormPeriodUnit": "Ślimak RA podany w",
             "WormTeeth": "Liczba zębów ślimacznicy RA",
+            "WormPeriodSeconds": "Okres ślimaka RA",
             "ForgetPeriodicError": "Zapomnij błąd okresowy",
             "DecAlgorithm": "Algorytm Dec",
             "DecAggression": "Agresja Dec",
@@ -2801,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "Skąd pochodzą klatki guidingu. Kamera guidingowa: kamera w gnieździe kamery guidingowej sprzętu. Symulator: wbudowana symulacja montażu, nieba i kamery, aby wypróbować guider bez sprzętu lub w dzień.",
-            "ExposureSeconds": "Czas naświetlania każdej klatki guidingu. 1–4 s uśredniają większość seeingu; krótsze ekspozycje reagują szybciej, ale gonią seeing, dłuższe reagują wolno na wiatr i błędy montażu.",
+            "ExposureSeconds": "Czas ekspozycji każdej klatki prowadzenia. Krótsze ekspozycje szybciej reagują na wiatr i błędy montażu; min. ruch chroni je przed gonieniem seeingu. 1 s pasuje do większości montaży; użyj dłuższych ekspozycji, gdy gwiazda prowadząca jest za słaba.",
             "Gain": "-1 zachowuje bieżące wzmocnienie ustawione w sterowniku. (Wzmocnienie w PHD2 jest wartością procentową, więc nie jest przenoszone.)",
             "Offset": "-1 zachowuje bieżący offset ustawiony w sterowniku.",
             "Binning": "Sprzętowy binning klatek guidingu. 2×2 zwiększa czułość kamery i przyspiesza przesyłanie klatek kosztem rozdzielczości; przydatne przy małych pikselach lub długiej ogniskowej guidingu. Po zmianie skalibruj ponownie.",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatycznie na podstawie skali obrazu.",
             "RaCorrectionPace": "Udział pozostałego błędu, który algorytm Predictive koryguje na klatkę: 0,5 usuwa przesunięcie w ciągu 2–3 klatek bez przechodzenia przez zero, 1 koryguje wszystko naraz. Dryf i błąd okresowy są zawsze korygowane w całości.",
             "PeriodicErrorPrediction": "Uczy się błędu okresowego ślimaka RA i koryguje go, zanim stanie się widoczny. Nauczona krzywa jest zapisywana dla profilu i montażu.",
+            "WormPeriodUnit": "Podaj ślimak RA liczbą zębów jego koła albo okresem w sekundach, np. z instrukcji montażu lub narzędzia PEC. Sekundy pasują też do napędu, którego okres nie odpowiada całkowitej liczbie zębów (przekładnia falowa, pasek). Używana jest tylko wybrana wartość.",
             "WormTeeth": "Liczba zębów ślimacznicy RA (np. 180 w EQ6-R, 135 w HEQ5); daje dokładny okres ślimaka. 0 = wykrywanie okresu na podstawie klatek prowadzenia.",
+            "WormPeriodSeconds": "Okres ślimaka RA w sekundach (np. 478,7 dla 180 zębów); nie jest wtedy wykrywany. Po przejściu przez południk jego faza jest uczona od nowa, jak bez liczby zębów. 0 (domyślnie) = wykryj okres z klatek prowadzenia; guider przyjmuje od 180 do 1200 s.",
             "ForgetPeriodicError": "Zapomina błąd okresowy nauczony dla tego montażu, np. po regulacji ślimaka; zostanie on nauczony od nowa.",
             "DecAlgorithm": "Predictive (eksperymentalny) uczy się seeingu i własnego ruchu montażu na podstawie klatek prowadzenia i koryguje błąd przewidywany dla następnej klatki, dlatego agresja, histereza i min. ruch go nie dotyczą.",
             "DecAggression": "Udział zmierzonego błędu Dec korygowany w każdej klatce: 1,0 koryguje całość. Zmniejsz, jeśli Dec przestrzeliwuje.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Gdy guiding startuje po tym, jak montaż przesunął się dalej niż ta wartość lub zmienił stronę kolumny, model luzu najpierw ponownie mierzy luz: Dec wysyła impulsy na północ, aż gwiazda zacznie podążać, a potem na południe z powrotem do startu. Koło opiera się wtedy o znaną stronę, a model zna luz przy nowym celu. Trwa to około 10–20 klatek guidingu. 0 = nigdy."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Model luzu działa tylko z algorytmem Dec Predictive; obecnie używany jest stały impuls. Aby go użyć, ustaw w tych ustawieniach „Algorytm Dec” na Predictive."
+            "backlashModelNeedsPredictive": "Model luzu działa tylko z algorytmem Dec Predictive; obecnie używany jest stały impuls. Aby go użyć, ustaw w tych ustawieniach „Algorytm Dec” na Predictive.",
+            "wormPeriodOutOfRange": "Poza zakresem 180–1200 s: guider nie używa tego okresu i wykrywa go z klatek prowadzenia."
           }
         },
         "darks": {
@@ -2970,6 +2979,8 @@
             "trialSeconds": "Czas każdej próby",
             "repeatBaseline": "Powtórz bieżące ustawienia na końcu",
             "repeatBaselineHint": "Wykrywa zmiany seeingu lub chmury podczas prób.",
+            "exposureTrial": "Wypróbuj krótsze ekspozycje",
+            "exposureTrialHint": "Od 1,5 s prowadzi też z 1 s i z ekspozycją w połowie drogi do obecnej (np. 1,5 s przy 2,5 s). Wiele montaży prowadzi lepiej z krótszymi ekspozycjami.",
             "allowCalibration": "Kalibruj w razie potrzeby",
             "allowCalibrationHint": "Bez kalibracji nie da się zmierzyć dryfu i reakcji montażu ani wykonać prób.",
             "minutes": "{value} min",
@@ -2983,6 +2994,23 @@
           "notConnected": "Podłącz PINS Native Guider, aby korzystać z Guiding Coach.",
           "calibratingBlock": "Poczekaj na zakończenie kalibracji.",
           "darksBlock": "Poczekaj na utworzenie biblioteki darków.",
+          "slewingBlock": "Montaż obraca się do pozycji kalibracji. Coach wystartuje, gdy tam dotrze; Stop w sterowaniu guiderem przerywa obrót.",
+          "position": {
+            "title": "Montaż wskazuje miejsce, w którym Coach mierzy źle",
+            "nearPole": "Dec {declination} jest blisko bieguna. Impulsy prowadzenia w RA ledwo tam przesuwają gwiazdę, więc kalibracja i wyniki RA stają się niewiarygodne. Powyżej {maxDeclination} Coach nie wystartuje.",
+            "low": "Montaż wskazuje tylko {altitude} nad horyzontem. Powietrze rozmywa tam i przesuwa gwiazdę bardziej, co psuje pomiary.",
+            "slewNeeded": "Wybierz obrót: powyżej Dec {maxDeclination} Coach nie wystartuje.",
+            "slewBlock": {
+              "noMount": "Podłącz montaż, aby obrócić go do pozycji kalibracji.",
+              "parked": "Odparkuj montaż, aby obrócić go do pozycji kalibracji.",
+              "slewing": "Poczekaj, aż montaż przestanie się obracać.",
+              "sequence": "Trwa sekwencja. Obrót odsunąłby montaż od celu; najpierw zatrzymaj sekwencję.",
+              "exposing": "Kamera główna naświetla. Obrót zepsułby klatkę; poczekaj, aż się skończy."
+            },
+            "startWithSlew": "Obróć i uruchom Coach",
+            "confirmSlewTitle": "Obrócić montaż?",
+            "confirmSlew": "Montaż opuszcza bieżący cel i obraca się do pozycji kalibracji ({side}). Coach startuje, gdy dotrze na miejsce."
+          },
           "start": "Rozpocznij sesję",
           "starting": "Uruchamianie…",
           "startFailed": "Nie udało się rozpocząć sesji",
@@ -3073,6 +3101,7 @@
               "current": "Bieżące ustawienia",
               "suggestion": "Sugestia Coacha",
               "variant": "Wariant",
+              "exposure": "Krótsza ekspozycja",
               "currentRepeat": "Bieżące ustawienia (powtórka)"
             },
             "winner": "Najlepsza",
@@ -3149,6 +3178,7 @@
           "hint": {
             "label": "Wskazówka",
             "dismiss": "Odrzuć wskazówkę",
+            "dismissForGood": "Nie pokazuj więcej tej wskazówki",
             "apply": "Zastosuj",
             "applied": "Zastosowano",
             "applyFailed": "Nie udało się zastosować wskazówki"
@@ -3250,7 +3280,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Przy wyłączonym prowadzeniu gwiazda nadal drga o {rmsArcsec} z powodu atmosfery. Żadne prowadzenie nie nadąży za tym szybkim ruchem: to dolna granica RMS prowadzenia.",
                 "fix_good": "Dobre warunki: teraz widać małe błędy montażu, więc dostrajanie się opłaca.",
-                "fix": "Nie goń seeingu: prowadź z ekspozycją 2 s lub dłuższą i min. ruchem tuż powyżej seeingu."
+                "fix": "Nie pozwól guiderowi gonić seeingu: ustaw min. ruch tuż powyżej seeingu. To on, a nie długa ekspozycja, filtruje seeing: krótka ekspozycja (około 1 s) szybciej reaguje na własne błędy montażu."
               },
               "minMove": {
                 "title": "Min. ruch wg seeingu: RA {raPx}, Dec {decPx}",
@@ -3398,6 +3428,11 @@
                 "title": "Prowadzenie na granicy seeingu",
                 "why": "RMS {rmsArcsec} jest bliski temu, na co pozwala atmosfera.",
                 "fix": "Na razie nie ma czego dostrajać."
+              },
+              "longExposure": {
+                "title": "Wypróbuj krótszą ekspozycję prowadzenia",
+                "why": "Przy {exposureSeconds} na klatkę korekty przychodzą z opóźnieniem. Wiele montaży prowadzi lepiej przy krótszych ekspozycjach, bo korekty dokładniej nadążają za błędami samego montażu i wiatrem.",
+                "fix": "Wypróbuj {suggestedSeconds} i porównaj RMS. Asystent prowadzenia może to przetestować. Ta wskazówka pojawia się tylko raz."
               }
             },
             "coach": {
@@ -3410,6 +3445,11 @@
                 "title": "Guider nie jest podłączony",
                 "why": "Coach potrzebuje podłączonego natywnego guidera z kamerą i montażem.",
                 "fix": "Podłącz guider (i montaż do prowadzenia impulsowego) i spróbuj ponownie."
+              },
+              "nearPole": {
+                "title": "Za blisko bieguna",
+                "why": "Montaż wskazuje Dec {declinationDeg}. Impulsy prowadzenia w RA ledwo tam przesuwają gwiazdę, więc kalibracja się nie udaje albo mierzy głównie szum.",
+                "fix": "Obróć montaż na deklinację w zakresie ±{maxDeclinationDeg}, najlepiej blisko równika niebieskiego, albo przy starcie Coacha wybierz obrót do pozycji kalibracji."
               },
               "noStar": {
                 "title": "Nie znaleziono gwiazdy prowadzącej",

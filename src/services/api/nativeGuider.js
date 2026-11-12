@@ -170,12 +170,18 @@ export default {
 
   /**
    * Starts a session. options = AdvancedCoachOptions ({ steps, exposureSeconds, gains,
-   * framesPerCombination, driftSeconds, trialSeconds, repeatBaseline, allowCalibration });
-   * empty lists mean the guider's defaults. Resolves { action, accepted, pending, status };
-   * a rejection carries the guider's messageCode (e.g. coach.busy).
+   * framesPerCombination, driftSeconds, trialSeconds, repeatBaseline, exposureTrial,
+   * allowCalibration }); empty lists mean the guider's defaults. Resolves { action, accepted,
+   * pending, status }; a rejection carries the guider's messageCode (e.g. coach.busy).
+   * slew (stay | east | west) slews to the calibration position on that side first; the answer is
+   * then mostly 202 (pending) and a failure follows as an 'action' event.
    */
-  startNativeGuiderCoach(options = {}) {
-    return request('post', 'coach/start', { data: options, timeout: 20000 });
+  startNativeGuiderCoach(options = {}, { slew } = {}) {
+    return request('post', 'coach/start', {
+      data: options,
+      params: slew ? { slew } : undefined,
+      timeout: 20000,
+    });
   },
 
   skipNativeGuiderCoachStep() {

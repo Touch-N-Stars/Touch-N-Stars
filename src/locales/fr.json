@@ -2711,6 +2711,10 @@
           "actionCancel": "Annuler",
           "actionOptionConfirm": "Exécuter « {option} » ?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dents",
+              "Seconds": "Secondes"
+            },
             "GuideSource": {
               "GuideCamera": "Caméra de guidage",
               "Simulator": "Simulateur"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Mouvement min. RA",
             "RaCorrectionPace": "Rythme de correction RA",
             "PeriodicErrorPrediction": "Prédiction de l'erreur périodique",
+            "WormPeriodUnit": "Vis RA indiquée en",
             "WormTeeth": "Dents de la roue RA",
+            "WormPeriodSeconds": "Période de la vis RA",
             "ForgetPeriodicError": "Oublier l'erreur périodique",
             "DecAlgorithm": "Algorithme Dec",
             "DecAggression": "Agressivité Dec",
@@ -2801,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "D'où viennent les images de guidage. Caméra de guidage : la caméra de l'emplacement caméra de guidage de l'équipement. Simulateur : une simulation intégrée de la monture, du ciel et de la caméra, pour essayer le guidage sans matériel ou en plein jour.",
-            "ExposureSeconds": "Temps de pose de chaque image de guidage. 1–4 s lissent l'essentiel du seeing ; des poses plus courtes réagissent plus vite mais poursuivent le seeing, des poses plus longues réagissent lentement au vent et aux erreurs de monture.",
+            "ExposureSeconds": "Temps de pose de chaque image de guidage. Les poses plus courtes réagissent plus vite au vent et aux erreurs de la monture ; le mouvement min. les empêche de courir après le seeing. 1 s convient à la plupart des montures ; utilisez des poses plus longues quand l'étoile guide est trop faible.",
             "Gain": "-1 conserve le gain actuel du pilote. (Le gain de PHD2 est un pourcentage, il n'est donc pas repris.)",
             "Offset": "-1 conserve l'offset actuel du pilote.",
             "Binning": "Binning matériel des images de guidage. 2×2 rend la caméra plus sensible et le transfert des images plus rapide, au prix de la résolution ; utile avec de petits pixels ou une longue focale de guidage. Recalibrer après un changement.",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatique selon l'échantillonnage.",
             "RaCorrectionPace": "Part de l'erreur restante que l'algorithme Predictive corrige par image : 0,5 résorbe un décalage en 2–3 images sans dépasser zéro, 1 corrige tout d'un coup. La dérive et l'erreur périodique sont toujours corrigées entièrement.",
             "PeriodicErrorPrediction": "Apprend l'erreur périodique de la vis sans fin RA et la corrige avant qu'elle ne se voie. La courbe apprise est conservée par profil et par monture.",
+            "WormPeriodUnit": "Indiquer la vis RA par le nombre de dents de sa roue ou par sa période en secondes, p. ex. d'après le manuel de la monture ou un outil PEC. Les secondes conviennent aussi à un entraînement dont la période ne correspond pas à un nombre entier de dents (réducteur harmonique, courroie). Seule la valeur choisie est utilisée.",
             "WormTeeth": "Nombre de dents de la roue de la vis sans fin RA (p. ex. 180 sur une EQ6-R, 135 sur une HEQ5) ; donne la période exacte de la vis. 0 = détecter la période à partir des images de guidage.",
+            "WormPeriodSeconds": "Période de la vis RA en secondes (p. ex. 478,7 pour 180 dents) ; elle n'est alors pas détectée. Après un retournement au méridien, sa phase est réapprise, comme sans nombre de dents. 0 (par défaut) = détecter la période à partir des images de guidage ; le guideur accepte 180 à 1200 s.",
             "ForgetPeriodicError": "Oublie l'erreur périodique apprise pour cette monture, p. ex. après un réglage de la vis sans fin ; elle est ensuite réapprise.",
             "DecAlgorithm": "Predictive (expérimental) apprend le seeing et le mouvement propre de la monture à partir des images de guidage et corrige l'erreur qu'il prédit pour l'image suivante ; l'agressivité, l'hystérésis et le mouvement min. ne s'appliquent donc pas à lui.",
             "DecAggression": "Part de l'erreur Dec mesurée corrigée à chaque image : 1,0 corrige tout. À baisser si Dec dépasse.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quand le guidage démarre après que la monture s'est déplacée de plus que cette valeur ou a changé de côté du pilier, le modèle de jeu remesure d'abord le jeu : la Dec envoie des impulsions vers le nord jusqu'à ce que l'étoile suive, puis vers le sud jusqu'au point de départ. L'engrenage repose alors sur un côté connu et le modèle connaît le jeu sur la nouvelle cible. Cela prend environ 10 à 20 images de guidage. 0 = jamais."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Le modèle de jeu ne fonctionne qu'avec l'algorithme Dec Predictive ; l'impulsion fixe est utilisée pour l'instant. Pour l'utiliser, réglez « Algorithme Dec » sur Predictive dans ces paramètres."
+            "backlashModelNeedsPredictive": "Le modèle de jeu ne fonctionne qu'avec l'algorithme Dec Predictive ; l'impulsion fixe est utilisée pour l'instant. Pour l'utiliser, réglez « Algorithme Dec » sur Predictive dans ces paramètres.",
+            "wormPeriodOutOfRange": "En dehors de 180 à 1200 s : le guideur n'utilise pas cette période et la détecte à partir des images de guidage."
           }
         },
         "darks": {
@@ -2970,6 +2979,8 @@
             "trialSeconds": "Durée par essai",
             "repeatBaseline": "Répéter les réglages actuels à la fin",
             "repeatBaselineHint": "Détecte un seeing changeant ou des nuages pendant les essais.",
+            "exposureTrial": "Essayer des poses plus courtes",
+            "exposureTrialHint": "À partir de 1,5 s, guide aussi avec 1 s et avec une pose à mi-chemin de la pose actuelle (p. ex. 1,5 s pour 2,5 s). Beaucoup de montures guident mieux avec des poses plus courtes.",
             "allowCalibration": "Calibrer si nécessaire",
             "allowCalibrationHint": "Sans calibration, la dérive, la réponse de la monture et les essais ne peuvent pas s'exécuter.",
             "minutes": "{value} min",
@@ -2983,6 +2994,23 @@
           "notConnected": "Connectez l'autoguideur natif PINS pour utiliser le coach.",
           "calibratingBlock": "Attendez la fin de la calibration.",
           "darksBlock": "Attendez la fin de la création de la bibliothèque de darks.",
+          "slewingBlock": "La monture se déplace vers la position de calibration. Le coach démarre à son arrivée ; Arrêter dans les commandes de l'autoguideur annule le déplacement.",
+          "position": {
+            "title": "La monture pointe là où le coach mesure mal",
+            "nearPole": "Dec {declination} est proche du pôle. Les impulsions de guidage en AD y déplacent à peine l'étoile, la calibration et les résultats en AD deviennent donc peu fiables. Au-delà de {maxDeclination}, le coach ne démarre pas.",
+            "low": "La monture ne pointe qu'à {altitude} au-dessus de l'horizon. L'air y brouille et déplace davantage l'étoile, ce qui fausse les mesures.",
+            "slewNeeded": "Choisissez un déplacement : au-delà de Dec {maxDeclination}, le coach ne démarre pas.",
+            "slewBlock": {
+              "noMount": "Connectez la monture pour vous déplacer vers une position de calibration.",
+              "parked": "Déparquez la monture pour vous déplacer vers une position de calibration.",
+              "slewing": "Attendez que la monture ait fini son déplacement.",
+              "sequence": "Une séquence est en cours. Un déplacement éloignerait la monture de sa cible ; arrêtez d'abord la séquence.",
+              "exposing": "La caméra d'imagerie est en pose. Un déplacement gâcherait la pose ; attendez qu'elle soit terminée."
+            },
+            "startWithSlew": "Se déplacer et lancer le coach",
+            "confirmSlewTitle": "Déplacer la monture ?",
+            "confirmSlew": "La monture quitte sa cible actuelle et se déplace vers la position de calibration ({side}). Le coach démarre à son arrivée."
+          },
           "start": "Lancer le coach",
           "starting": "Démarrage…",
           "startFailed": "Le coach n'a pas pu démarrer",
@@ -3073,6 +3101,7 @@
               "current": "Réglages actuels",
               "suggestion": "Suggestion du coach",
               "variant": "Variante",
+              "exposure": "Pose plus courte",
               "currentRepeat": "Réglages actuels (bis)"
             },
             "winner": "Meilleur",
@@ -3149,6 +3178,7 @@
           "hint": {
             "label": "Astuce",
             "dismiss": "Ignorer l'astuce",
+            "dismissForGood": "Ne plus afficher ce conseil",
             "apply": "Appliquer",
             "applied": "Appliqué",
             "applyFailed": "Échec de l'application de l'astuce"
@@ -3250,7 +3280,7 @@
                 "title": "Seeing : {rmsArcsec} ({level})",
                 "why": "Guidage coupé, l'étoile danse encore de {rmsArcsec} à cause de l'atmosphère. Aucun guidage ne peut suivre ce mouvement rapide : c'est le plancher de votre RMS guidé.",
                 "fix_good": "Bonnes conditions : les petites erreurs de la monture deviennent visibles, un réglage fin est donc payant.",
-                "fix": "Ne courez pas après le seeing : guidez avec des poses de 2 s ou plus et un mouvement min. juste au-dessus du seeing."
+                "fix": "Empêchez l'autoguideur de courir après le seeing avec un mouvement min. juste au-dessus. C'est cela, et non une pose longue, qui filtre le seeing : une pose courte (environ 1 s) réagit plus vite aux erreurs propres de la monture."
               },
               "minMove": {
                 "title": "Mouvement min. selon le seeing : RA {raPx}, Dec {decPx}",
@@ -3398,6 +3428,11 @@
                 "title": "Le guidage est à la limite du seeing",
                 "why": "Votre RMS de {rmsArcsec} est proche de ce que permet l'atmosphère.",
                 "fix": "Rien à régler pour l'instant."
+              },
+              "longExposure": {
+                "title": "Essayez une pose de guidage plus courte",
+                "why": "Avec {exposureSeconds} par image, le guidage corrige tard. Beaucoup de montures guident mieux avec des poses plus courtes, car les corrections suivent alors de plus près les erreurs de la monture et le vent.",
+                "fix": "Essayez {suggestedSeconds} et comparez le RMS. Le coach de guidage peut le tester pour vous. Ce conseil ne s'affiche qu'une fois."
               }
             },
             "coach": {
@@ -3410,6 +3445,11 @@
                 "title": "Autoguideur non connecté",
                 "why": "Le coach a besoin de l'autoguideur natif connecté, avec sa caméra et sa monture.",
                 "fix": "Connectez l'autoguideur (et la monture pour le guidage par impulsions) et réessayez."
+              },
+              "nearPole": {
+                "title": "Trop près du pôle",
+                "why": "La monture pointe à Dec {declinationDeg}. Les impulsions de guidage en AD y déplacent à peine l'étoile, la calibration échoue donc ou mesure surtout du bruit.",
+                "fix": "Déplacez-vous vers une déclinaison comprise dans ±{maxDeclinationDeg}, idéalement près de l'équateur céleste, ou choisissez un déplacement vers une position de calibration au démarrage du coach."
               },
               "noStar": {
                 "title": "Aucune étoile guide trouvée",

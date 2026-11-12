@@ -2711,6 +2711,10 @@
           "actionCancel": "取消",
           "actionOptionConfirm": "执行“{option}”？",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "齿数",
+              "Seconds": "秒"
+            },
             "GuideSource": {
               "GuideCamera": "导星相机",
               "Simulator": "模拟器"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "RA 最小移动量",
             "RaCorrectionPace": "RA 校正节奏",
             "PeriodicErrorPrediction": "周期误差预测",
+            "WormPeriodUnit": "RA 蜗杆输入方式",
             "WormTeeth": "RA 蜗轮齿数",
+            "WormPeriodSeconds": "RA 蜗杆周期",
             "ForgetPeriodicError": "忘记周期误差",
             "DecAlgorithm": "Dec 算法",
             "DecAggression": "Dec 激进度",
@@ -2801,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "导星帧的来源。导星相机：设备中导星相机槽位里的相机。模拟器：内置的赤道仪、天空和相机模拟，可在没有硬件或白天时试用导星。",
-            "ExposureSeconds": "每个导星帧的曝光时间。1–4 秒可平均掉大部分视宁度；更短的曝光反应更快，但会追逐视宁度，更长的曝光对风和赤道仪误差反应较慢。",
+            "ExposureSeconds": "每张导星图像的曝光时间。较短的曝光对风和赤道仪误差反应更快；最小移动量能防止它们追逐视宁度。1 s 适合大多数赤道仪；导星太暗时请使用更长的曝光。",
             "Gain": "-1 保持驱动当前的增益。（PHD2 的增益是百分比，因此不会沿用。）",
             "Offset": "-1 保持驱动当前的偏移。",
             "Binning": "导星帧的硬件合并。2×2 让相机更灵敏、帧传输更快，但会降低分辨率；适合小像素或长导星焦距。更改后请重新校准。",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = 根据像素比例自动设定。",
             "RaCorrectionPace": "Predictive 算法每帧校正的剩余误差比例：0.5 在 2–3 帧内消除偏移且不越过零点，1 一次全部校正。漂移和周期误差始终完全校正。",
             "PeriodicErrorPrediction": "学习 RA 蜗杆的周期误差，并在其显现之前加以校正。学得的曲线按配置文件和赤道仪保存。",
+            "WormPeriodUnit": "用蜗轮齿数或以秒为单位的周期来指定 RA 蜗杆，例如来自赤道仪说明书或 PEC 工具。秒也适用于周期不是整数齿数的传动（谐波减速器、皮带）。只使用所选的那一项。",
             "WormTeeth": "RA 蜗轮的齿数（例如 EQ6-R 为 180，HEQ5 为 135），可得出精确的蜗杆周期。0 = 从导星帧中检测周期。",
+            "WormPeriodSeconds": "RA 蜗杆的周期，单位为秒（例如 180 齿为 478.7）；此时不再检测周期。中天翻转后会重新学习其相位，与不知道齿数时相同。0（默认）= 从导星帧中检测周期；导星接受 180 到 1200 秒。",
             "ForgetPeriodicError": "忘记为此赤道仪学得的周期误差，例如在调整蜗杆之后；之后会重新学习。",
             "DecAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
             "DecAggression": "每帧校正的已测 Dec 误差比例：1.0 全部校正。若 Dec 过冲就调小。",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "当赤道仪移动超过此值或更换中天侧后开始导星时，间隙模型会先重新测量间隙：Dec 向北脉冲直到星点跟随，然后向南回到起点。之后齿轮靠在已知的一侧，模型即掌握新目标处的间隙。约需 10 到 20 个导星帧。0 = 从不。"
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。"
+            "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。",
+            "wormPeriodOutOfRange": "不在 180 到 1200 秒之间：导星不会使用此周期，而是从导星帧中检测周期。"
           }
         },
         "darks": {
@@ -2970,6 +2979,8 @@
             "trialSeconds": "每次试验时长",
             "repeatBaseline": "最后再次测试当前设置",
             "repeatBaselineHint": "可检测试验期间视宁度变化或云层。",
+            "exposureTrial": "尝试更短的曝光",
+            "exposureTrialHint": "从 1.5 s 起，还会用 1 s 和介于 1 s 与当前曝光中间的曝光导星（例如 2.5 s 时为 1.5 s）。许多赤道仪用更短的曝光导星效果更好。",
             "allowCalibration": "需要时进行校准",
             "allowCalibrationHint": "没有校准，漂移、赤道仪响应和试验都无法运行。",
             "minutes": "{value} 分钟",
@@ -2983,6 +2994,23 @@
           "notConnected": "请连接 PINS 自动导星仪以使用 Coach。",
           "calibratingBlock": "请等待校准完成。",
           "darksBlock": "请等待暗场库构建完成。",
+          "slewingBlock": "赤道仪正在转到校准位置。到达后 Coach 开始；导星控制中的停止可取消转动。",
+          "position": {
+            "title": "赤道仪指向 Coach 测量不佳的位置",
+            "nearPole": "Dec {declination} 接近天极。在那里 RA 导星脉冲几乎移动不了星点，因此校准和 RA 结果变得不可靠。超过 {maxDeclination} 时 Coach 不会启动。",
+            "low": "赤道仪仅指向地平线以上 {altitude}。那里的大气会更多地模糊和移动星点，从而破坏测量。",
+            "slewNeeded": "请选择转动：超过 Dec {maxDeclination} 时 Coach 不会启动。",
+            "slewBlock": {
+              "noMount": "请连接赤道仪以转到校准位置。",
+              "parked": "请将赤道仪解除停放以转到校准位置。",
+              "slewing": "请等待赤道仪停止转动。",
+              "sequence": "序列正在运行。转动会使赤道仪离开目标；请先停止序列。",
+              "exposing": "主相机正在曝光。转动会毁掉这次曝光；请等待曝光结束。"
+            },
+            "startWithSlew": "转动并启动 Coach",
+            "confirmSlewTitle": "转动赤道仪？",
+            "confirmSlew": "赤道仪将离开当前目标并转到校准位置（{side}）。到达后 Coach 开始。"
+          },
           "start": "启动 Coach",
           "starting": "正在启动…",
           "startFailed": "Coach 无法启动",
@@ -3073,6 +3101,7 @@
               "current": "当前设置",
               "suggestion": "Coach 建议",
               "variant": "变体",
+              "exposure": "更短曝光",
               "currentRepeat": "再次测试当前设置"
             },
             "winner": "最佳",
@@ -3149,6 +3178,7 @@
           "hint": {
             "label": "提示",
             "dismiss": "关闭提示",
+            "dismissForGood": "不再显示此提示",
             "apply": "应用",
             "applied": "已应用",
             "applyFailed": "应用提示失败"
@@ -3250,7 +3280,7 @@
                 "title": "视宁度：{rmsArcsec}（{level}）",
                 "why": "即使关闭导星，星点仍因大气而晃动 {rmsArcsec}。任何导星都跟不上这种快速运动：它是导星 RMS 的下限。",
                 "fix_good": "条件良好：赤道仪的小误差现在会显现，精细调整值得一做。",
-                "fix": "不要追逐视宁度：使用 2 s 或更长的导星曝光，并将最小移动量设为略高于视宁度。"
+                "fix": "用略高于视宁度的最小移动量防止导星仪追逐视宁度。过滤视宁度的是它，而不是长曝光：短曝光（约 1 s）对赤道仪自身的误差反应更快。"
               },
               "minMove": {
                 "title": "按视宁度设定最小移动量：RA {raPx}，Dec {decPx}",
@@ -3398,6 +3428,11 @@
                 "title": "导星已达视宁度极限",
                 "why": "您的 RMS {rmsArcsec} 已接近大气允许的水平。",
                 "fix": "目前无需调整。"
+              },
+              "longExposure": {
+                "title": "尝试更短的导星曝光",
+                "why": "每帧{exposureSeconds}时，导星修正较慢。曝光较短时，修正能更紧密地跟随赤道仪自身的误差和风，因此许多赤道仪导星效果更好。",
+                "fix": "尝试{suggestedSeconds}并比较RMS。导星教练可以替你测试。此提示只显示一次。"
               }
             },
             "coach": {
@@ -3410,6 +3445,11 @@
                 "title": "导星仪未连接",
                 "why": "Coach 需要已连接的原生导星仪及其相机和赤道仪。",
                 "fix": "连接导星仪（脉冲导星还需连接赤道仪）后重试。"
+              },
+              "nearPole": {
+                "title": "离天极太近",
+                "why": "赤道仪指向 Dec {declinationDeg}。在那里 RA 导星脉冲几乎移动不了星点，因此校准会失败或主要测到噪声。",
+                "fix": "转到 ±{maxDeclinationDeg} 以内的赤纬，最好靠近天赤道，或在启动 Coach 时选择转到校准位置。"
               },
               "noStar": {
                 "title": "未找到导星星点",

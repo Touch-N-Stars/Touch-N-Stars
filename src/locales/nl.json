@@ -2711,6 +2711,10 @@
           "actionCancel": "Annuleren",
           "actionOptionConfirm": "“{option}” uitvoeren?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Tanden",
+              "Seconds": "Seconden"
+            },
             "GuideSource": {
               "GuideCamera": "Guidecamera",
               "Simulator": "Simulator"
@@ -2760,7 +2764,9 @@
             "RaMinMove": "Min-move RA",
             "RaCorrectionPace": "RA-correctietempo",
             "PeriodicErrorPrediction": "Periodieke fout voorspellen",
+            "WormPeriodUnit": "RA-worm opgeven in",
             "WormTeeth": "Tanden RA-wormwiel",
+            "WormPeriodSeconds": "Periode RA-worm",
             "ForgetPeriodicError": "Periodieke fout vergeten",
             "DecAlgorithm": "Dec-algoritme",
             "DecAggression": "Dec-agressie",
@@ -2801,7 +2807,7 @@
           },
           "descriptions": {
             "GuideSource": "Waar de guideframes vandaan komen. Guidecamera: de camera in het guidecameraslot van de apparatuur. Simulator: een ingebouwde simulatie van montering, hemel en camera, om de guider zonder hardware of bij daglicht te proberen.",
-            "ExposureSeconds": "Belichtingstijd van elk guideframe. 1–4 s middelen het grootste deel van de seeing uit; kortere belichtingen reageren sneller maar jagen de seeing na, langere reageren traag op wind en monteringsfouten.",
+            "ExposureSeconds": "Belichtingstijd van elk guidebeeld. Kortere belichtingen reageren sneller op wind en fouten van de montering; de min-move voorkomt dat ze de seeing achternajagen. 1 s past bij de meeste monteringen; gebruik langere belichtingen als de guidester te zwak is.",
             "Gain": "-1 behoudt de huidige gain van het stuurprogramma. (De gain van PHD2 is een percentage en wordt daarom niet overgenomen.)",
             "Offset": "-1 behoudt de huidige offset van het stuurprogramma.",
             "Binning": "Hardwarebinning van de guideframes. 2×2 maakt de camera gevoeliger en de frames sneller over te dragen, ten koste van resolutie; nuttig bij kleine pixels of een lange guidebrandpuntsafstand. Kalibreer opnieuw na een wijziging.",
@@ -2827,7 +2833,9 @@
             "RaMinMove": "0 = automatisch uit de beeldschaal.",
             "RaCorrectionPace": "Deel van de resterende fout dat het Predictive-algoritme per frame corrigeert: 0,5 werkt een verschuiving weg over 2–3 frames zonder voorbij nul te zwaaien, 1 corrigeert alles in één keer. Drift en periodieke fout worden altijd volledig gecorrigeerd.",
             "PeriodicErrorPrediction": "Leert de periodieke fout van de RA-worm en corrigeert die voordat hij zichtbaar wordt. De geleerde curve wordt per profiel en montering bewaard.",
+            "WormPeriodUnit": "Geef de RA-worm op via het aantal tanden van het wormwiel of via de periode in seconden, bijv. uit de handleiding van de montering of een PEC-tool. Seconden passen ook bij een aandrijving waarvan de periode geen geheel aantal tanden is (strain-wave-overbrenging, riem). Alleen de gekozen waarde wordt gebruikt.",
             "WormTeeth": "Aantal tanden van het RA-wormwiel (bijv. 180 bij een EQ6-R, 135 bij een HEQ5); geeft de exacte wormperiode. 0 = periode bepalen uit de guidebeelden.",
+            "WormPeriodSeconds": "Periode van de RA-worm in seconden (bijv. 478,7 bij 180 tanden); die wordt dan niet bepaald. Na een meridiaanflip wordt de fase opnieuw geleerd, zoals zonder aantal tanden. 0 (standaard) = periode uit de guideframes bepalen; de guider neemt 180 tot 1200 s.",
             "ForgetPeriodicError": "Vergeet de voor deze montering geleerde periodieke fout, bijv. nadat de worm is afgesteld; die wordt daarna opnieuw geleerd.",
             "DecAlgorithm": "Predictive (experimenteel) leert de seeing en de eigen beweging van de montering uit de guidebeelden en corrigeert de fout die het voor het volgende beeld voorspelt; agressie, hysterese en min-move gelden er daarom niet voor.",
             "DecAggression": "Deel van de gemeten Dec-fout dat in elk frame wordt gecorrigeerd: 1,0 corrigeert alles. Verlaag het als Dec doorschiet.",
@@ -2867,7 +2875,8 @@
             "BacklashRemeasureAfterSlewDeg": "Start de guiding nadat de montering verder dan deze waarde is gezwenkt of van pierzijde is gewisseld, dan meet het spelingsmodel eerst de speling opnieuw: Dec pulst naar het noorden tot de ster volgt en daarna naar het zuiden terug naar het begin. Het tandwiel ligt dan tegen een bekende kant en het model kent de speling bij het nieuwe doel. Duurt ongeveer 10 tot 20 guideframes. 0 = nooit."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "Het spelingsmodel werkt alleen met het Dec-algoritme Predictive; nu wordt de vaste puls gebruikt. Zet hiervoor in deze instellingen ‘Dec-algoritme’ op Predictive."
+            "backlashModelNeedsPredictive": "Het spelingsmodel werkt alleen met het Dec-algoritme Predictive; nu wordt de vaste puls gebruikt. Zet hiervoor in deze instellingen ‘Dec-algoritme’ op Predictive.",
+            "wormPeriodOutOfRange": "Buiten 180 tot 1200 s: de guider gebruikt deze periode niet en bepaalt ze uit de guideframes."
           }
         },
         "darks": {
@@ -2970,6 +2979,8 @@
             "trialSeconds": "Duur per test",
             "repeatBaseline": "Huidige instellingen aan het eind herhalen",
             "repeatBaselineHint": "Detecteert wisselende seeing of wolken tijdens de tests.",
+            "exposureTrial": "Kortere belichtingen proberen",
+            "exposureTrialHint": "Vanaf 1,5 s wordt ook met 1 s geguided en met een belichting halverwege de huidige (bijv. 1,5 s bij 2,5 s). Veel monteringen guiden beter met kortere belichtingen.",
             "allowCalibration": "Kalibreren indien nodig",
             "allowCalibrationHint": "Zonder kalibratie kunnen drift, monteringsreactie en tests niet lopen.",
             "minutes": "{value} min",
@@ -2983,6 +2994,23 @@
           "notConnected": "Verbind de PINS Native Guider om de coach te gebruiken.",
           "calibratingBlock": "Wacht tot de kalibratie klaar is.",
           "darksBlock": "Wacht tot de dark-bibliotheek is opgebouwd.",
+          "slewingBlock": "De montering draait naar de kalibratiepositie. De coach start zodra ze er is; Stop in de guiderbediening breekt het draaien af.",
+          "position": {
+            "title": "De montering wijst naar een plek waar de coach slecht meet",
+            "nearPole": "Dec {declination} ligt dicht bij de pool. RA-guidepulsen bewegen de ster daar nauwelijks, dus de kalibratie en de RA-resultaten worden onbetrouwbaar. Voorbij {maxDeclination} start de coach niet.",
+            "low": "De montering wijst maar {altitude} boven de horizon. De lucht daar vervaagt en verschuift de ster meer, wat de metingen bederft.",
+            "slewNeeded": "Kies een draaibeweging: voorbij Dec {maxDeclination} start de coach niet.",
+            "slewBlock": {
+              "noMount": "Sluit de montering aan om naar een kalibratiepositie te slewen.",
+              "parked": "Parkeer de montering uit om naar een kalibratiepositie te slewen.",
+              "slewing": "Wacht tot de montering klaar is met slewen.",
+              "sequence": "Er loopt een sequentie. Slewen zou de montering van het doel weg bewegen; stop eerst de sequentie.",
+              "exposing": "De opnamecamera belicht. Slewen zou de opname bederven; wacht tot ze klaar is."
+            },
+            "startWithSlew": "Slewen en coach starten",
+            "confirmSlewTitle": "Montering slewen?",
+            "confirmSlew": "De montering verlaat het huidige doel en slewt naar de kalibratiepositie ({side}). De coach start zodra ze aankomt."
+          },
           "start": "Coach starten",
           "starting": "Starten…",
           "startFailed": "De coach kon niet starten",
@@ -3073,6 +3101,7 @@
               "current": "Huidige instellingen",
               "suggestion": "Voorstel coach",
               "variant": "Variant",
+              "exposure": "Kortere belichting",
               "currentRepeat": "Huidige instellingen opnieuw"
             },
             "winner": "Beste",
@@ -3149,6 +3178,7 @@
           "hint": {
             "label": "Tip",
             "dismiss": "Tip sluiten",
+            "dismissForGood": "Deze tip niet meer tonen",
             "apply": "Toepassen",
             "applied": "Toegepast",
             "applyFailed": "Tip toepassen mislukt"
@@ -3250,7 +3280,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Met guiding uit danst de ster nog steeds {rmsArcsec} door de atmosfeer. Geen guiding kan deze snelle beweging volgen: dit is de ondergrens van je guide-RMS.",
                 "fix_good": "Goede omstandigheden: kleine fouten van de montering worden nu zichtbaar, dus fijnafstemming loont.",
-                "fix": "Jaag de seeing niet na: guide met 2 s of langer en een min-move net boven de seeing."
+                "fix": "Voorkom met een min-move net boven de seeing dat de guider de seeing achternajaagt. Dat filtert de seeing, niet een lange belichting: een korte belichting (rond 1 s) reageert sneller op de eigen fouten van de montering."
               },
               "minMove": {
                 "title": "Min-move uit de seeing: RA {raPx}, Dec {decPx}",
@@ -3398,6 +3428,11 @@
                 "title": "Guiding zit op de seeinglimiet",
                 "why": "Je RMS van {rmsArcsec} ligt dicht bij wat de atmosfeer toelaat.",
                 "fix": "Nu niets af te stellen."
+              },
+              "longExposure": {
+                "title": "Probeer een kortere guidebelichting",
+                "why": "Met {exposureSeconds} per frame corrigeert de guider laat. Veel montages guiden beter met kortere belichtingen, omdat de correcties dan de eigen fouten van de montage en de wind beter volgen.",
+                "fix": "Probeer {suggestedSeconds} en vergelijk de RMS. De guiding-coach kan dit voor je testen. Deze tip verschijnt maar één keer."
               }
             },
             "coach": {
@@ -3410,6 +3445,11 @@
                 "title": "Guider niet verbonden",
                 "why": "De coach heeft de verbonden native guider met zijn camera en montering nodig.",
                 "fix": "Verbind de guider (en de montering voor pulse guiding) en probeer het opnieuw."
+              },
+              "nearPole": {
+                "title": "Te dicht bij de pool",
+                "why": "De montering wijst naar Dec {declinationDeg}. RA-guidepulsen bewegen de ster daar nauwelijks, dus de kalibratie mislukt of meet vooral ruis.",
+                "fix": "Draai naar een declinatie binnen ±{maxDeclinationDeg}, liefst dicht bij de hemelequator, of kies bij het starten van de coach een draaibeweging naar een kalibratiepositie."
               },
               "noStar": {
                 "title": "Geen guide-ster gevonden",
