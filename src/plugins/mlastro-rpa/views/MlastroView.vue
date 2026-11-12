@@ -201,6 +201,10 @@
         Choose a bounded step and press an arrow to move. Direction reversals may take longer while
         firmware backlash compensation runs.
       </p>
+      <p class="text-sm text-status-warn">
+        Moving the RPA shifts the field of view. It is not blocked while PINS is exposing, guiding
+        or running a sequence, so stop those first.
+      </p>
       <label
         >Step size (arcseconds)
         <select v-model.number="manualStep" class="field max-w-48" :disabled="manualBlocked">

@@ -38,3 +38,19 @@ test('RPA connection refusal retains its reason despite global error masking', a
     /Several possible RPA USB devices/
   );
 });
+
+test('a command that times out is reported as possibly executed', async (t) => {
+  const previous = rawHttp.defaults.adapter;
+  rawHttp.defaults.adapter = async (config) => {
+    throw new axios.AxiosError('timeout of 16000ms exceeded', 'ECONNABORTED', config, null);
+  };
+  t.after(() => {
+    rawHttp.defaults.adapter = previous;
+  });
+  await assert.rejects(
+    rpaRequest('move', { axis: 'az', direction: 1, arcseconds: 5 }),
+    /may have been executed: check the status/
+  );
+  // A read that times out changed nothing, so it keeps the plain timeout message.
+  await assert.rejects(rpaRequest('status'), /timeout of 16000ms exceeded/);
+});

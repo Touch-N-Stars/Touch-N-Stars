@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- MLAstro RPA (plugin): Connect an MLAstro One RPA to PINS over USB or Wi-Fi, nudge altitude and azimuth in fixed steps, and let TPPA correct the polar alignment automatically. It needs the MLAstro RPA plugin on PINS, which the app offers to install. Developed by @ydutertre.
+- MLAstro RPA (plugin): Connect an MLAstro One RPA to PINS over USB or Wi-Fi, nudge altitude and azimuth in fixed steps, and let TPPA correct the polar alignment automatically. It needs the MLAstro RPA plugin on PINS, which the app offers to install. The page warns that moving the RPA is not blocked during exposures, guiding or a running sequence, and a command that gets no answer in time is reported as possibly executed. Developed by @ydutertre.
 - Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
 
 ### Changed
