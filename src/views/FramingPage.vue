@@ -3,7 +3,7 @@
     <div class="framing-stage-wrapper absolute inset-0 flex items-center justify-center">
       <Suspense>
         <template #default>
-          <FramingAssitantImg :key="framingStore.framingReloadKey" />
+          <FramingAssistantImg :key="framingStore.framingReloadKey" />
         </template>
         <template #fallback>
           <div class="text-content p-4">{{ $t('common.loading') }}</div>
@@ -163,8 +163,8 @@ const framingStore = useFramingStore();
 const settingsStore = useSettingsStore();
 const appStore = apiStore();
 
-const FramingAssitantImg = defineAsyncComponent(
-  () => import('@/components/framing/FramingAssitantImg.vue')
+const FramingAssistantImg = defineAsyncComponent(
+  () => import('@/components/framing/FramingAssistantImg.vue')
 );
 
 const searchQuery = ref('');

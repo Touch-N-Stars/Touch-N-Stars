@@ -121,7 +121,7 @@ import { computed, ref, watch } from 'vue';
 import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import MeridianFlipPresetPicker from '@/components/mount/settings/MeridianFlipPresetPicker.vue';
 import MeridianFlipTimeline from '@/components/mount/settings/MeridianFlipTimeline.vue';

@@ -1685,7 +1685,7 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 // failure still surfaces in actionStatus like every other Track-tab action here.
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import {
   EyeIcon,

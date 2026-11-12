@@ -64,7 +64,7 @@ import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
 import { imageScale } from '@/utils/hocusFocusAdvisor';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import HfSetupIssues from './HfSetupIssues.vue';
 import HfSweepPreview from './HfSweepPreview.vue';
 
