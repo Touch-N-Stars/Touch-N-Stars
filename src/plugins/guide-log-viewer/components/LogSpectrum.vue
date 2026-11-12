@@ -1,5 +1,5 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="history-spectrum">
+  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="guide-log-spectrum">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('plugins.guideLogViewer.spectrum.title') }}
@@ -159,9 +159,13 @@ function compute() {
   const duration = to > from ? series.t[to - 1] - series.t[from] : 0;
   if (duration < MIN_SECONDS) {
     result.value = null;
-    message.value = t('plugins.guideLogViewer.spectrum.tooShort', {
-      minutes: MIN_SECONDS / 60,
-    });
+    message.value = t(
+      'plugins.guideLogViewer.spectrum.tooShort',
+      {
+        minutes: MIN_SECONDS / 60,
+      },
+      MIN_SECONDS / 60
+    );
     update();
     return;
   }
@@ -185,7 +189,9 @@ function compute() {
   // drift and dither offsets out, then bin so long ranges stay quick
   const detrended = detrendBySegment(tt, yy, groups);
   const binned = binSeries(tt, detrended, 4000);
-  const cadence = tt.length > 1 ? duration / tt.length : 2;
+  // the cadence of what is analysed: on long ranges a bin is wider than a frame, and periods
+  // below twice the bin width would only show aliases
+  const cadence = binned.t.length > 1 ? duration / binned.t.length : 2;
   const r = periodogram(binned.t, binned.y, {
     minPeriod: Math.max(2 * cadence, 4),
     maxPeriod: Math.min(duration / 2, 3600),
@@ -193,9 +199,13 @@ function compute() {
   });
   if (!r.periods.length) {
     result.value = null;
-    message.value = t('plugins.guideLogViewer.spectrum.tooShort', {
-      minutes: MIN_SECONDS / 60,
-    });
+    message.value = t(
+      'plugins.guideLogViewer.spectrum.tooShort',
+      {
+        minutes: MIN_SECONDS / 60,
+      },
+      MIN_SECONDS / 60
+    );
   } else {
     result.value = r;
     message.value = '';

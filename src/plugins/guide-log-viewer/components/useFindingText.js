@@ -3,10 +3,25 @@
 import { useI18n } from 'vue-i18n';
 import { formatDuration } from '../utils/logView';
 
-export function useFindingText() {
+/**
+ * `display` (optional) returns { unit: 'arcsec' | 'px', pixelScale } so distances read in the
+ * viewer's unit.
+ */
+export function useFindingText(display = () => ({})) {
   const { t, te } = useI18n();
   const BASE = 'plugins.guideLogViewer.findings';
-  const as = (v) => (Number.isFinite(v) ? `${v.toFixed(1)}″` : '–');
+  const fixed = (v, digits = 1) => v.toFixed(digits);
+  /** A distance given in arcsec, in the viewer's unit. */
+  const as = (v) => {
+    if (!Number.isFinite(v)) return '–';
+    const { unit, pixelScale } = display() ?? {};
+    if (unit !== 'px') return t(`${BASE}.arcsec`, { value: fixed(v) });
+    return pixelScale > 0 ? t(`${BASE}.px`, { value: fixed(v / pixelScale) }) : '–';
+  };
+  const pier = (side) => {
+    const key = `plugins.guideLogViewer.sessions.pier.${side}`;
+    return side && te(key) ? t(key) : side;
+  };
 
   function title(f) {
     if (f.kind === 'alert') {
@@ -25,11 +40,11 @@ export function useFindingText() {
     const duration = formatDuration(f.t1 - f.t0);
     switch (f.kind) {
       case 'starLost':
-        return t(`${BASE}.detail.starLost`, { frames: p.frames, duration });
+        return t(`${BASE}.detail.starLost`, { frames: p.frames, duration }, p.frames);
       case 'badStretch':
         return t(`${BASE}.detail.badStretch`, {
           rms: as(p.rms),
-          ratio: p.ratio.toFixed(1),
+          ratio: fixed(p.ratio),
           typical: as(p.typical),
           duration,
         });
@@ -50,11 +65,11 @@ export function useFindingText() {
           ? t(`${BASE}.detail.settleFailed`, { duration })
           : t(`${BASE}.detail.settleSlow`, { duration, typical: formatDuration(p.typical) });
       case 'pulseLimit':
-        return t(`${BASE}.detail.pulseLimit`, { frames: p.frames });
+        return t(`${BASE}.detail.pulseLimit`, { frames: p.frames }, p.frames);
       case 'alert':
         return p.message && p.message !== title(f) ? p.message : '';
       case 'flip':
-        return t(`${BASE}.detail.flip`, { from: p.from, to: p.to });
+        return t(`${BASE}.detail.flip`, { from: pier(p.from), to: pier(p.to) });
       case 'gap':
         return t(`${BASE}.detail.gap`, { duration: formatDuration(p.minutes * 60) });
       case 'param':
@@ -62,7 +77,7 @@ export function useFindingText() {
       case 'calibration':
         return p.failed
           ? t(`${BASE}.detail.calibrationFailed`)
-          : t(`${BASE}.detail.calibration`, { steps: p.steps });
+          : t(`${BASE}.detail.calibration`, { steps: p.steps }, p.steps);
       case 'incident': {
         const key = `components.guider.native.incidents.causes.${p.cause}.title`;
         return p.cause && te(key) ? t(`${BASE}.detail.incident`, { cause: t(key) }) : '';

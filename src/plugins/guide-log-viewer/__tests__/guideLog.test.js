@@ -117,6 +117,22 @@ test('parseWallTime reads the log clock as UTC wall seconds', () => {
   assert.equal(parseWallTime('nonsense'), null);
 });
 
+test('a clock set back between sessions keeps the time axis ascending', () => {
+  // the second session starts at 02:10 after the clocks went back from 03:00 to 02:00
+  const text =
+    guidingSection('2026-10-25 02:00:00', 40) +
+    'Guiding Ends at 2026-10-25 02:50:00\n' +
+    guidingSection('2026-10-25 02:10:00', 40, { from: 100 }) +
+    'Guiding Ends at 2026-10-25 02:20:00\n';
+  const log = parseGuideLog(text);
+  const [a, b] = log.sections;
+  assert.equal(b.clockShift, 3600);
+  assert.equal(b.start, parseWallTime('2026-10-25 03:10:00'));
+  assert.ok(b.start > a.end);
+  const s = buildSeries(log);
+  for (let i = 1; i < s.n; i++) assert.ok(s.t[i] >= s.t[i - 1]);
+});
+
 test('splitCsv keeps quoted fields together', () => {
   assert.deepEqual(splitCsv('1,"a,b",,3'), ['1', 'a,b', '', '3']);
 });
@@ -346,6 +362,29 @@ test('findFindings: star loss, flip, alert, settings change and calibration', ()
   assert.deepEqual(flip.params, { from: 'West', to: 'East' });
   // oldest first
   for (let i = 1; i < findings.length; i++) assert.ok(findings[i].t0 >= findings[i - 1].t0);
+});
+
+test('findFindings reports star losses on both sides of a session boundary', () => {
+  const drop = (frame, time) =>
+    `${frame},${time.toFixed(3)},"DROP",,,,,,,,,,,,,1200,2.10,1,"Star lost - low SNR"`;
+  // the first session ends with three dropped frames, the next starts with three
+  const text =
+    guidingSection('2026-11-10 20:00:00', 40) +
+    [drop(41, 81), drop(42, 82), drop(43, 83)].join('\n') +
+    '\nGuiding Ends at 2026-11-10 20:01:30\n' +
+    guidingSection('2026-11-10 20:02:00', 40, {
+      from: 100,
+      extra: (i) => (i < 3 ? [drop(97 + i, i * 2 + 0.5)] : []),
+    }) +
+    'Guiding Ends at 2026-11-10 20:03:30\n';
+  const log = parseGuideLog(text);
+  const s = buildSeries(log);
+  assert.equal(s.sectionRanges.length, 2);
+  // found per session, then merged as nearby losses of one stretch
+  const lost = findFindings(log, s).filter((f) => f.kind === 'starLost');
+  assert.equal(lost.length, 1);
+  assert.equal(lost[0].count, 2);
+  assert.equal(lost[0].params.frames, 6);
 });
 
 test('findFindings flags a rough stretch and a jump against the night itself', () => {

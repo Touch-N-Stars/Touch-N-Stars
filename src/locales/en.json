@@ -2899,7 +2899,7 @@
             "MaxPulseDutyPercent": "Guiding stops when an axis is pulsed for more than this share of a minute. Protects against a runaway, e.g. after a wrong calibration or with Dec reversed.",
             "PauseWhenSlewing": "Pauses the corrections while the mount reports slewing or parked. Turn it off only if the mount driver reports 'slewing' permanently.",
             "PauseWhenTrackingOff": "Pauses the corrections while the mount reports tracking off. Turn it off if the mount driver cannot report its tracking state.",
-            "SaveGuideLog": "Writes a PHD2-compatible guide log to ~/.local/share/NINA/InternalGuider/Logs, which the PHD2 Log Viewer and other PHD2 tools can open.",
+            "SaveGuideLog": "Writes a PHD2-compatible guide log to ~/.local/share/NINA/InternalGuider/Logs. The Guide Logs plugin shows it in the app; the PHD2 Log Viewer program and other PHD2 tools can open it as well.",
             "IncidentRecorder": "Keeps the last minutes of guide frames in memory and saves them around star losses, runaways, mount and camera problems and spikes, for a replay and a download.",
             "IncidentBudgetMb": "Disk space for recorded incidents; the oldest ones that are not kept are deleted first. Simulator incidents have their own 200 MB.",
             "SimulatorScenario": "Mount, sky and camera the built-in simulator simulates.",
@@ -8793,18 +8793,19 @@
       "analyzing": "Analysing…",
       "notSupported": "This PINS version does not offer its guide logs yet. You can still open a guide log file from this device.",
       "notAGuideLog": "This file holds no guiding or calibration of a PHD2-format guide log.",
+      "noSessions": "This guide log holds no guiding or calibration yet.",
       "pickNight": "Pick a night to see how guiding went.",
       "emptyHint": "The native guider writes one guide log per night while it guides. Guide a night, or open a PHD2 guide log from this device.",
       "kpi": {
         "guided": "Guided",
-        "sessions": "{count} sessions",
+        "sessions": "{count} session | {count} sessions",
         "rms": "Typical RMS",
         "rmsHint": "The median of the RMS over 30 frames across the night: what guiding was like most of the time. Moments when the star was lost or tracking was off do not distort it.",
         "rmsOverall": "{value} over all frames",
         "dithers": "Dithers",
         "settleMedian": "settled in {time} (median)",
         "starLost": "Star lost",
-        "frames": "frames",
+        "frames": "frame | frames",
         "findings": "Problems",
         "findingsSub": "serious / worth a look",
         "hints": {
@@ -8853,7 +8854,7 @@
       "stats": {
         "title": "Selected range",
         "excludeSettling": "Without settling",
-        "frames": "{count} frames",
+        "frames": "{count} frame | {count} frames",
         "empty": "No guide steps in this range.",
         "total": "Total",
         "peak": "Peak",
@@ -8893,7 +8894,7 @@
         "title": "Target",
         "radius": "RMS circle {value}",
         "hint": "Every guide step of the range, the newest brightest. The dashed circle is the total RMS.",
-        "outside": "{count} steps lie outside the plot."
+        "outside": "{count} step lies outside the plot. | {count} steps lie outside the plot."
       },
       "findings": {
         "title": "Worth a look",
@@ -8921,19 +8922,21 @@
           "incident": "Incident"
         },
         "detail": {
-          "starLost": "{frames} frames without a usable star over {duration}.",
+          "starLost": "{frames} frame without a usable star over {duration}. | {frames} frames without a usable star over {duration}.",
           "badStretch": "RMS up to {rms}, {ratio}× the night's typical {typical}, for {duration}.",
           "jump": "{axis} error of {value} in one frame (typical {typical}): a gust, a cable or the mount.",
           "clouds": "The star's SNR fell to {snr} (typically {typical}) for {duration}: clouds, dew or the star drifting off.",
           "settleFailed": "Settling failed after {duration}.",
           "settleSlow": "Settling took {duration} (typically {typical}).",
-          "pulseLimit": "{frames} pulses at the maximum duration: the mount could not keep up, or the star was lost.",
+          "pulseLimit": "{frames} pulse at the maximum duration: the mount could not keep up, or the star was lost. | {frames} pulses at the maximum duration: the mount could not keep up, or the star was lost.",
           "flip": "Pier side {from} → {to}.",
           "gap": "Guiding stopped for {duration}.",
-          "calibration": "Calibrated with {steps} steps.",
+          "calibration": "Calibrated with {steps} step. | Calibrated with {steps} steps.",
           "calibrationFailed": "Calibration failed.",
           "incident": "Likely cause: {cause}."
-        }
+        },
+        "arcsec": "{value}″",
+        "px": "{value} px"
       },
       "spectrum": {
         "title": "Periods",
@@ -8948,7 +8951,7 @@
           "ra": "What remained after guiding: a peak here is periodic error the guiding did not catch, or an oscillation.",
           "dec": "What remained in Dec: peaks often come from wind, cables or a fan."
         },
-        "tooShort": "Pick at least {minutes} minutes of guiding.",
+        "tooShort": "Pick at least {minutes} minute of guiding. | Pick at least {minutes} minutes of guiding.",
         "peak": "Strongest: {period}, {amplitude}",
         "worm": "Worm {period}",
         "amplitude": "{amplitude}"
@@ -8958,7 +8961,7 @@
         "calibration": "Calibration",
         "failed": "failed",
         "details": "Details",
-        "drops": "{count} lost",
+        "drops": "{count} lost | {count} lost",
         "pier": {
           "East": "East",
           "West": "West"
@@ -8990,10 +8993,14 @@
           "calStep": "Step / distance",
           "raLeg": "RA leg",
           "decLeg": "Dec leg",
-          "steps": "steps",
           "ortho": "Orthogonality error",
-          "pointing": "Pointing"
-        }
+          "pointing": "Pointing",
+          "exposure": "{seconds} s",
+          "gain": "gain {gain}",
+          "framesValue": "{frames} ({lost} lost)",
+          "legValue": "{angle}° · {count} step | {angle}° · {count} steps"
+        },
+        "target": "RA {hours}h{minutes} · Dec {dec}°"
       },
       "exposures": {
         "title": "Light frames",

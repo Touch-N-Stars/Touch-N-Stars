@@ -4,8 +4,33 @@ import { lowerBound } from './analyzeGuideLog';
 
 export { gradeOfRatio as gradeOf } from './analyzeGuideLog';
 
-/** Analysed logs of past nights by name|size|modified, kept for the app session. */
-export const historyCache = new Map();
+/**
+ * A Map that keeps only the `max` most recently used entries (get and set count as a use).
+ */
+export class LruCache extends Map {
+  constructor(max) {
+    super();
+    this.max = max;
+  }
+
+  get(key) {
+    if (!super.has(key)) return undefined;
+    const value = super.get(key);
+    super.delete(key);
+    super.set(key, value);
+    return value;
+  }
+
+  set(key, value) {
+    super.delete(key);
+    super.set(key, value);
+    while (this.size > this.max) super.delete(this.keys().next().value);
+    return this;
+  }
+}
+
+/** Analysed logs of past nights by name|size|modified; a few, a night can be large on a phone. */
+export const nightCache = new LruCache(5);
 
 /** Grades of a stretch of guiding by its RMS against the night's typical RMS. */
 export const GRADE_COLORS = {

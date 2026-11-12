@@ -1,5 +1,5 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="history-overview">
+  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="guide-log-overview">
     <div class="flex flex-wrap items-baseline justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('plugins.guideLogViewer.overview.title') }}
@@ -159,7 +159,8 @@ function columns() {
 function draw() {
   raf = null;
   const canvas = canvasEl.value;
-  if (!canvas || !width) return;
+  // a log with no sessions yet has no span: nothing to draw
+  if (!canvas || !width || !span.value) return;
   const ratio = window.devicePixelRatio || 1;
   canvas.width = Math.round(width * ratio);
   canvas.height = Math.round(HEIGHT * ratio);
@@ -273,6 +274,7 @@ function localX(e) {
 
 function onDown(e) {
   if (e.button !== undefined && e.button !== 0) return;
+  if (!span.value) return;
   const x = localX(e);
   const v0 = xOf(props.view.t0);
   const v1 = xOf(props.view.t1);
@@ -336,7 +338,7 @@ function tapAt(x) {
 }
 
 function updateHover(x) {
-  if (!width) return;
+  if (!width || !span.value) return;
   const time = tOf(x);
   const { series, rolling } = props.model;
   const i = Math.min(series.n - 1, lowerBound(series.t, time));

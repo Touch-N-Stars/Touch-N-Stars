@@ -1,5 +1,5 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="history-exposures">
+  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="guide-log-exposures">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('plugins.guideLogViewer.exposures.title') }}

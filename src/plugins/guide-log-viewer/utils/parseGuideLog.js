@@ -423,6 +423,7 @@ export function parseGuideLog(text) {
     }
   }
   close(null, 'truncated');
+  keepTimeAscending(sections);
 
   // Header facts a guiding section lacks (PHD2 logs the calibration's in its own header)
   for (const s of sections) {
@@ -432,6 +433,30 @@ export function parseGuideLog(text) {
   }
 
   return { version, app, sections, logs, warnings };
+}
+
+/**
+ * Keeps the wall seconds ascending across sections. When the rig's clock goes back (end of
+ * daylight saving time) a later section would start before the previous one ended; that
+ * section and all after it are moved on by whole hours (`clockShift`, seconds), so the time
+ * axis stays sorted and reads in the clock from before the change.
+ */
+export function keepTimeAscending(sections) {
+  let shift = 0;
+  let lastEnd = -Infinity;
+  for (const s of sections) {
+    const back = lastEnd - (s.start + shift);
+    if (back > 0) shift += Math.ceil(back / 3600) * 3600;
+    if (shift) {
+      s.clockShift = shift;
+      s.start += shift;
+      if (s.end !== null) s.end += shift;
+      const t = s.steps.t;
+      for (let i = 0; i < t.length; i++) t[i] += shift;
+      for (const e of s.events) if (Number.isFinite(e.t)) e.t += shift;
+    }
+    lastEnd = Math.max(lastEnd, s.end ?? s.start);
+  }
 }
 
 /** Number of frames of a section (rows incl. drops). */

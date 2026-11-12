@@ -73,7 +73,7 @@
       <div
         v-if="model && !loading"
         class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"
-        data-testid="history-kpis"
+        data-testid="guide-log-kpis"
       >
         <NativeHelpTip
           class="w-full"
@@ -84,7 +84,13 @@
           <span class="kpi-label">{{ t('plugins.guideLogViewer.kpi.guided') }}</span>
           <span class="kpi-value">{{ formatDuration(model.guidedSeconds) }}</span>
           <span class="kpi-sub">
-            {{ t('plugins.guideLogViewer.kpi.sessions', { count: model.summaries.length }) }}
+            {{
+              t(
+                'plugins.guideLogViewer.kpi.sessions',
+                { count: model.summaries.length },
+                model.summaries.length
+              )
+            }}
           </span>
         </NativeHelpTip>
         <NativeHelpTip
@@ -133,7 +139,9 @@
           <span class="kpi-value" :class="{ 'text-status-warn': model.nightStats.drops }">
             {{ model.nightStats.drops ?? 0 }}
           </span>
-          <span class="kpi-sub">{{ t('plugins.guideLogViewer.kpi.frames') }}</span>
+          <span class="kpi-sub">{{
+            t('plugins.guideLogViewer.kpi.frames', model.nightStats.drops ?? 0)
+          }}</span>
         </NativeHelpTip>
         <NativeHelpTip
           class="col-span-2 w-full sm:col-span-1"
@@ -173,6 +181,8 @@
             :findings="allFindings"
             :view="view"
             :selected="highlight"
+            :unit="unit"
+            :pixel-scale="model.pixelScale"
             @select="selectFinding"
             @replay="store.openReplay($event)"
           />
@@ -258,7 +268,7 @@ import {
   formatDistance,
   formatDuration,
   formatSize,
-  historyCache,
+  nightCache,
   viewAround,
 } from '../utils/logView';
 import SegToggle from './SegToggle.vue';
@@ -283,8 +293,8 @@ const KPI_CLASS =
 const UNIT_KEY = 'guideLogViewer.unit';
 const SETTLE_KEY = 'guideLogViewer.excludeSettling';
 
-// Parsed logs of past nights stay for the app session (they do not change any more).
-const cache = historyCache;
+// Parsed logs of past nights are kept for a while (they do not change any more).
+const cache = nightCache;
 
 const logs = ref([]);
 const listLoading = ref(false);
@@ -390,6 +400,8 @@ async function loadSelected() {
   const key = file ? `${file.name}|${file.sizeBytes}|${file.modifiedUtc}` : name;
   const token = beginLoad();
   highlight.value = null;
+  // the panels must never show another night under this name, also when the download fails
+  model.value = null;
   if (cache.has(key)) {
     show(cache.get(key));
     return;
@@ -411,6 +423,11 @@ async function loadSelected() {
     await new Promise((resolve) => setTimeout(resolve, 20));
     const m = analyze(text, { name, zone: zoneOf(file), live: !!file?.active });
     if (token !== loadToken) return;
+    if (!m.log.sections.length) {
+      // e.g. tonight's log, which so far only holds its header
+      loadError.value = t('plugins.guideLogViewer.noSessions');
+      return;
+    }
     if (!file?.active) cache.set(key, m);
     show(m);
   } catch (error) {

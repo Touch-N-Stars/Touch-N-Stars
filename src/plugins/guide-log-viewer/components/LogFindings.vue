@@ -1,5 +1,8 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0 lg:h-[34rem]" data-testid="history-findings">
+  <section
+    class="tns-card flex flex-col gap-2 min-w-0 lg:h-[34rem]"
+    data-testid="guide-log-findings"
+  >
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('plugins.guideLogViewer.findings.title') }}
@@ -83,7 +86,7 @@
           <button
             v-if="f.kind === 'incident'"
             type="button"
-            class="shrink-0 rounded-chip border border-line-strong px-2 min-h-10 text-xs font-semibold text-accent"
+            class="shrink-0 rounded-chip border border-line-strong px-2 min-h-touch text-xs font-semibold text-accent"
             @click.stop="emit('replay', f.params.id)"
           >
             {{ t('components.guider.native.incidents.replayButton') }}
@@ -107,6 +110,9 @@ const props = defineProps({
   findings: { type: Array, default: () => [] },
   view: { type: Object, required: true },
   selected: { type: Object, default: null },
+  unit: { type: String, default: 'arcsec' },
+  /** arcsec per px of the night, for distances in px */
+  pixelScale: { type: Number, default: NaN },
 });
 const emit = defineEmits(['select', 'replay']);
 const { t } = useI18n();
@@ -151,14 +157,17 @@ function inView(f) {
   return f.t1 >= props.view.t0 && f.t0 <= props.view.t1;
 }
 
-const { title, detail } = useFindingText();
+const { title, detail } = useFindingText(() => ({
+  unit: props.unit,
+  pixelScale: props.pixelScale,
+}));
 </script>
 
 <style scoped>
 @reference '../../../assets/tailwind.css';
 
 .chip {
-  @apply inline-flex min-h-8 items-center gap-1.5 rounded-chip border border-line bg-surface-2 px-2 text-[11px] text-content-muted;
+  @apply inline-flex min-h-touch items-center gap-1.5 rounded-chip border border-line bg-surface-2 px-2 text-[11px] text-content-muted;
 }
 
 .chip-on {

@@ -1,11 +1,11 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="history-stats">
+  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="guide-log-stats">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('plugins.guideLogViewer.stats.title') }}
       </h3>
       <span class="inline-flex items-center gap-1.5">
-        <label class="inline-flex min-h-10 items-center gap-2 text-xs text-content-muted">
+        <label class="inline-flex min-h-touch items-center gap-2 text-xs text-content-muted">
           <input
             type="checkbox"
             class="h-4 w-4 accent-[var(--color-accent)]"
@@ -22,7 +22,7 @@
     </div>
     <p class="text-[11px] tabular-nums text-content-muted -mt-1">
       {{ formatWall(view.t0) }} – {{ formatWall(view.t1) }} ·
-      {{ t('plugins.guideLogViewer.stats.frames', { count: stats?.n ?? 0 }) }}
+      {{ t('plugins.guideLogViewer.stats.frames', { count: stats?.n ?? 0 }, stats?.n ?? 0) }}
     </p>
 
     <p v-if="!stats || stats.empty" class="text-xs text-content-muted py-4 text-center">

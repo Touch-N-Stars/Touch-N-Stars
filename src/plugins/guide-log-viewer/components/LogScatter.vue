@@ -1,5 +1,5 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="history-scatter">
+  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="guide-log-scatter">
     <div class="flex items-baseline justify-between gap-2">
       <h3 class="text-sm font-semibold text-content">
         {{ t('plugins.guideLogViewer.scatter.title') }}
@@ -19,7 +19,7 @@
     <p class="text-[11px] text-content-muted">
       {{ t('plugins.guideLogViewer.scatter.hint') }}
       <template v-if="outsideCount">
-        {{ t('plugins.guideLogViewer.scatter.outside', { count: outsideCount }) }}
+        {{ t('plugins.guideLogViewer.scatter.outside', { count: outsideCount }, outsideCount) }}
       </template>
     </p>
   </section>

@@ -5,8 +5,8 @@ Date: 2026-11-10
 
 ## Goal
 
-The native guider writes one PHD2-format guide log per night. The History tab turns that
-log into answers the morning after: how good was guiding, when did it go wrong and why,
+The native guider writes one PHD2-format guide log per night. The Guide Log Viewer turns
+that log into answers the morning after: how good was guiding, when did it go wrong and why,
 what did the mount do on its own, and which light frames were hurt. It replaces the trip
 to PHD2 Log Viewer, whose information is useful but whose UI is not: it starts from the
 whole night, points at the problems itself, and stays usable on a phone.
@@ -24,6 +24,11 @@ whole night, points at the problems itself, and stays usable on a phone.
   (`NINA.Equipment`). See the plugin's `INTERNAL_GUIDER_API.md`.
 - Local files: any PHD2-format guide log (PINS or PHD2 itself) can be opened from the
   device; it is parsed in the browser and never uploaded.
+- Relation to `src/plugins/phd2-logviewer/`: that plugin (off by default, all modes) opens
+  PHD2 log files from the device for any setup. This one is for PINS: it lists the native
+  guider's own logs from the rig, grades the night against itself, points at the problems
+  and ties them to incidents and light frames. Both have their own parser; they share no
+  code so far.
 
 ## Non-goals
 
@@ -72,7 +77,9 @@ whole night, points at the problems itself, and stays usable on a phone.
   it as "wall seconds" (the wall clock read as UTC) and formats with UTC, so the axis shows
   the rig's time whatever the viewer's zone. Instants from elsewhere (incidents, images) are
   converted with the rig's zone from the log list (`timeZone`, IANA via `Intl`, else
-  `utcOffsetMinutes`).
+  `utcOffsetMinutes`). When the clock goes back between two sessions (end of daylight
+  saving time), the later sessions are moved on by whole hours so the axis stays sorted;
+  they then read in the clock from before the change.
 - **Everything is relative to the night itself.** The overview colours, the rough-stretch,
   jump and cloud findings and the light frame grades compare with the night's own typical
   (median rolling 30-frame) RMS or SNR, because absolute arcseconds mean different things
@@ -93,8 +100,8 @@ whole night, points at the problems itself, and stays usable on a phone.
   numbers of the range (statistics, target, periods), then the light frames.
 - **Findings merge** when the same kind repeats within 5 minutes, with a count, so a cloudy
   hour is one entry and not fifty.
-- **Parsed logs are cached** for the app session (name, size, modified); the log being
-  written is reloaded on demand. Picking another night cancels a download still running.
+- **Parsed logs are cached**, the last five nights (name, size, modified), so a phone does
+  not hold every night it has opened; the log being written is reloaded on demand. Picking another night cancels a download still running.
 - **Canvas for the overview and the target plot, uPlot for the graphs**, as on the native
   guider page; the plugin's view is an async component, so none of it loads before it is
   opened.
@@ -105,9 +112,9 @@ whole night, points at the problems itself, and stays usable on a phone.
 | ----------- | ------- | -------------------------------------------------------------------------------- |
 | Runtime     | yes     | PINS native guider only; 404/501 from an older backend shows a notice.           |
 | Polling     | no      | Logs load on demand; the active log has a reload button.                         |
-| Mobile      | yes     | Stacked cards on phones, touch selection, pinch and pan, 40-48 px targets.       |
-| i18n        | yes     | All strings under `plugins.guideLogViewer`.                                      |
+| Mobile      | yes     | Stacked cards on phones, touch selection, pinch and pan, 48 px targets.          |
+| i18n        | yes     | All strings under `plugins.guideLogViewer`, in all locales, with plural forms.   |
 | Performance | yes     | A 30 000-line night parses and analyses in about 0.2 s; periodogram binned.      |
 | Error paths | yes     | Download errors and files that are no guide log are shown in the header card.    |
 | Persistence | yes     | Unit, settling switch, pulse and uncorrected toggles, filters in `localStorage`. |
-| Tests       | yes     | Parser, analysis and view helpers in the plugin's `__tests__/`.                  |
+| Tests       | yes     | Parser, analysis and view helpers in the plugin's `__tests__/`; API routes too.  |

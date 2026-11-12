@@ -1,5 +1,8 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0 lg:h-[34rem]" data-testid="history-sessions">
+  <section
+    class="tns-card flex flex-col gap-2 min-w-0 lg:h-[34rem]"
+    data-testid="guide-log-sessions"
+  >
     <h3 class="text-sm font-semibold text-content">
       {{ t('plugins.guideLogViewer.sessions.title') }}
     </h3>
@@ -37,20 +40,20 @@
             </template>
             <template v-else>
               <span v-if="row.pierSide" class="text-content-muted">
-                {{ t(`plugins.guideLogViewer.sessions.pier.${row.pierSide}`) }}
+                {{ pierText(row.pierSide) }}
               </span>
               <span v-if="row.target" class="text-content-muted">{{ row.target }}</span>
               <span class="ml-auto font-semibold" :style="{ color: GRADE_COLORS[row.grade] }">
                 {{ row.rms }}
               </span>
               <span v-if="row.drops" :style="{ color: DROP_COLOR }">
-                {{ t('plugins.guideLogViewer.sessions.drops', { count: row.drops }) }}
+                {{ t('plugins.guideLogViewer.sessions.drops', { count: row.drops }, row.drops) }}
               </span>
             </template>
           </div>
           <button
             type="button"
-            class="flex min-h-10 min-w-10 shrink-0 items-center justify-center text-content-faint hover:text-content"
+            class="flex min-h-touch min-w-touch shrink-0 items-center justify-center text-content-faint hover:text-content"
             :aria-expanded="open.has(row.key)"
             :aria-label="t('plugins.guideLogViewer.sessions.details')"
             @click.stop="toggle(row.key)"
@@ -107,7 +110,7 @@ const props = defineProps({
   unit: { type: String, default: 'arcsec' },
 });
 const emit = defineEmits(['select']);
-const { t } = useI18n();
+const { t, te } = useI18n();
 
 const CAL_TEXT = '#c4b5fd';
 const open = ref(new Set());
@@ -124,12 +127,23 @@ function rmsText(stats, section) {
   return formatDistance(stats.rmsTotal, props.unit, section.header.pixelScale);
 }
 
+// decimals as everywhere else in the viewer and on the native guider pages
+const fixed = (value, digits) => value.toFixed(digits);
+
 function target(h) {
   if (!Number.isFinite(h.raHours) || !Number.isFinite(h.decDeg)) return '';
-  const ra = h.raHours;
-  const hh = Math.floor(ra);
-  const mm = Math.round((ra - hh) * 60);
-  return `RA ${hh}h${String(mm).padStart(2, '0')} · Dec ${h.decDeg.toFixed(1)}°`;
+  // whole minutes of RA, rounded before the split so 5.9999 h reads 6h00
+  const total = Math.round(h.raHours * 60) % (24 * 60);
+  return t('plugins.guideLogViewer.sessions.target', {
+    hours: Math.floor(total / 60),
+    minutes: String(total % 60).padStart(2, '0'),
+    dec: fixed(h.decDeg, 1),
+  });
+}
+
+function pierText(side) {
+  const key = `plugins.guideLogViewer.sessions.pier.${side}`;
+  return side && te(key) ? t(key) : side;
 }
 
 const rows = computed(() => {
@@ -187,8 +201,8 @@ function sectionFacts(section, summary) {
       label: t(`${L}.camera`),
       value: [
         h.camera,
-        Number.isFinite(h.exposureMs) ? `${h.exposureMs / 1000} s` : null,
-        Number.isFinite(h.gain) ? `gain ${h.gain}` : null,
+        Number.isFinite(h.exposureMs) ? t(`${L}.exposure`, { seconds: h.exposureMs / 1000 }) : null,
+        Number.isFinite(h.gain) ? t(`${L}.gain`, { gain: h.gain }) : null,
       ]
         .filter(Boolean)
         .join(' · '),
@@ -229,7 +243,9 @@ function sectionFacts(section, summary) {
     { label: t(`${L}.dithers`), value: summary ? String(summary.dithers) : null },
     {
       label: t(`${L}.frames`),
-      value: Number.isFinite(st.frames) ? `${st.frames} (${st.drops} ${t(`${L}.lost`)})` : null,
+      value: Number.isFinite(st.frames)
+        ? t(`${L}.framesValue`, { frames: st.frames, lost: st.drops })
+        : null,
     },
     {
       label: t(`${L}.endReason`),
@@ -250,6 +266,11 @@ function legAngle(steps, direction) {
   return Math.atan2(b.dy - a.dy, b.dx - a.dx);
 }
 
+function legText(angle, steps, direction) {
+  const count = steps.filter((s) => s.direction === direction).length;
+  return t(`${L}.legValue`, { angle: fixed((angle * 180) / Math.PI, 1), count }, count);
+}
+
 function calibrationFacts(section) {
   const steps = section.calibration?.steps ?? [];
   const facts = [];
@@ -264,12 +285,12 @@ function calibrationFacts(section) {
   if (ra !== null)
     facts.push({
       label: t(`${L}.raLeg`),
-      value: `${((ra * 180) / Math.PI).toFixed(1)}° · ${steps.filter((s) => s.direction === 'West').length} ${t(`${L}.steps`)}`,
+      value: legText(ra, steps, 'West'),
     });
   if (dec !== null)
     facts.push({
       label: t(`${L}.decLeg`),
-      value: `${((dec * 180) / Math.PI).toFixed(1)}° · ${steps.filter((s) => s.direction === 'North').length} ${t(`${L}.steps`)}`,
+      value: legText(dec, steps, 'North'),
     });
   if (ra !== null && dec !== null) {
     const diff = Math.abs(((dec - ra) * 180) / Math.PI) % 180;
@@ -284,7 +305,7 @@ function calibrationFacts(section) {
   if (Number.isFinite(h.decDeg))
     facts.push({
       label: t(`${L}.pointing`),
-      value: target(h) + (h.pierSide ? ` · ${h.pierSide}` : ''),
+      value: target(h) + (h.pierSide ? ` · ${pierText(h.pierSide)}` : ''),
     });
   return facts;
 }

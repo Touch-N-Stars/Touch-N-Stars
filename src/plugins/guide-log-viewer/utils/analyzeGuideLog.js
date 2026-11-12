@@ -564,14 +564,21 @@ function runs(n, test, { mergeGap = 0 } = {}) {
 export function findFindings(log, series, rolling = rollingRms(series)) {
   const out = [];
   const sections = log.sections ?? [];
-  const n = series.n;
   const t = series.t;
-  const sameSection = (a, b) => series.section[a] === series.section[b];
+  // runs of `test` within each section, as absolute [from, to] indices: a run never spans a
+  // session boundary
+  const sectionRuns = (test, options) => {
+    const list = [];
+    for (const r of series.sectionRanges) {
+      for (const [a, b] of runs(r.to - r.from, (j) => test(r.from + j), options))
+        list.push([r.from + a, r.from + b, r]);
+    }
+    return list;
+  };
 
   // Star lost: runs of dropped frames (up to 10 good frames in between still count as one); a
   // single dropped frame is left to the statistics
-  for (const [a, b] of runs(n, (i) => series.drop[i], { mergeGap: 10 })) {
-    if (!sameSection(a, b)) continue;
+  for (const [a, b] of sectionRuns((i) => series.drop[i], { mergeGap: 10 })) {
     let frames = 0;
     for (let i = a; i <= b; i++) frames += series.drop[i];
     if (frames < 2) continue;
@@ -589,15 +596,13 @@ export function findFindings(log, series, rolling = rollingRms(series)) {
   const typical = median(Array.from(rolling));
   if (Number.isFinite(typical) && typical > 0) {
     const limit = Math.max(typical * 2, typical + 0.5);
-    for (const [a, b] of runs(n, (i) => rolling[i] > limit, { mergeGap: ROLLING_FRAMES })) {
-      if (b - a < ROLLING_FRAMES / 2 || !sameSection(a, b)) continue;
+    const rough = sectionRuns((i) => rolling[i] > limit, { mergeGap: ROLLING_FRAMES });
+    for (const [a, b, range] of rough) {
+      if (b - a < ROLLING_FRAMES / 2) continue;
       let peak = 0;
       for (let i = a; i <= b; i++) if (rolling[i] > peak) peak = rolling[i];
       // the rolling window looks back: start the stretch where its first window began
-      const startIdx = Math.max(
-        series.sectionRanges.find((r) => a >= r.from && a < r.to)?.from ?? 0,
-        a - ROLLING_FRAMES + 1
-      );
+      const startIdx = Math.max(range.from, a - ROLLING_FRAMES + 1);
       out.push({
         kind: 'badStretch',
         severity: peak > typical * 3 ? 'bad' : 'warn',

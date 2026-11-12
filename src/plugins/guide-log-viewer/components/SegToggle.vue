@@ -33,7 +33,7 @@ const emit = defineEmits(['update:modelValue']);
 }
 
 .seg-btn {
-  @apply min-h-10 px-2.5 text-xs font-semibold tabular-nums text-content-muted transition-colors border-r border-line last:border-r-0;
+  @apply min-h-touch px-2.5 text-xs font-semibold tabular-nums text-content-muted transition-colors border-r border-line last:border-r-0;
 }
 
 .seg-btn-active {

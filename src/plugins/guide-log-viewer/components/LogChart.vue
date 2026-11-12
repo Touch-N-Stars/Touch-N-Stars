@@ -1,5 +1,5 @@
 <template>
-  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="history-chart">
+  <section class="tns-card flex flex-col gap-2 min-w-0" data-testid="guide-log-chart">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
         <h3 class="text-sm font-semibold text-content">
@@ -342,7 +342,7 @@ let yRange = [-1, 1];
 let msRange = [-100, 100];
 let snrRange = [0, 10];
 let overlay = { settles: [], drops: [], events: [] };
-const syncKey = `history-graph-${Math.random().toString(36).slice(2)}`;
+const syncKey = `guide-log-graph-${Math.random().toString(36).slice(2)}`;
 
 function rebuild() {
   const { series, log } = props.model;
@@ -840,7 +840,7 @@ watch(
 @reference '../../../assets/tailwind.css';
 
 .toggle {
-  @apply min-h-10 rounded-chip border border-line-strong px-2.5 text-xs font-semibold text-content-muted;
+  @apply min-h-touch rounded-chip border border-line-strong px-2.5 text-xs font-semibold text-content-muted;
 }
 
 .toggle-on {
@@ -848,7 +848,7 @@ watch(
 }
 
 .nav-btn {
-  @apply min-w-10 min-h-10 flex items-center justify-center rounded-chip text-content-muted hover:text-content hover:bg-surface-2;
+  @apply min-w-touch min-h-touch flex items-center justify-center rounded-chip text-content-muted hover:text-content hover:bg-surface-2;
 }
 
 .legend-item {
