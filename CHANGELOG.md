@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 27] - 2026-11-13
+
+### Fixed
+
+- Focuser: After switching back to the app during an autofocus, the status messages and the autofocus graph now show up right away instead of only after the next focuser step, and the graph no longer shows points twice.
+
 ## [App6.5.0 - beta 26] - 2026-11-13
 
 ### Added
