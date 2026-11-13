@@ -1441,6 +1441,10 @@
     "mount": {
       "title": "赤道儀",
       "slew": "導入 (Slew)",
+      "skyChart": {
+        "title": "赤道儀の現在位置",
+        "parked": "赤道儀はパーク中のため、表示する位置がありません。"
+      },
       "location_sync": {
         "title": "位置同期設定",
         "confirmationMessage": "NINAのLocation SyncがPromptに設定されている場合、座標を望遠鏡に送信する前に確認ウィンドウが表示されることがあります。この表示を抑制しTNSが自動的に座標を設定できるようにするには、設定をSync to Telescope（望遠鏡に同期）に変更することをお勧めします。",

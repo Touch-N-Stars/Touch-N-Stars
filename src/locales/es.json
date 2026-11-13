@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montura",
       "slew": "Desplazando",
+      "skyChart": {
+        "title": "Posición actual de la montura",
+        "parked": "La montura está aparcada, así que no hay ninguna posición que mostrar."
+      },
       "location_sync": {
         "title": "Configuración de sincronización de ubicación",
         "confirmationMessage": "Si la 'Sincronización de ubicación' en Nina se establece en 'Aviso', puede aparecer una ventana de confirmación antes de que se envíen coordenadas al telescopio. Para evitar esto y permitir que TNS establezca automáticamente las coordenadas, recomendamos cambiar la configuración a 'sincronizar al telescopio'",

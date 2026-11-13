@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montáž",
       "slew": "Přejezd",
+      "skyChart": {
+        "title": "Aktuální pozice montáže",
+        "parked": "Montáž je zaparkovaná, takže není co zobrazit."
+      },
       "location_sync": {
         "title": "Předvolby synchronizace polohy",
         "confirmationMessage": "Pokud je v aplikaci NINA nastavena možnost „Synchronizace polohy“ na „Vyžádat potvrzení“, může se před odesláním souřadnic do dalekohledu zobrazit potvrzovací okno. Abyste tomu zabránili a umožnili aplikaci TNS automaticky nastavit souřadnice, doporučujeme změnit nastavení na „Synchronizovat s dalekohledem“.",

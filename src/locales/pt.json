@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montagem",
       "slew": "Mover",
+      "skyChart": {
+        "title": "Posição atual da montagem",
+        "parked": "A montagem está estacionada, por isso não há posição para mostrar."
+      },
       "location_sync": {
         "title": "Configurações de sincronização de localização",
         "confirmationMessage": "Se \"Sincronização de Localização\" no NINA estiver definida como \"Prompt\", uma janela de confirmação pode aparecer antes que as coordenadas sejam enviadas ao telescópio. Para evitar isso e permitir que o TNS defina automaticamente as coordenadas, recomendamos alterar a configuração para \"Sincronizar com telescópio\"",

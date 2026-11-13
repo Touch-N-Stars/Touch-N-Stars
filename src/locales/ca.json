@@ -1473,6 +1473,10 @@
     "mount": {
       "title": "Muntura",
       "slew": "Desplaça",
+      "skyChart": {
+        "title": "Posició actual de la muntura",
+        "parked": "La muntura està aparcada, així que no hi ha cap posició per mostrar."
+      },
       "location_sync": {
         "title": "Configuració de sincronització d'ubicació",
         "confirmationMessage": "Si la 'Sincronització d'ubicació' a NINA és 'Pregunta', pot aparèixer una finestra de confirmació abans que les coordenades s'enviïn al telescopi. Per evitar-ho i permetre que TNS estableixi automàticament les coordenades, recomanem canviar la configuració a 'Sincronitza al telescopi'",

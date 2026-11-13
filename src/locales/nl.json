@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montering",
       "slew": "Slew",
+      "skyChart": {
+        "title": "Huidige positie van de montering",
+        "parked": "De montering is geparkeerd, dus er is geen positie om weer te geven."
+      },
       "location_sync": {
         "title": "Locatie sync instellingen",
         "confirmationMessage": "Als 'Locatie Sync' in NINA is ingesteld op 'Prompt', dan kan een bevestigingsscherm worden getoond voordat de coordinaten naar de telescoop worden gestuurd. Om dit te voorkomen moet u TNS toestaan om automatisch de coordinaten in te stellen, we adviseren om de instellingen te wijzigen naar 'Sync naar Telescoop'",
