@@ -2,8 +2,8 @@
   <div class="text-base text-content-muted pb-2">{{ $t('components.tppa.last_messages') }}:</div>
   <ul>
     <li
-      v-for="(msg, index) in lastMessages.slice().reverse()"
-      :key="index"
+      v-for="(msg, index) in lastMessages"
+      :key="`${msg.timestamp}-${index}`"
       :style="{ color: msg.color }"
     >
       <template v-if="index === 0">
@@ -16,62 +16,31 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 import { useLogStore } from '@/store/logStore';
 import { useI18n } from 'vue-i18n';
 import { formatTime } from '@/utils/utils';
+import { selectAfStatusEntries } from '@/utils/afStatusLog';
 import Spinner from '@/components/helpers/Spinner.vue';
 
 const { t } = useI18n();
 const logStore = useLogStore();
-let lastProcessedTimestamp = new Date();
-const lastMessages = ref([]);
 
-// Beobachte Log-Änderungen:
-watch(
-  () => logStore.LogsInfo.logs,
-  (newLogs) => {
-    if (!newLogs || newLogs.length === 0) return;
+const KIND_COLORS = {
+  complete: 'var(--color-status-ok)',
+  failed: 'var(--color-status-warn)',
+};
 
-    // Sortiere aufsteigend nach Timestamp:
-    const sortedLogs = [...newLogs].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-    for (const entry of sortedLogs) {
-      // Nur neue Einträge
-      if (lastProcessedTimestamp && new Date(entry.timestamp) <= new Date(lastProcessedTimestamp)) {
-        continue;
-      }
-      let message;
-      let color = 'inherit';
-
-      if (entry.message.includes('Moving Focuser to position')) {
-        message = entry.message;
-      } else if (entry.message.includes('Starting Exposure')) {
-        message = t('components.tppa.capture_running');
-      } else if (entry.message.includes('AutoFocus complete')) {
-        message = entry.message;
-        color = 'var(--color-status-ok)';
-      } else if (entry.message.includes('AutoFocus did not complete successfully')) {
-        message = entry.message;
-        color = 'var(--color-status-warn)';
-      } else {
-        // Nicht relevante Logs überspringen
-        continue;
-      }
-      // Speichere Einträge (max. 3)
-      lastMessages.value.push({
-        timestamp: entry.timestamp,
-        message,
-        line: entry.line,
-        color,
-      });
-
-      if (lastMessages.value.length > 3) {
-        lastMessages.value.shift();
-      }
-      lastProcessedTimestamp = entry.timestamp;
-    }
-  },
-  { deep: true }
+// Derived from the store's log window instead of collected in the component, so
+// a remount (the reconnect splash after every resume unmounts the page) shows the
+// current run right away. Newest first.
+const lastMessages = computed(() =>
+  selectAfStatusEntries(logStore.LogsInfo.logs)
+    .reverse()
+    .map((entry) => ({
+      timestamp: entry.timestamp,
+      message: entry.kind === 'exposure' ? t('components.tppa.capture_running') : entry.message,
+      color: KIND_COLORS[entry.kind] ?? 'inherit',
+    }))
 );
 </script>
