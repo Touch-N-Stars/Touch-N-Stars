@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Native Guider (PINS): The RA worm can be given as its period in seconds instead of the wheel's tooth count. A period outside the 180 to 1200 s the guider takes is flagged.
 - Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
 - Native Guider (PINS): The guider's Settings tab now shows the settle settings (pixel tolerance, minimum settle time and timeout) in the Dither group, in Basic and Advanced. Until now they were only in the guider settings on the equipment page. A short note explains that the tolerance is in guide camera pixels and that the exposure starts anyway once the timeout runs out.
+- PINS alarm: PINS now beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current or a dew heater without data, and a full disk. It is on by default and sounds only while a sequence runs, except for PowerBox over current and dew heater alarms. Needs the updated Touch'N'Stars plugin; with an older plugin the PowerBox no longer beeps on events.
+- PINS alarm: The new Alarm section under PINS-Devices, Configuration, PowerBox switches the alarm on or off, chooses the events, sets volume and length, lists entries that never beep and shows the recent alarms. A test beep reports whether the PowerBox really beeped, and the alarm can be muted for 30 minutes, also from the error notification.
 
 ### Changed
 
@@ -52,6 +54,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: The hotspot no longer shows a Wi-Fi signal of 0 percent. It reports no signal, so the card now says the signal is unavailable.
 - PINS: After saving the hotspot settings, the result shows Yes or No instead of an untranslated text.
 - PINS: The swap size notes about a pending reboot and a successful save are now shown in the warning and success colours.
+
+### Removed
+
+- PINS: The app no longer beeps the PowerBox itself on warnings and errors; PINS does it now (see Added). The earlier beep settings of the app are not taken over.
 
 ## [App6.5.0 - beta 24] - 2026-11-05
 

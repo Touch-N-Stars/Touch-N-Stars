@@ -127,12 +127,6 @@ export const usePinsDeviceStore = defineStore('pinsDevices', {
     error: null,
     pollingInterval: null,
     isPolling: false,
-    beepOnWarning: localStorage.getItem('pins_beepOnWarning') === 'true',
-    beepOnError: localStorage.getItem('pins_beepOnError') === 'true',
-    beepVolume: parseInt(localStorage.getItem('pins_beepVolume') ?? '40', 10),
-    beepLengthMs: parseInt(localStorage.getItem('pins_beepLengthMs') ?? '400', 10),
-    beepRepeatDuration: parseInt(localStorage.getItem('pins_beepRepeatDuration') ?? '5000', 10),
-    isBeeping: false,
   }),
 
   getters: {
@@ -971,57 +965,6 @@ export const usePinsDeviceStore = defineStore('pinsDevices', {
         console.error('Error restarting lenscontrol:', error);
         this.error = error.message;
         return false;
-      }
-    },
-
-    setBeepOnWarning(value) {
-      this.beepOnWarning = value;
-      localStorage.setItem('pins_beepOnWarning', value);
-    },
-
-    setBeepOnError(value) {
-      this.beepOnError = value;
-      localStorage.setItem('pins_beepOnError', value);
-    },
-
-    setBeepVolume(value) {
-      this.beepVolume = value;
-      localStorage.setItem('pins_beepVolume', value);
-    },
-
-    setBeepLengthMs(value) {
-      this.beepLengthMs = value;
-      localStorage.setItem('pins_beepLengthMs', value);
-    },
-
-    setBeepRepeatDuration(value) {
-      this.beepRepeatDuration = value;
-      localStorage.setItem('pins_beepRepeatDuration', value);
-    },
-
-    async beepPowerBox() {
-      if (this.isBeeping) return false;
-      const volume = this.beepVolume;
-      const lengthMs = this.beepLengthMs;
-      const totalMs = this.beepRepeatDuration;
-      this.isBeeping = true;
-      const startTime = Date.now();
-      try {
-        while (Date.now() - startTime < totalMs) {
-          await apiService.beepPinsDevice(volume, lengthMs);
-          // Wait for the beep to finish
-          await new Promise((resolve) => setTimeout(resolve, lengthMs));
-          // Stop if no time left for a pause + another cycle
-          if (Date.now() - startTime + lengthMs >= totalMs) break;
-          // Pause equal to beep length
-          await new Promise((resolve) => setTimeout(resolve, lengthMs));
-        }
-        return true;
-      } catch (error) {
-        // Silent fail - device may have disconnected
-        return false;
-      } finally {
-        this.isBeeping = false;
       }
     },
   },
