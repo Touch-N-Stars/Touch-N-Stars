@@ -14,8 +14,8 @@
         :for="inputId"
         :class="
           labelPosition === 'top'
-            ? 'block text-sm font-medium text-gray-300 mb-2'
-            : 'text-xs md:text-sm text-gray-200'
+            ? 'block text-sm font-medium text-content mb-2'
+            : 'text-xs md:text-sm text-content'
         "
       >
         {{ label }}
@@ -37,7 +37,7 @@
     >
       <button
         type="button"
-        class="flex items-center justify-center shrink-0 w-6 rounded-l-lg bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white text-sm font-bold border border-gray-600 select-none"
+        class="flex items-center justify-center shrink-0 w-6 rounded-l-lg bg-surface-3 hover:bg-surface-2 active:bg-surface-1 text-content text-sm font-bold border border-line-strong select-none"
         @click="stepDown"
       >
         &minus;
@@ -61,7 +61,7 @@
       />
       <button
         type="button"
-        class="flex items-center justify-center shrink-0 w-6 rounded-r-lg bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white text-sm font-bold border border-gray-600 select-none"
+        class="flex items-center justify-center shrink-0 w-6 rounded-r-lg bg-surface-3 hover:bg-surface-2 active:bg-surface-1 text-content text-sm font-bold border border-line-strong select-none"
         @click="stepUp"
       >
         +

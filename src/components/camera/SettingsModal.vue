@@ -3,7 +3,7 @@
     <!-- Tab-Leiste: nur anzeigen wenn mehr als ein Tab verfügbar -->
     <div
       v-if="visibleTabs.length > 1"
-      class="sticky top-0 z-10 flex border-b border-gray-700 mb-2 bg-gray-900"
+      class="sticky top-0 z-10 flex border-b border-line mb-2 bg-surface-1"
     >
       <button
         v-for="tab in visibleTabs"
@@ -11,8 +11,8 @@
         class="px-4 py-2 text-sm font-semibold transition"
         :class="
           activeTab === tab.value
-            ? 'text-white border-b-2 border-cyan-400'
-            : 'text-gray-400 hover:text-white'
+            ? 'text-white border-b-2 border-accent'
+            : 'text-content-muted hover:text-white'
         "
         @click="activeTab = tab.value"
       >
@@ -22,19 +22,19 @@
 
     <settingsCamera
       v-show="activeTab === 'camera'"
-      class="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="p-4 bg-surface-2/50 rounded-lg border border-line/50"
     />
     <settingsCameraCooler
       v-if="store.cameraInfo.CanSetTemperature"
       v-show="activeTab === 'cooler'"
-      class="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="p-4 bg-surface-2/50 rounded-lg border border-line/50"
     />
     <div v-if="store.filterInfo.Connected" v-show="activeTab === 'filter'">
-      <changeFilter class="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50" />
+      <changeFilter class="p-4 bg-surface-2/50 rounded-lg border border-line/50" />
     </div>
     <div
       v-show="activeTab === 'snapshot'"
-      class="p-4 bg-gray-800/50 rounded-lg border border-gray-700/50 flex flex-col gap-2"
+      class="p-4 bg-surface-2/50 rounded-lg border border-line/50 flex flex-col gap-2"
     >
       <setSolve />
       <setSaveSnapshot />

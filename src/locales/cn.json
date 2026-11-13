@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "赤道仪",
       "slew": "转动",
+      "skyChart": {
+        "title": "赤道仪当前位置",
+        "parked": "赤道仪已停靠，没有可显示的位置。"
+      },
       "location_sync": {
         "title": "位置同步设置",
         "confirmationMessage": "如果NINA中的\"位置同步\"设置为\"提示\"，在坐标发送到望远镜之前可能会出现确认窗口。为了避免这种情况并允许TNS自动设置坐标，我们建议将设置更改为\"与望远镜同步\"",
@@ -2481,8 +2485,13 @@
           },
           "FrameProcessingSlow": {
             "title": "画面处理缓慢",
-            "explanation": "处理一帧导星画面所用的时间超出预期，会延迟修正。",
-            "fix": "减少最大导星星数，使用像素合并或子帧，或检查 CPU 负载。"
+            "explanation": "在过去一分钟内，至少一半的导星画面处理耗时过长，因此修正较晚才送达赤道仪。偶尔出现单个慢帧是正常的，只会记录在日志中。",
+            "fix": "检查是否有其他任务占用计算机，例如实时叠加或其他程序。否则请减少“最大导星星数”、使用像素合并或子帧，或关闭降噪。"
+          },
+          "SlowGuideFrame": {
+            "title": "导星画面较慢",
+            "explanation": "有一帧导星画面的处理时间比平时长，因此它的修正稍晚了一些。当计算机忙于其他工作（例如保存、天文定位或叠加主相机的图像）时，偶尔会出现这种情况，不会造成影响。",
+            "fix": "无需处理。如果画面持续一分钟都很慢，导星仪会发出警告。"
           },
           "SettleTimeout": {
             "title": "稳定超时",
@@ -2695,6 +2704,7 @@
             "Safety": "安全",
             "Incidents": "异常事件"
           },
+          "settleHint": "抖动（Dither）或开始导星后，下一次曝光会等待导星误差在最短稳定时间内保持低于像素容差（导星相机像素）。如果先到达超时时间，曝光仍会开始。",
           "confirmReconnectTitle": "重新连接导星？",
           "confirmReconnect": "导星将断开并重新连接。在此期间导星会停止，正在进行的曝光将不再受导星控制。",
           "reconnectNeeded": "重新连接导星器以使用新的相机设置。",
@@ -2705,6 +2715,10 @@
           "actionCancel": "取消",
           "actionOptionConfirm": "执行“{option}”？",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "齿数",
+              "Seconds": "秒"
+            },
             "GuideSource": {
               "GuideCamera": "导星相机",
               "Simulator": "模拟器"
@@ -2754,7 +2768,9 @@
             "RaMinMove": "RA 最小移动量",
             "RaCorrectionPace": "RA 校正节奏",
             "PeriodicErrorPrediction": "周期误差预测",
+            "WormPeriodUnit": "RA 蜗杆输入方式",
             "WormTeeth": "RA 蜗轮齿数",
+            "WormPeriodSeconds": "RA 蜗杆周期",
             "ForgetPeriodicError": "忘记周期误差",
             "DecAlgorithm": "Dec 算法",
             "DecAggression": "Dec 激进度",
@@ -2795,7 +2811,7 @@
           },
           "descriptions": {
             "GuideSource": "导星帧的来源。导星相机：设备中导星相机槽位里的相机。模拟器：内置的赤道仪、天空和相机模拟，可在没有硬件或白天时试用导星。",
-            "ExposureSeconds": "每个导星帧的曝光时间。1–4 秒可平均掉大部分视宁度；更短的曝光反应更快，但会追逐视宁度，更长的曝光对风和赤道仪误差反应较慢。",
+            "ExposureSeconds": "每张导星图像的曝光时间。较短的曝光对风和赤道仪误差反应更快；最小移动量能防止它们追逐视宁度。1 s 适合大多数赤道仪；导星太暗时请使用更长的曝光。",
             "Gain": "-1 保持驱动当前的增益。（PHD2 的增益是百分比，因此不会沿用。）",
             "Offset": "-1 保持驱动当前的偏移。",
             "Binning": "导星帧的硬件合并。2×2 让相机更灵敏、帧传输更快，但会降低分辨率；适合小像素或长导星焦距。更改后请重新校准。",
@@ -2821,7 +2837,9 @@
             "RaMinMove": "0 = 根据像素比例自动设定。",
             "RaCorrectionPace": "Predictive 算法每帧校正的剩余误差比例：0.5 在 2–3 帧内消除偏移且不越过零点，1 一次全部校正。漂移和周期误差始终完全校正。",
             "PeriodicErrorPrediction": "学习 RA 蜗杆的周期误差，并在其显现之前加以校正。学得的曲线按配置文件和赤道仪保存。",
+            "WormPeriodUnit": "用蜗轮齿数或以秒为单位的周期来指定 RA 蜗杆，例如来自赤道仪说明书或 PEC 工具。秒也适用于周期不是整数齿数的传动（谐波减速器、皮带）。只使用所选的那一项。",
             "WormTeeth": "RA 蜗轮的齿数（例如 EQ6-R 为 180，HEQ5 为 135），可得出精确的蜗杆周期。0 = 从导星帧中检测周期。",
+            "WormPeriodSeconds": "RA 蜗杆的周期，单位为秒（例如 180 齿为 478.7）；此时不再检测周期。中天翻转后会重新学习其相位，与不知道齿数时相同。0（默认）= 从导星帧中检测周期；导星接受 180 到 1200 秒。",
             "ForgetPeriodicError": "忘记为此赤道仪学得的周期误差，例如在调整蜗杆之后；之后会重新学习。",
             "DecAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
             "DecAggression": "每帧校正的已测 Dec 误差比例：1.0 全部校正。若 Dec 过冲就调小。",
@@ -2852,7 +2870,7 @@
             "MaxPulseDutyPercent": "某一轴在一分钟内的脉冲时间超过此比例时停止导星（失控保护）。",
             "PauseWhenSlewing": "赤道仪报告转动中/已停放时暂停修正。仅当赤道仪驱动一直报告“转动中”时才关闭此项。",
             "PauseWhenTrackingOff": "赤道仪报告跟踪关闭时暂停修正。若赤道仪驱动无法报告跟踪状态，请关闭此项。",
-            "SaveGuideLog": "兼容 PHD2 的导星日志，保存在 ~/.local/share/NINA/InternalGuider/Logs。",
+            "SaveGuideLog": "将兼容 PHD2 的导星日志写入 ~/.local/share/NINA/InternalGuider/Logs。在应用中可用导星日志插件查看。",
             "IncidentRecorder": "在内存中保留最近几分钟的导星画面，并在丢失导星、导星失控、赤道仪和相机问题以及误差尖峰前后保存这些画面，供回放和下载。",
             "IncidentBudgetMb": "已记录异常事件可用的磁盘空间；最早的未保留异常事件会被优先删除。模拟器异常事件另有独立的 200 MB。",
             "SimulatorScenario": "内置模拟器所模拟的赤道仪、天空和相机。",
@@ -2861,7 +2879,8 @@
             "BacklashRemeasureAfterSlewDeg": "当赤道仪移动超过此值或更换中天侧后开始导星时，间隙模型会先重新测量间隙：Dec 向北脉冲直到星点跟随，然后向南回到起点。之后齿轮靠在已知的一侧，模型即掌握新目标处的间隙。约需 10 到 20 个导星帧。0 = 从不。"
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。"
+            "backlashModelNeedsPredictive": "间隙模型仅适用于 Dec 算法 Predictive；目前使用固定脉冲。 要使用它，请在这些设置中将“Dec 算法”设为 Predictive。",
+            "wormPeriodOutOfRange": "不在 180 到 1200 秒之间：导星不会使用此周期，而是从导星帧中检测周期。"
           }
         },
         "darks": {
@@ -2964,6 +2983,8 @@
             "trialSeconds": "每次试验时长",
             "repeatBaseline": "最后再次测试当前设置",
             "repeatBaselineHint": "可检测试验期间视宁度变化或云层。",
+            "exposureTrial": "尝试更短的曝光",
+            "exposureTrialHint": "从 1.5 s 起，还会用 1 s 和介于 1 s 与当前曝光中间的曝光导星（例如 2.5 s 时为 1.5 s）。许多赤道仪用更短的曝光导星效果更好。",
             "allowCalibration": "需要时进行校准",
             "allowCalibrationHint": "没有校准，漂移、赤道仪响应和试验都无法运行。",
             "minutes": "{value} 分钟",
@@ -2977,6 +2998,23 @@
           "notConnected": "请连接 PINS 自动导星仪以使用 Coach。",
           "calibratingBlock": "请等待校准完成。",
           "darksBlock": "请等待暗场库构建完成。",
+          "slewingBlock": "赤道仪正在转到校准位置。到达后 Coach 开始；导星控制中的停止可取消转动。",
+          "position": {
+            "title": "赤道仪指向 Coach 测量不佳的位置",
+            "nearPole": "Dec {declination} 接近天极。在那里 RA 导星脉冲几乎移动不了星点，因此校准和 RA 结果变得不可靠。超过 {maxDeclination} 时 Coach 不会启动。",
+            "low": "赤道仪仅指向地平线以上 {altitude}。那里的大气会更多地模糊和移动星点，从而破坏测量。",
+            "slewNeeded": "请选择转动：超过 Dec {maxDeclination} 时 Coach 不会启动。",
+            "slewBlock": {
+              "noMount": "请连接赤道仪以转到校准位置。",
+              "parked": "请将赤道仪解除停放以转到校准位置。",
+              "slewing": "请等待赤道仪停止转动。",
+              "sequence": "序列正在运行。转动会使赤道仪离开目标；请先停止序列。",
+              "exposing": "主相机正在曝光。转动会毁掉这次曝光；请等待曝光结束。"
+            },
+            "startWithSlew": "转动并启动 Coach",
+            "confirmSlewTitle": "转动赤道仪？",
+            "confirmSlew": "赤道仪将离开当前目标并转到校准位置（{side}）。到达后 Coach 开始。"
+          },
           "start": "启动 Coach",
           "starting": "正在启动…",
           "startFailed": "Coach 无法启动",
@@ -3067,6 +3105,7 @@
               "current": "当前设置",
               "suggestion": "Coach 建议",
               "variant": "变体",
+              "exposure": "更短曝光",
               "currentRepeat": "再次测试当前设置"
             },
             "winner": "最佳",
@@ -3143,6 +3182,7 @@
           "hint": {
             "label": "提示",
             "dismiss": "关闭提示",
+            "dismissForGood": "不再显示此提示",
             "apply": "应用",
             "applied": "已应用",
             "applyFailed": "应用提示失败"
@@ -3244,7 +3284,7 @@
                 "title": "视宁度：{rmsArcsec}（{level}）",
                 "why": "即使关闭导星，星点仍因大气而晃动 {rmsArcsec}。任何导星都跟不上这种快速运动：它是导星 RMS 的下限。",
                 "fix_good": "条件良好：赤道仪的小误差现在会显现，精细调整值得一做。",
-                "fix": "不要追逐视宁度：使用 2 s 或更长的导星曝光，并将最小移动量设为略高于视宁度。"
+                "fix": "用略高于视宁度的最小移动量防止导星仪追逐视宁度。过滤视宁度的是它，而不是长曝光：短曝光（约 1 s）对赤道仪自身的误差反应更快。"
               },
               "minMove": {
                 "title": "按视宁度设定最小移动量：RA {raPx}，Dec {decPx}",
@@ -3392,6 +3432,11 @@
                 "title": "导星已达视宁度极限",
                 "why": "您的 RMS {rmsArcsec} 已接近大气允许的水平。",
                 "fix": "目前无需调整。"
+              },
+              "longExposure": {
+                "title": "尝试更短的导星曝光",
+                "why": "每帧{exposureSeconds}时，导星修正较慢。曝光较短时，修正能更紧密地跟随赤道仪自身的误差和风，因此许多赤道仪导星效果更好。",
+                "fix": "尝试{suggestedSeconds}并比较RMS。导星教练可以替你测试。此提示只显示一次。"
               }
             },
             "coach": {
@@ -3404,6 +3449,11 @@
                 "title": "导星仪未连接",
                 "why": "Coach 需要已连接的原生导星仪及其相机和赤道仪。",
                 "fix": "连接导星仪（脉冲导星还需连接赤道仪）后重试。"
+              },
+              "nearPole": {
+                "title": "离天极太近",
+                "why": "赤道仪指向 Dec {declinationDeg}。在那里 RA 导星脉冲几乎移动不了星点，因此校准会失败或主要测到噪声。",
+                "fix": "转到 ±{maxDeclinationDeg} 以内的赤纬，最好靠近天赤道，或在启动 Coach 时选择转到校准位置。"
               },
               "noStar": {
                 "title": "未找到导星星点",
@@ -4950,6 +5000,7 @@
       "button_slew_to_zenith": "转向天顶",
       "keep_closed": "保持平板关闭",
       "status_adu_live": "最后测量的 ADU：{adu}",
+      "status_exposure_live": "曝光：{time} 秒",
       "status_failed": "失败",
       "status_running": "运行中",
       "status_stopped": "已停止",
@@ -5167,7 +5218,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey，仅 [OIII] 谱线（双电离氧）。仅覆盖 −16° 以北的天空；需单独下载。",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey，仅 [SII] 谱线（电离硫）。仅覆盖 −16° 以北的天空；需单独下载。"
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey，仅 [SII] 谱线（电离硫）。仅覆盖 −16° 以北的天空；需单独下载。",
+        "source_nsns_cont": "NSNS 连续谱",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey，仅含连续谱光：去除发射线的红、绿、蓝连续谱，恒星已部分移除。可突出反射星云和暗星云。仅覆盖 −16° 以北的天空，细节最高至 5 级；需单独下载。"
       },
       "object_types": {
         "_ass": "星协",
@@ -7017,23 +7070,96 @@
         "factoryReset": "恢复出厂设置",
         "factoryResetDesc": "将 PINS 设备重置为出厂默认设置",
         "factoryResetConfirm": "您确定要恢复出厂设置吗？这会将所有设置重置为其默认值。",
-        "notifications": {
-          "beepLength": "蜂鸣声持续时间",
-          "beepLengthDesc": "每次蜂鸣声的持续时间（以毫秒为单位） (100–10000)",
-          "beepOnError": "出错时发出蜂鸣声",
-          "beepOnErrorDesc": "收到 NINA 错误时 PowerBox 发出蜂鸣声",
-          "beepOnWarning": "警告时发出蜂鸣声",
-          "beepOnWarningDesc": "当收到 NINA 警告时，PowerBox 会发出蜂鸣声",
-          "beepRepeatDuration": "重复持续时间",
-          "beepRepeatDurationDesc": "持续重复蜂鸣模式的总时间（1-60 秒）",
-          "beepVolume": "蜂鸣声音量",
-          "powerboxRequired": "必须连接 PowerBox 才能发出蜂鸣通知",
-          "testBeep": "测试蜂鸣声",
-          "testBeepRunning": "嘟嘟声...",
-          "title": "通知",
-          "volumeLoud": "大声",
-          "volumeLow": "低的",
-          "volumeMedium": "中等的"
+        "alarm": {
+          "title": "警报",
+          "intro": "发生关键事件时，PINS 会自行让 PowerBox 蜂鸣，即使应用已关闭。",
+          "updateRequired": "请更新 PINS 上的 Touch'N'Stars 插件后在此设置警报。在此之前，PowerBox 不会在事件发生时蜂鸣。",
+          "loadFailed": "无法加载警报设置。",
+          "retry": "重试",
+          "saveFailed": "未保存：{reason}",
+          "enabled": "关键事件时蜂鸣",
+          "categoriesTitle": "蜂鸣类别",
+          "categoriesHint": "PowerBox 过流和加热带警报在没有运行序列时也会响起，其他警报仅在序列运行时响起。",
+          "categories": {
+            "Errors": "错误",
+            "Guiding": "导星",
+            "Mount": "赤道仪和中天翻转",
+            "Safety": "安全监视器",
+            "PowerBox": "PowerBox",
+            "Disk": "磁盘空间",
+            "Warnings": "警告"
+          },
+          "categoryHints": {
+            "Errors": "所有 N.I.N.A. 错误和丢失的设备",
+            "Guiding": "导星星丢失，导星失败",
+            "Mount": "翻转失败，未跟踪的曝光",
+            "Safety": "安全监视器报告不安全",
+            "PowerBox": "过流，加热带无数据",
+            "Disk": "剩余空间少于 2 GB，图像未保存",
+            "Warnings": "其他警告，可能经常蜂鸣"
+          },
+          "volume": "音量",
+          "burstSeconds": "警报时长（秒）",
+          "advanced": "高级",
+          "toneMs": "单音时长（毫秒）",
+          "pauseMs": "音间暂停（毫秒）",
+          "graceMinutes": "启动缓冲（分钟）",
+          "throttleMinutes": "同一警报重复间隔（分钟）",
+          "graceHint": "N.I.N.A. 启动后短时间内不发出警报。同一警报最多连续蜂鸣 3 次。",
+          "exclusionsTitle": "永不蜂鸣",
+          "addExclusionTitle": "添加永不蜂鸣的条目",
+          "exclusionPlaceholder": "消息的一部分",
+          "addExclusion": "添加",
+          "removeExclusion": "删除",
+          "exclusionsHint": "文本包含该条目的警报保持静音（不区分大小写）。",
+          "exclusionErrors": {
+            "tooShort": "至少 2 个字符",
+            "tooLong": "最多 200 个字符",
+            "duplicate": "已在列表中",
+            "tooMany": "最多 50 个条目"
+          },
+          "test": "测试蜂鸣",
+          "testOk": "PowerBox 正在蜂鸣（{count} 声）。",
+          "testNoPowerBox": "未连接 PowerBox。",
+          "testNotSupported": "此 PowerBox 无法蜂鸣。",
+          "testFailed": "PowerBox 未蜂鸣（{reason}）。",
+          "unreachable": "PINS 没有响应。",
+          "silence": "静音 {minutes} 分钟",
+          "endMute": "结束静音",
+          "status": {
+            "disabled": "警报已关闭",
+            "shuttingDown": "正在关闭，无警报",
+            "muted": "静音至 {time}",
+            "noPowerBox": "PowerBox 未连接，警报无法蜂鸣",
+            "grace": "正在启动，{time} 后发出警报",
+            "armed": "已启用：序列正在运行",
+            "standby": "等待序列（PowerBox 故障仍会蜂鸣）",
+            "bursting": "正在蜂鸣"
+          },
+          "historyTitle": "最近的警报",
+          "historyEmpty": "暂无警报。",
+          "historyCount": "{count}×",
+          "historyTest": "测试",
+          "excludeThis": "此项永不蜂鸣",
+          "outcome": {
+            "Pending": "正在蜂鸣",
+            "Beeped": "已蜂鸣",
+            "Coalesced": "已由上一次蜂鸣覆盖",
+            "Throttled": "刚蜂鸣过",
+            "Repeated": "已蜂鸣 3 次",
+            "Muted": "已静音",
+            "Grace": "启动缓冲",
+            "Shutdown": "正在关闭",
+            "NotArmed": "无运行中的序列",
+            "CategoryOff": "类别已关闭",
+            "Excluded": "永不蜂鸣",
+            "Disabled": "警报已关闭",
+            "NoPowerBox": "无 PowerBox",
+            "BeepFailed": "蜂鸣失败"
+          },
+          "muteFromToast": "PINS 警报静音 {minutes} 分钟",
+          "mutedFromToast": "PINS 警报已静音 {minutes} 分钟。",
+          "muteFailed": "无法将 PINS 警报静音。"
         }
       },
       "info": {
@@ -8771,6 +8897,242 @@
       "queryComplete": "查询完成",
       "invalidArguments": "参数必须是 JSON 对象",
       "planStopped": "已完成的操作会保留。剩余计划已停止，请提交新请求。"
+    },
+    "guideLogViewer": {
+      "navTitle": "导星日志",
+      "title": "导星日志",
+      "night": "夜晚",
+      "loadingList": "正在加载导星日志…",
+      "noLogs": "暂无导星日志",
+      "live": "正在写入",
+      "reload": "重新加载",
+      "openFile": "打开导星日志文件（PINS 或 PHD2）",
+      "downloading": "正在下载导星日志… {size}",
+      "analyzing": "正在分析…",
+      "notSupported": "此 PINS 版本尚不提供导星日志。你仍可以打开此设备上的导星日志文件。",
+      "notAGuideLog": "此文件不包含 PHD2 格式导星日志中的导星或校准。",
+      "noSessions": "此导星日志尚未包含导星或校准。",
+      "pickNight": "选择一个夜晚，查看导星情况。",
+      "emptyHint": "原生导星器在导星时每晚写入一个导星日志。导星一晚，或打开此设备上的 PHD2 导星日志。",
+      "kpi": {
+        "guided": "导星时长",
+        "sessions": "{count} 个会话",
+        "rms": "典型 RMS",
+        "rmsHint": "整晚 30 帧 RMS 的中位数：大部分时间里导星的表现。丢星或跟踪关闭的时刻不会使其失真。",
+        "rmsOverall": "全部帧 {value}",
+        "dithers": "抖动",
+        "settleMedian": "{time} 内稳定（中位数）",
+        "starLost": "丢星",
+        "frames": "帧",
+        "findings": "问题",
+        "findingsSub": "严重 / 值得一看",
+        "hints": {
+          "guided": "导星器本晚导星的时长，按会话累加（会话从开始导星到停止导星；校准不计入）。",
+          "dithers": "导星器抖动的次数，以及抖动后星点回到稳定范围内所需的时间（中位数）。稳定缓慢会占用两次曝光之间的时间。",
+          "starLost": "导星器未找到可用导星、因此未发送修正的导星帧。少数单帧无碍；长时间连续出现意味着云、露水、星点漂走或赤道仪被移动。",
+          "findings": "分析标记的时刻：严重的（红色）和值得一看的（琥珀色）。它们列在“值得一看”中，并以三角形画在概览和导星图上。"
+        }
+      },
+      "grade": {
+        "good": "好",
+        "fair": "一般",
+        "poor": "较差",
+        "bad": "差",
+        "lost": "丢星"
+      },
+      "overview": {
+        "title": "夜晚概览",
+        "aria": "整晚的导星质量：每个时刻的滑动 RMS，按本晚典型 RMS 着色",
+        "hint": "拖动选择时间范围，拖动框可移动，点按会话可显示，双击显示整晚。",
+        "rolling": "滑动 RMS",
+        "lightFrame": "亮场 {seconds} 秒",
+        "barsAre": "柱：滑动 RMS"
+      },
+      "chart": {
+        "title": "导星",
+        "pulses": "脉冲",
+        "free": "无修正",
+        "freeHint": "如果没有导星脉冲，星点会移动到哪里（根据脉冲和校准速率估算；每次抖动后重新开始）。显示赤道仪自身的漂移和周期误差。",
+        "earlier": "更早",
+        "later": "更晚",
+        "zoomIn": "放大",
+        "zoomOut": "缩小",
+        "whole": "整晚",
+        "hint": "将鼠标悬停或触摸图表可读取一帧及其标记。在图上拖动（或双指捏合）放大，滚动缩放，双击显示整晚。",
+        "dropped": "无星",
+        "dither": "抖动",
+        "starLost": "丢星",
+        "exposures": "亮场",
+        "rms": "RMS",
+        "rmsLine": "RMS（30 帧）",
+        "legendFindings": "值得一看",
+        "ditherBy": "抖动 {dx}, {dy} px",
+        "exposureAt": "亮场 {seconds} 秒，{filter}：RMS {rms}"
+      },
+      "stats": {
+        "title": "所选范围",
+        "excludeSettling": "不含稳定阶段",
+        "frames": "{count} 帧",
+        "empty": "此范围内没有导星步骤。",
+        "total": "总计",
+        "peak": "峰值",
+        "mean": "平均偏移",
+        "drift": "漂移",
+        "pulses": "有脉冲的帧",
+        "limited": "达到上限的脉冲",
+        "polar": "极轴校准",
+        "polarUnknown": "需要 ≥ 5 分钟",
+        "oscillation": "RA 振荡",
+        "decReversals": "Dec 换向",
+        "starLost": "无星帧",
+        "settling": "稳定帧",
+        "snr": "星点 SNR（中位数）",
+        "totalTitle": "总 RMS",
+        "raTitle": "RA RMS",
+        "decTitle": "Dec RMS",
+        "hints": {
+          "excludeSettling": "与 PHD2 和实时导星图一样，排除抖动后直到导星器报告星点稳定之前的帧。此时星点是被有意移动的，这些帧无法说明星点保持得好不好。",
+          "total": "星点围绕其平均位置游移的程度，RA 与 Dec 合计（RA RMS² + Dec RMS² 的平方根）。通常用这个数字比较导星。经验上，只要它低于主相机像素比例（″/px）的约一半到一倍，星点就能保持圆形。与 PHD2 一样，它围绕平均值测量，因此恒定偏移（见“平均偏移”）不计入。",
+          "ra": "仅 RA 误差的 RMS（围绕其平均值）。RA 承载赤道仪的周期误差和大部分阵风。",
+          "dec": "仅 Dec 误差的 RMS（围绕其平均值）。Dec RMS 高而 RA RMS 低，往往说明 Dec 回差、极轴校准不佳或线缆问题。",
+          "peak": "此范围内最大的单个误差（带符号）。一个大峰值是阵风、卡顿或跳变；规律重复的峰值提示周期误差或振荡。",
+          "mean": "此范围内的平均误差。理想情况下接近 0：平均而言星点位于锁定位置。恒定偏移说明导星器一直落后于漂移（最小移动过大、激进度过低、Dec 只向一个方向导星）。它本身不会使星点模糊，模糊由 RMS 造成，但偏移较大说明导星器跟不上。",
+          "drift": "赤道仪自行移动的速度（每分钟）：在抖动之间拟合的“无修正”运动的斜率。稳定的 Dec 漂移来自极轴误差；RA 漂移来自略有偏差的跟踪速率或形变。根据脉冲和校准速率估算。",
+          "pulses": "导星器在该轴上发送修正的导星帧比例。值很高且 RA 振荡也高，说明它在追逐视宁度。",
+          "limited": "达到最大脉冲时长的修正。说明赤道仪跟不上（大幅跳变、卡顿、校准错误），或者星点丢失后又被找回。",
+          "polar": "根据 Dec 漂移估算的极轴误差（角分）：3.8 × 漂移（″/分）÷ cos(Dec)，即 PHD2 导星助手的公式。需要一个至少 5 分钟的会话以及远离天极的目标。只是粗略估算；极轴校准流程更准确。",
+          "oscillation": "RA 误差在相邻帧之间改变符号的帧比例。约 0.5 为正常视宁度；明显高于此值（0.65 及以上）说明 RA 修正过强，把星点推来推去。",
+          "decReversals": "Dec 修正改变方向的次数（由北到南或反之）。每次换向都要消除 Dec 回差；换向多且 Dec RMS 大，说明存在回差。",
+          "starLost": "此范围内没有可用导星的帧；这些帧未发送修正。",
+          "settling": "此范围内导星器在抖动后稳定的帧。当“不含稳定阶段”开启时，它们不计入统计。",
+          "snr": "导星的信噪比，范围内的中位数。下降说明有云、露水或薄雾；低于约 10 时导星器容易丢星。"
+        }
+      },
+      "scatter": {
+        "title": "靶图",
+        "radius": "RMS 圆 {value}",
+        "hint": "范围内的每个导星步骤，越新越亮。虚线圆为总 RMS。",
+        "outside": "{count} 个步骤位于图外。"
+      },
+      "findings": {
+        "title": "值得一看",
+        "intro": "分析挑出的时刻，以本晚自身的典型值为参照。它们就是概览和导星图上的三角形。点按一个即可放大到那里。",
+        "filter": "显示",
+        "filters": {
+          "problems": "问题",
+          "all": "全部"
+        },
+        "times": "{count}×",
+        "none": "此日志中没有内容。",
+        "noProblems": "未发现问题。整晚导星看起来都很稳定。",
+        "kinds": {
+          "starLost": "丢星",
+          "badStretch": "不稳定时段",
+          "jump": "跳变",
+          "clouds": "星点变暗",
+          "settle": "稳定",
+          "pulseLimit": "脉冲上限",
+          "alert": "警报",
+          "flip": "中天翻转",
+          "gap": "中断",
+          "param": "设置更改",
+          "calibration": "校准",
+          "incident": "事件"
+        },
+        "detail": {
+          "starLost": "{duration} 内有 {frames} 帧没有可用星点。",
+          "badStretch": "RMS 最高 {rms}，为本晚典型值 {typical} 的 {ratio}×，持续 {duration}。",
+          "jump": "单帧 {axis} 误差 {value}（典型 {typical}）：阵风、线缆或赤道仪。",
+          "clouds": "星点 SNR 降至 {snr}（通常 {typical}），持续 {duration}：云、露水或星点漂走。",
+          "settleFailed": "{duration} 后稳定失败。",
+          "settleSlow": "稳定用了 {duration}（通常 {typical}）。",
+          "pulseLimit": "{frames} 个脉冲达到最大时长：赤道仪跟不上，或星点已丢失。",
+          "flip": "镜筒朝向 {from} → {to}。",
+          "gap": "导星停止了 {duration}。",
+          "calibration": "使用 {steps} 步完成校准。",
+          "calibrationFailed": "校准失败。",
+          "incident": "可能原因：{cause}。"
+        },
+        "arcsec": "{value}″",
+        "px": "{value} px"
+      },
+      "spectrum": {
+        "title": "周期",
+        "source": "信号",
+        "sources": {
+          "raFree": "RA 赤道仪",
+          "ra": "RA 导星后",
+          "dec": "Dec 导星后"
+        },
+        "hints": {
+          "raFree": "去除修正后的 RA 运动：峰值是赤道仪的周期误差，虚线为其蜗杆周期。",
+          "ra": "导星后剩余的部分：这里的峰值是导星未能消除的周期误差，或振荡。",
+          "dec": "Dec 中剩余的部分：峰值常来自风、线缆或风扇。"
+        },
+        "tooShort": "请至少选择 {minutes} 分钟的导星。",
+        "peak": "最强：{period}，{amplitude}",
+        "worm": "蜗杆 {period}",
+        "amplitude": "{amplitude}"
+      },
+      "sessions": {
+        "title": "会话",
+        "calibration": "校准",
+        "failed": "失败",
+        "details": "详情",
+        "drops": "丢失 {count}",
+        "pier": {
+          "East": "东",
+          "West": "西"
+        },
+        "end": {
+          "stopped": "已停止",
+          "closed": "日志已关闭",
+          "truncated": "日志在此结束",
+          "complete": "完成",
+          "failed": "失败"
+        },
+        "facts": {
+          "profile": "配置文件",
+          "camera": "导星相机",
+          "scale": "像素比例",
+          "mount": "赤道仪",
+          "raAlgorithm": "RA 算法",
+          "decAlgorithm": "Dec 算法",
+          "decMode": "Dec 导星模式",
+          "backlash": "回差补偿",
+          "off": "关",
+          "maxPulse": "最大脉冲 RA / Dec",
+          "calibration": "校准",
+          "guideSpeed": "导星速度 RA / Dec",
+          "dithers": "抖动",
+          "frames": "帧",
+          "lost": "丢失",
+          "endReason": "结束",
+          "calStep": "步长 / 距离",
+          "raLeg": "RA 段",
+          "decLeg": "Dec 段",
+          "ortho": "正交误差",
+          "pointing": "指向",
+          "exposure": "{seconds} 秒",
+          "gain": "增益 {gain}",
+          "framesValue": "{frames}（丢失 {lost}）",
+          "legValue": "{angle}° · {count} 步"
+        },
+        "target": "RA {hours}h{minutes} · Dec {dec}°"
+      },
+      "exposures": {
+        "title": "亮场",
+        "intro": "此 PINS 会话中每张亮场期间的导星情况，以它们的典型 RMS {typical} 为参照评级。点按一张即可查看。",
+        "sort": "排序",
+        "sorts": {
+          "time": "按时间",
+          "worst": "最差优先"
+        },
+        "time": "开始",
+        "filter": "滤镜",
+        "rms": "RMS",
+        "peak": "峰值"
+      }
     }
   },
   "pinsDevices": {
@@ -8853,6 +9215,10 @@
       "status": "状态",
       "error": "误差距离",
       "rotation": "旋转"
+    },
+    "manualRotator": {
+      "currentPosition": "当前位置",
+      "targetPosition": "目标位置"
     }
   },
   "loading": "加载中",

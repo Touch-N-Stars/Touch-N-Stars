@@ -1,11 +1,11 @@
 <template>
   <div class="rotation-ruler flex flex-col gap-1 select-none">
-    <div class="flex items-center justify-between text-xs text-gray-300">
+    <div class="flex items-center justify-between text-xs text-content">
       <span>{{ $t('components.framing.rotationRuler.label') }}</span>
       <span class="font-medium text-white tabular-nums">{{ displayAngle }}°</span>
       <button
         type="button"
-        class="flex items-center gap-1 text-gray-300 hover:text-white transition-colors"
+        class="flex items-center gap-1 text-content hover:text-white transition-colors"
         :disabled="displayAngle === 0"
         :class="{ 'opacity-40': displayAngle === 0 }"
         @click="reset"
@@ -28,7 +28,7 @@
       <div
         v-for="tick in ticks"
         :key="tick.angle"
-        class="absolute bottom-1 w-px bg-gray-400 pointer-events-none"
+        class="absolute bottom-1 w-px bg-content-muted pointer-events-none"
         :class="tick.major ? 'h-5' : tick.mid ? 'h-3.5' : 'h-2'"
         :style="{ left: `calc(50% + ${tick.offset}px)` }"
       ></div>

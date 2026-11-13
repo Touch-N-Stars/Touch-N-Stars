@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montagem",
       "slew": "Mover",
+      "skyChart": {
+        "title": "Posição atual da montagem",
+        "parked": "A montagem está estacionada, por isso não há posição para mostrar."
+      },
       "location_sync": {
         "title": "Configurações de sincronização de localização",
         "confirmationMessage": "Se \"Sincronização de Localização\" no NINA estiver definida como \"Prompt\", uma janela de confirmação pode aparecer antes que as coordenadas sejam enviadas ao telescópio. Para evitar isso e permitir que o TNS defina automaticamente as coordenadas, recomendamos alterar a configuração para \"Sincronizar com telescópio\"",
@@ -2481,8 +2485,13 @@
           },
           "FrameProcessingSlow": {
             "title": "Processamento de imagens lento",
-            "explanation": "O processamento de uma imagem de guiagem demorou mais do que o esperado, o que atrasa as correções.",
-            "fix": "Reduza o número máximo de estrelas guia, use binning ou uma subimagem, ou verifique a carga da CPU."
+            "explanation": "No último minuto, pelo menos metade das imagens de guiagem demorou demasiado a ser processada, por isso as correções chegaram atrasadas à montagem. Uma imagem lenta de vez em quando é normal e só fica anotada no registo.",
+            "fix": "Verifique o que mais está a ocupar o computador, como o empilhamento ao vivo ou outros programas. Caso contrário, baixe «Máx. estrelas guia», use binning ou uma subimagem, ou desative a redução de ruído."
+          },
+          "SlowGuideFrame": {
+            "title": "Imagem de guiagem lenta",
+            "explanation": "O processamento de uma imagem de guiagem demorou mais do que o habitual, por isso a sua correção chegou um pouco tarde. Isto acontece de vez em quando, quando o computador está ocupado com outras tarefas, como guardar, fazer plate solving ou empilhar uma imagem da câmara principal, e não faz mal.",
+            "fix": "Não é necessária nenhuma ação. O guiador avisa quando as imagens continuam lentas durante um minuto."
           },
           "SettleTimeout": {
             "title": "Tempo de estabilização esgotado",
@@ -2695,6 +2704,7 @@
             "Safety": "Segurança",
             "Incidents": "Incidentes"
           },
+          "settleHint": "Após um dither ou o início da guiagem, a exposição seguinte espera até o erro de guiagem ficar abaixo da tolerância (píxeis da câmara de guiagem) durante o tempo mínimo de estabilização. Se o tempo limite se esgotar antes, a exposição começa na mesma.",
           "confirmReconnectTitle": "Religar o guiador?",
           "confirmReconnect": "O guiador desliga-se e volta a ligar-se. A guiagem para entretanto, pelo que uma exposição em curso deixa de ser guiada.",
           "reconnectNeeded": "Reconecte o guiador para usar as novas configurações da câmera.",
@@ -2705,6 +2715,10 @@
           "actionCancel": "Cancelar",
           "actionOptionConfirm": "Executar “{option}”?",
           "optionLabels": {
+            "WormPeriodUnit": {
+              "Teeth": "Dentes",
+              "Seconds": "Segundos"
+            },
             "GuideSource": {
               "GuideCamera": "Câmara de guiagem",
               "Simulator": "Simulador"
@@ -2754,7 +2768,9 @@
             "RaMinMove": "Movimento mín. RA",
             "RaCorrectionPace": "Ritmo de correção RA",
             "PeriodicErrorPrediction": "Previsão do erro periódico",
+            "WormPeriodUnit": "Sem-fim RA indicado em",
             "WormTeeth": "Dentes da coroa RA",
+            "WormPeriodSeconds": "Período do sem-fim RA",
             "ForgetPeriodicError": "Esquecer erro periódico",
             "DecAlgorithm": "Algoritmo Dec",
             "DecAggression": "Agressividade Dec",
@@ -2795,7 +2811,7 @@
           },
           "descriptions": {
             "GuideSource": "De onde vêm as imagens de guiagem. Câmara de guiagem: a câmara na posição de câmara de guiagem do equipamento. Simulador: uma simulação integrada de montagem, céu e câmara, para experimentar a guiagem sem hardware ou de dia.",
-            "ExposureSeconds": "Tempo de exposição de cada imagem de guiagem. 1–4 s fazem a média da maior parte do seeing; exposições mais curtas reagem mais depressa mas perseguem o seeing, as mais longas reagem devagar ao vento e aos erros da montagem.",
+            "ExposureSeconds": "Tempo de exposição de cada imagem de guiagem. Exposições mais curtas reagem mais depressa ao vento e aos erros da montagem; o movimento mínimo impede que persigam o seeing. 1 s serve para a maioria das montagens; use exposições mais longas quando a estrela guia for fraca demais.",
             "Gain": "-1 mantém o ganho atual do driver. (O ganho do PHD2 é uma percentagem, por isso não é transferido.)",
             "Offset": "-1 mantém o desvio atual do driver.",
             "Binning": "Binning por hardware das imagens de guiagem. 2×2 torna a câmara mais sensível e a transferência mais rápida, à custa da resolução; útil com píxeis pequenos ou uma focal de guiagem longa. Calibre de novo após uma alteração.",
@@ -2821,7 +2837,9 @@
             "RaMinMove": "0 = automático a partir da escala de imagem.",
             "RaCorrectionPace": "Parte do erro restante que o algoritmo Predictive corrige por imagem: 0,5 elimina um desvio em 2–3 imagens sem passar do zero, 1 corrige tudo de uma vez. A deriva e o erro periódico são sempre corrigidos por completo.",
             "PeriodicErrorPrediction": "Aprende o erro periódico do sem-fim de RA e corrige-o antes que se note. A curva aprendida é guardada por perfil e montagem.",
+            "WormPeriodUnit": "Indique o sem-fim de RA pelos dentes da sua coroa ou pelo seu período em segundos, p. ex. do manual da montagem ou de uma ferramenta PEC. Os segundos também servem para um acionamento cujo período não é um número inteiro de dentes (redutor harmónico, correia). Só o valor escolhido é usado.",
             "WormTeeth": "Dentes da coroa de RA (ex.: 180 numa EQ6-R, 135 numa HEQ5); dá o período exato do sem-fim. 0 = detetar o período a partir das imagens de guiagem.",
+            "WormPeriodSeconds": "Período do sem-fim de RA em segundos (p. ex. 478,7 para 180 dentes); deixa então de ser detetado. Após um flip de meridiano a sua fase é reaprendida, como sem número de dentes. 0 (predefinição) = detetar o período a partir dos frames de guiagem; o guiador aceita 180 a 1200 s.",
             "ForgetPeriodicError": "Esquece o erro periódico aprendido para esta montagem (ex.: depois de ajustar o sem-fim); depois volta a ser aprendido.",
             "DecAlgorithm": "Predictive (experimental) aprende o seeing e o movimento próprio da montagem a partir das imagens de guiagem e corrige o erro que prevê para a imagem seguinte, pelo que a agressividade, a histerese e o movimento mínimo não se lhe aplicam.",
             "DecAggression": "Parte do erro Dec medido corrigida em cada imagem: 1,0 corrige tudo. Baixe se Dec ultrapassar.",
@@ -2852,7 +2870,7 @@
             "MaxPulseDutyPercent": "A guiagem para quando um eixo recebe pulsos durante mais do que esta fração de um minuto (proteção contra guiagem descontrolada).",
             "PauseWhenSlewing": "Pausa as correções enquanto a montagem indicar que se está a deslocar ou que está estacionada. Desligue apenas se o driver da montagem indicar “a deslocar-se” permanentemente.",
             "PauseWhenTrackingOff": "Pausa as correções enquanto a montagem indicar que o seguimento está desligado. Desligue se o driver da montagem não conseguir indicar o estado do seguimento.",
-            "SaveGuideLog": "Registo de guiagem compatível com o PHD2 em ~/.local/share/NINA/InternalGuider/Logs.",
+            "SaveGuideLog": "Registro de guiagem compatível com PHD2 em ~/.local/share/NINA/InternalGuider/Logs. O plugin Registros de guiagem o mostra no app.",
             "IncidentRecorder": "Mantém em memória as imagens de guiagem dos últimos minutos e guarda-as à volta de perdas de estrela, guiagem descontrolada, problemas da montagem e da câmara e picos de erro, para reprodução e transferência.",
             "IncidentBudgetMb": "Espaço em disco para os incidentes registados; os mais antigos que não estejam mantidos são eliminados primeiro. Os incidentes do simulador têm os seus próprios 200 MB.",
             "SimulatorScenario": "Montagem, céu e câmara que o simulador integrado simula.",
@@ -2861,7 +2879,8 @@
             "BacklashRemeasureAfterSlewDeg": "Quando a guiagem começa depois de a montagem se ter movido mais do que este valor ou mudado de lado do pilar, o modelo de folga volta primeiro a medir a folga: Dec envia pulsos para norte até a estrela seguir e depois para sul até ao ponto de partida. A engrenagem fica então encostada a um lado conhecido e o modelo conhece a folga no novo alvo. Demora cerca de 10 a 20 imagens de guiagem. 0 = nunca."
           },
           "warnings": {
-            "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições."
+            "backlashModelNeedsPredictive": "O modelo de folga só funciona com o algoritmo Dec Predictive; por agora é usado o pulso fixo. Para o usar, ponha «Algoritmo Dec» em Predictive nestas definições.",
+            "wormPeriodOutOfRange": "Fora de 180 a 1200 s: o guiador não usa este período e deteta-o a partir dos frames de guiagem."
           }
         },
         "darks": {
@@ -2964,6 +2983,8 @@
             "trialSeconds": "Duração por ensaio",
             "repeatBaseline": "Repetir as definições atuais no fim",
             "repeatBaselineHint": "Deteta mudanças de seeing ou nuvens durante os ensaios.",
+            "exposureTrial": "Testar exposições mais curtas",
+            "exposureTrialHint": "A partir de 1,5 s, guia também com 1 s e com uma exposição a meio caminho da atual (p. ex. 1,5 s com 2,5 s). Muitas montagens guiam melhor com exposições mais curtas.",
             "allowCalibration": "Calibrar se necessário",
             "allowCalibrationHint": "Sem calibração, a deriva, a resposta da montagem e os ensaios não podem ser executados.",
             "minutes": "{value} min",
@@ -2977,6 +2998,23 @@
           "notConnected": "Ligue o PINS Native Guider para usar o coach.",
           "calibratingBlock": "Aguarde até a calibração terminar.",
           "darksBlock": "Aguarde até a biblioteca de darks estar criada.",
+          "slewingBlock": "A montagem está a mover-se para a posição de calibração. O coach começa quando ela chegar; Parar nos controlos da guiagem cancela o movimento.",
+          "position": {
+            "title": "A montagem aponta para onde o coach mede mal",
+            "nearPole": "Dec {declination} está perto do polo. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração e os resultados em AR deixam de ser fiáveis. Além de {maxDeclination} o coach não começa.",
+            "low": "A montagem aponta só {altitude} acima do horizonte. O ar ali desfoca e desloca mais a estrela, o que estraga as medições.",
+            "slewNeeded": "Escolha um movimento: além de Dec {maxDeclination} o coach não começa.",
+            "slewBlock": {
+              "noMount": "Conecte a montagem para movê-la para uma posição de calibração.",
+              "parked": "Desestacione a montagem para movê-la para uma posição de calibração.",
+              "slewing": "Aguarde até a montagem parar de se mover.",
+              "sequence": "Está a decorrer uma sequência. Um movimento afastaria a montagem do alvo; pare primeiro a sequência.",
+              "exposing": "A câmara de imagem está a expor. Um movimento estragaria a exposição; aguarde até terminar."
+            },
+            "startWithSlew": "Mover e iniciar o coach",
+            "confirmSlewTitle": "Mover a montagem?",
+            "confirmSlew": "A montagem deixa o alvo atual e move-se para a posição de calibração ({side}). O coach começa quando chegar."
+          },
           "start": "Iniciar coach",
           "starting": "A iniciar…",
           "startFailed": "Não foi possível iniciar o coach",
@@ -3067,6 +3105,7 @@
               "current": "Definições atuais",
               "suggestion": "Sugestão do coach",
               "variant": "Variante",
+              "exposure": "Exposição mais curta",
               "currentRepeat": "Definições atuais (repetição)"
             },
             "winner": "Melhor",
@@ -3143,6 +3182,7 @@
           "hint": {
             "label": "Dica",
             "dismiss": "Dispensar dica",
+            "dismissForGood": "Não mostrar esta dica novamente",
             "apply": "Aplicar",
             "applied": "Aplicado",
             "applyFailed": "Não foi possível aplicar a dica"
@@ -3244,7 +3284,7 @@
                 "title": "Seeing: {rmsArcsec} ({level})",
                 "why": "Com a guiagem desligada, a estrela continua a dançar {rmsArcsec} por causa da atmosfera. Nenhuma guiagem consegue seguir este movimento rápido: é o limite mínimo do seu RMS guiado.",
                 "fix_good": "Boas condições: agora notam-se pequenos erros da montagem, por isso o ajuste fino compensa.",
-                "fix": "Não persiga o seeing: guie com 2 s ou mais e um movimento mínimo ligeiramente acima do seeing."
+                "fix": "Impeça a guiagem de perseguir o seeing com um movimento mínimo logo acima dele. É isso, e não uma exposição longa, que filtra o seeing: uma exposição curta (cerca de 1 s) reage mais depressa aos erros próprios da montagem."
               },
               "minMove": {
                 "title": "Movimento mín. pelo seeing: RA {raPx}, Dec {decPx}",
@@ -3392,6 +3432,11 @@
                 "title": "A guiagem está no limite do seeing",
                 "why": "O seu RMS de {rmsArcsec} está perto do que a atmosfera permite.",
                 "fix": "Nada a ajustar de momento."
+              },
+              "longExposure": {
+                "title": "Experimente uma exposição de guiagem mais curta",
+                "why": "Com {exposureSeconds} por imagem, a guiagem corrige tarde. Muitas montagens guiam melhor com exposições mais curtas, porque as correções acompanham mais de perto os erros da montagem e o vento.",
+                "fix": "Experimente {suggestedSeconds} e compare o RMS. O assistente de guiagem pode testar isto automaticamente. Esta dica só aparece uma vez."
               }
             },
             "coach": {
@@ -3404,6 +3449,11 @@
                 "title": "Guiador não ligado",
                 "why": "O coach precisa do guiador nativo ligado, com a sua câmara e montagem.",
                 "fix": "Ligue o guiador (e a montagem para guiagem por pulsos) e tente novamente."
+              },
+              "nearPole": {
+                "title": "Perto demais do polo",
+                "why": "A montagem aponta para Dec {declinationDeg}. Os pulsos de guiagem em AR mal movem a estrela ali, por isso a calibração falha ou mede sobretudo ruído.",
+                "fix": "Mova a montagem para uma declinação dentro de ±{maxDeclinationDeg}, de preferência perto do equador celeste, ou escolha um movimento para uma posição de calibração ao iniciar o coach."
               },
               "noStar": {
                 "title": "Nenhuma estrela guia encontrada",
@@ -4950,6 +5000,7 @@
       "button_slew_to_zenith": "Mover para zênite",
       "keep_closed": "Manter o painel flat fechado",
       "status_adu_live": "Última ADU medida: {adu}",
+      "status_exposure_live": "Exposição: {time} s",
       "status_failed": "falhou",
       "status_running": "Em execução",
       "status_stopped": "Parado",
@@ -5167,7 +5218,9 @@
         "source_nsns_oiii": "NSNS [OIII]",
         "source_nsns_oiii_hint": "Northern Sky Narrowband Survey, apenas linha [OIII] (oxigénio duplamente ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
         "source_nsns_sii": "NSNS [SII]",
-        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, apenas linha [SII] (enxofre ionizado). Cobre apenas o céu a norte de −16°; descarga separada."
+        "source_nsns_sii_hint": "Northern Sky Narrowband Survey, apenas linha [SII] (enxofre ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
+        "source_nsns_cont": "NSNS contínuo",
+        "source_nsns_cont_hint": "Northern Sky Narrowband Survey, apenas luz do contínuo: contínuo vermelho, verde e azul sem as linhas de emissão, com as estrelas parcialmente removidas. Realça as nebulosas de reflexão e as nuvens escuras. Cobre apenas o céu a norte de −16°, com detalhe até à ordem 5; é um download separado."
       },
       "object_types": {
         "_ass": "Associação estelar",
@@ -7017,23 +7070,96 @@
         "factoryReset": "Redefinição de fábrica",
         "factoryResetDesc": "Redefinir o dispositivo PINS para as configurações padrão de fábrica",
         "factoryResetConfirm": "Tem certeza de que deseja realizar uma redefinição de fábrica? Isso redefinirá todas as configurações para seus valores padrão.",
-        "notifications": {
-          "beepLength": "Duração do bipe",
-          "beepLengthDesc": "Duração de cada bipe em milissegundos (100–10.000)",
-          "beepOnError": "Bipe em caso de erro",
-          "beepOnErrorDesc": "Bipar o PowerBox quando um erro NINA for recebido",
-          "beepOnWarning": "Bipe de aviso",
-          "beepOnWarningDesc": "Bipar o PowerBox quando um aviso NINA for recebido",
-          "beepRepeatDuration": "Duração da repetição",
-          "beepRepeatDurationDesc": "Tempo total para repetir o padrão de bipe (1–60s)",
-          "beepVolume": "Volume do bipe",
-          "powerboxRequired": "O PowerBox deve estar conectado para que as notificações de bipe funcionem",
-          "testBeep": "Bipe de teste",
-          "testBeepRunning": "Bipando...",
-          "title": "Notificações",
-          "volumeLoud": "Alto",
-          "volumeLow": "Baixo",
-          "volumeMedium": "Médio"
+        "alarm": {
+          "title": "Alarme",
+          "intro": "O PINS faz a PowerBox apitar sozinho em eventos críticos, mesmo com a app fechada.",
+          "updateRequired": "Atualize o plugin Touch'N'Stars no PINS para configurar o alarme aqui. Até lá a PowerBox não apita em eventos.",
+          "loadFailed": "Não foi possível carregar as definições do alarme.",
+          "retry": "Tentar novamente",
+          "saveFailed": "Não guardado: {reason}",
+          "enabled": "Apitar em eventos críticos",
+          "categoriesTitle": "Apitar para",
+          "categoriesHint": "Os alarmes de sobrecorrente e do aquecedor da PowerBox soam também sem sequência em curso, todos os outros só durante uma sequência.",
+          "categories": {
+            "Errors": "Erros",
+            "Guiding": "Guiagem",
+            "Mount": "Montagem e meridian flip",
+            "Safety": "Monitor de segurança",
+            "PowerBox": "PowerBox",
+            "Disk": "Espaço em disco",
+            "Warnings": "Avisos"
+          },
+          "categoryHints": {
+            "Errors": "Qualquer erro do N.I.N.A. e dispositivos perdidos",
+            "Guiding": "Estrela guia perdida, guiagem falhou",
+            "Mount": "Flip falhou, exposições sem seguimento",
+            "Safety": "O monitor de segurança indica inseguro",
+            "PowerBox": "Sobrecorrente, aquecedor sem dados",
+            "Disk": "Menos de 2 GB livres, imagem não guardada",
+            "Warnings": "Outros avisos, pode apitar com frequência"
+          },
+          "volume": "Volume",
+          "burstSeconds": "Duração do alarme (s)",
+          "advanced": "Avançado",
+          "toneMs": "Duração do tom (ms)",
+          "pauseMs": "Pausa entre tons (ms)",
+          "graceMinutes": "Espera no arranque (min)",
+          "throttleMinutes": "Repetir o mesmo alarme após (min)",
+          "graceHint": "Sem alarmes logo após o arranque do N.I.N.A. O mesmo alarme apita no máximo 3 vezes seguidas.",
+          "exclusionsTitle": "Nunca apitar para",
+          "addExclusionTitle": "Adicionar uma entrada que nunca apita",
+          "exclusionPlaceholder": "Parte da mensagem",
+          "addExclusion": "Adicionar",
+          "removeExclusion": "Remover",
+          "exclusionsHint": "Os alarmes cujo texto contém a entrada ficam em silêncio (sem distinguir maiúsculas).",
+          "exclusionErrors": {
+            "tooShort": "Pelo menos 2 caracteres",
+            "tooLong": "No máximo 200 caracteres",
+            "duplicate": "Já está na lista",
+            "tooMany": "No máximo 50 entradas"
+          },
+          "test": "Apito de teste",
+          "testOk": "A PowerBox apita ({count} tons).",
+          "testNoPowerBox": "Nenhuma PowerBox ligada.",
+          "testNotSupported": "Esta PowerBox não consegue apitar.",
+          "testFailed": "A PowerBox não apitou ({reason}).",
+          "unreachable": "O PINS não respondeu.",
+          "silence": "Silenciar {minutes} min",
+          "endMute": "Terminar silêncio",
+          "status": {
+            "disabled": "Alarme desligado",
+            "shuttingDown": "A encerrar, sem alarmes",
+            "muted": "Silenciado até às {time}",
+            "noPowerBox": "PowerBox não ligada, os alarmes não podem apitar",
+            "grace": "A arrancar, alarmes dentro de {time}",
+            "armed": "Ativo: uma sequência está em curso",
+            "standby": "À espera de uma sequência (as falhas da PowerBox apitam na mesma)",
+            "bursting": "a apitar agora"
+          },
+          "historyTitle": "Alarmes recentes",
+          "historyEmpty": "Ainda sem alarmes.",
+          "historyCount": "{count}×",
+          "historyTest": "Teste",
+          "excludeThis": "Nunca apitar para isto",
+          "outcome": {
+            "Pending": "A apitar",
+            "Beeped": "Apitou",
+            "Coalesced": "Coberto pelo apito anterior",
+            "Throttled": "Apitou há pouco",
+            "Repeated": "Já apitou 3×",
+            "Muted": "Silenciado",
+            "Grace": "Espera no arranque",
+            "Shutdown": "A encerrar",
+            "NotArmed": "Nenhuma sequência em curso",
+            "CategoryOff": "Categoria desligada",
+            "Excluded": "Nunca apita",
+            "Disabled": "Alarme desligado",
+            "NoPowerBox": "Sem PowerBox",
+            "BeepFailed": "Apito falhou"
+          },
+          "muteFromToast": "Silenciar alarme PINS {minutes} min",
+          "mutedFromToast": "O alarme PINS está silenciado por {minutes} min.",
+          "muteFailed": "Não foi possível silenciar o alarme PINS."
         }
       },
       "info": {
@@ -8771,6 +8897,242 @@
       "queryComplete": "Consulta concluída",
       "invalidArguments": "Os argumentos devem ser um objeto JSON",
       "planStopped": "A ação concluída é preservada. O restante do plano foi interrompido; envia um novo pedido."
+    },
+    "guideLogViewer": {
+      "navTitle": "Registros de guiagem",
+      "title": "Registros de guiagem",
+      "night": "Noite",
+      "loadingList": "Carregando registros de guiagem…",
+      "noLogs": "Ainda não há registros de guiagem",
+      "live": "sendo escrito",
+      "reload": "Recarregar",
+      "openFile": "Abrir um arquivo de registro de guiagem (PINS ou PHD2)",
+      "downloading": "Baixando o registro de guiagem… {size}",
+      "analyzing": "Analisando…",
+      "notSupported": "Esta versão do PINS ainda não disponibiliza os seus registros de guiagem. Mesmo assim, você pode abrir um arquivo de registro a partir deste dispositivo.",
+      "notAGuideLog": "Este arquivo não contém guiagem nem calibração de um registro de guiagem no formato PHD2.",
+      "noSessions": "Este registro de guiagem ainda não contém guiagem nem calibração.",
+      "pickNight": "Escolha uma noite para ver como correu a guiagem.",
+      "emptyHint": "O guiador nativo escreve um registro de guiagem por noite enquanto guia. Guie uma noite ou abra um registro do PHD2 a partir deste dispositivo.",
+      "kpi": {
+        "guided": "Guiado",
+        "sessions": "{count} sessão | {count} sessões",
+        "rms": "RMS típico",
+        "rmsHint": "A mediana do RMS em 30 frames ao longo da noite: como foi a guiagem na maior parte do tempo. Os momentos em que a estrela se perdeu ou o seguimento estava desligado não a distorcem.",
+        "rmsOverall": "{value} em todos os frames",
+        "dithers": "Dithers",
+        "settleMedian": "estabilizado em {time} (mediana)",
+        "starLost": "Estrela perdida",
+        "frames": "frame | frames",
+        "findings": "Problemas",
+        "findingsSub": "graves / a ver",
+        "hints": {
+          "guided": "Quanto tempo o guiador guiou nesta noite, somado pelas suas sessões (uma sessão vai do início ao fim da guiagem; as calibrações não contam).",
+          "dithers": "Quantas vezes o guiador fez dither e quanto tempo levou, após um dither, até a estrela voltar ao limite de estabilização (mediana). Uma estabilização lenta custa tempo de exposição entre imagens.",
+          "starLost": "Frames de guiagem em que o guiador não encontrou uma estrela guia utilizável e por isso não enviou correção. Alguns frames isolados são inofensivos; séries longas significam nuvens, orvalho, uma estrela se afastando ou uma montagem que se moveu.",
+          "findings": "Momentos marcados pela análise: graves (vermelho) e a ver (âmbar). Aparecem em «A ver» e são desenhados como triângulos na vista geral e no gráfico de guiagem."
+        }
+      },
+      "grade": {
+        "good": "Boa",
+        "fair": "Razoável",
+        "poor": "Fraca",
+        "bad": "Má",
+        "lost": "Estrela perdida"
+      },
+      "overview": {
+        "title": "Vista da noite",
+        "aria": "Qualidade da guiagem ao longo da noite: o RMS móvel em cada momento, colorido face ao RMS típico da noite",
+        "hint": "Arraste para escolher um intervalo, arraste a moldura para movê-la, toque em uma sessão para mostrá-la, toque duas vezes para a noite inteira.",
+        "rolling": "RMS móvel",
+        "lightFrame": "Light frame {seconds} s",
+        "barsAre": "Barras: RMS móvel"
+      },
+      "chart": {
+        "title": "Guiagem",
+        "pulses": "Pulsos",
+        "free": "Sem correções",
+        "freeHint": "Para onde a estrela teria ido sem os pulsos de guiagem (estimado a partir dos pulsos e das taxas de calibração; recomeça em cada dither). Mostra a deriva própria e o erro periódico da montagem.",
+        "earlier": "Antes",
+        "later": "Depois",
+        "zoomIn": "Aproximar",
+        "zoomOut": "Afastar",
+        "whole": "Noite inteira",
+        "hint": "Passe o ponteiro ou toque no gráfico para ler um frame e os seus marcadores. Arraste sobre ele (ou faça pinça) para aproximar, role para zoom, duplo clique para a noite inteira.",
+        "dropped": "Sem estrela",
+        "dither": "Dither",
+        "starLost": "Estrela perdida",
+        "exposures": "Light frames",
+        "rms": "RMS",
+        "rmsLine": "RMS (30 frames)",
+        "legendFindings": "A ver",
+        "ditherBy": "Dither de {dx}, {dy} px",
+        "exposureAt": "Light frame {seconds} s, {filter}: RMS {rms}"
+      },
+      "stats": {
+        "title": "Intervalo escolhido",
+        "excludeSettling": "Sem estabilização",
+        "frames": "{count} frame | {count} frames",
+        "empty": "Não há passos de guiagem neste intervalo.",
+        "total": "Total",
+        "peak": "Pico",
+        "mean": "Desvio médio",
+        "drift": "Deriva",
+        "pulses": "Frames com pulso",
+        "limited": "Pulsos no limite",
+        "polar": "Alinhamento polar",
+        "polarUnknown": "precisa de ≥ 5 min",
+        "oscillation": "Oscilação RA",
+        "decReversals": "Inversões Dec",
+        "starLost": "Frames sem estrela",
+        "settling": "Frames de estabilização",
+        "snr": "SNR da estrela (mediana)",
+        "totalTitle": "RMS total",
+        "raTitle": "RMS RA",
+        "decTitle": "RMS Dec",
+        "hints": {
+          "excludeSettling": "Deixa de fora os frames após um dither até o guiador indicar a estrela estabilizada, como fazem o PHD2 e o gráfico de guiagem ao vivo. Nessa altura a estrela é movida de propósito, por isso esses frames não dizem nada sobre quão bem é mantida.",
+          "total": "Quanto a estrela se afastou da sua posição média, RA e Dec juntos (a raiz de RMS RA² + RMS Dec²). É o número com que normalmente se compara a guiagem. Como regra prática, as estrelas ficam redondas enquanto estiver abaixo de cerca de metade a uma vez a escala de pixel da câmera de imagem (″/px). Tal como no PHD2, é medido em torno da média, por isso um desvio constante (ver «Desvio médio») não conta.",
+          "ra": "O RMS do erro em RA sozinho, em torno da sua média. A RA transporta o erro periódico da montagem e a maioria das rajadas de vento.",
+          "dec": "O RMS do erro em Dec sozinho, em torno da sua média. Um RMS Dec alto com um RMS RA baixo aponta muitas vezes para backlash em Dec, um mau alinhamento polar ou um cabo.",
+          "peak": "O maior erro individual neste intervalo, com o seu sinal. Um único pico grande é uma rajada, um prendimento ou um salto; picos que voltam regularmente sugerem erro periódico ou oscilação.",
+          "mean": "O erro médio neste intervalo. Idealmente perto de 0: em média a estrela estava na posição de bloqueio. Um desvio constante significa que o guiador ficava atrás de uma deriva (movimento mínimo grande demais, agressividade baixa, Dec guiada só em um sentido). Sozinho não desfoca as estrelas, isso faz o RMS, mas um grande mostra que o guiador não acompanha.",
+          "drift": "A rapidez com que a montagem se moveu sozinha, por minuto: o declive do movimento «sem correções», ajustado entre dithers. Uma deriva constante em Dec vem do erro de alinhamento polar; uma deriva em RA de uma taxa de seguimento ligeiramente errada ou de flexão. Estimada a partir dos pulsos e das taxas de calibração.",
+          "pulses": "A proporção de frames de guiagem em que o guiador enviou uma correção nesse eixo. Valores muito altos com uma oscilação RA alta significam que persegue o seeing.",
+          "limited": "Correções que atingiram a duração máxima de pulso. Significam que a montagem não conseguiu acompanhar (um salto grande, um prendimento, uma calibração errada) ou que a estrela se perdeu e foi reencontrada.",
+          "polar": "O erro de alinhamento polar estimado a partir da deriva em Dec, em minutos de arco: 3,8 × deriva (″/min) ÷ cos(Dec), a fórmula do Guiding Assistant do PHD2. Precisa de uma sessão de pelo menos 5 minutos e de um alvo afastado do polo. Uma estimativa grosseira; uma rotina de alinhamento polar é mais exata.",
+          "oscillation": "A proporção de frames em que o erro em RA muda de sinal de um frame para o seguinte. Cerca de 0,5 é seeing normal; bem acima (0,65 ou mais) as correções RA são fortes demais e empurram a estrela para a frente e para trás.",
+          "decReversals": "Quantas vezes as correções em Dec mudaram de sentido (de norte para sul ou ao contrário). Cada inversão tem de absorver o backlash de Dec; muitas, junto com um RMS Dec grande, apontam para backlash.",
+          "starLost": "Frames sem estrela guia utilizável neste intervalo; não foi enviada correção para eles.",
+          "settling": "Frames deste intervalo em que o guiador estabilizava após um dither. Ficam fora das estatísticas enquanto «Sem estabilização» estiver ligado.",
+          "snr": "A relação sinal/ruído da estrela guia, mediana no intervalo. As quedas apontam para nuvens, orvalho ou neblina; abaixo de cerca de 10 o guiador perde a estrela facilmente."
+        }
+      },
+      "scatter": {
+        "title": "Alvo",
+        "radius": "Círculo RMS {value}",
+        "hint": "Cada passo de guiagem do intervalo, o mais recente o mais brilhante. O círculo tracejado é o RMS total.",
+        "outside": "{count} passo fica fora do gráfico. | {count} passos ficam fora do gráfico."
+      },
+      "findings": {
+        "title": "A ver",
+        "intro": "Momentos que a análise destacou, medidos face aos valores típicos desta noite. São os triângulos na vista geral e no gráfico de guiagem. Toque em um para aproximar ali.",
+        "filter": "Mostrar",
+        "filters": {
+          "problems": "Problemas",
+          "all": "Tudo"
+        },
+        "times": "{count}×",
+        "none": "Nada neste registro.",
+        "noProblems": "Nenhum problema encontrado. A guiagem parece estável durante toda a noite.",
+        "kinds": {
+          "starLost": "Estrela perdida",
+          "badStretch": "Troço agitado",
+          "jump": "Salto",
+          "clouds": "Estrela enfraquecida",
+          "settle": "Estabilização",
+          "pulseLimit": "Limite de pulso",
+          "alert": "Alerta",
+          "flip": "Meridian flip",
+          "gap": "Pausa",
+          "param": "Definição alterada",
+          "calibration": "Calibração",
+          "incident": "Incidente"
+        },
+        "detail": {
+          "starLost": "{frames} frame sem estrela utilizável durante {duration}. | {frames} frames sem estrela utilizável durante {duration}.",
+          "badStretch": "RMS até {rms}, {ratio}× o típico da noite de {typical}, durante {duration}.",
+          "jump": "Erro em {axis} de {value} em um frame (típico {typical}): uma rajada, um cabo ou a montagem.",
+          "clouds": "O SNR da estrela desceu para {snr} (normalmente {typical}) durante {duration}: nuvens, orvalho ou a estrela se afastando.",
+          "settleFailed": "A estabilização falhou após {duration}.",
+          "settleSlow": "A estabilização demorou {duration} (normalmente {typical}).",
+          "pulseLimit": "{frames} pulso com a duração máxima: a montagem não acompanhou, ou a estrela estava perdida. | {frames} pulsos com a duração máxima: a montagem não acompanhou, ou a estrela estava perdida.",
+          "flip": "Lado do pilar {from} → {to}.",
+          "gap": "Guiagem parada durante {duration}.",
+          "calibration": "Calibrado com {steps} passo. | Calibrado com {steps} passos.",
+          "calibrationFailed": "A calibração falhou.",
+          "incident": "Causa provável: {cause}."
+        },
+        "arcsec": "{value}″",
+        "px": "{value} px"
+      },
+      "spectrum": {
+        "title": "Períodos",
+        "source": "Sinal",
+        "sources": {
+          "raFree": "RA montagem",
+          "ra": "RA guiada",
+          "dec": "Dec guiada"
+        },
+        "hints": {
+          "raFree": "O movimento em RA sem as correções: os picos são o erro periódico da montagem, a linha tracejada o período do seu sem-fim.",
+          "ra": "O que ficou após a guiagem: um pico aqui é erro periódico que a guiagem não apanhou, ou uma oscilação.",
+          "dec": "O que ficou em Dec: os picos vêm muitas vezes do vento, de cabos ou de um ventilador."
+        },
+        "tooShort": "Escolha pelo menos {minutes} minuto de guiagem. | Escolha pelo menos {minutes} minutos de guiagem.",
+        "peak": "Mais forte: {period}, {amplitude}",
+        "worm": "Sem-fim {period}",
+        "amplitude": "{amplitude}"
+      },
+      "sessions": {
+        "title": "Sessões",
+        "calibration": "Calibração",
+        "failed": "falhou",
+        "details": "Detalhes",
+        "drops": "{count} perdido | {count} perdidos",
+        "pier": {
+          "East": "Leste",
+          "West": "Oeste"
+        },
+        "end": {
+          "stopped": "Parada",
+          "closed": "Registro fechado",
+          "truncated": "O registro termina aqui",
+          "complete": "Concluída",
+          "failed": "Falhou"
+        },
+        "facts": {
+          "profile": "Perfil",
+          "camera": "Câmera de guiagem",
+          "scale": "Escala de pixel",
+          "mount": "Montagem",
+          "raAlgorithm": "Algoritmo RA",
+          "decAlgorithm": "Algoritmo Dec",
+          "decMode": "Modo de guiagem Dec",
+          "backlash": "Comp. de backlash",
+          "off": "desligada",
+          "maxPulse": "Pulso máx. RA / Dec",
+          "calibration": "Calibração",
+          "guideSpeed": "Velocidade de guiagem RA / Dec",
+          "dithers": "Dithers",
+          "frames": "Frames",
+          "lost": "perdidos",
+          "endReason": "Fim",
+          "calStep": "Passo / distância",
+          "raLeg": "Troço RA",
+          "decLeg": "Troço Dec",
+          "ortho": "Erro de ortogonalidade",
+          "pointing": "Apontamento",
+          "exposure": "{seconds} s",
+          "gain": "ganho {gain}",
+          "framesValue": "{frames} ({lost} perdidos)",
+          "legValue": "{angle}° · {count} passo | {angle}° · {count} passos"
+        },
+        "target": "RA {hours}h{minutes} · Dec {dec}°"
+      },
+      "exposures": {
+        "title": "Light frames",
+        "intro": "A guiagem durante cada light frame desta sessão PINS, avaliada face ao seu RMS típico de {typical}. Toque em um para vê-lo.",
+        "sort": "Ordenar",
+        "sorts": {
+          "time": "Por hora",
+          "worst": "Piores primeiro"
+        },
+        "time": "Início",
+        "filter": "Filtro",
+        "rms": "RMS",
+        "peak": "Pico"
+      }
     }
   },
   "pinsDevices": {
@@ -8853,6 +9215,10 @@
       "status": "Status",
       "error": "Distância de Erro",
       "rotation": "Rotação"
+    },
+    "manualRotator": {
+      "currentPosition": "Posição atual",
+      "targetPosition": "Posição alvo"
     }
   },
   "loading": "carregando",

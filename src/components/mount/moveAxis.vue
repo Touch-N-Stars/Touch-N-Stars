@@ -28,7 +28,7 @@
           :class="buttonClass('north')"
         >
           <ArrowUpCircleIcon
-            :class="mountStore.lastDirection === 'north' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'north' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -55,7 +55,7 @@
           :class="buttonClass('west')"
         >
           <ArrowLeftCircleIcon
-            :class="mountStore.lastDirection === 'west' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'west' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -69,7 +69,7 @@
         >
           <StopCircleIcon
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-            :class="mountStore.lastDirection === '' ? 'text-red-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === '' ? 'text-status-danger' : 'text-content-muted'"
           />
         </button>
         <button
@@ -92,7 +92,7 @@
           :class="buttonClass('east')"
         >
           <ArrowRightCircleIcon
-            :class="mountStore.lastDirection === 'east' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'east' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -119,7 +119,7 @@
           :class="buttonClass('south')"
         >
           <ArrowDownCircleIcon
-            :class="mountStore.lastDirection === 'south' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'south' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -128,7 +128,7 @@
            connecting overlay below, which keeps its z-50 precedence on the outer container. -->
       <div
         v-if="store.mountIsParked && mountStore.wsIsConnected"
-        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40 pointer-events-none"
+        class="absolute inset-0 bg-surface-1/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40 pointer-events-none"
       >
         <!-- The backdrop stays click-through so the always-enabled stop button below it
              keeps working; the direction buttons underneath are disabled anyway. -->
@@ -145,7 +145,7 @@
       </div>
     </div>
     <div
-      class="flex flex-col bg-gray-900/80 w-full border border-gray-300 p-1 sm:p-2 mt-1 rounded-xl gap-1"
+      class="flex flex-col bg-surface-1/80 w-full border border-line-strong p-1 sm:p-2 mt-1 rounded-xl gap-1"
     >
       <SetSlewRate v-if="!store.isPINS" />
       <setSlewRatePins v-else />
@@ -154,12 +154,12 @@
     <!-- Loading Overlay -->
     <div
       v-if="!mountStore.wsIsConnected"
-      class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-50"
+      class="absolute inset-0 bg-surface-1/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-50"
     >
       <div class="flex flex-col items-center space-y-3">
         <!-- Spinner -->
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
-        <p class="text-gray-300 text-sm">{{ $t('luckycapture.mountConnecting') }}</p>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+        <p class="text-content text-sm">{{ $t('luckycapture.mountConnecting') }}</p>
       </div>
     </div>
   </div>

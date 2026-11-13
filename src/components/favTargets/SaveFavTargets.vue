@@ -117,7 +117,7 @@ function computePanels() {
       const rawX = dc * stepRa;
       const rawY = dr * stepDec;
       // Im Uhrzeigersinn rotieren, passend zur visuellen Kamera-Rotation in
-      // FramingAssitantImg (SVG rotiert clockwise um rotationAngleVisu).
+      // FramingAssistantImg (SVG rotiert clockwise um rotationAngleVisu).
       const rotX = rawX * cosT + rawY * sinT;
       const rotY = -rawX * sinT + rawY * cosT;
       const panelRA = centerRA - rotX / cosDec;
@@ -139,7 +139,7 @@ async function confirmSave() {
   const baseName = nameInput.value.trim();
 
   if (isMosaic.value) {
-    // Panel-Koordinaten kommen aus dem Store (von FramingAssitantImg aus den
+    // Panel-Koordinaten kommen aus dem Store (von FramingAssistantImg aus den
     // tatsächlich gerenderten Pixelpositionen berechnet) und stimmen damit exakt
     // mit dem Overlay überein. Fallback auf lokale Berechnung, falls leer.
     const framingStore = useFramingStore();

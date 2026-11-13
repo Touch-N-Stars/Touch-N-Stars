@@ -57,75 +57,35 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
-
-const store = apiStore();
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const scaleOptions = ['ARCSECONDS', 'PIXELS'];
 const maxYOptions = [1, 2, 4, 8, 16, 32];
 const historySizeOptions = [50, 100, 200, 400];
 
-const guiderScale = ref('');
-const maxY = ref(4);
-const historySize = ref(100);
-
-const guiderScaleStatusClass = ref('');
-const maxYStatusClass = ref('');
-const historySizeStatusClass = ref('');
-
-onMounted(() => {
-  guiderScale.value = store.profileInfo?.GuiderSettings?.PHD2GuiderScale || 'ARCSECONDS';
-  maxY.value = store.profileInfo?.GuiderSettings?.MaxY || 4;
-  historySize.value = store.profileInfo?.GuiderSettings?.PHD2HistorySize || 100;
+// An empty or zero profile value falls back to PHD2's default, as before.
+const {
+  value: guiderScale,
+  save: onGuiderScaleChange,
+  glowClass: guiderScaleStatusClass,
+} = useProfileSetting('GuiderSettings-PHD2GuiderScale', {
+  fallback: 'ARCSECONDS',
+  fromProfile: (v) => v || 'ARCSECONDS',
 });
-
-const onGuiderScaleChange = async () => {
-  try {
-    const response = await apiService.profileChangeValue(
-      'GuiderSettings-PHD2GuiderScale',
-      guiderScale.value
-    );
-    if (response.Success) {
-      guiderScaleStatusClass.value = 'glow-green';
-      setTimeout(() => {
-        guiderScaleStatusClass.value = '';
-      }, 1000);
-    }
-  } catch (error) {
-    console.error('Error changing guider scale:', error);
-  }
-};
-
-const onMaxYChange = async () => {
-  try {
-    const response = await apiService.profileChangeValue('GuiderSettings-MaxY', maxY.value);
-    if (response.Success) {
-      maxYStatusClass.value = 'glow-green';
-      setTimeout(() => {
-        maxYStatusClass.value = '';
-      }, 1000);
-    }
-  } catch (error) {
-    console.error('Error changing max Y:', error);
-  }
-};
-
-const onHistorySizeChange = async () => {
-  try {
-    const response = await apiService.profileChangeValue(
-      'GuiderSettings-PHD2HistorySize',
-      historySize.value
-    );
-    if (response.Success) {
-      historySizeStatusClass.value = 'glow-green';
-      setTimeout(() => {
-        historySizeStatusClass.value = '';
-      }, 1000);
-    }
-  } catch (error) {
-    console.error('Error changing history size:', error);
-  }
-};
+const {
+  value: maxY,
+  save: onMaxYChange,
+  glowClass: maxYStatusClass,
+} = useProfileSetting('GuiderSettings-MaxY', {
+  fallback: 4,
+  fromProfile: (v) => v || 4,
+});
+const {
+  value: historySize,
+  save: onHistorySizeChange,
+  glowClass: historySizeStatusClass,
+} = useProfileSetting('GuiderSettings-PHD2HistorySize', {
+  fallback: 100,
+  fromProfile: (v) => v || 100,
+});
 </script>

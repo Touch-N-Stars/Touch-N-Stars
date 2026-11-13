@@ -18,25 +18,11 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
-const store = apiStore();
-const setValue = ref(0);
-
-async function updateSetting() {
-  let value = String(setValue.value).replace(',', '.');
-  try {
-    const response = await apiService.profileChangeValue('ImageSettings-BlackClipping', value);
-    if (!response.Success) return;
-  } catch (error) {
-    console.log('Error save setting');
-  }
-}
-
-onMounted(() => {
-  setValue.value = store.profileInfo.ImageSettings.BlackClipping;
+const { value: setValue, save: updateSetting } = useProfileSetting('ImageSettings-BlackClipping', {
+  fallback: 0,
+  toProfile: (v) => String(v).replace(',', '.'),
 });
 </script>

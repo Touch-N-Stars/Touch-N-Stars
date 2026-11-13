@@ -8,7 +8,7 @@
     <label> {{ $t('components.dome.control.sync') }}</label>
     <div
       v-if="store.domeInfo.Slewing"
-      class="ml-2 w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+      class="ml-2 w-6 h-6 border-4 border-accent border-t-transparent rounded-full animate-spin"
     ></div>
   </button>
 </template>

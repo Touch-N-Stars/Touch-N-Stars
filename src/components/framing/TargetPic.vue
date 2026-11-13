@@ -6,7 +6,7 @@
       <!-- Button unten rechts -->
       <button
         @click="showModal = true"
-        class="absolute bottom-2 right-2 bg-gray-800 text-gray-400 w-8 h-8 rounded-full shadow-md hover:bg-gray-600 transition"
+        class="absolute bottom-2 right-2 bg-surface-2 text-content-muted w-8 h-8 rounded-full shadow-md hover:bg-surface-3 transition"
       >
         ?
       </button>

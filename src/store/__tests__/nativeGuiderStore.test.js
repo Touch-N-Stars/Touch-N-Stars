@@ -15,6 +15,15 @@ const { useSettingsStore } = await import('@/store/settingsStore');
 const { apiStore } = await import('@/store/store');
 const { default: apiService } = await import('@/services/apiService');
 
+// Several tests reach loadHistory without stubbing it. The real calls would
+// go out to the fake host and keep the process alive until their 10s timeout.
+// Tests that care override these via stubApi, which restores these defaults.
+Object.assign(apiService, {
+  getNativeGuiderSteps: async () => [],
+  getNativeGuiderAlerts: async () => [],
+  getNativeGuiderCalibration: async () => null,
+});
+
 function setup(t) {
   resetSockets();
   freshPinia();
@@ -426,6 +435,23 @@ test('startCoach passes the options and returns the localized rejection code', a
   assert.equal(store.coachPending, null);
 });
 
+test('startCoach passes a slew to the calibration position along', async (t) => {
+  const store = setup(t);
+  const sent = [];
+  stubApi(t, {
+    startNativeGuiderCoach: async (...args) => {
+      sent.push(args);
+      return { action: 'coach-start', pending: true, status: { phase: 'Idle' } };
+    },
+    getNativeGuiderStatus: async () => null,
+  });
+
+  assert.equal((await store.startCoach({ steps: ['Drift'] }, { slew: 'stay' })).ok, true);
+  assert.equal((await store.startCoach({})).ok, true);
+
+  assert.deepEqual(sent, [[{ steps: ['Drift'] }, { slew: 'stay' }], [{}]]);
+});
+
 test('startCoach applies the accepted status', async (t) => {
   const store = setup(t);
   stubApi(t, {
@@ -821,6 +847,9 @@ test('an older status answer does not undo a newer state event or a newer poll',
     getNativeGuiderStatus: () => new Promise((resolve) => answers.push(resolve)),
   });
   const guiding = { available: true, connected: true, status: { state: 'Guiding' } };
+  // Event and request times compare at millisecond resolution: a frozen clock
+  // keeps the outcome independent of how fast the test runs.
+  t.mock.timers.enable({ apis: ['Date'], now: 1_000_000 });
 
   const first = store.refreshStatus();
   store.handleMessage({ type: 'state', payload: 'Stopped' });
@@ -828,6 +857,8 @@ test('an older status answer does not undo a newer state event or a newer poll',
   await first;
   assert.equal(store.state, 'Stopped', 'the state event after the request wins');
 
+  // The next polls are sent after the event.
+  t.mock.timers.tick(1);
   const older = store.refreshStatus();
   const newer = store.refreshStatus();
   answers[2]({ available: true, connected: true, status: { state: 'Looping' } });

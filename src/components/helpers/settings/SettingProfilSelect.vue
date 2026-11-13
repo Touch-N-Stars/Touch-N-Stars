@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col w-full border border-gray-500 p-1 rounded-lg">
-    <label class="text-sm sm:text-xs mb-2 text-gray-200">{{ $t(`${labelKey}`) }}</label>
+  <div class="flex flex-col w-full border border-line-strong p-1 rounded-lg">
+    <label class="text-sm sm:text-xs mb-2 text-content">{{ $t(`${labelKey}`) }}</label>
     <select
       v-model="value"
       @change="updateSetting"
@@ -16,8 +16,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const props = defineProps({
   labelKey: {
@@ -42,23 +41,15 @@ const props = defineProps({
   },
 });
 
-const value = ref('');
-const statusClass = ref('');
-
-async function updateSetting() {
-  try {
-    const response = await apiService.profileChangeValue(props.settingKey, value.value);
-    if (!response.Success) return;
-    statusClass.value = 'glow-green';
-  } catch (error) {
-    console.log('Error save setting');
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
-}
-
-onMounted(() => {
-  value.value = props.modelValue;
+const {
+  value,
+  save,
+  glowClass: statusClass,
+} = useProfileSetting(() => props.settingKey, {
+  source: () => props.modelValue,
 });
+
+function updateSetting() {
+  save();
+}
 </script>

@@ -74,7 +74,7 @@
                 />
                 <!-- Progress Circle -->
                 <path
-                  class="fill-none stroke-green-500 stroke-[2.8]"
+                  class="fill-none stroke-status-ok stroke-[2.8]"
                   :style="{
                     strokeDasharray: cameraStore.exposureProgress + ', 100',
                     transform: 'rotate(-90deg)',
@@ -88,7 +88,7 @@
 
               <CameraIcon
                 class="icon camera-icon force-visible"
-                :class="store.cameraInfo.IsExposing ? 'text-green-500' : 'text-white'"
+                :class="store.cameraInfo.IsExposing ? 'text-status-ok' : 'text-white'"
               />
             </div>
             <span class="nav-label">{{ t('nav.camera') }}</span>
@@ -128,10 +128,10 @@
                   !store.mountInfo.Connected
                     ? 'text-white'
                     : store.mountInfo.AtPark
-                      ? 'text-red-500'
+                      ? 'text-status-danger'
                       : !store.mountInfo.TrackingEnabled
-                        ? 'text-yellow-500'
-                        : 'text-green-500',
+                        ? 'text-status-warn'
+                        : 'text-status-ok',
                 ]"
               >
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -145,7 +145,7 @@
               <!-- Disconnect Icon - positioned below the mount icon -->
               <LinkSlashIcon
                 v-if="!store.mountInfo.Connected"
-                class="absolute -bottom-2 -right-2 w-4 h-4 text-red-500 bg-gray-800 rounded-full p-0.5"
+                class="absolute -bottom-2 -right-2 w-4 h-4 text-status-danger bg-surface-2 rounded-full p-0.5"
               />
             </div>
             <span class="nav-label">{{ t('nav.mount') }}</span>
@@ -217,9 +217,9 @@
               class="icon force-visible"
               :class="[
                 store.flatdeviceInfo.LightOn
-                  ? 'text-yellow-500'
+                  ? 'text-status-warn'
                   : store.flatdeviceInfo.CoverState === 'Closed'
-                    ? 'text-red-500'
+                    ? 'text-status-danger'
                     : 'text-white',
               ]"
             />
@@ -266,7 +266,7 @@
               <!-- Disconnect Icon - positioned below the filter wheel icon -->
               <LinkSlashIcon
                 v-if="!store.filterInfo.Connected"
-                class="absolute -bottom-2 -right-2 w-4 h-4 text-red-500 bg-gray-800 rounded-full p-0.5"
+                class="absolute -bottom-2 -right-2 w-4 h-4 text-status-danger bg-surface-2 rounded-full p-0.5"
               />
             </div>
             <span class="nav-label">{{ t('nav.filterWheel') }}</span>
@@ -311,7 +311,7 @@
               stroke-linejoin="round"
               :class="[
                 'icon force-visible icon-tabler icons-tabler-outline icon-tabler-viewfinder',
-                store.guiderInfo.State == 'Guiding' ? 'text-green-500' : 'text-white',
+                store.guiderInfo.State == 'Guiding' ? 'text-status-ok' : 'text-white',
               ]"
             >
               <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -341,7 +341,7 @@
           >
             <ListBulletIcon
               class="icon force-visible"
-              :class="sequenceStore.sequenceRunning ? 'text-green-500' : 'text-white'"
+              :class="sequenceStore.sequenceRunning ? 'text-status-ok' : 'text-white'"
             />
             <span class="nav-label">{{ t('nav.sequence') }}</span>
           </router-link>
@@ -428,7 +428,7 @@
             :class="{ 'active-nav-button': store.showSkyAtlas }"
             @click="handleSkyViewClick"
           >
-            <SparklesIcon class="icon force-visible" />
+            <CassiopeiaIcon class="icon force-visible" />
             <span class="nav-label">{{ t('nav.skyView') }}</span>
           </router-link>
         </div>
@@ -511,11 +511,11 @@ import {
   Cog6ToothIcon,
   LightBulbIcon,
   AdjustmentsVerticalIcon,
-  SparklesIcon,
   InformationCircleIcon,
   LinkSlashIcon,
 } from '@heroicons/vue/24/outline';
 import CameraFramingIcon from '@/components/icons/CameraFramingIcon.vue';
+import CassiopeiaIcon from '@/components/icons/CassiopeiaIcon.vue';
 import PinsIcon from '@/components/icons/PinsIcon.vue';
 import { watch, computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -571,7 +571,7 @@ const touchedButton = ref(null);
 const iconsLoaded = ref(false);
 
 // Fixed frame surface color, independent of the selected instance.
-const activeInstanceColor = 'bg-gray-900/95';
+const activeInstanceColor = 'bg-surface-1/95';
 
 // Orientierung-spezifische CSS-Klassen
 const orientationClasses = computed(() => ({
@@ -808,20 +808,20 @@ watch(
 /* Navigation Buttons - Base Styles with improved rendering */
 .nav-button {
   @apply w-10 h-10 lg:w-12 lg:h-12 
-    border border-slate-600/30 
-    bg-slate-800/40 
-    text-gray-300 
+    border border-line-strong/30 
+    bg-surface-2/40 
+    text-content 
     rounded-full 
-    hover:bg-slate-700/60
-    hover:border-slate-500/50
-    hover:text-gray-200
+    hover:bg-surface-3/60
+    hover:border-line-strong/50
+    hover:text-white
     backdrop-blur-sm
     transition-all
     duration-200
     ease-out
     focus:outline-none 
     focus:ring-2 
-    focus:ring-cyan-500/40;
+    focus:ring-accent/40;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -867,26 +867,26 @@ watch(
 
 /* Touch feedback states */
 .nav-button.touch-active {
-  @apply bg-slate-600/80 
-    border-slate-400/70 
+  @apply bg-surface-3/80 
+    border-line-strong/70 
     transform scale-95;
   transition: all 0.1s ease-out;
 }
 
 /* Active Navigation Button Styles */
 .active-nav-button {
-  @apply bg-cyan-600/80 
-    border-cyan-500/60 
+  @apply bg-accent-action/80 
+    border-accent/60 
     text-white 
     shadow-lg
-    shadow-cyan-500/25;
+    shadow-accent/25;
 }
 
 .active-nav-button:hover {
-  @apply bg-cyan-500/90 
-    border-cyan-400/70 
+  @apply bg-accent/90 
+    border-accent/70 
     shadow-xl
-    shadow-cyan-500/30;
+    shadow-accent/30;
 }
 
 /* Icon Styles - FORCE VISIBILITY */
@@ -987,16 +987,16 @@ watch(
 }
 
 /* Status Indicator Colors for active buttons */
-.active-nav-button .icon.text-green-500 {
-  @apply text-green-400;
+.active-nav-button .icon.text-status-ok {
+  @apply text-status-ok;
 }
 
-.active-nav-button .icon.text-yellow-500 {
-  @apply text-yellow-400;
+.active-nav-button .icon.text-status-warn {
+  @apply text-status-warn;
 }
 
-.active-nav-button .icon.text-red-500 {
-  @apply text-red-400;
+.active-nav-button .icon.text-status-danger {
+  @apply text-status-danger;
 }
 
 /* Smooth transitions for all states */
@@ -1183,7 +1183,7 @@ watch(
 
 /* Fade gradients build on --nav-fade-color, which updateNavFadeColor() sets to
    the container's real computed background at runtime (instance colors vary).
-   Fallback matches the default bg-gray-900/95 nav background. */
+   Fallback matches the default bg-surface-1/95 nav background. */
 .scroll-fade {
   --fade: var(--nav-fade-color, rgba(17, 24, 39, 0.95));
 }

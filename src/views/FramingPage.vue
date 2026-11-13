@@ -3,53 +3,53 @@
     <div class="framing-stage-wrapper absolute inset-0 flex items-center justify-center">
       <Suspense>
         <template #default>
-          <FramingAssitantImg :key="framingStore.framingReloadKey" />
+          <FramingAssistantImg :key="framingStore.framingReloadKey" />
         </template>
         <template #fallback>
-          <div class="text-gray-300 p-4">{{ $t('common.loading') }}</div>
+          <div class="text-content p-4">{{ $t('common.loading') }}</div>
         </template>
       </Suspense>
     </div>
 
     <div
       v-if="hasMissingEquipmentSettings"
-      class="missing-settings-warning absolute top-2 left-1/2 -translate-x-1/2 max-w-xl w-[min(100%,40rem)] bg-yellow-900/90 border border-yellow-600 text-yellow-100 text-sm rounded-lg shadow-lg p-3 backdrop-blur-sm flex items-start gap-2"
+      class="missing-settings-warning absolute top-2 left-1/2 -translate-x-1/2 max-w-xl w-[min(100%,40rem)] bg-surface-1/95 border border-status-warn/50 text-content text-sm rounded-lg shadow-lg p-3 backdrop-blur-sm flex items-start gap-2"
     >
-      <ExclamationTriangleIcon class="w-5 h-5 shrink-0 text-yellow-300 mt-0.5" />
+      <ExclamationTriangleIcon class="w-5 h-5 shrink-0 text-status-warn mt-0.5" />
       <span>{{ $t('components.framing.missingEquipmentSettings') }}</span>
     </div>
 
     <button
       v-if="!controlsVisible"
-      class="controls-toggle absolute bottom-2 left-1/2 -translate-x-1/2 bg-gray-900/80 border border-gray-700 rounded-full shadow-lg p-2 backdrop-blur-sm hover:bg-gray-800"
+      class="controls-toggle absolute bottom-2 left-1/2 -translate-x-1/2 bg-surface-1/80 border border-line rounded-full shadow-lg p-2 backdrop-blur-sm hover:bg-surface-2"
       @click="controlsVisible = true"
     >
-      <ChevronUpIcon class="w-5 h-5 text-gray-200" />
+      <ChevronUpIcon class="w-5 h-5 text-content" />
     </button>
 
     <div
       v-show="controlsVisible"
-      class="controls-overlay absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col w-[min(100%,22rem)] gap-1.5 bg-gray-900/85 border border-gray-700 rounded-lg shadow-lg p-2 backdrop-blur-sm max-h-[calc(100%-1rem)] overflow-y-auto"
+      class="controls-overlay absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col w-[min(100%,22rem)] gap-1.5 bg-surface-1/85 border border-line rounded-lg shadow-lg p-2 backdrop-blur-sm max-h-[calc(100%-1rem)] overflow-y-auto"
       :class="{ 'controls-peek': rulerScrubbing }"
     >
       <!-- Row 1: Icon-Leiste -->
       <div class="flex items-center gap-1.5">
         <button
           class="p-1.5 rounded transition-colors"
-          :class="searchVisible ? 'text-cyan-400' : 'text-gray-400 hover:text-white'"
+          :class="searchVisible ? 'text-accent' : 'text-content-muted hover:text-white'"
           @click="searchVisible = !searchVisible"
         >
           <MagnifyingGlassIcon class="w-6 h-6" />
         </button>
         <button
           class="p-1.5 rounded transition-colors"
-          :class="settingsOpen ? 'text-cyan-400' : 'text-gray-400 hover:text-white'"
+          :class="settingsOpen ? 'text-accent' : 'text-content-muted hover:text-white'"
           @click="settingsOpen = !settingsOpen"
         >
           <Cog6ToothIcon class="w-6 h-6" />
         </button>
         <button
-          class="p-1.5 text-gray-400 hover:text-white ml-auto"
+          class="p-1.5 text-content-muted hover:text-white ml-auto"
           @click="controlsVisible = false"
         >
           <ChevronDownIcon class="w-4 h-4" />
@@ -73,7 +73,7 @@
             <li
               v-for="(item, index) in searchResults"
               :key="index"
-              class="p-2 text-sm hover:bg-blue-800 cursor-pointer"
+              class="p-2 text-sm hover:bg-surface-3 cursor-pointer"
               @click="selectTarget(item)"
             >
               {{ item.Name }}
@@ -127,7 +127,7 @@
       <getImageRotation />
 
       <!-- Ausklappbare Einstellungen -->
-      <div v-show="settingsOpen" class="pt-1.5 border-t border-gray-700/60">
+      <div v-show="settingsOpen" class="pt-1.5 border-t border-line/60">
         <MosaicControls />
       </div>
     </div>
@@ -163,8 +163,8 @@ const framingStore = useFramingStore();
 const settingsStore = useSettingsStore();
 const appStore = apiStore();
 
-const FramingAssitantImg = defineAsyncComponent(
-  () => import('@/components/framing/FramingAssitantImg.vue')
+const FramingAssistantImg = defineAsyncComponent(
+  () => import('@/components/framing/FramingAssistantImg.vue')
 );
 
 const searchQuery = ref('');

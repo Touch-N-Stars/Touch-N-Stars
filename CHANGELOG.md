@@ -5,14 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App6.5.0 - beta 25] - 2026-11-06
+## [App6.5.0 - beta 26] - 2026-11-13
 
 ### Added
 
+- PINS alarm: PINS now beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current or a dew heater without data, and a full disk. It is on by default and sounds only while a sequence runs, except for PowerBox over current and dew heater alarms. Needs the updated Touch'N'Stars plugin; with an older plugin the PowerBox no longer beeps on events.
+- PINS alarm: The new Alarm section under PINS-Devices, Configuration, PowerBox switches the alarm on or off, chooses the events, sets volume and length, lists entries that never beep and shows the recent alarms. A test beep reports whether the PowerBox really beeped, and the alarm can be muted for 30 minutes, also from the error notification.
+- Flat assistant: While flats or dark flats are being taken, the status now shows the exposure time the assistant chose next to the last measured ADU, so there is no need to switch to the Monitor tab to see it.
+
+### Removed
+
+- PINS: The app no longer beeps the PowerBox itself on warnings and errors; PINS does it now (see Added). The earlier beep settings of the app are not taken over.
+
+## [App6.5.0 - beta 25] - 2026-11-12
+
+### Added
+
+- MLAstro RPA (plugin): Connect an MLAstro One RPA to PINS over USB or Wi-Fi, nudge altitude and azimuth in fixed steps, and let TPPA correct the polar alignment automatically. It needs the MLAstro RPA plugin on PINS, which the app offers to install. The page warns that moving the RPA is not blocked during exposures, guiding or a running sequence, and a command that gets no answer in time is reported as possibly executed. Developed by @ydutertre.
+- Guide Log Viewer (PINS plugin): Reviews the guiding of any night from the native guider's guide logs, also with no equipment connected: a night overview coloured by guiding quality, the sessions, the moments worth a look with one tap to each of them, a zoomable guide graph with the total RMS, pulses, settling, dithers, lost stars and the light frames, statistics of any time range with an explanation for every value, a target plot, the periodic error of the mount and the calibrations. PHD2 guide logs can be opened from the device too. Needs the updated PINS and Touch'N'Stars plugin.
+- Native Guider (PINS): The Guiding Coach can also try shorter exposures (1 s and one halfway to the current exposure), since many mounts guide better with them. It needs the updated PINS guider.
+- Native Guider (PINS): A one-time tip suggests a shorter guide exposure when it is longer than 2 s.
+- Native Guider (PINS): The coach's start screen warns when the mount points close to the pole or low above the horizon, and can slew to a calibration position first. A slew is confirmed before the mount moves and is not offered while a sequence runs, the imaging camera exposes or the mount is already slewing. It needs the updated PINS guider and Touch'N'Stars plugin.
+- Native Guider (PINS): The RA worm can be given as its period in seconds instead of the wheel's tooth count. A period outside the 180 to 1200 s the guider takes is flagged.
 - Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
+- Native Guider (PINS): The guider's Settings tab now shows the settle settings (pixel tolerance, minimum settle time and timeout) in the Dither group, in Basic and Advanced. Until now they were only in the guider settings on the equipment page. A short note explains that the tolerance is in guide camera pixels and that the exposure starts anyway once the timeout runs out.
 
 ### Changed
 
+- Atlas: The Celestia Atlas button in the navigation bar now shows the W of Cassiopeia instead of the sparkles.
 - Interface: Dialogs now share one look across the app, including About, Log, Weather, the instance switcher and the favorites. More of them also close with the Escape key, and the small info dialogs close with a tap beside them.
 - Settings: All settings tabs now use the same cards, headings and colours as the rest of the app. The folder buttons next to path fields are larger and easier to tap.
 - TPPA: The polar alignment page and its settings now use the same cards and colours as the rest of the app. The two error dialogs fit on phone screens instead of being cut off at the sides, and they close with the Escape key.
@@ -21,18 +41,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: The PINS page, its network, services, system, INDI, software and upgrade tabs and their dialogs now use the same cards and colours as the rest of the app. The priority of a saved Wi-Fi network now has plus and minus buttons and opens the touch number pad, and the refresh buttons are larger and easier to tap.
 - Guider: The PHD2 guider page, its settings and the calibration assistant, calibration review, dark library and profile management dialogs now use the same cards and colours as the rest of the app. Calibrating is shown in the app's accent colour, like on the native guider page.
 - Focus: The focus page, its settings and the Hocus Focus aberration inspector, tilter, star detection and optimizer now use the same cards and colours as the rest of the app. The motor speed and USB capacity choices of PINS focusers are wide enough for their full names on phones.
+- Interface: The plate solving, meridian flip, manual rotator and autofocus dialogs opened by NINA, the notifications, the switches, the number fields with their touch number pad, the image viewer and the location sync question now use the same colours as the rest of the app. The three location sync choices are larger buttons.
+- Atlas: The atlas settings, the sky survey download, the catalogue filters and the about page now use the same colours as the rest of the app. The landscape source and the custom landscape fields are larger and easier to tap.
+- Interface: The dome, filter wheel, flat device, rotator, flat assistant, framing and sequence pages now use the same cards and colours as the rest of the app, and they show the same notice when their device is not connected.
+- Flats: The flat assistant with its sky flat, auto exposure, auto brightness and multi mode now uses the same cards and colours as the rest of the app. The zenith altitude choice is larger and easier to tap.
+- Framing: The framing image controls, the mosaic and rotation settings, the target search and the altitude chart now use the same cards and colours as the rest of the app.
+- Plate solving: The FITS file solver in framing, the atlas and the sequence target now shows its settings, progress and result in the same colours as the rest of the app.
+- Mount: The mount controls, the slew rate sliders, the slew and center options and the mount info now use the same colours as the rest of the app, and the mount shows the same notice as the other devices when it is not connected.
+- Camera: The camera settings, the cooler panel and the capture controls now use the same colours as the rest of the app; cooling, holding and warming keep their own colours.
+- Interface: The navigation bar, the connection screen at startup and the PINS upgrade and time warning dialogs now use the same colours as the rest of the app.
+- Interface: The flat device, filter wheel, rotator and dome controls and settings, the status bar with its progress panel, the instance switcher, the favourite targets, the session timeline, the plugin install dialog, the power dialog and the camera and guider steps of the setup wizard now use the same colours as the rest of the app. Resetting the rotator position uses the same red button as other stopping actions.
+- Native Guider (PINS): The "Frame processing slow" alert now appears only when guide frames stay slow for a minute. A single slow frame is shown as a separate, harmless note with an explanation. It needs the updated PINS guider. Developed by @aduffeck.
+- Logfile Collector (plugin): A failed upload now shows the status and the reason given by the server, for example a size limit, instead of only "Upload failed". Developed by @acocalypso.
 
 ### Fixed
 
 - TPPA: When the polar alignment runs in the dialog opened by NINA, its settings no longer open hidden behind that dialog.
 - TPPA: Until the first measurement arrives, errors show a question mark instead of an empty value, the error dialogs say they are waiting, and the circle no longer appears green without a result. The empty status frame is gone as well.
 - Camera, Focus and TPPA: The Drag and Show image labels are now translated.
+- Rotator: Under PINS, the manual rotator dialog now shows current and target position in the app language instead of always in English.
 - Monitor: The loading hint of the last image is now translated, and "No data available yet" is no longer shown in red like an error.
 - Equipment: The loading message shown while switching profiles is now translated.
 - PINS: The INDI registry editor now closes with the Escape key, like the other dialogs.
 - PINS: The hotspot no longer shows a Wi-Fi signal of 0 percent. It reports no signal, so the card now says the signal is unavailable.
 - PINS: After saving the hotspot settings, the result shows Yes or No instead of an untranslated text.
 - PINS: The swap size notes about a pending reboot and a successful save are now shown in the warning and success colours.
+- PINS: The rig network mode in the Wi-Fi card (automatic fallback or field hotspot, its status and the search for the rig after a switch) is now shown in the app language instead of always in English.
 
 ## [App6.5.0 - beta 24] - 2026-11-05
 

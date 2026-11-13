@@ -27,7 +27,7 @@
       <select
         v-if="settingsStore.flats.activeMode === 'single'"
         v-model="settingsStore.flats.selectedOption"
-        class="p-2 w-full border border-gray-500 rounded-lg bg-gray-800 text-white"
+        class="p-2 w-full border border-line-strong rounded-lg bg-surface-2 text-white"
       >
         <option value="AutoExposure">{{ $t('components.flatassistant.auto_exposure') }}</option>
         <option value="AutoBrightness">{{ $t('components.flatassistant.auto_brightness') }}</option>
@@ -50,7 +50,7 @@
           flatsStore.status.State === 'Finished' ||
           flatsStore.lastRun !== null
         "
-        class="flex flex-col w-full max-w-md space-y-2 mt-4 border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5"
+        class="flex flex-col w-full max-w-md space-y-2 mt-4 tns-card"
       >
         <getStatus />
         <LastImage />

@@ -127,7 +127,7 @@
           <span class="text-sm font-semibold uppercase tracking-wide text-content">
             {{ groupLabel(group.group) }}
             <span class="ml-1 text-xs font-normal normal-case text-content-faint">
-              {{ group.settings.length }}
+              {{ group.settings.length + (group.group === 'Dither' ? SETTLE_FIELD_COUNT : 0) }}
             </span>
           </span>
           <ChevronDownIcon
@@ -142,6 +142,14 @@
             :setting="setting"
             :compact="compact"
           />
+          <!-- Settle criteria: NINA profile settings, not the guider's own, so they are
+               shown in Basic too. They used to be reachable only from the equipment page. -->
+          <div v-if="group.group === 'Dither'" class="flex flex-col gap-2 py-3">
+            <p class="text-xs text-content-muted">
+              {{ t('components.guider.native.settings.settleHint') }}
+            </p>
+            <SettingsSettle embedded />
+          </div>
           <!-- The guide camera's device options belong to the camera group. Gain, offset and
                binning are left out: the guider has them as settings of its own above. -->
           <GuideCameraSettings
@@ -170,11 +178,12 @@ import { useI18n } from 'vue-i18n';
 import { ArrowPathIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useToastStore } from '@/store/toastStore';
-import { textOr, groupSettings, settingApplies } from '@/utils/nativeGuider';
+import { textOr, groupSettings, settingApplies, withGroup } from '@/utils/nativeGuider';
 import { readStored, writeStored } from '@/utils/safeStorage';
 import NativeSettingField from '@/components/guider/native/NativeSettingField.vue';
 import NativeDarkLibrary from '@/components/guider/native/NativeDarkLibrary.vue';
 import GuideCameraSettings from '@/components/guider/GuideCameraSettings.vue';
+import SettingsSettle from '@/components/guider/settingsSettle.vue';
 import { apiStore } from '@/store/store';
 
 const props = defineProps({
@@ -214,7 +223,14 @@ const namedSettings = computed(() => {
     .filter((s) => s && settingApplies(s, store.settings));
 });
 
-const groups = computed(() => groupSettings(store.settings, { advanced: advanced.value }));
+// Settle pixels, minimum settle time and timeout (settingsSettle.vue).
+const SETTLE_FIELD_COUNT = 3;
+
+// No Dither group while the settings failed to load: the error box explains the empty sheet.
+const groups = computed(() => {
+  const list = groupSettings(store.settings, { advanced: advanced.value });
+  return store.settingsError ? list : withGroup(list, 'Dither');
+});
 
 const visibleCount = computed(() =>
   namesMode.value

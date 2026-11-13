@@ -272,7 +272,7 @@ test('persists touch-sized brightness controls for all three Atlas categories', 
   assert.match(settingsView, /v-model\.number="starMagnitudeLimit"/);
   assert.match(settingsView, /v-model\.number="galaxyMagnitudeLimit"/);
   assert.match(settingsView, /v-model\.number="deepSkyMagnitudeLimit"/);
-  assert.match(settingsView, /class="w-full h-11 accent-cyan-500"/);
+  assert.match(settingsView, /class="w-full h-11 accent-accent-action"/);
   const messages = JSON.parse(englishLocale).components.celestiaAtlas.settings;
   assert.equal(messages.magnitude_limit_auto, 'Auto');
   assert.match(messages.magnitude_limit_hint, /Lower values show only brighter objects/);

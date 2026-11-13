@@ -25,9 +25,16 @@ npm run ratchet:check
 npm run test:run
 ```
 
-`npm run ci:verify` chains all of them plus `typecheck`. `ratchet:check` fails when legacy color
-classes or raw `type="number"` inputs exceed `scripts/ui-ratchet-baseline.json`; after a migration
-lower the limits with `npm run ratchet:update`, never raise them to get a PR through. `typecheck` can OOM, and `test:run`
+`npm run ci:verify` chains all of them plus `typecheck`. `ratchet:check` fails when a pattern
+that has a shared building block grows beyond `scripts/ui-ratchet-baseline.json`: legacy color
+classes, raw `type="number"` inputs, `setInterval`, `animate-spin` outside `Spinner`,
+`fixed inset-0` outside `Modal`, raw overlay z-index values, per-component `-webkit-user-select`,
+`<draggable>` without `fallbackOnBody`, `forceFallback` (definitions in
+`scripts/lib/uiRatchet.mjs`). After a migration lower the limits with `npm run ratchet:update`,
+never raise them to get a PR through. ESLint bans `apiService.profileChangeValue` outside the
+exception list in `eslint.config.js`; use `useProfileSetting`, and give a new exception a reason
+there. A new shared building block gets its guard in the same PR - a ratchet metric or a lint
+rule - otherwise the old way keeps spreading. `typecheck` can OOM, and `test:run`
 needs Node ≥ 22.15 (`registerHooks`) — below that every test file fails at module
 instantiation, which looks alarming but says nothing about the code.
 

@@ -17,12 +17,14 @@ import {
   formatMs,
   guideTiming,
   groupSettings,
+  withGroup,
   alertText,
   framePointFromTap,
   starSelectionAvailability,
   starSelectionErrorText,
   isBasicSetting,
   isNativeGuiderSelected,
+  isSegmentedSetting,
   markerFromMessage,
   saturationLevel,
   settingFormValue,
@@ -313,6 +315,50 @@ test('settings that depend on another one are shown only for the values they app
   );
 });
 
+test('settingApplies follows a chain: the worm value behind its unit behind the RA algorithm', () => {
+  const settings = [
+    { name: 'RaAlgorithm', type: 'enum', value: 'Predictive' },
+    {
+      name: 'WormPeriodUnit',
+      type: 'enum',
+      value: 'Teeth',
+      options: ['Teeth', 'Seconds'],
+      dependsOn: 'RaAlgorithm',
+      appliesTo: ['Predictive'],
+    },
+    { name: 'WormTeeth', dependsOn: 'WormPeriodUnit', appliesTo: ['Teeth'] },
+    { name: 'WormPeriodSeconds', dependsOn: 'WormPeriodUnit', appliesTo: ['Seconds'] },
+  ];
+  const shown = () =>
+    groupSettings(settings, { advanced: true }).flatMap((g) => g.settings.map((s) => s.name));
+  assert.deepEqual(shown(), ['RaAlgorithm', 'WormPeriodUnit', 'WormTeeth']);
+
+  settings[1] = { ...settings[1], value: 'Seconds' };
+  assert.deepEqual(shown(), ['RaAlgorithm', 'WormPeriodUnit', 'WormPeriodSeconds']);
+
+  settings[0] = { ...settings[0], value: 'Hysteresis' };
+  assert.deepEqual(shown(), ['RaAlgorithm'], 'hidden with the unit it depends on');
+
+  // a loop in the metadata does not hang
+  const loop = [
+    { name: 'A', value: 'x', dependsOn: 'B', appliesTo: ['y'] },
+    { name: 'B', value: 'y', dependsOn: 'A', appliesTo: ['x'] },
+  ];
+  assert.equal(settingApplies(loop[0], loop), true);
+});
+
+test('isSegmentedSetting picks the worm period unit only', () => {
+  const unit = { name: 'WormPeriodUnit', type: 'enum', options: ['Teeth', 'Seconds'] };
+  assert.equal(isSegmentedSetting(unit), true);
+  assert.equal(isSegmentedSetting({ ...unit, options: ['Teeth'] }), false, 'no choice');
+  assert.equal(isSegmentedSetting({ ...unit, type: 'string' }), false);
+  assert.equal(
+    isSegmentedSetting({ name: 'DitherMode', type: 'enum', options: ['Random', 'Spiral'] }),
+    false
+  );
+  assert.equal(isSegmentedSetting(null), false);
+});
+
 test('periodicErrorBadge shows the RA worm learning once the sky and the mount are learned', () => {
   const adapted = { name: 'Predictive', phase: 'Adapted', progress: 1 };
   const pe = { phase: 'Learning', progress: 0.314 };
@@ -394,6 +440,24 @@ test('groupSettings orders known groups first and filters basic', () => {
   assert.deepEqual(
     groupSettings(settings, { advanced: true }).map((g) => g.group),
     ['Camera', 'Algorithms', 'Safety', 'Zeta']
+  );
+});
+
+test('withGroup adds a missing group at its place and keeps an existing one', () => {
+  const groups = [
+    { group: 'Camera', settings: [{ name: 'A' }] },
+    { group: 'Safety', settings: [{ name: 'B' }] },
+    { group: 'Zeta', settings: [{ name: 'C' }] },
+  ];
+  assert.deepEqual(
+    withGroup(groups, 'Dither').map((g) => g.group),
+    ['Camera', 'Dither', 'Safety', 'Zeta']
+  );
+  assert.deepEqual(withGroup(groups, 'Dither')[1].settings, []);
+  assert.equal(withGroup(groups, 'Camera'), groups);
+  assert.deepEqual(
+    withGroup([], 'Dither').map((g) => g.group),
+    ['Dither']
   );
 });
 
@@ -578,6 +642,18 @@ test('settingWarning flags the play model without the Predictive Dec algorithm',
   assert.equal(settingWarning(model('PlayModel'), []), null, 'backend without DecAlgorithm');
   assert.equal(settingWarning({ name: 'Gain', value: 'PlayModel' }, []), null);
   assert.equal(settingWarning(null), null);
+});
+
+test('settingWarning flags a worm period the guider takes for "detect"', () => {
+  const period = (value, max) => ({ name: 'WormPeriodSeconds', value, max });
+  assert.equal(settingWarning(period('120'), []), 'wormPeriodOutOfRange');
+  assert.equal(settingWarning(period('179,9'), []), 'wormPeriodOutOfRange');
+  assert.equal(settingWarning(period('180'), []), null);
+  assert.equal(settingWarning(period('478.7'), []), null);
+  assert.equal(settingWarning(period('1200'), []), null);
+  assert.equal(settingWarning(period('1200.5'), []), 'wormPeriodOutOfRange');
+  assert.equal(settingWarning(period('1300', 1500), []), null, 'maximum from the setting');
+  assert.equal(settingWarning(period('0'), []), null, '0 = detect, as meant');
 });
 
 test('guideTiming reads the guide loop timing of the status', () => {

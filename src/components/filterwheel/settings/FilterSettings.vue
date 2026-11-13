@@ -3,10 +3,10 @@
     <div
       v-for="(filter, index) in sortedFilters"
       :key="index"
-      class="p-4 border border-gray-700 rounded-lg bg-gray-800/50"
+      class="p-4 border border-line rounded-lg bg-surface-2/50"
     >
       <div class="flex justify-between items-center mb-2">
-        <h3 class="font-bold text-base text-cyan-400">
+        <h3 class="font-bold text-base text-accent">
           {{ $t('components.filterwheel.settings.FilterWheelFilters.Position') }}
           {{ filter.Position + 1 }}
         </h3>
@@ -38,9 +38,9 @@
     <!-- PINS Device Settings -->
     <div
       v-if="store.isPINS && hasDeviceSettings"
-      class="mt-2 p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="mt-2 p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-surface-2/50 rounded-lg border border-line/50"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="font-bold text-base text-accent">
         {{ $t('components.filterwheel.settings.deviceSpecific') }}
       </h3>
       <pinsSetFilterWheelAlias />
@@ -64,7 +64,7 @@
 import { computed } from 'vue';
 import { apiStore } from '@/store/store';
 import { useFilterStore } from '@/store/filterStore';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import SetFilterName from './SetFilterName.vue';
 import AddNewFilter from './AddNewFilter.vue';
 import RemoveFilter from './RemoveFilter.vue';

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col w-full gap-1">
     <div>
-      <p class="text-xs sm:text-sm min-w-24 sm:min-w-32 font-medium text-gray-500">
+      <p class="text-xs sm:text-sm min-w-24 sm:min-w-32 font-medium text-content-faint">
         {{ $t('components.mount.control.slewRate') }}
       </p>
     </div>

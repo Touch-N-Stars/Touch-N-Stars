@@ -2,9 +2,9 @@
   <div class="w-full space-y-2">
     <!-- Running: spinner + progress bar -->
     <template v-if="flatsStore.status.State === 'Running'">
-      <div class="flex items-center gap-2 text-sm text-gray-200">
+      <div class="flex items-center gap-2 text-sm text-content">
         <svg
-          class="animate-spin h-4 w-4 text-cyan-400 shrink-0"
+          class="animate-spin h-4 w-4 text-accent shrink-0"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -25,7 +25,7 @@
         </svg>
         <span>{{ runningStatusText }}</span>
       </div>
-      <div v-if="flatsStore.status.TotalFilters > 1" class="text-xs text-gray-400">
+      <div v-if="flatsStore.status.TotalFilters > 1" class="text-xs text-content-muted">
         {{
           $t('components.flatassistant.status_filter_progress', {
             completed: flatsStore.status.CompletedFilters + 1,
@@ -33,14 +33,22 @@
           })
         }}
       </div>
-      <div class="w-full bg-gray-700 rounded-full h-2">
+      <div class="w-full bg-surface-3 rounded-full h-2">
         <div
-          class="bg-cyan-500 h-2 rounded-full transition-all duration-500"
+          class="bg-accent h-2 rounded-full transition-all duration-500"
           :style="{ width: progressPercent + '%' }"
         />
       </div>
-      <div v-if="flatsStore.currentADU !== null" class="text-xs text-gray-400">
-        {{ $t('components.flatassistant.status_adu_live', { adu: flatsStore.currentADU }) }}
+      <div
+        v-if="currentExposure !== null || flatsStore.currentADU !== null"
+        class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-content-muted"
+      >
+        <span v-if="currentExposure !== null">
+          {{ $t('components.flatassistant.status_exposure_live', { time: currentExposure }) }}
+        </span>
+        <span v-if="flatsStore.currentADU !== null">
+          {{ $t('components.flatassistant.status_adu_live', { adu: flatsStore.currentADU }) }}
+        </span>
       </div>
     </template>
 
@@ -63,7 +71,7 @@
       </div>
       <div
         v-if="flatsStore.lastRun?.lastADU !== null && flatsStore.lastRunOutcome.type === 'error'"
-        class="text-xs text-gray-400 pl-5"
+        class="text-xs text-content-muted pl-5"
       >
         {{ $t('components.flatassistant.status_adu_live', { adu: flatsStore.lastRun.lastADU }) }}
       </div>
@@ -74,11 +82,24 @@
 <script setup>
 import { computed } from 'vue';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
+import { apiStore } from '@/store/store';
 import { useI18n } from 'vue-i18n';
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+import { lastFlatExposure } from './flatExposure';
 
 const flatsStore = useFlatassistantStore();
+const store = apiStore();
 const { t } = useI18n();
+
+// Exposure time the flat assistant settled on, read from the newest saved frame in the
+// image history. The exposure search itself saves nothing, so the newest FLAT entry is the
+// one the run actually uses. Only trusted once this run (or this filter) has saved a frame,
+// otherwise an older flat from the history would be shown.
+const currentExposure = computed(() => {
+  if (flatsStore.status.WaitingForCover) return null;
+  if (!(flatsStore.status.CompletedIterations > 0)) return null;
+  return lastFlatExposure(store.imageHistoryInfo, flatsStore.currentRunType === 'darks');
+});
 
 const iterationsTracked = computed(
   () => flatsStore.status.TotalIterations > 0 && flatsStore.status.CompletedIterations >= 0
@@ -112,13 +133,13 @@ const runningStatusText = computed(() => {
 const outcomeColorClass = computed(() => {
   switch (flatsStore.lastRunOutcome?.type) {
     case 'success':
-      return 'text-green-400';
+      return 'text-status-ok';
     case 'warning':
-      return 'text-yellow-400';
+      return 'text-status-warn';
     case 'error':
-      return 'text-red-400';
+      return 'text-status-danger';
     default:
-      return 'text-gray-300';
+      return 'text-content';
   }
 });
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-row w-full items-center min-w-28 border border-gray-500 p-1 rounded-lg">
-    <label for="gain" class="text-sm mr-3 mb-1 text-gray-400">
+  <div class="flex flex-row w-full items-center min-w-28 border border-line-strong p-1 rounded-lg">
+    <label for="gain" class="text-sm mr-3 mb-1 text-content-muted">
       {{ $t('components.camera.binning_mode') }}
     </label>
     <select

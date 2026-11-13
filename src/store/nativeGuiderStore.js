@@ -489,13 +489,16 @@ export const useNativeGuiderStore = defineStore('nativeGuiderStore', {
 
     /**
      * Starts a session. Resolves { ok: true } or { ok: false, message, messageCode } - the start
-     * screen shows the (localized) reason next to the button instead of a toast.
+     * screen shows the (localized) reason next to the button instead of a toast. { slew } slews to
+     * the calibration position first (stay, east, west).
      */
-    async startCoach(options) {
+    async startCoach(options, { slew } = {}) {
       if (this.coachPending) return { ok: false, message: null, messageCode: null };
       this.coachPending = 'start';
       try {
-        const result = await apiService.startNativeGuiderCoach(options);
+        const result = slew
+          ? await apiService.startNativeGuiderCoach(options, { slew })
+          : await apiService.startNativeGuiderCoach(options);
         if (result?.status) this.setCoach(result.status);
         this.refreshStatus();
         return { ok: true };

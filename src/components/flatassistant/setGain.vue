@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="store.cameraInfo.Gains && store.cameraInfo.Gains.length > 0"
-    class="flex flex-row w-full items-center min-w-28 border border-gray-500 p-1 rounded-lg"
+    class="flex flex-row w-full items-center min-w-28 border border-line-strong p-1 rounded-lg"
   >
-    <label for="gain" class="text-sm mr-3 mb-1 text-gray-400">
+    <label for="gain" class="text-sm mr-3 mb-1 text-content-muted">
       {{ $t('components.camera.gain_iso') }}
     </label>
     <select id="gain" v-model.number="flatsStore.gain" class="tns-select ml-auto w-28">

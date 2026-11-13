@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
 import { useImagetStore } from './imageStore';
-import { ref, shallowRef, computed, watch, nextTick } from 'vue';
+import { ref, shallowRef, computed, watch, nextTick, onScopeDispose } from 'vue';
 import { timeSync } from '@/utils/timeSync';
 import { useSettingsStore } from './settingsStore';
 import { useMountStore } from './mountStore';
@@ -153,6 +153,7 @@ export const useCameraStore = defineStore('cameraStore', () => {
       }, COOLING_PENDING_MS);
     }
   }
+  onScopeDispose(() => clearTimeout(coolingPendingTimer));
 
   function devicePollMs() {
     return (store.profileInfo?.ApplicationSettings?.DevicePollingInterval ?? 2) * 1000;

@@ -38,11 +38,11 @@
             placeholderText="No image captured yet"
             @download="handleDownload"
             @histogram-toggle="showHistogram = !showHistogram"
-            class="bg-gray-900"
+            class="bg-surface-1"
           >
             <!-- Custom placeholder -->
             <template #placeholder>
-              <div class="flex flex-col items-center justify-center text-gray-400">
+              <div class="flex flex-col items-center justify-center text-content-muted">
                 <img
                   src="../assets/Logo_TouchNStars_600x600.png"
                   alt="TouchNStars Logo"
@@ -62,8 +62,8 @@
                 :class="[
                   'w-10 h-10 rounded-lg shadow-lg flex items-center justify-center transition-colors',
                   showCaptureStats
-                    ? 'bg-accent-action hover:bg-accent-action text-white'
-                    : 'bg-gray-800/90 hover:bg-gray-700 text-white',
+                    ? 'bg-accent-action hover:brightness-110 text-white'
+                    : 'bg-surface-1/90 hover:bg-surface-2 text-white',
                 ]"
                 title="Image Statistics"
               >
@@ -75,8 +75,8 @@
                 :class="[
                   'w-10 h-10 rounded-lg shadow-lg flex items-center justify-center transition-colors',
                   settingsStore.currentImageRotation !== 0
-                    ? 'bg-accent-action hover:bg-accent-action text-white'
-                    : 'bg-gray-800/90 hover:bg-gray-700 text-white',
+                    ? 'bg-accent-action hover:brightness-110 text-white'
+                    : 'bg-surface-1/90 hover:bg-surface-2 text-white',
                 ]"
                 :title="'Rotate image (' + settingsStore.currentImageRotation + '°)'"
               >
@@ -99,7 +99,7 @@
               <button
                 v-if="imageStore.imageData"
                 @click.stop="openSlewModal"
-                class="w-10 h-10 bg-gray-800/90 hover:enabled:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                class="w-10 h-10 bg-surface-1/90 hover:enabled:bg-surface-2 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 title="Center Here"
                 :disabled="
                   !cameraStore.plateSolveResult || !cameraStore.plateSolveResult.Coordinates
@@ -126,11 +126,11 @@
           <!-- PINS: Capture Stats Overlay -->
           <div
             v-if="store.isPINS && showCaptureStats && store.lastImageStats && imageStore.imageData"
-            class="absolute left-0 top-0 right-0 z-20 flex flex-col p-2 text-xs text-gray-300 bg-black/50"
+            class="absolute left-0 top-0 right-0 z-20 flex flex-col p-2 text-xs text-content bg-black/50"
           >
             <div v-if="statsLoading" class="flex items-center gap-2 py-1 opacity-60">
               <svg
-                class="w-3 h-3 animate-spin text-cyan-400"
+                class="w-3 h-3 animate-spin text-accent"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -145,7 +145,7 @@
                 />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
               </svg>
-              <span class="text-cyan-400 text-xs">updating…</span>
+              <span class="text-accent text-xs">updating…</span>
             </div>
             <div
               :class="isLandscape ? 'grid grid-cols-2 pt-14' : 'grid grid-cols-3 pt-36'"
@@ -204,7 +204,7 @@
                   >{{ store.lastImageStats.Min.toFixed(0)
                   }}<span
                     v-if="isValidStat(store.lastImageStats.MinOccurrences)"
-                    class="text-gray-400"
+                    class="text-content-muted"
                     >({{ store.lastImageStats.MinOccurrences }}x)</span
                   ></span
                 >
@@ -217,7 +217,7 @@
                   >{{ store.lastImageStats.Max.toFixed(0)
                   }}<span
                     v-if="isValidStat(store.lastImageStats.MaxOccurrences)"
-                    class="text-gray-400"
+                    class="text-content-muted"
                     >({{ store.lastImageStats.MaxOccurrences }}x)</span
                   ></span
                 >
@@ -252,7 +252,7 @@
             class="absolute inset-0 z-10 flex items-center justify-center bg-black/40"
           >
             <svg
-              class="w-5 h-5 animate-spin text-cyan-400"
+              class="w-5 h-5 animate-spin text-accent"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -338,7 +338,7 @@
       <template #header>
         <div class="flex items-center justify-between w-full">
           <h2 class="text-1xl font-semibold">{{ $t('components.mount.title') }}</h2>
-          <div class="flex items-center gap-2 text-gray-400">
+          <div class="flex items-center gap-2 text-content-muted">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -366,7 +366,7 @@
       <template #header>
         <div class="flex items-center justify-between w-full">
           <h2 class="text-1xl font-semibold">{{ $t('components.focuser.title') }}</h2>
-          <div class="flex items-center gap-2 text-gray-400">
+          <div class="flex items-center gap-2 text-content-muted">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -402,7 +402,7 @@
       <template #header>
         <div class="flex items-center justify-between w-full">
           <h2 class="text-1xl font-semibold">{{ $t('components.filterwheel.filter') }}</h2>
-          <div class="flex items-center gap-2 text-gray-400">
+          <div class="flex items-center gap-2 text-content-muted">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -432,7 +432,7 @@
       <template #header>
         <div class="flex items-center justify-between w-full">
           <h2 class="text-1xl font-semibold">{{ $t('components.rotator.title') }}</h2>
-          <div class="flex items-center gap-2 text-gray-400">
+          <div class="flex items-center gap-2 text-content-muted">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

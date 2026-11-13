@@ -41,7 +41,7 @@
             :class="
               instance.id === selectedInstanceId
                 ? 'border-accent/50 bg-accent/20 ring-1 ring-accent'
-                : 'border-line-strong hover:border-line-strong hover:bg-surface-3'
+                : 'border-line-strong hover:border-content-faint hover:bg-surface-3'
             "
           >
             <!-- Color dot -->

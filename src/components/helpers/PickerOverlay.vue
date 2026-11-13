@@ -7,7 +7,7 @@
     >
       <!-- Bottom sheet -->
       <div
-        class="bg-gray-900/95 backdrop-blur-sm border-t border-gray-700/50 w-full p-4 rounded-t-lg"
+        class="bg-surface-1/95 backdrop-blur-sm border-t border-line w-full p-4 rounded-t-lg"
         @click.stop
       >
         <div class="max-w-sm mx-auto">
@@ -15,16 +15,16 @@
           <div class="flex items-center justify-between mb-3">
             <button
               @click="pickerStore.cancel()"
-              class="p-2 rounded-full transition-colors text-red-500 hover:bg-gray-700/50 hover:text-red-400"
+              class="p-2 rounded-full transition-colors text-status-danger hover:bg-surface-3"
             >
               <XMarkIcon class="h-6 w-6" />
             </button>
             <div class="flex flex-col items-center">
-              <label class="text-xs text-gray-400">{{ $t(`${pickerStore.label}`) }}</label>
+              <label class="tns-label">{{ $t(`${pickerStore.label}`) }}</label>
               <span
                 :class="[
                   'text-2xl font-bold tabular-nums',
-                  pickerStore.isOutOfRange ? 'text-red-400' : 'text-white',
+                  pickerStore.isOutOfRange ? 'text-status-danger' : 'text-content',
                 ]"
               >
                 {{ pickerStore.displayValue }}
@@ -36,8 +36,8 @@
               :class="[
                 'p-2 rounded-full transition-colors',
                 isConfirmDisabled
-                  ? 'text-gray-500 cursor-not-allowed'
-                  : 'text-green-500 hover:bg-gray-700/50 hover:text-green-400',
+                  ? 'text-content-faint cursor-not-allowed'
+                  : 'text-status-ok hover:bg-surface-3',
               ]"
             >
               <CheckIcon class="h-6 w-6" />
@@ -129,7 +129,7 @@ const isConfirmDisabled = computed(() => {
 @reference '../../assets/tailwind.css';
 .numpad-btn {
   @apply h-14 rounded-lg text-xl font-semibold
-    text-gray-300
+    text-content
     transition-all
     flex items-center justify-center
     select-none;
@@ -147,7 +147,7 @@ const isConfirmDisabled = computed(() => {
 
 .numpad-action {
   background: linear-gradient(to bottom, #1f2937, #151c28);
-  @apply text-gray-400;
+  @apply text-content-muted;
 }
 
 .numpad-action:active {
@@ -156,7 +156,7 @@ const isConfirmDisabled = computed(() => {
 
 .numpad-active {
   background: linear-gradient(to bottom, #164e63, #0e3a4a);
-  @apply text-cyan-300;
+  @apply text-accent;
 }
 
 .numpad-btn:disabled {

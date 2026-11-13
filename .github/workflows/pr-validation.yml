@@ -59,3 +59,11 @@ jobs:
 
       - name: Browser tests
         run: npm run test:browser
+
+      - name: Upload browser test screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-test-screenshots
+          path: .cache/browser-tests/
+          retention-days: 7

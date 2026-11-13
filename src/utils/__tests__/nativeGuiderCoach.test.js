@@ -9,6 +9,11 @@ import {
   MESSAGE_CODES,
   activeHint,
   cameraGrid,
+  coachPosition,
+  coachPositionWarning,
+  coachSlewBlocker,
+  coachSlewPlan,
+  defaultCoachSlew,
   compareReports,
   defaultGains,
   describeChange,
@@ -30,6 +35,7 @@ import {
   periodicErrorOverlay,
   pulseResponse,
   rankedActions,
+  shorterTrialExposures,
   sparklinePoints,
   stepDetailText,
   upsertHint,
@@ -89,6 +95,7 @@ const SAMPLE_PARAMETERS = {
   'hint.lowSnr': { snr: 8 },
   'hint.decDrift': { driftArcsecPerMin: 1.5, arcmin: 6 },
   'hint.seeingBound': { rmsArcsec: 0.9 },
+  'hint.longExposure': { exposureSeconds: 2.5, suggestedSeconds: 1 },
 };
 
 const SEVERITIES = ['good', 'info', 'warning', 'problem'];
@@ -330,6 +337,18 @@ test('duration estimates cover every step and the calibration', () => {
   for (const step of COACH_STEPS) assert.ok(estimateStepSeconds(step, options) > 0, step);
   assert.equal(estimateStepSeconds('Trials', options), 4 * 140);
   assert.equal(estimateStepSeconds('Trials', { ...options, repeatBaseline: false }), 3 * 140);
+  // the exposure trials E and E2 run from 1.5 s up (E2 from 2 s), unless they are switched off
+  assert.equal(estimateStepSeconds('Trials', { ...options, currentExposureSeconds: 2.5 }), 6 * 140);
+  assert.equal(estimateStepSeconds('Trials', { ...options, currentExposureSeconds: 1.5 }), 5 * 140);
+  assert.equal(estimateStepSeconds('Trials', { ...options, currentExposureSeconds: 1 }), 4 * 140);
+  assert.equal(
+    estimateStepSeconds('Trials', {
+      ...options,
+      currentExposureSeconds: 2.5,
+      exposureTrial: false,
+    }),
+    4 * 140
+  );
   const all = estimateTotalSeconds(COACH_STEPS, options);
   // a default session is "about 15 minutes"
   assert.ok(all > 12 * 60 && all < 20 * 60, `total ${all}`);
@@ -487,11 +506,28 @@ test('ranked actions follow the report order and other findings group by step', 
   );
 });
 
-test('trials are ordered A, B, C, A2', () => {
+test('trials are ordered A, B, C, E, E2, A2', () => {
   assert.deepEqual(
-    orderedTrials([{ id: 'A2' }, { id: 'C' }, { id: 'A' }, { id: 'B' }]).map((t) => t.id),
-    ['A', 'B', 'C', 'A2']
+    orderedTrials([
+      { id: 'A2' },
+      { id: 'E2' },
+      { id: 'E' },
+      { id: 'C' },
+      { id: 'A' },
+      { id: 'B' },
+    ]).map((t) => t.id),
+    ['A', 'B', 'C', 'E', 'E2', 'A2']
   );
+});
+
+test('shorter-exposure trials: 1 s and the middle to the current exposure', () => {
+  assert.deepEqual(shorterTrialExposures(1), []);
+  assert.deepEqual(shorterTrialExposures(undefined), []);
+  assert.deepEqual(shorterTrialExposures(1.5), [1]);
+  assert.deepEqual(shorterTrialExposures(2), [1, 1.5]);
+  assert.deepEqual(shorterTrialExposures(2.5), [1, 1.5]);
+  assert.deepEqual(shorterTrialExposures(3), [1, 2]);
+  assert.deepEqual(shorterTrialExposures(4), [1, 2.5]);
 });
 
 test('history: the latest report per night, oldest night first, and the comparison', () => {
@@ -603,4 +639,81 @@ test('setting changes use labels and units from the settings metadata', () => {
     'PlayModel',
     'without a localizer the raw option'
   );
+});
+
+test('coachPositionWarning warns only for steps that guide the mount', () => {
+  const position = coachPosition({ Connected: true, Declination: 85, Altitude: 50 });
+  assert.equal(coachPositionWarning(position, ['CameraCheck']), null);
+  assert.equal(coachPositionWarning(position, ['CameraCheck', 'Drift']), position);
+  assert.equal(coachPositionWarning(position, []), null);
+  const fine = coachPosition({ Connected: true, Declination: 10, Altitude: 50 });
+  assert.equal(coachPositionWarning(fine, ['Drift']), null);
+  assert.equal(coachPositionWarning(null, ['Drift']), null);
+});
+
+test('coachSlewBlocker refuses a slew the mount or the imaging run cannot take', () => {
+  const mount = (extra = {}) => ({ Connected: true, AtPark: false, Slewing: false, ...extra });
+  assert.equal(coachSlewBlocker({ mountInfo: null }), 'noMount');
+  assert.equal(coachSlewBlocker({ mountInfo: { Connected: false } }), 'noMount');
+  assert.equal(coachSlewBlocker({ mountInfo: mount({ AtPark: true }) }), 'parked');
+  assert.equal(coachSlewBlocker({ mountInfo: mount({ Slewing: true }) }), 'slewing');
+  assert.equal(coachSlewBlocker({ mountInfo: mount(), sequenceRunning: true }), 'sequence');
+  assert.equal(coachSlewBlocker({ mountInfo: mount(), cameraExposing: true }), 'exposing');
+  assert.equal(coachSlewBlocker({ mountInfo: mount() }), null);
+});
+
+test('the coach slew is preselected only where the guider refuses, and sent only when possible', () => {
+  const refused = { issues: ['nearPole'], refused: true };
+  const warned = { issues: ['nearPole'], refused: false };
+  assert.equal(defaultCoachSlew(refused, null), 'stay');
+  assert.equal(defaultCoachSlew(refused, 'parked'), 'none', 'cannot slew');
+  assert.equal(defaultCoachSlew(warned, null), 'none', 'a slew leaves the target');
+  assert.equal(defaultCoachSlew(null, null), 'none');
+
+  assert.deepEqual(coachSlewPlan(refused, null, 'east'), { slew: 'east', missing: false });
+  assert.deepEqual(coachSlewPlan(refused, null, 'none'), { slew: null, missing: true });
+  assert.deepEqual(coachSlewPlan(refused, 'sequence', 'stay'), { slew: null, missing: true });
+  assert.deepEqual(coachSlewPlan(warned, null, 'west'), { slew: 'west', missing: false });
+  assert.deepEqual(coachSlewPlan(warned, null, 'none'), { slew: null, missing: false });
+  assert.deepEqual(
+    coachSlewPlan(null, null, 'stay'),
+    { slew: null, missing: false },
+    'no warning shown: no slew'
+  );
+});
+
+test('coachPosition rates the mount position for the coach', () => {
+  assert.equal(coachPosition(null), null);
+  assert.equal(coachPosition({ Connected: false, Declination: 89 }), null);
+  assert.deepEqual(coachPosition({ Connected: true, Declination: 10, Altitude: 50 }), {
+    declination: 10,
+    altitude: 50,
+    issues: [],
+    refused: false,
+  });
+  // Warned above 60°, refused by the guider above 80° (either hemisphere).
+  const steep = coachPosition({ Connected: true, Declination: -70, Altitude: 40 });
+  assert.deepEqual(steep.issues, ['nearPole']);
+  assert.equal(steep.refused, false);
+  const pole = coachPosition({ Connected: true, Declination: 89.8, Altitude: 20 });
+  assert.deepEqual(pole.issues, ['nearPole', 'low']);
+  assert.equal(pole.refused, true);
+  // Unknown values raise nothing.
+  assert.deepEqual(coachPosition({ Connected: true, Declination: 'x' }), {
+    declination: null,
+    altitude: null,
+    issues: [],
+    refused: false,
+  });
+});
+
+test('the nearPole rejection reads with degrees', () => {
+  const i18n = createI18n({ legacy: false, locale: 'en', messages: { en } });
+  const text = messageText(i18n.global, 'coach.nearPole', 'fallback', {
+    declinationDeg: 89.8,
+    maxDeclinationDeg: 80,
+  });
+  assert.equal(text.known, true);
+  assert.match(text.why, /Dec 89\.8°/);
+  assert.match(text.fix, /±80°/);
 });
