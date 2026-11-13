@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - PINS alarm: PINS now beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current or a dew heater without data, and a full disk. It is on by default and sounds only while a sequence runs, except for PowerBox over current and dew heater alarms. Needs the updated Touch'N'Stars plugin; with an older plugin the PowerBox no longer beeps on events.
 - PINS alarm: The new Alarm section under PINS-Devices, Configuration, PowerBox switches the alarm on or off, chooses the events, sets volume and length, lists entries that never beep and shows the recent alarms. A test beep reports whether the PowerBox really beeped, and the alarm can be muted for 30 minutes, also from the error notification.
+- Flat assistant: While flats or dark flats are being taken, the status now shows the exposure time the assistant chose next to the last measured ADU, so there is no need to switch to the Monitor tab to see it.
 
 ### Removed
 

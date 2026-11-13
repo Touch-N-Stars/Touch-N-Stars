@@ -4996,6 +4996,7 @@
       "button_slew_to_zenith": "Déplacer vers le zénith",
       "keep_closed": "Garder le panneau de flat fermé",
       "status_adu_live": "Dernière ADU mesurée : {adu}",
+      "status_exposure_live": "Exposition : {time} s",
       "status_failed": "échec",
       "status_running": "En cours",
       "status_stopped": "Arrêté",

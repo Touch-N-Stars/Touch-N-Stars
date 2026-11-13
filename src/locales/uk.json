@@ -4988,6 +4988,7 @@
       "status_darks_skipped": "Darks пропущено.",
       "status_waiting_cover": "Очікування закриття телескопа перед darks",
       "status_adu_live": "Останнє виміряне ADU: {adu}",
+      "status_exposure_live": "Експозиція: {time} с",
       "cover_scope_title": "Закрийте телескоп зараз",
       "cover_scope_message": "Закрийте телескоп зараз і натисніть OK, щоб почати зйомку darks.",
       "cover_scope_confirm": "OK",

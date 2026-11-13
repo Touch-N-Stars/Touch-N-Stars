@@ -5000,6 +5000,7 @@
       "start_multi_mode": "Iniciar Multi Modo",
       "multi_mode_no_filters": "No hay rueda de filtros conectada",
       "status_adu_live": "Última ADU medida: {adu}",
+      "status_exposure_live": "Exposición: {time} s",
       "status_failed": "fallido",
       "status_running": "En ejecución",
       "status_stopped": "Detenido",

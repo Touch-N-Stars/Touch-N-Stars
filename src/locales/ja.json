@@ -5000,6 +5000,7 @@
       "status_stopped": "停止済み",
       "status_failed": "フラットを撮影できませんでした — 有効な露出を決定できませんでした",
       "status_adu_live": "最後に測定したADU：{adu}",
+      "status_exposure_live": "露出：{time} 秒",
       "start_auto_exposure": "自動露光開始",
       "start_auto_brightness": "自動輝度調整開始",
       "start_sky_flat": "スカイフラット開始",

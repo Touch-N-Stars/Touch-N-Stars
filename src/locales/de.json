@@ -5041,6 +5041,7 @@
       "status_darks_skipped": "Darks übersprungen.",
       "status_waiting_cover": "Warte auf das Abdecken des Teleskops vor den Darks",
       "status_adu_live": "Letzter gemessener ADU: {adu}",
+      "status_exposure_live": "Belichtung: {time} s",
       "cover_scope_title": "Teleskop jetzt abdecken",
       "cover_scope_message": "Decke dein Teleskop jetzt ab und druecke OK, um mit den Darks zu beginnen.",
       "cover_scope_confirm": "OK",

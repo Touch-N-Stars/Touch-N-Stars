@@ -5050,6 +5050,7 @@
       "status_darks_skipped": "Foscos omesos.",
       "status_waiting_cover": "Esperant que es tapi el telescopi abans dels foscos",
       "status_adu_live": "Últim ADU mesurat: {adu}",
+      "status_exposure_live": "Exposició: {time} s",
       "target": "Objectiu",
       "cover_scope_title": "Tapa el telescopi ara",
       "cover_scope_message": "Tapa el telescopi ara i prem D'ACORD per començar a capturar els foscos.",

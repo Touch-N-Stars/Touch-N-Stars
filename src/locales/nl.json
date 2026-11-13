@@ -4996,6 +4996,7 @@
       "button_slew_to_zenith": "Slew naar zenith",
       "keep_closed": "Houd het flatpanel gesloten",
       "status_adu_live": "Laatst gemeten ADU: {adu}",
+      "status_exposure_live": "Belichting: {time} s",
       "status_failed": "mislukt",
       "status_running": "Actief",
       "status_stopped": "Gestopt",

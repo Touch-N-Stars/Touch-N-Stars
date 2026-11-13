@@ -4996,6 +4996,7 @@
       "button_slew_to_zenith": "转向天顶",
       "keep_closed": "保持平板关闭",
       "status_adu_live": "最后测量的 ADU：{adu}",
+      "status_exposure_live": "曝光：{time} 秒",
       "status_failed": "失败",
       "status_running": "运行中",
       "status_stopped": "已停止",

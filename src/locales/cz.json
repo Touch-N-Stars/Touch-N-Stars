@@ -4996,6 +4996,7 @@
       "button_slew_to_zenith": "Přejet na zenit",
       "keep_closed": "Ponechat flat panel zavřený",
       "status_adu_live": "Poslední měření ADU: {adu}",
+      "status_exposure_live": "Expozice: {time} s",
       "status_failed": "Selhalo",
       "status_running": "Běží",
       "status_stopped": "Zastaveno",

@@ -5053,6 +5053,7 @@
       "status_darks_skipped": "다크를 건너뜀.",
       "status_waiting_cover": "다크 촬영 전 망원경 덮개를 기다리는 중",
       "status_adu_live": "마지막 측정 ADU: {adu}",
+      "status_exposure_live": "노출: {time}초",
       "target": "목표",
       "cover_scope_title": "지금 망원경을 덮으세요",
       "cover_scope_message": "지금 망원경을 덮고 OK를 눌러 다크 촬영을 시작하세요.",

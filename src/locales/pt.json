@@ -4996,6 +4996,7 @@
       "button_slew_to_zenith": "Mover para zênite",
       "keep_closed": "Manter o painel flat fechado",
       "status_adu_live": "Última ADU medida: {adu}",
+      "status_exposure_live": "Exposição: {time} s",
       "status_failed": "falhou",
       "status_running": "Em execução",
       "status_stopped": "Parado",
