@@ -271,7 +271,7 @@
 
             <!-- Configuration Tab -->
             <div v-show="activeTab === 'configuration'">
-              <PinsDeviceConfigurationTab />
+              <PinsDeviceConfigurationTab :active="activeTab === 'configuration'" />
             </div>
           </div>
         </div>

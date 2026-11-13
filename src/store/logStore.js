@@ -2,12 +2,40 @@ import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
-import { usePinsDeviceStore } from '@/plugins/pinsDevices/store/pinsDevicesStore';
+import i18n from '@/i18n';
+import { usePinsAlarmStore } from '@/plugins/pinsDevices/store/pinsAlarmStore';
+import { isAlarmApiMissing } from '@/plugins/pinsDevices/utils/alarm';
 import { createPoller } from '@/utils/poller';
 import { useFramingStore } from '@/store/framingStore';
 import { findLatestSolvedRotation, newestLogTime } from '@/utils/plateSolveLog';
 
 const SOLVE_MAX_AGE_MS = 10 * 60 * 1000;
+const ALARM_MUTE_MINUTES = 30;
+
+// Mutes the box's alarm (see the error toast); the result as a toast of its own
+async function muteBoxAlarm(toastStore) {
+  const t = i18n.global.t;
+  try {
+    await apiService.silencePinsAlarm(ALARM_MUTE_MINUTES);
+    toastStore.showToast({
+      type: 'success',
+      title: t('plugins.pinsDevices.config.alarm.title'),
+      message: t('plugins.pinsDevices.config.alarm.mutedFromToast', {
+        minutes: ALARM_MUTE_MINUTES,
+      }),
+    });
+  } catch (error) {
+    if (error?.code === 'ERR_CANCELED') return;
+    // A plugin without the alarm: no more mute buttons, and say why
+    const missing = isAlarmApiMissing(error);
+    if (missing) usePinsAlarmStore().markUnsupported();
+    toastStore.showToast({
+      type: 'warning',
+      title: t('plugins.pinsDevices.config.alarm.title'),
+      message: t(`plugins.pinsDevices.config.alarm.${missing ? 'updateRequired' : 'muteFailed'}`),
+    });
+  }
+}
 const LOG_POLL_INTERVAL_MS = 2000;
 
 // Cheap identity of a log window: the backend returns the newest N entries, so
@@ -193,27 +221,27 @@ export const useLogStore = defineStore('LogStore', {
               : 'info';
         const formattedTime = this.formatTimestamp(latestLog.timestamp);
 
+        // On a PINS box the box itself beeps the PowerBox on errors (alarm service of the
+        // plugin); the error toast offers to mute it, as the alarm settings are deep in the
+        // PINS-Devices page
+        const muteAction =
+          type === 'error' && apiStore().isPINS && !usePinsAlarmStore().unsupportedHere
+            ? {
+                actionText: i18n.global.t('plugins.pinsDevices.config.alarm.muteFromToast', {
+                  minutes: ALARM_MUTE_MINUTES,
+                }),
+                onAction: () => muteBoxAlarm(toastStore),
+              }
+            : {};
+
         toastStore.showToast({
           type: type,
           title: `${displayLog.level}: ${formattedTime}`,
           message: displayLog.message,
           autoClose: displayLog.level === 'ERROR' ? false : true,
           autoCloseDelay: 8000,
+          ...muteAction,
         });
-
-        // Beep on warning/error if enabled
-        try {
-          const pinsStore = usePinsDeviceStore();
-          if (pinsStore.isPowerboxConnected) {
-            if (type === 'error' && pinsStore.beepOnError) {
-              pinsStore.beepPowerBox();
-            } else if (type === 'warning' && pinsStore.beepOnWarning) {
-              pinsStore.beepPowerBox();
-            }
-          }
-        } catch (e) {
-          // Ignore beep errors
-        }
 
         // Aktualisiere den letzten Timestamp
         this.lastErrorWarningTimestamp = latestLog.timestamp;
