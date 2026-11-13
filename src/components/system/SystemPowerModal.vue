@@ -25,6 +25,19 @@
             {{ $t('components.settings.system.shutdown') }}
           </button>
         </div>
+        <div class="border-t border-line pt-4 space-y-2">
+          <p class="text-content-muted text-sm text-center">
+            {{ $t('components.secureObservatory.powerHint') }}
+          </p>
+          <button
+            class="tns-btn-secondary gap-2"
+            data-testid="power-end-night"
+            @click="openEndNight"
+          >
+            <MoonIcon class="h-5 w-5 shrink-0" />
+            {{ $t('components.secureObservatory.open') }}
+          </button>
+        </div>
       </div>
 
       <!-- Step 2: confirm -->
@@ -36,12 +49,33 @@
               : $t('components.settings.system.confirmRestart')
           }}
         </p>
+
+        <!-- What the shutdown would leave as it is -->
+        <div
+          v-if="rigWarnings.length"
+          class="rounded border border-status-warn/50 bg-status-warn/10 p-3 space-y-2"
+          data-testid="power-rig-warnings"
+        >
+          <p class="text-sm font-medium text-status-warn">
+            {{ $t('components.rigChecks.shutdownTitle') }}
+          </p>
+          <ul class="list-disc pl-5 text-sm text-content space-y-1">
+            <li v-for="warning in rigWarnings" :key="warning.key">
+              {{ $t(`components.rigChecks.${warning.key}`, warning.params) }}
+            </li>
+          </ul>
+          <button class="tns-btn-secondary gap-2" @click="openEndNight">
+            <MoonIcon class="h-5 w-5 shrink-0" />
+            {{ $t('components.rigChecks.endNightFirst') }}
+          </button>
+        </div>
+
         <div class="flex justify-end gap-3">
           <button @click="cancel" class="tns-btn-secondary w-auto!">
             {{ $t('common.cancel') }}
           </button>
-          <button @click="execute" class="tns-btn-primary w-auto!">
-            {{ $t('common.confirm') }}
+          <button @click="execute" class="tns-btn-danger w-auto!">
+            {{ confirmLabel }}
           </button>
         </div>
       </div>
@@ -69,9 +103,13 @@
 <script setup>
 import { ref, computed, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ArrowPathIcon, PowerIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, MoonIcon, PowerIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import apiService from '@/services/apiService';
+import { apiStore } from '@/store/store';
+import { useSequenceStore } from '@/store/sequenceStore';
+import { useSecureObservatoryStore } from '@/store/secureObservatoryStore';
+import { shutdownRigCheck } from '@/utils/rigChecks';
 
 // Restart / shutdown of the backend host. With `initialAction` the picker is
 // skipped and the dialog opens directly on the confirmation (settings page);
@@ -87,7 +125,37 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 const { t } = useI18n();
 
+const store = apiStore();
+const sequenceStore = useSequenceStore();
+const secureObservatory = useSecureObservatoryStore();
+
 const action = ref(props.initialAction);
+
+// Shutting the host down under a running sequence, an unparked mount or a cold camera leaves
+// the rig like that until someone gets to it.
+const rigWarnings = computed(() =>
+  shutdownRigCheck(
+    {
+      mountInfo: store.mountInfo,
+      cameraInfo: store.cameraInfo,
+      domeInfo: store.domeInfo,
+      flatdeviceInfo: store.flatdeviceInfo,
+    },
+    sequenceStore.sequenceRunning
+  )
+);
+
+const confirmLabel = computed(() => {
+  if (!rigWarnings.value.length) return t('common.confirm');
+  return action.value === 'shutdown'
+    ? t('components.rigChecks.shutdownAnyway')
+    : t('components.rigChecks.restartAnyway');
+});
+
+function openEndNight() {
+  emit('close');
+  secureObservatory.openDialog();
+}
 const step = ref(props.initialAction ? 'confirm' : 'choose');
 
 const RESTART_RELOAD_DELAY_MS = 10000;

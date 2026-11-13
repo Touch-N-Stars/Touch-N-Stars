@@ -12,10 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS alarm: PINS now beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current or a dew heater without data, and a full disk. It is on by default and sounds only while a sequence runs, except for PowerBox over current and dew heater alarms. Needs the updated Touch'N'Stars plugin; with an older plugin the PowerBox no longer beeps on events.
 - PINS alarm: The new Alarm section under PINS-Devices, Configuration, PowerBox switches the alarm on or off, chooses the events, sets volume and length, lists entries that never beep and shows the recent alarms. A test beep reports whether the PowerBox really beeped, and the alarm can be muted for 30 minutes, also from the error notification.
 - Flat assistant: While flats or dark flats are being taken, the status now shows the exposure time the assistant chose next to the last measured ADU, so there is no need to switch to the Monitor tab to see it.
+- End night: One button on the equipment page and in the power menu ends the night. The box stops the sequence, the exposure and guiding, parks the mount, closes the dome and the flat panel cover, warms up the camera and disconnects everything, and keeps going when the phone drops off Wi-Fi. Each step can be switched off, and the dialog shows how far it got. The dome only closes over a parked mount, and devices stay connected when a step failed. It needs the updated Touch'N'Stars plugin.
+- Sequence: Before the start, the app checks the rig and warns about an unsafe safety monitor, a parked or not tracking mount, a camera that is not at its temperature, a missing guider, a missing image folder or less than 5 GB of free disk space. Steps the sequence does itself, like unparking or cooling, are not warned about. Start anyway is always possible.
+- System: Restarting or shutting down the box warns first when a sequence runs, the mount is not parked, the camera is cooled or the dome or flat panel cover is open, and offers to end the night first.
 
 ### Removed
 
 - PINS: The app no longer beeps the PowerBox itself on warnings and errors; PINS does it now (see Added). The earlier beep settings of the app are not taken over.
+
+### Fixed
+
+- Sequence: A failed stop or start of the sequence now shows an error instead of failing silently.
 
 ## [App6.5.0 - beta 25] - 2026-11-12
 

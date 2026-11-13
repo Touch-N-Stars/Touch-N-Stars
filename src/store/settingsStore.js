@@ -242,6 +242,8 @@ export const useSettingsStore = defineStore('settings', {
     screenLock: {
       active: false,
     },
+    // The steps last chosen in the "End night" dialog; null until it was used once.
+    endNight: null,
   }),
   getters: {
     currentImageRotation(state) {

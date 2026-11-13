@@ -234,6 +234,9 @@
     <!-- Meridian flip day test: app level, so a running test survives a page reload -->
     <MeridianFlipDayTest v-if="flipTestStore.visible" @close="flipTestStore.close()" />
 
+    <!-- End of night shutdown: app level, its progress outlives the page it was started on -->
+    <SecureObservatoryDialog />
+
     <!-- Dialog Modal -->
     <DialogModal />
 
@@ -355,6 +358,7 @@ import { useOrientation } from '@/composables/useOrientation';
 import { useStageWindow } from '@/composables/useStageWindow';
 import { useRoute } from 'vue-router';
 import DialogModal from '@/components/app/DialogModal.vue';
+import SecureObservatoryDialog from '@/components/system/SecureObservatoryDialog.vue';
 import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
 import PickerOverlay from '@/components/helpers/PickerOverlay.vue';
 import Modal from '@/components/helpers/Modal.vue';
