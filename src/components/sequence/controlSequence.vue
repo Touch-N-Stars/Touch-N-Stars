@@ -287,6 +287,40 @@
       </template>
     </Modal>
 
+    <!-- Preflight: what looks wrong before the start -->
+    <Modal
+      :show="preflightWarnings.length > 0"
+      max-width="max-w-md"
+      @close="answerPreflight(false)"
+    >
+      <template #header>
+        <h2 class="text-xl font-bold text-status-warn">
+          {{ $t('components.rigChecks.preflightTitle') }}
+        </h2>
+      </template>
+      <template #body>
+        <div class="w-full flex flex-col gap-4" data-testid="preflight-warnings">
+          <ul class="list-disc pl-5 text-sm text-content space-y-1">
+            <li v-for="warning in preflightWarnings" :key="warning.key">
+              {{ $t(`components.rigChecks.${warning.key}`, warning.params) }}
+            </li>
+          </ul>
+          <div class="flex justify-end gap-3">
+            <button class="tns-btn-secondary w-auto!" @click="answerPreflight(false)">
+              {{ $t('general.cancel') }}
+            </button>
+            <button
+              class="tns-btn-primary w-auto!"
+              data-testid="preflight-start-anyway"
+              @click="answerPreflight(true)"
+            >
+              {{ $t('components.rigChecks.startAnyway') }}
+            </button>
+          </div>
+        </div>
+      </template>
+    </Modal>
+
     <!-- Reset Confirmation Dialog -->
     <Modal
       :show="showResetConfirmation"
@@ -322,6 +356,7 @@ import { useOrientation } from '@/composables/useOrientation';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import { reportBackendRefusal } from '@/utils/backendErrors';
+import { sequencePreflight } from '@/utils/rigChecks';
 import { useI18n } from 'vue-i18n';
 import {
   FolderOpenIcon,
@@ -518,7 +553,39 @@ async function saveCurrentFile() {
   }
 }
 
+// Warnings of the check before the start; the dialog is open while the list is not empty.
+const preflightWarnings = ref([]);
+let preflightResolver = null;
+
+function answerPreflight(start) {
+  preflightWarnings.value = [];
+  preflightResolver?.(start);
+  preflightResolver = null;
+}
+
+// Silent when everything looks fine; otherwise the user decides. Never blocks: many
+// sequences unpark, cool and start guiding themselves.
+async function confirmPreflight() {
+  const imageDisk = await apiService.fetchImageDisk().catch(() => null);
+  const warnings = sequencePreflight(
+    {
+      mountInfo: store.mountInfo,
+      cameraInfo: store.cameraInfo,
+      guiderInfo: store.guiderInfo,
+      safetyInfo: store.safetyInfo,
+    },
+    sequenceStore.sequenceInfo,
+    imageDisk
+  );
+  if (warnings.length === 0) return true;
+  return new Promise((resolve) => {
+    preflightResolver = resolve;
+    preflightWarnings.value = warnings;
+  });
+}
+
 async function startSequence() {
+  if (!(await confirmPreflight())) return;
   console.log('Starting sequence');
   sequenceStore.setSequenceRunning(true);
   try {
@@ -533,6 +600,11 @@ async function startSequence() {
   } catch (error) {
     console.log('Error:', error);
     sequenceStore.setSequenceRunning(false);
+    toastStore.showToast({
+      type: 'error',
+      title: t('components.rigChecks.startFailed'),
+      message: String(error?.message || error),
+    });
   }
 }
 
@@ -546,7 +618,14 @@ async function stopSequence() {
       await sequenceStore.getSequenceInfo();
       sequenceStore.setSequenceRunning(false);
     } else {
+      // The user believes the rig has stopped: say so loudly when it has not.
       console.error('Failed to stop sequence:', data.Error);
+      toastStore.showToast({
+        type: 'error',
+        title: t('components.rigChecks.stopFailed'),
+        message: data.Error || '',
+        autoClose: false,
+      });
     }
   } catch (error) {
     console.log('Error:', error);
