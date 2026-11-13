@@ -27,6 +27,7 @@
                 <div class="mt-5">
                   <controlMount />
                 </div>
+                <MountSkyChart class="mt-5" />
               </div>
             </div>
           </div>
@@ -99,6 +100,7 @@ import TppaPage from '@/components/tppa/TppaPage.vue';
 import TargetSearch from '@/components/framing/TargetSearch.vue';
 import infoMount from '@/components/mount/infoMount.vue';
 import controlMount from '@/components/mount/controlMount.vue';
+import MountSkyChart from '@/components/mount/MountSkyChart.vue';
 import MeridianFlipSettings from '@/components/mount/settings/MeridianFlipSettings.vue';
 import OnStepXSettings from '@/components/mount/settings/OnStepXSettings.vue';
 import { apiStore } from '@/store/store';

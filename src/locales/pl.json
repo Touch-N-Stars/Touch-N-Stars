@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montaż",
       "slew": "Obrót",
+      "skyChart": {
+        "title": "Aktualna pozycja montażu",
+        "parked": "Montaż jest zaparkowany, więc nie ma pozycji do wyświetlenia."
+      },
       "location_sync": {
         "title": "Ustawienia synchronizacji lokalizacji",
         "confirmationMessage": "Jeśli 'Location Sync' w NINA jest ustawione na 'Prompt', przed wysłaniem współrzędnych do teleskopu może pojawić się okno potwierdzenia. Aby tego uniknąć i umożliwić TNS automatyczne ustawianie współrzędnych, zalecamy zmianę ustawienia na 'Sync to Telescope'",
@@ -4996,6 +5000,7 @@
       "button_slew_to_zenith": "Obróć do zenitu",
       "keep_closed": "Trzymaj panel flat zamknięty",
       "status_adu_live": "Ostatni zmierzony ADU: {adu}",
+      "status_exposure_live": "Naświetlanie: {time} s",
       "status_failed": "Niepowodzenie",
       "status_running": "W trakcie",
       "status_stopped": "Zatrzymano",

@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "赤道仪",
       "slew": "转动",
+      "skyChart": {
+        "title": "赤道仪当前位置",
+        "parked": "赤道仪已停靠，没有可显示的位置。"
+      },
       "location_sync": {
         "title": "位置同步设置",
         "confirmationMessage": "如果NINA中的\"位置同步\"设置为\"提示\"，在坐标发送到望远镜之前可能会出现确认窗口。为了避免这种情况并允许TNS自动设置坐标，我们建议将设置更改为\"与望远镜同步\"",
@@ -4996,6 +5000,7 @@
       "button_slew_to_zenith": "转向天顶",
       "keep_closed": "保持平板关闭",
       "status_adu_live": "最后测量的 ADU：{adu}",
+      "status_exposure_live": "曝光：{time} 秒",
       "status_failed": "失败",
       "status_running": "运行中",
       "status_stopped": "已停止",

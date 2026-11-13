@@ -5,7 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App6.5.0 - beta 25] - 2026-11-06
+## [App6.5.0 - beta 26] - 2026-11-13
+
+### Added
+
+- PINS alarm: PINS now beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current or a dew heater without data, and a full disk. It is on by default and sounds only while a sequence runs, except for PowerBox over current and dew heater alarms. Needs the updated Touch'N'Stars plugin; with an older plugin the PowerBox no longer beeps on events.
+- PINS alarm: The new Alarm section under PINS-Devices, Configuration, PowerBox switches the alarm on or off, chooses the events, sets volume and length, lists entries that never beep and shows the recent alarms. A test beep reports whether the PowerBox really beeped, and the alarm can be muted for 30 minutes, also from the error notification.
+- Flat assistant: While flats or dark flats are being taken, the status now shows the exposure time the assistant chose next to the last measured ADU, so there is no need to switch to the Monitor tab to see it.
+
+### Removed
+
+- PINS: The app no longer beeps the PowerBox itself on warnings and errors; PINS does it now (see Added). The earlier beep settings of the app are not taken over.
+
+## [App6.5.0 - beta 25] - 2026-11-12
 
 ### Added
 
@@ -17,8 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Native Guider (PINS): The RA worm can be given as its period in seconds instead of the wheel's tooth count. A period outside the 180 to 1200 s the guider takes is flagged.
 - Atlas: The NSNS continuum (starlight without the emission lines) can be downloaded as another sky background; it needs the updated Touch'N'Stars plugin.
 - Native Guider (PINS): The guider's Settings tab now shows the settle settings (pixel tolerance, minimum settle time and timeout) in the Dither group, in Basic and Advanced. Until now they were only in the guider settings on the equipment page. A short note explains that the tolerance is in guide camera pixels and that the exposure starts anyway once the timeout runs out.
-- PINS alarm: PINS now beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current or a dew heater without data, and a full disk. It is on by default and sounds only while a sequence runs, except for PowerBox over current and dew heater alarms. Needs the updated Touch'N'Stars plugin; with an older plugin the PowerBox no longer beeps on events.
-- PINS alarm: The new Alarm section under PINS-Devices, Configuration, PowerBox switches the alarm on or off, chooses the events, sets volume and length, lists entries that never beep and shows the recent alarms. A test beep reports whether the PowerBox really beeped, and the alarm can be muted for 30 minutes, also from the error notification.
 
 ### Changed
 
@@ -41,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Camera: The camera settings, the cooler panel and the capture controls now use the same colours as the rest of the app; cooling, holding and warming keep their own colours.
 - Interface: The navigation bar, the connection screen at startup and the PINS upgrade and time warning dialogs now use the same colours as the rest of the app.
 - Interface: The flat device, filter wheel, rotator and dome controls and settings, the status bar with its progress panel, the instance switcher, the favourite targets, the session timeline, the plugin install dialog, the power dialog and the camera and guider steps of the setup wizard now use the same colours as the rest of the app. Resetting the rotator position uses the same red button as other stopping actions.
+- Native Guider (PINS): The "Frame processing slow" alert now appears only when guide frames stay slow for a minute. A single slow frame is shown as a separate, harmless note with an explanation. It needs the updated PINS guider. Developed by @aduffeck.
+- Logfile Collector (plugin): A failed upload now shows the status and the reason given by the server, for example a size limit, instead of only "Upload failed". Developed by @acocalypso.
 
 ### Fixed
 
@@ -54,10 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: The hotspot no longer shows a Wi-Fi signal of 0 percent. It reports no signal, so the card now says the signal is unavailable.
 - PINS: After saving the hotspot settings, the result shows Yes or No instead of an untranslated text.
 - PINS: The swap size notes about a pending reboot and a successful save are now shown in the warning and success colours.
-
-### Removed
-
-- PINS: The app no longer beeps the PowerBox itself on warnings and errors; PINS does it now (see Added). The earlier beep settings of the app are not taken over.
+- PINS: The rig network mode in the Wi-Fi card (automatic fallback or field hotspot, its status and the search for the rig after a switch) is now shown in the app language instead of always in English.
 
 ## [App6.5.0 - beta 24] - 2026-11-05
 

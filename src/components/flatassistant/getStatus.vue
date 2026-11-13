@@ -39,8 +39,16 @@
           :style="{ width: progressPercent + '%' }"
         />
       </div>
-      <div v-if="flatsStore.currentADU !== null" class="text-xs text-content-muted">
-        {{ $t('components.flatassistant.status_adu_live', { adu: flatsStore.currentADU }) }}
+      <div
+        v-if="currentExposure !== null || flatsStore.currentADU !== null"
+        class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-content-muted"
+      >
+        <span v-if="currentExposure !== null">
+          {{ $t('components.flatassistant.status_exposure_live', { time: currentExposure }) }}
+        </span>
+        <span v-if="flatsStore.currentADU !== null">
+          {{ $t('components.flatassistant.status_adu_live', { adu: flatsStore.currentADU }) }}
+        </span>
       </div>
     </template>
 
@@ -74,11 +82,24 @@
 <script setup>
 import { computed } from 'vue';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
+import { apiStore } from '@/store/store';
 import { useI18n } from 'vue-i18n';
 import { CheckCircleIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/outline';
+import { lastFlatExposure } from './flatExposure';
 
 const flatsStore = useFlatassistantStore();
+const store = apiStore();
 const { t } = useI18n();
+
+// Exposure time the flat assistant settled on, read from the newest saved frame in the
+// image history. The exposure search itself saves nothing, so the newest FLAT entry is the
+// one the run actually uses. Only trusted once this run (or this filter) has saved a frame,
+// otherwise an older flat from the history would be shown.
+const currentExposure = computed(() => {
+  if (flatsStore.status.WaitingForCover) return null;
+  if (!(flatsStore.status.CompletedIterations > 0)) return null;
+  return lastFlatExposure(store.imageHistoryInfo, flatsStore.currentRunType === 'darks');
+});
 
 const iterationsTracked = computed(
   () => flatsStore.status.TotalIterations > 0 && flatsStore.status.CompletedIterations >= 0

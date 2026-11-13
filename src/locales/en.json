@@ -1473,6 +1473,10 @@
     "mount": {
       "title": "Mount",
       "slew": "Slew",
+      "skyChart": {
+        "title": "Current mount position",
+        "parked": "The mount is parked, so there is no position to chart."
+      },
       "location_sync": {
         "title": "Location sync settings",
         "confirmationMessage": "If 'Location Sync' in NINA is set to 'Prompt', a confirmation window may appear before coordinates are sent to the telescope. To avoid this and allow TNS to automatically set the coordinates, we recommend changing the setting to 'Sync to Telescope'",
@@ -5053,6 +5057,7 @@
       "status_darks_skipped": "Darks skipped.",
       "status_waiting_cover": "Waiting for the scope to be covered before the darks",
       "status_adu_live": "Last measured ADU: {adu}",
+      "status_exposure_live": "Exposure: {time} s",
       "target": "Target",
       "cover_scope_title": "Cover your scope now",
       "cover_scope_message": "Cover your scope now and press OK to start taking the darks.",

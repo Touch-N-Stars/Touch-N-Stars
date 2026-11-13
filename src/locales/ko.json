@@ -1473,6 +1473,10 @@
     "mount": {
       "title": "마운트",
       "slew": "슬루",
+      "skyChart": {
+        "title": "현재 마운트 위치",
+        "parked": "마운트가 파킹되어 있어 표시할 위치가 없습니다."
+      },
       "location_sync": {
         "title": "위치 동기화 설정",
         "confirmationMessage": "NINA의 'Location Sync'가 'Prompt'로 설정되어 있으면 좌표를 망원경으로 보내기 전에 확인 창이 나타날 수 있습니다. 이를 피하고 TNS가 좌표를 자동으로 설정하도록 하려면 'Sync to Telescope'로 변경하는 것을 권장합니다",
@@ -5053,6 +5057,7 @@
       "status_darks_skipped": "다크를 건너뜀.",
       "status_waiting_cover": "다크 촬영 전 망원경 덮개를 기다리는 중",
       "status_adu_live": "마지막 측정 ADU: {adu}",
+      "status_exposure_live": "노출: {time}초",
       "target": "목표",
       "cover_scope_title": "지금 망원경을 덮으세요",
       "cover_scope_message": "지금 망원경을 덮고 OK를 눌러 다크 촬영을 시작하세요.",

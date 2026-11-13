@@ -1432,6 +1432,10 @@
     "mount": {
       "title": "Montatura",
       "slew": "Spostamento",
+      "skyChart": {
+        "title": "Posizione attuale della montatura",
+        "parked": "La montatura è parcheggiata, quindi non c'è alcuna posizione da mostrare."
+      },
       "location_sync": {
         "title": "Impostazioni di sincronizzazione della posizione",
         "confirmationMessage": "Se la \"sincronizzazione della posizione\" in Nina è impostata su \"prompt\", può apparire una finestra di conferma prima che le coordinate vengano inviate al telescopio. Per evitare questo e consentire a TNS di impostare automaticamente le coordinate, ti consigliamo di modificare l'impostazione in \"Sincronizzazione in Telescope\"",
@@ -4996,6 +5000,7 @@
       "button_slew_to_zenith": "Sposta allo zenit",
       "keep_closed": "Tieni chiuso il pannello flat",
       "status_adu_live": "Ultima ADU misurata: {adu}",
+      "status_exposure_live": "Esposizione: {time} s",
       "status_failed": "Fallito",
       "status_running": "In esecuzione",
       "status_stopped": "Interrotto",

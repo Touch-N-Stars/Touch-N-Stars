@@ -1473,6 +1473,10 @@
     "mount": {
       "title": "Montierung",
       "slew": "Schwenken",
+      "skyChart": {
+        "title": "Aktuelle Position der Montierung",
+        "parked": "Die Montierung ist geparkt, daher gibt es keine Position zum Anzeigen."
+      },
       "location_sync": {
         "title": "Standortsynchronisierungseinstellungen",
         "confirmationMessage": "Wenn die Option ‚Location Sync‘ in NINA auf ‚Prompt‘ gesetzt ist, kann es sein, dass vor dem Übertragen der Koordinaten an das Teleskop ein Bestätigungsfenster erscheint. Um dies zu vermeiden und TNS die automatische Übergabe der Koordinaten zu ermöglichen, empfehlen wir, die Einstellung auf ‚Sync to Telescope‘ zu ändern.",
@@ -5041,6 +5045,7 @@
       "status_darks_skipped": "Darks übersprungen.",
       "status_waiting_cover": "Warte auf das Abdecken des Teleskops vor den Darks",
       "status_adu_live": "Letzter gemessener ADU: {adu}",
+      "status_exposure_live": "Belichtung: {time} s",
       "cover_scope_title": "Teleskop jetzt abdecken",
       "cover_scope_message": "Decke dein Teleskop jetzt ab und druecke OK, um mit den Darks zu beginnen.",
       "cover_scope_confirm": "OK",
