@@ -61,7 +61,9 @@ export function usePinsWifiInterfaces({ t, appendLog, getIp, status }) {
       const data = (await apiPinsService.getPinsWifiInterfaces()) || {};
       selectedClientInterface.value = data.client_interface || '';
       selectedHotspotInterface.value = data.hotspot_interface || '';
-      reconcileSelectedWifiInterfaces();
+      // No reconcile here: this runs in parallel with loadWifiAdapters, and reconciling against
+      // a not yet loaded (empty) adapter list wipes the configured roles back to wlan0/wlan0.
+      // loadWifiInterfaceConfig reconciles once both requests are done.
     } catch (error) {
       console.error(error);
       appendLog(t('plugins.pins.logs.wifiInterfacesLoadFailed', { message: error.message }));
