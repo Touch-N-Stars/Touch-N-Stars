@@ -287,4 +287,59 @@ export default {
     const { API_URL } = getUrls();
     return simpleGetRequest(`${API_URL}system/restart`);
   },
+
+  //-------------------------------------  End of night ---------------------------------
+  // The shutdown runs on the server (plugin >= this feature), so a phone that drops off
+  // Wi-Fi halfway does not leave the mount unparked. Each call resolves to
+  // { supported, status }: the error interceptor turns failures into resolved envelopes,
+  // so a 404 here means the plugin is too old for the endpoint.
+  async secureObservatoryStatus() {
+    const { API_URL } = getUrls();
+    const response = await axios.get(`${API_URL}secure-observatory`, {
+      timeout: DEFAULT_TIMEOUT,
+      suppressErrorToast: true,
+    });
+    return secureObservatoryResult(response);
+  },
+
+  async secureObservatoryStart(options) {
+    const { API_URL } = getUrls();
+    const response = await axios.post(`${API_URL}secure-observatory`, options ?? {}, {
+      timeout: DEFAULT_TIMEOUT,
+      suppressErrorToast: true,
+    });
+    return secureObservatoryResult(response);
+  },
+
+  async secureObservatoryCancel() {
+    const { API_URL } = getUrls();
+    const response = await axios.post(
+      `${API_URL}secure-observatory/cancel`,
+      {},
+      { timeout: DEFAULT_TIMEOUT, suppressErrorToast: true }
+    );
+    return secureObservatoryResult(response);
+  },
+
+  // Free space where the frames are saved: { path, exists, freeBytes, totalBytes }, or null
+  // when the plugin does not have the endpoint or the request failed.
+  async fetchImageDisk() {
+    const { API_URL } = getUrls();
+    const response = await axios.get(`${API_URL}preflight/image-disk`, {
+      timeout: DEFAULT_TIMEOUT,
+      suppressErrorToast: true,
+    });
+    const data = response?.data;
+    if (response?.status !== 200 || !data || data.Success === false) return null;
+    return data;
+  },
 };
+
+function secureObservatoryResult(response) {
+  if (response?.status === 404) return { supported: false, status: null };
+  const data = response?.data;
+  if (response?.status !== 200 || !data || data.Success === false || !data.state) {
+    return { supported: true, status: null, error: data?.Error || data?.error || null };
+  }
+  return { supported: true, status: data };
+}
