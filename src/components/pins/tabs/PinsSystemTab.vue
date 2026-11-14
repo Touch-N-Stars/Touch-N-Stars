@@ -5,6 +5,7 @@
     <!-- Raspberry Pi system locale, regulatory domain, timezone and keyboard -->
     <PinsLocalizationSettings v-if="store.isPINS" />
     <PinsSwapSettings v-if="store.isPINS" />
+    <PinsNotificationSettings v-if="store.isPINS" />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import { apiStore } from '@/store/store';
 import TimeSyncSettings from '../system/TimeSyncSettings.vue';
 import PinsLocalizationSettings from '../system/PinsLocalizationSettings.vue';
 import PinsSwapSettings from '../system/PinsSwapSettings.vue';
+import PinsNotificationSettings from '../system/PinsNotificationSettings.vue';
 
 const store = apiStore();
 </script>
