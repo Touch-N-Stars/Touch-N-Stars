@@ -8,6 +8,7 @@ const POLL_MS = 2000;
 // The step ids the plugin reports, in the order it runs them.
 export const SECURE_STEPS = [
   'stop_sequence',
+  'stop_activities',
   'abort_exposure',
   'stop_guiding',
   'park_mount',
@@ -18,7 +19,7 @@ export const SECURE_STEPS = [
 ];
 
 // The steps the user can switch off, with the request field each one maps to. Stopping the
-// sequence, the exposure and guiding always happens.
+// sequence, other running jobs (autofocus, flats, ...), the exposure and guiding always happens.
 export const SECURE_OPTIONS = [
   { step: 'park_mount', field: 'park' },
   { step: 'close_dome', field: 'closeDome' },

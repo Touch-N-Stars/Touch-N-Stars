@@ -5535,7 +5535,7 @@
       "open": "Terminar a noite…",
       "running": "A terminar a noite…",
       "intro": "Corre no computador do telescópio, por isso continua mesmo que este telemóvel perca o Wi-Fi ou entre em suspensão. Os passos de dispositivos não ligados são ignorados.",
-      "always": "Para sempre a sequência, a exposição e a guiagem.",
+      "always": "Interrompe sempre a sequência, o autofoco, os flats e outras tarefas em curso, a exposição e a guiagem.",
       "start": "Terminar a noite",
       "stop": "Parar",
       "again": "Escolher passos",
@@ -5547,6 +5547,7 @@
       "showDetails": "Detalhes",
       "steps": {
         "stop_sequence": "Parar a sequência",
+        "stop_activities": "Parar autofoco, flats e outras tarefas",
         "abort_exposure": "Abortar a exposição",
         "stop_guiding": "Parar a guiagem",
         "park_mount": "Estacionar a montagem",

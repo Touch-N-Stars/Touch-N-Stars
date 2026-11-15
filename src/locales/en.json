@@ -5535,7 +5535,7 @@
       "open": "End night…",
       "running": "Ending the night…",
       "intro": "Runs on the box, so it keeps going if this phone loses Wi-Fi or goes to sleep. Steps for devices that are not connected are skipped.",
-      "always": "Always stops the sequence, the exposure and guiding.",
+      "always": "Always stops the sequence, autofocus, flats and other running jobs, the exposure and guiding.",
       "start": "End night",
       "stop": "Stop",
       "again": "Choose steps",
@@ -5547,6 +5547,7 @@
       "showDetails": "Details",
       "steps": {
         "stop_sequence": "Stop the sequence",
+        "stop_activities": "Stop autofocus, flats and other jobs",
         "abort_exposure": "Abort the exposure",
         "stop_guiding": "Stop guiding",
         "park_mount": "Park the mount",

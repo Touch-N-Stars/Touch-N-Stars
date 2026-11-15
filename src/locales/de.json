@@ -5535,7 +5535,7 @@
       "open": "Nacht beenden…",
       "running": "Nacht wird beendet…",
       "intro": "Läuft auf der Box und macht weiter, auch wenn dein Handy das WLAN verliert oder in den Ruhezustand geht. Schritte für nicht verbundene Geräte werden übersprungen.",
-      "always": "Stoppt immer Sequenz, Belichtung und Guiding.",
+      "always": "Stoppt immer Sequenz, Autofokus, Flats und andere laufende Vorgänge, Belichtung und Guiding.",
       "start": "Nacht beenden",
       "stop": "Stopp",
       "again": "Schritte wählen",
@@ -5547,6 +5547,7 @@
       "showDetails": "Details",
       "steps": {
         "stop_sequence": "Sequenz stoppen",
+        "stop_activities": "Autofokus, Flats und andere Vorgänge stoppen",
         "abort_exposure": "Belichtung abbrechen",
         "stop_guiding": "Guiding stoppen",
         "park_mount": "Montierung parken",

@@ -5535,7 +5535,7 @@
       "open": "Termina la notte…",
       "running": "Chiusura della notte…",
       "intro": "Gira sul computer del telescopio, quindi continua anche se questo telefono perde il Wi-Fi o va in standby. I passi per i dispositivi non connessi vengono saltati.",
-      "always": "Ferma sempre la sequenza, l'esposizione e la guida.",
+      "always": "Ferma sempre la sequenza, l'autofocus, i flat e gli altri processi in corso, l'esposizione e la guida.",
       "start": "Termina la notte",
       "stop": "Ferma",
       "again": "Scegli i passi",
@@ -5547,6 +5547,7 @@
       "showDetails": "Dettagli",
       "steps": {
         "stop_sequence": "Ferma la sequenza",
+        "stop_activities": "Ferma autofocus, flat e altri processi",
         "abort_exposure": "Interrompi l'esposizione",
         "stop_guiding": "Ferma la guida",
         "park_mount": "Parcheggia la montatura",

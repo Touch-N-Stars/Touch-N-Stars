@@ -5535,7 +5535,7 @@
       "open": "Nacht afsluiten…",
       "running": "Nacht wordt afgesloten…",
       "intro": "Draait op de box, dus het gaat door als deze telefoon de wifi verliest of in slaap valt. Stappen voor apparaten die niet verbonden zijn worden overgeslagen.",
-      "always": "Stopt altijd de sequentie, de opname en guiding.",
+      "always": "Stopt altijd de sequentie, autofocus, flats en andere lopende taken, de opname en het guiden.",
       "start": "Nacht afsluiten",
       "stop": "Stoppen",
       "again": "Stappen kiezen",
@@ -5547,6 +5547,7 @@
       "showDetails": "Details",
       "steps": {
         "stop_sequence": "Sequentie stoppen",
+        "stop_activities": "Autofocus, flats en andere taken stoppen",
         "abort_exposure": "Opname afbreken",
         "stop_guiding": "Guiding stoppen",
         "park_mount": "Montering parkeren",

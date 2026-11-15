@@ -5535,7 +5535,7 @@
       "open": "Acaba la nit…",
       "running": "Acabant la nit…",
       "intro": "S'executa a l'ordinador del telescopi, així que continua encara que aquest mòbil perdi la Wi-Fi o entri en repòs. Els passos dels dispositius no connectats s'ometen.",
-      "always": "Sempre atura la seqüència, l'exposició i el guiatge.",
+      "always": "Sempre atura la seqüència, l'enfocament automàtic, els flats i altres tasques en curs, l'exposició i el guiatge.",
       "start": "Acaba la nit",
       "stop": "Atura",
       "again": "Tria els passos",
@@ -5547,6 +5547,7 @@
       "showDetails": "Detalls",
       "steps": {
         "stop_sequence": "Atura la seqüència",
+        "stop_activities": "Atura l'enfocament automàtic, els flats i altres tasques",
         "abort_exposure": "Avorta l'exposició",
         "stop_guiding": "Atura el guiatge",
         "park_mount": "Aparca la muntura",

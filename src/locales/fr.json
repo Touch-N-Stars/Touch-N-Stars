@@ -5535,7 +5535,7 @@
       "open": "Terminer la nuit…",
       "running": "Fin de nuit en cours…",
       "intro": "S'exécute sur le boîtier : continue même si ce téléphone perd le Wi-Fi ou se met en veille. Les étapes des appareils non connectés sont ignorées.",
-      "always": "Arrête toujours la séquence, la pose et le guidage.",
+      "always": "Arrête toujours la séquence, l'autofocus, les flats et les autres tâches en cours, la pose et le guidage.",
       "start": "Terminer la nuit",
       "stop": "Arrêter",
       "again": "Choisir les étapes",
@@ -5547,6 +5547,7 @@
       "showDetails": "Détails",
       "steps": {
         "stop_sequence": "Arrêter la séquence",
+        "stop_activities": "Arrêter l'autofocus, les flats et les autres tâches",
         "abort_exposure": "Interrompre la pose",
         "stop_guiding": "Arrêter le guidage",
         "park_mount": "Parquer la monture",

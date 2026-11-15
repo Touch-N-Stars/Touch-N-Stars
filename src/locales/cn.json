@@ -5535,7 +5535,7 @@
       "open": "结束观测…",
       "running": "正在结束观测…",
       "intro": "在望远镜端的主机上运行，即使手机断开 Wi-Fi 或休眠也会继续。未连接设备的步骤会被跳过。",
-      "always": "始终会停止序列、曝光和导星。",
+      "always": "始终停止序列、自动对焦、平场及其他正在运行的任务、曝光和导星。",
       "start": "结束观测",
       "stop": "停止",
       "again": "选择步骤",
@@ -5547,6 +5547,7 @@
       "showDetails": "详情",
       "steps": {
         "stop_sequence": "停止序列",
+        "stop_activities": "停止自动对焦、平场和其他任务",
         "abort_exposure": "中止曝光",
         "stop_guiding": "停止导星",
         "park_mount": "停靠赤道仪",

@@ -5535,7 +5535,7 @@
       "open": "Ukončit noc…",
       "running": "Ukončování noci…",
       "intro": "Běží v počítači u dalekohledu, takže pokračuje, i když telefon ztratí Wi-Fi nebo usne. Kroky pro nepřipojená zařízení se přeskočí.",
-      "always": "Vždy zastaví sekvenci, expozici a navádění.",
+      "always": "Vždy zastaví sekvenci, autofokus, flaty a další běžící úlohy, expozici a navádění.",
       "start": "Ukončit noc",
       "stop": "Zastavit",
       "again": "Vybrat kroky",
@@ -5547,6 +5547,7 @@
       "showDetails": "Podrobnosti",
       "steps": {
         "stop_sequence": "Zastavit sekvenci",
+        "stop_activities": "Zastavit autofokus, flaty a další úlohy",
         "abort_exposure": "Přerušit expozici",
         "stop_guiding": "Zastavit navádění",
         "park_mount": "Zaparkovat montáž",

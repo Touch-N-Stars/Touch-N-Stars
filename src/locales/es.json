@@ -5535,7 +5535,7 @@
       "open": "Terminar la noche…",
       "running": "Terminando la noche…",
       "intro": "Se ejecuta en el ordenador del telescopio, así que sigue aunque este móvil pierda el Wi-Fi o se bloquee. Se omiten los pasos de los dispositivos no conectados.",
-      "always": "Siempre detiene la secuencia, la exposición y el guiado.",
+      "always": "Siempre detiene la secuencia, el autoenfoque, los flats y otras tareas en curso, la exposición y el guiado.",
       "start": "Terminar la noche",
       "stop": "Detener",
       "again": "Elegir pasos",
@@ -5547,6 +5547,7 @@
       "showDetails": "Detalles",
       "steps": {
         "stop_sequence": "Detener la secuencia",
+        "stop_activities": "Detener autoenfoque, flats y otras tareas",
         "abort_exposure": "Cancelar la exposición",
         "stop_guiding": "Detener el guiado",
         "park_mount": "Aparcar la montura",

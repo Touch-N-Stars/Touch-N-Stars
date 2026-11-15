@@ -5535,7 +5535,7 @@
       "open": "Zakończ noc…",
       "running": "Kończenie nocy…",
       "intro": "Działa na komputerze przy teleskopie, więc nie przerwie się, gdy telefon straci Wi-Fi lub się uśpi. Kroki dla niepodłączonych urządzeń są pomijane.",
-      "always": "Zawsze zatrzymuje sekwencję, ekspozycję i prowadzenie.",
+      "always": "Zawsze zatrzymuje sekwencję, autofokus, flaty i inne trwające zadania, ekspozycję oraz prowadzenie.",
       "start": "Zakończ noc",
       "stop": "Zatrzymaj",
       "again": "Wybierz kroki",
@@ -5547,6 +5547,7 @@
       "showDetails": "Szczegóły",
       "steps": {
         "stop_sequence": "Zatrzymaj sekwencję",
+        "stop_activities": "Zatrzymaj autofokus, flaty i inne zadania",
         "abort_exposure": "Przerwij ekspozycję",
         "stop_guiding": "Zatrzymaj prowadzenie",
         "park_mount": "Zaparkuj montaż",
