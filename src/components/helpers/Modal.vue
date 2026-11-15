@@ -45,10 +45,12 @@
              ~257px size-attribute width) makes the whole body wider than the dialog.
              justify-center-safe is the backstop for content that truly cannot shrink:
              plain justify-center centres the overflow and cuts off the *left* edge,
-             which scrolling can never reach. -->
+             which scrolling can never reach. items-start keeps the slot content at its own
+             height: with the default stretch it is clamped to the body's max height, so a
+             bordered card ends at the visible edge while its rows spill out below it. -->
         <div
           :class="[
-            'flex justify-center-safe *:min-w-0 mb-4 overflow-y-auto scrollbar-thin',
+            'flex items-start justify-center-safe *:min-w-0 mb-4 overflow-y-auto scrollbar-thin',
             props.bodyMaxHeight,
           ]"
         >
