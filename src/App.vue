@@ -680,13 +680,13 @@ const stageClasses = computed(() => ({
   'bg-ground transition-all': true,
   'mt-[calc(82px+var(--subnav-offset))] mx-[var(--stage-inset)] mb-[calc(var(--statusbar-height)+env(safe-area-inset-bottom)+var(--stage-inset))]':
     !isLandscape.value,
-  'ml-[calc(var(--nav-width)+var(--stage-inset))] mr-[var(--stage-inset)] mt-[calc(var(--stage-inset)+var(--subnav-offset))] mb-[calc(var(--statusbar-height)+var(--stage-inset))]':
+  'ml-[calc(var(--nav-width)+var(--stage-inset))] mr-(--stage-right) mt-[calc(var(--stage-inset)+var(--subnav-offset))] mb-[calc(var(--statusbar-height)+env(safe-area-inset-bottom)+var(--stage-inset))]':
     isLandscape.value,
 }));
 
 const stageStyle = computed(() => ({
   minHeight: isLandscape.value
-    ? 'calc(100dvh - var(--stage-inset) - var(--subnav-offset) - var(--statusbar-height) - var(--stage-inset))'
+    ? 'calc(100dvh - var(--stage-inset) - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))'
     : 'calc(100dvh - 82px - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))',
 }));
 

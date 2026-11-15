@@ -38,9 +38,12 @@
 
 /* Landscape navigation sidebar width — single source of truth.
    Referenced across App/StatusBar/SubNav/overlays via var(--nav-width) and
-   var(--nav-offset) (sidebar + 1rem gap). Change the width here only. */
+   var(--nav-offset) (sidebar + 1rem gap). Change the width here only.
+   The left safe-area inset (landscape iPhone with the camera cutout on the
+   left) is added on top, so the buttons keep their full 6rem column and
+   everything placed after the sidebar moves along. It is 0 everywhere else. */
 :root {
-  --nav-width: 6rem;
+  --nav-width: calc(6rem + env(safe-area-inset-left, 0px));
   --nav-offset: calc(var(--nav-width) + 1rem);
 
   /* Status bar height — single source of truth; the bar itself and all
@@ -56,6 +59,9 @@
 
   /* Stage layout: the content sheet sits inset inside the bar frame. */
   --stage-inset: 6px; /* frame rails left/right of the stage */
+  /* Right rail plus the right safe-area inset (landscape iPhone with the
+     camera cutout on the right), so the stage stays clear of it. */
+  --stage-right: calc(var(--stage-inset) + env(safe-area-inset-right, 0px));
   --stage-radius: 16px;
 
   /* Height the fixed SubNav occupies below the navbar. SubNav.vue raises this
@@ -332,7 +338,7 @@
    because it depends on the orientation-driven nav width. */
 @utility tns-status-panel {
   position: fixed;
-  right: var(--stage-inset);
+  right: var(--stage-right);
   bottom: calc(env(safe-area-inset-bottom, 0px) + var(--statusbar-height));
   border: 1px solid var(--color-cyan-700);
   border-bottom: none;
