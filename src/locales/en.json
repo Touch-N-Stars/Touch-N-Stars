@@ -6013,6 +6013,7 @@
       },
       "startUpgrade": "Start Upgrade",
       "upgrading": "Upgrading...",
+      "upgradeStatusUnknown": "The result of the last update could not be determined. Check for updates to see whether packages are still pending, then start the update again if needed.",
       "upgradeOverlay": {
         "title": "System Update In Progress",
         "running": "Updating Raspberry Pi packages. Please wait until the process is complete.",
@@ -6028,7 +6029,8 @@
         "idle": "Idle",
         "running": "Running",
         "success": "Success",
-        "failed": "Failed"
+        "failed": "Failed",
+        "unknown": "Unknown"
       },
       "logs": {
         "syncingTime": "Time difference detected: {diff}s. Syncing time...",

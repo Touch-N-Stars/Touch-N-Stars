@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "开始升级",
       "upgrading": "正在升级...",
+      "upgradeStatusUnknown": "无法确定上次更新的结果。请检查是否仍有待更新的软件包，如有需要请重新开始更新。",
       "terminalOutput": "终端输出",
       "clearOutput": "清除输出",
       "waiting": "正在接管控制... 等待命令...",
@@ -5818,7 +5819,8 @@
         "idle": "空闲",
         "running": "运行中",
         "success": "成功",
-        "failed": "失败"
+        "failed": "失败",
+        "unknown": "未知"
       },
       "logs": {
         "syncingTime": "检测到的时间差：{diff}s。正在同步时间...",

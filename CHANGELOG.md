@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- PINS: The system update no longer keeps showing Running after it has finished. The app now always ends on Success, Failed with the exit code, or Unknown when the result cannot be determined, for example after a power loss during the update, and the update button becomes usable again. A second update started from another device now follows the running one instead of starting again. Needs the updated pinsdaemon.
 - Focuser: After switching back to the app during an autofocus, the status messages and the autofocus graph now show up right away instead of only after the next focuser step, and the graph no longer shows points twice.
 
 ## [App6.5.0 - beta 26] - 2026-11-13

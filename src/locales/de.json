@@ -5840,6 +5840,7 @@
       },
       "startUpgrade": "Upgrade starten",
       "upgrading": "Aktualisiere...",
+      "upgradeStatusUnknown": "Das Ergebnis des letzten Updates konnte nicht ermittelt werden. Prüfe, ob noch Pakete ausstehen, und starte das Update bei Bedarf erneut.",
       "upgradeOverlay": {
         "title": "Systemaktualisierung läuft",
         "running": "Raspberry-Pi-Pakete werden aktualisiert. Bitte warten, bis der Vorgang abgeschlossen ist.",
@@ -5855,7 +5856,8 @@
         "idle": "Bereit",
         "running": "Läuft",
         "success": "Erfolg",
-        "failed": "Fehlgeschlagen"
+        "failed": "Fehlgeschlagen",
+        "unknown": "Unbekannt"
       },
       "logs": {
         "syncingTime": "Zeitunterschied erkannt: {diff}s. Zeit wird synchronisiert...",

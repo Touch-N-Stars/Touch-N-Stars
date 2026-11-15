@@ -359,6 +359,7 @@ import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
 import PickerOverlay from '@/components/helpers/PickerOverlay.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import { usePinsStore } from '@/store/pinsStore';
+import { clearStoredUpgradeTracking } from '@/components/pins/composables/usePinsUpgradeTracker';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
 import { useGuiderStore } from '@/store/guiderStore';
 import { NATIVE_GUIDER_ID } from '@/utils/nativeGuider';
@@ -830,12 +831,7 @@ function closePinsUpgradeOverlay() {
     pinsUpgradeRecoveryTimer = null;
   }
   pinsStore.resetUpgradeOverlay();
-  try {
-    window.localStorage.removeItem('lastUpgradeJobId');
-    window.localStorage.removeItem('lastUpgradeJobResult');
-  } catch {
-    // Ignore storage cleanup errors.
-  }
+  clearStoredUpgradeTracking();
 }
 
 function finalizePinsUpgradeRecoveryIfReady() {
@@ -851,12 +847,7 @@ function finalizePinsUpgradeRecoveryIfReady() {
   pinsUpgradeRecoveryTimer = setTimeout(() => {
     if (pinsStore.isUpgradeWaitingForBackend && store.isBackendReachable) {
       pinsStore.finalizeUpgradeRecovery();
-      try {
-        window.localStorage.removeItem('lastUpgradeJobId');
-        window.localStorage.removeItem('lastUpgradeJobResult');
-      } catch {
-        // Ignore storage cleanup errors.
-      }
+      clearStoredUpgradeTracking();
     }
     pinsUpgradeRecoveryTimer = null;
   }, 1500);

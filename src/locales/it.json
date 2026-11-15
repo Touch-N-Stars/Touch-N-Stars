@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "Avvia aggiornamento",
       "upgrading": "Aggiornamento in corso...",
+      "upgradeStatusUnknown": "Non è stato possibile determinare l'esito dell'ultimo aggiornamento. Verifica se ci sono ancora pacchetti in sospeso e, se necessario, riavvia l'aggiornamento.",
       "terminalOutput": "OUTPUT TERMINALE",
       "clearOutput": "Cancella output",
       "waiting": "Assumendo il controllo... In attesa di comando...",
@@ -5818,7 +5819,8 @@
         "idle": "Inattivo",
         "running": "In esecuzione",
         "success": "Successo",
-        "failed": "Fallito"
+        "failed": "Fallito",
+        "unknown": "Sconosciuto"
       },
       "logs": {
         "syncingTime": "Differenza oraria rilevata: {diff}s. Sincronizzazione dell'ora...",
