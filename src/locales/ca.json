@@ -80,6 +80,10 @@
     "checkNow": "Comproveu si hi ha actualitzacions",
     "checking": "S'està comprovant…",
     "upToDateMessage": "Ja esteu executant la darrera versió.",
+    "upToDateVersion": "Ja esteu executant la darrera versió ({version}). Podeu tornar-la a instal·lar si alguna cosa no funciona.",
+    "installAnyway": "Instal·la igualment",
+    "upToDateNewer": "La versió instal·lada ({current}) és més nova que la darrera publicació del canal seleccionat ({version}). Encara podeu instal·lar {version}, per exemple per tornar a l'estable.",
+    "installVersion": "Instal·la {version}",
     "upToDateTitle": "No hi ha cap actualització disponible"
   },
   "setup": {

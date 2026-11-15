@@ -80,6 +80,10 @@
     "checking": "確認中…",
     "upToDateTitle": "アップデートはありません",
     "upToDateMessage": "すでに最新バージョンを使用しています。",
+    "upToDateVersion": "すでに最新バージョン ({version}) を使用しています。問題がある場合は再インストールできます。",
+    "installAnyway": "それでもインストール",
+    "upToDateNewer": "インストール済みのバージョン ({current}) は、選択したチャンネルの最新リリース ({version}) より新しいです。安定版に戻す場合などは、{version} をインストールできます。",
+    "installVersion": "{version} をインストール",
     "checkFailedTitle": "アップデートの確認に失敗しました"
   },
   "setup": {

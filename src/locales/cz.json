@@ -80,6 +80,10 @@
     "checking": "Kontrola…",
     "upToDateTitle": "Žádná aktualizace není k dispozici",
     "upToDateMessage": "Používáte již nejnovější verzi.",
+    "upToDateVersion": "Používáte již nejnovější verzi ({version}). Pokud něco nefunguje, můžete ji nainstalovat znovu.",
+    "installAnyway": "Přesto nainstalovat",
+    "upToDateNewer": "Vaše nainstalovaná verze ({current}) je novější než poslední vydání zvoleného kanálu ({version}). Přesto můžete nainstalovat {version}, například pro návrat na stabilní verzi.",
+    "installVersion": "Nainstalovat {version}",
     "checkFailedTitle": "Kontrola aktualizací selhala"
   },
   "setup": {

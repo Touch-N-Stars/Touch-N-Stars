@@ -80,6 +80,10 @@
     "checking": "Ricerca…",
     "upToDateTitle": "Nessun aggiornamento disponibile",
     "upToDateMessage": "Stai già usando la versione più recente.",
+    "upToDateVersion": "Stai già usando la versione più recente ({version}). Puoi reinstallarla se qualcosa non funziona.",
+    "installAnyway": "Installa comunque",
+    "upToDateNewer": "La versione installata ({current}) è più recente dell'ultima release del canale selezionato ({version}). Puoi comunque installare {version}, ad esempio per tornare alla stabile.",
+    "installVersion": "Installa {version}",
     "checkFailedTitle": "Controllo aggiornamenti non riuscito"
   },
   "setup": {

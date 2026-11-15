@@ -80,6 +80,10 @@
     "checking": "Recherche…",
     "upToDateTitle": "Aucune mise à jour disponible",
     "upToDateMessage": "Vous utilisez déjà la dernière version.",
+    "upToDateVersion": "Vous utilisez déjà la dernière version ({version}). Vous pouvez la réinstaller si quelque chose ne fonctionne pas.",
+    "installAnyway": "Installer quand même",
+    "upToDateNewer": "Votre version installée ({current}) est plus récente que la dernière version du canal sélectionné ({version}). Vous pouvez tout de même installer {version}, par exemple pour revenir à la version stable.",
+    "installVersion": "Installer {version}",
     "checkFailedTitle": "Échec de la recherche de mise à jour"
   },
   "setup": {

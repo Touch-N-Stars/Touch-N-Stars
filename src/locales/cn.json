@@ -80,6 +80,10 @@
     "checking": "检查中…",
     "upToDateTitle": "没有可用更新",
     "upToDateMessage": "您已在使用最新版本。",
+    "upToDateVersion": "您已在使用最新版本 ({version})。如果出现问题，可以重新安装。",
+    "installAnyway": "仍然安装",
+    "upToDateNewer": "您安装的版本 ({current}) 比所选渠道的最新发布版本 ({version}) 更新。您仍可安装 {version}，例如切换回稳定版。",
+    "installVersion": "安装 {version}",
     "checkFailedTitle": "检查更新失败"
   },
   "setup": {

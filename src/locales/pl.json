@@ -80,6 +80,10 @@
     "checking": "Sprawdzanie…",
     "upToDateTitle": "Brak dostępnych aktualizacji",
     "upToDateMessage": "Używasz już najnowszej wersji.",
+    "upToDateVersion": "Używasz już najnowszej wersji ({version}). Możesz zainstalować ją ponownie, jeśli coś nie działa.",
+    "installAnyway": "Zainstaluj mimo to",
+    "upToDateNewer": "Zainstalowana wersja ({current}) jest nowsza niż najnowsze wydanie wybranego kanału ({version}). Nadal możesz zainstalować {version}, na przykład aby wrócić do wersji stabilnej.",
+    "installVersion": "Zainstaluj {version}",
     "checkFailedTitle": "Sprawdzanie aktualizacji nie powiodło się"
   },
   "setup": {

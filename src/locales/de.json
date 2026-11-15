@@ -80,6 +80,10 @@
     "checking": "Suche…",
     "upToDateTitle": "Kein Update verfügbar",
     "upToDateMessage": "Du verwendest bereits die neueste Version.",
+    "upToDateVersion": "Du verwendest bereits die neueste Version ({version}). Du kannst sie erneut installieren, falls etwas nicht funktioniert.",
+    "installAnyway": "Trotzdem installieren",
+    "upToDateNewer": "Deine installierte Version ({current}) ist neuer als das letzte Release des gewählten Kanals ({version}). Du kannst {version} trotzdem installieren, z. B. um zurück zu Stable zu wechseln.",
+    "installVersion": "{version} installieren",
     "checkFailedTitle": "Update-Prüfung fehlgeschlagen"
   },
   "setup": {

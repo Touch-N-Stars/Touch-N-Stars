@@ -80,6 +80,10 @@
     "checking": "Bezig met controleren…",
     "upToDateTitle": "Geen update beschikbaar",
     "upToDateMessage": "Je gebruikt al de nieuwste versie.",
+    "upToDateVersion": "Je gebruikt al de nieuwste versie ({version}). Je kunt deze opnieuw installeren als er iets niet werkt.",
+    "installAnyway": "Toch installeren",
+    "upToDateNewer": "Je geïnstalleerde versie ({current}) is nieuwer dan de laatste release van het gekozen kanaal ({version}). Je kunt {version} toch installeren, bijvoorbeeld om terug te gaan naar stabiel.",
+    "installVersion": "{version} installeren",
     "checkFailedTitle": "Controle op updates mislukt"
   },
   "setup": {
