@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Mode débogage actif – Connexion VNC non disponible. Veuillez désactiver le mode débogage dans les paramètres."
+      "debugModeWarning": "Mode débogage actif – Connexion VNC non disponible. Veuillez désactiver le mode débogage dans les paramètres.",
+      "username": "Nom d'utilisateur",
+      "password": "Mot de passe",
+      "rememberPassword": "Mémoriser le mot de passe sur cet appareil",
+      "credentialsRequired": "Le serveur VNC exige une connexion. Saisissez le nom d'utilisateur et le mot de passe du Pi.",
+      "authFailed": "Échec de la connexion. Vérifiez le nom d'utilisateur et le mot de passe de l'utilisateur du bureau du Pi."
     },
     "landscaperCreator": {
       "actions": {

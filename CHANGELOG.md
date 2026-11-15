@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- VNC Remote (PINS): The connection works again after the Raspberry Pi update of wayvnc from 2026-11-15, which dropped every VNC client without a login right after connecting, so the window only flashed. The VNC Remote page now asks for the username and password of the Pi's desktop user (pi by default) and can remember the password on the device. The login also works when the app is opened over plain http. Needs the updated pinsdaemon, which turns on the login for wayvnc; other VNC viewers such as RealVNC then ask for the same username and password.
 - Sequence: On PINS, saved sequences no longer end up in the wrong place with a backslash in their file name, so they show up in the file list again.
 
 ## [App6.5.0 - beta 27] - 2026-11-13

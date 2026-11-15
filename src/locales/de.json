@@ -8412,7 +8412,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Debug-Modus aktiv – VNC-Verbindung nicht verfügbar. Bitte Debug-Modus in den Einstellungen deaktivieren."
+      "debugModeWarning": "Debug-Modus aktiv – VNC-Verbindung nicht verfügbar. Bitte Debug-Modus in den Einstellungen deaktivieren.",
+      "username": "Benutzername",
+      "password": "Passwort",
+      "rememberPassword": "Passwort auf diesem Gerät merken",
+      "credentialsRequired": "Der VNC-Server verlangt eine Anmeldung. Gib Benutzername und Passwort des Pi ein.",
+      "authFailed": "Anmeldung fehlgeschlagen. Prüfe Benutzername und Passwort des Desktop-Benutzers auf dem Pi."
     },
     "landscaperCreator": {
       "actions": {

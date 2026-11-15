@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Debugmodus actief – VNC-verbinding niet beschikbaar. Schakel de debugmodus uit in de instellingen."
+      "debugModeWarning": "Debugmodus actief – VNC-verbinding niet beschikbaar. Schakel de debugmodus uit in de instellingen.",
+      "username": "Gebruikersnaam",
+      "password": "Wachtwoord",
+      "rememberPassword": "Wachtwoord op dit apparaat onthouden",
+      "credentialsRequired": "De VNC-server vereist een login. Voer de gebruikersnaam en het wachtwoord van de Pi in.",
+      "authFailed": "Inloggen mislukt. Controleer de gebruikersnaam en het wachtwoord van de desktopgebruiker van de Pi."
     },
     "landscaperCreator": {
       "actions": {

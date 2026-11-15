@@ -8708,7 +8708,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Debug mode is active — VNC connection is not available. Please disable debug mode in settings."
+      "debugModeWarning": "Debug mode is active — VNC connection is not available. Please disable debug mode in settings.",
+      "username": "Username",
+      "password": "Password",
+      "rememberPassword": "Remember password on this device",
+      "credentialsRequired": "The VNC server requires a login. Enter the Pi's username and password.",
+      "authFailed": "Login failed. Check the username and password of the Pi's desktop user."
     },
     "screenLock": {
       "unlock": "Unlock screen",

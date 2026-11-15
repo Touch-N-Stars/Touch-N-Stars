@@ -8278,7 +8278,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Modalità debug attiva – Connessione VNC non disponibile. Disattiva la modalità debug nelle impostazioni."
+      "debugModeWarning": "Modalità debug attiva – Connessione VNC non disponibile. Disattiva la modalità debug nelle impostazioni.",
+      "username": "Nome utente",
+      "password": "Password",
+      "rememberPassword": "Ricorda la password su questo dispositivo",
+      "credentialsRequired": "Il server VNC richiede l'accesso. Inserisci nome utente e password del Pi.",
+      "authFailed": "Accesso non riuscito. Controlla nome utente e password dell'utente desktop del Pi."
     },
     "landscaperCreator": {
       "actions": {

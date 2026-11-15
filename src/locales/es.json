@@ -8273,7 +8273,12 @@
       "title": "Visor de registros PHD2"
     },
     "vncRemote": {
-      "debugModeWarning": "Modo de depuración activo – Conexión VNC no disponible. Desactiva el modo de depuración en los ajustes."
+      "debugModeWarning": "Modo de depuración activo – Conexión VNC no disponible. Desactiva el modo de depuración en los ajustes.",
+      "username": "Usuario",
+      "password": "Contraseña",
+      "rememberPassword": "Recordar la contraseña en este dispositivo",
+      "credentialsRequired": "El servidor VNC requiere iniciar sesión. Introduce el usuario y la contraseña de la Pi.",
+      "authFailed": "Error al iniciar sesión. Comprueba el usuario y la contraseña del usuario de escritorio de la Pi."
     },
     "landscaperCreator": {
       "actions": {

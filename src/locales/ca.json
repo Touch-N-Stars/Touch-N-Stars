@@ -8498,7 +8498,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "El mode de depuració està actiu — la connexió VNC no està disponible. Si us plau, desactiva el mode de depuració a la configuració."
+      "debugModeWarning": "El mode de depuració està actiu — la connexió VNC no està disponible. Si us plau, desactiva el mode de depuració a la configuració.",
+      "username": "Usuari",
+      "password": "Contrasenya",
+      "rememberPassword": "Recorda la contrasenya en aquest dispositiu",
+      "credentialsRequired": "El servidor VNC requereix iniciar sessió. Introdueix l'usuari i la contrasenya de la Pi.",
+      "authFailed": "No s'ha pogut iniciar sessió. Comprova l'usuari i la contrasenya de l'usuari d'escriptori de la Pi."
     },
     "hardwareDb": {
       "title": "Compatibilitat de maquinari",

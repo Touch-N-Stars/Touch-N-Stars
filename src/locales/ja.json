@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "デバッグモードが有効です – VNC接続は利用できません。設定でデバッグモードを無効にしてください。"
+      "debugModeWarning": "デバッグモードが有効です – VNC接続は利用できません。設定でデバッグモードを無効にしてください。",
+      "username": "ユーザー名",
+      "password": "パスワード",
+      "rememberPassword": "このデバイスにパスワードを保存",
+      "credentialsRequired": "VNC サーバーにはログインが必要です。Pi のユーザー名とパスワードを入力してください。",
+      "authFailed": "ログインに失敗しました。Pi のデスクトップユーザーのユーザー名とパスワードを確認してください。"
     },
     "landscaperCreator": {
       "actions": {
