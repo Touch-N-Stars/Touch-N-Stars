@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "调试模式已激活 – VNC连接不可用。请在设置中关闭调试模式。"
+      "debugModeWarning": "调试模式已激活 – VNC连接不可用。请在设置中关闭调试模式。",
+      "username": "用户名",
+      "password": "密码",
+      "rememberPassword": "在此设备上记住密码",
+      "credentialsRequired": "VNC 服务器需要登录。请输入 Pi 的用户名和密码。",
+      "authFailed": "登录失败。请检查 Pi 桌面用户的用户名和密码。"
     },
     "landscaperCreator": {
       "actions": {

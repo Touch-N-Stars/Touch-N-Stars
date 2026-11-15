@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Režim ladění je aktivní – Připojení VNC není dostupné. Vypněte prosím režim ladění v nastavení."
+      "debugModeWarning": "Režim ladění je aktivní – Připojení VNC není dostupné. Vypněte prosím režim ladění v nastavení.",
+      "username": "Uživatelské jméno",
+      "password": "Heslo",
+      "rememberPassword": "Zapamatovat heslo v tomto zařízení",
+      "credentialsRequired": "Server VNC vyžaduje přihlášení. Zadejte uživatelské jméno a heslo Pi.",
+      "authFailed": "Přihlášení selhalo. Zkontrolujte uživatelské jméno a heslo uživatele plochy na Pi."
     },
     "landscaperCreator": {
       "actions": {

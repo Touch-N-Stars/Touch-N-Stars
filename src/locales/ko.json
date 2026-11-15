@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "디버그 모드가 활성화되어 있어 VNC 연결을 사용할 수 없습니다. 설정에서 디버그 모드를 끄세요."
+      "debugModeWarning": "디버그 모드가 활성화되어 있어 VNC 연결을 사용할 수 없습니다. 설정에서 디버그 모드를 끄세요.",
+      "username": "사용자 이름",
+      "password": "비밀번호",
+      "rememberPassword": "이 기기에 비밀번호 저장",
+      "credentialsRequired": "VNC 서버에 로그인이 필요합니다. Pi의 사용자 이름과 비밀번호를 입력하세요.",
+      "authFailed": "로그인에 실패했습니다. Pi 데스크톱 사용자의 사용자 이름과 비밀번호를 확인하세요."
     },
     "landscaperCreator": {
       "actions": {

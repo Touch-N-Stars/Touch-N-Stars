@@ -354,6 +354,33 @@
           </div>
         </div>
 
+        <!-- PINS' wayvnc requires the Pi's desktop login since wayvnc 0.10.2-1+rpt2 -->
+        <div class="flex gap-2 mb-3">
+          <input
+            v-model.trim="username"
+            type="text"
+            autocomplete="username"
+            autocapitalize="none"
+            class="tns-input grow"
+            :placeholder="$t('plugins.vncRemote.username')"
+            :disabled="isConnecting"
+          />
+          <input
+            v-model="password"
+            type="password"
+            autocomplete="current-password"
+            class="tns-input grow"
+            :placeholder="$t('plugins.vncRemote.password')"
+            :disabled="isConnecting"
+            @keydown.enter="connect"
+          />
+        </div>
+
+        <label class="tns-label mb-3 flex items-center gap-2">
+          <input v-model="rememberPassword" type="checkbox" :disabled="isConnecting" />
+          {{ $t('plugins.vncRemote.rememberPassword') }}
+        </label>
+
         <div
           v-if="settingsStore.showDebugConsole"
           class="mb-3 rounded bg-yellow-900/30 p-2 text-xs text-yellow-200 border border-yellow-700/50"
@@ -363,7 +390,7 @@
 
         <div
           v-if="errorMessage"
-          class="mb-3 rounded bg-red-900/20 p-2 text-xs text-red-200 border border-red-900/30 truncate"
+          class="mb-3 rounded bg-red-900/20 p-2 text-xs text-red-200 border border-red-900/30 break-words"
         >
           {{ errorMessage }}
         </div>
@@ -381,16 +408,54 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue';
 import { Capacitor } from '@capacitor/core';
 import { useSettingsStore } from '@/store/settingsStore';
 import Panzoom from '@panzoom/panzoom';
 import OnScreenKeyboard from '../components/OnScreenKeyboard.vue';
+import { useI18n } from 'vue-i18n';
 
 const settingsStore = useSettingsStore();
+const { t } = useI18n();
+
+const CREDENTIALS_STORAGE_KEY = 'vncRemote.credentials';
 
 const host = ref('');
 const port = ref('6080');
+const username = ref('pi');
+const password = ref('');
+const rememberPassword = ref(false);
+// Credentials are sent at most once per connection attempt so a wrong
+// password ends in a security failure instead of a resend loop.
+let credentialsSent = false;
+
+const loadStoredCredentials = () => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(CREDENTIALS_STORAGE_KEY) || 'null');
+    if (!stored) return;
+    if (typeof stored.username === 'string' && stored.username) username.value = stored.username;
+    if (typeof stored.password === 'string' && stored.password) {
+      password.value = stored.password;
+      rememberPassword.value = true;
+    }
+  } catch {
+    // Storage can be unavailable (private mode); fall back to the defaults.
+  }
+};
+
+const storeCredentials = () => {
+  try {
+    localStorage.setItem(
+      CREDENTIALS_STORAGE_KEY,
+      JSON.stringify({
+        username: username.value,
+        password: rememberPassword.value ? password.value : '',
+      })
+    );
+  } catch {
+    // Ignore storage failures; the user can still type the password.
+  }
+};
 
 const isConnecting = ref(false);
 const isConnected = ref(false);
@@ -398,7 +463,8 @@ const statusMessage = ref('Not connected');
 const errorMessage = ref('');
 
 const viewerRef = ref(null);
-const rfbInstance = ref(null);
+// shallowRef: noVNC's RFB must not be wrapped in a deep reactive proxy.
+const rfbInstance = shallowRef(null);
 const isFullscreen = ref(false);
 const isToolbarOpen = ref(false);
 const isNavMode = ref(false);
@@ -575,6 +641,7 @@ const applyAutoHost = () => {
 
 onMounted(() => {
   detectMobileClient();
+  loadStoredCredentials();
   applyAutoHost();
   document.addEventListener('fullscreenchange', updateFullscreenState);
 });
@@ -638,6 +705,7 @@ const detachRfb = () => {
 function handleConnect() {
   isConnected.value = true;
   statusMessage.value = 'Connected';
+  if (credentialsSent) storeCredentials();
 }
 
 function handleDisconnect(event) {
@@ -648,17 +716,33 @@ function handleDisconnect(event) {
 
 function handleSecurityFailure(event) {
   isConnected.value = false;
-  const reason = event?.detail?.status
-    ? `Security error (${event.detail.status})`
-    : 'Security error';
-  errorMessage.value = reason;
+  if (credentialsSent) {
+    errorMessage.value = t('plugins.vncRemote.authFailed');
+  } else {
+    errorMessage.value = event?.detail?.status
+      ? `Security error (${event.detail.status})`
+      : 'Security error';
+  }
   statusMessage.value = 'Connection failed';
 }
 
-function handleCredentialsRequired() {
-  isConnected.value = false;
-  errorMessage.value = 'Credentials required by server';
-  statusMessage.value = 'Awaiting credentials';
+function handleCredentialsRequired(event) {
+  const types = event?.detail?.types || ['password'];
+  const missing =
+    (types.includes('username') && !username.value) ||
+    (types.includes('password') && !password.value);
+
+  if (credentialsSent || missing) {
+    isConnected.value = false;
+    errorMessage.value = t('plugins.vncRemote.credentialsRequired');
+    statusMessage.value = 'Awaiting credentials';
+    detachRfb();
+    return;
+  }
+
+  credentialsSent = true;
+  statusMessage.value = 'Authenticating...';
+  rfbInstance.value?.sendCredentials({ username: username.value, password: password.value });
 }
 
 const connect = async () => {
@@ -674,6 +758,8 @@ const connect = async () => {
     }
 
     detachRfb();
+    credentialsSent = false;
+    if (!rememberPassword.value) storeCredentials();
 
     let rfbModule;
     try {
@@ -683,6 +769,11 @@ const connect = async () => {
       rfbModule = await import('@novnc/novnc/lib/rfb.js');
     }
     const { default: RFB } = rfbModule;
+
+    // Over plain HTTP there is no crypto.subtle; give noVNC a JS AES so the
+    // wayvnc login (Apple DH) works there too.
+    const { installInsecureContextCrypto } = await import('../utils/novncInsecureContextCrypto.js');
+    installInsecureContextCrypto();
 
     const rfb = new RFB(viewerRef.value, connectionUrl.value, {
       shared: true,

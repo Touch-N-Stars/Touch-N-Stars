@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Tryb debugowania aktywny – Połączenie VNC niedostępne. Wyłącz tryb debugowania w ustawieniach."
+      "debugModeWarning": "Tryb debugowania aktywny – Połączenie VNC niedostępne. Wyłącz tryb debugowania w ustawieniach.",
+      "username": "Nazwa użytkownika",
+      "password": "Hasło",
+      "rememberPassword": "Zapamiętaj hasło na tym urządzeniu",
+      "credentialsRequired": "Serwer VNC wymaga logowania. Wpisz nazwę użytkownika i hasło Pi.",
+      "authFailed": "Logowanie nie powiodło się. Sprawdź nazwę użytkownika i hasło użytkownika pulpitu Pi."
     },
     "landscaperCreator": {
       "actions": {

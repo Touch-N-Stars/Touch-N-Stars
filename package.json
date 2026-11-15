@@ -63,6 +63,7 @@
     "@capgo/capacitor-updater": "8.50.2",
     "@heroicons/vue": "^2.2.0",
     "@microsoft/signalr": "^10.0.0",
+    "@noble/ciphers": "2.4.0",
     "@novnc/novnc": "1.5.0",
     "@panzoom/panzoom": "4.6.2",
     "@unhead/vue": "3.1.7",

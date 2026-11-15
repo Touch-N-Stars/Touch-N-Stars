@@ -8273,7 +8273,12 @@
       "page": "{n} / {total}"
     },
     "vncRemote": {
-      "debugModeWarning": "Modo de depuração ativo – Conexão VNC não disponível. Desative o modo de depuração nas configurações."
+      "debugModeWarning": "Modo de depuração ativo – Conexão VNC não disponível. Desative o modo de depuração nas configurações.",
+      "username": "Utilizador",
+      "password": "Palavra-passe",
+      "rememberPassword": "Lembrar a palavra-passe neste dispositivo",
+      "credentialsRequired": "O servidor VNC exige início de sessão. Introduza o utilizador e a palavra-passe do Pi.",
+      "authFailed": "Falha no início de sessão. Verifique o utilizador e a palavra-passe do utilizador do ambiente de trabalho do Pi."
     },
     "landscaperCreator": {
       "actions": {
