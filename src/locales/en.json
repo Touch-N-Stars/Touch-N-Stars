@@ -79,6 +79,10 @@
     "checking": "Checking…",
     "upToDateTitle": "No update available",
     "upToDateMessage": "You are already running the latest version.",
+    "upToDateVersion": "You are already running the latest version ({version}). You can install it again if something is not working.",
+    "installAnyway": "Install anyway",
+    "upToDateNewer": "Your installed version ({current}) is newer than the latest release of the selected channel ({version}). You can still install {version}, for example to switch back to stable.",
+    "installVersion": "Install {version}",
     "checkFailedTitle": "Update check failed"
   },
   "setup": {

@@ -220,6 +220,8 @@
       :status="updateStatus"
       :error="updateError"
       :is-downgrade="updateInfo.isDowngrade || false"
+      :up-to-date="updateInfo.upToDate || false"
+      :current-version="updateInfo.currentVersion || ''"
       @confirm="handleUpdateConfirm"
       @cancel="handleUpdateCancel"
     />
@@ -1167,16 +1169,22 @@ async function checkForAppUpdate(options = {}) {
     }
 
     if (result?.available && (force || result.version !== dismissedUpdateVersion.value)) {
+      // A manual check that finds nothing newer than the installed version reports "up to date"
+      // and only offers to install the channel's release anyway (e.g. back to stable).
+      const upToDate = force && (result.isCurrent || result.isDowngrade);
       let whatsNewDetails = null;
-      try {
-        whatsNewDetails = await fetchChangelogWhatsNew(result);
-        console.info('Update whats-new content resolved:', whatsNewDetails);
-      } catch (whatsNewError) {
-        console.warn('Failed to load whats-new content:', whatsNewError);
+      if (!upToDate) {
+        try {
+          whatsNewDetails = await fetchChangelogWhatsNew(result);
+          console.info('Update whats-new content resolved:', whatsNewDetails);
+        } catch (whatsNewError) {
+          console.warn('Failed to load whats-new content:', whatsNewError);
+        }
       }
 
       updateInfo.value = {
         ...result,
+        upToDate,
         whatsNew: whatsNewDetails,
       };
       updateStatus.value = 'idle';

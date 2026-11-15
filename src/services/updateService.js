@@ -313,6 +313,8 @@ export async function checkForManualUpdate(currentVersion = appVersion, options 
     ...latestRelease,
     currentVersion: normalizedCurrentVersion,
     isDowngrade: versionComparison < 0,
+    // Only reachable with allowDowngrade: the latest release is the version already installed.
+    isCurrent: versionComparison === 0,
   };
 }
 
