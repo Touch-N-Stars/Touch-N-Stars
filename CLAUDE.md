@@ -83,6 +83,7 @@ before working in these areas — the details are not repeated in this file.
 | `changelog`       | CHANGELOG entries and the What's New parser contract                                                  |
 | `i18n`            | locale keys, the checker's rules, translation workflow                                                |
 | `tns-review`      | three parallel review agents: functionality, UI, maintainability                                      |
+| `user-logs`       | analyse a user's log bundle (tns-logs-\*.zip): find it, read the manifest, line up NINA/app timelines |
 
 ## Android networking: two confirmed non-bugs
 

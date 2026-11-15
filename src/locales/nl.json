@@ -30,7 +30,8 @@
     "delete": "Verwijder",
     "edit": "Bewerking",
     "close": "Sluiten",
-    "save": "Opslaan"
+    "save": "Opslaan",
+    "backendName": "NINA"
   },
   "pages": {
     "equipment": {
@@ -42,9 +43,9 @@
     "title": "Touch'N'Stars",
     "connection_error_toast": {
       "title": "Verbindingsfout",
-      "message_api": "API plugin is niet beschikbaar. Controleer instellingen in NINA",
+      "message_api": "API plugin is niet beschikbaar. Controleer instellingen in @:{'general.backendName'}",
       "message_api_version": "API plugin is te oud. Voer update uit",
-      "message_tns": "De Touch'N'Stars plugin is niet beschikbaar. Controleer instellingen in NINA",
+      "message_tns": "De Touch'N'Stars plugin is niet beschikbaar. Controleer instellingen in @:{'general.backendName'}",
       "message_tns_version": "De Touch N Stars plugin is te oud. Voer update uit"
     },
     "connection_splash": {
@@ -79,6 +80,10 @@
     "checking": "Bezig met controleren…",
     "upToDateTitle": "Geen update beschikbaar",
     "upToDateMessage": "Je gebruikt al de nieuwste versie.",
+    "upToDateVersion": "Je gebruikt al de nieuwste versie ({version}). Je kunt deze opnieuw installeren als er iets niet werkt.",
+    "installAnyway": "Toch installeren",
+    "upToDateNewer": "Je geïnstalleerde versie ({current}) is nieuwer dan de laatste release van het gekozen kanaal ({version}). Je kunt {version} toch installeren, bijvoorbeeld om terug te gaan naar stabiel.",
+    "installVersion": "{version} installeren",
     "checkFailedTitle": "Controle op updates mislukt"
   },
   "setup": {
@@ -87,7 +92,7 @@
     "selectLanguage": "Selecteer je taal",
     "gpsConfiguration": "GPS Configuratie",
     "completeSetup": "Afronden Setup",
-    "instanceConfiguration": "N.I.N.A connectie details",
+    "instanceConfiguration": "@:{'general.backendName'} connectie details",
     "InfoAppsTitel": "Wiki",
     "check_wki": "Gedetailleerde instructies vind je in de wiki",
     "coordAlt": "Alt",
@@ -140,7 +145,7 @@
       "missingEquipmentSettings": "Ontbrekende apparatuurinstellingen: stel de brandpuntsafstand en pixelgrootte in onder Instellingen → Apparatuur, zodat het FOV van de camera correct wordt berekend.",
       "confirmSetTargetTitle": "Bevestig Doel Selectie",
       "confirmSetTargetMessage": "Weet u zeker dat u dit Doel wilt instellen als het sequentie Doel?",
-      "useNinaCache": "Gebruik NINA cache voor het Doel beeld",
+      "useNinaCache": "Gebruik @:{'general.backendName'} cache voor het Doel beeld",
       "setSequnceTarget": "gebruik als sequentie Doel",
       "sequenceTargetPicker": {
         "title": "Sequentiedoel",
@@ -177,7 +182,7 @@
         "SolveError": "Fout tijdens image solving"
       },
       "moveRotator": "Rotateer camera",
-      "infoTargetImage": "Indien het beeld wordt weergegeven in zwart, dan moet de “Offline Sky Map Cache“ ingesteld worden in NINA of moet de optie “gebruik NINA cache” ge-deactiveerd worden",
+      "infoTargetImage": "Indien het beeld wordt weergegeven in zwart, dan moet de “Offline Sky Map Cache“ ingesteld worden in @:{'general.backendName'} of moet de optie “gebruik @:{'general.backendName'} cache” ge-deactiveerd worden",
       "useCenter": "Centreer",
       "useRotate": "Roteer",
       "skyChart": {
@@ -263,7 +268,7 @@
         "openWiki": "Wiki openen"
       },
       "instance": {
-        "description": "Adres van de computer waarop N.I.N.A draait. Op hetzelfde netwerk vindt de app hem meestal zelf.",
+        "description": "Adres van de computer waarop @:{'general.backendName'} draait. Op hetzelfde netwerk vindt de app hem meestal zelf.",
         "connect": "Opslaan en verbinden",
         "connecting": "Connecting…",
         "connected": "Verbonden met {name}",
@@ -404,7 +409,7 @@
         "focalLength": "Brandpuntsafstand guidescope",
         "focalLengthHint": "Brandpuntsafstand van de guidescope in mm. Die wordt in het PHD2-profiel opgeslagen, los van je hoofdtelescoop, en zorgt dat PHD2 de guiding in boogseconden kan weergeven.",
         "ditherTitle": "Dither",
-        "ditherDescription": "NINA stelt de dither in guidecamera-pixels in, terwijl de gebruikelijke aanbevelingen in pixels van je opnamecamera zijn. Dit rekent tussen beide om.",
+        "ditherDescription": "@:{'general.backendName'} stelt de dither in guidecamera-pixels in, terwijl de gebruikelijke aanbevelingen in pixels van je opnamecamera zijn. Dit rekent tussen beide om.",
         "ditherMainPixels": "Dither (opnamepixels)",
         "ditherMainPixelsHint": "Hoe ver elke dither het object op je opnamesensor moet verschuiven. 10 tot 15 pixels is een goed beginpunt.",
         "guidePixelSize": "Pixelgrootte guidecamera (µm)",
@@ -492,9 +497,9 @@
         "editTokens": "Tokens bewerken",
         "help": {
           "title": "Bestandsnaampatroon",
-          "intro": "Stel het bestandsnaampatroon samen voor je opgenomen afbeeldingen. Elk token wordt door NINA vervangen door de werkelijke waarde bij het opslaan.",
+          "intro": "Stel het bestandsnaampatroon samen voor je opgenomen afbeeldingen. Elk token wordt door @:{'general.backendName'} vervangen door de werkelijke waarde bij het opslaan.",
           "tokensTitle": "Tokens",
-          "tokensDesc": "Tik op een tokenknop om het aan het patroon toe te voegen. Tokens zoals Filter, Date of ExposureTime worden door NINA vervangen door de werkelijke waarden.",
+          "tokensDesc": "Tik op een tokenknop om het aan het patroon toe te voegen. Tokens zoals Filter, Date of ExposureTime worden door @:{'general.backendName'} vervangen door de werkelijke waarden.",
           "separatorsTitle": "Scheidingstekens",
           "separatorsDesc": "Gebruik \\ om mapstructuren te maken. Gebruik _ of - om waarden in de bestandsnaam te scheiden. Gebruik \"Tekst\" om aangepaste tekst toe te voegen zoals \"s\" voor seconden.",
           "cursorTitle": "Invoegpositie",
@@ -535,7 +540,7 @@
       "backupRestore": {
         "title": "Back-up & herstellen",
         "description": "Slaat de instellingen die op dit apparaat zijn opgeslagen op in een bestand en herstelt ze op een ander apparaat.",
-        "profileWarning": "Dit maakt alleen een back-up van de app-instellingen op dit apparaat. Uitrusting-, camera-, montering- en andere instellingen staan in het NINA- of PINS-profiel - maak daar apart een back-up van voor een volledige back-up.",
+        "profileWarning": "Dit maakt alleen een back-up van de app-instellingen op dit apparaat. Uitrusting-, camera-, montering- en andere instellingen staan in het @:{'general.backendName'}-profiel - maak daar apart een back-up van voor een volledige back-up.",
         "locationAndroid": "Het bestand wordt opgeslagen in Documenten/TouchNStars op dit apparaat - open het met een bestandsbeheer-app.",
         "locationIos": "Het bestand wordt opgeslagen in de Bestanden-app onder Op mijn iPhone/iPad → Touch 'N Stars → Documents.",
         "locationBrowser": "Het bestand wordt opgeslagen in de standaard downloadmap van je browser.",
@@ -605,7 +610,7 @@
         "help": {
           "ExposureTime": "Belichtingstijd, in seconden, gebruikt voor de opnamen die door de plate solver worden gemaakt. Langere belichtingen vangen meer sterren op, wat helpt bij het oplossen van zwakke of stersarme velden, maar vertraagt elke oplospoging.",
           "Gain": "Camera-gain gebruikt voor de plate-solving-opnamen. Laat leeg om de standaard gain van de camera te gebruiken.",
-          "ASTAPLocation": "Pad naar het ASTAP-programma (astap.exe) op het systeem waarop NINA draait. Vereist voor lokale plate solving met ASTAP.",
+          "ASTAPLocation": "Pad naar het ASTAP-programma (astap.exe) op het systeem waarop @:{'general.backendName'} draait. Vereist voor lokale plate solving met ASTAP.",
           "SearchRadius": "Straal in graden rond de doelcoördinaten waarin de solver zoekt bij een blind-solve-poging. Een grotere straal verhoogt de oplostijd, maar helpt wanneer de beginpositie van de montering minder nauwkeurig is.",
           "Threshold": "Maximaal toegestane afwijking, in boogminuten, tussen de opgeloste positie en het doel tijdens Slew & Center. Als de oplossing verder afwijkt dan dit, wordt een nieuwe slew-and-solve-cyclus gestart.",
           "RotationTolerance": "Maximaal toegestane rotatieafwijking, in graden, tussen de opgeloste beeldoriëntatie en de doeloriëntatie tijdens Center & Rotate. Bij overschrijding wordt de rotator bijgesteld en het beeld opnieuw opgelost.",
@@ -673,7 +678,7 @@
         "mountTime": "Montagetijd",
         "notSupported": "Niet ondersteund door stuurprogramma",
         "syncLabel": "Tijd synchroniseren met montering",
-        "syncLabelInfo": "Indien ingeschakeld wordt bij het klikken op \"Nu synchroniseren\" de montuur kort verbroken en opnieuw verbonden zodat NINA de huidige tijd kan overdragen.",
+        "syncLabelInfo": "Indien ingeschakeld wordt bij het klikken op \"Nu synchroniseren\" de montuur kort verbroken en opnieuw verbonden zodat @:{'general.backendName'} de huidige tijd kan overdragen.",
         "title": "Tijdsynchronisatie",
         "loadError": "Kan tijdinformatie niet laden.",
         "syncError": "Tijdsynchronisatie mislukt. Controleer de verbinding met het PINS-apparaat.",
@@ -770,7 +775,7 @@
       "save": "Save",
       "connect": "Connect",
       "disconnect": "Disconnect",
-      "sharedGuidWarning": "Rotator en veiligheidsmonitor delen in NINA één opslagplek – wie de ene wijzigt, wijzigt ook de andere.",
+      "sharedGuidWarning": "Rotator en veiligheidsmonitor delen in @:{'general.backendName'} één opslagplek – wie de ene wijzigt, wijzigt ook de andere.",
       "noReconnectHint": "Nieuwe instellingen gelden bij de volgende verbinding.",
       "cameraNoSettings": "Deze camera heeft geen instellingen."
     },
@@ -828,7 +833,7 @@
       },
       "info": {
         "title": "Info",
-        "message": "Het handmatige filterwiel en de handmatige rotator kunnen kunnen momenteel uitsluitend via NINA worden aangestuurd. Gebruik de API “Networked Filter Wheel” voor het filterwiel"
+        "message": "Het handmatige filterwiel en de handmatige rotator kunnen kunnen momenteel uitsluitend via @:{'general.backendName'} worden aangestuurd. Gebruik de API “Networked Filter Wheel” voor het filterwiel"
       }
     },
     "lastLogs": {
@@ -914,6 +919,11 @@
       "skipCurrentItem": "Huidig item overslaan",
       "manageSequences": "Sequenties laden / opslaan",
       "saveSequenceAs": "Huidige sequentie opslaan als",
+      "sequenceFolder": "Sequentiemap",
+      "sequenceFolderNotSet": "Geen map ingesteld",
+      "sequenceFolderChange": "Map wijzigen",
+      "sequenceFolderRelative": "Dit is geen volledig pad, dus bestanden komen in de programmamap van @:{'general.backendName'} terecht. Kies een map.",
+      "sequenceFolderSaveError": "De sequentiemap kon niet worden gewijzigd.",
       "sequenceFileName": "Bestandsnaam",
       "sequenceSave": "Opslaan",
       "sequenceLoad": "Laden",
@@ -936,7 +946,7 @@
       "no_sequences_found": "Geen sequentie gevonden",
       "error_loading_sequences": "Fout tijdens laden sequenties",
       "error_loading_sequence": "Fout tijdens laden sequentie",
-      "editFailed": "NINA heeft de wijziging niet overgenomen",
+      "editFailed": "@:{'general.backendName'} heeft de wijziging niet overgenomen",
       "targetNotFound": "Doel niet gevonden in de sequentie. Probeer het opnieuw.",
       "filter": "Filter",
       "triggers": "Triggers",
@@ -1438,7 +1448,7 @@
       },
       "location_sync": {
         "title": "Locatie sync instellingen",
-        "confirmationMessage": "Als 'Locatie Sync' in NINA is ingesteld op 'Prompt', dan kan een bevestigingsscherm worden getoond voordat de coordinaten naar de telescoop worden gestuurd. Om dit te voorkomen moet u TNS toestaan om automatisch de coordinaten in te stellen, we adviseren om de instellingen te wijzigen naar 'Sync naar Telescoop'",
+        "confirmationMessage": "Als 'Locatie Sync' in @:{'general.backendName'} is ingesteld op 'Prompt', dan kan een bevestigingsscherm worden getoond voordat de coordinaten naar de telescoop worden gestuurd. Om dit te voorkomen moet u TNS toestaan om automatisch de coordinaten in te stellen, we adviseren om de instellingen te wijzigen naar 'Sync naar Telescoop'",
         "toTelescope": {
           "label": "Sync naar Telescoop"
         },
@@ -1525,7 +1535,7 @@
               "description": "Stel de minuten zelf in onder Geavanceerd."
             },
             "sideOfPierNoMount": "Verbind de montering voordat je kiest, zodat de app kan controleren of hij zijn pierkant doorgeeft.",
-            "sideOfPierUnknown": "Je montering geeft zijn pierkant niet door, dus „Pierzijde gebruiken” blijft uit. NINA bepaalt de flip dan op tijd.",
+            "sideOfPierUnknown": "Je montering geeft zijn pierkant niet door, dus „Pierzijde gebruiken” blijft uit. @:{'general.backendName'} bepaalt de flip dan op tijd.",
             "applyFailed": "De voorinstelling kon niet volledig worden opgeslagen. Controleer de waarden onder Geavanceerd."
           },
           "timeline": {
@@ -1537,30 +1547,30 @@
             "atMinutes": "+{min} min",
             "windowMinutes": "+{min}–{max} min",
             "explainPause": "De opname stopt {pause} min voor de meridiaan en het volgen wordt uitgezet. De flip volgt {min} min na de meridiaan. Dit kost opnametijd – gebruik het alleen als de telescoop de meridiaan niet kan passeren.",
-            "explainFixed": "NINA maakt belichtingen tot er een voorbij {min} min na de meridiaan zou lopen, wacht dan en flipt precies op dat moment. Een later uiterste tijdstip voorkomt het wachten.",
+            "explainFixed": "@:{'general.backendName'} maakt belichtingen tot er een voorbij {min} min na de meridiaan zou lopen, wacht dan en flipt precies op dat moment. Een later uiterste tijdstip voorkomt het wachten.",
             "explainWindow": "Na de eerste belichting die tussen {min} en {max} min na de meridiaan eindigt, volgt direct de flip – zonder wachten."
           },
           "help": {
             "MinutesAfterMeridian": "Vroegste moment na de meridiaan waarop de flip mag beginnen.",
-            "MaxMinutesAfterMeridian": "Laatste moment na de meridiaan voor de flip. Het kan niet kleiner zijn dan het vroegste. Een grotere marge laat NINA direct na een belichting flippen, zonder wachten.",
+            "MaxMinutesAfterMeridian": "Laatste moment na de meridiaan voor de flip. Het kan niet kleiner zijn dan het vroegste. Een grotere marge laat @:{'general.backendName'} direct na een belichting flippen, zonder wachten.",
             "PauseTimeBeforeMeridian": "Alleen voor apparatuur die de meridiaan niet veilig kan passeren: het volgen stopt zoveel minuten ervoor. Anders op 0 laten.",
             "SettleTime": "Wacht na de flip zodat de montering tot rust komt. Uitgerekte sterren bij de eerste plate solve na een flip? Verhoog deze waarde.",
-            "Recenter": "Na de flip doet NINA een plate solve en centreert het object opnieuw. Sterk aanbevolen; vereist een werkende plate solver.",
+            "Recenter": "Na de flip doet @:{'general.backendName'} een plate solve en centreert het object opnieuw. Sterk aanbevolen; vereist een werkende plate solver.",
             "UseSideOfPier": "Gebruikt de pierkant die de montering doorgeeft om te bepalen of een flip nodig is. Betrouwbaarder, maar alleen als de montering die correct doorgeeft.",
             "AutoFocusAfterFlip": "Voert na de flip een autofocus uit. Handig bij Newtons en SCT's waarvan de spiegel verschuift als de tubus draait.",
             "RotateImageAfterFlip": "Draait het voorbeeld na de flip 180°. Alleen weergave – de opgeslagen beelden blijven ongewijzigd."
           },
           "dayTest": {
             "title": "Flip overdag testen",
-            "teaser": "Laat NINA overdag een echte meridiaan flip doen met jouw instellingen: komt de telescoop in de stand na de meridiaan langs het statief of de pier, zijn de kabels lang genoeg?",
+            "teaser": "Laat @:{'general.backendName'} overdag een echte meridiaan flip doen met jouw instellingen: komt de telescoop in de stand na de meridiaan langs het statief of de pier, zijn de kabels lang genoeg?",
             "open": "Test starten",
-            "intro": "Je rijdt de telescoop met de hand naar een punt net ten oosten van de meridiaan. Vandaar volgt hij verder voorbij de meridiaan, en NINA flipt precies zoals 's nachts – met je flip-instellingen en op de echte tijd.",
+            "intro": "Je rijdt de telescoop met de hand naar een punt net ten oosten van de meridiaan. Vandaar volgt hij verder voorbij de meridiaan, en @:{'general.backendName'} flipt precies zoals 's nachts – met je flip-instellingen en op de echte tijd.",
             "blockers": {
               "notConnected": "De montering is niet verbonden.",
               "parked": "De montering is geparkeerd. Haal hem eerst uit de parkeerstand.",
               "cannotSlew": "De montering kan geen coördinaten aansturen.",
               "noLocation": "De montering heeft geen locatie. Stel eerst je locatie in.",
-              "sequenceRunning": "Er loopt een sequentie in NINA. Stop die eerst."
+              "sequenceRunning": "Er loopt een sequentie in @:{'general.backendName'}. Stop die eerst."
             },
             "caps": {
               "label": "De kappen zitten op telescoop, zoeker en guidescope",
@@ -1580,14 +1590,14 @@
             "resultProblem": "De flip-beweging vraagt aandacht.",
             "problemAdvice": "Controleer de kabelgeleiding zodat de kabels aan beide kanten reiken. Heeft de telescoop het statief of de pier geraakt, kies dan hierboven „Nauwelijks” of controleer de meridiaanlimiet van je montering.",
             "pierChanged": "Pierkant: {before} → {after}",
-            "notTested": "Het guiden na de flip wordt niet gecontroleerd. Details staan in het NINA-logboek.",
+            "notTested": "Het guiden na de flip wordt niet gecontroleerd. Details staan in het @:{'general.backendName'}-logboek.",
             "stopped": "Test gestopt. Sequentie en volgen zijn uit, de montering blijft waar hij is.",
             "sideEast": "Oost",
             "sideWest": "West",
             "exposure": "Lengte van je belichtingen (s)",
-            "exposureHelp": "NINA flipt na de eerste belichting die binnen het flipvenster eindigt. Met je gebruikelijke belichtingstijd flipt de test in dezelfde stand als 's nachts.",
+            "exposureHelp": "@:{'general.backendName'} flipt na de eerste belichting die binnen het flipvenster eindigt. Met je gebruikelijke belichtingstijd flipt de test in dezelfde stand als 's nachts.",
             "plan": "De test duurt minstens {minutes} min, plus de tijd die je voor de meridiaan begint. De montering volgt tot {flip} min voorbij de meridiaan – dat is de stand die getest wordt, net als 's nachts.",
-            "sequenceNotice": "Er wordt een testsequentie in NINA geladen. Die vervangt de sequentie die nu geladen is – sla die eerst op als je hem wilt houden.",
+            "sequenceNotice": "Er wordt een testsequentie in @:{'general.backendName'} geladen. Die vervangt de sequentie die nu geladen is – sla die eerst op als je hem wilt houden.",
             "start": "Testsequentie laden en starten",
             "toPositioning": "Verder",
             "back": "Terug",
@@ -1596,7 +1606,7 @@
               "toMeridian": "Tijd tot de meridiaan",
               "pastMeridian": "Voorbij de meridiaan sinds",
               "noData": "De montering meldt nog geen positie of locatie.",
-              "poleHint": "De telescoop wijst naar de pool. NINA flipt ook hier, maar alleen buiten de pool zie je of de buis langs het statief komt en de kabels lang genoeg zijn. Rijd Dec voor een realistische test naar een hoogte zoals bij je gebruikelijke objecten.",
+              "poleHint": "De telescoop wijst naar de pool. @:{'general.backendName'} flipt ook hier, maar alleen buiten de pool zie je of de buis langs het statief komt en de kabels lang genoeg zijn. Rijd Dec voor een realistische test naar een hoogte zoals bij je gebruikelijke objecten.",
               "checks": {
                 "lead": "Minstens {minutes} min voor de flip",
                 "pier": "Contragewicht omlaag – de pierzijde voor de flip",
@@ -1613,20 +1623,20 @@
               }
             },
             "confirmTitle": "Testsequentie laden?",
-            "confirmMessage": "De in NINA geladen sequentie wordt vervangen door de flip-test. De telescoop volgt vanaf zijn huidige positie en NINA flipt hem na de meridiaan.",
+            "confirmMessage": "De in @:{'general.backendName'} geladen sequentie wordt vervangen door de flip-test. De telescoop volgt vanaf zijn huidige positie en @:{'general.backendName'} flipt hem na de meridiaan.",
             "waitingForMeridian": "Volgt naar de meridiaan …",
             "pastMeridian": "De telescoop staat {minutes} min voorbij de meridiaan.",
-            "flipping": "NINA flipt …",
+            "flipping": "@:{'general.backendName'} flipt …",
             "countdownWindow": "Flip over {earliest} tot {latest} min",
             "countdownLatest": "Flip uiterlijk over {latest} min",
-            "runningHint": "NINA voert de test zelf uit, de app mag gesloten worden. Druk op STOP als iets in de weg zit – dat stopt sequentie en volgen.",
-            "flippedAt": "NINA flipte {minutes} min na de meridiaan.",
-            "noFlip": "NINA flipte niet op tijd. Sequentie en volgen zijn gestopt.",
-            "noFlipAdvice": "Controleer de flip-instellingen en het NINA-logboek. Staat „Pierzijde gebruiken” aan, dan geeft je montering de kant misschien verkeerd door – probeer het uitgeschakeld.",
+            "runningHint": "@:{'general.backendName'} voert de test zelf uit, de app mag gesloten worden. Druk op STOP als iets in de weg zit – dat stopt sequentie en volgen.",
+            "flippedAt": "@:{'general.backendName'} flipte {minutes} min na de meridiaan.",
+            "noFlip": "@:{'general.backendName'} flipte niet op tijd. Sequentie en volgen zijn gestopt.",
+            "noFlipAdvice": "Controleer de flip-instellingen en het @:{'general.backendName'}-logboek. Staat „Pierzijde gebruiken” aan, dan geeft je montering de kant misschien verkeerd door – probeer het uitgeschakeld.",
             "startFailed": "De testsequentie kon niet worden gestart: {error}",
-            "ninaError": "NINA meldde een fout tijdens de flip, bij de stap: {step}.",
+            "ninaError": "@:{'general.backendName'} meldde een fout tijdens de flip, bij de stap: {step}.",
             "ninaErrorRecenterCaps": "Met de kappen erop is dat te verwachten – opnieuw centreren heeft sterren nodig. Controleer 's nachts of plate solving werkt.",
-            "ninaOk": "NINA heeft de flip zonder fout afgerond.",
+            "ninaOk": "@:{'general.backendName'} heeft de flip zonder fout afgerond.",
             "steps": {
               "recenter": "opnieuw centreren (plate solve)",
               "autofocus": "autofocus na de flip",
@@ -4056,7 +4066,7 @@
           "saveFolder": "Opgenomen frames opslaan in",
           "sequenceRunningLive": "Er loopt een sequentie, dus een live sweep is uitgeschakeld: die zou midden in de sequentie de focuser verplaatsen en belichtingen maken. Een opgeslagen autofocus-run werkt ondertussen wel.",
           "working": "Bezig...",
-          "runsInBackground": "Je kunt dit venster sluiten: de optimalisatie loopt door in NINA en je kunt hem opnieuw openen via het tabblad Sterdetectie.",
+          "runsInBackground": "Je kunt dit venster sluiten: de optimalisatie loopt door in @:{'general.backendName'} en je kunt hem opnieuw openen via het tabblad Sterdetectie.",
           "complete": "Optimalisatie voltooid",
           "variant": "Weergave",
           "variantCurrent": "Huidig",
@@ -4239,12 +4249,12 @@
             "maxBlindStepsPerDirection": "Maximaal aantal blinde autofocusstappen in elke richting voordat wordt omgekeerd om de andere kant te proberen. Zet op 0 om de limiet uit te schakelen.",
             "reverseInitialDirection": "Start de autofocus met een beweging in de tegenovergestelde richting. Handig wanneer de focus vanaf de andere kant benaderd moet worden, bijv. SCT's met spiegelverschuiving of focusers met speling (backlash).",
             "focuserIncreasesTowardObjective": "In welke richting je focuser beweegt: verplaatst een HOGERE focusserpositie de camera van het objectief af (standaard) of ernaartoe (omgekeerd)? Dit beïnvloedt ALLEEN RICHTINGSLABELS EN DIAGRAMMEN — de bijschriften \"naar het objectief toe/van het objectief af\", de labels Telescoop/Sensor bij het sensormodel, het advies over spacers en de pijlen omhoog/omlaag in de tilt-aanwijzingen. Het kan nooit een meting, een schroefhoek of een correctie veranderen: de richting van de tilt-adapter wordt in focusser-eenheden gemeten, en de focuserconventie valt volledig weg uit die meting. Als deze labels bij jouw opstelling dus omgekeerd lijken, zet dit dan om — niets wat je al hebt gekalibreerd wordt beïnvloed en niets gaat opeens de andere kant op draaien.",
-            "validateHfrImprovement": "Indien ingeschakeld wordt vooraf en achteraf een extra belichting gemaakt om te controleren of de HFR is verbeterd. Deze controle kan worden uitgevoerd naast de R²-validatie die in de Autofocus-opties van NINA is ingesteld.",
+            "validateHfrImprovement": "Indien ingeschakeld wordt vooraf en achteraf een extra belichting gemaakt om te controleren of de HFR is verbeterd. Deze controle kan worden uitgevoerd naast de R²-validatie die in de Autofocus-opties van @:{'general.backendName'} is ingesteld.",
             "hfrImprovementThreshold": "Hoeveel speelruimte er is bij het valideren van HFR-verbeteringen. De standaardwaarde van 15% betekent dat de autofocus mislukt als de begin-HFR 15% of meer beter is dan de eind-HFR",
             "hyperbolicFitModel": "Welk hyperbolisch model op de focuscurve wordt gefit. Hybrid (Best Fit) is de aanbevolen standaard: de curve wordt live weergegeven met de Tilted Hyperbola, en aan het einde van de run wordt elk model opnieuw gefit en blijft het model met de kleinste verwachte fout voor de beste focuspositie over — zo kiest elke run zelf zijn betrouwbaarste fit. De vaste keuzes: Symmetric is de klassieke hyperbool met 4 parameters; de andere zijn asymmetrisch (een andere helling aan weerszijden van de focus, wat vaak voorkomt omdat de HFR buiten focus zich anders gedraagt dan in focus): Tilted Hyperbola is één vloeiende curve met een lineaire scheefheid, Smooth Blend laat twee hyperbolen vloeiend in elkaar overgaan en Uneven Blend is de oorspronkelijke gemengde fit.",
             "weightedHyperbolicFitEnabled": "Weegt elk punt in de hyperbolische fit op basis van de meetfout. σ-waarden worden vóór het fitten geregulariseerd: een gedegenereerde σ van bijna nul (bijv. van een frame met heel weinig gedetecteerde sterren) wordt begrensd op 20% van de mediane σ van de sweep, en een onbekende σ krijgt de mediaan, zodat geen enkel punt de fit kan domineren door een gedegenereerde foutschatting.",
-            "fitRejectionCriterion": "Welke maat voor de fitkwaliteit bepaalt of een autofocusrun wordt verworpen. R² (standaard) behoudt het bestaande gedrag en verwerpt als de R² van de fit onder de R²-drempel van NINA valt (Focuser-instellingen). Gereduceerde χ² verwerpt in plaats daarvan als de gereduceerde χ² van de hyperbolische fit de drempel hieronder overschrijdt — een grens voor de fitkwaliteit in spreidingseenheden voor een focuscurve, maar alleen geldig als 'Gewogen hyperbolische fit' is ingeschakeld (het is afhankelijk van de meet-σ per punt). Kwadratische en trendlijnfits gebruiken altijd R², ongeacht deze instelling.",
-            "rSquaredRejectionThreshold": "De minimale R² (determinatiecoëfficiënt) waaronder een autofocusrun wordt verworpen, als het afwijzingscriterium op R² staat. Dit is NINA's eigen R²-drempel uit de Focuser-instellingen; als je hem hier wijzigt, verander je dezelfde profielinstelling. Een R² dichter bij 1 betekent een betere fit op de gemeten focuscurve.",
+            "fitRejectionCriterion": "Welke maat voor de fitkwaliteit bepaalt of een autofocusrun wordt verworpen. R² (standaard) behoudt het bestaande gedrag en verwerpt als de R² van de fit onder de R²-drempel van @:{'general.backendName'} valt (Focuser-instellingen). Gereduceerde χ² verwerpt in plaats daarvan als de gereduceerde χ² van de hyperbolische fit de drempel hieronder overschrijdt — een grens voor de fitkwaliteit in spreidingseenheden voor een focuscurve, maar alleen geldig als 'Gewogen hyperbolische fit' is ingeschakeld (het is afhankelijk van de meet-σ per punt). Kwadratische en trendlijnfits gebruiken altijd R², ongeacht deze instelling.",
+            "rSquaredRejectionThreshold": "De minimale R² (determinatiecoëfficiënt) waaronder een autofocusrun wordt verworpen, als het afwijzingscriterium op R² staat. Dit is @:{'general.backendName'}'s eigen R²-drempel uit de Focuser-instellingen; als je hem hier wijzigt, verander je dezelfde profielinstelling. Een R² dichter bij 1 betekent een betere fit op de gemeten focuscurve.",
             "reducedChiSquaredRejectionThreshold": "Bovengrens voor de gereduceerde χ² van de hyperbolische fit (χ² per vrijheidsgraad) waarboven de run wordt verworpen, als het afwijzingscriterium op Gereduceerde χ² staat. De σ per punt achter de gewichten is de spreiding van het sterrenensemble, die de onzekerheid van de mediane HFR per punt overschat — dus gereduceerde χ² ligt doorgaans ruim onder 1, wordt kleiner naarmate meer sterren worden gedetecteerd en groter naarmate Frames per punt toeneemt. Beschouw deze drempel als een grove controlegrens, niet als een gekalibreerde statistische toets. Zet op 0 om uit te schakelen. Alleen zinvol bij gewogen fits.",
             "maxOutlierRejections": "Bepaalt hoeveel punten maximaal als uitschieter kunnen worden verworpen bij het fitten van de autofocuscurve.",
             "outlierRejectionConfidence": "Betrouwbaarheidsniveau voor een tweezijdige Grubbs-toets op uitschieters bij het fitten van de autofocuscurve. 95% is een redelijke standaard. Moet boven 50% en onder 100% liggen.",
@@ -4316,7 +4326,7 @@
             "useAutoFocusCrop": "Aan: Hocus Focus meet sterren alleen binnen de binnenste en buitenste uitsnede, in zijn eigen autofocus en bij gewone opnamen. Uit: het gebruikt het hele beeld.",
             "fitPSF": "Of er PSF-modellen op gedetecteerde sterren worden gefit. Dit is vereist voor FWHM en eccentriciteit",
             "debugMode": "Schakelt de foutopsporingsmodus in, die extra gegevens opslaat die nuttig zijn bij het debuggen. Laat dit uit, tenzij je de sterdetectie aan het afstemmen bent en structuurkaarten wilt bekijken.",
-            "detectionBinning": "Software-binning die alleen voor de sterdetectie op het frame wordt toegepast. De sterdetectie is gekalibreerd voor sterren in focus van ongeveer 2 tot 4 pixels; bij lange brandpuntsafstanden zijn sterren veel groter, waardoor de pixelgebaseerde instellingen buiten bereik vallen. Door het frame voor de detectie te binnen komt de stergrootte weer binnen bereik en verbetert de signaal-ruisverhouding per pixel. Het beeld dat je ziet en de gerapporteerde HFR-waarden blijven op de resolutie waarmee de camera heeft opgenomen. Dit is niet de Autofocus-binning van NINA, die bepaalt hoe de camera de autofocusframes opneemt en overeen moet komen met de binning waarmee je fotografeert; de twee vermenigvuldigen elkaar",
+            "detectionBinning": "Software-binning die alleen voor de sterdetectie op het frame wordt toegepast. De sterdetectie is gekalibreerd voor sterren in focus van ongeveer 2 tot 4 pixels; bij lange brandpuntsafstanden zijn sterren veel groter, waardoor de pixelgebaseerde instellingen buiten bereik vallen. Door het frame voor de detectie te binnen komt de stergrootte weer binnen bereik en verbetert de signaal-ruisverhouding per pixel. Het beeld dat je ziet en de gerapporteerde HFR-waarden blijven op de resolutie waarmee de camera heeft opgenomen. Dit is niet de Autofocus-binning van @:{'general.backendName'}, die bepaalt hoe de camera de autofocusframes opneemt en overeen moet komen met de binning waarmee je fotografeert; de twee vermenigvuldigen elkaar",
             "measurementAverage": "Bepaalt hoe de gemiddelde stermeting over het frame wordt berekend. De mediaan is robuust tegen uitschieters en is de standaard.",
             "useOptimizedSettings": "Indien ingeschakeld sturen de geoptimaliseerde sterdetectie-instellingen uit de optimalisatiewizard de detectie aan in plaats van de voorinstellingen Ruisniveau / Pixelschaal / Focusbereik. Alleen beschikbaar in de eenvoudige modus nadat de wizard een resultaat heeft opgeleverd en toegepast",
             "noiseLevel": "Bepaalt hoeveel het bronbeeld wordt vervaagd voordat de sterdetectie begint. Verhoog dit als je een bijzonder ruisende sensor hebt of met een zeer hoog F-getal fotografeert",
@@ -4489,7 +4499,7 @@
         "applied": "Toegepast. De volgende autofocus gebruikt de nieuwe waarde.",
         "applyFailed": "De waarde kon niet worden opgeslagen.",
         "findings": {
-          "notActive": "Hocus Focus heeft de laatste autofocus niet uitgevoerd. Zet in de NINA-opties zowel 'Auto Focus' als 'Star Detector' op Hocus Focus.",
+          "notActive": "Hocus Focus heeft de laatste autofocus niet uitgevoerd. Zet in de @:{'general.backendName'}-opties zowel 'Auto Focus' als 'Star Detector' op Hocus Focus.",
           "fewStars": "Er zijn maar {stars} sterren gedetecteerd. Een langere belichting geeft de curve meer gegevens.",
           "fewStarsNarrowband": "Er zijn maar {stars} sterren gedetecteerd. Smalbandfilters hebben een veel langere focusbelichting nodig.",
           "notBracketed_inward": "Het scherpste punt was het eerste van de reeks, dus het focus ligt verder naar binnen. Stel eerst grof met de hand scherp of maak de reeks breder.",
@@ -4513,7 +4523,7 @@
         "title": "Autofocus-basis",
         "description": "De belangrijkste instellingen voor Hocus Focus. Al het andere staat hieronder bij de gedetailleerde instellingen.",
         "startAssistant": "Installatie-assistent starten",
-        "ninaSettings": "NINA-focuserinstellingen",
+        "ninaSettings": "@:{'general.backendName'}-focuserinstellingen",
         "optics": "Optiek",
         "opticsLine": "Brandpuntsafstand {focalLength} mm · pixelgrootte {pixelSize} µm",
         "imageScale": "Beeldschaal {scale}″/px",
@@ -4586,7 +4596,7 @@
           "camera": "Camera verbonden",
           "focuser": "Focuser verbonden",
           "hocusFocus": "Hocus Focus beschikbaar",
-          "engineHint": "In NINA moeten 'Auto Focus' en 'Star Detector' allebei op Hocus Focus staan. De resultaatstap meldt het als dat niet zo is."
+          "engineHint": "In @:{'general.backendName'} moeten 'Auto Focus' en 'Star Detector' allebei op Hocus Focus staan. De resultaatstap meldt het als dat niet zo is."
         },
         "focalLength": "Brandpuntsafstand (mm)",
         "pixelSize": "Pixelgrootte (µm)",
@@ -4722,7 +4732,7 @@
         "height": "Hoogte (px)",
         "focal_length": "Focale lengte (mm)",
         "bit_depth": "Bitdiepte",
-        "bit_depth_help": "De bitdiepte die N.I.N.A. aanneemt voor de cameradata. Belangrijk voor camera's die hun bitdiepte niet zelf melden, zoals DSLR's; beïnvloedt statistieken, stretchen en verzadiging. De RAW-bestanden die de camera opslaat, veranderen niet.",
+        "bit_depth_help": "De bitdiepte die @:{'general.backendName'} aanneemt voor de cameradata. Belangrijk voor camera's die hun bitdiepte niet zelf melden, zoals DSLR's; beïnvloedt statistieken, stretchen en verzadiging. De RAW-bestanden die de camera opslaat, veranderen niet.",
         "bit_scaling": "Bitschaling",
         "bit_scaling_help": "Schaalt de cameradata op naar 16 bit, zodat beelden van camera's met een lagere bitdiepte het volledige waardebereik gebruiken."
       },
@@ -4793,12 +4803,12 @@
         "StartFromCurrentPosition": "Start vanaf huidige positie",
         "DirectionEast": "Richting Oost",
         "camera_settings": "Camera Instellingen",
-        "camera_settings_hint": "Laat leeg voor NINA standaard waardes",
+        "camera_settings_hint": "Laat leeg voor @:{'general.backendName'} standaard waardes",
         "exposure_time": "Belichtingstijd (s)",
         "gain": "Gain",
         "filter": "Filter",
         "filter_default": "Standaard",
-        "nina_default": "NINA standaard",
+        "nina_default": "@:{'general.backendName'} standaard",
         "ManualMode": "Manuele mode"
       },
       "pins_settings": {
@@ -4847,7 +4857,7 @@
     },
     "slewAndCenter": {
       "title": "Slew en Centreer",
-      "LastSelectedImageSource_wrong": "Selecteer offline sky map als beeldbron in NINA / Framing",
+      "LastSelectedImageSource_wrong": "Selecteer offline sky map als beeldbron in @:{'general.backendName'} / Framing",
       "ra": "RA:",
       "dec": "Dec:",
       "ra_placeholder": "RA 03:47:28.2",
@@ -5098,7 +5108,7 @@
         "rise_set": "Opkomst / Ondergang",
         "circumpolar": "circumpolair",
         "never_rises": "komt nooit op",
-        "missing_location": "Hoogte en opkomst/ondergang hebben de locatie uit het NINA-profiel nodig."
+        "missing_location": "Hoogte en opkomst/ondergang hebben de locatie uit het @:{'general.backendName'}-profiel nodig."
       },
       "datetime": {
         "title": "Datum & Tijd",
@@ -5121,7 +5131,7 @@
         "landscapes_visible": "Toon landschap",
         "hide_below_horizon": "Verberg objecten onder de horizon",
         "sky_survey_visible": "Fotografische hemelkaart",
-        "sky_survey_hint": "Gebruikt uitsluitend de meegeleverde DSS-hemelbeelden offline en haalt nooit surveymosaïeken van internet op.",
+        "sky_survey_hint": "Toont het naar je @:{'general.backendName'}-host gedownloade DSS- of NSNS-survey offline; de app haalt nooit tegels van internet op.",
         "dsos_visible": "Deep Sky-objecten (Messier, NGC)",
         "catalog_filters": "Catalogusfilters",
         "catalog_filter_hint": "Bepaalt welke deep-sky-markeringen zichtbaar zijn; offline zoeken vindt nog steeds alle catalogusobjecten.",
@@ -5171,7 +5181,7 @@
       },
       "survey": {
         "title": "Fotografische surveygegevens",
-        "hint": "De DSS-kleursurvey wordt eenmalig naar de NINA/PINS-host gedownload en van daaruit aan de Atlas geleverd. Hogere orders voegen detail toe voor smalle velden.",
+        "hint": "De DSS-kleursurvey wordt eenmalig naar de @:{'general.backendName'}-host gedownload en van daaruit aan de Atlas geleverd. Hogere orders voegen detail toe voor smalle velden.",
         "plugin_update_required": "Werk de Touch'N'Stars-plugin bij om de hemelsurvey te downloaden.",
         "installed": "Geïnstalleerd",
         "free_space": "Vrij op host",
@@ -5196,11 +5206,11 @@
         "delete_keep_option": "{name} behouden, rest verwijderen",
         "delete_all_option": "Alles",
         "delete_confirm_title": "Surveygegevens verwijderen?",
-        "delete_confirm": "De gedownloade hemelsurvey van de NINA/PINS-host verwijderen? De Atlas toont geen fotografische achtergrond meer totdat deze opnieuw is gedownload.",
+        "delete_confirm": "De gedownloade hemelsurvey van de @:{'general.backendName'}-host verwijderen? De Atlas toont geen fotografische achtergrond meer totdat deze opnieuw is gedownload.",
         "delete_confirm_keep": "Elke order boven {name} verwijderen? {name} blijft geïnstalleerd en wordt in de Atlas getoond.",
-        "terms": "Digitized Sky Survey © STScI/NASA, gekleurd en HiPS-verwerkt door CDS (CNRS/Unistra). Vrij voor niet-commercieel gebruik met naamsvermelding; de tegels blijven op je eigen NINA/PINS-host.",
+        "terms": "Digitized Sky Survey © STScI/NASA, gekleurd en HiPS-verwerkt door CDS (CNRS/Unistra). Vrij voor niet-commercieel gebruik met naamsvermelding; de tegels blijven op je eigen @:{'general.backendName'}-host.",
         "terms_link": "Gebruiksvoorwaarden",
-        "offer_text": "Nu de fotografische hemelachtergrond (DSS, ongeveer {size}) naar de NINA/PINS-host downloaden? Zonder deze toont de Atlas alleen sterren en catalogusobjecten.",
+        "offer_text": "Nu de fotografische hemelachtergrond (DSS, ongeveer {size}) naar de @:{'general.backendName'}-host downloaden? Zonder deze toont de Atlas alleen sterren en catalogusobjecten.",
         "offer_text_legacy": "De gedownloade hemelachtergrond gebruikt een verouderd formaat. Nu opnieuw downloaden (ongeveer {size})? De oude bestanden worden vervangen.",
         "offer_accept": "Downloaden",
         "offer_decline": "Niet nu",
@@ -5210,9 +5220,9 @@
         "source_nsns": "NSNS kleur",
         "source_dss_hint": "Digitized Sky Survey: fotografische beelden in ware kleuren van de hele hemel.",
         "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] rood, Hα groen, [SII] blauw, zodat emissienevels hun volledige omvang tonen. Dekt alleen de hemel ten noorden van −16°.",
-        "hint_nsns": "De NSNS-smalbandsurvey wordt eenmalig naar de NINA/PINS-host gedownload en vanaf daar aan de Atlas geleverd. Hogere orders voegen detail toe voor smalle beeldvelden.",
+        "hint_nsns": "De NSNS-smalbandsurvey wordt eenmalig naar de @:{'general.backendName'}-host gedownload en vanaf daar aan de Atlas geleverd. Hogere orders voegen detail toe voor smalle beeldvelden.",
         "plugin_update_required_nsns": "Werk de Touch'N'Stars-plug-in bij om de NSNS-smalbandsurvey te downloaden.",
-        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, gelicentieerd onder CC BY-NC-SA 4.0. Gratis voor niet-commercieel gebruik met bronvermelding; de tegels blijven op je eigen NINA/PINS-host.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, gelicentieerd onder CC BY-NC-SA 4.0. Gratis voor niet-commercieel gebruik met bronvermelding; de tegels blijven op je eigen @:{'general.backendName'}-host.",
         "source_nsns_ha": "NSNS Hα",
         "source_nsns_ha_hint": "Northern Sky Narrowband Survey, alleen Hα-lijn (geïoniseerde waterstof). Dekt alleen de hemel ten noorden van −16°; aparte download.",
         "source_nsns_oiii": "NSNS [OIII]",
@@ -5946,7 +5956,7 @@
         "keepOpen": "Houd deze app open. Controles zijn tijdelijk geblokkeerd om een ​​inconsistente status te voorkomen.",
         "running": "Raspberry Pi-pakketten bijwerken. Wacht tot het proces is voltooid.",
         "title": "Systeemupdate wordt uitgevoerd",
-        "waitingForApi": "Update voltooid. Wachten tot de NINA API weer bereikbaar is...",
+        "waitingForApi": "Update voltooid. Wachten tot de @:{'general.backendName'} API weer bereikbaar is...",
         "close": "Sluiten"
       },
       "pluginsAction": "Actie",
@@ -6128,7 +6138,7 @@
       "errors": {
         "title": "Bahtinov-analyse",
         "readFile": "Kan het geselecteerde bestand niet lezen.",
-        "captureLoad": "Kon de laatste opname niet laden van N.I.N.A.",
+        "captureLoad": "Kon de laatste opname niet laden van @:{'general.backendName'}",
         "analysisFailed": "Analyseverzoek mislukt.",
         "badRequest": "De server heeft het verzoek afgewezen. Controleer de parameters.",
         "mockMode": "Bahtinov-analyse is niet beschikbaar terwijl de mock-API is ingeschakeld.",
@@ -6224,12 +6234,12 @@
         "validationJournalLines": "Journaalregels moeten tussen 100 en 50.000 liggen.",
         "validationSections": "Selecteer ten minste één sectie.",
         "expertMode": "Expertinstellingen",
-        "ninaLogs": "NINA-logbestanden (laatste 10)",
+        "ninaLogs": "@:{'general.backendName'}-logbestanden (laatste 10)",
         "collecting": "PINS-systeemdiagnose wordt verzameld… dit kan even duren."
       },
       "progress": {
         "collectingLogs": "Touch'N'Stars-logs worden verzameld…",
-        "collectingNinaLogs": "Recente NINA-logbestanden worden verzameld…",
+        "collectingNinaLogs": "Recente @:{'general.backendName'}-logbestanden worden verzameld…",
         "buildingArchive": "ZIP-archief wordt aangemaakt…"
       }
     },
@@ -6333,7 +6343,7 @@
         "noListsHint": "Maak object/doellijst aan in telescopius.com laad deze hier in.",
         "editOnTelescopius": "Bewerk lijsten in Telescopius",
         "dataFrom": "Data van",
-        "connectionError": "Connectie met Telescopius mislukt. De NINA PC heeft een active internetverbinding nodig en er moet minimaal 1 lijst aangemaakt zijn in Telescopius.",
+        "connectionError": "Connectie met Telescopius mislukt. De @:{'general.backendName'} PC heeft een active internetverbinding nodig en er moet minimaal 1 lijst aangemaakt zijn in Telescopius.",
         "myLists": "Mijn doellijsten",
         "unnamedList": "Naamloze lijst",
         "showObjects": "Objecten tonen",
@@ -6432,8 +6442,8 @@
         "sendToNina": "Adopteer Sequence",
         "sending": "Verzenden...",
         "sent": "Verzonden!",
-        "sendErrorTitle": "Fout bij sturen naar N.I.N.A",
-        "sendSuccessMessage": "Sequentie successvol verzonden naar N.I.N.A!",
+        "sendErrorTitle": "Fout bij sturen naar @:{'general.backendName'}",
+        "sendSuccessMessage": "Sequentie successvol verzonden naar @:{'general.backendName'}!",
         "validSequence": "Sequentie is valide en kan gebruikt worden",
         "invalidSequence": "Voeg object toe aan Doelinstellingen en Slimme opnames om een valide sequentie aan te maken",
         "saveNamed": "Sequentie opslaan als...",
@@ -7092,7 +7102,7 @@
             "Warnings": "Waarschuwingen"
           },
           "categoryHints": {
-            "Errors": "Elke N.I.N.A.-fout en verloren apparaten",
+            "Errors": "Elke @:{'general.backendName'}-fout en verloren apparaten",
             "Guiding": "Gidsster verloren, guiding mislukt",
             "Mount": "Flip mislukt, opnames zonder volgen",
             "Safety": "De veiligheidsmonitor meldt onveilig",
@@ -7107,7 +7117,7 @@
           "pauseMs": "Pauze tussen tonen (ms)",
           "graceMinutes": "Opstartwachttijd (min)",
           "throttleMinutes": "Hetzelfde alarm herhalen na (min)",
-          "graceHint": "Geen alarmen direct na het starten van N.I.N.A. Hetzelfde alarm piept hoogstens 3 keer achter elkaar.",
+          "graceHint": "Geen alarmen direct na het starten van @:{'general.backendName'} Hetzelfde alarm piept hoogstens 3 keer achter elkaar.",
           "exclusionsTitle": "Nooit piepen bij",
           "addExclusionTitle": "Item toevoegen dat nooit piept",
           "exclusionPlaceholder": "Deel van het bericht",
@@ -7262,7 +7272,7 @@
     },
     "shortcuts": {
       "title": "Sequentie-Shortcuts",
-      "description": "Snelle toegang om N.I.N.A sequenties te laden",
+      "description": "Snelle toegang om @:{'general.backendName'} sequenties te laden",
       "addNew": "Nieuwe Shortcut",
       "newShortcut": "Nieuwe Shortcut",
       "createFirst": "Creer Eerste Shortcut",
@@ -7606,7 +7616,7 @@
           "maxPluginStorageGb": "Maximale opslag van plug-ins (GB)",
           "maxPluginStorageHelp": "Stel 0 in voor geen limiet.",
           "protocolTooltip": "Protocol dat wordt gebruikt om de lokale geavanceerde API te bereiken die wordt weergegeven door PINS.",
-          "sequencePollTooltip": "Hoe vaak controleert AllSky of een PINS/NINA-reeks is gestart of gestopt.",
+          "sequencePollTooltip": "Hoe vaak controleert AllSky of een @:{'general.backendName'}-reeks is gestart of gestopt.",
           "advancedApiHostTooltip": "Hostnaam of IP-adres van de PINS Advanced API-service.",
           "portTooltip": "TCP-poort gebruikt door de PINS Advanced API-service.",
           "timeoutTooltip": "Maximale tijd die moet worden gewacht op één enkel Advanced API-verzoek voordat het als niet-beschikbaar wordt gemarkeerd.",
@@ -7822,7 +7832,7 @@
         "exampleLabels": ["Algemene IP-camera", "ONVIF-camera", "Axis-camera", "Hikvision-camera"],
         "examplesTitle": "Voorbeelden",
         "proxyOptions": [
-          "Proxy (standaard): De afbeelding wordt opgehaald door de NINA-backend en doorgestuurd naar de browser. Vereist voor lokale netwerkcamera's met inloggegevens of CORS-beperkingen. Iets langzamer bij toegang via VPN.",
+          "Proxy (standaard): De afbeelding wordt opgehaald door de @:{'general.backendName'}-backend en doorgestuurd naar de browser. Vereist voor lokale netwerkcamera's met inloggegevens of CORS-beperkingen. Iets langzamer bij toegang via VPN.",
           "Direct: De browser haalt de afbeelding rechtstreeks op. Sneller voor openbare internetcamera's (bijvoorbeeld openbare allsky-cams). Ondersteunt geen inloggegevens in de URL in Chrome/Edge."
         ],
         "proxyText": "Elke camera kan op twee manieren worden opgehaald:",
@@ -7843,7 +7853,7 @@
       "snapshotUrl": "Momentopname-URL",
       "unknownCamera": "Onbekende camera",
       "useProxy": "Gebruik proxy",
-      "useProxyHint": "Leid de afbeelding door de NINA-backend. Vereist voor camera's met inloggegevens of CORS-beperkingen. Uitschakelen voor directe internetcamera's."
+      "useProxyHint": "Leid de afbeelding door de @:{'general.backendName'}-backend. Vereist voor camera's met inloggegevens of CORS-beperkingen. Uitschakelen voor directe internetcamera's."
     },
     "targetScheduler": {
       "actions": {
@@ -8233,8 +8243,8 @@
       "filterAll": "All",
       "filterNewOnly": "New only",
       "filterVisibleOnly": "Visible tonight",
-      "visibleHint": "Based on observer location from NINA profile",
-      "visibleNoLocation": "No observer location — set location in NINA profile",
+      "visibleHint": "Based on observer location from @:{'general.backendName'} profile",
+      "visibleNoLocation": "No observer location — set location in @:{'general.backendName'} profile",
       "sortBy": "Sort by",
       "sortLatestMag": "Latest mag (brightest first)",
       "sortFirstObserved": "Discovery date (newest first)",
@@ -8411,7 +8421,7 @@
         "useTls": "Gebruik TLS (schakelt poort naar 8883)",
         "username": "Gebruikersnaam"
       },
-      "notLoaded": "De Ground Station plugin is niet geïnstalleerd of geladen in NINA. Installeer de plugin 'Ground Station' in NINA om deze instellingen te gebruiken.",
+      "notLoaded": "De Ground Station plugin is niet geïnstalleerd of geladen in @:{'general.backendName'}. Installeer de plugin 'Ground Station' in @:{'general.backendName'} om deze instellingen te gebruiken.",
       "ntfysh": {
         "defaultIcon": "Standaard pictogram-URL",
         "defaultTopic": "Standaardonderwerp",
@@ -8455,7 +8465,7 @@
         "refreshing": "Vernieuwen…",
         "workspace": "Werkruimte"
       },
-      "subtitle": "Configureer NINA Ground Station-meldingsservices",
+      "subtitle": "Configureer @:{'general.backendName'} Ground Station-meldingsservices",
       "tabs": {
         "discord": "Discord",
         "email": "E-mail",
@@ -8645,7 +8655,7 @@
         "exportFailedMessage": "Kopiëren naar klembord is mislukt.",
         "apiDocsLink": "Target Scheduler API-documentatie",
         "setupTitle": "Target Scheduler API instellen",
-        "setupStep1": "Open in NINA de opties van de Target Scheduler-plugin en schakel de API-server in.",
+        "setupStep1": "Open in @:{'general.backendName'} de opties van de Target Scheduler-plugin en schakel de API-server in.",
         "setupStep2": "Noteer de getoonde poort (standaard 8188).",
         "setupStep3": "Voer die poort hierboven in, de verbinding wordt dan automatisch gemaakt.",
         "welcomeTitle": "Welkom bij Target Scheduler Viewer",
@@ -8701,7 +8711,7 @@
         "noTargets": "Geen doelen in dit project."
       },
       "schedulePreview": {
-        "disclaimer": "Voorspeld schema van de Scheduler voor vannacht, bij elke refresh herberekend — geen registratie van wat NINA op dit moment daadwerkelijk opneemt.",
+        "disclaimer": "Voorspeld schema van de Scheduler voor vannacht, bij elke refresh herberekend — geen registratie van wat @:{'general.backendName'} op dit moment daadwerkelijk opneemt.",
         "learnMore": "Meer info",
         "noScheduleData": "Geen planningsgegevens.",
         "waitingNotVisible": "Wachten — doel nog niet zichtbaar"
@@ -8722,7 +8732,7 @@
         "open": "Plugin verbonden",
         "closed": "Plugin niet bereikbaar",
         "unreachable": "Geen verbinding met de AAPA-plugin op {url}.",
-        "checkPlugin": "Is de AAPA Controller-plugin geïnstalleerd en geladen in N.I.N.A.?",
+        "checkPlugin": "Is de AAPA Controller-plugin geïnstalleerd en geladen in @:{'general.backendName'}?",
         "checkEnabled": "Is de WebSocket-server ingeschakeld in de pluginsinstellingen, met dezelfde poort als hieronder?",
         "checkFirewall": "Staat de Windows-firewall inkomende verbindingen op deze poort toe?",
         "port": "WebSocket-poort"
@@ -8737,7 +8747,7 @@
         "ipAddress": "IP-adres van de AAPA",
         "connect": "Verbinden",
         "disconnect": "Verbinding verbreken",
-        "autoHint": "Auto controleert alle seriële poorten van de N.I.N.A.-computer op een AAPA."
+        "autoHint": "Auto controleert alle seriële poorten van de @:{'general.backendName'}-computer op een AAPA."
       },
       "status": {
         "positionX": "Positie X (Az)",
@@ -8756,13 +8766,13 @@
       },
       "assist": {
         "title": "Automatische pooluitlijning",
-        "hint": "Eén tik start TPPA (als het nog niet draait) en daarna de Auto-Pilot, die corrigeert tot de fout binnen de tolerantie ligt. TPPA stopt automatisch wanneer de Auto-Pilot eindigt. In de TPPA-instellingen in N.I.N.A. moet \"Log polar alignment error adjustments\" ingeschakeld zijn. Houd deze pagina open zolang het loopt.",
+        "hint": "Eén tik start TPPA (als het nog niet draait) en daarna de Auto-Pilot, die corrigeert tot de fout binnen de tolerantie ligt. TPPA stopt automatisch wanneer de Auto-Pilot eindigt. In de TPPA-instellingen in @:{'general.backendName'} moet \"Log polar alignment error adjustments\" ingeschakeld zijn. Houd deze pagina open zolang het loopt.",
         "start": "Pooluitlijning starten",
         "running": "Bezig…",
         "stop": "Stoppen",
         "tppaSettings": "TPPA-instellingen",
         "autoPilotSettings": "Auto-Pilot-instellingen",
-        "tnsPluginRequired": "TPPA heeft de Touch'N'Stars-plugin in N.I.N.A. nodig; deze is niet bereikbaar.",
+        "tnsPluginRequired": "TPPA heeft de Touch'N'Stars-plugin in @:{'general.backendName'} nodig; deze is niet bereikbaar.",
         "phaseLabel": "Status",
         "azError": "Azimutfout",
         "altError": "Hoogtefout",
@@ -8835,12 +8845,12 @@
           "MinYLimit": "Min. Y (stappen)",
           "MaxYLimit": "Max. Y (stappen)"
         },
-        "autoSaveHint": "Wijzigingen worden in N.I.N.A. opgeslagen zodra je een veld verlaat.",
-        "saveInNina": "Opslaan in N.I.N.A.",
+        "autoSaveHint": "Wijzigingen worden in @:{'general.backendName'} opgeslagen zodra je een veld verlaat.",
+        "saveInNina": "Opslaan in @:{'general.backendName'}",
         "storeOnDevice": "Opslaan op AAPA",
         "sendConfirm": "De huidige configuratie van de AAPA permanent in het geheugen (EEPROM) opslaan?",
         "applyToDevice": "Toepassen op AAPA",
-        "applyInNinaHint": "Deze waarden worden in N.I.N.A. opgeslagen. Gebruik de verzendknop in het AAPA-paneel in N.I.N.A. om ze naar de AAPA over te dragen."
+        "applyInNinaHint": "Deze waarden worden in @:{'general.backendName'} opgeslagen. Gebruik de verzendknop in het AAPA-paneel in @:{'general.backendName'} om ze naar de AAPA over te dragen."
       },
       "log": {
         "title": "Log",
@@ -9288,7 +9298,7 @@
       "reload": "Voorbeeld herladen"
     },
     "cache": {
-      "useNinaCache": "NINA-cache voor doelobject gebruiken",
+      "useNinaCache": "@:{'general.backendName'}-cache voor doelobject gebruiken",
       "hint": "Laadt DSS/doelobject via TNS WebAPI. De cache-schakelaar bestuurt useCache.",
       "hintShort": "Geeft useCache door aan targetpic"
     },
@@ -9431,7 +9441,7 @@
       "filterAuto": "Auto",
       "filterBroadband": "Breedband",
       "filterClassifications": "Classificaties filteren",
-      "filterClassificationsHint": "Filters uit je NINA-profiel. Automatisch maakt gebruik van eerste-letter-matching (L,R,G,B = breedband; H,S,O = smalband).",
+      "filterClassificationsHint": "Filters uit je @:{'general.backendName'}-profiel. Automatisch maakt gebruik van eerste-letter-matching (L,R,G,B = breedband; H,S,O = smalband).",
       "filterExclude": "Uitsluiten",
       "filterNarrowband": "Smalband",
       "lightModeReport": "Lichtmodusrapport",
@@ -9646,7 +9656,7 @@
       "working": "Bezig…",
       "howItWorks": "Hoe het werkt",
       "eqmodToggleTitle": "EQMOD RA-snelheidscorrectie",
-      "eqmodToggleDescription": "EQMOD leest de RA-snelheid als ruwe boogseconden/sec in plaats van wat NINA verstuurt, waardoor het volgen ~15× te traag wordt zonder correctie. Alleen inschakelen als de montering EQMOD gebruikt.",
+      "eqmodToggleDescription": "EQMOD leest de RA-snelheid als ruwe boogseconden/sec in plaats van wat @:{'general.backendName'} verstuurt, waardoor het volgen ~15× te traag wordt zonder correctie. Alleen inschakelen als de montering EQMOD gebruikt.",
       "eqmodDetectedHint": "{name} lijkt een EQMOD-driver te zijn — je wilt dit waarschijnlijk inschakelen.",
       "reapplyIntervalTitle": "Herhalingsinterval",
       "reapplyIntervalDescription": "Hoe vaak Quick Track de volgsnelheid herberekent en opnieuw verstuurt. De standaardwaarde van 900 s (15 min) is geschikt voor kometen en asteroïden.",

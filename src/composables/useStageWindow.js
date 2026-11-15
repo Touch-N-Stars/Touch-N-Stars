@@ -15,8 +15,11 @@ export function useStageWindow() {
       ? {
           top: 'calc(var(--stage-inset) + var(--subnav-offset))',
           left: 'calc(var(--nav-width) + var(--stage-inset))',
-          right: 'var(--stage-inset)',
-          bottom: 'calc(var(--statusbar-height) + var(--status-panel-height) + var(--stage-inset))',
+          right: 'var(--stage-right)',
+          // The status bar grows by the bottom safe area (iOS home indicator) in
+          // landscape too, so the window has to end above it.
+          bottom:
+            'calc(var(--statusbar-height) + env(safe-area-inset-bottom) + var(--status-panel-height) + var(--stage-inset))',
         }
       : {
           top: 'calc(82px + var(--subnav-offset))',

@@ -368,10 +368,7 @@
                 :style="responsiveStarProfileStyle"
                 class="relative shrink-0 bg-black/80 rounded border border-line-strong overflow-hidden"
               >
-                <Phd2StarProfile
-                  :containerWidth="responsiveStarSize.width"
-                  :containerHeight="responsiveStarSize.height"
-                />
+                <Phd2StarProfile />
               </div>
             </div>
           </div>
@@ -395,10 +392,7 @@
                 :style="responsiveStarProfileStyle"
                 class="relative shrink-0 bg-black/80 rounded border border-line-strong overflow-hidden"
               >
-                <Phd2StarProfile
-                  :containerWidth="responsiveStarSize.width"
-                  :containerHeight="responsiveStarSize.height"
-                />
+                <Phd2StarProfile />
               </div>
             </div>
           </div>

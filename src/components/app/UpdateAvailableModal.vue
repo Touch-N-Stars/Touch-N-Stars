@@ -31,14 +31,10 @@
           </div>
           <div class="flex-1">
             <h2 id="update-available-title" class="text-2xl font-semibold text-white">
-              {{ isDowngrade ? t('updates.downgradeTitle') : t('updates.title') }}
+              {{ titleText }}
             </h2>
             <p class="mt-2 text-sm text-content">
-              {{
-                isDowngrade
-                  ? t('updates.downgradeDescription', { version })
-                  : t('updates.description', { version })
-              }}
+              {{ descriptionText }}
             </p>
           </div>
         </div>
@@ -67,7 +63,7 @@
         </div>
 
         <div
-          v-if="releaseNotes"
+          v-if="releaseNotes && !upToDate"
           class="mb-6 max-h-52 overflow-y-auto rounded-xl border border-line bg-surface-2 p-4 text-sm text-content"
         >
           <p class="mb-2 font-semibold text-content">{{ t('updates.releaseNotes') }}</p>
@@ -98,22 +94,23 @@
         </p>
 
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <!-- Up to date: closing is the expected action, reinstalling is the fallback -->
           <button
             type="button"
-            class="rounded-xl border border-line px-4 py-2 text-sm font-medium text-content transition hover:border-line-strong hover:text-white disabled:cursor-not-allowed disabled:border-line disabled:text-content-faint"
+            :class="upToDate ? primaryButtonClass : secondaryButtonClass"
             :disabled="isBusy"
             @click="$emit('cancel')"
           >
-            {{ t('updates.later') }}
+            {{ upToDate ? t('common.close') : t('updates.later') }}
           </button>
           <button
             type="button"
-            class="rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-ground transition hover:bg-accent disabled:cursor-not-allowed disabled:bg-accent disabled:text-content"
+            :class="upToDate ? secondaryButtonClass : primaryButtonClass"
             :disabled="isBusy"
             @click="$emit('confirm')"
           >
             <span v-if="isBusy">{{ t('updates.working') }}</span>
-            <span v-else>{{ t('updates.updateNow') }}</span>
+            <span v-else>{{ confirmText }}</span>
           </button>
         </div>
       </div>
@@ -177,6 +174,16 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // Manual check found nothing newer: the offered release is the installed version or,
+  // with isDowngrade, older than it (e.g. a beta installed while the stable channel is selected).
+  upToDate: {
+    type: Boolean,
+    default: false,
+  },
+  currentVersion: {
+    type: String,
+    default: '',
+  },
 });
 
 const emit = defineEmits(['confirm', 'cancel']);
@@ -216,4 +223,30 @@ const hasWhatsNew = computed(() =>
 );
 
 const { t } = useI18n();
+
+const primaryButtonClass =
+  'rounded-xl bg-accent px-4 py-2 text-sm font-semibold text-ground transition hover:bg-accent disabled:cursor-not-allowed disabled:bg-accent disabled:text-content';
+const secondaryButtonClass =
+  'rounded-xl border border-line px-4 py-2 text-sm font-medium text-content transition hover:border-line-strong hover:text-white disabled:cursor-not-allowed disabled:border-line disabled:text-content-faint';
+
+const titleText = computed(() => {
+  if (props.upToDate) return t('updates.upToDateTitle');
+  return props.isDowngrade ? t('updates.downgradeTitle') : t('updates.title');
+});
+const descriptionText = computed(() => {
+  if (props.upToDate) {
+    return props.isDowngrade
+      ? t('updates.upToDateNewer', { current: props.currentVersion, version: props.version })
+      : t('updates.upToDateVersion', { version: props.version });
+  }
+  return props.isDowngrade
+    ? t('updates.downgradeDescription', { version: props.version })
+    : t('updates.description', { version: props.version });
+});
+const confirmText = computed(() => {
+  if (!props.upToDate) return t('updates.updateNow');
+  return props.isDowngrade
+    ? t('updates.installVersion', { version: props.version })
+    : t('updates.installAnyway');
+});
 </script>

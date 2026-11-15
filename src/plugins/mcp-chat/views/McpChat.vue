@@ -646,8 +646,8 @@ onUnmounted(disconnect);
 @media (orientation: landscape) {
   .chat-connected {
     height: calc(
-      100dvh - var(--subnav-offset, 0px) - var(--statusbar-height, 48px) - 2 *
-        var(--stage-inset, 8px) - 32px
+      100dvh - var(--subnav-offset, 0px) - var(--statusbar-height, 48px) -
+        env(safe-area-inset-bottom, 0px) - 2 * var(--stage-inset, 8px) - 32px
     );
   }
 }

@@ -57,6 +57,7 @@ import { ArrowPathIcon } from '@heroicons/vue/24/outline';
 import ItemShell from './ItemShell.vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
+import { joinSequenceFilePath } from '@/utils/sequenceFilePath';
 
 defineProps({
   item: { type: Object, required: true },
@@ -86,23 +87,10 @@ function onSelect(event, save) {
   save('FilePath', filePath);
 }
 
-// Mirrors controlSequence.vue's buildFilePath — joins the profile's default sequence
-// folder with a bare filename using the folder's own path separator.
-function buildFilePath(name) {
-  const defaultFolder = store.profileInfo?.SequenceSettings?.DefaultSequenceFolder ?? '';
-  const sep =
-    defaultFolder.endsWith('\\') || defaultFolder.endsWith('/')
-      ? ''
-      : defaultFolder.includes('/')
-        ? '/'
-        : '\\';
-  const fileName = name.endsWith('.json') ? name : name + '.json';
-  return defaultFolder ? defaultFolder + sep + fileName : fileName;
-}
-
 function applyNewFileName(save) {
   if (!newFileName.value.trim()) return;
-  save('FilePath', buildFilePath(newFileName.value.trim()));
+  const folder = store.profileInfo?.SequenceSettings?.DefaultSequenceFolder ?? '';
+  save('FilePath', joinSequenceFilePath(folder, newFileName.value.trim(), store.isPINS));
   newFileName.value = '';
 }
 

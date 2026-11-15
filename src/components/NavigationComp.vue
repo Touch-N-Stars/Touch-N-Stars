@@ -761,7 +761,8 @@ watch(
   @apply fixed left-0 top-0 bottom-0 h-full w-(--nav-width) flex-col justify-start;
   height: 100vh !important;
   /* Clear a landscape camera cutout only on devices that actually have one;
-     collapses to zero elsewhere (needs viewport-fit=cover). */
+     collapses to zero elsewhere (needs viewport-fit=cover). --nav-width already
+     includes this inset, so the buttons keep their full 6rem column. */
   padding-left: env(safe-area-inset-left, 0px);
 }
 

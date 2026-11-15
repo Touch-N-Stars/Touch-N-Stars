@@ -30,7 +30,8 @@
     "delete": "Smazat",
     "edit": "Upravit",
     "close": "Zavřít",
-    "save": "Uložit"
+    "save": "Uložit",
+    "backendName": "NINA"
   },
   "pages": {
     "equipment": {
@@ -42,9 +43,9 @@
     "title": "Touch'N'Stars",
     "connection_error_toast": {
       "title": "Chyba připojení",
-      "message_api": "Zásuvný modul API není k dispozici. Zkontrolujte nastavení v NINA",
+      "message_api": "Zásuvný modul API není k dispozici. Zkontrolujte nastavení v @:{'general.backendName'}",
       "message_api_version": "Zásuvný modul API je příliš starý. Proveďte aktualizaci",
-      "message_tns": "Zásuvný modul TouchNStars není k dispozici. Zkontrolujte prosím nastavení v NINA",
+      "message_tns": "Zásuvný modul TouchNStars není k dispozici. Zkontrolujte prosím nastavení v @:{'general.backendName'}",
       "message_tns_version": "Zásuvný modul Touch N Stars je příliš starý. Proveďte prosím aktualizaci"
     },
     "connection_splash": {
@@ -79,6 +80,10 @@
     "checking": "Kontrola…",
     "upToDateTitle": "Žádná aktualizace není k dispozici",
     "upToDateMessage": "Používáte již nejnovější verzi.",
+    "upToDateVersion": "Používáte již nejnovější verzi ({version}). Pokud něco nefunguje, můžete ji nainstalovat znovu.",
+    "installAnyway": "Přesto nainstalovat",
+    "upToDateNewer": "Vaše nainstalovaná verze ({current}) je novější než poslední vydání zvoleného kanálu ({version}). Přesto můžete nainstalovat {version}, například pro návrat na stabilní verzi.",
+    "installVersion": "Nainstalovat {version}",
     "checkFailedTitle": "Kontrola aktualizací selhala"
   },
   "setup": {
@@ -87,7 +92,7 @@
     "selectLanguage": "Vyberte jazyk",
     "gpsConfiguration": "Konfigurace GPS",
     "completeSetup": "Dokončit nastavení",
-    "instanceConfiguration": "Podrobnosti o připojení N.I.N.A",
+    "instanceConfiguration": "Podrobnosti o připojení @:{'general.backendName'}",
     "InfoAppsTitel": "Wiki",
     "check_wki": "Podrobné pokyny najdete na naší wiki",
     "coordAlt": "Alt",
@@ -140,7 +145,7 @@
       "missingEquipmentSettings": "Chybí nastavení vybavení: prosím nastavte ohniskovou vzdálenost a velikost pixelu v Nastavení → Vybavení, aby byl FOV kamery správně vypočítán.",
       "confirmSetTargetTitle": "Potvrzení Výběru Cíle",
       "confirmSetTargetMessage": "Jste si jisti, že chcete tento cíl nastavit jako součást sekvence?",
-      "useNinaCache": "Využití mezipaměti NINA pro cílový obraz",
+      "useNinaCache": "Využití mezipaměti @:{'general.backendName'} pro cílový obraz",
       "setSequnceTarget": "nastavit tento cíl jako součást sekvence",
       "sequenceTargetPicker": {
         "title": "Cíl sekvence",
@@ -177,7 +182,7 @@
         "SolveError": "Chyba při řešení snímku"
       },
       "moveRotator": "Otáčení kamery",
-      "infoTargetImage": "Pokud se snímek zobrazuje pouze černě, je nutné v NINA nastavit „Offline Mapa Oblohy“ nebo deaktivovat možnost „Použít NINA Mezipamět",
+      "infoTargetImage": "Pokud se snímek zobrazuje pouze černě, je nutné v @:{'general.backendName'} nastavit „Offline Mapa Oblohy“ nebo deaktivovat možnost „Použít @:{'general.backendName'} Mezipamět",
       "useCenter": "Střed",
       "useRotate": "Rotace",
       "skyChart": {
@@ -263,7 +268,7 @@
         "openWiki": "Otevřít wiki"
       },
       "instance": {
-        "description": "Adresa počítače, na kterém běží N.I.N.A. Ve stejné síti ho aplikace obvykle najde sama.",
+        "description": "Adresa počítače, na kterém běží @:{'general.backendName'} Ve stejné síti ho aplikace obvykle najde sama.",
         "connect": "Uložit a připojit",
         "connecting": "Connecting…",
         "connected": "Připojeno k {name}",
@@ -404,7 +409,7 @@
         "focalLength": "Ohnisková vzdálenost pointačního dalekohledu",
         "focalLengthHint": "Ohnisková vzdálenost pointačního dalekohledu v mm. Ukládá se do profilu PHD2, odděleně od hlavního dalekohledu, a díky ní PHD2 udává pointaci v úhlových vteřinách.",
         "ditherTitle": "Dither",
-        "ditherDescription": "NINA nastavuje dithering v pixelech pointační kamery, zatímco obvyklá doporučení se uvádějí v pixelech hlavní kamery. Toto převádí mezi obojím.",
+        "ditherDescription": "@:{'general.backendName'} nastavuje dithering v pixelech pointační kamery, zatímco obvyklá doporučení se uvádějí v pixelech hlavní kamery. Toto převádí mezi obojím.",
         "ditherMainPixels": "Dithering (pixely hlavní kamery)",
         "ditherMainPixelsHint": "O kolik má každý dithering posunout objekt na čipu hlavní kamery. Dobrým výchozím bodem je 10 až 15 pixelů.",
         "guidePixelSize": "Velikost pixelu pointační kamery (µm)",
@@ -492,9 +497,9 @@
         "editTokens": "Upravit tokeny",
         "help": {
           "title": "Vzor názvu souboru",
-          "intro": "Sestavte vzor názvu souboru pro vaše pořízené snímky. Každý token bude při ukládání nahrazen skutečnou hodnotou z NINA.",
+          "intro": "Sestavte vzor názvu souboru pro vaše pořízené snímky. Každý token bude při ukládání nahrazen skutečnou hodnotou z @:{'general.backendName'}.",
           "tokensTitle": "Tokeny",
-          "tokensDesc": "Klepněte na tlačítko tokenu pro přidání do vzoru. Tokeny jako Filter, Date nebo ExposureTime jsou nahrazeny skutečnými hodnotami z NINA.",
+          "tokensDesc": "Klepněte na tlačítko tokenu pro přidání do vzoru. Tokeny jako Filter, Date nebo ExposureTime jsou nahrazeny skutečnými hodnotami z @:{'general.backendName'}.",
           "separatorsTitle": "Oddělovače",
           "separatorsDesc": "Použijte \\ pro vytvoření struktury složek. Použijte _ nebo - pro oddělení hodnot v názvu souboru. Použijte \"Text\" pro přidání vlastního textu, např. \"s\" pro sekundy.",
           "cursorTitle": "Pozice vložení",
@@ -535,7 +540,7 @@
       "backupRestore": {
         "title": "Zálohování a obnovení",
         "description": "Uloží nastavení tohoto zařízení do souboru a obnoví je na jiném zařízení.",
-        "profileWarning": "Tímto se zálohují pouze nastavení aplikace na tomto zařízení. Nastavení vybavení, kamery, montáže a další jsou uložena v profilu NINA nebo PINS - pro úplnou zálohu je zálohujte samostatně.",
+        "profileWarning": "Tímto se zálohují pouze nastavení aplikace na tomto zařízení. Nastavení vybavení, kamery, montáže a další jsou uložena v profilu @:{'general.backendName'} - pro úplnou zálohu je zálohujte samostatně.",
         "locationAndroid": "Soubor se ukládá do Dokumenty/TouchNStars na tomto zařízení - otevřete jej pomocí aplikace správce souborů.",
         "locationIos": "Soubor se ukládá v aplikaci Soubory v umístění Na mém iPhonu/iPadu → Touch 'N Stars → Documents.",
         "locationBrowser": "Soubor se ukládá do výchozí složky stažených souborů vašeho prohlížeče.",
@@ -605,7 +610,7 @@
         "help": {
           "ExposureTime": "Doba expozice v sekundách použitá pro snímky pořízené řešitelem desky. Delší expozice zachytí více hvězd, což pomáhá při řešení slabých nebo řídkých polí, ale zpomaluje každý pokus o řešení.",
           "Gain": "Zesílení kamery použité pro expozice při plate solvingu. Ponechte prázdné pro použití výchozího zesílení kamery.",
-          "ASTAPLocation": "Cesta ke spustitelnému souboru ASTAP (astap.exe) v systému, na kterém běží NINA. Vyžadováno pro lokální plate solving pomocí ASTAP.",
+          "ASTAPLocation": "Cesta ke spustitelnému souboru ASTAP (astap.exe) v systému, na kterém běží @:{'general.backendName'}. Vyžadováno pro lokální plate solving pomocí ASTAP.",
           "SearchRadius": "Poloměr ve stupních kolem cílových souřadnic, ve kterém řešitel hledá při pokusu o slepé řešení (blind solve). Větší poloměr prodlužuje dobu řešení, ale pomáhá, když je počáteční poloha montáže méně přesná.",
           "Threshold": "Maximální povolená odchylka v obloukových minutách mezi vyřešenou polohou a cílem během Slew & Center. Pokud je řešení odchýleno více než o tuto hodnotu, spustí se další cyklus slew-and-solve.",
           "RotationTolerance": "Maximální povolená odchylka rotace ve stupních mezi vyřešenou orientací snímku a cílovou orientací během Center & Rotate. Při překročení je rotátor upraven a snímek znovu vyřešen.",
@@ -673,7 +678,7 @@
         "mountTime": "Čas montáže",
         "notSupported": "Není podporováno ovladačem",
         "syncLabel": "Synchronizovat čas do montáže",
-        "syncLabelInfo": "Pokud je tato možnost povolena, kliknutím na \"Synchronizovat nyní\" se montáž krátce odpojí a znovu připojí, aby NINA mohla přenést aktuální čas.",
+        "syncLabelInfo": "Pokud je tato možnost povolena, kliknutím na \"Synchronizovat nyní\" se montáž krátce odpojí a znovu připojí, aby @:{'general.backendName'} mohla přenést aktuální čas.",
         "title": "Synchronizace času",
         "loadError": "Informace o čase se nepodařilo načíst.",
         "syncError": "Synchronizace času selhala. Zkontroluj připojení k zařízení PINS.",
@@ -770,7 +775,7 @@
       "save": "Save",
       "connect": "Connect",
       "disconnect": "Disconnect",
-      "sharedGuidWarning": "Rotátor a bezpečnostní monitor sdílejí v NINA jedno úložné místo – změna jednoho mění i druhý.",
+      "sharedGuidWarning": "Rotátor a bezpečnostní monitor sdílejí v @:{'general.backendName'} jedno úložné místo – změna jednoho mění i druhý.",
       "noReconnectHint": "Nová nastavení se projeví při příštím připojení.",
       "cameraNoSettings": "Tato kamera nemá žádná nastavení."
     },
@@ -828,7 +833,7 @@
       },
       "info": {
         "title": "Info",
-        "message": "Ruční filtrační kolo a ruční rotátor lze v současné době ovládat pouze prostřednictvím aplikace NINA."
+        "message": "Ruční filtrační kolo a ruční rotátor lze v současné době ovládat pouze prostřednictvím aplikace @:{'general.backendName'}."
       }
     },
     "lastLogs": {
@@ -914,6 +919,11 @@
       "skipCurrentItem": "Přeskočit aktuální položku",
       "manageSequences": "Načíst / uložit sekvence",
       "saveSequenceAs": "Uložit aktuální sekvenci jako",
+      "sequenceFolder": "Složka sekvencí",
+      "sequenceFolderNotSet": "Složka není nastavena",
+      "sequenceFolderChange": "Změnit složku",
+      "sequenceFolderRelative": "Nejde o úplnou cestu, soubory proto skončí ve složce programu @:{'general.backendName'} Vyberte prosím složku.",
+      "sequenceFolderSaveError": "Složku sekvencí se nepodařilo změnit.",
       "sequenceFileName": "Název souboru",
       "sequenceSave": "Uložit",
       "sequenceLoad": "Načíst",
@@ -936,7 +946,7 @@
       "no_sequences_found": "Žádné sekvence nenalezeny",
       "error_loading_sequences": "Chyba při načítání sekvencí",
       "error_loading_sequence": "Chyba při načítání sekvence",
-      "editFailed": "NINA změnu nepřijala",
+      "editFailed": "@:{'general.backendName'} změnu nepřijala",
       "targetNotFound": "Cíl nebyl v sekvenci nalezen. Zkuste to znovu.",
       "filter": "Filtr",
       "triggers": "Spouštěče:",
@@ -1438,7 +1448,7 @@
       },
       "location_sync": {
         "title": "Předvolby synchronizace polohy",
-        "confirmationMessage": "Pokud je v aplikaci NINA nastavena možnost „Synchronizace polohy“ na „Vyžádat potvrzení“, může se před odesláním souřadnic do dalekohledu zobrazit potvrzovací okno. Abyste tomu zabránili a umožnili aplikaci TNS automaticky nastavit souřadnice, doporučujeme změnit nastavení na „Synchronizovat s dalekohledem“.",
+        "confirmationMessage": "Pokud je v aplikaci @:{'general.backendName'} nastavena možnost „Synchronizace polohy“ na „Vyžádat potvrzení“, může se před odesláním souřadnic do dalekohledu zobrazit potvrzovací okno. Abyste tomu zabránili a umožnili aplikaci TNS automaticky nastavit souřadnice, doporučujeme změnit nastavení na „Synchronizovat s dalekohledem“.",
         "toTelescope": {
           "label": "Synchronizace s dalekohledem"
         },
@@ -1525,7 +1535,7 @@
               "description": "Minuty nastav sám v části Pokročilé."
             },
             "sideOfPierNoMount": "Před výběrem připoj montáž, aby aplikace mohla ověřit, zda hlásí svou stranu sloupu.",
-            "sideOfPierUnknown": "Tvoje montáž nehlásí stranu sloupu, proto zůstane „Použít stranu sloupu“ vypnuté. NINA pak o flipu rozhoduje podle času.",
+            "sideOfPierUnknown": "Tvoje montáž nehlásí stranu sloupu, proto zůstane „Použít stranu sloupu“ vypnuté. @:{'general.backendName'} pak o flipu rozhoduje podle času.",
             "applyFailed": "Předvolbu se nepodařilo uložit celou. Zkontroluj hodnoty v části Pokročilé."
           },
           "timeline": {
@@ -1537,30 +1547,30 @@
             "atMinutes": "+{min} min",
             "windowMinutes": "+{min}–{max} min",
             "explainPause": "Snímání se zastaví {pause} min před poledníkem a sledování se vypne. Flip následuje {min} min po poledníku. Stojí to čas snímání – použij jen tehdy, když dalekohled nemůže projít poledníkem.",
-            "explainFixed": "NINA pořizuje expozice, dokud by některá nepřesáhla {min} min po poledníku, pak čeká a provede flip přesně v tu chvíli. Pozdější nejzazší čas ušetří čekání.",
+            "explainFixed": "@:{'general.backendName'} pořizuje expozice, dokud by některá nepřesáhla {min} min po poledníku, pak čeká a provede flip přesně v tu chvíli. Pozdější nejzazší čas ušetří čekání.",
             "explainWindow": "Po první expozici, která skončí mezi {min} a {max} min po poledníku, hned následuje flip – bez čekání."
           },
           "help": {
             "MinutesAfterMeridian": "Nejdřívější okamžik po poledníku, kdy může flip začít.",
-            "MaxMinutesAfterMeridian": "Nejzazší okamžik po poledníku pro flip. Nemůže být menší než nejdřívější. Větší rozestup dovolí NINA provést flip hned po expozici, bez čekání.",
+            "MaxMinutesAfterMeridian": "Nejzazší okamžik po poledníku pro flip. Nemůže být menší než nejdřívější. Větší rozestup dovolí @:{'general.backendName'} provést flip hned po expozici, bez čekání.",
             "PauseTimeBeforeMeridian": "Jen pro vybavení, které nemůže bezpečně projít poledníkem: sledování se zastaví o tolik minut dřív. Jinak nech 0.",
             "SettleTime": "Po flipu čeká, až se montáž ustálí. Rozmazané hvězdy při prvním plate solve po flipu? Zvyš tuto hodnotu.",
-            "Recenter": "Po flipu NINA provede plate solve a znovu vycentruje objekt. Důrazně doporučeno; vyžaduje funkční plate solver.",
+            "Recenter": "Po flipu @:{'general.backendName'} provede plate solve a znovu vycentruje objekt. Důrazně doporučeno; vyžaduje funkční plate solver.",
             "UseSideOfPier": "Používá stranu sloupu hlášenou montáží k rozhodnutí, zda je flip potřeba. Spolehlivější, ale jen pokud ji montáž hlásí správně.",
             "AutoFocusAfterFlip": "Po flipu spustí autofokus. Užitečné u Newtonů a SCT, jejichž zrcadlo se při otočení tubusu posune.",
             "RotateImageAfterFlip": "Po flipu otočí náhled o 180°. Jen zobrazení – uložené snímky zůstanou beze změny."
           },
           "dayTest": {
             "title": "Otestovat flip ve dne",
-            "teaser": "Nech NINA udělat přes den skutečný meridian flip s tvým nastavením: projde dalekohled kolem stativu nebo sloupu v poloze po poledníku, stačí kabely?",
+            "teaser": "Nech @:{'general.backendName'} udělat přes den skutečný meridian flip s tvým nastavením: projde dalekohled kolem stativu nebo sloupu v poloze po poledníku, stačí kabely?",
             "open": "Spustit test",
-            "intro": "Teleskop sám ručně najedeš do bodu těsně východně od meridiánu. Odtud pokračuje ve sledování za meridián a NINA provede flip přesně jako v noci – s tvým nastavením flipu a ve skutečném čase.",
+            "intro": "Teleskop sám ručně najedeš do bodu těsně východně od meridiánu. Odtud pokračuje ve sledování za meridián a @:{'general.backendName'} provede flip přesně jako v noci – s tvým nastavením flipu a ve skutečném čase.",
             "blockers": {
               "notConnected": "Montáž není připojena.",
               "parked": "Montáž je zaparkovaná. Nejdřív ji odparkuj.",
               "cannotSlew": "Montáž neumí najíždět na souřadnice.",
               "noLocation": "Montáž nemá polohu. Nejdřív nastav svou polohu.",
-              "sequenceRunning": "V NINA běží sekvence. Nejdřív ji zastav."
+              "sequenceRunning": "V @:{'general.backendName'} běží sekvence. Nejdřív ji zastav."
             },
             "caps": {
               "label": "Krytky jsou na dalekohledu, hledáčku i pointačním dalekohledu",
@@ -1580,14 +1590,14 @@
             "resultProblem": "Pohyb flipu vyžaduje pozornost.",
             "problemAdvice": "Zkontroluj vedení kabelů, aby stačily na obou stranách. Pokud se dalekohled dotkl stativu nebo sloupu, zvol nahoře „Skoro vůbec“ nebo zkontroluj limit poledníku své montáže.",
             "pierChanged": "Strana sloupu: {before} → {after}",
-            "notTested": "Pointace po flipu se nekontroluje. Podrobnosti najdeš v logu NINA.",
+            "notTested": "Pointace po flipu se nekontroluje. Podrobnosti najdeš v logu @:{'general.backendName'}.",
             "stopped": "Test zastaven. Sekvence i sledování jsou vypnuté, montáž zůstává na místě.",
             "sideEast": "Východ",
             "sideWest": "Západ",
             "exposure": "Délka tvých expozic (s)",
-            "exposureHelp": "NINA provede flip po první expozici, která skončí v okně flipu. S tvou obvyklou délkou expozice provede test flip ve stejné poloze jako v noci.",
+            "exposureHelp": "@:{'general.backendName'} provede flip po první expozici, která skončí v okně flipu. S tvou obvyklou délkou expozice provede test flip ve stejné poloze jako v noci.",
             "plan": "Test trvá nejméně {minutes} min plus čas, o který začneš před meridiánem. Montáž sleduje až {flip} min za meridián – to je testovaná poloha, stejně jako v noci.",
-            "sequenceNotice": "Do NINA se načte testovací sekvence. Nahradí právě načtenou sekvenci – pokud si ji chceš ponechat, nejdřív ji ulož.",
+            "sequenceNotice": "Do @:{'general.backendName'} se načte testovací sekvence. Nahradí právě načtenou sekvenci – pokud si ji chceš ponechat, nejdřív ji ulož.",
             "start": "Načíst testovací sekvenci a spustit",
             "toPositioning": "Pokračovat",
             "back": "Zpět",
@@ -1596,7 +1606,7 @@
               "toMeridian": "Čas do meridiánu",
               "pastMeridian": "Za meridiánem už",
               "noData": "Montáž zatím nehlásí polohu ani stanoviště.",
-              "poleHint": "Teleskop míří na pól. NINA provede flip i tady, ale jen mimo pól uvidíš, jestli tubus mine stativ a jestli kabely stačí. Pro realistický test najeď v Dec do výšky jako u tvých obvyklých objektů.",
+              "poleHint": "Teleskop míří na pól. @:{'general.backendName'} provede flip i tady, ale jen mimo pól uvidíš, jestli tubus mine stativ a jestli kabely stačí. Pro realistický test najeď v Dec do výšky jako u tvých obvyklých objektů.",
               "checks": {
                 "lead": "Nejméně {minutes} min před flipem",
                 "pier": "Protizávaží dole – strana sloupu před flipem",
@@ -1613,20 +1623,20 @@
               }
             },
             "confirmTitle": "Načíst testovací sekvenci?",
-            "confirmMessage": "Sekvence načtená v NINA se nahradí testem flipu. Teleskop sleduje ze své aktuální polohy a NINA ho po meridiánu převrátí.",
+            "confirmMessage": "Sekvence načtená v @:{'general.backendName'} se nahradí testem flipu. Teleskop sleduje ze své aktuální polohy a @:{'general.backendName'} ho po meridiánu převrátí.",
             "waitingForMeridian": "Sledování k poledníku …",
             "pastMeridian": "Dalekohled je {minutes} min za poledníkem.",
-            "flipping": "NINA provádí flip …",
+            "flipping": "@:{'general.backendName'} provádí flip …",
             "countdownWindow": "Flip za {earliest} až {latest} min",
             "countdownLatest": "Flip nejpozději za {latest} min",
-            "runningHint": "NINA provádí test sama, aplikaci můžeš zavřít. Pokud něco překáží, stiskni STOP – zastaví sekvenci i sledování.",
-            "flippedAt": "NINA provedla flip {minutes} min po poledníku.",
-            "noFlip": "NINA neprovedla flip včas. Sekvence a sledování byly zastaveny.",
-            "noFlipAdvice": "Zkontroluj nastavení flipu a log NINA. Pokud je zapnuté „Použít stranu sloupu“, montáž možná hlásí stranu chybně – zkus to s vypnutou volbou.",
+            "runningHint": "@:{'general.backendName'} provádí test sama, aplikaci můžeš zavřít. Pokud něco překáží, stiskni STOP – zastaví sekvenci i sledování.",
+            "flippedAt": "@:{'general.backendName'} provedla flip {minutes} min po poledníku.",
+            "noFlip": "@:{'general.backendName'} neprovedla flip včas. Sekvence a sledování byly zastaveny.",
+            "noFlipAdvice": "Zkontroluj nastavení flipu a log @:{'general.backendName'}. Pokud je zapnuté „Použít stranu sloupu“, montáž možná hlásí stranu chybně – zkus to s vypnutou volbou.",
             "startFailed": "Testovací sekvenci se nepodařilo spustit: {error}",
-            "ninaError": "NINA nahlásila při flipu chybu, v kroku: {step}.",
+            "ninaError": "@:{'general.backendName'} nahlásila při flipu chybu, v kroku: {step}.",
             "ninaErrorRecenterCaps": "S krytkami je to očekávané – nové vycentrování potřebuje hvězdy. V noci ověř, že plate solving funguje.",
-            "ninaOk": "NINA dokončila flip bez chyby.",
+            "ninaOk": "@:{'general.backendName'} dokončila flip bez chyby.",
             "steps": {
               "recenter": "nové vycentrování (plate solve)",
               "autofocus": "autofokus po flipu",
@@ -4056,7 +4066,7 @@
           "saveFolder": "Ukládat pořízené snímky do",
           "sequenceRunningLive": "Běží sekvence, proto je živý průjezd zakázán: posouval by fokusér a pořizoval expozice uprostřed sekvence. Uložený běh automatického zaostření mezitím funguje.",
           "working": "Pracuji...",
-          "runsInBackground": "Toto okno můžete zavřít: optimalizace v NINA dál běží a znovu ji otevřete z karty Detekce hvězd.",
+          "runsInBackground": "Toto okno můžete zavřít: optimalizace v @:{'general.backendName'} dál běží a znovu ji otevřete z karty Detekce hvězd.",
           "complete": "Optimalizace dokončena",
           "variant": "Zobrazeno",
           "variantCurrent": "Aktuální",
@@ -4239,12 +4249,12 @@
             "maxBlindStepsPerDirection": "Maximální počet slepých kroků AutoFocus v každém směru, než se směr obrátí a zkusí se druhá strana. Nastavte 0 pro zrušení omezení.",
             "reverseInitialDirection": "Zahájí autofokus pohybem v opačném směru. Užitečné, když se ostření musí blížit z druhé strany, např. u SCT s posunem zrcadla nebo u fokuserů s vůlí (backlash).",
             "focuserIncreasesTowardObjective": "Kterým směrem se váš fokusér pohybuje: posouvá VYŠŠÍ poloha fokuséru kameru od objektivu (standard), nebo k němu (obráceně)? Ovlivňuje to POUZE POPISKY A DIAGRAMY SMĚRU – texty „posunout k objektivu / od objektivu“, popisky Dalekohled/Senzor v modelu senzoru, rady k distančním kroužkům a šipky pohybu nahoru/dolů v navádění pro Tilt. Nikdy to nezmění měření, úhel šroubu ani korekci: směr adaptéru Tilt se měří v jednotkách fokuséru a konvence fokuséru se z tohoto měření zcela vyruší. Pokud se vám tedy popisky na vaší sestavě zdají obrácené, přepněte to – nic z toho, co jste už zkalibrovali, se nezmění a nic se nezačne otáčet opačně.",
-            "validateHfrImprovement": "Je-li zapnuto, pořídí se jedna expozice navíc před a po, aby se ověřilo, že se HFR zlepšilo. Tuto kontrolu lze provádět navíc k ověření R² nastavenému v možnostech Auto Focus v NINA.",
+            "validateHfrImprovement": "Je-li zapnuto, pořídí se jedna expozice navíc před a po, aby se ověřilo, že se HFR zlepšilo. Tuto kontrolu lze provádět navíc k ověření R² nastavenému v možnostech Auto Focus v @:{'general.backendName'}.",
             "hfrImprovementThreshold": "Jakou rezervu povolit při ověřování zlepšení HFR. Výchozí hodnota 15 % znamená, že Auto Focus selže, pokud je počáteční HFR o 15 % nebo více lepší než výsledné HFR",
             "hyperbolicFitModel": "Který hyperbolický model se fituje na křivku ostření. Hybrid (Best Fit) je doporučená výchozí volba: křivka se během běhu vykresluje živě pomocí Tilted Hyperbola, po dokončení běhu se znovu nafitují všechny modely a ponechá se ten s nejmenší očekávanou chybou polohy nejlepšího ostření – každý běh si tak sám vybere svůj nejdůvěryhodnější fit. Pevné volby: Symmetric je klasická čtyřparametrová hyperbola; ostatní jsou asymetrické (různý sklon na každé straně ostření, což je běžné, protože HFR mimo ohnisko se chová jinak než v ohnisku): Tilted Hyperbola je jediná hladká křivka s lineárním zkosením, Smooth Blend plynule prolíná dvě hyperboly a Uneven Blend je původní prolínaný fit.",
             "weightedHyperbolicFitEnabled": "Váží každý bod hyperbolického fitu podle chyby měření. Hodnoty σ se před fitem regularizují: degenerovaná téměř nulová σ (např. ze snímku s velmi málo detekovanými hvězdami) se omezí zdola na 20 % mediánu σ průjezdu a neznámá σ dostane medián, takže žádný jednotlivý bod nemůže fit ovládnout kvůli degenerovanému odhadu chyby.",
-            "fitRejectionCriterion": "Která metrika kvality fitu rozhoduje o odmítnutí běhu automatického zaostření. R² (výchozí) zachovává stávající chování a odmítá, když R² fitu klesne pod práh R² v NINA (nastavení fokuséru). Redukované χ² místo toho odmítá, když redukované χ² hyperbolického fitu překročí práh níže – mez kvality fitu křivky ostření v jednotkách rozptylu, platná ale jen při zapnutém „Vážený hyperbolický fit“ (opírá se o σ měření jednotlivých bodů). Kvadratický fit a fit trendovými čarami vždy používají R² bez ohledu na toto nastavení.",
-            "rSquaredRejectionThreshold": "Minimální R² (koeficient determinace), pod kterým je běh automatického zaostření odmítnut, když je kritérium odmítnutí nastaveno na R². Jde o vlastní práh R² z nastavení fokuséru v NINA; úpravou zde měníte totéž nastavení profilu. R² blíže k 1 znamená lepší shodu se změřenou křivkou ostření.",
+            "fitRejectionCriterion": "Která metrika kvality fitu rozhoduje o odmítnutí běhu automatického zaostření. R² (výchozí) zachovává stávající chování a odmítá, když R² fitu klesne pod práh R² v @:{'general.backendName'} (nastavení fokuséru). Redukované χ² místo toho odmítá, když redukované χ² hyperbolického fitu překročí práh níže – mez kvality fitu křivky ostření v jednotkách rozptylu, platná ale jen při zapnutém „Vážený hyperbolický fit“ (opírá se o σ měření jednotlivých bodů). Kvadratický fit a fit trendovými čarami vždy používají R² bez ohledu na toto nastavení.",
+            "rSquaredRejectionThreshold": "Minimální R² (koeficient determinace), pod kterým je běh automatického zaostření odmítnut, když je kritérium odmítnutí nastaveno na R². Jde o vlastní práh R² z nastavení fokuséru v @:{'general.backendName'}; úpravou zde měníte totéž nastavení profilu. R² blíže k 1 znamená lepší shodu se změřenou křivkou ostření.",
             "reducedChiSquaredRejectionThreshold": "Horní mez redukovaného χ² hyperbolického fitu (χ² na stupeň volnosti), nad kterou je běh odmítnut, když je kritérium odmítnutí nastaveno na redukované χ². σ bodů použitá pro váhy je rozptyl souboru hvězd, který nadhodnocuje nejistotu mediánu HFR bodu – redukované χ² proto obvykle vychází hluboko pod 1, klesá s větším počtem detekovaných hvězd a roste se zvyšujícím se počtem snímků na bod. Berte tento práh jako hrubou kontrolní mez, ne jako kalibrovaný statistický test. Nastavte 0 pro vypnutí. Má smysl jen u vážených fitů.",
             "maxOutlierRejections": "Určuje maximální počet bodů, které mohou být při fitu křivky Auto Focus odmítnuty jako odlehlé.",
             "outlierRejectionConfidence": "Hladina spolehlivosti oboustranného Grubbsova testu odlehlých hodnot použitého při fitu křivky Auto Focus. 95 % je rozumná výchozí hodnota. Musí být nad 50 % a pod 100 %.",
@@ -4316,7 +4326,7 @@
             "useAutoFocusCrop": "Zapnuto: Hocus Focus měří hvězdy jen uvnitř vnitřního a vnějšího ořezu, při vlastním automatickém zaostřování i u běžných snímků. Vypnuto: používá celý snímek.",
             "fitPSF": "Zda fitovat modely PSF na detekované hvězdy. Je to nutné pro FWHM a excentricitu",
             "debugMode": "Zapne režim ladění, který ukládá další data užitečná pro ladění. Nechte vypnuté, pokud zrovna neladíte detekci hvězd a nechcete si prohlížet mapy struktury.",
-            "detectionBinning": "Softwarový binning snímku použitý pouze pro detekci hvězd. Detekce hvězd je kalibrována na zaostřené hvězdy o velikosti zhruba 2 až 4 pixely; při dlouhých ohniskových vzdálenostech jsou hvězdy mnohem větší, čímž se nastavení založená na pixelech dostanou mimo rozsah. Binning snímku pro detekci vrátí velikost hvězd do rozsahu a zlepší poměr signálu k šumu na pixel. Zobrazený snímek i hlášené hodnoty HFR zůstávají v rozlišení, ve kterém kamera snímala. Nejde o Auto Focus Binning v NINA, který mění, jak kamera snímky automatického zaostření pořizuje, a měl by odpovídat binningu, se kterým fotografujete; oba se násobí",
+            "detectionBinning": "Softwarový binning snímku použitý pouze pro detekci hvězd. Detekce hvězd je kalibrována na zaostřené hvězdy o velikosti zhruba 2 až 4 pixely; při dlouhých ohniskových vzdálenostech jsou hvězdy mnohem větší, čímž se nastavení založená na pixelech dostanou mimo rozsah. Binning snímku pro detekci vrátí velikost hvězd do rozsahu a zlepší poměr signálu k šumu na pixel. Zobrazený snímek i hlášené hodnoty HFR zůstávají v rozlišení, ve kterém kamera snímala. Nejde o Auto Focus Binning v @:{'general.backendName'}, který mění, jak kamera snímky automatického zaostření pořizuje, a měl by odpovídat binningu, se kterým fotografujete; oba se násobí",
             "measurementAverage": "Určuje, jak se počítá průměrné měření hvězd v celém snímku. Medián je odolný vůči odlehlým hodnotám a je výchozí.",
             "useOptimizedSettings": "Je-li zapnuto, detekci řídí optimalizované nastavení detekce hvězd vytvořené průvodcem optimalizace místo předvoleb Úroveň šumu / Měřítko pixelu / Rozsah ostření. K dispozici jen v jednoduchém režimu poté, co průvodce vytvořil a použil výsledek",
             "noiseLevel": "Určuje míru rozmazání zdrojového snímku před zahájením detekce hvězd. Zvyšte, pokud máte obzvlášť zašuměný senzor nebo fotografujete při velmi vysokém clonovém čísle",
@@ -4489,7 +4499,7 @@
         "applied": "Použito. Příští autofokus použije novou hodnotu.",
         "applyFailed": "Hodnotu se nepodařilo uložit.",
         "findings": {
-          "notActive": "Poslední autofokus neprovedl Hocus Focus. V nastavení NINA nastavte 'Auto Focus' i 'Star Detector' na Hocus Focus.",
+          "notActive": "Poslední autofokus neprovedl Hocus Focus. V nastavení @:{'general.backendName'} nastavte 'Auto Focus' i 'Star Detector' na Hocus Focus.",
           "fewStars": "Bylo zjištěno jen {stars} hvězd. Delší expozice dá křivce více dat.",
           "fewStarsNarrowband": "Bylo zjištěno jen {stars} hvězd. Úzkopásmové filtry potřebují mnohem delší expozici pro ostření.",
           "notBracketed_inward": "Nejostřejší bod byl první v řadě, ohnisko tedy leží více dovnitř. Nejprve zaostřete zhruba ručně nebo řadu rozšiřte.",
@@ -4513,7 +4523,7 @@
         "title": "Základy autofokusu",
         "description": "Nejdůležitější nastavení pro Hocus Focus. Vše ostatní najdete níže v podrobném nastavení.",
         "startAssistant": "Spustit průvodce nastavením",
-        "ninaSettings": "Nastavení ostřiče NINA",
+        "ninaSettings": "Nastavení ostřiče @:{'general.backendName'}",
         "optics": "Optika",
         "opticsLine": "Ohnisková vzdálenost {focalLength} mm · velikost pixelu {pixelSize} µm",
         "imageScale": "Měřítko obrazu {scale}″/px",
@@ -4586,7 +4596,7 @@
           "camera": "Kamera připojena",
           "focuser": "Ostřič připojen",
           "hocusFocus": "Hocus Focus dostupný",
-          "engineHint": "V NINA musí být 'Auto Focus' i 'Star Detector' nastaveny na Hocus Focus. Krok výsledku vám řekne, pokud tomu tak není."
+          "engineHint": "V @:{'general.backendName'} musí být 'Auto Focus' i 'Star Detector' nastaveny na Hocus Focus. Krok výsledku vám řekne, pokud tomu tak není."
         },
         "focalLength": "Ohnisková vzdálenost (mm)",
         "pixelSize": "Velikost pixelu (µm)",
@@ -4722,7 +4732,7 @@
         "height": "Výška (px)",
         "focal_length": "Ohnisková vzdálenost (mm)",
         "bit_depth": "Bitová hloubka",
-        "bit_depth_help": "Bitová hloubka, kterou N.I.N.A. předpokládá pro data z kamery. Je důležitá pro kamery, které ji samy nehlásí, např. zrcadlovky, a ovlivňuje statistiky, roztažení a saturaci. Nemění soubory RAW uložené fotoaparátem.",
+        "bit_depth_help": "Bitová hloubka, kterou @:{'general.backendName'} předpokládá pro data z kamery. Je důležitá pro kamery, které ji samy nehlásí, např. zrcadlovky, a ovlivňuje statistiky, roztažení a saturaci. Nemění soubory RAW uložené fotoaparátem.",
         "bit_scaling": "Bitové škálování",
         "bit_scaling_help": "Škáluje data z kamery na 16 bitů, aby snímky z kamer s nižší bitovou hloubkou využily celý rozsah hodnot."
       },
@@ -4793,12 +4803,12 @@
         "StartFromCurrentPosition": "Začít ze současné pozice?",
         "DirectionEast": "Směr Východ",
         "camera_settings": "Nastavení Kamery",
-        "camera_settings_hint": "Nechte prázdné pro výchozí nastavení NINA",
+        "camera_settings_hint": "Nechte prázdné pro výchozí nastavení @:{'general.backendName'}",
         "exposure_time": "Doba Expozice (s)",
         "gain": "Zesílení",
         "filter": "Filtr",
         "filter_default": "Výchozí",
-        "nina_default": "NINA Výchozí",
+        "nina_default": "@:{'general.backendName'} Výchozí",
         "ManualMode": "Manuální režim"
       },
       "pins_settings": {
@@ -4847,7 +4857,7 @@
     },
     "slewAndCenter": {
       "title": "Přejet a Vycentrovat",
-      "LastSelectedImageSource_wrong": "Vyberte offline mapu oblohy jako zdroj obrázku v NINA / Snímkování",
+      "LastSelectedImageSource_wrong": "Vyberte offline mapu oblohy jako zdroj obrázku v @:{'general.backendName'} / Snímkování",
       "ra": "RA:",
       "dec": "Dec:",
       "ra_placeholder": "RA 03:47:28.2",
@@ -5098,7 +5108,7 @@
         "rise_set": "Východ / Západ",
         "circumpolar": "cirkumpolární",
         "never_rises": "nikdy nevychází",
-        "missing_location": "Výška a východ/západ vyžadují polohu stanoviště v profilu NINA."
+        "missing_location": "Výška a východ/západ vyžadují polohu stanoviště v profilu @:{'general.backendName'}."
       },
       "datetime": {
         "title": "Datum a čas",
@@ -5121,7 +5131,7 @@
         "landscapes_visible": "Ukázat krajinu",
         "hide_below_horizon": "Skrýt objekty pod obzorem",
         "sky_survey_visible": "Fotografický průzkum oblohy",
-        "sky_survey_hint": "Používá pouze přibalené snímky DSS offline a nikdy nestahuje dlaždice přehlídky z internetu.",
+        "sky_survey_hint": "Zobrazuje přehlídku DSS nebo NSNS staženou offline do tvého hostitele @:{'general.backendName'}; aplikace nikdy nestahuje dlaždice z internetu.",
         "dsos_visible": "Deep Sky Objekty (Messier, NGC)",
         "catalog_filters": "Filtry katalogu",
         "catalog_filter_hint": "Ovládá viditelné značky objektů hlubokého nebe; offline vyhledávání nadále najde všechny katalogové objekty.",
@@ -5171,7 +5181,7 @@
       },
       "survey": {
         "title": "Data fotografického přehledu",
-        "hint": "Barevný přehled DSS se jednorázově stáhne na hostitele NINA/PINS a odtud je poskytován Atlasu. Vyšší řády přidávají detail pro úzká zorná pole.",
+        "hint": "Barevný přehled DSS se jednorázově stáhne na hostitele @:{'general.backendName'} a odtud je poskytován Atlasu. Vyšší řády přidávají detail pro úzká zorná pole.",
         "plugin_update_required": "Aktualizujte prosím plugin Touch'N'Stars, abyste mohli stáhnout přehled oblohy.",
         "installed": "Nainstalováno",
         "free_space": "Volné místo na hostiteli",
@@ -5196,11 +5206,11 @@
         "delete_keep_option": "Zachovat {name}, zbytek odstranit",
         "delete_all_option": "Vše",
         "delete_confirm_title": "Odstranit data přehledu?",
-        "delete_confirm": "Odstranit stažený přehled oblohy z hostitele NINA/PINS? Atlas nebude zobrazovat fotografické pozadí, dokud nebude znovu stažen.",
+        "delete_confirm": "Odstranit stažený přehled oblohy z hostitele @:{'general.backendName'}? Atlas nebude zobrazovat fotografické pozadí, dokud nebude znovu stažen.",
         "delete_confirm_keep": "Odstranit každý řád nad {name}? {name} zůstane nainstalován a Atlas jej bude dál zobrazovat.",
-        "terms": "Digitized Sky Survey © STScI/NASA, obarveno a zpracováno do HiPS organizací CDS (CNRS/Unistra). Volné pro nekomerční použití s uvedením zdroje; dlaždice zůstávají na vašem vlastním hostiteli NINA/PINS.",
+        "terms": "Digitized Sky Survey © STScI/NASA, obarveno a zpracováno do HiPS organizací CDS (CNRS/Unistra). Volné pro nekomerční použití s uvedením zdroje; dlaždice zůstávají na vašem vlastním hostiteli @:{'general.backendName'}.",
         "terms_link": "Podmínky použití",
-        "offer_text": "Stáhnout nyní fotografické pozadí oblohy (DSS, přibližně {size}) na hostitele NINA/PINS? Bez něj Atlas zobrazuje pouze hvězdy a katalogové objekty.",
+        "offer_text": "Stáhnout nyní fotografické pozadí oblohy (DSS, přibližně {size}) na hostitele @:{'general.backendName'}? Bez něj Atlas zobrazuje pouze hvězdy a katalogové objekty.",
         "offer_text_legacy": "Stažené pozadí oblohy používá zastaralý formát. Stáhnout je nyní znovu (přibližně {size})? Staré soubory budou nahrazeny.",
         "offer_accept": "Stáhnout",
         "offer_decline": "Teď ne",
@@ -5210,9 +5220,9 @@
         "source_nsns": "NSNS barevný",
         "source_dss_hint": "Digitized Sky Survey: fotografické snímky celé oblohy ve skutečných barvách.",
         "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] červeně, Hα zeleně, [SII] modře, takže emisní mlhoviny ukážou celý svůj rozsah. Pokrývá jen oblohu severně od −16°.",
-        "hint_nsns": "Úzkopásmový survey NSNS se stáhne jednou na hostitele NINA/PINS a odtud se poskytuje Atlasu. Vyšší řády přidávají detaily pro úzká zorná pole.",
+        "hint_nsns": "Úzkopásmový survey NSNS se stáhne jednou na hostitele @:{'general.backendName'} a odtud se poskytuje Atlasu. Vyšší řády přidávají detaily pro úzká zorná pole.",
         "plugin_update_required_nsns": "Pro stažení úzkopásmového surveye NSNS aktualizujte plugin Touch'N'Stars.",
-        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licence CC BY-NC-SA 4.0. Zdarma pro nekomerční použití s uvedením autora; dlaždice zůstávají na vašem vlastním hostiteli NINA/PINS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licence CC BY-NC-SA 4.0. Zdarma pro nekomerční použití s uvedením autora; dlaždice zůstávají na vašem vlastním hostiteli @:{'general.backendName'}.",
         "source_nsns_ha": "NSNS Hα",
         "source_nsns_ha_hint": "Northern Sky Narrowband Survey, pouze čára Hα (ionizovaný vodík). Pokrývá jen oblohu severně od −16°; samostatné stažení.",
         "source_nsns_oiii": "NSNS [OIII]",
@@ -5946,7 +5956,7 @@
         "keepOpen": "Nech tuto aplikaci otevřenou. Ovládání je dočasně zablokované, aby nevznikl nekonzistentní stav.",
         "running": "Aktualizují se balíčky Raspberry Pi. Počkej prosím, dokud proces neskončí.",
         "title": "Probíhá aktualizace systému",
-        "waitingForApi": "Aktualizace dokončena. Čeká se, až bude NINA API znovu dostupné…",
+        "waitingForApi": "Aktualizace dokončena. Čeká se, až bude @:{'general.backendName'} API znovu dostupné…",
         "close": "Zavřít"
       },
       "pluginsAction": "Action",
@@ -6128,7 +6138,7 @@
       "errors": {
         "title": "Bahtinovova analýza",
         "readFile": "Vybraný soubor nelze přečíst.",
-        "captureLoad": "Nepodařilo se načíst nejnovější záběr z N.I.N.A.",
+        "captureLoad": "Nepodařilo se načíst nejnovější záběr z @:{'general.backendName'}",
         "analysisFailed": "Požadavek na analýzu se nezdařil.",
         "badRequest": "Server požadavek odmítl. Prosím ověřte parametry.",
         "mockMode": "Bahtinova analýza není k dispozici, když je povoleno simulované API.",
@@ -6224,12 +6234,12 @@
         "validationJournalLines": "Journal lines must be between 100 and 50000.",
         "validationSections": "Select at least one section.",
         "expertMode": "Expertní nastavení",
-        "ninaLogs": "Soubory protokolů NINA (posledních 10)",
+        "ninaLogs": "Soubory protokolů @:{'general.backendName'} (posledních 10)",
         "collecting": "Probíhá shromažďování systémové diagnostiky PINS… může to chvíli trvat."
       },
       "progress": {
         "collectingLogs": "Shromažďování protokolů Touch'N'Stars…",
-        "collectingNinaLogs": "Shromažďování nedávných souborů protokolů NINA…",
+        "collectingNinaLogs": "Shromažďování nedávných souborů protokolů @:{'general.backendName'}…",
         "buildingArchive": "Vytváření archivu ZIP…"
       }
     },
@@ -6333,7 +6343,7 @@
         "noListsHint": "Vytvořte seznamy cílů na telescopius.com a poté je zde znovu načtěte.",
         "editOnTelescopius": "Upravit seznamy na Telescopius",
         "dataFrom": "Data z",
-        "connectionError": "Připojení k Telescopius selhalo. Počítač NINA potřebuje internetové připojení a v Telescopius musí existovat alespoň jeden seznam cílů.",
+        "connectionError": "Připojení k Telescopius selhalo. Počítač @:{'general.backendName'} potřebuje internetové připojení a v Telescopius musí existovat alespoň jeden seznam cílů.",
         "myLists": "Moje seznamy cílů",
         "unnamedList": "Nepojmenovaný seznam",
         "showObjects": "Zobrazit objekty",
@@ -6432,8 +6442,8 @@
         "sendToNina": "Převzít sekvenci",
         "sending": "Odesílání...",
         "sent": "Odesláno!",
-        "sendErrorTitle": "Chyba při odesílání do N.I.N.A",
-        "sendSuccessMessage": "Sekvence úspěšně odeslána do N.I.N.A!",
+        "sendErrorTitle": "Chyba při odesílání do @:{'general.backendName'}",
+        "sendSuccessMessage": "Sekvence úspěšně odeslána do @:{'general.backendName'}!",
         "validSequence": "Sekvence je platná a lze ji převzít.",
         "invalidSequence": "Přidejte nastavení cíle a inteligentní expozici, abyste vytvořili platnou sekvenci.",
         "saveNamed": "Uložit sekvenci jako...",
@@ -7092,7 +7102,7 @@
             "Warnings": "Varování"
           },
           "categoryHints": {
-            "Errors": "Každá chyba N.I.N.A. a ztracená zařízení",
+            "Errors": "Každá chyba @:{'general.backendName'} a ztracená zařízení",
             "Guiding": "Ztracená pointační hvězda, pointace selhala",
             "Mount": "Flip selhal, snímky bez sledování",
             "Safety": "Bezpečnostní monitor hlásí nebezpečí",
@@ -7107,7 +7117,7 @@
           "pauseMs": "Pauza mezi tóny (ms)",
           "graceMinutes": "Prodleva po startu (min)",
           "throttleMinutes": "Opakovat stejný alarm po (min)",
-          "graceHint": "Žádné alarmy hned po spuštění N.I.N.A. Stejný alarm pípne nejvýše 3krát za sebou.",
+          "graceHint": "Žádné alarmy hned po spuštění @:{'general.backendName'} Stejný alarm pípne nejvýše 3krát za sebou.",
           "exclusionsTitle": "Nikdy nepípat při",
           "addExclusionTitle": "Přidat položku, která nikdy nepípá",
           "exclusionPlaceholder": "Část zprávy",
@@ -7262,7 +7272,7 @@
     },
     "shortcuts": {
       "title": "Zkratky Sekvencí",
-      "description": "Rychlý přístup k načtení a spuštění sekvencí N.I.N.A.",
+      "description": "Rychlý přístup k načtení a spuštění sekvencí @:{'general.backendName'}",
       "addNew": "Nová zkratka",
       "newShortcut": "Nová zkratka",
       "createFirst": "Vytvořit první zkratku",
@@ -7606,7 +7616,7 @@
           "maxPluginStorageGb": "Maximální úložiště pluginu (GB)",
           "maxPluginStorageHelp": "Nastavte 0 pro žádný limit.",
           "protocolTooltip": "Protokol používaný k dosažení místního pokročilého rozhraní API vystaveného pomocí PINS.",
-          "sequencePollTooltip": "Jak často AllSky kontroluje, zda se spustila nebo zastavila sekvence PINS/NINA.",
+          "sequencePollTooltip": "Jak často AllSky kontroluje, zda se spustila nebo zastavila sekvence @:{'general.backendName'}.",
           "advancedApiHostTooltip": "Název hostitele nebo IP adresa služby PINS Advanced API.",
           "portTooltip": "TCP port používaný službou PINS Advanced API.",
           "timeoutTooltip": "Maximální doba čekání na jeden požadavek Advanced API, než bude označen jako nedostupný.",
@@ -7822,7 +7832,7 @@
         "exampleLabels": ["Generic IP camera", "ONVIF camera", "Axis camera", "Hikvision camera"],
         "examplesTitle": "Examples",
         "proxyOptions": [
-          "Proxy (default): The image is fetched by the NINA backend and forwarded to the browser. Required for local network cameras with credentials or CORS restrictions. Slightly slower when accessed over VPN.",
+          "Proxy (default): The image is fetched by the @:{'general.backendName'} backend and forwarded to the browser. Required for local network cameras with credentials or CORS restrictions. Slightly slower when accessed over VPN.",
           "Direct: The browser fetches the image directly. Faster for public internet cameras (e.g. public allsky cams). Does not support credentials in the URL in Chrome/Edge."
         ],
         "proxyText": "Each camera can be fetched in two ways:",
@@ -7843,7 +7853,7 @@
       "snapshotUrl": "Snapshot URL",
       "unknownCamera": "Unknown camera",
       "useProxy": "Use Proxy",
-      "useProxyHint": "Route image through the NINA backend. Required for cameras with credentials or CORS restrictions. Disable for direct internet cameras."
+      "useProxyHint": "Route image through the @:{'general.backendName'} backend. Required for cameras with credentials or CORS restrictions. Disable for direct internet cameras."
     },
     "targetScheduler": {
       "actions": {
@@ -8233,8 +8243,8 @@
       "filterAll": "All",
       "filterNewOnly": "New only",
       "filterVisibleOnly": "Visible tonight",
-      "visibleHint": "Based on observer location from NINA profile",
-      "visibleNoLocation": "No observer location — set location in NINA profile",
+      "visibleHint": "Based on observer location from @:{'general.backendName'} profile",
+      "visibleNoLocation": "No observer location — set location in @:{'general.backendName'} profile",
       "sortBy": "Sort by",
       "sortLatestMag": "Latest mag (brightest first)",
       "sortFirstObserved": "Discovery date (newest first)",
@@ -8411,7 +8421,7 @@
         "useTls": "Use TLS (switches port to 8883)",
         "username": "Username"
       },
-      "notLoaded": "The Ground Station plugin is not installed or not loaded in NINA. Install the 'Ground Station' plugin in NINA to use these settings.",
+      "notLoaded": "The Ground Station plugin is not installed or not loaded in @:{'general.backendName'}. Install the 'Ground Station' plugin in @:{'general.backendName'} to use these settings.",
       "ntfysh": {
         "defaultIcon": "Default Icon URL",
         "defaultTopic": "Default Topic",
@@ -8455,7 +8465,7 @@
         "refreshing": "Refreshing…",
         "workspace": "Workspace"
       },
-      "subtitle": "Configure NINA Ground Station notification services",
+      "subtitle": "Configure @:{'general.backendName'} Ground Station notification services",
       "tabs": {
         "discord": "Discord",
         "email": "Email",
@@ -8645,7 +8655,7 @@
         "exportFailedMessage": "Nelze zkopírovat do schránky.",
         "apiDocsLink": "Dokumentace API Target Scheduler",
         "setupTitle": "Nastavit API Target Scheduler",
-        "setupStep1": "V NINA otevřete možnosti pluginu Target Scheduler a povolte jeho API server.",
+        "setupStep1": "V @:{'general.backendName'} otevřete možnosti pluginu Target Scheduler a povolte jeho API server.",
         "setupStep2": "Poznamenejte si zobrazený port (výchozí 8188).",
         "setupStep3": "Zadejte tento port výše, poté se automaticky připojí.",
         "welcomeTitle": "Vítejte v Target Scheduler Viewer",
@@ -8701,7 +8711,7 @@
         "noTargets": "V tomto projektu nejsou žádné cíle."
       },
       "schedulePreview": {
-        "disclaimer": "Predikovaný plán Scheduleru na dnešní noc, přepočítaný při každém obnovení — není záznamem toho, co NINA právě skutečně snímá.",
+        "disclaimer": "Predikovaný plán Scheduleru na dnešní noc, přepočítaný při každém obnovení — není záznamem toho, co @:{'general.backendName'} právě skutečně snímá.",
         "learnMore": "Zjistit více",
         "noScheduleData": "Žádná data plánu.",
         "waitingNotVisible": "Čeká se — cíl zatím není viditelný"
@@ -8722,7 +8732,7 @@
         "open": "Plugin připojen",
         "closed": "Plugin není dostupný",
         "unreachable": "Žádné spojení s pluginem AAPA na {url}.",
-        "checkPlugin": "Je plugin AAPA Controller nainstalován a načten v N.I.N.A.?",
+        "checkPlugin": "Je plugin AAPA Controller nainstalován a načten v @:{'general.backendName'}?",
         "checkEnabled": "Je v nastavení pluginu zapnutý server WebSocket se stejným portem jako níže?",
         "checkFirewall": "Povoluje brána firewall Windows příchozí spojení na tomto portu?",
         "port": "Port WebSocket"
@@ -8737,7 +8747,7 @@
         "ipAddress": "IP adresa AAPA",
         "connect": "Připojit",
         "disconnect": "Odpojit",
-        "autoHint": "Auto zkontroluje všechny sériové porty počítače s N.I.N.A., zda na nich není AAPA."
+        "autoHint": "Auto zkontroluje všechny sériové porty počítače s @:{'general.backendName'}, zda na nich není AAPA."
       },
       "status": {
         "positionX": "Poloha X (Az)",
@@ -8756,13 +8766,13 @@
       },
       "assist": {
         "title": "Automatické polární ustavení",
-        "hint": "Jedno klepnutí spustí TPPA (pokud už neběží) a poté Auto-Pilot, který koriguje, dokud chyba není v toleranci. TPPA se automaticky zastaví, když Auto-Pilot skončí. V nastavení TPPA v N.I.N.A. musí být zapnuto \"Log polar alignment error adjustments\". Nech tuto stránku během běhu otevřenou.",
+        "hint": "Jedno klepnutí spustí TPPA (pokud už neběží) a poté Auto-Pilot, který koriguje, dokud chyba není v toleranci. TPPA se automaticky zastaví, když Auto-Pilot skončí. V nastavení TPPA v @:{'general.backendName'} musí být zapnuto \"Log polar alignment error adjustments\". Nech tuto stránku během běhu otevřenou.",
         "start": "Spustit polární ustavení",
         "running": "Běží…",
         "stop": "Zastavit",
         "tppaSettings": "Nastavení TPPA",
         "autoPilotSettings": "Nastavení Auto-Pilota",
-        "tnsPluginRequired": "TPPA potřebuje plugin Touch'N'Stars v N.I.N.A.; není dostupný.",
+        "tnsPluginRequired": "TPPA potřebuje plugin Touch'N'Stars v @:{'general.backendName'}; není dostupný.",
         "phaseLabel": "Stav",
         "azError": "Chyba azimutu",
         "altError": "Chyba výšky",
@@ -8835,12 +8845,12 @@
           "MinYLimit": "Min. Y (kroky)",
           "MaxYLimit": "Max. Y (kroky)"
         },
-        "autoSaveHint": "Změny se ukládají do N.I.N.A., jakmile pole opustíte.",
-        "saveInNina": "Uložit v N.I.N.A.",
+        "autoSaveHint": "Změny se ukládají do @:{'general.backendName'}, jakmile pole opustíte.",
+        "saveInNina": "Uložit v @:{'general.backendName'}",
         "storeOnDevice": "Uložit do AAPA",
         "sendConfirm": "Trvale uložit aktuální konfiguraci AAPA do jeho paměti (EEPROM)?",
         "applyToDevice": "Použít na AAPA",
-        "applyInNinaHint": "Tyto hodnoty jsou uloženy v N.I.N.A. Pro přenos do AAPA použijte tlačítko odeslání v panelu AAPA v N.I.N.A."
+        "applyInNinaHint": "Tyto hodnoty jsou uloženy v @:{'general.backendName'} Pro přenos do AAPA použijte tlačítko odeslání v panelu AAPA v @:{'general.backendName'}"
       },
       "log": {
         "title": "Protokol",
@@ -9288,7 +9298,7 @@
       "reload": "Znovu načíst náhled"
     },
     "cache": {
-      "useNinaCache": "Použít NINA cache pro obrázek cíle",
+      "useNinaCache": "Použít @:{'general.backendName'} cache pro obrázek cíle",
       "hint": "Načítá DSS/obrázek cíle přes TNS WebAPI. Přepínač cache ovládá useCache.",
       "hintShort": "Předává useCache do targetpic"
     },
@@ -9431,7 +9441,7 @@
       "filterAuto": "Auto",
       "filterBroadband": "Broadband",
       "filterClassifications": "Filter Classifications",
-      "filterClassificationsHint": "Filters from your NINA profile. Auto uses first-letter matching (L,R,G,B = broadband; H,S,O = narrowband).",
+      "filterClassificationsHint": "Filters from your @:{'general.backendName'} profile. Auto uses first-letter matching (L,R,G,B = broadband; H,S,O = narrowband).",
       "filterExclude": "Exclude",
       "filterNarrowband": "Narrowband",
       "lightModeReport": "Light Mode Report",
@@ -9646,7 +9656,7 @@
       "working": "Probíhá…",
       "howItWorks": "Jak to funguje",
       "eqmodToggleTitle": "Korekce rychlosti RA pro EQMOD",
-      "eqmodToggleDescription": "EQMOD čte rychlost RA jako surové obloukové sekundy/s místo hodnoty odesílané NINA, což bez korekce zpomalí sledování ~15×. Zapněte pouze pokud montáž používá EQMOD.",
+      "eqmodToggleDescription": "EQMOD čte rychlost RA jako surové obloukové sekundy/s místo hodnoty odesílané @:{'general.backendName'}, což bez korekce zpomalí sledování ~15×. Zapněte pouze pokud montáž používá EQMOD.",
       "eqmodDetectedHint": "{name} vypadá jako ovladač EQMOD — pravděpodobně to budete chtít zapnout.",
       "reapplyIntervalTitle": "Interval opětovného použití",
       "reapplyIntervalDescription": "Jak často Quick Track přepočítá a znovu odešle rychlost sledování. Výchozí hodnota 900 s (15 min) vyhovuje kometyám a planetkám.",

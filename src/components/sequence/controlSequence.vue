@@ -158,6 +158,35 @@
       </template>
       <template #body>
         <div class="w-full flex flex-col gap-4">
+          <!-- Sequence folder -->
+          <div class="flex flex-col gap-2">
+            <label class="tns-label">{{ $t('components.sequence.sequenceFolder') }}</label>
+            <div class="flex items-center gap-2 min-w-0">
+              <div
+                class="flex-1 flex items-center min-h-touch overflow-x-auto scrollbar-thin px-3 py-2 rounded-lg border border-line bg-surface-2 min-w-0"
+                :class="folderGlowClass"
+              >
+                <span
+                  class="text-sm font-mono whitespace-nowrap"
+                  :class="sequenceFolder ? 'text-content' : 'text-content-faint italic'"
+                  >{{ sequenceFolder || $t('components.sequence.sequenceFolderNotSet') }}</span
+                >
+              </div>
+              <button
+                class="tns-btn-secondary w-auto! shrink-0"
+                :disabled="folderSaving"
+                :title="$t('components.sequence.sequenceFolderChange')"
+                :aria-label="$t('components.sequence.sequenceFolderChange')"
+                @click="showFolderBrowser = true"
+              >
+                <FolderIcon class="h-5 w-5" />
+              </button>
+            </div>
+            <p v-if="isRelativeFolder(sequenceFolder)" class="text-xs text-status-warn">
+              {{ $t('components.sequence.sequenceFolderRelative') }}
+            </p>
+          </div>
+
           <!-- File list -->
           <div class="flex flex-col gap-1 max-h-64 overflow-y-auto">
             <div v-if="filesLoading" class="text-content-muted text-sm text-center py-4">
@@ -228,6 +257,14 @@
         </div>
       </template>
     </Modal>
+
+    <FileBrowser
+      v-model="showFolderBrowser"
+      mode="directory"
+      :initial-path="sequenceFolder"
+      :title="$t('components.sequence.sequenceFolder')"
+      @select="onFolderSelected"
+    />
 
     <!-- Delete Confirmation Dialog -->
     <Modal
@@ -323,7 +360,10 @@ import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import { reportBackendRefusal } from '@/utils/backendErrors';
 import { useI18n } from 'vue-i18n';
+import { useProfileSetting } from '@/composables/useProfileSetting';
+import { joinSequenceFilePath, isRelativeFolder } from '@/utils/sequenceFilePath';
 import {
+  FolderIcon,
   FolderOpenIcon,
   FlagIcon,
   ForwardIcon,
@@ -333,6 +373,7 @@ import {
   TrashIcon,
 } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
+import FileBrowser from '@/components/helpers/fileBrowser.vue';
 
 const sequenceStore = useSequenceStore();
 const sequenceV2Store = useSequenceV2Store();
@@ -353,6 +394,42 @@ const showDeleteConfirmation = ref(false);
 const fileToDelete = ref(null);
 const showOverwriteConfirmation = ref(false);
 const fileToOverwrite = ref(null);
+const showFolderBrowser = ref(false);
+
+// Read through the composable rather than profileInfo, so a folder change applies to the
+// file list right away instead of after the next profile poll.
+const {
+  value: sequenceFolder,
+  save: saveSequenceFolder,
+  saving: folderSaving,
+  glowClass: folderGlowClass,
+} = useProfileSetting('SequenceSettings-DefaultSequenceFolder', { fallback: '' });
+
+async function refreshFiles() {
+  const result = await apiService.sequenceFetchFiles(sequenceFolder.value || undefined);
+  sequenceFiles.value = result?.Sequences ?? [];
+}
+
+async function onFolderSelected(path) {
+  if (!path || path === sequenceFolder.value) return;
+  const ok = await saveSequenceFolder(path);
+  if (!ok) {
+    toastStore.showToast({
+      type: 'error',
+      title: t('components.sequence.sequenceFolder'),
+      message: t('components.sequence.sequenceFolderSaveError'),
+    });
+    return;
+  }
+  filesLoading.value = true;
+  try {
+    await refreshFiles();
+  } catch (e) {
+    sequenceFiles.value = [];
+  } finally {
+    filesLoading.value = false;
+  }
+}
 
 async function skipToEnd() {
   try {
@@ -383,9 +460,7 @@ async function openFileManager() {
   showFileManager.value = true;
   filesLoading.value = true;
   try {
-    const defaultFolder = store.profileInfo?.SequenceSettings?.DefaultSequenceFolder;
-    const result = await apiService.sequenceFetchFiles(defaultFolder);
-    sequenceFiles.value = result?.Sequences ?? [];
+    await refreshFiles();
   } catch (e) {
     sequenceFiles.value = [];
   } finally {
@@ -403,9 +478,7 @@ async function confirmDeleteFile() {
   showDeleteConfirmation.value = false;
   try {
     await apiService.sequenceDeleteFile(fileToDelete.value.path);
-    const defaultFolder = store.profileInfo?.SequenceSettings?.DefaultSequenceFolder;
-    const result = await apiService.sequenceFetchFiles(defaultFolder);
-    sequenceFiles.value = result?.Sequences ?? [];
+    await refreshFiles();
   } catch (e) {
     console.error('Error deleting sequence file:', e);
   } finally {
@@ -465,29 +538,19 @@ async function loadFile(filePath) {
   }
 }
 
-function buildFilePath(name) {
-  const defaultFolder = store.profileInfo?.SequenceSettings?.DefaultSequenceFolder ?? '';
-  const sep =
-    defaultFolder.endsWith('\\') || defaultFolder.endsWith('/')
-      ? ''
-      : defaultFolder.includes('/')
-        ? '/'
-        : '\\';
-  const fileName = name.endsWith('.json') ? name : name + '.json';
-  return defaultFolder ? defaultFolder + sep + fileName : fileName;
-}
-
 async function saveFile() {
   if (!saveFileName.value.trim()) return;
   saveLoading.value = true;
   try {
-    const filePath = buildFilePath(saveFileName.value.trim());
+    const filePath = joinSequenceFilePath(
+      sequenceFolder.value,
+      saveFileName.value.trim(),
+      store.isPINS
+    );
     await apiService.sequenceSaveFile(filePath);
     sequenceStore.setLastSequenceFilePath(filePath);
     saveFileName.value = '';
-    const defaultFolder = store.profileInfo?.SequenceSettings?.DefaultSequenceFolder ?? '';
-    const result = await apiService.sequenceFetchFiles(defaultFolder || undefined);
-    sequenceFiles.value = result?.Sequences ?? [];
+    await refreshFiles();
   } catch (e) {
     console.error('Error saving sequence file:', e);
   } finally {

@@ -313,7 +313,8 @@ const gapClasses = computed(() => {
 // A panel docked at the stage bottom pushes the bar up past it in portrait. In
 // landscape the bar stays put; the docked panel ends left of it instead.
 const containerStyle = computed(() => {
-  if (isLandscape.value) return { right: '0.5rem' };
+  // Clear a camera cutout on the right in landscape (0 on devices without one).
+  if (isLandscape.value) return { right: 'calc(0.5rem + env(safe-area-inset-right, 0px))' };
   const offset = props.dockOffset;
   const dock = offset > 0 ? ` + var(--stage-inset) + ${offset}px + 0.5rem` : '';
   return { bottom: `calc(var(--above-statusbar) + var(--status-panel-height)${dock})` };

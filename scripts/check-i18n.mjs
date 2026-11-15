@@ -5,6 +5,9 @@ import { hasDamagedLocaleText } from './lib/localeTextIntegrity.mjs';
 const LOCALES_DIR = path.resolve('src/locales');
 const BASE_LOCALE = 'en.json';
 const PLACEHOLDER_RE = /\{\s*([A-Za-z0-9_]+)\s*\}/g;
+// Linked messages (@:{'general.backendName'} or @:some.key) count as placeholders too,
+// so a translation cannot drop the reference or swap it for a hard-coded word.
+const LINKED_RE = /@(?:\.\w+)?:(?:\{\s*'([^']+)'\s*\}|([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*))/g;
 const PLURAL_SUFFIXES = new Set(['zero', 'one', 'two', 'few', 'many', 'other']);
 
 function parseJsonWithDuplicateCheck(filePath) {
@@ -183,7 +186,9 @@ function flatten(obj, prefix = '', out = {}) {
 
 function placeholders(value) {
   if (typeof value !== 'string') return [];
-  return [...new Set([...value.matchAll(PLACEHOLDER_RE)].map((m) => m[1]))].sort();
+  const named = [...value.matchAll(PLACEHOLDER_RE)].map((m) => m[1]);
+  const linked = [...value.matchAll(LINKED_RE)].map((m) => `@:${m[1] ?? m[2]}`);
+  return [...new Set([...named, ...linked])].sort();
 }
 
 function pluralGroups(flatMap) {

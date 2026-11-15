@@ -63,6 +63,24 @@ const localeLoaders = {
 
 const loadedLocales = new Set(['en']);
 
+// Name of the backend the app is connected to. Locale strings reference it as the
+// linked message @:{'general.backendName'}, so a single runtime switch makes every
+// such text read "PINS" on a PINS device and "NINA" otherwise. The JSON files carry
+// "NINA" as the value until PINS has been detected.
+let backendName = 'NINA';
+
+function applyBackendName(locale) {
+  i18n.global.mergeLocaleMessage(locale, { general: { backendName } });
+}
+
+export function setBackendName(name) {
+  if (name === backendName) return;
+  backendName = name;
+  for (const locale of loadedLocales) {
+    applyBackendName(locale);
+  }
+}
+
 // Create i18n instance
 const i18n = createI18n({
   legacy: false,
@@ -82,6 +100,7 @@ export async function loadLocaleMessages(locale) {
     const module = await localeLoaders[normalizedLocale]();
     i18n.global.setLocaleMessage(normalizedLocale, module.default ?? module);
     loadedLocales.add(normalizedLocale);
+    applyBackendName(normalizedLocale);
   }
   return normalizedLocale;
 }

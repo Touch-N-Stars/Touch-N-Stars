@@ -220,6 +220,8 @@
       :status="updateStatus"
       :error="updateError"
       :is-downgrade="updateInfo.isDowngrade || false"
+      :up-to-date="updateInfo.upToDate || false"
+      :current-version="updateInfo.currentVersion || ''"
       @confirm="handleUpdateConfirm"
       @cancel="handleUpdateCancel"
     />
@@ -381,7 +383,7 @@ import {
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
 import { setAppBackgrounded, useBackgroundAwarePolling } from '@/utils/appLifecycle';
-import { setLocaleLanguage } from '@/i18n';
+import { setLocaleLanguage, setBackendName } from '@/i18n';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useToastStore } from '@/store/toastStore';
 import { PINS_PORT, DEFAULT_PINS_DAEMON_API_TOKEN as PINS_TOKEN } from '@/services/pinsConfig';
@@ -504,6 +506,12 @@ watch(
       setTimeout(checkPinsTimeMismatch, 3000);
     }
   }
+);
+// Texts name the backend via @:{'general.backendName'} (see src/i18n.js)
+watch(
+  () => store.isPINS,
+  (isPINS) => setBackendName(isPINS ? 'PINS' : 'NINA'),
+  { immediate: true }
 );
 const sequenceStore = useSequenceStore();
 const logStore = useLogStore();
@@ -673,13 +681,13 @@ const stageClasses = computed(() => ({
   'bg-ground transition-all': true,
   'mt-[calc(82px+var(--subnav-offset))] mx-[var(--stage-inset)] mb-[calc(var(--statusbar-height)+env(safe-area-inset-bottom)+var(--stage-inset))]':
     !isLandscape.value,
-  'ml-[calc(var(--nav-width)+var(--stage-inset))] mr-[var(--stage-inset)] mt-[calc(var(--stage-inset)+var(--subnav-offset))] mb-[calc(var(--statusbar-height)+var(--stage-inset))]':
+  'ml-[calc(var(--nav-width)+var(--stage-inset))] mr-(--stage-right) mt-[calc(var(--stage-inset)+var(--subnav-offset))] mb-[calc(var(--statusbar-height)+env(safe-area-inset-bottom)+var(--stage-inset))]':
     isLandscape.value,
 }));
 
 const stageStyle = computed(() => ({
   minHeight: isLandscape.value
-    ? 'calc(100dvh - var(--stage-inset) - var(--subnav-offset) - var(--statusbar-height) - var(--stage-inset))'
+    ? 'calc(100dvh - var(--stage-inset) - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))'
     : 'calc(100dvh - 82px - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))',
 }));
 
@@ -1158,16 +1166,22 @@ async function checkForAppUpdate(options = {}) {
     }
 
     if (result?.available && (force || result.version !== dismissedUpdateVersion.value)) {
+      // A manual check that finds nothing newer than the installed version reports "up to date"
+      // and only offers to install the channel's release anyway (e.g. back to stable).
+      const upToDate = force && (result.isCurrent || result.isDowngrade);
       let whatsNewDetails = null;
-      try {
-        whatsNewDetails = await fetchChangelogWhatsNew(result);
-        console.info('Update whats-new content resolved:', whatsNewDetails);
-      } catch (whatsNewError) {
-        console.warn('Failed to load whats-new content:', whatsNewError);
+      if (!upToDate) {
+        try {
+          whatsNewDetails = await fetchChangelogWhatsNew(result);
+          console.info('Update whats-new content resolved:', whatsNewDetails);
+        } catch (whatsNewError) {
+          console.warn('Failed to load whats-new content:', whatsNewError);
+        }
       }
 
       updateInfo.value = {
         ...result,
+        upToDate,
         whatsNew: whatsNewDetails,
       };
       updateStatus.value = 'idle';
