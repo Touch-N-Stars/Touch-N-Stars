@@ -32,6 +32,7 @@ export function useImageLoupe({ containerRef, imageRef, imageRotationRef }) {
   const loupeZoomFactor = ref(getStoredLoupeZoom());
 
   let attachedElement = null;
+  let previousTouchAction = '';
   let activePointerId = null;
 
   const updateFromPointer = (event) => {
@@ -103,15 +104,30 @@ export function useImageLoupe({ containerRef, imageRef, imageRotationRef }) {
     loupePreview.value = null;
   };
 
+  // A long press on an <img> starts a native image drag (Android WebView,
+  // ~500ms) or opens the image context menu (Chrome on Android). Both cancel
+  // the pointer, so the preview would vanish before the user starts moving.
+  const preventNativeLongPress = (event) => {
+    event.preventDefault();
+  };
+
   const attachLoupePointerHandlers = (element) => {
     if (!element || attachedElement === element) return;
     detachLoupePointerHandlers();
+
+    // Without touch-action: none the browser takes over the drag as a native
+    // pan and fires pointercancel, which closes the preview right away. This
+    // used to work only by accident when Panzoom had set it before.
+    previousTouchAction = element.style.touchAction;
+    element.style.touchAction = 'none';
 
     element.addEventListener('pointerdown', handlePointerDown, { passive: false });
     element.addEventListener('pointermove', handlePointerMove, { passive: false });
     element.addEventListener('pointerup', endPointer);
     element.addEventListener('pointercancel', endPointer);
     element.addEventListener('pointerleave', endPointer);
+    element.addEventListener('dragstart', preventNativeLongPress);
+    element.addEventListener('contextmenu', preventNativeLongPress);
     attachedElement = element;
   };
 
@@ -123,6 +139,9 @@ export function useImageLoupe({ containerRef, imageRef, imageRotationRef }) {
     attachedElement.removeEventListener('pointerup', endPointer);
     attachedElement.removeEventListener('pointercancel', endPointer);
     attachedElement.removeEventListener('pointerleave', endPointer);
+    attachedElement.removeEventListener('dragstart', preventNativeLongPress);
+    attachedElement.removeEventListener('contextmenu', preventNativeLongPress);
+    attachedElement.style.touchAction = previousTouchAction;
     attachedElement = null;
     activePointerId = null;
     loupePreview.value = null;
