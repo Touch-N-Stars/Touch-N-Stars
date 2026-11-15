@@ -382,7 +382,7 @@ import {
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
 import { setAppBackgrounded, useBackgroundAwarePolling } from '@/utils/appLifecycle';
-import { setLocaleLanguage } from '@/i18n';
+import { setLocaleLanguage, setBackendName } from '@/i18n';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useToastStore } from '@/store/toastStore';
 import { PINS_PORT, DEFAULT_PINS_DAEMON_API_TOKEN as PINS_TOKEN } from '@/services/pinsConfig';
@@ -505,6 +505,12 @@ watch(
       setTimeout(checkPinsTimeMismatch, 3000);
     }
   }
+);
+// Texts name the backend via @:{'general.backendName'} (see src/i18n.js)
+watch(
+  () => store.isPINS,
+  (isPINS) => setBackendName(isPINS ? 'PINS' : 'NINA'),
+  { immediate: true }
 );
 const sequenceStore = useSequenceStore();
 const logStore = useLogStore();

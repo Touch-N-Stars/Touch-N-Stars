@@ -30,7 +30,8 @@
     "delete": "删除",
     "edit": "编辑",
     "close": "关闭",
-    "save": "保存"
+    "save": "保存",
+    "backendName": "NINA"
   },
   "pages": {
     "equipment": {
@@ -42,9 +43,9 @@
     "title": "Touch'N'Stars",
     "connection_error_toast": {
       "title": "连接错误",
-      "message_api": "API 插件不可用。请检查 NINA 中的设置",
+      "message_api": "API 插件不可用。请检查 @:{'general.backendName'} 中的设置",
       "message_api_version": "API 插件版本过旧。请进行更新",
-      "message_tns": "TouchNStars 插件不可用。请检查 NINA 中的设置",
+      "message_tns": "TouchNStars 插件不可用。请检查 @:{'general.backendName'} 中的设置",
       "message_tns_version": "Touch N Stars 插件版本过于陈旧。请进行更新"
     },
     "connection_splash": {
@@ -87,7 +88,7 @@
     "selectLanguage": "选择您的语言",
     "gpsConfiguration": "GPS 配置",
     "completeSetup": "完成设置",
-    "instanceConfiguration": "N.I.N.A 连接详情",
+    "instanceConfiguration": "@:{'general.backendName'} 连接详情",
     "InfoAppsTitel": "维基",
     "check_wki": "您可以在我们的维基中找到详细说明",
     "coordAlt": "海拔",
@@ -140,7 +141,7 @@
       "missingEquipmentSettings": "缺少设备设置：请在设置 → 设备中设置焦距和像素大小，以便正确计算相机视场。",
       "confirmSetTargetTitle": "确认目标选择",
       "confirmSetTargetMessage": "您确定要将此目标设置为序列目标吗？",
-      "useNinaCache": "使用 NINA 缓存作为目标图像",
+      "useNinaCache": "使用 @:{'general.backendName'} 缓存作为目标图像",
       "setSequnceTarget": "设置为序列目标",
       "sequenceTargetPicker": {
         "title": "序列目标",
@@ -177,7 +178,7 @@
         "SolveError": "解析图像错误"
       },
       "moveRotator": "旋转相机",
-      "infoTargetImage": "如果图像仅显示为黑色，必须在NINA中设置\"离线星图缓存\"或禁用\"使用NINA缓存\"选项",
+      "infoTargetImage": "如果图像仅显示为黑色，必须在@:{'general.backendName'}中设置\"离线星图缓存\"或禁用\"使用@:{'general.backendName'}缓存\"选项",
       "useCenter": "居中",
       "useRotate": "旋转",
       "skyChart": {
@@ -263,7 +264,7 @@
         "openWiki": "打开 Wiki"
       },
       "instance": {
-        "description": "运行 N.I.N.A. 的电脑地址。在同一网络中，应用通常能自动找到它。",
+        "description": "运行 @:{'general.backendName'} 的电脑地址。在同一网络中，应用通常能自动找到它。",
         "connect": "保存并连接",
         "connecting": "Connecting…",
         "connected": "已连接到 {name}",
@@ -404,7 +405,7 @@
         "focalLength": "导星镜焦距",
         "focalLengthHint": "导星镜的焦距（mm）。它保存在 PHD2 配置文件中，与主望远镜分开，PHD2 靠它以角秒显示导星数据。",
         "ditherTitle": "Dither",
-        "ditherDescription": "NINA 以导星相机像素设置抖动，而常见建议使用主相机像素。这里在两者之间换算。",
+        "ditherDescription": "@:{'general.backendName'} 以导星相机像素设置抖动，而常见建议使用主相机像素。这里在两者之间换算。",
         "ditherMainPixels": "抖动（主相机像素）",
         "ditherMainPixelsHint": "每次抖动应使目标在主相机传感器上移动多少。10 到 15 像素是不错的起点。",
         "guidePixelSize": "导星相机像素尺寸 (µm)",
@@ -492,9 +493,9 @@
         "editTokens": "编辑标记",
         "help": {
           "title": "文件名模式",
-          "intro": "为拍摄的图像构建文件名模式。保存时，每个标记将被 NINA 替换为实际值。",
+          "intro": "为拍摄的图像构建文件名模式。保存时，每个标记将被 @:{'general.backendName'} 替换为实际值。",
           "tokensTitle": "标记",
-          "tokensDesc": "点击标记按钮将其添加到模式中。Filter、Date 或 ExposureTime 等标记将被 NINA 替换为实际值。",
+          "tokensDesc": "点击标记按钮将其添加到模式中。Filter、Date 或 ExposureTime 等标记将被 @:{'general.backendName'} 替换为实际值。",
           "separatorsTitle": "分隔符",
           "separatorsDesc": "使用 \\ 创建文件夹结构。使用 _ 或 - 分隔文件名中的值。使用「文本」添加自定义文本，如「s」表示秒。",
           "cursorTitle": "插入位置",
@@ -535,7 +536,7 @@
       "backupRestore": {
         "title": "备份与恢复",
         "description": "将此设备上保存的设置导出为文件，并在其他设备上恢复。",
-        "profileWarning": "此功能仅备份此设备上的应用设置。设备、相机、赤道仪等设置保存在 NINA 或 PINS 配置文件中，如需完整备份请单独备份该配置文件。",
+        "profileWarning": "此功能仅备份此设备上的应用设置。设备、相机、赤道仪等设置保存在 @:{'general.backendName'} 配置文件中，如需完整备份请单独备份该配置文件。",
         "locationAndroid": "文件保存在此设备的 文档/TouchNStars 中 - 请使用文件管理器应用打开。",
         "locationIos": "文件保存在“文件”应用中的 我的 iPhone/iPad → Touch 'N Stars → Documents。",
         "locationBrowser": "文件保存在浏览器的默认下载文件夹中。",
@@ -605,7 +606,7 @@
         "help": {
           "ExposureTime": "解析器拍摄图像所用的曝光时间（秒）。曝光时间越长，捕获的星点越多，有助于解析暗弱或星点稀疏的天区，但会拖慢每次解析尝试的速度。",
           "Gain": "用于解析曝光的相机增益。留空则使用相机的默认增益。",
-          "ASTAPLocation": "运行 NINA 的系统上 ASTAP 可执行文件（astap.exe）的路径。使用 ASTAP 进行本地解析时需要此项。",
+          "ASTAPLocation": "运行 @:{'general.backendName'} 的系统上 ASTAP 可执行文件（astap.exe）的路径。使用 ASTAP 进行本地解析时需要此项。",
           "SearchRadius": "尝试盲解析时，解析器在目标坐标周围搜索的半径（度）。半径越大解析耗时越长，但在赤道仪初始指向不够精确时会有帮助。",
           "Threshold": "在 Slew & Center（转向并居中）过程中，解析位置与目标位置之间允许的最大偏差（角分）。若偏差超过此值，将触发另一轮转向并解析。",
           "RotationTolerance": "在 Center & Rotate（居中并旋转）过程中，解析出的图像方向与目标方向之间允许的最大旋转偏差（度）。超出该值时，旋转器会被调整并重新解析画面。",
@@ -673,7 +674,7 @@
         "mountTime": "赤道仪时间",
         "notSupported": "驱动程序不支持",
         "syncLabel": "同步时间到赤道仪",
-        "syncLabelInfo": "启用后，点击「立即同步」将短暂断开并重新连接赤道仪，以便 NINA 将当前时间传输给它。",
+        "syncLabelInfo": "启用后，点击「立即同步」将短暂断开并重新连接赤道仪，以便 @:{'general.backendName'} 将当前时间传输给它。",
         "title": "时间同步",
         "loadError": "无法加载时间信息。",
         "syncError": "时间同步失败。请检查与 PINS 设备的连接。",
@@ -770,7 +771,7 @@
       "save": "Save",
       "connect": "Connect",
       "disconnect": "Disconnect",
-      "sharedGuidWarning": "旋转器和安全监视器在 NINA 中共用一个存储位置——修改其中一个也会改变另一个。",
+      "sharedGuidWarning": "旋转器和安全监视器在 @:{'general.backendName'} 中共用一个存储位置——修改其中一个也会改变另一个。",
       "noReconnectHint": "新设置将在下次连接时生效。",
       "cameraNoSettings": "此相机没有可配置的设置。"
     },
@@ -828,7 +829,7 @@
       },
       "info": {
         "title": "信息",
-        "message": "手动滤镜轮和手动旋转器目前只能通过NINA控制。滤镜轮请使用API的\"网络滤镜轮\""
+        "message": "手动滤镜轮和手动旋转器目前只能通过@:{'general.backendName'}控制。滤镜轮请使用API的\"网络滤镜轮\""
       }
     },
     "lastLogs": {
@@ -917,7 +918,7 @@
       "sequenceFolder": "序列文件夹",
       "sequenceFolderNotSet": "未设置文件夹",
       "sequenceFolderChange": "更改文件夹",
-      "sequenceFolderRelative": "这不是完整路径，文件会保存到 N.I.N.A. 的程序文件夹中。请选择一个文件夹。",
+      "sequenceFolderRelative": "这不是完整路径，文件会保存到 @:{'general.backendName'} 的程序文件夹中。请选择一个文件夹。",
       "sequenceFolderSaveError": "无法更改序列文件夹。",
       "sequenceFileName": "文件名",
       "sequenceSave": "保存",
@@ -941,7 +942,7 @@
       "no_sequences_found": "未找到序列",
       "error_loading_sequences": "加载序列时出错",
       "error_loading_sequence": "加载序列时出错",
-      "editFailed": "NINA 未接受此更改",
+      "editFailed": "@:{'general.backendName'} 未接受此更改",
       "targetNotFound": "在序列中未找到目标，请重试。",
       "filter": "滤镜",
       "triggers": "触发器",
@@ -1443,7 +1444,7 @@
       },
       "location_sync": {
         "title": "位置同步设置",
-        "confirmationMessage": "如果NINA中的\"位置同步\"设置为\"提示\"，在坐标发送到望远镜之前可能会出现确认窗口。为了避免这种情况并允许TNS自动设置坐标，我们建议将设置更改为\"与望远镜同步\"",
+        "confirmationMessage": "如果@:{'general.backendName'}中的\"位置同步\"设置为\"提示\"，在坐标发送到望远镜之前可能会出现确认窗口。为了避免这种情况并允许TNS自动设置坐标，我们建议将设置更改为\"与望远镜同步\"",
         "toTelescope": {
           "label": "与望远镜同步"
         },
@@ -1530,7 +1531,7 @@
               "description": "在“高级”中自行设置分钟数。"
             },
             "sideOfPierNoMount": "选择前请先连接赤道仪，以便应用检查它是否报告立柱侧。",
-            "sideOfPierUnknown": "你的赤道仪不报告立柱侧，因此“使用立柱侧”保持关闭。NINA 将按时间决定翻转。",
+            "sideOfPierUnknown": "你的赤道仪不报告立柱侧，因此“使用立柱侧”保持关闭。@:{'general.backendName'} 将按时间决定翻转。",
             "applyFailed": "预设未能完整保存。请检查“高级”中的数值。"
           },
           "timeline": {
@@ -1542,30 +1543,30 @@
             "atMinutes": "+{min} 分钟",
             "windowMinutes": "+{min}–{max} 分钟",
             "explainPause": "拍摄在子午线前 {pause} 分钟停止，并关闭跟踪。翻转在子午线后 {min} 分钟进行。这会损失拍摄时间——仅在望远镜无法越过子午线时使用。",
-            "explainFixed": "NINA 持续曝光，直到某张会超过子午线后 {min} 分钟，然后等待并恰好在该时刻翻转。把最晚时间设得更晚可以省去等待。",
+            "explainFixed": "@:{'general.backendName'} 持续曝光，直到某张会超过子午线后 {min} 分钟，然后等待并恰好在该时刻翻转。把最晚时间设得更晚可以省去等待。",
             "explainWindow": "在子午线后 {min} 到 {max} 分钟之间结束的第一张曝光之后立即翻转——无需等待。"
           },
           "help": {
             "MinutesAfterMeridian": "过子午线后允许开始翻转的最早时间。",
-            "MaxMinutesAfterMeridian": "过子午线后翻转的最晚时间。不能小于最早时间。间隔越大，NINA 越能在一张曝光后立即翻转而不用等待。",
+            "MaxMinutesAfterMeridian": "过子午线后翻转的最晚时间。不能小于最早时间。间隔越大，@:{'general.backendName'} 越能在一张曝光后立即翻转而不用等待。",
             "PauseTimeBeforeMeridian": "仅适用于无法安全越过子午线的设备：在子午线前这么多分钟停止跟踪。否则保持为 0。",
             "SettleTime": "翻转后等待，让赤道仪稳定下来。翻转后第一次 plate solve 出现拖线？请增大此值。",
-            "Recenter": "翻转后 NINA 进行 plate solve 并重新居中目标。强烈推荐；需要可用的 plate solver。",
+            "Recenter": "翻转后 @:{'general.backendName'} 进行 plate solve 并重新居中目标。强烈推荐；需要可用的 plate solver。",
             "UseSideOfPier": "使用赤道仪报告的立柱侧来判断是否需要翻转。更可靠，但前提是赤道仪报告正确。",
             "AutoFocusAfterFlip": "翻转后运行自动对焦。适用于镜筒转动时主镜会移动的牛顿和 SCT。",
             "RotateImageAfterFlip": "翻转后将预览旋转 180°。仅影响显示——保存的图像不变。"
           },
           "dayTest": {
             "title": "白天测试翻转",
-            "teaser": "让 NINA 在白天用你的设置做一次真正的中天翻转：在过子午线后的位置，望远镜能否避开三脚架或立柱，线缆是否够长？",
+            "teaser": "让 @:{'general.backendName'} 在白天用你的设置做一次真正的中天翻转：在过子午线后的位置，望远镜能否避开三脚架或立柱，线缆是否够长？",
             "open": "开始测试",
-            "intro": "你手动将望远镜移到子午线以东不远处的一点。从那里它会继续跟踪越过子午线，NINA 会像夜间一样翻转——使用你的翻转设置并在真实时间进行。",
+            "intro": "你手动将望远镜移到子午线以东不远处的一点。从那里它会继续跟踪越过子午线，@:{'general.backendName'} 会像夜间一样翻转——使用你的翻转设置并在真实时间进行。",
             "blockers": {
               "notConnected": "赤道仪未连接。",
               "parked": "赤道仪已归位停放。请先解除停放。",
               "cannotSlew": "赤道仪无法转到坐标。",
               "noLocation": "赤道仪没有观测地点。请先设置你的位置。",
-              "sequenceRunning": "NINA 中正在运行序列。请先停止它。"
+              "sequenceRunning": "@:{'general.backendName'} 中正在运行序列。请先停止它。"
             },
             "caps": {
               "label": "望远镜、寻星镜和导星镜都已盖上镜盖",
@@ -1585,14 +1586,14 @@
             "resultProblem": "翻转动作需要注意。",
             "problemAdvice": "检查线缆走线，确保两侧都够长。如果望远镜碰到了三脚架或立柱，请在上方选择“几乎不能”，或检查赤道仪的子午线限位。",
             "pierChanged": "立柱侧：{before} → {after}",
-            "notTested": "不检查翻转后的导星。详情见 NINA 日志。",
+            "notTested": "不检查翻转后的导星。详情见 @:{'general.backendName'} 日志。",
             "stopped": "测试已停止。序列和跟踪已关闭，赤道仪保持原位。",
             "sideEast": "东",
             "sideWest": "西",
             "exposure": "你的曝光时长（秒）",
-            "exposureHelp": "NINA 会在翻转窗口内结束的第一张曝光之后翻转。使用你平时的曝光时长，测试会在与夜间相同的位置翻转。",
+            "exposureHelp": "@:{'general.backendName'} 会在翻转窗口内结束的第一张曝光之后翻转。使用你平时的曝光时长，测试会在与夜间相同的位置翻转。",
             "plan": "测试至少需要 {minutes} 分钟，再加上你在子午线前开始的时间。赤道仪会跟踪到过子午线 {flip} 分钟——这就是要测试的位置，与夜间相同。",
-            "sequenceNotice": "将在 NINA 中加载一个测试序列，它会替换当前加载的序列——如需保留，请先保存。",
+            "sequenceNotice": "将在 @:{'general.backendName'} 中加载一个测试序列，它会替换当前加载的序列——如需保留，请先保存。",
             "start": "加载测试序列并开始",
             "toPositioning": "继续",
             "back": "返回",
@@ -1601,7 +1602,7 @@
               "toMeridian": "距子午线时间",
               "pastMeridian": "已过子午线",
               "noData": "赤道仪尚未报告位置或地点。",
-              "poleHint": "望远镜指向极点。NINA 在这里也会翻转，但只有离开极点才能看出镜筒能否避开三脚架、线缆是否够长。若要真实测试，请将 Dec 移到与你常拍目标相近的高度。",
+              "poleHint": "望远镜指向极点。@:{'general.backendName'} 在这里也会翻转，但只有离开极点才能看出镜筒能否避开三脚架、线缆是否够长。若要真实测试，请将 Dec 移到与你常拍目标相近的高度。",
               "checks": {
                 "lead": "至少在翻转前 {minutes} 分钟",
                 "pier": "配重朝下——翻转前的立柱侧",
@@ -1618,20 +1619,20 @@
               }
             },
             "confirmTitle": "加载测试序列？",
-            "confirmMessage": "NINA 中已加载的序列将被翻转测试替换。望远镜从当前位置继续跟踪，NINA 在过子午线后将其翻转。",
+            "confirmMessage": "@:{'general.backendName'} 中已加载的序列将被翻转测试替换。望远镜从当前位置继续跟踪，@:{'general.backendName'} 在过子午线后将其翻转。",
             "waitingForMeridian": "正在向子午线跟踪 …",
             "pastMeridian": "望远镜已越过子午线 {minutes} 分钟。",
-            "flipping": "NINA 正在翻转 …",
+            "flipping": "@:{'general.backendName'} 正在翻转 …",
             "countdownWindow": "{earliest} 至 {latest} 分钟后翻转",
             "countdownLatest": "最迟 {latest} 分钟后翻转",
-            "runningHint": "NINA 会自行执行测试，可以关闭应用。如有阻碍请按 STOP——它会停止序列和跟踪。",
-            "flippedAt": "NINA 在子午线后 {minutes} 分钟进行了翻转。",
-            "noFlip": "NINA 未按时翻转。序列和跟踪已停止。",
-            "noFlipAdvice": "请检查翻转设置和 NINA 日志。如果开启了“使用立柱侧”，赤道仪可能报告了错误的立柱侧——请关闭后再试。",
+            "runningHint": "@:{'general.backendName'} 会自行执行测试，可以关闭应用。如有阻碍请按 STOP——它会停止序列和跟踪。",
+            "flippedAt": "@:{'general.backendName'} 在子午线后 {minutes} 分钟进行了翻转。",
+            "noFlip": "@:{'general.backendName'} 未按时翻转。序列和跟踪已停止。",
+            "noFlipAdvice": "请检查翻转设置和 @:{'general.backendName'} 日志。如果开启了“使用立柱侧”，赤道仪可能报告了错误的立柱侧——请关闭后再试。",
             "startFailed": "无法启动测试序列：{error}",
-            "ninaError": "NINA 在翻转期间报告了错误，所在步骤：{step}。",
+            "ninaError": "@:{'general.backendName'} 在翻转期间报告了错误，所在步骤：{step}。",
             "ninaErrorRecenterCaps": "盖着镜盖时这是正常的——重新居中需要星星。夜间请确认 plate solving 正常工作。",
-            "ninaOk": "NINA 已无错误地完成翻转。",
+            "ninaOk": "@:{'general.backendName'} 已无错误地完成翻转。",
             "steps": {
               "recenter": "重新居中（plate solve）",
               "autofocus": "翻转后自动对焦",
@@ -4061,7 +4062,7 @@
           "saveFolder": "拍摄帧保存到",
           "sequenceRunningLive": "序列正在运行，因此已禁用实时扫描：它会在序列中途移动调焦器并拍摄曝光。此时仍可使用已保存的自动对焦运行。",
           "working": "处理中...",
-          "runsInBackground": "可以关闭此窗口：优化会在 NINA 中继续运行，之后可从“星点检测”标签页重新打开。",
+          "runsInBackground": "可以关闭此窗口：优化会在 @:{'general.backendName'} 中继续运行，之后可从“星点检测”标签页重新打开。",
           "complete": "优化完成",
           "variant": "显示",
           "variantCurrent": "当前",
@@ -4244,12 +4245,12 @@
             "maxBlindStepsPerDirection": "在每个方向上尝试的最大盲自动对焦步数，超过后反向尝试另一侧。设为 0 可取消上限。",
             "reverseInitialDirection": "自动对焦从相反方向开始移动。适用于需要从另一侧接近焦点的情况，例如存在镜面偏移的 SCT 或有回差（backlash）的调焦器。",
             "focuserIncreasesTowardObjective": "你的调焦器的移动方向：调焦器位置增大时，相机是远离物镜（标准）还是靠近物镜（反向）？此设置只影响方向标签和示意图——即“移向/移离物镜”的说明文字、传感器模型上的望远镜/传感器标签、垫片建议，以及倾斜指导中的上/下移动箭头。它绝不会改变任何测量值、螺丝角度或校正量：倾斜适配器的方向是以调焦器单位测量的，调焦器方向约定在该测量中完全抵消。因此，如果这些标签在你的设备上看起来是反的，直接切换即可——已校准的内容都不受影响，也不会有任何东西开始反向转动。",
-            "validateHfrImprovement": "启用后，会在对焦前后各额外拍摄一张曝光，以确保 HFR 有所改善。此检查可以与 NINA 自动对焦选项中配置的 R² 验证同时进行。",
+            "validateHfrImprovement": "启用后，会在对焦前后各额外拍摄一张曝光，以确保 HFR 有所改善。此检查可以与 @:{'general.backendName'} 自动对焦选项中配置的 R² 验证同时进行。",
             "hfrImprovementThreshold": "验证 HFR 改善时允许的余量。默认值 15% 表示：若初始 HFR 比最终 HFR 好 15% 或以上，则自动对焦判定失败",
             "hyperbolicFitModel": "用于拟合对焦曲线的双曲线模型。推荐默认使用“混合（最佳拟合）”：运行过程中用倾斜双曲线实时绘制曲线，运行结束时对所有模型重新拟合，并保留最佳焦点位置预期误差最小的那个——因此每次运行都会自动选出最可信的拟合。固定选项：“对称”是经典的 4 参数双曲线；其余为非对称模型（焦点两侧斜率不同，这很常见，因为离焦时 HFR 的变化规律与合焦时不同）：“倾斜双曲线”是带线性倾斜的单一平滑曲线，“平滑混合”平滑地融合两条双曲线，“不均匀混合”则是最初的混合拟合。",
             "weightedHyperbolicFitEnabled": "根据测量误差为双曲线拟合中的每个点加权。拟合前会对 σ 值进行正则化：退化的接近零的 σ（例如来自检测到星点极少的帧）会被限制为不低于本次扫描 σ 中位数的 20%，未知的 σ 取中位数，因此任何单个点都无法因退化的误差估计而主导拟合。",
-            "fitRejectionCriterion": "决定是否剔除自动对焦运行的拟合优度指标。R²（默认）保持原有行为，当拟合的 R² 低于 NINA 的 R² 阈值（调焦器设置）时剔除。约化 χ² 则在双曲线拟合的约化 χ² 超过下方阈值时剔除——这是以离散度为单位的对焦曲线拟合优度上限，但只有在启用“加权双曲线拟合”时才有效（它依赖每个点的测量 σ）。抛物线和趋势线拟合无论此设置如何始终使用 R²。",
-            "rSquaredRejectionThreshold": "当剔除标准设为 R² 时，自动对焦运行被剔除的最小 R²（决定系数）。这就是 NINA 调焦器设置中的 R² 阈值；在此处修改会更改同一个配置文件设置。R² 越接近 1，表示与实测对焦曲线的拟合越好。",
+            "fitRejectionCriterion": "决定是否剔除自动对焦运行的拟合优度指标。R²（默认）保持原有行为，当拟合的 R² 低于 @:{'general.backendName'} 的 R² 阈值（调焦器设置）时剔除。约化 χ² 则在双曲线拟合的约化 χ² 超过下方阈值时剔除——这是以离散度为单位的对焦曲线拟合优度上限，但只有在启用“加权双曲线拟合”时才有效（它依赖每个点的测量 σ）。抛物线和趋势线拟合无论此设置如何始终使用 R²。",
+            "rSquaredRejectionThreshold": "当剔除标准设为 R² 时，自动对焦运行被剔除的最小 R²（决定系数）。这就是 @:{'general.backendName'} 调焦器设置中的 R² 阈值；在此处修改会更改同一个配置文件设置。R² 越接近 1，表示与实测对焦曲线的拟合越好。",
             "reducedChiSquaredRejectionThreshold": "当剔除标准设为约化 χ² 时，双曲线拟合的约化 χ²（每自由度 χ²）上限，超过则剔除本次运行。权重所依据的每点 σ 是星点集合的离散度，它高估了每点 HFR 中位数的不确定度——因此约化 χ² 通常远低于 1，检测到的星点越多它越小，每点帧数增加时它会变大。请把该阈值当作粗略的合理性上限，而不是经过校准的统计检验。设为 0 可禁用。仅对加权拟合有意义。",
             "maxOutlierRejections": "控制自动对焦曲线拟合过程中最多可作为离群点剔除的点数。",
             "outlierRejectionConfidence": "自动对焦曲线拟合时用于双侧 Grubbs 离群点统计检验的置信水平。95% 是合理的默认值。必须大于 50% 且小于 100%。",
@@ -4321,7 +4322,7 @@
             "useAutoFocusCrop": "开启时，Hocus Focus 仅在内、外裁剪范围内测量星点，包括其自动对焦和普通曝光。关闭时，使用整幅图像。",
             "fitPSF": "是否对检测到的星点拟合 PSF 模型。计算 FWHM 和偏心率需要此项",
             "debugMode": "启用调试模式，会保存对调试有用的额外数据。除非你正在调校星点检测并希望查看结构图，否则请保持关闭。",
-            "detectionBinning": "仅用于星点检测、对帧进行的软件像素合并。星点检测是针对约 2 到 4 像素的合焦星点校准的；在长焦距下星点远大于此，使基于像素的设置超出适用范围。对检测用的帧进行合并可以让星点尺寸回到适用范围，并提高每像素的信噪比。你看到的图像和报告的 HFR 值仍保持相机拍摄时的分辨率。这不同于 NINA 的自动对焦像素合并——后者改变相机拍摄自动对焦帧的方式，应与你成像时的像素合并一致；两者是相乘关系",
+            "detectionBinning": "仅用于星点检测、对帧进行的软件像素合并。星点检测是针对约 2 到 4 像素的合焦星点校准的；在长焦距下星点远大于此，使基于像素的设置超出适用范围。对检测用的帧进行合并可以让星点尺寸回到适用范围，并提高每像素的信噪比。你看到的图像和报告的 HFR 值仍保持相机拍摄时的分辨率。这不同于 @:{'general.backendName'} 的自动对焦像素合并——后者改变相机拍摄自动对焦帧的方式，应与你成像时的像素合并一致；两者是相乘关系",
             "measurementAverage": "控制如何计算整帧的平均星点测量值。中位数对离群值更稳健，是默认选项。",
             "useOptimizedSettings": "启用后，由优化向导生成的优化星点检测设置将取代噪声级别/像素比例/对焦范围预设来驱动检测。仅在简单模式下、且向导已生成并应用结果后可用",
             "noiseLevel": "控制开始星点检测前对源图像的模糊程度。如果你的传感器噪声特别大，或使用非常大的焦比拍摄，请调高此值",
@@ -4494,7 +4495,7 @@
         "applied": "已应用。下次自动对焦将使用新值。",
         "applyFailed": "无法保存该值。",
         "findings": {
-          "notActive": "上次自动对焦并非由 Hocus Focus 执行。请在 NINA 选项中将 'Auto Focus' 和 'Star Detector' 都设置为 Hocus Focus。",
+          "notActive": "上次自动对焦并非由 Hocus Focus 执行。请在 @:{'general.backendName'} 选项中将 'Auto Focus' 和 'Star Detector' 都设置为 Hocus Focus。",
           "fewStars": "仅检测到 {stars} 颗星。更长的曝光能为曲线提供更多数据。",
           "fewStarsNarrowband": "仅检测到 {stars} 颗星。窄带滤镜需要长得多的对焦曝光。",
           "notBracketed_inward": "最清晰的点是序列中的第一个点，因此焦点更靠内。请先手动粗调对焦，或扩大测量范围。",
@@ -4518,7 +4519,7 @@
         "title": "自动对焦要点",
         "description": "Hocus Focus 最重要的设置。其他所有设置都在下方的详细设置中。",
         "startAssistant": "启动设置助手",
-        "ninaSettings": "NINA 调焦器设置",
+        "ninaSettings": "@:{'general.backendName'} 调焦器设置",
         "optics": "光学系统",
         "opticsLine": "焦距 {focalLength} mm · 像素尺寸 {pixelSize} µm",
         "imageScale": "图像比例 {scale}″/px",
@@ -4591,7 +4592,7 @@
           "camera": "相机已连接",
           "focuser": "调焦器已连接",
           "hocusFocus": "Hocus Focus 可用",
-          "engineHint": "在 NINA 中，'Auto Focus' 和 'Star Detector' 都必须设置为 Hocus Focus。如果没有，结果步骤会提示你。"
+          "engineHint": "在 @:{'general.backendName'} 中，'Auto Focus' 和 'Star Detector' 都必须设置为 Hocus Focus。如果没有，结果步骤会提示你。"
         },
         "focalLength": "焦距 (mm)",
         "pixelSize": "像素尺寸 (µm)",
@@ -4727,7 +4728,7 @@
         "height": "高度 (px)",
         "focal_length": "焦距 (mm)",
         "bit_depth": "位深度",
-        "bit_depth_help": "N.I.N.A. 为相机数据假定的位深度。对不自行报告位深度的相机（如单反）很重要，会影响统计、拉伸和饱和判断。不会更改相机保存的 RAW 文件。",
+        "bit_depth_help": "@:{'general.backendName'} 为相机数据假定的位深度。对不自行报告位深度的相机（如单反）很重要，会影响统计、拉伸和饱和判断。不会更改相机保存的 RAW 文件。",
         "bit_scaling": "位缩放",
         "bit_scaling_help": "将相机数据缩放到 16 位，使位深度较低的相机图像也能使用完整的数值范围。"
       },
@@ -4798,12 +4799,12 @@
         "StartFromCurrentPosition": "从当前位置开始？",
         "DirectionEast": "指向东方",
         "camera_settings": "相机设置",
-        "camera_settings_hint": "留空则使用 NINA 默认值",
+        "camera_settings_hint": "留空则使用 @:{'general.backendName'} 默认值",
         "exposure_time": "曝光时间 (秒)",
         "gain": "增益",
         "filter": "滤镜",
         "filter_default": "默认值",
-        "nina_default": "NINA 默认值",
+        "nina_default": "@:{'general.backendName'} 默认值",
         "ManualMode": "手动模式"
       },
       "pins_settings": {
@@ -4852,7 +4853,7 @@
     },
     "slewAndCenter": {
       "title": "转动与居中",
-      "LastSelectedImageSource_wrong": "请在 NINA / Framing 中选择离线星图作为图像源",
+      "LastSelectedImageSource_wrong": "请在 @:{'general.backendName'} / Framing 中选择离线星图作为图像源",
       "ra": "赤经：",
       "dec": "赤纬：",
       "ra_placeholder": "赤经 03:47:28.2",
@@ -5103,7 +5104,7 @@
         "rise_set": "升起 / 落下",
         "circumpolar": "拱极",
         "never_rises": "永不升起",
-        "missing_location": "高度和升落时间需要 NINA 配置文件中的观测地点。"
+        "missing_location": "高度和升落时间需要 @:{'general.backendName'} 配置文件中的观测地点。"
       },
       "datetime": {
         "title": "日期与时间",
@@ -5126,7 +5127,7 @@
         "landscapes_visible": "显示地平线",
         "hide_below_horizon": "隐藏地平线以下的天体",
         "sky_survey_visible": "实拍巡天图像",
-        "sky_survey_hint": "仅离线使用随附的 DSS 天空图像，不会从互联网获取巡天图块。",
+        "sky_survey_hint": "离线显示已下载到 @:{'general.backendName'} 主机上的 DSS 或 NSNS 巡天图像；应用从不从互联网获取巡天图块。",
         "dsos_visible": "深空天体 (梅西耶, NGC)",
         "catalog_filters": "深空天体筛选",
         "catalog_filter_hint": "控制星图中可见的深空天体标记；离线搜索仍可找到所有星表天体。",
@@ -5176,7 +5177,7 @@
       },
       "survey": {
         "title": "巡天照片数据",
-        "hint": "DSS 彩色巡天数据会一次性下载到 NINA/PINS 主机，并从那里提供给 Atlas。更高的阶数会为狭窄视场增加细节。",
+        "hint": "DSS 彩色巡天数据会一次性下载到 @:{'general.backendName'} 主机，并从那里提供给 Atlas。更高的阶数会为狭窄视场增加细节。",
         "plugin_update_required": "请更新 Touch'N'Stars 插件以下载天空巡天数据。",
         "installed": "已安装",
         "free_space": "主机可用空间",
@@ -5201,11 +5202,11 @@
         "delete_keep_option": "保留 {name}，删除其余部分",
         "delete_all_option": "全部",
         "delete_confirm_title": "删除巡天数据？",
-        "delete_confirm": "删除已从 NINA/PINS 主机下载的天空巡天数据？在再次下载之前，Atlas 将不显示照片背景。",
+        "delete_confirm": "删除已从 @:{'general.backendName'} 主机下载的天空巡天数据？在再次下载之前，Atlas 将不显示照片背景。",
         "delete_confirm_keep": "删除 {name} 以上的所有阶数？{name} 将保持已安装状态，并继续在 Atlas 中显示。",
-        "terms": "Digitized Sky Survey © STScI/NASA，由 CDS（CNRS/Unistra）上色并进行 HiPS 处理。在注明出处的前提下可免费用于非商业用途；图块保存在您自己的 NINA/PINS 主机上。",
+        "terms": "Digitized Sky Survey © STScI/NASA，由 CDS（CNRS/Unistra）上色并进行 HiPS 处理。在注明出处的前提下可免费用于非商业用途；图块保存在您自己的 @:{'general.backendName'} 主机上。",
         "terms_link": "使用条款",
-        "offer_text": "现在要将照片版天空背景（DSS，约 {size}）下载到 NINA/PINS 主机吗？没有它，Atlas 只会显示恒星和星表天体。",
+        "offer_text": "现在要将照片版天空背景（DSS，约 {size}）下载到 @:{'general.backendName'} 主机吗？没有它，Atlas 只会显示恒星和星表天体。",
         "offer_text_legacy": "已下载的天空背景使用了过时的格式。现在重新下载吗（约 {size}）？旧文件将被替换。",
         "offer_accept": "下载",
         "offer_decline": "暂不",
@@ -5215,9 +5216,9 @@
         "source_nsns": "NSNS 彩色",
         "source_dss_hint": "Digitized Sky Survey：全天真彩色摄影图像。",
         "source_nsns_hint": "Northern Sky Narrowband Survey：[OIII] 为红、Hα 为绿、[SII] 为蓝，发射星云可显示其完整范围。仅覆盖 −16° 以北的天空。",
-        "hint_nsns": "NSNS 窄带巡天只需下载一次到 NINA/PINS 主机，并由主机提供给星图。更高的阶数可为窄视场增加细节。",
+        "hint_nsns": "NSNS 窄带巡天只需下载一次到 @:{'general.backendName'} 主机，并由主机提供给星图。更高的阶数可为窄视场增加细节。",
         "plugin_update_required_nsns": "请更新 Touch'N'Stars 插件以下载 NSNS 窄带巡天。",
-        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg，采用 CC BY-NC-SA 4.0 许可。注明出处后可免费用于非商业用途；图块保存在您自己的 NINA/PINS 主机上。",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg，采用 CC BY-NC-SA 4.0 许可。注明出处后可免费用于非商业用途；图块保存在您自己的 @:{'general.backendName'} 主机上。",
         "source_nsns_ha": "NSNS Hα",
         "source_nsns_ha_hint": "Northern Sky Narrowband Survey，仅 Hα 谱线（电离氢）。仅覆盖 −16° 以北的天空；需单独下载。",
         "source_nsns_oiii": "NSNS [OIII]",
@@ -5949,7 +5950,7 @@
         "keepOpen": "请保持应用打开。为防止状态不一致，操作已暂时锁定。",
         "running": "正在更新 Raspberry Pi 软件包。请等待更新完成。",
         "title": "系统更新进行中",
-        "waitingForApi": "更新完成。正在等待 NINA API 恢复可用…",
+        "waitingForApi": "更新完成。正在等待 @:{'general.backendName'} API 恢复可用…",
         "close": "关闭"
       },
       "pluginsAction": "Action",
@@ -6131,7 +6132,7 @@
       "errors": {
         "title": "巴季诺夫分析",
         "readFile": "无法读取所选文件。",
-        "captureLoad": "无法加载 N.I.N.A. 的最新捕获。",
+        "captureLoad": "无法加载 @:{'general.backendName'} 的最新捕获。",
         "analysisFailed": "分析请求失败。",
         "badRequest": "服务器拒绝了该请求。请确认参数。",
         "mockMode": "启用模拟 API 时，Bahtinov 分析不可用。",
@@ -6227,12 +6228,12 @@
         "validationJournalLines": "Journal lines must be between 100 and 50000.",
         "validationSections": "Select at least one section.",
         "expertMode": "专家设置",
-        "ninaLogs": "NINA 日志文件(最近 10 个)",
+        "ninaLogs": "@:{'general.backendName'} 日志文件(最近 10 个)",
         "collecting": "正在收集 PINS 系统诊断信息…这可能需要一些时间。"
       },
       "progress": {
         "collectingLogs": "正在收集 Touch'N'Stars 日志…",
-        "collectingNinaLogs": "正在收集最近的 NINA 日志文件…",
+        "collectingNinaLogs": "正在收集最近的 @:{'general.backendName'} 日志文件…",
         "buildingArchive": "正在创建 ZIP 压缩包…"
       }
     },
@@ -6336,7 +6337,7 @@
         "noListsHint": "在 telescopius.com 上创建目标列表，然后在此处重新加载。",
         "editOnTelescopius": "在 Telescopius 上编辑列表",
         "dataFrom": "数据来自",
-        "connectionError": "与 Telescopius 的连接失败。NINA PC 需要互联网连接，并且在 Telescopius 中必须至少存在一个目标列表。",
+        "connectionError": "与 Telescopius 的连接失败。@:{'general.backendName'} PC 需要互联网连接，并且在 Telescopius 中必须至少存在一个目标列表。",
         "myLists": "我的目标列表",
         "unnamedList": "未命名列表",
         "showObjects": "显示天体",
@@ -6435,8 +6436,8 @@
         "sendToNina": "采用序列",
         "sending": "发送中...",
         "sent": "已发送！",
-        "sendErrorTitle": "发送到 N.I.N.A 时出错",
-        "sendSuccessMessage": "序列已成功发送到 N.I.N.A！",
+        "sendErrorTitle": "发送到 @:{'general.backendName'} 时出错",
+        "sendSuccessMessage": "序列已成功发送到 @:{'general.backendName'}！",
         "validSequence": "序列有效，可以采用",
         "invalidSequence": "添加目标设置和智能曝光以创建有效序列",
         "saveNamed": "序列另存为...",
@@ -7095,7 +7096,7 @@
             "Warnings": "警告"
           },
           "categoryHints": {
-            "Errors": "所有 N.I.N.A. 错误和丢失的设备",
+            "Errors": "所有 @:{'general.backendName'} 错误和丢失的设备",
             "Guiding": "导星星丢失，导星失败",
             "Mount": "翻转失败，未跟踪的曝光",
             "Safety": "安全监视器报告不安全",
@@ -7110,7 +7111,7 @@
           "pauseMs": "音间暂停（毫秒）",
           "graceMinutes": "启动缓冲（分钟）",
           "throttleMinutes": "同一警报重复间隔（分钟）",
-          "graceHint": "N.I.N.A. 启动后短时间内不发出警报。同一警报最多连续蜂鸣 3 次。",
+          "graceHint": "@:{'general.backendName'} 启动后短时间内不发出警报。同一警报最多连续蜂鸣 3 次。",
           "exclusionsTitle": "永不蜂鸣",
           "addExclusionTitle": "添加永不蜂鸣的条目",
           "exclusionPlaceholder": "消息的一部分",
@@ -7265,7 +7266,7 @@
     },
     "shortcuts": {
       "title": "序列快捷方式",
-      "description": "快速访问 N.I.N.A 序列的加载与启动",
+      "description": "快速访问 @:{'general.backendName'} 序列的加载与启动",
       "addNew": "新增快捷方式",
       "newShortcut": "新建快捷方式",
       "createFirst": "创建首个快捷方式",
@@ -7609,7 +7610,7 @@
           "maxPluginStorageGb": "最大插件存储 (GB)",
           "maxPluginStorageHelp": "设置 0 表示无限制。",
           "protocolTooltip": "用于访问 PINS 公开的本地高级 API 的协议。",
-          "sequencePollTooltip": "AllSky 检查 PINS/NINA 序列是否已启动或停止的频率。",
+          "sequencePollTooltip": "AllSky 检查 @:{'general.backendName'} 序列是否已启动或停止的频率。",
           "advancedApiHostTooltip": "PINS 高级 API 服务的主机名或 IP 地址。",
           "portTooltip": "PINS 高级 API 服务使用的 TCP 端口。",
           "timeoutTooltip": "将单个高级 API 请求标记为不可用之前等待的最长时间。",
@@ -7825,7 +7826,7 @@
         "exampleLabels": ["Generic IP camera", "ONVIF camera", "Axis camera", "Hikvision camera"],
         "examplesTitle": "Examples",
         "proxyOptions": [
-          "Proxy (default): The image is fetched by the NINA backend and forwarded to the browser. Required for local network cameras with credentials or CORS restrictions. Slightly slower when accessed over VPN.",
+          "Proxy (default): The image is fetched by the @:{'general.backendName'} backend and forwarded to the browser. Required for local network cameras with credentials or CORS restrictions. Slightly slower when accessed over VPN.",
           "Direct: The browser fetches the image directly. Faster for public internet cameras (e.g. public allsky cams). Does not support credentials in the URL in Chrome/Edge."
         ],
         "proxyText": "Each camera can be fetched in two ways:",
@@ -7846,7 +7847,7 @@
       "snapshotUrl": "Snapshot URL",
       "unknownCamera": "Unknown camera",
       "useProxy": "Use Proxy",
-      "useProxyHint": "Route image through the NINA backend. Required for cameras with credentials or CORS restrictions. Disable for direct internet cameras."
+      "useProxyHint": "Route image through the @:{'general.backendName'} backend. Required for cameras with credentials or CORS restrictions. Disable for direct internet cameras."
     },
     "targetScheduler": {
       "actions": {
@@ -8236,8 +8237,8 @@
       "filterAll": "All",
       "filterNewOnly": "New only",
       "filterVisibleOnly": "Visible tonight",
-      "visibleHint": "Based on observer location from NINA profile",
-      "visibleNoLocation": "No observer location — set location in NINA profile",
+      "visibleHint": "Based on observer location from @:{'general.backendName'} profile",
+      "visibleNoLocation": "No observer location — set location in @:{'general.backendName'} profile",
       "sortBy": "Sort by",
       "sortLatestMag": "Latest mag (brightest first)",
       "sortFirstObserved": "Discovery date (newest first)",
@@ -8414,7 +8415,7 @@
         "useTls": "Use TLS (switches port to 8883)",
         "username": "Username"
       },
-      "notLoaded": "The Ground Station plugin is not installed or not loaded in NINA. Install the 'Ground Station' plugin in NINA to use these settings.",
+      "notLoaded": "The Ground Station plugin is not installed or not loaded in @:{'general.backendName'}. Install the 'Ground Station' plugin in @:{'general.backendName'} to use these settings.",
       "ntfysh": {
         "defaultIcon": "Default Icon URL",
         "defaultTopic": "Default Topic",
@@ -8458,7 +8459,7 @@
         "refreshing": "Refreshing…",
         "workspace": "Workspace"
       },
-      "subtitle": "Configure NINA Ground Station notification services",
+      "subtitle": "Configure @:{'general.backendName'} Ground Station notification services",
       "tabs": {
         "discord": "Discord",
         "email": "Email",
@@ -8648,7 +8649,7 @@
         "exportFailedMessage": "无法复制到剪贴板。",
         "apiDocsLink": "Target Scheduler API 文档",
         "setupTitle": "设置 Target Scheduler API",
-        "setupStep1": "在 NINA 中打开 Target Scheduler 插件选项并启用其 API 服务器。",
+        "setupStep1": "在 @:{'general.backendName'} 中打开 Target Scheduler 插件选项并启用其 API 服务器。",
         "setupStep2": "记下显示的端口（默认 8188）。",
         "setupStep3": "在上方输入该端口，随后将自动连接。",
         "welcomeTitle": "欢迎使用 Target Scheduler Viewer",
@@ -8704,7 +8705,7 @@
         "noTargets": "此项目中没有目标。"
       },
       "schedulePreview": {
-        "disclaimer": "Scheduler 对今晚的预测计划，每次刷新都会重新计算——并非 NINA 当前实际拍摄内容的记录。",
+        "disclaimer": "Scheduler 对今晚的预测计划，每次刷新都会重新计算——并非 @:{'general.backendName'} 当前实际拍摄内容的记录。",
         "learnMore": "了解更多",
         "noScheduleData": "暂无排程数据。",
         "waitingNotVisible": "等待中 — 目标尚不可见"
@@ -8725,7 +8726,7 @@
         "open": "插件已连接",
         "closed": "无法访问插件",
         "unreachable": "无法连接到 {url} 上的 AAPA 插件。",
-        "checkPlugin": "AAPA Controller 插件是否已在 N.I.N.A. 中安装并加载?",
+        "checkPlugin": "AAPA Controller 插件是否已在 @:{'general.backendName'} 中安装并加载?",
         "checkEnabled": "插件设置中是否已启用 WebSocket 服务器,且端口与下方一致?",
         "checkFirewall": "Windows 防火墙是否允许此端口的入站连接?",
         "port": "WebSocket 端口"
@@ -8740,7 +8741,7 @@
         "ipAddress": "AAPA 的 IP 地址",
         "connect": "连接",
         "disconnect": "断开连接",
-        "autoHint": "自动模式会检查 N.I.N.A. 计算机上的所有串口,查找 AAPA。"
+        "autoHint": "自动模式会检查 @:{'general.backendName'} 计算机上的所有串口,查找 AAPA。"
       },
       "status": {
         "positionX": "位置 X (Az)",
@@ -8759,13 +8760,13 @@
       },
       "assist": {
         "title": "自动极轴校准",
-        "hint": "点击一次即启动 TPPA（如果尚未运行），然后启动 Auto-Pilot，它会持续校正直到误差在容差范围内。Auto-Pilot 结束时 TPPA 会自动停止。必须在 N.I.N.A. 的 TPPA 设置中启用 \"Log polar alignment error adjustments\"。运行期间请保持此页面打开。",
+        "hint": "点击一次即启动 TPPA（如果尚未运行），然后启动 Auto-Pilot，它会持续校正直到误差在容差范围内。Auto-Pilot 结束时 TPPA 会自动停止。必须在 @:{'general.backendName'} 的 TPPA 设置中启用 \"Log polar alignment error adjustments\"。运行期间请保持此页面打开。",
         "start": "开始极轴校准",
         "running": "运行中…",
         "stop": "停止",
         "tppaSettings": "TPPA 设置",
         "autoPilotSettings": "Auto-Pilot 设置",
-        "tnsPluginRequired": "TPPA 需要 N.I.N.A. 中的 Touch'N'Stars 插件；该插件无法访问。",
+        "tnsPluginRequired": "TPPA 需要 @:{'general.backendName'} 中的 Touch'N'Stars 插件；该插件无法访问。",
         "phaseLabel": "状态",
         "azError": "方位角误差",
         "altError": "高度角误差",
@@ -8838,12 +8839,12 @@
           "MinYLimit": "最小 Y(步)",
           "MaxYLimit": "最大 Y(步)"
         },
-        "autoSaveHint": "离开输入框后,更改会立即保存到 N.I.N.A.。",
-        "saveInNina": "保存到 N.I.N.A.",
+        "autoSaveHint": "离开输入框后,更改会立即保存到 @:{'general.backendName'}。",
+        "saveInNina": "保存到 @:{'general.backendName'}",
         "storeOnDevice": "存储到 AAPA",
         "sendConfirm": "将 AAPA 当前配置永久存储到其内存 (EEPROM) 中?",
         "applyToDevice": "应用到 AAPA",
-        "applyInNinaHint": "这些值保存在 N.I.N.A. 中。要传输到 AAPA,请使用 N.I.N.A. 中 AAPA 面板的发送按钮。"
+        "applyInNinaHint": "这些值保存在 @:{'general.backendName'} 中。要传输到 AAPA,请使用 @:{'general.backendName'} 中 AAPA 面板的发送按钮。"
       },
       "log": {
         "title": "日志",
@@ -9291,7 +9292,7 @@
       "reload": "重新加载预览"
     },
     "cache": {
-      "useNinaCache": "使用 NINA 缓存获取目标图像",
+      "useNinaCache": "使用 @:{'general.backendName'} 缓存获取目标图像",
       "hint": "通过 TNS WebAPI 加载 DSS/目标图片。缓存开关控制 useCache。",
       "hintShort": "将 useCache 传递给 targetpic"
     },
@@ -9434,7 +9435,7 @@
       "filterAuto": "Auto",
       "filterBroadband": "Broadband",
       "filterClassifications": "Filter Classifications",
-      "filterClassificationsHint": "Filters from your NINA profile. Auto uses first-letter matching (L,R,G,B = broadband; H,S,O = narrowband).",
+      "filterClassificationsHint": "Filters from your @:{'general.backendName'} profile. Auto uses first-letter matching (L,R,G,B = broadband; H,S,O = narrowband).",
       "filterExclude": "Exclude",
       "filterNarrowband": "Narrowband",
       "lightModeReport": "Light Mode Report",
@@ -9649,7 +9650,7 @@
       "working": "处理中…",
       "howItWorks": "工作原理",
       "eqmodToggleTitle": "EQMOD 赤经速率校正",
-      "eqmodToggleDescription": "EQMOD 将赤经速率读取为原始角秒/秒，而不是 NINA 发送的值，若不校正会导致跟踪速度慢约 15 倍。仅当赤道仪使用 EQMOD 时才启用。",
+      "eqmodToggleDescription": "EQMOD 将赤经速率读取为原始角秒/秒，而不是 @:{'general.backendName'} 发送的值，若不校正会导致跟踪速度慢约 15 倍。仅当赤道仪使用 EQMOD 时才启用。",
       "eqmodDetectedHint": "{name} 看起来是 EQMOD 驱动 — 您可能需要启用此项。",
       "reapplyIntervalTitle": "重新应用间隔",
       "reapplyIntervalDescription": "Quick Track 重新计算并重新发送跟踪速率的频率。默认值 900 秒（15 分钟）适用于彗星和小行星。",

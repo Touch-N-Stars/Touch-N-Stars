@@ -30,7 +30,8 @@
     "delete": "Elimina",
     "edit": "Edita",
     "close": "Tanca",
-    "save": "Desa"
+    "save": "Desa",
+    "backendName": "NINA"
   },
   "pages": {
     "equipment": {
@@ -42,9 +43,9 @@
     "title": "Touch'N'Stars",
     "connection_error_toast": {
       "title": "Error de connexió",
-      "message_api": "El connector API no està disponible. Comprova la configuració a NINA",
+      "message_api": "El connector API no està disponible. Comprova la configuració a @:{'general.backendName'}",
       "message_api_version": "El connector API és massa antic. Fes una actualització",
-      "message_tns": "El connector TouchNStars no està disponible. Comprova la configuració a NINA",
+      "message_tns": "El connector TouchNStars no està disponible. Comprova la configuració a @:{'general.backendName'}",
       "message_tns_version": "El connector Touch N Stars és massa antic. Actualitza'l"
     },
     "connection_splash": {
@@ -100,7 +101,7 @@
     "coordAlt": "Alt",
     "coordUnit": "m",
     "completeSetup": "Finalitza la configuració",
-    "instanceConfiguration": "Detalls de connexió N.I.N.A",
+    "instanceConfiguration": "Detalls de connexió @:{'general.backendName'}",
     "InfoAppsTitel": "Wiki",
     "check_wki": "Podeu trobar instruccions detallades a la nostra wiki"
   },
@@ -181,7 +182,7 @@
       "missingEquipmentSettings": "Manca configuració d'equip: estableix la longitud focal i la mida del píxel a Configuració → Equip perquè el camp de visió de la càmera es calculi correctament.",
       "confirmSetTargetTitle": "Confirma la selecció de l'objectiu",
       "confirmSetTargetMessage": "Estàs segur que vols establir aquest objectiu com a objectiu de la seqüència?",
-      "useNinaCache": "Usa la memòria cau de NINA per a la imatge de l'objectiu",
+      "useNinaCache": "Usa la memòria cau de @:{'general.backendName'} per a la imatge de l'objectiu",
       "setSequnceTarget": "estableix com a objectiu de la seqüència",
       "sequenceTargetPicker": {
         "title": "Objectiu de la seqüència",
@@ -241,7 +242,7 @@
         "SolveError": "Error en resoldre la imatge"
       },
       "moveRotator": "Gira la càmera",
-      "infoTargetImage": "Si la imatge només es mostra en negre, cal configurar la \"memòria cau del mapa del cel sense connexió\" a NINA o desactivar l'opció \"usa la memòria cau de NINA\"",
+      "infoTargetImage": "Si la imatge només es mostra en negre, cal configurar la \"memòria cau del mapa del cel sense connexió\" a @:{'general.backendName'} o desactivar l'opció \"usa la memòria cau de @:{'general.backendName'}\"",
       "useCenter": "Centra",
       "useRotate": "Gira",
       "customTarget": "Objectiu personalitzat",
@@ -304,7 +305,7 @@
         "openWiki": "Obre la wiki"
       },
       "instance": {
-        "description": "Adreça de l'ordinador on s'executa N.I.N.A. A la mateixa xarxa, l'app normalment el troba sola.",
+        "description": "Adreça de l'ordinador on s'executa @:{'general.backendName'} A la mateixa xarxa, l'app normalment el troba sola.",
         "connect": "Desa i connecta",
         "connecting": "Connecting…",
         "connected": "Connectat a {name}",
@@ -445,7 +446,7 @@
         "focalLength": "Focal del telescopi guia",
         "focalLengthHint": "Focal del telescopi guia en mm. Es desa al perfil de PHD2, separada del telescopi principal, i permet a PHD2 mostrar el guiatge en segons d'arc.",
         "ditherTitle": "Dither",
-        "ditherDescription": "NINA defineix el dither en píxels de la càmera de guiatge, mentre que les recomanacions habituals es donen en píxels de la càmera d'imatge. Això converteix entre tots dos.",
+        "ditherDescription": "@:{'general.backendName'} defineix el dither en píxels de la càmera de guiatge, mentre que les recomanacions habituals es donen en píxels de la càmera d'imatge. Això converteix entre tots dos.",
         "ditherMainPixels": "Dither (píxels d'imatge)",
         "ditherMainPixelsHint": "Quant ha de moure cada dither l'objecte al sensor d'imatge. De 10 a 15 píxels és un bon punt de partida.",
         "guidePixelSize": "Mida del píxel de la càmera de guiatge (µm)",
@@ -514,7 +515,7 @@
         "backendTime": "Hora del servidor",
         "mountTime": "Hora de la muntura",
         "syncLabel": "Sincronitza l'hora a la muntura",
-        "syncLabelInfo": "Quan està activat, fer clic a \"Sincronitza ara\" desconnectarà i reconnectarà breument la muntura perquè NINA li pugui transferir l'hora actual.",
+        "syncLabelInfo": "Quan està activat, fer clic a \"Sincronitza ara\" desconnectarà i reconnectarà breument la muntura perquè @:{'general.backendName'} li pugui transferir l'hora actual.",
         "mountNotConnected": "Muntura no connectada",
         "notSupported": "No compatible amb el controlador",
         "syncSuccess": "Hora sincronitzada correctament.",
@@ -575,9 +576,9 @@
         "editTokens": "Edita tokens",
         "help": {
           "title": "Patró de nom de fitxer",
-          "intro": "Construeix el patró de nom de fitxer per a les imatges capturades. Cada token serà substituït per NINA amb el valor real en desar.",
+          "intro": "Construeix el patró de nom de fitxer per a les imatges capturades. Cada token serà substituït per @:{'general.backendName'} amb el valor real en desar.",
           "tokensTitle": "Tokens",
-          "tokensDesc": "Toca un botó de token per afegir-lo al patró. Tokens com Filter, Date o ExposureTime són substituïts per NINA pels valors reals.",
+          "tokensDesc": "Toca un botó de token per afegir-lo al patró. Tokens com Filter, Date o ExposureTime són substituïts per @:{'general.backendName'} pels valors reals.",
           "separatorsTitle": "Separadors",
           "separatorsDesc": "Usa \\ per crear estructures de carpetes. Usa _ o - per separar valors al nom del fitxer. Usa \"Text\" per afegir text personalitzat com \"s\" per a segons.",
           "cursorTitle": "Posició d'inserció",
@@ -618,7 +619,7 @@
       "backupRestore": {
         "title": "Còpia de seguretat i restauració",
         "description": "Desa els ajustos emmagatzemats en aquest dispositiu en un fitxer i restaura'ls en un altre dispositiu.",
-        "profileWarning": "Això només fa còpia de seguretat dels ajustos de l'aplicació en aquest dispositiu. Els ajustos d'equip, càmera, muntura i altres es troben al perfil de NINA o PINS - fes-ne una còpia de seguretat per separat per a una còpia completa.",
+        "profileWarning": "Això només fa còpia de seguretat dels ajustos de l'aplicació en aquest dispositiu. Els ajustos d'equip, càmera, muntura i altres es troben al perfil de @:{'general.backendName'} - fes-ne una còpia de seguretat per separat per a una còpia completa.",
         "locationAndroid": "El fitxer es desa a Documents/TouchNStars en aquest dispositiu - obre'l amb una app de gestor de fitxers.",
         "locationIos": "El fitxer es desa a l'app Fitxers, a Al meu iPhone/iPad → Touch 'N Stars → Documents.",
         "locationBrowser": "El fitxer es desa a la carpeta de baixades predeterminada del teu navegador.",
@@ -688,7 +689,7 @@
         "help": {
           "ExposureTime": "Temps d'exposició, en segons, usat per a les imatges preses pel solucionador de placa. Les exposicions més llargues capturen més estrelles, cosa que ajuda a resoldre camps febles o dispersos, però alenteix cada intent de resolució.",
           "Gain": "Guany de la càmera usat per a les exposicions de resolució de placa. Deixa buit per usar el guany per defecte de la càmera.",
-          "ASTAPLocation": "Ruta a l'executable d'ASTAP (astap.exe) al sistema on s'executa NINA. Necessari per a la resolució local de placa amb ASTAP.",
+          "ASTAPLocation": "Ruta a l'executable d'ASTAP (astap.exe) al sistema on s'executa @:{'general.backendName'}. Necessari per a la resolució local de placa amb ASTAP.",
           "SearchRadius": "Radi en graus al voltant de les coordenades objectiu en el qual el solucionador cerca quan intenta una resolució cega. Un radi més gran augmenta el temps de resolució però ajuda quan la posició inicial de la muntura és menys precisa.",
           "Threshold": "Desviació màxima permesa, en minuts d'arc, entre la posició resolta i l'objectiu durant Slew & Center. Si la resolució s'allunya més, s'activa un altre cicle de slew-and-solve.",
           "RotationTolerance": "Desviació de rotació màxima permesa, en graus, entre l'orientació de la imatge resolta i l'orientació objectiu durant Center & Rotate. Si se supera, el rotador s'ajusta i el fotograma es torna a resoldre.",
@@ -811,7 +812,7 @@
       "save": "Desa",
       "connect": "Connecta",
       "disconnect": "Desconnecta",
-      "sharedGuidWarning": "El rotador i el monitor de seguretat comparteixen una ranura d'emmagatzematge a NINA — canviar l'un també canvia l'altre.",
+      "sharedGuidWarning": "El rotador i el monitor de seguretat comparteixen una ranura d'emmagatzematge a @:{'general.backendName'} — canviar l'un també canvia l'altre.",
       "noReconnectHint": "La nova configuració s'aplica en la propera connexió.",
       "cameraNoSettings": "Aquesta càmera no té configuració a ajustar."
     },
@@ -869,7 +870,7 @@
       },
       "info": {
         "title": "Informació",
-        "message": "La roda de filtres manual i el rotador manual ara com ara només es poden controlar via NINA. Usa la \"Networked Filter Wheel\" de l'API per a la roda de filtres"
+        "message": "La roda de filtres manual i el rotador manual ara com ara només es poden controlar via @:{'general.backendName'}. Usa la \"Networked Filter Wheel\" de l'API per a la roda de filtres"
       }
     },
     "lastLogs": {
@@ -961,7 +962,7 @@
       "sequenceFolder": "Carpeta de seqüències",
       "sequenceFolderNotSet": "Cap carpeta definida",
       "sequenceFolderChange": "Canvia la carpeta",
-      "sequenceFolderRelative": "No és un camí complet, de manera que els fitxers acaben a la carpeta del programa de N.I.N.A. Tria una carpeta.",
+      "sequenceFolderRelative": "No és un camí complet, de manera que els fitxers acaben a la carpeta del programa de @:{'general.backendName'} Tria una carpeta.",
       "sequenceFolderSaveError": "No s'ha pogut canviar la carpeta de seqüències.",
       "sequenceFileName": "Nom del fitxer",
       "sequenceSave": "Desa",
@@ -985,7 +986,7 @@
       "no_sequences_found": "No s'ha trobat cap seqüència",
       "error_loading_sequences": "Error en carregar les seqüències",
       "error_loading_sequence": "Error en carregar la seqüència",
-      "editFailed": "NINA no ha acceptat el canvi",
+      "editFailed": "@:{'general.backendName'} no ha acceptat el canvi",
       "targetNotFound": "No s'ha trobat l'objectiu a la seqüència. Torna-ho a provar.",
       "filter": "Filtre",
       "triggers": "Activadors",
@@ -1484,7 +1485,7 @@
       },
       "location_sync": {
         "title": "Configuració de sincronització d'ubicació",
-        "confirmationMessage": "Si la 'Sincronització d'ubicació' a NINA és 'Pregunta', pot aparèixer una finestra de confirmació abans que les coordenades s'enviïn al telescopi. Per evitar-ho i permetre que TNS estableixi automàticament les coordenades, recomanem canviar la configuració a 'Sincronitza al telescopi'",
+        "confirmationMessage": "Si la 'Sincronització d'ubicació' a @:{'general.backendName'} és 'Pregunta', pot aparèixer una finestra de confirmació abans que les coordenades s'enviïn al telescopi. Per evitar-ho i permetre que TNS estableixi automàticament les coordenades, recomanem canviar la configuració a 'Sincronitza al telescopi'",
         "toTelescope": {
           "label": "Sincronitza al telescopi"
         },
@@ -1571,7 +1572,7 @@
               "description": "Ajusta tu mateix els minuts a Avançat."
             },
             "sideOfPierNoMount": "Connecta la muntura abans de triar, perquè l'app comprovi si informa del seu costat del pilar.",
-            "sideOfPierUnknown": "La teva muntura no informa del costat del pilar, així que «Usa el costat del pilar» queda desactivat. NINA decideix llavors el gir per l'hora.",
+            "sideOfPierUnknown": "La teva muntura no informa del costat del pilar, així que «Usa el costat del pilar» queda desactivat. @:{'general.backendName'} decideix llavors el gir per l'hora.",
             "applyFailed": "El valor predefinit no s'ha pogut desar del tot. Revisa els valors a Avançat."
           },
           "timeline": {
@@ -1583,30 +1584,30 @@
             "atMinutes": "+{min} min",
             "windowMinutes": "+{min}–{max} min",
             "explainPause": "La captura s'atura {pause} min abans del meridià i s'apaga el seguiment. El gir arriba {min} min després del meridià. Costa temps de captura – fes-ho servir només si el telescopi no pot passar el meridià.",
-            "explainFixed": "NINA fa exposicions fins que una passaria de {min} min després del meridià; llavors espera i gira just en aquell moment. Un límit més tardà evita l'espera.",
+            "explainFixed": "@:{'general.backendName'} fa exposicions fins que una passaria de {min} min després del meridià; llavors espera i gira just en aquell moment. Un límit més tardà evita l'espera.",
             "explainWindow": "La primera exposició que acaba entre {min} i {max} min després del meridià va seguida directament del gir – sense esperes."
           },
           "help": {
             "MinutesAfterMeridian": "Moment més d'hora després del meridià en què pot començar el gir.",
-            "MaxMinutesAfterMeridian": "Moment més tard després del meridià per al gir. No pot ser inferior al més d'hora. Un marge més gran permet a NINA girar just després d'una exposició, sense esperar.",
+            "MaxMinutesAfterMeridian": "Moment més tard després del meridià per al gir. No pot ser inferior al més d'hora. Un marge més gran permet a @:{'general.backendName'} girar just després d'una exposició, sense esperar.",
             "PauseTimeBeforeMeridian": "Només per a equips que no poden passar el meridià amb seguretat: el seguiment s'atura aquests minuts abans. Si no, deixa-ho a 0.",
             "SettleTime": "Espera després del gir perquè la muntura s'estabilitzi. Estrelles mogudes al primer plate solve després d'un gir? Augmenta aquest valor.",
-            "Recenter": "Després del gir, NINA fa un plate solve i torna a centrar l'objecte. Molt recomanat; cal un plate solver que funcioni.",
+            "Recenter": "Després del gir, @:{'general.backendName'} fa un plate solve i torna a centrar l'objecte. Molt recomanat; cal un plate solver que funcioni.",
             "UseSideOfPier": "Fa servir el costat del pilar que informa la muntura per decidir si cal un gir. Més fiable, però només si la muntura l'informa correctament.",
             "AutoFocusAfterFlip": "Executa un autoenfocament després del gir. Útil en Newton i SCT amb mirall que es desplaça quan gira el tub.",
             "RotateImageAfterFlip": "Gira la previsualització 180° després del gir. Només visualització – les imatges desades no canvien."
           },
           "dayTest": {
             "title": "Prova el gir de dia",
-            "teaser": "Deixa que NINA faci un gir de meridià real durant el dia, amb els teus ajustos: el telescopi passa el trípode o la columna en la posició després del meridià, hi arriben els cables?",
+            "teaser": "Deixa que @:{'general.backendName'} faci un gir de meridià real durant el dia, amb els teus ajustos: el telescopi passa el trípode o la columna en la posició després del meridià, hi arriben els cables?",
             "open": "Inicia la prova",
-            "intro": "Portes el telescopi a mà fins a un punt just a l'est del meridià. Des d'allà continua el seguiment més enllà, i NINA gira exactament com de nit – amb els teus ajustos de gir i a l'hora real.",
+            "intro": "Portes el telescopi a mà fins a un punt just a l'est del meridià. Des d'allà continua el seguiment més enllà, i @:{'general.backendName'} gira exactament com de nit – amb els teus ajustos de gir i a l'hora real.",
             "blockers": {
               "notConnected": "La muntura no està connectada.",
               "parked": "La muntura està aparcada. Desaparca-la primer.",
               "cannotSlew": "La muntura no pot anar a coordenades.",
               "noLocation": "La muntura no té ubicació. Defineix primer la teva ubicació.",
-              "sequenceRunning": "Hi ha una seqüència en marxa a NINA. Atura-la primer."
+              "sequenceRunning": "Hi ha una seqüència en marxa a @:{'general.backendName'}. Atura-la primer."
             },
             "caps": {
               "label": "Les tapes són al telescopi, al buscador i al telescopi guia",
@@ -1626,14 +1627,14 @@
             "resultProblem": "El moviment de gir necessita atenció.",
             "problemAdvice": "Revisa el recorregut dels cables perquè arribin als dos costats. Si el telescopi ha tocat el trípode o la columna, tria «Gairebé gens» a dalt o revisa el límit de meridià de la teva muntura.",
             "pierChanged": "Costat del pilar: {before} → {after}",
-            "notTested": "No es comprova el guiatge després del gir. Els detalls són al registre de NINA.",
+            "notTested": "No es comprova el guiatge després del gir. Els detalls són al registre de @:{'general.backendName'}.",
             "stopped": "Prova aturada. Seqüència i seguiment estan aturats, la muntura es queda on és.",
             "sideEast": "Est",
             "sideWest": "Oest",
             "exposure": "Durada de les teves exposicions (s)",
-            "exposureHelp": "NINA gira després de la primera exposició que acaba dins la finestra de gir. Amb la teva durada habitual, la prova gira en la mateixa posició que de nit.",
+            "exposureHelp": "@:{'general.backendName'} gira després de la primera exposició que acaba dins la finestra de gir. Amb la teva durada habitual, la prova gira en la mateixa posició que de nit.",
             "plan": "La prova dura com a mínim {minutes} min, més el temps abans del meridià en què comences. La muntura segueix fins a {flip} min passat el meridià – aquesta és la posició que es prova, igual que de nit.",
-            "sequenceNotice": "Es carrega una seqüència de prova a NINA. Substitueix la seqüència carregada ara – desa-la abans si la vols conservar.",
+            "sequenceNotice": "Es carrega una seqüència de prova a @:{'general.backendName'}. Substitueix la seqüència carregada ara – desa-la abans si la vols conservar.",
             "start": "Carrega la seqüència de prova i inicia",
             "toPositioning": "Continua",
             "back": "Enrere",
@@ -1642,7 +1643,7 @@
               "toMeridian": "Temps fins al meridià",
               "pastMeridian": "Passat el meridià des de fa",
               "noData": "La muntura encara no informa de posició ni ubicació.",
-              "poleHint": "El telescopi apunta al pol. NINA també gira aquí, però només fora del pol veus si el tub passa el trípode i si els cables arriben. Per a una prova realista, porta Dec a una alçada com la dels teus objectius habituals.",
+              "poleHint": "El telescopi apunta al pol. @:{'general.backendName'} també gira aquí, però només fora del pol veus si el tub passa el trípode i si els cables arriben. Per a una prova realista, porta Dec a una alçada com la dels teus objectius habituals.",
               "checks": {
                 "lead": "Com a mínim {minutes} min abans del gir",
                 "pier": "Contrapès avall – el costat del pilar abans del gir",
@@ -1659,20 +1660,20 @@
               }
             },
             "confirmTitle": "Carregar la seqüència de prova?",
-            "confirmMessage": "La seqüència carregada a NINA se substitueix per la prova de gir. El telescopi segueix des de la posició actual i NINA el gira després del meridià.",
+            "confirmMessage": "La seqüència carregada a @:{'general.backendName'} se substitueix per la prova de gir. El telescopi segueix des de la posició actual i @:{'general.backendName'} el gira després del meridià.",
             "waitingForMeridian": "Seguint cap al meridià …",
             "pastMeridian": "El telescopi és {minutes} min més enllà del meridià.",
-            "flipping": "NINA està girant …",
+            "flipping": "@:{'general.backendName'} està girant …",
             "countdownWindow": "Gir d'aquí a {earliest} – {latest} min",
             "countdownLatest": "Gir com a molt tard d'aquí a {latest} min",
-            "runningHint": "NINA executa la prova pel seu compte, pots tancar l'app. Prem STOP si alguna cosa fa nosa – atura la seqüència i el seguiment.",
-            "flippedAt": "NINA ha girat {minutes} min després del meridià.",
-            "noFlip": "NINA no ha girat a temps. S'han aturat la seqüència i el seguiment.",
-            "noFlipAdvice": "Revisa els ajustos de gir i el registre de NINA. Si «Usa el costat del pilar» està activat, potser la muntura informa malament del costat – prova-ho desactivat.",
+            "runningHint": "@:{'general.backendName'} executa la prova pel seu compte, pots tancar l'app. Prem STOP si alguna cosa fa nosa – atura la seqüència i el seguiment.",
+            "flippedAt": "@:{'general.backendName'} ha girat {minutes} min després del meridià.",
+            "noFlip": "@:{'general.backendName'} no ha girat a temps. S'han aturat la seqüència i el seguiment.",
+            "noFlipAdvice": "Revisa els ajustos de gir i el registre de @:{'general.backendName'}. Si «Usa el costat del pilar» està activat, potser la muntura informa malament del costat – prova-ho desactivat.",
             "startFailed": "No s'ha pogut iniciar la seqüència de prova: {error}",
-            "ninaError": "NINA ha informat d'un error durant el gir, al pas: {step}.",
+            "ninaError": "@:{'general.backendName'} ha informat d'un error durant el gir, al pas: {step}.",
             "ninaErrorRecenterCaps": "Amb les tapes és l'esperat – recentrar necessita estrelles. Comprova de nit que el plate solving funciona.",
-            "ninaOk": "NINA ha completat el gir sense errors.",
+            "ninaOk": "@:{'general.backendName'} ha completat el gir sense errors.",
             "steps": {
               "recenter": "recentrament (plate solve)",
               "autofocus": "autoenfocament després del gir",
@@ -4102,7 +4103,7 @@
           "saveFolder": "Desa els fotogrames capturats a",
           "sequenceRunningLive": "Hi ha una seqüència en execució, per això el recorregut en directe està desactivat: mouria el focador i faria exposicions enmig de la seqüència. Mentrestant, una execució d'AF desada sí que funciona.",
           "working": "Treballant...",
-          "runsInBackground": "Pots tancar aquesta finestra: l'optimització continua executant-se a NINA i la pots tornar a obrir des de la pestanya Detecció d'estels.",
+          "runsInBackground": "Pots tancar aquesta finestra: l'optimització continua executant-se a @:{'general.backendName'} i la pots tornar a obrir des de la pestanya Detecció d'estels.",
           "complete": "Optimització completada",
           "variant": "Mostrant",
           "variantCurrent": "Actual",
@@ -4285,12 +4286,12 @@
             "maxBlindStepsPerDirection": "Nombre màxim de passos cecs d'AF que s'intenten en cada direcció abans d'invertir el sentit i provar l'altre costat. Posa 0 per desactivar el límit.",
             "reverseInitialDirection": "Inicia l'autofocus movent-se en la direcció contrària. Útil quan el focus s'ha d'aproximar des de l'altre costat, p. ex. SCT amb desplaçament del mirall o enfocadors amb joc (backlash).",
             "focuserIncreasesTowardObjective": "En quin sentit es mou el teu focador: una posició MÉS ALTA del focador allunya la càmera de l'objectiu (estàndard) o l'hi apropa (invertit)? Això afecta NOMÉS LES ETIQUETES I ELS DIAGRAMES de direcció: els textos \"apropa/allunya de l'objectiu\", les etiquetes Telescopi/Sensor del model del sensor, els consells sobre separadors i les fletxes de moviment amunt/avall de la guia d'inclinació. Mai pot canviar una mesura, un angle de cargol ni una correcció: la direcció de l'adaptador d'inclinació es mesura en unitats del focador, i la convenció del focador s'anul·la completament en aquesta mesura. Per tant, si aquestes etiquetes apareixen al revés al teu equip, inverteix aquesta opció: res del que ja hagis calibrat es veu afectat i res començarà a girar en sentit contrari.",
-            "validateHfrImprovement": "Si està activat, fa una exposició addicional abans i després per assegurar que l'HFR ha millorat. Aquesta comprovació es pot fer a més de la validació R² configurada a les opcions d'enfocament automàtic de NINA.",
+            "validateHfrImprovement": "Si està activat, fa una exposició addicional abans i després per assegurar que l'HFR ha millorat. Aquesta comprovació es pot fer a més de la validació R² configurada a les opcions d'enfocament automàtic de @:{'general.backendName'}.",
             "hfrImprovementThreshold": "Quin marge es permet en validar les millores d'HFR. El valor predeterminat del 15% vol dir que l'AF falla si l'HFR inicial és un 15% o més millor que l'HFR final",
             "hyperbolicFitModel": "Quin model hiperbòlic s'ajusta a la corba d'enfocament. Híbrid (Millor ajust) és l'opció predeterminada recomanada: la corba es dibuixa en directe amb la hipèrbola inclinada i, en acabar l'execució, es tornen a ajustar tots els models i es conserva el que té el menor error esperat per a la posició de millor enfocament, de manera que cada execució tria per si mateixa l'ajust més fiable. Les opcions fixes: Simètric és la hipèrbola clàssica de 4 paràmetres; les altres són asimètriques (pendent diferent a cada costat de l'enfocament, cosa habitual perquè l'HFR desenfocat es comporta diferent de l'enfocat): Hipèrbola inclinada és una sola corba suau amb un biaix lineal, Mescla suau combina suaument dues hipèrboles, i Mescla desigual és l'ajust combinat original.",
             "weightedHyperbolicFitEnabled": "Pondera cada punt de l'ajust hiperbòlic segons l'error de mesura. Els valors de σ es regularitzen abans de l'ajust: una σ degenerada propera a zero (p. ex. d'un fotograma amb molt pocs estels detectats) s'eleva fins al 20% de la σ mediana del recorregut, i una σ desconeguda rep la mediana, de manera que cap punt pot dominar l'ajust per una estimació d'error degenerada.",
-            "fitRejectionCriterion": "Quina mètrica de qualitat d'ajust decideix si es rebutja una execució d'AF. R² (per defecte) manté el comportament existent i rebutja quan el R² de l'ajust queda per sota del llindar R² de NINA (configuració de l'enfocador). χ² reduït, en canvi, rebutja quan el χ² reduït de l'ajust hiperbòlic supera el llindar de sota: un límit de qualitat d'ajust en unitats de dispersió per a una corba d'enfocament, però només és vàlid quan 'Ajust hiperbòlic ponderat' està activat (depèn de la σ de mesura de cada punt). Els ajustos quadràtics i de línies de tendència sempre utilitzen R², independentment d'aquesta opció.",
-            "rSquaredRejectionThreshold": "El R² mínim (coeficient de determinació) per sota del qual es rebutja una execució d'AF, quan el criteri de rebuig és R². És el mateix llindar R² de NINA de la configuració de l'enfocador; modificar-lo aquí canvia aquesta mateixa opció del perfil. Un R² més proper a 1 indica un millor ajust a la corba d'enfocament mesurada.",
+            "fitRejectionCriterion": "Quina mètrica de qualitat d'ajust decideix si es rebutja una execució d'AF. R² (per defecte) manté el comportament existent i rebutja quan el R² de l'ajust queda per sota del llindar R² de @:{'general.backendName'} (configuració de l'enfocador). χ² reduït, en canvi, rebutja quan el χ² reduït de l'ajust hiperbòlic supera el llindar de sota: un límit de qualitat d'ajust en unitats de dispersió per a una corba d'enfocament, però només és vàlid quan 'Ajust hiperbòlic ponderat' està activat (depèn de la σ de mesura de cada punt). Els ajustos quadràtics i de línies de tendència sempre utilitzen R², independentment d'aquesta opció.",
+            "rSquaredRejectionThreshold": "El R² mínim (coeficient de determinació) per sota del qual es rebutja una execució d'AF, quan el criteri de rebuig és R². És el mateix llindar R² de @:{'general.backendName'} de la configuració de l'enfocador; modificar-lo aquí canvia aquesta mateixa opció del perfil. Un R² més proper a 1 indica un millor ajust a la corba d'enfocament mesurada.",
             "reducedChiSquaredRejectionThreshold": "Límit superior del χ² reduït de l'ajust hiperbòlic (χ² per grau de llibertat) per sobre del qual es rebutja l'execució, quan el criteri de rebuig és χ² reduït. La σ per punt que hi ha darrere dels pesos és la dispersió del conjunt d'estels, que sobreestima la incertesa de l'HFR mediana per punt; per això el χ² reduït sol quedar força per sota d'1, disminueix com més estels es detecten i augmenta amb més fotogrames per punt. Considera aquest llindar un límit de control aproximat, no una prova estadística calibrada. Posa 0 per desactivar-lo. Només té sentit amb ajustos ponderats.",
             "maxOutlierRejections": "Controla el nombre màxim de punts que es poden rebutjar com a valors atípics durant l'ajust de la corba d'AF.",
             "outlierRejectionConfidence": "Nivell de confiança de la prova estadística de Grubbs de dues cues per a valors atípics utilitzada durant l'ajust de la corba d'AF. El 95% és un valor predeterminat raonable. Ha de ser superior al 50% i inferior al 100%.",
@@ -4362,7 +4363,7 @@
             "useAutoFocusCrop": "Activat, Hocus Focus mesura els estels només dins del retall interior i exterior, en el seu autoenfocament i en les exposicions normals. Desactivat, fa servir la imatge sencera.",
             "fitPSF": "Indica si s'ajusten models PSF als estels detectats. És necessari per a la FWHM i l'excentricitat",
             "debugMode": "Activa el mode de depuració, que desa dades addicionals útils per depurar. Mantén-lo desactivat tret que estiguis ajustant la detecció d'estels i vulguis veure els mapes d'estructura.",
-            "detectionBinning": "Binning per programari aplicat al fotograma només per a la detecció d'estels. La detecció d'estels està calibrada per a estels enfocats d'uns 2 a 4 píxels; amb distàncies focals llargues els estels són molt més grans, cosa que deixa fora de rang els paràmetres basats en píxels. Fer binning del fotograma per a la detecció torna la mida dels estels dins del rang i millora la relació senyal-soroll per píxel. La imatge que veus i els valors d'HFR informats es mantenen a la resolució amb què ha capturat la càmera. No és el binning d'AF de NINA, que canvia com la càmera captura els fotogrames d'AF i hauria de coincidir amb el binning amb què fas les imatges; tots dos es multipliquen",
+            "detectionBinning": "Binning per programari aplicat al fotograma només per a la detecció d'estels. La detecció d'estels està calibrada per a estels enfocats d'uns 2 a 4 píxels; amb distàncies focals llargues els estels són molt més grans, cosa que deixa fora de rang els paràmetres basats en píxels. Fer binning del fotograma per a la detecció torna la mida dels estels dins del rang i millora la relació senyal-soroll per píxel. La imatge que veus i els valors d'HFR informats es mantenen a la resolució amb què ha capturat la càmera. No és el binning d'AF de @:{'general.backendName'}, que canvia com la càmera captura els fotogrames d'AF i hauria de coincidir amb el binning amb què fas les imatges; tots dos es multipliquen",
             "measurementAverage": "Controla com es calcula la mesura mitjana dels estels al fotograma. La mediana és robusta davant dels valors atípics i és l'opció predeterminada.",
             "useOptimizedSettings": "Si està activat, la configuració de detecció d'estels optimitzada generada per l'assistent d'optimització governa la detecció en lloc dels valors predefinits de Nivell de soroll / Escala de píxel / Rang d'enfocament. Només disponible en mode simple després que l'assistent hagi generat i aplicat un resultat",
             "noiseLevel": "Controla la quantitat de difuminat que s'aplica a la imatge original abans de començar el procés de detecció d'estels. Augmenta-ho si tens un sensor especialment sorollós o fotografies amb una relació focal molt alta",
@@ -4535,7 +4536,7 @@
         "applied": "Aplicat. El proper enfocament automàtic farà servir el valor nou.",
         "applyFailed": "No s'ha pogut desar el valor.",
         "findings": {
-          "notActive": "Hocus Focus no ha executat l'últim enfocament automàtic. A les opcions de NINA, posa tant 'Auto Focus' com 'Star Detector' a Hocus Focus.",
+          "notActive": "Hocus Focus no ha executat l'últim enfocament automàtic. A les opcions de @:{'general.backendName'}, posa tant 'Auto Focus' com 'Star Detector' a Hocus Focus.",
           "fewStars": "Només s'han detectat {stars} estels. Una exposició més llarga dona més dades a la corba.",
           "fewStarsNarrowband": "Només s'han detectat {stars} estels. Els filtres de banda estreta necessiten una exposició d'enfocament molt més llarga.",
           "notBracketed_inward": "El punt més nítid ha estat el primer de la sèrie, així que el focus és més cap a dins. Enfoca primer a mà de manera aproximada o amplia la sèrie.",
@@ -4559,7 +4560,7 @@
         "title": "L'essencial de l'enfocament automàtic",
         "description": "Els ajustos més importants per a Hocus Focus. La resta és més avall, als ajustos detallats.",
         "startAssistant": "Inicia l'assistent de configuració",
-        "ninaSettings": "Ajustos de l'enfocador de NINA",
+        "ninaSettings": "Ajustos de l'enfocador de @:{'general.backendName'}",
         "optics": "Òptica",
         "opticsLine": "Distància focal {focalLength} mm · mida del píxel {pixelSize} µm",
         "imageScale": "Escala d'imatge {scale}″/px",
@@ -4632,7 +4633,7 @@
           "camera": "Càmera connectada",
           "focuser": "Enfocador connectat",
           "hocusFocus": "Hocus Focus disponible",
-          "engineHint": "A NINA, 'Auto Focus' i 'Star Detector' han d'estar tots dos a Hocus Focus. El pas Resultat t'ho indica si no és així."
+          "engineHint": "A @:{'general.backendName'}, 'Auto Focus' i 'Star Detector' han d'estar tots dos a Hocus Focus. El pas Resultat t'ho indica si no és així."
         },
         "focalLength": "Distància focal (mm)",
         "pixelSize": "Mida del píxel (µm)",
@@ -4783,7 +4784,7 @@
         "height": "Alçada (px)",
         "focal_length": "Longitud focal (mm)",
         "bit_depth": "Profunditat de bits",
-        "bit_depth_help": "La profunditat de bits que N.I.N.A. suposa per a les dades de la càmera. És important per a càmeres que no la informen, com les rèflex, i afecta les estadístiques, l'estirament i la saturació. No modifica els fitxers RAW que desa la càmera.",
+        "bit_depth_help": "La profunditat de bits que @:{'general.backendName'} suposa per a les dades de la càmera. És important per a càmeres que no la informen, com les rèflex, i afecta les estadístiques, l'estirament i la saturació. No modifica els fitxers RAW que desa la càmera.",
         "bit_scaling": "Escalat de bits",
         "bit_scaling_help": "Escala les dades de la càmera a 16 bits perquè les imatges de càmeres amb menys profunditat de bits facin servir tot el rang de valors."
       },
@@ -4852,12 +4853,12 @@
         "StartFromCurrentPosition": "Comença des de la posició actual?",
         "DirectionEast": "Direcció est",
         "camera_settings": "Configuració de la càmera",
-        "camera_settings_hint": "Deixa buit per als valors per defecte de NINA",
+        "camera_settings_hint": "Deixa buit per als valors per defecte de @:{'general.backendName'}",
         "exposure_time": "Temps d'exposició (s)",
         "gain": "Guany",
         "filter": "Filtre",
         "filter_default": "Per defecte",
-        "nina_default": "Per defecte de NINA",
+        "nina_default": "Per defecte de @:{'general.backendName'}",
         "ManualMode": "Mode manual"
       },
       "pins_settings": {
@@ -4898,7 +4899,7 @@
     },
     "slewAndCenter": {
       "title": "Desplaça i centra",
-      "LastSelectedImageSource_wrong": "Selecciona el mapa del cel sense connexió com a font d'imatge a NINA / Enquadrament",
+      "LastSelectedImageSource_wrong": "Selecciona el mapa del cel sense connexió com a font d'imatge a @:{'general.backendName'} / Enquadrament",
       "ra": "AR:",
       "dec": "Dec:",
       "ra_placeholder": "AR 03:47:28.2",
@@ -5149,7 +5150,7 @@
         "rise_set": "Sortida / Posta",
         "circumpolar": "circumpolar",
         "never_rises": "no surt mai",
-        "missing_location": "L'altura i la sortida/posta necessiten la ubicació del lloc al perfil de NINA."
+        "missing_location": "L'altura i la sortida/posta necessiten la ubicació del lloc al perfil de @:{'general.backendName'}."
       },
       "datetime": {
         "title": "Data i hora",
@@ -5172,7 +5173,7 @@
         "landscapes_visible": "Mostra els paisatges",
         "hide_below_horizon": "Amaga els objectes per sota de l'horitzó",
         "sky_survey_visible": "Rastreig fotogràfic del cel",
-        "sky_survey_hint": "Usa les imatges DSS del cel empaquetades sense connexió i mai obtingui mosaics d'internet.",
+        "sky_survey_hint": "Mostra el survey DSS o NSNS descarregat al teu amfitrió @:{'general.backendName'} sense connexió; l'app mai obté mosaics d'internet.",
         "dsos_visible": "Objectes de cel profund (Messier, NGC)",
         "catalog_filters": "Filtres del catàleg",
         "catalog_filter_hint": "Controla els marcadors de cel profund visibles; la cerca sense connexió troba tots els objectes del catàleg.",
@@ -5222,7 +5223,7 @@
       },
       "survey": {
         "title": "Dades del rastreig fotogràfic",
-        "hint": "El rastreig en color DSS es descarrega una vegada a l'amfitrió NINA/PINS i es serveix a l'Atles des d'allà. Els ordres superiors afegeixen detall per a camps estrets.",
+        "hint": "El rastreig en color DSS es descarrega una vegada a l'amfitrió @:{'general.backendName'} i es serveix a l'Atles des d'allà. Els ordres superiors afegeixen detall per a camps estrets.",
         "plugin_update_required": "Actualitza el connector Touch'N'Stars per descarregar el rastreig del cel.",
         "installed": "Instal·lat",
         "free_space": "Lliure a l'amfitrió",
@@ -5247,11 +5248,11 @@
         "delete_keep_option": "Conserva {name}, suprimeix la resta",
         "delete_all_option": "Tot",
         "delete_confirm_title": "Suprimir les dades del rastreig?",
-        "delete_confirm": "Suprimir el rastreig del cel descarregat de l'amfitrió NINA/PINS? L'Atles no mostrarà fons fotogràfic fins que es torni a descarregar.",
+        "delete_confirm": "Suprimir el rastreig del cel descarregat de l'amfitrió @:{'general.backendName'}? L'Atles no mostrarà fons fotogràfic fins que es torni a descarregar.",
         "delete_confirm_keep": "Suprimir tots els ordres per sobre de {name}? {name} continua instal·lat i l'Atles el segueix mostrant.",
-        "terms": "Digitized Sky Survey © STScI/NASA, acolorit i processat en HiPS pel CDS (CNRS/Unistra). Ús gratuït no comercial amb atribució; els mosaics romanen al teu propi amfitrió NINA/PINS.",
+        "terms": "Digitized Sky Survey © STScI/NASA, acolorit i processat en HiPS pel CDS (CNRS/Unistra). Ús gratuït no comercial amb atribució; els mosaics romanen al teu propi amfitrió @:{'general.backendName'}.",
         "terms_link": "Condicions d'ús",
-        "offer_text": "Vols descarregar ara el fons fotogràfic del cel (DSS, uns {size}) a l'amfitrió NINA/PINS? Sense això, l'Atles només mostra estrelles i objectes de catàleg.",
+        "offer_text": "Vols descarregar ara el fons fotogràfic del cel (DSS, uns {size}) a l'amfitrió @:{'general.backendName'}? Sense això, l'Atles només mostra estrelles i objectes de catàleg.",
         "offer_text_legacy": "El fons del cel descarregat fa servir un format obsolet. Vols tornar-lo a descarregar ara (uns {size})? Els fitxers antics seran substituïts.",
         "offer_accept": "Descarrega",
         "offer_decline": "Ara no",
@@ -5261,9 +5262,9 @@
         "source_nsns": "NSNS color",
         "source_dss_hint": "Digitized Sky Survey: imatges fotogràfiques en colors reals de tot el cel.",
         "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] vermell, Hα verd, [SII] blau, perquè les nebuloses d'emissió mostrin tota la seva extensió. Cobreix només el cel al nord de −16°.",
-        "hint_nsns": "El survey de banda estreta NSNS es descarrega una sola vegada a l'amfitrió NINA/PINS i s'ofereix a l'Atlas des d'allà. Els ordres superiors afegeixen detall per a camps estrets.",
+        "hint_nsns": "El survey de banda estreta NSNS es descarrega una sola vegada a l'amfitrió @:{'general.backendName'} i s'ofereix a l'Atlas des d'allà. Els ordres superiors afegeixen detall per a camps estrets.",
         "plugin_update_required_nsns": "Actualitza el connector Touch'N'Stars per descarregar el survey de banda estreta NSNS.",
-        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, amb llicència CC BY-NC-SA 4.0. Gratuït per a ús no comercial amb atribució; les tessel·les es queden al teu propi amfitrió NINA/PINS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, amb llicència CC BY-NC-SA 4.0. Gratuït per a ús no comercial amb atribució; les tessel·les es queden al teu propi amfitrió @:{'general.backendName'}.",
         "source_nsns_ha": "NSNS Hα",
         "source_nsns_ha_hint": "Northern Sky Narrowband Survey, només línia Hα (hidrogen ionitzat). Cobreix només el cel al nord de −16°; descàrrega independent.",
         "source_nsns_oiii": "NSNS [OIII]",
@@ -5880,7 +5881,7 @@
       "upgradeOverlay": {
         "title": "Actualització del sistema en curs",
         "running": "Actualitzant els paquets del Raspberry Pi. Espera fins que el procés s'hagi completat.",
-        "waitingForApi": "Actualització finalitzada. Esperant que l'API de NINA torni a estar disponible...",
+        "waitingForApi": "Actualització finalitzada. Esperant que l'API de @:{'general.backendName'} torni a estar disponible...",
         "keepOpen": "Mantén aquesta aplicació oberta. Els controls estan temporalment bloquejats per evitar un estat inconsistent.",
         "jobId": "ID de tasca: {jobId}",
         "close": "Tanca"
@@ -6148,7 +6149,7 @@
       "errors": {
         "title": "Anàlisi de Bahtinov",
         "readFile": "No s'ha pogut llegir el fitxer seleccionat.",
-        "captureLoad": "No s'ha pogut carregar l'última captura de N.I.N.A.",
+        "captureLoad": "No s'ha pogut carregar l'última captura de @:{'general.backendName'}",
         "analysisFailed": "La sol·licitud d'anàlisi ha fallat.",
         "badRequest": "El servidor ha rebutjat la sol·licitud. Verifica els paràmetres.",
         "mockMode": "L'anàlisi de Bahtinov no està disponible amb l'API simulada activada.",
@@ -6208,7 +6209,7 @@
         "validationJournalLines": "Les línies de diari han d'estar entre 100 i 50000.",
         "validationDmesgLines": "Les línies de dmesg han d'estar entre 100 i 50000.",
         "expertMode": "Configuració avançada",
-        "ninaLogs": "Fitxers de registre de NINA (últims 10)",
+        "ninaLogs": "Fitxers de registre de @:{'general.backendName'} (últims 10)",
         "collecting": "Recollint els diagnòstics del sistema PINS… això pot trigar una mica."
       },
       "actions": {
@@ -6249,7 +6250,7 @@
       },
       "progress": {
         "collectingLogs": "Recollint els registres de Touch'N'Stars…",
-        "collectingNinaLogs": "Recollint els fitxers de registre recents de NINA…",
+        "collectingNinaLogs": "Recollint els fitxers de registre recents de @:{'general.backendName'}…",
         "buildingArchive": "Creant l'arxiu ZIP…"
       }
     },
@@ -6427,7 +6428,7 @@
         "noListsHint": "Crea llistes d'objectius a telescopius.com i torna a carregar-les aquí.",
         "editOnTelescopius": "Edita les llistes a Telescopius",
         "dataFrom": "Dades de",
-        "connectionError": "La connexió a Telescopius ha fallat. El PC amb NINA necessita connexió a Internet i cal que existeixi almenys una llista d'objectius a Telescopius.",
+        "connectionError": "La connexió a Telescopius ha fallat. El PC amb @:{'general.backendName'} necessita connexió a Internet i cal que existeixi almenys una llista d'objectius a Telescopius.",
         "myLists": "Les meves llistes d'objectius",
         "unnamedList": "Llista sense nom",
         "showObjects": "Mostra els objectes",
@@ -6534,7 +6535,7 @@
       "save": "Desa",
       "add": "Afegeix",
       "useProxy": "Utilitza el proxy",
-      "useProxyHint": "Redirigeix la imatge pel backend de NINA. Necessari per a càmeres amb credencials o restriccions CORS. Desactiva per a càmeres directes d'Internet.",
+      "useProxyHint": "Redirigeix la imatge pel backend de @:{'general.backendName'}. Necessari per a càmeres amb credencials o restriccions CORS. Desactiva per a càmeres directes d'Internet.",
       "deleteConfirm": "Realment vols eliminar la càmera \"{name}\"?",
       "loadingImage": "Carregant imatge…",
       "unknownCamera": "Càmera desconeguda",
@@ -6550,7 +6551,7 @@
         "proxyTitle": "Proxy vs. directe",
         "proxyText": "Cada càmera es pot obtenir de dues maneres:",
         "proxyOptions": [
-          "Proxy (predeterminat): La imatge s'obté pel backend de NINA i es reenvía al navegador. Necessari per a càmeres en xarxa local amb credencials o restriccions CORS. Una mica més lent amb VPN.",
+          "Proxy (predeterminat): La imatge s'obté pel backend de @:{'general.backendName'} i es reenvía al navegador. Necessari per a càmeres en xarxa local amb credencials o restriccions CORS. Una mica més lent amb VPN.",
           "Directe: El navegador obté la imatge directament. Més ràpid per a càmeres públiques d'Internet (p. ex., allsky públiques). No admet credencials a la URL a Chrome/Edge."
         ],
         "close": "Tanca"
@@ -6637,8 +6638,8 @@
         "sendToNina": "Adopta la seqüència",
         "sending": "Enviant...",
         "sent": "Enviada!",
-        "sendErrorTitle": "Error en enviar a N.I.N.A",
-        "sendSuccessMessage": "Seqüència enviada correctament a N.I.N.A!",
+        "sendErrorTitle": "Error en enviar a @:{'general.backendName'}",
+        "sendSuccessMessage": "Seqüència enviada correctament a @:{'general.backendName'}!",
         "validSequence": "La seqüència és vàlida i es pot adoptar",
         "invalidSequence": "Afegeix configuració de l'objectiu i exposició intel·ligent per crear una seqüència vàlida",
         "saveNamed": "Desa la seqüència com...",
@@ -7300,7 +7301,7 @@
             "Warnings": "Avisos"
           },
           "categoryHints": {
-            "Errors": "Qualsevol error de N.I.N.A. i dispositius perduts",
+            "Errors": "Qualsevol error de @:{'general.backendName'} i dispositius perduts",
             "Guiding": "Estrella guia perduda, guiatge fallit",
             "Mount": "Flip fallit, preses sense seguiment",
             "Safety": "El monitor de seguretat indica insegur",
@@ -7315,7 +7316,7 @@
           "pauseMs": "Pausa entre tons (ms)",
           "graceMinutes": "Espera en arrencar (min)",
           "throttleMinutes": "Repetir la mateixa alarma després de (min)",
-          "graceHint": "Cap alarma just després d'arrencar N.I.N.A. La mateixa alarma xiula com a màxim 3 vegades seguides.",
+          "graceHint": "Cap alarma just després d'arrencar @:{'general.backendName'} La mateixa alarma xiula com a màxim 3 vegades seguides.",
           "exclusionsTitle": "No xiular mai per",
           "addExclusionTitle": "Afegir una entrada que mai no xiula",
           "exclusionPlaceholder": "Part del missatge",
@@ -7467,7 +7468,7 @@
     },
     "shortcuts": {
       "title": "Dreceres de seqüències",
-      "description": "Accés ràpid per carregar i iniciar seqüències de N.I.N.A",
+      "description": "Accés ràpid per carregar i iniciar seqüències de @:{'general.backendName'}",
       "addNew": "Nova drecera",
       "newShortcut": "Nova drecera",
       "createFirst": "Crea la primera drecera",
@@ -7811,7 +7812,7 @@
           "maxPluginStorageGb": "Emmagatzematge màxim del connector (GB)",
           "maxPluginStorageHelp": "Estableix 0 per a sense límit.",
           "protocolTooltip": "Protocol per connectar amb l'API avançada local exposada per PINS.",
-          "sequencePollTooltip": "Amb quina freqüència AllSky comprova si una seqüència de PINS/NINA ha començat o acabat.",
+          "sequencePollTooltip": "Amb quina freqüència AllSky comprova si una seqüència de @:{'general.backendName'} ha començat o acabat.",
           "advancedApiHostTooltip": "Nom de servidor o adreça IP del servei de l'API avançada de PINS.",
           "portTooltip": "Port TCP del servei de l'API avançada de PINS.",
           "timeoutTooltip": "Temps màxim d'espera per a una sola sol·licitud de l'API avançada abans de marcar-la com a no disponible.",
@@ -8227,8 +8228,8 @@
     },
     "groundStation": {
       "title": "Ground Station",
-      "subtitle": "Configura els serveis de notificació de NINA Ground Station",
-      "notLoaded": "El connector Ground Station no està instal·lat ni carregat a NINA. Instal·la el connector 'Ground Station' a NINA per usar aquesta configuració.",
+      "subtitle": "Configura els serveis de notificació de @:{'general.backendName'} Ground Station",
+      "notLoaded": "El connector Ground Station no està instal·lat ni carregat a @:{'general.backendName'}. Instal·la el connector 'Ground Station' a @:{'general.backendName'} per usar aquesta configuració.",
       "tabs": {
         "pushover": "Pushover",
         "telegram": "Telegram",
@@ -8461,8 +8462,8 @@
       "filterAll": "Totes",
       "filterNewOnly": "Només noves",
       "filterVisibleOnly": "Visibles aquesta nit",
-      "visibleHint": "Basat en la ubicació de l'observador del perfil de NINA",
-      "visibleNoLocation": "Sense ubicació de l'observador — estableix la ubicació al perfil de NINA",
+      "visibleHint": "Basat en la ubicació de l'observador del perfil de @:{'general.backendName'}",
+      "visibleNoLocation": "Sense ubicació de l'observador — estableix la ubicació al perfil de @:{'general.backendName'}",
       "sortBy": "Ordena per",
       "sortLatestMag": "Magnitud actual (les més brillants primer)",
       "sortFirstObserved": "Data de descobriment (les més recents primer)",
@@ -8648,7 +8649,7 @@
         "exportFailedMessage": "No s'ha pogut copiar al porta-retalls.",
         "apiDocsLink": "Documentació de l'API de Target Scheduler",
         "setupTitle": "Configura l'API de Target Scheduler",
-        "setupStep1": "Al NINA, obre les opcions del connector Target Scheduler i activa'n el servidor API.",
+        "setupStep1": "Al @:{'general.backendName'}, obre les opcions del connector Target Scheduler i activa'n el servidor API.",
         "setupStep2": "Anota el port que mostra (per defecte 8188).",
         "setupStep3": "Introdueix aquest port a dalt; la connexió es farà automàticament.",
         "welcomeTitle": "Benvingut a Target Scheduler Viewer",
@@ -8704,7 +8705,7 @@
         "noTargets": "Cap objectiu en aquest projecte."
       },
       "schedulePreview": {
-        "disclaimer": "Pla previst de l'Scheduler per a aquesta nit, recalculat a cada actualització — no és un registre del que la NINA està capturant realment ara mateix.",
+        "disclaimer": "Pla previst de l'Scheduler per a aquesta nit, recalculat a cada actualització — no és un registre del que la @:{'general.backendName'} està capturant realment ara mateix.",
         "learnMore": "Més informació",
         "noScheduleData": "Sense dades de planificació.",
         "waitingNotVisible": "Esperant — objectiu encara no visible"
@@ -8725,7 +8726,7 @@
         "open": "Connector connectat",
         "closed": "Connector no accessible",
         "unreachable": "Sense connexió amb el connector AAPA a {url}.",
-        "checkPlugin": "El connector AAPA Controller està instal·lat i carregat a N.I.N.A.?",
+        "checkPlugin": "El connector AAPA Controller està instal·lat i carregat a @:{'general.backendName'}?",
         "checkEnabled": "El servidor WebSocket està activat a la configuració del connector, amb el mateix port que a sota?",
         "checkFirewall": "El tallafocs de Windows permet connexions entrants en aquest port?",
         "port": "Port WebSocket"
@@ -8740,7 +8741,7 @@
         "ipAddress": "Adreça IP de l'AAPA",
         "connect": "Connecta",
         "disconnect": "Desconnecta",
-        "autoHint": "Auto comprova tots els ports sèrie de l'ordinador amb N.I.N.A. a la recerca d'un AAPA."
+        "autoHint": "Auto comprova tots els ports sèrie de l'ordinador amb @:{'general.backendName'} a la recerca d'un AAPA."
       },
       "status": {
         "positionX": "Posició X (Az)",
@@ -8759,13 +8760,13 @@
       },
       "assist": {
         "title": "Alineació polar automàtica",
-        "hint": "Un toc inicia TPPA (si no està ja en marxa) i després l'Auto-Pilot, que corregeix fins que l'error és dins la tolerància. TPPA s'atura automàticament quan acaba l'Auto-Pilot. A la configuració de TPPA a N.I.N.A. cal activar \"Log polar alignment error adjustments\". Mantén aquesta pàgina oberta mentre s'executa.",
+        "hint": "Un toc inicia TPPA (si no està ja en marxa) i després l'Auto-Pilot, que corregeix fins que l'error és dins la tolerància. TPPA s'atura automàticament quan acaba l'Auto-Pilot. A la configuració de TPPA a @:{'general.backendName'} cal activar \"Log polar alignment error adjustments\". Mantén aquesta pàgina oberta mentre s'executa.",
         "start": "Iniciar alineació polar",
         "running": "En marxa…",
         "stop": "Atura",
         "tppaSettings": "Configuració de TPPA",
         "autoPilotSettings": "Configuració de l'Auto-Pilot",
-        "tnsPluginRequired": "TPPA necessita el plugin Touch'N'Stars a N.I.N.A.; no és accessible.",
+        "tnsPluginRequired": "TPPA necessita el plugin Touch'N'Stars a @:{'general.backendName'}; no és accessible.",
         "phaseLabel": "Estat",
         "azError": "Error d'azimut",
         "altError": "Error d'altitud",
@@ -8838,12 +8839,12 @@
           "MinYLimit": "Y mín. (passos)",
           "MaxYLimit": "Y màx. (passos)"
         },
-        "autoSaveHint": "Els canvis es desen a N.I.N.A. en sortir d'un camp.",
-        "saveInNina": "Desa a N.I.N.A.",
+        "autoSaveHint": "Els canvis es desen a @:{'general.backendName'} en sortir d'un camp.",
+        "saveInNina": "Desa a @:{'general.backendName'}",
         "storeOnDevice": "Desa a l'AAPA",
         "sendConfirm": "Desar de manera permanent la configuració actual de l'AAPA a la seva memòria (EEPROM)?",
         "applyToDevice": "Aplica a l'AAPA",
-        "applyInNinaHint": "Aquests valors es desen a N.I.N.A. Per transferir-los a l'AAPA, utilitza el botó d'enviament al tauler AAPA de N.I.N.A."
+        "applyInNinaHint": "Aquests valors es desen a @:{'general.backendName'} Per transferir-los a l'AAPA, utilitza el botó d'enviament al tauler AAPA de @:{'general.backendName'}"
       },
       "log": {
         "title": "Registre",
@@ -9295,7 +9296,7 @@
       "expandSectionsDefault": "Expandeix les seccions per defecte",
       "lightModeReport": "Informe en mode clar",
       "filterClassifications": "Classificació de filtres",
-      "filterClassificationsHint": "Filtres del teu perfil de NINA. Auto utilitza la primera lletra (L,R,G,B = banda ampla; H,S,O = banda estreta).",
+      "filterClassificationsHint": "Filtres del teu perfil de @:{'general.backendName'}. Auto utilitza la primera lletra (L,R,G,B = banda ampla; H,S,O = banda estreta).",
       "filterAuto": "Auto",
       "filterBroadband": "Banda ampla",
       "filterNarrowband": "Banda estreta",
@@ -9429,7 +9430,7 @@
       "reload": "Recarrega la previsualització"
     },
     "cache": {
-      "useNinaCache": "Utilitza la caché de NINA per a la imatge de l'objectiu",
+      "useNinaCache": "Utilitza la caché de @:{'general.backendName'} per a la imatge de l'objectiu",
       "hint": "Carrega la imatge DSS/objectiu via TNS WebAPI. El commutador de caché controla useCache.",
       "hintShort": "Passa useCache a targetpic"
     },
@@ -9649,7 +9650,7 @@
       "working": "Processant…",
       "howItWorks": "Com funciona",
       "eqmodToggleTitle": "Correcció de la velocitat d'AR per a EQMOD",
-      "eqmodToggleDescription": "EQMOD llegeix la taxa d'AR com a arcsegons/seg en brut en lloc del que envia NINA, fent que el seguiment sigui ~15× massa lent si no es corregeix. Activa-ho només si la muntura fa servir EQMOD.",
+      "eqmodToggleDescription": "EQMOD llegeix la taxa d'AR com a arcsegons/seg en brut en lloc del que envia @:{'general.backendName'}, fent que el seguiment sigui ~15× massa lent si no es corregeix. Activa-ho només si la muntura fa servir EQMOD.",
       "eqmodDetectedHint": "{name} sembla un controlador EQMOD — probablement voldràs activar-ho.",
       "reapplyIntervalTitle": "Interval de reaplicació",
       "reapplyIntervalDescription": "Amb quina freqüència Quick Track recalcula i reenvia la taxa de seguiment. El valor per defecte de 900 s (15 min) és adequat per a cometes i asteroides.",

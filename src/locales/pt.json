@@ -30,7 +30,8 @@
     "delete": "Excluir",
     "edit": "Editar",
     "close": "Fechar",
-    "save": "Salvar"
+    "save": "Salvar",
+    "backendName": "NINA"
   },
   "pages": {
     "equipment": {
@@ -42,9 +43,9 @@
     "title": "Touch'N'Stars",
     "connection_error_toast": {
       "title": "Erro de conexão",
-      "message_api": "O plugin API não está disponível. Verifique as configurações no NINA",
+      "message_api": "O plugin API não está disponível. Verifique as configurações no @:{'general.backendName'}",
       "message_api_version": "O plugin API está muito antigo. Execute uma atualização",
-      "message_tns": "O plugin TouchNStars não está disponível. Verifique as configurações no NINA",
+      "message_tns": "O plugin TouchNStars não está disponível. Verifique as configurações no @:{'general.backendName'}",
       "message_tns_version": "O plugin Touch N Stars está muito antigo. Execute uma atualização"
     },
     "connection_splash": {
@@ -87,7 +88,7 @@
     "selectLanguage": "Selecione seu idioma",
     "gpsConfiguration": "Configuração do GPS",
     "completeSetup": "Configuração Completa",
-    "instanceConfiguration": "Detalhes da conexão N.I.N.A",
+    "instanceConfiguration": "Detalhes da conexão @:{'general.backendName'}",
     "InfoAppsTitel": "Wiki",
     "check_wki": "Você pode encontrar instruções detalhadas em nosso wiki",
     "coordAlt": "Alt.",
@@ -140,7 +141,7 @@
       "missingEquipmentSettings": "Configurações de equipamento em falta: por favor, defina a distância focal e o tamanho do pixel em Configurações → Equipamento para que o FOV da câmara seja calculado corretamente.",
       "confirmSetTargetTitle": "Confirmar Seleção do Alvo",
       "confirmSetTargetMessage": "Tem certeza de que deseja definir este alvo como alvo da sequência?",
-      "useNinaCache": "Usar cache do NINA para imagem do alvo",
+      "useNinaCache": "Usar cache do @:{'general.backendName'} para imagem do alvo",
       "setSequnceTarget": "definir como alvo da sequência",
       "sequenceTargetPicker": {
         "title": "Alvo da sequência",
@@ -177,7 +178,7 @@
         "SolveError": "Erro de resolução de imagem"
       },
       "moveRotator": "Girar câmera",
-      "infoTargetImage": "Se a imagem for exibida apenas em preto, o \"cache do mapa do céu offline\" deve ser configurado no NINA ou a opção \"Usar cache NINA\" deve ser desativada",
+      "infoTargetImage": "Se a imagem for exibida apenas em preto, o \"cache do mapa do céu offline\" deve ser configurado no @:{'general.backendName'} ou a opção \"Usar cache @:{'general.backendName'}\" deve ser desativada",
       "useCenter": "Centralizar",
       "useRotate": "Girar",
       "skyChart": {
@@ -263,7 +264,7 @@
         "openWiki": "Abrir o wiki"
       },
       "instance": {
-        "description": "Endereço do computador onde corre o N.I.N.A. Na mesma rede, a app normalmente encontra-o sozinha.",
+        "description": "Endereço do computador onde corre o @:{'general.backendName'} Na mesma rede, a app normalmente encontra-o sozinha.",
         "connect": "Guardar e ligar",
         "connecting": "Connecting…",
         "connected": "Ligado a {name}",
@@ -404,7 +405,7 @@
         "focalLength": "Distância focal do telescópio de guiagem",
         "focalLengthHint": "Distância focal do telescópio de guiagem em mm. Fica guardada no perfil do PHD2, separada do telescópio principal, e permite ao PHD2 indicar a guiagem em segundos de arco.",
         "ditherTitle": "Dither",
-        "ditherDescription": "O NINA define o dither em píxeis da câmara de guiagem, enquanto as recomendações habituais são dadas em píxeis da câmara de imagem. Isto converte entre os dois.",
+        "ditherDescription": "O @:{'general.backendName'} define o dither em píxeis da câmara de guiagem, enquanto as recomendações habituais são dadas em píxeis da câmara de imagem. Isto converte entre os dois.",
         "ditherMainPixels": "Dither (píxeis de imagem)",
         "ditherMainPixelsHint": "Quanto cada dither deve deslocar o objeto no sensor de imagem. 10 a 15 píxeis é um bom ponto de partida.",
         "guidePixelSize": "Tamanho do píxel da câmara de guiagem (µm)",
@@ -492,9 +493,9 @@
         "editTokens": "Editar tokens",
         "help": {
           "title": "Padrão de nome de ficheiro",
-          "intro": "Construa o padrão de nome de ficheiro para as suas imagens capturadas. Cada token será substituído pelo NINA com o valor real ao guardar.",
+          "intro": "Construa o padrão de nome de ficheiro para as suas imagens capturadas. Cada token será substituído pelo @:{'general.backendName'} com o valor real ao guardar.",
           "tokensTitle": "Tokens",
-          "tokensDesc": "Toque num botão de token para o adicionar ao padrão. Tokens como Filter, Date ou ExposureTime são substituídos pelo NINA com os valores reais.",
+          "tokensDesc": "Toque num botão de token para o adicionar ao padrão. Tokens como Filter, Date ou ExposureTime são substituídos pelo @:{'general.backendName'} com os valores reais.",
           "separatorsTitle": "Separadores",
           "separatorsDesc": "Use \\ para criar estruturas de pastas. Use _ ou - para separar valores no nome do ficheiro. Use \"Texto\" para adicionar texto personalizado como \"s\" para segundos.",
           "cursorTitle": "Posição de inserção",
@@ -535,7 +536,7 @@
       "backupRestore": {
         "title": "Backup e restauração",
         "description": "Salva as configurações armazenadas neste dispositivo em um arquivo e as restaura em outro dispositivo.",
-        "profileWarning": "Isso faz backup apenas das configurações do app neste dispositivo. As configurações de equipamento, câmera, montagem e outras ficam no perfil do NINA ou PINS - faça o backup dele separadamente para um backup completo.",
+        "profileWarning": "Isso faz backup apenas das configurações do app neste dispositivo. As configurações de equipamento, câmera, montagem e outras ficam no perfil do @:{'general.backendName'} - faça o backup dele separadamente para um backup completo.",
         "locationAndroid": "O arquivo é salvo em Documentos/TouchNStars neste dispositivo - abra com um app gerenciador de arquivos.",
         "locationIos": "O arquivo é salvo no app Arquivos, em No meu iPhone/iPad → Touch 'N Stars → Documents.",
         "locationBrowser": "O arquivo é salvo na pasta de downloads padrão do seu navegador.",
@@ -605,7 +606,7 @@
         "help": {
           "ExposureTime": "Tempo de exposição, em segundos, usado nas imagens capturadas pelo resolvedor de placas. Exposições mais longas captam mais estrelas, o que ajuda a resolver campos fracos ou com poucas estrelas, mas torna cada tentativa de resolução mais lenta.",
           "Gain": "Ganho da câmera usado nas exposições de plate solving. Deixe em branco para usar o ganho padrão da câmera.",
-          "ASTAPLocation": "Caminho para o executável do ASTAP (astap.exe) no sistema onde o NINA está sendo executado. Necessário para o plate solving local com ASTAP.",
+          "ASTAPLocation": "Caminho para o executável do ASTAP (astap.exe) no sistema onde o @:{'general.backendName'} está sendo executado. Necessário para o plate solving local com ASTAP.",
           "SearchRadius": "Raio em graus ao redor das coordenadas alvo em que o resolvedor pesquisa ao tentar uma resolução cega (blind solve). Um raio maior aumenta o tempo de resolução, mas ajuda quando a posição inicial da montagem é menos precisa.",
           "Threshold": "Desvio máximo permitido, em minutos de arco, entre a posição resolvida e o alvo durante o Slew & Center. Se a resolução estiver mais distante do que isso, outro ciclo de slew-and-solve é acionado.",
           "RotationTolerance": "Desvio de rotação máximo permitido, em graus, entre a orientação da imagem resolvida e a orientação alvo durante o Center & Rotate. Se excedido, o rotator é ajustado e o quadro é resolvido novamente.",
@@ -673,7 +674,7 @@
         "mountTime": "Hora da montagem",
         "notSupported": "Não suportado pelo driver",
         "syncLabel": "Sincronizar a hora com a montagem",
-        "syncLabelInfo": "Quando ativado, clicar em \"Sincronizar agora\" desconectará e reconectará brevemente a montagem para que o NINA possa transferir a hora atual.",
+        "syncLabelInfo": "Quando ativado, clicar em \"Sincronizar agora\" desconectará e reconectará brevemente a montagem para que o @:{'general.backendName'} possa transferir a hora atual.",
         "title": "Sincronização de horário",
         "loadError": "Não foi possível carregar as informações de horário.",
         "syncError": "A sincronização de horário falhou. Verifique a conexão com o dispositivo PINS.",
@@ -770,7 +771,7 @@
       "save": "Save",
       "connect": "Connect",
       "disconnect": "Disconnect",
-      "sharedGuidWarning": "O rotador e o monitor de segurança partilham um mesmo espaço de armazenamento no NINA – alterar um altera também o outro.",
+      "sharedGuidWarning": "O rotador e o monitor de segurança partilham um mesmo espaço de armazenamento no @:{'general.backendName'} – alterar um altera também o outro.",
       "noReconnectHint": "As novas definições aplicam-se na próxima ligação.",
       "cameraNoSettings": "Esta câmara não tem definições para configurar."
     },
@@ -828,7 +829,7 @@
       },
       "info": {
         "title": "Informações",
-        "message": "A roda de filtros manual e o rotacionador manual só podem ser controlados via NINA no momento. Use a \"Roda de Filtros de Rede\" da API para a roda de filtros"
+        "message": "A roda de filtros manual e o rotacionador manual só podem ser controlados via @:{'general.backendName'} no momento. Use a \"Roda de Filtros de Rede\" da API para a roda de filtros"
       }
     },
     "lastLogs": {
@@ -917,7 +918,7 @@
       "sequenceFolder": "Pasta de sequências",
       "sequenceFolderNotSet": "Nenhuma pasta definida",
       "sequenceFolderChange": "Alterar pasta",
-      "sequenceFolderRelative": "Não é um caminho completo, por isso os ficheiros vão parar à pasta do programa do N.I.N.A. Escolha uma pasta.",
+      "sequenceFolderRelative": "Não é um caminho completo, por isso os ficheiros vão parar à pasta do programa do @:{'general.backendName'} Escolha uma pasta.",
       "sequenceFolderSaveError": "Não foi possível alterar a pasta de sequências.",
       "sequenceFileName": "Nome do ficheiro",
       "sequenceSave": "Guardar",
@@ -941,7 +942,7 @@
       "no_sequences_found": "Nenhuma sequência encontrada",
       "error_loading_sequences": "Erro ao carregar sequências",
       "error_loading_sequence": "Erro ao carregar sequência",
-      "editFailed": "O NINA não aceitou a alteração",
+      "editFailed": "O @:{'general.backendName'} não aceitou a alteração",
       "targetNotFound": "Alvo não encontrado na sequência. Tente novamente.",
       "filter": "Filtro",
       "triggers": "Gatilhos",
@@ -1443,7 +1444,7 @@
       },
       "location_sync": {
         "title": "Configurações de sincronização de localização",
-        "confirmationMessage": "Se \"Sincronização de Localização\" no NINA estiver definida como \"Prompt\", uma janela de confirmação pode aparecer antes que as coordenadas sejam enviadas ao telescópio. Para evitar isso e permitir que o TNS defina automaticamente as coordenadas, recomendamos alterar a configuração para \"Sincronizar com telescópio\"",
+        "confirmationMessage": "Se \"Sincronização de Localização\" no @:{'general.backendName'} estiver definida como \"Prompt\", uma janela de confirmação pode aparecer antes que as coordenadas sejam enviadas ao telescópio. Para evitar isso e permitir que o TNS defina automaticamente as coordenadas, recomendamos alterar a configuração para \"Sincronizar com telescópio\"",
         "toTelescope": {
           "label": "Sincronizar com telescópio"
         },
@@ -1530,7 +1531,7 @@
               "description": "Define tu os minutos em Avançado."
             },
             "sideOfPierNoMount": "Liga a montagem antes de escolher, para a app verificar se ela indica o seu lado do pilar.",
-            "sideOfPierUnknown": "A tua montagem não indica o lado do pilar, por isso «Usar lado do pilar» fica desligado. O NINA decide então o flip pela hora.",
+            "sideOfPierUnknown": "A tua montagem não indica o lado do pilar, por isso «Usar lado do pilar» fica desligado. O @:{'general.backendName'} decide então o flip pela hora.",
             "applyFailed": "A predefinição não foi guardada por completo. Verifica os valores em Avançado."
           },
           "timeline": {
@@ -1542,30 +1543,30 @@
             "atMinutes": "+{min} min",
             "windowMinutes": "+{min}–{max} min",
             "explainPause": "A captura para {pause} min antes do meridiano e o seguimento é desligado. O flip segue {min} min depois do meridiano. Isto custa tempo de captura – usa só se o telescópio não conseguir passar o meridiano.",
-            "explainFixed": "O NINA faz exposições até que uma ultrapassaria {min} min depois do meridiano; depois espera e faz o flip exatamente nesse momento. Um limite mais tardio evita a espera.",
+            "explainFixed": "O @:{'general.backendName'} faz exposições até que uma ultrapassaria {min} min depois do meridiano; depois espera e faz o flip exatamente nesse momento. Um limite mais tardio evita a espera.",
             "explainWindow": "A primeira exposição que termina entre {min} e {max} min depois do meridiano é seguida diretamente pelo flip – sem espera."
           },
           "help": {
             "MinutesAfterMeridian": "Momento mais cedo depois do meridiano em que o flip pode começar.",
-            "MaxMinutesAfterMeridian": "Momento mais tarde depois do meridiano para o flip. Não pode ser inferior ao mais cedo. Uma margem maior permite ao NINA fazer o flip logo após uma exposição, sem esperar.",
+            "MaxMinutesAfterMeridian": "Momento mais tarde depois do meridiano para o flip. Não pode ser inferior ao mais cedo. Uma margem maior permite ao @:{'general.backendName'} fazer o flip logo após uma exposição, sem esperar.",
             "PauseTimeBeforeMeridian": "Só para equipamento que não consegue passar o meridiano em segurança: o seguimento para estes minutos antes. Caso contrário, deixa 0.",
             "SettleTime": "Espera após o flip para a montagem estabilizar. Estrelas arrastadas no primeiro plate solve após um flip? Aumenta este valor.",
-            "Recenter": "Após o flip, o NINA faz um plate solve e volta a centrar o objeto. Muito recomendado; precisa de um plate solver funcional.",
+            "Recenter": "Após o flip, o @:{'general.backendName'} faz um plate solve e volta a centrar o objeto. Muito recomendado; precisa de um plate solver funcional.",
             "UseSideOfPier": "Usa o lado do pilar indicado pela montagem para decidir se é preciso um flip. Mais fiável, mas só se a montagem o indicar corretamente.",
             "AutoFocusAfterFlip": "Executa um autofoco após o flip. Útil em Newton e SCT cujo espelho se desloca quando o tubo roda.",
             "RotateImageAfterFlip": "Roda a pré-visualização 180° após o flip. Só visualização – as imagens guardadas não mudam."
           },
           "dayTest": {
             "title": "Testar o flip de dia",
-            "teaser": "Deixa o NINA fazer um meridian flip real durante o dia, com as tuas definições: o telescópio passa o tripé ou a coluna na posição depois do meridiano, os cabos chegam?",
+            "teaser": "Deixa o @:{'general.backendName'} fazer um meridian flip real durante o dia, com as tuas definições: o telescópio passa o tripé ou a coluna na posição depois do meridiano, os cabos chegam?",
             "open": "Iniciar teste",
-            "intro": "Levas o telescópio à mão até um ponto logo a leste do meridiano. A partir daí continua o seguimento para além dele, e o NINA faz o flip exatamente como à noite – com as tuas definições e à hora real.",
+            "intro": "Levas o telescópio à mão até um ponto logo a leste do meridiano. A partir daí continua o seguimento para além dele, e o @:{'general.backendName'} faz o flip exatamente como à noite – com as tuas definições e à hora real.",
             "blockers": {
               "notConnected": "A montagem não está ligada.",
               "parked": "A montagem está estacionada. Desestaciona-a primeiro.",
               "cannotSlew": "A montagem não consegue apontar para coordenadas.",
               "noLocation": "A montagem não tem localização. Define primeiro a tua localização.",
-              "sequenceRunning": "Está a correr uma sequência no NINA. Para-a primeiro."
+              "sequenceRunning": "Está a correr uma sequência no @:{'general.backendName'}. Para-a primeiro."
             },
             "caps": {
               "label": "As tampas estão no telescópio, no buscador e no telescópio de guiagem",
@@ -1585,14 +1586,14 @@
             "resultProblem": "O movimento do flip precisa de atenção.",
             "problemAdvice": "Verifica o percurso dos cabos para que cheguem nos dois lados. Se o telescópio tocou no tripé ou na coluna, escolhe «Quase nada» acima ou verifica o limite de meridiano da tua montagem.",
             "pierChanged": "Lado do pilar: {before} → {after}",
-            "notTested": "A guiagem após o flip não é verificada. Os detalhes estão no registo do NINA.",
+            "notTested": "A guiagem após o flip não é verificada. Os detalhes estão no registo do @:{'general.backendName'}.",
             "stopped": "Teste parado. Sequência e seguimento estão desligados, a montagem fica onde está.",
             "sideEast": "Este",
             "sideWest": "Oeste",
             "exposure": "Duração das tuas exposições (s)",
-            "exposureHelp": "O NINA faz o flip após a primeira exposição que termina dentro da janela de flip. Com a tua duração habitual, o teste faz o flip na mesma posição que à noite.",
+            "exposureHelp": "O @:{'general.backendName'} faz o flip após a primeira exposição que termina dentro da janela de flip. Com a tua duração habitual, o teste faz o flip na mesma posição que à noite.",
             "plan": "O teste dura pelo menos {minutes} min, mais o tempo antes do meridiano em que começas. A montagem segue até {flip} min depois do meridiano – é essa a posição testada, como à noite.",
-            "sequenceNotice": "É carregada uma sequência de teste no NINA. Substitui a sequência carregada agora – guarda-a antes se a quiseres manter.",
+            "sequenceNotice": "É carregada uma sequência de teste no @:{'general.backendName'}. Substitui a sequência carregada agora – guarda-a antes se a quiseres manter.",
             "start": "Carregar sequência de teste e iniciar",
             "toPositioning": "Continuar",
             "back": "Voltar",
@@ -1601,7 +1602,7 @@
               "toMeridian": "Tempo até ao meridiano",
               "pastMeridian": "Depois do meridiano há",
               "noData": "A montagem ainda não indica posição ou local.",
-              "poleHint": "O telescópio aponta para o polo. O NINA também faz o flip aqui, mas só longe do polo vês se o tubo passa o tripé e se os cabos chegam. Para um teste realista, leva Dec a uma altura como a dos teus alvos habituais.",
+              "poleHint": "O telescópio aponta para o polo. O @:{'general.backendName'} também faz o flip aqui, mas só longe do polo vês se o tubo passa o tripé e se os cabos chegam. Para um teste realista, leva Dec a uma altura como a dos teus alvos habituais.",
               "checks": {
                 "lead": "Pelo menos {minutes} min antes do flip",
                 "pier": "Contrapeso em baixo – o lado do pilar antes do flip",
@@ -1618,20 +1619,20 @@
               }
             },
             "confirmTitle": "Carregar sequência de teste?",
-            "confirmMessage": "A sequência carregada no NINA é substituída pelo teste de flip. O telescópio segue a partir da posição atual e o NINA faz o flip depois do meridiano.",
+            "confirmMessage": "A sequência carregada no @:{'general.backendName'} é substituída pelo teste de flip. O telescópio segue a partir da posição atual e o @:{'general.backendName'} faz o flip depois do meridiano.",
             "waitingForMeridian": "A seguir em direção ao meridiano …",
             "pastMeridian": "O telescópio está {minutes} min para além do meridiano.",
-            "flipping": "O NINA está a fazer o flip …",
+            "flipping": "O @:{'general.backendName'} está a fazer o flip …",
             "countdownWindow": "Flip em {earliest} a {latest} min",
             "countdownLatest": "Flip o mais tardar em {latest} min",
-            "runningHint": "O NINA executa o teste sozinho, podes fechar a app. Carrega em STOP se algo atrapalhar – para a sequência e o seguimento.",
-            "flippedAt": "O NINA fez o flip {minutes} min depois do meridiano.",
-            "noFlip": "O NINA não fez o flip a tempo. A sequência e o seguimento foram parados.",
-            "noFlipAdvice": "Verifica as definições de flip e o registo do NINA. Se «Usar lado do pilar» estiver ligado, a tua montagem pode indicar mal o lado – tenta com ele desligado.",
+            "runningHint": "O @:{'general.backendName'} executa o teste sozinho, podes fechar a app. Carrega em STOP se algo atrapalhar – para a sequência e o seguimento.",
+            "flippedAt": "O @:{'general.backendName'} fez o flip {minutes} min depois do meridiano.",
+            "noFlip": "O @:{'general.backendName'} não fez o flip a tempo. A sequência e o seguimento foram parados.",
+            "noFlipAdvice": "Verifica as definições de flip e o registo do @:{'general.backendName'}. Se «Usar lado do pilar» estiver ligado, a tua montagem pode indicar mal o lado – tenta com ele desligado.",
             "startFailed": "Não foi possível iniciar a sequência de teste: {error}",
-            "ninaError": "O NINA indicou um erro durante o flip, no passo: {step}.",
+            "ninaError": "O @:{'general.backendName'} indicou um erro durante o flip, no passo: {step}.",
             "ninaErrorRecenterCaps": "Com as tampas é o esperado – recentrar precisa de estrelas. À noite verifica se o plate solving funciona.",
-            "ninaOk": "O NINA concluiu o flip sem erros.",
+            "ninaOk": "O @:{'general.backendName'} concluiu o flip sem erros.",
             "steps": {
               "recenter": "recentragem (plate solve)",
               "autofocus": "autofoco após o flip",
@@ -4061,7 +4062,7 @@
           "saveFolder": "Salvar quadros capturados em",
           "sequenceRunningLive": "Uma sequência está em execução, por isso a varredura ao vivo está desativada: moveria o focalizador e faria exposições no meio dela. Uma execução de autofoco salva continua a funcionar.",
           "working": "Processando...",
-          "runsInBackground": "Pode fechar esta janela: a otimização continua a correr no NINA e pode reabri-la a partir da aba Detecção de Estrelas.",
+          "runsInBackground": "Pode fechar esta janela: a otimização continua a correr no @:{'general.backendName'} e pode reabri-la a partir da aba Detecção de Estrelas.",
           "complete": "Otimização concluída",
           "variant": "Mostrando",
           "variantCurrent": "Atual",
@@ -4244,12 +4245,12 @@
             "maxBlindStepsPerDirection": "Número máximo de passos cegos de Autofoco tentados em cada direção antes de inverter para tentar o outro lado. Defina 0 para desativar o limite.",
             "reverseInitialDirection": "Inicia o autofoco movendo-se na direção oposta. Útil quando o foco tem de ser aproximado pelo outro lado, p. ex. SCT com deslocamento do espelho ou focalizadores com folga (backlash).",
             "focuserIncreasesTowardObjective": "Em que sentido o seu focalizador se desloca: uma posição MAIOR do focalizador afasta a câmera da objetiva (padrão) ou aproxima-a (invertido)? Isto afeta APENAS RÓTULOS E DIAGRAMAS de direção — as legendas \"aproximar/afastar da objetiva\", os rótulos Telescópio/Sensor no modelo do sensor, as recomendações de espaçadores e as setas de movimento para cima/baixo nas indicações de Tilt. Nunca pode alterar uma medição, um ângulo de parafuso ou uma correção: a direção do adaptador de Tilt é medida em unidades do focalizador, e a convenção do focalizador anula-se por completo nessa medição. Por isso, se estes rótulos aparecerem invertidos no seu equipamento, altere esta opção — nada do que já calibrou é afetado e nada vai começar a rodar no sentido oposto.",
-            "validateHfrImprovement": "Se ativado, faz uma exposição extra antes e depois para garantir que o HFR melhorou. Esta verificação pode ser feita além da validação R² configurada nas opções de Autofoco do NINA.",
+            "validateHfrImprovement": "Se ativado, faz uma exposição extra antes e depois para garantir que o HFR melhorou. Esta verificação pode ser feita além da validação R² configurada nas opções de Autofoco do @:{'general.backendName'}.",
             "hfrImprovementThreshold": "Margem de tolerância ao validar melhorias de HFR. O valor padrão de 15% significa que o Autofoco falha se o HFR inicial for 15% ou mais melhor do que o HFR final",
             "hyperbolicFitModel": "Qual modelo hiperbólico é ajustado à curva de foco. Hybrid (Best Fit) é o padrão recomendado: a curva é desenhada ao vivo com a Tilted Hyperbola e, no fim da execução, todos os modelos são reajustados e é mantido o que tem o menor erro esperado para a posição de melhor foco — assim cada execução seleciona o seu ajuste mais fiável. As opções fixas: Symmetric é a hipérbole clássica de 4 parâmetros; as restantes são assimétricas (declive diferente de cada lado do foco, comum porque o HFR fora de foco se comporta de forma diferente do HFR em foco): Tilted Hyperbola é uma única curva suave com uma inclinação linear, Smooth Blend combina suavemente duas hipérboles e Uneven Blend é o ajuste combinado original.",
             "weightedHyperbolicFitEnabled": "Pondera cada ponto do ajuste hiperbólico com base no erro de medição. Os valores de σ são regularizados antes do ajuste: um σ degenerado próximo de zero (p. ex. de um quadro com muito poucas estrelas detetadas) é limitado inferiormente a 20% do σ mediano da varredura, e um σ desconhecido recebe a mediana, para que nenhum ponto possa dominar o ajuste através de uma estimativa de erro degenerada.",
-            "fitRejectionCriterion": "Qual métrica de qualidade do ajuste decide se uma execução de autofoco é rejeitada. R² (padrão) mantém o comportamento existente, rejeitando quando o R² do ajuste fica abaixo do limite R² do NINA (configurações do Focalizador). χ² reduzido rejeita quando o χ² reduzido do ajuste hiperbólico excede o limite abaixo — um limite de qualidade do ajuste em unidades de dispersão para uma curva de foco, mas só é válido quando 'Ajuste Hiperbólico Ponderado' está ativado (depende do σ de medição por ponto). Os ajustes quadráticos e de linhas de tendência usam sempre R², independentemente desta configuração.",
-            "rSquaredRejectionThreshold": "O R² mínimo (coeficiente de determinação) abaixo do qual uma execução de autofoco é rejeitada, quando o critério de rejeição está definido como R². É o próprio limite R² do NINA das configurações do Focalizador; editá-lo aqui altera essa mesma configuração do perfil. Um R² mais próximo de 1 indica um melhor ajuste à curva de foco medida.",
+            "fitRejectionCriterion": "Qual métrica de qualidade do ajuste decide se uma execução de autofoco é rejeitada. R² (padrão) mantém o comportamento existente, rejeitando quando o R² do ajuste fica abaixo do limite R² do @:{'general.backendName'} (configurações do Focalizador). χ² reduzido rejeita quando o χ² reduzido do ajuste hiperbólico excede o limite abaixo — um limite de qualidade do ajuste em unidades de dispersão para uma curva de foco, mas só é válido quando 'Ajuste Hiperbólico Ponderado' está ativado (depende do σ de medição por ponto). Os ajustes quadráticos e de linhas de tendência usam sempre R², independentemente desta configuração.",
+            "rSquaredRejectionThreshold": "O R² mínimo (coeficiente de determinação) abaixo do qual uma execução de autofoco é rejeitada, quando o critério de rejeição está definido como R². É o próprio limite R² do @:{'general.backendName'} das configurações do Focalizador; editá-lo aqui altera essa mesma configuração do perfil. Um R² mais próximo de 1 indica um melhor ajuste à curva de foco medida.",
             "reducedChiSquaredRejectionThreshold": "Limite superior do χ² reduzido do ajuste hiperbólico (χ² por grau de liberdade) acima do qual a execução é rejeitada, quando o critério de rejeição está definido como χ² reduzido. O σ por ponto por trás dos pesos é a dispersão do conjunto de estrelas, que sobrestima a incerteza do HFR mediano por ponto — por isso o χ² reduzido fica tipicamente bem abaixo de 1, diminui à medida que mais estrelas são detetadas e aumenta à medida que Quadros por Ponto aumenta. Trate este limite como um limite de sanidade grosseiro, e não como um teste estatístico calibrado. Defina 0 para desativar. Só tem significado com ajustes ponderados.",
             "maxOutlierRejections": "Controla o número máximo de pontos que podem ser rejeitados como outliers durante o ajuste da curva de Autofoco.",
             "outlierRejectionConfidence": "Nível de confiança para um teste estatístico de Grubbs bicaudal de outliers usado durante o ajuste da curva de Autofoco. 95% é um padrão razoável. Tem de estar acima de 50% e abaixo de 100%.",
@@ -4321,7 +4322,7 @@
             "useAutoFocusCrop": "Ativo: o Hocus Focus mede as estrelas apenas dentro do corte interior e exterior, no seu autofoco e nas exposições normais. Inativo: usa a imagem inteira.",
             "fitPSF": "Se devem ser ajustados modelos de PSF às estrelas detetadas. É necessário para FWHM e Excentricidade",
             "debugMode": "Ativa o modo de depuração, que guarda dados adicionais úteis para depuração. Mantenha desligado a menos que esteja a afinar a detecção de estrelas e queira ver os mapas de estrutura.",
-            "detectionBinning": "Binning por software aplicado ao quadro apenas para a detecção de estrelas. A detecção de estrelas está calibrada para estrelas em foco de cerca de 2 a 4 pixels; em distâncias focais longas as estrelas são muito maiores do que isso, o que coloca as configurações baseadas em pixels fora do intervalo. Aplicar binning ao quadro para a detecção traz o tamanho das estrelas de volta ao intervalo e melhora a relação sinal-ruído por pixel. A imagem que vê e os valores de HFR reportados mantêm a resolução com que a câmera capturou. Isto não é o Binning de Autofoco do NINA, que altera a forma como a câmera captura os quadros de autofoco e deve corresponder ao binning com que faz imagens; os dois multiplicam-se",
+            "detectionBinning": "Binning por software aplicado ao quadro apenas para a detecção de estrelas. A detecção de estrelas está calibrada para estrelas em foco de cerca de 2 a 4 pixels; em distâncias focais longas as estrelas são muito maiores do que isso, o que coloca as configurações baseadas em pixels fora do intervalo. Aplicar binning ao quadro para a detecção traz o tamanho das estrelas de volta ao intervalo e melhora a relação sinal-ruído por pixel. A imagem que vê e os valores de HFR reportados mantêm a resolução com que a câmera capturou. Isto não é o Binning de Autofoco do @:{'general.backendName'}, que altera a forma como a câmera captura os quadros de autofoco e deve corresponder ao binning com que faz imagens; os dois multiplicam-se",
             "measurementAverage": "Controla como é calculada a medição média das estrelas no quadro. A mediana é robusta a outliers e é o padrão.",
             "useOptimizedSettings": "Quando ativado, as configurações de detecção de estrelas otimizadas produzidas pelo assistente de otimização controlam a detecção em vez das predefinições Nível de Ruído / Escala de Pixel / Faixa de Foco. Só disponível no Modo Simples depois de o assistente ter produzido e aplicado um resultado",
             "noiseLevel": "Controla a quantidade de desfoque aplicada à imagem de origem antes de iniciar o processo de detecção de estrelas. Aumente se tiver um sensor particularmente ruidoso ou fotografar com uma razão focal muito alta",
@@ -4494,7 +4495,7 @@
         "applied": "Aplicado. O próximo autofoco usa o novo valor.",
         "applyFailed": "Não foi possível guardar o valor.",
         "findings": {
-          "notActive": "O Hocus Focus não executou o último autofoco. Nas opções do NINA, defina tanto 'Auto Focus' como 'Star Detector' para Hocus Focus.",
+          "notActive": "O Hocus Focus não executou o último autofoco. Nas opções do @:{'general.backendName'}, defina tanto 'Auto Focus' como 'Star Detector' para Hocus Focus.",
           "fewStars": "Foram detetadas apenas {stars} estrelas. Uma exposição mais longa dá mais dados à curva.",
           "fewStarsNarrowband": "Foram detetadas apenas {stars} estrelas. Os filtros de banda estreita precisam de uma exposição de focagem muito mais longa.",
           "notBracketed_inward": "O ponto mais nítido foi o primeiro da série, por isso o foco está mais para dentro. Foque primeiro à mão de forma aproximada ou alargue a série.",
@@ -4518,7 +4519,7 @@
         "title": "O essencial do autofoco",
         "description": "As definições mais importantes para o Hocus Focus. Tudo o resto está mais abaixo nas definições detalhadas.",
         "startAssistant": "Iniciar assistente de configuração",
-        "ninaSettings": "Definições do focalizador do NINA",
+        "ninaSettings": "Definições do focalizador do @:{'general.backendName'}",
         "optics": "Ótica",
         "opticsLine": "Distância focal {focalLength} mm · tamanho do píxel {pixelSize} µm",
         "imageScale": "Escala da imagem {scale}″/px",
@@ -4591,7 +4592,7 @@
           "camera": "Câmara ligada",
           "focuser": "Focalizador ligado",
           "hocusFocus": "Hocus Focus disponível",
-          "engineHint": "No NINA, 'Auto Focus' e 'Star Detector' têm de estar ambos em Hocus Focus. O passo Resultado avisa se não for o caso."
+          "engineHint": "No @:{'general.backendName'}, 'Auto Focus' e 'Star Detector' têm de estar ambos em Hocus Focus. O passo Resultado avisa se não for o caso."
         },
         "focalLength": "Distância focal (mm)",
         "pixelSize": "Tamanho do píxel (µm)",
@@ -4727,7 +4728,7 @@
         "height": "Altura (px)",
         "focal_length": "Distância focal (mm)",
         "bit_depth": "Profundidade de bits",
-        "bit_depth_help": "A profundidade de bits que o N.I.N.A. assume para os dados da câmara. É relevante para câmaras que não a reportam, como as DSLR, e afeta estatísticas, stretch e saturação. Não altera os ficheiros RAW gravados pela câmara.",
+        "bit_depth_help": "A profundidade de bits que o @:{'general.backendName'} assume para os dados da câmara. É relevante para câmaras que não a reportam, como as DSLR, e afeta estatísticas, stretch e saturação. Não altera os ficheiros RAW gravados pela câmara.",
         "bit_scaling": "Escalonamento de bits",
         "bit_scaling_help": "Escala os dados da câmara para 16 bits, para que as imagens de câmaras com menor profundidade de bits usem toda a gama de valores."
       },
@@ -4798,12 +4799,12 @@
         "StartFromCurrentPosition": "Iniciar da posição atual?",
         "DirectionEast": "Direção Leste",
         "camera_settings": "Configurações da câmera",
-        "camera_settings_hint": "Deixe em branco para padrões do NINA",
+        "camera_settings_hint": "Deixe em branco para padrões do @:{'general.backendName'}",
         "exposure_time": "Tempo de exposição (s)",
         "gain": "Ganho",
         "filter": "Filtro",
         "filter_default": "Padrão",
-        "nina_default": "Padrão NINA",
+        "nina_default": "Padrão @:{'general.backendName'}",
         "ManualMode": "Modo manual"
       },
       "pins_settings": {
@@ -4852,7 +4853,7 @@
     },
     "slewAndCenter": {
       "title": "Mover e centralizar",
-      "LastSelectedImageSource_wrong": "Selecione o mapa estelar offline como fonte de imagem no NINA / Framing",
+      "LastSelectedImageSource_wrong": "Selecione o mapa estelar offline como fonte de imagem no @:{'general.backendName'} / Framing",
       "ra": "AR:",
       "dec": "Dec:",
       "ra_placeholder": "AR 03:47:28.2",
@@ -5103,7 +5104,7 @@
         "rise_set": "Nascer / Ocaso",
         "circumpolar": "circumpolar",
         "never_rises": "nunca nasce",
-        "missing_location": "A altura e o nascer/ocaso precisam da localização do local no perfil do NINA."
+        "missing_location": "A altura e o nascer/ocaso precisam da localização do local no perfil do @:{'general.backendName'}."
       },
       "datetime": {
         "title": "Data e hora",
@@ -5126,7 +5127,7 @@
         "landscapes_visible": "Mostrar paisagens",
         "hide_below_horizon": "Ocultar objetos abaixo do horizonte",
         "sky_survey_visible": "Levantamento fotográfico do céu",
-        "sky_survey_hint": "Usa apenas as imagens DSS incluídas offline e nunca transfere mosaicos do levantamento da Internet.",
+        "sky_survey_hint": "Mostra offline o levantamento DSS ou NSNS transferido para o teu anfitrião @:{'general.backendName'}; a app nunca transfere mosaicos da Internet.",
         "dsos_visible": "Objetos do céu profundo (Messier, NGC)",
         "catalog_filters": "Filtros de catálogo",
         "catalog_filter_hint": "Controla os marcadores visíveis de céu profundo; a pesquisa offline continua a encontrar todos os objetos do catálogo.",
@@ -5176,7 +5177,7 @@
       },
       "survey": {
         "title": "Dados do levantamento fotográfico",
-        "hint": "O levantamento colorido DSS é baixado uma vez para o host NINA/PINS e fornecido ao Atlas a partir daí. Ordens mais altas adicionam detalhe para campos estreitos.",
+        "hint": "O levantamento colorido DSS é baixado uma vez para o host @:{'general.backendName'} e fornecido ao Atlas a partir daí. Ordens mais altas adicionam detalhe para campos estreitos.",
         "plugin_update_required": "Atualize o plugin Touch'N'Stars para baixar o levantamento do céu.",
         "installed": "Instalado",
         "free_space": "Livre no host",
@@ -5201,11 +5202,11 @@
         "delete_keep_option": "Manter {name}, excluir o resto",
         "delete_all_option": "Tudo",
         "delete_confirm_title": "Excluir dados do levantamento?",
-        "delete_confirm": "Excluir o levantamento do céu baixado do host NINA/PINS? O Atlas não mostrará mais o fundo fotográfico até que seja baixado novamente.",
+        "delete_confirm": "Excluir o levantamento do céu baixado do host @:{'general.backendName'}? O Atlas não mostrará mais o fundo fotográfico até que seja baixado novamente.",
         "delete_confirm_keep": "Excluir todas as ordens acima de {name}? {name} permanece instalada e continua sendo exibida no Atlas.",
-        "terms": "Digitized Sky Survey © STScI/NASA, colorido e processado em HiPS pelo CDS (CNRS/Unistra). Uso gratuito não comercial com atribuição; os mosaicos permanecem no seu próprio host NINA/PINS.",
+        "terms": "Digitized Sky Survey © STScI/NASA, colorido e processado em HiPS pelo CDS (CNRS/Unistra). Uso gratuito não comercial com atribuição; os mosaicos permanecem no seu próprio host @:{'general.backendName'}.",
         "terms_link": "Termos de uso",
-        "offer_text": "Baixar o fundo fotográfico do céu (DSS, cerca de {size}) para o host NINA/PINS agora? Sem ele, o Atlas mostra apenas estrelas e objetos de catálogo.",
+        "offer_text": "Baixar o fundo fotográfico do céu (DSS, cerca de {size}) para o host @:{'general.backendName'} agora? Sem ele, o Atlas mostra apenas estrelas e objetos de catálogo.",
         "offer_text_legacy": "O fundo do céu baixado usa um formato desatualizado. Baixá-lo novamente agora (cerca de {size})? Os arquivos antigos serão substituídos.",
         "offer_accept": "Baixar",
         "offer_decline": "Agora não",
@@ -5215,9 +5216,9 @@
         "source_nsns": "NSNS cor",
         "source_dss_hint": "Digitized Sky Survey: imagens fotográficas em cores reais de todo o céu.",
         "source_nsns_hint": "Northern Sky Narrowband Survey: [OIII] vermelho, Hα verde, [SII] azul, para que as nebulosas de emissão mostrem toda a sua extensão. Cobre apenas o céu a norte de −16°.",
-        "hint_nsns": "O survey de banda estreita NSNS é descarregado uma única vez para o host NINA/PINS e servido ao Atlas a partir daí. Ordens mais altas acrescentam detalhe para campos estreitos.",
+        "hint_nsns": "O survey de banda estreita NSNS é descarregado uma única vez para o host @:{'general.backendName'} e servido ao Atlas a partir daí. Ordens mais altas acrescentam detalhe para campos estreitos.",
         "plugin_update_required_nsns": "Atualize o plugin Touch'N'Stars para descarregar o survey de banda estreita NSNS.",
-        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licenciado sob CC BY-NC-SA 4.0. Gratuito para uso não comercial com atribuição; os mosaicos permanecem no seu próprio host NINA/PINS.",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg, licenciado sob CC BY-NC-SA 4.0. Gratuito para uso não comercial com atribuição; os mosaicos permanecem no seu próprio host @:{'general.backendName'}.",
         "source_nsns_ha": "NSNS Hα",
         "source_nsns_ha_hint": "Northern Sky Narrowband Survey, apenas linha Hα (hidrogénio ionizado). Cobre apenas o céu a norte de −16°; descarga separada.",
         "source_nsns_oiii": "NSNS [OIII]",
@@ -5949,7 +5950,7 @@
         "keepOpen": "Mantenha este aplicativo aberto. Os controles são temporariamente bloqueados para evitar estados inconsistentes.",
         "running": "Atualizando pacotes Raspberry Pi. Aguarde até que o processo seja concluído.",
         "title": "Atualização do sistema em andamento",
-        "waitingForApi": "Atualização concluída. Aguardando que a API NINA fique acessível novamente...",
+        "waitingForApi": "Atualização concluída. Aguardando que a API @:{'general.backendName'} fique acessível novamente...",
         "close": "Fechar"
       },
       "pluginsAction": "Ação",
@@ -6131,7 +6132,7 @@
       "errors": {
         "title": "Análise de Bahtinov",
         "readFile": "Não é possível ler o arquivo selecionado.",
-        "captureLoad": "Falha ao carregar a captura mais recente do N.I.N.A.",
+        "captureLoad": "Falha ao carregar a captura mais recente do @:{'general.backendName'}",
         "analysisFailed": "Falha na solicitação de análise.",
         "badRequest": "O servidor rejeitou a solicitação. Por favor, verifique os parâmetros.",
         "mockMode": "A análise de Bahtinov não está disponível enquanto a API simulada está habilitada.",
@@ -6227,12 +6228,12 @@
         "validationJournalLines": "As linhas do journal devem estar entre 100 e 50.000.",
         "validationSections": "Selecione pelo menos uma seção.",
         "expertMode": "Configurações avançadas",
-        "ninaLogs": "Arquivos de log do NINA (últimos 10)",
+        "ninaLogs": "Arquivos de log do @:{'general.backendName'} (últimos 10)",
         "collecting": "Recolhendo diagnósticos do sistema PINS… isso pode demorar um pouco."
       },
       "progress": {
         "collectingLogs": "Recolhendo logs do Touch'N'Stars…",
-        "collectingNinaLogs": "Recolhendo arquivos de log recentes do NINA…",
+        "collectingNinaLogs": "Recolhendo arquivos de log recentes do @:{'general.backendName'}…",
         "buildingArchive": "Criando arquivo ZIP…"
       }
     },
@@ -6336,7 +6337,7 @@
         "noListsHint": "Crie listas de alvos no telescopius.com e depois recarregue-as aqui.",
         "editOnTelescopius": "Editar listas no Telescopius",
         "dataFrom": "Dados de",
-        "connectionError": "Conexão com Telescopius falhou. O PC NINA precisa de uma conexão com internet e pelo menos uma lista de alvos deve existir no Telescopius.",
+        "connectionError": "Conexão com Telescopius falhou. O PC @:{'general.backendName'} precisa de uma conexão com internet e pelo menos uma lista de alvos deve existir no Telescopius.",
         "myLists": "Minhas listas de alvos",
         "unnamedList": "Lista sem nome",
         "showObjects": "Mostrar objetos",
@@ -6435,8 +6436,8 @@
         "sendToNina": "Adotar sequência",
         "sending": "Enviando...",
         "sent": "Enviado!",
-        "sendErrorTitle": "Erro ao enviar para N.I.N.A",
-        "sendSuccessMessage": "Sequência enviada com sucesso para N.I.N.A!",
+        "sendErrorTitle": "Erro ao enviar para @:{'general.backendName'}",
+        "sendSuccessMessage": "Sequência enviada com sucesso para @:{'general.backendName'}!",
         "validSequence": "A sequência é válida e pode ser adotada",
         "invalidSequence": "Adicione Configurações de Alvo e Exposição Inteligente para criar uma sequência válida",
         "saveNamed": "Salvar sequência como...",
@@ -7095,7 +7096,7 @@
             "Warnings": "Avisos"
           },
           "categoryHints": {
-            "Errors": "Qualquer erro do N.I.N.A. e dispositivos perdidos",
+            "Errors": "Qualquer erro do @:{'general.backendName'} e dispositivos perdidos",
             "Guiding": "Estrela guia perdida, guiagem falhou",
             "Mount": "Flip falhou, exposições sem seguimento",
             "Safety": "O monitor de segurança indica inseguro",
@@ -7110,7 +7111,7 @@
           "pauseMs": "Pausa entre tons (ms)",
           "graceMinutes": "Espera no arranque (min)",
           "throttleMinutes": "Repetir o mesmo alarme após (min)",
-          "graceHint": "Sem alarmes logo após o arranque do N.I.N.A. O mesmo alarme apita no máximo 3 vezes seguidas.",
+          "graceHint": "Sem alarmes logo após o arranque do @:{'general.backendName'} O mesmo alarme apita no máximo 3 vezes seguidas.",
           "exclusionsTitle": "Nunca apitar para",
           "addExclusionTitle": "Adicionar uma entrada que nunca apita",
           "exclusionPlaceholder": "Parte da mensagem",
@@ -7265,7 +7266,7 @@
     },
     "shortcuts": {
       "title": "Atalhos de sequência",
-      "description": "Acesso rápido para carregar e iniciar sequências N.I.N.A",
+      "description": "Acesso rápido para carregar e iniciar sequências @:{'general.backendName'}",
       "addNew": "Novo atalho",
       "newShortcut": "Novo atalho",
       "createFirst": "Crie o primeiro atalho",
@@ -7609,7 +7610,7 @@
           "maxPluginStorageGb": "Armazenamento máximo de plug-ins (GB)",
           "maxPluginStorageHelp": "Defina 0 para não ter limite.",
           "protocolTooltip": "Protocolo usado para acessar a API avançada local exposta por PINS.",
-          "sequencePollTooltip": "Com que frequência o AllSky verifica se uma sequência PINS/NINA foi iniciada ou interrompida.",
+          "sequencePollTooltip": "Com que frequência o AllSky verifica se uma sequência @:{'general.backendName'} foi iniciada ou interrompida.",
           "advancedApiHostTooltip": "Nome do host ou endereço IP do serviço PINS Advanced API.",
           "portTooltip": "Porta TCP usada pelo serviço PINS Advanced API.",
           "timeoutTooltip": "Tempo máximo de espera por uma única solicitação de API avançada antes de marcá-la como indisponível.",
@@ -7825,7 +7826,7 @@
         "exampleLabels": ["Câmera IP genérica", "Câmera ONVIF", "Câmera Axis", "Câmera Hikvision"],
         "examplesTitle": "Exemplos",
         "proxyOptions": [
-          "Proxy (padrão): A imagem é buscada pelo backend NINA e encaminhada ao navegador. Obrigatório para câmeras de rede local com credenciais ou restrições CORS. Um pouco mais lento quando acessado por VPN.",
+          "Proxy (padrão): A imagem é buscada pelo backend @:{'general.backendName'} e encaminhada ao navegador. Obrigatório para câmeras de rede local com credenciais ou restrições CORS. Um pouco mais lento quando acessado por VPN.",
           "Direto: O navegador busca a imagem diretamente. Mais rápido para câmeras públicas de Internet (por exemplo, câmeras allsky públicas). Não oferece suporte a credenciais no URL no Chrome/Edge."
         ],
         "proxyText": "Cada câmera pode ser obtida de duas maneiras:",
@@ -7846,7 +7847,7 @@
       "snapshotUrl": "URL do instantâneo",
       "unknownCamera": "Câmera desconhecida",
       "useProxy": "Usar proxy",
-      "useProxyHint": "Roteie a imagem pelo back-end do NINA. Obrigatório para câmeras com credenciais ou restrições CORS. Desative para câmeras diretas de internet."
+      "useProxyHint": "Roteie a imagem pelo back-end do @:{'general.backendName'}. Obrigatório para câmeras com credenciais ou restrições CORS. Desative para câmeras diretas de internet."
     },
     "targetScheduler": {
       "actions": {
@@ -8236,8 +8237,8 @@
       "filterAll": "All",
       "filterNewOnly": "New only",
       "filterVisibleOnly": "Visible tonight",
-      "visibleHint": "Based on observer location from NINA profile",
-      "visibleNoLocation": "No observer location — set location in NINA profile",
+      "visibleHint": "Based on observer location from @:{'general.backendName'} profile",
+      "visibleNoLocation": "No observer location — set location in @:{'general.backendName'} profile",
       "sortBy": "Sort by",
       "sortLatestMag": "Latest mag (brightest first)",
       "sortFirstObserved": "Discovery date (newest first)",
@@ -8414,7 +8415,7 @@
         "useTls": "Use TLS (muda a porta para 8883)",
         "username": "Nome de usuário"
       },
-      "notLoaded": "O plugin Ground Station não está instalado ou não carregado no NINA. Instale o plugin 'Ground Station' no NINA para usar essas configurações.",
+      "notLoaded": "O plugin Ground Station não está instalado ou não carregado no @:{'general.backendName'}. Instale o plugin 'Ground Station' no @:{'general.backendName'} para usar essas configurações.",
       "ntfysh": {
         "defaultIcon": "URL do ícone padrão",
         "defaultTopic": "Tópico padrão",
@@ -8458,7 +8459,7 @@
         "refreshing": "Atualizando…",
         "workspace": "Espaço de trabalho"
       },
-      "subtitle": "Configurar serviços de notificação da Estação Terrestre NINA",
+      "subtitle": "Configurar serviços de notificação da Estação Terrestre @:{'general.backendName'}",
       "tabs": {
         "discord": "Discord",
         "email": "E-mail",
@@ -8648,7 +8649,7 @@
         "exportFailedMessage": "Não foi possível copiar para a área de transferência.",
         "apiDocsLink": "Documentação da API do Target Scheduler",
         "setupTitle": "Configurar a API do Target Scheduler",
-        "setupStep1": "No NINA, abra as opções do plugin Target Scheduler e ative o servidor API.",
+        "setupStep1": "No @:{'general.backendName'}, abra as opções do plugin Target Scheduler e ative o servidor API.",
         "setupStep2": "Anote a porta exibida (padrão 8188).",
         "setupStep3": "Digite essa porta acima; a conexão será feita automaticamente.",
         "welcomeTitle": "Bem-vindo ao Target Scheduler Viewer",
@@ -8704,7 +8705,7 @@
         "noTargets": "Nenhum alvo neste projeto."
       },
       "schedulePreview": {
-        "disclaimer": "Plano previsto do Scheduler para esta noite, recalculado a cada atualização — não é um registro do que o NINA está realmente capturando agora.",
+        "disclaimer": "Plano previsto do Scheduler para esta noite, recalculado a cada atualização — não é um registro do que o @:{'general.backendName'} está realmente capturando agora.",
         "learnMore": "Saiba mais",
         "noScheduleData": "Sem dados de agendamento.",
         "waitingNotVisible": "Aguardando — alvo ainda não visível"
@@ -8725,7 +8726,7 @@
         "open": "Plugin ligado",
         "closed": "Plugin inacessível",
         "unreachable": "Sem ligação ao plugin AAPA em {url}.",
-        "checkPlugin": "O plugin AAPA Controller está instalado e carregado no N.I.N.A.?",
+        "checkPlugin": "O plugin AAPA Controller está instalado e carregado no @:{'general.backendName'}?",
         "checkEnabled": "O servidor WebSocket está ativado nas definições do plugin, com a mesma porta indicada abaixo?",
         "checkFirewall": "A firewall do Windows permite ligações de entrada nesta porta?",
         "port": "Porta WebSocket"
@@ -8740,7 +8741,7 @@
         "ipAddress": "Endereço IP do AAPA",
         "connect": "Ligar",
         "disconnect": "Desligar",
-        "autoHint": "Auto verifica todas as portas série do computador N.I.N.A. à procura de um AAPA."
+        "autoHint": "Auto verifica todas as portas série do computador @:{'general.backendName'} à procura de um AAPA."
       },
       "status": {
         "positionX": "Posição X (Az)",
@@ -8759,13 +8760,13 @@
       },
       "assist": {
         "title": "Alinhamento polar automático",
-        "hint": "Um toque inicia o TPPA (se ainda não estiver a correr) e depois o Auto-Pilot, que corrige até o erro estar dentro da tolerância. O TPPA para automaticamente quando o Auto-Pilot termina. Nas definições do TPPA no N.I.N.A., \"Log polar alignment error adjustments\" tem de estar ativado. Mantenha esta página aberta durante a execução.",
+        "hint": "Um toque inicia o TPPA (se ainda não estiver a correr) e depois o Auto-Pilot, que corrige até o erro estar dentro da tolerância. O TPPA para automaticamente quando o Auto-Pilot termina. Nas definições do TPPA no @:{'general.backendName'}, \"Log polar alignment error adjustments\" tem de estar ativado. Mantenha esta página aberta durante a execução.",
         "start": "Iniciar alinhamento polar",
         "running": "A correr…",
         "stop": "Parar",
         "tppaSettings": "Definições do TPPA",
         "autoPilotSettings": "Definições do Auto-Pilot",
-        "tnsPluginRequired": "O TPPA precisa do plugin Touch'N'Stars no N.I.N.A.; não está acessível.",
+        "tnsPluginRequired": "O TPPA precisa do plugin Touch'N'Stars no @:{'general.backendName'}; não está acessível.",
         "phaseLabel": "Estado",
         "azError": "Erro de azimute",
         "altError": "Erro de altitude",
@@ -8838,12 +8839,12 @@
           "MinYLimit": "Y mín. (passos)",
           "MaxYLimit": "Y máx. (passos)"
         },
-        "autoSaveHint": "As alterações são guardadas no N.I.N.A. assim que sair de um campo.",
-        "saveInNina": "Guardar no N.I.N.A.",
+        "autoSaveHint": "As alterações são guardadas no @:{'general.backendName'} assim que sair de um campo.",
+        "saveInNina": "Guardar no @:{'general.backendName'}",
         "storeOnDevice": "Guardar no AAPA",
         "sendConfirm": "Guardar permanentemente a configuração atual do AAPA na sua memória (EEPROM)?",
         "applyToDevice": "Aplicar ao AAPA",
-        "applyInNinaHint": "Estes valores são guardados no N.I.N.A. Para os transferir para o AAPA, use o botão de envio no painel AAPA no N.I.N.A."
+        "applyInNinaHint": "Estes valores são guardados no @:{'general.backendName'} Para os transferir para o AAPA, use o botão de envio no painel AAPA no @:{'general.backendName'}"
       },
       "log": {
         "title": "Registo",
@@ -9291,7 +9292,7 @@
       "reload": "Recarregar pré-visualização"
     },
     "cache": {
-      "useNinaCache": "Usar cache do NINA para imagem do alvo",
+      "useNinaCache": "Usar cache do @:{'general.backendName'} para imagem do alvo",
       "hint": "Carrega imagem DSS/alvo via TNS WebAPI. O botão de cache controla useCache.",
       "hintShort": "Passa useCache para targetpic"
     },
@@ -9434,7 +9435,7 @@
       "filterAuto": "Auto",
       "filterBroadband": "Banda larga",
       "filterClassifications": "Classificações de filtros",
-      "filterClassificationsHint": "Filtros do seu perfil NINA. Auto usa correspondência de primeira letra (L,R,G,B = banda larga; H,S,O = banda estreita).",
+      "filterClassificationsHint": "Filtros do seu perfil @:{'general.backendName'}. Auto usa correspondência de primeira letra (L,R,G,B = banda larga; H,S,O = banda estreita).",
       "filterExclude": "Excluir",
       "filterNarrowband": "Banda estreita",
       "lightModeReport": "Relatório de modo claro",
@@ -9649,7 +9650,7 @@
       "working": "Processando…",
       "howItWorks": "Como funciona",
       "eqmodToggleTitle": "Correção da taxa de AR para EQMOD",
-      "eqmodToggleDescription": "O EQMOD lê a taxa de AR como arcsec/seg bruto em vez do que o NINA envia, tornando o rastreamento ~15× mais lento se não for corrigido. Ative apenas se a montagem usar EQMOD.",
+      "eqmodToggleDescription": "O EQMOD lê a taxa de AR como arcsec/seg bruto em vez do que o @:{'general.backendName'} envia, tornando o rastreamento ~15× mais lento se não for corrigido. Ative apenas se a montagem usar EQMOD.",
       "eqmodDetectedHint": "{name} parece ser um driver EQMOD — provavelmente vai querer ativar isto.",
       "reapplyIntervalTitle": "Intervalo de reaplicação",
       "reapplyIntervalDescription": "Com que frequência o Quick Track recalcula e reenvia a taxa de acompanhamento. O valor predefinido de 900 s (15 min) é adequado para cometas e asteroides.",

@@ -30,7 +30,8 @@
     "delete": "削除",
     "edit": "編集",
     "close": "閉じる",
-    "save": "保存"
+    "save": "保存",
+    "backendName": "NINA"
   },
   "pages": {
     "equipment": {
@@ -42,9 +43,9 @@
     "title": "Touch'N'Stars",
     "connection_error_toast": {
       "title": "接続エラー",
-      "message_api": "APIプラグインが利用できません。NINAの設定を確認してください。",
+      "message_api": "APIプラグインが利用できません。@:{'general.backendName'}の設定を確認してください。",
       "message_api_version": "APIプラグインのバージョンが古すぎます。アップデートを実行してください。",
-      "message_tns": "Touch'N'Stars プラグインが利用できません。NINAの設定を確認してください。",
+      "message_tns": "Touch'N'Stars プラグインが利用できません。@:{'general.backendName'}の設定を確認してください。",
       "message_tns_version": "Touch'N'Starsプラグインのバージョンが古すぎます。アップデートを実行してください。"
     },
     "connection_splash": {
@@ -100,7 +101,7 @@
     "coordAlt": "高度",
     "coordUnit": "m",
     "completeSetup": "セットアップ完了",
-    "instanceConfiguration": "N.I.N.A 接続詳細",
+    "instanceConfiguration": "@:{'general.backendName'} 接続詳細",
     "InfoAppsTitel": "Wiki",
     "check_wki": "詳細な手順はWikiでご確認いただけます"
   },
@@ -149,7 +150,7 @@
       "missingEquipmentSettings": "機材設定が不足しています：カメラの視野角が正しく計算されるよう、設定 → 機材で焦点距離とピクセルサイズを設定してください。",
       "confirmSetTargetTitle": "ターゲット選択の確認",
       "confirmSetTargetMessage": "このターゲットをシーケンスのターゲットとして設定しますか？",
-      "useNinaCache": "NINA キャッシュをターゲット画像に使用する",
+      "useNinaCache": "@:{'general.backendName'} キャッシュをターゲット画像に使用する",
       "setSequnceTarget": "シーケンスのターゲットに設定",
       "sequenceTargetPicker": {
         "title": "シーケンスのターゲット",
@@ -209,7 +210,7 @@
         "SolveError": "画像の解析中にエラーが発生しました"
       },
       "moveRotator": "カメラを回転",
-      "infoTargetImage": "画像が真っ黒に表示される場合は、NINAで「オフライン・スカイマップ・キャッシュ」を設定するか、「NINAキャッシュを使用する」オプションを無効にする必要があります",
+      "infoTargetImage": "画像が真っ黒に表示される場合は、@:{'general.backendName'}で「オフライン・スカイマップ・キャッシュ」を設定するか、「@:{'general.backendName'}キャッシュを使用する」オプションを無効にする必要があります",
       "useCenter": "中心",
       "useRotate": "回転",
       "customTarget": "カスタムターゲット",
@@ -272,7 +273,7 @@
         "openWiki": "Wiki を開く"
       },
       "instance": {
-        "description": "N.I.N.A. が動いているマシンのアドレスです。同じネットワーク内なら、通常アプリが自動で見つけます。",
+        "description": "@:{'general.backendName'} が動いているマシンのアドレスです。同じネットワーク内なら、通常アプリが自動で見つけます。",
         "connect": "保存して接続",
         "connecting": "Connecting…",
         "connected": "{name} に接続しました",
@@ -413,7 +414,7 @@
         "focalLength": "ガイド鏡の焦点距離",
         "focalLengthHint": "ガイド鏡の焦点距離 (mm) です。メイン望遠鏡とは別に PHD2 のプロファイルに保存され、PHD2 が角秒でガイド値を表示するのに使われます。",
         "ditherTitle": "Dither",
-        "ditherDescription": "NINA はディザーをガイドカメラのピクセルで設定しますが、一般的な推奨値はメインカメラのピクセルで示されます。ここで両者を換算します。",
+        "ditherDescription": "@:{'general.backendName'} はディザーをガイドカメラのピクセルで設定しますが、一般的な推奨値はメインカメラのピクセルで示されます。ここで両者を換算します。",
         "ditherMainPixels": "ディザー（メインカメラのピクセル）",
         "ditherMainPixelsHint": "1 回のディザーで対象をメインカメラのセンサー上でどれだけ動かすか。10〜15 ピクセルがよい出発点です。",
         "guidePixelSize": "ガイドカメラのピクセルサイズ (µm)",
@@ -482,7 +483,7 @@
         "backendTime": "サーバー時刻",
         "mountTime": "赤道儀時刻",
         "syncLabel": "赤道儀に時刻を同期",
-        "syncLabelInfo": "有効にすると、「今すぐ同期」をクリックした際に赤道儀が一時的に切断・再接続され、NINAが現在時刻を転送できるようになります。",
+        "syncLabelInfo": "有効にすると、「今すぐ同期」をクリックした際に赤道儀が一時的に切断・再接続され、@:{'general.backendName'}が現在時刻を転送できるようになります。",
         "mountNotConnected": "赤道儀が接続されていません",
         "notSupported": "ドライバーが非対応です",
         "loadError": "時間情報を読み込めませんでした。",
@@ -543,9 +544,9 @@
         "editTokens": "トークンを編集",
         "help": {
           "title": "ファイル名パターン",
-          "intro": "撮影した画像のファイル名パターンを作成します。各トークンはNINA によって実際の値に置き換えて保存されます。",
+          "intro": "撮影した画像のファイル名パターンを作成します。各トークンは@:{'general.backendName'} によって実際の値に置き換えて保存されます。",
           "tokensTitle": "トークン",
-          "tokensDesc": "トークンボタンをタップするとパターンに追加されます。フィルター、日付、露出時間などのトークンは、NINAによって実際の値に変換されます。",
+          "tokensDesc": "トークンボタンをタップするとパターンに追加されます。フィルター、日付、露出時間などのトークンは、@:{'general.backendName'}によって実際の値に変換されます。",
           "separatorsTitle": "区切り記号",
           "separatorsDesc": "フォルダー構造を作成するには \\ を使用します。ファイル名内の値を区切るには _ や - を使用します。秒を表す\"s\"などのカスタムテキストを追加するには\"テキスト\"を使用します。",
           "cursorTitle": "挿入位置",
@@ -586,7 +587,7 @@
       "backupRestore": {
         "title": "バックアップと復元",
         "description": "この端末に保存されている設定をファイルに保存し、別の端末で復元します。",
-        "profileWarning": "これはこの端末上のアプリ設定のみをバックアップします。機材、カメラ、架台などの設定は NINA または PINS プロファイルに保存されています。完全なバックアップにはそちらも別途バックアップしてください。",
+        "profileWarning": "これはこの端末上のアプリ設定のみをバックアップします。機材、カメラ、架台などの設定は @:{'general.backendName'} プロファイルに保存されています。完全なバックアップにはそちらも別途バックアップしてください。",
         "locationAndroid": "ファイルはこの端末の ドキュメント/TouchNStars に保存されます。ファイル管理アプリで開いてください。",
         "locationIos": "ファイルは「ファイル」アプリの「この iPhone/iPad 内」→「Touch 'N Stars」→「Documents」に保存されます。",
         "locationBrowser": "ファイルはブラウザの既定のダウンロードフォルダに保存されます。",
@@ -656,7 +657,7 @@
         "help": {
           "ExposureTime": "プレートソルバーが撮影する画像の露出時間（秒）。露出時間を長くすると、より多くの星を検出できるため、暗い視野や星の少ない視野の解決に役立ちますが、各解決の試行が遅くなります。",
           "Gain": "プレートソルビングの露出に使用するカメラのゲイン。空欄のままにするとカメラのデフォルトゲインが使用されます。",
-          "ASTAPLocation": "NINA を実行しているシステム上の ASTAP 実行ファイル（astap.exe）へのパス。ASTAP によるローカルプレートソルビングに必要です。",
+          "ASTAPLocation": "@:{'general.backendName'} を実行しているシステム上の ASTAP 実行ファイル（astap.exe）へのパス。ASTAP によるローカルプレートソルビングに必要です。",
           "SearchRadius": "ブラインドソルブを試みる際にソルバーが検索する、ターゲット座標を中心とした半径（度）。半径を大きくすると解決時間は増えますが、鏡筒の初期位置の精度が低い場合に役立ちます。",
           "Threshold": "Slew & Center 中に、解決された位置とターゲットとの間で許容される最大偏差（分角）。これを超えて外れている場合、再度スリュー＆ソルブのサイクルが実行されます。",
           "RotationTolerance": "Center & Rotate 中に、解決された画像の向きとターゲットの向きとの間で許容される最大回転偏差（度）。これを超えるとローテーターが調整され、フレームが再度解決されます。",
@@ -779,7 +780,7 @@
       "save": "保存",
       "connect": "接続",
       "disconnect": "切断",
-      "sharedGuidWarning": "NINAではローテーターとセーフティモニターが1つのストレージスロットを共有しています。一方を変更すると他方も変更されます。",
+      "sharedGuidWarning": "@:{'general.backendName'}ではローテーターとセーフティモニターが1つのストレージスロットを共有しています。一方を変更すると他方も変更されます。",
       "noReconnectHint": "新しい設定は次回の接続時に反映されます。",
       "cameraNoSettings": "このカメラには設定項目がありません。"
     },
@@ -837,7 +838,7 @@
       },
       "info": {
         "title": "情報",
-        "message": "手動フィルターホイールおよび手動ローテーターは、現在 NINA 経由でのみ制御可能です。フィルターホイールには API の「Networked Filter Wheel」を使用してください。"
+        "message": "手動フィルターホイールおよび手動ローテーターは、現在 @:{'general.backendName'} 経由でのみ制御可能です。フィルターホイールには API の「Networked Filter Wheel」を使用してください。"
       }
     },
     "lastLogs": {
@@ -926,7 +927,7 @@
       "sequenceFolder": "シーケンスフォルダー",
       "sequenceFolderNotSet": "フォルダーが設定されていません",
       "sequenceFolderChange": "フォルダーを変更",
-      "sequenceFolderRelative": "完全なパスではないため、ファイルは N.I.N.A. のプログラムフォルダーに保存されます。フォルダーを選択してください。",
+      "sequenceFolderRelative": "完全なパスではないため、ファイルは @:{'general.backendName'} のプログラムフォルダーに保存されます。フォルダーを選択してください。",
       "sequenceFolderSaveError": "シーケンスフォルダーを変更できませんでした。",
       "sequenceFileName": "ファイル名",
       "sequenceSave": "保存",
@@ -950,7 +951,7 @@
       "no_sequences_found": "シーケンスが見つかりません",
       "error_loading_sequences": "シーケンスの読み込み中にエラーが発生しました",
       "error_loading_sequence": "シーケンスの読み込み中にエラーが発生しました",
-      "editFailed": "NINA が変更を受け付けませんでした",
+      "editFailed": "@:{'general.backendName'} が変更を受け付けませんでした",
       "targetNotFound": "シーケンス内にターゲットが見つかりません。もう一度お試しください。",
       "filter": "フィルター",
       "triggers": "トリガー",
@@ -1452,7 +1453,7 @@
       },
       "location_sync": {
         "title": "位置同期設定",
-        "confirmationMessage": "NINAのLocation SyncがPromptに設定されている場合、座標を望遠鏡に送信する前に確認ウィンドウが表示されることがあります。この表示を抑制しTNSが自動的に座標を設定できるようにするには、設定をSync to Telescope（望遠鏡に同期）に変更することをお勧めします。",
+        "confirmationMessage": "@:{'general.backendName'}のLocation SyncがPromptに設定されている場合、座標を望遠鏡に送信する前に確認ウィンドウが表示されることがあります。この表示を抑制しTNSが自動的に座標を設定できるようにするには、設定をSync to Telescope（望遠鏡に同期）に変更することをお勧めします。",
         "toTelescope": {
           "label": "望遠鏡に同期"
         },
@@ -1539,7 +1540,7 @@
               "description": "「詳細設定」で分数を自分で設定します。"
             },
             "sideOfPierNoMount": "選ぶ前に架台を接続してください。架台がピア側を報告するかアプリが確認できます。",
-            "sideOfPierUnknown": "この架台はピア側を報告しないため、「ピア側を使用」はオフのままです。NINA は時刻で反転を判断します。",
+            "sideOfPierUnknown": "この架台はピア側を報告しないため、「ピア側を使用」はオフのままです。@:{'general.backendName'} は時刻で反転を判断します。",
             "applyFailed": "プリセットを完全には保存できませんでした。「詳細設定」の値を確認してください。"
           },
           "timeline": {
@@ -1551,30 +1552,30 @@
             "atMinutes": "+{min} 分",
             "windowMinutes": "+{min}〜{max} 分",
             "explainPause": "子午線の {pause} 分前に撮影を止め、追尾をオフにします。反転は子午線通過後 {min} 分に行います。撮影時間が減るため、望遠鏡が子午線を越えられない場合だけ使ってください。",
-            "explainFixed": "NINA は露光が子午線通過後 {min} 分を超えそうになるまで撮影し、その時点まで待ってちょうどそこで反転します。最遅時刻を遅くすると待ち時間がなくなります。",
+            "explainFixed": "@:{'general.backendName'} は露光が子午線通過後 {min} 分を超えそうになるまで撮影し、その時点まで待ってちょうどそこで反転します。最遅時刻を遅くすると待ち時間がなくなります。",
             "explainWindow": "子午線通過後 {min}〜{max} 分の間に終わった最初の露光の直後に反転します。待ち時間なし。"
           },
           "help": {
             "MinutesAfterMeridian": "子午線通過後、反転を始めてよい最も早い時刻です。",
-            "MaxMinutesAfterMeridian": "子午線通過後の反転の最も遅い時刻です。最早時刻より小さくはできません。間隔を広げると、NINA は露光直後に待たずに反転できます。",
+            "MaxMinutesAfterMeridian": "子午線通過後の反転の最も遅い時刻です。最早時刻より小さくはできません。間隔を広げると、@:{'general.backendName'} は露光直後に待たずに反転できます。",
             "PauseTimeBeforeMeridian": "子午線を安全に越えられない機材専用：子午線のこの分数前に追尾を止めます。それ以外は 0 のままにしてください。",
             "SettleTime": "反転後、架台が落ち着くまで待ちます。反転後最初の plate solve で星が流れる場合は値を増やしてください。",
-            "Recenter": "反転後、NINA が plate solve を行い天体を再センタリングします。強く推奨。動作する plate solver が必要です。",
+            "Recenter": "反転後、@:{'general.backendName'} が plate solve を行い天体を再センタリングします。強く推奨。動作する plate solver が必要です。",
             "UseSideOfPier": "架台が報告するピア側を使って反転が必要か判断します。より確実ですが、架台が正しく報告する場合に限ります。",
             "AutoFocusAfterFlip": "反転後にオートフォーカスを実行します。鏡筒が回ると主鏡が動くニュートンや SCT に便利です。",
             "RotateImageAfterFlip": "反転後にプレビューを 180° 回転します。表示のみで、保存画像は変わりません。"
           },
           "dayTest": {
             "title": "昼間に反転をテスト",
-            "teaser": "あなたの設定で NINA に昼間に本物の子午線反転をさせましょう。子午線を越えた位置で望遠鏡は三脚やピラーをかわせるか、ケーブルは届くか？",
+            "teaser": "あなたの設定で @:{'general.backendName'} に昼間に本物の子午線反転をさせましょう。子午線を越えた位置で望遠鏡は三脚やピラーをかわせるか、ケーブルは届くか？",
             "open": "テスト開始",
-            "intro": "望遠鏡を手動で子午線のすぐ東の点まで動かします。そこから子午線を越えて追尾を続け、NINA が夜間と同じように反転します——あなたの反転設定と実際の時刻で。",
+            "intro": "望遠鏡を手動で子午線のすぐ東の点まで動かします。そこから子午線を越えて追尾を続け、@:{'general.backendName'} が夜間と同じように反転します——あなたの反転設定と実際の時刻で。",
             "blockers": {
               "notConnected": "架台が接続されていません。",
               "parked": "架台がパーク中です。先にパークを解除してください。",
               "cannotSlew": "架台は座標への導入ができません。",
               "noLocation": "架台に観測地がありません。先に場所を設定してください。",
-              "sequenceRunning": "NINA でシーケンスが実行中です。先に停止してください。"
+              "sequenceRunning": "@:{'general.backendName'} でシーケンスが実行中です。先に停止してください。"
             },
             "caps": {
               "label": "望遠鏡・ファインダー・ガイド鏡にキャップをした",
@@ -1594,14 +1595,14 @@
             "resultProblem": "反転の動作に注意が必要です。",
             "problemAdvice": "両側でケーブルが届くよう配線を確認してください。望遠鏡が三脚やピラーに触れた場合は、上で「ほとんどできない」を選ぶか、架台の子午線リミットを確認してください。",
             "pierChanged": "ピア側：{before} → {after}",
-            "notTested": "反転後のガイドは確認しません。詳細は NINA のログを見てください。",
+            "notTested": "反転後のガイドは確認しません。詳細は @:{'general.backendName'} のログを見てください。",
             "stopped": "テストを停止しました。シーケンスと追尾はオフ、架台はその場にとどまります。",
             "sideEast": "東",
             "sideWest": "西",
             "exposure": "露光時間（秒）",
-            "exposureHelp": "NINA は反転ウィンドウ内で終わった最初の露光の後に反転します。いつもの露光時間なら、テストは夜と同じ位置で反転します。",
+            "exposureHelp": "@:{'general.backendName'} は反転ウィンドウ内で終わった最初の露光の後に反転します。いつもの露光時間なら、テストは夜と同じ位置で反転します。",
             "plan": "テストには少なくとも {minutes} 分かかり、さらに子午線の何分前から始めたかの時間が加わります。赤道儀は子午線を {flip} 分過ぎるまで追尾します——これがテストする位置で、夜間と同じです。",
-            "sequenceNotice": "テスト用シーケンスを NINA に読み込みます。現在読み込まれているシーケンスは置き換えられるので、残したい場合は先に保存してください。",
+            "sequenceNotice": "テスト用シーケンスを @:{'general.backendName'} に読み込みます。現在読み込まれているシーケンスは置き換えられるので、残したい場合は先に保存してください。",
             "start": "テストシーケンスを読み込んで開始",
             "toPositioning": "次へ",
             "back": "戻る",
@@ -1610,7 +1611,7 @@
               "toMeridian": "子午線までの時間",
               "pastMeridian": "子午線通過後の経過",
               "noData": "赤道儀はまだ位置または設置場所を報告していません。",
-              "poleHint": "望遠鏡は極を向いています。ここでも NINA は反転しますが、鏡筒が三脚に当たらないか、ケーブルが届くかは極から離れないと分かりません。現実的なテストには、Dec をいつもの対象と同じくらいの高さに動かしてください。",
+              "poleHint": "望遠鏡は極を向いています。ここでも @:{'general.backendName'} は反転しますが、鏡筒が三脚に当たらないか、ケーブルが届くかは極から離れないと分かりません。現実的なテストには、Dec をいつもの対象と同じくらいの高さに動かしてください。",
               "checks": {
                 "lead": "反転の少なくとも {minutes} 分前",
                 "pier": "カウンターウェイト下向き——反転前のピア側",
@@ -1627,20 +1628,20 @@
               }
             },
             "confirmTitle": "テストシーケンスを読み込みますか？",
-            "confirmMessage": "NINA に読み込まれているシーケンスは反転テストに置き換えられます。望遠鏡は現在の位置から追尾し、子午線通過後に NINA が反転させます。",
+            "confirmMessage": "@:{'general.backendName'} に読み込まれているシーケンスは反転テストに置き換えられます。望遠鏡は現在の位置から追尾し、子午線通過後に @:{'general.backendName'} が反転させます。",
             "waitingForMeridian": "子午線へ向けて追尾中 …",
             "pastMeridian": "望遠鏡は子午線を {minutes} 分越えています。",
-            "flipping": "NINA が反転中 …",
+            "flipping": "@:{'general.backendName'} が反転中 …",
             "countdownWindow": "{earliest}〜{latest} 分後に反転",
             "countdownLatest": "遅くとも {latest} 分後に反転",
-            "runningHint": "NINA が単独でテストを実行するため、アプリを閉じても大丈夫です。何かが邪魔になったら STOP を押すと、シーケンスと追尾が止まります。",
-            "flippedAt": "NINA は子午線通過後 {minutes} 分で反転しました。",
-            "noFlip": "NINA は時間内に反転しませんでした。シーケンスと追尾を停止しました。",
-            "noFlipAdvice": "反転設定と NINA のログを確認してください。「ピア側を使用」がオンなら、架台がピア側を誤って報告している可能性があります。オフにして試してください。",
+            "runningHint": "@:{'general.backendName'} が単独でテストを実行するため、アプリを閉じても大丈夫です。何かが邪魔になったら STOP を押すと、シーケンスと追尾が止まります。",
+            "flippedAt": "@:{'general.backendName'} は子午線通過後 {minutes} 分で反転しました。",
+            "noFlip": "@:{'general.backendName'} は時間内に反転しませんでした。シーケンスと追尾を停止しました。",
+            "noFlipAdvice": "反転設定と @:{'general.backendName'} のログを確認してください。「ピア側を使用」がオンなら、架台がピア側を誤って報告している可能性があります。オフにして試してください。",
             "startFailed": "テストシーケンスを開始できませんでした：{error}",
-            "ninaError": "NINA が反転中にエラーを報告しました。ステップ：{step}。",
+            "ninaError": "@:{'general.backendName'} が反転中にエラーを報告しました。ステップ：{step}。",
             "ninaErrorRecenterCaps": "キャップをしているので想定どおりです。再センタリングには星が必要です。夜に plate solving が動作するか確認してください。",
-            "ninaOk": "NINA はエラーなしで反転を完了しました。",
+            "ninaOk": "@:{'general.backendName'} はエラーなしで反転を完了しました。",
             "steps": {
               "recenter": "再センタリング（plate solve）",
               "autofocus": "反転後のオートフォーカス",
@@ -4070,7 +4071,7 @@
           "saveFolder": "撮影フレームの保存先",
           "sequenceRunningLive": "シーケンス実行中のためライブスイープは無効です。実行するとシーケンスの途中でフォーカサーが動き、露光が行われてしまいます。保存済みオートフォーカス実行はその間も使用できます。",
           "working": "処理中...",
-          "runsInBackground": "このウィンドウを閉じても最適化はNINAで継続され、星検出タブから再度開くことができます。",
+          "runsInBackground": "このウィンドウを閉じても最適化は@:{'general.backendName'}で継続され、星検出タブから再度開くことができます。",
           "complete": "最適化完了",
           "variant": "表示中",
           "variantCurrent": "現在",
@@ -4253,12 +4254,12 @@
             "maxBlindStepsPerDirection": "反対側を試すために方向を反転するまでに、各方向で試行するブラインドオートフォーカスステップの最大数。0 に設定すると上限を無効にします。",
             "reverseInitialDirection": "オートフォーカスを逆方向への移動から開始します。反対側からピントに近づける必要がある場合に便利です（例：ミラーシフトのある SCT やバックラッシュのあるフォーカサー）。",
             "focuserIncreasesTowardObjective": "フォーカサーの移動方向：フォーカサー位置の値が大きくなるとカメラが対物側から離れる（標準）か、近づく（反転）か。これは方向の表示とダイアグラムにのみ影響します。すなわち「対物側へ近づける/離す」の表示、センサーモデルの望遠鏡/センサーのラベル、スペーサーのアドバイス、チルト調整ガイドの上下移動の矢印です。測定値、ネジの角度、補正量が変わることは決してありません。チルトアダプターの方向はフォーカサー単位で測定され、フォーカサーの方向の規約はその測定から完全に相殺されるためです。お使いの機材でこれらの表示が逆に見える場合は切り替えてください。すでに較正した内容には影響せず、何かが逆方向に回り始めることもありません。",
-            "validateHfrImprovement": "有効にすると、前後に追加の露光を行いHFRが改善したことを確認します。このチェックは、NINAのオートフォーカスオプションで設定されたR²検証に加えて行われる場合があります。",
+            "validateHfrImprovement": "有効にすると、前後に追加の露光を行いHFRが改善したことを確認します。このチェックは、@:{'general.backendName'}のオートフォーカスオプションで設定されたR²検証に加えて行われる場合があります。",
             "hfrImprovementThreshold": "HFR改善を検証する際の許容幅。デフォルト値の15%は、初期HFRが最終HFRより15%以上良い場合にオートフォーカスが失敗となることを意味します",
             "hyperbolicFitModel": "フォーカスカーブにフィットする双曲線モデル。推奨のデフォルトは Hybrid（Best Fit）です。カーブは Tilted Hyperbola でライブ描画され、実行完了時にすべてのモデルで再フィットし、最良フォーカス位置の期待誤差が最小のモデルが採用されます。そのため各実行で最も信頼できるフィットが自動選択されます。固定の選択肢：Symmetric は従来の4パラメーター双曲線です。その他は非対称モデル（デフォーカス時と合焦付近でHFRの振る舞いが異なることが多いため、フォーカスの両側で傾きが異なる）で、Tilted Hyperbola は線形の傾きを持つ単一の滑らかな曲線、Smooth Blend は2つの双曲線を滑らかにブレンドしたもの、Uneven Blend は従来のブレンドフィットです。",
             "weightedHyperbolicFitEnabled": "双曲線フィットの各点を測定誤差に基づいて重み付けします。σ 値はフィット前に正則化されます。ほぼゼロの縮退した σ（例：検出星数が非常に少ないフレーム）はスイープの σ 中央値の20%を下限とし、不明な σ には中央値が使われるため、縮退した誤差推定によって単一の点がフィットを支配することはありません。",
-            "fitRejectionCriterion": "オートフォーカス実行を棄却するかどうかを決める適合度指標。R²（デフォルト）は従来の動作で、フィットのR²がNINAのR²しきい値（フォーカサー設定）を下回ると棄却します。換算 χ² は、双曲線フィットの換算 χ² が下記のしきい値を超えると棄却します。これはフォーカスカーブに対するばらつき単位の適合度の上限ですが、「重み付き双曲線フィット」が有効な場合にのみ有効です（各点の測定 σ に依存するため）。二次フィットとトレンドラインフィットは、この設定にかかわらず常にR²を使用します。",
-            "rSquaredRejectionThreshold": "棄却基準がR²に設定されている場合に、オートフォーカス実行が棄却される最小のR²（決定係数）。これはNINA自身のフォーカサー設定のR²しきい値であり、ここで編集すると同じプロファイル設定が変更されます。R²が1に近いほど、測定されたフォーカスカーブへのフィットが良好です。",
+            "fitRejectionCriterion": "オートフォーカス実行を棄却するかどうかを決める適合度指標。R²（デフォルト）は従来の動作で、フィットのR²が@:{'general.backendName'}のR²しきい値（フォーカサー設定）を下回ると棄却します。換算 χ² は、双曲線フィットの換算 χ² が下記のしきい値を超えると棄却します。これはフォーカスカーブに対するばらつき単位の適合度の上限ですが、「重み付き双曲線フィット」が有効な場合にのみ有効です（各点の測定 σ に依存するため）。二次フィットとトレンドラインフィットは、この設定にかかわらず常にR²を使用します。",
+            "rSquaredRejectionThreshold": "棄却基準がR²に設定されている場合に、オートフォーカス実行が棄却される最小のR²（決定係数）。これは@:{'general.backendName'}自身のフォーカサー設定のR²しきい値であり、ここで編集すると同じプロファイル設定が変更されます。R²が1に近いほど、測定されたフォーカスカーブへのフィットが良好です。",
             "reducedChiSquaredRejectionThreshold": "棄却基準が換算 χ² に設定されている場合に、実行が棄却される双曲線フィットの換算 χ²（自由度あたりの χ²）の上限値。重みの基になる各点の σ は星集団のばらつきであり、各点のHFR中央値の不確かさを過大評価します。そのため換算 χ² は通常1を大きく下回り、検出星数が増えるほど小さく、1点あたりのフレーム数が増えるほど大きくなります。このしきい値は較正された統計的検定ではなく、大まかな妥当性の上限として扱ってください。0 に設定すると無効になります。重み付きフィットでのみ意味があります。",
             "maxOutlierRejections": "オートフォーカスのカーブフィッティング中に外れ値として除外できる点の最大数を制御します。",
             "outlierRejectionConfidence": "オートフォーカスのカーブフィッティング中に使用する、外れ値の両側 Grubbs 検定の信頼水準。95% が妥当なデフォルトです。50%より大きく100%未満である必要があります。",
@@ -4330,7 +4331,7 @@
             "useAutoFocusCrop": "オンにすると、Hocus Focus は自身のオートフォーカスと通常の露出の両方で、内側と外側のクロップ内の星だけを測定します。オフにすると画像全体を使います。",
             "fitPSF": "検出された星にPSFモデルをフィットするかどうか。FWHMと離心率の算出に必要です",
             "debugMode": "デバッグに役立つ追加データを保存するデバッグモードを有効にします。星検出を調整していて構造マップを確認したい場合以外はオフにしてください。",
-            "detectionBinning": "星検出のためだけにフレームに適用されるソフトウェアビニング。星検出は約2〜4ピクセルの合焦した星を想定して較正されています。長焦点では星がそれよりはるかに大きくなり、ピクセル単位の設定が適正範囲から外れます。検出用にフレームをビニングすると星のサイズが適正範囲に戻り、ピクセルあたりのS/Nも向上します。表示される画像と報告されるHFR値は、カメラが撮影した解像度のままです。これはNINAのオートフォーカス・ビニングとは別物です。そちらはカメラがオートフォーカスフレームを撮影する方法を変更するもので、撮影時のビニングと一致させる必要があります。両者は掛け合わされます",
+            "detectionBinning": "星検出のためだけにフレームに適用されるソフトウェアビニング。星検出は約2〜4ピクセルの合焦した星を想定して較正されています。長焦点では星がそれよりはるかに大きくなり、ピクセル単位の設定が適正範囲から外れます。検出用にフレームをビニングすると星のサイズが適正範囲に戻り、ピクセルあたりのS/Nも向上します。表示される画像と報告されるHFR値は、カメラが撮影した解像度のままです。これは@:{'general.backendName'}のオートフォーカス・ビニングとは別物です。そちらはカメラがオートフォーカスフレームを撮影する方法を変更するもので、撮影時のビニングと一致させる必要があります。両者は掛け合わされます",
             "measurementAverage": "フレーム全体の星の平均測定値の計算方法を制御します。中央値は外れ値に強く、デフォルトです。",
             "useOptimizedSettings": "有効にすると、ノイズレベル/ピクセルスケール/フォーカス範囲のプリセットの代わりに、最適化ウィザードが生成した星検出設定で検出を行います。シンプルモードで、ウィザードが結果を生成・適用した後にのみ利用できます",
             "noiseLevel": "星検出処理を開始する前に元画像に適用するぼかしの量を制御します。特にノイズの多いセンサーを使用している場合や、非常に大きなF値で撮影する場合は値を上げてください",
@@ -4503,7 +4504,7 @@
         "applied": "適用しました。次のオートフォーカスから新しい値を使います。",
         "applyFailed": "値を保存できませんでした。",
         "findings": {
-          "notActive": "前回のオートフォーカスは Hocus Focus で実行されていません。NINA のオプションで 'Auto Focus' と 'Star Detector' の両方を Hocus Focus に設定してください。",
+          "notActive": "前回のオートフォーカスは Hocus Focus で実行されていません。@:{'general.backendName'} のオプションで 'Auto Focus' と 'Star Detector' の両方を Hocus Focus に設定してください。",
           "fewStars": "検出された星は {stars} 個だけです。露出を長くするとカーブのデータが増えます。",
           "fewStarsNarrowband": "検出された星は {stars} 個だけです。ナローバンドフィルターではフォーカス用の露出をかなり長くする必要があります。",
           "notBracketed_inward": "最もシャープな点が測定列の最初でした。ピント位置はさらに内側にあります。先に手動でおおまかにピントを合わせるか、測定範囲を広げてください。",
@@ -4527,7 +4528,7 @@
         "title": "オートフォーカスの基本",
         "description": "Hocus Focus で最も重要な設定です。その他はすべて下の詳細設定にあります。",
         "startAssistant": "セットアップアシスタントを開始",
-        "ninaSettings": "NINA フォーカサー設定",
+        "ninaSettings": "@:{'general.backendName'} フォーカサー設定",
         "optics": "光学系",
         "opticsLine": "焦点距離 {focalLength} mm · ピクセルサイズ {pixelSize} µm",
         "imageScale": "画像スケール {scale}″/px",
@@ -4600,7 +4601,7 @@
           "camera": "カメラ接続済み",
           "focuser": "フォーカサー接続済み",
           "hocusFocus": "Hocus Focus 利用可能",
-          "engineHint": "NINA で 'Auto Focus' と 'Star Detector' の両方を Hocus Focus に設定する必要があります。そうでない場合は結果ステップで通知されます。"
+          "engineHint": "@:{'general.backendName'} で 'Auto Focus' と 'Star Detector' の両方を Hocus Focus に設定する必要があります。そうでない場合は結果ステップで通知されます。"
         },
         "focalLength": "焦点距離 (mm)",
         "pixelSize": "ピクセルサイズ (µm)",
@@ -4746,7 +4747,7 @@
         "height": "高さ (px)",
         "focal_length": "焦点距離 (mm)",
         "bit_depth": "ビット深度",
-        "bit_depth_help": "N.I.N.A. がカメラデータに想定するビット深度です。デジタル一眼などビット深度を報告しないカメラで重要で、統計、ストレッチ、飽和判定に影響します。カメラが保存する RAW ファイルは変更しません。",
+        "bit_depth_help": "@:{'general.backendName'} がカメラデータに想定するビット深度です。デジタル一眼などビット深度を報告しないカメラで重要で、統計、ストレッチ、飽和判定に影響します。カメラが保存する RAW ファイルは変更しません。",
         "bit_scaling": "ビットスケーリング",
         "bit_scaling_help": "カメラデータを 16 ビットにスケーリングし、ビット深度の低いカメラの画像でも値の範囲全体を使えるようにします。"
       },
@@ -4807,12 +4808,12 @@
         "StartFromCurrentPosition": "現在位置から開始しますか？",
         "DirectionEast": "東方向へ移動",
         "camera_settings": "カメラ設定",
-        "camera_settings_hint": "空欄の場合はNINAのデフォルト値を使用します",
+        "camera_settings_hint": "空欄の場合は@:{'general.backendName'}のデフォルト値を使用します",
         "exposure_time": "露光時間 (秒)",
         "gain": "ゲイン",
         "filter": "フィルター",
         "filter_default": "デフォルト",
-        "nina_default": "NINA デフォルト",
+        "nina_default": "@:{'general.backendName'} デフォルト",
         "ManualMode": "マニュアルモード"
       },
       "pins_settings": {
@@ -4861,7 +4862,7 @@
     },
     "slewAndCenter": {
       "title": "導入と中心合わせ",
-      "LastSelectedImageSource_wrong": "NINA / Framingで画像ソースにオフラインスカイマップを選択してください",
+      "LastSelectedImageSource_wrong": "@:{'general.backendName'} / Framingで画像ソースにオフラインスカイマップを選択してください",
       "ra": "赤経 (RA):",
       "dec": "赤緯 (Dec):",
       "ra_placeholder": "赤経 03:47:28.2",
@@ -5112,7 +5113,7 @@
         "rise_set": "出 / 入",
         "circumpolar": "周極",
         "never_rises": "昇らない",
-        "missing_location": "高度と出没時刻には NINA プロファイルの観測地が必要です。"
+        "missing_location": "高度と出没時刻には @:{'general.backendName'} プロファイルの観測地が必要です。"
       },
       "datetime": {
         "title": "日付と時刻",
@@ -5135,7 +5136,7 @@
         "landscapes_visible": "風景を表示",
         "hide_below_horizon": "地平線下の天体を非表示",
         "sky_survey_visible": "写真による全天サーベイ",
-        "sky_survey_hint": "同梱された DSS 天空画像のみをオフラインで使用し、インターネットからタイルを取得しません。",
+        "sky_survey_hint": "@:{'general.backendName'} ホストにダウンロードした DSS または NSNS サーベイをオフラインで表示します。アプリがインターネットからタイルを取得することはありません。",
         "dsos_visible": "ディープスカイ天体 (メシエ, NGC)",
         "catalog_filters": "カタログフィルター",
         "catalog_filter_hint": "表示する深宇宙天体マーカーを制御します。オフライン検索では引き続きすべてのカタログ天体を検索できます。",
@@ -5185,7 +5186,7 @@
       },
       "survey": {
         "title": "写真サーベイデータ",
-        "hint": "DSSカラーサーベイは一度だけNINA/PINSホストにダウンロードされ、そこからAtlasに提供されます。オーダーが高いほど、狭い視野の詳細が増えます。",
+        "hint": "DSSカラーサーベイは一度だけ@:{'general.backendName'}ホストにダウンロードされ、そこからAtlasに提供されます。オーダーが高いほど、狭い視野の詳細が増えます。",
         "plugin_update_required": "空のサーベイをダウンロードするには、Touch'N'Starsプラグインを更新してください。",
         "installed": "インストール済み",
         "free_space": "ホストの空き容量",
@@ -5210,11 +5211,11 @@
         "delete_keep_option": "{name}を残し、残りを削除",
         "delete_all_option": "すべて",
         "delete_confirm_title": "サーベイデータを削除しますか？",
-        "delete_confirm": "NINA/PINSホストからダウンロード済みの空サーベイを削除しますか？再度ダウンロードするまでAtlasに写真背景は表示されません。",
+        "delete_confirm": "@:{'general.backendName'}ホストからダウンロード済みの空サーベイを削除しますか？再度ダウンロードするまでAtlasに写真背景は表示されません。",
         "delete_confirm_keep": "{name}より上のすべてのオーダーを削除しますか？{name}はインストールされたままで、Atlasに表示され続けます。",
-        "terms": "Digitized Sky Survey © STScI/NASA、CDS（CNRS/Unistra）によりカラー化・HiPS処理。非営利利用は帰属表示のもと無料です。タイルはご自身のNINA/PINSホストに保存されます。",
+        "terms": "Digitized Sky Survey © STScI/NASA、CDS（CNRS/Unistra）によりカラー化・HiPS処理。非営利利用は帰属表示のもと無料です。タイルはご自身の@:{'general.backendName'}ホストに保存されます。",
         "terms_link": "利用規約",
-        "offer_text": "写真による空の背景（DSS、約{size}）を今すぐNINA/PINSホストにダウンロードしますか？ない場合、Atlasには星とカタログ天体のみが表示されます。",
+        "offer_text": "写真による空の背景（DSS、約{size}）を今すぐ@:{'general.backendName'}ホストにダウンロードしますか？ない場合、Atlasには星とカタログ天体のみが表示されます。",
         "offer_text_legacy": "ダウンロード済みの空の背景は古い形式です。今すぐ再度ダウンロードしますか（約{size}）？古いファイルは置き換えられます。",
         "offer_accept": "ダウンロード",
         "offer_decline": "今はしない",
@@ -5224,9 +5225,9 @@
         "source_nsns": "NSNS カラー",
         "source_dss_hint": "Digitized Sky Survey：全天の実写トゥルーカラー画像。",
         "source_nsns_hint": "Northern Sky Narrowband Survey：[OIII] を赤、Hα を緑、[SII] を青で表示し、輝線星雲の全体像を示します。−16° より北の空のみが対象です。",
-        "hint_nsns": "NSNS 狭帯域サーベイは NINA/PINS ホストに一度だけダウンロードされ、そこからアトラスに配信されます。高いオーダーほど狭い視野の細部が増えます。",
+        "hint_nsns": "NSNS 狭帯域サーベイは @:{'general.backendName'} ホストに一度だけダウンロードされ、そこからアトラスに配信されます。高いオーダーほど狭い視野の細部が増えます。",
         "plugin_update_required_nsns": "NSNS 狭帯域サーベイをダウンロードするには、Touch'N'Stars プラグインを更新してください。",
-        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg、CC BY-NC-SA 4.0 ライセンス。出典を明記すれば非商用で無料で利用できます。タイルはお使いの NINA/PINS ホストに保存されます。",
+        "terms_nsns": "Northern Sky Narrowband Survey © Stefan Ziegenbalg、CC BY-NC-SA 4.0 ライセンス。出典を明記すれば非商用で無料で利用できます。タイルはお使いの @:{'general.backendName'} ホストに保存されます。",
         "source_nsns_ha": "NSNS Hα",
         "source_nsns_ha_hint": "Northern Sky Narrowband Survey、Hα 輝線のみ（電離水素）。−16° より北の空のみが対象です。別途ダウンロードが必要です。",
         "source_nsns_oiii": "NSNS [OIII]",
@@ -5949,7 +5950,7 @@
         "keepOpen": "このアプリを開いたままにしてください。 状態の不整合を防ぐために、コントロールは一時的にブロックされます。",
         "running": "Raspberry Pi パッケージを更新しています。 処理が完了するまでお待ちください。",
         "title": "システムアップデート中",
-        "waitingForApi": "アップデートが完了しました。 NINA API が再びアクセス可能になるのを待っています...",
+        "waitingForApi": "アップデートが完了しました。 @:{'general.backendName'} API が再びアクセス可能になるのを待っています...",
         "close": "閉じる"
       },
       "pluginsAction": "アクション",
@@ -6131,7 +6132,7 @@
       "errors": {
         "title": "バーティノフ解析",
         "readFile": "ファイルの読み込みに失敗しました。",
-        "captureLoad": "N.I.N.A.からの最新画像の取得に失敗しました。",
+        "captureLoad": "@:{'general.backendName'}からの最新画像の取得に失敗しました。",
         "analysisFailed": "解析リクエストに失敗しました。",
         "badRequest": "サーバーがリクエストを拒否しました。パラメータを確認してください。",
         "mockMode": "mock API有効時は解析機能を利用できません。",
@@ -6227,12 +6228,12 @@
         "validationJournalLines": "ジャーナル行数は 100 ～ 50000 でなければなりません。",
         "validationSections": "少なくとも 1 つのセクションを選択します。",
         "expertMode": "詳細設定",
-        "ninaLogs": "NINAログファイル(直近10件)",
+        "ninaLogs": "@:{'general.backendName'}ログファイル(直近10件)",
         "collecting": "PINSシステム診断を収集しています…しばらく時間がかかります。"
       },
       "progress": {
         "collectingLogs": "Touch'N'Starsのログを収集しています…",
-        "collectingNinaLogs": "最近のNINAログファイルを収集しています…",
+        "collectingNinaLogs": "最近の@:{'general.backendName'}ログファイルを収集しています…",
         "buildingArchive": "ZIPアーカイブを作成しています…"
       }
     },
@@ -6336,7 +6337,7 @@
         "noListsHint": "telescopius.comでターゲットリストを作成し、ここで再読み込みしてください。",
         "editOnTelescopius": "Telescopiusでリストを編集",
         "dataFrom": "データ取得元",
-        "connectionError": "Telescopiusへの接続に失敗しました。NINAのPCにインターネット接続が必要で、Telescopiusに少なくとも1つのターゲットリストが存在する必要があります。",
+        "connectionError": "Telescopiusへの接続に失敗しました。@:{'general.backendName'}のPCにインターネット接続が必要で、Telescopiusに少なくとも1つのターゲットリストが存在する必要があります。",
         "myLists": "マイターゲットリスト",
         "unnamedList": "名称未設定のリスト",
         "showObjects": "天体を表示",
@@ -6443,7 +6444,7 @@
       "save": "保存",
       "add": "追加",
       "useProxy": "プロキシを使用",
-      "useProxyHint": "NINAバックエンド経由で画像をルーティングします。認証やCORS制限のあるカメラに必要です。インターネット直接カメラには無効にしてください。",
+      "useProxyHint": "@:{'general.backendName'}バックエンド経由で画像をルーティングします。認証やCORS制限のあるカメラに必要です。インターネット直接カメラには無効にしてください。",
       "deleteConfirm": "カメラ \"{name}\" を本当に削除しますか？",
       "loadingImage": "画像を読み込み中…",
       "unknownCamera": "不明なカメラ",
@@ -6459,7 +6460,7 @@
         "proxyTitle": "プロキシ vs. ダイレクト",
         "proxyText": "各カメラは2通りの方法で取得できます：",
         "proxyOptions": [
-          "プロキシ（デフォルト）：画像はNINAバックエンドで取得されブラウザに転送されます。認証やCORS制限のあるローカルネットワークカメラに必要です。VPN経由では若干遅くなります。",
+          "プロキシ（デフォルト）：画像は@:{'general.backendName'}バックエンドで取得されブラウザに転送されます。認証やCORS制限のあるローカルネットワークカメラに必要です。VPN経由では若干遅くなります。",
           "ダイレクト：ブラウザが画像を直接取得します。公開インターネットカメラ（例：公開AllSkyカメラ）に最適です。Chrome/EdgeではURLの認証情報をサポートしません。"
         ],
         "close": "閉じる"
@@ -6546,8 +6547,8 @@
         "sendToNina": "シーケンスを適用",
         "sending": "送信中...",
         "sent": "送信しました！",
-        "sendErrorTitle": "N.I.N.Aへの送信エラー",
-        "sendSuccessMessage": "シーケンスをN.I.N.Aに正常に送信しました！",
+        "sendErrorTitle": "@:{'general.backendName'}への送信エラー",
+        "sendSuccessMessage": "シーケンスを@:{'general.backendName'}に正常に送信しました！",
         "validSequence": "シーケンスは有効で適用できます",
         "invalidSequence": "有効なシーケンスを作成するには、ターゲット設定とスマート露出を追加してください",
         "saveNamed": "シーケンスに名前を付けて保存...",
@@ -7209,7 +7210,7 @@
             "Warnings": "警告"
           },
           "categoryHints": {
-            "Errors": "すべての N.I.N.A. エラーと切断された機器",
+            "Errors": "すべての @:{'general.backendName'} エラーと切断された機器",
             "Guiding": "ガイド星の消失、ガイド失敗",
             "Mount": "反転失敗、追尾なしの撮影",
             "Safety": "セーフティモニターが危険を報告",
@@ -7224,7 +7225,7 @@
           "pauseMs": "音の間隔（ms）",
           "graceMinutes": "起動直後の猶予（分）",
           "throttleMinutes": "同じアラームの再通知まで（分）",
-          "graceHint": "N.I.N.A. 起動直後はアラームを鳴らしません。同じアラームは連続で最大 3 回まで鳴ります。",
+          "graceHint": "@:{'general.backendName'} 起動直後はアラームを鳴らしません。同じアラームは連続で最大 3 回まで鳴ります。",
           "exclusionsTitle": "鳴らさない対象",
           "addExclusionTitle": "鳴らさない項目を追加",
           "exclusionPlaceholder": "メッセージの一部",
@@ -7376,7 +7377,7 @@
     },
     "shortcuts": {
       "title": "シーケンスショートカット",
-      "description": "N.I.N.Aシーケンスの読み込みと開始へのクイックアクセス",
+      "description": "@:{'general.backendName'}シーケンスの読み込みと開始へのクイックアクセス",
       "addNew": "新しいショートカット",
       "newShortcut": "新しいショートカット",
       "createFirst": "最初のショートカットを作成",
@@ -7720,7 +7721,7 @@
           "maxPluginStorageGb": "プラグイン最大ストレージ（GB）",
           "maxPluginStorageHelp": "無制限にするには0を設定してください。",
           "protocolTooltip": "PINSが公開するローカル詳細APIへのアクセスに使用するプロトコル。",
-          "sequencePollTooltip": "AllSkyがPINS/NINAシーケンスの開始・停止を確認する頻度。",
+          "sequencePollTooltip": "AllSkyが@:{'general.backendName'}シーケンスの開始・停止を確認する頻度。",
           "advancedApiHostTooltip": "PINS詳細APIサービスのホスト名またはIPアドレス。",
           "portTooltip": "PINS詳細APIサービスが使用するTCPポート。",
           "timeoutTooltip": "詳細APIリクエストが利用不可とみなされるまでの最大待機時間。",
@@ -8236,8 +8237,8 @@
       "filterAll": "すべて",
       "filterNewOnly": "新規のみ",
       "filterVisibleOnly": "今夜見える天体のみ",
-      "visibleHint": "NINAプロファイルの観測地点に基づく",
-      "visibleNoLocation": "観測地点が未設定です — NINAプロファイルで場所を設定してください",
+      "visibleHint": "@:{'general.backendName'}プロファイルの観測地点に基づく",
+      "visibleNoLocation": "観測地点が未設定です — @:{'general.backendName'}プロファイルで場所を設定してください",
       "sortBy": "並べ替え",
       "sortLatestMag": "最新等級（明るい順）",
       "sortFirstObserved": "発見日（新しい順）",
@@ -8414,7 +8415,7 @@
         "useTls": "TLS を使用します (ポートを 8883 に切り替えます)",
         "username": "ユーザー名"
       },
-      "notLoaded": "Ground Station プラグインが NINA にインストールされていないか、ロードされていません。 これらの設定を使用するには、NINA に「Ground Station」プラグインをインストールします。",
+      "notLoaded": "Ground Station プラグインが @:{'general.backendName'} にインストールされていないか、ロードされていません。 これらの設定を使用するには、@:{'general.backendName'} に「Ground Station」プラグインをインストールします。",
       "ntfysh": {
         "defaultIcon": "デフォルトのアイコンの URL",
         "defaultTopic": "デフォルトのトピック",
@@ -8458,7 +8459,7 @@
         "refreshing": "更新中…",
         "workspace": "ワークスペース"
       },
-      "subtitle": "NINA Ground Station 通知サービスを構成する",
+      "subtitle": "@:{'general.backendName'} Ground Station 通知サービスを構成する",
       "tabs": {
         "discord": "Discord",
         "email": "電子メール",
@@ -8648,7 +8649,7 @@
         "exportFailedMessage": "クリップボードにコピーできませんでした。",
         "apiDocsLink": "Target Scheduler APIドキュメント",
         "setupTitle": "Target Scheduler APIを設定",
-        "setupStep1": "NINAでTarget Schedulerプラグインのオプションを開き、APIサーバーを有効にしてください。",
+        "setupStep1": "@:{'general.backendName'}でTarget Schedulerプラグインのオプションを開き、APIサーバーを有効にしてください。",
         "setupStep2": "表示されたポート番号を控えてください（デフォルト8188）。",
         "setupStep3": "上のポートを入力すると自動的に接続されます。",
         "welcomeTitle": "Target Scheduler Viewerへようこそ",
@@ -8704,7 +8705,7 @@
         "noTargets": "このプロジェクトにターゲットはありません。"
       },
       "schedulePreview": {
-        "disclaimer": "Schedulerによる今夜の予測プランです。更新のたびに再計算され、NINAが実際に撮影している内容の記録ではありません。",
+        "disclaimer": "Schedulerによる今夜の予測プランです。更新のたびに再計算され、@:{'general.backendName'}が実際に撮影している内容の記録ではありません。",
         "learnMore": "詳しく見る",
         "noScheduleData": "スケジュールデータがありません。",
         "waitingNotVisible": "待機中 — ターゲットはまだ見えていません"
@@ -8725,7 +8726,7 @@
         "open": "プラグイン接続済み",
         "closed": "プラグインに到達できません",
         "unreachable": "{url} の AAPA プラグインに接続できません。",
-        "checkPlugin": "AAPA Controller プラグインが N.I.N.A. にインストールされ、読み込まれていますか?",
+        "checkPlugin": "AAPA Controller プラグインが @:{'general.backendName'} にインストールされ、読み込まれていますか?",
         "checkEnabled": "プラグイン設定で WebSocket サーバーが有効になっており、下記と同じポートですか?",
         "checkFirewall": "Windows ファイアウォールでこのポートへの受信接続が許可されていますか?",
         "port": "WebSocket ポート"
@@ -8740,7 +8741,7 @@
         "ipAddress": "AAPA の IP アドレス",
         "connect": "接続",
         "disconnect": "切断",
-        "autoHint": "自動では、N.I.N.A. コンピューターのすべてのシリアルポートから AAPA を検索します。"
+        "autoHint": "自動では、@:{'general.backendName'} コンピューターのすべてのシリアルポートから AAPA を検索します。"
       },
       "status": {
         "positionX": "位置 X (Az)",
@@ -8759,13 +8760,13 @@
       },
       "assist": {
         "title": "自動極軸合わせ",
-        "hint": "1回タップすると TPPA が起動し（すでに実行中でない場合）、続いて Auto-Pilot が誤差が許容範囲内に収まるまで補正します。Auto-Pilot が終了すると TPPA は自動的に停止します。N.I.N.A. の TPPA 設定で「Log polar alignment error adjustments」を有効にしておく必要があります。実行中はこのページを開いたままにしてください。",
+        "hint": "1回タップすると TPPA が起動し（すでに実行中でない場合）、続いて Auto-Pilot が誤差が許容範囲内に収まるまで補正します。Auto-Pilot が終了すると TPPA は自動的に停止します。@:{'general.backendName'} の TPPA 設定で「Log polar alignment error adjustments」を有効にしておく必要があります。実行中はこのページを開いたままにしてください。",
         "start": "極軸合わせを開始",
         "running": "実行中…",
         "stop": "停止",
         "tppaSettings": "TPPA 設定",
         "autoPilotSettings": "Auto-Pilot 設定",
-        "tnsPluginRequired": "TPPA には N.I.N.A. の Touch'N'Stars プラグインが必要ですが、接続できません。",
+        "tnsPluginRequired": "TPPA には @:{'general.backendName'} の Touch'N'Stars プラグインが必要ですが、接続できません。",
         "phaseLabel": "ステータス",
         "azError": "方位誤差",
         "altError": "高度誤差",
@@ -8838,12 +8839,12 @@
           "MinYLimit": "最小 Y(ステップ)",
           "MaxYLimit": "最大 Y(ステップ)"
         },
-        "autoSaveHint": "フィールドを離れると、変更は N.I.N.A. に保存されます。",
-        "saveInNina": "N.I.N.A. に保存",
+        "autoSaveHint": "フィールドを離れると、変更は @:{'general.backendName'} に保存されます。",
+        "saveInNina": "@:{'general.backendName'} に保存",
         "storeOnDevice": "AAPA に保存",
         "sendConfirm": "AAPA の現在の設定をメモリ (EEPROM) に永続保存しますか?",
         "applyToDevice": "AAPA に適用",
-        "applyInNinaHint": "これらの値は N.I.N.A. に保存されます。AAPA に転送するには、N.I.N.A. の AAPA パネルにある送信ボタンを使用してください。"
+        "applyInNinaHint": "これらの値は @:{'general.backendName'} に保存されます。AAPA に転送するには、@:{'general.backendName'} の AAPA パネルにある送信ボタンを使用してください。"
       },
       "log": {
         "title": "ログ",
@@ -9291,7 +9292,7 @@
       "reload": "プレビューを再読み込み"
     },
     "cache": {
-      "useNinaCache": "ターゲット画像にNINAキャッシュを使用",
+      "useNinaCache": "ターゲット画像に@:{'general.backendName'}キャッシュを使用",
       "hint": "TNS WebAPI経由でDSS/ターゲット画像を読み込みます。キャッシュトグルはuseCacheを制御します。",
       "hintShort": "useCacheをtargetpicに渡します"
     },
@@ -9434,7 +9435,7 @@
       "filterAuto": "自動",
       "filterBroadband": "ブロードバンド",
       "filterClassifications": "フィルターの分類",
-      "filterClassificationsHint": "NINA プロフィールからフィルターします。 自動では、最初の文字の一致が使用されます (L、R、G、B = 広帯域、H、S、O = 狭帯域)。",
+      "filterClassificationsHint": "@:{'general.backendName'} プロフィールからフィルターします。 自動では、最初の文字の一致が使用されます (L、R、G、B = 広帯域、H、S、O = 狭帯域)。",
       "filterExclude": "除外する",
       "filterNarrowband": "ナローバンド",
       "lightModeReport": "ライトモードレポート",
@@ -9649,7 +9650,7 @@
       "working": "処理中…",
       "howItWorks": "使い方",
       "eqmodToggleTitle": "EQMOD RAレート補正",
-      "eqmodToggleDescription": "EQMODはNINAが送る値ではなく、赤経レートを生の秒角/秒として読み取るため、補正しないと追尾が約15倍遅くなります。マウントがEQMODを使用している場合のみ有効にしてください。",
+      "eqmodToggleDescription": "EQMODは@:{'general.backendName'}が送る値ではなく、赤経レートを生の秒角/秒として読み取るため、補正しないと追尾が約15倍遅くなります。マウントがEQMODを使用している場合のみ有効にしてください。",
       "eqmodDetectedHint": "{name} はEQMODドライバーのようです — おそらく有効にした方がよいでしょう。",
       "reapplyIntervalTitle": "再適用間隔",
       "reapplyIntervalDescription": "Quick Trackが追尾レートを再計算して再送信する頻度です。デフォルトの900秒（15分）は彗星や小惑星に適しています。",
