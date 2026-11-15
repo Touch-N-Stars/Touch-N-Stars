@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "Iniciar actualización",
       "upgrading": "Actualizando...",
+      "upgradeStatusUnknown": "No se pudo determinar el resultado de la última actualización. Comprueba si aún hay paquetes pendientes y, si es necesario, vuelve a iniciar la actualización.",
       "terminalOutput": "SALIDA DE TERMINAL",
       "clearOutput": "Limpiar salida",
       "waiting": "Asumiendo el control... Esperando comando...",
@@ -5818,7 +5819,8 @@
         "idle": "Inactivo",
         "running": "Ejecutando",
         "success": "Éxito",
-        "failed": "Fallido"
+        "failed": "Fallido",
+        "unknown": "Desconocido"
       },
       "logs": {
         "syncingTime": "Diferencia horaria detectada: {diff}s. Sincronizando hora...",

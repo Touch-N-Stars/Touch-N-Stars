@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "Upgrade starten",
       "upgrading": "Upgraden...",
+      "upgradeStatusUnknown": "Het resultaat van de laatste update kon niet worden bepaald. Controleer of er nog pakketten in behandeling zijn en start de update zo nodig opnieuw.",
       "terminalOutput": "TERMINALUITVOER",
       "clearOutput": "Uitvoer wissen",
       "waiting": "Controle overnemen... Wachten op opdracht...",
@@ -5818,7 +5819,8 @@
         "idle": "Inactief",
         "running": "Actief",
         "success": "Geslaagd",
-        "failed": "Mislukt"
+        "failed": "Mislukt",
+        "unknown": "Onbekend"
       },
       "logs": {
         "syncingTime": "Tijdsverschil gedetecteerd: {diff}s. Tijd synchroniseren...",

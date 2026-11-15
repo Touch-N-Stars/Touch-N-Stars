@@ -10,6 +10,7 @@
               'bg-accent/10 border-accent/40 text-accent animate-pulse': status === 'Running',
               'bg-status-ok/10 border-status-ok/40 text-status-ok': status === 'Success',
               'bg-status-danger/10 border-status-danger/40 text-status-danger': status === 'Failed',
+              'bg-status-warn/10 border-status-warn/40 text-status-warn': status === 'Unknown',
             }"
           >
             <span
@@ -23,6 +24,12 @@
             class="text-xs text-status-danger"
           >
             {{ $t('plugins.pins.logs.upgradeFailed', { exitCode: upgradeExitCode }) }}
+          </p>
+          <p
+            v-if="status === 'Unknown' && activeOperation === 'upgrade'"
+            class="text-xs text-status-warn max-w-xs"
+          >
+            {{ $t('plugins.pins.upgradeStatusUnknown') }}
           </p>
         </div>
       </div>

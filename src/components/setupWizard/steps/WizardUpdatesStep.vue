@@ -95,17 +95,21 @@ function appendLog(message) {
   pinsStore.appendTerminalLog(message);
 }
 
-const { beginUpgradeTrackingFromStart, resetUpgradeForNewRun, restoreUpgradeState } =
-  usePinsUpgradeTracker({
-    t,
-    appendLog,
-    pinsStore,
-    status,
-    jobId,
-    activeOperation,
-    getIp,
-    shouldWaitForApiRecovery: () => !store.isBackendReachable,
-  });
+const {
+  beginUpgradeTrackingFromStart,
+  adoptRunningUpgrade,
+  resetUpgradeForNewRun,
+  restoreUpgradeState,
+} = usePinsUpgradeTracker({
+  t,
+  appendLog,
+  pinsStore,
+  status,
+  jobId,
+  activeOperation,
+  getIp,
+  shouldWaitForApiRecovery: () => !store.isBackendReachable,
+});
 
 async function checkUpdates() {
   if (isChecking.value) return;
@@ -150,8 +154,9 @@ async function startUpgrade() {
     // daemon restart. The global overlay in App.vue renders the progress.
     beginUpgradeTrackingFromStart(ip, returnedJobId, data);
   } catch (error) {
+    if (adoptRunningUpgrade(ip, error)) return;
     console.error('[PinsWizard] Upgrade start failed:', error);
-    status.value = 'Failed';
+    status.value = error?.response ? 'Failed' : 'Unknown';
     errorMessage.value = t('components.setupWizard.updates.upgradeFailed', {
       message: error.message,
     });

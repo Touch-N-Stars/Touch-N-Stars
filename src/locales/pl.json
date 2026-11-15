@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "Rozpocznij aktualizację",
       "upgrading": "Aktualizowanie...",
+      "upgradeStatusUnknown": "Nie udało się ustalić wyniku ostatniej aktualizacji. Sprawdź, czy nadal są oczekujące pakiety, i w razie potrzeby uruchom aktualizację ponownie.",
       "terminalOutput": "WYJŚCIE TERMINALA",
       "clearOutput": "Wyczyść wyjście",
       "waiting": "Przejmowanie kontroli... Oczekiwanie na polecenie...",
@@ -5818,7 +5819,8 @@
         "idle": "Bezczynny",
         "running": "Uruchomiony",
         "success": "Sukces",
-        "failed": "Niepowodzenie"
+        "failed": "Niepowodzenie",
+        "unknown": "Nieznany"
       },
       "logs": {
         "syncingTime": "Wykryto różnicę czasu: {diff} s. Synchronizowanie czasu...",

@@ -1,4 +1,4 @@
-import { onUnmounted, watch } from 'vue';
+import { watch } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
 import { apiStore } from '@/store/store';
 import { usePinsUpgradeTracker } from './usePinsUpgradeTracker';
@@ -14,6 +14,7 @@ export function usePinsUpgrade({ t, runner }) {
     stopUpgradePolling,
     restoreUpgradeState,
     beginUpgradeTrackingFromStart,
+    adoptRunningUpgrade,
     handleUpgradeWsClosed,
     resetUpgradeForNewRun,
   } = usePinsUpgradeTracker({
@@ -51,8 +52,11 @@ export function usePinsUpgrade({ t, runner }) {
       // Upgrade status resolution uses polling with /jobs/{id} and /jobs/latest fallback.
       runner.followJobLog(ip, returnedJobId, { onClosed: handleUpgradeWsClosed });
     } catch (error) {
+      if (adoptRunningUpgrade(ip, error)) return;
       console.error(error);
-      status.value = 'Failed';
+      // Without a response the request may still have reached the daemon, so the
+      // upgrade is not known to have failed.
+      status.value = error?.response ? 'Failed' : 'Unknown';
       runner.logDaemonError(error, ip, { corsHint: true });
     }
   }
@@ -71,7 +75,9 @@ export function usePinsUpgrade({ t, runner }) {
     { immediate: true }
   );
 
-  onUnmounted(stopUpgradePolling);
+  // No stop on unmount: the tracker is app-wide and drives the global overlay in App.vue,
+  // which stays up when this tab unmounts (route change, orientation re-key). It stops on
+  // its own once the upgrade reaches a final or unknown state.
 
   return {
     upgradeExitCode,

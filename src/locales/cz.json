@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "Spustit aktualizaci",
       "upgrading": "Aktualizace probíhá...",
+      "upgradeStatusUnknown": "Výsledek poslední aktualizace nelze zjistit. Zkontrolujte, zda ještě čekají balíčky na aktualizaci, a v případě potřeby spusťte aktualizaci znovu.",
       "terminalOutput": "VÝSTUP TERMINÁLU",
       "clearOutput": "Vymazat výstup",
       "waiting": "Přebírám kontrolu... Čekám na příkaz...",
@@ -5818,7 +5819,8 @@
         "idle": "Nečinný",
         "running": "Běží",
         "success": "Úspěch",
-        "failed": "Selhání"
+        "failed": "Selhání",
+        "unknown": "Neznámý"
       },
       "logs": {
         "syncingTime": "Zjištěný časový rozdíl: {diff}s. Synchronizuji čas...",

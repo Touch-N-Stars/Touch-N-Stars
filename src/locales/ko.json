@@ -5843,6 +5843,7 @@
       },
       "startUpgrade": "업그레이드 시작",
       "upgrading": "업그레이드 중...",
+      "upgradeStatusUnknown": "마지막 업데이트 결과를 확인할 수 없습니다. 대기 중인 패키지가 있는지 확인한 후 필요하면 업데이트를 다시 시작하세요.",
       "upgradeOverlay": {
         "title": "시스템 업데이트 진행 중",
         "running": "Raspberry Pi 패키지를 업데이트하고 있습니다. 작업이 완료될 때까지 기다려 주세요.",
@@ -5858,7 +5859,8 @@
         "idle": "대기 중",
         "running": "실행 중",
         "success": "성공",
-        "failed": "실패"
+        "failed": "실패",
+        "unknown": "알 수 없음"
       },
       "logs": {
         "syncingTime": "시간 차이 감지됨: {diff}s. 시간 동기화 중...",

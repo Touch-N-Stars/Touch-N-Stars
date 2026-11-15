@@ -5811,6 +5811,7 @@
       },
       "startUpgrade": "Démarrer la mise à jour",
       "upgrading": "Mise à jour en cours...",
+      "upgradeStatusUnknown": "Le résultat de la dernière mise à jour n'a pas pu être déterminé. Vérifiez si des paquets sont encore en attente, puis relancez la mise à jour si nécessaire.",
       "terminalOutput": "SORTIE TERMINAL",
       "clearOutput": "Effacer la sortie",
       "waiting": "Prise de contrôle... En attente de commande...",
@@ -5818,7 +5819,8 @@
         "idle": "Inactif",
         "running": "En cours",
         "success": "Succès",
-        "failed": "Échec"
+        "failed": "Échec",
+        "unknown": "Inconnu"
       },
       "logs": {
         "syncingTime": "Différence horaire détectée : {diff}s. Synchronisation de l'heure...",

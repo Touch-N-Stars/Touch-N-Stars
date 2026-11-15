@@ -5819,6 +5819,7 @@
       },
       "startUpgrade": "アップグレード開始",
       "upgrading": "アップグレード中...",
+      "upgradeStatusUnknown": "前回のアップデートの結果を確認できませんでした。保留中のパッケージがあるか確認し、必要に応じてアップデートを再度開始してください。",
       "terminalOutput": "ターミナル出力",
       "clearOutput": "出力をクリア",
       "waiting": "制御中... コマンドを待機中...",
@@ -5826,7 +5827,8 @@
         "idle": "アイドル",
         "running": "実行中",
         "success": "成功",
-        "failed": "失敗"
+        "failed": "失敗",
+        "unknown": "不明"
       },
       "logs": {
         "syncingTime": "時刻差を検出：{diff}秒。時刻を同期中...",

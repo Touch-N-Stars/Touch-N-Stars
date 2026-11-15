@@ -4,12 +4,62 @@ import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 const LAST_UPGRADE_JOB_ID_KEY = 'lastUpgradeJobId';
 const LAST_UPGRADE_JOB_RESULT_KEY = 'lastUpgradeJobResult';
+// The rig (daemon host) the saved job belongs to. Job ids are only meaningful on
+// the daemon that created them, so a saved job is never resumed against another rig.
+const LAST_UPGRADE_JOB_HOST_KEY = 'lastUpgradeJobHost';
+const UPGRADE_STORAGE_KEYS = [
+  LAST_UPGRADE_JOB_ID_KEY,
+  LAST_UPGRADE_JOB_RESULT_KEY,
+  LAST_UPGRADE_JOB_HOST_KEY,
+];
 const UPGRADE_POLL_INTERVAL_MS = 3000;
 const UPGRADE_INITIAL_BACKOFF_MS = 2000;
 const UPGRADE_MAX_BACKOFF_MS = 30000;
-const UPGRADE_LATEST_NOT_FOUND_MAX_RETRIES = 2;
+// A 404 can be a torn read of the daemon's state file on older daemons; only a
+// repeated 404 means the daemon really has no record of the job.
+const UPGRADE_NOT_FOUND_MAX_RETRIES = 2;
 
-export function usePinsUpgradeTracker({
+function getStorageItem(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function setStorageItem(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage write errors.
+  }
+}
+
+function removeStorageItem(key) {
+  try {
+    window.localStorage.removeItem(key);
+  } catch {
+    // Ignore storage remove errors.
+  }
+}
+
+/** Forgets the saved upgrade job (id, last result, rig). Leaves all other storage alone. */
+export function clearStoredUpgradeTracking() {
+  UPGRADE_STORAGE_KEYS.forEach(removeStorageItem);
+}
+
+/**
+ * Tracks the PINS system upgrade job until the daemon reports a final result.
+ *
+ * The upgrade outlives the pinsdaemon process (it restarts the daemon when it updates
+ * the daemon's own package), so the job is followed by polling `/jobs/{id}`, which the
+ * daemon answers from its persisted state after a restart. Every way this tracker stops
+ * polling ends in an explicit UI state: Success, Failed, or Unknown when the outcome
+ * cannot be established. It never stops while leaving the UI on Running.
+ *
+ * Status values written to `status`: 'Idle' | 'Running' | 'Success' | 'Failed' | 'Unknown'.
+ */
+export function createPinsUpgradeTracker({
   t,
   appendLog,
   pinsStore,
@@ -22,34 +72,17 @@ export function usePinsUpgradeTracker({
   const upgradeExitCode = ref(null);
   const isUpgradePolling = ref(false);
 
-  let hasRestoredUpgradeState = false;
   let upgradePollTimer = null;
   let upgradePollBackoffMs = UPGRADE_INITIAL_BACKOFF_MS;
   let lastUpgradeStatus = null;
-  let upgradeLatestNotFoundCount = 0;
+  let upgradeNotFoundCount = 0;
+  let trackedHost = null;
+  // Bumped whenever tracking starts or stops, so a response that arrives for an
+  // abandoned poll (overlay closed, rig switched, new run) is dropped.
+  let pollGeneration = 0;
 
-  function getStorageItem(key) {
-    try {
-      return window.localStorage.getItem(key);
-    } catch {
-      return null;
-    }
-  }
-
-  function setStorageItem(key, value) {
-    try {
-      window.localStorage.setItem(key, value);
-    } catch {
-      // Ignore storage write errors.
-    }
-  }
-
-  function removeStorageItem(key) {
-    try {
-      window.localStorage.removeItem(key);
-    } catch {
-      // Ignore storage remove errors.
-    }
+  function logError(message) {
+    appendLog(t('plugins.pins.logs.error', { message }));
   }
 
   function toFiniteNumber(value) {
@@ -72,6 +105,7 @@ export function usePinsUpgradeTracker({
       startedAt: toFiniteNumber(rawJob.startedAt),
       finishedAt: toFiniteNumber(rawJob.finishedAt),
       command: rawJob.command ?? null,
+      errorMessage: rawJob.errorMessage ?? null,
     };
   }
 
@@ -79,32 +113,32 @@ export function usePinsUpgradeTracker({
     return statusValue === 'success' || statusValue === 'failed';
   }
 
-  function isUpgradeInProgressStatus(statusValue) {
-    return statusValue === 'started' || statusValue === 'running';
+  function isUpgradeRunningInUi() {
+    return activeOperation.value === 'upgrade' && status.value === 'Running';
   }
 
-  function setUpgradeJobId(nextJobId) {
+  function setUpgradeJobId(nextJobId, host = null) {
     pinsStore.setCurrentJobId(nextJobId || null);
     if (nextJobId) {
       setStorageItem(LAST_UPGRADE_JOB_ID_KEY, String(nextJobId));
+      if (host) {
+        setStorageItem(LAST_UPGRADE_JOB_HOST_KEY, host);
+      }
     } else {
       removeStorageItem(LAST_UPGRADE_JOB_ID_KEY);
+      removeStorageItem(LAST_UPGRADE_JOB_HOST_KEY);
     }
   }
 
-  function getStoredUpgradeJobId() {
-    return getStorageItem(LAST_UPGRADE_JOB_ID_KEY);
-  }
-
-  function saveUpgradeFinalResult(job) {
+  function saveUpgradeResult(job) {
     setStorageItem(LAST_UPGRADE_JOB_RESULT_KEY, JSON.stringify(job));
   }
 
-  function clearStoredUpgradeFinalResult() {
+  function clearStoredUpgradeResult() {
     removeStorageItem(LAST_UPGRADE_JOB_RESULT_KEY);
   }
 
-  function getStoredUpgradeFinalResult() {
+  function getStoredUpgradeResult() {
     const raw = getStorageItem(LAST_UPGRADE_JOB_RESULT_KEY);
     if (!raw) {
       return null;
@@ -117,6 +151,10 @@ export function usePinsUpgradeTracker({
     }
   }
 
+  function getTrackedJobId() {
+    return jobId.value || getStorageItem(LAST_UPGRADE_JOB_ID_KEY);
+  }
+
   function clearUpgradePollTimer() {
     if (upgradePollTimer) {
       clearTimeout(upgradePollTimer);
@@ -126,9 +164,10 @@ export function usePinsUpgradeTracker({
 
   function stopUpgradePolling() {
     isUpgradePolling.value = false;
+    pollGeneration += 1;
     clearUpgradePollTimer();
     upgradePollBackoffMs = UPGRADE_INITIAL_BACKOFF_MS;
-    upgradeLatestNotFoundCount = 0;
+    upgradeNotFoundCount = 0;
   }
 
   function scheduleUpgradePolling(ip, delayMs = UPGRADE_POLL_INTERVAL_MS) {
@@ -138,10 +177,18 @@ export function usePinsUpgradeTracker({
 
     clearUpgradePollTimer();
     upgradePollTimer = setTimeout(() => {
+      upgradePollTimer = null;
       // Not with delayMs: it can be 0, which would spin until the app is back in the foreground.
       if (isAppBackgrounded.value) scheduleUpgradePolling(ip);
       else pollUpgradeStatus(ip);
     }, delayMs);
+  }
+
+  function scheduleRetry(ip, message) {
+    const retryDelay = Math.min(upgradePollBackoffMs, UPGRADE_MAX_BACKOFF_MS);
+    upgradePollBackoffMs = Math.min(upgradePollBackoffMs * 2, UPGRADE_MAX_BACKOFF_MS);
+    logError(`${message} Retrying in ${Math.round(retryDelay / 1000)}s.`);
+    scheduleUpgradePolling(ip, retryDelay);
   }
 
   function shouldRetryUpgradePolling(error) {
@@ -155,42 +202,64 @@ export function usePinsUpgradeTracker({
     return statusCode === 408 || statusCode === 429;
   }
 
+  /**
+   * Ends tracking without a confirmed result. The upgrade may or may not have finished;
+   * the user gets the controls back and can check for updates or start a new run.
+   */
+  function markUpgradeStatusUnknown(reason) {
+    stopUpgradePolling();
+    if (reason) {
+      logError(reason);
+    }
+    appendLog(t('plugins.pins.logs.jobStatus', { status: 'unknown' }));
+    setUpgradeJobId(null);
+    clearStoredUpgradeResult();
+    lastUpgradeStatus = 'unknown';
+    upgradeExitCode.value = null;
+    pinsStore.setActiveOperation('upgrade');
+    status.value = 'Unknown';
+  }
+
   function applyUpgradeJobState(job, { persistFinal = true } = {}) {
     const normalized = normalizeUpgradeJob(job);
     if (!normalized) {
       return false;
     }
 
+    if (normalized.status === 'unknown') {
+      // The daemon settled a record whose detached unit vanished without a result.
+      markUpgradeStatusUnknown(normalized.errorMessage);
+      return true;
+    }
+
     const previousStatus = lastUpgradeStatus;
     if (normalized.jobId) {
-      setUpgradeJobId(normalized.jobId);
+      setUpgradeJobId(normalized.jobId, trackedHost);
     }
 
     if (normalized.status && normalized.status !== previousStatus) {
       appendLog(t('plugins.pins.logs.jobStatus', { status: normalized.status }));
     }
 
-    if (normalized.exitCode !== null && normalized.exitCode !== undefined) {
-      upgradeExitCode.value = normalized.exitCode;
-    }
-
+    upgradeExitCode.value = normalized.exitCode ?? null;
     lastUpgradeStatus = normalized.status || previousStatus;
     pinsStore.setActiveOperation('upgrade');
 
     if (persistFinal || !isUpgradeTerminalStatus(normalized.status)) {
-      saveUpgradeFinalResult(normalized);
+      saveUpgradeResult(normalized);
     }
 
     if (normalized.status === 'success') {
+      stopUpgradePolling();
       status.value = 'Success';
       if (previousStatus !== 'success') {
         appendLog(t('plugins.pins.logs.upgradeSuccess'));
       }
-      stopUpgradePolling();
       return true;
     }
 
     if (normalized.status === 'failed') {
+      stopUpgradePolling();
       status.value = 'Failed';
       if (previousStatus !== 'failed') {
         appendLog(
@@ -199,51 +268,24 @@ export function usePinsUpgradeTracker({
           })
         );
       }
-      stopUpgradePolling();
       return true;
     }
 
-    if (isUpgradeInProgressStatus(normalized.status)) {
-      status.value = 'Running';
-      return false;
-    }
-
+    // started, running, or a status this client does not know yet: keep following it.
     status.value = 'Running';
     return false;
   }
 
-  async function fetchUpgradeJobById(ip, id) {
-    if (!ip) {
-      throw new Error('Missing host IP');
+  /** Drops tracking that belongs to another rig without touching its saved record. */
+  function releaseForOtherRig() {
+    stopUpgradePolling();
+    pinsStore.setCurrentJobId(null);
+    if (isUpgradeRunningInUi()) {
+      pinsStore.setActiveOperation(null);
+      status.value = 'Idle';
     }
-
-    const response = await apiPinsService.getPinsDaemonJob(id);
-    return normalizeUpgradeJob(response);
-  }
-
-  async function fetchLatestUpgradeJob(ip) {
-    if (!ip) {
-      throw new Error('Missing host IP');
-    }
-
-    const response = await apiPinsService.getPinsDaemonLatestJob();
-    return normalizeUpgradeJob(response);
-  }
-
-  function selectPreferredJob(storedFinalResult, latestJob) {
-    if (!storedFinalResult) {
-      return latestJob;
-    }
-    if (!latestJob) {
-      return storedFinalResult;
-    }
-    if (storedFinalResult.jobId === latestJob.jobId) {
-      return latestJob;
-    }
-
-    const storedStartedAt = storedFinalResult.startedAt ?? -Infinity;
-    const latestStartedAt = latestJob.startedAt ?? -Infinity;
-    return latestStartedAt >= storedStartedAt ? latestJob : storedFinalResult;
+    lastUpgradeStatus = null;
+    upgradeExitCode.value = null;
   }
 
   async function pollUpgradeStatus(ip) {
@@ -251,112 +293,110 @@ export function usePinsUpgradeTracker({
       return;
     }
 
-    const trackedJobId = jobId.value || getStoredUpgradeJobId();
+    if (trackedHost && getIp() !== trackedHost) {
+      appendLog(
+        t('plugins.pins.logs.error', {
+          message: 'Connected to a different rig. Upgrade tracking for the previous rig stopped.',
+        })
+      );
+      releaseForOtherRig();
+      return;
+    }
+
+    const trackedJobId = getTrackedJobId();
     if (!trackedJobId) {
-      stopUpgradePolling();
-      return;
-    }
-
-    try {
-      const currentJob = await fetchUpgradeJobById(ip, trackedJobId);
-      upgradePollBackoffMs = UPGRADE_INITIAL_BACKOFF_MS;
-      upgradeLatestNotFoundCount = 0;
-      const terminal = applyUpgradeJobState(currentJob);
-      if (!terminal) {
-        scheduleUpgradePolling(ip);
-      }
-      return;
-    } catch (error) {
-      if (error?.response?.status === 404) {
-        try {
-          const latestJob = await fetchLatestUpgradeJob(ip);
-          const storedFinal = getStoredUpgradeFinalResult();
-          const selectedJob = selectPreferredJob(storedFinal, latestJob);
-
-          if (selectedJob?.jobId && selectedJob.jobId !== trackedJobId) {
-            setUpgradeJobId(selectedJob.jobId);
-          }
-
-          upgradePollBackoffMs = UPGRADE_INITIAL_BACKOFF_MS;
-          const terminal = applyUpgradeJobState(selectedJob);
-          if (!terminal) {
-            scheduleUpgradePolling(ip);
-          }
-          return;
-        } catch (latestError) {
-          if (latestError?.response?.status === 404) {
-            upgradeLatestNotFoundCount += 1;
-            if (upgradeLatestNotFoundCount <= UPGRADE_LATEST_NOT_FOUND_MAX_RETRIES) {
-              const retryDelay = Math.min(upgradePollBackoffMs, UPGRADE_MAX_BACKOFF_MS);
-              appendLog(
-                t('plugins.pins.logs.error', {
-                  message: `No jobs found yet. Retrying in ${Math.round(retryDelay / 1000)}s.`,
-                })
-              );
-              upgradePollBackoffMs = Math.min(upgradePollBackoffMs * 2, UPGRADE_MAX_BACKOFF_MS);
-              scheduleUpgradePolling(ip, retryDelay);
-              return;
-            }
-
-            appendLog(
-              t('plugins.pins.logs.error', {
-                message: 'No upgrade jobs available. Upgrade tracking stopped.',
-              })
-            );
-
-            stopUpgradePolling();
-            setUpgradeJobId(null);
-            lastUpgradeStatus = null;
-
-            // If there is no terminal result saved, return controls to idle.
-            const latestStoredResult = getStoredUpgradeFinalResult();
-            if (!latestStoredResult || !isUpgradeTerminalStatus(latestStoredResult.status)) {
-              status.value = 'Idle';
-              pinsStore.setActiveOperation(null);
-              upgradeExitCode.value = null;
-            }
-            return;
-          }
-
-          error = latestError;
-        }
-      }
-
-      if (error?.response?.status === 401) {
-        appendLog(
-          t('plugins.pins.logs.serverError', {
-            status: error.response.status,
-            data: JSON.stringify(error.response.data),
-          })
+      // The job id was cleared under us (overlay closed, storage wiped).
+      if (isUpgradeRunningInUi()) {
+        markUpgradeStatusUnknown(
+          'The upgrade job id is no longer known. Upgrade tracking stopped.'
         );
-        appendLog(
-          t('plugins.pins.logs.error', {
-            message: 'Unauthorized. Please re-authenticate or refresh your token.',
-          })
-        );
-        status.value = 'Failed';
+      } else {
         stopUpgradePolling();
-        return;
       }
-
-      if (shouldRetryUpgradePolling(error)) {
-        const retryDelay = Math.min(upgradePollBackoffMs, UPGRADE_MAX_BACKOFF_MS);
-        upgradePollBackoffMs = Math.min(upgradePollBackoffMs * 2, UPGRADE_MAX_BACKOFF_MS);
-        appendLog(
-          t('plugins.pins.logs.error', {
-            message: `Status check failed (${error.message}). Retrying in ${Math.round(
-              retryDelay / 1000
-            )}s.`,
-          })
-        );
-        scheduleUpgradePolling(ip, retryDelay);
-        return;
-      }
-
-      appendLog(t('plugins.pins.logs.statusFetchFailed', { message: error.message }));
-      status.value = 'Failed';
-      stopUpgradePolling();
+      return;
     }
+
+    const generation = pollGeneration;
+    // True when the answer no longer belongs to the current tracking. If this poller is
+    // still the current one, the job was dropped under it (overlay closed): end it here,
+    // otherwise the polling flag would stay set with no timer behind it.
+    const isStale = () => {
+      if (generation !== pollGeneration || !isUpgradePolling.value) {
+        return true;
+      }
+      if (getTrackedJobId() !== trackedJobId) {
+        stopUpgradePolling();
+        return true;
+      }
+      return false;
+    };
+
+    let currentJob;
+    try {
+      currentJob = await apiPinsService.getPinsDaemonJob(trackedJobId);
+    } catch (error) {
+      if (isStale()) {
+        return;
+      }
+      handlePollError(ip, trackedJobId, error);
+      return;
+    }
+
+    if (isStale()) {
+      return;
+    }
+
+    upgradePollBackoffMs = UPGRADE_INITIAL_BACKOFF_MS;
+    upgradeNotFoundCount = 0;
+    const normalized = normalizeUpgradeJob(currentJob);
+    if (normalized?.jobId && String(normalized.jobId) !== String(trackedJobId)) {
+      // Never follow a different job than the one this upgrade started.
+      markUpgradeStatusUnknown(
+        `The PINS daemon answered for job ${normalized.jobId} instead of ${trackedJobId}.`
+      );
+      return;
+    }
+    if (!applyUpgradeJobState(currentJob)) {
+      scheduleUpgradePolling(ip);
+    }
+  }
+
+  function handlePollError(ip, trackedJobId, error) {
+    const statusCode = error?.response?.status;
+
+    if (statusCode === 404) {
+      upgradeNotFoundCount += 1;
+      if (upgradeNotFoundCount <= UPGRADE_NOT_FOUND_MAX_RETRIES) {
+        scheduleRetry(ip, `Upgrade job ${trackedJobId} not found yet.`);
+        return;
+      }
+      // Deliberately no fallback to /jobs/latest: that returns whatever job ran last on
+      // the daemon (a time sync, a Wi-Fi change...), which says nothing about this upgrade.
+      markUpgradeStatusUnknown(
+        `The PINS daemon has no record of upgrade job ${trackedJobId}. Its result cannot be determined.`
+      );
+      return;
+    }
+
+    if (statusCode === 401 || statusCode === 403) {
+      appendLog(
+        t('plugins.pins.logs.serverError', {
+          status: statusCode,
+          data: JSON.stringify(error.response.data),
+        })
+      );
+      markUpgradeStatusUnknown('Unauthorized. Please re-authenticate or refresh your token.');
+      return;
+    }
+
+    if (shouldRetryUpgradePolling(error)) {
+      // The daemon restarts during its own package update: keep waiting for it.
+      scheduleRetry(ip, `Status check failed (${error?.message}).`);
+      return;
+    }
+
+    appendLog(t('plugins.pins.logs.statusFetchFailed', { message: error?.message }));
+    markUpgradeStatusUnknown(null);
   }
 
   function beginUpgradeTracking(ip, nextJobId) {
@@ -364,10 +404,10 @@ export function usePinsUpgradeTracker({
       return;
     }
 
+    stopUpgradePolling();
     isUpgradePolling.value = true;
-    upgradePollBackoffMs = UPGRADE_INITIAL_BACKOFF_MS;
-    upgradeLatestNotFoundCount = 0;
-    setUpgradeJobId(nextJobId);
+    trackedHost = ip;
+    setUpgradeJobId(nextJobId, ip);
     scheduleUpgradePolling(ip, 0);
   }
 
@@ -376,7 +416,8 @@ export function usePinsUpgradeTracker({
       return;
     }
 
-    setUpgradeJobId(nextJobId);
+    trackedHost = ip;
+    setUpgradeJobId(nextJobId, ip);
 
     const normalizedResponseJob = normalizeUpgradeJob(rawStartResponse);
     if (normalizedResponseJob) {
@@ -386,77 +427,141 @@ export function usePinsUpgradeTracker({
     beginUpgradeTracking(ip, nextJobId);
   }
 
+  /**
+   * Attaches to an upgrade that is already running when the daemon refuses a second
+   * one (409 with the running job's id). Returns true when it took over.
+   */
+  function adoptRunningUpgrade(ip, error) {
+    const detail = error?.response?.data?.detail;
+    const runningJobId = error?.response?.status === 409 ? detail?.jobId : null;
+    if (!ip || !runningJobId) {
+      return false;
+    }
+
+    appendLog(
+      t('plugins.pins.logs.error', {
+        message: `An upgrade is already running (job ${runningJobId}). Following it instead.`,
+      })
+    );
+    resetUpgradeForNewRun();
+    pinsStore.setActiveOperation('upgrade');
+    status.value = 'Running';
+    beginUpgradeTracking(ip, runningJobId);
+    return true;
+  }
+
+  /**
+   * Re-attaches to the saved upgrade job of the current rig. Safe to call repeatedly
+   * (on every PINS detection and component mount): it does nothing while tracking runs.
+   */
   function restoreUpgradeState() {
-    if (hasRestoredUpgradeState) {
-      return;
-    }
-    hasRestoredUpgradeState = true;
-
     const ip = getIp();
-    if (!ip) {
+    if (!ip || isUpgradePolling.value) {
       return;
     }
 
-    const trackedJobId = jobId.value || getStoredUpgradeJobId();
-    const storedFinalResult = getStoredUpgradeFinalResult();
+    const savedHost = getStorageItem(LAST_UPGRADE_JOB_HOST_KEY);
+    if (savedHost && savedHost !== ip) {
+      // Saved by another rig: keep it for when that rig is selected again.
+      if (jobId.value === getStorageItem(LAST_UPGRADE_JOB_ID_KEY)) {
+        releaseForOtherRig();
+      }
+      return;
+    }
 
-    if (storedFinalResult && isUpgradeTerminalStatus(storedFinalResult.status)) {
-      const shouldKeepTerminalRecovery =
-        Boolean(trackedJobId) && Boolean(shouldWaitForApiRecovery?.());
+    const trackedJobId = getTrackedJobId();
+    const storedResult = getStoredUpgradeResult();
+    const storedResultBelongsToJob =
+      storedResult && (!storedResult.jobId || !trackedJobId || storedResult.jobId === trackedJobId);
 
-      if (!shouldKeepTerminalRecovery) {
-        clearStoredUpgradeFinalResult();
-        setUpgradeJobId(null);
-        lastUpgradeStatus = null;
-        upgradeExitCode.value = null;
+    if (storedResultBelongsToJob && isUpgradeTerminalStatus(storedResult.status)) {
+      trackedHost = ip;
 
-        if (activeOperation.value === 'upgrade' && status.value !== 'Running') {
-          pinsStore.setActiveOperation(null);
-          status.value = 'Idle';
-        }
+      if (isUpgradeRunningInUi()) {
+        // The UI still waits for a job whose final result is already known.
+        applyUpgradeJobState(storedResult);
         return;
       }
 
-      pinsStore.setActiveOperation('upgrade');
-      lastUpgradeStatus = storedFinalResult.status;
-      upgradeExitCode.value = storedFinalResult.exitCode;
-      status.value = storedFinalResult.status === 'success' ? 'Success' : 'Failed';
-    }
+      if (trackedJobId && shouldWaitForApiRecovery?.()) {
+        // App.vue keeps the overlay up until the backend answers again.
+        applyUpgradeJobState(storedResult);
+        return;
+      }
 
-    if (!trackedJobId) {
+      if (status.value === 'Idle' && storedResult.status === 'failed') {
+        // Reload after a failed run: report it once instead of silently dropping it.
+        applyUpgradeJobState(storedResult);
+      }
+
+      // Completed earlier: nothing to resume. Whatever result the UI shows stays.
+      clearStoredUpgradeTracking();
+      if (jobId.value && jobId.value === trackedJobId) {
+        pinsStore.setCurrentJobId(null);
+      }
+      lastUpgradeStatus = null;
       return;
     }
 
-    setUpgradeJobId(trackedJobId);
-    if (!storedFinalResult || !isUpgradeTerminalStatus(storedFinalResult.status)) {
-      pinsStore.setActiveOperation('upgrade');
-      status.value = 'Running';
-      beginUpgradeTracking(ip, trackedJobId);
+    if (!trackedJobId) {
+      if (isUpgradeRunningInUi()) {
+        markUpgradeStatusUnknown('No upgrade job id is saved. Upgrade tracking cannot resume.');
+      }
+      return;
     }
+
+    if (storedResult && !storedResultBelongsToJob) {
+      clearStoredUpgradeResult();
+    }
+
+    pinsStore.setActiveOperation('upgrade');
+    status.value = 'Running';
+    beginUpgradeTracking(ip, trackedJobId);
   }
 
   function handleUpgradeWsClosed(ip) {
-    if (activeOperation.value === 'upgrade' && isUpgradePolling.value) {
-      scheduleUpgradePolling(ip, 0);
-      return true;
+    if (activeOperation.value !== 'upgrade') {
+      return false;
     }
 
-    return false;
+    // The tracker owns the upgrade's final status, never the generic socket fallback:
+    // that one would call a still-running job "failed".
+    if (isUpgradePolling.value) {
+      scheduleUpgradePolling(ip, 0);
+    }
+    return true;
   }
 
   function resetUpgradeForNewRun() {
     stopUpgradePolling();
-    clearStoredUpgradeFinalResult();
+    clearStoredUpgradeResult();
     upgradeExitCode.value = null;
     lastUpgradeStatus = null;
   }
 
   return {
     upgradeExitCode,
+    isUpgradePolling,
     stopUpgradePolling,
     restoreUpgradeState,
     beginUpgradeTrackingFromStart,
+    adoptRunningUpgrade,
     handleUpgradeWsClosed,
     resetUpgradeForNewRun,
+    markUpgradeStatusUnknown,
   };
+}
+
+let sharedTracker = null;
+
+/**
+ * The app-wide upgrade tracker. The PINS Update tab and the setup wizard both show the
+ * same upgrade and the blocking overlay in App.vue outlives either of them, so they
+ * share one poller instead of each running (and abandoning) their own.
+ */
+export function usePinsUpgradeTracker(options) {
+  if (!sharedTracker) {
+    sharedTracker = createPinsUpgradeTracker(options);
+  }
+  return sharedTracker;
 }
