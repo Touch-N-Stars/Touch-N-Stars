@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0 - beta 28] - 2026-11-15
+
+### Added
+
+- Sequence: The sequence folder can now be chosen in the Load / save sequences dialog.
+
+### Fixed
+
+- Sequence: On PINS, saved sequences no longer end up in the wrong place with a backslash in their file name, so they show up in the file list again.
+
 ## [App6.5.0 - beta 27] - 2026-11-13
 
 ### Fixed
