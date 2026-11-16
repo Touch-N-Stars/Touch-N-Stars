@@ -21,6 +21,22 @@
       <Spinner v-if="isDisconnecting" size="sm" />
     </button>
   </div>
+  <!-- End of night: park, close, warm and disconnect on the server -->
+  <div v-if="hasAnyConnection || secureObservatory.running" class="-mt-3 pb-5">
+    <button
+      class="tns-btn-secondary gap-2"
+      data-testid="end-night"
+      @click="secureObservatory.openDialog()"
+    >
+      <MoonIcon class="h-5 w-5 shrink-0" />
+      <span>{{
+        secureObservatory.running
+          ? $t('components.secureObservatory.running')
+          : $t('components.secureObservatory.open')
+      }}</span>
+      <Spinner v-if="secureObservatory.running" size="sm" />
+    </button>
+  </div>
   <div class="flex flex-col gap-2">
     <selectDevices
       apiAction="cameraAction"
@@ -396,10 +412,13 @@ import {
   setProfileDevice,
 } from '@/utils/equipmentDevices';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { useSecureObservatoryStore } from '@/store/secureObservatoryStore';
+import { MoonIcon } from '@heroicons/vue/24/outline';
 import { equipmentInUse, isNativeGuiderInUse, usesGuideCameraSlot } from '@/utils/nativeGuider';
 
 const { t } = useI18n();
 const store = apiStore();
+const secureObservatory = useSecureObservatoryStore();
 const guiderStore = useGuiderStore();
 const equipmentStore = useEquipmentStore();
 const isConnecting = ref(false);
