@@ -12,6 +12,8 @@ export const createDefaultCelestiaAtlasSettings = () => ({
   landscapesVisible: true,
   hideBelowHorizon: true,
   skySurveyVisible: true,
+  // Which downloaded survey the Atlas shows as background: 'dss' or 'nsns'.
+  skySurveySource: 'dss',
   // First-open offer to download the DSS survey; set once the user declines it.
   dssSurveyOfferDismissed: false,
   landscapeSourceMode: 'default',

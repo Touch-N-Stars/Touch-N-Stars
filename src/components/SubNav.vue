@@ -33,8 +33,11 @@
         :class="{ 'active-subnav-button': item.value === activeItem }"
         @click="selectItem(item.value)"
         :title="item.name"
+        :aria-label="item.badge ? `${item.name} (${item.badge})` : undefined"
       >
         {{ item.name }}
+        <!-- Optional count badge (e.g. unseen items of a tab) -->
+        <span v-if="item.badge" class="subnav-badge" aria-hidden="true">{{ item.badge }}</span>
       </button>
     </div>
   </div>
@@ -79,7 +82,7 @@ const subnavClasses = computed(() => ({
   'left-(--nav-width) top-0 w-[calc(100vw-var(--nav-width))]': isLandscape.value,
 }));
 // Fixed frame surface color, matching Navbar/StatusBar so all bars read as one surface.
-const backgroundClasses = ['bg-gray-900/95', 'backdrop-blur-sm'];
+const backgroundClasses = ['bg-surface-1/95', 'backdrop-blur-sm'];
 
 // Scroll fade gradients must match the actual background, which is an instance
 // color class picked at runtime (see NavigationComp's updateNavFadeColor).
@@ -134,10 +137,10 @@ watch(
 .subnav-button {
   @apply shrink-0 h-auto
     bg-transparent
-    text-gray-400
+    text-content-muted
     rounded-md
-    hover:text-gray-200
-    hover:bg-gray-800/30
+    hover:text-content
+    hover:bg-surface-2/30
     transition-all
     duration-200
     ease-out
@@ -165,7 +168,10 @@ watch(
   background-color: rgba(6, 182, 212, 0.3);
 }
 .active-subnav-button {
-  @apply text-cyan-400;
+  @apply text-accent;
+}
+.subnav-badge {
+  @apply min-w-4 h-4 px-1 rounded-full bg-status-danger text-[10px] font-bold leading-4 text-ground tabular-nums;
 }
 .active-subnav-button::after {
   background-color: rgba(6, 182, 212, 1) !important;

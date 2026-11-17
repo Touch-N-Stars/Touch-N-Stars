@@ -1,0 +1,10 @@
+{
+  "id": "cone-error",
+  "name": "Cone Error",
+  "description": "Measure the cone error of the telescope on both pier sides and get the shim to correct it.",
+  "version": "1.0.0",
+  "author": "Nico Trost",
+  "defaultEnabled": false,
+  "enabled": true,
+  "isPins": true
+}

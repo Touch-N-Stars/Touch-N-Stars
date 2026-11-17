@@ -5,20 +5,18 @@
         <h2 class="text-base font-semibold">
           {{ $t('components.guider.phd2.calibrationData.title') }}
         </h2>
-        <div class="flex border-b border-gray-600 text-xs">
-          <span class="px-3 py-1 border-b-2 border-blue-400 text-blue-300">Mount</span>
+        <div class="flex border-b border-line text-xs">
+          <span class="px-3 py-1 border-b-2 border-accent text-accent">Mount</span>
         </div>
       </div>
     </template>
     <template #body>
-      <div v-if="isLoading" class="flex justify-center py-10">
-        <div
-          class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full"
-        ></div>
+      <div v-if="isLoading" class="flex justify-center py-10 text-accent">
+        <Spinner />
       </div>
 
       <div v-else-if="data">
-        <div v-if="!data.Calibrated" class="text-yellow-400 text-sm text-center py-8">
+        <div v-if="!data.Calibrated" class="text-status-warn text-sm text-center py-8">
           {{ $t('components.guider.phd2.calibrationData.notCalibrated') }}
         </div>
 
@@ -102,51 +100,51 @@
           <!-- Right: Data panels -->
           <div class="flex-1 flex flex-col gap-3 text-xs min-w-0">
             <!-- Last Mount Calibration box -->
-            <div class="border border-gray-500 rounded p-2">
-              <div class="text-gray-300 font-semibold mb-2 text-xs uppercase tracking-wide">
+            <div class="border border-line rounded-control p-2">
+              <div class="text-content font-semibold mb-2 text-xs uppercase tracking-wide">
                 {{ $t('components.guider.phd2.calibrationData.lastMountCalibration') }}
               </div>
               <table class="w-full border-collapse">
                 <tbody>
                   <tr>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.cameraAngle') }}
                     </td>
-                    <td class="text-white pr-4">{{ data.XAngle?.toFixed(1) }}</td>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content pr-4">{{ data.XAngle?.toFixed(1) }}</td>
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.orthogonalityError') }}
                     </td>
-                    <td class="text-white">{{ orthogError }}</td>
+                    <td class="text-content">{{ orthogError }}</td>
                   </tr>
                   <tr>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.raRate') }}
                     </td>
-                    <td class="text-white pr-4">{{ data.XRate?.toFixed(3) }} px/sec</td>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content pr-4">{{ data.XRate?.toFixed(3) }} px/sec</td>
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.decRate') }}
                     </td>
-                    <td class="text-white">{{ data.YRate?.toFixed(3) }} px/sec</td>
+                    <td class="text-content">{{ data.YRate?.toFixed(3) }} px/sec</td>
                   </tr>
                   <tr>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.raParity') }}
                     </td>
-                    <td class="text-white pr-4">
+                    <td class="text-content pr-4">
                       {{ data.XParity && data.XParity !== '?' ? data.XParity : '-' }}
                     </td>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.decParity') }}
                     </td>
-                    <td class="text-white">
+                    <td class="text-content">
                       {{ data.YParity && data.YParity !== '?' ? data.YParity : '-' }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="text-gray-400 pr-2 py-0.5 whitespace-nowrap">
+                    <td class="text-content-muted pr-2 py-0.5 whitespace-nowrap">
                       {{ $t('components.guider.phd2.calibrationData.declination') }}
                     </td>
-                    <td class="text-white pr-4" colspan="3">
+                    <td class="text-content pr-4" colspan="3">
                       {{ decDisplay }} {{ $t('components.guider.phd2.calibrationData.estimated') }}
                     </td>
                   </tr>
@@ -158,7 +156,7 @@
             <button
               @click="clearCalibration"
               :disabled="isClearing"
-              class="tns-btn-danger px-4 py-2 text-sm disabled:opacity-40 self-start"
+              class="tns-btn-danger w-auto! self-start"
             >
               <span v-if="isClearing">{{
                 $t('components.guider.phd2.calibrationData.clearing')
@@ -178,6 +176,7 @@
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Modal from '@/components/helpers/Modal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import apiService from '@/services/apiService';
 
 const { t: $t } = useI18n();

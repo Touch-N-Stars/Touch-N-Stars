@@ -16,6 +16,7 @@ const Flatassistant = () => import('@/views/FlatassistantPage.vue');
 const FocusPage = () => import('@/views/FocusPage.vue');
 const SequencePage = () => import('@/views/SequencePage.vue');
 const FramingPage = () => import('@/views/FramingPage.vue');
+const PinsPage = () => import('@/views/PinsPage.vue');
 
 const routes = [
   {
@@ -37,6 +38,7 @@ const routes = [
   { path: '/flats', component: Flatassistant },
   { path: '/sequence', component: SequencePage },
   { path: '/framing', component: FramingPage },
+  { path: '/pins', component: PinsPage },
 ];
 
 const router = createRouter({

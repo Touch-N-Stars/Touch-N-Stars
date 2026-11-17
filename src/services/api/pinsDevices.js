@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getUrls } from './core';
+import { DEFAULT_TIMEOUT, getUrls, rawHttp } from './core';
 
 export default {
   //-------------------------------------  PINS Devices ---------------------------------
@@ -435,17 +435,56 @@ export default {
     }
   },
 
-  async beepPinsDevice(volume = 100, lengthMs = 1000) {
-    try {
-      const { API_URL } = getUrls();
-      const response = await axios.post(
-        `${API_URL}pins/powerbox/beep?volume=${volume}&lengthMs=${lengthMs}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error beeping PowerBox:', error);
-      throw error;
-    }
+  // --------------------------------- PINS alarm (beeps on the box) ---------------------------------
+  // The box beeps the PowerBox by itself on critical events. These calls use rawHttp: they reject
+  // with the real status and body, so the caller can tell a plugin without the alarm (HTML 404)
+  // from an answer of the alarm API (JSON envelope), and no generic error toast appears.
+  async getPinsAlarmSettings() {
+    const { API_URL } = getUrls();
+    const response = await rawHttp.get(`${API_URL}pins/alarm`, { timeout: DEFAULT_TIMEOUT });
+    return response.data;
+  },
+
+  // patch: the changed fields only (PascalCase, e.g. { Categories: { Guiding: false } })
+  async setPinsAlarmSettings(patch) {
+    const { API_URL } = getUrls();
+    const response = await rawHttp.put(`${API_URL}pins/alarm`, patch, { timeout: DEFAULT_TIMEOUT });
+    return response.data;
+  },
+
+  // preview: optional { Volume, ToneMs, PauseMs, BurstSeconds } to test unsaved values
+  async testPinsAlarm(preview) {
+    const { API_URL } = getUrls();
+    const response = await rawHttp.post(`${API_URL}pins/alarm/test`, preview ?? {}, {
+      timeout: DEFAULT_TIMEOUT,
+    });
+    return response.data;
+  },
+
+  // minutes 0 ends a mute; a running burst stops either way
+  async silencePinsAlarm(minutes = 30) {
+    const { API_URL } = getUrls();
+    const response = await rawHttp.post(
+      `${API_URL}pins/alarm/silence`,
+      { Minutes: minutes },
+      { timeout: DEFAULT_TIMEOUT }
+    );
+    return response.data;
+  },
+
+  async getPinsAlarmStatus() {
+    const { API_URL } = getUrls();
+    const response = await rawHttp.get(`${API_URL}pins/alarm/status`, { timeout: DEFAULT_TIMEOUT });
+    return response.data;
+  },
+
+  async getPinsAlarmHistory(limit = 20) {
+    const { API_URL } = getUrls();
+    const response = await rawHttp.get(`${API_URL}pins/alarm/history`, {
+      params: { limit },
+      timeout: DEFAULT_TIMEOUT,
+    });
+    return response.data;
   },
 
   // --------------------------------- PowerBox WiFi ---------------------------------

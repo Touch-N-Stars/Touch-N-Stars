@@ -2,12 +2,50 @@ import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
-import { usePinsDeviceStore } from '@/plugins/pinsDevices/store/pinsDevicesStore';
+import i18n from '@/i18n';
+import { usePinsAlarmStore } from '@/plugins/pinsDevices/store/pinsAlarmStore';
+import { isAlarmApiMissing } from '@/plugins/pinsDevices/utils/alarm';
 import { createPoller } from '@/utils/poller';
 import { useFramingStore } from '@/store/framingStore';
 import { findLatestSolvedRotation, newestLogTime } from '@/utils/plateSolveLog';
 
 const SOLVE_MAX_AGE_MS = 10 * 60 * 1000;
+const ALARM_MUTE_MINUTES = 30;
+
+// Mutes the box's alarm (see the error toast); the result as a toast of its own
+async function muteBoxAlarm(toastStore) {
+  const t = i18n.global.t;
+  try {
+    await apiService.silencePinsAlarm(ALARM_MUTE_MINUTES);
+    toastStore.showToast({
+      type: 'success',
+      title: t('plugins.pinsDevices.config.alarm.title'),
+      message: t('plugins.pinsDevices.config.alarm.mutedFromToast', {
+        minutes: ALARM_MUTE_MINUTES,
+      }),
+    });
+  } catch (error) {
+    if (error?.code === 'ERR_CANCELED') return;
+    // A plugin without the alarm: no more mute buttons, and say why
+    const missing = isAlarmApiMissing(error);
+    if (missing) usePinsAlarmStore().markUnsupported();
+    toastStore.showToast({
+      type: 'warning',
+      title: t('plugins.pinsDevices.config.alarm.title'),
+      message: t(`plugins.pinsDevices.config.alarm.${missing ? 'updateRequired' : 'muteFailed'}`),
+    });
+  }
+}
+const LOG_POLL_INTERVAL_MS = 2000;
+
+// Cheap identity of a log window: the backend returns the newest N entries, so
+// an unchanged window has the same length and the same entries at both ends.
+function logWindowSignature(logs) {
+  if (!Array.isArray(logs) || logs.length === 0) return '';
+  const first = logs[0];
+  const last = logs[logs.length - 1];
+  return `${logs.length}|${first?.timestamp}|${first?.message}|${last?.timestamp}|${last?.message}`;
+}
 
 export const useLogStore = defineStore('LogStore', {
   state: () => ({
@@ -64,6 +102,12 @@ export const useLogStore = defineStore('LogStore', {
 
         // Logs vom Backend holen (z.B. die letzten 500)
         const logs = await apiService.getLastLogs('500');
+        // Most polls return the same window; skipping it spares the reactive
+        // array swap (and every watcher on it) plus the scans below. Compared
+        // against the stored window, not a cached value, so a reset of LogsInfo
+        // (clearAllStates) always lets the next poll through.
+        const signature = logWindowSignature(logs);
+        if (signature && signature === logWindowSignature(this.LogsInfo.logs)) return;
         this.LogsInfo.logs = logs;
 
         // Prüfe auf neue ERROR/WARNING Meldungen
@@ -177,27 +221,27 @@ export const useLogStore = defineStore('LogStore', {
               : 'info';
         const formattedTime = this.formatTimestamp(latestLog.timestamp);
 
+        // On a PINS box the box itself beeps the PowerBox on errors (alarm service of the
+        // plugin); the error toast offers to mute it, as the alarm settings are deep in the
+        // PINS-Devices page
+        const muteAction =
+          type === 'error' && apiStore().isPINS && !usePinsAlarmStore().unsupportedHere
+            ? {
+                actionText: i18n.global.t('plugins.pinsDevices.config.alarm.muteFromToast', {
+                  minutes: ALARM_MUTE_MINUTES,
+                }),
+                onAction: () => muteBoxAlarm(toastStore),
+              }
+            : {};
+
         toastStore.showToast({
           type: type,
           title: `${displayLog.level}: ${formattedTime}`,
           message: displayLog.message,
           autoClose: displayLog.level === 'ERROR' ? false : true,
           autoCloseDelay: 8000,
+          ...muteAction,
         });
-
-        // Beep on warning/error if enabled
-        try {
-          const pinsStore = usePinsDeviceStore();
-          if (pinsStore.isPowerboxConnected) {
-            if (type === 'error' && pinsStore.beepOnError) {
-              pinsStore.beepPowerBox();
-            } else if (type === 'warning' && pinsStore.beepOnWarning) {
-              pinsStore.beepPowerBox();
-            }
-          }
-        } catch (e) {
-          // Ignore beep errors
-        }
 
         // Aktualisiere den letzten Timestamp
         this.lastErrorWarningTimestamp = latestLog.timestamp;
@@ -207,7 +251,7 @@ export const useLogStore = defineStore('LogStore', {
 
     startFetchingLog() {
       if (!this._logPoller) {
-        this._logPoller = createPoller(() => this.fetchLogInfos(), 1000);
+        this._logPoller = createPoller(() => this.fetchLogInfos(), LOG_POLL_INTERVAL_MS);
       }
       this._logPoller.start();
     },

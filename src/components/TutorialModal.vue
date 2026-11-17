@@ -25,7 +25,7 @@
 
         <!-- Body -->
         <div class="tutorial-body">
-          <p class="text-gray-300 leading-relaxed">{{ currentStep.content[$i18n.locale] }}</p>
+          <p class="text-content leading-relaxed">{{ currentStep.content[$i18n.locale] }}</p>
         </div>
 
         <!-- Footer -->

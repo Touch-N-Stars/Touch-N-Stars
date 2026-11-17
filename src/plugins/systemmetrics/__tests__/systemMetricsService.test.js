@@ -55,3 +55,24 @@ test('PINS mode merges temperature and power status into system metrics', async 
   });
   assert.equal(result.SystemTemperature.celsius, 50);
 });
+
+test('Linux swap counters are passed through without requiring PINS mode', async (t) => {
+  store.isPINS = false;
+  const swap = {
+    TotalBytes: 2147483648,
+    UsedBytes: 536870912,
+    AvailableBytes: 1610612736,
+    UsedPercent: 25,
+  };
+  t.mock.method(axios, 'get', async () => ({ data: { Swap: swap } }));
+  const result = await systemMetricsService.fetchSystemMetrics();
+  assert.deepEqual(result.Swap, swap);
+});
+
+test('older backends without swap metrics remain supported', async (t) => {
+  store.isPINS = false;
+  t.mock.method(axios, 'get', async () => ({ data: { CpuUsagePercent: 10 } }));
+  const result = await systemMetricsService.fetchSystemMetrics();
+  assert.equal(result.Swap, undefined);
+  assert.equal(result.CpuUsagePercent, 10);
+});

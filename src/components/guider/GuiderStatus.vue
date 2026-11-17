@@ -57,12 +57,12 @@ const statusTextClasses = computed(() => {
   const state = store.guiderInfo?.State;
 
   return {
-    'text-green-400': state === 'Guiding',
-    'text-blue-400': state === 'Calibrating',
-    'text-yellow-400': state === 'Looping',
-    'text-red-400': state === 'LostLock',
-    'text-gray-400': state === 'Stopped',
-    'text-gray-500': !state,
+    'text-status-ok': state === 'Guiding',
+    'text-accent': state === 'Calibrating',
+    'text-status-warn': state === 'Looping',
+    'text-status-danger': state === 'LostLock',
+    'text-content-muted': state === 'Stopped',
+    'text-content-faint': !state,
   };
 });
 </script>
@@ -70,7 +70,7 @@ const statusTextClasses = computed(() => {
 <style scoped>
 @reference '../../assets/tailwind.css';
 .guider-status {
-  @apply p-4 bg-gray-800/50 rounded-lg border border-gray-700/50;
+  @apply tns-card;
 }
 
 .status-indicator {
@@ -82,28 +82,28 @@ const statusTextClasses = computed(() => {
 }
 
 .status-guiding .status-dot {
-  @apply bg-green-500 shadow-lg shadow-green-500/50;
+  @apply bg-status-ok shadow-lg shadow-status-ok/50;
 }
 
 .status-calibrating .status-dot {
-  @apply bg-blue-500 shadow-lg shadow-blue-500/50;
+  @apply bg-accent shadow-lg shadow-accent/50;
 }
 
 .status-looping .status-dot {
-  @apply bg-yellow-500 shadow-lg shadow-yellow-500/50;
+  @apply bg-status-warn shadow-lg shadow-status-warn/50;
 }
 
 .status-error .status-dot {
-  @apply bg-red-500 shadow-lg shadow-red-500/50;
+  @apply bg-status-danger shadow-lg shadow-status-danger/50;
 }
 
 .status-stopped .status-dot {
-  @apply bg-gray-500 shadow-lg shadow-gray-500/50;
+  @apply bg-content-muted shadow-lg shadow-content-muted/50;
   animation: none;
 }
 
 .status-unknown .status-dot {
-  @apply bg-gray-600 shadow-lg shadow-gray-600/50;
+  @apply bg-content-faint shadow-lg shadow-content-faint/50;
   animation: none;
 }
 </style>

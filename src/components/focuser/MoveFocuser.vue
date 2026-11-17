@@ -21,7 +21,7 @@
         "
         @click="store.focuserInfo.IsMoving ? stopFocuser() : moveFocuser()"
       >
-        <StopIcon v-if="store.focuserInfo.IsMoving" class="h-5 w-5 text-white" />
+        <StopIcon v-if="store.focuserInfo.IsMoving" class="h-5 w-5" />
         <span v-else>{{ $t('components.focuser.move') }}</span>
       </button>
     </div>

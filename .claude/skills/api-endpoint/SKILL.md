@@ -47,9 +47,10 @@ Keep logic in `Server/Services/`, not in the controller.
 
 ## Frontend: domain module, then facade
 
-Add the method to the matching module in `src/services/api/` — 17 domain
+Add the method to the matching module in `src/services/api/` — 18 domain
 modules (camera, mount, phd2, sequence, profile, system, framing, image, flats,
-filesystem, plugins, tppa, equipment, hocusfocus, pinsDevices, tenmicron, atlas) plus
+filesystem, plugins, tppa, equipment, hocusfocus, pinsDevices, tenmicron, atlas,
+nativeGuider) plus
 `core.js`, which is infrastructure and not spread into the facade.
 Use the helpers from `core.js` rather than raw axios where they fit:
 `simpleGetRequest(url)` and `getWithParams(url, params)` both unwrap
@@ -65,7 +66,7 @@ async getFoo(id) {
 Call `getUrls()` **inside** the method. Hoisting it to module scope freezes the
 host/port from before the user connected.
 
-`src/services/apiService.js` spreads all 17 domain modules into one object, so two
+`src/services/apiService.js` spreads all 18 domain modules into one object, so two
 modules exporting the same method name silently overwrite each other. That is
 what the snapshot test guards.
 

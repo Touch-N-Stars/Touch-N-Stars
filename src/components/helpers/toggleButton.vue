@@ -4,9 +4,9 @@
       @click="updateToggled"
       :disabled="disabled"
       :class="[
-        statusValue ? 'bg-cyan-600/20 border-cyan-500/60' : 'bg-slate-700/40 border-slate-600/60',
-        disabled ? 'cursor-not-allowed opacity-50' : 'hover:border-slate-500/70 active:scale-95',
-        'relative inline-flex h-6 w-12 items-center rounded-full transition-all duration-300 ease-out border shadow-inner focus:outline-none focus:ring-2 focus:ring-cyan-500/40',
+        statusValue ? 'bg-accent/20 border-accent/60' : 'bg-surface-3 border-line-strong',
+        disabled ? 'cursor-not-allowed opacity-50' : 'hover:border-content-faint active:scale-95',
+        'relative inline-flex h-6 w-12 items-center rounded-full transition-all duration-300 ease-out border shadow-inner focus:outline-none focus:ring-2 focus:ring-accent/40',
       ]"
       type="button"
       :aria-pressed="statusValue?.toString() || 'false'"
@@ -17,8 +17,8 @@
       <span
         :class="[
           statusValue
-            ? 'translate-x-6 bg-gradient-to-br from-cyan-400 to-cyan-600'
-            : 'translate-x-1 bg-gradient-to-br from-slate-300 to-slate-500',
+            ? 'translate-x-6 bg-gradient-to-br from-accent to-accent-action'
+            : 'translate-x-1 bg-gradient-to-br from-content to-content-faint',
           'inline-block h-4 w-4 transform rounded-full shadow-sm transition-all duration-300 ease-out',
         ]"
       />

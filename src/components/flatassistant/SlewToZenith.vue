@@ -1,9 +1,6 @@
 <template>
   <div class="flex w-full items-center gap-2 p-4">
-    <select
-      v-model="settingsStore.flats.altitudeSite"
-      class="w-28 border border-gray-500 rounded-lg bg-gray-800 p-2 text-white"
-    >
+    <select v-model="settingsStore.flats.altitudeSite" class="tns-select w-28!">
       <option value="EAST">{{ $t('components.tppa.east') }}</option>
       <option value="WEST">{{ $t('components.tppa.west') }}</option>
     </select>
@@ -11,8 +8,7 @@
     <ButtonSlew
       class="w-full"
       :label="t('components.flatassistant.button_slew_to_zenith')"
-      :raAngle="computedRa"
-      :decAngle="computedDec"
+      :getCoordinates="zenithCoordinates"
       @finished="stopTracking"
     />
   </div>
@@ -40,25 +36,21 @@ const zenithAzimuth = computed(() =>
   settingsStore.flats.altitudeSite === ALTITUDE_SITE.WEST ? 90 : 270
 );
 
-const computedRa = computed(() => {
-  const { ra } = altAzToRaDec(
-    89,
-    zenithAzimuth.value,
-    store.profileInfo.AstrometrySettings.Latitude,
-    store.profileInfo.AstrometrySettings.Longitude
-  );
-  return ra;
-});
+// 5° off zenith puts the target clearly on one side of the meridian (beyond
+// typical mount tracking limits) while keeping the tube steep enough for a
+// flat panel to rest on it.
+const ZENITH_ALTITUDE = 85;
 
-const computedDec = computed(() => {
-  const { dec } = altAzToRaDec(
-    89,
+// Computed at click time: the sidereal time is not reactive, so a cached
+// value drifts across the meridian and lands on the wrong pier side.
+function zenithCoordinates() {
+  return altAzToRaDec(
+    ZENITH_ALTITUDE,
     zenithAzimuth.value,
     store.profileInfo.AstrometrySettings.Latitude,
     store.profileInfo.AstrometrySettings.Longitude
   );
-  return dec;
-});
+}
 
 async function stopTracking() {
   try {

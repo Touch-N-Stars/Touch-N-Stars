@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block text-sm font-medium text-gray-300 mb-2">{{
+    <label class="block text-sm font-medium text-content mb-2">{{
       $t('components.settings.image.maxDimension')
     }}</label>
     <select
@@ -12,7 +12,7 @@
         }
       "
       :class="[statusClass]"
-      class="tns-input w-full py-2"
+      class="tns-select"
     >
       <option v-for="option in resolutionOptions" :key="option.value" :value="String(option.value)">
         {{ option.label }}{{ option.value < 99999 ? ` (${option.value}px)` : '' }}

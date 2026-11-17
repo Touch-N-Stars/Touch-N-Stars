@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
 import apiPinsService from '@/services/apiPinsService';
 import { useSettingsStore } from '@/store/settingsStore';
-import { usePinsStore } from '@/plugins/pins/store/pinsStore';
+import { usePinsStore } from '@/store/pinsStore';
 import { useToastStore } from '@/store/toastStore';
 import { useImagetStore } from './imageStore';
 import { useAutofocusStore } from '@/store/autofocusStore';
@@ -22,11 +22,14 @@ import { useSequenceStore } from '@/store/sequenceStore';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useDialogStore } from '@/store/dialogStore';
 import { useLogStore } from '@/store/logStore';
+import { useFlatassistantStore } from '@/store/flatassistantStore';
 import websocketMountControlService from '@/services/websocketMountControl';
 import websocketTppaService from '@/services/websocketTppa';
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { createPoller } from '@/utils/poller';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
+import { takeProfileStale } from '@/services/api/profileStaleness';
+import { handleFailureEvent } from '@/utils/backendErrors';
 
 // Serialized snapshots of the last payload written per state key (module-level,
 // deliberately non-reactive). Used by setInfoIfChanged() so the 2s poll only
@@ -37,6 +40,17 @@ let lastWrittenInfoJson = {};
 // After a negative PINS-detection result, re-probe on this cadence instead of
 // staying silenced for the rest of the session (see checkForPINS()).
 const PINS_RECHECK_INTERVAL_MS = 15000;
+
+// A plugin without the sequence controller only gains it through an update, which needs a
+// NINA restart and therefore a reconnect (clearAllStates) - so a negative probe is only
+// repeated rarely, as a safety net for a transient wrong answer.
+const SEQUENCE_EDITOR_RECHECK_INTERVAL_MS = 60000;
+
+// The active profile is ~20 kB and was the largest payload of the 2s poll while
+// rarely changing. Writes from the app mark it stale (profileStaleness.js), so
+// this interval only bounds how long a change made elsewhere (NINA UI, another
+// client) takes to show up.
+const PROFILE_REFRESH_INTERVAL_MS = 10000;
 
 // Initial profileInfo shape. Also used by switchBackend() to drop the previous
 // instance's profile (readers like capturePhoto's SnapShotControlSettings.Save
@@ -119,6 +133,24 @@ const defaultProfileInfo = () => ({
   },
 });
 
+// Device info polled on every tick while the device is connected:
+// [connection flag, response key for handleApiResponses, request].
+const DEVICE_INFO_REQUESTS = [
+  ['isCameraConnected', 'cameraResponse', () => apiService.cameraAction('info')],
+  ['isGuideCameraConnected', 'guideCameraResponse', () => apiService.guideCameraAction('info')],
+  ['isMountConnected', 'mountResponse', () => apiService.mountAction('info')],
+  ['isFilterConnected', 'filterResponse', () => apiService.filterAction('info')],
+  ['isRotatorConnected', 'rotatorResponse', () => apiService.rotatorAction('info')],
+  ['isFocuserConnected', 'focuserResponse', () => apiService.focusAction('info')],
+  ['isFocuserConnected', 'focuserAfResponse', () => apiService.focuserAfAction('info')],
+  ['isGuiderConnected', 'guiderResponse', () => apiService.guiderAction('info')],
+  ['isFlatdeviceConnected', 'flatdeviceResponse', () => apiService.flatdeviceAction('info')],
+  ['isDomeConnected', 'domeResponse', () => apiService.domeAction('info')],
+  ['isSafetyConnected', 'safetyResponse', () => apiService.safetyAction('info')],
+  ['isWeatherConnected', 'weatherResponse', () => apiService.weatherAction('info')],
+  ['isSwitchConnected', 'switchResponse', () => apiService.switchAction('info')],
+];
+
 export const apiStore = defineStore('store', {
   state: () => ({
     apiPort: null,
@@ -138,11 +170,19 @@ export const apiStore = defineStore('store', {
     pinsCheckResolvedOnce: false,
     pinsCheckNegativeCount: 0,
     pinsLastNegativeCheckAt: 0,
+    // Whether the TNS plugin serves the id-based sequence editor (/api/sequence/*).
+    // null = not probed yet. Feature-detected instead of tied to isPINS, because the same
+    // plugin runs on Windows NINA and on PINS. Read it through sequenceEditorAvailable.
+    sequenceEditorSupported: null,
+    sequenceEditorLastNegativeCheckAt: 0,
     isTimeSynced: false,
     intervalIdGraph: null,
     lastEventHistoryFetch: 0,
+    lastProfileFetch: 0,
     profileInfo: defaultProfileInfo(),
     cameraInfo: { Connected: false, IsExposing: false, BinningModes: [], ReadoutModes: [] },
+    // PINS' guide camera slot (/equipment/guidecamera). Stays disconnected against official NINA.
+    guideCameraInfo: { Connected: false, IsExposing: false, BinningModes: [] },
     mountInfo: { Connected: false, TrackingMode: null },
     filterInfo: { Connected: false },
     focuserInfo: { Connected: false, CanReverse: false, CanSetMaxStep: false },
@@ -197,8 +237,12 @@ export const apiStore = defineStore('store', {
     pageReturnTime: null,
     isRedirecting: false,
     backendReachableTimeoutId: null,
+    // Set by the first event history of a session: only later histories can show a connect
+    // that really happened, the first one just lists what was connected already.
+    eventHistoryBaselineKnown: false,
     isMountConnected: false,
     isCameraConnected: false,
+    isGuideCameraConnected: false,
     isFilterConnected: false,
     isRotatorConnected: false,
     isFocuserConnected: false,
@@ -225,9 +269,31 @@ export const apiStore = defineStore('store', {
     // Every other PHD2 app state (Stopped, Looping, Selected, Paused, LostLock)
     // still allows changing settings.
     guiderIsRunning: (state) => ['Guiding', 'Calibrating'].includes(state.guiderInfo?.State),
+
+    // The id-based sequence editor (SequenceV2Page) instead of the legacy NINA view.
+    sequenceEditorAvailable: (state) => state.isPINS || state.sequenceEditorSupported === true,
+
+    // Still waiting for the PINS check or the sequence editor probe to answer.
+    sequenceEditorDetectionPending: (state) =>
+      state.isTnsPluginConnected &&
+      !state.isPINS &&
+      (!state.pinsCheckResolvedOnce || state.sequenceEditorSupported === null),
   },
 
   actions: {
+    /**
+     * The info of every connected device, requested in parallel: { cameraResponse, ... }.
+     * Each response is keyed by what was requested, not by the connection flags afterwards:
+     * a CONNECTED/DISCONNECTED event can flip a flag while the requests are in flight (e.g. the
+     * native guider connecting its guide camera) and would shift every later response onto the
+     * wrong device.
+     */
+    async fetchDeviceInfos() {
+      const pending = DEVICE_INFO_REQUESTS.filter(([flag]) => this[flag]);
+      const responses = await Promise.all(pending.map(([, , request]) => request()));
+      return Object.fromEntries(pending.map(([, key], index) => [key, responses[index]]));
+    },
+
     async fetchAllInfos(t) {
       // Staleness guard: if switchBackend() bumps the epoch while this cycle
       // is parked on an await, every result below belongs to the OLD instance.
@@ -399,6 +465,8 @@ export const apiStore = defineStore('store', {
         if (this.isApiVersionNewerOrEqual) {
           await this.checkForPINS();
           if (isStale()) return;
+          await this.checkSequenceEditorSupport();
+          if (isStale()) return;
         }
 
         // Automatisch Channel WebSocket verbinden wenn Backend erreichbar ist
@@ -538,66 +606,13 @@ export const apiStore = defineStore('store', {
           this.lastEventHistoryFetch = now;
         }
 
-        // Build API requests dynamically based on connection status
-        const requests = [];
-        const requestMap = {};
-
-        if (this.isCameraConnected) {
-          requests.push(apiService.cameraAction('info'));
-          requestMap[requests.length - 1] = 'cameraResponse';
-        }
-        if (this.isMountConnected) {
-          requests.push(apiService.mountAction('info'));
-          requestMap[requests.length - 1] = 'mountResponse';
-        }
-        if (this.isFilterConnected) {
-          requests.push(apiService.filterAction('info'));
-          requestMap[requests.length - 1] = 'filterResponse';
-        }
-        if (this.isRotatorConnected) {
-          requests.push(apiService.rotatorAction('info'));
-          requestMap[requests.length - 1] = 'rotatorResponse';
-        }
-        if (this.isFocuserConnected) {
-          requests.push(apiService.focusAction('info'));
-          requestMap[requests.length - 1] = 'focuserResponse';
-        }
-        if (this.isFocuserConnected) {
-          requests.push(apiService.focuserAfAction('info'));
-          requestMap[requests.length - 1] = 'focuserAfResponse';
-        }
-        if (this.isGuiderConnected) {
-          requests.push(apiService.guiderAction('info'));
-          requestMap[requests.length - 1] = 'guiderResponse';
-        }
-        if (this.isFlatdeviceConnected) {
-          requests.push(apiService.flatdeviceAction('info'));
-          requestMap[requests.length - 1] = 'flatdeviceResponse';
-        }
-        if (this.isDomeConnected) {
-          requests.push(apiService.domeAction('info'));
-          requestMap[requests.length - 1] = 'domeResponse';
-        }
-        if (this.isSafetyConnected) {
-          requests.push(apiService.safetyAction('info'));
-          requestMap[requests.length - 1] = 'safetyResponse';
-        }
-        if (this.isWeatherConnected) {
-          requests.push(apiService.weatherAction('info'));
-          requestMap[requests.length - 1] = 'weatherResponse';
-        }
-        if (this.isSwitchConnected) {
-          requests.push(apiService.switchAction('info'));
-          requestMap[requests.length - 1] = 'switchResponse';
-        }
-
-        const responses = await Promise.all(requests);
+        const deviceResponses = await this.fetchDeviceInfos();
         if (isStale()) return;
 
-        // Map responses to correct keys
         const responseData = {
           imageHistoryResponse: null,
           cameraResponse: null,
+          guideCameraResponse: null,
           mountResponse: null,
           filterResponse: null,
           rotatorResponse: null,
@@ -609,30 +624,18 @@ export const apiStore = defineStore('store', {
           safetyResponse: null,
           weatherResponse: null,
           switchResponse: null,
+          ...deviceResponses,
         };
-
-        let responseIndex = 0;
-        if (this.isCameraConnected) responseData.cameraResponse = responses[responseIndex++];
-        if (this.isMountConnected) responseData.mountResponse = responses[responseIndex++];
-        if (this.isFilterConnected) responseData.filterResponse = responses[responseIndex++];
-        if (this.isRotatorConnected) responseData.rotatorResponse = responses[responseIndex++];
-        if (this.isFocuserConnected) responseData.focuserResponse = responses[responseIndex++];
-        if (this.isFocuserConnected) responseData.focuserAfResponse = responses[responseIndex++];
-        if (this.isGuiderConnected) responseData.guiderResponse = responses[responseIndex++];
-        if (this.isFlatdeviceConnected)
-          responseData.flatdeviceResponse = responses[responseIndex++];
-        if (this.isDomeConnected) responseData.domeResponse = responses[responseIndex++];
-        if (this.isSafetyConnected) responseData.safetyResponse = responses[responseIndex++];
-        if (this.isWeatherConnected) responseData.weatherResponse = responses[responseIndex++];
-        if (this.isSwitchConnected) responseData.switchResponse = responses[responseIndex++];
 
         this.handleApiResponses(responseData);
       } catch (error) {
         console.error('Error fetching information:', error);
       }
       if (isStale()) return;
-      await this.fetchProfilInfos();
-      if (isStale()) return;
+      if (takeProfileStale() || Date.now() - this.lastProfileFetch >= PROFILE_REFRESH_INTERVAL_MS) {
+        await this.fetchProfilInfos();
+        if (isStale()) return;
+      }
       //when the backend is accessible again close modal
       if (this.isBackendReachable && !this.closeErrorModal) {
         this.closeErrorModal = true;
@@ -667,10 +670,14 @@ export const apiStore = defineStore('store', {
       this.apiPort = null;
       this.attemptsToConnect = 0;
       this.lastEventHistoryFetch = 0;
+      this.eventHistoryBaselineKnown = false;
+      this.lastProfileFetch = 0;
       this.isPINS = false;
       this.isPinsCheckDone = false;
       this.pinsCheckResolvedOnce = false;
       this.pinsCheckNegativeCount = 0;
+      this.sequenceEditorSupported = null;
+      this.sequenceEditorLastNegativeCheckAt = 0;
       this.isTimeSynced = false;
       this.imageHistoryInfo = null;
       this.lastImageStats = null;
@@ -678,6 +685,7 @@ export const apiStore = defineStore('store', {
       // Clear equipment connection flags
       this.isMountConnected = false;
       this.isCameraConnected = false;
+      this.isGuideCameraConnected = false;
       this.isFilterConnected = false;
       this.isRotatorConnected = false;
       this.isFocuserConnected = false;
@@ -690,6 +698,7 @@ export const apiStore = defineStore('store', {
 
       // Clear equipment info from previous instance
       this.cameraInfo = { Connected: false, IsExposing: false, BinningModes: [], ReadoutModes: [] };
+      this.guideCameraInfo = { Connected: false, IsExposing: false, BinningModes: [] };
       this.mountInfo = { Connected: false, TrackingMode: null };
       this.filterInfo = { Connected: false };
       this.focuserInfo = { Connected: false, CanReverse: false, CanSetMaxStep: false };
@@ -767,7 +776,6 @@ export const apiStore = defineStore('store', {
         phd2Cameras: [],
         phd2SelectedCameraIndex: null,
         phd2SelectedCameraName: null,
-        phd2Mounts: [],
         phd2SelectedMountIndex: null,
         phd2SelectedMountName: null,
       });
@@ -781,6 +789,8 @@ export const apiStore = defineStore('store', {
       sequenceV2Store.$patch({
         data: [],
         loaded: false,
+        revision: null,
+        statusEndpointSupported: null,
         availableItems: [],
         availableTriggers: [],
         availableConditions: [],
@@ -862,6 +872,7 @@ export const apiStore = defineStore('store', {
     handleApiResponses({
       imageHistoryResponse,
       cameraResponse,
+      guideCameraResponse,
       mountResponse,
       filterResponse,
       rotatorResponse,
@@ -882,6 +893,12 @@ export const apiStore = defineStore('store', {
         this.setInfoIfChanged('cameraInfo', cameraResponse.Response);
       } else if (cameraResponse) {
         console.error('Error in camera API response:', cameraResponse.Error);
+      }
+
+      if (guideCameraResponse?.Success) {
+        this.setInfoIfChanged('guideCameraInfo', guideCameraResponse.Response);
+      } else if (guideCameraResponse) {
+        console.error('Error in guide camera API response:', guideCameraResponse.Error);
       }
 
       if (mountResponse?.Success) {
@@ -980,6 +997,8 @@ export const apiStore = defineStore('store', {
       // another instance. A transient connection loss keeps them: same instance,
       // same indices.
       useImagetStore().clearThumbnailCache();
+      // Another instance may run another plugin version and its own flat run.
+      useFlatassistantStore().resetServerRun();
 
       // Re-arm the sockets that were live before the switch. connect() with a
       // null URL (apiPort is null right after teardown) arms the idle-recheck
@@ -1033,6 +1052,7 @@ export const apiStore = defineStore('store', {
         const profileInfoResponse = await apiService.profileAction('show?active=true');
 
         if (profileInfoResponse && profileInfoResponse.Response) {
+          this.lastProfileFetch = Date.now();
           // imageSavePath and existingEquipmentList are derived purely from the
           // profile, so they only need recomputing when the profile changed.
           if (this.setInfoIfChanged('profileInfo', profileInfoResponse.Response)) {
@@ -1101,6 +1121,8 @@ export const apiStore = defineStore('store', {
       this.existingEquipmentList = [];
       const apiMapping = {
         CameraSettings: 'camera',
+        // PINS only; right after the camera so connectAll() connects it next.
+        GuideCameraSettings: 'guidecamera',
         DomeSettings: 'dome',
         FilterWheelSettings: 'filter',
         FocuserSettings: 'focuser',
@@ -1209,6 +1231,25 @@ export const apiStore = defineStore('store', {
       }
     },
 
+    // Probes once per connection whether the plugin serves /api/sequence/*. A positive
+    // answer latches until clearAllStates(); a negative one is repeated rarely.
+    async checkSequenceEditorSupport() {
+      // PINS always has the editor (sequenceEditorAvailable), no need to probe
+      if (this.isPINS) return;
+      if (this.sequenceEditorSupported === true) return;
+      if (!this.isTnsPluginConnected) return;
+      if (
+        this.sequenceEditorSupported === false &&
+        Date.now() - this.sequenceEditorLastNegativeCheckAt < SEQUENCE_EDITOR_RECHECK_INTERVAL_MS
+      ) {
+        return;
+      }
+      const supported = await apiService.probeSequenceEditorSupport();
+      if (supported === null) return; // no answer - retry next cycle
+      this.sequenceEditorSupported = supported;
+      if (!supported) this.sequenceEditorLastNegativeCheckAt = Date.now();
+    },
+
     async syncSystemTime() {
       const pinsStore = usePinsStore();
 
@@ -1286,7 +1327,15 @@ export const apiStore = defineStore('store', {
         if (imageStore.isImageFetching) {
           return;
         }
-        await imageStore.getImage();
+        // A capture this app started always loads: capturePhoto() waits for the fetch to start,
+        // and a frame identical to the shown one (e.g. a simulator replaying its file) would
+        // otherwise be skipped as "unchanged" and leave that wait hanging forever. The skip is
+        // meant for events the backend re-sends after a reconnect or resume.
+        if (useCameraStore().isLoadingImage) {
+          await imageStore.getImage();
+        } else {
+          await imageStore.refreshImageIfChanged();
+        }
       }
 
       if (message.Response && message.Response.Event === 'IMAGE-SAVE') {
@@ -1299,11 +1348,14 @@ export const apiStore = defineStore('store', {
       // If a device connection event arrives via WebSocket, fetch event history immediately
       if (message.Response && message.Response.Event) {
         const event = message.Response.Event;
+        if (handleFailureEvent(message.Response)) return;
         const deviceEvents = [
           'MOUNT-CONNECTED',
           'MOUNT-DISCONNECTED',
           'CAMERA-CONNECTED',
           'CAMERA-DISCONNECTED',
+          'GUIDECAMERA-CONNECTED',
+          'GUIDECAMERA-DISCONNECTED',
           'FILTERWHEEL-CONNECTED',
           'FILTERWHEEL-DISCONNECTED',
           'ROTATOR-CONNECTED',
@@ -1365,6 +1417,7 @@ export const apiStore = defineStore('store', {
       const deviceMap = {
         MOUNT: 'isMountConnected',
         CAMERA: 'isCameraConnected',
+        GUIDECAMERA: 'isGuideCameraConnected',
         FILTERWHEEL: 'isFilterConnected',
         ROTATOR: 'isRotatorConnected',
         FOCUSER: 'isFocuserConnected',
@@ -1375,6 +1428,8 @@ export const apiStore = defineStore('store', {
         WEATHER: 'isWeatherConnected',
         SAFETY: 'isSafetyConnected',
       };
+
+      const cameraWasConnected = this.isCameraConnected;
 
       // Initialize all devices as disconnected
       Object.values(deviceMap).forEach((key) => {
@@ -1411,12 +1466,23 @@ export const apiStore = defineStore('store', {
         //console.log(`Device ${deviceName}: ${event.Event} -> ${isConnected}`);
       });
 
+      if (this.eventHistoryBaselineKnown && !cameraWasConnected && this.isCameraConnected) {
+        useCameraStore().armAutoStart();
+      }
+      this.eventHistoryBaselineKnown = true;
+
       // Clear data for disconnected devices. Must go through setInfoIfChanged:
       // a direct write would leave the cache holding the pre-disconnect payload,
       // and a reconnect returning identical data would then be skipped, leaving
       // the state stuck at the cleared defaults.
       if (!this.isCameraConnected)
         this.setInfoIfChanged('cameraInfo', { Connected: false, IsExposing: false });
+      if (!this.isGuideCameraConnected)
+        this.setInfoIfChanged('guideCameraInfo', {
+          Connected: false,
+          IsExposing: false,
+          BinningModes: [],
+        });
       if (!this.isMountConnected)
         this.setInfoIfChanged('mountInfo', { Connected: false, TrackingMode: null });
       if (!this.isFilterConnected) this.setInfoIfChanged('filterInfo', { Connected: false });

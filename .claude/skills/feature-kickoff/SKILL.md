@@ -163,12 +163,22 @@ If the user says yes:
 ```bash
 git status --short              # must be clean apart from docs/features/<slug>.md
 git fetch origin
-git switch -c <branch> origin/develop
+git switch --no-track -c <branch> origin/develop
+git push -u origin <branch>
+git branch -vv | grep '^\*'     # must show [origin/<branch>], not [origin/develop]
 ```
 
 Branch off **`origin/develop`**, not `master` and not whatever branch happens to
 be checked out. `develop` is the integration branch; `master` is the release
 branch.
+
+The user's yes to the branch covers publishing it: the branch must show up on
+GitHub right away, so push it in the same step. `--no-track` is mandatory —
+without it git sets `origin/develop` as the upstream, and every later `git push`
+(including VS Code's push/sync button) writes the feature commits straight into
+`develop` while no branch of that name ever appears on GitHub. The final check
+catches that; if it still shows `[origin/develop]`, fix it with
+`git branch --set-upstream-to=origin/<branch>` before handing back.
 
 Naming follows what the repo already uses — lowercase kebab-case describing the
 change, matching the file slug so the two stay findable together:

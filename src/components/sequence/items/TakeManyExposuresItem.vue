@@ -2,11 +2,11 @@
   <ItemShell :item="item">
     <template #summary>
       <template v-if="exposure">
-        <span class="text-xs text-slate-400 font-mono">{{ exposure.ExposureTime }}s</span>
-        <span class="text-xs text-slate-500">G{{ exposure.Gain }}</span>
-        <span class="text-xs text-slate-500">{{ exposure.ImageType }}</span>
+        <span class="text-xs text-content-muted font-mono">{{ exposure.ExposureTime }}s</span>
+        <span class="text-xs text-content-faint">G{{ exposure.Gain }}</span>
+        <span class="text-xs text-content-faint">{{ exposure.ImageType }}</span>
       </template>
-      <span v-if="loopIterations" class="text-xs text-slate-400 font-mono">
+      <span v-if="loopIterations" class="text-xs text-content-muted font-mono">
         {{ completedIterations }} / {{ loopIterations }}
       </span>
     </template>
@@ -51,11 +51,11 @@
 
       <!-- Binning -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.binning')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="binningValue"
           @change="saveExposure('Binning', $event.target.value)"
         >
@@ -68,11 +68,11 @@
 
       <!-- Image Type -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.imageType')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="exposure.ImageType"
           @change="saveExposure('ImageType', $event.target.value)"
         >

@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         {{ $t('components.sequence.items.autofocus.everyN', { n: item.AfterExposures }) }}
       </span>
     </template>

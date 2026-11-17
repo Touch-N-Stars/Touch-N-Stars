@@ -1,7 +1,7 @@
 <template>
   <div v-if="store.isPINS" class="flex flex-row w-full items-center min-w-28">
     <div class="flex items-center gap-1 mr-3">
-      <label for="guide-algorithm-dec" class="text-sm sm:text-xs mb-1 text-gray-200">
+      <label for="guide-algorithm-dec" class="text-sm sm:text-xs mb-1 text-content">
         {{ $t('components.guider.phd2.guideAlgorithmDEC') }}
       </label>
       <InfoModal

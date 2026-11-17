@@ -22,13 +22,13 @@
         ></path>
       </svg>
     </div>
-    <!-- Error Message when plugin not available or version incompatible -->
+    <!-- Error Message when the API version is incompatible -->
     <div
-      v-else-if="!pageIsLoading && (!livestackPluginAvailable || errorMessage)"
+      v-else-if="!pageIsLoading && errorMessage"
       class="border border-red-700 rounded-lg bg-red-900/50 shadow-lg p-4 m-4"
     >
       <p class="text-red-400 text-center">
-        {{ errorMessage || t('plugins.livestack.not_available') }}
+        {{ errorMessage }}
       </p>
     </div>
     <div v-else-if="pageIsLoading" class="flex flex-col items-center justify-center h-64">
@@ -56,18 +56,21 @@
     </div>
     <!-- Main content when plugin is available -->
     <div v-else>
-      <!-- Fullscreen Image Display -->
-      <div class="fixed inset-0 z-10">
-        <!-- ZoomableImage Component - Full Screen -->
+      <!-- Image area fills exactly the stage window with its own rounded
+           clipping, so a zoomed image stays inside the frame (same as CameraPage). -->
+      <div
+        class="fixed z-10 rounded-[var(--stage-radius)] overflow-hidden bg-ground"
+        :style="stageWindowStyle"
+      >
         <ZoomableImage
-          :imageData="getStretchSettings().stretchedImageData || livestackStore.currentImageUrl"
-          :loading="isLoading || isHistogramProcessing"
+          :imageData="stretchedImageUrl"
+          :loading="isLoading || stretchRendering"
           :showDownload="true"
           :showFullscreen="false"
           :showHistogram="true"
-          controlsClass="right-2 bottom-above-statusbar left-2 landscape:left-(--nav-offset)"
+          controlsClass="right-2 bottom-2 left-2"
           :initialZoom="currentZoomLevel"
-          height="100vh"
+          height="100%"
           :altText="imageAltText"
           :placeholderText="imagePlaceholderText"
           @image-load="handleImageLoad"
@@ -93,23 +96,13 @@
         <!-- Histogram Overlay -->
         <div
           v-if="showHistogram && livestackStore.currentImageUrl"
-          class="absolute top-60 left-4 landscape:left-(--nav-offset) landscape:top-24 right-4 z-70"
+          class="absolute top-40 left-4 landscape:top-22 right-4 z-70"
         >
-          <div
-            v-if="isHistogramProcessing"
-            class="absolute inset-0 bg-gray-900/70 flex items-center justify-center rounded-lg text-gray-200 text-sm pointer-events-none"
-          >
-            Procesando…
-          </div>
           <HistogramChart
-            :data="getHistogram()"
+            :imageUrl="livestackStore.currentImageUrl"
             height="100px"
-            :showStats="false"
-            :blackPoint="getStretchSettings().blackPoint"
-            :midPoint="getStretchSettings().midPoint"
-            :whitePoint="getStretchSettings().whitePoint"
-            @levels-changed="onLevelsChanged"
-            @levels-reset="onLevelsReset"
+            collapsibleStats
+            toolbarInChart
           />
         </div>
       </div>
@@ -124,10 +117,11 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import apiService from '@/services/apiService';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
+import { useStageWindow } from '@/composables/useStageWindow';
 import HistogramChart from '@/components/helpers/HistogramChart.vue';
 import websocketChannelService from '@/services/websocketChannelSocket.js';
 import { useLivestackStore } from '../store/livestackStore.js';
-import { useHistogramStore } from '@/store/histogramStore';
+import { useRawStretch } from '@/composables/useRawStretch';
 import { useI18n } from 'vue-i18n';
 import { downloadImage as downloadImageHelper } from '@/utils/imageDownloader';
 import { apiStore } from '@/store/store';
@@ -138,7 +132,7 @@ import { timeSync } from '@/utils/timeSync';
 
 const { t } = useI18n();
 const livestackStore = useLivestackStore();
-const histogramStore = useHistogramStore();
+const { stageWindowStyle } = useStageWindow();
 const store = apiStore();
 const settingsStore = useSettingsStore();
 const isLoading = ref(false);
@@ -146,23 +140,27 @@ const lastUpdated = ref(null);
 const errorMessage = ref(null);
 const wsStatus = ref('disconnected');
 const currentZoomLevel = ref(1);
-const livestackPluginAvailable = ref(false);
 const pageIsLoading = ref(true);
 const showHistogram = ref(false);
-const isHistogramProcessing = computed(() =>
-  histogramStore.isProcessing(livestackStore.currentImageUrl)
+// Every stack update replaces currentImageUrl; the old entry is released with it.
+const { displayUrl: stretchedImageUrl, rendering: stretchRendering } = useRawStretch(
+  () => livestackStore.currentImageUrl,
+  () =>
+    livestackStore.currentImageTarget && livestackStore.currentImageFilter
+      ? {
+          kind: 'livestack',
+          target: livestackStore.currentImageTarget,
+          filter: livestackStore.currentImageFilter,
+        }
+      : null,
+  showHistogram,
+  { releaseOnChange: true, releaseOnUnmount: true }
 );
 const livestackRefs = storeToRefs(livestackStore);
 const imageAltText = computed(() =>
   t('plugins.livestack.image_alt', { filter: livestackStore.selectedFilter?.label ?? '' })
 );
 const imagePlaceholderText = computed(() => t('plugins.livestack.loading_image'));
-
-watch([showHistogram, () => livestackStore.currentImageUrl], ([panelOpen, imageUrl]) => {
-  if (panelOpen && imageUrl) {
-    histogramStore.requestHistogram(imageUrl);
-  }
-});
 
 // Observe changes to target/filter together to avoid duplicate loads
 watch(
@@ -242,39 +240,6 @@ const handleDownload = async (data) => {
   });
 };
 
-const getHistogram = () => {
-  if (!livestackStore.currentImageUrl) return null;
-  return histogramStore.getHistogram(livestackStore.currentImageUrl);
-};
-
-const getStretchSettings = () => {
-  if (!livestackStore.currentImageUrl) {
-    return {
-      blackPoint: 0,
-      whitePoint: 255,
-      midPoint: 127,
-      stretchedImageData: null,
-    };
-  }
-  return histogramStore.getStretchSettings(livestackStore.currentImageUrl);
-};
-
-const onLevelsChanged = async (event) => {
-  if (!livestackStore.currentImageUrl) return;
-  const { blackPoint, whitePoint, midPoint } = event;
-  await histogramStore.applyStretch(
-    livestackStore.currentImageUrl,
-    blackPoint,
-    whitePoint,
-    midPoint
-  );
-};
-
-const onLevelsReset = () => {
-  if (!livestackStore.currentImageUrl) return;
-  histogramStore.resetStretch(livestackStore.currentImageUrl);
-};
-
 // WebSocket handlers
 const handleWebSocketStatus = (status) => {
   wsStatus.value = status;
@@ -342,20 +307,7 @@ onMounted(async () => {
     return;
   }
 
-  const response = await apiService.getPlugins();
-  console.log('Plugins response:', response);
-
-  // Check if Livestack plugin is available
-  if (
-    !response.Success ||
-    !response.Response?.some((plugin) => plugin.toLowerCase() === 'livestack')
-  ) {
-    console.error('Livestack plugin is not available or not installed');
-    pageIsLoading.value = false;
-    return;
-  }
-
-  livestackPluginAvailable.value = true;
+  // Whether the NINA plugin is loaded is checked by NinaPluginGate before this view mounts.
 
   // Setup WebSocket callbacks on the global WebSocket service
   const originalStatusCallback = websocketChannelService.statusCallback;

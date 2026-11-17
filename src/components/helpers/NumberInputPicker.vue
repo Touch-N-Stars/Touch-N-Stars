@@ -14,8 +14,8 @@
         :for="inputId"
         :class="
           labelPosition === 'top'
-            ? 'block text-sm font-medium text-gray-300 mb-2'
-            : 'text-xs md:text-sm text-gray-200'
+            ? 'block text-sm font-medium text-content mb-2'
+            : 'text-xs md:text-sm text-content'
         "
       >
         {{ label }}
@@ -37,7 +37,7 @@
     >
       <button
         type="button"
-        class="flex items-center justify-center shrink-0 w-6 rounded-l-lg bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white text-sm font-bold border border-gray-600 select-none"
+        class="flex items-center justify-center shrink-0 w-6 rounded-l-lg bg-surface-3 hover:bg-surface-2 active:bg-surface-1 text-content text-sm font-bold border border-line-strong select-none"
         @click="stepDown"
       >
         &minus;
@@ -50,7 +50,7 @@
           'tns-input rounded-none border-x-0 text-center min-w-12! px-1! flex-1',
           statusClass,
         ]"
-        :placeholder="isDefaultValue && defaultValue === null ? 'default' : placeholder"
+        :placeholder="isDefaultValue ? defaultPlaceholder : placeholder"
         :step="step"
         :min="min"
         :max="max"
@@ -61,7 +61,7 @@
       />
       <button
         type="button"
-        class="flex items-center justify-center shrink-0 w-6 rounded-r-lg bg-gray-700 hover:bg-gray-600 active:bg-gray-500 text-white text-sm font-bold border border-gray-600 select-none"
+        class="flex items-center justify-center shrink-0 w-6 rounded-r-lg bg-surface-3 hover:bg-surface-2 active:bg-surface-1 text-content text-sm font-bold border border-line-strong select-none"
         @click="stepUp"
       >
         +
@@ -72,6 +72,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useNumberPicker } from '@/composables/useNumberPicker';
 import { useSettingsStore } from '@/store/settingsStore';
 import InfoModal from '@/components/helpers/infoModal.vue';
@@ -156,6 +157,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'change', 'focus', 'blur']);
 
+const { t } = useI18n();
 const { openPicker: openNumberPicker } = useNumberPicker();
 const settingsStore = useSettingsStore();
 const statusClass = ref('');
@@ -182,9 +184,29 @@ const isDefaultValue = computed(() => {
   return sentinelActive.value && props.modelValue === -1;
 });
 
+// The value that applies while the field is at its default, or null when it is not known.
+// A defaultValue equal to the sentinel itself says nothing about the effective value.
+const knownDefault = computed(() => {
+  const value = props.defaultValue;
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) return null;
+  if (sentinelActive.value && Number(value) === -1) return null;
+  return Number(value);
+});
+
+// At the default the field stays empty and the greyed placeholder names the effective value,
+// so it cannot be mistaken for a value the user set.
+const defaultPlaceholder = computed(() => {
+  if (knownDefault.value === null) return t('components.helpers.numberInput.default');
+  const value =
+    props.decimalPlaces !== null
+      ? knownDefault.value.toFixed(props.decimalPlaces)
+      : String(knownDefault.value);
+  return t('components.helpers.numberInput.defaultWithValue', { value });
+});
+
 const formattedValue = computed(() => {
   if (isDefaultValue.value) {
-    return props.defaultValue !== null ? props.defaultValue : '';
+    return '';
   }
   if (props.decimalPlaces !== null) {
     return Number(props.modelValue).toFixed(props.decimalPlaces);
@@ -205,7 +227,7 @@ function openPicker() {
 
   let valueToPass;
   if (isDefaultValue.value) {
-    valueToPass = props.defaultValue !== null ? props.defaultValue : props.min;
+    valueToPass = knownDefault.value !== null ? knownDefault.value : props.min;
   } else {
     valueToPass = props.modelValue;
   }
@@ -225,7 +247,7 @@ function openPicker() {
 
 function currentValue() {
   if (isDefaultValue.value) {
-    return props.defaultValue !== null ? props.defaultValue : props.min;
+    return knownDefault.value !== null ? knownDefault.value : props.min;
   }
   const val = Number(props.modelValue);
   return isNaN(val) ? 0 : val;

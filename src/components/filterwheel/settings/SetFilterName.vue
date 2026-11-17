@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row w-full items-center">
-    <label class="text-sm text-gray-200 mr-10 whitespace-nowrap">
+    <label class="text-sm text-content mr-10 whitespace-nowrap">
       {{ $t('components.filterwheel.settings.FilterWheelFilters.Name') }}
     </label>
     <input
@@ -14,8 +14,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 
 const props = defineProps({
   modelValue: {
@@ -28,8 +27,10 @@ const props = defineProps({
   },
 });
 
-const value = ref('');
-const filterName = ref(props.modelValue);
+// The caller passes the name from its filter entry; the input follows it until edited.
+const { value, save } = useProfileSetting(() => props.settingKey, {
+  source: () => props.modelValue,
+});
 
 // Allow harmless separators (dash, underscore, space) in filter names such as
 // "Ha 3nm" or "L-eXtreme"; everything else is stripped while typing.
@@ -37,17 +38,7 @@ function sanitizeName(event) {
   value.value = event.target.value.replace(/[^a-zA-Z0-9äöüÄÖÜß _-]/g, '');
 }
 
-async function updateSetting() {
-  value.value = value.value.trim();
-  try {
-    await apiService.profileChangeValue(`${props.settingKey}`, value.value);
-  } catch (error) {
-    console.error('Error updating filter name:', error);
-  }
+function updateSetting() {
+  save(value.value.trim());
 }
-
-onMounted(() => {
-  value.value = props.modelValue;
-  filterName.value = props.modelValue;
-});
 </script>

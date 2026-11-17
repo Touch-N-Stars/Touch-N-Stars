@@ -180,7 +180,6 @@ export const usePinsAllSkyStore = defineStore('pinsAllSkyStore', {
               ? i18n.global.t('plugins.pinsAllSky.messages.noSessionsDeleted')
               : i18n.global.t('plugins.pinsAllSky.messages.deletedSessions', {
                   count: deletedSessionCount,
-                  suffix: deletedSessionCount === 1 ? '' : 's',
                   freed: this.formatSize(freedBytes),
                   remaining: this.formatSize(remainingUsed),
                 });
@@ -216,7 +215,6 @@ export const usePinsAllSkyStore = defineStore('pinsAllSkyStore', {
               ? i18n.global.t('plugins.pinsAllSky.messages.noSessionsDeleted')
               : i18n.global.t('plugins.pinsAllSky.messages.deletedSessions', {
                   count: deletedSessionCount,
-                  suffix: deletedSessionCount === 1 ? '' : 's',
                   freed: this.formatSize(freedBytes),
                   remaining: this.formatSize(remainingUsed),
                 });

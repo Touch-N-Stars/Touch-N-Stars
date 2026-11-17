@@ -3,6 +3,7 @@ import NightSummaryView from './views/nightsummary.vue';
 import { usePluginStore } from '@/store/pluginStore';
 import { useNightSummaryStore } from './store/nightsummaryStore';
 import metadata from './plugin.json';
+import { withNinaPluginGate } from '@/components/ninaPlugins/withNinaPluginGate';
 import NightSummaryIcon from './components/NightSummaryIcon.vue';
 
 export default {
@@ -40,7 +41,7 @@ export default {
 
     router.addRoute({
       path: pluginPath,
-      component: markRaw(NightSummaryView),
+      component: withNinaPluginGate(markRaw(NightSummaryView), metadata),
       meta: { requiresSetup: true },
     });
 

@@ -1640,12 +1640,14 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch, h } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
 import { raDecToAltAz, wait } from '@/utils/utils';
 import { timeSync } from '@/utils/timeSync';
+import { useBackgroundAwarePolling } from '@/utils/appLifecycle';
 import { equatorialToAltAz, getSunAltitudeDeg, angularSeparationDeg } from '@/utils/astronomy';
 import { fetchBrowseObjects, refreshCobs } from '../utils/fetchBrowseObjects';
 import { fetchPath } from '../utils/fetchPath';
@@ -1683,7 +1685,7 @@ import SkyChart from '@/components/framing/SkyChart.vue';
 // failure still surfaces in actionStatus like every other Track-tab action here.
 import Modal from '@/components/helpers/Modal.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
-import SettingInput from '@/components/helpers/settings/UpdatePorfileNumber.vue';
+import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import {
   EyeIcon,
@@ -1775,6 +1777,7 @@ const AsteroidIcon = {
 };
 
 const { t } = useI18n();
+const toastStore = useToastStore();
 const store = apiStore();
 const framingStore = useFramingStore();
 const perihelionStore = usePerihelionStore();
@@ -1954,8 +1957,17 @@ async function onExportAsteroids() {
   });
 }
 
+function confirmClear(messageKey) {
+  return toastStore.showConfirmation(
+    t('common.confirm'),
+    t(messageKey),
+    t('common.delete'),
+    t('common.cancel')
+  );
+}
+
 async function onClearComets() {
-  if (!window.confirm(t('perihelion.settings.confirmClearComets'))) return;
+  if (!(await confirmClear('perihelion.settings.confirmClearComets'))) return;
   const result = await clearComets();
   dataSettingsStatus.value = result.message;
   if (result.ok) {
@@ -1968,7 +1980,7 @@ async function onClearComets() {
 }
 
 async function onClearAsteroids() {
-  if (!window.confirm(t('perihelion.settings.confirmClearAsteroids'))) return;
+  if (!(await confirmClear('perihelion.settings.confirmClearAsteroids'))) return;
   const result = await clearAsteroids();
   dataSettingsStatus.value = result.message;
   if (result.ok) {
@@ -1978,7 +1990,7 @@ async function onClearAsteroids() {
 }
 
 async function onClearCobs() {
-  if (!window.confirm(t('perihelion.settings.confirmClearCobs'))) return;
+  if (!(await confirmClear('perihelion.settings.confirmClearCobs'))) return;
   const result = await clearCobs();
   dataSettingsStatus.value = result.message;
   if (result.ok) {
@@ -2706,7 +2718,6 @@ const stopButtonLabel = computed(() =>
 // stale local state, so e.g. a silently-failing auto-reapply tick is actually visible.
 const quickTrackStatus = ref(null);
 const now = ref(Date.now());
-let statusPollHandle = null;
 
 // Survives independently of quickTrackStatus/trackingMode being reset below -- a genuine safety
 // concern: Quick Track has no sequence of its own, so nothing else stops it from tracking a
@@ -2732,24 +2743,22 @@ async function pollQuickTrackStatus() {
   now.value = Date.now();
 }
 
+// immediateOnResume: a meridian stop that happened in the background has to show up right away.
+// perihelionApi has no response interceptors, so a failed tick lands in the catch above.
+useBackgroundAwarePolling(
+  pollQuickTrackStatus,
+  10000,
+  computed(() => trackingMode.value === 'quick'),
+  { immediate: true, immediateOnResume: true }
+);
 watch(
   trackingMode,
   (mode) => {
-    if (statusPollHandle) {
-      clearInterval(statusPollHandle);
-      statusPollHandle = null;
-    }
-    if (mode === 'quick') {
-      pollQuickTrackStatus();
-      statusPollHandle = setInterval(pollQuickTrackStatus, 10000);
-    } else {
-      quickTrackStatus.value = null;
-    }
+    if (mode !== 'quick') quickTrackStatus.value = null;
   },
   { immediate: true }
 );
 onUnmounted(() => {
-  if (statusPollHandle) clearInterval(statusPollHandle);
   if (positionDerivedStateHandle) clearInterval(positionDerivedStateHandle);
 });
 

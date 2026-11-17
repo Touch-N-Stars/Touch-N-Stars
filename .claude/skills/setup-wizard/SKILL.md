@@ -55,21 +55,23 @@ transient connection loss while the profile stays.
 Modals opened from inside the wizard teleport to `body`, so they need explicit
 layering or they open invisibly _behind_ it:
 
-| Layer                               | Value                                  |
-| ----------------------------------- | -------------------------------------- |
-| `Modal.vue` default                 | `z-40`                                 |
-| `LoadingOverlay`                    | `z-[60]`                               |
-| **Wizard overlay**                  | `z-70`                                 |
-| Modals opened from the wizard       | `z-[75]`                               |
-| `LocationSyncModal`                 | `z-[76]` — it blocks the mount connect |
-| PINS upgrade overlay, `DialogModal` | `z-[80]`                               |
+| Layer                                | Token                | Value |
+| ------------------------------------ | -------------------- | ----- |
+| `Modal.vue` default                  | `z-modal`            | 40    |
+| `LoadingOverlay`                     | `z-loading`          | 60    |
+| **Wizard overlay**                   | `z-overlay`          | 70    |
+| Modals opened from the wizard        | `z-overlay-modal`    | 75    |
+| `LocationSyncModal` (blocks connect) | `z-overlay-blocking` | 76    |
+| PINS upgrade overlay, `DialogModal`  | `z-dialog`           | 80    |
+
+The whole scale lives in `tailwind.config.cjs`.
 
 `Indi3rdpartyInstallPanel.vue:19` documents this at the call site.
 
 ## Third-party INDI driver installs
 
 `ALLOWED_INDI_DRIVER_TYPES` in
-`src/plugins/pins/composables/indiInstallUtils.js:39` accepts eight types:
+`src/components/pins/composables/indiInstallUtils.js:39` accepts eight types:
 `camera, filterwheel, flatpanel, focuser, rotator, switches, telescope,
 weather`. It must stay in sync with `TYPE_OPTIONS` in
 `PinsIndiRegistryEditModal.vue:303` — the registry an installed driver is

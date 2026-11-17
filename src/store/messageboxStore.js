@@ -61,6 +61,11 @@ export const useMessageboxStore = defineStore('messageboxStore', {
           this.handleMessageboxUpdate(messageboxData);
         });
 
+        // Also arrives for a box this client already closed itself; the clear is idempotent.
+        signalRMessageboxesService.setClearDialogCallback((messageboxId) => {
+          this.handleClearMessagebox(messageboxId);
+        });
+
         signalRMessageboxesService.setStatusCallback((status) => {
           console.log('[messageboxStore] SignalR connection status:', status);
           this.isConnectedToSignalR = status === 'Connected' || status === 'Reconnected';

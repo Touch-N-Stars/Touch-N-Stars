@@ -21,24 +21,43 @@ npm run lint
 npm run format:check
 npm run build
 npm run i18n:check
+npm run ratchet:check
 npm run test:run
 ```
 
-`npm run ci:verify` chains all of them plus `typecheck`. `typecheck` can OOM, and `test:run`
+`npm run ci:verify` chains all of them plus `typecheck`. `ratchet:check` fails when a pattern
+that has a shared building block grows beyond `scripts/ui-ratchet-baseline.json`: legacy color
+classes, raw `type="number"` inputs, `setInterval`, `animate-spin` outside `Spinner`,
+`fixed inset-0` outside `Modal`, raw overlay z-index values, per-component `-webkit-user-select`,
+`<draggable>` without `fallbackOnBody`, `forceFallback` (definitions in
+`scripts/lib/uiRatchet.mjs`). After a migration lower the limits with `npm run ratchet:update`,
+never raise them to get a PR through. ESLint bans `apiService.profileChangeValue` outside the
+exception list in `eslint.config.js`; use `useProfileSetting`, and give a new exception a reason
+there. A new shared building block gets its guard in the same PR - a ratchet metric or a lint
+rule - otherwise the old way keeps spreading. `typecheck` can OOM, and `test:run`
 needs Node ≥ 22.15 (`registerHooks`) — below that every test file fails at module
 instantiation, which looks alarming but says nothing about the code.
+
+`npm run test:browser` is separate because it needs Chrome and a built `dist/` (`npm run
+build:app`). The unit test loader stubs `.vue` files, so this is the only automated check that
+renders real pages: it opens every main route at phone and tablet size against the local fake
+backend in `scripts/lib/fakeBackend.mjs` and fails on uncaught exceptions, raw i18n keys, empty
+pages and horizontal overflow. No device is connected there, so it covers the disconnected state
+only; pages that need more get fixtures through `BACKEND_ROUTES` in `scripts/browser-test.mjs`.
+A pass proves nothing about real N.I.N.A., PINS or hardware. Screenshots land in
+`.cache/browser-tests/` for before/after comparisons of UI work.
 
 ## PINS is NINA, forked to Linux
 
 Not a separate headless backend. The same NINA runs there, so **everything the NINA
 side offers exists in PINS mode too** - the Advanced API on `/v2/api`, the Touch'N'Stars
 plugin server, equipment devices, the whole `/v2/api/equipment/*` surface. The PINS
-daemon on port 8000 is *additional*, and only for host/system concerns (Wi-Fi, timezone,
+daemon on port 8000 is _additional_, and only for host/system concerns (Wi-Fi, timezone,
 keyboard layout, updates).
 
 The HLD's phrase "PINS/headless mode with additional daemon APIs" is easy to misread as
 "PINS has no NINA". It does. Never design a PINS fallback around the assumption that
-`/v2/api` is unavailable there - the correct question is almost always whether a *device*
+`/v2/api` is unavailable there - the correct question is almost always whether a _device_
 is connected, not which runtime mode is active (see the feature-detect rule in
 `.claude/skills/api-endpoint/SKILL.md`).
 
@@ -55,15 +74,16 @@ The recurring procedures are documented as on-demand skills in `.claude/skills/`
 here, so they cost no context until they are actually needed. Load the skill
 before working in these areas — the details are not repeated in this file.
 
-| Skill | Covers |
-| --- | --- |
-| `feature-kickoff` | new feature: interview the goal, agree acceptance criteria, write `docs/features/<slug>.md` |
-| `equipment` | device map, INDI driver changes, OFFLINE reload, connect ordering, every `<X>Settings-…` profile trap |
-| `setup-wizard` | wizard steps and their order, z-index staffing, location and coordinate handling |
-| `api-endpoint` | plugin-server controllers, the five base URLs, the apiService facade and its surface snapshot |
-| `changelog` | CHANGELOG entries and the What's New parser contract |
-| `i18n` | locale keys, the checker's rules, translation workflow |
-| `tns-review` | three parallel review agents: functionality, UI, maintainability |
+| Skill             | Covers                                                                                                |
+| ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `feature-kickoff` | new feature: interview the goal, agree acceptance criteria, write `docs/features/<slug>.md`           |
+| `equipment`       | device map, INDI driver changes, OFFLINE reload, connect ordering, every `<X>Settings-…` profile trap |
+| `setup-wizard`    | wizard steps and their order, z-index staffing, location and coordinate handling                      |
+| `api-endpoint`    | plugin-server controllers, the five base URLs, the apiService facade and its surface snapshot         |
+| `changelog`       | CHANGELOG entries and the What's New parser contract                                                  |
+| `i18n`            | locale keys, the checker's rules, translation workflow                                                |
+| `tns-review`      | three parallel review agents: functionality, UI, maintainability                                      |
+| `user-logs`       | analyse a user's log bundle (tns-logs-\*.zip): find it, read the manifest, line up NINA/app timelines |
 
 ## Android networking: two confirmed non-bugs
 
@@ -82,8 +102,32 @@ Do not chase these as app-logic bugs.
 ## UI conventions
 
 Use the `tns-*` utilities from `src/assets/tailwind.css` (`tns-card`, `tns-btn-primary`,
-`tns-btn-secondary`, `tns-input`, `tns-select`, `min-h-touch`), not the legacy raw
-gray/cyan palette still present in older screens.
+`tns-btn-secondary`, `tns-input`, `tns-select`, `tns-section-title`, `tns-label`,
+`tns-field-row`, `min-h-touch`), not the legacy raw gray/cyan palette still present in older
+screens. `tns-select-compact` and `tns-input-compact` give up the 48px touch height, so they are
+for dense rows like the sequence editor only.
+
+The sequence editor keeps a few raw Tailwind colors on purpose: they tell categories apart, which
+the design tokens have no slot for (item icon colors in `ItemShell`, the nesting-depth borders and
+the cyan/amber/blue trigger, condition and instruction lists in `SequenceItem`, the area dots and
+the purple global triggers in `SequenceCurrentView`, the amber expected/remaining times in the
+condition and wait items). Do not migrate them to tokens.
+
+Loading and missing-device states use the helpers **`Spinner`** (`size` `sm`/`md`/`lg`, takes the
+current text color) and **`DeviceNotConnected`** (`messageKey`) from `src/components/helpers/`.
+
+Overlays pick a layer from the `zIndex` scale in `tailwind.config.cjs` (`z-modal`, `z-dialog`, ...),
+not a raw number. `Modal` closes on Escape exactly when a backdrop tap would, so
+`closeOnBackdropClick="false"` also guards the keyboard. Keep that on any dialog whose close does
+more than hide it: closing the plate solving `DialogModal` cancels the solve and stops the slew.
+
+Numeric fields use the helper **`NumberInputPicker`** (`src/components/helpers/`), never a raw
+`<input type="number">`: it brings the −/+ steppers, clamps to `min`/`max` and opens the touch
+picker when `touchOptimized` is on. Traps: `-1` counts as "use default" whenever `min >= -1`,
+so pass `:useDefaultSentinel="false"` for plain values; give every instance its own `inputId`
+(the default `number-input` collides); `labelKey` is required — it titles the touch picker.
+For a field under its own label use `labelPosition="top" wrapperClass="w-full"`. The one
+exception is coordinates (see the `setup-wizard` skill).
 
 The `tns-btn` base carries **`w-full`** (only `tns-btn-ghost` opts out with `w-auto`). That is
 right for a button that owns its row, but a `tns-btn-*` dropped into a flex row next to other
@@ -106,13 +150,13 @@ creates a containing block for `position: fixed`, which misplaces Sortable.js's 
 Chrome. Do **not** use `forceFallback: true`.
 
 Long-press on iOS: WebKit has **two** different native menus and they are driven by two
-different properties. "Copy / Look Up / Share" with the magnifier is the *text selection*
+different properties. "Copy / Look Up / Share" with the magnifier is the _text selection_
 callout — that one is `-webkit-user-select`. The image/link preview popup is
 `-webkit-touch-callout`. `@contextmenu.prevent` stops neither. Both are now switched off
 app-wide on `body` in `src/assets/tailwind.css`, with `input`/`textarea`/`[contenteditable]`
 opted back into selection (without that, WebKit loses caret placement and paste inside form
 fields). Output the user wants to mark and copy carries Tailwind's plain `select-text`
-(`PinsTerminalOutput.vue`, `JsonPreviewModal.vue`, `Phd2LogView.vue`) — an element's own
+(`PinsTerminalOutput.vue`, `Phd2LogView.vue`) — an element's own
 `user-select` beats the inherited `body` value, so no custom utility is needed. Components normally do **not** need to
 set either property themselves any more; the older per-component blocks in `moveAxis.vue`,
 `NavigationComp.vue`, `ZoomableImage.vue` etc. are redundant leftovers.

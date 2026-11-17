@@ -153,10 +153,12 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import { useImageMonitorStore } from '../store/imageMonitorStore';
 import MonitorHelpModal from './MonitorHelpModal.vue';
 
 const { t } = useI18n();
+const toastStore = useToastStore();
 
 const isHelpOpen = ref(false);
 
@@ -216,8 +218,14 @@ const handleSave = () => {
   emit('close');
 };
 
-const handleRemove = () => {
-  if (confirm(t('plugins.multiImageMonitor.deleteConfirm', { name: camera.value.name }))) {
+const handleRemove = async () => {
+  const confirmed = await toastStore.showConfirmation(
+    t('common.confirm'),
+    t('plugins.multiImageMonitor.deleteConfirm', { name: camera.value.name }),
+    t('common.delete'),
+    t('common.cancel')
+  );
+  if (confirmed) {
     emit('remove', props.cameraId);
   }
 };

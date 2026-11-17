@@ -319,18 +319,26 @@ export default {
       const response = await axios.get(`${API_URL}indi/serialports`);
       const data = response.data.Response;
       if (data && Array.isArray(data.Ports)) {
-        const byIdLinks = (data.ByIdLinks || []).map((link) => ({
-          Port: link.Path,
-          Description: '',
-        }));
-        if (byIdLinks.length > 0) {
-          return [
-            ...data.Ports,
-            { Port: '', Description: '', separator: true, label: '─── by-id ───' },
-            ...byIdLinks,
-          ];
+        const toPorts = (links) =>
+          (links || []).map((link) => ({
+            Port: link.Path,
+            Description: link.Description || '',
+          }));
+        const groups = [
+          { label: '─── by-id ───', ports: toPorts(data.ByIdLinks) },
+          { label: '─── by-path ───', ports: toPorts(data.ByPathLinks) },
+        ];
+
+        const result = [...data.Ports];
+        for (const group of groups) {
+          if (group.ports.length > 0) {
+            result.push(
+              { Port: '', Description: '', separator: true, label: group.label },
+              ...group.ports
+            );
+          }
         }
-        return data.Ports;
+        return result;
       }
       return Array.isArray(data) ? data : [];
     } catch (error) {

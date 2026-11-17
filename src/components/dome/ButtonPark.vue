@@ -5,24 +5,13 @@
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
-import { useI18n } from 'vue-i18n';
+import { runDomeAction } from './runDomeAction';
 import { ref } from 'vue';
 
-const { t } = useI18n();
 const statusClass = ref('');
 
 async function parkDome() {
-  try {
-    await apiService.domeAction('park');
-    statusClass.value = 'glow-green';
-    console.log(t('components.dome.control.park'));
-  } catch (error) {
-    console.log(t('components.dome.control.errors.park'));
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('park', statusClass, 'components.dome.control.errors.park');
 }
 </script>
 <style scoped>

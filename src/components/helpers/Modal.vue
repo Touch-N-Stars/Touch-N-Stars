@@ -3,28 +3,37 @@
     <!-- Overlay (nur wenn nicht minimiert) -->
     <div
       v-if="show && !isMinimized"
+      ref="overlayElement"
       :class="[
-        'fixed inset-0 flex items-center justify-center text-gray-200 p-2 bg-black/30',
+        'fixed inset-0 flex items-center justify-center text-content p-2 bg-black/30',
         zIndexClass,
       ]"
       @click="handleBackdropClick"
     >
       <div
+        role="dialog"
+        aria-modal="true"
+        :aria-label="title || undefined"
+        :aria-labelledby="title ? undefined : headerId"
         :class="[
-          'p-6 bg-gradient-to-br from-gray-950 bg-gray-800 rounded-lg shadow-lg w-full relative',
+          'p-6 bg-surface-1 border border-line rounded-card shadow-lg w-full relative',
           props.maxWidth,
         ]"
         @click.stop
       >
         <!-- Header (relative + z-index so it paints above fixed descendants like SubNav) -->
-        <div class="relative z-20 mb-4 border-b pb-2 flex justify-between items-center">
-          <slot name="header">
-            <h2 class="text-xl font-bold">Standard Titel</h2>
-          </slot>
+        <div class="relative z-20 mb-4 border-b border-line pb-2 flex justify-between items-center">
+          <!-- contents: names the dialog without changing the flex layout of the slot -->
+          <div :id="headerId" class="contents">
+            <slot name="header">
+              <h2 class="text-xl font-bold">Standard Titel</h2>
+            </slot>
+          </div>
           <button
             v-if="!disableClose"
             @click="handleClose"
-            class="w-8 h-8 text-gray-400 hover:text-gray-600"
+            :aria-label="$t('common.close')"
+            class="w-8 h-8 text-content-muted hover:text-content"
           >
             <XMarkIcon />
           </button>
@@ -36,9 +45,14 @@
              ~257px size-attribute width) makes the whole body wider than the dialog.
              justify-center-safe is the backstop for content that truly cannot shrink:
              plain justify-center centres the overflow and cuts off the *left* edge,
-             which scrolling can never reach. -->
+             which scrolling can never reach. items-start keeps the slot content at its own
+             height: with the default stretch it is clamped to the body's max height, so a
+             bordered card ends at the visible edge while its rows spill out below it. -->
         <div
-          class="flex justify-center-safe *:min-w-0 mb-4 max-h-[60vh] overflow-y-auto scrollbar-thin"
+          :class="[
+            'flex items-start justify-center-safe *:min-w-0 mb-4 overflow-y-auto scrollbar-thin',
+            props.bodyMaxHeight,
+          ]"
         >
           <slot name="body">
             <p>Standard-Inhalt</p>
@@ -57,18 +71,19 @@
         @touchstart="startDrag"
       >
         <div
-          class="flex items-center gap-2 py-2 pl-3 pr-2 bg-gradient-to-br from-gray-950 bg-gray-800 rounded-full shadow-lg cursor-move select-none touch-none max-w-[220px]"
+          class="flex items-center gap-2 py-2 pl-3 pr-2 bg-surface-1 border border-line rounded-full shadow-lg cursor-move select-none touch-none max-w-[220px]"
         >
           <button
             @click="handleChipRestore"
-            class="flex-1 min-w-0 text-left text-sm font-semibold text-gray-100 truncate"
+            class="flex-1 min-w-0 text-left text-sm font-semibold text-content truncate"
           >
             {{ title || 'Dialog' }}
           </button>
           <button
             v-if="!disableClose"
             @click.stop="handleClose"
-            class="w-6 h-6 shrink-0 flex items-center justify-center text-gray-400 hover:text-gray-200"
+            :aria-label="$t('common.close')"
+            class="w-6 h-6 shrink-0 flex items-center justify-center text-content-muted hover:text-content"
           >
             <XMarkIcon class="w-4 h-4" />
           </button>
@@ -78,14 +93,16 @@
   </teleport>
 </template>
 <script setup>
-import { computed, ref, watch, onBeforeUnmount } from 'vue';
+import { computed, ref, watch, onBeforeUnmount, useId } from 'vue';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
+import { useModalEscape } from '@/composables/useModalEscape';
 
 const props = defineProps({
   show: Boolean,
+  // A layer from the zIndex scale in tailwind.config.cjs.
   zIndex: {
     type: String,
-    default: 'z-40',
+    default: 'z-modal',
   },
   disableClose: {
     type: Boolean,
@@ -94,6 +111,10 @@ const props = defineProps({
   maxWidth: {
     type: String,
     default: 'max-w-2xl',
+  },
+  bodyMaxHeight: {
+    type: String,
+    default: 'max-h-[60vh]',
   },
   closeOnBackdropClick: {
     type: Boolean,
@@ -124,6 +145,16 @@ function handleBackdropClick(event) {
     handleClose();
   }
 }
+
+const headerId = useId();
+const overlayElement = ref(null);
+
+// Escape is a backdrop tap on the keyboard, never more: closeOnBackdropClick="false" guards
+// dialogs whose close also ends a running operation, like the DialogModal for plate solving,
+// autofocus and the meridian flip.
+useModalEscape(overlayElement, () => {
+  if (props.closeOnBackdropClick) handleClose();
+});
 
 // Draggable minimized chip (same drag mechanics as ModalTransparent.vue's quick-access
 // panels), but always dropped back at the default spot above the status bar whenever the

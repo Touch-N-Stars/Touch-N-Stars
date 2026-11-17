@@ -1,8 +1,17 @@
 <template>
   <div
-    class="flex items-center w-full justify-between border border-line-strong p-1 md:p-2 rounded-control"
+    class="flex items-center w-full justify-between gap-3"
+    :class="
+      compact
+        ? 'bg-surface-2 rounded-chip px-3 py-2 min-h-touch'
+        : 'border border-line-strong p-1 md:p-2 rounded-control'
+    "
   >
-    <label for="setDewHeaterStrength" class="text-xs md:text-sm text-content font-medium">
+    <label
+      for="setDewHeaterStrength"
+      class="font-medium text-content"
+      :class="compact ? 'text-sm md:text-base' : 'text-xs md:text-sm'"
+    >
       {{ $t('components.camera.dewHeaterStrength') }}
     </label>
     <select
@@ -22,6 +31,11 @@
 import { computed, ref, watch } from 'vue';
 import apiService from '@/services/apiService';
 import { useCameraStore } from '@/store/cameraStore';
+
+// Compact (status bar panel): row styled like the switch panel entries.
+const { compact } = defineProps({
+  compact: { type: Boolean, default: false },
+});
 
 const cameraStore = useCameraStore();
 const dewHeaterStrength = ref(0);

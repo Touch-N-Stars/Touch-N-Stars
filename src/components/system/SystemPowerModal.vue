@@ -12,7 +12,7 @@
     <template #body>
       <!-- Step 1: pick the action -->
       <div v-if="step === 'choose'" class="w-full space-y-4">
-        <p class="text-gray-400 text-sm text-center">
+        <p class="text-content-muted text-sm text-center">
           {{ $t('components.settings.system.info') }}
         </p>
         <div class="flex justify-center gap-3">
@@ -29,7 +29,7 @@
 
       <!-- Step 2: confirm -->
       <div v-else-if="step === 'confirm'" class="w-full space-y-6">
-        <p class="text-gray-300">
+        <p class="text-content">
           {{
             action === 'shutdown'
               ? $t('components.settings.system.confirmShutdown')
@@ -48,14 +48,14 @@
 
       <!-- Step 3a: restart in progress, page reloads after the countdown -->
       <div v-else-if="step === 'restarting'" class="text-center space-y-4">
-        <ArrowPathIcon class="h-12 w-12 mx-auto text-yellow-400 animate-spin" />
-        <p class="text-gray-300">{{ $t('components.settings.system.restartInfoMessage') }}</p>
+        <ArrowPathIcon class="h-12 w-12 mx-auto text-status-warn animate-spin" />
+        <p class="text-content">{{ $t('components.settings.system.restartInfoMessage') }}</p>
       </div>
 
       <!-- Step 3b: shutdown sent, the backend is gone -->
       <div v-else class="text-center space-y-4">
-        <PowerIcon class="h-12 w-12 mx-auto text-red-400" />
-        <p class="text-gray-300">{{ $t('components.settings.system.shutdownInfoMessage') }}</p>
+        <PowerIcon class="h-12 w-12 mx-auto text-status-danger" />
+        <p class="text-content">{{ $t('components.settings.system.shutdownInfoMessage') }}</p>
         <div class="flex justify-center mt-4">
           <button @click="emit('close')" class="tns-btn-secondary w-auto!">
             {{ $t('common.close') }}

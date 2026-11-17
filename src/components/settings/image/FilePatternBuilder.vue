@@ -17,7 +17,7 @@
     <!-- Advanced Settings toggle -->
     <button
       @click="showAdvanced = !showAdvanced"
-      class="flex items-center justify-between w-full text-xs text-gray-400 hover:text-gray-200 transition-colors"
+      class="flex items-center justify-between w-full text-xs text-content-muted hover:text-content transition-colors"
     >
       <span>{{ $t('components.settings.imageFile.advancedSettings') }}</span>
       <svg
@@ -35,19 +35,19 @@
     <!-- Advanced section: DARK, FLAT, BIAS -->
     <div v-if="showAdvanced" class="flex flex-col gap-3">
       <!-- DARK panel -->
-      <div class="flex flex-col gap-2 p-3 bg-gray-900/40 border border-gray-700/40 rounded-lg">
+      <div class="flex flex-col gap-2 p-3 bg-ground/40 border border-line rounded-lg">
         <div class="flex items-center justify-between">
-          <label class="text-xs font-semibold text-gray-300">
+          <label class="text-xs font-semibold text-content">
             {{ $t('components.settings.imageFile.darks') }}
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-content-muted cursor-pointer">
             <input type="checkbox" v-model="darkUsesLight" class="rounded" />
             {{ $t('components.settings.imageFile.useLightPattern') }}
           </label>
         </div>
         <div
           v-if="darkUsesLight"
-          class="bg-gray-900/50 border border-gray-700/50 rounded-lg px-3 py-2 font-mono text-xs text-cyan-300/60 break-all"
+          class="bg-ground/50 border border-line rounded-lg px-3 py-2 font-mono text-xs text-accent/60 break-all"
         >
           {{ darkPreviewResult || '—' }}
         </div>
@@ -55,19 +55,19 @@
       </div>
 
       <!-- BIAS panel -->
-      <div class="flex flex-col gap-2 p-3 bg-gray-900/40 border border-gray-700/40 rounded-lg">
+      <div class="flex flex-col gap-2 p-3 bg-ground/40 border border-line rounded-lg">
         <div class="flex items-center justify-between">
-          <label class="text-xs font-semibold text-gray-300">
+          <label class="text-xs font-semibold text-content">
             {{ $t('components.settings.imageFile.bias') }}
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-content-muted cursor-pointer">
             <input type="checkbox" v-model="biasUsesLight" class="rounded" />
             {{ $t('components.settings.imageFile.useLightPattern') }}
           </label>
         </div>
         <div
           v-if="biasUsesLight"
-          class="bg-gray-900/50 border border-gray-700/50 rounded-lg px-3 py-2 font-mono text-xs text-cyan-300/60 break-all"
+          class="bg-ground/50 border border-line rounded-lg px-3 py-2 font-mono text-xs text-accent/60 break-all"
         >
           {{ biasPreviewResult || '—' }}
         </div>
@@ -75,19 +75,19 @@
       </div>
 
       <!-- FLAT panel -->
-      <div class="flex flex-col gap-2 p-3 bg-gray-900/40 border border-gray-700/40 rounded-lg">
+      <div class="flex flex-col gap-2 p-3 bg-ground/40 border border-line rounded-lg">
         <div class="flex items-center justify-between">
-          <label class="text-xs font-semibold text-gray-300">
+          <label class="text-xs font-semibold text-content">
             {{ $t('components.settings.imageFile.flats') }}
           </label>
-          <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+          <label class="flex items-center gap-2 text-xs text-content-muted cursor-pointer">
             <input type="checkbox" v-model="flatUsesLight" class="rounded" />
             {{ $t('components.settings.imageFile.useLightPattern') }}
           </label>
         </div>
         <div
           v-if="flatUsesLight"
-          class="bg-gray-900/50 border border-gray-700/50 rounded-lg px-3 py-2 font-mono text-xs text-cyan-300/60 break-all"
+          class="bg-ground/50 border border-line rounded-lg px-3 py-2 font-mono text-xs text-accent/60 break-all"
         >
           {{ flatPreviewResult || '—' }}
         </div>

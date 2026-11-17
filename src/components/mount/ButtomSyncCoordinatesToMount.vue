@@ -13,7 +13,7 @@
     >
       <span
         v-if="mountStore.isSyncCoordinates"
-        class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+        class="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin"
       ></span>
       <p v-else>{{ $t('components.mount.control.sync_coordinates_to_mount') }}</p>
     </button>

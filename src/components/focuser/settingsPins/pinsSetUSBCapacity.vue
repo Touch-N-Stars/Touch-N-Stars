@@ -3,14 +3,14 @@
     v-if="focuserStore.focuserSettings?.USBCapacities !== undefined"
     class="flex items-center w-full justify-between border border-line-strong p-1 md:p-2 rounded-control"
   >
-    <label for="setUSBCapacity" class="text-xs md:text-sm text-gray-200 font-medium">
+    <label for="setUSBCapacity" class="text-xs md:text-sm text-content font-medium">
       {{ $t('components.focuser.settings.USBCapacity') }}
     </label>
     <select
       id="setUSBCapacity"
       v-model="usbCapacity"
       @change="setUSBCapacity"
-      class="tns-select w-24 md:w-32"
+      class="tns-select w-32"
     >
       <option
         v-for="(label, index) in focuserStore.focuserSettings.USBCapacities"

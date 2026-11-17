@@ -1,20 +1,20 @@
 <template>
   <div class="flex flex-col gap-3">
-    <h3 class="font-bold text-base text-cyan-400">
+    <h3 class="font-bold text-base text-accent">
       {{ $t('components.flat.settings.trainedSettings.title') }}
     </h3>
 
     <div
       v-for="(s, index) in settings"
       :key="index"
-      class="p-3 border border-gray-500 rounded-lg bg-gray-800/40 flex flex-col gap-3"
+      class="p-3 border border-line-strong rounded-lg bg-surface-2/40 flex flex-col gap-3"
     >
       <!-- Header row: title + delete -->
       <div class="flex justify-between items-center">
-        <h3 class="font-bold text-base text-cyan-400">#{{ index + 1 }}</h3>
+        <h3 class="font-bold text-base text-accent">#{{ index + 1 }}</h3>
         <button
           @click="confirmRemove(index)"
-          class="p-2 text-gray-500 hover:text-red-500 transition-colors"
+          class="p-2 text-content-faint hover:text-status-danger transition-colors"
         >
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path
@@ -27,8 +27,8 @@
       </div>
 
       <!-- Filter select -->
-      <div class="flex flex-col w-full border border-gray-500 p-2 rounded-lg">
-        <label class="text-sm sm:text-xs mb-2 text-gray-200">
+      <div class="flex flex-col w-full border border-line-strong p-2 rounded-lg">
+        <label class="text-sm sm:text-xs mb-2 text-content">
           {{ $t('components.flat.settings.trainedSettings.filter') }}
         </label>
         <select v-model="s.Filter" @change="saveSetting(index)" class="tns-select w-full py-2">
@@ -40,8 +40,8 @@
       </div>
 
       <!-- Binning select -->
-      <div class="flex flex-col w-full border border-gray-500 p-2 rounded-lg">
-        <label class="text-sm sm:text-xs mb-2 text-gray-200">
+      <div class="flex flex-col w-full border border-line-strong p-2 rounded-lg">
+        <label class="text-sm sm:text-xs mb-2 text-content">
           {{ $t('components.flat.settings.trainedSettings.binning') }}
         </label>
         <select v-model="s.BinningName" @change="saveSetting(index)" class="tns-select w-full py-2">
@@ -109,21 +109,21 @@
     <!-- Add button -->
     <button
       @click="addSetting"
-      class="w-full h-16 border-2 border-dashed border-gray-500 hover:border-cyan-500 rounded-lg flex items-center justify-center transition-colors"
+      class="w-full h-16 border-2 border-dashed border-line-strong hover:border-accent rounded-lg flex items-center justify-center transition-colors"
     >
-      <span class="text-4xl text-gray-500 hover:text-cyan-500 transition-colors">+</span>
+      <span class="text-4xl text-content-faint hover:text-accent transition-colors">+</span>
     </button>
 
     <!-- Delete confirmation modal -->
     <Modal :show="showModal" @close="showModal = false" maxWidth="max-w-md">
       <template #header>
-        <h2 class="text-lg font-bold text-red-500">
+        <h2 class="text-lg font-bold text-status-danger">
           {{ $t('components.flat.settings.trainedSettings.confirmTitle') }}
         </h2>
       </template>
       <template #body>
         <div class="flex flex-col gap-4">
-          <p class="text-gray-300">
+          <p class="text-content">
             {{ $t('components.flat.settings.trainedSettings.confirmMessage') }}
           </p>
           <div class="flex gap-3 justify-end">

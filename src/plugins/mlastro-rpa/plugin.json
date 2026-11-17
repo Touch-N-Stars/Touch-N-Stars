@@ -1,0 +1,15 @@
+{
+  "id": "mlastro-rpa",
+  "name": "MLAstro RPA",
+  "description": "Connect an MLAstro One RPA and run automated polar alignment through PINS TPPA.",
+  "version": "0.3.0-beta.2",
+  "author": "PINS MLAstro integration",
+  "defaultEnabled": false,
+  "enabled": true,
+  "isPins": true,
+  "ninaPlugin": {
+    "name": "MLAstroRPA.Linux",
+    "displayName": "MLAstro RPA",
+    "pinsPackage": "pins-plugin-mlastrorpa"
+  }
+}

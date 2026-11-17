@@ -2,9 +2,9 @@
   <div class="flex flex-col gap-2 w-full">
     <div v-if="store.flatdeviceInfo.SupportsOnOff">
       <div
-        class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+        class="flex flex-row items-center justify-between w-full border border-line-strong p-2 rounded-lg"
       >
-        <label for="toggle_light" class="text-gray-400">
+        <label for="toggle_light" class="text-content-muted">
           {{ $t('components.flat.toggle_light') }}
         </label>
         <div>
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div v-if="store.flatdeviceInfo.LightOn" class="border border-gray-500 p-2 rounded-lg">
+    <div v-if="store.flatdeviceInfo.LightOn" class="border border-line-strong p-2 rounded-lg">
       <NumberInputPicker
         v-model="flatStore.brightness"
         :label="$t('components.flat.brightness')"
@@ -30,7 +30,7 @@
     </div>
     <div v-if="store.flatdeviceInfo.SupportsOpenClose">
       <div
-        class="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2 w-full border border-gray-500 p-2 rounded-lg"
+        class="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2 w-full border border-line-strong p-2 rounded-lg"
       >
         <button @click="closeCover" class="tns-btn-secondary">
           {{ $t('components.flat.cover.close') }}

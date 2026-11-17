@@ -50,6 +50,8 @@ watch(
       }
     }
   },
-  { deep: true }
+  // immediate: after a remount (every resume) the window is already in the store
+  // and may not change for a while; without it the wrong graph type is chosen.
+  { deep: true, immediate: true }
 );
 </script>

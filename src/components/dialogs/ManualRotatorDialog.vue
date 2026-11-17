@@ -3,23 +3,19 @@
     <!-- Current and Target Position -->
     <div class="grid grid-cols-2 gap-4">
       <!-- Current Position -->
-      <div class="bg-gray-800 p-4 rounded-lg text-center">
-        <p class="text-gray-400 text-sm mb-2">{{ content.Text1 }}</p>
-        <p class="text-4xl font-bold text-white">
-          {{ formattedCurrentPosition }}{{ content.Text3 }}
-        </p>
+      <div class="bg-surface-2 p-4 rounded-lg text-center">
+        <p class="text-content-muted text-sm mb-2">{{ view.currentLabel }}</p>
+        <p class="text-4xl font-bold text-white">{{ view.currentText }}</p>
       </div>
       <!-- Target Position -->
-      <div class="bg-gray-800 p-4 rounded-lg text-center">
-        <p class="text-gray-400 text-sm mb-2">{{ content.Text4 }}</p>
-        <p class="text-4xl font-bold text-white">
-          {{ formattedTargetPosition }}{{ content.Text6 }}
-        </p>
+      <div class="bg-surface-2 p-4 rounded-lg text-center">
+        <p class="text-content-muted text-sm mb-2">{{ view.targetLabel }}</p>
+        <p class="text-4xl font-bold text-white">{{ view.targetText }}</p>
       </div>
     </div>
 
     <!-- Rotation Visualization (Clock-style) -->
-    <div class="bg-gray-800 p-6 rounded-lg flex flex-col items-center">
+    <div class="bg-surface-2 p-6 rounded-lg flex flex-col items-center">
       <!-- Clock Display -->
       <svg width="200" height="200" viewBox="0 0 200 200" class="mb-4">
         <!-- Clock Circle -->
@@ -33,7 +29,7 @@
           :y="100 - Math.cos((angle * Math.PI) / 180) * 70"
           text-anchor="middle"
           dominant-baseline="middle"
-          class="fill-gray-400 text-xs"
+          class="fill-content-muted text-xs"
         >
           {{ angle }}°
         </text>
@@ -42,8 +38,8 @@
         <line
           x1="100"
           y1="100"
-          :x2="100 + Math.sin((currentAngle * Math.PI) / 180) * 60"
-          :y2="100 - Math.cos((currentAngle * Math.PI) / 180) * 60"
+          :x2="100 + Math.sin((view.currentAngle * Math.PI) / 180) * 60"
+          :y2="100 - Math.cos((view.currentAngle * Math.PI) / 180) * 60"
           stroke="#3B82F6"
           stroke-width="3"
           stroke-linecap="round"
@@ -53,8 +49,8 @@
         <line
           x1="100"
           y1="100"
-          :x2="100 + Math.sin((targetAngle * Math.PI) / 180) * 60"
-          :y2="100 - Math.cos((targetAngle * Math.PI) / 180) * 60"
+          :x2="100 + Math.sin((view.targetAngle * Math.PI) / 180) * 60"
+          :y2="100 - Math.cos((view.targetAngle * Math.PI) / 180) * 60"
           stroke="#10B981"
           stroke-width="3"
           stroke-linecap="round"
@@ -63,11 +59,11 @@
 
         <!-- Rotation Arc -->
         <path
-          :d="getRotationArc(currentAngle, targetAngle)"
+          :d="getRotationArc(view.currentAngle, view.targetAngle)"
           fill="none"
           stroke="#F59E0B"
           stroke-width="2"
-          :marker-end="content.Text9?.toLowerCase().includes('clock') ? 'url(#arrowhead)' : ''"
+          :marker-end="view.direction?.toLowerCase().includes('clock') ? 'url(#arrowhead)' : ''"
         />
 
         <!-- Arrow marker definition -->
@@ -85,25 +81,25 @@
       <div class="flex gap-4 mb-3 text-xs">
         <div class="flex items-center gap-1">
           <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
-          <span class="text-gray-400">{{ content.Text1 }}</span>
+          <span class="text-content-muted">{{ view.currentLabel }}</span>
         </div>
         <div class="flex items-center gap-1">
           <div class="w-3 h-3 border-2 border-green-500 border-dashed rounded-full"></div>
-          <span class="text-gray-400">{{ content.Text4 }}</span>
+          <span class="text-content-muted">{{ view.targetLabel }}</span>
         </div>
       </div>
 
       <!-- Rotation Info -->
-      <p class="text-2xl font-bold text-yellow-500 mb-1">
-        {{ formattedRotationAmount }}{{ content.Text8 }}
-      </p>
-      <p class="text-gray-400 text-sm">{{ content.Text9 }}</p>
+      <p class="text-2xl font-bold text-yellow-500 mb-1">{{ view.rotationText }}</p>
+      <p class="text-content-muted text-sm">{{ view.direction }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toManualRotatorView } from '@/utils/manualRotatorContent';
 
 const props = defineProps({
   dialog: {
@@ -112,63 +108,19 @@ const props = defineProps({
   },
 });
 
-const content = computed(() => {
-  return props.dialog?.Content || {};
-});
+const { t } = useI18n();
 
-function parseCultureInvariantNumber(value) {
-  if (typeof value === 'number') {
-    return Number.isFinite(value) ? value : 0;
-  }
+// Try both PascalCase and lowercase; the SignalR payload may use either
+const content = computed(
+  () =>
+    props.dialog?.Content ||
+    props.dialog?.content ||
+    props.dialog?.Parameters ||
+    props.dialog?.parameters ||
+    {}
+);
 
-  if (value === null || value === undefined) {
-    return 0;
-  }
-
-  const raw = String(value).trim();
-  if (!raw) {
-    return 0;
-  }
-
-  // Keep only sign and numeric separators so values like "12,5°" are still parsed correctly.
-  const cleaned = raw.replace(/[^0-9.,+-]/g, '');
-  if (!cleaned) {
-    return 0;
-  }
-
-  const lastComma = cleaned.lastIndexOf(',');
-  const lastDot = cleaned.lastIndexOf('.');
-
-  let normalized = cleaned;
-  if (lastComma > -1 && lastDot > -1) {
-    // Assume the rightmost separator is decimal separator.
-    if (lastComma > lastDot) {
-      normalized = cleaned.replace(/\./g, '').replace(',', '.');
-    } else {
-      normalized = cleaned.replace(/,/g, '');
-    }
-  } else if (lastComma > -1) {
-    normalized = cleaned.replace(',', '.');
-  }
-
-  const parsed = Number.parseFloat(normalized);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function formatAngleValue(value) {
-  const parsed = parseCultureInvariantNumber(value);
-  return parsed.toLocaleString('en-US', {
-    useGrouping: false,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  });
-}
-
-const currentAngle = computed(() => parseCultureInvariantNumber(content.value.Text2));
-const targetAngle = computed(() => parseCultureInvariantNumber(content.value.Text5));
-const formattedCurrentPosition = computed(() => formatAngleValue(content.value.Text2));
-const formattedTargetPosition = computed(() => formatAngleValue(content.value.Text5));
-const formattedRotationAmount = computed(() => formatAngleValue(content.value.Text7));
+const view = computed(() => toManualRotatorView(content.value, t));
 
 function getRotationArc(currentAngle, targetAngle) {
   const cx = 100;

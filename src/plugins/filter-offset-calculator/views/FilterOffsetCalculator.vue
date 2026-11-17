@@ -255,7 +255,14 @@
                 >
                   <td class="py-1.5 pr-2 text-gray-400">{{ o.Position }}</td>
                   <td class="py-1.5 pr-2 text-white">{{ o.Name }}</td>
-                  <td class="py-1.5 text-right font-mono text-green-200">{{ o.FocusOffset }}</td>
+                  <!-- Same convention as MeasurementBoard: green only for offsets measured this run -->
+                  <td
+                    class="py-1.5 text-right font-mono"
+                    :class="o.measured ? 'text-green-200' : 'text-gray-500'"
+                    :title="o.measured ? '' : $t('plugins.filterOffset.notMeasured')"
+                  >
+                    {{ o.FocusOffset }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -440,21 +447,27 @@ const filterProgressPct = computed(() => {
  */
 const displayedNewOffsets = computed(() => {
   const measured = result.value?.NewOffsets ?? [];
-  if (!measured.length || !filters.value.length) return measured;
+  if (!measured.length || !filters.value.length) {
+    return measured.map((o) => ({ ...o, measured: o.Measured !== false }));
+  }
 
-  const measuredByPosition = new Map(measured.map((o) => [o.Position, o.FocusOffset]));
+  const measuredByPosition = new Map(measured.map((o) => [o.Position, o]));
   const basePosition = measured[0].Position;
   const baseMeasured = measured[0].FocusOffset;
   const basePrevious =
     result.value.OldOffsets?.find((o) => o.Position === basePosition)?.FocusOffset ?? 0;
 
-  const table = filters.value.map((f) => ({
-    Position: f.position,
-    Name: f.name,
-    FocusOffset: measuredByPosition.has(f.position)
-      ? measuredByPosition.get(f.position)
-      : baseMeasured + (f.focusOffset - basePrevious),
-  }));
+  // A filter whose autofocus failed in every loop comes back with Measured: false and keeps its
+  // previous offset; older plugins send no flag at all.
+  const table = filters.value.map((f) => {
+    const entry = measuredByPosition.get(f.position);
+    return {
+      Position: f.position,
+      Name: f.name,
+      FocusOffset: entry ? entry.FocusOffset : baseMeasured + (f.focusOffset - basePrevious),
+      measured: !!entry && entry.Measured !== false,
+    };
+  });
 
   const reference =
     table.find((t) => t.Position === newDefaultFilterPosition.value) ??

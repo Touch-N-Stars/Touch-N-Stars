@@ -2,6 +2,7 @@ import { markRaw } from 'vue';
 import GroundStationView from './views/GroundStationView.vue';
 import { usePluginStore } from '@/store/pluginStore';
 import metadata from './plugin.json';
+import { withNinaPluginGate } from '@/components/ninaPlugins/withNinaPluginGate';
 import GroundStationIcon from './components/GroundStationIcon.vue';
 
 export default {
@@ -35,7 +36,7 @@ export default {
 
     router.addRoute({
       path: pluginPath,
-      component: GroundStationView,
+      component: withNinaPluginGate(GroundStationView, metadata),
       meta: { requiresSetup: true },
     });
 

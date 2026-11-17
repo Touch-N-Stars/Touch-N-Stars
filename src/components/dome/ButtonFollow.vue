@@ -1,8 +1,8 @@
 <template>
   <div
-    class="flex flex-row w-full h-12 items-center min-w-28 border border-gray-500 p-1 rounded-lg"
+    class="flex flex-row w-full h-12 items-center min-w-28 border border-line-strong p-1 rounded-lg"
   >
-    <label for="pixel-size" class="text-sm mr-3 mb-1 text-gray-400">
+    <label for="pixel-size" class="text-sm mr-3 mb-1 text-content-muted">
       {{ $t('components.dome.control.follow') }}
     </label>
     <toggleButton

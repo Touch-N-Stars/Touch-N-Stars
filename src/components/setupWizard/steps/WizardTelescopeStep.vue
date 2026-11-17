@@ -56,73 +56,43 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const { t } = useI18n();
-const store = apiStore();
 
 const FOCAL_LENGTH_FALLBACK = 500;
 const FOCAL_RATIO_FALLBACK = 5.0;
 
-const telescopeName = ref('');
-const focalLength = ref(FOCAL_LENGTH_FALLBACK);
-const focalRatio = ref(FOCAL_RATIO_FALLBACK);
-const nameStatusClass = ref('');
+// Same settings as settingsTelescope.vue: each field follows the profile until it is saved,
+// so values that arrive with a late poll still show up.
+const telescope = useProfileSetting('TelescopeSettings-Name', { fallback: '' });
+const focal = useProfileSetting('TelescopeSettings-FocalLength', {
+  fallback: FOCAL_LENGTH_FALLBACK,
+  fromProfile: (v) => v || FOCAL_LENGTH_FALLBACK,
+});
+const ratio = useProfileSetting('TelescopeSettings-FocalRatio', {
+  fallback: FOCAL_RATIO_FALLBACK,
+  fromProfile: (v) => v || FOCAL_RATIO_FALLBACK,
+});
+const { value: telescopeName, glowClass: nameStatusClass } = telescope;
+const { value: focalLength } = focal;
+const { value: focalRatio } = ratio;
+
 const errorMessage = ref('');
-const touchedFields = ref(new Set());
 
-// settingsTelescope.vue seeds from the profile in onMounted only and keeps showing
-// its defaults when the 2s poll delivers late. Watch instead, but never overwrite
-// a field the user already edited.
-watch(
-  () => store.profileInfo?.TelescopeSettings,
-  (settings) => {
-    if (!settings) return;
-    if (!touchedFields.value.has('name')) {
-      telescopeName.value = settings.Name ?? '';
-    }
-    if (!touchedFields.value.has('focalLength')) {
-      focalLength.value = settings.FocalLength || FOCAL_LENGTH_FALLBACK;
-    }
-    if (!touchedFields.value.has('focalRatio')) {
-      focalRatio.value = settings.FocalRatio || FOCAL_RATIO_FALLBACK;
-    }
-  },
-  { immediate: true, deep: true }
-);
-
-async function writeProfileValue(field, settingPath, value) {
-  touchedFields.value.add(field);
+async function write(setting) {
   errorMessage.value = '';
-  try {
-    await apiService.profileChangeValue(settingPath, value);
-    return true;
-  } catch (error) {
-    console.error('[PinsWizard] Telescope setting failed:', error);
+  if (!(await setting.save())) {
     errorMessage.value = t('components.setupWizard.telescope.saveFailed', {
-      message: error.message,
+      message: setting.error.value,
     });
-    return false;
   }
 }
 
-async function updateTelescopeName() {
-  const ok = await writeProfileValue('name', 'TelescopeSettings-Name', telescopeName.value);
-  nameStatusClass.value = ok ? 'glow-green' : 'glow-red';
-  setTimeout(() => {
-    nameStatusClass.value = '';
-  }, 2000);
-}
-
-function updateFocalLength() {
-  return writeProfileValue('focalLength', 'TelescopeSettings-FocalLength', focalLength.value);
-}
-
-function updateFocalRatio() {
-  return writeProfileValue('focalRatio', 'TelescopeSettings-FocalRatio', focalRatio.value);
-}
+const updateTelescopeName = () => write(telescope);
+const updateFocalLength = () => write(focal);
+const updateFocalRatio = () => write(ratio);
 </script>

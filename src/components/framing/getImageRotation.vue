@@ -54,7 +54,7 @@
       <template v-else>
         <div class="flex items-center justify-center gap-2">
           <div class="relative flex items-center justify-center w-7 h-7">
-            <ArrowPathIcon class="w-7 h-7 absolute text-cyan-300" />
+            <ArrowPathIcon class="w-7 h-7 absolute text-accent" />
             <CameraIcon class="w-3.5 h-3.5" />
           </div>
           <span>{{ $t('components.framing.getImageRotation.startCapture') }}</span>
@@ -64,7 +64,7 @@
   </div>
   <div
     v-if="cameraStore.plateSolveError"
-    class="p-4 mt-2 text-center bg-red-500/20 border border-red-500/70 rounded-lg"
+    class="p-4 mt-2 text-center bg-status-danger/20 border border-status-danger/70 rounded-lg"
   >
     <p>{{ $t('components.framing.getImageRotation.SolveError') }}</p>
   </div>

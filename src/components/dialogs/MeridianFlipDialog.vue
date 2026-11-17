@@ -4,12 +4,12 @@
       v-for="(step, index) in meridianFlipSteps"
       :key="step.Id"
       :class="[
-        'flex items-center gap-3 px-4 py-3 rounded-lg transition-all border bg-cyan-950',
+        'flex items-center gap-3 px-4 py-3 rounded-lg transition-all border bg-surface-2',
         step.Finished
-          ? 'border-cyan-800 text-white'
+          ? 'border-line text-content'
           : isStepCurrent(index)
-            ? 'border-2 border-cyan-500 text-white'
-            : 'border-cyan-900 text-gray-300',
+            ? 'border-2 border-accent text-content'
+            : 'border-line text-content-muted',
       ]"
     >
       <!-- Step indicator -->
@@ -17,10 +17,10 @@
         :class="[
           'shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors',
           step.Finished
-            ? 'bg-green-600 text-white'
+            ? 'bg-status-ok/20 text-status-ok'
             : isStepCurrent(index)
-              ? 'bg-cyan-500 text-white'
-              : 'bg-cyan-900 text-gray-400',
+              ? 'bg-accent-action text-white'
+              : 'bg-surface-3 text-content-muted',
         ]"
       >
         <span v-if="step.Finished">✓</span>
@@ -32,15 +32,15 @@
 
       <!-- Step status icon and time -->
       <div v-if="isStepCurrent(index) && countdownSeconds > 0" class="flex items-center gap-2">
-        <span class="text-cyan-400 text-sm font-semibold">{{ remainingTime }}</span>
-        <span class="text-lg animate-pulse text-cyan-400">⏳</span>
+        <span class="text-accent text-sm font-semibold">{{ remainingTime }}</span>
+        <span class="text-lg animate-pulse text-accent">⏳</span>
       </div>
       <span
         v-else-if="isStepCurrent(index) && countdownSeconds <= 0"
-        class="text-lg animate-pulse text-cyan-400"
+        class="text-lg animate-pulse text-accent"
         >⏳</span
       >
-      <span v-else-if="step.Finished" class="text-lg text-green-500">✓</span>
+      <span v-else-if="step.Finished" class="text-lg text-status-ok">✓</span>
     </div>
   </div>
 </template>

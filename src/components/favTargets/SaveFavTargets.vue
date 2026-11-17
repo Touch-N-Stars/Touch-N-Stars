@@ -11,17 +11,21 @@
       <span v-if="showLabel">{{ t('components.fav_target.save_to_favorites') }}</span>
     </button>
 
-    <!-- Modal -->
-    <Teleport to="body">
-      <div v-if="showModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-        <div
-          class="bg-gray-800 text-gray-300 p-4 m-8 rounded-lg max-w-xl max-h-[80vh] min-h-48 min-w-72 overflow-y-auto"
-        >
-          <h3 class="text-lg font-semibold mb-4">
-            {{ t('components.fav_target.enter_name') }}
-          </h3>
+    <!-- A tap beside it must not throw away the typed name. -->
+    <Modal
+      :show="showModal"
+      zIndex="z-modal-raised"
+      maxWidth="max-w-xl"
+      :closeOnBackdropClick="false"
+      @close="showModal = false"
+    >
+      <template #header>
+        <h2 class="text-xl font-bold">{{ t('components.fav_target.enter_name') }}</h2>
+      </template>
+      <template #body>
+        <div class="w-full">
           <input v-model="nameInput" type="text" class="w-full h-10 tns-input" />
-          <p v-if="isMosaic" class="text-xs text-gray-400 mt-2">
+          <p v-if="isMosaic" class="text-xs text-content-muted mt-2">
             {{ mosaicCols * mosaicRows }} {{ t('components.framing.mosaic.panels') }}
             {{ t('components.framing.mosaic.willBeSaved') }}
           </p>
@@ -34,13 +38,14 @@
             </button>
           </div>
         </div>
-      </div>
-    </Teleport>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue';
+import Modal from '@/components/helpers/Modal.vue';
 import { useFavTargetStore } from '@/store/favTargetsStore';
 import { HeartIcon } from '@heroicons/vue/24/outline';
 import { useI18n } from 'vue-i18n';
@@ -112,7 +117,7 @@ function computePanels() {
       const rawX = dc * stepRa;
       const rawY = dr * stepDec;
       // Im Uhrzeigersinn rotieren, passend zur visuellen Kamera-Rotation in
-      // FramingAssitantImg (SVG rotiert clockwise um rotationAngleVisu).
+      // FramingAssistantImg (SVG rotiert clockwise um rotationAngleVisu).
       const rotX = rawX * cosT + rawY * sinT;
       const rotY = -rawX * sinT + rawY * cosT;
       const panelRA = centerRA - rotX / cosDec;
@@ -134,7 +139,7 @@ async function confirmSave() {
   const baseName = nameInput.value.trim();
 
   if (isMosaic.value) {
-    // Panel-Koordinaten kommen aus dem Store (von FramingAssitantImg aus den
+    // Panel-Koordinaten kommen aus dem Store (von FramingAssistantImg aus den
     // tatsächlich gerenderten Pixelpositionen berechnet) und stimmen damit exakt
     // mit dem Overlay überein. Fallback auf lokale Berechnung, falls leer.
     const framingStore = useFramingStore();

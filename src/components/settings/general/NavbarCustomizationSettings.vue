@@ -52,7 +52,8 @@ const allNavItems = computed(() => {
       id: 'plugin-' + item.pluginId,
       label: item.title,
     }));
-  return [...STATIC_NAV_ITEMS, ...pluginItems];
+  const pinsItems = store.isPINS ? [{ id: 'pins', labelKey: 'nav.pins' }] : [];
+  return [...STATIC_NAV_ITEMS, ...pinsItems, ...pluginItems];
 });
 
 const orderedItems = computed(() => {

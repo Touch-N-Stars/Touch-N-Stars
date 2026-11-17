@@ -22,7 +22,7 @@ const emit = defineEmits(['click']);
 const { isLandscape } = useOrientation();
 
 const iconClasses = computed(() => ({
-  'text-gray-300': true,
+  'text-content': true,
   'w-6 h-6': !isLandscape.value,
   'w-5 h-5': isLandscape.value,
 }));

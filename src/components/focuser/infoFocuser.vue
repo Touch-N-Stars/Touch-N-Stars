@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!store.focuserInfo.Connected" class="text-red-500">
+  <div v-if="!store.focuserInfo.Connected" class="text-status-danger">
     <p>{{ $t('components.focuser.please_connect_focuser') }}</p>
   </div>
   <div

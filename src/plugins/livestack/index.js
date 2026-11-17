@@ -5,6 +5,7 @@ import PluginView from './views/LiveStack.vue';
 import { usePluginStore } from '@/store/pluginStore';
 import { useLivestackStore } from './store/livestackStore';
 import metadata from './plugin.json';
+import { withNinaPluginGate } from '@/components/ninaPlugins/withNinaPluginGate';
 
 export default {
   metadata,
@@ -25,7 +26,7 @@ export default {
     // Register route with generic plugin path
     router.addRoute({
       path: pluginPath,
-      component: PluginView,
+      component: withNinaPluginGate(PluginView, metadata),
       meta: { requiresSetup: true },
     });
 

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="store.flatdeviceInfo.Connected"
-    class="border border-gray-500 p-2 rounded-lg bg-gray-800/40"
+    class="border border-line-strong p-2 rounded-lg bg-surface-2/40"
   >
     <NumberInputPicker
       v-model="closedPositionValue"

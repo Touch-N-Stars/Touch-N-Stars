@@ -36,6 +36,8 @@ const props = defineProps({
   decAngle: Number,
   label: String,
   disabled: Boolean,
+  // Optional: resolves { ra, dec } at click time for time-dependent targets
+  getCoordinates: Function,
 });
 const emit = defineEmits(['finished']);
 
@@ -54,7 +56,10 @@ async function unparkMount() {
 
 async function slew() {
   await unparkMount(); // Überprüfen und Entparken, falls erforderlich
-  await framingStore.slew(props.raAngle, props.decAngle);
+  const { ra, dec } = props.getCoordinates
+    ? props.getCoordinates()
+    : { ra: props.raAngle, dec: props.decAngle };
+  await framingStore.slew(ra, dec);
   emit('finished'); // Emit Event nach Erfolg
 }
 </script>

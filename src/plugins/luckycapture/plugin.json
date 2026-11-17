@@ -1,0 +1,15 @@
+{
+  "id": "luckycapture",
+  "name": "LuckyCapture",
+  "description": "Native planetary SER and lossless AVI capture using the connected PINS camera",
+  "version": "0.2.0",
+  "author": "Christian Wöhrle",
+  "defaultEnabled": false,
+  "enabled": true,
+  "isPins": true,
+  "ninaPlugin": {
+    "name": "PINS.LuckyCapture",
+    "displayName": "Lucky Capture",
+    "pinsPackage": "pins-plugin-luckycapture"
+  }
+}

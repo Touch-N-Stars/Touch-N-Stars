@@ -1,12 +1,7 @@
 <template>
   <div>
-    <div class="mb-4 flex items-center gap-3 px-4 sm:px-0">
-      <button
-        @click="toggleSortOrder"
-        class="flex items-center gap-2 text-sm sm:text-base text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-all duration-150 ease-in-out focus:outline-none group bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2"
-        role="button"
-        aria-label="Sort images"
-      >
+    <div class="mb-4 flex flex-wrap items-center gap-3 px-4 sm:px-0">
+      <button type="button" @click="toggleSortOrder" :class="[TOOLBAR_BUTTON, 'text-accent']">
         <div class="flex flex-col items-center text-[0.65rem] leading-3 opacity-50 mr-1">
           <ChevronUpIcon class="w-3 h-3 mb-0.5" />
           <ChevronDownIcon class="w-3 h-3" />
@@ -29,15 +24,13 @@
         </span>
       </button>
       <button
+        type="button"
         @click="toggleShowHistoryStats"
-        class="flex items-center gap-2 text-sm sm:text-base transition-all duration-150 ease-in-out focus:outline-none group bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2"
-        :class="
-          settingsStore.monitorViewSetting.showHistoryImageStats
-            ? 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-            : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400'
-        "
-        role="button"
-        aria-label="Toggle image statistics"
+        :class="[
+          TOOLBAR_BUTTON,
+          settingsStore.monitorViewSetting.showHistoryImageStats ? 'text-accent' : TOOLBAR_OFF,
+        ]"
+        :aria-pressed="settingsStore.monitorViewSetting.showHistoryImageStats"
       >
         <ChartBarIcon class="w-5 h-5" />
         <span class="border-b-2 border-transparent group-hover:border-current">
@@ -46,14 +39,9 @@
       </button>
       <button
         v-if="del.canDelete.value"
+        type="button"
         @click="toggleSelectionMode"
-        class="flex items-center gap-2 text-sm sm:text-base transition-all duration-150 ease-in-out focus:outline-none group bg-blue-50 dark:bg-blue-900/20 rounded-lg px-3 py-2"
-        :class="
-          selectionMode
-            ? 'text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-            : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-400'
-        "
-        role="button"
+        :class="[TOOLBAR_BUTTON, selectionMode ? 'text-accent' : TOOLBAR_OFF]"
         :aria-pressed="selectionMode"
         data-testid="image-history-select-mode"
       >
@@ -63,7 +51,7 @@
         </span>
       </button>
     </div>
-    <p v-if="selectionMode" class="px-4 sm:px-0 text-sm text-gray-400">
+    <p v-if="selectionMode" class="px-4 sm:px-0 text-sm text-content-muted">
       {{ t('components.sequence.imageHistoryDelete.selectHint') }}
     </p>
     <div
@@ -82,20 +70,19 @@
           :selectable="selectionMode"
           :selected="selectedIndices.has(item.index)"
           :hold-to-select="del.canDelete.value"
+          browsable
           @delete="del.request({ index: item.index, stats: item.stats })"
           @toggle-select="toggleSelected(item.index)"
           @hold="enterSelectionMode(item.index)"
+          @open="viewerIndex = item.index"
         />
         <div
           v-else
-          class="flex items-center justify-center min-h-55 bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl border border-cyan-700"
+          class="flex items-center justify-center min-h-55 bg-surface-1 rounded-card border border-line"
         >
           <!-- Once the retries are used up the tile must stop pretending to load. -->
-          <PhotoIcon v-if="item.failed" class="w-8 h-8 text-gray-600" />
-          <div
-            v-else
-            class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin opacity-50"
-          ></div>
+          <PhotoIcon v-if="item.failed" class="w-8 h-8 text-content-faint" />
+          <Spinner v-else class="text-accent opacity-50" />
         </div>
       </div>
       <div
@@ -103,9 +90,7 @@
         ref="sentinel"
         class="col-span-full flex items-center justify-center p-5 min-h-20"
       >
-        <div
-          class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
-        ></div>
+        <Spinner class="text-accent" />
       </div>
     </div>
 
@@ -120,7 +105,7 @@
           class="tns-card mx-auto max-w-3xl flex flex-wrap items-center gap-2 p-2 pointer-events-auto shadow-xl shadow-black/60"
           data-testid="image-history-selection-bar"
         >
-          <span class="text-sm text-gray-200 px-2 min-w-24">
+          <span class="text-sm text-content px-2 min-w-24">
             {{
               t('components.sequence.imageHistoryDelete.selectedCount', {
                 count: selectedIndices.size,
@@ -165,6 +150,15 @@
       </div>
     </transition>
 
+    <!-- One full-size view for the whole grid, so it can browse from tile to tile. -->
+    <HistoryImageViewer
+      v-model="viewerIndex"
+      :order="sortedIndices"
+      :entries="enrichedStats"
+      :deletable="del.canDelete.value"
+      @delete="onViewerDelete"
+    />
+
     <!-- One confirmation dialog for the whole grid instead of one per tile. -->
     <ImageDeleteConfirm
       :pending="del.pending.value"
@@ -188,6 +182,8 @@ import {
 } from '@heroicons/vue/24/outline';
 import SequenceImage from '@/components/imageHistory/SequenceImage.vue';
 import ImageDeleteConfirm from '@/components/imageHistory/ImageDeleteConfirm.vue';
+import HistoryImageViewer from '@/components/imageHistory/HistoryImageViewer.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useSequenceStore } from '@/store/sequenceStore';
@@ -216,6 +212,11 @@ const CONCURRENCY = 4;
 // A thumbnail of a just-saved image may not exist on the backend yet.
 const MISS_RETRIES = 2;
 const MISS_RETRY_DELAY = 3000;
+
+// Toolbar toggles: accent text while on, faint while off.
+const TOOLBAR_BUTTON =
+  'group flex items-center gap-2 min-h-touch px-3 rounded-control bg-surface-2 border border-line text-sm sm:text-base transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/50';
+const TOOLBAR_OFF = 'text-content-faint hover:text-content-muted';
 
 const sortAscending = ref(false);
 const visibleCount = ref(BATCH_SIZE);
@@ -303,6 +304,16 @@ function deleteSelected() {
     .filter((index) => selectedIndices.value.has(index))
     .map((index) => ({ index, stats: enrichedStats.value[index] }));
   del.request(items);
+}
+
+// --- full-size view ---------------------------------------------------------
+const viewerIndex = ref(null); // absolute history index shown full size, null = closed
+
+function onViewerDelete(index) {
+  // The confirmation belongs to the grid; close the full-size view first so the dialog
+  // is not shown over an image that is about to disappear.
+  viewerIndex.value = null;
+  del.request({ index, stats: enrichedStats.value[index] });
 }
 
 async function confirmDelete() {

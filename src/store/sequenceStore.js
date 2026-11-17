@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
 import { apiStore } from './store';
 import { createPoller } from '@/utils/poller';
+import { DSO_CONTAINER_TYPE } from '@/utils/sequenceTargets';
+import { useSequenceV2Store } from './sequenceV2Store';
 
 export const useSequenceStore = defineStore('sequenceStore', {
   state: () => ({
@@ -22,6 +24,9 @@ export const useSequenceStore = defineStore('sequenceStore', {
     sequenceIsEditable: true,
     targetName: '',
     lastTargetName: '',
+    // Position of the running DSO container among all of them (-1 = none running).
+    runningTargetIndex: -1,
+    targetCount: 0,
     imageTargetNames: {},
     runningItems: [],
     runningConditions: [],
@@ -302,6 +307,8 @@ export const useSequenceStore = defineStore('sequenceStore', {
           this.sequenceIsLoaded = false;
           this.confirmSequenceRunning(false);
           this.targetName = '';
+          this.runningTargetIndex = -1;
+          this.targetCount = 0;
           this.runningItems = [];
           this.runningConditions = [];
           this.collapsedStates = {};
@@ -333,14 +340,6 @@ export const useSequenceStore = defineStore('sequenceStore', {
 
         this.sequenceInfo = response.Response;
 
-        // TargetName auslesen, wenn vorhanden
-        for (const container of this.sequenceInfo) {
-          if (container?.Items) {
-            this.findAndSetTargetName(container.Items);
-            if (this.targetName) break; // Bei erstem Treffer abbrechen
-          }
-        }
-
         if (this.sequenceIsEditable) {
           this.generatePaths(this.sequenceInfo);
         }
@@ -350,6 +349,8 @@ export const useSequenceStore = defineStore('sequenceStore', {
         const isRunning = response.Response?.some((sequence) =>
           sequence.Items?.some((item) => item.Status === 'RUNNING')
         );
+
+        await this.refreshRunningTarget(isRunning);
 
         // Collect all running items with their names from already-fetched response
         const oldRunningItems = this.runningItems;
@@ -597,33 +598,66 @@ export const useSequenceStore = defineStore('sequenceStore', {
       return null;
     },
 
-    findAndSetTargetName(items) {
-      if (!items || !Array.isArray(items)) return;
-      this.targetName = '';
-
-      for (const item of items) {
-        // Wenn das Item läuft und ein Target hat, speichern
-        if (item?.Status === 'RUNNING') {
-          const resolvedName = this.extractTargetName(item.Target);
-          if (resolvedName) {
-            this.targetName = resolvedName;
-            this.lastTargetName = resolvedName;
-            //console.log('Aktives Target (RUNNING):', this.targetName);
-            return; // ersten aktiven Treffer nehmen
-          }
+    // Only sequence/state carries Target. sequence/json -- used with plugin >= 1.2.8 and on
+    // PINS -- has neither Target nor FullTypeName, so a DSO container cannot be told apart
+    // from a Sequential one there. The plugin's V2 tree is used instead: /sequence/status is
+    // small and the tree itself is only reloaded when its structure changes. While the V2
+    // page polls it anyway, no extra request is made.
+    async refreshRunningTarget(isRunning) {
+      if (isRunning && this.collectTargetContainers(this.sequenceInfo).length === 0) {
+        const sequenceV2Store = useSequenceV2Store();
+        if (!sequenceV2Store.isFetching()) await sequenceV2Store.fetchStatusUpdate();
+        if (sequenceV2Store.loaded) {
+          this.updateRunningTarget(sequenceV2Store.data);
+          return;
         }
       }
+      this.updateRunningTarget(this.sequenceInfo);
     },
 
-    extractTargetName(target) {
-      if (!target) return '';
+    // Finds the running DSO container anywhere in the tree (also inside nested
+    // Sequential/Parallel containers) and records its name and position.
+    updateRunningTarget(containers) {
+      const dsos = this.collectTargetContainers(Array.isArray(containers) ? containers : []);
+      const index = dsos.findIndex((item) => item?.Status === 'RUNNING');
+      const name = index >= 0 ? this.extractTargetName(dsos[index]) : '';
 
-      if (typeof target === 'string') {
-        return target.trim();
+      // Only write on change so the 5s poll does not re-render the status block.
+      if (this.targetCount !== dsos.length) this.targetCount = dsos.length;
+      if (this.runningTargetIndex !== index) this.runningTargetIndex = index;
+      if (this.targetName !== name) this.targetName = name;
+      if (name && this.lastTargetName !== name) this.lastTargetName = name;
+    },
+
+    // The legacy state/json responses carry no FullTypeName, so a DSO container is
+    // recognised by its Target field there. Like collectDsoContainers, a DSO container
+    // is collected but not descended into.
+    collectTargetContainers(items) {
+      const result = [];
+      const walk = (list) => {
+        for (const item of list ?? []) {
+          if (item?.FullTypeName === DSO_CONTAINER_TYPE || item?.Target) {
+            result.push(item);
+          } else {
+            walk(item?.Items);
+          }
+        }
+      };
+      walk(items);
+      return result;
+    },
+
+    extractTargetName(item) {
+      if (!item) return '';
+
+      if (typeof item.Target?.TargetName === 'string' && item.Target.TargetName.trim()) {
+        return item.Target.TargetName.trim();
       }
 
-      if (typeof target.TargetName === 'string') {
-        return target.TargetName.trim();
+      // On the JSON path Target is a coordinate string ("RA: ...; Dec: ..."), never a
+      // name -- the container name carries the target name there.
+      if (typeof item.Name === 'string') {
+        return item.Name.trim();
       }
 
       return '';

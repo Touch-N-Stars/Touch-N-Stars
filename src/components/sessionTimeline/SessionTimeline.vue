@@ -2,16 +2,16 @@
   <div class="flex flex-col w-full gap-4">
     <div class="flex flex-wrap items-center justify-between gap-2 px-1">
       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <h3 class="text-sm font-medium text-gray-300">
+        <h3 class="text-sm font-medium text-content">
           {{ $t('components.sequence.timeline.title') }}
         </h3>
-        <span v-if="hasData" class="text-xs text-gray-400">{{ viewLabel }}</span>
+        <span v-if="hasData" class="text-xs text-content-muted">{{ viewLabel }}</span>
       </div>
       <div class="flex items-center gap-2">
         <button
           type="button"
           class="tns-btn-secondary w-auto! px-3! text-sm!"
-          :disabled="!latest && !zoom"
+          :disabled="!latest && !zoomedView"
           :title="$t('components.sequence.timeline.fullNightHint')"
           @click="showFullNight"
         >
@@ -20,7 +20,7 @@
         <button
           type="button"
           class="tns-btn-secondary w-auto! px-3! text-sm!"
-          :class="latest ? 'border-cyan-500! text-cyan-300!' : ''"
+          :class="latest ? 'border-accent! text-accent!' : ''"
           :aria-pressed="latest"
           :title="$t('components.sequence.timeline.latestHint')"
           @click="toggleLatest"
@@ -31,7 +31,7 @@
     </div>
 
     <div v-if="!hasData" :class="CARD">
-      <p class="p-2 text-gray-300">{{ $t('components.sequence.timeline.noData') }}</p>
+      <p class="p-2 text-content">{{ $t('components.sequence.timeline.noData') }}</p>
     </div>
 
     <template v-else>
@@ -47,18 +47,18 @@
           @update:view="setView"
           @reset="showFullNight"
         />
-        <p class="px-2 pt-1 text-xs text-gray-400">
+        <p class="px-2 pt-1 text-xs text-content-muted">
           {{ $t('components.sequence.timeline.zoomHint') }}
         </p>
 
         <div v-if="filterLegend.length" class="flex flex-wrap items-center gap-2 px-2 pt-2">
-          <span class="text-xs text-gray-400"
+          <span class="text-xs text-content-muted"
             >{{ $t('components.sequence.timeline.filters') }}:</span
           >
           <span
             v-for="entry in filterLegend"
             :key="entry.name"
-            class="inline-flex items-center gap-1 text-xs text-gray-300"
+            class="inline-flex items-center gap-1 text-xs text-content"
           >
             <span class="inline-block w-3 h-3 rounded-sm" :style="{ background: entry.color }" />
             {{ entry.name || $t('components.sequence.timeline.noFilter') }}
@@ -67,7 +67,7 @@
 
         <div
           v-if="selectedBar"
-          class="mt-2 mx-2 p-3 bg-gray-900/70 border border-gray-700 rounded-lg text-sm text-gray-200"
+          class="mt-2 mx-2 p-3 bg-surface-1/70 border border-line rounded-lg text-sm text-content"
         >
           <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
             <span class="font-medium">
@@ -108,7 +108,7 @@
       </div>
 
       <div :class="CARD">
-        <h3 class="text-sm font-medium text-gray-300 px-2 pb-1">
+        <h3 class="text-sm font-medium text-content px-2 pb-1">
           {{ $t('components.sequence.timeline.statistics') }}
         </h3>
         <div
@@ -116,7 +116,7 @@
           :key="group.key"
           class="flex flex-wrap items-center gap-2 px-2 pb-2"
         >
-          <span class="text-xs text-gray-400 w-16 shrink-0">{{ group.label }}</span>
+          <span class="text-xs text-content-muted w-16 shrink-0">{{ group.label }}</span>
           <button
             v-for="s in group.series"
             :key="s.key"
@@ -136,7 +136,10 @@
             {{ s.label }}
           </button>
         </div>
-        <p v-if="timeline.guideHistorySupported === false" class="px-2 pb-2 text-xs text-amber-300">
+        <p
+          v-if="timeline.guideHistorySupported === false"
+          class="px-2 pb-2 text-xs text-status-warn"
+        >
           {{ $t('components.sequence.timeline.guideHistoryUnsupported') }}
         </p>
         <SessionStatsGraph
@@ -155,7 +158,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useImagetStore } from '@/store/imageStore';
@@ -178,13 +181,13 @@ import {
   imageSeries,
   sessionStart,
 } from '@/utils/sessionTimelineUtils';
-import { clampView, isFullView } from '@/utils/timeWindow';
+import { endsAtLiveEdge, isFullView, restoreView } from '@/utils/timeWindow';
 import TimelineRows from './TimelineRows.vue';
 import SessionStatsGraph from './SessionStatsGraph.vue';
 
 // Matches the neighbouring cards of the Stats tab
 const CARD =
-  'w-full border border-cyan-700 bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl p-2';
+  'w-full border border-accent-action bg-surface-2 shadow-lg shadow-accent-action/40 rounded-xl p-2';
 // Both plots share these so their time axes line up
 const LABEL_WIDTH = 72;
 const PAD_RIGHT = 8;
@@ -223,9 +226,34 @@ const filterLegend = computed(() =>
 // `session` is everything since the application start; `view` is what both
 // plots show: the last hour following the live edge (Latest), a zoomed range,
 // or the session.
+//
+// The zoomed range is remembered as absolute times (settingsStore.sessionTimelineZoom),
+// so it is still there after leaving the page or reloading. A range that reaches the
+// live edge is kept open (`end: null`) and grows with the session, so new data still
+// shows up when only its start was moved. Dragging updates the range many times a
+// second, so the store - persisted as a whole - only gets it once it settles.
+
+const ZOOM_SAVE_DELAY_MS = 500;
 
 const latest = computed(() => monitor.timelineLatest === true);
-const zoom = ref(null);
+const zoom = ref(settingsStore.sessionTimelineZoom ?? null);
+
+let zoomSaveTimer = null;
+
+function saveZoom() {
+  clearTimeout(zoomSaveTimer);
+  zoomSaveTimer = null;
+  settingsStore.sessionTimelineZoom = zoom.value ? { ...zoom.value } : null;
+}
+
+watch(zoom, () => {
+  clearTimeout(zoomSaveTimer);
+  zoomSaveTimer = setTimeout(saveZoom, ZOOM_SAVE_DELAY_MS);
+});
+
+onBeforeUnmount(() => {
+  if (zoomSaveTimer) saveZoom();
+});
 
 const session = computed(() =>
   displayWindow({
@@ -240,9 +268,17 @@ const session = computed(() =>
   })
 );
 
+// Null while the remembered range lies outside the session: when it is from an earlier
+// night, and right after a reload until the first poll has filled the session. Kept
+// rather than cleared, for that second case.
+const zoomedView = computed(() => {
+  const restored = zoom.value ? restoreView(zoom.value, session.value) : null;
+  return restored && !isFullView(restored, session.value) ? restored : null;
+});
+
 const view = computed(() => {
   if (latest.value) return displayWindow({ latest: true, nowMs: timeline.nowMs });
-  return zoom.value ? clampView(zoom.value, session.value) : session.value;
+  return zoomedView.value ?? session.value;
 });
 
 const viewLabel = computed(() => {
@@ -252,7 +288,11 @@ const viewLabel = computed(() => {
 
 function setView(next) {
   monitor.timelineLatest = false;
-  zoom.value = isFullView(next, session.value) ? null : next;
+  if (isFullView(next, session.value)) {
+    zoom.value = null;
+    return;
+  }
+  zoom.value = { start: next.start, end: endsAtLiveEdge(next, session.value) ? null : next.end };
 }
 
 function showFullNight() {
@@ -316,10 +356,10 @@ function toggleSeries(key) {
 }
 
 function chipClass(s) {
-  if (!s.available) return 'bg-gray-800 border-gray-700 text-gray-500 cursor-not-allowed';
+  if (!s.available) return 'bg-surface-2 border-line text-content-faint cursor-not-allowed';
   return isActive(s)
-    ? 'bg-gray-700 text-gray-100'
-    : 'bg-gray-800 border-gray-600 text-gray-400 hover:border-gray-400';
+    ? 'bg-surface-3 text-content'
+    : 'bg-surface-2 border-line-strong text-content-muted hover:border-content-faint';
 }
 
 // --- selection ----------------------------------------------------------------------

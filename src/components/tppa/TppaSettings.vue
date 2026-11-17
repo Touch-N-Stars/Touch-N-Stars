@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col gap-1 border border-gray-500 p-2 rounded-lg">
-    <div class="flex flex-row items-center justify-between w-full">
-      <label for="toggle_Pos" class="text-gray-300">
+  <div class="tns-card flex flex-col gap-1">
+    <div class="tns-field-row">
+      <label for="toggle_Pos" class="text-sm text-content">
         {{ $t('components.tppa.settings.StartFromCurrentPosition') }}
       </label>
       <div>
@@ -12,8 +12,8 @@
         />
       </div>
     </div>
-    <div class="flex flex-row items-center justify-between w-full">
-      <label for="toggle_Pos" class="text-gray-300">
+    <div class="tns-field-row">
+      <label for="toggle_Pos" class="text-sm text-content">
         {{ $t('components.tppa.settings.DirectionEast') }}
       </label>
       <div>
@@ -26,9 +26,9 @@
     </div>
     <div
       v-if="store.checkVersionNewerOrEqual(store.currentApiVersion, '2.2.10.0')"
-      class="flex flex-row items-center justify-between w-full"
+      class="tns-field-row"
     >
-      <label for="toggle_Pos" class="text-gray-300">
+      <label for="toggle_Pos" class="text-sm text-content">
         {{ $t('components.tppa.settings.ManualMode') }}
       </label>
       <div>
@@ -41,11 +41,11 @@
     </div>
 
     <!-- Camera Settings -->
-    <div class="border-t border-gray-600 pt-2 mt-2">
-      <h4 class="text-gray-200 text-sm mb-1">
+    <div class="border-t border-line pt-2 mt-2">
+      <h4 class="tns-section-title mb-1">
         {{ $t('components.tppa.settings.camera_settings') }}
       </h4>
-      <p class="text-gray-400 text-xs mb-3">
+      <p class="tns-label mb-3">
         {{ $t('components.tppa.settings.camera_settings_hint') }}
       </p>
 
@@ -80,7 +80,7 @@
 
       <!-- Filter -->
       <div v-if="store.filterInfo.Connected" class="mt-2">
-        <label for="tppa-filter" class="text-xs mb-1 text-gray-400 block">
+        <label for="tppa-filter" class="tns-label mb-1 block">
           {{ $t('components.tppa.settings.filter') }}
         </label>
         <select id="tppa-filter" v-model="tppaStore.settings.Filter" class="tns-select w-full">

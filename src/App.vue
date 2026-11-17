@@ -14,7 +14,7 @@
       <Transition name="splash">
         <div
           v-if="shouldShowConnectionSplash"
-          class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-gray-900 p-4"
+          class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-surface-1 p-4"
         >
           <!-- Reconnect status: calm spinner-only while just lost, escalates to a
                fuller message + actions after a few seconds (connectionPhase) -->
@@ -24,23 +24,23 @@
           >
             <div
               class="w-8 h-8 border-4 border-t-transparent border-solid rounded-full animate-spin"
-              :class="connectionIsStalled ? 'border-amber-400' : 'border-blue-400'"
+              :class="connectionIsStalled ? 'border-status-warn' : 'border-accent'"
             ></div>
 
             <p
               v-if="connectionPhase === 'connecting'"
-              class="text-gray-300 text-sm sm:text-base font-medium text-center"
+              class="text-content text-sm sm:text-base font-medium text-center"
             >
               {{ connectionConnectingMessage }}
             </p>
 
             <p
               v-if="connectionPhase === 'attention'"
-              class="text-sm sm:text-base font-medium bg-gray-800 px-4 py-2 rounded-lg max-w-[calc(100%-2rem)] text-center"
+              class="text-sm sm:text-base font-medium bg-surface-2 px-4 py-2 rounded-lg max-w-[calc(100%-2rem)] text-center"
               :class="
                 connectionIsStalled
-                  ? 'text-amber-300 border border-amber-500/30'
-                  : 'text-blue-300 border border-blue-500/30'
+                  ? 'text-status-warn border border-status-warn/30'
+                  : 'text-accent border border-accent/30'
               "
             >
               {{ connectionAttentionMessage }}
@@ -50,11 +50,11 @@
               <button
                 v-if="!showConnectionDetails"
                 @click="showConnectionDetails = true"
-                class="text-xs text-gray-400 hover:text-gray-300 underline"
+                class="text-xs text-content-muted hover:text-content underline"
               >
                 {{ $t('app.connection_splash.show_details') }}
               </button>
-              <p v-else class="text-xs text-gray-400 mt-1">
+              <p v-else class="text-xs text-content-muted mt-1">
                 {{
                   $t('app.connection_splash.details', {
                     endpoint: connectionTargetLabel,
@@ -72,13 +72,13 @@
           >
             <button
               @click="retryConnectionNow"
-              class="px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm sm:text-base rounded-lg transition-colors flex items-center gap-2"
+              class="px-4 py-2 sm:px-6 sm:py-3 bg-accent-action hover:brightness-110 text-white text-sm sm:text-base rounded-lg transition-colors flex items-center gap-2"
             >
               {{ $t('app.connection_splash.retry_now') }}
             </button>
             <button
               @click="showSettingsModal = true"
-              class="px-4 py-2 sm:px-6 sm:py-3 bg-gray-700 hover:bg-gray-600 text-white text-sm sm:text-base rounded-lg border border-gray-600 hover:border-gray-500 transition-colors flex items-center gap-2"
+              class="px-4 py-2 sm:px-6 sm:py-3 bg-surface-3 hover:bg-surface-2 text-white text-sm sm:text-base rounded-lg border border-line-strong hover:border-content-faint transition-colors flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@
             </button>
           </div>
 
-          <h1 class="text-3xl sm:text-4xl md:text-5xl text-yellow-50 font-mono font-bold mb-4">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl text-content font-mono font-bold mb-4">
             {{ $t('app.title') }}
           </h1>
           <img
@@ -123,8 +123,10 @@
         v-show="store.showSkyAtlas"
       />
       <div v-if="!shouldShowConnectionSplash" :class="stageClasses" :style="stageStyle">
-        <div class="container mx-auto px-3 py-4">
-          <router-view v-show="!store.showSkyAtlas" :key="routerViewKey" />
+        <!-- v-show sits on the wrapper: on a page with a fragment root (e.g. EquipmentPage)
+             it would be ignored and the page would flash before the atlas covers it. -->
+        <div v-show="!store.showSkyAtlas" class="container mx-auto px-3 py-4">
+          <router-view :key="routerViewKey" />
         </div>
       </div>
       <!-- Fixed frame mask: paints the frame with a rounded window punched out
@@ -142,35 +144,6 @@
       </div>
     </div>
 
-    <!-- Logs Modal -->
-    <div
-      v-if="showLogsModal"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-    >
-      <div
-        class="bg-gray-900 rounded-lg p-4 sm:p-6 w-full sm:max-w-4xl h-full sm:h-auto sm:max-h-[90vh] overflow-y-auto mx-2 sm:mx-0 scrollbar-hide"
-      >
-        <button
-          @click="showLogsModal = false"
-          class="fixed sm:absolute top-2 right-2 sm:top-4 sm:right-4 p-2 text-gray-400 hover:text-white bg-gray-900 rounded-full"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
     <!-- Tutorial Modal -->
     <TutorialModal v-if="showTutorial" :steps="tutorialSteps" @close="closeTutorial" />
     <!-- First-run setup wizard (cancellable) -->
@@ -188,17 +161,17 @@
       maxWidth="max-w-lg"
       :disableClose="true"
       :closeOnBackdropClick="false"
-      zIndex="z-[80]"
+      zIndex="z-dialog"
     >
       <template #header>
-        <h2 class="text-xl font-bold text-blue-300">
+        <h2 class="text-xl font-bold text-accent">
           {{ $t('plugins.pins.upgradeOverlay.title') }}
         </h2>
       </template>
       <template #body>
         <div class="flex flex-col items-center text-center gap-4 w-full">
           <svg
-            class="h-10 w-10 text-blue-400"
+            class="h-10 w-10 text-accent"
             :class="pinsStore.isUpgradeRunning ? 'animate-spin' : 'animate-pulse'"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -218,18 +191,18 @@
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             />
           </svg>
-          <p class="text-gray-200 text-sm sm:text-base">
+          <p class="text-content text-sm sm:text-base">
             {{ pinsUpgradeOverlayMessage }}
           </p>
-          <p class="text-xs text-gray-400">
+          <p class="text-xs text-content-muted">
             {{ $t('plugins.pins.upgradeOverlay.keepOpen') }}
           </p>
-          <p v-if="pinsStore.currentJobId" class="text-xs text-blue-300 font-mono break-all">
+          <p v-if="pinsStore.currentJobId" class="text-xs text-accent font-mono break-all">
             {{ $t('plugins.pins.upgradeOverlay.jobId', { jobId: pinsStore.currentJobId }) }}
           </p>
           <button
             @click="closePinsUpgradeOverlay"
-            class="mt-2 px-4 py-2 text-sm text-gray-300 hover:text-white border border-gray-600 hover:border-gray-400 rounded transition-colors"
+            class="mt-2 px-4 py-2 text-sm text-content hover:text-white border border-line-strong hover:border-content-faint rounded transition-colors"
           >
             {{ $t('plugins.pins.upgradeOverlay.close') }}
           </button>
@@ -247,6 +220,8 @@
       :status="updateStatus"
       :error="updateError"
       :is-downgrade="updateInfo.isDowngrade || false"
+      :up-to-date="updateInfo.upToDate || false"
+      :current-version="updateInfo.currentVersion || ''"
       @confirm="handleUpdateConfirm"
       @cancel="handleUpdateCancel"
     />
@@ -257,6 +232,9 @@
       :data="whatsNewData"
       @close="dismissWhatsNew"
     />
+
+    <!-- Meridian flip day test: app level, so a running test survives a page reload -->
+    <MeridianFlipDayTest v-if="flipTestStore.visible" @close="flipTestStore.close()" />
 
     <!-- Dialog Modal -->
     <DialogModal />
@@ -279,13 +257,13 @@
       :closeOnBackdropClick="false"
     >
       <template #header>
-        <h2 class="text-xl font-bold text-yellow-400">
+        <h2 class="text-xl font-bold text-status-warn">
           {{ $t('plugins.pins.timeWarning.title') }}
         </h2>
       </template>
       <template #body>
         <div class="flex flex-col gap-4 w-full text-sm">
-          <p class="text-gray-300">
+          <p class="text-content">
             {{
               $t('plugins.pins.timeWarning.message', {
                 clientTime: timeWarningClientTime,
@@ -298,11 +276,11 @@
               syncPinsTimeToClient();
               showTimeWarningModal = false;
             "
-            class="w-full py-2 rounded bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors"
+            class="w-full py-2 rounded bg-accent-action hover:brightness-110 text-white font-semibold transition-colors"
           >
             {{ $t('plugins.pins.timeWarning.setTime') }}
           </button>
-          <label class="flex items-center gap-2 cursor-pointer text-gray-300">
+          <label class="flex items-center gap-2 cursor-pointer text-content">
             <input
               type="checkbox"
               :checked="pinsStore.suppressTimeWarning"
@@ -313,7 +291,7 @@
           </label>
           <button
             @click="showTimeWarningModal = false"
-            class="w-full py-2 rounded bg-gray-700 hover:bg-gray-600 text-white transition-colors"
+            class="w-full py-2 rounded bg-surface-3 hover:bg-surface-2 text-white transition-colors"
           >
             {{ $t('plugins.pins.timeWarning.dismiss') }}
           </button>
@@ -332,9 +310,11 @@
         <h2 class="text-xl font-bold text-white">{{ $t('components.settings.title') }}</h2>
       </template>
       <template #body>
-        <SettingsComp />
+        <SettingsComp @navigate="showSettingsModal = false" />
       </template>
     </Modal>
+
+    <NinaPluginInstallDialog />
   </div>
 </template>
 
@@ -370,18 +350,21 @@ import { useDialogStore } from './store/dialogStore';
 import { useMessageboxStore } from './store/messageboxStore';
 import { usePickerStore } from '@/store/pickerStore';
 import { useI18n } from 'vue-i18n';
-import ToastModal from '@/components/helpers/ToastModal.vue';
+import ToastModal from '@/components/app/ToastModal.vue';
 import StatusBar from '@/components/status/StatusBar.vue';
-import LocationSyncModal from '@/components/helpers/LocationSyncModal.vue';
+import LocationSyncModal from '@/components/app/LocationSyncModal.vue';
 import { useOrientation } from '@/composables/useOrientation';
+import { useStageWindow } from '@/composables/useStageWindow';
 import { useRoute } from 'vue-router';
-import DialogModal from '@/components/helpers/DialogModal.vue';
-import MessageBoxModal from '@/components/helpers/MessageBoxModal.vue';
+import DialogModal from '@/components/app/DialogModal.vue';
+import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
 import PickerOverlay from '@/components/helpers/PickerOverlay.vue';
 import Modal from '@/components/helpers/Modal.vue';
-import { usePinsStore } from '@/plugins/pins/store/pinsStore';
+import { usePinsStore } from '@/store/pinsStore';
+import { clearStoredUpgradeTracking } from '@/components/pins/composables/usePinsUpgradeTracker';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
 import { useGuiderStore } from '@/store/guiderStore';
+import { NATIVE_GUIDER_ID } from '@/utils/nativeGuider';
 import { usePinsDeviceStore } from '@/plugins/pinsDevices/store/pinsDevicesStore';
 import { useImageMonitorStore } from '@/plugins/multi-image-monitor/store/imageMonitorStore';
 import { usePinsAllSkyStore } from '@/plugins/pins-allsky/store/pinsAllskyStore';
@@ -400,22 +383,29 @@ import {
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
 import { setAppBackgrounded, useBackgroundAwarePolling } from '@/utils/appLifecycle';
-import { setLocaleLanguage } from '@/i18n';
+import { setLocaleLanguage, setBackendName } from '@/i18n';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useToastStore } from '@/store/toastStore';
 import { PINS_PORT, DEFAULT_PINS_DAEMON_API_TOKEN as PINS_TOKEN } from '@/services/pinsConfig';
 import apiPinsService from '@/services/apiPinsService';
 import { createUnderVoltageNotifier } from '@/plugins/systemmetrics/services/underVoltageNotifier';
 import { usePluginStore } from '@/store/pluginStore';
+import { useMeridianFlipTestStore } from '@/store/meridianFlipTestStore';
 
 const SkyAtlasView = defineAsyncComponent(() => import('./views/CelestiaAtlasView.vue'));
 const TutorialModal = defineAsyncComponent(() => import('@/components/TutorialModal.vue'));
+const MeridianFlipDayTest = defineAsyncComponent(
+  () => import('@/components/mount/settings/MeridianFlipDayTest.vue')
+);
 const SetupWizard = defineAsyncComponent(() => import('@/components/setupWizard/SetupWizard.vue'));
-const ConsoleViewer = defineAsyncComponent(() => import('@/components/helpers/ConsoleViewer.vue'));
+const ConsoleViewer = defineAsyncComponent(() => import('@/components/app/ConsoleViewer.vue'));
 const SettingsComp = defineAsyncComponent(() => import('@/components/SettingsComp.vue'));
-const WhatsNewModal = defineAsyncComponent(() => import('@/components/helpers/WhatsNewModal.vue'));
+const NinaPluginInstallDialog = defineAsyncComponent(
+  () => import('@/components/ninaPlugins/NinaPluginInstallDialog.vue')
+);
+const WhatsNewModal = defineAsyncComponent(() => import('@/components/app/WhatsNewModal.vue'));
 const UpdateAvailableModal = defineAsyncComponent(
-  () => import('@/components/helpers/UpdateAvailableModal.vue')
+  () => import('@/components/app/UpdateAvailableModal.vue')
 );
 const ScreenLockOverlay = defineAsyncComponent(
   () => import('@/plugins/screen-lock/components/ScreenLockOverlay.vue')
@@ -426,7 +416,17 @@ const settingsStore = useSettingsStore();
 const toastStore = useToastStore();
 const pinsStore = usePinsStore();
 const nightSummaryStore = useNightSummaryStore();
+const flipTestStore = useMeridianFlipTestStore();
 const route = useRoute();
+
+// A flip test that ran before a reload comes back once the backend answers.
+watch(
+  () => store.isBackendReachable,
+  (reachable) => {
+    if (reachable) flipTestStore.restore();
+  },
+  { immediate: true }
+);
 const pluginStore = usePluginStore();
 const skyAtlasMounted = ref(Boolean(store.showSkyAtlas));
 
@@ -507,6 +507,12 @@ watch(
     }
   }
 );
+// Texts name the backend via @:{'general.backendName'} (see src/i18n.js)
+watch(
+  () => store.isPINS,
+  (isPINS) => setBackendName(isPINS ? 'PINS' : 'NINA'),
+  { immediate: true }
+);
 const sequenceStore = useSequenceStore();
 const logStore = useLogStore();
 const flatsStore = useFlatassistantStore();
@@ -515,6 +521,26 @@ const pinsDeviceStore = usePinsDeviceStore();
 const imageMonitorStore = useImageMonitorStore();
 const sequenceV2Store = useSequenceV2Store();
 const pinsAllSkyStore = usePinsAllSkyStore();
+// PINS native guider: its live feed (/ws/internal-guider) runs app-wide while it is the
+// connected guider, so critical guiding alerts toast on every page, not only on the guider page.
+// The store (with its socket and helpers) is loaded on the first native connect, so NINA and
+// PHD2 users don't carry it in the main chunk.
+let nativeGuiderStore = null;
+const isNativeGuiderConnected = () =>
+  store.guiderInfo?.Connected === true && store.guiderInfo?.DeviceId === NATIVE_GUIDER_ID;
+watch(
+  isNativeGuiderConnected,
+  async (nativeConnected) => {
+    if (nativeConnected && !nativeGuiderStore) {
+      const { useNativeGuiderStore } = await import('@/store/nativeGuiderStore');
+      nativeGuiderStore = useNativeGuiderStore();
+    }
+    // The guider may have disconnected while the chunk loaded: apply the current state.
+    if (isNativeGuiderConnected()) nativeGuiderStore?.startFeed();
+    else nativeGuiderStore?.stopFeed();
+  },
+  { immediate: true }
+);
 
 // Global flat run outcome — fires regardless of which page is active.
 // prevRun !== null guard mirrors the original page watcher: first setter wins,
@@ -531,7 +557,6 @@ const cameraStore = useCameraStore();
 const dialogStore = useDialogStore();
 const messageboxStore = useMessageboxStore();
 const imageStore = useImagetStore();
-const showLogsModal = ref(false);
 const showTutorial = ref(false);
 const showSplashScreen = ref(true);
 const showSettingsModal = ref(false);
@@ -572,7 +597,8 @@ useBackgroundAwarePolling(
   checkPinsPowerStatus,
   PINS_POWER_STATUS_INTERVAL_MS,
   pinsPowerMonitoringActive,
-  { immediate: true }
+  // At a 5 minute interval an under-voltage warning must not wait a full cycle after resume
+  { immediate: true, immediateOnResume: true }
 );
 // Reconnecting after being backgrounded routinely takes up to ~12s on its own (Android
 // radio/network wake-up after Doze, see websocketChannelSocket reconnect timing) - that
@@ -638,7 +664,7 @@ const appLayoutClasses = computed(() => ({
 }));
 
 // Fixed frame surface color, independent of the selected instance.
-const frameColor = 'bg-gray-900/95';
+const frameColor = 'bg-surface-1/95';
 
 const navContainerClasses = computed(() => ({
   'z-20 fixed top-0 w-full': !isLandscape.value,
@@ -655,37 +681,21 @@ const stageClasses = computed(() => ({
   'bg-ground transition-all': true,
   'mt-[calc(82px+var(--subnav-offset))] mx-[var(--stage-inset)] mb-[calc(var(--statusbar-height)+env(safe-area-inset-bottom)+var(--stage-inset))]':
     !isLandscape.value,
-  'ml-[calc(var(--nav-width)+var(--stage-inset))] mr-[var(--stage-inset)] mt-[calc(var(--stage-inset)+var(--subnav-offset))] mb-[calc(var(--statusbar-height)+var(--stage-inset))]':
+  'ml-[calc(var(--nav-width)+var(--stage-inset))] mr-(--stage-right) mt-[calc(var(--stage-inset)+var(--subnav-offset))] mb-[calc(var(--statusbar-height)+env(safe-area-inset-bottom)+var(--stage-inset))]':
     isLandscape.value,
 }));
 
 const stageStyle = computed(() => ({
   minHeight: isLandscape.value
-    ? 'calc(100dvh - var(--stage-inset) - var(--subnav-offset) - var(--statusbar-height) - var(--stage-inset))'
+    ? 'calc(100dvh - var(--stage-inset) - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))'
     : 'calc(100dvh - 82px - var(--subnav-offset) - var(--statusbar-height) - env(safe-area-inset-bottom) - var(--stage-inset))',
 }));
 
-// Viewport rect of the frame mask — mirrors the stage margins, plus
-// --status-panel-height so an open status-bar panel does not swallow the rounded
-// bottom corners. The panels sit above the mask (they are children of the z-20
-// bar container), so the window has to yield instead. The sheet keeps its
-// margins and simply scrolls on beneath the panel.
-const stageFrameStyle = computed(() =>
-  isLandscape.value
-    ? {
-        top: 'calc(var(--stage-inset) + var(--subnav-offset))',
-        left: 'calc(var(--nav-width) + var(--stage-inset))',
-        right: 'var(--stage-inset)',
-        bottom: 'calc(var(--statusbar-height) + var(--status-panel-height) + var(--stage-inset))',
-      }
-    : {
-        top: 'calc(82px + var(--subnav-offset))',
-        left: 'var(--stage-inset)',
-        right: 'var(--stage-inset)',
-        bottom:
-          'calc(var(--statusbar-height) + env(safe-area-inset-bottom) + var(--status-panel-height) + var(--stage-inset))',
-      }
-);
+// Viewport rect of the frame mask. The panels sit above the mask (they are
+// children of the z-20 bar container), so the window has to yield to an open
+// status-bar panel instead. The sheet keeps its margins and simply scrolls on
+// beneath the panel.
+const { stageWindowStyle: stageFrameStyle } = useStageWindow();
 
 // The frame mask paints with box-shadow, which needs a concrete color — read
 // the instance color off the frame div at runtime (same technique as the nav
@@ -829,12 +839,7 @@ function closePinsUpgradeOverlay() {
     pinsUpgradeRecoveryTimer = null;
   }
   pinsStore.resetUpgradeOverlay();
-  try {
-    window.localStorage.removeItem('lastUpgradeJobId');
-    window.localStorage.removeItem('lastUpgradeJobResult');
-  } catch {
-    // Ignore storage cleanup errors.
-  }
+  clearStoredUpgradeTracking();
 }
 
 function finalizePinsUpgradeRecoveryIfReady() {
@@ -850,12 +855,7 @@ function finalizePinsUpgradeRecoveryIfReady() {
   pinsUpgradeRecoveryTimer = setTimeout(() => {
     if (pinsStore.isUpgradeWaitingForBackend && store.isBackendReachable) {
       pinsStore.finalizeUpgradeRecovery();
-      try {
-        window.localStorage.removeItem('lastUpgradeJobId');
-        window.localStorage.removeItem('lastUpgradeJobResult');
-      } catch {
-        // Ignore storage cleanup errors.
-      }
+      clearStoredUpgradeTracking();
     }
     pinsUpgradeRecoveryTimer = null;
   }, 1500);
@@ -1008,6 +1008,7 @@ async function performResume() {
     // respective socket was disconnected on purpose.
     websocketTppaService.resumeAfterBackground();
     websocketMountControlService.resumeAfterBackground();
+    nativeGuiderStore?.resumeAfterBackground();
 
     // Kill all HTTP requests still in flight from before the background phase.
     // Their TCP connections are likely dead (Android cuts them), but they hog
@@ -1056,18 +1057,20 @@ async function performResume() {
       // PINS/Headless mode: Use SignalR for real-time updates
       await dialogStore.initializeDialogSignalR();
       await messageboxStore.initializeMessageboxSignalR();
-      if (isPaused) return;
-      flatsStore.startFetchingFlats();
     } else {
       // WPF mode: Use polling
       dialogStore.startPolling();
     }
+    // Flat runs execute in the plugin under NINA and PINS alike; the poller picks up
+    // a run that progressed or finished while the app was in the background.
+    if (isPaused) return;
+    flatsStore.startFetchingFlats();
 
     // Clear any stale in-flight fetch flags from before the pause — connections
     // killed by the OS in background would otherwise leave isImageFetching stuck true.
     imageStore.isImageFetching = false;
     imageStore.isSequenceImageFetching = false;
-    imageStore.getImage();
+    imageStore.refreshImageIfChanged();
     if (!sequenceStore.sequenceEdit) {
       sequenceStore.startFetching();
     }
@@ -1163,16 +1166,22 @@ async function checkForAppUpdate(options = {}) {
     }
 
     if (result?.available && (force || result.version !== dismissedUpdateVersion.value)) {
+      // A manual check that finds nothing newer than the installed version reports "up to date"
+      // and only offers to install the channel's release anyway (e.g. back to stable).
+      const upToDate = force && (result.isCurrent || result.isDowngrade);
       let whatsNewDetails = null;
-      try {
-        whatsNewDetails = await fetchChangelogWhatsNew(result);
-        console.info('Update whats-new content resolved:', whatsNewDetails);
-      } catch (whatsNewError) {
-        console.warn('Failed to load whats-new content:', whatsNewError);
+      if (!upToDate) {
+        try {
+          whatsNewDetails = await fetchChangelogWhatsNew(result);
+          console.info('Update whats-new content resolved:', whatsNewDetails);
+        } catch (whatsNewError) {
+          console.warn('Failed to load whats-new content:', whatsNewError);
+        }
       }
 
       updateInfo.value = {
         ...result,
+        upToDate,
         whatsNew: whatsNewDetails,
       };
       updateStatus.value = 'idle';
@@ -1334,11 +1343,11 @@ onMounted(async () => {
     // PINS/Headless mode: Use SignalR for real-time updates
     await dialogStore.initializeDialogSignalR();
     await messageboxStore.initializeMessageboxSignalR();
-    flatsStore.startFetchingFlats();
   } else {
     // WPF mode: Use polling
     dialogStore.startPolling();
   }
+  flatsStore.startFetchingFlats();
 
   if (!sequenceStore.sequenceEdit) {
     sequenceStore.startFetching();
@@ -1410,13 +1419,6 @@ watch(
       }, 200); // delay
     }
 
-    // Re-initialize dialog and messagebox SignalR after an instance switch
-    // (clearAllStates disconnects them; they don't auto-reconnect on their own)
-    if (isReachable && store.isPINS) {
-      await dialogStore.initializeDialogSignalR();
-      await messageboxStore.initializeMessageboxSignalR();
-    }
-
     // Re-initialize night summary plugin after an instance switch so it
     // fetches its status, settings, and sessions from the new backend.
     if (isReachable && store.isPINS) {
@@ -1425,6 +1427,29 @@ watch(
 
     if (isReachable) {
       finalizePinsUpgradeRecoveryIfReady();
+    }
+  }
+);
+
+// Dialog transport follows the backend mode: SignalR on PINS, polling on WPF NINA.
+// The mount and resume paths decide once, right after their first fetchAllInfos(); if
+// PINS detection had not finished by then (backend still coming up, or PINS found by a
+// later re-probe), they fell back to polling and never switched, leaving PINS with
+// dialog polling on top of SignalR. Re-deciding on every change of either input fixes
+// that, and also re-arms SignalR after an instance switch (clearAllStates disconnects
+// it and it does not reconnect on its own).
+watch(
+  () => [store.isBackendReachable, store.isPINS],
+  async ([isReachable, isPINS]) => {
+    // pauseApp() stopped everything; performResume() restarts it.
+    if (!isReachable || isPaused) return;
+    flatsStore.startFetchingFlats();
+    if (isPINS) {
+      dialogStore.stopPolling();
+      await dialogStore.initializeDialogSignalR();
+      await messageboxStore.initializeMessageboxSignalR();
+    } else {
+      dialogStore.startPolling();
     }
   }
 );

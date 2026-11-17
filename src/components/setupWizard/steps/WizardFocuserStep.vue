@@ -69,9 +69,13 @@
     </div>
 
     <!-- Focuser settings modal (same split as connectEquipment.vue).
-         zIndex must clear the wizard overlay (z-70) but stay under the PINS
-         upgrade overlay (z-[80]) - all of these teleport to body. -->
-    <Modal :show="showFocuserSettings" zIndex="z-[75]" @close="showFocuserSettings = false">
+         zIndex must clear the wizard overlay (z-overlay) but stay under the PINS
+         upgrade overlay (z-dialog) - all of these teleport to body. -->
+    <Modal
+      :show="showFocuserSettings"
+      zIndex="z-overlay-modal"
+      @close="showFocuserSettings = false"
+    >
       <template #header>
         <h2 class="text-2xl font-semibold">{{ $t('components.focuser.indi.settings') }}</h2>
       </template>

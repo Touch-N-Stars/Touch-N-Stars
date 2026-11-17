@@ -1,10 +1,10 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span v-if="switchFilter?.ComboBoxText" class="text-xs text-slate-400 shrink-0">{{
-        switchFilter.ComboBoxText
+      <span v-if="currentFilter" class="text-xs text-content-muted shrink-0">{{
+        currentFilter
       }}</span>
-      <span v-if="loopCondition" class="text-xs text-slate-500"
+      <span v-if="loopCondition" class="text-xs text-content-faint"
         >{{ loopCondition.CompletedIterations }}/{{ loopCondition.Iterations }}</span
       >
     </template>
@@ -25,25 +25,19 @@
 
       <!-- Filter from inner SwitchFilter -->
       <div v-if="switchFilter" class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.switchFilter.filter')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
-          :value="switchFilter.ComboBoxText"
-          @change="
-            store.setProperty(
-              switchFilter.Id,
-              'SelectedFilter',
-              filterNames.indexOf($event.target.value) + 1
-            )
-          "
+          class="tns-select-compact ml-auto w-36 md:w-40"
+          :value="currentFilter"
+          @change="saveFilter($event.target.value)"
         >
           <option
-            v-if="switchFilter.ComboBoxText && !filterNames.includes(switchFilter.ComboBoxText)"
-            :value="switchFilter.ComboBoxText"
+            v-if="currentFilter && !filterNames.includes(currentFilter)"
+            :value="currentFilter"
           >
-            {{ switchFilter.ComboBoxText }}
+            {{ currentFilter }}
           </option>
           <option v-for="(name, i) in filterNames" :key="i" :value="name">
             {{ name }}
@@ -53,11 +47,11 @@
 
       <!-- Binning from inner TakeExposure -->
       <div v-if="exposure" class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.takeExposure.binning')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="binningValue"
           @change="store.setProperty(exposure.Id, 'Binning', $event.target.value)"
         >
@@ -92,7 +86,7 @@
       />
 
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.autoBrightnessFlat.keepPanelClosed')
         }}</label>
         <div class="ml-auto">
@@ -114,6 +108,7 @@ import GainInput from '@/components/helpers/GainInput.vue';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { apiStore } from '@/store/store';
+import { switchFilterName, switchFilterUpdate } from '@/utils/sequenceFilter';
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -131,6 +126,12 @@ const filterNames = computed(() => {
 const switchFilter = computed(
   () => props.item.Items?.find((i) => i.FullTypeName?.endsWith('SwitchFilter')) ?? null
 );
+const currentFilter = computed(() => switchFilterName(switchFilter.value));
+
+function saveFilter(name) {
+  const { property, value } = switchFilterUpdate(switchFilter.value, filterNames.value, name);
+  store.setProperty(switchFilter.value.Id, property, value);
+}
 
 const innerContainer = computed(
   () => props.item.Items?.find((i) => i.FullTypeName?.endsWith('SequentialContainer')) ?? null

@@ -6,5 +6,10 @@
   "author": "Johannes Maier, Rafa Barberá",
   "defaultEnabled": false,
   "enabled": true,
-  "isPins": false
+  "isPins": false,
+  "ninaPlugin": {
+    "name": "LiveStack",
+    "displayName": "LiveStack",
+    "pinsPackage": "pins-plugin-livestack"
+  }
 }

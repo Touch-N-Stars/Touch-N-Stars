@@ -1,16 +1,34 @@
 import axios from 'axios';
 import { getUrls, simpleGetRequest } from './core';
 
+// The imaging camera and PINS' guide camera slot share the same routes under
+// /equipment/camera and /equipment/guidecamera: one implementation per call for both slots.
+const CAMERA = 'camera';
+const GUIDE_CAMERA = 'guidecamera';
+
+function slotAction(slot, action) {
+  const { BASE_URL } = getUrls();
+  return simpleGetRequest(`${BASE_URL}/equipment/${slot}/${action}`);
+}
+
+async function slotGet(slot, path, params, config = {}) {
+  const { BASE_URL } = getUrls();
+  const response = await axios.get(`${BASE_URL}/equipment/${slot}/${path}`, { params, ...config });
+  return response.data;
+}
+
+const cool = (slot, temperature, minutes) => slotGet(slot, 'cool', { temperature, minutes });
+const warm = (slot, minutes) => slotGet(slot, 'warm', { minutes });
+const setBinning = (slot, mode) => slotGet(slot, 'set-binning', { binning: mode });
+
 export default {
   //-------------------------------------  Camera ---------------------------------------
   cameraAction(action) {
-    const { BASE_URL } = getUrls();
-    return simpleGetRequest(`${BASE_URL}/equipment/camera/${action}`);
+    return slotAction(CAMERA, action);
   },
 
   cameraCancelConnect() {
-    const { BASE_URL } = getUrls();
-    return simpleGetRequest(`${BASE_URL}/equipment/camera/cancel-connect`);
+    return slotAction(CAMERA, 'cancel-connect');
   },
 
   async getCaptureStatisticsFull() {
@@ -117,20 +135,8 @@ export default {
     }
   },
 
-  async startCameraCooling(temp, minutes) {
-    try {
-      const { BASE_URL } = getUrls();
-      const response = await axios.get(`${BASE_URL}/equipment/camera/cool`, {
-        params: {
-          temperature: temp,
-          minutes: minutes,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      // console.error('Error retrieving capture result:', error);
-      throw error;
-    }
+  startCameraCooling(temp, minutes) {
+    return cool(CAMERA, temp, minutes);
   },
 
   async stopCameraCooling() {
@@ -146,18 +152,8 @@ export default {
     }
   },
 
-  async startCameraWarming(minutes) {
-    try {
-      const { BASE_URL } = getUrls();
-      const response = await axios.get(`${BASE_URL}/equipment/camera/warm`, {
-        params: {
-          minutes: minutes,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
+  startCameraWarming(minutes) {
+    return warm(CAMERA, minutes);
   },
 
   async stopCameraWarming() {
@@ -203,17 +199,8 @@ export default {
     }
   },
 
-  async setBinningMode(mode) {
-    try {
-      const { BASE_URL } = getUrls();
-      const response = await axios.get(`${BASE_URL}/equipment/camera/set-binning`, {
-        params: { binning: mode },
-      });
-      return response.data;
-    } catch (error) {
-      // console.error('Error retrieving result:', error);
-      throw error;
-    }
+  setBinningMode(mode) {
+    return setBinning(CAMERA, mode);
   },
 
   async setReadoutMode(mode) {
@@ -255,5 +242,36 @@ export default {
       // console.error('Error retrieving result:', error);
       throw error;
     }
+  },
+
+  //-------------------------------------  Guide camera (PINS) ---------------------------------------
+  // PINS' second camera slot: the camera's calls on /equipment/guidecamera.
+  guideCameraAction(action) {
+    return slotAction(GUIDE_CAMERA, action);
+  },
+
+  guideCameraCancelConnect() {
+    return slotAction(GUIDE_CAMERA, 'cancel-connect');
+  },
+
+  // One exposure, returned as an image without going through the imaging pipeline (nothing is saved).
+  guideCameraCapture(duration, gain, quality = 80) {
+    const params = { duration: duration, quality: quality, resize: true, size: '1280x960' };
+    if (gain !== null && gain !== undefined && gain !== '') {
+      params.gain = gain;
+    }
+    return slotGet(GUIDE_CAMERA, 'capture', params, { timeout: (duration + 120) * 1000 });
+  },
+
+  guideCameraCool(temp, minutes) {
+    return cool(GUIDE_CAMERA, temp, minutes);
+  },
+
+  guideCameraWarm(minutes) {
+    return warm(GUIDE_CAMERA, minutes);
+  },
+
+  guideCameraSetBinning(mode) {
+    return setBinning(GUIDE_CAMERA, mode);
   },
 };

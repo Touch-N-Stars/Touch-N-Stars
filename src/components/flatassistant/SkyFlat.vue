@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-col w-full max-w-md space-y-2 mt-4 border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5"
-  >
+  <div class="flex flex-col w-full max-w-md space-y-2 mt-4 tns-card">
     <setCount />
     <setGain />
     <setOffset />
@@ -12,7 +10,7 @@
     <selectFilter v-if="store.filterInfo.Connected" v-model="selectedFilterId" />
     <setBinning v-if="(store.cameraInfo?.BinningModes?.length || 0) > 1" />
     <div class="flex items-center justify-between">
-      <span class="text-sm text-gray-300">{{ $t('components.flatassistant.keep_closed') }}</span>
+      <span class="text-sm text-content">{{ $t('components.flatassistant.keep_closed') }}</span>
       <toggleButton
         :statusValue="settingsStore.flats.keepClosed"
         @update:statusValue="settingsStore.flats.keepClosed = $event"
@@ -64,6 +62,28 @@ onMounted(() => {
 
 async function startAutoExposure() {
   console.log('Flats startAutoExposure: ');
+  if (await flatsStore.detectServerWorkflow()) {
+    // Sky flats offer no dark count field, so none are taken (same as multi mode).
+    await flatsStore.startServerRun({
+      mode: 'SkyFlat',
+      keepClosed: settingsStore.flats.keepClosed,
+      darkCount: 0,
+      filters: [
+        {
+          filterId: selectedFilterId.value,
+          count: flatsStore.count,
+          gain: flatsStore.gain,
+          offset: flatsStore.offset,
+          binning: flatsStore.binning,
+          histogramMean: flatsStore.histogramMean * 100,
+          meanTolerance: flatsStore.meanTolerance * 100,
+          minExposure: flatsStore.minExposureTime,
+          maxExposure: flatsStore.maxExposureTime,
+        },
+      ],
+    });
+    return;
+  }
   try {
     await flatsStore.runFlatWorkflow({
       request: () =>

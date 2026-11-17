@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div
+    v-if="tppaStore.isRunning && (statusText || progressPercent !== null)"
+    class="border border-line-strong rounded-card"
+  >
     <p>{{ statusText }}</p>
     <p v-if="progressPercent !== null">{{ progressPercent }}%</p>
   </div>

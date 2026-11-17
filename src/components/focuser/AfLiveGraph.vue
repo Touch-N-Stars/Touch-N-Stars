@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useAutofocusStore } from '@/store/autofocusStore';
 import { Chart, registerables } from 'chart.js';
 
@@ -119,5 +119,10 @@ watch(
 onMounted(() => {
   updateChart();
   console.log('[AfLiveGraph] Livechart mounted');
+});
+
+onBeforeUnmount(() => {
+  chartInstance?.destroy();
+  chartInstance = null;
 });
 </script>

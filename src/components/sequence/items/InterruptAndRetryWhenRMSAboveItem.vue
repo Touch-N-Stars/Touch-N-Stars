@@ -1,8 +1,8 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ item.RmsThreshold }}"</span>
-      <span class="text-xs text-slate-400 font-mono">≤{{ item.MaxRetries }}×</span>
+      <span class="text-xs text-content-muted font-mono">{{ item.RmsThreshold }}"</span>
+      <span class="text-xs text-content-muted font-mono">≤{{ item.MaxRetries }}×</span>
     </template>
 
     <template #editor="{ save }">
@@ -18,12 +18,12 @@
       />
 
       <div class="flex items-center gap-3">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.interruptAndRetryWhenRMSAbove.mode')
         }}</label>
         <select
           :value="item.Mode"
-          class="ml-auto bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-auto"
           @change="save('Mode', $event.target.value)"
         >
           <option value="RMS">

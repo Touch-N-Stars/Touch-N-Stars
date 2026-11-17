@@ -5,6 +5,7 @@ export const useEquipmentStore = defineStore('equipmentStore', {
     reloadTrigger: 0,
     rescanTrigger: {
       camera: 0,
+      guideCamera: 0,
       mount: 0,
       filter: 0,
       focus: 0,

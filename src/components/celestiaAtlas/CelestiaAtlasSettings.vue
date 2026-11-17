@@ -10,7 +10,7 @@
     <Cog6ToothIcon class="h-6 w-6" />
   </button>
 
-  <Modal :show="settingsVisible" @close="settingsVisible = false" zIndex="z-40">
+  <Modal :show="settingsVisible" @close="settingsVisible = false" zIndex="z-modal">
     <template #header>
       <h3>{{ $t('components.celestiaAtlas.settings.title') }}</h3>
     </template>
@@ -71,14 +71,10 @@
             </div>
           </div>
           <div class="grid gap-2" v-if="settingsStore.celestiaAtlas.landscapesVisible">
-            <label for="landscapeSourceMode" class="text-gray-400 block mb-1">
+            <label for="landscapeSourceMode" class="text-content-muted block mb-1">
               {{ $t('components.celestiaAtlas.settings.landscape_source_mode') }}
             </label>
-            <select
-              id="landscapeSourceMode"
-              v-model="landscapeSourceSelection"
-              class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
-            >
+            <select id="landscapeSourceMode" v-model="landscapeSourceSelection" class="tns-select">
               <option value="default">
                 {{ $t('components.celestiaAtlas.settings.landscape_source_default') }}
               </option>
@@ -109,14 +105,14 @@
               class="mt-2 grid gap-2"
             >
               <div>
-                <label for="customLandscapeUrl" class="text-gray-400 block mb-1 text-sm">
+                <label for="customLandscapeUrl" class="text-content-muted block mb-1 text-sm">
                   {{ $t('components.celestiaAtlas.settings.custom_landscape_url') }}
                 </label>
                 <input
                   id="customLandscapeUrl"
                   v-model="settingsStore.celestiaAtlas.customLandscapeUrl"
                   type="text"
-                  class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
+                  class="tns-input"
                   :placeholder="
                     $t('components.celestiaAtlas.settings.custom_landscape_url_placeholder')
                   "
@@ -124,14 +120,14 @@
               </div>
 
               <div>
-                <label for="customLandscapeKey" class="text-gray-400 block mb-1 text-sm">
+                <label for="customLandscapeKey" class="text-content-muted block mb-1 text-sm">
                   {{ $t('components.celestiaAtlas.settings.custom_landscape_key') }}
                 </label>
                 <input
                   id="customLandscapeKey"
                   v-model="settingsStore.celestiaAtlas.customLandscapeKey"
                   type="text"
-                  class="w-full bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
+                  class="tns-input"
                   :placeholder="
                     $t('components.celestiaAtlas.settings.custom_landscape_key_placeholder')
                   "
@@ -141,7 +137,7 @@
 
             <div class="mt-3 flex justify-end">
               <button
-                class="px-3 py-1 rounded bg-cyan-700 hover:bg-cyan-600 text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                class="px-3 py-1 rounded bg-accent-action hover:brightness-110 text-sm text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 :disabled="!landscapeSourceDirty"
                 @click="saveLandscapeSourceSettings"
               >
@@ -149,14 +145,14 @@
               </button>
             </div>
 
-            <div class="mt-3 border border-gray-600 rounded-lg p-2 bg-gray-800/40">
+            <div class="mt-3 border border-line-strong rounded-lg p-2 bg-surface-2/40">
               <div class="flex items-center justify-between gap-2">
-                <p class="text-gray-300 text-sm font-medium">
+                <p class="text-content text-sm font-medium">
                   {{ $t('components.celestiaAtlas.settings.available_landscapes') }}
                 </p>
                 <button
                   type="button"
-                  class="px-2 py-1 rounded border border-gray-500 bg-gray-700 hover:bg-gray-600 text-xs text-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="px-2 py-1 rounded border border-line-strong bg-surface-3 hover:bg-surface-2 text-xs text-content disabled:opacity-50 disabled:cursor-not-allowed"
                   :disabled="landscapeListLoading"
                   @click="fetchAvailableLandscapes"
                 >
@@ -165,15 +161,15 @@
               </div>
 
               <div class="mt-2 text-sm">
-                <p v-if="landscapeListLoading" class="text-gray-400">
+                <p v-if="landscapeListLoading" class="text-content-muted">
                   {{ $t('common.loading') }}
                 </p>
-                <p v-else-if="landscapeListError" class="text-red-400">
+                <p v-else-if="landscapeListError" class="text-status-danger">
                   {{ landscapeListError }}
                 </p>
                 <p
                   v-else-if="landscapeListLoaded && availableLandscapes.length === 0"
-                  class="text-gray-400"
+                  class="text-content-muted"
                 >
                   {{ $t('components.celestiaAtlas.settings.no_landscapes_available') }}
                 </p>
@@ -182,10 +178,10 @@
                   <li
                     v-for="(landscape, index) in availableLandscapes"
                     :key="`${landscape.folderName || 'unknown'}-${landscape.serviceUrl || index}`"
-                    class="rounded border border-gray-700 bg-gray-900/60 p-2"
+                    class="rounded border border-line bg-surface-1/60 p-2"
                   >
                     <div class="flex items-center justify-between gap-2">
-                      <p class="text-gray-100 font-medium truncate">
+                      <p class="text-content font-medium truncate">
                         {{
                           landscape.title ||
                           landscape.folderName ||
@@ -196,8 +192,8 @@
                         class="text-[10px] px-2 py-0.5 rounded-full"
                         :class="
                           landscape.hasAllsky
-                            ? 'bg-green-900 text-green-200'
-                            : 'bg-yellow-900 text-yellow-200'
+                            ? 'bg-status-ok/15 text-status-ok'
+                            : 'bg-status-warn/15 text-status-warn'
                         "
                       >
                         {{
@@ -207,11 +203,11 @@
                         }}
                       </span>
                     </div>
-                    <p class="text-xs text-gray-400 mt-1 break-all">
+                    <p class="text-xs text-content-muted mt-1 break-all">
                       {{ $t('components.celestiaAtlas.settings.folder_name_label') }}:
                       {{ landscape.folderName || '—' }}
                     </p>
-                    <p class="text-xs text-gray-400 mt-1 break-all">
+                    <p class="text-xs text-content-muted mt-1 break-all">
                       {{ $t('components.celestiaAtlas.settings.service_url_label') }}:
                       {{ landscape.serviceUrl || '—' }}
                     </p>
@@ -229,12 +225,12 @@
             <div class="min-w-0 max-w-full">
               <label
                 for="skySurveyVisible"
-                class="block break-words whitespace-normal text-gray-300"
+                class="block break-words whitespace-normal text-content"
               >
                 {{ $t('components.celestiaAtlas.settings.sky_survey_visible') }}
               </label>
               <p
-                class="mt-1 max-w-full break-words whitespace-normal text-xs leading-5 text-gray-400"
+                class="mt-1 max-w-full break-words whitespace-normal text-xs leading-5 text-content-muted"
               >
                 {{ $t('components.celestiaAtlas.settings.sky_survey_hint') }}
               </p>
@@ -249,156 +245,24 @@
               />
             </div>
           </div>
-          <div class="grid gap-3" data-testid="atlas-survey-download">
-            <div>
-              <p class="text-gray-200 font-medium">
-                {{ $t('components.celestiaAtlas.survey.title') }}
-              </p>
-              <p class="text-xs text-gray-400">
-                {{ $t('components.celestiaAtlas.survey.hint') }}
-              </p>
-            </div>
-
-            <p v-if="surveyStore.supported === false" class="text-sm text-yellow-300">
-              {{ $t('components.celestiaAtlas.survey.plugin_update_required') }}
+          <div class="grid gap-2">
+            <label for="skySurveySource" class="text-sm text-content">
+              {{ $t('components.celestiaAtlas.survey.source_label') }}
+            </label>
+            <select id="skySurveySource" v-model="surveySource" class="tns-select w-full">
+              <option v-for="id in SKY_SURVEY_IDS" :key="id" :value="id">
+                {{ $t(`components.celestiaAtlas.survey.source_${skySurveyLocaleKey(id)}`) }}
+              </option>
+            </select>
+            <p class="text-xs text-content-muted">
+              {{
+                $t(
+                  `components.celestiaAtlas.survey.source_${skySurveyLocaleKey(activeSurveyId)}_hint`
+                )
+              }}
             </p>
-            <p v-else-if="!surveyStore.loaded" class="text-sm text-gray-400">
-              {{ $t('common.loading') }}
-            </p>
-            <p v-else-if="surveyStore.error" class="text-sm text-red-400">
-              {{ surveyStore.error }}
-            </p>
-            <template v-else>
-              <dl class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm">
-                <dt class="text-gray-400">
-                  {{ $t('components.celestiaAtlas.survey.installed') }}
-                </dt>
-                <dd class="text-gray-100 break-words">{{ installedSummary }}</dd>
-                <dt class="text-gray-400">
-                  {{ $t('components.celestiaAtlas.survey.free_space') }}
-                </dt>
-                <dd class="text-gray-100">{{ formatSurveyBytes(surveyStore.freeBytes) }}</dd>
-              </dl>
-
-              <div v-if="surveyStore.isRunning" class="grid gap-2">
-                <div class="h-2 overflow-hidden rounded-full bg-gray-700">
-                  <div
-                    class="h-full bg-cyan-500 transition-[width] duration-300"
-                    :style="{ width: `${surveyStore.progressFraction * 100}%` }"
-                  />
-                </div>
-                <p class="text-sm text-gray-200">
-                  {{
-                    $t('components.celestiaAtlas.survey.progress', {
-                      order: surveyStore.job.currentOrder,
-                      done: surveyStore.job.tilesDone,
-                      total: surveyStore.job.tilesTotal,
-                      size: formatSurveyBytes(surveyStore.job.bytesDownloaded),
-                    })
-                  }}
-                </p>
-                <button
-                  class="tns-btn-secondary w-auto! justify-self-start"
-                  type="button"
-                  :disabled="surveyStore.busy"
-                  @click="surveyStore.cancelDownload()"
-                >
-                  {{ $t('common.cancel') }}
-                </button>
-              </div>
-
-              <template v-else>
-                <p v-if="jobOutcomeMessage" class="text-sm" :class="jobOutcomeClass">
-                  {{ jobOutcomeMessage }}
-                </p>
-                <p v-if="surveyStore.legacyFormat" class="text-sm text-yellow-300">
-                  {{ $t('components.celestiaAtlas.survey.legacy_format') }}
-                </p>
-
-                <label class="grid gap-1" for="dssSurveyTargetOrder">
-                  <span class="text-sm text-gray-300">
-                    {{ $t('components.celestiaAtlas.survey.target_order') }}
-                  </span>
-                  <select
-                    id="dssSurveyTargetOrder"
-                    v-model.number="selectedOrder"
-                    class="tns-select"
-                  >
-                    <option
-                      v-for="option in surveyStore.orderOptions"
-                      :key="option.order"
-                      :value="option.order"
-                      :disabled="option.installed"
-                    >
-                      {{ orderOptionLabel(option) }}
-                    </option>
-                  </select>
-                </label>
-
-                <p v-if="!hasEnoughSpace" class="text-xs text-red-300">
-                  {{
-                    $t('components.celestiaAtlas.survey.not_enough_space', {
-                      needed: formatSurveyBytes(selectedRequiredBytes),
-                      free: formatSurveyBytes(surveyStore.freeBytes),
-                    })
-                  }}
-                </p>
-
-                <div class="flex flex-wrap gap-2">
-                  <button
-                    class="tns-btn-primary w-auto!"
-                    type="button"
-                    :disabled="!canDownload"
-                    @click="startSurveyDownload"
-                  >
-                    {{ $t(downloadButtonKey) }}
-                  </button>
-                </div>
-
-                <div v-if="surveyStore.hasAnyData" class="grid gap-2 border-t border-gray-600 pt-3">
-                  <label class="grid gap-1" for="dssSurveyDeleteTarget">
-                    <span class="text-sm text-gray-300">
-                      {{ $t('components.celestiaAtlas.survey.delete_target') }}
-                    </span>
-                    <select id="dssSurveyDeleteTarget" v-model="deleteKeepOrder" class="tns-select">
-                      <option
-                        v-for="option in deleteOptions"
-                        :key="String(option.keepOrder)"
-                        :value="option.keepOrder"
-                      >
-                        {{ option.label }}
-                      </option>
-                    </select>
-                  </label>
-                  <button
-                    class="tns-btn-danger w-auto! justify-self-start flex items-center gap-2"
-                    type="button"
-                    :disabled="surveyStore.busy"
-                    @click="showDeleteConfirm = true"
-                  >
-                    <ArrowPathIcon v-if="deleting" class="h-4 w-4 animate-spin" />
-                    {{ $t('common.delete') }}
-                  </button>
-                </div>
-              </template>
-
-              <p v-if="surveyStore.actionError" class="text-xs text-red-300">
-                {{ surveyStore.actionError }}
-              </p>
-
-              <p class="text-xs leading-5 text-gray-500">
-                {{ $t('components.celestiaAtlas.survey.terms') }}
-                <a
-                  class="text-cyan-500 hover:underline"
-                  href="https://archive.stsci.edu/dss/copyright.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {{ $t('components.celestiaAtlas.survey.terms_link') }}
-                </a>
-              </p>
-            </template>
           </div>
+          <AtlasSurveyDownload :key="activeSurveyId" :survey-id="activeSurveyId" />
         </div>
 
         <div v-else-if="activeTab === 'catalogs'" class="grid gap-3" role="tabpanel">
@@ -423,16 +287,16 @@
           />
           <div class="grid gap-3">
             <div>
-              <p class="text-gray-200 font-medium">
+              <p class="text-content font-medium">
                 {{ $t('components.celestiaAtlas.settings.brightness_filters') }}
               </p>
-              <p class="text-xs text-gray-400">
+              <p class="text-xs text-content-muted">
                 {{ $t('components.celestiaAtlas.settings.magnitude_limit_hint') }}
               </p>
             </div>
 
             <label class="grid gap-1" for="starMagnitudeLimit">
-              <span class="flex justify-between gap-2 text-sm text-gray-300">
+              <span class="flex justify-between gap-2 text-sm text-content">
                 <span>{{ $t('components.celestiaAtlas.settings.star_magnitude_limit') }}</span>
                 <output>{{ formatMagnitudeLimit(starMagnitudeLimit) }}</output>
               </span>
@@ -443,12 +307,12 @@
                 min="-2"
                 max="20"
                 step="0.1"
-                class="w-full h-11 accent-cyan-500"
+                class="w-full h-11 accent-accent-action"
               />
             </label>
 
             <label class="grid gap-1" for="galaxyMagnitudeLimit">
-              <span class="flex justify-between gap-2 text-sm text-gray-300">
+              <span class="flex justify-between gap-2 text-sm text-content">
                 <span>{{ $t('components.celestiaAtlas.settings.galaxy_magnitude_limit') }}</span>
                 <output>{{ formatMagnitudeLimit(galaxyMagnitudeLimit) }}</output>
               </span>
@@ -459,12 +323,12 @@
                 min="-2"
                 max="30"
                 step="0.5"
-                class="w-full h-11 accent-cyan-500"
+                class="w-full h-11 accent-accent-action"
               />
             </label>
 
             <label class="grid gap-1" for="deepSkyMagnitudeLimit">
-              <span class="flex justify-between gap-2 text-sm text-gray-300">
+              <span class="flex justify-between gap-2 text-sm text-content">
                 <span>{{ $t('components.celestiaAtlas.settings.dso_magnitude_limit') }}</span>
                 <output>{{ formatMagnitudeLimit(deepSkyMagnitudeLimit) }}</output>
               </span>
@@ -475,7 +339,7 @@
                 min="-2"
                 max="30"
                 step="0.5"
-                class="w-full h-11 accent-cyan-500"
+                class="w-full h-11 accent-accent-action"
               />
             </label>
           </div>
@@ -483,10 +347,10 @@
             class="grid min-h-24 w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t border-line pt-3"
           >
             <div class="min-w-0 max-w-full">
-              <div class="block break-words whitespace-normal text-gray-300">
+              <div class="block break-words whitespace-normal text-content">
                 {{ $t('components.celestiaAtlas.settings.comet_data_title') }}
               </div>
-              <p class="mt-1 max-w-full break-words whitespace-normal text-xs text-gray-400">
+              <p class="mt-1 max-w-full break-words whitespace-normal text-xs text-content-muted">
                 <template v-if="cometRefreshState === 'success'">
                   {{
                     $t('components.celestiaAtlas.settings.comet_data_updated', {
@@ -527,32 +391,6 @@
       </div>
     </template>
   </Modal>
-
-  <Modal
-    :show="showDeleteConfirm"
-    zIndex="z-[75]"
-    maxWidth="max-w-md"
-    @close="showDeleteConfirm = false"
-  >
-    <template #header>
-      <h2 class="text-lg font-bold text-red-500">
-        {{ $t('components.celestiaAtlas.survey.delete_confirm_title') }}
-      </h2>
-    </template>
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <p class="text-gray-300 text-sm">{{ deleteConfirmMessage }}</p>
-        <div class="flex gap-3 justify-end">
-          <button @click="showDeleteConfirm = false" class="tns-btn-secondary w-auto!">
-            {{ $t('common.cancel') }}
-          </button>
-          <button @click="confirmDeleteSurvey" class="tns-btn-danger w-auto!">
-            {{ $t('common.delete') }}
-          </button>
-        </div>
-      </div>
-    </template>
-  </Modal>
 </template>
 
 <script setup>
@@ -560,17 +398,22 @@ import { useSettingsStore } from '@/store/settingsStore';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import { watch, ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Cog6ToothIcon, ArrowPathIcon } from '@heroicons/vue/24/outline';
+import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import apiService from '@/services/apiService';
 import AtlasCatalogFilters from '@/components/celestiaAtlas/AtlasCatalogFilters.vue';
 import CelestiaAtlasAbout from '@/components/celestiaAtlas/CelestiaAtlasAbout.vue';
+import AtlasSurveyDownload from '@/components/celestiaAtlas/AtlasSurveyDownload.vue';
 import {
   BUNDLED_LANDSCAPE_KEYS,
   canonicalizeCelestiaAtlasDataUrl,
 } from '@/store/utils/celestiaAtlasSettingsMigration';
 import { useCelestiaAtlasSurveyStore } from '@/store/celestiaAtlasSurveyStore';
-import { formatSurveyBytes } from '@/utils/formatSurveyBytes';
+import {
+  SKY_SURVEY_IDS,
+  normalizeSkySurveyId,
+  skySurveyLocaleKey,
+} from '@/integrations/celestiaAtlas/offlineSkySurvey';
 
 defineProps({
   starCatalogueGroups: {
@@ -601,7 +444,15 @@ defineProps({
 defineEmits(['refresh-comets']);
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
-const surveyStore = useCelestiaAtlasSurveyStore();
+const activeSurveyId = computed(() =>
+  normalizeSkySurveyId(settingsStore.celestiaAtlas.skySurveySource)
+);
+const surveySource = computed({
+  get: () => activeSurveyId.value,
+  set: (id) => {
+    settingsStore.celestiaAtlas.skySurveySource = id;
+  },
+});
 const settingsVisible = ref(false);
 const landscapeSourceDirty = ref(false);
 const availableLandscapes = ref([]);
@@ -698,157 +549,7 @@ function toggleControls() {
     void fetchAvailableLandscapes();
   }
   if (opening) {
-    void surveyStore.refresh();
-  }
-}
-
-// --- DSS survey download -------------------------------------------------------------
-// The Atlas view owns the 2 s status poll; this section only reads the store and fires
-// the actions, so a closed dialog changes nothing about a running download.
-const selectedOrder = ref(null);
-
-// Default to the next order above the installed one; re-evaluated whenever the installed
-// order moves (download finished, survey deleted) so the selection never points at an
-// order that is already there.
-watch(
-  () => [surveyStore.installedOrder, surveyStore.loaded],
-  () => {
-    selectedOrder.value =
-      surveyStore.orderOptions.find((option) => !option.installed)?.order ?? null;
-  },
-  { immediate: true }
-);
-
-const installedSummary = computed(() => {
-  const installed = surveyStore.installedOrder;
-  const partial = surveyStore.status?.orders?.find(
-    (order) => !order.complete && Number(order.tilesPresent) > 0
-  );
-  const parts = [];
-  if (installed === null) {
-    parts.push(t('components.celestiaAtlas.survey.not_installed'));
-  } else {
-    parts.push(
-      t('components.celestiaAtlas.survey.installed_order', {
-        order: installed,
-        size: formatSurveyBytes(surveyStore.totalBytes),
-      })
-    );
-  }
-  if (partial) {
-    parts.push(
-      t('components.celestiaAtlas.survey.partial_order', {
-        order: partial.order,
-        percent: Math.round((partial.tilesPresent / partial.tileCount) * 100),
-      })
-    );
-  }
-  return parts.join(' · ');
-});
-
-const selectedRequiredBytes = computed(() =>
-  selectedOrder.value === null ? 0 : surveyStore.estimateMissingBytes(selectedOrder.value)
-);
-const hasEnoughSpace = computed(
-  () => selectedOrder.value === null || surveyStore.hasEnoughFreeSpace(selectedOrder.value)
-);
-const canDownload = computed(
-  () => selectedOrder.value !== null && hasEnoughSpace.value && !surveyStore.busy
-);
-
-const downloadButtonKey = computed(() => {
-  if (surveyStore.legacyFormat) return 'components.celestiaAtlas.survey.download_replace';
-  return surveyStore.hasPartialOrder
-    ? 'components.celestiaAtlas.survey.resume'
-    : 'components.celestiaAtlas.survey.download';
-});
-
-const jobOutcomeMessage = computed(() => {
-  const job = surveyStore.job;
-  if (!job || job.state === 'running') return '';
-  if (job.state === 'completed') {
-    return t('components.celestiaAtlas.survey.job_completed', { order: job.targetOrder });
-  }
-  if (job.state === 'cancelled') return t('components.celestiaAtlas.survey.job_cancelled');
-  if (job.state === 'failed') {
-    return t('components.celestiaAtlas.survey.job_failed', { message: job.error || '' });
-  }
-  return '';
-});
-const jobOutcomeClass = computed(() =>
-  surveyStore.job?.state === 'failed' ? 'text-red-300' : 'text-gray-300'
-);
-
-function orderName(order) {
-  return order === surveyStore.baseOrder
-    ? t('components.celestiaAtlas.survey.order_base', {
-        min: surveyStore.minOrder,
-        max: surveyStore.baseOrder,
-      })
-    : t('components.celestiaAtlas.survey.order_n', { order });
-}
-
-function orderOptionLabel(option) {
-  const name = orderName(option.order);
-  if (option.installed) return `${name} — ${t('components.celestiaAtlas.survey.option_installed')}`;
-  return `${name} — ${t('components.celestiaAtlas.survey.option_size', { size: formatSurveyBytes(option.missingBytes) })}`;
-}
-
-function startSurveyDownload() {
-  if (selectedOrder.value === null) return;
-  void surveyStore.startDownload(selectedOrder.value);
-}
-
-// --- Delete: keep everything up to a chosen order, or wipe the survey entirely -----------
-const deleteKeepOrder = ref(null);
-const showDeleteConfirm = ref(false);
-
-// Selectable "keep up to order X" choices between base and the order below the installed
-// one, plus "delete everything"; reset whenever the installed order moves so a stale choice
-// never lingers (e.g. picking "keep 4" after order 4 itself was just deleted).
-watch(
-  () => [surveyStore.installedOrder, surveyStore.baseOrder],
-  () => {
-    deleteKeepOrder.value = null;
-  },
-  { immediate: true }
-);
-
-const deleteOptions = computed(() => {
-  const installed = surveyStore.installedOrder;
-  const options = [];
-  if (installed !== null) {
-    for (let order = surveyStore.baseOrder; order < installed; order += 1) {
-      options.push({
-        keepOrder: order,
-        label: t('components.celestiaAtlas.survey.delete_keep_option', { name: orderName(order) }),
-      });
-    }
-  }
-  options.push({
-    keepOrder: null,
-    label: t('components.celestiaAtlas.survey.delete_all_option'),
-  });
-  return options;
-});
-
-const deleteConfirmMessage = computed(() => {
-  return deleteKeepOrder.value === null
-    ? t('components.celestiaAtlas.survey.delete_confirm')
-    : t('components.celestiaAtlas.survey.delete_confirm_keep', {
-        name: orderName(deleteKeepOrder.value),
-      });
-});
-
-const deleting = ref(false);
-
-async function confirmDeleteSurvey() {
-  showDeleteConfirm.value = false;
-  deleting.value = true;
-  try {
-    await surveyStore.deleteSurvey(deleteKeepOrder.value);
-  } finally {
-    deleting.value = false;
+    void useCelestiaAtlasSurveyStore(activeSurveyId.value).refresh();
   }
 }
 

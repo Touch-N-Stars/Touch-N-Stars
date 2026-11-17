@@ -26,6 +26,31 @@ export function zoomView(view, factor, anchor, bounds) {
   );
 }
 
+/**
+ * True when the view reaches the right end of the bounds - the live edge, while the
+ * bounds end now. The tolerance only absorbs rounding from the pixel-to-time mapping.
+ */
+export function endsAtLiveEdge(view, bounds, toleranceMs = 1000) {
+  return view.end >= bounds.end - toleranceMs;
+}
+
+/**
+ * A remembered view, fitted into the current bounds: the part of it that still lies
+ * inside them. `end: null` means "up to the end of the bounds", for a view that
+ * follows the live edge. Null when nothing is left - a range from an earlier session
+ * is dropped rather than moved onto the new one - and for anything that is not a view.
+ */
+export function restoreView(view, bounds) {
+  const end = view?.end === null ? bounds.end : view?.end;
+  if (!Number.isFinite(view?.start) || !Number.isFinite(end)) return null;
+  if (end <= view.start) return null;
+  if (end <= bounds.start || view.start >= bounds.end) return null;
+  return clampView(
+    { start: Math.max(view.start, bounds.start), end: Math.min(end, bounds.end) },
+    bounds
+  );
+}
+
 export function panView(view, deltaMs, bounds) {
   return clampView({ start: view.start + deltaMs, end: view.end + deltaMs }, bounds);
 }

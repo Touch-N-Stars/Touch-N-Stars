@@ -4,7 +4,7 @@
       :value="currentLevel"
       @change="updateSetting($event.target.value)"
       :class="[statusClass]"
-      class="tns-input w-full py-2"
+      class="tns-select"
     >
       <option v-for="level in availableLevels" :key="level" :value="level">{{ level }}</option>
     </select>

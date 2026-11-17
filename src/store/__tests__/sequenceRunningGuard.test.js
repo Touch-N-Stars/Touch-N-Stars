@@ -123,3 +123,13 @@ test('findById reaches items, triggers and conditions at any depth', () => {
   assert.equal(store.findById('gt')?.Status, 'CREATED');
   assert.equal(store.findById('nope'), undefined);
 });
+
+test('setDsoTarget refuses an Id that is not in the held tree instead of using index 0', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  const result = await store.setDsoTarget('unknown-dso', 'M31', 10.68, 41.27, 0);
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(calls, []);
+});

@@ -1,14 +1,14 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ raStr }} {{ decStr }}</span>
-      <span class="text-xs text-slate-500 font-mono">{{ displayPositionAngle }}°</span>
+      <span class="text-xs text-content-muted font-mono">{{ raStr }} {{ decStr }}</span>
+      <span class="text-xs text-content-faint font-mono">{{ displayPositionAngle }}°</span>
     </template>
 
     <template #editor="{ save }">
       <template v-if="!item.Inherited">
         <!-- RA -->
-        <div class="text-xs text-slate-400 font-medium">
+        <div class="text-xs text-content-muted font-medium">
           {{ $t('components.sequence.items.center.ra') }}
         </div>
         <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">
@@ -49,7 +49,7 @@
         </div>
 
         <!-- Dec -->
-        <div class="text-xs text-slate-400 font-medium pt-1">
+        <div class="text-xs text-content-muted font-medium pt-1">
           {{ $t('components.sequence.items.center.dec') }}
         </div>
         <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">
@@ -101,7 +101,7 @@
           @change="save('PositionAngle', $event)"
         />
       </template>
-      <div v-else class="text-xs text-blue-400/80">
+      <div v-else class="text-xs text-accent/80">
         {{ $t('components.sequence.items.center.inherited') }}
       </div>
     </template>

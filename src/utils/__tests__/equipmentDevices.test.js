@@ -9,10 +9,12 @@ installBrowserGlobals();
 const { apiStore } = await import('@/store/store');
 const apiService = (await import('@/services/apiService')).default;
 const {
+  DEVICE_MAP,
   apiActionForApiName,
   getIndiDriver,
   isHiddenIndiDriver,
   isOfflineDevice,
+  phd2ConnectBlockers,
   redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
@@ -296,4 +298,37 @@ test('redirectManualFilterWheel leaves other wheels alone', async () => {
   }
 
   assert.deepEqual(calls, []);
+});
+
+test('the guide camera slot maps like the camera, under its own profile section', () => {
+  assert.equal(apiActionForApiName('guidecamera'), 'guideCameraAction');
+  assert.deepEqual(DEVICE_MAP.guideCameraAction, {
+    section: 'GuideCameraSettings',
+    rescanKey: 'guideCamera',
+    idKey: 'Id',
+    indi: true,
+  });
+});
+
+test('PHD2 in PINS waits for the mount and a validated guide camera, nothing else does', () => {
+  const pins = { selectedGuider: 'PHD2', isPINS: true };
+  assert.deepEqual(phd2ConnectBlockers({ ...pins, mountConnected: true, guidecamOk: true }), []);
+  assert.deepEqual(phd2ConnectBlockers({ ...pins, mountConnected: false, guidecamOk: false }), [
+    'components.connectEquipment.guider.mountRequired',
+    'components.connectEquipment.guider.guideCamRequired',
+  ]);
+  assert.deepEqual(
+    phd2ConnectBlockers({ ...pins, isPINS: false, mountConnected: false, guidecamOk: false }),
+    [],
+    'NINA connects PHD2 itself'
+  );
+  assert.deepEqual(
+    phd2ConnectBlockers({
+      selectedGuider: 'Internal Guider',
+      isPINS: true,
+      mountConnected: false,
+      guidecamOk: false,
+    }),
+    []
+  );
 });

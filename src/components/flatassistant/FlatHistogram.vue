@@ -2,20 +2,20 @@
   <div class="mt-2 w-full">
     <canvas ref="canvasEl" class="block w-full rounded" style="height: 56px" />
     <div class="flex justify-between text-[10px] mt-0.5 px-0.5 select-none">
-      <span class="text-gray-500">0</span>
+      <span class="text-content-faint">0</span>
       <span
         v-if="flatsStore.currentADU !== null"
-        :class="inTolerance ? 'text-green-400' : 'text-yellow-400'"
+        :class="inTolerance ? 'text-status-ok' : 'text-status-warn'"
       >
         {{ flatsStore.currentADU.toLocaleString() }} ADU
       </span>
-      <span v-else class="text-green-400/80">
+      <span v-else class="text-status-ok/80">
         {{ $t('components.flatassistant.target') }}:
         {{ Math.round(flatsStore.histogramMean * 100) }}% ±{{
           Math.round(flatsStore.meanTolerance * 100)
         }}%
       </span>
-      <span class="text-gray-500">{{ MAX_ADU.toLocaleString() }}</span>
+      <span class="text-content-faint">{{ MAX_ADU.toLocaleString() }}</span>
     </div>
   </div>
 </template>
@@ -23,16 +23,11 @@
 <script setup>
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { useFlatassistantStore } from '@/store/flatassistantStore';
-import { apiStore } from '@/store/store';
 
 const flatsStore = useFlatassistantStore();
-const store = apiStore();
 const canvasEl = ref(null);
 
-const MAX_ADU = computed(() => {
-  const bits = store.cameraInfo?.BitDepth;
-  return bits > 0 ? (1 << bits) - 1 : 65535;
-});
+const MAX_ADU = computed(() => flatsStore.maxADU);
 const PADDING = 10;
 
 const inTolerance = computed(() => {

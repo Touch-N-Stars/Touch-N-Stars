@@ -4,6 +4,12 @@ This document is the current engineering contract for Celestia Atlas inside
 Touch'N'Stars. The longer [migration log](celestia-atlas-migration.md) preserves
 implementation history and evidence; it should not be used as the setup guide.
 
+## Survey performance
+
+The pinned renderer uses Allsky alone when its preview resolution meets the viewport pixel scale, with regular tiles as fallback if the mosaic is unavailable. WebGL detail tiles use Blob-to-ImageBitmap decoding where supported, avoiding canvas pixel readback; bitmap lifetime follows the decoded memory budget. The persistent Cache Storage entry limit is 4096 across all surveys, with batched maintenance in the standalone service worker. This is an entry limit, not a byte budget; browser quotas still apply.
+
+Chromium regression tests cover request suppression, bitmap cleanup, matching image orientation, unavailable-Allsky fallback, desktop/mobile gestures and offline continuity. Pixel 7 frame-time and heap improvements require repeating the physical-device profiling protocol.
+
 ## Ownership and dependency
 
 Touch'N'Stars owns the Vue UI, persistence, N.I.N.A. adapters, native lifecycle,

@@ -1,0 +1,10 @@
+{
+  "id": "guide-log-viewer",
+  "name": "Guide Log Viewer",
+  "description": "Review the guiding of past nights from the native guider's guide logs: night overview, zoomable guide graph, statistics, problems worth a look, periodic error and calibrations. Also opens PHD2 guide logs.",
+  "version": "1.0.0",
+  "author": "André Duffeck",
+  "defaultEnabled": true,
+  "enabled": true,
+  "isPins": true
+}

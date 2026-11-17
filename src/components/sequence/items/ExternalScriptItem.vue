@@ -1,23 +1,21 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono truncate">
+      <span class="text-xs text-content-muted font-mono truncate">
         {{ item.Script || $t('components.sequence.items.externalScript.notSet') }}
       </span>
     </template>
 
     <template #editor="{ save }">
       <div class="flex flex-col gap-1">
-        <label class="text-xs text-slate-400">{{
-          $t('components.sequence.items.externalScript.script')
-        }}</label>
+        <label class="tns-label">{{ $t('components.sequence.items.externalScript.script') }}</label>
         <!-- Full width instead of the usual seq-field-row: a script path with arguments is
              far longer than the 9-10rem the row layout leaves for an input. -->
         <div class="flex items-center gap-2">
           <TextInput
             :modelValue="item.Script ?? ''"
             :placeholder="$t('components.sequence.items.externalScript.placeholder')"
-            inputClass="w-full min-w-0 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs font-mono text-gray-200 placeholder-slate-500"
+            inputClass="tns-input-compact min-w-0 font-mono"
             @change="save('Script', $event)"
           />
           <button
@@ -28,7 +26,7 @@
             <FolderOpenIcon class="w-3.5 h-3.5" />
           </button>
         </div>
-        <p class="text-xs text-slate-500">
+        <p class="text-xs text-content-faint">
           {{ $t('components.sequence.items.externalScript.hint') }}
         </p>
       </div>

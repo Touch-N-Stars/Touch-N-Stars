@@ -34,20 +34,18 @@
         v-if="isLoadingImg && imageData"
         class="absolute inset-0 flex items-center justify-center bg-black/20 z-40"
       >
-        <div class="flex flex-col items-center text-white">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-2"></div>
-          <p class="text-sm">Loading image...</p>
+        <div class="flex flex-col items-center gap-2 text-white">
+          <Spinner size="lg" />
+          <p class="text-sm">{{ $t('common.loading') }}</p>
         </div>
       </div>
     </div>
 
     <!-- Loading Spinner when no image yet -->
     <div v-else-if="isLoadingImg" class="flex items-center justify-center w-full h-64">
-      <div class="flex flex-col items-center text-blue-500">
-        <div
-          class="w-12 h-12 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"
-        ></div>
-        <p class="text-sm mt-2">Loading image...</p>
+      <div class="flex flex-col items-center gap-2 text-accent">
+        <Spinner size="lg" />
+        <p class="text-sm">{{ $t('common.loading') }}</p>
       </div>
     </div>
 
@@ -68,6 +66,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import SequenceImage from '@/components/imageHistory/SequenceImage.vue';
 import ImageDeleteConfirm from '@/components/imageHistory/ImageDeleteConfirm.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { useImagetStore } from '@/store/imageStore';
 import { useImageHistoryDelete } from '@/composables/useImageHistoryDelete';
 import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';

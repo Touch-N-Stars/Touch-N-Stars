@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isWandererRotator" class="border border-gray-500 p-2 rounded-lg bg-gray-800/40">
+  <div v-if="isWandererRotator" class="border border-line-strong p-2 rounded-lg bg-surface-2/40">
     <NumberInputPicker
       v-model="backlashValue"
       :label="$t('components.rotator.settings.Backlash')"

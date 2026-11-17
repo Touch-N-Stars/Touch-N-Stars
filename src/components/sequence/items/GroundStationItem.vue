@@ -1,16 +1,16 @@
 <template>
   <ItemShell :item="item">
     <template v-if="summary" #summary>
-      <span class="text-xs text-slate-400 truncate">{{ summary }}</span>
+      <span class="text-xs text-content-muted truncate">{{ summary }}</span>
     </template>
 
     <template v-if="fields.length" #editor="{ save }">
       <template v-for="f in visibleFields" :key="f.key">
         <!-- Select -->
         <div v-if="f.type === 'select'" class="seq-field-row">
-          <label class="text-xs text-slate-400 shrink-0">{{ fieldLabel(f) }}</label>
+          <label class="tns-label shrink-0">{{ fieldLabel(f) }}</label>
           <select
-            class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+            class="tns-select-compact ml-auto w-36 md:w-40"
             :value="item[f.key]"
             @change="save(f.key, f.numeric ? Number($event.target.value) : $event.target.value)"
           >
@@ -34,13 +34,13 @@
 
         <!-- Boolean -->
         <div v-else-if="f.type === 'bool'" class="seq-field-row">
-          <label class="text-xs text-slate-400">{{ fieldLabel(f) }}</label>
+          <label class="tns-label">{{ fieldLabel(f) }}</label>
           <button
             class="ml-auto px-3 py-1 rounded text-xs font-medium border transition-colors"
             :class="
               item[f.key]
-                ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30'
-                : 'bg-slate-700/60 text-slate-400 border-slate-600 hover:bg-slate-700'
+                ? 'bg-accent/20 text-accent border-accent/40 hover:bg-accent/30'
+                : 'bg-surface-2 text-content-muted border-line-strong hover:bg-surface-3'
             "
             @click="save(f.key, !item[f.key])"
           >
@@ -52,10 +52,10 @@
 
         <!-- Textarea -->
         <div v-else-if="f.type === 'textarea'" class="seq-field-row items-start">
-          <label class="text-xs text-slate-400 shrink-0 mt-1">{{ fieldLabel(f) }}</label>
+          <label class="tns-label shrink-0 mt-1">{{ fieldLabel(f) }}</label>
           <TextAreaInput
             :modelValue="item[f.key] ?? ''"
-            inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200 resize-none"
+            inputClass="tns-input-compact ml-auto w-36 md:w-40 resize-none"
             :rows="3"
             @change="save(f.key, $event)"
           />
@@ -63,10 +63,10 @@
 
         <!-- Password -->
         <div v-else-if="f.type === 'password'" class="seq-field-row">
-          <label class="text-xs text-slate-400 shrink-0">{{ fieldLabel(f) }}</label>
+          <label class="tns-label shrink-0">{{ fieldLabel(f) }}</label>
           <input
             type="password"
-            class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+            class="tns-input-compact ml-auto w-36 md:w-40"
             :value="item[f.key] ?? ''"
             @change="save(f.key, $event.target.value)"
           />
@@ -74,10 +74,10 @@
 
         <!-- Text -->
         <div v-else class="seq-field-row">
-          <label class="text-xs text-slate-400 shrink-0">{{ fieldLabel(f) }}</label>
+          <label class="tns-label shrink-0">{{ fieldLabel(f) }}</label>
           <TextInput
             :modelValue="item[f.key] ?? ''"
-            inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+            inputClass="tns-input-compact ml-auto w-36 md:w-40"
             @change="save(f.key, $event)"
           />
         </div>

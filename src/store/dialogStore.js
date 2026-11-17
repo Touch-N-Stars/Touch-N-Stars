@@ -197,7 +197,10 @@ export const useDialogStore = defineStore('dialogStore', {
         signalRDialogService.setStatusCallback((status) => {
           console.log('[dialogStore] SignalR connection status:', status);
           this.isConnectedToSignalR = status === 'Connected' || status === 'Reconnected';
+          if (status === 'Reconnecting') this.dropDialogsBeforeReplay();
         });
+
+        this.dropDialogsBeforeReplay();
 
         // Connect. isConnectedToSignalR is driven exclusively by the status
         // callback above: connect() can resolve without a live connection when
@@ -209,6 +212,17 @@ export const useDialogStore = defineStore('dialogStore', {
         console.error('[dialogStore] Failed to establish SignalR connection:', error);
         this.isConnectedToSignalR = false;
       }
+    },
+
+    /**
+     * The dialog hub sends every active dialog on each connect, but a ClearDialog sent while
+     * the app was away is lost. Dropping the list before connecting leaves only live dialogs.
+     * Must run before the connection is up: the replay can arrive ahead of the Connected status.
+     */
+    dropDialogsBeforeReplay() {
+      this.dialogs = [];
+      this.slewAndCenterData = null;
+      this.meridianFlipData = null;
     } /**
      * Handle dialog update from SignalR
      */,
@@ -342,7 +356,9 @@ export const useDialogStore = defineStore('dialogStore', {
         this.dialogs = this.dialogs.filter((d) => d.ContentType !== contentType);
         console.log('[dialogStore] Plate Solving dialog closed and removed');
 
-        // 1. Send stop commands
+        // 1. Send stop commands. Only while slewing: an INDI abort also ends tracking, so
+        // closing the dialog during a solve or a sequence would stop the mount for good.
+        if (!store.mountIsSlewing) return;
         try {
           await apiService.slewStop();
           console.log('[dialogStore] Stop commands sent successfully');

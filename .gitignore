@@ -3,6 +3,14 @@ node_modules
 /dist
 /coverage/
 /.cache/
+
+# Generated Playwright state and test artifacts
+/.playwright-cli/
+/playwright-report/
+/blob-report/
+/test-results/
+/playwright/.cache/
+/playwright/.auth/
 /server/dist
 /server/build
 /server/static
@@ -42,7 +50,7 @@ resources/android/**/*
 src/plugins/pluginRegistry.js
 public/whats-new.json
 nul
-/.vs/Touch-N-Stars.slnx
+/.vs/
 tailwind.config.backup
 
 

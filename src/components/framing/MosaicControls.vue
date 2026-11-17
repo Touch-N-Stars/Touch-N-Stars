@@ -1,17 +1,15 @@
 <template>
-  <div
-    class="border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-4 space-y-3"
-  >
+  <div class="tns-card space-y-3">
     <!-- Header with toggle -->
     <!-- NINA Cache -->
     <div v-if="showNinaCache" class="flex items-center justify-between">
-      <span class="text-sm font-normal text-gray-300">{{
+      <span class="text-sm font-normal text-content">{{
         $t('components.framing.useNinaCache')
       }}</span>
       <controlUseNinaCache />
     </div>
     <div class="flex items-center justify-between">
-      <span class="text-sm font-normal text-gray-300">{{
+      <span class="text-sm font-normal text-content">{{
         $t('components.framing.mosaic.title')
       }}</span>
       <toggleButton
@@ -21,7 +19,7 @@
     </div>
 
     <!-- Settings — only when active -->
-    <div v-if="framingStore.isMosaicMode" class="space-y-3 pt-2 border-t border-gray-700/50">
+    <div v-if="framingStore.isMosaicMode" class="space-y-3 pt-2 border-t border-line/50">
       <NumberInputPicker
         v-model="framingStore.mosaicCols"
         :label="$t('components.framing.mosaic.columns')"
@@ -49,7 +47,7 @@
       <!-- Preserve Alignment toggle
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-1">
-          <span class="text-xs text-gray-300">{{
+          <span class="text-xs text-content">{{
             $t('components.framing.mosaic.preserveAlignment')
           }}</span>
           <infoModal
@@ -64,7 +62,7 @@
         />
       </div> -->
       <!-- Summary -->
-      <div class="text-xs text-gray-400 text-center pt-1">
+      <div class="text-xs text-content-muted text-center pt-1">
         {{ framingStore.mosaicCols }} × {{ framingStore.mosaicRows }} =
         {{ framingStore.mosaicCols * framingStore.mosaicRows }}
         {{ $t('components.framing.mosaic.panels') }}

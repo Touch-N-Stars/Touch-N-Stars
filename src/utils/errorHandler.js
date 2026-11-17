@@ -121,12 +121,15 @@ export function setupErrorHandler() {
 
         // Show toast for HTTP errors or API StatusCode errors (but not for HTTP 200 + StatusCode 200)
         // Skip toasts for HTTP 200 + StatusCode 200 (successful responses) and all 404s
+        // Callers probing a backend in the background (e.g. "is PHD2 running?") opt out
+        // of the toast via `suppressErrorToast` in the axios config; the log stays.
         if (
           (response.status >= 400 || statusCode >= 400) &&
           statusCode !== 404 &&
           statusCode !== 409 &&
           statusCode !== 500 &&
-          !isSuppressedUrl
+          !isSuppressedUrl &&
+          !response.config?.suppressErrorToast
         ) {
           showToast({
             type: isRealError ? 'error' : 'info',
@@ -183,8 +186,20 @@ export function setupErrorHandler() {
       let message;
       let category = 'NETWORK';
 
+      // A JSON error body carries the server's own reason (Error, ErrorCode); HTML or plain-text
+      // bodies from proxies and unknown routes do not. Some plugin controllers answer with
+      // lowercase keys ({ "error": "..." }).
+      const body = error.response?.data;
+      const serverBody = body && typeof body === 'object' && !Array.isArray(body) ? body : null;
+      const serverError =
+        serverBody?.Error ||
+        serverBody?.Message ||
+        serverBody?.error ||
+        serverBody?.message ||
+        null;
+
       if (status) {
-        message = `${method} request failed`;
+        message = serverError || `${method} request failed`;
         category = 'HTTP';
       } else {
         message = `Connection failed: ${error.message}`;
@@ -199,6 +214,7 @@ export function setupErrorHandler() {
         extra: {
           errorCode: error.code,
           errorMessage: error.message,
+          serverErrorCode: serverBody?.ErrorCode,
           timeout: error.config?.timeout,
         },
       });
@@ -214,14 +230,16 @@ export function setupErrorHandler() {
       */
 
       // Return a mock error response instead of rejecting
-      // This prevents the calling code from crashing
+      // This prevents the calling code from crashing. The server's body is kept so callers
+      // can show its reason and branch on its ErrorCode.
       return {
         data: {
           Response: '',
-          Error: message,
-          StatusCode: status || 500,
-          Success: false,
           Type: 'API',
+          ...serverBody,
+          Error: message,
+          StatusCode: serverBody?.StatusCode || status || 500,
+          Success: false,
         },
         status: status || 500,
         config: error.config,

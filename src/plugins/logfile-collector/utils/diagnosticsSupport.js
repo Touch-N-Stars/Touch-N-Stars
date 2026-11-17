@@ -3,6 +3,7 @@
 // per Windows user account and cannot be resolved from the frontend without backend support,
 // so the "last 10 NINA logs" feature is intentionally PINS-only for now.
 export const PINS_NINA_LOG_PATH = '/home/pi/.local/share/NINA/Logs';
+export const PINS_INTERNAL_GUIDER_LOG_PATH = '/home/pi/.local/share/NINA/InternalGuider/Logs';
 
 export const DIAGNOSTICS_STATUS = {
   IDLE: 'idle',

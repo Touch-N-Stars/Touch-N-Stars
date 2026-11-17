@@ -1,17 +1,17 @@
 <template>
   <ItemShell :item="item">
     <template v-if="item.Iterations > 0" #summary>
-      <span class="text-xs text-slate-400 font-mono"
+      <span class="text-xs text-content-muted font-mono"
         >{{ item.CompletedIterations ?? 0 }} / {{ item.Iterations }}</span
       >
     </template>
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{ $t('common.name') }}</label>
+        <label class="tns-label shrink-0">{{ $t('common.name') }}</label>
         <TextInput
           :modelValue="item.Name ?? ''"
-          inputClass="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          inputClass="tns-input-compact ml-auto w-36 md:w-40"
           @change="save('Name', $event)"
         />
       </div>

@@ -14,7 +14,7 @@
 
 <script setup>
 import { useI18n } from 'vue-i18n';
-import PinsLocalizationSettings from '@/components/settings/general/PinsLocalizationSettings.vue';
+import PinsLocalizationSettings from '@/components/pins/system/PinsLocalizationSettings.vue';
 
 const { t } = useI18n();
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div v-if="store.isPINS" class="flex items-center justify-between w-full">
     <div class="flex items-center gap-1">
-      <span class="text-sm font-medium text-gray-300">
+      <span class="text-sm font-medium text-content">
         {{ $t('components.guider.phd2.restoreCalibration') }}
       </span>
       <InfoModal
@@ -19,13 +19,16 @@
     <!-- Reconnect confirmation modal -->
     <Modal :show="showReconnectConfirm" @close="showReconnectConfirm = false" maxWidth="max-w-md">
       <template #header>
-        <h2 class="text-lg font-bold text-white" data-testid="restore-calibration-reconnect-title">
+        <h2
+          class="text-lg font-bold text-content"
+          data-testid="restore-calibration-reconnect-title"
+        >
           {{ $t('components.guider.phd2.restoreCalibrationReconnect.title') }}
         </h2>
       </template>
       <template #body>
         <div class="flex flex-col gap-4" data-testid="restore-calibration-reconnect-modal">
-          <p class="text-gray-300">
+          <p class="text-content">
             {{ $t('components.guider.phd2.restoreCalibrationReconnect.message') }}
           </p>
           <div class="flex gap-3 justify-end">

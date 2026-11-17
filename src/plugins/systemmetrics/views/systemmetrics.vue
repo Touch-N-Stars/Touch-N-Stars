@@ -131,6 +131,39 @@
           </article>
 
           <article
+            v-if="swapMetrics"
+            class="rounded-xl border border-gray-700 bg-gray-900/60 p-6 shadow-lg"
+          >
+            <header class="flex items-center justify-between">
+              <h2 class="text-lg font-semibold text-white">Swap</h2>
+              <span class="text-sm text-gray-400">{{ formatPercent(swapUsagePercent) }} used</span>
+            </header>
+            <div class="mt-4 h-3 rounded-full bg-gray-800">
+              <div
+                class="h-full rounded-full bg-violet-500 transition-all duration-500"
+                :style="{ width: percentToWidth(swapUsagePercent) }"
+              ></div>
+            </div>
+            <p v-if="swapMetrics.TotalBytes === 0" class="mt-4 text-sm text-gray-400">
+              Swap is disabled on this device.
+            </p>
+            <dl class="mt-4 space-y-2 text-sm text-gray-300">
+              <div class="flex justify-between">
+                <dt>Used</dt>
+                <dd>{{ formatBytes(swapMetrics.UsedBytes) }}</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt>Available</dt>
+                <dd>{{ formatBytes(swapMetrics.AvailableBytes) }}</dd>
+              </div>
+              <div class="flex justify-between text-gray-400">
+                <dt>Total</dt>
+                <dd>{{ formatBytes(swapMetrics.TotalBytes) }}</dd>
+              </div>
+            </dl>
+          </article>
+
+          <article
             v-if="systemTemperatureCelsius !== null"
             class="rounded-xl border border-gray-700 bg-gray-900/60 p-6 shadow-lg"
           >
@@ -352,6 +385,8 @@ const lastUpdatedText = computed(() => {
 });
 
 const cpuUsagePercent = computed(() => clampPercent(metrics.value?.CpuUsagePercent));
+const swapMetrics = computed(() => metrics.value?.Swap ?? null);
+const swapUsagePercent = computed(() => swapMetrics.value?.UsedPercent ?? 0);
 const memoryMetrics = computed(() => metrics.value?.Memory ?? null);
 const memoryUsagePercent = computed(() => clampPercent(memoryMetrics.value?.UsedPercent));
 const diskMetrics = computed(() => metrics.value?.Disks ?? []);

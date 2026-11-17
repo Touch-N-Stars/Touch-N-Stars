@@ -2,12 +2,45 @@ import { defineStore } from 'pinia';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
 import { useImagetStore } from './imageStore';
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, shallowRef, computed, watch, nextTick, onScopeDispose } from 'vue';
 import { timeSync } from '@/utils/timeSync';
 import { useSettingsStore } from './settingsStore';
 import { useMountStore } from './mountStore';
+import { useSequenceStore } from './sequenceStore';
+import { useToastStore } from './toastStore';
 import apiService from '@/services/apiService';
+import i18n from '@/i18n';
 import { positionAngleFromNinaPlateSolve } from '@/integrations/celestiaAtlas/positionAngle';
+import { isBackendRefusal, reportBackendRefusal, toastBackendError } from '@/utils/backendErrors';
+
+// Safety net for the wait between "exposure started" and "image download started" in
+// capturePhoto(). That download is normally triggered by the IMAGE-PREPARED event; when the
+// event is lost or the frame is skipped as unchanged, the capture button would spin forever.
+// After the exposure, NINA is asked whether the capture is done; two consecutive "done"
+// answers without a download (the second one leaves the event time to arrive) load the
+// image directly. The hard limit ends the wait even when NINA never reports the capture as
+// done; it counts from the end of the exposure and leaves room for slow hosts (a Pi needs
+// about 45 s to prepare and analyse a 26 MP frame).
+const CAPTURE_DONE_POLL_MS = 1000;
+const CAPTURE_DONE_CONFIRMATIONS = 2;
+const CAPTURE_HARD_LIMIT_MS = 90 * 1000;
+const CAPTURE_IN_PROGRESS = 'Capture already in progress';
+
+// How long after a camera connect the auto start waits for a payload that allows its actions.
+const AUTO_START_WINDOW_MS = 30 * 1000;
+const AUTO_START_KEY_PREFIX = 'camera_auto_start_';
+
+// A failed capture answers getResult with 500 "Capture failed: <reason>". Older ninaAPI versions
+// returned the previous image or "Unknown error" instead, so this never matches there.
+function isCaptureFailed(result) {
+  return result?.StatusCode === 500 && String(result.Error || '').startsWith('Capture failed');
+}
+
+// An aborted exposure (from this app, NINA or another client) also reports
+// "Capture failed: cancelled"; it ends the wait but is no error for the user.
+function isCaptureCancelled(result) {
+  return /cancel/i.test(String(result?.Error || ''));
+}
 
 export const useCameraStore = defineStore('cameraStore', () => {
   const framingStore = useFramingStore();
@@ -29,6 +62,8 @@ export const useCameraStore = defineStore('cameraStore', () => {
   const slewModal = ref(false);
   let countdownSessionId = 0; // Unique ID for each countdown session
   const cameraSettings = ref();
+  // Device settings of PINS' guide camera slot, same shape as cameraSettings.
+  const guideCameraSettings = ref();
 
   // Helper function to wait briefly
   function wait(ms) {
@@ -45,6 +80,17 @@ export const useCameraStore = defineStore('cameraStore', () => {
       console.log('[Camerastore] Camera settings: ', response.Response);
     } catch (error) {
       console.error(' [cameraStore]Error fetching camera settings:', error.message);
+    }
+  }
+
+  // Read the device settings of the guide camera slot (PINS only)
+  async function readGuideCameraSettings() {
+    if (!store.guideCameraInfo.Connected) return;
+    try {
+      const response = await apiService.guideCameraAction('get-settings');
+      if (response?.Success) guideCameraSettings.value = response.Response;
+    } catch (error) {
+      console.error('[cameraStore] Error fetching guide camera settings:', error.message);
     }
   }
 
@@ -107,6 +153,7 @@ export const useCameraStore = defineStore('cameraStore', () => {
       }, COOLING_PENDING_MS);
     }
   }
+  onScopeDispose(() => clearTimeout(coolingPendingTimer));
 
   function devicePollMs() {
     return (store.profileInfo?.ApplicationSettings?.DevicePollingInterval ?? 2) * 1000;
@@ -262,6 +309,8 @@ export const useCameraStore = defineStore('cameraStore', () => {
         // may predate the command.
         rampDirection.value = null;
       }
+
+      runAutoStart(info);
     }
   );
 
@@ -303,7 +352,9 @@ export const useCameraStore = defineStore('cameraStore', () => {
       // ninaAPI, see waitForRampIdle() for why the start has to wait.
       await apiService.stopCameraWarming();
       await waitForRampIdle();
-      await apiService.startCameraCooling(temperature, minutes ?? 10);
+      const response = await apiService.startCameraCooling(temperature, minutes ?? 10);
+      if (isBackendRefusal(response)) resetCoolingIntent();
+      return response;
     } catch (error) {
       resetCoolingIntent();
       throw error;
@@ -345,6 +396,163 @@ export const useCameraStore = defineStore('cameraStore', () => {
     holdCaptureAt = Date.now() + devicePollMs() + 1000;
   }
 
+  // --- Auto start on connect -------------------------------------------------
+  //
+  // Opt-in: cools the camera and, when chosen, switches the dew heater on after
+  // a camera connect. apiStore only calls armAutoStart() for a connect it saw
+  // happen, never for a camera that was already connected when the app attached
+  // to the backend: opening the app must not command the camera.
+  //
+  // The choice belongs to one profile on one backend, so it lives in a backend
+  // setting keyed by the profile id and never in the persisted settingsStore:
+  // that one is shared by all instances on this device, and profile ids can
+  // repeat between backends (cloned PINS images).
+  //
+  // The connect event arrives before the first camera payload and a driver may
+  // report its capabilities a moment after Connected, so the actions run from
+  // the cameraInfo watch once a payload allows them.
+  let autoStart = null; // { cool, dewHeater, deadline } | null
+  let autoStartGeneration = 0; // ends an armAutoStart() still waiting for the backend
+  let autoStartConfigLoad = 0; // only the newest load may write autoStartConfig
+
+  // Choice of the active profile for the settings UI; null until it is known.
+  const autoStartConfig = shallowRef(null); // { cool, dewHeater } | null
+
+  // null when the backend could not tell; a profile without an entry has it off.
+  async function readAutoStartConfig(profileId) {
+    try {
+      const response = await apiService.getSetting(`${AUTO_START_KEY_PREFIX}${profileId}`);
+      if (response?.StatusCode === 404) return { cool: false, dewHeater: false };
+      if (response?.Response?.Value === undefined) return null;
+      const { cool, dewHeater } = JSON.parse(response.Response.Value);
+      return { cool: cool === true, dewHeater: dewHeater === true };
+    } catch (error) {
+      console.warn('[cameraStore] Could not read the auto start setting:', error.message);
+      return null;
+    }
+  }
+
+  async function loadAutoStartConfig() {
+    const load = ++autoStartConfigLoad;
+    autoStartConfig.value = null;
+    const profileId = store.profileInfo?.Id;
+    if (!profileId) return;
+    const config = await readAutoStartConfig(profileId);
+    if (load === autoStartConfigLoad) autoStartConfig.value = config;
+  }
+
+  async function saveAutoStartConfig(patch) {
+    const previous = autoStartConfig.value;
+    const profileId = store.profileInfo?.Id;
+    if (!previous || !profileId) return;
+    const next = { ...previous, ...patch };
+    autoStartConfig.value = next;
+
+    const key = `${AUTO_START_KEY_PREFIX}${profileId}`;
+    const value = JSON.stringify(next);
+    try {
+      let response = await apiService.createSetting({ Key: key, Value: value });
+      if (response?.StatusCode === 409) response = await apiService.updateSetting(key, value);
+      if (!isBackendRefusal(response)) return;
+      toastBackendError(response, 'components.camera.autoStartSaveFailed');
+    } catch (error) {
+      toastBackendError({ Error: error.message }, 'components.camera.autoStartSaveFailed');
+    }
+    if (autoStartConfig.value === next) autoStartConfig.value = previous;
+  }
+
+  async function armAutoStart() {
+    const generation = ++autoStartGeneration;
+    // A profile switched elsewhere only shows up with the periodic refresh, and
+    // both this choice and the cool target depend on it.
+    await store.fetchProfilInfos();
+    const profileId = store.profileInfo?.Id;
+    const config = profileId ? await readAutoStartConfig(profileId) : null;
+    if (generation !== autoStartGeneration || !config?.cool) return;
+    autoStart = {
+      cool: true,
+      dewHeater: config.dewHeater,
+      deadline: Date.now() + AUTO_START_WINDOW_MS,
+    };
+    // The payload that allows the actions may have arrived during the reads.
+    runAutoStart(store.cameraInfo);
+  }
+
+  function runAutoStart(info) {
+    if (!autoStart) return;
+    // A running sequence owns the camera. sequenceRunning is only polled while
+    // the sequence page is open, so this cannot catch every run.
+    if (Date.now() >= autoStart.deadline || useSequenceStore().sequenceRunning) {
+      autoStart = null;
+      return;
+    }
+    if (!info.Connected) return;
+
+    let coolTarget = null;
+    if (autoStart.cool && info.CanSetTemperature) {
+      // A cooler that is already on stays as it is, whoever switched it on.
+      if (info.CoolerOn || isRampRunning.value || coolingPending.value) {
+        autoStart.cool = false;
+      } else if (Number.isFinite(targetTemp.value)) {
+        coolTarget = targetTemp.value;
+        autoStart.cool = false;
+      }
+    }
+
+    let startDewHeater = false;
+    if (autoStart.dewHeater && info.HasDewHeater) {
+      startDewHeater = !info.DewHeaterOn;
+      autoStart.dewHeater = false;
+    }
+
+    if (!autoStart.cool && !autoStart.dewHeater) autoStart = null;
+    if (coolTarget != null || startDewHeater) executeAutoStart(coolTarget, startDewHeater);
+  }
+
+  // A failure stays on screen: nobody pressed anything, so nobody is watching for it.
+  async function tryAutoAction(action, titleKey) {
+    try {
+      const response = await action();
+      if (!isBackendRefusal(response)) return true;
+      toastBackendError(response, titleKey, { autoClose: false });
+    } catch (error) {
+      toastBackendError({ Error: error.message }, titleKey, { autoClose: false });
+    }
+    return false;
+  }
+
+  // Hardware moved without a button press, so the user gets told, in one toast
+  // because a second one would replace the first.
+  async function executeAutoStart(coolTarget, startDewHeater) {
+    const t = i18n.global.t;
+    const started = [];
+    if (
+      coolTarget != null &&
+      (await tryAutoAction(
+        () => startCooling(coolTarget, store.profileInfo?.CameraSettings?.CoolingDuration),
+        'components.camera.autoCoolFailed'
+      ))
+    ) {
+      started.push(t('components.camera.autoCoolStarted', { temperature: coolTarget }));
+    }
+    if (
+      startDewHeater &&
+      (await tryAutoAction(
+        () => apiService.startStoppDewheater(true),
+        'components.camera.autoDewHeaterFailed'
+      ))
+    ) {
+      started.push(t('components.camera.autoDewHeaterStarted'));
+    }
+    if (started.length) {
+      useToastStore().showToast({
+        type: 'info',
+        title: t('components.camera.autoStartTitle'),
+        message: started.join(' '),
+      });
+    }
+  }
+
   // Start capture + image fetch
   async function capturePhoto(apiService, exposureTime, gain, solve = false) {
     if (exposureTime <= 0) {
@@ -362,18 +570,27 @@ export const useCameraStore = defineStore('cameraStore', () => {
     const mountSotre = useMountStore();
     const targetName = settingsStore.camera.snapshotTargetName;
 
+    // Taken before the exposure: the fallback in phase 1 may already have replaced it.
+    const previousImage = imageStore.imageData;
+
     try {
       // Phase 1: Start exposure (Server provides ExposureEndTime and IsExposing)
-      await apiService.startCapture(exposureTime, gain, solve, true, save, targetName);
-      isLoadingImage.value = true;
-      // This wait has no timeout, so it must honor aborts: resetCaptureState()
-      // (backend teardown) and abortExposure() set isAbort while we may be
-      // stuck here waiting for an exposure that will never report back.
-      while (!imageStore.isImageFetching) {
-        if (isAbort.value) return;
-        await wait(100);
-        //console.log('[cameraStore] Waiting for exposure to complete...');
+      const started = await apiService.startCapture(
+        exposureTime,
+        gain,
+        solve,
+        true,
+        save,
+        targetName
+      );
+      if (reportBackendRefusal(started, 'components.backendErrors.captureStart')) {
+        isLooping.value = false;
+        return;
       }
+      isLoadingImage.value = true;
+      // Must honor aborts: resetCaptureState() (backend teardown) and abortExposure() set
+      // isAbort while we may be waiting for an exposure that will never report back.
+      if (!(await waitForImageFetch(apiService, imageStore, exposureTime))) return;
 
       // Phase 2: Load image with timeout
       if (!isAbort.value) {
@@ -382,11 +599,14 @@ export const useCameraStore = defineStore('cameraStore', () => {
         // Wait for image or timeout
         let attempts = 0;
         const maxAttempts = 60;
-        const previousImage = imageStore.imageData;
 
         while (attempts < maxAttempts && !isAbort.value) {
           try {
             const resImageData = await apiService.getImageData();
+            if (isCaptureFailed(resImageData)) {
+              reportCaptureFailure(resImageData);
+              return;
+            }
 
             // Check if new image is available
             if (previousImage !== imageStore.imageData) {
@@ -419,19 +639,11 @@ export const useCameraStore = defineStore('cameraStore', () => {
           await wait(1000);
         }
 
-        try {
-          console.log('[cameraStore] Image successfully loaded');
-        } catch (error) {
-          console.error('[cameraStore] Image loading failed:', error.message);
-          if (!isAbort.value) {
-            alert('Image was not provided in time');
-          }
-        } finally {
-          // Clear timeout
-          if (loadingTimeout.value) {
-            clearTimeout(loadingTimeout.value);
-            loadingTimeout.value = null;
-          }
+        // The loop returns as soon as the image is there, so reaching this means it never came.
+        if (!isAbort.value) reportImageTimeout();
+        if (loadingTimeout.value) {
+          clearTimeout(loadingTimeout.value);
+          loadingTimeout.value = null;
         }
       }
     } catch (error) {
@@ -448,6 +660,64 @@ export const useCameraStore = defineStore('cameraStore', () => {
         console.log('[cameraStore] save value in loop: ', save);
       }
     }
+  }
+
+  /**
+   * Waits until the image download of the capture has started (see CAPTURE_DONE_POLL_MS).
+   * Returns false when the wait ended without an image: aborted or hard limit reached.
+   */
+  // Ends a loop as well: the next capture would most likely fail for the same reason.
+  function reportImageTimeout() {
+    console.error('[cameraStore] No image arrived for the capture');
+    const { t } = i18n.global;
+    useToastStore().showToast({
+      type: 'error',
+      title: t('components.camera.imageTimeoutTitle'),
+      message: t('components.camera.imageTimeout'),
+    });
+  }
+
+  function reportCaptureFailure(result) {
+    console.error('[cameraStore] Capture failed:', result.Error);
+    isLooping.value = false;
+    if (isAbort.value || isCaptureCancelled(result)) return;
+    toastBackendError(result, 'components.backendErrors.capture');
+  }
+
+  async function waitForImageFetch(apiService, imageStore, exposureTime) {
+    const startedAt = Date.now();
+    const exposureMs = exposureTime * 1000;
+    let lastCheck = 0;
+    let doneAnswers = 0;
+
+    while (!imageStore.isImageFetching) {
+      if (isAbort.value) return false;
+      const elapsed = Date.now() - startedAt;
+      if (elapsed > exposureMs + CAPTURE_HARD_LIMIT_MS) {
+        // A loop would only start the next capture into the same silence.
+        isLooping.value = false;
+        reportImageTimeout();
+        return false;
+      }
+
+      if (elapsed >= exposureMs && Date.now() - lastCheck >= CAPTURE_DONE_POLL_MS) {
+        lastCheck = Date.now();
+        const result = await apiService.getImageData().catch(() => null);
+        if (isCaptureFailed(result)) {
+          reportCaptureFailure(result);
+          return false;
+        }
+        const done = result?.Success === true && result.Response !== CAPTURE_IN_PROGRESS;
+        doneAnswers = done ? doneAnswers + 1 : 0;
+        if (doneAnswers >= CAPTURE_DONE_CONFIRMATIONS && !imageStore.isImageFetching) {
+          console.warn('[cameraStore] Capture done without IMAGE-PREPARED, loading the image');
+          await imageStore.getImage();
+          return true;
+        }
+      }
+      await wait(100);
+    }
+    return true;
   }
 
   /**
@@ -538,6 +808,10 @@ export const useCameraStore = defineStore('cameraStore', () => {
     readoutMode.value = 0;
     setCoolingPending(null);
     rampDirection.value = null;
+    autoStart = null;
+    autoStartGeneration++;
+    autoStartConfigLoad++;
+    autoStartConfig.value = null;
   }
 
   // Stop countdown (e.g. when app is paused)
@@ -674,6 +948,8 @@ export const useCameraStore = defineStore('cameraStore', () => {
     containerSize,
     slewModal,
     cameraSettings,
+    guideCameraSettings,
+    autoStartConfig,
 
     // Actions
     capturePhoto,
@@ -683,8 +959,12 @@ export const useCameraStore = defineStore('cameraStore', () => {
     stopCountdown,
     resetCaptureState,
     readSettings,
+    readGuideCameraSettings,
     startCooling,
     startWarming,
     cancelTempChange,
+    armAutoStart,
+    loadAutoStartConfig,
+    saveAutoStartConfig,
   };
 });

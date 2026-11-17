@@ -6,5 +6,11 @@
   "author": "Nico",
   "defaultEnabled": false,
   "enabled": true,
-  "isPins": false
+  "isPins": false,
+  "ninaPlugin": {
+    "name": "NINA.Plugin.NightSummary",
+    "aliases": ["Night Summary"],
+    "displayName": "Night Summary",
+    "pinsPackage": "pins-plugin-nightsummary"
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" :class="{ compact: compact }">
     <!-- Own positioning context for the parked overlay, so it covers the direction pad
          only and leaves the slew rate control below it usable. -->
     <div class="relative">
@@ -9,7 +9,13 @@
         <!-- Obere Reihe (Nord) -->
         <div></div>
         <button
-          :disabled="store.mountIsParked"
+          :disabled="
+            store.mountIsParked || !store.mountInfo?.Connected || !mountStore.wsIsConnected
+          "
+          type="button"
+          :aria-label="$t('luckycapture.mountNorth')"
+          @keydown="handleKeyDown($event, 'north')"
+          @keyup="handleKeyUp"
           @mousedown="sendCommand('north')"
           @mouseup="sendStop"
           @mouseleave="sendStop"
@@ -19,10 +25,10 @@
           @blur="sendStop"
           @contextmenu.prevent
           class="btn"
-          :class="mountStore.lastDirection === 'north' ? 'glow-green' : ''"
+          :class="buttonClass('north')"
         >
           <ArrowUpCircleIcon
-            :class="mountStore.lastDirection === 'north' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'north' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -30,7 +36,13 @@
 
         <!-- Mittlere Reihe (West, Stop, Ost) -->
         <button
-          :disabled="store.mountIsParked"
+          :disabled="
+            store.mountIsParked || !store.mountInfo?.Connected || !mountStore.wsIsConnected
+          "
+          type="button"
+          :aria-label="$t('luckycapture.mountWest')"
+          @keydown="handleKeyDown($event, 'west')"
+          @keyup="handleKeyUp"
           @mousedown="sendCommand('west')"
           @mouseup="sendStop"
           @mouseleave="sendStop"
@@ -40,22 +52,34 @@
           @blur="sendStop"
           @contextmenu.prevent
           class="btn"
-          :class="mountStore.lastDirection === 'west' ? 'glow-green' : ''"
+          :class="buttonClass('west')"
         >
           <ArrowLeftCircleIcon
-            :class="mountStore.lastDirection === 'west' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'west' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
         <!-- Deliberately not disabled while parked: an emergency stop must always get through. -->
-        <button @click="sendStop" class="btn btn-stop" :disabled="!mountStore.wsIsConnected">
+        <button
+          type="button"
+          @click="sendStop(true)"
+          :aria-label="$t('luckycapture.mountStop')"
+          class="btn btn-stop"
+          :disabled="!mountStore.wsIsConnected"
+        >
           <StopCircleIcon
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
-            :class="mountStore.lastDirection === '' ? 'text-red-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === '' ? 'text-status-danger' : 'text-content-muted'"
           />
         </button>
         <button
-          :disabled="store.mountIsParked"
+          :disabled="
+            store.mountIsParked || !store.mountInfo?.Connected || !mountStore.wsIsConnected
+          "
+          type="button"
+          :aria-label="$t('luckycapture.mountEast')"
+          @keydown="handleKeyDown($event, 'east')"
+          @keyup="handleKeyUp"
           @mousedown="sendCommand('east')"
           @mouseup="sendStop"
           @mouseleave="sendStop"
@@ -65,10 +89,10 @@
           @blur="sendStop"
           @contextmenu.prevent
           class="btn"
-          :class="mountStore.lastDirection === 'east' ? 'glow-green' : ''"
+          :class="buttonClass('east')"
         >
           <ArrowRightCircleIcon
-            :class="mountStore.lastDirection === 'east' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'east' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -76,7 +100,13 @@
         <!-- Untere Reihe (Süd) -->
         <div></div>
         <button
-          :disabled="store.mountIsParked"
+          :disabled="
+            store.mountIsParked || !store.mountInfo?.Connected || !mountStore.wsIsConnected
+          "
+          type="button"
+          :aria-label="$t('luckycapture.mountSouth')"
+          @keydown="handleKeyDown($event, 'south')"
+          @keyup="handleKeyUp"
           @mousedown="sendCommand('south')"
           @mouseup="sendStop"
           @mouseleave="sendStop"
@@ -86,10 +116,10 @@
           @blur="sendStop"
           @contextmenu.prevent
           class="btn"
-          :class="mountStore.lastDirection === 'south' ? 'glow-green' : ''"
+          :class="buttonClass('south')"
         >
           <ArrowDownCircleIcon
-            :class="mountStore.lastDirection === 'south' ? 'text-green-500' : 'text-gray-400'"
+            :class="mountStore.lastDirection === 'south' ? 'text-status-ok' : 'text-content-muted'"
             class="w-8 h-8 sm:w-12 sm:h-12 move-axis-icon"
           />
         </button>
@@ -98,7 +128,7 @@
            connecting overlay below, which keeps its z-50 precedence on the outer container. -->
       <div
         v-if="store.mountIsParked && mountStore.wsIsConnected"
-        class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40 pointer-events-none"
+        class="absolute inset-0 bg-surface-1/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-40 pointer-events-none"
       >
         <!-- The backdrop stays click-through so the always-enabled stop button below it
              keeps working; the direction buttons underneath are disabled anyway. -->
@@ -115,27 +145,29 @@
       </div>
     </div>
     <div
-      class="flex flex-col bg-gray-900/80 w-full border border-gray-300 p-1 sm:p-2 mt-1 rounded-xl gap-1"
+      class="flex flex-col bg-surface-1/80 w-full border border-line-strong p-1 sm:p-2 mt-1 rounded-xl gap-1"
     >
       <SetSlewRate v-if="!store.isPINS" />
       <setSlewRatePins v-else />
     </div>
+    <p v-if="commandError" class="command-error" role="alert">{{ commandError }}</p>
     <!-- Loading Overlay -->
     <div
       v-if="!mountStore.wsIsConnected"
-      class="absolute inset-0 bg-gray-900/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-50"
+      class="absolute inset-0 bg-surface-1/70 backdrop-blur-sm flex items-center justify-center rounded-xl z-50"
     >
       <div class="flex flex-col items-center space-y-3">
         <!-- Spinner -->
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-500"></div>
-        <p class="text-gray-300 text-sm">Connecting...</p>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+        <p class="text-content text-sm">{{ $t('luckycapture.mountConnecting') }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import websocketMountControl from '@/services/websocketMountControl';
 import { useMountStore } from '@/store/mountStore';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -152,6 +184,18 @@ import {
 } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 
+const props = defineProps({
+  compact: Boolean,
+  // Directions to point out to the user, e.g. ['east', 'south'] for a guided move.
+  highlight: { type: Array, default: () => [] },
+});
+
+function buttonClass(direction) {
+  if (mountStore.lastDirection === direction) return 'glow-green';
+  return props.highlight.includes(direction) ? 'highlight-move' : '';
+}
+const { t } = useI18n();
+const commandError = ref('');
 const mountStore = useMountStore();
 const store = apiStore();
 const settingsStore = useSettingsStore();
@@ -166,10 +210,13 @@ const sendCommand = (direction) => {
     return;
   }
 
-  if (store.mountIsParked) {
+  if (store.mountIsParked || !store.mountInfo?.Connected) {
     console.warn('Mount is parked, ignoring move command.');
     return;
   }
+
+  if (mountStore.lastDirection === direction) return;
+  if (mountStore.lastDirection) sendStop();
 
   // Stop a still-running interval before starting a new one
   if (commandInterval) {
@@ -178,6 +225,7 @@ const sendCommand = (direction) => {
     console.log('Previous command interval cleared before starting new one');
   }
 
+  commandError.value = '';
   mountStore.lastDirection = direction;
 
   const sendMoveMessage = () => {
@@ -190,7 +238,7 @@ const sendCommand = (direction) => {
 
     // A sequence can park the mount while a button is still held down. Without this the
     // repeat would keep firing into the void until the 30s failsafe.
-    if (store.mountIsParked) {
+    if (store.mountIsParked || !store.mountInfo?.Connected) {
       console.warn('Mount parked during command, stopping.');
       sendStop();
       return;
@@ -247,10 +295,10 @@ const handleTouchEnd = (event) => {
   sendStop();
 };
 
-const sendStop = () => {
+const sendStop = (force = false) => {
   console.log('sendStop called');
 
-  if (!mountStore.lastDirection) {
+  if (!mountStore.lastDirection && !(force === true && store.isPINS)) {
     console.log('No previous command to stop.');
     return;
   }
@@ -285,7 +333,34 @@ const sendStop = () => {
   mountStore.lastDirection = '';
 };
 
+function handleKeyDown(event, direction) {
+  if (![' ', 'Enter'].includes(event.key)) return;
+  event.preventDefault();
+  if (!event.repeat) sendCommand(direction);
+}
+function handleKeyUp(event) {
+  if (![' ', 'Enter'].includes(event.key)) return;
+  event.preventDefault();
+  sendStop();
+}
+const handleGlobalStop = () => sendStop();
+const handleEscape = (event) => {
+  if (event.key === 'Escape') sendStop(true);
+};
+watch(
+  () => [store.mountInfo?.Connected, store.mountIsParked, mountStore.wsIsConnected],
+  () => {
+    if (!store.mountInfo?.Connected || store.mountIsParked || !mountStore.wsIsConnected) sendStop();
+  }
+);
+
 onMounted(() => {
+  websocketMountControl.setMessageCallback((message) => {
+    if (message.Success === false) {
+      commandError.value = message.Error || t('luckycapture.mountCommandFailed');
+      sendStop();
+    }
+  });
   websocketMountControl.setStatusCallback((status) => {
     console.log('Status updated:', status);
     if (status === 'connected') {
@@ -295,19 +370,17 @@ onMounted(() => {
   websocketMountControl.connect();
 
   // Globaler Event-Listener für Sicherheit
-  const handleGlobalStop = () => {
-    if (mountStore.lastDirection) {
-      console.log('Global emergency stop triggered');
-      sendStop();
-    }
-  };
-
   document.addEventListener('visibilitychange', handleGlobalStop);
   window.addEventListener('blur', handleGlobalStop);
   window.addEventListener('pagehide', handleGlobalStop);
+  window.addEventListener('keydown', handleEscape);
 });
 
 onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', handleGlobalStop);
+  window.removeEventListener('blur', handleGlobalStop);
+  window.removeEventListener('pagehide', handleGlobalStop);
+  window.removeEventListener('keydown', handleEscape);
   // Sicherheits-Stop beim Unmount
   if (mountStore.lastDirection) {
     sendStop();
@@ -332,6 +405,50 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+.command-error {
+  grid-column: 1 / -1;
+  color: #ffb4aa;
+  overflow-wrap: anywhere;
+}
+
+.highlight-move {
+  box-shadow: 0 0 0 3px var(--color-status-warn);
+  animation: highlight-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes highlight-pulse {
+  50% {
+    /* --color-status-warn at 40%; color-mix() needs iOS 16.2, the app targets iOS 15 */
+    box-shadow: 0 0 0 6px rgb(251 191 36 / 0.4);
+  }
+}
+
+.compact {
+  display: grid;
+  grid-template-columns: 156px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+.compact .move-axis-grid {
+  width: 156px;
+  gap: 4px;
+  padding: 0;
+}
+.compact .btn {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 6px;
+  box-shadow: none;
+}
+.compact .move-axis-icon {
+  width: 32px;
+  height: 32px;
+}
+.btn:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 2px;
+}
+
 .move-axis-grid {
   user-select: none;
   -webkit-user-select: none;

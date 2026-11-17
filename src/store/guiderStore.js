@@ -33,10 +33,8 @@ export const useGuiderStore = defineStore('guiderStore', {
     phd2CamerasLoading: false,
 
     // PHD2 Mount State (PINS)
-    phd2Mounts: [],
     phd2SelectedMountIndex: null,
     phd2SelectedMountName: null,
-    phd2MountsLoading: false,
 
     // PHD2 Focal Length State (PINS)
     phd2FocalLength: null,
@@ -322,24 +320,6 @@ export const useGuiderStore = defineStore('guiderStore', {
       }
     },
 
-    async setPHD2Camera(index) {
-      if (this.isDarkLibraryBuildActive) {
-        console.warn('PHD2 dark library build active – aborting setPHD2Camera');
-        return;
-      }
-      try {
-        const response = await apiPinsService.setPHD2SelectedCamera(index);
-        if (response.Success && response.Response) {
-          this.phd2SelectedCameraIndex = response.Response.Index;
-          this.phd2SelectedCameraName = response.Response.Name;
-          return response;
-        }
-      } catch (error) {
-        console.error('Error setting PHD2 camera:', error);
-        throw error;
-      }
-    },
-
     async refreshPHD2SelectedCamera() {
       const store = apiStore();
       if (!store.isPINS) return;
@@ -355,42 +335,6 @@ export const useGuiderStore = defineStore('guiderStore', {
     },
 
     // PHD2 Mount Actions (PINS)
-    async fetchPHD2Mounts() {
-      const store = apiStore();
-      if (!store.isPINS) return;
-      this.phd2MountsLoading = true;
-      try {
-        const response = await apiPinsService.getPHD2MountList();
-        if (response.Success && response.Response) {
-          this.phd2Mounts = response.Response.Mounts;
-          this.phd2SelectedMountIndex = response.Response.SelectedIndex;
-          this.phd2SelectedMountName = response.Response.Mounts[response.Response.SelectedIndex];
-        }
-      } catch (error) {
-        console.error('Error fetching PHD2 mounts:', error);
-      } finally {
-        this.phd2MountsLoading = false;
-      }
-    },
-
-    async setPHD2Mount(index) {
-      if (this.isDarkLibraryBuildActive) {
-        console.warn('PHD2 dark library build active – aborting setPHD2Mount');
-        return;
-      }
-      try {
-        const response = await apiPinsService.setPHD2SelectedMount(index);
-        if (response.Success && response.Response) {
-          this.phd2SelectedMountIndex = response.Response.Index;
-          this.phd2SelectedMountName = response.Response.Name;
-          return response;
-        }
-      } catch (error) {
-        console.error('Error setting PHD2 mount:', error);
-        throw error;
-      }
-    },
-
     async refreshPHD2SelectedMount() {
       const store = apiStore();
       if (!store.isPINS) return;

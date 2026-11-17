@@ -1,24 +1,28 @@
 <template>
-  <!-- @container: every nesting level costs ~98px of fixed chrome (padding, drag handle,
-       chevron, more-menu), so a deeply nested item can be left with well under 100px for its
-       name and summary. Below 16rem the chrome shrinks to give that space back. Safe despite
-       the draggables below: they all set fallbackOnBody, so the Sortable ghost is appended to
-       document.body and is not affected by the containing block container-type creates. -->
   <div
     class="@container rounded-lg border transition-all duration-200"
     :class="[borderClass, hasChildren && depth > 0 ? depthLeftBorder : '', activeSectionRing]"
   >
+    <!-- Keep this comment inside the root element: a root-level comment turns the template
+         into a Fragment in dev builds, and vuedraggable then attaches its item context to
+         the fragment anchor instead of this div ("this.context is null" on drag start).
+
+         @container: every nesting level costs ~98px of fixed chrome (padding, drag handle,
+         chevron, more-menu), so a deeply nested item can be left with well under 100px for its
+         name and summary. Below 16rem the chrome shrinks to give that space back. Safe despite
+         the draggables below: they all set fallbackOnBody, so the Sortable ghost is appended to
+         document.body and is not affected by the containing block container-type creates. -->
     <!-- Item header row -->
     <div class="flex items-center gap-1.5 px-2 py-2 @max-[16rem]:gap-1 @max-[16rem]:px-1">
       <!-- Drag handle. Sortable picks the handle up by the .drag-handle class, so dropping
            the class is what actually stops a drag of this single row while its siblings
            stay draggable. -->
       <span
-        class="shrink-0 p-1 text-slate-600 transition-colors touch-none @max-[16rem]:p-0.5"
+        class="shrink-0 p-1 text-content-faint transition-colors touch-none @max-[16rem]:p-0.5"
         :class="
           dragDisabled
             ? 'cursor-not-allowed opacity-40'
-            : 'drag-handle cursor-grab active:cursor-grabbing hover:text-slate-400'
+            : 'drag-handle cursor-grab active:cursor-grabbing hover:text-content-muted'
         "
         :title="
           isRunning ? $t('components.sequence.runningLocked') : $t('components.sequence.move')
@@ -34,11 +38,11 @@
       <!-- Collapse chevron -->
       <button
         v-if="hasChildren"
-        class="shrink-0 p-0.5 rounded hover:bg-slate-600/40 transition-colors"
+        class="shrink-0 p-0.5 rounded hover:bg-surface-3 transition-colors"
         @click.stop="collapsed = !collapsed"
       >
         <ChevronRightIcon
-          class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200"
+          class="w-3.5 h-3.5 text-content-muted transition-transform duration-200"
           :class="{ 'rotate-90': !collapsed }"
         />
       </button>
@@ -51,7 +55,7 @@
       <!-- More menu -->
       <div class="shrink-0" ref="moreRef">
         <button
-          class="p-1 rounded text-slate-500 hover:text-slate-300 hover:bg-slate-600/40 transition-colors @max-[16rem]:p-0.5"
+          class="p-1 rounded text-content-faint hover:text-content-muted hover:bg-surface-3 transition-colors @max-[16rem]:p-0.5"
           :title="$t('components.sequence.more')"
           :disabled="isLocked"
           @click.stop="toggleMore"
@@ -61,11 +65,11 @@
         <Teleport to="body">
           <div
             v-if="moreOpen"
-            class="fixed z-[9999] bg-gray-800 border border-slate-600 rounded-lg shadow-xl py-1 min-w-max"
+            class="fixed z-top bg-surface-1 border border-line-strong rounded-lg shadow-xl py-1 min-w-max"
             :style="moreStyle"
             @click.stop
           >
-            <p v-if="isRunning" class="px-3 py-1 text-xs text-slate-500 max-w-56">
+            <p v-if="isRunning" class="px-3 py-1 text-xs text-content-faint max-w-56">
               {{ $t('components.sequence.runningLocked') }}
             </p>
             <button class="menu-item" :disabled="isLocked" @click="doAction('duplicate')">
@@ -89,9 +93,9 @@
             <button class="menu-item" :disabled="isLocked || isRunning" @click="doAction('reset')">
               <ArrowPathIcon class="w-4 h-4" /> {{ $t('components.sequence.resetStatus') }}
             </button>
-            <div class="border-t border-slate-700 my-1" />
+            <div class="border-t border-line my-1" />
             <button
-              class="menu-item text-red-400 hover:text-red-300 hover:bg-red-900/20"
+              class="menu-item text-status-danger! hover:bg-status-danger/10!"
               :disabled="isLocked || isRunning"
               @click="doAction('remove')"
             >
@@ -115,7 +119,8 @@
         class="mb-1.5"
       />
 
-      <!-- Triggers -->
+      <!-- Triggers (cyan), conditions (amber) and instructions (blue) keep their own colors:
+           they tell the three kinds of list apart, which the design tokens have no slot for. -->
       <div
         v-if="item.Triggers !== undefined"
         class="mb-1.5 rounded-lg p-1.5 space-y-1 transition-all duration-200 @max-[16rem]:p-1"
@@ -135,9 +140,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1"
+          :class="dropZoneClass(item.Triggers)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onSiblingDragEnd(evt, item.Triggers)"
+          :group="dragGroup('triggers', canAdd)"
+          @change="(evt) => store.applyDrop(evt, item.Triggers, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem
@@ -179,9 +186,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1"
+          :class="dropZoneClass(item.Conditions)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onSiblingDragEnd(evt, item.Conditions)"
+          :group="dragGroup('conditions', canAdd)"
+          @change="(evt) => store.applyDrop(evt, item.Conditions, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem
@@ -218,9 +227,11 @@
           ghost-class="opacity-30"
           :force-fallback="true"
           class="space-y-1.5"
+          :class="dropZoneClass(item.Items)"
           :fallbackOnBody="true"
           :disabled="isLocked"
-          @end="(evt) => onChildDragEnd(evt)"
+          :group="dragGroup('items', canAddItems)"
+          @change="(evt) => store.applyDrop(evt, item.Items, item.Id)"
         >
           <template #item="{ element }">
             <SequenceItem :item="element" :siblings="item.Items" :depth="depth + 1" />
@@ -229,7 +240,7 @@
 
         <!-- Add item button at bottom, centered -->
         <div
-          v-if="item.Items !== undefined && canAdd && !isLocked"
+          v-if="item.Items !== undefined && canAddItems && !isLocked"
           class="flex justify-center mt-2"
         >
           <AddTypeButton
@@ -265,7 +276,14 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { ITEM_COMPONENTS, GenericItem } from './items/index.js';
 import { displayStatus, isCompositeItem } from '@/utils/sequenceStatus';
 
+const TARGET_SCHEDULER_CONTAINER = 'NINA.Plugin.TargetScheduler.Sequencer.TargetSchedulerContainer';
+
 const NO_ADD_TYPES = new Set(['NINA.Sequencer.SequenceItem.Imaging.SmartExposure']);
+// Target Scheduler fills its container with the planned instructions itself at runtime;
+// triggers and conditions on it stay user-defined.
+const NO_ADD_ITEM_TYPES = new Set([TARGET_SCHEDULER_CONTAINER]);
+// Containers that can hold many generated children start collapsed
+const COLLAPSED_BY_DEFAULT = new Set([TARGET_SCHEDULER_CONTAINER]);
 
 const props = defineProps({
   item: { type: Object, required: true },
@@ -274,12 +292,13 @@ const props = defineProps({
 });
 
 const canAdd = computed(() => !NO_ADD_TYPES.has(props.item.FullTypeName));
+const canAddItems = computed(() => canAdd.value && !NO_ADD_ITEM_TYPES.has(props.item.FullTypeName));
 const isNoExpand = computed(() => isCompositeItem(props.item));
 
 const store = useSequenceV2Store();
 const sequenceStore = useSequenceStore();
 const mainStore = apiStore();
-const collapsed = ref(false);
+const collapsed = ref(COLLAPSED_BY_DEFAULT.has(props.item.FullTypeName));
 const activeSection = ref(null);
 const isLocked = computed(() => sequenceStore.sequenceControlsLocked);
 // The sequencer is executing this node right now -- changing, resetting, disabling,
@@ -352,6 +371,7 @@ const dsoTarget = computed(() => {
 });
 const typeComponent = computed(() => ITEM_COMPONENTS[props.item.FullTypeName] ?? GenericItem);
 
+// Nesting depth is told apart by color, so these stay outside the design tokens.
 const DEPTH_BORDERS = [
   'border-l-2 border-l-blue-500/60',
   'border-l-2 border-l-violet-500/60',
@@ -363,11 +383,11 @@ const depthLeftBorder = computed(() => DEPTH_BORDERS[(props.depth - 1) % DEPTH_B
 
 const borderClass = computed(() => {
   const s = displayStatus(props.item);
-  if (s === 'RUNNING') return 'border-green-500/50 shadow-lg shadow-green-500/35';
-  if (s === 'FINISHED') return 'border-emerald-600/30 bg-emerald-950/10';
-  if (s === 'FAILED') return 'border-red-500/40 bg-red-950/10';
-  if (s === 'DISABLED') return 'border-slate-700/30 bg-slate-900/20 opacity-60';
-  return 'border-slate-600/30 bg-slate-800/30';
+  if (s === 'RUNNING') return 'border-status-ok/50 shadow-lg shadow-status-ok/35';
+  if (s === 'FINISHED') return 'border-status-ok/30 bg-status-ok/5';
+  if (s === 'FAILED') return 'border-status-danger/40 bg-status-danger/5';
+  if (s === 'DISABLED') return 'border-line bg-surface-1/20 opacity-60';
+  return 'border-line bg-surface-3/30';
 });
 
 async function doAction(action) {
@@ -384,27 +404,17 @@ async function doAction(action) {
   if (action === 'remove') await store.remove(id);
 }
 
-function onChildDragEnd(evt) {
-  onSiblingDragEnd(evt, props.item.Items);
+// Lists of one kind share a Sortable group, so a row can be dropped into the same kind of
+// list of any other container. Without a group (older plugin) it stays in its own list.
+// canReceive false keeps rows out of containers that fill themselves (Target Scheduler).
+function dragGroup(kind, canReceive = true) {
+  if (!store.canMoveAcrossContainers) return null;
+  return { name: `sequence-${kind}`, pull: true, put: canReceive };
 }
 
-function onSiblingDragEnd(evt, siblings) {
-  if (isLocked.value) return;
-  if (evt.oldIndex === evt.newIndex) return;
-  const newIdx = evt.newIndex;
-  const moved = siblings[newIdx];
-  // The handle of a running item carries no .drag-handle class, so this should not
-  // happen -- but vuedraggable has already reordered the local list, and a reorder of
-  // equal length is not corrected by applyStatusUpdates. Reload to undo it.
-  if (moved?.Status === 'RUNNING') {
-    store.loadCurrent();
-    return;
-  }
-  if (newIdx === 0) {
-    store.move(moved.Id, siblings[1]?.Id, false);
-  } else {
-    store.move(moved.Id, siblings[newIdx - 1]?.Id, true);
-  }
+// An empty list has no height; give it some so a row can be dropped into it.
+function dropZoneClass(list) {
+  return store.canMoveAcrossContainers && !list?.length ? 'min-h-6' : '';
 }
 
 function onOutsideClick(e) {
@@ -419,7 +429,7 @@ onUnmounted(() => document.removeEventListener('click', onOutsideClick));
 <style scoped>
 @reference '../../assets/tailwind.css';
 .menu-item {
-  @apply flex items-center gap-2 w-full px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-700/60 transition-colors;
+  @apply flex items-center gap-2 w-full px-3 py-1.5 text-sm text-content-muted hover:bg-surface-2 transition-colors;
   @apply disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent;
 }
 </style>

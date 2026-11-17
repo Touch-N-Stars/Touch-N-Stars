@@ -8,13 +8,13 @@
     <label> {{ $t('components.dome.control.sync') }}</label>
     <div
       v-if="store.domeInfo.Slewing"
-      class="ml-2 w-6 h-6 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"
+      class="ml-2 w-6 h-6 border-4 border-accent border-t-transparent rounded-full animate-spin"
     ></div>
   </button>
 </template>
 
 <script setup>
-import apiService from '@/services/apiService';
+import { runDomeAction } from './runDomeAction';
 import { apiStore } from '@/store/store';
 import { ref } from 'vue';
 
@@ -22,17 +22,7 @@ const store = apiStore();
 const statusClass = ref('');
 
 async function syncTelescope() {
-  try {
-    const response = await apiService.domeAction('sync');
-    console.log('syncing telescope', response);
-    statusClass.value = 'glow-green';
-    console.log('telescope synced');
-  } catch (error) {
-    console.log('telescope sync error');
-  }
-  setTimeout(() => {
-    statusClass.value = '';
-  }, 1000);
+  await runDomeAction('sync', statusClass, 'components.dome.control.errors.sync');
 }
 </script>
 <style scoped>

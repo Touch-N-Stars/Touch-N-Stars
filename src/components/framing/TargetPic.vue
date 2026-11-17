@@ -6,40 +6,33 @@
       <!-- Button unten rechts -->
       <button
         @click="showModal = true"
-        class="absolute bottom-2 right-2 bg-gray-800 text-gray-400 w-8 h-8 rounded-full shadow-md hover:bg-gray-600 transition"
+        class="absolute bottom-2 right-2 bg-surface-2 text-content-muted w-8 h-8 rounded-full shadow-md hover:bg-surface-3 transition"
       >
         ?
       </button>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div
-    v-if="showModal"
-    class="fixed inset-0 bg-gray-900/50 flex items-center justify-center z-top"
-    @click.self="showModal = false"
+  <Modal
+    :show="showModal"
+    zIndex="z-top"
+    maxWidth="max-w-96"
+    :title="$t('components.framing.infoTargetImage')"
+    @close="showModal = false"
   >
-    <!-- Modal Box -->
-    <div class="bg-gray-700 p-6 rounded-md shadow-lg relative w-full max-w-96">
-      <!-- "X"-Button oben rechts -->
-      <button
-        @click="showModal = false"
-        class="absolute top-2 right-2 bg-gray-700 text-gray-400 text-xl w-8 h-8 rounded-full hover:bg-gray-600 flex items-center justify-center"
-      >
-        &times;
-      </button>
-
-      <div class="flex items-center space-x-2">
-        <InformationCircleIcon class="h-10 w-10 text-blue-500" />
-      </div>
-      <p class="mt-2 text-gray-400">{{ $t('components.framing.infoTargetImage') }}</p>
-    </div>
-  </div>
+    <template #header>
+      <InformationCircleIcon class="h-10 w-10 text-accent" />
+    </template>
+    <template #body>
+      <p class="text-content-muted">{{ $t('components.framing.infoTargetImage') }}</p>
+    </template>
+  </Modal>
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import apiService from '@/services/apiService';
+import Modal from '@/components/helpers/Modal.vue';
 import { useFramingStore } from '@/store/framingStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { InformationCircleIcon } from '@heroicons/vue/24/outline';

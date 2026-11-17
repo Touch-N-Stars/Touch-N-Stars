@@ -1,6 +1,6 @@
 <template>
   <div class="block">
-    <label class="block text-sm font-medium text-gray-300 mb-2">{{
+    <label class="block text-sm font-medium text-content mb-2">{{
       $t('components.settings.image.strech_factor')
     }}</label>
     <NumberInputPicker
@@ -18,25 +18,11 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
-const store = apiStore();
-const strechFactor = ref(0);
-
-async function updateSetting() {
-  let value = String(strechFactor.value).replace(',', '.');
-  try {
-    const response = await apiService.profileChangeValue('ImageSettings-AutoStretchFactor', value);
-    if (!response.Success) return;
-  } catch (error) {
-    console.log('Error save setting');
-  }
-}
-
-onMounted(() => {
-  strechFactor.value = store.profileInfo.ImageSettings.AutoStretchFactor;
-});
+const { value: strechFactor, save: updateSetting } = useProfileSetting(
+  'ImageSettings-AutoStretchFactor',
+  { fallback: 0, toProfile: (v) => String(v).replace(',', '.') }
+);
 </script>

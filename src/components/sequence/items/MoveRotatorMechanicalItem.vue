@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ item.MechanicalPosition }}°</span>
+      <span class="text-xs text-content-muted font-mono">{{ item.MechanicalPosition }}°</span>
     </template>
 
     <template #editor="{ save }">

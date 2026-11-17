@@ -16,21 +16,21 @@
 
     <p v-if="installStatus" class="text-sm text-content-muted break-words">{{ installStatus }}</p>
 
-    <!-- zIndex must clear the wizard overlay (z-70) but stay under the PINS
-         upgrade overlay (z-[80]) - all of these teleport to body. -->
+    <!-- zIndex must clear the wizard overlay (z-overlay) but stay under the PINS
+         upgrade overlay (z-dialog) - all of these teleport to body. -->
     <PinsIndiInstallConfirmModal
       :show="showInstallModal"
       :selected-item="selectedDriver"
       :installing="isInstalling"
       :error-message="installError"
-      zIndex="z-[75]"
+      zIndex="z-overlay-modal"
       @close="closeInstallModal"
       @confirm="installDriver"
     />
 
     <PinsIndiRegistryEditModal
       :show="showRegistryModal"
-      zIndex="z-[75]"
+      zIndex="z-overlay-modal"
       @close="showRegistryModal = false"
     />
   </div>
@@ -40,15 +40,15 @@
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
-import PinsIndi3rdpartyCard from '@/plugins/pins/components/PinsIndi3rdpartyCard.vue';
-import PinsIndiInstallConfirmModal from '@/plugins/pins/components/PinsIndiInstallConfirmModal.vue';
-import PinsIndiRegistryEditModal from '@/plugins/pins/components/PinsIndiRegistryEditModal.vue';
+import PinsIndi3rdpartyCard from '@/components/pins/PinsIndi3rdpartyCard.vue';
+import PinsIndiInstallConfirmModal from '@/components/pins/PinsIndiInstallConfirmModal.vue';
+import PinsIndiRegistryEditModal from '@/components/pins/PinsIndiRegistryEditModal.vue';
 import {
   buildIndiInstallPayload,
   extractIndiInstallErrorDetail,
   parseIndiInstallJobId,
-} from '@/plugins/pins/composables/indiInstallUtils';
-import { pollJobUntilFinished } from '@/plugins/pins/composables/pinsJobPolling';
+} from '@/components/pins/composables/indiInstallUtils';
+import { pollJobUntilFinished } from '@/components/pins/composables/pinsJobPolling';
 
 /**
  * Search, confirm and install a 3rd party INDI driver package.

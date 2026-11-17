@@ -4,13 +4,18 @@ import { getUrls } from './core';
 export default {
   //------------------------------------- PHD2 ------------------------------------------
   //https://github.com/acocalypso/N.I.N.A-Plugin-for-Touch-N-Stars/blob/PHD2/PHD2_API_README.md
-  async connectPHD2() {
+  // quiet: no error toast when PHD2 is unreachable (background probes, not user actions).
+  async connectPHD2({ quiet = false } = {}) {
     try {
       const { API_URL } = getUrls();
-      const response = await axios.post(`${API_URL}phd2/connect`, {
-        instance: 1,
-        hostname: 'localhost',
-      });
+      const response = await axios.post(
+        `${API_URL}phd2/connect`,
+        {
+          instance: 1,
+          hostname: 'localhost',
+        },
+        { suppressErrorToast: quiet }
+      );
       console.log('PHD2 TNS API connect:', response.data);
       return response.data;
     } catch (error) {

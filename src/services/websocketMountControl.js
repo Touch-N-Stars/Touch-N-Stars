@@ -63,7 +63,7 @@ class WebSocketMountControlService {
       },
       onMessage: (message) => {
         // Mount API wraps every payload in a Success flag
-        if (!message || !message.Success) return;
+        if (!message) return;
         if (this.messageCallback) this.messageCallback(message);
       },
     });

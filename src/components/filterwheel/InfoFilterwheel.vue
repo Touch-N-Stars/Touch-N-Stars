@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!store.filterInfo.Connected" class="text-red-500">
+  <div v-if="!store.filterInfo.Connected" class="text-status-danger">
     <p>{{ $t('components.filterwheel.please_connect_filterwheel') }}</p>
   </div>
   <div

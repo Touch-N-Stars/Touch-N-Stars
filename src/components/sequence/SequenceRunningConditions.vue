@@ -3,15 +3,18 @@
     <div
       v-for="(condition, index) in sequenceStore.runningConditions"
       :key="index"
-      class="text-sm text-gray-300"
+      class="text-sm text-content-muted"
     >
       {{ removeSuffix(condition.Name).replace(/_/g, ' ') }}
-      <span v-if="getConditionDetails(condition)" class="text-gray-500">
+      <span v-if="getConditionDetails(condition)" class="text-content-faint">
         - {{ getConditionDetails(condition) }}
       </span>
     </div>
-    <div v-if="sequenceStore.runningConditions.length === 0" class="text-gray-500 italic text-sm">
-      No conditions
+    <div
+      v-if="sequenceStore.runningConditions.length === 0"
+      class="text-content-faint italic text-sm"
+    >
+      {{ $t('components.sequence.noConditions') }}
     </div>
   </div>
 </template>

@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         +{{ item.MinutesAfterMeridian }}min / max {{ item.MaxMinutesAfterMeridian }}min
       </span>
       <span class="text-xs text-amber-400/80 font-mono"> ⏱ {{ timeToFlip }} </span>

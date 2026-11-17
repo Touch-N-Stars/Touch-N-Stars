@@ -1,10 +1,10 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono"
+      <span class="text-xs text-content-muted font-mono"
         >{{ item.AboveOrBelow }} {{ item.Offset }}°</span
       >
-      <span class="text-xs text-slate-500 font-mono">{{ raStr }}</span>
+      <span class="text-xs text-content-faint font-mono">{{ raStr }}</span>
       <span v-if="item.ExpectedTime" class="text-xs text-amber-400/80 font-mono"
         >⏱ {{ item.ExpectedTime }}</span
       >
@@ -13,11 +13,11 @@
     <template #editor="{ save }">
       <!-- Above/Below -->
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.moonAltitude.comparator')
         }}</label>
         <select
-          class="ml-auto w-36 md:w-40 bg-slate-700/60 border border-slate-600 rounded px-2 py-1 text-xs text-gray-200"
+          class="tns-select-compact ml-auto w-36 md:w-40"
           :value="item.AboveOrBelow"
           @change="save('AboveOrBelow', $event.target.value)"
         >
@@ -39,7 +39,7 @@
       />
 
       <!-- RA -->
-      <div class="text-xs text-slate-400 font-medium">
+      <div class="text-xs text-content-muted font-medium">
         {{ $t('components.sequence.items.center.ra') }}
       </div>
       <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">
@@ -80,7 +80,7 @@
       </div>
 
       <!-- Dec -->
-      <div class="text-xs text-slate-400 font-medium pt-1">
+      <div class="text-xs text-content-muted font-medium pt-1">
         {{ $t('components.sequence.items.center.dec') }}
       </div>
       <div class="grid grid-cols-1 @[20rem]:grid-cols-3 gap-1">

@@ -2,6 +2,7 @@
 // application modules touch (window, localStorage, WebSocket, URL object
 // helpers) and provides a fresh Pinia per test. Test-only code - never
 // imported by application modules.
+import { after } from 'node:test';
 import { createPinia, setActivePinia } from 'pinia';
 
 // --- Fake WebSocket ---------------------------------------------------------
@@ -100,7 +101,15 @@ export class MemoryStorage {
 
 // --- Global installation ----------------------------------------------------
 
+let disposeHookRegistered = false;
+
 export function installBrowserGlobals() {
+  // Test files call this at module top level, so the hook lands on the root
+  // and disposes the last test's stores once the file is done.
+  if (!disposeHookRegistered) {
+    disposeHookRegistered = true;
+    after(disposePinia);
+  }
   if (!globalThis.window) {
     globalThis.window = {
       location: { hostname: '127.0.0.1', port: '8080', protocol: 'http:' },
@@ -121,8 +130,19 @@ export function installBrowserGlobals() {
   }
 }
 
+// Stops the stores of the current Pinia: their effect scopes end, so
+// watchers stop and `onScopeDispose` cleanups clear pending timers. Without
+// this a store timer outlives its test and keeps the test process alive.
+let currentPinia = null;
+
+export function disposePinia() {
+  currentPinia?._e.stop();
+  currentPinia = null;
+}
+
 export function freshPinia() {
-  const pinia = createPinia();
-  setActivePinia(pinia);
-  return pinia;
+  disposePinia();
+  currentPinia = createPinia();
+  setActivePinia(currentPinia);
+  return currentPinia;
 }

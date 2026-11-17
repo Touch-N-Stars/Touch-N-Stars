@@ -1,9 +1,9 @@
 <template>
   <div>
     <div
-      class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+      class="flex flex-row items-center justify-between w-full border border-line-strong p-2 rounded-lg"
     >
-      <label for="landscapesVisible" class="text-gray-400">
+      <label for="landscapesVisible" class="text-content-muted">
         {{ $t('components.settings.debug.activate') }}
       </label>
       <div>

@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         +{{ item.Amount }}% /
         {{ $t('components.sequence.items.autofocus.samples', { n: item.SampleSize }) }}
       </span>
@@ -28,15 +28,15 @@
         @change="save('SampleSize', $event)"
       />
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400">{{
+        <label class="tns-label">{{
           $t('components.sequence.items.autofocus.trendPerFilter')
         }}</label>
         <button
           class="ml-auto px-3 py-1 rounded text-xs font-medium border transition-colors"
           :class="
             item.TrendPerFilter
-              ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30'
-              : 'bg-slate-700/60 text-slate-400 border-slate-600 hover:bg-slate-700'
+              ? 'bg-accent/20 text-accent border-accent/40 hover:bg-accent/30'
+              : 'bg-surface-2 text-content-muted border-line-strong hover:bg-surface-3'
           "
           @click="save('TrendPerFilter', !item.TrendPerFilter)"
         >

@@ -1,10 +1,10 @@
 <template>
   <section
-    class="col-span-full grid w-full gap-3 rounded-lg border border-gray-500 p-3"
+    class="col-span-full grid w-full gap-3 rounded-lg border border-line-strong p-3"
     data-testid="atlas-catalog-filters"
   >
     <div>
-      <p class="font-medium text-gray-200">
+      <p class="font-medium text-content">
         {{ t('components.celestiaAtlas.settings.catalog_filters') }}
       </p>
     </div>
@@ -18,7 +18,7 @@
       @select-none="setSelection('starCatalogueGroups', [])"
       @toggle="toggleSelection('starCatalogueGroups', starCatalogueGroups, $event)"
     />
-    <p class="text-xs leading-5 text-gray-400">
+    <p class="text-xs leading-5 text-content-muted">
       {{ t('components.celestiaAtlas.settings.star_catalogue_hint') }}
     </p>
     <fieldset :disabled="disabled" class="grid gap-2 disabled:opacity-50">

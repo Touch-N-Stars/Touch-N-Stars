@@ -1,0 +1,10 @@
+{
+  "id": "aapa",
+  "name": "AAPA Controller",
+  "description": "Control the AAPA automated polar alignment device through the AAPA Controller NINA plugin",
+  "version": "1.0.0",
+  "author": "Johannes Maier",
+  "defaultEnabled": false,
+  "enabled": true,
+  "isPins": false
+}

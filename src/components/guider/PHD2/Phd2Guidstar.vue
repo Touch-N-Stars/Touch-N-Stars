@@ -13,12 +13,12 @@
     <div class="absolute inset-0 pointer-events-none">
       <!-- Vertikale Linie -->
       <div
-        class="absolute bg-green-400 opacity-90"
+        class="absolute bg-status-ok opacity-90"
         style="left: 50%; top: 0; width: 2px; height: 100%; transform: translateX(-1px)"
       ></div>
       <!-- Horizontale Linie -->
       <div
-        class="absolute bg-green-400 opacity-90"
+        class="absolute bg-status-ok opacity-90"
         style="top: 50%; left: 0; height: 2px; width: 100%; transform: translateY(-1px)"
       ></div>
     </div>

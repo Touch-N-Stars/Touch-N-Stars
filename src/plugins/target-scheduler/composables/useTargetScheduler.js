@@ -5,6 +5,7 @@ import { apiStore } from '@/store/store';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useFavTargetStore } from '@/store/favTargetsStore';
 import { useToastStore } from '@/store/toastStore';
+import { switchFilterUpdate } from '@/utils/sequenceFilter';
 import {
   DEFAULT_MAX_CHUNK_MINUTES,
   DEFAULT_STEP_MINUTES,
@@ -330,11 +331,8 @@ export function useTargetScheduler() {
     Array.isArray(favoritesStore.favoriteTargets) ? favoritesStore.favoriteTargets : []
   );
 
-  const canApplyToSequence = computed(
-    () =>
-      mainStore.isPINS ||
-      mainStore.checkVersionNewerOrEqual(mainStore.currentTnsPluginVersion, '1.2.8.0')
-  );
+  // Applying writes through the id-based sequence endpoints (sequenceV2Store)
+  const canApplyToSequence = computed(() => mainStore.sequenceEditorAvailable);
 
   const totalScheduledMinutes = computed(() =>
     scheduleResult.value.segments.reduce((sum, segment) => sum + (segment.durationMinutes || 0), 0)
@@ -571,13 +569,6 @@ export function useTargetScheduler() {
     return [...orderedFromSchedule, ...remaining];
   }
 
-  function getFilterIndexByName(filterName) {
-    if (!filterName) return null;
-    const filters = mainStore.filterInfo?.AvailableFilters || [];
-    const index = filters.findIndex((filter) => filter.Name === filterName);
-    return index >= 0 ? index + 1 : null;
-  }
-
   async function addItemAndResolveNewNode(
     containerId,
     fullTypeName,
@@ -673,10 +664,16 @@ export function useTargetScheduler() {
       item.FullTypeName?.includes('LoopCondition')
     );
 
-    if (switchFilter?.Id) {
-      const filterIndex = getFilterIndexByName(exposure.filterName);
-      if (filterIndex) {
-        await apiService.sequenceSetProperty(switchFilter.Id, 'SelectedFilter', filterIndex);
+    if (switchFilter?.Id && exposure.filterName) {
+      const filterNames = (mainStore.filterInfo?.AvailableFilters || []).map((f) => f.Name);
+      const { property, value } = switchFilterUpdate(
+        switchFilter,
+        filterNames,
+        exposure.filterName
+      );
+      // value 0 = filter not on the wheel (slot-index shape); leave the item untouched then
+      if (value) {
+        await apiService.sequenceSetProperty(switchFilter.Id, property, value);
       }
     }
 

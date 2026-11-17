@@ -1,14 +1,14 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400">{{
+      <span class="text-xs text-content-muted">{{
         item.OnOff ? $t('components.sequence.items.on') : $t('components.sequence.items.off')
       }}</span>
     </template>
 
     <template #editor="{ save }">
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">{{
+        <label class="tns-label shrink-0">{{
           $t('components.sequence.items.dewHeater.onOff')
         }}</label>
         <div class="ml-auto">

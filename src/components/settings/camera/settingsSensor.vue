@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
-  >
-    <h3 class="font-bold text-base text-cyan-400">
+  <div class="tns-card flex flex-col gap-2 sm:gap-3">
+    <h3 class="tns-section-title">
       {{ $t('components.camera.chip_settings.title') }}
     </h3>
 
@@ -42,50 +40,50 @@
         inputId="chip-width"
         @change="updateChipWidth"
       />
+
+      <NumberInputPicker
+        v-model="bitDepth"
+        :label="$t('components.camera.chip_settings.bit_depth')"
+        labelKey="components.camera.chip_settings.bit_depth"
+        :helpMessage="$t('components.camera.chip_settings.bit_depth_help')"
+        :min="8"
+        :max="16"
+        :step="1"
+        :decimalPlaces="0"
+        :useDefaultSentinel="false"
+        inputId="camera-bit-depth"
+        @change="updateBitDepth"
+      />
     </div>
+
+    <ProfileToggle
+      settingKey="CameraSettings-BitScaling"
+      labelKey="components.camera.chip_settings.bit_scaling"
+      helpKey="components.camera.chip_settings.bit_scaling_help"
+    />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
+import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 
-const store = apiStore();
-
-const pixelSize = ref(0);
-const chipHigh = ref(0);
-const chipWidth = ref(0);
-
-async function updatePixelSize() {
-  try {
-    await apiService.profileChangeValue('CameraSettings-PixelSize', pixelSize.value);
-  } catch (error) {
-    console.error('Error updating PixelSize:', error);
-  }
-}
-
-async function updateChipHigh() {
-  try {
-    await apiService.profileChangeValue('FramingAssistantSettings-CameraHeight', chipHigh.value);
-  } catch (error) {
-    console.error('Error updating ChipHigh:', error);
-  }
-}
-
-async function updateChipWidth() {
-  try {
-    await apiService.profileChangeValue('FramingAssistantSettings-CameraWidth', chipWidth.value);
-  } catch (error) {
-    console.error('Error updating ChipWidth:', error);
-  }
-}
-
-onMounted(() => {
-  const profile = store.profileInfo;
-  pixelSize.value = profile?.CameraSettings?.PixelSize || 5.0;
-  chipHigh.value = profile?.FramingAssistantSettings?.CameraHeight || 1501;
-  chipWidth.value = profile?.FramingAssistantSettings?.CameraWidth || 3001;
+// An empty or zero profile value shows the old placeholder defaults, as before.
+const { value: pixelSize, save: updatePixelSize } = useProfileSetting('CameraSettings-PixelSize', {
+  fallback: 5.0,
+  fromProfile: (v) => v || 5.0,
+});
+const { value: chipHigh, save: updateChipHigh } = useProfileSetting(
+  'FramingAssistantSettings-CameraHeight',
+  { fallback: 1501, fromProfile: (v) => v || 1501 }
+);
+const { value: chipWidth, save: updateChipWidth } = useProfileSetting(
+  'FramingAssistantSettings-CameraWidth',
+  { fallback: 3001, fromProfile: (v) => v || 3001 }
+);
+const { value: bitDepth, save: updateBitDepth } = useProfileSetting('CameraSettings-BitDepth', {
+  fallback: 16,
+  fromProfile: (v) => v || 16,
 });
 </script>

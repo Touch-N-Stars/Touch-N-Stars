@@ -99,27 +99,11 @@ the pod update, and clean the Xcode build folder again.
 - **User-Friendly Design**: Simple and intuitive interface specifically optimized for mobile devices.
 - **Focus on Practical Features**: Support for essential steps in setting up your equipment.
 
-### Celestia Atlas sky pointing (native apps)
-
-Tap the Atlas compass to follow the direction your phone is aimed, looking
-through the back of its screen. Tap again or drag the map to stop. Pinch zoom
-keeps your chosen field of view. The compass is highlighted while tracking.
-
-Sky pointing uses your configured observing site, or requests foreground location
-only if no valid site exists. iOS may request motion access. Sensor readings are
-processed locally. Magnetic interference can affect alignment: move away from
-metal and magnets and calibrate the compass with a figure-eight motion.
-Browsers and devices without a north-referenced motion sensor retain manual
-navigation. Enable **Show compass** in Atlas settings if the control is hidden.
-
-This feature requires a rebuilt native app; a web asset update alone is insufficient.
-See [local build instructions, accuracy limits, and validation status](docs/sky-pointing.md).
-
 ### 💙 **Acknowledgements**
 
 - Special thanks go to the entire **NINA** development team, whose excellent work enabled the creation of this web app.
 - A special thank you to **Christian**, the developer of the **Advanced API**, for his efforts and support. His work has significantly enabled the development of this web app.
-- [Celestia Atlas](https://github.com/acocalypso/celestia_atlas), the default offline sky renderer, licensed under MIT. Its view compass shows geographic bearing on phones and desktops and can be hidden in Atlas display settings.
+- [Celestia Atlas](https://github.com/acocalypso/celestia_atlas), the default offline sky renderer, licensed under MIT.
 - OpenNGC catalogue data by Mattia Verga and contributors, licensed under CC-BY-SA-4.0
 - Stellarium v26.2 deep-sky catalogue cross-index data, used for the bundled Abell/ACO, Barnard, LBN, LDN, RCW, Sharpless 2 and vdB supplement, licensed under GPL-2.0-or-later
 - HYG Database v4.1 by David Nash/Astronomy Nexus, used for the bundled HYG star layer, licensed under CC-BY-SA-4.0

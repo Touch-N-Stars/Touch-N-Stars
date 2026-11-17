@@ -1,18 +1,15 @@
 <template>
-  <div
-    v-if="isEquipmentSelected"
-    class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg"
-  >
+  <div v-if="isEquipmentSelected" class="tns-card flex flex-col">
     <!-- Connection Mode -->
     <div class="flex flex-row items-center justify-between w-full">
-      <label for="connectionMode" class="text-xs md:text-sm text-gray-200 mr-2">
+      <label for="connectionMode" class="text-xs md:text-sm text-content mr-2">
         {{ $t('indi.config.connectionMode') }}
       </label>
       <select
         id="connectionMode"
         v-model="connectionMode"
         @change="setConnectionMode"
-        class="tns-input text-xs md:text-sm w-48"
+        class="tns-select text-xs md:text-sm w-48"
         :class="statusClassConnectionMode"
       >
         <option value="CONNECTION_SERIAL">{{ $t('indi.config.serial') }}</option>
@@ -25,7 +22,7 @@
     <div v-if="connectionMode === 'CONNECTION_SERIAL'">
       <!-- Auto Detect Checkbox -->
       <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-        <label for="autoDetect" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="autoDetect" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.autoDetect') }}
         </label>
         <input
@@ -39,17 +36,14 @@
 
       <!-- Device Port (Serial) -->
       <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-        <label for="devicePort" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="devicePort" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.devicePort') }}
         </label>
         <select
           id="devicePort"
           v-model="selectedPort"
-          class="tns-input text-xs md:text-sm w-48"
-          :class="[
-            statusClassDevicePort,
-            autoDetect ? 'opacity-50 cursor-not-allowed bg-gray-600' : '',
-          ]"
+          class="tns-select text-xs md:text-sm w-48"
+          :class="statusClassDevicePort"
           :disabled="autoDetect"
         >
           <option value="" disabled>{{ $t('indi.config.selectPort') }}</option>
@@ -68,7 +62,7 @@
         v-if="manualPortMode"
         class="flex flex-row items-center justify-between w-full mt-2 md:mt-3"
       >
-        <label for="manualPort" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="manualPort" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.manualPortPath') }}
         </label>
         <input
@@ -77,10 +71,7 @@
           @change="setDevicePort"
           type="text"
           class="tns-input text-xs md:text-sm w-48"
-          :class="[
-            statusClassDevicePort,
-            autoDetect ? 'opacity-50 cursor-not-allowed bg-gray-600' : '',
-          ]"
+          :class="statusClassDevicePort"
           :disabled="autoDetect"
           placeholder="/dev/guidefocus"
         />
@@ -88,18 +79,15 @@
 
       <!-- Baud Rate -->
       <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-        <label for="baudRate" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="baudRate" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.baudRate') }}
         </label>
         <select
           id="baudRate"
           v-model.number="baudRate"
           @change="setBaudRate"
-          class="tns-input text-xs md:text-sm w-48"
-          :class="[
-            statusClassBaudRate,
-            autoDetect ? 'opacity-50 cursor-not-allowed bg-gray-600' : '',
-          ]"
+          class="tns-select text-xs md:text-sm w-48"
+          :class="statusClassBaudRate"
           :disabled="autoDetect"
         >
           <option :value="9600">9600</option>
@@ -115,7 +103,7 @@
     <div v-if="connectionMode === 'CONNECTION_TCP'">
       <!-- IP Address -->
       <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-        <label for="ipAddress" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="ipAddress" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.ipAddress') }}
         </label>
         <input
@@ -131,7 +119,7 @@
 
       <!-- TCP Port -->
       <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-        <label for="tcpPort" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="tcpPort" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.tcpPort') }}
         </label>
         <input
@@ -150,7 +138,7 @@
     <div v-if="connectionMode === 'CONNECTION_HTTP'">
       <!-- IP Address -->
       <div class="flex flex-row items-center justify-between w-full mt-2 md:mt-3">
-        <label for="httpAddress" class="text-xs md:text-sm text-gray-200 mr-2">
+        <label for="httpAddress" class="text-xs md:text-sm text-content mr-2">
           {{ $t('indi.config.ipAddress') }}
         </label>
         <input

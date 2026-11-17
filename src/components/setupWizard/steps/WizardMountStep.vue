@@ -32,6 +32,7 @@
         :deviceName="$t('components.connectEquipment.mount.name')"
         :default-device-id="store.profileInfo?.TelescopeSettings?.Id"
         :isConnected="store.mountInfo?.Connected"
+        :configDeviceIds="['OnStepX']"
         @open-config="openMountSettings"
       />
     </div>
@@ -70,9 +71,9 @@
     </div>
 
     <!-- Mount settings modal (same split as connectEquipment.vue).
-         zIndex must clear the wizard overlay (z-70) but stay under the PINS
-         upgrade overlay (z-[80]) - all of these teleport to body. -->
-    <Modal :show="showMountSettings" zIndex="z-[75]" @close="showMountSettings = false">
+         zIndex must clear the wizard overlay (z-overlay) but stay under the PINS
+         upgrade overlay (z-dialog) - all of these teleport to body. -->
+    <Modal :show="showMountSettings" zIndex="z-overlay-modal" @close="showMountSettings = false">
       <template #header>
         <h2 class="text-2xl font-semibold">{{ $t('components.mount.indi.settings') }}</h2>
       </template>
@@ -83,6 +84,7 @@
           :selectedDevice="selectedMountDevice"
           :deviceId="selectedMountObj?.Id"
         />
+        <SettingsOnStepXConnection v-else-if="selectedMountObj?.Id === 'OnStepX'" />
         <SettingsSerialConnection
           v-else
           equipmentType="mount"
@@ -103,6 +105,7 @@ import Modal from '@/components/helpers/Modal.vue';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
+import SettingsOnStepXConnection from '@/components/equipment/SettingsOnStepXConnection.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
 

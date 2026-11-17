@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { getUrls, simpleGetRequest } from './core';
+import { markProfileStale } from './profileStaleness';
 
 export default {
   //-------------------------------------  profile ---------------------------------------
@@ -23,6 +24,8 @@ export default {
     } catch (error) {
       // console.error('Error switch profil:', error);
       throw error;
+    } finally {
+      markProfileStale();
     }
   },
 
@@ -37,6 +40,8 @@ export default {
     } catch (error) {
       // console.error('Error switch profil:', error);
       throw error;
+    } finally {
+      markProfileStale();
     }
   },
 
@@ -48,6 +53,8 @@ export default {
       return response.data;
     } catch (error) {
       throw error;
+    } finally {
+      markProfileStale();
     }
   },
 
@@ -61,6 +68,8 @@ export default {
       return response.data;
     } catch (error) {
       throw error;
+    } finally {
+      markProfileStale();
     }
   },
 
@@ -74,6 +83,8 @@ export default {
       return response.data;
     } catch (error) {
       throw error;
+    } finally {
+      markProfileStale();
     }
   },
 

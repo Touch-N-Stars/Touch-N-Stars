@@ -7,7 +7,7 @@
   >
     <button
       @click="start"
-      class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md z-10"
+      class="p-2 bg-surface-3 border border-accent-action rounded-full shadow-md z-10"
       :title="$t('components.fitsPlatesolve.buttonTitle')"
     >
       <svg
@@ -29,7 +29,7 @@
     </button>
     <span
       v-if="props.showBadgeLabel"
-      class="absolute left-1/2 -translate-x-1/2 top-[calc(100%-20px)] text-[8.5px] font-semibold text-white/80 text-center leading-tight bg-slate-900/60 border border-slate-500/30 rounded px-1 py-0.5 whitespace-nowrap"
+      class="absolute left-1/2 -translate-x-1/2 top-[calc(100%-20px)] text-[8.5px] font-semibold text-white/80 text-center leading-tight bg-surface-1/60 border border-line-strong/30 rounded px-1 py-0.5 whitespace-nowrap"
     >
       Solve
     </span>
@@ -48,7 +48,7 @@
     v-else
     v-bind="$attrs"
     @click="start"
-    class="flex items-center gap-1 px-2 py-1 bg-slate-700/60 border border-slate-600 rounded text-xs text-gray-200 hover:bg-slate-600"
+    class="flex items-center gap-1 px-2 py-1 bg-surface-3/60 border border-line-strong rounded text-xs text-content hover:bg-surface-3"
     :title="$t('components.fitsPlatesolve.buttonTitle')"
   >
     <svg
@@ -88,7 +88,7 @@
     @close="onCancel"
   >
     <template #header>
-      <span class="text-base font-semibold text-slate-200 tracking-wide">{{ modalTitle }}</span>
+      <span class="text-base font-semibold text-content tracking-wide">{{ modalTitle }}</span>
     </template>
 
     <template #body>
@@ -99,9 +99,9 @@
           class="flex flex-col items-center justify-center gap-3 py-8"
         >
           <span
-            class="w-8 h-8 border-2 border-gray-600 border-t-cyan-700 rounded-full animate-spin"
+            class="w-8 h-8 border-2 border-line-strong border-t-accent-action rounded-full animate-spin"
           ></span>
-          <span class="text-slate-400 text-sm">{{
+          <span class="text-content-muted text-sm">{{
             $t('components.fitsPlatesolve.loadingParams')
           }}</span>
         </div>
@@ -109,16 +109,18 @@
         <!-- Parameter Confirmation Form -->
         <div v-else-if="step === 'confirm'" class="flex flex-col gap-4">
           <!-- File path display -->
-          <div class="rounded-md bg-gray-900/60 px-3 py-2">
-            <span class="text-xs text-slate-500">{{ $t('components.fitsPlatesolve.file') }}</span>
-            <p class="text-xs text-slate-400 font-mono truncate mt-0.5">{{ selectedFile }}</p>
+          <div class="rounded-md bg-surface-1/60 px-3 py-2">
+            <span class="text-xs text-content-faint">{{
+              $t('components.fitsPlatesolve.file')
+            }}</span>
+            <p class="text-xs text-content-muted font-mono truncate mt-0.5">{{ selectedFile }}</p>
           </div>
 
           <!-- Fields -->
           <div class="space-y-3">
             <!-- Focal Length -->
             <div class="flex items-center gap-3">
-              <label class="text-xs text-slate-400 w-28 shrink-0">{{
+              <label class="text-xs text-content-muted w-28 shrink-0">{{
                 $t('components.fitsPlatesolve.focalLength')
               }}</label>
               <NumberInputPicker
@@ -131,12 +133,12 @@
                 input-id="focalLength"
                 wrapper-class="flex-1"
               />
-              <span class="text-xs text-slate-500 shrink-0 w-6">mm</span>
+              <span class="text-xs text-content-faint shrink-0 w-6">mm</span>
             </div>
 
             <!-- Pixel Size -->
             <div class="flex items-center gap-3">
-              <label class="text-xs text-slate-400 w-28 shrink-0">{{
+              <label class="text-xs text-content-muted w-28 shrink-0">{{
                 $t('components.fitsPlatesolve.pixelSize')
               }}</label>
               <NumberInputPicker
@@ -149,12 +151,12 @@
                 input-id="pixelSize"
                 wrapper-class="flex-1"
               />
-              <span class="text-xs text-slate-500 shrink-0 w-6">µm</span>
+              <span class="text-xs text-content-faint shrink-0 w-6">µm</span>
             </div>
 
             <!-- Binning -->
             <div class="flex items-center gap-3">
-              <label class="text-xs text-slate-400 w-28 shrink-0">{{
+              <label class="text-xs text-content-muted w-28 shrink-0">{{
                 $t('components.fitsPlatesolve.binning')
               }}</label>
               <NumberInputPicker
@@ -167,19 +169,19 @@
                 input-id="binning"
                 wrapper-class="flex-1"
               />
-              <span class="text-xs text-slate-500 shrink-0 w-6">×</span>
+              <span class="text-xs text-content-faint shrink-0 w-6">×</span>
             </div>
 
             <!-- Separator -->
-            <div class="border-t border-gray-700 pt-2">
-              <p class="text-xs text-slate-600 mb-3">
+            <div class="border-t border-line pt-2">
+              <p class="text-xs text-content-faint mb-3">
                 {{ $t('components.fitsPlatesolve.coordinatesHint') }}
               </p>
             </div>
 
             <!-- RA -->
             <div class="flex items-start gap-3">
-              <label class="text-xs text-slate-400 w-28 shrink-0 pt-2">{{
+              <label class="text-xs text-content-muted w-28 shrink-0 pt-2">{{
                 $t('components.fitsPlatesolve.ra')
               }}</label>
               <div class="flex-1 flex flex-col xs:flex-row items-stretch xs:items-center gap-1">
@@ -194,7 +196,7 @@
                     input-id="raH"
                     wrapper-class="w-full"
                   />
-                  <span class="text-xs text-slate-500 shrink-0">h</span>
+                  <span class="text-xs text-content-faint shrink-0">h</span>
                 </div>
                 <div class="flex-1 flex items-center gap-1">
                   <NumberInputPicker
@@ -207,7 +209,7 @@
                     input-id="raM"
                     wrapper-class="w-full"
                   />
-                  <span class="text-xs text-slate-500 shrink-0">m</span>
+                  <span class="text-xs text-content-faint shrink-0">m</span>
                 </div>
                 <div class="flex-1 flex items-center gap-1">
                   <NumberInputPicker
@@ -220,14 +222,14 @@
                     input-id="raS"
                     wrapper-class="w-full"
                   />
-                  <span class="text-xs text-slate-500 shrink-0">s</span>
+                  <span class="text-xs text-content-faint shrink-0">s</span>
                 </div>
               </div>
             </div>
 
             <!-- Dec -->
             <div class="flex items-start gap-3">
-              <label class="text-xs text-slate-400 w-28 shrink-0 pt-2">{{
+              <label class="text-xs text-content-muted w-28 shrink-0 pt-2">{{
                 $t('components.fitsPlatesolve.dec')
               }}</label>
               <div class="flex-1 flex flex-col xs:flex-row items-stretch xs:items-center gap-1">
@@ -242,7 +244,7 @@
                     input-id="decD"
                     wrapper-class="w-full"
                   />
-                  <span class="text-xs text-slate-500 shrink-0">°</span>
+                  <span class="text-xs text-content-faint shrink-0">°</span>
                 </div>
                 <div class="flex-1 flex items-center gap-1">
                   <NumberInputPicker
@@ -255,7 +257,7 @@
                     input-id="decM"
                     wrapper-class="w-full"
                   />
-                  <span class="text-xs text-slate-500 shrink-0">'</span>
+                  <span class="text-xs text-content-faint shrink-0">'</span>
                 </div>
                 <div class="flex-1 flex items-center gap-1">
                   <NumberInputPicker
@@ -268,14 +270,14 @@
                     input-id="decS"
                     wrapper-class="w-full"
                   />
-                  <span class="text-xs text-slate-500 shrink-0">"</span>
+                  <span class="text-xs text-content-faint shrink-0">"</span>
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="flex justify-end gap-2 pt-2 border-t border-gray-700">
+          <div class="flex justify-end gap-2 pt-2 border-t border-line">
             <button class="tns-btn-secondary" @click="onCancel">
               {{ $t('common.cancel') }}
             </button>
@@ -298,12 +300,12 @@
           class="flex flex-col items-center justify-center gap-3 py-8"
         >
           <span
-            class="w-10 h-10 border-2 border-gray-600 border-t-cyan-700 rounded-full animate-spin"
+            class="w-10 h-10 border-2 border-line-strong border-t-accent-action rounded-full animate-spin"
           ></span>
-          <span class="text-slate-300 text-sm font-medium">{{
+          <span class="text-content text-sm font-medium">{{
             $t('components.fitsPlatesolve.solving')
           }}</span>
-          <span class="text-slate-500 text-xs text-center max-w-[280px]">{{
+          <span class="text-content-faint text-xs text-center max-w-[280px]">{{
             $t('components.fitsPlatesolve.solvingHint')
           }}</span>
         </div>
@@ -311,9 +313,9 @@
         <!-- Result -->
         <div v-else-if="step === 'result'" class="flex flex-col gap-4">
           <!-- Success banner -->
-          <div class="flex items-center gap-2.5 rounded-md bg-green-950/40 px-3 py-2">
-            <div class="w-2 h-2 rounded-full bg-green-400 shrink-0"></div>
-            <span class="text-green-400 text-sm font-medium">{{
+          <div class="flex items-center gap-2.5 rounded-md bg-status-ok/15 px-3 py-2">
+            <div class="w-2 h-2 rounded-full bg-status-ok shrink-0"></div>
+            <span class="text-status-ok text-sm font-medium">{{
               $t('components.fitsPlatesolve.success')
             }}</span>
           </div>
@@ -321,33 +323,35 @@
           <!-- Result details -->
           <div class="space-y-3">
             <div class="flex justify-between items-center">
-              <span class="text-xs text-slate-500">{{ $t('components.fitsPlatesolve.ra') }}</span>
-              <span class="text-sm text-cyan-400 font-mono">{{ result?.raString }}</span>
+              <span class="text-xs text-content-faint">{{
+                $t('components.fitsPlatesolve.ra')
+              }}</span>
+              <span class="text-sm text-accent font-mono">{{ result?.raString }}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-xs text-slate-500">{{ $t('components.fitsPlatesolve.dec') }}</span>
-              <span class="text-sm text-cyan-400 font-mono">{{ result?.decString }}</span>
+              <span class="text-xs text-content-faint">{{
+                $t('components.fitsPlatesolve.dec')
+              }}</span>
+              <span class="text-sm text-accent font-mono">{{ result?.decString }}</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-xs text-slate-500">{{
+              <span class="text-xs text-content-faint">{{
                 $t('components.fitsPlatesolve.rotation')
               }}</span>
-              <span class="text-sm text-cyan-400 font-mono"
-                >{{ result?.rotation?.toFixed(2) }}°</span
-              >
+              <span class="text-sm text-accent font-mono">{{ result?.rotation?.toFixed(2) }}°</span>
             </div>
             <div class="flex justify-between items-center">
-              <span class="text-xs text-slate-500">{{
+              <span class="text-xs text-content-faint">{{
                 $t('components.fitsPlatesolve.pixelScale')
               }}</span>
-              <span class="text-sm text-cyan-400 font-mono"
+              <span class="text-sm text-accent font-mono"
                 >{{ result?.pixelScale?.toFixed(3) }}"</span
               >
             </div>
           </div>
 
           <!-- Actions -->
-          <div class="flex flex-col gap-2 pt-2 border-t border-gray-700">
+          <div class="flex flex-col gap-2 pt-2 border-t border-line">
             <SaveFavTargets
               class="w-full"
               name="FITS Plate Solve"
@@ -391,16 +395,16 @@
         <!-- Error -->
         <div v-else-if="step === 'error'" class="flex flex-col gap-4">
           <!-- Error banner -->
-          <div class="flex items-center gap-2.5 rounded-md bg-red-950/40 px-3 py-2">
-            <div class="w-2 h-2 rounded-full bg-red-400 shrink-0"></div>
-            <span class="text-red-400 text-sm font-medium">{{
+          <div class="flex items-center gap-2.5 rounded-md bg-status-danger/15 px-3 py-2">
+            <div class="w-2 h-2 rounded-full bg-status-danger shrink-0"></div>
+            <span class="text-status-danger text-sm font-medium">{{
               $t('components.fitsPlatesolve.error')
             }}</span>
           </div>
-          <p v-if="errorMessage" class="text-slate-400 text-sm leading-relaxed">
+          <p v-if="errorMessage" class="text-content-muted text-sm leading-relaxed">
             {{ errorMessage }}
           </p>
-          <div class="flex justify-end gap-2 pt-2 border-t border-gray-700">
+          <div class="flex justify-end gap-2 pt-2 border-t border-line">
             <button class="tns-btn-secondary" @click="onCancel">
               {{ $t('common.close') }}
             </button>

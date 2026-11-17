@@ -8,27 +8,7 @@
       :disabled="isConnecting || allConnected"
     >
       <span>{{ $t('components.connectEquipment.connectAll') }}</span>
-      <svg
-        v-if="isConnecting"
-        class="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <Spinner v-if="isConnecting" size="sm" />
     </button>
 
     <!-- Disconnect All Button -->
@@ -38,27 +18,7 @@
       :disabled="isDisconnecting || !hasAnyConnection"
     >
       <span>{{ $t('components.connectEquipment.disconnectAll') }}</span>
-      <svg
-        v-if="isDisconnecting"
-        class="animate-spin h-5 w-5 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
+      <Spinner v-if="isDisconnecting" size="sm" />
     </button>
   </div>
   <div class="flex flex-col gap-2">
@@ -75,6 +35,7 @@
       :deviceName="$t('components.connectEquipment.mount.name')"
       :default-device-id="store.profileInfo?.TelescopeSettings?.Id"
       :isConnected="store.mountInfo.Connected"
+      :configDeviceIds="['OnStepX']"
       @open-config="openMountSettings"
     />
 
@@ -86,8 +47,19 @@
       @open-config="openFocuserSettings"
     />
 
+    <!-- One guide camera row, owned by the chosen guider: the native guider uses PINS' guide
+         camera slot (official NINA's profile has no GuideCameraSettings), PHD2 opens the camera
+         from its own profile. Showing both would invite picking the same camera twice. -->
+    <selectDevices
+      v-if="guideCameraSlot"
+      apiAction="guideCameraAction"
+      :deviceName="$t('components.connectEquipment.guideCamera.name')"
+      :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
+      :isConnected="store.guideCameraInfo.Connected"
+      @open-config="openGuideCameraSettings"
+    />
     <selectGuiderCam
-      v-if="store.isPINS"
+      v-else-if="store.isPINS && !isNativeGuiderChoice"
       :deviceName="$t('components.connectEquipment.guiderCam.name')"
     />
 
@@ -186,7 +158,27 @@
         :selectedDevice="selectedCameraDevice"
         :deviceId="selectedCameraObj?.Id"
       />
-      <p v-else class="text-sm text-gray-300">
+      <p v-else class="text-sm text-content">
+        {{ $t('components.alpacaDirect.cameraNoSettings') }}
+      </p>
+    </template>
+  </Modal>
+
+  <!-- Guide Camera Settings Modal: PINS' guide camera slot keeps its own Alpaca static IP -->
+  <Modal :show="showGuideCameraSettings" @close="showGuideCameraSettings = false">
+    <template #header>
+      <h2 class="text-2xl font-semibold">
+        {{ $t('components.alpacaDirect.title') }}
+      </h2>
+    </template>
+    <template #body>
+      <SettingsAlpacaDirect
+        v-if="isAlpacaDirect(selectedGuideCameraObj)"
+        deviceType="guidecamera"
+        :selectedDevice="selectedGuideCameraDevice"
+        :deviceId="selectedGuideCameraObj?.Id"
+      />
+      <p v-else class="text-sm text-content">
         {{ $t('components.alpacaDirect.cameraNoSettings') }}
       </p>
     </template>
@@ -204,6 +196,7 @@
         :selectedDevice="selectedMountDevice"
         :deviceId="selectedMountObj?.Id"
       />
+      <SettingsOnStepXConnection v-else-if="selectedMountObj?.Id === 'OnStepX'" />
       <SettingsSerialConnection
         v-else
         equipmentType="mount"
@@ -383,8 +376,10 @@ import apiService from '@/services/apiService';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import selectGuiderCam from '@/components/guider/PHD2/selectGuiderCam.vue';
 import Modal from '@/components/helpers/Modal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import settingsGuiderConnect from '@/components/guider/settingsGuiderConnect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
+import SettingsOnStepXConnection from '@/components/equipment/SettingsOnStepXConnection.vue';
 import SettingsWeather from '@/components/equipment/SettingsWeather.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import SettingsFilterWheelSlotNum from '@/components/equipment/SettingsFilterWheelSlotNum.vue';
@@ -394,12 +389,14 @@ import {
   apiActionForApiName,
   getIndiDriver,
   isOfflineDevice,
+  phd2ConnectBlockers,
   redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
   setProfileDevice,
 } from '@/utils/equipmentDevices';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { equipmentInUse, isNativeGuiderInUse, usesGuideCameraSlot } from '@/utils/nativeGuider';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -412,6 +409,9 @@ const selectedGuiderDevice = ref('');
 const showCameraSettings = ref(false);
 const selectedCameraDevice = ref('');
 const selectedCameraObj = ref(null);
+const showGuideCameraSettings = ref(false);
+const selectedGuideCameraDevice = ref('');
+const selectedGuideCameraObj = ref(null);
 const showMountSettings = ref(false);
 const selectedMountDevice = ref('');
 const selectedMountObj = ref(null);
@@ -448,23 +448,25 @@ const weatherHasApiKeySettings = computed(() =>
   WEATHER_API_KEY_DEVICES.includes(selectedWeatherDeviceName.value)
 );
 
-const isGuiderConnectDisabled = computed(() => {
-  return (
-    selectedGuiderDevice.value === 'PHD2' &&
-    store.isPINS &&
-    (!store.mountInfo.Connected || !guiderStore.guidecamOk)
-  );
-});
+// The PINS native guider neither needs the PHD2 guide camera pick nor PHD2's mount-first rule.
+const isNativeGuiderChoice = computed(() => isNativeGuiderInUse(store, selectedGuiderDevice.value));
+// One guide camera row per guider: the PINS slot only for the native guider.
+const guideCameraSlot = computed(() => usesGuideCameraSlot(store, selectedGuiderDevice.value));
+// What 'connect all' handles: without the slot while PHD2 is the guider.
+const equipmentToConnect = computed(() =>
+  equipmentInUse(store.existingEquipmentList, { guideCameraSlot: guideCameraSlot.value })
+);
 
-const guiderDisabledMessage = computed(() => {
-  if (selectedGuiderDevice.value !== 'PHD2' || !store.isPINS) return '';
-  const messages = [];
-  if (!store.mountInfo.Connected)
-    messages.push(t('components.connectEquipment.guider.mountRequired'));
-  if (!guiderStore.guidecamOk)
-    messages.push(t('components.connectEquipment.guider.guideCamRequired'));
-  return messages.join(' ');
-});
+const phd2Blockers = computed(() =>
+  phd2ConnectBlockers({
+    selectedGuider: selectedGuiderDevice.value,
+    isPINS: store.isPINS,
+    mountConnected: store.mountInfo.Connected,
+    guidecamOk: guiderStore.guidecamOk,
+  })
+);
+const isGuiderConnectDisabled = computed(() => phd2Blockers.value.length > 0);
+const guiderDisabledMessage = computed(() => phd2Blockers.value.map((key) => t(key)).join(' '));
 
 const openGuiderSettings = (payload) => {
   selectedGuiderDevice.value = payload?.selectedDeviceDisplayName || '';
@@ -475,6 +477,12 @@ const openCameraSettings = (payload) => {
   selectedCameraDevice.value = payload?.selectedDeviceDisplayName || '';
   selectedCameraObj.value = payload?.selectedDeviceObj || null;
   showCameraSettings.value = true;
+};
+
+const openGuideCameraSettings = (payload) => {
+  selectedGuideCameraDevice.value = payload?.selectedDeviceDisplayName || '';
+  selectedGuideCameraObj.value = payload?.selectedDeviceObj || null;
+  showGuideCameraSettings.value = true;
 };
 
 const openMountSettings = (payload) => {
@@ -535,6 +543,8 @@ function isDeviceConnected(apiName) {
   switch (apiName) {
     case 'camera':
       return store.cameraInfo.Connected;
+    case 'guidecamera':
+      return store.guideCameraInfo.Connected;
     case 'mount':
       return store.mountInfo.Connected;
     case 'filter':
@@ -561,7 +571,7 @@ function isDeviceConnected(apiName) {
 }
 
 const allConnected = computed(() =>
-  store.existingEquipmentList.every((device) => isDeviceConnected(device.apiName))
+  equipmentToConnect.value.every((device) => isDeviceConnected(device.apiName))
 );
 
 const hasAnyConnection = computed(() =>
@@ -596,7 +606,7 @@ function waitForMountConnected(timeoutMs = 30000) {
 async function reloadOfflineIndiDrivers() {
   let reloaded = false;
 
-  for (const device of store.existingEquipmentList) {
+  for (const device of equipmentToConnect.value) {
     const apiAction = apiActionForApiName(device.apiName);
     // Skip everything that is not INDI-backed; native drivers re-enumerate on their own.
     if (!apiAction || !getIndiDriver(apiAction)) continue;
@@ -668,10 +678,13 @@ async function connectAll() {
     await reloadOfflineIndiDrivers();
     await redirectManualFilterWheelBeforeConnect();
 
-    for (const device of store.existingEquipmentList) {
+    for (const device of equipmentToConnect.value) {
       switch (device.apiName) {
         case 'camera':
           await apiService.cameraAction('connect');
+          break;
+        case 'guidecamera':
+          await apiService.guideCameraAction('connect');
           break;
         case 'mount': {
           const canConnect = await checkMountConnectionPermission(t);
@@ -692,7 +705,7 @@ async function connectAll() {
           await apiService.rotatorAction('connect');
           break;
         case 'guider':
-          if (store.isPINS) {
+          if (store.isPINS && !isNativeGuiderChoice.value) {
             if (!store.mountInfo.Connected || !guiderStore.guidecamOk) {
               console.warn(
                 '[Connect Equipment] Mount must be connected or guide camera must be match before connecting guider in PINS mode'
@@ -728,10 +741,15 @@ async function connectAll() {
 async function disconnectAll() {
   isDisconnecting.value = true;
   try {
+    // The guider stops before its camera goes away, so the guide camera is disconnected after the loop.
+    let hasGuideCamera = false;
     for (const device of store.existingEquipmentList) {
       switch (device.apiName) {
         case 'camera':
           await apiService.cameraAction('disconnect');
+          break;
+        case 'guidecamera':
+          hasGuideCamera = true;
           break;
         case 'mount':
           await apiService.mountAction('disconnect');
@@ -772,6 +790,9 @@ async function disconnectAll() {
           await apiService.switchAction('disconnect');
           break;
       }
+    }
+    if (hasGuideCamera) {
+      await apiService.guideCameraAction('disconnect');
     }
   } catch (error) {
     console.error(t('components.connectEquipment.disconnectAllError'), error);

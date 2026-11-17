@@ -1,10 +1,10 @@
 <template>
-  <!-- Hidden while the global PINS upgrade overlay (App.vue, z-[80]) owns the screen,
+  <!-- Hidden while the global PINS upgrade overlay (App.vue, z-dialog) owns the screen,
        so the two never stack. The wizard state survives in settingsStore. -->
   <teleport to="body">
     <div
       v-if="!pinsStore.shouldShowUpgradeOverlay"
-      class="fixed inset-0 z-70 bg-ground/95 overflow-y-auto overscroll-contain"
+      class="fixed inset-0 z-overlay bg-ground/95 overflow-y-auto overscroll-contain"
     >
       <div class="min-h-full flex items-start sm:items-center justify-center p-4 py-8">
         <div class="w-full max-w-xl flex flex-col gap-4">
@@ -154,7 +154,7 @@ import { XMarkIcon } from '@heroicons/vue/24/outline';
 import { Capacitor } from '@capacitor/core';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
-import { usePinsStore } from '@/plugins/pins/store/pinsStore';
+import { usePinsStore } from '@/store/pinsStore';
 import WizardLanguageStep from './steps/WizardLanguageStep.vue';
 import WizardInfoStep from './steps/WizardInfoStep.vue';
 import WizardInstanceStep from './steps/WizardInstanceStep.vue';

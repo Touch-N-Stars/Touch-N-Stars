@@ -3,16 +3,9 @@
     <div class="container py-6 px-4 max-w-4xl mx-auto">
       <h1 class="text-3xl font-bold text-white mb-6">{{ $t('nightsummary.title') }}</h1>
 
-      <!-- Plugin not installed -->
+      <!-- Whether the NINA plugin is loaded is checked by NinaPluginGate before this view mounts. -->
       <div
-        v-if="nightSummaryStore.pluginInstalled === false"
-        class="bg-gray-800 border border-gray-700 rounded-lg p-8 text-center"
-      >
-        <p class="text-gray-400 text-lg">{{ $t('nightsummary.notAvailable') }}</p>
-      </div>
-
-      <div
-        v-else-if="
+        v-if="
           !store.checkVersionNewerOrEqual(store.currentTnsPluginVersion, '1.3.1.0') && !store.isPINS
         "
       >

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="borderClass"
-    class="flex flex-col sm:flex-row border p-2 rounded-lg h-full gap-2 sm:items-center transition-all duration-300"
+    class="flex flex-col sm:flex-row border p-2 rounded-control h-full gap-2 sm:items-center transition-all duration-300"
   >
     <label class="text-sm sm:w-36 shrink-0" for="deviceSelect">{{ deviceName }}:</label>
     <div class="flex flex-col gap-1 w-full">
@@ -27,36 +27,19 @@
         </select>
         <div class="flex shrink-0 gap-1">
           <button
-            v-if="store.isPINS"
+            v-if="store.isPINS && !props.hideConfig"
             @click="configDevice"
-            :disabled="
-              isScanning ||
-              isConnected ||
-              (!props.alwaysEnableConfig &&
-                !(selectedDeviceObj && selectedDeviceObj.HasSetupDialog))
-            "
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-70"
+            :disabled="configDisabled"
+            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-70"
           >
-            <Cog6ToothIcon
-              class="w-6 h-6"
-              :class="{
-                'text-gray-400':
-                  isScanning ||
-                  isConnected ||
-                  (!props.alwaysEnableConfig &&
-                    !(selectedDeviceObj && selectedDeviceObj.HasSetupDialog)),
-              }"
-            />
+            <Cog6ToothIcon class="w-6 h-6" :class="{ 'text-content-faint': configDisabled }" />
           </button>
           <button
             @click="rescanDevices"
             :disabled="isScanning || isConnected"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-70"
+            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-70"
           >
-            <ArrowPathIcon
-              class="w-6 h-6"
-              :class="{ 'text-green-500 spin': isScanning, 'text-white': !isScanning }"
-            />
+            <ArrowPathIcon class="w-6 h-6" :class="{ 'text-status-ok spin': isScanning }" />
           </button>
           <button
             @click="
@@ -67,15 +50,15 @@
                   : toggleConnection()
             "
             :disabled="isToggleCon && !store.isPINS"
-            class="flex justify-center items-center w-10 h-10 border border-cyan-500/20 bg-gray-700 text-white rounded-lg hover:bg-gray-600 disabled:opacity-30"
+            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-30"
           >
-            <XCircleIcon v-if="isToggleCon && store.isPINS" class="w-6 h-6 text-yellow-500" />
+            <XCircleIcon v-if="isToggleCon && store.isPINS" class="w-6 h-6 text-status-warn" />
             <InformationCircleIcon
               v-else-if="disableConnect && disableConnectMessage"
-              class="w-6 h-6 text-yellow-500"
+              class="w-6 h-6 text-status-warn"
             />
             <LinkIcon v-else-if="!isConnected" class="w-6 h-6" />
-            <LinkSlashIcon v-else class="w-6 h-6 text-red-600" />
+            <LinkSlashIcon v-else class="w-6 h-6 text-status-danger" />
           </button>
         </div>
       </div>
@@ -84,35 +67,33 @@
       </span>
     </div>
 
-    <!-- Disable Info Modal -->
-    <div
-      v-if="showDisableModal"
-      class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-      @click.self="showDisableModal = false"
+    <!-- Disable Info Modal: also opens from the setup wizard, hence the raised layer -->
+    <Modal
+      :show="showDisableModal"
+      zIndex="z-overlay-modal"
+      maxWidth="max-w-xl"
+      @close="showDisableModal = false"
     >
-      <div class="bg-gray-800 text-white p-4 m-8 rounded-lg max-w-xl">
-        <div class="flex justify-end">
-          <button @click="showDisableModal = false" class="text-white hover:text-gray-300">
-            <XMarkIcon class="w-6 h-6" />
-          </button>
-        </div>
-        <h2 class="text-xl font-bold mb-4">Info</h2>
+      <template #header>
+        <h2 class="text-xl font-bold">Info</h2>
+      </template>
+      <template #body>
         <p>{{ disableConnectMessage }}</p>
-      </div>
-    </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, watch, computed } from 'vue';
 import apiService from '@/services/apiService';
+import Modal from '@/components/helpers/Modal.vue';
 import {
   ArrowPathIcon,
   LinkIcon,
   LinkSlashIcon,
   Cog6ToothIcon,
   InformationCircleIcon,
-  XMarkIcon,
   XCircleIcon,
 } from '@heroicons/vue/24/outline';
 import { useEquipmentStore } from '@/store/equipmentStore';
@@ -127,6 +108,7 @@ import {
 } from '@/utils/equipmentDevices';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
+import { isAppBackgrounded } from '@/utils/appLifecycle';
 
 const equipmentStore = useEquipmentStore();
 const store = apiStore();
@@ -140,6 +122,12 @@ const props = defineProps({
   disableConnect: { type: Boolean, default: false },
   disableConnectMessage: { type: String, default: '' },
   alwaysEnableConfig: { type: Boolean, default: false },
+  // For a device without a setup dialog of its own: no cog that would do nothing or configure
+  // another device.
+  hideConfig: { type: Boolean, default: false },
+  // Device ids whose settings live in Touch'N'Stars itself, so the cog is enabled for them even
+  // when the driver has no setup dialog (e.g. pins' native OnStepX driver)
+  configDeviceIds: { type: Array, default: () => [] },
 });
 
 const devices = ref([]);
@@ -148,7 +136,7 @@ const error = ref(false);
 const isScanning = ref(false);
 const isToggleCon = ref(false);
 const isReloadingDriver = ref(false);
-const borderClass = ref('border-gray-500');
+const borderClass = ref('border-line-strong');
 const showDisableModal = ref(false);
 
 // After a backend restart App.vue remounts this page in the very tick isBackendReachable
@@ -173,8 +161,8 @@ function scheduleEmptyRetry() {
   emptyRetryTimer = setTimeout(() => {
     emptyRetryTimer = null;
     // Do not fire into a dead backend; the reachability watcher refetches as soon as it
-    // comes back.
-    if (!store.isBackendReachable) {
+    // comes back. A backgrounded app just waits for the next round.
+    if (!store.isBackendReachable || isAppBackgrounded.value) {
       scheduleEmptyRetry();
       return;
     }
@@ -188,6 +176,17 @@ function openDisableInfo() {
 
 const selectedDeviceObj = computed(() =>
   devices.value.find((d) => d.DisplayName === selectedDevice.value)
+);
+
+const configDisabled = computed(
+  () =>
+    isScanning.value ||
+    props.isConnected ||
+    !(
+      props.alwaysEnableConfig ||
+      selectedDeviceObj.value?.HasSetupDialog ||
+      props.configDeviceIds.includes(selectedDeviceObj.value?.Id)
+    )
 );
 
 const displayDevices = computed(() => {
@@ -475,11 +474,11 @@ async function cancelConnect() {
 
 function updateBorderClass() {
   if (error.value) {
-    borderClass.value = 'border-red-500 error-glow';
+    borderClass.value = 'border-status-danger error-glow';
   } else if (props.isConnected) {
-    borderClass.value = 'border-green-500 connected-glow';
+    borderClass.value = 'border-status-ok connected-glow';
   } else {
-    borderClass.value = 'border-gray-500';
+    borderClass.value = 'border-line-strong';
   }
 }
 

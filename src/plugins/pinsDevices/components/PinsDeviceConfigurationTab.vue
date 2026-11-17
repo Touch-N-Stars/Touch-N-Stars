@@ -93,134 +93,8 @@
             </p>
           </div>
 
-          <!-- Notification Settings -->
-          <div class="border border-gray-700 rounded-lg bg-gray-700/30 p-4 space-y-3">
-            <h3 class="text-sm font-semibold text-gray-300">
-              {{ $t('plugins.pinsDevices.config.notifications.title') }}
-            </h3>
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="text-sm text-gray-200">{{
-                  $t('plugins.pinsDevices.config.notifications.beepOnWarning')
-                }}</span>
-                <p class="text-xs text-gray-500">
-                  {{ $t('plugins.pinsDevices.config.notifications.beepOnWarningDesc') }}
-                </p>
-              </div>
-              <button
-                @click="store.setBeepOnWarning(!store.beepOnWarning)"
-                :class="[
-                  'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none',
-                  store.beepOnWarning ? 'bg-cyan-500' : 'bg-gray-600',
-                ]"
-              >
-                <span
-                  :class="[
-                    'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
-                    store.beepOnWarning ? 'translate-x-6' : 'translate-x-1',
-                  ]"
-                />
-              </button>
-            </div>
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="text-sm text-gray-200">{{
-                  $t('plugins.pinsDevices.config.notifications.beepOnError')
-                }}</span>
-                <p class="text-xs text-gray-500">
-                  {{ $t('plugins.pinsDevices.config.notifications.beepOnErrorDesc') }}
-                </p>
-              </div>
-              <button
-                @click="store.setBeepOnError(!store.beepOnError)"
-                :class="[
-                  'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none',
-                  store.beepOnError ? 'bg-cyan-500' : 'bg-gray-600',
-                ]"
-              >
-                <span
-                  :class="[
-                    'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
-                    store.beepOnError ? 'translate-x-6' : 'translate-x-1',
-                  ]"
-                />
-              </button>
-            </div>
-            <!-- Beep Volume -->
-            <div class="pt-2 border-t border-gray-700 space-y-2">
-              <span class="text-sm text-gray-200">{{
-                $t('plugins.pinsDevices.config.notifications.beepVolume')
-              }}</span>
-              <div class="flex gap-2">
-                <button
-                  v-for="preset in beepVolumePresets"
-                  :key="preset.value"
-                  @click="store.setBeepVolume(preset.value)"
-                  :class="[
-                    'flex-1 py-1 px-2 rounded-lg text-sm font-semibold transition-all',
-                    store.beepVolume === preset.value
-                      ? 'bg-cyan-500 text-white'
-                      : 'bg-gray-600 hover:bg-gray-500 text-gray-200',
-                  ]"
-                >
-                  {{ $t(preset.labelKey) }}
-                </button>
-              </div>
-            </div>
-            <!-- Beep Length -->
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="text-sm text-gray-200">{{
-                  $t('plugins.pinsDevices.config.notifications.beepLength')
-                }}</span>
-                <p class="text-xs text-gray-500">
-                  {{ $t('plugins.pinsDevices.config.notifications.beepLengthDesc') }}
-                </p>
-              </div>
-              <button
-                @click="openBeepLengthPicker()"
-                class="py-1 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all"
-              >
-                {{ store.beepLengthMs }}ms
-              </button>
-            </div>
-            <!-- Beep Repeat Duration -->
-            <div class="flex items-center justify-between">
-              <div>
-                <span class="text-sm text-gray-200">{{
-                  $t('plugins.pinsDevices.config.notifications.beepRepeatDuration')
-                }}</span>
-                <p class="text-xs text-gray-500">
-                  {{ $t('plugins.pinsDevices.config.notifications.beepRepeatDurationDesc') }}
-                </p>
-              </div>
-              <button
-                @click="openBeepRepeatDurationPicker()"
-                class="py-1 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all"
-              >
-                {{ store.beepRepeatDuration / 1000 }}s
-              </button>
-            </div>
-            <!-- Test Beep -->
-            <div class="pt-2 border-t border-gray-700">
-              <button
-                @click="store.beepPowerBox()"
-                :disabled="!store.isPowerboxConnected || store.isBeeping"
-                class="w-full py-2 px-3 rounded-lg text-sm font-semibold transition-all"
-                :class="
-                  store.isPowerboxConnected && !store.isBeeping
-                    ? 'bg-cyan-600 hover:bg-cyan-700 text-white'
-                    : 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                "
-              >
-                {{
-                  store.isBeeping
-                    ? $t('plugins.pinsDevices.config.notifications.testBeepRunning')
-                    : $t('plugins.pinsDevices.config.notifications.testBeep')
-                }}
-              </button>
-            </div>
-          </div>
+          <!-- Alarm: the box beeps the PowerBox by itself on critical events -->
+          <PinsAlarmSettings :active="active && activeSubTab === 'powerbox'" />
         </div>
 
         <!-- MeteoStation Configuration -->
@@ -449,9 +323,15 @@
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { usePinsDeviceStore } from '../store/pinsDevicesStore.js';
+import PinsAlarmSettings from './PinsAlarmSettings.vue';
 import { useNumberPicker } from '@/composables/useNumberPicker.js';
 
 const { t } = useI18n();
+
+defineProps({
+  // The configuration tab is visible (the tabs above use v-show): the alarm polls only then
+  active: { type: Boolean, default: false },
+});
 
 const store = usePinsDeviceStore();
 const { openPicker } = useNumberPicker();
@@ -558,36 +438,6 @@ onUnmounted(() => {
     unwatchStatus();
   }
 });
-
-const beepVolumePresets = [
-  { value: 5, labelKey: 'plugins.pinsDevices.config.notifications.volumeLow' },
-  { value: 20, labelKey: 'plugins.pinsDevices.config.notifications.volumeMedium' },
-  { value: 40, labelKey: 'plugins.pinsDevices.config.notifications.volumeLoud' },
-];
-
-const openBeepLengthPicker = () => {
-  openPicker(
-    'plugins.pinsDevices.config.notifications.beepLength',
-    100,
-    10000,
-    100,
-    store.beepLengthMs,
-    (newValue) => store.setBeepLengthMs(parseInt(newValue, 10)),
-    0
-  );
-};
-
-const openBeepRepeatDurationPicker = () => {
-  openPicker(
-    'plugins.pinsDevices.config.notifications.beepRepeatDuration',
-    1,
-    60,
-    1,
-    store.beepRepeatDuration / 1000,
-    (newValue) => store.setBeepRepeatDuration(parseInt(newValue, 10) * 1000),
-    0
-  );
-};
 
 const openTemperatureOffsetPicker = () => {
   openPicker(

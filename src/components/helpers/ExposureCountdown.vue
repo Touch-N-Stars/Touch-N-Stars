@@ -3,7 +3,7 @@
   <div class="w-full rounded-lg overflow-hidden">
     <div
       v-if="cameraStore.exposureProgress > 0"
-      class="bg-gradient-to-r from-blue-800 to-blue-200"
+      class="bg-gradient-to-r from-accent-action to-accent"
       :style="{
         width: cameraStore.exposureProgress + '%',
         height: '1px',

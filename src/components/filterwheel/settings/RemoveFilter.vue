@@ -1,5 +1,8 @@
 <template>
-  <button @click="showModal = true" class="p-2 text-gray-500 hover:text-red-500 transition-colors">
+  <button
+    @click="showModal = true"
+    class="p-2 text-content-faint hover:text-status-danger transition-colors"
+  >
     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       <path
         fill-rule="evenodd"
@@ -11,13 +14,13 @@
 
   <Modal :show="showModal" @close="showModal = false" maxWidth="max-w-md">
     <template #header>
-      <h2 class="text-lg font-bold text-red-500">
+      <h2 class="text-lg font-bold text-status-danger">
         {{ $t('components.RemoveFilter.confirmTitle') }}
       </h2>
     </template>
     <template #body>
       <div class="flex flex-col gap-4">
-        <p class="text-gray-300">
+        <p class="text-content">
           {{ $t('components.RemoveFilter.confirmMessage') }}
         </p>
         <div class="flex gap-3 justify-end">

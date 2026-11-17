@@ -5,8 +5,10 @@ import {
   brushMode,
   brushView,
   clampView,
+  endsAtLiveEdge,
   isFullView,
   panView,
+  restoreView,
   timeTicks,
   zoomView,
 } from '../timeWindow.js';
@@ -28,6 +30,58 @@ test('clampView keeps the span inside the bounds and never below the minimum', (
     end: 1_000_000 + MIN_VIEW_SPAN_MS,
   });
   assert.deepEqual(clampView({ start: -1, end: 9_000_000 }, bounds), bounds);
+});
+
+test('restoreView keeps a remembered view that still lies inside the bounds', () => {
+  assert.deepEqual(restoreView(view, bounds), view);
+});
+
+test('restoreView keeps only the part of a view that is still inside the bounds', () => {
+  // The session now starts later (NINA restarted, or the first frames were deleted).
+  assert.deepEqual(restoreView(view, { start: 1_500_000, end: 3_600_000 }), {
+    start: 1_500_000,
+    end: 2_000_000,
+  });
+  // What is left is never narrower than the minimum span.
+  assert.deepEqual(restoreView(view, { start: 1_990_000, end: 3_600_000 }), {
+    start: 1_990_000,
+    end: 1_990_000 + MIN_VIEW_SPAN_MS,
+  });
+});
+
+test('restoreView lets a view without an end run up to the end of the bounds', () => {
+  // Remembered while following the live edge; the session has grown since.
+  assert.deepEqual(restoreView({ start: 1_000_000, end: null }, bounds), {
+    start: 1_000_000,
+    end: 3_600_000,
+  });
+  assert.deepEqual(restoreView({ start: 1_000_000, end: null }, { start: 0, end: 4_000_000 }), {
+    start: 1_000_000,
+    end: 4_000_000,
+  });
+  // Started before this session: what is left is the whole session.
+  assert.deepEqual(
+    restoreView({ start: 1_000_000, end: null }, { start: 2_000_000, end: 3_600_000 }),
+    { start: 2_000_000, end: 3_600_000 }
+  );
+  assert.equal(restoreView({ start: 4_000_000, end: null }, bounds), null);
+  assert.equal(restoreView({ start: 1_000_000 }, bounds), null);
+});
+
+test('endsAtLiveEdge: the end of the view at the end of the bounds, give or take rounding', () => {
+  assert.equal(endsAtLiveEdge({ start: 1_000_000, end: 3_600_000 }, bounds), true);
+  assert.equal(endsAtLiveEdge({ start: 1_000_000, end: 3_599_400.7 }, bounds), true);
+  assert.equal(endsAtLiveEdge({ start: 1_000_000, end: 3_590_000 }, bounds), false);
+  assert.equal(endsAtLiveEdge(view, bounds), false);
+});
+
+test('restoreView drops a view from outside the bounds and anything that is no view', () => {
+  // A range from the night before must not be moved onto tonight's session.
+  assert.equal(restoreView(view, { start: 2_000_000, end: 3_600_000 }), null);
+  assert.equal(restoreView({ start: 4_000_000, end: 5_000_000 }, bounds), null);
+  assert.equal(restoreView(null, bounds), null);
+  assert.equal(restoreView({ start: 2_000_000, end: 1_000_000 }, bounds), null);
+  assert.equal(restoreView({ start: '1', end: 2 }, bounds), null);
 });
 
 test('zoomView scales around the anchor and panView shifts within the bounds', () => {

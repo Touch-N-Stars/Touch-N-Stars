@@ -1,9 +1,7 @@
 <template>
   <div>
-    <div v-show="isLoading" class="flex items-center justify-center">
-      <span
-        class="w-12 h-12 border-4 border-blue-500 border-t-transparent border-solid rounded-full animate-spin"
-      ></span>
+    <div v-show="isLoading" class="flex items-center justify-center text-accent">
+      <Spinner size="lg" />
     </div>
     <div v-show="!isLoading" class="w-full h-[25vh] min-h-40 relative">
       <canvas ref="rmsGraph"></canvas>
@@ -13,19 +11,19 @@
         :disabled="isClearing"
         :title="$t('components.guider.clearGraph')"
         :aria-label="$t('components.guider.clearGraph')"
-        class="absolute top-0 right-7 p-1 text-gray-400 hover:text-white disabled:opacity-50"
+        class="absolute top-0 right-7 p-1 text-content-muted hover:text-content disabled:opacity-50"
       >
         <TrashIcon class="w-5 h-5" />
       </button>
       <button
         v-if="store.isPINS"
         @click="showSettings = !showSettings"
-        class="absolute top-0 right-0 p-1 text-gray-400 hover:text-white"
+        class="absolute top-0 right-0 p-1 text-content-muted hover:text-content"
       >
         <Cog6ToothIcon class="w-5 h-5" />
       </button>
     </div>
-    <div v-if="store.isPINS" v-show="showSettings" class="mt-2 p-3 bg-gray-800 rounded-lg">
+    <div v-if="store.isPINS" v-show="showSettings" class="mt-2 p-3 bg-surface-2 rounded-control">
       <Phd2GraphSettings />
     </div>
   </div>
@@ -39,6 +37,7 @@ import { useI18n } from 'vue-i18n';
 import { useToastStore } from '@/store/toastStore';
 import { apiStore } from '@/store/store';
 import Phd2GraphSettings from './PHD2/pins/Phd2GraphSettings.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { Cog6ToothIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 const { t } = useI18n();

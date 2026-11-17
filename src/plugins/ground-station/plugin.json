@@ -6,5 +6,10 @@
   "author": "Johannes",
   "defaultEnabled": false,
   "enabled": true,
-  "isPins": true
+  "isPins": true,
+  "ninaPlugin": {
+    "name": "GroundStation",
+    "displayName": "Ground Station",
+    "pinsPackage": "pins-plugin-groundstation"
+  }
 }

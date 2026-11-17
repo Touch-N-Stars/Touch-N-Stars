@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const wizardSource = readFileSync(new URL('../SetupWizard.vue', import.meta.url), 'utf8');
-const settingsSource = readFileSync(
-  new URL('../../settings/SettingsConnectionTab.vue', import.meta.url),
+const systemTabSource = readFileSync(
+  new URL('../../pins/tabs/PinsSystemTab.vue', import.meta.url),
   'utf8'
 );
 const localizationSource = readFileSync(
-  new URL('../../settings/general/PinsLocalizationSettings.vue', import.meta.url),
+  new URL('../../pins/system/PinsLocalizationSettings.vue', import.meta.url),
   'utf8'
 );
 
@@ -20,7 +20,7 @@ test('PINS localization is ordered before Wi-Fi in the setup assistant', () => {
 });
 
 test('system localization settings remain inside the PINS capability boundary', () => {
-  assert.match(settingsSource, /<PinsLocalizationSettings v-if="store\.isPINS" \/>/);
+  assert.match(systemTabSource, /<PinsLocalizationSettings v-if="store\.isPINS" \/>/);
 });
 
 test('large host option sets use searchable explicit selects instead of datalists', () => {

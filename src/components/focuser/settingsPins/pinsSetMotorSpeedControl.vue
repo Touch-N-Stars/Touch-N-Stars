@@ -3,15 +3,10 @@
     v-if="focuserStore.focuserSettings?.HasMotorSpeedControl"
     class="flex items-center w-full justify-between border border-line-strong p-1 md:p-2 rounded-control"
   >
-    <label for="setMotorSpeed" class="text-xs md:text-sm text-gray-200 font-medium">
+    <label for="setMotorSpeed" class="text-xs md:text-sm text-content font-medium">
       {{ $t('components.focuser.settings.MotorSpeedControl') }}
     </label>
-    <select
-      id="setMotorSpeed"
-      v-model="motorSpeed"
-      @change="setMotorSpeed"
-      class="tns-select w-24 md:w-32"
-    >
+    <select id="setMotorSpeed" v-model="motorSpeed" @change="setMotorSpeed" class="tns-select w-32">
       <option
         v-for="(label, index) in focuserStore.focuserSettings.MotorSpeeds"
         :key="index"

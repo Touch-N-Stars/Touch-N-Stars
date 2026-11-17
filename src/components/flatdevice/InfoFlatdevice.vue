@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!store.flatdeviceInfo.Connected" class="text-red-500">
+  <div v-if="!store.flatdeviceInfo.Connected" class="text-status-danger">
     <p>{{ $t('components.flat.please_connect_flatDevice') }}</p>
   </div>
   <div

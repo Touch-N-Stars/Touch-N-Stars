@@ -2,9 +2,9 @@
   <div class="flex flex-col gap-2 sm:gap-4 pb-20">
     <!-- Reverse Setting Container -->
     <div
-      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-gray-800/50 rounded-lg border border-gray-700/50"
+      class="p-2 sm:p-4 flex flex-col gap-2 sm:gap-3 bg-surface-2/50 rounded-lg border border-line/50"
     >
-      <h3 class="font-bold text-base text-cyan-400">
+      <h3 class="font-bold text-base text-accent">
         {{ $t('components.rotator.settings.basic') }}
       </h3>
       <rotatorReverse />

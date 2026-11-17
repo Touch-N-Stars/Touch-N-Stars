@@ -1,43 +1,54 @@
 <template>
-  <div class="w-full h-full flex flex-col text-white text-xs overflow-hidden">
-    <!-- Header mit Star-Werten -->
-    <div class="px-2 pt-1 pb-1 shrink-0">
-      <h3 class="font-semibold text-center mb-1">Star Profile</h3>
-      <div class="flex justify-between">
-        <span
+  <div
+    ref="rootEl"
+    class="w-full h-full flex flex-col text-content overflow-hidden"
+    :class="compact ? 'text-[10px] leading-tight' : 'text-xs'"
+  >
+    <!-- Header with star values; the title is dropped on small tiles to leave room for the graph -->
+    <div class="shrink-0" :class="compact ? 'px-1 pt-0.5' : 'px-2 pt-1 pb-1'">
+      <h3 v-if="!compact" class="font-semibold text-center mb-1">Star Profile</h3>
+      <div class="flex flex-wrap justify-between gap-x-1">
+        <span class="whitespace-nowrap"
           >SNR: <span :class="snrClass">{{ snrValue }}</span></span
         >
-        <span
+        <span class="whitespace-nowrap"
           >HFD: <span :class="hfdClass">{{ hfdValue }}</span></span
         >
       </div>
     </div>
 
-    <!-- Star Profile Graph -->
-    <div class="flex-1 flex items-center justify-center px-2">
-      <div class="relative">
-        <canvas
-          ref="profileCanvas"
-          :width="canvasWidth"
-          :height="canvasHeight"
-          class="border border-gray-500 bg-black rounded"
-        ></canvas>
+    <!-- Star Profile Graph: takes whatever height is left, the canvas follows its measured size -->
+    <div
+      ref="graphEl"
+      class="relative flex-1 min-h-0 bg-black rounded border border-line-strong overflow-hidden"
+      :class="compact ? 'mx-1 my-0.5' : 'mx-2 my-1'"
+    >
+      <canvas
+        ref="profileCanvas"
+        :width="canvasWidth"
+        :height="canvasHeight"
+        class="absolute inset-0 block w-full h-full"
+      ></canvas>
 
-        <!-- Crosshair overlay -->
-        <div class="absolute inset-0 pointer-events-none">
-          <div class="absolute bg-green-400 opacity-50" :style="crosshairVerticalStyle"></div>
-          <div class="absolute bg-green-400 opacity-50" :style="crosshairHorizontalStyle"></div>
-        </div>
+      <!-- Crosshair overlay -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute left-1/2 top-0 bottom-0 w-px bg-status-ok opacity-50"></div>
+        <div class="absolute top-1/2 left-0 right-0 h-px bg-status-ok opacity-50"></div>
       </div>
     </div>
 
     <!-- Footer -->
-    <div class="px-2 pb-1 shrink-0 text-gray-400 text-center">Mass: {{ massValue }}</div>
+    <div
+      class="shrink-0 text-content-muted text-center truncate"
+      :class="compact ? 'px-1 pb-0.5' : 'px-2 pb-1'"
+    >
+      Mass: {{ massValue }}
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch, nextTick } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
 import { useGuiderStore } from '@/store/guiderStore';
 
 const guiderStore = useGuiderStore();
@@ -45,31 +56,28 @@ const profileCanvas = ref(null);
 
 const starInfo = computed(() => guiderStore.phd2StarInfo);
 
-// Dynamische Canvas-Größe basierend auf Container
+// Tiles narrower than this drop the title and use smaller text
+const COMPACT_WIDTH = 160;
+
+const rootEl = ref(null);
+const graphEl = ref(null);
+const compact = ref(false);
 const canvasWidth = ref(200);
-const canvasHeight = ref(150);
+const canvasHeight = ref(100);
+let resizeObserver = null;
 
-// Props für Container-Größe (falls von Parent übergeben)
-const props = defineProps({
-  containerWidth: {
-    type: Number,
-    default: 200,
-  },
-  containerHeight: {
-    type: Number,
-    default: 150,
-  },
-});
-
-// Canvas-Größe an Container anpassen
-const updateCanvasSize = () => {
-  // Exakte Berechnung für verfügbaren Platz
-  const availableWidth = props.containerWidth - 16; // 16px für seitliches Padding
-  const availableHeight = props.containerHeight - 50; // 50px für Header + Footer
-
-  // Canvas soll genau in den verfügbaren Platz passen
-  canvasWidth.value = Math.max(100, availableWidth);
-  canvasHeight.value = Math.max(60, availableHeight);
+// Size the canvas drawing surface to the space the flex layout actually leaves for it,
+// so header and footer always stay visible however small the tile gets.
+const updateSizes = () => {
+  if (rootEl.value) compact.value = rootEl.value.clientWidth < COMPACT_WIDTH;
+  if (!graphEl.value) return;
+  const width = Math.max(1, Math.floor(graphEl.value.clientWidth));
+  const height = Math.max(1, Math.floor(graphEl.value.clientHeight));
+  if (width === canvasWidth.value && height === canvasHeight.value) return;
+  canvasWidth.value = width;
+  canvasHeight.value = height;
+  // Changing the canvas size clears it
+  drawStarProfile();
 };
 
 const snrValue = computed(() => {
@@ -90,39 +98,24 @@ const massValue = computed(() => {
 // Color coding for SNR (Signal-to-Noise Ratio)
 const snrClass = computed(() => {
   const snr = starInfo.value?.SNR;
-  if (!snr) return 'text-gray-400';
+  if (!snr) return 'text-content-muted';
 
-  if (snr >= 50) return 'text-green-400'; // Excellent
-  if (snr >= 20) return 'text-yellow-400'; // Good
-  if (snr >= 10) return 'text-orange-400'; // Fair
-  return 'text-red-400'; // Poor
+  if (snr >= 50) return 'text-status-ok'; // Excellent
+  if (snr >= 20) return 'text-content'; // Good
+  if (snr >= 10) return 'text-status-warn'; // Fair
+  return 'text-status-danger'; // Poor
 });
 
 // Color coding for HFD (Half Flux Diameter) - smaller is better for stars
 const hfdClass = computed(() => {
   const hfd = starInfo.value?.HFD;
-  if (!hfd) return 'text-gray-400';
+  if (!hfd) return 'text-content-muted';
 
-  if (hfd <= 2.0) return 'text-green-400'; // Excellent focus
-  if (hfd <= 3.0) return 'text-yellow-400'; // Good focus
-  if (hfd <= 4.0) return 'text-orange-400'; // Fair focus
-  return 'text-red-400'; // Poor focus
+  if (hfd <= 2.0) return 'text-status-ok'; // Excellent focus
+  if (hfd <= 3.0) return 'text-content'; // Good focus
+  if (hfd <= 4.0) return 'text-status-warn'; // Fair focus
+  return 'text-status-danger'; // Poor focus
 });
-
-// Crosshair styles (centered)
-const crosshairVerticalStyle = computed(() => ({
-  left: `${canvasWidth.value / 2 - 0.5}px`,
-  top: '0px',
-  width: '1px',
-  height: `${canvasHeight.value}px`,
-}));
-
-const crosshairHorizontalStyle = computed(() => ({
-  left: '0px',
-  top: `${canvasHeight.value / 2 - 0.5}px`,
-  width: `${canvasWidth.value}px`,
-  height: '1px',
-}));
 
 // Simuliere Sternprofil basierend auf HFD und SNR
 const drawStarProfile = async () => {
@@ -146,6 +139,8 @@ const drawStarProfile = async () => {
 
   const hfd = starInfo.value.HFD;
   const mass = starInfo.value.StarMass;
+  // Keep the curve readable on small canvases: margins shrink with the height
+  const margin = Math.min(10, Math.round(canvasHeight.value / 8));
 
   // Sternprofil simulieren (Gaußsche Kurve)
   const centerX = canvasWidth.value / 2;
@@ -177,8 +172,9 @@ const drawStarProfile = async () => {
     // Quantisierung für pixeligeren Look
     intensity = Math.round(intensity * 12) / 12;
 
-    const scaledIntensity = intensity * (canvasHeight.value - 30) * (Math.log10(mass) / 6);
-    const y = canvasHeight.value - 10 - scaledIntensity;
+    const scaledIntensity =
+      intensity * Math.max(0, canvasHeight.value - 2 * margin) * (Math.log10(mass) / 6);
+    const y = canvasHeight.value - margin - scaledIntensity;
 
     if (x === 10) {
       ctx.moveTo(x, y);
@@ -214,12 +210,6 @@ const drawGrid = (ctx) => {
   }
 };
 
-// Watch für Änderungen der Container-Größe
-watch([() => props.containerWidth, () => props.containerHeight], () => {
-  updateCanvasSize();
-  nextTick(() => drawStarProfile());
-});
-
 // Watch für Änderungen der Star-Info und beim Laden
 watch(starInfo, drawStarProfile, { deep: true });
 
@@ -227,7 +217,15 @@ watch(starInfo, drawStarProfile, { deep: true });
 watch(() => guiderStore.phd2Connection?.IsConnected, drawStarProfile);
 
 onMounted(() => {
-  updateCanvasSize();
+  resizeObserver = new ResizeObserver(updateSizes);
+  if (rootEl.value) resizeObserver.observe(rootEl.value);
+  if (graphEl.value) resizeObserver.observe(graphEl.value);
+  updateSizes();
   drawStarProfile();
+});
+
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+  resizeObserver = null;
 });
 </script>

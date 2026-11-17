@@ -5,9 +5,8 @@
       <h1 class="text-xl text-center font-bold">{{ $t('components.flatassistant.title') }}</h1>
     </div>
 
-    <!-- Temporarily hide multi-mode there is a bug in the backend -->
     <SubNav
-      v-if="store.isPINS"
+      v-if="multiModeAvailable"
       :items="[
         { name: t('components.flatassistant.single_mode'), value: 'single' },
         { name: t('components.flatassistant.multi_mode'), value: 'multi' },
@@ -28,7 +27,7 @@
       <select
         v-if="settingsStore.flats.activeMode === 'single'"
         v-model="settingsStore.flats.selectedOption"
-        class="p-2 w-full border border-gray-500 rounded-lg bg-gray-800 text-white"
+        class="p-2 w-full border border-line-strong rounded-lg bg-surface-2 text-white"
       >
         <option value="AutoExposure">{{ $t('components.flatassistant.auto_exposure') }}</option>
         <option value="AutoBrightness">{{ $t('components.flatassistant.auto_brightness') }}</option>
@@ -51,7 +50,7 @@
           flatsStore.status.State === 'Finished' ||
           flatsStore.lastRun !== null
         "
-        class="flex flex-col w-full max-w-md space-y-2 mt-4 border border-gray-700 rounded-lg bg-gradient-to-br from-gray-800 to-gray-900 shadow-lg p-5"
+        class="flex flex-col w-full max-w-md space-y-2 mt-4 tns-card"
       >
         <getStatus />
         <LastImage />
@@ -94,8 +93,13 @@ const selectedComponent = computed(() => {
   }
 });
 
-onMounted(() => {
-  if (!store.isPINS) {
+// Multi mode runs in the plugin (NINA and PINS); with an older plugin only PINS has it,
+// driven by the app's own per-filter loop.
+const multiModeAvailable = computed(() => store.isPINS || flatsStore.serverWorkflow === true);
+
+onMounted(async () => {
+  await flatsStore.detectServerWorkflow();
+  if (!multiModeAvailable.value) {
     settingsStore.flats.activeMode = 'single';
   }
 });
@@ -115,7 +119,8 @@ watch(
   (flatSettings) => {
     if (!flatSettings) return;
     flatsStore.count = flatSettings.FlatCount ?? flatsStore.count;
-    flatsStore.darkCount = flatSettings.DarkFlatCount ?? 0;
+    // Same condition as multi mode: dark flats need the plugin-side run or PINS.
+    flatsStore.darkCount = multiModeAvailable.value ? (flatSettings.DarkFlatCount ?? 0) : 0;
   },
   { immediate: true }
 );

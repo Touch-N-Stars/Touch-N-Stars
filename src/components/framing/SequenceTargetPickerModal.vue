@@ -53,6 +53,23 @@
         </div>
 
         <div v-if="selection === NEW_TARGET && targets.length" class="space-y-1">
+          <label class="block text-xs text-content-faint" for="sequence-target-template">
+            {{ $t('components.framing.sequenceTargetPicker.template') }}
+          </label>
+          <select id="sequence-target-template" v-model="template" class="tns-select">
+            <option v-for="target in targets" :key="target.id" :value="target.id">
+              {{ $t('components.framing.sequenceTargetPicker.copyOf', { name: target.name }) }}
+            </option>
+            <option :value="EMPTY_TEMPLATE">
+              {{ $t('components.framing.sequenceTargetPicker.emptyTarget') }}
+            </option>
+          </select>
+        </div>
+
+        <div
+          v-if="selection === NEW_TARGET && targets.length && template === EMPTY_TEMPLATE"
+          class="space-y-1"
+        >
           <label class="block text-xs text-content-faint" for="sequence-target-position">
             {{ $t('components.framing.sequenceTargetPicker.position') }}
           </label>
@@ -93,6 +110,7 @@ import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/vue/24/outline';
 
 const NEW_TARGET = '__new__';
 const AT_END = '__end__';
+const EMPTY_TEMPLATE = '__empty__';
 
 const props = defineProps({
   show: Boolean,
@@ -107,6 +125,8 @@ const emit = defineEmits(['close', 'confirm']);
 
 const selection = ref(null);
 const position = ref(AT_END);
+// A new target is a copy of this one (with all its exposures), or EMPTY_TEMPLATE.
+const template = ref(EMPTY_TEMPLATE);
 
 // The dialog is kept mounted, so every opening starts from a clean selection instead of
 // whatever the previous run left behind.
@@ -116,6 +136,8 @@ watch(
     if (!open) return;
     selection.value = props.targets[0]?.id ?? NEW_TARGET;
     position.value = AT_END;
+    // Copying the last target is what "next target, same exposures" needs most often.
+    template.value = props.targets.at(-1)?.id ?? EMPTY_TEMPLATE;
   },
   { immediate: true }
 );
@@ -130,6 +152,11 @@ function confirm() {
   if (selection.value === null) return;
   if (selection.value !== NEW_TARGET) {
     emit('confirm', { mode: 'replace', id: selection.value });
+    return;
+  }
+  // The plugin inserts a copy right behind its source, so there is no position to choose.
+  if (template.value !== EMPTY_TEMPLATE && props.targets.some((t) => t.id === template.value)) {
+    emit('confirm', { mode: 'copy', sourceId: template.value });
     return;
   }
   const afterId = position.value === AT_END ? (props.targets.at(-1)?.id ?? null) : position.value;

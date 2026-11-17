@@ -25,7 +25,7 @@
           :y="rowIndex * ROW_HEIGHT + ROW_HEIGHT / 2"
           text-anchor="end"
           dominant-baseline="middle"
-          class="fill-gray-300"
+          class="fill-content"
           font-size="11"
         >
           {{ $t(`components.sequence.timeline.rows.${row.key}`) }}
@@ -45,7 +45,7 @@
           :x="xOf(tick)"
           :y="rowsHeight + 16"
           text-anchor="middle"
-          class="fill-gray-400"
+          class="fill-content-muted"
           font-size="11"
         >
           {{ formatClock(tick, { seconds: tickSeconds }) }}
@@ -116,7 +116,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { BAR_COLORS, formatClock } from '@/utils/sessionTimelineUtils';
-import { brushMode, brushView, tickCount, timeTicks } from '@/utils/timeWindow';
+import { brushMode, brushView, endsAtLiveEdge, tickCount, timeTicks } from '@/utils/timeWindow';
 import {
   DRAG_THRESHOLD_PX,
   localPoint,
@@ -230,6 +230,7 @@ function onPointerDown(event) {
     x,
     anchorT: boundsScale.value.t(x),
     view: { ...props.view },
+    atLiveEdge: endsAtLiveEdge(props.view, props.bounds),
     dragging: false,
   };
 }
@@ -245,7 +246,13 @@ function onPointerMove(event) {
     svg.value.setPointerCapture?.(event.pointerId);
   }
   const t = boundsScale.value.t(x);
-  emit('update:view', brushView(brush.mode, brush.anchorT, t, brush.view, props.bounds));
+  // A range at the live edge stays there while its start is dragged: the bounds grow
+  // with every poll, and the end taken at pointerdown would fall behind.
+  const startView =
+    brush.mode === 'start' && brush.atLiveEdge
+      ? { ...brush.view, end: props.bounds.end }
+      : brush.view;
+  emit('update:view', brushView(brush.mode, brush.anchorT, t, startView, props.bounds));
 }
 
 function onPointerUp(event) {

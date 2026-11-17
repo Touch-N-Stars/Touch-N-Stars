@@ -3,6 +3,7 @@
 import axios from 'axios';
 import { getActivePinia } from 'pinia';
 import { PINS_PORT, DEFAULT_PINS_DAEMON_API_TOKEN } from '../pinsConfig';
+import { getHttpAbortSignal } from '@/utils/httpLifecycle';
 
 // Perihelion's own standalone server (see PerihelionApiServer.DefaultPort on the plugin side) --
 // a separate port from ninaAPI's /v2/api, since Quick Track deliberately bypasses the sequencer
@@ -101,6 +102,19 @@ export const getPinsDaemonAuthHeaders = () => {
     Authorization: `Bearer ${token}`,
   };
 };
+
+// The global axios interceptors (errorHandler.js) resolve every failed request into a mock
+// { Success: false, StatusCode } response, which hides the HTTP status and body. Feature
+// detection has to tell an unknown route (HTML 404) from a JSON error of an existing
+// endpoint, so those calls use this instance: no response interceptors, real rejections.
+// The app-wide resume abort signal is attached by hand (see httpLifecycle.js).
+export const rawHttp = axios.create();
+rawHttp.interceptors.request.use((config) => {
+  if (!config.signal) {
+    config.signal = getHttpAbortSignal();
+  }
+  return config;
+});
 
 export const simpleGetRequest = (url) => {
   return axios

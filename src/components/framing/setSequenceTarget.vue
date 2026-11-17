@@ -121,9 +121,9 @@ async function setSequenceTarget() {
     rotation,
   };
 
-  // NINA/WPF has no sequence editor to pick a target in -- unchanged behaviour: the
-  // first target of the sequence is overwritten.
-  if (!store.isPINS) {
+  // Without the plugin's sequence editor there is nothing to pick a target in -- legacy
+  // behaviour: the first target of the sequence is overwritten.
+  if (!store.sequenceEditorAvailable) {
     try {
       await apiService.sequnceTargetSet(
         name,
@@ -173,6 +173,8 @@ async function onPickerConfirm(choice) {
   showPicker.value = false;
   if (choice.mode === 'replace') {
     await applyToExistingTarget(choice.id);
+  } else if (choice.mode === 'copy') {
+    await applyToCopiedTarget(choice.sourceId);
   } else {
     await applyToNewTarget(choice.afterId);
   }
@@ -200,5 +202,17 @@ async function applyToNewTarget(afterId) {
     return;
   }
   await applyToExistingTarget(added.id);
+}
+
+// Copies an existing target with all its exposures and gives the copy the framing target.
+async function applyToCopiedTarget(sourceId) {
+  const target = pendingTarget.value;
+  if (!target) return;
+  const copied = await sequenceV2Store.copyDsoTarget(sourceId);
+  if (!copied.ok) {
+    reportResult(copied, t('components.sequence.simple.copyFailed'));
+    return;
+  }
+  await applyToExistingTarget(copied.id);
 }
 </script>

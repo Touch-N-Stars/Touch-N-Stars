@@ -1,7 +1,9 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">{{ item.Slope }}x + {{ item.Intercept }}</span>
+      <span class="text-xs text-content-muted font-mono"
+        >{{ item.Slope }}x + {{ item.Intercept }}</span
+      >
     </template>
 
     <template #editor="{ save }">
@@ -26,7 +28,7 @@
         @change="save('Intercept', $event)"
       />
       <div class="seq-field-row">
-        <label class="text-xs text-slate-400 shrink-0">
+        <label class="tns-label shrink-0">
           {{ $t('components.sequence.items.moveFocuserByTemperature.absolute') }}
         </label>
         <div class="ml-auto">

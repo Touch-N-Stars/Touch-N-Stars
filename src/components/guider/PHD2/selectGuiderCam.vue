@@ -64,13 +64,19 @@ const selectedCam = ref('');
 const isLoading = ref(false);
 const borderClass = ref('border-line-strong');
 
-async function loadCameras(withRescan = false) {
+// auto: the initial load on mount. It only probes PHD2 quietly - a stopped PHD2 service is
+// normal at startup and must not raise toasts; errors are reported on user actions only.
+async function loadCameras(withRescan = false, { auto = false } = {}) {
   if (store.profileInfo.GuiderSettings.GuiderName !== 'PHD2_Single') {
     withRescan = false;
   }
   isLoading.value = true;
   try {
-    await apiService.connectPHD2();
+    const connectResponse = await apiService.connectPHD2({ quiet: auto });
+    if (auto && connectResponse?.Success !== true) {
+      borderClass.value = 'border-line-strong';
+      return;
+    }
     if (withRescan && !store.cameraInfo?.Connected) {
       await apiService.cameraAction('rescan');
     }
@@ -169,7 +175,7 @@ watch(
     }
     const isFirstRun = !oldValues;
     if (isFirstRun) {
-      await loadCameras();
+      await loadCameras(false, { auto: true });
     } else {
       validateSelection();
     }

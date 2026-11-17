@@ -11,6 +11,7 @@ import {
   migrateCelestiaAtlasSettingsStorage,
 } from '@/store/utils/celestiaAtlasSettingsMigration';
 import { serializeRigSharedSettings } from '@/services/rigSharedSettingsService';
+import { migrateNavbarIds } from '@/utils/navbarIdMigration';
 
 // Upgrade the persisted state before Pinia's persistence plugin hydrates it.
 // Existing installations keep all Atlas preferences, while the obsolete key is
@@ -106,6 +107,11 @@ export const useSettingsStore = defineStore('settings', {
     },
     framing: {
       useNinaCache: true,
+    },
+    // Sequence editor V2 layout: 'full' (default) or 'simple'. Per device, so it survives a
+    // restart and an instance switch.
+    sequence: {
+      viewMode: 'full',
     },
     // Sky chart moon overlay: kept here, not in apiStore, because this store is
     // persisted as a whole - the toggle has to survive a restart and an instance
@@ -219,6 +225,16 @@ export const useSettingsStore = defineStore('settings', {
       itemOrder: [...DEFAULT_STATUSBAR_ORDER],
       hiddenItems: [],
     },
+    // Zoomed range of the Monitor's session timeline ({ start, end } in ms, end null =
+    // up to now; null = the whole session). Per device on purpose: monitorViewSetting is shared with every
+    // client of the rig, and zooming on one device must not move the view on the others.
+    sessionTimelineZoom: null,
+    // RunIds of plugin-side flat runs whose outcome was shown, so a run that finished while the
+    // app was closed is reported exactly once. Per device and outside `flats` on purpose: `flats`
+    // is mirrored to the backend and restored on load, which brought back a stale id and showed
+    // the same outcome on every start. A list, not one id, so switching between rigs does not
+    // re-report each rig's last run.
+    seenFlatRunIds: [],
     // Screen lock (screen-lock plugin): guards against accidental touches.
     // Lives here, not in apiStore, because this store is persisted as a whole -
     // the lock has to survive a restart and an instance switch (which reloads
@@ -234,6 +250,11 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   actions: {
+    // Older persisted settings have no `sequence` block yet.
+    setSequenceViewMode(mode) {
+      if (!this.sequence) this.sequence = { viewMode: mode };
+      else this.sequence.viewMode = mode;
+    },
     async loadAllBackendSettings() {
       const sequenceStore = useSequenceStore();
       const tppaStore = useTppaStore();
@@ -345,7 +366,9 @@ export const useSettingsStore = defineStore('settings', {
       const response = await apiService.getSetting('navbar_settings');
       if (response?.Response?.Value !== undefined) {
         Object.assign(this.navbar, JSON.parse(response.Response.Value));
+        if (migrateNavbarIds(this.navbar)) this.saveNavbarSettings();
       } else if (response?.StatusCode === 404) {
+        migrateNavbarIds(this.navbar);
         this.saveNavbarSettings();
       }
     },

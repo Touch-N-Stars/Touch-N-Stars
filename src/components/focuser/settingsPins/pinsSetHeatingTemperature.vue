@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="focuserStore.focuserSettings?.HeatingTemperature !== undefined"
-    class="flex items-center w-full justify-between border border-gray-500 p-1 md:p-2 rounded-lg"
+    class="flex items-center w-full justify-between border border-line-strong p-1 md:p-2 rounded-control"
   >
-    <label class="text-xs md:text-sm text-gray-200 font-medium">
+    <label class="text-xs md:text-sm text-content font-medium">
       {{ $t('components.focuser.settings.HeatingTemperature') }}
     </label>
     <NumberInputPicker

@@ -8,6 +8,9 @@ import {
   runWithConcurrency,
   selectIndicesToLoad,
   runDeleteBatch,
+  historyRawSource,
+  neighbourInOrder,
+  createLatestLoader,
 } from '../imageHistoryUtils.js';
 
 test('buildTypeIndexMap counts per image type', () => {
@@ -208,4 +211,119 @@ test('runDeleteBatch deletes sequentially, keeps going after a failure and repor
 test('runDeleteBatch with nothing to do resolves empty', async () => {
   const result = await runDeleteBatch([], async () => {});
   assert.deepEqual(result, { deleted: [], failed: [] });
+});
+
+test('historyRawSource prefers the file name and falls back to position plus statistics', () => {
+  assert.deepEqual(historyRawSource(3, { Filename: 'L_001.fits', Mean: 1, Median: 2 }), {
+    kind: 'history',
+    filename: 'L_001.fits',
+  });
+  assert.deepEqual(historyRawSource(3, { Mean: 1.5, Median: 2 }), {
+    kind: 'history',
+    index: 3,
+    mean: 1.5,
+    median: 2,
+  });
+  assert.equal(historyRawSource(3, { Mean: NaN, Median: 2 }), null);
+  assert.equal(historyRawSource(3, undefined), null);
+});
+
+test('neighbourInOrder steps through the order the grid shows', () => {
+  // Newest first: absolute indices run backwards.
+  const order = [7, 5, 4, 0];
+  assert.equal(neighbourInOrder(order, 5, -1), 7);
+  assert.equal(neighbourInOrder(order, 5, 1), 4);
+  assert.equal(neighbourInOrder(order, 4, 1), 0);
+});
+
+test('neighbourInOrder stops at both ends and for entries no longer listed', () => {
+  const order = [7, 5, 4, 0];
+  assert.equal(neighbourInOrder(order, 7, -1), null);
+  assert.equal(neighbourInOrder(order, 0, 1), null);
+  assert.equal(neighbourInOrder(order, 6, 1), null);
+  assert.equal(neighbourInOrder([], 0, 1), null);
+  assert.equal(neighbourInOrder(undefined, 0, 1), null);
+});
+
+function deferredLoads() {
+  const pending = [];
+  const load = (key) =>
+    new Promise((resolve) => {
+      pending.push({ key, resolve });
+    });
+  return { load, pending };
+}
+
+const flush = () => new Promise((resolve) => setImmediate(resolve));
+
+test('createLatestLoader delivers a single request', async () => {
+  const { load, pending } = deferredLoads();
+  const delivered = [];
+  const loader = createLatestLoader(load, (key, result) => delivered.push([key, result]));
+
+  loader.request(4);
+  pending[0].resolve('url-4');
+  await flush();
+
+  assert.deepEqual(delivered, [[4, 'url-4']]);
+});
+
+test('createLatestLoader never runs two loads at once and skips what was passed over', async () => {
+  const { load, pending } = deferredLoads();
+  const delivered = [];
+  const loader = createLatestLoader(load, (key, result) => delivered.push([key, result]));
+
+  loader.request(4);
+  loader.request(3);
+  loader.request(2);
+  assert.equal(pending.length, 1, 'requests made during a load wait for it');
+
+  pending[0].resolve('url-4');
+  await flush();
+  assert.deepEqual(delivered, [], 'a result nobody waits for is dropped');
+  assert.deepEqual(
+    pending.map((p) => p.key),
+    [4, 2],
+    'only the last wish is fetched next'
+  );
+
+  pending[1].resolve('url-2');
+  await flush();
+  assert.deepEqual(delivered, [[2, 'url-2']]);
+});
+
+test('createLatestLoader delivers an image that was asked for again while it loaded', async () => {
+  const { load, pending } = deferredLoads();
+  const delivered = [];
+  const loader = createLatestLoader(load, (key, result) => delivered.push([key, result]));
+
+  loader.request(4);
+  loader.request(3);
+  loader.request(4);
+  pending[0].resolve('url-4');
+  await flush();
+
+  assert.deepEqual(delivered, [[4, 'url-4']]);
+  assert.equal(pending.length, 1);
+});
+
+test('createLatestLoader drops the running load after cancel and reports failures as null', async () => {
+  const delivered = [];
+  const { load, pending } = deferredLoads();
+  const loader = createLatestLoader(load, (key, result) => delivered.push([key, result]));
+
+  loader.request(4);
+  loader.cancel();
+  pending[0].resolve('url-4');
+  await flush();
+  assert.deepEqual(delivered, []);
+
+  const failing = createLatestLoader(
+    async () => {
+      throw new Error('offline');
+    },
+    (key, result) => delivered.push([key, result])
+  );
+  await failing.request(1);
+  assert.deepEqual(delivered, [[1, null]]);
 });

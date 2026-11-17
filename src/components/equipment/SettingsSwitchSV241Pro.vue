@@ -1,26 +1,27 @@
 <template>
-  <div v-if="isSV241Pro" class="flex flex-col border border-gray-500 p-1 md:p-2 rounded-lg mt-2">
-    <div class="flex flex-row items-center justify-between w-full">
-      <label for="preConnectDelay" class="text-xs md:text-sm text-gray-200 mr-2">
-        {{ $t('components.switch.sv241pro.preConnectDelay') }}
-      </label>
-      <input
-        id="preConnectDelay"
-        v-model.number="preConnectDelay"
-        @change="setPreConnectDelay"
-        type="number"
-        min="0"
-        class="tns-input text-xs md:text-sm w-48"
-        :class="statusClassPre"
-      />
-    </div>
+  <div v-if="isSV241Pro" class="tns-card flex flex-col mt-2">
+    <!-- The row glows with the result of the profile write. -->
+    <NumberInputPicker
+      v-model="preConnectDelay"
+      @change="setPreConnectDelay"
+      :label="$t('components.switch.sv241pro.preConnectDelay')"
+      labelKey="components.switch.sv241pro.preConnectDelay"
+      :min="0"
+      :max="60000"
+      :step="100"
+      :decimalPlaces="0"
+      :useDefaultSentinel="false"
+      inputId="preConnectDelay"
+      :wrapperClass="statusClassPre"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
+import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const props = defineProps({
   selectedDevice: { type: String, default: '' },
@@ -41,33 +42,12 @@ const isSV241Pro = computed(() => {
   return candidates.some((s) => s.includes('svbony') && s.includes('powerbox'));
 });
 
-const preConnectDelay = ref(0);
-const statusClassPre = ref('');
+const {
+  value: preConnectDelay,
+  save: setPreConnectDelay,
+  glowClass: statusClassPre,
+} = useProfileSetting('SwitchSettings-IndiPreConnectDelay', { fallback: 0 });
 
-function initializeSettings() {
-  const settings = store.profileInfo?.SwitchSettings;
-  if (!settings) return;
-  preConnectDelay.value = settings.IndiPreConnectDelay ?? 0;
-}
-
-async function setPreConnectDelay() {
-  try {
-    await apiService.profileChangeValue(
-      'SwitchSettings-IndiPreConnectDelay',
-      preConnectDelay.value
-    );
-    statusClassPre.value = 'glow-green';
-  } catch {
-    statusClassPre.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassPre.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(async () => {
-  await store.fetchProfilInfos();
-  initializeSettings();
-});
+// Opened right after a driver change: fetch the profile now instead of waiting for the poller.
+onMounted(() => store.fetchProfilInfos());
 </script>

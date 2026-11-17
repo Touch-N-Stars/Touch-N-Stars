@@ -1,3 +1,5 @@
+import { isAppBackgrounded } from '@/utils/appLifecycle';
+
 const SAVE_DEBOUNCE_MS = 800;
 const REFRESH_INTERVAL_MS = 5000;
 
@@ -38,7 +40,7 @@ export function initializeRigSharedSettingsSync(settingsStore) {
   });
 
   refreshTimer = setInterval(() => {
-    if (!settingsStore._sharedRigSettingsReady || saveTimer) return;
+    if (isAppBackgrounded.value || !settingsStore._sharedRigSettingsReady || saveTimer) return;
     void settingsStore.loadSharedRigUiSettings().catch((error) => {
       console.warn('[RigSharedSettings] refresh failed:', error?.message || error);
     });

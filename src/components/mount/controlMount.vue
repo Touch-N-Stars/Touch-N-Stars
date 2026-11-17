@@ -59,7 +59,7 @@ import ButtonSetAsPark from '@/components/mount/ButtonSetAsPark.vue';
 import ButtonHome from '@/components/mount/ButtonHome.vue';
 import ButtonUnpark from '@/components/mount/ButtonUnpark.vue';
 import ButtonPark from '@/components/mount/ButtonPark.vue';
-import ButtonSlewStop from '@/components/mount//ButtonSlewStop.vue';
+import ButtonSlewStop from '@/components/mount/ButtonSlewStop.vue';
 import ButtonTrackingMode from '@/components/mount/ButtonTrackingMode.vue';
 import ButtonTrackingStop from '@/components/mount/ButtonTrackingStop.vue';
 import MountParkedNotice from '@/components/mount/MountParkedNotice.vue';

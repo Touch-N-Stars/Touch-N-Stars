@@ -23,6 +23,7 @@ import { useI18n } from 'vue-i18n';
 import { Chart, registerables } from 'chart.js';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
+import { useHocusFocusStore } from '@/store/hocusFocusStore';
 import HfAfChart from '@/components/focuser/HfAfChart.vue';
 import HfAfDetails from '@/components/focuser/HfAfDetails.vue';
 
@@ -35,6 +36,7 @@ const timestamp = ref(''); // Timestamp für die Anzeige
 const temperature = ref();
 const hfRun = ref(null); // HocusFocus' last run, while HocusFocus is the auto-focuser
 const store = apiStore();
+const hfStore = useHocusFocusStore();
 let chartInstance = null;
 // Periodically reload the last autofocus run
 usePolling(() => fetchLastAf(), 15000, { immediate: false });
@@ -87,8 +89,11 @@ function parseHyperbolicFormula(formula) {
 async function fetchLastAf() {
   try {
     // While HocusFocus is the auto-focuser, its last run is the newest AF: show it the way its own panel does.
-    // PINS only: the view reads HocusFocus v4 internals that a stock NINA's HocusFocus may not have.
-    const hfData = store.isPINS ? await apiService.hocusfocus.getLastAutoFocusRun() : null;
+    // PINS only (see hocusFocusStore.available): the view reads HocusFocus v4 internals.
+    if (hfStore.available === null) await hfStore.checkAvailability();
+    const hfData = hfStore.available ? await apiService.hocusfocus.getLastAutoFocusRun() : null;
+    // The diagnosis card judges the same response, so no second request is needed.
+    hfStore.lastRun = hfData?.Success ? hfData : null;
     hfRun.value =
       hfData?.Success && hfData.IsActiveAutoFocuser && !hfData.InProgress ? hfData : null;
     if (hfRun.value) return;

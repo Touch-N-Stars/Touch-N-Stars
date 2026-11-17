@@ -117,3 +117,78 @@ export async function runDeleteBatch(items, deleteOne, { onProgress } = {}) {
   }
   return { deleted, failed };
 }
+
+/**
+ * Raw-data source of a history image for histogram and stretch (see histogramStore
+ * fetchRaw()). The PINS fork names the file; the official Advanced API only has the
+ * position, which the plugin confirms against the entry's mean and median.
+ */
+export function historyRawSource(index, stats) {
+  if (stats?.Filename) return { kind: 'history', filename: stats.Filename };
+  if (isNumber(stats?.Mean) && isNumber(stats?.Median)) {
+    return { kind: 'history', index, mean: stats.Mean, median: stats.Median };
+  }
+  return null;
+}
+
+function isNumber(value) {
+  return typeof value === 'number' && !isNaN(value);
+}
+
+/**
+ * The entry `step` places away from `current` in the order the grid shows
+ * (-1 = the tile before it, +1 = the tile after it). Null at either end, and when
+ * `current` is no longer listed (deleted, or outside the filter).
+ */
+export function neighbourInOrder(order, current, step) {
+  const list = order ?? [];
+  const position = list.indexOf(current);
+  if (position < 0) return null;
+  return list[position + step] ?? null;
+}
+
+/**
+ * Loads one image at a time and only delivers the one asked for last.
+ *
+ * imageStore keeps a single full-size history image and revokes the previous URL as
+ * soon as the next download lands, so two downloads in flight could revoke the image
+ * on screen. Requests made while a download runs therefore only replace the wish; the
+ * loop fetches whatever is wanted once the running one is done, and a result nobody
+ * waits for any more is dropped. Fast browsing skips the images in between.
+ *
+ * @param {(key: any) => Promise<any>} load
+ * @param {(key: any, result: any) => void} onLoaded  result is null when the load failed
+ */
+export function createLatestLoader(load, onLoaded) {
+  let wanted = null;
+  let running = false;
+
+  async function request(key) {
+    wanted = key;
+    if (running) return;
+    running = true;
+    try {
+      while (wanted !== null) {
+        const current = wanted;
+        let result = null;
+        try {
+          result = await load(current);
+        } catch {
+          result = null;
+        }
+        if (wanted === current) {
+          wanted = null;
+          onLoaded(current, result);
+        }
+      }
+    } finally {
+      running = false;
+    }
+  }
+
+  function cancel() {
+    wanted = null;
+  }
+
+  return { request, cancel };
+}

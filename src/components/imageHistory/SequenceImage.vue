@@ -7,8 +7,8 @@
     @pointerleave="cancelHold"
     @contextmenu="onContextMenu"
     ref="imageContainer"
-    class="image-container relative overflow-hidden touch-auto bg-gray-800 shadow-lg shadow-cyan-700/40 rounded-xl border cursor-pointer transition-shadow"
-    :class="selected ? 'border-cyan-400 ring-2 ring-cyan-400' : 'border-cyan-700'"
+    class="image-container relative overflow-hidden touch-auto bg-surface-1 rounded-card border cursor-pointer transition-shadow"
+    :class="selected ? 'border-accent ring-2 ring-accent' : 'border-line'"
   >
     <img
       ref="image"
@@ -22,7 +22,7 @@
     <button
       v-if="selectable"
       type="button"
-      class="absolute top-2 left-2 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+      class="absolute top-2 left-2 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-control focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
       role="checkbox"
       :aria-checked="selected"
       :aria-label="$t('components.sequence.imageHistoryDelete.select')"
@@ -32,7 +32,7 @@
       <span
         class="flex items-center justify-center w-7 h-7 rounded-full border-2 transition-colors"
         :class="
-          selected ? 'bg-cyan-500 border-cyan-400 text-white' : 'bg-gray-900/60 border-white/80'
+          selected ? 'bg-accent-action border-accent text-white' : 'bg-ground/60 border-white/80'
         "
       >
         <CheckIcon v-if="selected" class="w-5 h-5" />
@@ -43,7 +43,7 @@
     <button
       v-if="deletable && !selectable"
       type="button"
-      class="absolute top-2 right-2 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-lg bg-gray-900/75 text-gray-200 hover:bg-red-700/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 transition-colors"
+      class="absolute top-2 right-2 z-10 flex items-center justify-center min-h-touch min-w-touch rounded-control bg-ground/75 text-content hover:bg-status-danger/90 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-status-danger transition-colors"
       :aria-label="$t('components.sequence.imageHistoryDelete.button')"
       :title="$t('components.sequence.imageHistoryDelete.button')"
       data-testid="image-history-delete"
@@ -54,7 +54,7 @@
     <div
       v-if="showStats"
       :class="[
-        'flex flex-col w-full bottom-0 shadow-lg shadow-cyan-700/40 rounded-xl p-2 text-xs text-gray-300 bg-black/10',
+        'flex flex-col w-full bottom-0 rounded-card p-2 text-xs text-content bg-black/10',
         { absolute: !displayStatusUnderImage },
       ]"
     >
@@ -141,10 +141,10 @@
     </div>
   </div>
 
-  <!-- Teleported: the history grid wraps each tile in an isolated stacking
-       context, which would otherwise trap the fullscreen modal below the
-       fixed SubNav and the following tiles. -->
-  <Teleport to="body">
+  <!-- Teleported, so no stacking context around the tile can trap the fullscreen
+       modal below the fixed SubNav. Browsable tiles (the history grid) leave the
+       full-size view to the parent. -->
+  <Teleport v-if="!browsable" to="body">
     <ImageModal
       :showModal="showModal"
       :imageData="fullResImage"
@@ -153,6 +153,7 @@
       :index="index"
       :statistics="stats"
       :deletable="deletable"
+      :rawSource="rawSource"
       @close="closeModal"
       @delete="onModalDelete"
     />
@@ -163,6 +164,7 @@
 import { ref, computed, watch, onBeforeUnmount } from 'vue';
 import { TrashIcon, CheckIcon } from '@heroicons/vue/24/outline';
 import { createHoldTimer } from '@/utils/holdTimer';
+import { historyRawSource } from '@/utils/imageHistoryUtils';
 import ImageModal from '@/components/helpers/imageModal.vue';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { useImagetStore } from '@/store/imageStore';
@@ -219,9 +221,16 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  // The parent shows the full-size view so it can browse between tiles; a tap only
+  // emits `open`.
+  browsable: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
-const emit = defineEmits(['delete', 'toggle-select', 'hold']);
+const emit = defineEmits(['delete', 'toggle-select', 'hold', 'open']);
 
 // --- long press -----------------------------------------------------------
 // A completed hold must not also count as a tap, so the click that follows the
@@ -261,6 +270,10 @@ function onTileClick() {
   }
   if (props.selectable) {
     emit('toggle-select');
+    return;
+  }
+  if (props.browsable) {
+    emit('open');
     return;
   }
   openModal();
@@ -356,6 +369,9 @@ function closeModal() {
 function isValidNumber(value) {
   return typeof value === 'number' && !isNaN(value);
 }
+
+// Raw data for histogram and stretch.
+const rawSource = computed(() => historyRawSource(props.index, props.stats));
 
 function formatDate(dateStr) {
   const dateObject = new Date(dateStr);

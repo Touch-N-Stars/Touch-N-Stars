@@ -1,80 +1,34 @@
 <template>
   <div>
     <img v-if="imagetStore.imageData" :src="displayImageData" alt="Flat Image" />
-    <FlatHistogram v-if="store.isPINS" />
+    <FlatHistogram v-if="store.isPINS || flatsStore.serverWorkflow === true" />
     <HistogramChart
-      v-if="imagetStore.imageData && store.isPINS"
-      :data="getHistogram()"
-      :blackPoint="getStretchSettings().blackPoint"
-      :midPoint="getStretchSettings().midPoint"
-      :whitePoint="getStretchSettings().whitePoint"
-      :statistics="null"
-      :saveEnabled="true"
-      :showReset="true"
-      @levels-changed="onLevelsChanged"
-      @levels-reset="onLevelsReset"
+      v-if="imagetStore.imageData"
+      :imageUrl="imagetStore.imageData"
+      collapsibleStats
+      toolbarInChart
+      lockFullRange
     />
   </div>
 </template>
 
 <script setup>
-import { computed, watch } from 'vue';
 import { useImagetStore } from '@/store/imageStore';
-import { useHistogramStore } from '@/store/histogramStore';
 import { apiStore } from '@/store/store';
+import { useFlatassistantStore } from '@/store/flatassistantStore';
+import { useRawStretch } from '@/composables/useRawStretch';
 import FlatHistogram from './FlatHistogram.vue';
 import HistogramChart from '@/components/helpers/HistogramChart.vue';
 
 const imagetStore = useImagetStore();
-const histogramStore = useHistogramStore();
 const store = apiStore();
+const flatsStore = useFlatassistantStore();
 
-const displayImageData = computed(() => {
-  if (!imagetStore.imageData) return null;
-  return (
-    histogramStore.getStretchSettings(imagetStore.imageData).stretchedImageData ||
-    imagetStore.imageData
-  );
-});
-
-const getHistogram = () => {
-  if (!imagetStore.imageData) return null;
-  return histogramStore.getHistogram(imagetStore.imageData);
-};
-
-const getStretchSettings = () => {
-  if (!imagetStore.imageData) return { blackPoint: 0, whitePoint: 255, midPoint: 127 };
-  return histogramStore.getStretchSettings(imagetStore.imageData);
-};
-
-const onLevelsChanged = async ({ blackPoint, whitePoint, midPoint }) => {
-  if (!imagetStore.imageData) return;
-  await histogramStore.applyStretch(imagetStore.imageData, blackPoint, whitePoint, midPoint);
-};
-
-const onLevelsReset = () => {
-  if (!imagetStore.imageData) return;
-  histogramStore.resetStretch(imagetStore.imageData);
-};
-
-watch(
+// The histogram is always visible here, so the raw data loads with every new flat.
+// imageStore releases the entry whenever it replaces imageData.
+const { displayUrl: displayImageData } = useRawStretch(
   () => imagetStore.imageData,
-  (imageData) => {
-    if (!imageData) return;
-    histogramStore.requestHistogram(imageData).then(() => {
-      if (store.isPINS && store.lastImageStats?.Histogram) {
-        histogramStore.injectApiHistogram(imageData, store.lastImageStats.Histogram);
-      }
-    });
-  },
-  { immediate: true }
-);
-
-watch(
-  () => store.lastImageStats,
-  (newVal) => {
-    if (!store.isPINS || !imagetStore.imageData || !newVal?.Histogram) return;
-    histogramStore.injectApiHistogram(imagetStore.imageData, newVal.Histogram);
-  }
+  () => ({ kind: 'prepared' }),
+  () => true
 );
 </script>

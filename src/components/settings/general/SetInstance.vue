@@ -1,34 +1,34 @@
 <template>
   <div class="space-y-6">
     <!-- Instance Detection Section -->
-    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+    <div class="tns-card">
       <h3 class="text-lg font-semibold text-white mb-4">NINA Instance Discovery</h3>
       <InstanceDetection v-model="tempInstance" :hide-manual-config="true" />
     </div>
 
     <!-- Add/Edit Instance Form -->
-    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+    <div class="tns-card">
       <h3 class="text-lg font-semibold text-white mb-4">
         {{ editingInstance ? 'Edit Instance' : 'Add New Instance' }}
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Instance Name</label>
+          <label class="block text-sm font-medium text-content mb-2">Instance Name</label>
           <input
             v-model="tempInstance.name"
             type="text"
-            class="tns-input w-full py-2"
+            class="tns-select"
             placeholder="My NINA Instance"
           />
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">IP Address / FQDN</label>
+          <label class="block text-sm font-medium text-content mb-2">IP Address / FQDN</label>
           <input
             v-model="tempInstance.ip"
             type="text"
-            class="tns-input w-full py-2"
+            class="tns-select"
             placeholder="192.168.1.100"
           />
         </div>
@@ -52,9 +52,9 @@
       <!-- Error Message -->
       <div
         v-if="emptyFieldsError"
-        class="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md"
+        class="mb-4 p-3 bg-status-danger/10 border border-status-danger/40 rounded-md"
       >
-        <div class="flex items-center text-red-400 text-sm">
+        <div class="flex items-center text-status-danger text-sm">
           <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
             <path
               fill-rule="evenodd"
@@ -77,18 +77,18 @@
     </div>
 
     <!-- Instance List -->
-    <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+    <div class="tns-card">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold text-white">
           Configured Instances
-          <span class="text-sm text-gray-400 font-normal ml-2">({{ instances.length }})</span>
+          <span class="text-sm text-content-muted font-normal ml-2">({{ instances.length }})</span>
         </h3>
       </div>
 
       <!-- Empty State -->
       <div v-if="instances.length === 0" class="text-center py-8">
         <svg
-          class="mx-auto h-12 w-12 text-gray-500 mb-4"
+          class="mx-auto h-12 w-12 text-content-faint mb-4"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -100,8 +100,8 @@
             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
           />
         </svg>
-        <p class="text-gray-400 text-sm">No instances configured yet</p>
-        <p class="text-gray-500 text-xs mt-1">Use the detection above or add manually</p>
+        <p class="text-content-muted text-sm">No instances configured yet</p>
+        <p class="text-content-faint text-xs mt-1">Use the detection above or add manually</p>
       </div>
 
       <!-- Instance Cards -->
@@ -113,14 +113,14 @@
           :class="[
             settingsStore.getInstanceColorByIndex(index),
             selectedInstance === instance.id
-              ? 'ring-2 ring-cyan-500 border-cyan-500/50'
-              : 'border-gray-600 hover:border-gray-500',
+              ? 'ring-2 ring-accent border-accent/50'
+              : 'border-line-strong hover:border-content-faint',
           ]"
         >
           <!-- Selected Badge -->
           <div
             v-if="selectedInstance === instance.id"
-            class="absolute -top-2 -right-2 bg-cyan-500 text-white text-xs px-2 py-1 rounded-full font-medium"
+            class="absolute -top-2 -right-2 bg-accent-action text-white text-xs px-2 py-1 rounded-full font-medium"
           >
             Active
           </div>
@@ -131,11 +131,11 @@
                 <h4 class="font-medium text-white text-lg">{{ instance.name }}</h4>
                 <div
                   v-if="selectedInstance === instance.id"
-                  class="ml-2 w-2 h-2 bg-green-500 rounded-full"
+                  class="ml-2 w-2 h-2 bg-status-ok rounded-full"
                   title="Currently selected"
                 ></div>
               </div>
-              <div class="flex items-center text-gray-400 text-sm">
+              <div class="flex items-center text-content-muted text-sm">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -155,8 +155,8 @@
                 :class="[
                   'p-2 rounded-md transition-colors',
                   selectedInstance === instance.id
-                    ? 'text-green-400 bg-green-900/30'
-                    : 'text-gray-400 hover:text-green-400 hover:bg-green-900/20',
+                    ? 'text-status-ok bg-status-ok/15'
+                    : 'text-content-muted hover:text-status-ok hover:bg-status-ok/10',
                 ]"
                 :title="selectedInstance === instance.id ? 'Currently Active' : 'Set as Active'"
               >
@@ -171,7 +171,7 @@
 
               <button
                 @click="editInstance(instance.id)"
-                class="p-2 text-gray-400 hover:text-cyan-400 hover:bg-cyan-900/20 rounded-md transition-colors"
+                class="p-2 text-content-muted hover:text-accent hover:bg-accent/10 rounded-md transition-colors"
                 title="Edit Instance"
               >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -183,7 +183,7 @@
 
               <button
                 @click="removeInstance(instance.id)"
-                class="p-2 text-gray-400 hover:text-red-400 hover:bg-red-900/20 rounded-md transition-colors"
+                class="p-2 text-content-muted hover:text-status-danger hover:bg-status-danger/10 rounded-md transition-colors"
                 title="Delete Instance"
               >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

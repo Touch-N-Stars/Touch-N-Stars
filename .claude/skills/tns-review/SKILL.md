@@ -58,13 +58,17 @@ Every agent prompt must carry these constraints verbatim:
   absent.
 - **Polling contract.** `/v2/socket` does not deliver every state change, so
   polling must not be replaced by WebSocket events. Every new or changed poller
-  goes through `createPoller` (`src/utils/poller.js:9`) or
-  `useBackgroundAwarePolling` (`src/utils/appLifecycle.js:27`) and pauses when
-  the app is backgrounded.
+  goes through `usePolling` (`src/composables/usePolling.js`) in components, or
+  `createPoller` (`src/utils/poller.js`) / `useBackgroundAwarePolling`
+  (`src/utils/appLifecycle.js`) elsewhere, and pauses when the app is
+  backgrounded. A raw `setInterval` is a finding.
 - **Equipment safety.** Connection ordering (switch first with its 5 s wait,
-  mount before guider), profile writes via `apiService.profileChangeValue`,
-  device selection via `setProfileDevice` (`src/utils/equipmentDevices.js`) so
-  it survives the next device-list refresh.
+  mount before guider), profile values via `useProfileSetting`
+  (`src/composables/useProfileSetting.js`) — a direct
+  `apiService.profileChangeValue` is only allowed in the files listed as
+  exceptions in `eslint.config.js` — and device selection via
+  `setProfileDevice` (`src/utils/equipmentDevices.js`) so it survives the next
+  device-list refresh.
 - **Races.** Stale responses overwriting newer state, missing fetch
   generations, re-entrancy guards, and operations that take seconds
   (mount reconnect, driver reload, PHD2) without a loading flag.
@@ -83,10 +87,16 @@ Every agent prompt must carry these constraints verbatim:
   screens.
 - **Low-light operation.** Contrast and dark-mode readability must not regress;
   modals and dialogs stay operable.
-- **z-index staffing:** `Modal` 40, `LoadingOverlay` 60, setup wizard 70, modals
-  opened from the wizard 75, `LocationSyncModal` 76, PINS upgrade overlay and
-  `DialogModal` 80. Anything teleported to `body` needs an explicit value.
-- **Drag & drop:** every `<draggable>` needs `:fallbackOnBody="true"`; never
+- **Building blocks instead of hand-rolled UI.** Overlays go through `Modal`,
+  loading states through `Spinner`, missing devices through
+  `DeviceNotConnected`, numeric fields through `NumberInputPicker` (all in
+  `src/components/helpers/`). A new `fixed inset-0` overlay, `animate-spin`
+  spinner or `type="number"` input is a finding.
+- **z-index staffing:** pick a named layer from the `zIndex` scale in
+  `tailwind.config.cjs` (`z-modal` 40, `z-loading` 60, `z-overlay` 70,
+  `z-overlay-modal` 75, `z-overlay-blocking` 76, `z-dialog` 80, ...), never a raw
+  `z-50` / `z-[n]` / `z-index: n`. Anything teleported to `body` needs a layer.
+- **Drag & drop:** every `<draggable>` needs `:fallbackOnBody="true"`; no new
   `forceFallback: true`; watch for `backdrop-filter` on a parent, which creates
   a containing block for `position: fixed` and misplaces the ghost on Android
   Chrome.

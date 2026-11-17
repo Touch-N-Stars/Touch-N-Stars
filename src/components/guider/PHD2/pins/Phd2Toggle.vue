@@ -1,7 +1,7 @@
 <template>
   <div v-if="store.isPINS" class="flex items-center justify-between w-full">
     <div class="flex items-center gap-1">
-      <span class="text-sm font-medium text-gray-300">{{ $t(labelKey) }}</span>
+      <span class="text-sm font-medium text-content">{{ $t(labelKey) }}</span>
       <InfoModal v-if="helpKey" :title="$t(labelKey)" :message="$t(helpKey)" size="w-4 h-4" />
     </div>
     <toggleButton

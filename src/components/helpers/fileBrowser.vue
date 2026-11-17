@@ -2,21 +2,23 @@
   <Teleport to="body">
     <div
       v-if="isOpen"
+      ref="overlayElement"
       class="fixed inset-0 bg-black/65 backdrop-blur-sm flex items-center justify-center z-top p-4"
       @click.self="cancel"
     >
       <div
-        class="bg-[#1a1f2e] border border-[#2e3650] rounded-[10px] w-full max-w-[520px] h-[90vh] flex flex-col overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.6)]"
+        role="dialog"
+        aria-modal="true"
+        :aria-label="title || $t('components.fileBrowser.title')"
+        class="bg-surface-1 border border-line rounded-[10px] w-full max-w-[520px] h-[90vh] flex flex-col overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.6)]"
       >
         <!-- Header -->
-        <div
-          class="flex items-center justify-between px-4 py-3.5 border-b border-[#2e3650] shrink-0"
-        >
-          <span class="text-sm font-semibold text-slate-200 tracking-wide">{{
+        <div class="flex items-center justify-between px-4 py-3.5 border-b border-line shrink-0">
+          <span class="text-sm font-semibold text-content tracking-wide">{{
             title || $t('components.fileBrowser.title')
           }}</span>
           <button
-            class="text-slate-500 text-sm px-2 py-1 rounded hover:text-slate-200 hover:bg-[#2e3650] transition-colors cursor-pointer bg-transparent border-none"
+            class="text-content-faint text-sm px-2 py-1 rounded hover:text-content hover:bg-surface-3 transition-colors cursor-pointer bg-transparent border-none"
             @click="cancel"
           >
             ✕
@@ -25,10 +27,10 @@
 
         <!-- Breadcrumb + Up-Button -->
         <div
-          class="flex items-center gap-1 px-3 py-2 border-b border-[#2e3650] bg-[#151a27] shrink-0 min-h-9 overflow-x-auto"
+          class="flex items-center gap-1 px-3 py-2 border-b border-line bg-ground shrink-0 min-h-9 overflow-x-auto"
         >
           <button
-            class="flex items-center justify-center w-6 h-6 rounded text-slate-400 hover:text-slate-200 hover:bg-[#2e3650] transition-colors cursor-pointer bg-transparent border-none shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
+            class="flex items-center justify-center w-6 h-6 rounded text-content-muted hover:text-content hover:bg-surface-3 transition-colors cursor-pointer bg-transparent border-none shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
             :disabled="!canGoUp"
             @click="goUp"
             :title="$t('components.fileBrowser.goUp')"
@@ -50,12 +52,12 @@
               class="flex items-center bg-transparent border-none text-[0.78rem] cursor-pointer px-1 py-0.5 rounded transition-colors whitespace-nowrap"
               :class="
                 i === breadcrumbs.length - 1
-                  ? 'text-slate-200 cursor-default pointer-events-none'
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'text-content cursor-default pointer-events-none'
+                  : 'text-content-faint hover:text-content'
               "
               @click="navigateTo(crumb.path)"
             >
-              <span v-if="i > 0" class="text-[#2e3650] mr-0.5 pointer-events-none">›</span>
+              <span v-if="i > 0" class="text-content-faint mr-0.5 pointer-events-none">›</span>
               {{ crumb.label }}
             </button>
           </div>
@@ -65,22 +67,22 @@
         <div class="flex-1 overflow-y-auto min-h-[160px]">
           <div
             v-if="listLoading"
-            class="flex items-center justify-center gap-2 min-h-[140px] text-slate-500 text-sm"
+            class="flex items-center justify-center gap-2 min-h-[140px] text-content-faint text-sm"
           >
             <span
-              class="w-4 h-4 border-2 border-[#2e3650] border-t-cyan-700 rounded-full animate-spin shrink-0"
+              class="w-4 h-4 border-2 border-line border-t-accent-action rounded-full animate-spin shrink-0"
             ></span>
             <span>{{ $t('components.fileBrowser.loading') }}</span>
           </div>
           <div
             v-else-if="listError"
-            class="flex items-center justify-center min-h-[140px] text-red-400 text-sm px-4 text-center"
+            class="flex items-center justify-center min-h-[140px] text-status-danger text-sm px-4 text-center"
           >
             {{ listError }}
           </div>
           <div
             v-else-if="directories.length === 0 && filteredFiles.length === 0"
-            class="flex items-center justify-center min-h-[140px] text-slate-600 text-sm italic"
+            class="flex items-center justify-center min-h-[140px] text-content-faint text-sm italic"
           >
             {{ $t('components.fileBrowser.empty') }}
           </div>
@@ -92,28 +94,32 @@
               class="flex items-center gap-2 px-3 py-2 cursor-pointer border-l-2 transition-all group"
               :class="
                 selectedPath === dir.path
-                  ? 'bg-cyan-900/10 border-l-cyan-700'
-                  : 'border-l-transparent hover:bg-[#1e2639]'
+                  ? 'bg-accent/10 border-l-accent-action'
+                  : 'border-l-transparent hover:bg-surface-2'
               "
               @click="selectDirectory(dir)"
               @dblclick="navigateTo(dir.path)"
             >
               <!-- Folder icon -->
-              <svg class="w-4 h-4 shrink-0 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+              <svg
+                class="w-4 h-4 shrink-0 text-status-warn"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
                 <path
                   d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"
                 />
               </svg>
-              <span class="flex-1 text-[0.85rem] text-slate-200 truncate">{{ dir.name }}</span>
+              <span class="flex-1 text-[0.85rem] text-content truncate">{{ dir.name }}</span>
               <span
                 v-if="selectedPath !== dir.path"
-                class="text-[0.7rem] text-slate-600 shrink-0 group-hover:hidden"
+                class="text-[0.7rem] text-content-faint shrink-0 group-hover:hidden"
               >
                 {{ $t('components.fileBrowser.dblClickHint') }}
               </span>
               <!-- Delete button -->
               <button
-                class="items-center justify-center w-6 h-6 rounded text-slate-500 hover:text-red-400 hover:bg-red-900/20 transition-colors cursor-pointer bg-transparent border-none shrink-0"
+                class="items-center justify-center w-6 h-6 rounded text-content-faint hover:text-status-danger hover:bg-status-danger/10 transition-colors cursor-pointer bg-transparent border-none shrink-0"
                 :class="selectedPath === dir.path ? 'flex' : 'hidden group-hover:flex'"
                 @click.stop="deleteDirectory(dir)"
                 :title="$t('components.fileBrowser.deleteDir')"
@@ -136,7 +142,7 @@
             <!-- Divider between dirs and files -->
             <li
               v-if="directories.length > 0 && filteredFiles.length > 0"
-              class="mx-3 my-1 border-t border-[#2e3650]"
+              class="mx-3 my-1 border-t border-line"
             />
 
             <!-- Files (hidden in directory mode) -->
@@ -144,17 +150,17 @@
               v-if="props.mode !== 'directory'"
               v-for="file in filteredFiles"
               :key="file.path"
-              class="flex items-center gap-2 px-3 py-2 border-l-2 transition-all group cursor-pointer hover:bg-[#1e2639]"
+              class="flex items-center gap-2 px-3 py-2 border-l-2 transition-all group cursor-pointer hover:bg-surface-2"
               :class="
                 selectedPath === file.path
-                  ? 'bg-cyan-900/10 border-l-cyan-700'
+                  ? 'bg-accent/10 border-l-accent-action'
                   : 'border-l-transparent'
               "
               @click="selectFile(file)"
             >
               <!-- File icon -->
               <svg
-                class="w-4 h-4 shrink-0 text-slate-400"
+                class="w-4 h-4 shrink-0 text-content-muted"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -163,16 +169,18 @@
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
-              <span class="flex-1 text-[0.85rem] text-slate-200 truncate">{{ file.name }}</span>
-              <span class="text-[0.7rem] text-slate-500 shrink-0">{{ formatSize(file.size) }}</span>
+              <span class="flex-1 text-[0.85rem] text-content truncate">{{ file.name }}</span>
+              <span class="text-[0.7rem] text-content-faint shrink-0">{{
+                formatSize(file.size)
+              }}</span>
               <span
                 v-if="selectedPath !== file.path"
-                class="text-[0.7rem] text-slate-600 shrink-0 ml-2 group-hover:hidden"
+                class="text-[0.7rem] text-content-faint shrink-0 ml-2 group-hover:hidden"
                 >{{ formatDate(file.lastModified) }}
               </span>
               <!-- Delete button -->
               <button
-                class="items-center justify-center w-6 h-6 rounded text-slate-500 hover:text-red-400 hover:bg-red-900/20 transition-colors cursor-pointer bg-transparent border-none shrink-0"
+                class="items-center justify-center w-6 h-6 rounded text-content-faint hover:text-status-danger hover:bg-status-danger/10 transition-colors cursor-pointer bg-transparent border-none shrink-0"
                 :class="selectedPath === file.path ? 'flex' : 'hidden group-hover:flex'"
                 @click.stop="deleteFile(file)"
                 :title="$t('components.fileBrowser.deleteFile')"
@@ -195,19 +203,19 @@
         </div>
 
         <!-- New Folder -->
-        <div class="flex items-center gap-2 px-4 py-2 border-t border-[#2e3650] shrink-0">
+        <div class="flex items-center gap-2 px-4 py-2 border-t border-line shrink-0">
           <input
             v-if="creatingFolder"
             ref="folderInput"
             v-model="newFolderName"
-            class="flex-1 bg-[#0f1420] border border-[#2e3650] focus:border-cyan-700 rounded-md text-slate-200 text-xs px-2.5 py-1.5 outline-none transition-colors"
+            class="flex-1 bg-ground border border-line focus:border-accent rounded-md text-content text-xs px-2.5 py-1.5 outline-none transition-colors"
             :placeholder="$t('components.fileBrowser.folderPlaceholder')"
             @keydown.enter="confirmNewFolder"
             @keydown.escape="cancelNewFolder"
           />
           <button
             v-if="!creatingFolder"
-            class="px-3 py-1.5 rounded-md border border-[#2e3650] bg-transparent text-slate-400 text-xs cursor-pointer hover:bg-[#2e3650] hover:text-slate-200 transition-all"
+            class="px-3 py-1.5 rounded-md border border-line bg-transparent text-content-muted text-xs cursor-pointer hover:bg-surface-3 hover:text-content transition-all"
             @click="startNewFolder"
           >
             {{ $t('components.fileBrowser.newFolder') }}
@@ -228,20 +236,20 @@
 
         <!-- Selected Path Preview -->
         <div
-          class="flex items-center gap-2 px-4 py-2 bg-[#0f1420] border-t border-[#2e3650] shrink-0 min-h-9"
+          class="flex items-center gap-2 px-4 py-2 bg-ground border-t border-line shrink-0 min-h-9"
         >
-          <span class="text-xs text-slate-600 whitespace-nowrap shrink-0">{{
+          <span class="text-xs text-content-faint whitespace-nowrap shrink-0">{{
             $t('components.fileBrowser.selectedPath')
           }}</span>
           <div class="flex-1 overflow-x-auto scrollbar-thin">
-            <span class="text-[0.78rem] text-slate-400 font-mono whitespace-nowrap">{{
+            <span class="text-[0.78rem] text-content-muted font-mono whitespace-nowrap">{{
               selectedPath || '—'
             }}</span>
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2 px-4 py-3 border-t border-[#2e3650] shrink-0">
+        <div class="flex justify-end gap-2 px-4 py-3 border-t border-line shrink-0">
           <button class="tns-btn-secondary" @click="cancel">
             {{ $t('common.cancel') }}
           </button>
@@ -256,6 +264,7 @@
 
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue';
+import { useModalEscape } from '@/composables/useModalEscape';
 import { useI18n } from 'vue-i18n';
 import apiService from '@/services/apiService';
 import { useToastStore } from '@/store/toastStore';
@@ -513,4 +522,7 @@ function confirm() {
 function cancel() {
   emit('update:modelValue', false);
 }
+
+const overlayElement = ref(null);
+useModalEscape(overlayElement, cancel);
 </script>

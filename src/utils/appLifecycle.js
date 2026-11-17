@@ -19,27 +19,35 @@ export function setAppBackgrounded(value) {
  * Creates a poller that starts/stops with `activeRef` (e.g. a `show` prop or
  * `v-if` condition) and additionally pauses/resumes with app background state,
  * without the caller having to hook into App.vue directly.
+ *
+ * `immediate` applies when activeRef turns true, not on the foreground switch: App.vue
+ * aborts stale requests shortly after it, and an aborted request resolves as an empty
+ * response that callers would write into their state. Set `immediateOnResume` only if
+ * waiting a full interval after resume is worse and fetchFn tolerates that response.
  * @param {() => Promise<void>|void} fetchFn
  * @param {number} intervalMs
  * @param {import('vue').Ref<boolean>} activeRef - poll only while this is true
- * @param {{ immediate?: boolean }} [options]
+ * @param {{ immediate?: boolean, immediateOnResume?: boolean }} [options]
  */
 export function useBackgroundAwarePolling(fetchFn, intervalMs, activeRef, options = {}) {
-  const poller = createPoller(fetchFn, intervalMs, options);
+  const { immediateOnResume = false, ...pollerOptions } = options;
+  const poller = createPoller(fetchFn, intervalMs, pollerOptions);
   let disposed = false;
 
   const canRun = () => !disposed && activeRef.value && !isAppBackgrounded.value;
 
-  const sync = () => {
+  const sync = (startOptions) => {
     if (canRun()) {
-      poller.start();
+      poller.start(startOptions);
     } else {
       poller.stop();
     }
   };
 
-  const stopWatchActive = watch(activeRef, sync, { immediate: true });
-  const stopWatchBackground = watch(isAppBackgrounded, sync);
+  const stopWatchActive = watch(activeRef, () => sync(), { immediate: true });
+  const stopWatchBackground = watch(isAppBackgrounded, () =>
+    sync(immediateOnResume ? undefined : { immediate: false })
+  );
 
   onUnmounted(() => {
     disposed = true;

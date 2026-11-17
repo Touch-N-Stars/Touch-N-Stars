@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <!-- Auto-Detection Section -->
-    <div class="p-4 bg-gray-700 rounded-lg">
+    <div class="p-4 bg-surface-3 rounded-lg">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-medium text-white">
           {{ t('components.instanceDetection.autoDetectionTitle') }}
@@ -17,17 +17,17 @@
       </div>
       <!-- Detection Results -->
       <div v-if="detectionMessage" class="mb-4">
-        <div :class="detectionSuccess ? 'text-green-400' : 'text-yellow-400'" class="text-sm">
+        <div :class="detectionSuccess ? 'text-status-ok' : 'text-status-warn'" class="text-sm">
           {{ detectionMessage }}
         </div>
       </div>
       <!-- No Instance Found Message -->
-      <div v-if="showNoInstanceMessage" class="text-gray-400 text-sm">
+      <div v-if="showNoInstanceMessage" class="text-content-muted text-sm">
         <p>
           {{ t('components.instanceDetection.noInstanceMessage') }}
         </p>
       </div>
-      <div v-else-if="!supportsMdnsDiscovery" class="text-gray-400 text-sm">
+      <div v-else-if="!supportsMdnsDiscovery" class="text-content-muted text-sm">
         <p>
           {{ t('components.instanceDetection.mdnsAvailabilityHint') }}
         </p>
@@ -39,35 +39,35 @@
         {{ t('components.instanceDetection.manualConfigTitle') }}
       </h3>
       <div>
-        <label class="block text-sm font-medium text-gray-400 mb-1">
+        <label class="block text-sm font-medium text-content-muted mb-1">
           {{ t('components.instanceDetection.instanceNameLabel') }}
         </label>
         <input
           v-model="instanceName"
           type="text"
-          class="w-full px-3 py-2 bg-gray-700 text-gray-300 rounded-md"
+          class="w-full px-3 py-2 bg-surface-3 text-content rounded-md"
           :placeholder="t('components.instanceDetection.instanceNamePlaceholder')"
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-400 mb-1">
+        <label class="block text-sm font-medium text-content-muted mb-1">
           {{ t('components.instanceDetection.ipLabel') }}
         </label>
         <input
           v-model="instanceIP"
           type="text"
-          class="w-full px-3 py-2 bg-gray-700 text-gray-300 rounded-md"
+          class="w-full px-3 py-2 bg-surface-3 text-content rounded-md"
           :placeholder="t('components.instanceDetection.ipPlaceholder')"
         />
       </div>
       <div>
-        <label class="block text-sm font-medium text-gray-400 mb-1">
+        <label class="block text-sm font-medium text-content-muted mb-1">
           {{ t('components.instanceDetection.portLabel') }}
         </label>
         <input
           v-model="instancePort"
           type="text"
-          class="w-full px-3 py-2 bg-gray-700 text-gray-300 rounded-md"
+          class="w-full px-3 py-2 bg-surface-3 text-content rounded-md"
           :placeholder="t('components.instanceDetection.portPlaceholder')"
         />
       </div>
@@ -75,99 +75,81 @@
   </div>
 
   <!-- Discovery Modal -->
-  <div
-    v-if="showDiscoveryModal"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
-    @click.self="closeDiscoveryModal"
+  <Modal
+    :show="showDiscoveryModal"
+    zIndex="z-top"
+    maxWidth="max-w-lg"
+    :title="t('components.instanceDetection.modalTitle')"
+    @close="closeDiscoveryModal"
   >
-    <div class="w-full max-w-lg rounded-xl bg-gray-800/95 p-6 shadow-2xl">
-      <div class="flex items-start justify-between">
-        <div>
-          <h2 class="text-xl font-semibold text-white">
-            {{ t('components.instanceDetection.modalTitle') }}
-          </h2>
-          <p class="text-sm text-gray-400">
-            {{ t('components.instanceDetection.modalSubtitle') }}
-          </p>
-        </div>
-        <button
-          type="button"
-          class="p-2 text-gray-300 hover:text-white hover:bg-gray-700/60 rounded-full transition-colors"
-          @click="closeDiscoveryModal"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            class="h-5 w-5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.5"
-              d="M6 6l12 12M6 18L18 6"
-            />
-          </svg>
-        </button>
+    <template #header>
+      <div>
+        <h2 class="text-xl font-bold">{{ t('components.instanceDetection.modalTitle') }}</h2>
+        <p class="text-sm text-content-muted">
+          {{ t('components.instanceDetection.modalSubtitle') }}
+        </p>
       </div>
+    </template>
+    <template #body>
+      <div class="w-full">
+        <div class="mt-6 space-y-4 max-h-80 overflow-y-auto pr-1">
+          <div v-if="modalMessage" class="flex items-center space-x-3 text-content">
+            <span v-if="isDetecting" class="loader w-4 h-4"></span>
+            <span>{{ modalMessage }}</span>
+          </div>
 
-      <div class="mt-6 space-y-4 max-h-80 overflow-y-auto pr-1">
-        <div v-if="modalMessage" class="flex items-center space-x-3 text-gray-300">
-          <span v-if="isDetecting" class="loader w-4 h-4"></span>
-          <span>{{ modalMessage }}</span>
-        </div>
-
-        <div
-          v-if="discoveryError"
-          class="rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-2 text-sm text-red-200"
-        >
-          {{ discoveryError }}
-        </div>
-
-        <template v-if="discoveredInstances.length">
-          <button
-            v-for="instance in discoveredInstances"
-            :key="instanceKey(instance)"
-            type="button"
-            :disabled="!instance.ip || !instance.port"
-            @click="handleInstanceSelected(instance)"
-            class="w-full rounded-lg border border-gray-700 bg-gray-700/40 px-4 py-3 text-left text-sm text-gray-100 transition"
-            :class="{
-              'hover:border-blue-500 hover:bg-gray-700/60 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40':
-                instance.ip && instance.port,
-              'cursor-not-allowed opacity-60': !instance.ip || !instance.port,
-            }"
+          <div
+            v-if="discoveryError"
+            class="rounded-lg border border-status-danger/40 bg-status-danger/10 px-3 py-2 text-sm text-status-danger"
           >
-            <div class="text-base font-semibold text-white">
-              {{ instance.label }}
-            </div>
-            <div class="mt-1 text-sm text-gray-300">
-              <span v-if="instance.ip && instance.port">
-                {{ instance.ip }}:{{ instance.port }}
-              </span>
-              <span v-else class="text-gray-400">
-                {{ t('components.instanceDetection.addressUnavailable') }}
-              </span>
-            </div>
-            <div v-if="instance.hosts.length > 1" class="mt-2 text-xs text-gray-500">
-              {{ t('components.instanceDetection.otherAddresses') }} {{ otherHosts(instance) }}
-            </div>
-          </button>
-        </template>
+            {{ discoveryError }}
+          </div>
 
-        <div
-          v-else-if="!isDetecting && !discoveryError"
-          class="rounded-lg border border-gray-700 bg-gray-800/80 px-3 py-2 text-sm text-gray-300"
-        >
-          {{ t('components.instanceDetection.modalEmpty') }}
+          <template v-if="discoveredInstances.length">
+            <button
+              v-for="instance in discoveredInstances"
+              :key="instanceKey(instance)"
+              type="button"
+              :disabled="!instance.ip || !instance.port"
+              @click="handleInstanceSelected(instance)"
+              class="w-full rounded-lg border border-line bg-surface-3/40 px-4 py-3 text-left text-sm text-content transition"
+              :class="{
+                'hover:border-accent hover:bg-surface-3 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/40':
+                  instance.ip && instance.port,
+                'cursor-not-allowed opacity-60': !instance.ip || !instance.port,
+              }"
+            >
+              <div class="text-base font-semibold text-white">
+                {{ instance.label }}
+              </div>
+              <div class="mt-1 text-sm text-content">
+                <span v-if="instance.ip && instance.port">
+                  {{ instance.ip }}:{{ instance.port }}
+                </span>
+                <span v-else class="text-content-muted">
+                  {{ t('components.instanceDetection.addressUnavailable') }}
+                </span>
+              </div>
+              <div v-if="instance.hosts.length > 1" class="mt-2 text-xs text-content-faint">
+                {{ t('components.instanceDetection.otherAddresses') }} {{ otherHosts(instance) }}
+              </div>
+            </button>
+          </template>
+
+          <div
+            v-else-if="!isDetecting && !discoveryError"
+            class="rounded-lg border border-line bg-surface-2/80 px-3 py-2 text-sm text-content"
+          >
+            {{ t('components.instanceDetection.modalEmpty') }}
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    </template>
+  </Modal>
 </template>
 <script setup>
 import { ref, watch } from 'vue';
+import Modal from '@/components/helpers/Modal.vue';
 import { Capacitor } from '@capacitor/core';
 import { mDNS } from '@acovanconis/capacitor-mdns';
 import { useI18n } from 'vue-i18n';

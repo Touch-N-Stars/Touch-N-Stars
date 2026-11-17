@@ -1,10 +1,10 @@
 <template>
-  <div class="flex flex-col w-full border border-gray-500 p-1 md:p-2 rounded-lg">
+  <div class="flex flex-col w-full border border-line-strong p-1 md:p-2 rounded-lg">
     <!-- Guiding Start Retry -->
     <ProfileToggle
       labelKey="components.guider.guidingStartRetry"
       settingKey="GuiderSettings-AutoRetryStartGuiding"
-      labelClass="text-xs md:text-sm text-gray-200"
+      labelClass="text-xs md:text-sm text-content"
       toggleClass="pr-5 pl-5 justify-center h-7 md:h-8"
     />
 
@@ -28,46 +28,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 
-const store = apiStore();
-
-const guidingStartTimeout = ref(60);
-
-const statusClassGuidingStartTimeout = ref('');
-
-const initializeSettings = () => {
-  if (!store.profileInfo?.GuiderSettings) {
-    console.warn('GuiderSettings not loaded');
-    return;
-  }
-
-  guidingStartTimeout.value =
-    store.profileInfo.GuiderSettings.AutoRetryStartGuidingTimeoutSeconds ?? 60;
-};
-
-async function setGuidingStartTimeout() {
-  try {
-    await apiService.profileChangeValue(
-      'GuiderSettings-AutoRetryStartGuidingTimeoutSeconds',
-      guidingStartTimeout.value
-    );
-    statusClassGuidingStartTimeout.value = 'glow-green';
-  } catch (error) {
-    console.error('Error setting guiding start timeout:', error);
-    statusClassGuidingStartTimeout.value = 'glow-red';
-  } finally {
-    setTimeout(() => {
-      statusClassGuidingStartTimeout.value = '';
-    }, 2000);
-  }
-}
-
-onMounted(() => {
-  initializeSettings();
-});
+const { value: guidingStartTimeout, save: setGuidingStartTimeout } = useProfileSetting(
+  'GuiderSettings-AutoRetryStartGuidingTimeoutSeconds',
+  { fallback: 60 }
+);
 </script>

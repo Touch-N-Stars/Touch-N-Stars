@@ -63,10 +63,10 @@ import { storeToRefs } from 'pinia';
 import { ArrowPathIcon } from '@heroicons/vue/24/outline';
 import apiPinsService from '@/services/apiPinsService';
 import { useSettingsStore } from '@/store/settingsStore';
-import { usePinsStore } from '@/plugins/pins/store/pinsStore';
+import { usePinsStore } from '@/store/pinsStore';
 import { apiStore } from '@/store/store';
-import { usePinsUpgradeTracker } from '@/plugins/pins/composables/usePinsUpgradeTracker';
-import { parseJobIdFromResponse } from '@/plugins/pins/composables/pinsJobPolling';
+import { usePinsUpgradeTracker } from '@/components/pins/composables/usePinsUpgradeTracker';
+import { parseJobIdFromResponse } from '@/components/pins/composables/pinsJobPolling';
 
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
@@ -95,17 +95,21 @@ function appendLog(message) {
   pinsStore.appendTerminalLog(message);
 }
 
-const { beginUpgradeTrackingFromStart, resetUpgradeForNewRun, restoreUpgradeState } =
-  usePinsUpgradeTracker({
-    t,
-    appendLog,
-    pinsStore,
-    status,
-    jobId,
-    activeOperation,
-    getIp,
-    shouldWaitForApiRecovery: () => !store.isBackendReachable,
-  });
+const {
+  beginUpgradeTrackingFromStart,
+  adoptRunningUpgrade,
+  resetUpgradeForNewRun,
+  restoreUpgradeState,
+} = usePinsUpgradeTracker({
+  t,
+  appendLog,
+  pinsStore,
+  status,
+  jobId,
+  activeOperation,
+  getIp,
+  shouldWaitForApiRecovery: () => !store.isBackendReachable,
+});
 
 async function checkUpdates() {
   if (isChecking.value) return;
@@ -150,8 +154,9 @@ async function startUpgrade() {
     // daemon restart. The global overlay in App.vue renders the progress.
     beginUpgradeTrackingFromStart(ip, returnedJobId, data);
   } catch (error) {
+    if (adoptRunningUpgrade(ip, error)) return;
     console.error('[PinsWizard] Upgrade start failed:', error);
-    status.value = 'Failed';
+    status.value = error?.response ? 'Failed' : 'Unknown';
     errorMessage.value = t('components.setupWizard.updates.upgradeFailed', {
       message: error.message,
     });

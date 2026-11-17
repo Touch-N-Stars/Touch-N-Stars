@@ -2,7 +2,7 @@
   <div class="flex flex-col gap-1">
     <div class="flex items-center justify-between">
       <span class="flex items-center gap-1">
-        <span class="text-sm font-medium text-gray-300">
+        <span class="text-sm font-medium text-content">
           {{ $t('components.settings.plate_solver.Filter') }}
         </span>
         <InfoModal
@@ -32,14 +32,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { computed } from 'vue';
 import { apiStore } from '@/store/store';
-import apiService from '@/services/apiService';
+import { useProfileSetting } from '@/composables/useProfileSetting';
 import InfoModal from '@/components/helpers/infoModal.vue';
 
 const store = apiStore();
-const selectedValue = ref('null');
-const statusClass = ref('');
 
 const filters = computed(() => store.profileInfo?.FilterWheelSettings?.FilterWheelFilters ?? []);
 
@@ -64,23 +62,10 @@ function readCurrent() {
   return current.value ? String(current.value.Position) : 'null';
 }
 
-async function updateSetting() {
-  try {
-    const res = await apiService.profileChangeValue(
-      'PlateSolveSettings-Filter',
-      selectedValue.value
-    );
-    statusClass.value = res?.Success === false ? 'glow-red' : 'glow-green';
-  } catch (e) {
-    console.log('Error save setting', e);
-    statusClass.value = 'glow-red';
-  }
-  setTimeout(() => (statusClass.value = ''), 1500);
-}
-
-onMounted(() => (selectedValue.value = readCurrent()));
-watch(
-  () => store.profileInfo?.PlateSolveSettings?.Filter,
-  () => (selectedValue.value = readCurrent())
-);
+// The select works on the filter position as a string, 'null' for none.
+const {
+  value: selectedValue,
+  save: updateSetting,
+  glowClass: statusClass,
+} = useProfileSetting('PlateSolveSettings-Filter', { source: readCurrent });
 </script>

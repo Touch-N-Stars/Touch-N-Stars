@@ -1,0 +1,10 @@
+{
+  "id": "mcp-chat",
+  "name": "PINS AI Chat",
+  "description": "Local multilingual MCP chat with reviewed actions and troubleshooting",
+  "version": "0.2.0",
+  "author": "Christian Wöhrle",
+  "defaultEnabled": false,
+  "enabled": false,
+  "isPins": true
+}

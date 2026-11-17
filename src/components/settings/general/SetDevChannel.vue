@@ -1,9 +1,9 @@
 <template>
   <div>
     <div
-      class="flex flex-row items-center justify-between w-full border border-gray-500 p-2 rounded-lg"
+      class="flex flex-row items-center justify-between w-full border border-line-strong p-2 rounded-lg"
     >
-      <label class="text-gray-400">
+      <label class="text-content-muted">
         {{ $t('components.settings.devChannel.title') }}
       </label>
       <div>
@@ -13,7 +13,7 @@
         />
       </div>
     </div>
-    <p class="text-xs text-gray-500 mt-1">
+    <p class="text-xs text-content-faint mt-1">
       {{ $t('components.settings.devChannel.description') }}
     </p>
   </div>

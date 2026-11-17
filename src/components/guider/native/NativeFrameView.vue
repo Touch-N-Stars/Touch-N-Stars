@@ -1,0 +1,701 @@
+<template>
+  <div class="tns-card p-2! flex flex-col gap-2 min-w-0">
+    <!-- Toolbar -->
+    <div class="flex items-center gap-2 min-w-0">
+      <div class="flex flex-col min-w-0 text-xs leading-tight">
+        <span class="text-content font-semibold tabular-nums truncate">
+          {{ t('components.guider.native.frame.title') }}
+        </span>
+        <span class="text-content-faint tabular-nums truncate">{{ subtitle }}</span>
+      </div>
+      <div class="ml-auto flex items-center gap-1 shrink-0">
+        <div class="flex rounded-control border border-line-strong overflow-hidden">
+          <button
+            v-for="option in STRETCH_OPTIONS"
+            :key="option.id"
+            type="button"
+            class="px-2 min-h-touch text-xs font-semibold"
+            :class="
+              stretchId === option.id
+                ? 'bg-accent/20 text-accent'
+                : 'bg-surface-2 text-content-muted'
+            "
+            :title="t('components.guider.native.frame.stretch')"
+            @click="setStretch(option.id)"
+          >
+            {{ t(`components.guider.native.frame.stretch_${option.id}`) }}
+          </button>
+        </div>
+        <button
+          type="button"
+          class="tns-btn-secondary w-auto! px-2!"
+          :title="t('components.guider.native.frame.overlay')"
+          :aria-label="t('components.guider.native.frame.overlay')"
+          :aria-pressed="showOverlay"
+          @click="toggleOverlay"
+        >
+          <EyeIcon v-if="showOverlay" class="w-5 h-5" />
+          <EyeSlashIcon v-else class="w-5 h-5" />
+        </button>
+        <button
+          v-if="isZoomed"
+          type="button"
+          class="tns-btn-secondary w-auto! px-2!"
+          :title="t('components.guider.native.frame.resetZoom')"
+          :aria-label="t('components.guider.native.frame.resetZoom')"
+          @click="resetZoom"
+        >
+          <ArrowsPointingInIcon class="w-5 h-5" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Frame -->
+    <div
+      ref="viewport"
+      class="relative w-full overflow-hidden rounded-control bg-black"
+      :style="viewportStyle"
+      @pointerdown.capture="onPointerDown"
+      @click="onTap"
+    >
+      <!-- The stage fills the viewport; image (object-contain) and overlay (viewBox in frame
+           pixels, "meet") are letterboxed identically, and Panzoom moves both together. -->
+      <div
+        v-if="displayed.src"
+        ref="stage"
+        class="absolute inset-0"
+        data-testid="native-guider-frame"
+      >
+        <img
+          :src="displayed.src"
+          class="absolute inset-0 w-full h-full object-contain select-none pointer-events-none"
+          draggable="false"
+          alt=""
+        />
+        <NativeFrameOverlay
+          v-if="showOverlay && displayed.info"
+          :width="frameWidth"
+          :height="frameHeight"
+          :stars="stars"
+          :lock="lock"
+          :scale="fitScale * zoom"
+          :show-labels="showLabels"
+          :selected="selected"
+          :pick="pickPos"
+        />
+      </div>
+
+      <!-- Placeholder -->
+      <div
+        v-if="!displayed.src"
+        class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center"
+      >
+        <span
+          v-if="loading"
+          class="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"
+        ></span>
+        <p class="text-sm text-content-muted">{{ placeholderText }}</p>
+      </div>
+
+      <!-- Tapped star details -->
+      <div
+        v-if="selected"
+        class="absolute left-2 top-2 z-10 rounded-control bg-surface-1/90 border border-line-strong px-2.5 py-2 text-xs text-content max-w-[70%] pointer-events-none"
+      >
+        <p class="font-semibold mb-0.5" :class="selectedTitleClass">{{ selectedTitle }}</p>
+        <p class="tabular-nums text-content-muted">
+          x {{ fmt(selected.x, 1) }} · y {{ fmt(selected.y, 1) }}
+        </p>
+        <p class="tabular-nums">
+          SNR {{ fmt(selected.snr, 1) }} · HFD {{ fmt(selected.hfd, 2) }} ·
+          {{ t('components.guider.native.strip.mass') }} {{ fmt(selected.mass, 0) }}
+        </p>
+        <p v-if="!selected.isPrimary && selected.used" class="tabular-nums text-content-muted">
+          {{ t('components.guider.native.frame.weight') }} {{ fmt(selected.weight, 2) }}
+        </p>
+        <p
+          v-if="selected.rejectReason"
+          class="mt-0.5 whitespace-normal"
+          :class="isStarProblem(selected.rejectReason) ? 'text-status-warn' : 'text-content-muted'"
+        >
+          {{ reasonText(selected.rejectReason) }}
+        </p>
+      </div>
+
+      <div
+        v-if="(error && displayed.src) || levelWarning"
+        class="absolute bottom-1 left-1 right-1 flex flex-col items-stretch gap-1 pointer-events-none"
+      >
+        <!-- Frame levels: saturated or signal-free frames explain a white or black image -->
+        <p
+          v-if="levelWarning"
+          class="self-start rounded border px-2 py-1 text-xs leading-snug bg-surface-1/90"
+          :class="
+            levelWarning.kind === 'partlySaturated'
+              ? 'border-status-warn/40 text-status-warn text-[11px]!'
+              : 'border-status-danger/50 text-status-danger font-semibold'
+          "
+          data-testid="native-guider-frame-levels"
+        >
+          {{ levelWarningText }}
+        </p>
+        <p
+          v-if="error && displayed.src"
+          class="text-[11px] text-status-danger bg-surface-1/80 rounded px-2 py-1 break-words pointer-events-auto select-text"
+        >
+          {{ error }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Choose the tapped star (or the star at the tapped point) as the guide star; outside the
+         frame so the button never takes part in panning -->
+    <div
+      v-if="selectTarget || selectMessage"
+      class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs"
+      data-testid="native-guider-select-star"
+    >
+      <button
+        v-if="selectTarget"
+        type="button"
+        class="tns-btn-primary w-auto! h-9! min-h-9! px-3! text-xs! gap-1.5!"
+        :disabled="!availability.allowed || selecting"
+        @click="selectGuideStar"
+      >
+        <span
+          v-if="selecting"
+          class="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin"
+        ></span>
+        {{
+          selected
+            ? t('components.guider.native.frame.select.useStar')
+            : t('components.guider.native.frame.select.useStarHere')
+        }}
+      </button>
+      <span v-if="selectTarget && !availability.allowed" class="text-content-muted">
+        {{ t(`components.guider.native.frame.select.unavailable.${availability.reason}`) }}
+      </span>
+      <span v-else-if="selecting" class="text-content-muted">
+        {{ t('components.guider.native.frame.select.waiting') }}
+      </span>
+      <span
+        v-if="selectMessage"
+        :class="selectMessage.kind === 'error' ? 'text-status-danger' : 'text-status-ok'"
+      >
+        {{ selectMessage.text }}
+      </span>
+      <button
+        type="button"
+        class="tns-btn-secondary w-auto! h-9! min-h-9! min-w-9! px-2! ml-auto"
+        :title="t('components.guider.native.frame.select.close')"
+        :aria-label="t('components.guider.native.frame.select.close')"
+        @click="clearSelection"
+      >
+        <XMarkIcon class="w-4 h-4" />
+      </button>
+    </div>
+
+    <!-- Legend -->
+    <div v-if="showOverlay" class="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-content-muted">
+      <span class="flex items-center gap-1"
+        ><span class="legend-swatch border-[#34d399]"></span
+        >{{ t('components.guider.native.frame.legendPrimary') }}</span
+      >
+      <span class="flex items-center gap-1"
+        ><span class="legend-swatch rounded-full border-[#22d3ee]"></span
+        >{{ t('components.guider.native.frame.legendSecondary') }}</span
+      >
+      <span class="flex items-center gap-1"
+        ><span class="legend-swatch rounded-full border-dashed border-[#94a3b8]"></span
+        >{{ t('components.guider.native.frame.legendRejected') }}</span
+      >
+      <span class="flex items-center gap-1 text-[#fbbf24]"
+        >+ {{ t('components.guider.native.frame.legendLock') }}</span
+      >
+      <span class="ml-auto text-content-faint">{{
+        t('components.guider.native.frame.tapHint')
+      }}</span>
+      <!-- When no other star counts for the same reason, say so once instead of per star -->
+      <p v-if="frameReason" class="basis-full text-content-muted">
+        {{ reasonText(frameReason) }}
+      </p>
+    </div>
+
+    <!-- One row: up to three star tiles, then the profile of the primary in the rest of the row
+         (phone: the tiles fill a row, the profile gets its own) -->
+    <div class="grid grid-cols-3 sm:grid-cols-[repeat(3,minmax(0,7rem))_minmax(0,1fr)] gap-2">
+      <NativeStarPeeper
+        :primary-crop="displayed.info?.primaryCrop || null"
+        :primary-star="primaryStar"
+        :secondary-crops="displayed.info?.secondaryCrops || []"
+        :bit-depth="displayed.info?.bitDepth || 16"
+      />
+      <NativeStarProfile
+        class="col-span-3 sm:row-start-1"
+        :class="
+          primaryStar && displayed.info?.primaryCrop
+            ? 'sm:col-span-1 sm:col-start-4'
+            : 'sm:col-span-4'
+        "
+        :crop="displayed.info?.primaryCrop || null"
+        :star="primaryStar"
+        :bit-depth="displayed.info?.bitDepth || 16"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import Panzoom from '@panzoom/panzoom';
+import { ArrowsPointingInIcon, EyeIcon, EyeSlashIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import apiService from '@/services/apiService';
+import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import {
+  fmt,
+  framePointFromTap,
+  frameLevelWarning,
+  starSelectionAvailability,
+  starSelectionErrorText,
+} from '@/utils/nativeGuider';
+import NativeFrameOverlay from './NativeFrameOverlay.vue';
+import NativeStarPeeper from './NativeStarPeeper.vue';
+import NativeStarProfile from './NativeStarProfile.vue';
+import { frameWideReason, isStarProblem, reasonKey } from './starReasons.js';
+import { readStored, writeStored } from '@/utils/safeStorage';
+import {
+  DEFAULT_STRETCH_ID,
+  STRETCH_OPTIONS,
+  STRETCH_STORAGE_KEY,
+  frameWidthFor,
+  stretchValue,
+} from './frameDisplay';
+
+const props = defineProps({
+  /** Only an active (visible) view fetches frames. */
+  active: { type: Boolean, default: true },
+  /** Max viewport height (CSS length). */
+  maxHeight: { type: String, default: '62vh' },
+});
+
+const { t, te } = useI18n();
+const store = useNativeGuiderStore();
+
+const TAP_RADIUS_PX = 28;
+// How long the confirmation of a chosen guide star stays below the frame.
+const SELECT_DONE_MS = 8000;
+
+const viewport = ref(null);
+const stage = ref(null);
+const displayed = ref({ src: null, info: null, loadedAt: 0 });
+const loading = ref(false);
+const error = ref(null);
+const noFrame = ref(false);
+
+/** Saturated / signal-free frame warning from the levels of the shown frame. */
+const levelWarning = computed(() =>
+  displayed.value.src ? frameLevelWarning(displayed.value.info?.levels) : null
+);
+const levelWarningText = computed(() => {
+  const w = levelWarning.value;
+  if (!w) return '';
+  const percent = w.percent >= 10 ? Math.round(w.percent) : Math.round(w.percent * 10) / 10;
+  switch (w.kind) {
+    case 'saturated':
+      return t('components.guider.native.frame.levelSaturated', { percent });
+    case 'flat':
+      return t('components.guider.native.frame.levelFlat', {
+        level: w.level,
+        fullScale: w.fullScale,
+      });
+    default:
+      return t('components.guider.native.frame.levelPartlySaturated', { percent });
+  }
+});
+const viewportSize = ref({ width: 0, height: 0 });
+const zoom = ref(1);
+/** Frame position of the tapped star; the popup follows the nearest star across frames. */
+const selectedPos = ref(null);
+/** Tapped frame point away from the marked stars, offered as the place to choose a guide star. */
+const pickPos = ref(null);
+const selecting = ref(false);
+/** Outcome of the last guide star choice: { kind: 'ok' | 'error', text } or null. */
+const selectMessage = ref(null);
+const stretchId = ref(readStored(STRETCH_STORAGE_KEY, DEFAULT_STRETCH_ID));
+const showOverlay = ref(readStored('nativeGuider.frame.overlay', 'true') !== 'false');
+const now = ref(Date.now());
+
+let panzoom = null;
+let resizeObserver = null;
+let queued = false;
+let pointerStart = null;
+let clock = null;
+let selectMessageTimer = null;
+
+const frameWidth = computed(() => displayed.value.info?.width || 1936);
+const frameHeight = computed(() => displayed.value.info?.height || 1216);
+
+const viewportStyle = computed(() => ({
+  aspectRatio: `${frameWidth.value} / ${frameHeight.value}`,
+  maxHeight: props.maxHeight,
+}));
+
+/** Screen pixels per frame pixel of the contained image at zoom 1. */
+const fitScale = computed(() => {
+  const { width, height } = viewportSize.value;
+  if (!width || !height) return 0.5;
+  return Math.min(width / frameWidth.value, height / frameHeight.value);
+});
+
+const stars = computed(() => displayed.value.info?.stars || []);
+const frameReason = computed(() => frameWideReason(stars.value));
+/** Why a star was not used, as a sentence (an unknown reason from a newer guider by its name). */
+function reasonText(reason) {
+  const key = reasonKey(reason);
+  return key
+    ? t(`components.guider.native.frame.reasons.${key}`)
+    : t('components.guider.native.frame.reasons.unknown', { reason });
+}
+const primaryStar = computed(() => stars.value.find((s) => s.isPrimary) || null);
+const showLabels = computed(() => stars.value.length <= 30 || zoom.value > 1.5);
+const lock = computed(() => {
+  const info = displayed.value.info;
+  if (!info || info.lockX === null || info.lockX === undefined) return null;
+  return { x: info.lockX, y: info.lockY };
+});
+const selected = computed(() => {
+  const pos = selectedPos.value;
+  if (!pos) return null;
+  let best = null;
+  let bestDistance = 15;
+  for (const star of stars.value) {
+    const d = Math.hypot(star.x - pos.x, star.y - pos.y);
+    if (d <= bestDistance) {
+      best = star;
+      bestDistance = d;
+    }
+  }
+  return best;
+});
+const selectedTitle = computed(() => {
+  const s = selected.value;
+  if (!s) return '';
+  if (s.isPrimary) return t('components.guider.native.frame.legendPrimary');
+  return s.used
+    ? t('components.guider.native.frame.legendSecondary')
+    : t('components.guider.native.frame.legendRejected');
+});
+const selectedTitleClass = computed(() => {
+  const s = selected.value;
+  if (!s) return '';
+  if (s.isPrimary) return 'text-status-ok';
+  return s.used ? 'text-accent' : 'text-content-muted';
+});
+const isZoomed = computed(() => Math.abs(zoom.value - 1) > 0.05);
+const availability = computed(() => starSelectionAvailability(store.state, store.coachRunning));
+/** Where "guide on this star" would look: a tapped star that is not the guide star yet, else the tapped point. */
+const selectTarget = computed(() => {
+  const s = selected.value;
+  if (s) return s.isPrimary ? null : { x: s.x, y: s.y };
+  return pickPos.value;
+});
+
+const subtitle = computed(() => {
+  const info = displayed.value.info;
+  if (!info) return '';
+  const ms = Date.parse(info.timestamp);
+  const age = Number.isFinite(ms) ? Math.max(0, Math.round((now.value - ms) / 1000)) : null;
+  const parts = [`${info.width}×${info.height}`];
+  const exposure = Number(store.status?.exposureSeconds);
+  if (Number.isFinite(exposure) && exposure > 0) parts.push(`${fmt(exposure, 1)} s`);
+  parts.push(t('components.guider.native.frame.starCount', { count: stars.value.length }));
+  if (age !== null) parts.push(t('components.guider.native.frame.age', { seconds: age }));
+  return parts.join(' · ');
+});
+
+const placeholderText = computed(() => {
+  if (!store.isAvailable) return t('components.guider.native.notConnected');
+  if (error.value) return error.value;
+  if (noFrame.value || !loading.value) return t('components.guider.native.frame.noFrame');
+  return t('common.loading');
+});
+
+function targetWidth() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const needed = Math.max(fitScale.value * frameWidth.value, 320) * dpr;
+  const width = frameWidthFor(needed);
+  return Math.min(width, displayed.value.info?.width || width);
+}
+
+function preload(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const timer = setTimeout(() => reject(new Error('timeout')), 20000);
+    image.onload = () => {
+      clearTimeout(timer);
+      resolve();
+    };
+    image.onerror = () => {
+      clearTimeout(timer);
+      reject(new Error(t('components.guider.native.frame.imageFailed')));
+    };
+    image.src = src;
+  });
+}
+
+/** Loads frame-info, then the JPEG of exactly that frame, and swaps both at once. */
+async function refresh({ force = false } = {}) {
+  if (!props.active || !store.isAvailable) return;
+  if (loading.value) {
+    queued = true;
+    return;
+  }
+  loading.value = true;
+  try {
+    const info = await apiService.getNativeGuiderFrameInfo({ cropSize: 31, secondaries: 2 });
+    if (!info) return;
+    noFrame.value = false;
+    if (!force && displayed.value.src && displayed.value.info?.frameNumber === info.frameNumber) {
+      displayed.value = { ...displayed.value, info };
+      return;
+    }
+    const stretch = stretchValue(stretchId.value);
+    const src = apiService.getNativeGuiderImageUrl({
+      maxWidth: targetWidth(),
+      stretch,
+      frame: info.frameNumber,
+    });
+    await preload(src);
+    const firstImage = !displayed.value.src;
+    displayed.value = { src, info, loadedAt: Date.now() };
+    error.value = null;
+    if (firstImage) nextTick(initPanzoom);
+  } catch (e) {
+    if (e?.cancelled) return;
+    if (e?.status === 404) {
+      noFrame.value = true;
+      error.value = null;
+    } else {
+      error.value = e?.message || String(e);
+    }
+  } finally {
+    loading.value = false;
+    if (queued) {
+      queued = false;
+      refresh();
+    }
+  }
+}
+
+function setStretch(id) {
+  stretchId.value = id;
+  writeStored(STRETCH_STORAGE_KEY, id);
+  refresh({ force: true });
+}
+
+function toggleOverlay() {
+  showOverlay.value = !showOverlay.value;
+  writeStored('nativeGuider.frame.overlay', showOverlay.value);
+}
+
+// --- Zoom / pan ---------------------------------------------------------------
+
+function onPanzoomChange() {
+  if (!panzoom) return;
+  zoom.value = panzoom.getScale();
+  if (viewport.value) viewport.value.style.touchAction = zoom.value > 1.01 ? 'none' : 'pan-y';
+}
+
+function onWheel(event) {
+  if (panzoom) panzoom.zoomWithWheel(event);
+}
+
+function initPanzoom() {
+  destroyPanzoom();
+  if (!stage.value || !viewport.value) return;
+  panzoom = Panzoom(stage.value, {
+    maxScale: 12,
+    minScale: 1,
+    contain: 'outside',
+    step: 0.6,
+    // Unzoomed, a vertical swipe scrolls the page (the frame fills most of a phone screen);
+    // pinch still reaches Panzoom. Once zoomed, Panzoom owns every gesture (see below).
+    touchAction: 'pan-y',
+  });
+  stage.value.addEventListener('panzoomchange', onPanzoomChange);
+  viewport.value.addEventListener('wheel', onWheel, { passive: false });
+  zoom.value = 1;
+}
+
+function destroyPanzoom() {
+  if (stage.value) stage.value.removeEventListener('panzoomchange', onPanzoomChange);
+  if (viewport.value) viewport.value.removeEventListener('wheel', onWheel);
+  if (panzoom) {
+    try {
+      panzoom.destroy();
+    } catch {
+      // already gone
+    }
+    panzoom = null;
+  }
+}
+
+function resetZoom() {
+  panzoom?.reset();
+  zoom.value = 1;
+}
+
+// --- Tap to inspect a star ------------------------------------------------------
+
+function onPointerDown(event) {
+  pointerStart = { x: event.clientX, y: event.clientY };
+}
+
+function onTap(event) {
+  // A pan gesture also ends with a click; only a (nearly) stationary tap selects.
+  if (
+    pointerStart &&
+    Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y) > 8
+  ) {
+    return;
+  }
+  // The stage rect includes the Panzoom transform; the image is letterboxed inside it.
+  const point = stage.value
+    ? framePointFromTap(
+        stage.value.getBoundingClientRect(),
+        frameWidth.value,
+        frameHeight.value,
+        event.clientX,
+        event.clientY
+      )
+    : null;
+  if (!point) {
+    selectedPos.value = null;
+    pickPos.value = null;
+    return;
+  }
+  const radius = TAP_RADIUS_PX / point.scale;
+  let best = null;
+  let bestDistance = radius;
+  for (const star of stars.value) {
+    const d = Math.hypot(star.x - point.x, star.y - point.y);
+    if (d <= bestDistance) {
+      best = star;
+      bestDistance = d;
+    }
+  }
+  if (!selecting.value) setSelectMessage(null);
+  if (best) {
+    const same = selected.value && best.x === selected.value.x && best.y === selected.value.y;
+    selectedPos.value = same ? null : { x: best.x, y: best.y };
+    pickPos.value = null;
+    return;
+  }
+  // Empty sky: offer the star there as the guide star while one can be chosen; a second tap on
+  // the same spot (or anywhere while guiding) just closes everything.
+  const pick = pickPos.value;
+  const samePick = pick && Math.hypot(pick.x - point.x, pick.y - point.y) <= radius;
+  selectedPos.value = null;
+  pickPos.value = availability.value.allowed && !samePick ? { x: point.x, y: point.y } : null;
+}
+
+function setSelectMessage(message) {
+  if (selectMessageTimer) clearTimeout(selectMessageTimer);
+  selectMessageTimer = null;
+  selectMessage.value = message;
+  if (message?.kind === 'ok') {
+    selectMessageTimer = setTimeout(() => {
+      selectMessageTimer = null;
+      selectMessage.value = null;
+    }, SELECT_DONE_MS);
+  }
+}
+
+function clearSelection() {
+  selectedPos.value = null;
+  pickPos.value = null;
+  setSelectMessage(null);
+}
+
+/** Makes the tapped star (or the star at the tapped point) the guide star on the next frame. */
+async function selectGuideStar() {
+  const target = selectTarget.value;
+  if (!target || selecting.value || !availability.value.allowed) return;
+  selecting.value = true;
+  setSelectMessage(null);
+  try {
+    const result = await apiService.selectNativeGuiderStar(
+      Math.round(target.x * 10) / 10,
+      Math.round(target.y * 10) / 10
+    );
+    selectedPos.value = null;
+    pickPos.value = null;
+    setSelectMessage({
+      kind: 'ok',
+      text: t('components.guider.native.frame.select.done', {
+        count: Number(result?.secondaryStars) || 0,
+      }),
+    });
+    store.refreshStatus();
+    refresh();
+  } catch (e) {
+    if (e?.cancelled) return;
+    setSelectMessage({ kind: 'error', text: starSelectionErrorText({ t, te }, e) });
+  } finally {
+    selecting.value = false;
+  }
+}
+
+// --- Lifecycle --------------------------------------------------------------------
+
+function measure() {
+  if (!viewport.value) return;
+  const rect = viewport.value.getBoundingClientRect();
+  viewportSize.value = { width: rect.width, height: rect.height };
+}
+
+watch(
+  () => store.latestFrameNumber,
+  () => refresh()
+);
+watch(
+  () => [props.active, store.isAvailable],
+  ([active, available]) => {
+    if (active && available) refresh();
+  },
+  { immediate: true }
+);
+watch(viewportSize, () => {
+  // Pan limits depend on the viewport size; start from a clean transform after a resize.
+  if (panzoom && isZoomed.value) resetZoom();
+});
+
+onMounted(() => {
+  measure();
+  if (typeof ResizeObserver !== 'undefined' && viewport.value) {
+    resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(viewport.value);
+  }
+  clock = setInterval(() => {
+    now.value = Date.now();
+  }, 1000);
+});
+
+onBeforeUnmount(() => {
+  destroyPanzoom();
+  resizeObserver?.disconnect();
+  resizeObserver = null;
+  if (clock) clearInterval(clock);
+  if (selectMessageTimer) clearTimeout(selectMessageTimer);
+});
+</script>
+
+<style scoped>
+.legend-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-width: 2px;
+}
+</style>

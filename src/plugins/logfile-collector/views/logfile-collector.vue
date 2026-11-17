@@ -445,6 +445,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import Modal from '@/components/helpers/Modal.vue';
 import { useI18n } from 'vue-i18n';
+import { useToastStore } from '@/store/toastStore';
 import { useLogStore } from '@/store/logStore';
 import { useLogCollectorStore } from '../store/logCollectorStore';
 import { generateTimestampLogToken } from '../utils/tokenGenerator';
@@ -463,12 +464,12 @@ import { downloadBlob } from '@/utils/blobDownloader';
 import {
   DIAGNOSTICS_DEFAULTS,
   DIAGNOSTICS_STATUS,
-  PINS_NINA_LOG_PATH,
   buildDiagnosticsPayload,
   getDiagnosticsUiStatus,
   normalizeDiagnosticsOptions,
   validateDiagnosticsConfig,
 } from '../utils/diagnosticsSupport';
+import { addRecentNinaLogFiles } from '../utils/ninaLogFiles';
 import { buildLogManifest, MANIFEST_DIAGNOSTICS_VALIDATION_FAILED } from '../utils/manifestBuilder';
 import { PINS_PORT as PORT, DEFAULT_PINS_DAEMON_API_TOKEN as TOKEN } from '@/services/pinsConfig';
 import { copyText } from '@/utils/clipboard';
@@ -499,6 +500,7 @@ const activeAction = ref(null); // 'upload' | 'save' | null - which action is cu
 const activeArchiveId = ref(null);
 const activeArchiveAction = ref(null); // 'upload' | 'download' | null - per-row spinner
 const { t } = useI18n();
+const toastStore = useToastStore();
 
 const diagnosticsApi = createDiagnosticsApi({
   getIp,
@@ -584,29 +586,6 @@ async function buildZip(filesMap) {
   });
 }
 
-const NINA_LOG_FILE_COUNT = 10;
-
-async function addRecentNinaLogFiles(filesMap) {
-  try {
-    const listing = await apiService.browseFilesystem(PINS_NINA_LOG_PATH);
-    const files = Array.isArray(listing?.files) ? listing.files : [];
-    const recentFiles = [...files]
-      .sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))
-      .slice(0, NINA_LOG_FILE_COUNT);
-
-    for (const file of recentFiles) {
-      try {
-        const buffer = await apiService.fetchFilesystemFileBuffer(file.path);
-        filesMap.set(`nina-logs/${file.name}`, buffer);
-      } catch (fileError) {
-        console.warn(`Failed to read NINA log file "${file.path}":`, fileError);
-      }
-    }
-  } catch (error) {
-    console.warn('Failed to list NINA log files from PINS:', error);
-  }
-}
-
 // Collects everything (TNS/console logs, PINS-only: recent NINA logs + system diagnostics)
 // into a single filesMap, plus a manifest.json recording app version, platform, NINA/PINS
 // mode and (PINS-only) the diagnostics configuration actually used - so support can tell
@@ -640,7 +619,8 @@ async function collectLogFiles({ description = '', logToken = null } = {}) {
 
   // PINS-only: the log path is a stable constant there (fixed system user "pi"), unlike
   // NINA/Windows where %LOCALAPPDATA% varies per user account and can't be resolved from
-  // the frontend (see PINS_NINA_LOG_PATH). Never let a failure here block collection.
+  // the frontend. This includes InternalGuider logs. A missing log directory must
+  // never block collection.
   // System diagnostics are collected as part of this same action too - there is no
   // separate "start diagnostics" step, everything ends up in one ZIP.
   // apiState.currentPinsVersion is only the bare "3.3.0.1057" reported by /v2/api - the
@@ -672,7 +652,7 @@ async function collectLogFiles({ description = '', logToken = null } = {}) {
     if (includeNinaLogs.value) {
       progressMessage.value = t('plugins.logfileCollector.progress.collectingNinaLogs');
       progressPhase.value = 'collectingNinaLogs';
-      await addRecentNinaLogFiles(filesMap);
+      await addRecentNinaLogFiles(apiService, filesMap);
     }
 
     await runPinsDiagnostics(filesMap);
@@ -765,7 +745,7 @@ async function collectAndUpload() {
   } catch (err) {
     console.error('Log upload failed', err);
     resultOk.value = false;
-    resultMsg.value = t('plugins.logfileCollector.result.failed');
+    resultMsg.value = uploadFailureMessage(err);
     lastGeneratedToken.value = ''; // Clear token on failure
   } finally {
     busy.value = false;
@@ -867,7 +847,7 @@ async function uploadSavedArchive(archive) {
   } catch (err) {
     console.error('Log upload failed', err);
     resultOk.value = false;
-    resultMsg.value = t('plugins.logfileCollector.result.failed');
+    resultMsg.value = uploadFailureMessage(err);
   } finally {
     busy.value = false;
     activeArchiveId.value = null;
@@ -1112,6 +1092,22 @@ async function uploadZipBlob(zipBlob, zipFileName, uploadDescription, logToken) 
   throw new Error(`Upload failed with status ${res.status}`);
 }
 
+// The server says why it refused an archive (e.g. a size limit); show that instead of a
+// bare "Upload failed" so a user can report something actionable.
+function uploadFailureMessage(error) {
+  const status = error?.response?.status;
+  if (!status) {
+    const reason = error?.message?.trim();
+    const failed = t('plugins.logfileCollector.result.failed');
+    return reason ? `${failed}: ${reason}` : failed;
+  }
+  const failed = t('plugins.logfileCollector.result.failedWithStatus', { status });
+  const reason = extractErrorMessage({ response: error.response }, '').trim();
+  // A proxy error page (HTML) is not a readable reason.
+  if (!reason || reason.startsWith('<')) return failed;
+  return `${failed}: ${reason.slice(0, 300)}`;
+}
+
 function extractErrorMessage(error, fallback) {
   const responseData = error?.response?.data;
   if (typeof responseData === 'string' && responseData.trim()) {
@@ -1166,8 +1162,14 @@ function removeSubmission(id) {
   }
 }
 
-function clearAllSubmissions() {
-  if (confirm(t('plugins.logfileCollector.confirmClearAll'))) {
+async function clearAllSubmissions() {
+  const confirmed = await toastStore.showConfirmation(
+    t('common.confirm'),
+    t('plugins.logfileCollector.confirmClearAll'),
+    t('common.delete'),
+    t('common.cancel')
+  );
+  if (confirmed) {
     logCollectorStore.clearAllSubmissions();
     resultMsg.value = t('plugins.logfileCollector.result.allSubmissionsCleared');
     resultOk.value = true;

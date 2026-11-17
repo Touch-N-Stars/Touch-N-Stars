@@ -181,24 +181,9 @@ export default {
     return this._simpleGetRequest(`${API_URL}phd2/camera/selected`);
   },
 
-  setPHD2SelectedCamera(index) {
-    const { API_URL } = getUrls();
-    return this._simplePutRequest(`${API_URL}phd2/camera/selected`, { index });
-  },
-
-  getPHD2MountList() {
-    const { API_URL } = getUrls();
-    return this._simpleGetRequest(`${API_URL}phd2/mount/list`);
-  },
-
   getPHD2SelectedMount() {
     const { API_URL } = getUrls();
     return this._simpleGetRequest(`${API_URL}phd2/mount/selected`);
-  },
-
-  setPHD2SelectedMount(index) {
-    const { API_URL } = getUrls();
-    return this._simplePutRequest(`${API_URL}phd2/mount/selected`, { index });
   },
 
   getPHD2Focallength() {
@@ -716,6 +701,29 @@ export default {
     );
   },
 
+  getPinsRepository() {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/repository', {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 15000,
+    });
+  },
+
+  setPinsRepository(channel) {
+    if (!['trixie', 'unstable'].includes(channel)) {
+      throw new Error('Repository channel must be trixie or unstable.');
+    }
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPostRequest(
+      '/repository',
+      { channel },
+      {
+        baseUrl: PINSDAEMON_URL,
+        timeout: 15000,
+      }
+    );
+  },
+
   getPinsPlugins() {
     const { PINSDAEMON_URL } = getUrls();
     return this._pinsDaemonGetRequest('/plugins', {
@@ -813,6 +821,26 @@ export default {
     });
   },
 
+  getPinsSystemSwap() {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/system/swap', {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 15000,
+    });
+  },
+
+  updatePinsSystemSwap(sizeGb) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPutRequest(
+      '/system/swap',
+      { sizeGb },
+      {
+        baseUrl: PINSDAEMON_URL,
+        timeout: 15000,
+      }
+    );
+  },
+
   getPinsSystemLocalizationOptions() {
     const { PINSDAEMON_URL } = getUrls();
     return this._pinsDaemonGetRequest('/system/localization/options', {
@@ -878,6 +906,42 @@ export default {
       baseUrl: PINSDAEMON_URL,
       timeout: 30000,
     });
+  },
+
+  getPinsSavedWifiNetworks() {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonGetRequest('/wifi/networks', {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 30000,
+    });
+  },
+
+  updatePinsSavedWifiNetwork(uuid, payload) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPutRequest(`/wifi/networks/${encodeURIComponent(uuid)}`, payload, {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 15000,
+    });
+  },
+
+  forgetPinsSavedWifiNetwork(uuid) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonDeleteRequest(`/wifi/networks/${encodeURIComponent(uuid)}`, {
+      baseUrl: PINSDAEMON_URL,
+      timeout: 15000,
+    });
+  },
+
+  connectPinsSavedWifiNetwork(uuid) {
+    const { PINSDAEMON_URL } = getUrls();
+    return this._pinsDaemonPostRequest(
+      `/wifi/networks/${encodeURIComponent(uuid)}/connect`,
+      {},
+      {
+        baseUrl: PINSDAEMON_URL,
+        timeout: 30000,
+      }
+    );
   },
 
   disablePinsWifi() {
@@ -998,6 +1062,12 @@ export default {
       .catch((error) => {
         throw error;
       });
+  },
+
+  _pinsDaemonDeleteRequest(path, { baseUrl, timeout = 10000 } = {}) {
+    return axios
+      .delete(`${baseUrl}${path}`, { headers: getPinsDaemonAuthHeaders(), timeout })
+      .then((response) => response.data);
   },
 
   _pinsDaemonPostRequest(path, data, { baseUrl, timeout = 10000 } = {}) {

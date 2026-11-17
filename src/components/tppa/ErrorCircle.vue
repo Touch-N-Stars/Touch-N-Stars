@@ -1,14 +1,9 @@
 <template>
   <div>
     <!-- Modal Trigger -->
-    <button
-      @click="isModalOpen = true"
-      class="p-2 bg-gray-700 border border-cyan-600 rounded-full shadow-md z-30"
-      style="bottom: var(--above-statusbar)"
-      v-if="tppaStore.isRunning"
-    >
+    <QuickAccessButton v-if="tppaStore.isRunning" @click="isModalOpen = true">
       <svg
-        fill="#ffffff"
+        fill="currentColor"
         height="24"
         width="24"
         version="1.1"
@@ -46,100 +41,99 @@
           </g>
         </g>
       </svg>
-    </button>
+    </QuickAccessButton>
 
-    <!-- Modal Overlay -->
-    <div
-      v-if="isModalOpen"
-      class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center"
-      @click.self="isModalOpen = false"
+    <Modal
+      :show="isModalOpen"
+      zIndex="z-dialog"
+      maxWidth="max-w-md"
+      bodyMaxHeight="max-h-[calc(100vh-10rem)]"
+      @close="isModalOpen = false"
     >
-      <div
-        class="bg-gray-800 text-white p-4 rounded-lg min-w-[400px] max-w-4xl max-h-[80vh] overflow-y-auto"
-        @click.stop
-      >
-        <div class="flex justify-end items-center">
-          <button @click="isModalOpen = false" class="text-white hover:text-gray-300">
-            <XMarkIcon class="w-6 h-6" />
-          </button>
-        </div>
-
-        <!-- Error Circle Representation -->
-        <div class="flex justify-center items-center py-4 relative">
-          <svg
-            :width="circleSize"
-            :height="circleSize"
-            :viewBox="`0 0 ${circleSize} ${circleSize}`"
+      <template #header>
+        <h2 class="text-xl font-bold">{{ $t('components.tppa.title') }}</h2>
+      </template>
+      <template #body>
+        <div class="w-full">
+          <TppaWaitingForValues />
+          <!-- Error Circle Representation -->
+          <div
+            v-if="tppaStore.showTotalError"
+            class="flex justify-center items-center py-4 relative"
           >
-            <!-- Background Circle -->
-            <circle
-              :cx="circleSize / 2"
-              :cy="circleSize / 2"
-              :r="circleRadius"
-              :stroke="errorColor"
-              stroke-width="2"
-              fill="none"
-            />
+            <svg
+              class="max-w-full h-auto"
+              :width="circleSize"
+              :height="circleSize"
+              :viewBox="`0 0 ${circleSize} ${circleSize}`"
+            >
+              <!-- Background Circle -->
+              <circle
+                :cx="circleSize / 2"
+                :cy="circleSize / 2"
+                :r="circleRadius"
+                :stroke="errorColor"
+                stroke-width="2"
+                fill="none"
+              />
 
-            <!-- Error Correction Arrow -->
-            <defs>
-              <marker
-                id="arrowhead"
-                markerWidth="7"
-                markerHeight="7"
-                refX="5"
-                refY="3"
-                orient="auto"
-              >
-                <polygon points="0 0, 6 3, 0 6" :fill="errorColor" />
-              </marker>
-            </defs>
+              <!-- Error Correction Arrow -->
+              <defs>
+                <marker
+                  id="arrowhead"
+                  markerWidth="7"
+                  markerHeight="7"
+                  refX="5"
+                  refY="3"
+                  orient="auto"
+                >
+                  <polygon points="0 0, 6 3, 0 6" :fill="errorColor" />
+                </marker>
+              </defs>
 
-            <line
-              :x1="circleSize / 2 - arrowLength * Math.cos(errorAngle)"
-              :y1="circleSize / 2 + arrowLength * Math.sin(errorAngle)"
-              :x2="circleSize / 2"
-              :y2="circleSize / 2"
-              :stroke="errorColor"
-              stroke-width="4"
-              marker-end="url(#arrowhead)"
-            />
+              <line
+                :x1="circleSize / 2 - arrowLength * Math.cos(errorAngle)"
+                :y1="circleSize / 2 + arrowLength * Math.sin(errorAngle)"
+                :x2="circleSize / 2"
+                :y2="circleSize / 2"
+                :stroke="errorColor"
+                stroke-width="4"
+                marker-end="url(#arrowhead)"
+              />
 
-            <!-- Center Point -->
-            <circle :cx="circleSize / 2" :cy="circleSize / 2" r="5" fill="white" />
-          </svg>
+              <!-- Center Point -->
+              <circle :cx="circleSize / 2" :cy="circleSize / 2" r="5" fill="currentColor" />
+            </svg>
+          </div>
+
+          <div class="text-center text-xl">
+            <p>{{ $t('components.tppa.total_error') }} {{ tppaStore.showTotalError || '?' }}</p>
+            <p class="text-sm text-content-muted">
+              {{ $t('components.tppa.azimuth_error') }} {{ tppaStore.showAzimuthError || '?' }}
+            </p>
+            <p class="text-sm text-content-muted">
+              {{ $t('components.tppa.altitude_error') }} {{ tppaStore.showAltitudeError || '?' }}
+            </p>
+          </div>
+
+          <div v-if="tppaStore.showAzimuthError" class="flex items-center justify-center pt-2">
+            <ButtonPause class="w-12 h-12" />
+          </div>
+          <TppaLastStatus class="mt-4 p-3" />
         </div>
-
-        <div class="text-center text-xl">
-          <p>{{ $t('components.tppa.total_error') }} {{ tppaStore.showTotalError }}</p>
-          <p class="text-sm text-gray-400">
-            {{ $t('components.tppa.azimuth_error') }} {{ tppaStore.showAzimuthError }}
-          </p>
-          <p class="text-sm text-gray-400">
-            {{ $t('components.tppa.altitude_error') }} {{ tppaStore.showAltitudeError }}
-          </p>
-        </div>
-
-        <div v-if="tppaStore.showAzimuthError" class="flex items-center justify-center pt-2">
-          <ButtonPause class="w-12 h-12" />
-        </div>
-        <div
-          v-if="tppaStore.isTppaRunning"
-          class="bg-gray-800 p-5 m-5 border border-gray-500 rounded-md"
-        >
-          <TppaLastStatus />
-        </div>
-      </div>
-    </div>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
-import { XMarkIcon } from '@heroicons/vue/24/outline';
 import { useTppaStore } from '@/store/tppaStore';
 import ButtonPause from '@/components/tppa/ButtonPause.vue';
 import TppaLastStatus from '@/components/tppa/TppaLastStatus.vue';
+import TppaWaitingForValues from '@/components/tppa/TppaWaitingForValues.vue';
+import Modal from '@/components/helpers/Modal.vue';
+import QuickAccessButton from '@/components/helpers/QuickAccessButton.vue';
 
 const tppaStore = useTppaStore();
 const isModalOpen = ref(false);
@@ -172,8 +166,8 @@ const circleSize = computed(() => {
 // Fehlerfarbe basierend auf Total Error
 const errorColor = computed(() => {
   const totalErrorSeconds = tppaStore.totalErrorDeg * 3600;
-  if (totalErrorSeconds < 60) return 'green'; // Unter 1' (60 Sekunden) Grün
-  if (totalErrorSeconds < 120) return 'yellow'; // Unter 2' (120 Sekunden) Gelb
-  return 'red'; // Sonst Rot
+  if (totalErrorSeconds < 60) return 'var(--color-status-ok)'; // Unter 1' (60 Sekunden) Grün
+  if (totalErrorSeconds < 120) return 'var(--color-status-warn)'; // Unter 2' (120 Sekunden) Gelb
+  return 'var(--color-status-danger)'; // Sonst Rot
 });
 </script>

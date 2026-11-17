@@ -244,10 +244,10 @@
                 <!-- Ports Sub-Tab Content -->
                 <div class="p-4">
                   <div v-show="activePortsSubTab === 'power'">
-                    <PinsDevicePowerPortsTab />
+                    <PinsDeviceSwitchPortsTab kind="power" />
                   </div>
                   <div v-show="activePortsSubTab === 'usb'">
-                    <PinsDeviceUsbPortsTab />
+                    <PinsDeviceSwitchPortsTab kind="usb" />
                   </div>
                   <div v-show="activePortsSubTab === 'dew'">
                     <PinsDeviceDewPortsTab />
@@ -271,7 +271,7 @@
 
             <!-- Configuration Tab -->
             <div v-show="activeTab === 'configuration'">
-              <PinsDeviceConfigurationTab />
+              <PinsDeviceConfigurationTab :active="activeTab === 'configuration'" />
             </div>
           </div>
         </div>
@@ -295,8 +295,7 @@
 import { ref, computed, onMounted, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import PinsDeviceGeneralTab from './PinsDeviceGeneralTab.vue';
-import PinsDevicePowerPortsTab from './PinsDevicePowerPortsTab.vue';
-import PinsDeviceUsbPortsTab from './PinsDeviceUsbPortsTab.vue';
+import PinsDeviceSwitchPortsTab from './PinsDeviceSwitchPortsTab.vue';
 import PinsDeviceDewPortsTab from './PinsDeviceDewPortsTab.vue';
 import PinsDeviceAdjustablePowerTab from './PinsDeviceAdjustablePowerTab.vue';
 import PinsDeviceWeatherTab from './PinsDeviceWeatherTab.vue';

@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col bg-gray-900/90 border border-line-strong p-1 pb-2 rounded-control">
-    <label for="flat-filter" class="text-xs mb-1 text-gray-400">
+  <div class="flex flex-col bg-surface-1/90 border border-line-strong p-1 pb-2 rounded-control">
+    <label for="flat-filter" class="text-xs mb-1 text-content-muted">
       {{ $t('components.filterwheel.filter') }}
     </label>
     <select

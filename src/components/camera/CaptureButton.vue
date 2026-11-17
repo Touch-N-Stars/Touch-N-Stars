@@ -1,10 +1,11 @@
 <template>
-  <!-- Capture & Cancel Buttons -->
   <div
     class="fixed flex items-center justify-center z-50 bg-ground/70 backdrop-blur-md p-3 rounded-card border border-line shadow-lg shadow-black transition-all duration-300"
     :class="[containerClasses, gapClasses]"
     :style="containerStyle"
   >
+    <!-- Capture & Cancel Buttons. Kept inside the root: a comment before it turns the
+         component into a fragment in dev, and CameraPage measures its $el. -->
     <!-- Close dropdown when clicking outside -->
     <div v-if="showDropdown" class="dropdown-backdrop" @click="showDropdown = false"></div>
     <!-- Capture / Cancel Combined Button -->
@@ -22,18 +23,14 @@
     >
       <!-- Phase 1: Belichtungsfortschritt mit Server-Countdown -->
       <template v-if="store.cameraInfo.IsExposing">
-        <svg :class="['absolute inset-0', progressSizeClasses]" viewBox="0 0 36 36">
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 36 36">
           <path
             class="text-white/30 fill-none stroke-current stroke-[2.8]"
             d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
           />
           <path
             class="fill-none stroke-white stroke-[2.8]"
-            :style="{
-              strokeDasharray: cameraStore.exposureProgress + ', 100',
-              transform: 'rotate(-90deg)',
-              transformOrigin: 'center',
-            }"
+            :style="{ strokeDasharray: cameraStore.exposureProgress + ', 100' }"
             d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
           />
         </svg>
@@ -217,6 +214,15 @@ import SettingsModal from '@/components/camera/SettingsModal.vue';
 import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import { useOrientation } from '@/composables/useOrientation';
 
+const props = defineProps({
+  // Height in px of a panel docked at the bottom of the stage; in portrait the
+  // button moves clear of it.
+  dockOffset: {
+    type: Number,
+    default: 0,
+  },
+});
+
 const cameraStore = useCameraStore();
 const settingsStore = useSettingsStore();
 const sequenceStore = useSequenceStore();
@@ -289,7 +295,7 @@ const containerClasses = computed(() => ({
   // Portrait mode - bottom center
   'right-1/2 translate-x-1/2 flex-row': !isLandscape.value,
   // Landscape mode - left side vertical (changed from right to left)
-  'right-2 top-1/2 -translate-y-1/2 flex-col': isLandscape.value,
+  'top-1/2 -translate-y-1/2 flex-col': isLandscape.value,
 }));
 
 // Gap classes for different orientations
@@ -304,10 +310,14 @@ const gapClasses = computed(() => {
 // Anchored to --above-statusbar (bar height + safe area); --status-panel-height
 // adds the height of whichever status bar panel (progress, camera/mount/filter
 // info, guider graph) is currently open, so the action bar never gets covered.
+// A panel docked at the stage bottom pushes the bar up past it in portrait. In
+// landscape the bar stays put; the docked panel ends left of it instead.
 const containerStyle = computed(() => {
-  return !isLandscape.value
-    ? { bottom: 'calc(var(--above-statusbar) + var(--status-panel-height))' }
-    : {};
+  // Clear a camera cutout on the right in landscape (0 on devices without one).
+  if (isLandscape.value) return { right: 'calc(0.5rem + env(safe-area-inset-right, 0px))' };
+  const offset = props.dockOffset;
+  const dock = offset > 0 ? ` + var(--stage-inset) + ${offset}px + 0.5rem` : '';
+  return { bottom: `calc(var(--above-statusbar) + var(--status-panel-height)${dock})` };
 });
 
 // Responsive button sizes — never below the 48px touch target
@@ -324,14 +334,6 @@ const iconSizeClasses = computed(() => {
     return 'w-12 h-12'; // All landscape
   }
   return 'w-16 h-16'; // Portrait
-});
-
-// Progress circle size classes - proportional to button size
-const progressSizeClasses = computed(() => {
-  if (isLandscape.value) {
-    return 'w-12 h-12 lg:w-16 lg:h-16'; // Same as button size
-  }
-  return 'w-12 h-12 lg:w-16 lg:h-16'; // Portrait mode
 });
 
 // Progress text size classes

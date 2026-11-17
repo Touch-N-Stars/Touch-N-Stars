@@ -8,69 +8,69 @@
     <template #body>
       <div class="flex flex-col gap-4 sm:gap-6 w-full min-w-0 max-w-full sm:min-w-[500px]">
         <!-- Info Section -->
-        <div class="p-3 sm:p-4 bg-blue-500/20 border border-blue-500/30 rounded-lg">
-          <p class="text-blue-300 text-sm">
+        <div class="p-3 sm:p-4 bg-accent/10 border border-accent/30 rounded-control">
+          <p class="text-content text-sm">
             {{ $t('components.guider.phd2.darkLibrary.info') }}
           </p>
-          <p class="text-blue-200 text-xs mt-2">
+          <p class="text-content-muted text-xs mt-2">
             {{ $t('components.guider.phd2.darkLibrary.warning') }}
           </p>
         </div>
 
         <!-- Current Library Status -->
-        <div class="bg-gray-700/50 p-3 rounded-lg space-y-2">
-          <h3 class="text-sm font-medium text-gray-300 mb-2">
+        <div class="bg-surface-2 p-3 rounded-control space-y-2">
+          <h3 class="text-sm font-medium text-content-muted mb-2">
             {{ $t('components.guider.phd2.darkLibrary.status') }}
           </h3>
           <div v-if="info" class="text-sm grid grid-cols-2 gap-x-3 gap-y-1">
-            <div class="text-gray-400">{{ $t('components.guider.phd2.darkLibrary.exists') }}:</div>
-            <div :class="info.Exists ? 'text-green-400' : 'text-gray-300'">
+            <div class="text-content-muted">
+              {{ $t('components.guider.phd2.darkLibrary.exists') }}:
+            </div>
+            <div :class="info.Exists ? 'text-status-ok' : 'text-content-muted'">
               {{ info.Exists ? '✓' : '–' }}
             </div>
-            <div class="text-gray-400">{{ $t('components.guider.phd2.darkLibrary.loaded') }}:</div>
-            <div :class="info.Loaded ? 'text-green-400' : 'text-gray-300'">
+            <div class="text-content-muted">
+              {{ $t('components.guider.phd2.darkLibrary.loaded') }}:
+            </div>
+            <div :class="info.Loaded ? 'text-status-ok' : 'text-content-muted'">
               {{ info.Loaded ? '✓' : '–' }}
             </div>
             <template v-if="info.Exists">
-              <div class="text-gray-400">
+              <div class="text-content-muted">
                 {{ $t('components.guider.phd2.darkLibrary.numDarks') }}:
               </div>
-              <div class="text-gray-200">{{ info.NumDarks }}</div>
-              <div class="text-gray-400">{{ $t('components.guider.phd2.darkLibrary.range') }}:</div>
-              <div class="text-gray-200">
+              <div class="text-content">{{ info.NumDarks }}</div>
+              <div class="text-content-muted">
+                {{ $t('components.guider.phd2.darkLibrary.range') }}:
+              </div>
+              <div class="text-content">
                 {{ (info.MinExposureSec / 1000).toFixed(1) }} –
                 {{ (info.MaxExposureSec / 1000).toFixed(1) }} s
               </div>
             </template>
           </div>
-          <div v-else class="text-sm text-gray-400">
+          <div v-else class="text-sm text-content-muted">
             {{ $t('components.guider.phd2.darkLibrary.noLibrary') }}
           </div>
         </div>
 
         <!-- Exposure Configuration -->
-        <div class="bg-gray-700/50 p-3 rounded-lg space-y-3">
+        <div class="bg-surface-2 p-3 rounded-control space-y-3">
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-gray-400">
+            <label for="darkLibMinExposure" class="tns-label">
               {{ $t('components.guider.phd2.darkLibrary.minExposure') }}
             </label>
-            <select
-              v-model.number="minExposureSec"
-              class="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
-            >
+            <select v-model.number="minExposureSec" id="darkLibMinExposure" class="tns-select">
               <option v-for="t in phd2ExposureSteps" :key="`min-${t}`" :value="t">
                 {{ formatSeconds(t) }} s
               </option>
             </select>
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-gray-400">
+            <label for="darkLibMaxExposure" class="tns-label">
               {{ $t('components.guider.phd2.darkLibrary.maxExposure') }}
             </label>
-            <select
-              v-model.number="maxExposureSec"
-              class="bg-gray-800 border border-gray-600 rounded px-2 py-1 text-sm text-gray-200"
-            >
+            <select v-model.number="maxExposureSec" id="darkLibMaxExposure" class="tns-select">
               <option v-for="t in phd2ExposureSteps" :key="`max-${t}`" :value="t">
                 {{ formatSeconds(t) }} s
               </option>
@@ -88,25 +88,25 @@
             wrapperClass="w-full"
           />
 
-          <div v-if="rangeInvalid" class="text-xs text-red-400">
+          <div v-if="rangeInvalid" class="text-xs text-status-danger">
             {{ $t('components.guider.phd2.darkLibrary.invalidRange') }}
           </div>
           <div v-else>
-            <div class="text-xs text-gray-400 mb-1">
+            <div class="text-xs text-content-muted mb-1">
               {{ $t('components.guider.phd2.darkLibrary.previewExposures') }}:
             </div>
             <div class="flex flex-wrap gap-1">
               <span
                 v-for="t in expTimesMs"
                 :key="t"
-                class="px-2 py-0.5 text-xs bg-gray-800 text-gray-200 rounded"
+                class="px-2 py-0.5 text-xs bg-surface-3 text-content rounded-chip"
               >
                 {{ formatSeconds(t / 1000) }} s
               </span>
             </div>
-            <div class="text-xs text-gray-400 mt-2">
+            <div class="text-xs text-content-muted mt-2">
               {{ $t('components.guider.phd2.darkLibrary.totalFrames') }}:
-              <span class="text-gray-200">{{ totalFrames }}</span>
+              <span class="text-content">{{ totalFrames }}</span>
             </div>
           </div>
         </div>
@@ -114,15 +114,15 @@
         <!-- Progress -->
         <div
           v-if="isBuilding && buildStatus"
-          class="p-3 rounded-lg bg-cyan-500/20 border border-cyan-500/30"
+          class="p-3 rounded-control bg-accent/10 border border-accent/30"
         >
           <div class="flex items-center gap-2 mb-2">
-            <div class="spinner"></div>
-            <span class="text-sm text-cyan-200">
+            <Spinner size="sm" class="text-accent" />
+            <span class="text-sm text-accent">
               {{ $t('components.guider.phd2.darkLibrary.building') }}
             </span>
           </div>
-          <div class="text-xs text-gray-200 mb-2">
+          <div class="text-xs text-content mb-2">
             {{
               $t('components.guider.phd2.darkLibrary.buildProgress', {
                 frame: buildStatus.Frame ?? 0,
@@ -131,16 +131,16 @@
               })
             }}
           </div>
-          <div class="w-full h-2 bg-gray-800 rounded">
+          <div class="w-full h-2 bg-surface-3 rounded-full">
             <div
-              class="h-2 bg-cyan-500 rounded transition-all"
+              class="h-2 bg-accent rounded-full transition-all"
               :style="{ width: progressPercent + '%' }"
             ></div>
           </div>
         </div>
 
         <!-- Result -->
-        <div v-if="lastResult" class="p-3 sm:p-4 rounded-lg" :class="resultClass">
+        <div v-if="lastResult" class="p-3 sm:p-4 rounded-control" :class="resultClass">
           <div class="text-sm">
             <div class="font-medium">
               {{
@@ -149,7 +149,7 @@
                   : $t('components.guider.phd2.darkLibrary.buildFailed')
               }}
             </div>
-            <div v-if="lastResult.error" class="mt-1 text-gray-300">
+            <div v-if="lastResult.error" class="mt-1 text-content-muted">
               {{ lastResult.error }}
             </div>
           </div>
@@ -161,10 +161,7 @@
           <button
             @click="isBuilding ? onCancel() : onBuild()"
             :disabled="!isBuilding && (rangeInvalid || expTimesMs.length === 0)"
-            :class="[
-              'px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-center gap-2',
-              isBuilding ? 'tns-btn-danger' : 'tns-btn-primary',
-            ]"
+            :class="isBuilding ? 'tns-btn-danger' : 'tns-btn-primary'"
           >
             <StopIcon v-if="isBuilding" class="w-5 h-5" />
             <span>
@@ -180,14 +177,14 @@
             <button
               @click="onLoad"
               :disabled="isBuilding || !info?.Exists || info?.Loaded"
-              class="tns-btn-secondary px-2 py-2 text-sm disabled:opacity-50"
+              class="tns-btn-secondary px-2!"
             >
               {{ $t('components.guider.phd2.darkLibrary.load') }}
             </button>
             <button
               @click="onUnload"
               :disabled="isBuilding || !info?.Loaded"
-              class="tns-btn-secondary px-2 py-2 text-sm disabled:opacity-50"
+              class="tns-btn-secondary px-2!"
             >
               {{ $t('components.guider.phd2.darkLibrary.unload') }}
             </button>
@@ -195,7 +192,7 @@
               @click="onDelete"
               :disabled="isBuilding || !info?.Exists"
               :class="confirmDelete ? 'tns-btn-danger' : 'tns-btn-secondary'"
-              class="px-2 py-2 text-sm disabled:opacity-50"
+              class="px-2!"
             >
               {{
                 confirmDelete
@@ -214,6 +211,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import { StopIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { useGuiderStore } from '@/store/guiderStore';
 
@@ -264,8 +262,8 @@ const progressPercent = computed(() => {
 const resultClass = computed(() => {
   if (!lastResult.value) return '';
   return lastResult.value.success
-    ? 'bg-green-500/20 border border-green-500/30 text-green-200'
-    : 'bg-red-500/20 border border-red-500/30 text-red-200';
+    ? 'bg-status-ok/10 border border-status-ok/40 text-status-ok'
+    : 'bg-status-danger/10 border border-status-danger/40 text-status-danger';
 });
 
 async function onBuild() {
@@ -354,19 +352,3 @@ onBeforeUnmount(() => {
   if (confirmDeleteTimer) clearTimeout(confirmDeleteTimer);
 });
 </script>
-
-<style scoped>
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>

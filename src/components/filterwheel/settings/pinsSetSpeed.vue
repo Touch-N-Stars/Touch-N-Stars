@@ -3,7 +3,7 @@
     v-if="filterStore.filterwheelSettings?.Speeds !== undefined"
     class="flex items-center w-full justify-between border border-line-strong p-1 md:p-2 rounded-control"
   >
-    <label for="setSpeed" class="text-xs md:text-sm text-gray-200 font-medium">
+    <label for="setSpeed" class="text-xs md:text-sm text-content font-medium">
       {{ $t('components.filterwheel.settings.Speed') }}
     </label>
     <select id="setSpeed" v-model="speed" @change="setSpeed" class="tns-select w-24 md:w-32">

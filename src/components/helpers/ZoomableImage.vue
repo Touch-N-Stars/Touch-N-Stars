@@ -17,7 +17,7 @@
       <button
         v-if="showDownload"
         @click.stop="handleDownload"
-        class="w-10 h-10 bg-gray-800/90 hover:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors"
+        class="w-10 h-10 bg-surface-1/90 hover:bg-surface-2 text-content rounded-lg shadow-lg flex items-center justify-center transition-colors"
         title="Download Image"
       >
         <ArrowDownTrayIcon class="w-5 h-5" />
@@ -27,7 +27,7 @@
       <button
         v-if="showFullscreen"
         @click.stop="handleFullscreen"
-        class="w-10 h-10 bg-gray-800/90 hover:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors"
+        class="w-10 h-10 bg-surface-1/90 hover:bg-surface-2 text-content rounded-lg shadow-lg flex items-center justify-center transition-colors"
         title="Open Fullscreen"
       >
         <MagnifyingGlassPlusIcon class="w-5 h-5" />
@@ -37,8 +37,12 @@
       <button
         v-if="showHistogram"
         @click.stop="handleHistogramToggle"
-        class="w-10 h-10 bg-gray-800/90 hover:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors"
-        :class="{ 'bg-cyan-700 hover:bg-cyan-600': showHistogramActive }"
+        class="w-10 h-10 rounded-lg shadow-lg flex items-center justify-center transition-colors"
+        :class="
+          showHistogramActive
+            ? 'bg-accent-action text-white hover:brightness-110'
+            : 'bg-surface-1/90 hover:bg-surface-2 text-content'
+        "
         title="Toggle Histogram"
       >
         <svg
@@ -74,7 +78,7 @@
       <button
         v-if="showLoupe && isLoupeActive"
         @click.stop="cycleLoupeZoom"
-        class="h-10 min-w-10 px-2 bg-gray-800/90 hover:bg-gray-700 text-white rounded-lg shadow-lg flex items-center justify-center transition-colors text-sm font-semibold tabular-nums"
+        class="h-10 min-w-10 px-2 bg-surface-1/90 hover:bg-surface-2 text-content rounded-lg shadow-lg flex items-center justify-center transition-colors text-sm font-semibold tabular-nums"
         :title="$t('components.helpers.zoomableImage.loupeZoom')"
         :aria-label="$t('components.helpers.zoomableImage.loupeZoom')"
       >
@@ -138,10 +142,10 @@
     <!-- Placeholder -->
     <div
       v-else-if="!imageData || imageLoadError"
-      class="flex items-center justify-center w-full h-full bg-gray-800/20"
+      class="flex items-center justify-center w-full h-full bg-surface-2/20"
     >
       <slot name="placeholder">
-        <div class="text-gray-400 text-center">
+        <div class="text-content-muted text-center">
           <PhotoIcon class="w-16 h-16 mx-auto mb-2 opacity-50" />
           <p class="text-sm">{{ placeholderText }}</p>
         </div>

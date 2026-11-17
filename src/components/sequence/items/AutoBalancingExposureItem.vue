@@ -1,7 +1,7 @@
 <template>
   <ItemShell :item="item">
     <template #summary>
-      <span class="text-xs text-slate-400 font-mono">
+      <span class="text-xs text-content-muted font-mono">
         {{ item.ExposureItems?.length ?? 0 }} ×
       </span>
     </template>
@@ -10,7 +10,7 @@
       <div class="overflow-x-auto">
         <table class="w-full text-xs border-collapse">
           <thead>
-            <tr class="text-slate-500 border-b border-slate-700">
+            <tr class="text-content-faint border-b border-line">
               <th class="text-left pb-1 pr-2 font-normal">
                 {{ $t('components.sequence.items.autoBalancingExposure.progress') }}
               </th>
@@ -36,12 +36,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, i) in localItems" :key="i" class="border-b border-slate-700/40">
+            <tr v-for="(row, i) in localItems" :key="i" class="border-b border-line">
               <!-- Progress with -/+ buttons -->
               <td class="py-1 pr-2">
                 <div class="flex items-center gap-0.5">
                   <button
-                    class="px-1 py-0.5 bg-slate-700/60 border border-slate-600 rounded text-slate-300 hover:bg-slate-600 transition-colors"
+                    class="px-1 py-0.5 bg-surface-2 border border-line-strong rounded text-content-muted hover:bg-surface-3 transition-colors"
                     @click="
                       row.Progress = Math.max(0, row.Progress - 1);
                       markDirty();
@@ -49,9 +49,9 @@
                   >
                     −
                   </button>
-                  <span class="w-7 text-center text-gray-200">{{ row.Progress }}</span>
+                  <span class="w-7 text-center text-content">{{ row.Progress }}</span>
                   <button
-                    class="px-1 py-0.5 bg-slate-700/60 border border-slate-600 rounded text-slate-300 hover:bg-slate-600 transition-colors"
+                    class="px-1 py-0.5 bg-surface-2 border border-line-strong rounded text-content-muted hover:bg-surface-3 transition-colors"
                     @click="
                       row.Progress++;
                       markDirty();
@@ -68,7 +68,7 @@
                   v-model.number="row.Ratio"
                   min="1"
                   step="1"
-                  class="w-12 bg-slate-700/60 border border-slate-600 rounded px-1 py-0.5 text-gray-200 outline-none focus:border-cyan-500/50"
+                  class="w-12 bg-surface-2 border border-line-strong rounded px-1 py-0.5 text-content outline-none focus:border-accent"
                   @input="markDirty"
                 />
               </td>
@@ -79,7 +79,7 @@
                   v-model.number="row.ExposureTime"
                   min="0"
                   step="0.1"
-                  class="w-16 bg-slate-700/60 border border-slate-600 rounded px-1 py-0.5 text-gray-200 outline-none focus:border-cyan-500/50"
+                  class="w-16 bg-surface-2 border border-line-strong rounded px-1 py-0.5 text-content outline-none focus:border-accent"
                   @input="markDirty"
                 />
               </td>
@@ -87,7 +87,7 @@
               <td class="py-1 pr-2">
                 <select
                   :value="row.Filter?._name ?? ''"
-                  class="bg-slate-700/60 border border-slate-600 rounded px-1 py-0.5 text-gray-200"
+                  class="bg-surface-2 border border-line-strong rounded px-1 py-0.5 text-content"
                   @change="onFilterChange(row, $event.target.value)"
                 >
                   <option value="">–</option>
@@ -100,7 +100,7 @@
               <td class="py-1 pr-2">
                 <select
                   :value="row.Binning?.X ?? 1"
-                  class="bg-slate-700/60 border border-slate-600 rounded px-1 py-0.5 text-gray-200"
+                  class="bg-surface-2 border border-line-strong rounded px-1 py-0.5 text-content"
                   @change="
                     row.Binning = {
                       X: Number($event.target.value),
@@ -121,7 +121,7 @@
                   type="number"
                   v-model.number="row.Gain"
                   min="-1"
-                  class="w-16 bg-slate-700/60 border border-slate-600 rounded px-1 py-0.5 text-gray-200 outline-none focus:border-cyan-500/50"
+                  class="w-16 bg-surface-2 border border-line-strong rounded px-1 py-0.5 text-content outline-none focus:border-accent"
                   :placeholder="row.Gain === -1 ? '(Camera)' : ''"
                   @input="markDirty"
                 />
@@ -132,14 +132,14 @@
                   type="number"
                   v-model.number="row.Offset"
                   min="-1"
-                  class="w-16 bg-slate-700/60 border border-slate-600 rounded px-1 py-0.5 text-gray-200 outline-none focus:border-cyan-500/50"
+                  class="w-16 bg-surface-2 border border-line-strong rounded px-1 py-0.5 text-content outline-none focus:border-accent"
                   :placeholder="row.Offset === -1 ? '(Camera)' : ''"
                   @input="markDirty"
                 />
               </td>
               <td class="py-1">
                 <button
-                  class="text-red-400 hover:text-red-300 p-0.5 transition-colors"
+                  class="text-status-danger hover:text-status-danger/70 p-0.5 transition-colors"
                   @click="removeRow(i)"
                 >
                   <TrashIcon class="w-3.5 h-3.5" />
@@ -147,7 +147,7 @@
               </td>
             </tr>
             <tr v-if="localItems.length === 0">
-              <td colspan="8" class="py-2 text-center text-slate-600">
+              <td colspan="8" class="py-2 text-center text-content-faint">
                 {{ $t('components.sequence.items.autoBalancingExposure.noEntries') }}
               </td>
             </tr>
@@ -157,14 +157,14 @@
 
       <div class="flex items-center justify-between mt-2">
         <button
-          class="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 px-2 py-1 rounded hover:bg-slate-700/40 transition-colors"
+          class="flex items-center gap-1 text-xs text-content-muted hover:text-content px-2 py-1 rounded hover:bg-surface-3 transition-colors"
           @click="addRow"
         >
           <PlusIcon class="w-3.5 h-3.5" />
           {{ $t('components.sequence.items.autoBalancingExposure.addRow') }}
         </button>
         <button
-          class="flex items-center gap-1 text-xs text-cyan-400 hover:text-cyan-300 px-2 py-1 rounded hover:bg-cyan-900/20 transition-colors"
+          class="flex items-center gap-1 text-xs text-accent px-2 py-1 rounded hover:bg-accent/10 transition-colors"
           @click="saveAll(save)"
         >
           {{ $t('general.save') }}
