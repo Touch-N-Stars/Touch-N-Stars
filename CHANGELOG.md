@@ -5,6 +5,85 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.5.0] - 2026-11-17
+
+Summary of all changes since 6.4.0 (released in 6.5.0-beta1 to 6.5.0-beta29, see below for the individual beta releases).
+
+### Added
+
+- Native Guider (PINS): New guiding page for the guider built into PINS, as an alternative to PHD2. It shows the live guide frame, guide graph, target plot with a star view, statistics, calibration, event log, settings and dark library, and every setting has an info button that explains it. The guide star can be chosen with a tap, calibration can slew to a calibration position first, and the guide camera has its own slot in equipment connect and the setup wizard. The guider, the Guiding Coach and the flight recorder were developed by @aduffeck. Thank you!
+- Native Guider (PINS): The Guiding Coach measures the guide camera, the seeing and the mount, tries better settings including shorter exposures and recommends what to change, with live hints while guiding. The Incidents tab replays the frames and telemetry around the moments guiding went wrong and names a likely cause. Developed by @aduffeck.
+- Native Guider (PINS): New Dec backlash play model. It learns the size and shape of the play of the Dec gear from calibration and guiding, holds back corrections that would only take up play on seeing noise, and a chip in the status bar shows the learned play.
+- Native Guider (PINS): New setting "Rotator turns the guide camera". The guider then waits while the rotator turns and continues with a new guide star and the calibration turned with the rotator. Developed by @aduffeck.
+- Guide Log Viewer (PINS plugin): Reviews the guiding of any night from the native guider's guide logs, also with no equipment connected: a night overview coloured by guiding quality, the moments worth a look, a zoomable guide graph, statistics of any time range with an explanation for every value, a target plot, the periodic error of the mount and the calibrations. PHD2 guide logs can be opened too.
+- Sequence editor (NINA): With an up-to-date Touch'N'Stars plugin, NINA now gets the same sequence editor as PINS, with editing directly in the list, loading and saving of sequence files and items from other NINA plugins. Items, triggers and conditions can be dragged into another container.
+- Sequence editor: New simple view for imaging a list of targets, similar to the legacy sequencer in NINA. Each target is a card with its exposure rows, slew and center options, guiding and autofocus triggers, the altitude over the night and the expected clock times. The view is chosen in the sequence settings.
+- Sequence: The sequence status shows the target that is being imaged right now, for example "Target 2 of 3", and the sequence folder can be chosen in the Load / save sequences dialog.
+- Framing: When sending a target to the loaded sequence, the new target can be added as a copy of an existing one with all its exposures.
+- Focus (PINS): Hocus Focus is now part of the focus page, with the key autofocus settings in one card, a setup assistant that measures the right step size with your focuser, and a check after each run that suggests a fix you can apply with one tap. Aberration Inspector and Tilter are tabs of the focus page.
+- Hocus Focus: New AutoFocus option to reverse the initial direction.
+- Settings (Meridian Flip): One question about how far the mount can track past the meridian replaces the three minute values, and a timeline shows when the flip happens. A daylight test lets NINA do a real meridian flip with your settings.
+- PINS alarm: PINS beeps the PowerBox by itself on critical events, also when the app is closed: N.I.N.A. errors and lost devices, lost guiding, mount and meridian flip problems, the safety monitor reporting unsafe, PowerBox over current, a dew heater without data and a full disk. The Alarm section under PINS-Devices, Configuration, PowerBox chooses the events, volume and length, offers a test beep and can mute the alarm for 30 minutes. Needs the updated Touch'N'Stars plugin.
+- PINS: The network tab lists the saved Wi-Fi networks with their priority; each one can be connected, switched to auto-connect or forgotten. Developed by @acocalypso.
+- PINS: Switch between the stable and the unstable software repository, and configure a disk swap of 2, 4 or 8 GB instead of zram. Needs the updated pinsdaemon.
+- PINS: Plugins that need a NINA plugin offer to install it and restart PINS, and the settings have a PINS tab that leads straight to the PINS page.
+- PINS AI Chat: Local multilingual chat with MCP tools, explicit approval of equipment actions, live job results and redacted troubleshooting reports.
+- Camera: New option in the cooler settings to cool down automatically when the camera connects, and to switch on the dew heater along with it.
+- Camera: Histogram and stretch work on the real 16-bit raw data, with exact statistics and separate RGB channels; the histogram is docked beside the image. The camera chip card in the settings sets bit depth and bit scaling. Needs the updated Touch'N'Stars plugin; with an older plugin the preview image is used.
+- Mount (PINS): With the native OnStepX driver, a new OnStepX tab sets the limits, the preferred pier side and the home position, and with a Proxisky UMi also the mount's own settings. The driver settings choose the serial port and the baud rate.
+- Equipment (PINS): The guide camera has its own Alpaca Direct settings again, so two Alpaca cameras without discovery can be used as imaging and guide camera at the same time. Developed by @nitr57.
+- Guiding: The guide camera card also sets readout mode, USB limit and camera options, and with the internal guider the dither settings show how far a dither moves the image on the main camera. Developed by @nitr57.
+- Image history: The image viewer has arrows to the previous and next image; the arrow keys and a sideways swipe do the same.
+- Sequence monitor: The session timeline remembers the chosen start and end on this device.
+- Flat assistant: While flats or dark flats are being taken, the status shows the exposure time the assistant chose next to the last measured ADU.
+- Atlas: The Northern Sky Narrowband Survey (NSNS) can be downloaded as an additional sky background, as colour composite, as single H-alpha, OIII or SII line or as continuum.
+- MLAstro RPA (plugin): Connect an MLAstro One RPA to PINS over USB or Wi-Fi, nudge altitude and azimuth and let TPPA correct the polar alignment automatically. Developed by @ydutertre.
+- LuckyCapture (plugin, PINS): Planetary video capture with the connected PINS camera as SER or lossless AVI, with live preview, region of interest with quick presets, histogram and frame statistics. Developed by @acocalypso.
+- Cone Error (plugin, PINS): A guided measurement of the cone error of the mount that ends with the shim thickness and which end of the dovetail to shim. Developed by @nitr57.
+- AAPA Controller (plugin): Control the Astrophilos Automated Polar Alignment, including one-button polar alignment together with TPPA.
+- Livestack (PINS): The settings dialog holds the plugin options that are otherwise out of reach on PINS, such as working directory, calibration, master library and saved files. Developed by @nitr57.
+
+### Changed
+
+- Interface: The whole app now uses the same cards, headings, colours and dialogs. More dialogs close with the Escape key, number fields have plus and minus buttons and open the touch number pad, many controls are larger and easier to tap, and pages show the same notice when their device is not connected.
+- Interface: On tablets and large screens many pages use more of the screen width.
+- Interface: Questions before deleting something and error messages appear in the app's own style instead of as browser pop-ups.
+- PINS: The PINS page is built in instead of a plugin and has new System and INDI tabs. Installing a NINA plugin package warns that PINS restarts.
+- Flat assistant: Flat runs now run inside the Touch'N'Stars plugin on NINA and PINS and continue while the app is closed. Multi mode, darks after the flats, the live ADU meter and the flat target name now work on NINA as well. Needs the updated Touch'N'Stars plugin.
+- Sequence editor: The Target Scheduler container gets a compact view, and the live status of a sequence is fetched with much less data, which keeps large sequences responsive.
+- Atlas: Updated to a newer Celestia Atlas version with corrected catalogue cross-references. The sky survey source is picked from a select in the Layers panel, and the navigation bar button shows the W of Cassiopeia. Developed by @acocalypso.
+- Logfile Collector (plugin): A failed upload shows the status and the reason given by the server. Developed by @acocalypso.
+
+### Removed
+
+- PINS: The separate Hocus Focus plugin; it is now part of the focus page.
+- PINS: The app no longer beeps the PowerBox itself on warnings and errors; PINS does it now (see Added). The earlier beep settings of the app are not taken over.
+
+### Fixed
+
+- VNC Remote (PINS): The connection works again after the Raspberry Pi update of wayvnc from 2026-11-15. The page now asks for the username and password of the Pi's desktop user and can remember the password on the device. Needs the updated pinsdaemon.
+- PINS: The system update no longer keeps showing Running after it has finished, and a second update started from another device follows the running one. Needs the updated pinsdaemon.
+- Sequence (PINS): Saved sequences no longer end up in the wrong place with a backslash in their file name.
+- Error messages: When the backend refuses a request, or a park, filter change, focuser move, dome or flat panel action fails, the app shows the reason instead of failing silently.
+- Camera: A capture no longer keeps spinning forever when the image is lost, and the app says so when an image never arrives.
+- Connection: Several pages no longer ask the backend for status while the app is in the background, which saves battery and speeds up the reconnect.
+- Mount: Closing the plate solving dialog no longer stops tracking when the mount is not slewing.
+- Focuser: After switching back to the app during an autofocus, the status and the autofocus graph show up right away.
+- Message boxes: A box answered on another device or closed by the backend disappears on every device.
+- Flat assistant: Slew to zenith honours the selected pier side, multi mode stays within the range of the flat device, and DSLR raw images no longer show the brightness four times too low.
+- Guide camera: For cameras with a list of named gains, the chosen gain itself is stored instead of its position in the list.
+- Guiding (PHD2): Opening the guider no longer shows error messages when PHD2 is not running yet.
+- TPPA: When the polar alignment runs in the dialog opened by NINA, its settings no longer open hidden behind it, and no value or green circle is shown before the first measurement.
+- Status bar: The camera panel shows the dew heater switch also for cameras without cooling.
+- Settings: Switches show changes made by a preset or another client without reopening the page.
+- Image viewer: The Android back gesture closes the full-screen image instead of leaving the page.
+- Atlas: Opening the sky atlas no longer briefly flashes the equipment page.
+- Mount (PINS): While no slew rate is known, the page asks to connect a mount. Developed by @nitr57.
+- Night Summary (plugin, NINA): The plugin is recognised again on Windows.
+- Perihelion (plugin): The path in the framing view stays aligned with the sky background. Developed by @acocalypso.
+- Target Scheduler Viewer: "Apply to sequence" is only offered when the sequence editor is available.
+- Translations: Several texts that were always shown in English, such as the rotator dialog under PINS and the PINS rig network mode, are now translated.
+
 ## [App6.5.0 - beta 28] - 2026-11-15
 
 ### Added
