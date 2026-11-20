@@ -355,6 +355,7 @@ import StatusBar from '@/components/status/StatusBar.vue';
 import LocationSyncModal from '@/components/app/LocationSyncModal.vue';
 import { useOrientation } from '@/composables/useOrientation';
 import { useStageWindow } from '@/composables/useStageWindow';
+import { useSimpleModeLanding } from '@/composables/useSimpleModeLanding';
 import { useRoute } from 'vue-router';
 import DialogModal from '@/components/app/DialogModal.vue';
 import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
@@ -418,6 +419,7 @@ const pinsStore = usePinsStore();
 const nightSummaryStore = useNightSummaryStore();
 const flipTestStore = useMeridianFlipTestStore();
 const route = useRoute();
+useSimpleModeLanding();
 
 // A flip test that ran before a reload comes back once the backend answers.
 watch(

@@ -43,6 +43,22 @@
       @scroll="updateScrollIndicators"
     >
       <div class="nav-items-wrapper" :class="wrapperClasses">
+        <!-- Simple mode home page; only exists while the mode is active -->
+        <div v-if="simpleModeActive" :style="{ order: getNavOrder('home') }" class="nav-item">
+          <!-- Active by hand: the atlas also sits on /start and must not light both up -->
+          <router-link
+            to="/start"
+            class="nav-button"
+            active-class=""
+            exact-active-class=""
+            :class="{ 'active-nav-button': route.path === '/start' && !store.showSkyAtlas }"
+            @click="store.showSkyAtlas = false"
+          >
+            <HomeIcon class="icon force-visible" />
+            <span class="nav-label">{{ t('nav.home') }}</span>
+          </router-link>
+        </div>
+
         <div
           v-if="store.isBackendReachable && !isNavItemHidden('equipment')"
           :style="{ order: getNavOrder('equipment') }"
@@ -343,7 +359,9 @@
               class="icon force-visible"
               :class="sequenceStore.sequenceRunning ? 'text-status-ok' : 'text-white'"
             />
-            <span class="nav-label">{{ t('nav.sequence') }}</span>
+            <span class="nav-label">{{
+              simpleModeActive ? t('nav.plan') : t('nav.sequence')
+            }}</span>
           </router-link>
         </div>
 
@@ -422,14 +440,17 @@
           :style="{ order: getNavOrder('skyview') }"
           class="nav-item"
         >
+          <!-- In simple mode the atlas opens over the home page, so closing it lands there -->
           <router-link
-            to="/"
+            :to="simpleModeActive ? '/start' : '/'"
             class="nav-button"
             :class="{ 'active-nav-button': store.showSkyAtlas }"
             @click="handleSkyViewClick"
           >
             <CassiopeiaIcon class="icon force-visible" />
-            <span class="nav-label">{{ t('nav.skyView') }}</span>
+            <span class="nav-label">{{
+              simpleModeActive ? t('nav.target') : t('nav.skyView')
+            }}</span>
           </router-link>
         </div>
         <div
@@ -513,6 +534,7 @@ import {
   AdjustmentsVerticalIcon,
   InformationCircleIcon,
   LinkSlashIcon,
+  HomeIcon,
 } from '@heroicons/vue/24/outline';
 import CameraFramingIcon from '@/components/icons/CameraFramingIcon.vue';
 import CassiopeiaIcon from '@/components/icons/CassiopeiaIcon.vue';
@@ -529,6 +551,8 @@ import { usePluginStore } from '@/store/pluginStore';
 import AboutModal from './status/AboutModal.vue';
 import version from '@/version';
 import { useOrientation } from '@/composables/useOrientation';
+import { useSimpleMode } from '@/composables/useSimpleMode';
+import { isHiddenInSimpleMode, simpleNavOrder } from '@/utils/simpleMode';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -589,7 +613,12 @@ const wrapperClasses = computed(() => ({
   'flex flex-col space-y-2 px-2 py-4': isLandscape.value,
 }));
 
+// The simple mode replaces the user's own navbar customization while it is active, without
+// touching it: switching the mode off brings the stored order and hidden items back.
+const { active: simpleModeActive } = useSimpleMode();
+
 function getNavOrder(id) {
+  if (simpleModeActive.value) return simpleNavOrder(id);
   const order = settingsStore.navbar?.itemOrder;
   if (!order) return 99;
   const idx = order.indexOf(id);
@@ -597,6 +626,7 @@ function getNavOrder(id) {
 }
 
 function isNavItemHidden(id) {
+  if (simpleModeActive.value) return isHiddenInSimpleMode(id);
   return settingsStore.navbar?.hiddenItems?.includes(id) ?? false;
 }
 
@@ -707,7 +737,9 @@ onBeforeUnmount(() => {
 watch(
   () => route.path,
   (newPath) => {
-    if (newPath !== '/') {
+    // The atlas is an overlay on its own route: '/' normally, the home page in simple mode.
+    const atlasPath = simpleModeActive.value ? '/start' : '/';
+    if (newPath !== atlasPath) {
       store.showSkyAtlas = false;
     }
     // Force icon visibility after route change
@@ -732,6 +764,7 @@ watch(
     () => store.guiderInfo.Connected,
     () => sequenceStore.sequenceIsLoaded,
     () => isLandscape.value,
+    () => simpleModeActive.value,
   ],
   () => {
     nextTick(() => {

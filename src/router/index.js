@@ -17,6 +17,7 @@ const FocusPage = () => import('@/views/FocusPage.vue');
 const SequencePage = () => import('@/views/SequencePage.vue');
 const FramingPage = () => import('@/views/FramingPage.vue');
 const PinsPage = () => import('@/views/PinsPage.vue');
+const SimpleHomePage = () => import('@/views/SimpleHomePage.vue');
 
 const routes = [
   {
@@ -39,6 +40,9 @@ const routes = [
   { path: '/sequence', component: SequencePage },
   { path: '/framing', component: FramingPage },
   { path: '/pins', component: PinsPage },
+  // Home page of the PINS simple mode. Reachable directly as well; it explains itself when
+  // the mode is off or the backend is not PINS.
+  { path: '/start', component: SimpleHomePage },
 ];
 
 const router = createRouter({

@@ -5529,6 +5529,199 @@
       "devChannelHidden": "Dev update channel hidden.",
       "specialEnabled": "Eyesore marker enabled.",
       "specialDisabled": "The fun is over."
+    },
+    "simpleMode": {
+      "title": "Tonight",
+      "subtitle": "Your night step by step: tap the highlighted step and follow it from top to bottom.",
+      "pinsOnly": "The simple mode is only available when Touch'N'Stars is connected to a PINS device.",
+      "offHint": "The simple mode is switched off, so the navigation shows every page.",
+      "turnOn": "Use simple mode",
+      "showAll": "Show all functions (switch simple mode off)",
+      "status": {
+        "done": "Done",
+        "running": "Running",
+        "open": "To do",
+        "skipped": "Skipped"
+      },
+      "markDone": "Mark as done",
+      "skip": "Skip tonight",
+      "undoMark": "Undo",
+      "needsCamera": "Connect the camera first.",
+      "needsMount": "Connect the mount first.",
+      "needsGuider": "The guider is not connected yet. Tap “Connect everything” above.",
+      "needsCameraAndMount": "Needs a connected camera and mount.",
+      "rig": {
+        "title": "Your equipment",
+        "changeDevices": "Change devices",
+        "empty": "No devices are set up yet. The setup assistant walks you through camera, mount and the rest.",
+        "openWizard": "Open the setup assistant",
+        "connecting": "Connecting…",
+        "allConnected": "Everything connected",
+        "connectAll": "Connect everything",
+        "exposing": "Taking a picture",
+        "coolingTo": "cooling to {temp}",
+        "parked": "Parked",
+        "slewing": "Moving",
+        "tracking": "Tracking the sky",
+        "notTracking": "Not tracking",
+        "autofocusRunning": "Autofocus running",
+        "position": "Position {position}",
+        "connected": "Connected",
+        "notConnected": "Not connected"
+      },
+      "guiderState": {
+        "Guiding": "Guiding",
+        "Calibrating": "Calibrating",
+        "Looping": "Looking for a star",
+        "LostLock": "Star lost",
+        "Idle": "Stopped",
+        "Paused": "Paused",
+        "Reacquiring": "Searching the star again"
+      },
+      "night": {
+        "title": "Your night",
+        "progress": "{done} of {total} done"
+      },
+      "steps": {
+        "connect": {
+          "title": "Connect your equipment",
+          "description": "Switch on the power of your rig, then connect all devices with one tap.",
+          "hint": "If a device does not connect, check its cable and power, then tap “Connect everything” again.",
+          "summary": "{connected} of {total} connected"
+        },
+        "cool": {
+          "title": "Cool the camera",
+          "description": "A cooled sensor gives cleaner pictures. Cooling takes about 10 minutes, so start it early – you can carry on with the next steps meanwhile.",
+          "targetTemp": "Target temperature (°C)",
+          "start": "Cool to {temp} °C",
+          "failed": "Cooling could not be started"
+        },
+        "mount": {
+          "title": "Get the mount ready",
+          "description": "The mount has to be unparked and follow the sky (tracking) before it can point at a target.",
+          "action": "Unpark and start tracking",
+          "trackingFailed": "Tracking could not be switched on"
+        },
+        "polar": {
+          "title": "Polar alignment",
+          "description": "Aligns the mount with the celestial pole. The app takes three pictures, rotates the mount between them and shows you how far to turn the adjustment knobs. Once per setup is enough.",
+          "action": "Open polar alignment"
+        },
+        "target": {
+          "title": "Choose and go to a target",
+          "description": "Pick your object in the sky atlas. The app goes there, takes a picture, works out where the telescope really points and corrects until the target sits in the middle.",
+          "action": "Open the sky atlas",
+          "howSearch": "Search for the object or tap it in the sky.",
+          "howSlew": "Tap “{button}” to go there. With automatic centering off, the button says “{slew}”.",
+          "howPlan": "Tap “{button}” to put it into your plan.",
+          "autoCenter": "Center the target automatically with a picture (recommended)"
+        },
+        "focus": {
+          "title": "Focus",
+          "description": "Sharp stars make or break the night – and the next steps need them too: polar alignment and centering the target work out the position from a picture. Point the telescope at a part of the sky with stars. With a motor focuser the autofocus does the work; without one, focus by hand using live pictures.",
+          "autofocus": "Start autofocus",
+          "watch": "Watch the focus curve",
+          "manualHint": "No motor focuser connected: open the camera, take pictures in a loop and turn the focuser until the stars are as small as possible.",
+          "manual": "Open the camera",
+          "lastRun": "Last autofocus at {time}",
+          "lastFailed": "Last autofocus at {time} failed – check that stars are visible and try again"
+        },
+        "guide": {
+          "title": "Start guiding",
+          "description": "The guide camera watches one star and corrects the mount, so long exposures stay sharp. PINS has a guider built in – no extra software needed. Go to your target first: the first start calibrates there automatically, which takes a few minutes and does not work close to the celestial pole.",
+          "start": "Start guiding",
+          "stop": "Stop guiding",
+          "details": "Guiding details and graph",
+          "calibrateAndStart": "Calibrate and start guiding",
+          "useNativeHint": "The simple mode guides with the guider built into PINS. Your profile uses a different guider right now.",
+          "useNative": "Use the built-in guider",
+          "nativeMissing": "This PINS version has no built-in guider yet. Update PINS under",
+          "chooseCamera": "The built-in guider needs to know which camera is your guide camera. Pick it here – after that, “Connect everything” connects it too.",
+          "chooseCameraAction": "Choose the guide camera…",
+          "noGuideCamera": "No guide camera found – plug it in and check “All devices”"
+        },
+        "capture": {
+          "title": "Take pictures",
+          "description": "Your plan says which targets to shoot with which filter, exposure time and number of pictures. Start it and the app takes care of the rest.",
+          "targets": "Targets",
+          "remaining": "Time left",
+          "noPlan": "There is no plan yet. Create one with your target, filter, exposure time and number of pictures.",
+          "editPlan": "Edit plan",
+          "createPlan": "Create a plan",
+          "watch": "Watch the pictures come in",
+          "start": "Start taking pictures",
+          "stop": "Stop taking pictures",
+          "summary": "{targets} target(s), done at about {time}",
+          "summaryDone": "{targets} target(s), all pictures taken",
+          "confirmStartTitle": "Start taking pictures?",
+          "confirmStartMessage": "The plan with {targets} target(s) starts now and takes about {remaining}. The mount may move.",
+          "confirmStopTitle": "Stop taking pictures?",
+          "confirmStopMessage": "The current picture is cancelled. You can start the plan again later.",
+          "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
+          "summaryEmpty": "{targets} target(s), no pictures planned yet"
+        },
+        "end": {
+          "title": "End the night",
+          "description": "Stops everything in the right order, parks the mount and warms up the camera slowly so no moisture forms on the sensor.",
+          "action": "End the night"
+        }
+      },
+      "more": {
+        "title": "More",
+        "equipment": "All devices",
+        "mount": "Mount",
+        "focus": "Focus",
+        "guider": "Guiding",
+        "system": "Wi-Fi, updates & system",
+        "settings": "Settings"
+      },
+      "endNight": {
+        "title": "End the night",
+        "intro": "These steps run one after the other. Untick anything you want to keep running.",
+        "nothingToDo": "Nothing is running and the mount is parked – there is nothing left to do.",
+        "someFailed": "Not everything worked. Check the messages and the mount before you switch off the power.",
+        "done": "All done. Wait until the camera has warmed up before you switch off the power.",
+        "confirm": "End the night now",
+        "actions": {
+          "stopSequence": "Stop taking pictures",
+          "stopGuiding": "Stop guiding",
+          "parkMount": "Park the mount",
+          "warmCamera": "Warm up the camera (10 min)"
+        },
+        "parkTimeout": "The mount did not report “parked” within 3 minutes. Check it before you switch off the power.",
+        "doneNoWarmUp": "All done. You can switch off the power now."
+      },
+      "settings": {
+        "title": "Simple mode",
+        "description": "A start page that guides you through the night, and a navigation with only the pages you need for it. Switch it off to see every function again.",
+        "navbarHint": "While the simple mode is on, the navigation customization below has no effect. It comes back unchanged when you switch the mode off."
+      },
+      "wizard": {
+        "title": "How do you want to use the app?",
+        "simpleTitle": "Simple (recommended to get started)",
+        "simpleText": "A start page leads you through the night step by step, with only the pages you need.",
+        "fullTitle": "All functions",
+        "fullText": "Every page and setting in the navigation, for experienced users."
+      },
+      "focusFirst": "Focus first: this step works out the position from a picture, and that needs sharp stars.",
+      "live": {
+        "lastPicture": "Last picture",
+        "openFull": "Show the picture full screen",
+        "noPicture": "No picture yet. Take a test picture to see what the camera sees.",
+        "preview": "Test picture",
+        "hfr": "Sharpness (HFR)",
+        "stars": "Stars",
+        "guiding": "Guiding",
+        "sensor": "Sensor",
+        "trendTitle": "Sharpness of the last {count} pictures",
+        "trendHint": "Sharper stars are drawn higher up. If the line sinks during the night, focus again.",
+        "exposure": "Exposure time",
+        "testPicture": "Take a test picture",
+        "abort": "Stop exposure",
+        "planRunning": "Your plan is taking pictures – new ones appear here as they come in.",
+        "justNow": "just now",
+        "minutesAgo": "{minutes} min ago"
+      }
     }
   },
   "plugins": {
@@ -9738,7 +9931,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Settings",
-    "about": "About"
+    "about": "About",
+    "home": "Start",
+    "plan": "Plan",
+    "target": "Target"
   },
   "luckycapture": {
     "noCamera": "No connected camera",

@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.6.0-beta1] - 2026-11-20
+
+### Added
+
+- PINS: New simple mode for getting started, with a start page that shows the latest picture with sharpness, stars, guiding and the sharpness trend of the night, leads through the night step by step (connect, cool, focus, polar alignment, target from the sky atlas, guiding with the built-in guider, pictures, end of night) and a navigation with only the pages needed for it; it is offered at the end of the setup assistant and can be switched in Settings, Interface.
+
 ## [App6.5.0] - 2026-11-17
 
 Summary of all changes since 6.4.0 (released in 6.5.0-beta1 to 6.5.0-beta29, see below for the individual beta releases).

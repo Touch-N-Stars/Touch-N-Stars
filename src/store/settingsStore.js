@@ -242,6 +242,15 @@ export const useSettingsStore = defineStore('settings', {
     screenLock: {
       active: false,
     },
+    // PINS simple mode: guided home page and a reduced navigation for users coming from
+    // all-in-one boxes. Per device on purpose (not in the shared rig settings): a phone can run
+    // the simple mode while a tablet on the same rig shows everything. `steps` holds the steps
+    // marked by hand, valid for one night only (see utils/simpleMode.js).
+    simpleMode: {
+      enabled: false,
+      coolTemp: -10,
+      steps: { night: '', marks: {} },
+    },
   }),
   getters: {
     currentImageRotation(state) {
@@ -250,6 +259,30 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   actions: {
+    // Older persisted settings have no `simpleMode` block yet.
+    _ensureSimpleMode() {
+      if (!this.simpleMode) {
+        this.simpleMode = { enabled: false, coolTemp: -10, steps: { night: '', marks: {} } };
+      }
+      if (!this.simpleMode.steps) this.simpleMode.steps = { night: '', marks: {} };
+      return this.simpleMode;
+    },
+    setSimpleModeEnabled(enabled) {
+      const mode = this._ensureSimpleMode();
+      mode.enabled = Boolean(enabled);
+      // The simple mode's "Plan" is the simple sequence view.
+      if (mode.enabled) this.setSequenceViewMode('simple');
+    },
+    setSimpleModeCoolTemp(temp) {
+      this._ensureSimpleMode().coolTemp = temp;
+    },
+    // mark: 'done' | 'skipped' | null (clear). Marks of an earlier night are dropped first.
+    setSimpleModeStepMark(night, stepId, mark) {
+      const mode = this._ensureSimpleMode();
+      if (mode.steps.night !== night) mode.steps = { night, marks: {} };
+      if (mark) mode.steps.marks[stepId] = mark;
+      else delete mode.steps.marks[stepId];
+    },
     // Older persisted settings have no `sequence` block yet.
     setSequenceViewMode(mode) {
       if (!this.sequence) this.sequence = { viewMode: mode };

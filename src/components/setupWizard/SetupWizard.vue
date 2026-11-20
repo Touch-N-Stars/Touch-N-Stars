@@ -116,6 +116,29 @@
                 <p class="text-sm text-content-faint">
                   {{ t('components.setupWizard.done.moreDevicesHint') }}
                 </p>
+                <!-- PINS: how the app should look from now on. Same switch as in
+                     Settings -> Interface, so it can be changed any time. -->
+                <div v-if="store.isPINS" class="flex flex-col gap-2">
+                  <h3 class="tns-section-title">
+                    {{ t('components.simpleMode.wizard.title') }}
+                  </h3>
+                  <button
+                    v-for="option in uiModeOptions"
+                    :key="option.value"
+                    type="button"
+                    class="text-left rounded-card border p-3 min-h-touch transition-colors"
+                    :class="
+                      simpleModeChoice === option.value
+                        ? 'border-accent bg-accent/10'
+                        : 'border-line bg-surface-2'
+                    "
+                    :aria-pressed="simpleModeChoice === option.value"
+                    @click="settingsStore.setSimpleModeEnabled(option.value)"
+                  >
+                    <span class="block font-semibold text-content">{{ t(option.titleKey) }}</span>
+                    <span class="block text-xs text-content-muted">{{ t(option.textKey) }}</span>
+                  </button>
+                </div>
                 <!-- Anyone who skipped the instance step lands on the connection
                      splash afterwards; say where to fix that. -->
                 <p v-if="!store.isBackendReachable" class="text-sm text-status-warn">
@@ -152,6 +175,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
 import { Capacitor } from '@capacitor/core';
+import { useRouter } from 'vue-router';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import { usePinsStore } from '@/store/pinsStore';
@@ -176,6 +200,7 @@ const emit = defineEmits(['close']);
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const store = apiStore();
+const router = useRouter();
 const pinsStore = usePinsStore();
 
 const isMobile = ['android', 'ios'].includes(Capacitor.getPlatform());
@@ -261,8 +286,23 @@ function cancel() {
 
 function finish() {
   settingsStore.completeSetupWizard(store.profileInfo?.Id);
+  if (store.isPINS && simpleModeChoice.value) router.push('/start');
   emit('close');
 }
+
+const simpleModeChoice = computed(() => settingsStore.simpleMode?.enabled === true);
+const uiModeOptions = [
+  {
+    value: true,
+    titleKey: 'components.simpleMode.wizard.simpleTitle',
+    textKey: 'components.simpleMode.wizard.simpleText',
+  },
+  {
+    value: false,
+    titleKey: 'components.simpleMode.wizard.fullTitle',
+    textKey: 'components.simpleMode.wizard.fullText',
+  },
+];
 </script>
 
 <style scoped>
