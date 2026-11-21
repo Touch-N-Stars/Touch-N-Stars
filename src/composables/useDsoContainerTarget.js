@@ -12,7 +12,10 @@ import {
 } from '@/utils/sequenceTargets';
 
 // Names NINA gives a DSO container before it has a target (its instruction set's type name).
-const DEFAULT_CONTAINER_NAMES = ['Deep Sky Object Instruction Set', 'DeepSkyObjectContainer'];
+export const DEFAULT_CONTAINER_NAMES = [
+  'Deep Sky Object Instruction Set',
+  'DeepSkyObjectContainer',
+];
 
 /**
  * Target of one DSO container in the V2 sequence tree: its coordinates for display and the

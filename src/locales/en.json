@@ -5880,7 +5880,13 @@
         "abort": "Stop exposure",
         "planRunning": "Your plan is taking pictures – new ones appear here as they come in.",
         "justNow": "just now",
-        "minutesAgo": "{minutes} min ago"
+        "minutesAgo": "{minutes} min ago",
+        "histogram": "Histogram",
+        "min": "Min",
+        "max": "Max",
+        "pixels": "{count} pixel | {count} pixels",
+        "pixelsSaturated": "{count} pixel saturated | {count} pixels saturated",
+        "histogramHint": "Unstretched sensor data of the whole picture. Only the range around the sky background is shown; stars and saturated pixels lie further right and are counted under Max."
       },
       "setupChecks": {
         "title": "Before your first night",
@@ -5893,7 +5899,60 @@
         "blockedPolar": "Polar alignment cannot work yet, see \"Before your first night\" above.",
         "blockedTarget": "Centering cannot work yet: no star map is installed, see \"Before your first night\" above."
       },
-      "backToNight": "Back to your night"
+      "backToNight": "Back to your night",
+      "cockpit": {
+        "title": "Taking pictures",
+        "noTargetName": "Your plan",
+        "doneAt": "Done at",
+        "remaining": "{time} of pictures left",
+        "activity": {
+          "autofocus": "Focusing (autofocus)",
+          "slewing": "Telescope is moving (centering or meridian flip)",
+          "calibrating": "Guider is calibrating",
+          "settling": "Waiting for the guiding to settle",
+          "exposing": "Exposing",
+          "busy": "Getting the next picture ready"
+        },
+        "exposing": "Exposing {seconds} s",
+        "frame": "picture {frame} of {frames}",
+        "check": "Check",
+        "hfr": "HFR",
+        "notGuiding": "not guiding",
+        "noFrame": "no picture yet",
+        "hfrChange": "{change} % vs. before",
+        "guidingLevel": {
+          "good": "excellent",
+          "ok": "good",
+          "poor": "too high",
+          "unknown": "scale unknown"
+        },
+        "guideGraph": "Guide errors of the last steps",
+        "alerts": {
+          "devices": "{count} device is no longer connected. | {count} devices are no longer connected.",
+          "starLost": "The guider lost its star. Pictures taken now will show trails.",
+          "notGuiding": "The plan is running without guiding.",
+          "guidingPoor": "Guiding ({rms}″) is larger than one image pixel ({scale}″) – stars get soft. Wind, balance or a loose cable are common causes.",
+          "hfrRising": "Stars are {change} % larger than in the earlier pictures. Focus may have drifted, or dew or clouds are coming in.",
+          "cooling": "Sensor is at {temp} °C instead of {target} °C."
+        },
+        "hfrNoBaseline": "first pictures",
+        "lastPicture": "last picture"
+      },
+      "summary": {
+        "finished": {
+          "title": "Plan finished",
+          "text": "All pictures of your plan are taken. End the night to park the telescope and warm up the camera."
+        },
+        "ended": {
+          "title": "Night ended",
+          "text": "Clear skies! Here is what tonight brought.",
+          "notParked": "Telescope not parked yet",
+          "resume": "Continue the night"
+        },
+        "frames": "Pictures",
+        "integration": "Exposure",
+        "medianHfr": "Median HFR"
+      }
     }
   },
   "plugins": {

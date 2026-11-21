@@ -55,10 +55,78 @@
     <div class="p-3 flex flex-col gap-3">
       <!-- lg: the panel only gets half the page next to the night steps, too narrow for four
            tiles ("SHARPNESS (HFR)" was cut off on a 1024 px tablet) -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2">
+      <div
+        v-if="!compact"
+        class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2"
+      >
         <div v-for="tile in tiles" :key="tile.key" class="tns-stat-tile">
           <span class="tns-stat-label">{{ tile.label }}</span>
           <span class="tns-stat-value">{{ tile.value }}</span>
+        </div>
+      </div>
+
+      <!-- Histogram of the shown picture: where the sky background sits, and how many pixels
+           are at the darkest and brightest value (clipped background, saturated stars) -->
+      <div v-if="histogram" class="flex flex-col gap-1">
+        <div class="flex items-baseline justify-between gap-2">
+          <span class="tns-label">{{ $t('components.simpleMode.live.histogram') }}</span>
+          <span class="text-xs text-content-faint tabular-nums">
+            {{ histogram.lo }} – {{ histogram.hi }} ADU
+          </span>
+        </div>
+        <svg
+          :viewBox="`0 0 ${HIST_W} ${HIST_H}`"
+          preserveAspectRatio="none"
+          class="w-full h-14 rounded-chip bg-surface-2"
+          role="img"
+          :aria-label="$t('components.simpleMode.live.histogram')"
+        >
+          <polygon
+            :points="histogramPoints"
+            fill="var(--color-accent)"
+            fill-opacity="0.35"
+            stroke="var(--color-accent)"
+            stroke-width="1.5"
+            vector-effect="non-scaling-stroke"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <!-- Say what the curve is: a cut of the linear axis can be mistaken for a stretch -->
+        <p class="text-xs text-content-faint">
+          {{ $t('components.simpleMode.live.histogramHint') }}
+        </p>
+        <div class="grid grid-cols-2 gap-2">
+          <div class="tns-stat-tile min-w-0">
+            <span class="tns-stat-label">{{ $t('components.simpleMode.live.min') }}</span>
+            <span class="tns-stat-value">{{ histogram.min }}</span>
+            <span class="text-[11px] leading-tight text-content-muted">
+              {{
+                $t(
+                  'components.simpleMode.live.pixels',
+                  { count: formatCount(histogram.minCount) },
+                  histogram.minCount
+                )
+              }}
+            </span>
+          </div>
+          <div
+            class="tns-stat-tile min-w-0"
+            :class="histogram.saturated ? 'tns-stat-tile-warn' : ''"
+          >
+            <span class="tns-stat-label">{{ $t('components.simpleMode.live.max') }}</span>
+            <span class="tns-stat-value">{{ histogram.max }}</span>
+            <span class="text-[11px] leading-tight text-content-muted">
+              {{
+                $t(
+                  histogram.saturated
+                    ? 'components.simpleMode.live.pixelsSaturated'
+                    : 'components.simpleMode.live.pixels',
+                  { count: formatCount(histogram.maxCount) },
+                  histogram.maxCount
+                )
+              }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -91,8 +159,8 @@
         <p class="text-xs text-content-faint">{{ $t('components.simpleMode.live.trendHint') }}</p>
       </div>
 
-      <!-- Test picture -->
-      <div v-if="store.cameraInfo.Connected" class="flex gap-2">
+      <!-- Test picture (not while the plan runs: the camera is the plan's) -->
+      <div v-if="store.cameraInfo.Connected && !compact" class="flex gap-2">
         <label for="simple-mode-exposure" class="sr-only">
           {{ $t('components.simpleMode.live.exposure') }}
         </label>
@@ -127,7 +195,7 @@
           {{ $t('components.simpleMode.live.abort') }}
         </button>
       </div>
-      <p v-if="sequenceStore.sequenceRunning" class="text-xs text-content-faint">
+      <p v-if="sequenceStore.sequenceRunning && !compact" class="text-xs text-content-faint">
         {{ $t('components.simpleMode.live.planRunning') }}
       </p>
     </div>
@@ -154,10 +222,21 @@ import { useImagetStore } from '@/store/imageStore';
 import { usePolling } from '@/composables/usePolling';
 import Spinner from '@/components/helpers/Spinner.vue';
 import ImageModal from '@/components/helpers/imageModal.vue';
-import { hfrSeries, latestPicture } from '@/utils/simpleMode';
-import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';
+import { hfrSeries, histogramSummary, latestPicture } from '@/utils/simpleMode';
+import {
+  historyEntryKey,
+  historyRawSource,
+  isHistoryEntryDeleted,
+} from '@/utils/imageHistoryUtils';
+import { parseRawImage } from '@/utils/rawImage/parseRawImage';
 
-const { t } = useI18n();
+defineProps({
+  // While the plan runs the imaging cockpit shows the numbers; the panel keeps the picture
+  // and the sharpness trend.
+  compact: { type: Boolean, default: false },
+});
+
+const { t, locale } = useI18n();
 const store = apiStore();
 const settingsStore = useSettingsStore();
 const cameraStore = useCameraStore();
@@ -338,6 +417,68 @@ const ago = computed(() => {
     ? t('components.simpleMode.live.justNow')
     : t('components.simpleMode.live.minutesAgo', { minutes });
 });
+
+// --- Histogram --------------------------------------------------------------------------
+// From the plugin's raw image: its histogram and statistics cover the full frame, while the
+// pixel plane is asked for at a token size (only the histogram is used here). One request per
+// shown picture; a newer picture cancels the one in flight.
+const RAW_MAX_DIM = 16;
+const histogram = ref(null);
+let histogramAbort = null;
+const histogramSource = computed(() => {
+  const p = picture.value;
+  if (!p) return null;
+  if (p.source === 'history') {
+    const source = historyRawSource(p.index, p.entry);
+    return source ? { key: `history-${p.index}`, source } : null;
+  }
+  return { key: `prepared-${previewAtMs.value}`, source: { kind: 'prepared' } };
+});
+watch(
+  () => histogramSource.value?.key,
+  async () => {
+    histogramAbort?.abort();
+    const target = histogramSource.value;
+    if (!target) {
+      histogram.value = null;
+      return;
+    }
+    const controller = new AbortController();
+    histogramAbort = controller;
+    try {
+      const buffer =
+        target.source.kind === 'history'
+          ? await apiService.getRawHistoryImage(target.source, RAW_MAX_DIM, controller.signal)
+          : await apiService.getRawPreparedImage(RAW_MAX_DIM, controller.signal);
+      if (histogramAbort === controller) histogram.value = histogramSummary(parseRawImage(buffer));
+    } catch (error) {
+      if (controller.signal.aborted) return;
+      // An older plugin without raw images: no histogram, the rest of the panel stays.
+      histogram.value = null;
+      if (error?.rawImageCode !== 'unsupported') {
+        console.warn('[Simple mode] histogram not available', error?.message ?? error);
+      }
+    }
+  },
+  { immediate: true }
+);
+onBeforeUnmount(() => histogramAbort?.abort());
+
+const HIST_W = 300;
+const HIST_H = 56;
+const histogramPoints = computed(() => {
+  const bins = histogram.value?.bins ?? [];
+  const peak = Math.max(...bins, 1);
+  const step = HIST_W / Math.max(bins.length - 1, 1);
+  const line = bins.map((count, i) => {
+    const y = HIST_H - 2 - (count / peak) * (HIST_H - 4);
+    return `${(i * step).toFixed(1)},${y.toFixed(1)}`;
+  });
+  return [`0,${HIST_H}`, ...line, `${HIST_W},${HIST_H}`].join(' ');
+});
+
+const countFormat = computed(() => new Intl.NumberFormat(locale.value));
+const formatCount = (count) => countFormat.value.format(count);
 
 // --- HFR trend ----------------------------------------------------------------------------
 const TREND_W = 300;

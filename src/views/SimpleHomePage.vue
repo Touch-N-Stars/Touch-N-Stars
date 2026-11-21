@@ -12,7 +12,10 @@
     <template v-else>
       <header class="flex flex-col gap-1 px-1">
         <h1 class="text-2xl font-bold text-content">{{ $t('components.simpleMode.title') }}</h1>
-        <p class="text-sm text-content-muted">{{ $t('components.simpleMode.subtitle') }}</p>
+        <!-- The step-by-step hint only fits the preparation -->
+        <p v-if="phase === 'prepare'" class="text-sm text-content-muted">
+          {{ $t('components.simpleMode.subtitle') }}
+        </p>
       </header>
 
       <!-- Reached /start with the mode switched off (e.g. by a bookmark) -->
@@ -26,19 +29,52 @@
         </button>
       </div>
 
-      <!-- Phone: one column, picture first. Tablet landscape: picture and equipment on the
-           left, the night on the right. -->
+      <!-- What leads depends on the phase of the night (see `order`): while preparing, the
+           steps; while the plan runs, the imaging cockpit and the newest picture, with the
+           finished preparation folded away; afterwards, what the night brought.
+           Tablet landscape: two columns (picture side left, night right). On a phone both
+           columns dissolve (`contents`) into one list, ordered by `order`. -->
       <div class="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start">
-        <div class="flex flex-col gap-4">
-          <SimpleLivePanel />
-          <SimpleRigCard />
+        <div class="contents lg:flex lg:flex-col lg:gap-4">
+          <SimpleImagingCockpit
+            v-if="phase === 'imaging'"
+            :style="{ order: order.lead }"
+            :planSummary="planSummary"
+            :remaining="plan.remaining"
+            :doneAt="plan.doneAt"
+            :guiderState="guiderState"
+            :usesNativeGuider="usesNativeGuider"
+            :missingDevices="missingDevices"
+            :coolingTarget="cockpitCoolingTarget"
+            :stopping="busy.capture"
+            @stop="stopCapture"
+          />
+          <SimpleNightSummary
+            v-else-if="phase === 'finished' || phase === 'ended'"
+            :style="{ order: order.lead }"
+            :phase="phase"
+            :night="night"
+            :warming="cameraWarming"
+            @end="showEndNight = true"
+            @resume="setMark('end', null)"
+          />
+          <!-- Preparing: the picture sits on the left, beside the steps -->
+          <SimpleLivePanel v-if="phase === 'prepare'" :style="{ order: order.picture }" />
+          <SimpleRigCard v-if="showRig" :style="{ order: order.rig }" />
         </div>
 
-        <div class="flex flex-col gap-4">
-          <SimpleSetupChecks />
+        <div class="contents lg:flex lg:flex-col lg:gap-4">
+          <SimpleSetupChecks v-if="phase === 'prepare'" :style="{ order: order.checks }" />
+          <!-- Later: the picture next to the cockpit (tablet), right below it (phone) -->
+          <SimpleLivePanel
+            v-if="phase !== 'prepare'"
+            :style="{ order: order.picture }"
+            :compact="phase === 'imaging'"
+          />
 
-          <section class="flex flex-col gap-2">
-            <div class="flex items-baseline justify-between gap-2 px-1">
+          <section class="flex flex-col gap-2" :style="{ order: order.steps }">
+            <!-- Preparing: the steps are the page. Later they are done and fold away. -->
+            <div v-if="phase === 'prepare'" class="flex items-baseline justify-between gap-2 px-1">
               <h2 class="tns-section-title">{{ $t('components.simpleMode.night.title') }}</h2>
               <span class="text-xs text-content-faint">
                 {{
@@ -49,349 +85,379 @@
                 }}
               </span>
             </div>
-
-            <SimpleStepCard
-              v-for="(step, index) in steps"
-              :key="step.id"
-              :number="index + 1"
-              :status="step.status"
-              :current="step.id === currentId"
-              :title="$t(`components.simpleMode.steps.${step.id}.title`)"
-              :description="$t(`components.simpleMode.steps.${step.id}.description`)"
-              :summary="summaries[step.id] || ''"
-              :markable="MARKABLE_STEPS.includes(step.id)"
-              :skippable="SKIPPABLE_STEPS.includes(step.id)"
-              :hasMark="Boolean(marks[step.id])"
-              @mark="setMark(step.id, $event)"
+            <button
+              v-else
+              type="button"
+              class="tns-card p-3! flex items-center gap-3 min-h-touch text-left"
+              :aria-expanded="stepsOpen"
+              data-haptic="none"
+              @click="stepsToggled = !stepsOpen"
             >
-              <!-- 1. Connect -->
-              <template v-if="step.id === 'connect'">
-                <p v-if="step.status !== 'done'" class="text-xs text-content-faint">
-                  {{ $t('components.simpleMode.steps.connect.hint') }}
-                </p>
-              </template>
+              <span class="flex-1 min-w-0">
+                <span class="block font-semibold text-content">
+                  {{ $t('components.simpleMode.night.title') }}
+                </span>
+                <span class="block text-xs text-content-muted">
+                  {{
+                    $t('components.simpleMode.night.progress', {
+                      done: doneCount,
+                      total: steps.length,
+                    })
+                  }}
+                </span>
+              </span>
+              <ChevronDownIcon
+                class="w-4 h-4 shrink-0 text-content-faint transition-transform"
+                :class="stepsOpen ? 'rotate-180' : ''"
+              />
+            </button>
 
-              <!-- 2. Cool the camera -->
-              <template v-else-if="step.id === 'cool'">
-                <DeviceNotConnected
-                  v-if="!store.cameraInfo.Connected"
-                  messageKey="components.simpleMode.needsCamera"
-                />
-                <template v-else-if="step.status !== 'done'">
-                  <NumberInputPicker
-                    :modelValue="coolTemp"
-                    labelKey="components.simpleMode.steps.cool.targetTemp"
-                    :label="$t('components.simpleMode.steps.cool.targetTemp')"
-                    inputId="simple-mode-cool-temp"
-                    :min="-40"
-                    :max="20"
-                    :step="1"
-                    :decimalPlaces="0"
-                    :useDefaultSentinel="false"
-                    labelPosition="top"
-                    wrapperClass="w-full"
-                    @update:modelValue="settingsStore.setSimpleModeCoolTemp($event)"
+            <template v-if="stepsOpen">
+              <SimpleStepCard
+                v-for="(step, index) in steps"
+                :key="step.id"
+                :number="index + 1"
+                :status="step.status"
+                :current="step.id === currentId"
+                :title="$t(`components.simpleMode.steps.${step.id}.title`)"
+                :description="$t(`components.simpleMode.steps.${step.id}.description`)"
+                :summary="summaries[step.id] || ''"
+                :markable="MARKABLE_STEPS.includes(step.id)"
+                :skippable="SKIPPABLE_STEPS.includes(step.id)"
+                :hasMark="Boolean(marks[step.id])"
+                @mark="setMark(step.id, $event)"
+              >
+                <!-- 1. Connect -->
+                <template v-if="step.id === 'connect'">
+                  <p v-if="step.status !== 'done'" class="text-xs text-content-faint">
+                    {{ $t('components.simpleMode.steps.connect.hint') }}
+                  </p>
+                </template>
+
+                <!-- 2. Cool the camera -->
+                <template v-else-if="step.id === 'cool'">
+                  <DeviceNotConnected
+                    v-if="!store.cameraInfo.Connected"
+                    messageKey="components.simpleMode.needsCamera"
                   />
+                  <template v-else-if="step.status !== 'done'">
+                    <NumberInputPicker
+                      :modelValue="coolTemp"
+                      labelKey="components.simpleMode.steps.cool.targetTemp"
+                      :label="$t('components.simpleMode.steps.cool.targetTemp')"
+                      inputId="simple-mode-cool-temp"
+                      :min="-40"
+                      :max="20"
+                      :step="1"
+                      :decimalPlaces="0"
+                      :useDefaultSentinel="false"
+                      labelPosition="top"
+                      wrapperClass="w-full"
+                      @update:modelValue="settingsStore.setSimpleModeCoolTemp($event)"
+                    />
+                    <button
+                      type="button"
+                      class="tns-btn-primary"
+                      :disabled="busy.cool || cameraStore.coolingState === 'cooling'"
+                      @click="startCooling"
+                    >
+                      <Spinner v-if="busy.cool" size="sm" />
+                      {{ $t('components.simpleMode.steps.cool.start', { temp: coolTemp }) }}
+                    </button>
+                  </template>
+                </template>
+
+                <!-- 3. Mount ready -->
+                <template v-else-if="step.id === 'mount'">
+                  <DeviceNotConnected
+                    v-if="!store.mountInfo.Connected"
+                    messageKey="components.simpleMode.needsMount"
+                  />
+                  <p
+                    v-else-if="step.status !== 'done' && tppaStore.stoppedAfterRun"
+                    class="text-xs text-status-warn"
+                  >
+                    {{ $t('components.simpleMode.steps.mount.trackingOffAfterPolar') }}
+                  </p>
+                  <button
+                    v-if="store.mountInfo.Connected && step.status !== 'done'"
+                    type="button"
+                    class="tns-btn-primary"
+                    :disabled="busy.mount || store.mountIsSlewing"
+                    @click="makeMountReady"
+                  >
+                    <Spinner v-if="busy.mount" size="sm" />
+                    {{ $t('components.simpleMode.steps.mount.action') }}
+                  </button>
+                </template>
+
+                <!-- 4. Polar alignment -->
+                <template v-else-if="step.id === 'polar'">
+                  <p v-if="locationMissing || databaseMissing" class="text-xs text-status-warn">
+                    {{ $t('components.simpleMode.setupChecks.blockedPolar') }}
+                  </p>
+                  <p v-if="!focusSettled" class="text-xs text-status-warn">
+                    {{ $t('components.simpleMode.focusFirst') }}
+                  </p>
                   <button
                     type="button"
                     class="tns-btn-primary"
-                    :disabled="busy.cool || cameraStore.coolingState === 'cooling'"
-                    @click="startCooling"
+                    :disabled="!store.mountInfo.Connected || !store.cameraInfo.Connected"
+                    @click="openPolarAlignment"
                   >
-                    <Spinner v-if="busy.cool" size="sm" />
-                    {{ $t('components.simpleMode.steps.cool.start', { temp: coolTemp }) }}
+                    {{ $t('components.simpleMode.steps.polar.action') }}
+                  </button>
+                  <p
+                    v-if="!store.mountInfo.Connected || !store.cameraInfo.Connected"
+                    class="text-xs text-status-warn"
+                  >
+                    {{ $t('components.simpleMode.needsCameraAndMount') }}
+                  </p>
+                </template>
+
+                <!-- 5. Target: picked in the sky atlas, which slews, centers and fills the plan -->
+                <template v-else-if="step.id === 'target'">
+                  <p v-if="databaseMissing" class="text-xs text-status-warn">
+                    {{ $t('components.simpleMode.setupChecks.blockedTarget') }}
+                  </p>
+                  <p v-if="!focusSettled" class="text-xs text-status-warn">
+                    {{ $t('components.simpleMode.focusFirst') }}
+                  </p>
+                  <ol class="text-xs text-content-muted list-decimal pl-5 flex flex-col gap-1">
+                    <li>{{ $t('components.simpleMode.steps.target.howSearch') }}</li>
+                    <!-- The atlas' own button labels, so the hint matches in every language -->
+                    <li>
+                      {{
+                        $t('components.simpleMode.steps.target.howSlew', {
+                          button: $t('components.slewAndCenter.slew_and_center'),
+                          slew: $t('components.slewAndCenter.slew'),
+                        })
+                      }}
+                    </li>
+                    <li>
+                      {{
+                        $t('components.simpleMode.steps.target.howPlan', {
+                          button: $t('components.framing.setSequnceTarget'),
+                        })
+                      }}
+                    </li>
+                  </ol>
+                  <!-- Same rig-wide setting as the switch next to the atlas slew button -->
+                  <div class="tns-field-row">
+                    <span class="text-sm text-content">
+                      {{ $t('components.simpleMode.steps.target.autoCenter') }}
+                    </span>
+                    <ToggleButton
+                      :statusValue="settingsStore.mount?.useCenter === true"
+                      @update:statusValue="setAutoCenter"
+                    />
+                  </div>
+                  <button type="button" class="tns-btn-primary" @click="openAtlas">
+                    {{ $t('components.simpleMode.steps.target.action') }}
                   </button>
                 </template>
-              </template>
 
-              <!-- 3. Mount ready -->
-              <template v-else-if="step.id === 'mount'">
-                <DeviceNotConnected
-                  v-if="!store.mountInfo.Connected"
-                  messageKey="components.simpleMode.needsMount"
-                />
-                <p
-                  v-else-if="step.status !== 'done' && tppaStore.stoppedAfterRun"
-                  class="text-xs text-status-warn"
-                >
-                  {{ $t('components.simpleMode.steps.mount.trackingOffAfterPolar') }}
-                </p>
-                <button
-                  v-if="store.mountInfo.Connected && step.status !== 'done'"
-                  type="button"
-                  class="tns-btn-primary"
-                  :disabled="busy.mount || store.mountIsSlewing"
-                  @click="makeMountReady"
-                >
-                  <Spinner v-if="busy.mount" size="sm" />
-                  {{ $t('components.simpleMode.steps.mount.action') }}
-                </button>
-              </template>
-
-              <!-- 4. Polar alignment -->
-              <template v-else-if="step.id === 'polar'">
-                <p v-if="locationMissing || databaseMissing" class="text-xs text-status-warn">
-                  {{ $t('components.simpleMode.setupChecks.blockedPolar') }}
-                </p>
-                <p v-if="!focusSettled" class="text-xs text-status-warn">
-                  {{ $t('components.simpleMode.focusFirst') }}
-                </p>
-                <button
-                  type="button"
-                  class="tns-btn-primary"
-                  :disabled="!store.mountInfo.Connected || !store.cameraInfo.Connected"
-                  @click="openPolarAlignment"
-                >
-                  {{ $t('components.simpleMode.steps.polar.action') }}
-                </button>
-                <p
-                  v-if="!store.mountInfo.Connected || !store.cameraInfo.Connected"
-                  class="text-xs text-status-warn"
-                >
-                  {{ $t('components.simpleMode.needsCameraAndMount') }}
-                </p>
-              </template>
-
-              <!-- 5. Target: picked in the sky atlas, which slews, centers and fills the plan -->
-              <template v-else-if="step.id === 'target'">
-                <p v-if="databaseMissing" class="text-xs text-status-warn">
-                  {{ $t('components.simpleMode.setupChecks.blockedTarget') }}
-                </p>
-                <p v-if="!focusSettled" class="text-xs text-status-warn">
-                  {{ $t('components.simpleMode.focusFirst') }}
-                </p>
-                <ol class="text-xs text-content-muted list-decimal pl-5 flex flex-col gap-1">
-                  <li>{{ $t('components.simpleMode.steps.target.howSearch') }}</li>
-                  <!-- The atlas' own button labels, so the hint matches in every language -->
-                  <li>
-                    {{
-                      $t('components.simpleMode.steps.target.howSlew', {
-                        button: $t('components.slewAndCenter.slew_and_center'),
-                        slew: $t('components.slewAndCenter.slew'),
-                      })
-                    }}
-                  </li>
-                  <li>
-                    {{
-                      $t('components.simpleMode.steps.target.howPlan', {
-                        button: $t('components.framing.setSequnceTarget'),
-                      })
-                    }}
-                  </li>
-                </ol>
-                <!-- Same rig-wide setting as the switch next to the atlas slew button -->
-                <div class="tns-field-row">
-                  <span class="text-sm text-content">
-                    {{ $t('components.simpleMode.steps.target.autoCenter') }}
-                  </span>
-                  <ToggleButton
-                    :statusValue="settingsStore.mount?.useCenter === true"
-                    @update:statusValue="setAutoCenter"
-                  />
-                </div>
-                <button type="button" class="tns-btn-primary" @click="openAtlas">
-                  {{ $t('components.simpleMode.steps.target.action') }}
-                </button>
-              </template>
-
-              <!-- 6. Focus -->
-              <template v-else-if="step.id === 'focus'">
-                <!-- Autofocus needs a one-time setup per telescope (step size, exposure,
+                <!-- 6. Focus -->
+                <template v-else-if="step.id === 'focus'">
+                  <!-- Autofocus needs a one-time setup per telescope (step size, exposure,
                      star detection); unset, a run tends to fail. Hocus Focus brings the
                      assistant for it. -->
-                <div
-                  v-if="afSetupNeeded"
-                  class="flex flex-col gap-2 rounded-control border border-status-warn/40 p-3"
-                >
-                  <p class="text-sm text-content">
-                    {{ $t('components.simpleMode.steps.focus.setupFirst') }}
-                  </p>
-                  <button type="button" class="tns-btn-primary" @click="showAfSetup = true">
-                    {{ $t('components.simpleMode.steps.focus.setup') }}
-                  </button>
-                </div>
-                <!-- Focus needs stars in the picture; the target step comes later, so the way
+                  <div
+                    v-if="afSetupNeeded"
+                    class="flex flex-col gap-2 rounded-control border border-status-warn/40 p-3"
+                  >
+                    <p class="text-sm text-content">
+                      {{ $t('components.simpleMode.steps.focus.setupFirst') }}
+                    </p>
+                    <button type="button" class="tns-btn-primary" @click="showAfSetup = true">
+                      {{ $t('components.simpleMode.steps.focus.setup') }}
+                    </button>
+                  </div>
+                  <!-- Focus needs stars in the picture; the target step comes later, so the way
                      to point the telescope somewhere is offered here too. -->
-                <button
-                  v-if="store.mountInfo.Connected"
-                  type="button"
-                  class="tns-btn-secondary"
-                  @click="openAtlas"
-                >
-                  {{ $t('components.simpleMode.steps.focus.pointAtStars') }}
-                </button>
-                <template v-if="store.focuserInfo.Connected">
                   <button
-                    v-if="!store.focuserAfInfo?.autofocus_running"
+                    v-if="store.mountInfo.Connected"
                     type="button"
-                    :class="afSetupNeeded ? 'tns-btn-secondary' : 'tns-btn-primary'"
-                    :disabled="busy.focus || !store.cameraInfo.Connected"
-                    @click="startAutofocus"
+                    class="tns-btn-secondary"
+                    @click="openAtlas"
                   >
-                    <Spinner v-if="busy.focus" size="sm" />
-                    {{ $t('components.simpleMode.steps.focus.autofocus') }}
+                    {{ $t('components.simpleMode.steps.focus.pointAtStars') }}
                   </button>
-                  <router-link to="/autofocus" class="tns-btn-secondary">
-                    {{ $t('components.simpleMode.steps.focus.watch') }}
-                  </router-link>
-                </template>
-                <template v-else>
-                  <p class="text-xs text-content-faint">
-                    {{ $t('components.simpleMode.steps.focus.manualHint') }}
-                  </p>
-                  <router-link to="/camera" class="tns-btn-primary">
-                    {{ $t('components.simpleMode.steps.focus.manual') }}
-                  </router-link>
-                </template>
-              </template>
-
-              <!-- 7. Guiding with the guider built into PINS -->
-              <template v-else-if="step.id === 'guide'">
-                <template v-if="!usesNativeGuider">
-                  <p class="text-sm text-content">
-                    {{ $t('components.simpleMode.steps.guide.useNativeHint') }}
-                  </p>
-                  <button
-                    v-if="nativeGuiderOffered"
-                    type="button"
-                    class="tns-btn-primary"
-                    :disabled="busy.guide"
-                    @click="switchToNativeGuider"
-                  >
-                    <Spinner v-if="busy.guide" size="sm" />
-                    {{ $t('components.simpleMode.steps.guide.useNative') }}
-                  </button>
-                  <p v-else-if="nativeGuiderOffered === false" class="text-xs text-status-warn">
-                    {{ $t('components.simpleMode.steps.guide.nativeMissing') }}
-                    <router-link to="/pins" class="underline text-accent">
-                      {{ $t('components.simpleMode.more.system') }}
+                  <template v-if="store.focuserInfo.Connected">
+                    <button
+                      v-if="!store.focuserAfInfo?.autofocus_running"
+                      type="button"
+                      :class="afSetupNeeded ? 'tns-btn-secondary' : 'tns-btn-primary'"
+                      :disabled="busy.focus || !store.cameraInfo.Connected"
+                      @click="startAutofocus"
+                    >
+                      <Spinner v-if="busy.focus" size="sm" />
+                      {{ $t('components.simpleMode.steps.focus.autofocus') }}
+                    </button>
+                    <router-link to="/autofocus" class="tns-btn-secondary">
+                      {{ $t('components.simpleMode.steps.focus.watch') }}
                     </router-link>
-                  </p>
+                  </template>
+                  <template v-else>
+                    <p class="text-xs text-content-faint">
+                      {{ $t('components.simpleMode.steps.focus.manualHint') }}
+                    </p>
+                    <router-link to="/camera" class="tns-btn-primary">
+                      {{ $t('components.simpleMode.steps.focus.manual') }}
+                    </router-link>
+                  </template>
                 </template>
-                <template v-else-if="!guideCameraChosen">
-                  <label for="simple-mode-guide-camera" class="text-xs text-status-warn">
-                    {{ $t('components.simpleMode.steps.guide.chooseCamera') }}
-                  </label>
-                  <select
-                    id="simple-mode-guide-camera"
-                    class="tns-select"
-                    :disabled="busy.guide || guideCameras.length === 0"
-                    :value="''"
-                    @change="chooseGuideCamera($event.target.value)"
-                  >
-                    <option value="" disabled>
+
+                <!-- 7. Guiding with the guider built into PINS -->
+                <template v-else-if="step.id === 'guide'">
+                  <template v-if="!usesNativeGuider">
+                    <p class="text-sm text-content">
+                      {{ $t('components.simpleMode.steps.guide.useNativeHint') }}
+                    </p>
+                    <button
+                      v-if="nativeGuiderOffered"
+                      type="button"
+                      class="tns-btn-primary"
+                      :disabled="busy.guide"
+                      @click="switchToNativeGuider"
+                    >
+                      <Spinner v-if="busy.guide" size="sm" />
+                      {{ $t('components.simpleMode.steps.guide.useNative') }}
+                    </button>
+                    <p v-else-if="nativeGuiderOffered === false" class="text-xs text-status-warn">
+                      {{ $t('components.simpleMode.steps.guide.nativeMissing') }}
+                      <router-link to="/pins" class="underline text-accent">
+                        {{ $t('components.simpleMode.more.system') }}
+                      </router-link>
+                    </p>
+                  </template>
+                  <template v-else-if="!guideCameraChosen">
+                    <label for="simple-mode-guide-camera" class="text-xs text-status-warn">
+                      {{ $t('components.simpleMode.steps.guide.chooseCamera') }}
+                    </label>
+                    <select
+                      id="simple-mode-guide-camera"
+                      class="tns-select"
+                      :disabled="busy.guide || guideCameras.length === 0"
+                      :value="''"
+                      @change="chooseGuideCamera($event.target.value)"
+                    >
+                      <option value="" disabled>
+                        {{
+                          guideCameras.length
+                            ? $t('components.simpleMode.steps.guide.chooseCameraAction')
+                            : $t('components.simpleMode.steps.guide.noGuideCamera')
+                        }}
+                      </option>
+                      <option v-for="camera in guideCameras" :key="camera.id" :value="camera.id">
+                        {{ camera.name }}
+                      </option>
+                    </select>
+                  </template>
+                  <template v-else-if="store.guiderInfo.Connected">
+                    <button
+                      v-if="!guiderBusy"
+                      type="button"
+                      class="tns-btn-primary"
+                      :disabled="busy.guide || !store.mountInfo.Connected"
+                      @click="startGuiding"
+                    >
+                      <Spinner v-if="busy.guide" size="sm" />
                       {{
-                        guideCameras.length
-                          ? $t('components.simpleMode.steps.guide.chooseCameraAction')
-                          : $t('components.simpleMode.steps.guide.noGuideCamera')
+                        nativeGuiderStore.isCalibrated
+                          ? $t('components.simpleMode.steps.guide.start')
+                          : $t('components.simpleMode.steps.guide.calibrateAndStart')
                       }}
-                    </option>
-                    <option v-for="camera in guideCameras" :key="camera.id" :value="camera.id">
-                      {{ camera.name }}
-                    </option>
-                  </select>
+                    </button>
+                    <button
+                      v-else
+                      type="button"
+                      class="tns-btn-danger"
+                      :disabled="busy.guide"
+                      @click="stopGuiding"
+                    >
+                      {{ $t('components.simpleMode.steps.guide.stop') }}
+                    </button>
+                  </template>
+                  <DeviceNotConnected v-else messageKey="components.simpleMode.needsGuider" />
+                  <router-link v-if="usesNativeGuider" to="/guider" class="tns-btn-secondary">
+                    {{ $t('components.simpleMode.steps.guide.details') }}
+                  </router-link>
                 </template>
-                <template v-else-if="store.guiderInfo.Connected">
-                  <button
-                    v-if="!guiderBusy"
-                    type="button"
-                    class="tns-btn-primary"
-                    :disabled="busy.guide || !store.mountInfo.Connected"
-                    @click="startGuiding"
+
+                <!-- 8. Capture -->
+                <template v-else-if="step.id === 'capture'">
+                  <div v-if="plan.targets > 0" class="grid grid-cols-2 gap-2">
+                    <div class="tns-stat-tile">
+                      <span class="tns-stat-label">{{
+                        $t('components.simpleMode.steps.capture.targets')
+                      }}</span>
+                      <span class="tns-stat-value">{{ plan.targets }}</span>
+                    </div>
+                    <div class="tns-stat-tile">
+                      <span class="tns-stat-label">{{
+                        $t('components.simpleMode.steps.capture.remaining')
+                      }}</span>
+                      <span class="tns-stat-value">{{ plan.remaining }}</span>
+                    </div>
+                  </div>
+                  <p v-else class="text-xs text-content-faint">
+                    {{ $t('components.simpleMode.steps.capture.noPlan') }}
+                  </p>
+                  <p
+                    v-if="plan.targets > 0 && plan.totalSeconds === 0"
+                    class="text-xs text-status-warn"
                   >
-                    <Spinner v-if="busy.guide" size="sm" />
+                    {{ $t('components.simpleMode.steps.capture.noExposures') }}
+                  </p>
+                  <router-link to="/sequence" class="tns-btn-secondary">
                     {{
-                      nativeGuiderStore.isCalibrated
-                        ? $t('components.simpleMode.steps.guide.start')
-                        : $t('components.simpleMode.steps.guide.calibrateAndStart')
+                      plan.targets > 0
+                        ? $t('components.simpleMode.steps.capture.editPlan')
+                        : $t('components.simpleMode.steps.capture.createPlan')
                     }}
-                  </button>
+                  </router-link>
+                  <template v-if="sequenceStore.sequenceRunning">
+                    <router-link to="/seq-mon" class="tns-btn-primary">
+                      {{ $t('components.simpleMode.steps.capture.watch') }}
+                    </router-link>
+                    <button
+                      type="button"
+                      class="tns-btn-danger"
+                      :disabled="busy.capture"
+                      @click="stopCapture"
+                    >
+                      {{ $t('components.simpleMode.steps.capture.stop') }}
+                    </button>
+                  </template>
                   <button
                     v-else
                     type="button"
-                    class="tns-btn-danger"
-                    :disabled="busy.guide"
-                    @click="stopGuiding"
+                    class="tns-btn-primary"
+                    :disabled="
+                      busy.capture ||
+                      plan.totalSeconds === 0 ||
+                      sequenceStore.sequenceControlsLocked
+                    "
+                    @click="startCapture"
                   >
-                    {{ $t('components.simpleMode.steps.guide.stop') }}
+                    <Spinner v-if="busy.capture" size="sm" />
+                    {{ $t('components.simpleMode.steps.capture.start') }}
                   </button>
                 </template>
-                <DeviceNotConnected v-else messageKey="components.simpleMode.needsGuider" />
-                <router-link v-if="usesNativeGuider" to="/guider" class="tns-btn-secondary">
-                  {{ $t('components.simpleMode.steps.guide.details') }}
-                </router-link>
-              </template>
 
-              <!-- 8. Capture -->
-              <template v-else-if="step.id === 'capture'">
-                <div v-if="plan.targets > 0" class="grid grid-cols-2 gap-2">
-                  <div class="tns-stat-tile">
-                    <span class="tns-stat-label">{{
-                      $t('components.simpleMode.steps.capture.targets')
-                    }}</span>
-                    <span class="tns-stat-value">{{ plan.targets }}</span>
-                  </div>
-                  <div class="tns-stat-tile">
-                    <span class="tns-stat-label">{{
-                      $t('components.simpleMode.steps.capture.remaining')
-                    }}</span>
-                    <span class="tns-stat-value">{{ plan.remaining }}</span>
-                  </div>
-                </div>
-                <p v-else class="text-xs text-content-faint">
-                  {{ $t('components.simpleMode.steps.capture.noPlan') }}
-                </p>
-                <p
-                  v-if="plan.targets > 0 && plan.totalSeconds === 0"
-                  class="text-xs text-status-warn"
-                >
-                  {{ $t('components.simpleMode.steps.capture.noExposures') }}
-                </p>
-                <router-link to="/sequence" class="tns-btn-secondary">
-                  {{
-                    plan.targets > 0
-                      ? $t('components.simpleMode.steps.capture.editPlan')
-                      : $t('components.simpleMode.steps.capture.createPlan')
-                  }}
-                </router-link>
-                <template v-if="sequenceStore.sequenceRunning">
-                  <router-link to="/seq-mon" class="tns-btn-primary">
-                    {{ $t('components.simpleMode.steps.capture.watch') }}
-                  </router-link>
-                  <button
-                    type="button"
-                    class="tns-btn-danger"
-                    :disabled="busy.capture"
-                    @click="stopCapture"
-                  >
-                    {{ $t('components.simpleMode.steps.capture.stop') }}
+                <!-- 9. End of night -->
+                <template v-else-if="step.id === 'end'">
+                  <button type="button" class="tns-btn-danger" @click="showEndNight = true">
+                    {{ $t('components.simpleMode.steps.end.action') }}
                   </button>
                 </template>
-                <button
-                  v-else
-                  type="button"
-                  class="tns-btn-primary"
-                  :disabled="
-                    busy.capture || plan.totalSeconds === 0 || sequenceStore.sequenceControlsLocked
-                  "
-                  @click="startCapture"
-                >
-                  <Spinner v-if="busy.capture" size="sm" />
-                  {{ $t('components.simpleMode.steps.capture.start') }}
-                </button>
-              </template>
-
-              <!-- 9. End of night -->
-              <template v-else-if="step.id === 'end'">
-                <button type="button" class="tns-btn-danger" @click="showEndNight = true">
-                  {{ $t('components.simpleMode.steps.end.action') }}
-                </button>
-              </template>
-            </SimpleStepCard>
+              </SimpleStepCard>
+            </template>
           </section>
 
           <!-- Everything else, one tap away -->
-          <section class="tns-card flex flex-col gap-3">
+          <section class="tns-card flex flex-col gap-3" :style="{ order: order.more }">
             <h2 class="tns-section-title">{{ $t('components.simpleMode.more.title') }}</h2>
             <div class="grid grid-cols-2 gap-2">
               <router-link
@@ -461,6 +527,9 @@ import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import SimpleStepCard from '@/components/simpleMode/SimpleStepCard.vue';
 import SimpleEndNightModal from '@/components/simpleMode/SimpleEndNightModal.vue';
 import SimpleSetupChecks from '@/components/simpleMode/SimpleSetupChecks.vue';
+import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.vue';
+import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import HfSetupAssistant from '@/components/focuser/hocus/HfSetupAssistant.vue';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
 import { useSimpleSetupChecks } from '@/composables/useSimpleSetupChecks';
@@ -472,6 +541,7 @@ import {
   isWarmingUp,
   marksForNight,
   nightKey,
+  nightPhase,
   nightSteps,
 } from '@/utils/simpleMode';
 import {
@@ -720,6 +790,42 @@ const cameraWarming = computed(
       targetTemp: coolingTarget.value,
     })
 );
+
+// --- Phase of the night: what leads the page ---------------------------------------------
+const phase = computed(() => nightPhase(steps.value));
+
+// The steps are open while preparing; afterwards folded, unless the user opens them. A new
+// phase starts folded again.
+const stepsToggled = ref(null);
+watch(phase, () => (stepsToggled.value = null));
+const stepsOpen = computed(() => stepsToggled.value ?? phase.value === 'prepare');
+
+const missingDevices = computed(
+  () => equipmentToConnect.value.filter((d) => !isDeviceConnected(d.apiName)).length
+);
+// After the preparation the equipment card only matters when a device dropped out.
+const showRig = computed(() => phase.value === 'prepare' || missingDevices.value > 0);
+
+// Phone order (CSS `order`) per phase; on a tablet only the order inside a column counts.
+const order = computed(() => {
+  if (phase.value !== 'prepare') {
+    return { lead: 1, rig: 2, picture: 3, checks: 4, steps: 5, more: 6 };
+  }
+  // Nothing connected yet: the equipment card holds the "connect everything" button.
+  return missingDevices.value > 0 || !allConnected.value
+    ? { checks: 1, rig: 2, steps: 3, picture: 4, more: 6, lead: 0 }
+    : { checks: 1, steps: 2, picture: 3, rig: 4, more: 6, lead: 0 };
+});
+
+// The cockpit warns about a sensor off its temperature only while the cooler is meant to hold one.
+const cockpitCoolingTarget = computed(() => {
+  const target = Number(coolingTarget.value);
+  return store.cameraInfo.CanSetTemperature &&
+    ['cooling', 'holding'].includes(cameraStore.coolingState) &&
+    Number.isFinite(target)
+    ? target
+    : null;
+});
 
 function formatTemp(value) {
   return Number.isFinite(value) ? `${value.toFixed(1)} °C` : '–';

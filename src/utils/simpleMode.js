@@ -1,5 +1,7 @@
 // Pure helpers of the PINS simple mode (no Vue, no stores) so they can be unit tested with
 // node --test. The simple mode home page feeds them a plain snapshot of the stores.
+import { binColumns, cumulative, percentile } from '@/utils/rawImage/histogramView';
+import { MAD_SCALE, maxAdu } from '@/utils/rawImage/stretch';
 
 /** Navigation entries the simple mode keeps, in the order it shows them. */
 // Five entries fit a 390 px phone without scrolling. Targets are picked in the sky atlas
@@ -289,4 +291,210 @@ export function hfrSeries(history, max = 30, isDeleted = () => false) {
     points.push({ hfr, stars: finiteOrNull(entry.Stars) });
   }
   return points.reverse();
+}
+
+// --- Phases of the night -------------------------------------------------------------------
+
+/**
+ * Which part of the night the home page is in; it decides what the page puts first.
+ * - prepare: getting the rig ready (the steps lead)
+ * - imaging: the plan takes pictures (guiding, sharpness and star shape lead)
+ * - finished: the plan has nothing left, the night is not ended yet
+ * - ended: the night was ended on this page
+ *
+ * @param {{ id: string, status: string }[]} steps from nightSteps()
+ */
+export function nightPhase(steps) {
+  const status = (id) => steps.find((step) => step.id === id)?.status;
+  if (status('end') === 'done') return 'ended';
+  if (status('capture') === 'running') return 'imaging';
+  if (status('capture') === 'done') return 'finished';
+  return 'prepare';
+}
+
+/**
+ * What the rig is busy with while the plan runs, most telling first: an autofocus run or a
+ * slew (centering, meridian flip) pauses the pictures, a calibrating or settling guider
+ * delays the next one.
+ * @returns {'autofocus'|'slewing'|'calibrating'|'settling'|'exposing'|'busy'}
+ */
+export function imagingActivity({ afRunning, slewing, guiderState, settling, exposing }) {
+  if (afRunning) return 'autofocus';
+  if (slewing) return 'slewing';
+  if (guiderState === 'Calibrating') return 'calibrating';
+  if (settling || guiderState === 'Settling') return 'settling';
+  if (exposing) return 'exposing';
+  return 'busy';
+}
+
+// Guide RMS as a share of the imaging pixel scale. Below half a pixel the guiding is invisible
+// in the picture, up to one pixel it softens the stars a little, beyond that it shows.
+const GUIDING_GOOD_RATIO = 0.5;
+const GUIDING_OK_RATIO = 1;
+
+/**
+ * Rates the total guide RMS against the imaging scale.
+ * @returns {{ level: 'good'|'ok'|'poor'|null, ratio: number|null }} level null when the RMS
+ *   or the scale is unknown
+ */
+export function rateGuiding(rmsArcsec, imageScaleArcsec) {
+  const rms = finiteOrNull(rmsArcsec);
+  const scale = finiteOrNull(imageScaleArcsec);
+  if (rms === null || rms <= 0 || scale === null || scale <= 0) return { level: null, ratio: null };
+  const ratio = rms / scale;
+  const level = ratio <= GUIDING_GOOD_RATIO ? 'good' : ratio <= GUIDING_OK_RATIO ? 'ok' : 'poor';
+  return { level, ratio };
+}
+
+// Earlier pictures of the same filter the newest one is compared with.
+const HFR_BASELINE_FRAMES = 10;
+const HFR_MIN_BASELINE = 3;
+// How much larger than usual the HFR may get before it counts as drifting.
+const HFR_OK_RISE = 0.1;
+const HFR_POOR_RISE = 0.25;
+
+function median(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+/**
+ * The newest saved picture's HFR against the median of the pictures before it in the same
+ * filter (filters focus differently, so they are not mixed). A growing HFR means focus drifts,
+ * dew forms or clouds come in.
+ *
+ * @param {object[]|null} history store.imageHistoryInfo
+ * @returns {{ hfr: number, stars: number|null, filter: string, baseline: number|null,
+ *   change: number|null, level: 'good'|'ok'|'poor'|null } | null} null without any HFR yet
+ */
+export function hfrHealth(history, isDeleted = () => false) {
+  const list = Array.isArray(history) ? history : [];
+  let latest = null;
+  const earlier = [];
+  for (let i = list.length - 1; i >= 0; i--) {
+    const entry = list[i];
+    if (!entry || isDeleted(entry, i)) continue;
+    const hfr = finiteOrNull(entry.HFR);
+    if (hfr === null || hfr <= 0) continue;
+    if (!latest) {
+      latest = { hfr, stars: finiteOrNull(entry.Stars), filter: entry.Filter ?? '' };
+      continue;
+    }
+    if ((entry.Filter ?? '') !== latest.filter) continue;
+    earlier.push(hfr);
+    if (earlier.length >= HFR_BASELINE_FRAMES) break;
+  }
+  if (!latest) return null;
+  if (earlier.length < HFR_MIN_BASELINE) {
+    return { ...latest, baseline: null, change: null, level: null };
+  }
+  const baseline = median(earlier);
+  const change = (latest.hfr - baseline) / baseline;
+  const level = change <= HFR_OK_RISE ? 'good' : change <= HFR_POOR_RISE ? 'ok' : 'poor';
+  return { ...latest, baseline, change, level };
+}
+
+/**
+ * The light frames saved in the given night: count and summed exposure, for the summary once
+ * the plan is through.
+ */
+export function nightFrames(history, key, isDeleted = () => false) {
+  const list = Array.isArray(history) ? history : [];
+  let frames = 0;
+  let seconds = 0;
+  const hfrs = [];
+  list.forEach((entry, i) => {
+    if (!entry || isDeleted(entry, i)) return;
+    if (String(entry.ImageType ?? '').toUpperCase() !== 'LIGHT') return;
+    if (!isInNight(entry.Date, key)) return;
+    frames += 1;
+    seconds += finiteOrNull(entry.ExposureTime) ?? 0;
+    const hfr = finiteOrNull(entry.HFR);
+    if (hfr !== null && hfr > 0) hfrs.push(hfr);
+  });
+  return { frames, seconds, medianHfr: hfrs.length ? median(hfrs) : null };
+}
+
+/**
+ * Where the running plan stands: the target and exposure row being worked on, from
+ * summarizeTargets(). The RUNNING status wins; between two items (a slew, a filter change)
+ * the first target and row with frames left stand in.
+ *
+ * @returns {{ container: object, row: object|null, endMs: number|undefined } | null}
+ */
+export function runningPlanPosition(summary) {
+  const targets = summary?.targets ?? [];
+  const target =
+    targets.find((t) => t.container?.Status === 'RUNNING') ??
+    targets.find((t) => t.remainingSeconds > 0) ??
+    null;
+  if (!target) return null;
+  const row =
+    target.rows.find((r) => r.status === 'RUNNING') ??
+    target.rows.find((r) => r.enabled && r.remainingSeconds > 0) ??
+    null;
+  return { container: target.container, row, endMs: target.endMs };
+}
+
+/** Columns of the small histogram on the home page. */
+export const HISTOGRAM_COLUMNS = 80;
+
+// The view spans the sky background: from a few sigma below the median up to where 99 % of
+// the pixels are. Stars and saturated pixels lie beyond and are reported as numbers (max and
+// its count); including them, as the camera page's zoom does up to 99.95 %, squeezes the
+// background into one spike as soon as a frame has a few bright stars.
+const VIEW_SIGMA = 8;
+const VIEW_PERCENTILE = 0.99;
+const VIEW_MIN_WIDTH = 64;
+
+/**
+ * The small histogram of the newest picture and its extremes, from the plugin's raw image
+ * (parseRawImage()): exact per-channel statistics and a 65536-bin histogram over the full
+ * frame. Channels are summed into one curve; min and max carry how many pixels sit there -
+ * many pixels at the maximum are saturated stars, many at the minimum a clipped background.
+ *
+ * @returns {{ bins: number[], lo: number, hi: number, min: number, max: number,
+ *   minCount: number, maxCount: number, saturated: boolean } | null}
+ */
+export function histogramSummary(raw, columns = HISTOGRAM_COLUMNS) {
+  const meta = raw?.meta;
+  const histograms = raw?.histograms;
+  const stats = Array.isArray(meta?.stats) ? meta.stats : [];
+  if (!histograms?.length || stats.length === 0) return null;
+  const sum = new Float64Array(histograms[0].length);
+  for (const histogram of histograms) {
+    for (let v = 0; v < histogram.length; v++) sum[v] += histogram[v];
+  }
+  const cum = cumulative(sum);
+  const min = Math.round(Math.min(...stats.map((s) => s.min)));
+  const max = Math.round(Math.max(...stats.map((s) => s.max)));
+  if (!Number.isFinite(min) || !Number.isFinite(max)) return null;
+
+  const median = Math.min(...stats.map((s) => s.median));
+  const sigma = Math.max(1, Math.max(...stats.map((s) => s.mad)) * MAD_SCALE);
+  let lo = Math.max(min, Math.floor(median - VIEW_SIGMA * sigma));
+  let hi = Math.max(percentile(cum, VIEW_PERCENTILE), Math.ceil(median + VIEW_SIGMA * sigma)) + 1;
+  hi = Math.min(hi, sum.length);
+  if (hi - lo < VIEW_MIN_WIDTH) {
+    lo = Math.max(0, Math.floor((lo + hi - VIEW_MIN_WIDTH) / 2));
+    hi = Math.min(sum.length, lo + VIEW_MIN_WIDTH);
+  }
+
+  // Whole ADU per column: with a fractional width some columns collect one value more than
+  // their neighbours and the curve turns into a comb.
+  const perColumn = Math.ceil((hi - lo) / columns);
+  hi = Math.min(sum.length, lo + perColumn * columns);
+  lo = hi - perColumn * columns;
+
+  return {
+    bins: Array.from(binColumns(cum, lo, hi, columns)),
+    lo,
+    hi,
+    min,
+    max,
+    minCount: sum[min] ?? 0,
+    maxCount: sum[max] ?? 0,
+    saturated: max >= maxAdu(meta.bitDepth),
+  };
 }

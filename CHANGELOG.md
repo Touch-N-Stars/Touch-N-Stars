@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - PINS: New simple mode for getting started, with a start page that shows the latest picture with sharpness, stars, guiding and the sharpness trend of the night, leads through the night step by step (connect, cool, focus, polar alignment, target from the sky atlas, guiding with the built-in guider, pictures, end of night) and a navigation with only the pages needed for it; it is offered at the end of the setup assistant and can be switched in Settings, Interface.
+- PINS: The simple mode start page adapts to the night: while the plan runs it puts guiding, sharpness and star count first and warns when one of them gets worse, and the newest picture shows its histogram with min and max pixel counts.
 
 ## [App6.5.0] - 2026-11-17
 

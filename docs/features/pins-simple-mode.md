@@ -57,6 +57,25 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    „Testbild aufnehmen“ belichtet mit der gewählten Zeit (gleiche Einstellung wie die
    Kameraseite), ein Tipp aufs Bild öffnet die Vollbildansicht mit Zoom. Auf dem Tablet
    stehen Bild und Ausrüstung links, die Schritte rechts.
+4b. Given die Startseite, then richtet sie sich nach der Phase der Nacht (aus den Schritten
+   abgeleitet): **Vorbereitung** (Aufnahme nicht gestartet) – Schritte vorn, auf dem Telefon
+   die Ausrüstung davor, solange nicht alles verbunden ist. **Aufnahme läuft** – oben ein
+   Cockpit mit Ziel, Fertig-Uhrzeit, aktueller Tätigkeit (Belichtung mit Bildnummer und
+   Fortschritt, Autofokus, Schwenk, Kalibrieren, Settle) und drei Ampelkacheln: Guiding-RMS
+   gegen den Abbildungsmaßstab (≤ 0,5 px gut, ≤ 1 px ok), HFR des neuesten Bildes gegen den
+   Median der vorherigen im selben Filter (≤ +10 % gut, ≤ +25 % ok) und die Sternanzahl. Eine
+   Sternform wird bewusst nicht geschätzt (NINA liefert keine Exzentrizität pro Bild), die
+   Sterne sieht man im Bild. Darunter der RA/Dec-Verlauf des eingebauten Guiders (nur bei
+   verbundenem Feed, sonst NINAs RMS aus dem 2-s-Polling) und Warnungen: Gerät
+   getrennt, Stern verloren, Plan ohne Guiding, Guiding zu groß, HFR steigt, Sensor > 2 °C
+   neben dem Kühlziel. Das Bild steht daneben (Tablet) bzw. darunter (Telefon), die Schritte
+   sind zugeklappt, die Ausrüstung erscheint nur, wenn ein Gerät fehlt. **Plan fertig** und
+   **Nacht beendet** – Bilanz der Nacht (Lights, Belichtungszeit, Median-HFR), bei „fertig“
+   mit „Nacht beenden“ vorn, bei „beendet“ mit Park- und Aufwärmstatus.
+4c. Given ein Bild im Bild-Panel (jede Phase), then zeigt es das Histogramm um den
+   Himmelshintergrund (vom Plugin, `raw-image/prepared` bzw. `raw-image/history`, volle
+   Auflösung) sowie Min und Max mit der Anzahl Pixel auf diesem Wert; Max am Sensorlimit ist
+   als „gesättigt“ markiert. Ohne Raw-Endpoint (älteres Plugin) entfällt der Block.
 5. Given die Startseite, then zeigt „Deine Nacht“ die Schritte Kamera kühlen (nur bei
    kühlbarer Kamera), Teleskop startklar, Scharfstellen, Polausrichtung, Ziel anfahren,
    Guiding, Aufnahme und Nacht beenden. Scharfstellen steht vor Polausrichtung und Ziel, weil

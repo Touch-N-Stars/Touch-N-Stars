@@ -377,3 +377,140 @@ test('the HFR trend keeps the last pictures with a usable HFR, oldest first', ()
   );
   assert.deepEqual(hfrSeries(null), []);
 });
+
+const {
+  nightPhase,
+  imagingActivity,
+  rateGuiding,
+  hfrHealth,
+  histogramSummary,
+  nightFrames,
+  runningPlanPosition,
+} = await import('@/utils/simpleMode');
+
+test('nightPhase follows the capture and end steps', () => {
+  const steps = (capture, end = 'open') => [
+    { id: 'connect', status: 'done' },
+    { id: 'capture', status: capture },
+    { id: 'end', status: end },
+  ];
+  assert.equal(nightPhase(steps('open')), 'prepare');
+  assert.equal(nightPhase(steps('running')), 'imaging');
+  assert.equal(nightPhase(steps('done')), 'finished');
+  // An ended night stays ended even if a plan is started again by mistake elsewhere
+  assert.equal(nightPhase(steps('running', 'done')), 'ended');
+});
+
+test('imagingActivity puts what pauses the pictures first', () => {
+  const base = { afRunning: false, slewing: false, guiderState: 'Guiding', exposing: true };
+  assert.equal(imagingActivity(base), 'exposing');
+  assert.equal(imagingActivity({ ...base, afRunning: true, slewing: true }), 'autofocus');
+  assert.equal(imagingActivity({ ...base, slewing: true }), 'slewing');
+  assert.equal(imagingActivity({ ...base, guiderState: 'Calibrating' }), 'calibrating');
+  assert.equal(imagingActivity({ ...base, settling: true }), 'settling');
+  assert.equal(imagingActivity({ ...base, exposing: false }), 'busy');
+});
+
+test('rateGuiding compares the RMS with the image scale', () => {
+  assert.equal(rateGuiding(0.6, 1.5).level, 'good');
+  assert.equal(rateGuiding(1.2, 1.5).level, 'ok');
+  assert.equal(rateGuiding(2, 1.5).level, 'poor');
+  assert.equal(rateGuiding(null, 1.5).level, null);
+  assert.equal(rateGuiding(0.8, null).level, null);
+});
+
+test('hfrHealth compares the newest HFR with earlier frames of the same filter', () => {
+  const frames = (filter, values) => values.map((HFR) => ({ HFR, Filter: filter, Stars: 100 }));
+  const history = [
+    ...frames('L', [2, 2, 2.1, 1.9]),
+    ...frames('Ha', [3, 3]),
+    ...frames('L', [2.6]),
+  ];
+  const health = hfrHealth(history);
+  assert.equal(health.filter, 'L');
+  assert.equal(health.baseline, 2);
+  assert.ok(Math.abs(health.change - 0.3) < 1e-9);
+  assert.equal(health.level, 'poor');
+
+  // Too few earlier frames of that filter: value only, no verdict
+  const fresh = hfrHealth([...frames('L', [2, 2, 2]), ...frames('Ha', [3])]);
+  assert.equal(fresh.hfr, 3);
+  assert.equal(fresh.level, null);
+
+  assert.equal(hfrHealth([]), null);
+  // Deleted frames do not count
+  assert.equal(hfrHealth(frames('L', [2, 2, 2, 2.05]), (_, i) => i === 3).hfr, 2);
+});
+
+test('nightFrames counts the light frames of the night only', () => {
+  const history = [
+    { ImageType: 'LIGHT', Date: '2026-11-20T23:00:00', ExposureTime: 300, HFR: 2 },
+    { ImageType: 'LIGHT', Date: '2026-11-21T02:00:00', ExposureTime: 300, HFR: 3 },
+    { ImageType: 'SNAPSHOT', Date: '2026-11-21T02:10:00', ExposureTime: 5, HFR: 2 },
+    { ImageType: 'LIGHT', Date: '2026-11-19T23:00:00', ExposureTime: 300, HFR: 2 },
+  ];
+  assert.deepEqual(nightFrames(history, '2026-11-20'), {
+    frames: 2,
+    seconds: 600,
+    medianHfr: 2.5,
+  });
+});
+
+test('runningPlanPosition prefers the running target and row', () => {
+  const row = (status, remainingSeconds) => ({ status, enabled: true, remainingSeconds });
+  const done = {
+    container: { Status: 'FINISHED' },
+    rows: [row('FINISHED', 0)],
+    remainingSeconds: 0,
+  };
+  const running = {
+    container: { Status: 'RUNNING', Name: 'M 31' },
+    rows: [row('FINISHED', 0), row('RUNNING', 600), row('CREATED', 600)],
+    remainingSeconds: 1200,
+    endMs: 5,
+  };
+  const position = runningPlanPosition({ targets: [done, running] });
+  assert.equal(position.container.Name, 'M 31');
+  assert.equal(position.row, running.rows[1]);
+
+  // Between items: the first row with frames left
+  const between = {
+    ...running,
+    container: { Status: 'CREATED', Name: 'M 33' },
+    rows: [row('FINISHED', 0), row('CREATED', 600)],
+  };
+  assert.equal(runningPlanPosition({ targets: [done, between] }).row, between.rows[1]);
+  assert.equal(runningPlanPosition({ targets: [done] }), null);
+});
+
+test('histogramSummary counts the pixels at the extremes and zooms to the data', () => {
+  const histogram = new Uint32Array(65536);
+  histogram[100] = 3; // minimum
+  for (let v = 180; v < 260; v++) histogram[v] = 1000; // sky background
+  histogram[65535] = 42; // saturated stars
+  const raw = {
+    meta: { bitDepth: 16, stats: [{ min: 100, max: 65535, median: 220, mad: 20 }] },
+    histograms: [histogram],
+  };
+  const summary = histogramSummary(raw, 40);
+  assert.equal(summary.min, 100);
+  assert.equal(summary.minCount, 3);
+  assert.equal(summary.max, 65535);
+  assert.equal(summary.maxCount, 42);
+  assert.equal(summary.saturated, true);
+  assert.equal(summary.bins.length, 40);
+  // The view starts at the darkest data, not at 0, so the background is not one spike
+  assert.ok(summary.lo >= 100 && summary.lo < 180);
+  // ... and ends near the background, not at the saturated stars
+  assert.ok(summary.hi < 1000);
+  assert.ok(summary.bins.filter((b) => b > 0).length > 5);
+
+  // 14-bit data below its own limit is not saturated
+  const unsaturated = histogramSummary({
+    meta: { bitDepth: 14, stats: [{ min: 100, max: 9000, median: 220, mad: 20 }] },
+    histograms: [histogram],
+  });
+  assert.equal(unsaturated.saturated, false);
+
+  assert.equal(histogramSummary({ meta: { stats: [] }, histograms: [] }), null);
+});
