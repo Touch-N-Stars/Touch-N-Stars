@@ -12,7 +12,13 @@ const {
   currentStepId,
   endNightActions,
   isWarmingUp,
+  simpleTargetSteps,
+  targetsMissingSteps,
+  calibrationRisk,
+  addGuidingTime,
+  guidingWasPoor,
 } = await import('@/utils/simpleMode');
+const { START_GUIDING_TYPE, CENTER_TYPE, SLEW_TYPE } = await import('@/utils/sequenceSimple');
 
 function snapshot(overrides = {}) {
   return {
@@ -81,15 +87,16 @@ test('marks of another night are dropped', () => {
 
 test('steps come in the order of a night and optional ones only when they apply', () => {
   const ids = nightSteps(snapshot()).map((s) => s.id);
-  // Focus before polar alignment and target: both plate-solve, which needs sharp stars
+  // Focus before polar alignment and target: both plate-solve, which needs sharp stars.
+  // Guiding is set up before the target: the plan slews there and starts guiding itself.
   assert.deepEqual(ids, [
     'connect',
     'cool',
     'mount',
     'focus',
     'polar',
-    'target',
     'guide',
+    'target',
     'capture',
     'end',
   ]);
@@ -192,9 +199,9 @@ test('mount is ready when unparked and tracking', () => {
 });
 
 test('manual steps follow their marks, live activity shows as running', () => {
-  const steps = nightSteps(snapshot({ marks: { polar: 'done', target: 'skipped' } }));
+  const steps = nightSteps(snapshot({ marks: { polar: 'done', focus: 'skipped' } }));
   assert.equal(statusOf(steps, 'polar'), 'done');
-  assert.equal(statusOf(steps, 'target'), 'skipped');
+  assert.equal(statusOf(steps, 'focus'), 'skipped');
   assert.equal(statusOf(nightSteps(snapshot({ tppaRunning: true })), 'polar'), 'running');
   assert.equal(
     statusOf(nightSteps(snapshot({ tppaRunning: true, marks: { polar: 'done' } })), 'polar'),
@@ -212,14 +219,29 @@ test('focus is done after an autofocus tonight or a manual mark', () => {
   assert.equal(f({ afRunning: true }, { focus: 'skipped' }), 'running');
 });
 
-test('guiding is read from the guider state', () => {
-  const g = (state, marks = {}) =>
-    statusOf(nightSteps(snapshot({ guider: { inProfile: true, state }, marks })), 'guide');
-  assert.equal(g('Guiding'), 'done');
-  assert.equal(g('Calibrating'), 'running');
-  assert.equal(g('Stopped'), 'open');
-  assert.equal(g('Stopped', { guide: 'skipped' }), 'skipped');
-  assert.equal(g('Stopped', { guide: 'done' }), 'open');
+test('guiding is set up once the guider is chosen and calibrated', () => {
+  const g = (guider, marks = {}) =>
+    statusOf(
+      nightSteps(snapshot({ guider: { inProfile: true, state: 'Stopped', ...guider }, marks })),
+      'guide'
+    );
+  assert.equal(g({ ready: true, calibrated: true }), 'done');
+  // Guiding itself is the plan's job: a stopped guider with a calibration is still set up
+  assert.equal(g({ ready: true, calibrated: true, state: 'Stopped' }), 'done');
+  assert.equal(g({ ready: true, calibrated: false }), 'open');
+  assert.equal(g({ ready: false, calibrated: true }), 'open');
+  assert.equal(g({ ready: true, calibrated: false, state: 'Calibrating' }), 'running');
+  assert.equal(g({ ready: true, calibrated: false }, { guide: 'skipped' }), 'skipped');
+  // Only the guider can say it is calibrated
+  assert.equal(g({ ready: true, calibrated: false }, { guide: 'done' }), 'open');
+});
+
+test('the target step is done once the plan has a target', () => {
+  const t = (sequence) =>
+    statusOf(nightSteps(snapshot({ sequence: { ...snapshot().sequence, ...sequence } })), 'target');
+  assert.equal(t({ targets: 1, targetSet: true }), 'done');
+  assert.equal(t({ targets: 1, targetSet: false }), 'open');
+  assert.equal(t({ targets: 0 }), 'open');
 });
 
 test('capture runs with the sequence and is done once the plan is through', () => {
@@ -250,7 +272,7 @@ test('the current step is the first that is neither done nor skipped', () => {
       marks: { focus: 'done', polar: 'skipped' },
     })
   );
-  assert.equal(currentStepId(focused), 'target');
+  assert.equal(currentStepId(focused), 'guide');
   assert.equal(currentStepId([{ id: 'a', status: 'done' }]), null);
   // Cooling runs by itself: the next open step is the one to work on
   const cooling = nightSteps(
@@ -513,4 +535,75 @@ test('histogramSummary counts the pixels at the extremes and zooms to the data',
   assert.equal(unsaturated.saturated, false);
 
   assert.equal(histogramSummary({ meta: { stats: [] }, histograms: [] }), null);
+});
+
+test('simple targets are centered, turned with a rotator and guided unless guiding is skipped', () => {
+  assert.deepEqual(simpleTargetSteps(), { slewMode: 'center', startGuiding: true });
+  assert.deepEqual(simpleTargetSteps({ rotator: true, guiding: false }), {
+    slewMode: 'centerAndRotate',
+    startGuiding: false,
+  });
+});
+
+test('targetsMissingSteps lists targets with pictures left that are not slewed to or guided', () => {
+  const target = (items, extra = {}) => ({
+    container: { Id: extra.id ?? 'x', Status: extra.status ?? 'CREATED', Items: items },
+    remainingSeconds: extra.remaining ?? 100,
+  });
+  const center = { FullTypeName: CENTER_TYPE, Status: 'CREATED' };
+  const guide = { FullTypeName: START_GUIDING_TYPE, Status: 'CREATED' };
+  const complete = target([center, guide], { id: 'ok' });
+  const noGuide = target([center], { id: 'noGuide' });
+  const noSlew = target([guide], { id: 'noSlew' });
+  const guideOff = target([{ FullTypeName: SLEW_TYPE }, { ...guide, Status: 'DISABLED' }], {
+    id: 'guideOff',
+  });
+  const finished = target([], { id: 'finished', remaining: 0 });
+  const running = target([], { id: 'running', status: 'RUNNING' });
+  const summary = { targets: [complete, noGuide, noSlew, guideOff, finished, running] };
+
+  assert.deepEqual(
+    targetsMissingSteps(summary).map((c) => c.Id),
+    ['noGuide', 'noSlew', 'guideOff']
+  );
+  // Without guiding only the approach counts
+  assert.deepEqual(
+    targetsMissingSteps(summary, { guiding: false }).map((c) => c.Id),
+    ['noSlew']
+  );
+  assert.deepEqual(targetsMissingSteps(null), []);
+});
+
+test('calibrationRisk flags targets near the pole or low in the sky', () => {
+  assert.equal(calibrationRisk({ decDeg: 41, altitudeDeg: 60 }), null);
+  assert.equal(calibrationRisk({ decDeg: 69, altitudeDeg: 60 }), 'nearPole');
+  assert.equal(calibrationRisk({ decDeg: -75, altitudeDeg: 60 }), 'nearPole');
+  assert.equal(calibrationRisk({ decDeg: 10, altitudeDeg: 20 }), 'low');
+  // Unknown values are no risk
+  assert.equal(calibrationRisk({ decDeg: null, altitudeDeg: undefined }), null);
+});
+
+test('the guiding tally counts rated time per night and ignores gaps', () => {
+  let tally = null;
+  tally = addGuidingTime(tally, { night: 'n1', level: 'good', elapsedMs: 2000 });
+  tally = addGuidingTime(tally, { night: 'n1', level: 'poor', elapsedMs: 3000 });
+  assert.deepEqual(tally, { night: 'n1', guidedMs: 5000, poorMs: 3000 });
+  // A gap (app in the background) and an unknown rating add nothing
+  assert.deepEqual(addGuidingTime(tally, { night: 'n1', level: 'poor', elapsedMs: 600000 }), tally);
+  assert.deepEqual(addGuidingTime(tally, { night: 'n1', level: null, elapsedMs: 2000 }), tally);
+  // A new night starts over
+  assert.deepEqual(addGuidingTime(tally, { night: 'n2', level: 'ok', elapsedMs: 2000 }), {
+    night: 'n2',
+    guidedMs: 2000,
+    poorMs: 0,
+  });
+});
+
+test('the coach is recommended after a long, mostly poor guided night', () => {
+  const min = 60 * 1000;
+  assert.equal(guidingWasPoor({ guidedMs: 60 * min, poorMs: 30 * min }), true);
+  assert.equal(guidingWasPoor({ guidedMs: 60 * min, poorMs: 10 * min }), false);
+  // Too short to judge
+  assert.equal(guidingWasPoor({ guidedMs: 10 * min, poorMs: 10 * min }), false);
+  assert.equal(guidingWasPoor(null), false);
 });

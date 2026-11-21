@@ -9,8 +9,8 @@ Wer von der ASIAIR auf PINS umsteigt und technisch nicht so bewandert ist, finde
 heute nicht zurecht: 15+ Navigationseinträge, Fachbegriffe aus NINA (Framing, Sequenz,
 Trigger, TPPA) und kein roter Faden durch die Nacht. Der Einfach-Modus gibt diesen Nutzern
 eine Startseite, die die Nacht Schritt für Schritt führt, wie man es von der ASIAIR kennt
-(Verbinden → Kühlen → Montierung → Fokus → Polausrichtung → Ziel → Guiding → Autorun → Nacht
-beenden),
+(Verbinden → Kühlen → Montierung → Fokus → Polausrichtung → Guiding einrichten → Ziel →
+Autorun → Nacht beenden),
 und eine Navigation mit nur den Einträgen, die man dafür braucht. Alle Funktionen bleiben
 erreichbar, der Modus lässt sich jederzeit ausschalten.
 
@@ -25,6 +25,8 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
 
 - Keine neue Backend-Logik, kein neuer Endpoint, keine Änderung an NINA/PINS.
 - Keine Automatik, die Hardware ohne Knopfdruck bewegt. Jeder Schritt startet nur auf Tippen.
+  Anfahren, Zentrieren und Guiding-Start am Ziel übernimmt der Plan; sie laufen erst nach
+  „Aufnahme starten“ und dessen Bestätigung, die genau das ankündigt.
 - Die vorhandenen Seiten (Kamera, Framing, Sequenz, Montierung, Fokus, Guiding) ändern sich
   nicht. Der Modus verweist auf sie, statt sie nachzubauen.
 - Die Navbar-Anpassung des Nutzers (Reihenfolge, versteckte Einträge) bleibt gespeichert und
@@ -49,7 +51,7 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    Poll-Zyklus (2 s). „Alles verbinden“ verbindet in derselben Reihenfolge wie die
    Geräteseite (gemeinsamer Code) und ist ausgegraut, wenn alles verbunden ist. Ohne Geräte
    im Profil erscheint ein Hinweis mit Knopf zum Setup-Assistenten.
-4a. Given die Startseite, then steht oben das neueste Bild – die letzte Vorschau der Kamera
+   4a. Given die Startseite, then steht oben das neueste Bild – die letzte Vorschau der Kamera
    oder das zuletzt gespeicherte Bild, je nachdem was neuer ist – mit Ziel, Belichtung, Filter
    und Alter, darunter HFR, Sterne, Guiding-RMS (nur während des Guidings) und
    Sensortemperatur sowie der HFR-Verlauf der letzten 30 gespeicherten Bilder. Neue Bilder
@@ -57,7 +59,7 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    „Testbild aufnehmen“ belichtet mit der gewählten Zeit (gleiche Einstellung wie die
    Kameraseite), ein Tipp aufs Bild öffnet die Vollbildansicht mit Zoom. Auf dem Tablet
    stehen Bild und Ausrüstung links, die Schritte rechts.
-4b. Given die Startseite, then richtet sie sich nach der Phase der Nacht (aus den Schritten
+   4b. Given die Startseite, then richtet sie sich nach der Phase der Nacht (aus den Schritten
    abgeleitet): **Vorbereitung** (Aufnahme nicht gestartet) – Schritte vorn, auf dem Telefon
    die Ausrüstung davor, solange nicht alles verbunden ist. **Aufnahme läuft** – oben ein
    Cockpit mit Ziel, Fertig-Uhrzeit, aktueller Tätigkeit (Belichtung mit Bildnummer und
@@ -72,44 +74,66 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    sind zugeklappt, die Ausrüstung erscheint nur, wenn ein Gerät fehlt. **Plan fertig** und
    **Nacht beendet** – Bilanz der Nacht (Lights, Belichtungszeit, Median-HFR), bei „fertig“
    mit „Nacht beenden“ vorn, bei „beendet“ mit Park- und Aufwärmstatus.
-4c. Given ein Bild im Bild-Panel (jede Phase), then zeigt es das Histogramm um den
+   4c. Given ein Bild im Bild-Panel (jede Phase), then zeigt es das Histogramm um den
    Himmelshintergrund (vom Plugin, `raw-image/prepared` bzw. `raw-image/history`, volle
    Auflösung) sowie Min und Max mit der Anzahl Pixel auf diesem Wert; Max am Sensorlimit ist
    als „gesättigt“ markiert. Ohne Raw-Endpoint (älteres Plugin) entfällt der Block.
 5. Given die Startseite, then zeigt „Deine Nacht“ die Schritte Kamera kühlen (nur bei
-   kühlbarer Kamera), Teleskop startklar, Scharfstellen, Polausrichtung, Ziel anfahren,
-   Guiding, Aufnahme und Nacht beenden. Scharfstellen steht vor Polausrichtung und Ziel, weil
-   beide per Plate-Solving arbeiten und dafür scharfe Sterne brauchen; solange Fokus offen ist,
-   weisen beide Schritte darauf hin. Jeder Schritt zeigt
+   kühlbarer Kamera), Teleskop startklar, Scharfstellen, Polausrichtung, Guiding einrichten,
+   Ziel wählen, Aufnahme und Nacht beenden. Scharfstellen steht vor Polausrichtung und Ziel,
+   weil beide per Plate-Solving arbeiten und dafür scharfe Sterne brauchen; solange Fokus offen
+   ist, weist die Polausrichtung darauf hin. Jeder Schritt zeigt
    „Erledigt“, „Läuft“, „Offen“ oder „Übersprungen“. Der erste offene Schritt ist
    hervorgehoben und aufgeklappt.
    5a. Was sich aus dem Gerätestatus ablesen lässt, wird abgeleitet: gekühlt = Kühler an und
-   Zieltemperatur erreicht; startklar = verbunden, nicht geparkt, Nachführung an; Guiding =
-   Guider-Status „Guiding“ (Kalibrieren = läuft); Aufnahme = Sequenz läuft; Scharfstellen =
-   Autofokus läuft bzw. in dieser Nacht abgeschlossen.
-   5b. Polausrichtung, Ziel und manuelles Scharfstellen lassen sich nicht ablesen: Der Nutzer
+   Zieltemperatur erreicht; startklar = verbunden, nicht geparkt, Nachführung an; Guiding
+   eingerichtet = eingebauter Guider und Guidekamera gewählt und der Guider meldet eine
+   Kalibrierung (Kalibrieren = läuft); Ziel = der Plan hat ein Ziel mit Objekt oder
+   Koordinaten; Aufnahme = Sequenz läuft; Scharfstellen = Autofokus läuft bzw. in dieser Nacht
+   abgeschlossen.
+   5b. Polausrichtung und manuelles Scharfstellen lassen sich nicht ablesen: Der Nutzer
    markiert sie als erledigt oder überspringt sie. Die Markierung gilt für die laufende Nacht
    (12 Uhr bis 12 Uhr) und übersteht einen App-Neustart.
 6. Given ein Schritt mit Aktion, when der Nutzer tippt, then passiert genau diese Aktion:
    Kühlen auf die eingestellte Temperatur, Entparken + Nachführung an, Polausrichtung öffnen
-   (Montierung → TPPA), Himmelsatlas öffnen (dort Suchen, „Slew and Center“, „set to
-   sequence target“; der Schritt bietet den Rig-Schalter „automatisch zentrieren“ an),
-   Autofokus starten bzw. Kamera öffnen, Guiding starten/stoppen, Plan öffnen, Aufnahme
-   starten/stoppen. Eine Ablehnung durch das Backend
+   (Montierung → TPPA), Himmelsatlas öffnen, Autofokus starten bzw. Kamera öffnen, Guider
+   einmal kalibrieren, Plan öffnen, Aufnahme starten/stoppen. Eine Ablehnung durch das Backend
    erscheint als Toast.
+   6a. Given der Himmelsatlas im Einfach-Modus, then steht „In den Plan“ als Hauptknopf vorn,
+   „Slew and Center“ ist mit dem Hinweis versehen, dass Anfahren nur zum Prüfen des
+   Bildausschnitts nötig ist. „In den Plan“ setzt das Ziel (Auswahl neu/ersetzen/kopieren wie
+   bisher) und schaltet für dieses Ziel Zentrieren (mit verbundenem Rotator: Zentrieren und
+   Drehen) und „Guiding starten“ ein – Letzteres nicht, wenn der Guiding-Schritt übersprungen
+   wurde. Ein Ziel ohne Belichtung bekommt eine Belichtungszeile. Danach schließt der Atlas
+   und die Startseite erscheint.
+   6b. Given der Schritt „Ziel wählen“, then listet er die Ziele des Plans. Ist der Guider noch
+   nicht kalibriert und steht das nächste Ziel über 60° Deklination oder unter 30° Höhe
+   (Grenzen des Guiding-Coach), then weist er darauf hin, vorher einmal zu kalibrieren.
 7. Given „Nacht beenden“, when der Nutzer bestätigt, then werden der Reihe nach nur die
    angehakten und zutreffenden Schritte ausgeführt: Aufnahme stoppen, Guiding stoppen,
    Montierung parken, Kamera aufwärmen. Jeder zeigt sein Ergebnis. Ohne Bestätigung passiert
    nichts.
 8. Given der Schritt „Aufnahme“, then zeigt er Anzahl Ziele und Restdauer des geladenen Plans
    (gleiche Rechnung wie die einfache Sequenzansicht) bzw. „Noch kein Plan“, und führt in die
-   einfache Sequenzansicht.
-8a. Given der Schritt „Guiding“ und ein anderer Guider im Profil (PHD2, keiner), then bietet
+   einfache Sequenzansicht. Ziele mit offenen Bildern, die der Plan nicht anfährt oder (bei
+   eingerichtetem Guiding) nicht guidet, meldet er mit einem Knopf, der das für alle nachholt.
+   Ohne Ziel mit Koordinaten lässt sich die Aufnahme nicht starten.
+   8a. Given der Schritt „Guiding“ und ein anderer Guider im Profil (PHD2, keiner), then bietet
    er „Eingebauten Guider verwenden“ an, wenn PINS ihn als Gerät führt (`InternalGuider`),
    sonst einen Update-Hinweis. Ohne Guidekamera im Profil zeigt er die Auswahl der Kameras
    (ohne die Hauptkamera). Beide Wahlen landen im Profil und werden per `rescan` an NINAs
    Geräteauswahl gegeben, damit „Alles verbinden“ (ohne `?to=`) das richtige Gerät verbindet.
-   Starten kalibriert beim ersten Mal automatisch, ohne die Montierung wegzufahren.
+   Ohne Kalibrierung bietet er „Einmal kalibrieren“ an: nach Rückfrage schwenkt die Montierung
+   wie beim Kalibrier-Assistenten an die Kalibrierposition der aktuellen Seite (Himmelsäquator,
+   5° neben dem Meridian, kein Flip), kalibriert und stoppt das Guiding danach wieder. PINS
+   behält die Kalibrierung über Nächte und passt sie an Deklination und Pierseite an; der
+   Schritt bleibt erledigt, bis PINS sie verwirft (andere Guidekamera, Binning, Brennweite).
+   Einen Start/Stopp-Knopf gibt es nicht mehr, das Guiding startet der Plan am Ziel.
+   8b. Given eine Nacht, in der der Plan mindestens 15 min geguidet hat und davon mindestens 30 %
+   mit roter Guiding-Ampel, then empfehlen die Bilanz und die nächste Vorbereitung den
+   Guiding-Coach (≈ 15 min) mit Knopf zum Coach-Tab (`/guider?tab=coach`). Öffnen oder
+   „Jetzt nicht“ blendet die Empfehlung für diese Nacht aus. Während der Plan läuft, wird der
+   Coach nie angeboten.
 9. Given der Setup-Assistent auf PINS, then bietet der letzte Schritt „Einfach“ oder „Alle
    Funktionen“ an. Die Wahl landet im selben Schalter wie in den Einstellungen.
 10. Alle neuen Texte sind übersetzbar. Die reine Logik (Nachtschlüssel, Schrittstatus, Navbar-
@@ -119,17 +143,17 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
 
 ## Dimensions considered
 
-| Dimension        | Applies | Note                                                                            |
-| ---------------- | ------- | ------------------------------------------------------------------------------- |
-| Runtime modes    | yes     | Nur PINS, über `store.isPINS` gegated                                           |
-| Polling          | yes     | Kein neuer Poller für Geräte; Sequenzbaum per vorhandenem `sequenceV2Store`     |
-| Mobile           | yes     | Karten mit `min-h-touch`, `tns-*`, keine Hover-Abhängigkeit                     |
-| i18n             | yes     | Neue Texte erst in `en.json`, die anderen 13 Sprachen gesammelt vor dem Commit  |
-| Equipment safety | yes     | Nur explizite Knopfdrücke; „Nacht beenden“ nur nach Bestätigung                 |
-| Error paths      | yes     | Backend-Ablehnungen → Toast; Gerät weg → Schritt zeigt „Nicht verbunden“        |
-| Native           | no      | Keine Capacitor-API                                                             |
-| Persistence      | yes     | `settingsStore.simpleMode` (an/aus, Kühltemperatur, Nachtmarkierungen)          |
-| Tests            | yes     | `src/utils/simpleMode.js` + Composable für „Alles verbinden“                    |
+| Dimension        | Applies | Note                                                                                   |
+| ---------------- | ------- | -------------------------------------------------------------------------------------- |
+| Runtime modes    | yes     | Nur PINS, über `store.isPINS` gegated                                                  |
+| Polling          | yes     | Kein neuer Poller für Geräte; Sequenzbaum per vorhandenem `sequenceV2Store`            |
+| Mobile           | yes     | Karten mit `min-h-touch`, `tns-*`, keine Hover-Abhängigkeit                            |
+| i18n             | yes     | Neue Texte erst in `en.json`, die anderen 13 Sprachen gesammelt vor dem Commit         |
+| Equipment safety | yes     | Nur explizite Knopfdrücke; „Nacht beenden“ nur nach Bestätigung                        |
+| Error paths      | yes     | Backend-Ablehnungen → Toast; Gerät weg → Schritt zeigt „Nicht verbunden“               |
+| Native           | no      | Keine Capacitor-API                                                                    |
+| Persistence      | yes     | `settingsStore.simpleMode` (an/aus, Kühltemperatur, Nachtmarkierungen, Guiding-Bilanz) |
+| Tests            | yes     | `src/utils/simpleMode.js` + Composable für „Alles verbinden“                           |
 
 ## Verification (2026-11-20)
 
@@ -142,6 +166,18 @@ Nacht beenden (Parken wartet auf „geparkt“), Testbild mit HFR/Sternen (Stern
 nach dem Bild, die Vorschau fragt bis zu sechsmal nach), neues gespeichertes Bild erscheint
 live. `npm run test:browser` prüft `/start` bei 390 px
 und 1024 px.
+
+## Verification (2026-11-21, Plan übernimmt Anfahren und Guiding)
+
+Gegen PINS im Docker mit Sky-Simulator: Kalibrier-Assistent mit `slew=stay` schwenkt von
+Dec 89° an die Kalibrierposition (Dec 0°, gut 4° östlich des Meridians), kalibriert in ~2 min
+und guidet danach; Stopp per API. Plan mit Anfahren, „Guiding starten“ und Belichtung vor
+dem Ziel M 15: nach dem Schwenk startet das Guiding mit der gespeicherten Kalibrierung ohne
+Neukalibrierung, danach läuft die Belichtung. Zentrieren ließ sich im Container nicht prüfen
+(keine ASTAP-Datenbank: „No star database found“). Unit-Tests für Schrittlogik,
+Zielprüfung, Guiding-Bilanz und `applySimpleTargetSteps`; `npm run test:browser` grün.
+Die UI-Abläufe (Atlas → „In den Plan“, Kalibrier-Knopf mit Auto-Stopp, Coach-Hinweis) sind
+noch nicht im echten Browser gegen PINS durchgeklickt.
 
 ## Open questions
 

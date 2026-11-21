@@ -1,7 +1,18 @@
 <template>
   <div>
-    <button @click="setSequenceTarget" class="tns-btn-secondary">
-      <span>{{ $t('components.framing.setSequnceTarget') }}</span>
+    <!-- Simple mode: the plan slews, centers and guides, so this is the main action -->
+    <button
+      type="button"
+      :class="simple ? 'tns-btn-primary' : 'tns-btn-secondary'"
+      :disabled="busy"
+      @click="setSequenceTarget"
+    >
+      <Spinner v-if="busy" size="sm" />
+      <span>
+        {{
+          simple ? $t('components.simpleMode.addToPlan') : $t('components.framing.setSequnceTarget')
+        }}
+      </span>
     </button>
 
     <SequenceTargetPickerModal
@@ -15,7 +26,10 @@
 
 <script setup>
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import apiService from '@/services/apiService';
+import Spinner from '@/components/helpers/Spinner.vue';
+import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import SequenceTargetPickerModal from '@/components/framing/SequenceTargetPickerModal.vue';
 import { useFramingStore } from '@/store/framingStore';
 import { useSequenceStore } from '@/store/sequenceStore';
@@ -43,6 +57,9 @@ const sequenceV2Store = useSequenceV2Store();
 const store = apiStore();
 const toastStore = useToastStore();
 const { t } = useI18n();
+const router = useRouter();
+const { active: simple, applyToTarget } = useSimplePlanTargets();
+const busy = ref(false);
 
 const showPicker = ref(false);
 const pickerTargets = ref([]);
@@ -82,6 +99,11 @@ function showSuccess() {
 function reportResult(result, fallbackMessage) {
   if (result?.ok) {
     showSuccess();
+    // Simple mode: the target is in the plan, the night goes on on the home page
+    if (simple.value) {
+      store.showSkyAtlas = false;
+      router.push('/start');
+    }
     return;
   }
   if (result?.locked) {
@@ -189,14 +211,21 @@ async function onPickerConfirm(choice) {
 async function applyToExistingTarget(id) {
   const target = pendingTarget.value;
   if (!target) return;
-  const result = await sequenceV2Store.setDsoTarget(
-    id,
-    target.name,
-    target.ra,
-    target.dec,
-    target.rotation
-  );
-  reportResult(result, t('components.fav_target.modal_sequence_error.message'));
+  busy.value = true;
+  try {
+    let result = await sequenceV2Store.setDsoTarget(
+      id,
+      target.name,
+      target.ra,
+      target.dec,
+      target.rotation
+    );
+    // Simple mode: the plan slews to the target, centers it and starts guiding there
+    if (result.ok && simple.value) result = await applyToTarget(id, { addExposure: true });
+    reportResult(result, t('components.fav_target.modal_sequence_error.message'));
+  } finally {
+    busy.value = false;
+  }
 }
 
 async function applyToNewTarget(afterId) {

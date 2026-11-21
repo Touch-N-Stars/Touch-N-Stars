@@ -271,3 +271,55 @@ test('an autofocus trigger is appended to the target or re-enabled', async (t) =
     { name: 'sequenceEnable', args: ['aft', true] },
   ]);
 });
+
+test('simple target steps switch on centering and guiding before the exposures', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  await store.applySimpleTargetSteps(
+    'dso',
+    { slewMode: 'center', startGuiding: true },
+    { addExposure: true }
+  );
+
+  // The target already has exposures: none is added
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddItem', args: ['l', CENTER_TYPE, false] },
+    { name: 'sequenceAddItem', args: ['l', START_GUIDING_TYPE, false] },
+  ]);
+});
+
+test('simple target steps leave a complete target alone and switch guiding off when skipped', async (t) => {
+  const { store, calls, restore } = setup({
+    dsoSteps: [
+      { Id: 'center', FullTypeName: CENTER_TYPE, Status: 'CREATED' },
+      { Id: 'guide', FullTypeName: START_GUIDING_TYPE, Status: 'CREATED' },
+    ],
+  });
+  t.after(restore);
+
+  await store.applySimpleTargetSteps('dso', { slewMode: 'center', startGuiding: true });
+  assert.deepEqual(calls, []);
+
+  await store.applySimpleTargetSteps('dso', { slewMode: 'center', startGuiding: false });
+  assert.deepEqual(calls, [{ name: 'sequenceEnable', args: ['guide', false] }]);
+});
+
+test('a simple target without pictures gets an exposure row', async (t) => {
+  const { store, calls, restore } = setup({
+    dsoSteps: [{ Id: 'center', FullTypeName: CENTER_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+  // Only the approach, no exposures
+  store.data[2].Items[0].Items = store.data[2].Items[0].Items.slice(0, 1);
+
+  await store.applySimpleTargetSteps(
+    'dso',
+    { slewMode: 'center', startGuiding: false },
+    { addExposure: true }
+  );
+
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddItem', args: ['center', SMART_EXPOSURE_TYPE, true] },
+  ]);
+});

@@ -251,6 +251,10 @@ export const useSettingsStore = defineStore('settings', {
       coolTemp: -10,
       steps: { night: '', marks: {} },
       afSetupProfiles: [],
+      // How long the plan guided last night and how much of it poorly (see addGuidingTime()),
+      // and the night whose coach recommendation was taken up or dismissed.
+      guiding: null,
+      coachHintNight: '',
     },
   }),
   getters: {
@@ -299,6 +303,13 @@ export const useSettingsStore = defineStore('settings', {
       if (mode.steps.night !== night) mode.steps = { night, marks: {} };
       if (mark) mode.steps.marks[stepId] = mark;
       else delete mode.steps.marks[stepId];
+    },
+    setSimpleModeGuiding(tally) {
+      this._ensureSimpleMode().guiding = tally;
+    },
+    // The coach recommendation for `night` was followed or dismissed: it does not come back.
+    dismissSimpleModeCoachHint(night) {
+      this._ensureSimpleMode().coachHintNight = night ?? '';
     },
     // Older persisted settings have no `sequence` block yet.
     setSequenceViewMode(mode) {

@@ -20,8 +20,11 @@ import {
   END_AREA_TYPE,
   END_ORDER,
   SLEW_MODE_TYPES,
+  SMART_EXPOSURE_TYPE,
   START_AREA_TYPE,
+  START_GUIDING_TYPE,
   START_ORDER,
+  TAKE_MANY_EXPOSURES_TYPE,
   TARGET_ORDER,
 } from '@/utils/sequenceSimple';
 
@@ -693,6 +696,32 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       }
       const type = SLEW_MODE_TYPES[mode];
       if (type) await this.setTargetItemEnabled(containerId, type, true);
+    },
+
+    // Simple mode: the plan slews to the target and starts guiding there, so the user never
+    // does either by hand. `steps` comes from simpleTargetSteps(). With `addExposure` a target
+    // without pictures also gets an exposure row to fill in.
+    async applySimpleTargetSteps(containerId, steps, { addExposure = false } = {}) {
+      if (this._isControlsLocked()) return { ok: false, locked: true };
+      if (!this.findById(containerId)) return { ok: false };
+
+      await this.setTargetSlewMode(containerId, steps.slewMode);
+      await this.setTargetItemEnabled(containerId, START_GUIDING_TYPE, steps.startGuiding);
+
+      const container = this.findById(containerId);
+      const hasExposure = (container?.Items ?? []).some((i) =>
+        [SMART_EXPOSURE_TYPE, TAKE_MANY_EXPOSURES_TYPE].includes(i?.FullTypeName)
+      );
+      if (addExposure && container && !hasExposure) {
+        const { targetId, insertAfter } = insertionPoint(
+          container,
+          SMART_EXPOSURE_TYPE,
+          TARGET_ORDER,
+          'bottom'
+        );
+        await this.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
+      }
+      return { ok: true };
     },
 
     // Optional trigger of a container (the autofocus triggers of a target). Off disables,

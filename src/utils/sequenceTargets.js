@@ -90,3 +90,41 @@ export function dsoContainerDecString(item) {
   const sec = String(Math.round(co.DecSeconds)).padStart(2, '0');
   return `${sign}${deg}°${min}'${sec}"`;
 }
+
+// Names NINA gives a DSO container before it has a target (its instruction set's type name).
+export const DEFAULT_CONTAINER_NAMES = [
+  'Deep Sky Object Instruction Set',
+  'DeepSkyObjectContainer',
+];
+
+/** The object name of a DSO container, or '' while it carries NINA's type name. */
+export function dsoContainerName(item) {
+  const name = item?.Target?.TargetName || item?.Name;
+  return name && !DEFAULT_CONTAINER_NAMES.includes(name) ? name : '';
+}
+
+/** Declination of a DSO container in degrees, or null when it carries no coordinates. */
+export function dsoContainerDecDegrees(item) {
+  const co = dsoContainerCoordinates(item);
+  if (!Number.isFinite(co.DecDegrees)) return null;
+  const abs = Math.abs(co.DecDegrees) + (co.DecMinutes ?? 0) / 60 + (co.DecSeconds ?? 0) / 3600;
+  return co.NegativeDec || co.DecDegrees < 0 ? -abs : abs;
+}
+
+/** Right ascension of a DSO container in degrees, or null when it carries no coordinates. */
+export function dsoContainerRaDegrees(item) {
+  const co = dsoContainerCoordinates(item);
+  if (!Number.isFinite(co.RAHours)) return null;
+  return (co.RAHours + (co.RAMinutes ?? 0) / 60 + (co.RASeconds ?? 0) / 3600) * 15;
+}
+
+/**
+ * Whether a DSO container was given a target. A fresh container holds NINA's type name and
+ * RA 0 / Dec 0; a target set from the atlas, a search or by hand changes at least one of them.
+ */
+export function dsoContainerHasTarget(item) {
+  if (dsoContainerName(item)) return true;
+  const ra = dsoContainerRaDegrees(item);
+  const dec = dsoContainerDecDegrees(item);
+  return (ra !== null && ra !== 0) || (dec !== null && dec !== 0);
+}

@@ -29,6 +29,8 @@
       </div>
     </div>
 
+    <SimpleCoachHint />
+
     <!-- Ended: the rig is shutting down - show that it really does -->
     <ul v-if="phase === 'ended'" class="flex flex-col gap-1 text-sm">
       <li v-if="store.mountInfo.Connected" class="flex items-center gap-2">
@@ -76,6 +78,7 @@ import { CheckCircleIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useImagetStore } from '@/store/imageStore';
 import Spinner from '@/components/helpers/Spinner.vue';
+import SimpleCoachHint from './SimpleCoachHint.vue';
 import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';
 import { formatDuration } from '@/utils/sequenceSimple';
 import { nightFrames } from '@/utils/simpleMode';

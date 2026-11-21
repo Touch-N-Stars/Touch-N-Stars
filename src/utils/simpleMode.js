@@ -2,6 +2,8 @@
 // node --test. The simple mode home page feeds them a plain snapshot of the stores.
 import { binColumns, cumulative, percentile } from '@/utils/rawImage/histogramView';
 import { MAD_SCALE, maxAdu } from '@/utils/rawImage/stretch';
+import { COACH_POSITION } from '@/utils/nativeGuiderCoach';
+import { START_GUIDING_TYPE, findByType, isActive, slewMode } from '@/utils/sequenceSimple';
 
 /** Navigation entries the simple mode keeps, in the order it shows them. */
 // Five entries fit a 390 px phone without scrolling. Targets are picked in the sky atlas
@@ -50,17 +52,6 @@ export function marksForNight(stored, key) {
   if (!stored || stored.night !== key || !stored.marks) return {};
   return { ...stored.marks };
 }
-
-// Guider states that count as "doing something" before steady guiding.
-const GUIDER_BUSY_STATES = [
-  'Calibrating',
-  'Looping',
-  'Selected',
-  'Settling',
-  'Reacquiring',
-  'Paused',
-  'LostLock',
-];
 
 // How close the sensor has to be to the target to count as cooled. Some drivers (and the
 // simulators) report the cooler as on without the sensor ever getting there.
@@ -113,13 +104,18 @@ function markStatus(mark) {
  * @param {{ connected: boolean, canCool: boolean, coolerOn: boolean, warming?: boolean, ramping?: boolean, setPoint?: number, temperature: number, targetTemp: number }} s.camera
  * @param {{ connected: boolean, parked: boolean, tracking: boolean, slewing: boolean }} s.mount
  * @param {{ connected: boolean, afRunning: boolean, afDoneTonight: boolean }} s.focuser
- * @param {{ inProfile: boolean, state: string }} s.guider
- * @param {{ running: boolean, targets: number, totalSeconds: number, remainingSeconds: number }} s.sequence
+ * @param {{ inProfile: boolean, state: string, ready?: boolean, calibrated?: boolean }} s.guider
+ *   ready: the built-in guider and a guide camera are chosen; calibrated: the guider holds a
+ *   calibration (PINS keeps it across nights and adapts it to the pointing)
+ * @param {{ running: boolean, targets: number, targetSet?: boolean, totalSeconds: number, remainingSeconds: number }} s.sequence
+ *   targetSet: at least one target of the plan has an object or coordinates
  * @param {boolean} s.tppaRunning
  * @param {Record<string, 'done'|'skipped'>} s.marks
  */
 // The order follows the night. Focus comes before polar alignment and the target: both
-// plate-solve, and plate solving needs sharp stars.
+// plate-solve, and plate solving needs sharp stars. Guiding is set up (calibrated) before the
+// target is chosen: the plan slews, centers and starts guiding on its own, so neither is a
+// step of its own any more.
 export function nightSteps(s) {
   const marks = s.marks ?? {};
   const steps = [];
@@ -163,19 +159,17 @@ export function nightSteps(s) {
     steps.push({ id: 'polar', status });
   }
 
-  {
-    let status = markStatus(marks.target);
-    if (s.mount?.slewing && status !== 'done') status = 'running';
-    steps.push({ id: 'target', status });
-  }
-
   if (s.guider?.inProfile) {
+    // A setup step: once calibrated it stays done, night after night, until PINS drops the
+    // calibration (other guide camera, binning or focal length).
     let status = markStatus(marks.guide);
-    if (s.guider.state === 'Guiding') status = 'done';
-    else if (GUIDER_BUSY_STATES.includes(s.guider.state)) status = 'running';
-    else if (status === 'done') status = 'open'; // guiding stopped: a stale "done" would lie
+    if (s.guider.state === 'Calibrating') status = 'running';
+    else if (s.guider.ready && s.guider.calibrated) status = 'done';
+    else if (status === 'done') status = 'open'; // only the guider can say it is calibrated
     steps.push({ id: 'guide', status });
   }
+
+  steps.push({ id: 'target', status: s.sequence?.targetSet ? 'done' : 'open' });
 
   {
     let status = 'open';
@@ -207,10 +201,10 @@ export function currentStepId(steps) {
 }
 
 /** Steps the app cannot read from the devices, so the user marks them done by hand. */
-export const MARKABLE_STEPS = ['polar', 'target', 'focus'];
+export const MARKABLE_STEPS = ['polar', 'focus'];
 
-/** Steps a session can do without; the user may skip them. */
-export const SKIPPABLE_STEPS = ['cool', 'polar', 'target', 'focus', 'guide'];
+/** Steps a session can do without; the user may skip them. Skipping 'guide' = no guiding. */
+export const SKIPPABLE_STEPS = ['cool', 'polar', 'focus', 'guide'];
 
 /**
  * The end-of-night actions that apply right now, in the order they have to run: the sequence
@@ -497,4 +491,79 @@ export function histogramSummary(raw, columns = HISTOGRAM_COLUMNS) {
     maxCount: sum[max] ?? 0,
     saturated: max >= maxAdu(meta.bitDepth),
   };
+}
+
+// --- Targets of the plan ---------------------------------------------------------------------
+
+/**
+ * How the simple mode wants every target approached: centered with a plate solve (and turned
+ * to its framing angle when a rotator is there), then guided - unless guiding was skipped.
+ * The plan does both on its own, so the user never slews or starts guiding by hand.
+ */
+export function simpleTargetSteps({ rotator = false, guiding = true } = {}) {
+  return { slewMode: rotator ? 'centerAndRotate' : 'center', startGuiding: Boolean(guiding) };
+}
+
+/**
+ * Targets with pictures left that the plan would not slew to or not guide (a plan from before
+ * the simple mode, or a step switched off in the plan). Finished targets do not matter.
+ *
+ * @param {object} summary summarizeTargets()
+ * @param {{ guiding: boolean }} wanted whether the targets should start guiding
+ * @returns {object[]} their DSO containers
+ */
+export function targetsMissingSteps(summary, { guiding = true } = {}) {
+  return (summary?.targets ?? [])
+    .filter((t) => t.remainingSeconds > 0 && t.container?.Status !== 'RUNNING')
+    .filter(
+      (t) =>
+        slewMode(t.container) === 'off' ||
+        (guiding && !isActive(findByType(t.container.Items, START_GUIDING_TYPE)))
+    )
+    .map((t) => t.container);
+}
+
+/**
+ * Why a guider calibration at the target would go wrong, or null: 'nearPole' (RA pulses
+ * barely move the star there) or 'low' (the air blurs and shifts the star). Same limits as
+ * the Guiding Coach's position check.
+ */
+export function calibrationRisk({ decDeg, altitudeDeg }) {
+  const dec = finiteOrNull(decDeg);
+  const alt = finiteOrNull(altitudeDeg);
+  if (dec !== null && Math.abs(dec) > COACH_POSITION.warnDeclination) return 'nearPole';
+  if (alt !== null && alt < COACH_POSITION.minAltitude) return 'low';
+  return null;
+}
+
+// --- Guiding quality over the night ----------------------------------------------------------
+
+// A gap longer than this between two ratings (app in the background, feed down) is not
+// counted: nobody knows how the guiding was meanwhile.
+const GUIDING_MAX_GAP_MS = 30000;
+// The coach is recommended after this much guiding of which this share was poor.
+const COACH_MIN_GUIDED_MS = 15 * 60 * 1000;
+const COACH_POOR_SHARE = 0.3;
+
+/**
+ * Adds the time since the previous rating to the night's guiding tally. The tally starts over
+ * with a new night.
+ *
+ * @param {{ night: string, guidedMs: number, poorMs: number } | null} tally
+ * @param {{ night: string, level: 'good'|'ok'|'poor'|null, elapsedMs: number }} sample
+ */
+export function addGuidingTime(tally, { night, level, elapsedMs }) {
+  const base = tally?.night === night ? { ...tally } : { night, guidedMs: 0, poorMs: 0 };
+  const ms = finiteOrNull(elapsedMs);
+  if (!level || ms === null || ms <= 0 || ms > GUIDING_MAX_GAP_MS) return base;
+  base.guidedMs += ms;
+  if (level === 'poor') base.poorMs += ms;
+  return base;
+}
+
+/** Whether the tallied night was guided long enough and badly enough to call in the coach. */
+export function guidingWasPoor(tally) {
+  const guided = finiteOrNull(tally?.guidedMs) ?? 0;
+  const poor = finiteOrNull(tally?.poorMs) ?? 0;
+  return guided >= COACH_MIN_GUIDED_MS && poor / guided >= COACH_POOR_SHARE;
 }

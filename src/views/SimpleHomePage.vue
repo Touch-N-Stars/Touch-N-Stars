@@ -85,6 +85,7 @@
                 }}
               </span>
             </div>
+            <SimpleCoachHint v-if="phase === 'prepare'" />
             <button
               v-else
               type="button"
@@ -127,14 +128,14 @@
                 :hasMark="Boolean(marks[step.id])"
                 @mark="setMark(step.id, $event)"
               >
-                <!-- 1. Connect -->
+                <!-- Connect -->
                 <template v-if="step.id === 'connect'">
                   <p v-if="step.status !== 'done'" class="text-xs text-content-faint">
                     {{ $t('components.simpleMode.steps.connect.hint') }}
                   </p>
                 </template>
 
-                <!-- 2. Cool the camera -->
+                <!-- Cool the camera -->
                 <template v-else-if="step.id === 'cool'">
                   <DeviceNotConnected
                     v-if="!store.cameraInfo.Connected"
@@ -167,7 +168,7 @@
                   </template>
                 </template>
 
-                <!-- 3. Mount ready -->
+                <!-- Mount ready -->
                 <template v-else-if="step.id === 'mount'">
                   <DeviceNotConnected
                     v-if="!store.mountInfo.Connected"
@@ -191,7 +192,7 @@
                   </button>
                 </template>
 
-                <!-- 4. Polar alignment -->
+                <!-- Polar alignment -->
                 <template v-else-if="step.id === 'polar'">
                   <p v-if="locationMissing || databaseMissing" class="text-xs text-status-warn">
                     {{ $t('components.simpleMode.setupChecks.blockedPolar') }}
@@ -215,49 +216,47 @@
                   </p>
                 </template>
 
-                <!-- 5. Target: picked in the sky atlas, which slews, centers and fills the plan -->
+                <!-- Target: picked in the sky atlas and put into the plan, which slews there,
+                     centers it and starts guiding on its own -->
                 <template v-else-if="step.id === 'target'">
                   <p v-if="databaseMissing" class="text-xs text-status-warn">
                     {{ $t('components.simpleMode.setupChecks.blockedTarget') }}
                   </p>
-                  <p v-if="!focusSettled" class="text-xs text-status-warn">
-                    {{ $t('components.simpleMode.focusFirst') }}
+                  <ul
+                    v-if="planTargetNames.length"
+                    class="flex flex-col gap-1 text-sm text-content"
+                  >
+                    <li v-for="(name, index) in planTargetNames" :key="index" class="truncate">
+                      {{ name }}
+                    </li>
+                  </ul>
+                  <!-- The atlas' own button label, so the hint matches in every language -->
+                  <p v-else class="text-xs text-content-muted">
+                    {{
+                      $t('components.simpleMode.steps.target.how', {
+                        button: $t('components.simpleMode.addToPlan'),
+                      })
+                    }}
                   </p>
-                  <ol class="text-xs text-content-muted list-decimal pl-5 flex flex-col gap-1">
-                    <li>{{ $t('components.simpleMode.steps.target.howSearch') }}</li>
-                    <!-- The atlas' own button labels, so the hint matches in every language -->
-                    <li>
-                      {{
-                        $t('components.simpleMode.steps.target.howSlew', {
-                          button: $t('components.slewAndCenter.slew_and_center'),
-                          slew: $t('components.slewAndCenter.slew'),
-                        })
-                      }}
-                    </li>
-                    <li>
-                      {{
-                        $t('components.simpleMode.steps.target.howPlan', {
-                          button: $t('components.framing.setSequnceTarget'),
-                        })
-                      }}
-                    </li>
-                  </ol>
-                  <!-- Same rig-wide setting as the switch next to the atlas slew button -->
-                  <div class="tns-field-row">
-                    <span class="text-sm text-content">
-                      {{ $t('components.simpleMode.steps.target.autoCenter') }}
-                    </span>
-                    <ToggleButton
-                      :statusValue="settingsStore.mount?.useCenter === true"
-                      @update:statusValue="setAutoCenter"
-                    />
-                  </div>
-                  <button type="button" class="tns-btn-primary" @click="openAtlas">
-                    {{ $t('components.simpleMode.steps.target.action') }}
+                  <p v-if="calibrationRiskKey" class="text-xs text-status-warn">
+                    {{
+                      $t(`components.simpleMode.steps.target.calibrationRisk.${calibrationRiskKey}`)
+                    }}
+                  </p>
+                  <button
+                    type="button"
+                    :class="step.status === 'done' ? 'tns-btn-secondary' : 'tns-btn-primary'"
+                    @click="openAtlas"
+                  >
+                    {{
+                      step.status === 'done'
+                        ? $t('components.simpleMode.steps.target.another')
+                        : $t('components.simpleMode.steps.target.action')
+                    }}
                   </button>
                 </template>
 
-                <!-- 6. Focus -->
+                <!-- Focus -->
                 <template v-else-if="step.id === 'focus'">
                   <!-- Autofocus needs a one-time setup per telescope (step size, exposure,
                      star detection); unset, a run tends to fail. Hocus Focus brings the
@@ -308,7 +307,7 @@
                   </template>
                 </template>
 
-                <!-- 7. Guiding with the guider built into PINS -->
+                <!-- Guiding: the guider built into PINS, chosen and calibrated once -->
                 <template v-else-if="step.id === 'guide'">
                   <template v-if="!usesNativeGuider">
                     <p class="text-sm text-content">
@@ -354,30 +353,38 @@
                       </option>
                     </select>
                   </template>
+                  <!-- Calibrated once, the plan guides at every target by itself -->
                   <template v-else-if="store.guiderInfo.Connected">
-                    <button
-                      v-if="!guiderBusy"
-                      type="button"
-                      class="tns-btn-primary"
-                      :disabled="busy.guide || !store.mountInfo.Connected"
-                      @click="startGuiding"
-                    >
-                      <Spinner v-if="busy.guide" size="sm" />
+                    <p v-if="calibrating" class="text-sm text-content">
                       {{
-                        nativeGuiderStore.isCalibrated
-                          ? $t('components.simpleMode.steps.guide.start')
-                          : $t('components.simpleMode.steps.guide.calibrateAndStart')
+                        nativeGuiderStore.summary.calibrationSlew
+                          ? $t('components.simpleMode.steps.guide.slewingToCalibration')
+                          : $t('components.simpleMode.steps.guide.calibrating')
                       }}
-                    </button>
-                    <button
-                      v-else
-                      type="button"
-                      class="tns-btn-danger"
-                      :disabled="busy.guide"
-                      @click="stopGuiding"
+                    </p>
+                    <p
+                      v-else-if="nativeGuiderStore.isCalibrated"
+                      class="text-xs text-content-muted"
                     >
-                      {{ $t('components.simpleMode.steps.guide.stop') }}
-                    </button>
+                      {{ $t('components.simpleMode.steps.guide.calibratedHint') }}
+                    </p>
+                    <template v-else>
+                      <p class="text-xs text-content-muted">
+                        {{ $t('components.simpleMode.steps.guide.calibrateHint') }}
+                      </p>
+                      <p v-if="calibrationBlocker" class="text-xs text-status-warn">
+                        {{ $t(calibrationBlocker) }}
+                      </p>
+                      <button
+                        type="button"
+                        class="tns-btn-primary"
+                        :disabled="busy.guide || Boolean(calibrationBlocker)"
+                        @click="calibrateGuider"
+                      >
+                        <Spinner v-if="busy.guide" size="sm" />
+                        {{ $t('components.simpleMode.steps.guide.calibrate') }}
+                      </button>
+                    </template>
                   </template>
                   <DeviceNotConnected v-else messageKey="components.simpleMode.needsGuider" />
                   <router-link v-if="usesNativeGuider" to="/guider" class="tns-btn-secondary">
@@ -385,7 +392,7 @@
                   </router-link>
                 </template>
 
-                <!-- 8. Capture -->
+                <!-- Capture -->
                 <template v-else-if="step.id === 'capture'">
                   <div v-if="plan.targets > 0" class="grid grid-cols-2 gap-2">
                     <div class="tns-stat-tile">
@@ -410,6 +417,32 @@
                   >
                     {{ $t('components.simpleMode.steps.capture.noExposures') }}
                   </p>
+                  <!-- A plan from before the simple mode, or a step switched off in the plan -->
+                  <div
+                    v-if="missingSteps.length && !sequenceStore.sequenceRunning"
+                    class="flex flex-col gap-2 rounded-control border border-status-warn/40 p-3"
+                  >
+                    <p class="text-sm text-content">
+                      {{
+                        $t(
+                          wantedSteps.startGuiding
+                            ? 'components.simpleMode.steps.capture.missingSteps'
+                            : 'components.simpleMode.steps.capture.missingSlew',
+                          { count: missingSteps.length },
+                          missingSteps.length
+                        )
+                      }}
+                    </p>
+                    <button
+                      type="button"
+                      class="tns-btn-secondary"
+                      :disabled="busy.plan || sequenceStore.sequenceControlsLocked"
+                      @click="fixMissingSteps"
+                    >
+                      <Spinner v-if="busy.plan" size="sm" />
+                      {{ $t('components.simpleMode.steps.capture.fixSteps') }}
+                    </button>
+                  </div>
                   <router-link to="/sequence" class="tns-btn-secondary">
                     {{
                       plan.targets > 0
@@ -437,6 +470,7 @@
                     :disabled="
                       busy.capture ||
                       plan.totalSeconds === 0 ||
+                      planTargets.length === 0 ||
                       sequenceStore.sequenceControlsLocked
                     "
                     @click="startCapture"
@@ -446,7 +480,7 @@
                   </button>
                 </template>
 
-                <!-- 9. End of night -->
+                <!-- End of night -->
                 <template v-else-if="step.id === 'end'">
                   <button type="button" class="tns-btn-danger" @click="showEndNight = true">
                     {{ $t('components.simpleMode.steps.end.action') }}
@@ -511,7 +545,6 @@ import { useTppaStore } from '@/store/tppaStore';
 import { useToastStore } from '@/store/toastStore';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useEquipmentStore } from '@/store/equipmentStore';
-import { useFramingStore } from '@/store/framingStore';
 import { NATIVE_GUIDER_ID, isNativeGuiderInUse } from '@/utils/nativeGuider';
 import { setProfileDevice } from '@/utils/equipmentDevices';
 import { useSimpleMode } from '@/composables/useSimpleMode';
@@ -521,7 +554,6 @@ import { waitForState } from '@/utils/waitForState';
 import Spinner from '@/components/helpers/Spinner.vue';
 import DeviceNotConnected from '@/components/helpers/DeviceNotConnected.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
-import ToggleButton from '@/components/helpers/toggleButton.vue';
 import SimpleRigCard from '@/components/simpleMode/SimpleRigCard.vue';
 import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import SimpleStepCard from '@/components/simpleMode/SimpleStepCard.vue';
@@ -529,6 +561,15 @@ import SimpleEndNightModal from '@/components/simpleMode/SimpleEndNightModal.vue
 import SimpleSetupChecks from '@/components/simpleMode/SimpleSetupChecks.vue';
 import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.vue';
 import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
+import SimpleCoachHint from '@/components/simpleMode/SimpleCoachHint.vue';
+import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
+import { raDecToAltAz } from '@/utils/utils';
+import {
+  dsoContainerDecDegrees,
+  dsoContainerHasTarget,
+  dsoContainerName,
+  dsoContainerRaDegrees,
+} from '@/utils/sequenceTargets';
 import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import HfSetupAssistant from '@/components/focuser/hocus/HfSetupAssistant.vue';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
@@ -536,6 +577,7 @@ import { useSimpleSetupChecks } from '@/composables/useSimpleSetupChecks';
 import {
   MARKABLE_STEPS,
   SKIPPABLE_STEPS,
+  calibrationRisk,
   currentStepId,
   isInNight,
   isWarmingUp,
@@ -543,6 +585,7 @@ import {
   nightKey,
   nightPhase,
   nightSteps,
+  targetsMissingSteps,
 } from '@/utils/simpleMode';
 import {
   FRAME_OVERHEAD_SECONDS,
@@ -568,11 +611,11 @@ const tppaStore = useTppaStore();
 const toastStore = useToastStore();
 const nativeGuiderStore = useNativeGuiderStore();
 const equipmentStore = useEquipmentStore();
-const framingStore = useFramingStore();
 const hfStore = useHocusFocusStore();
 const { available, enabled } = useSimpleMode();
 const { allConnected, equipmentToConnect, isDeviceConnected } = useEquipmentConnection();
 const { locationMissing, databaseMissing } = useSimpleSetupChecks();
+const { wantedSteps, applyToTargets } = useSimplePlanTargets();
 
 // --- Night and clock -------------------------------------------------------------------
 // A local clock, not a backend poll: it rolls the night over at noon and moves the
@@ -585,17 +628,6 @@ const marks = computed(() => marksForNight(settingsStore.simpleMode?.steps, nigh
 function setMark(stepId, mark) {
   settingsStore.setSimpleModeStepMark(night.value, stepId, mark);
 }
-
-// A target centered from the app (sky atlas) is the "target" step done - the user would
-// otherwise have to mark it by hand right after the app said "target centered".
-watch(
-  () => framingStore.lastSlewResult,
-  (result) => {
-    if (result?.ok && result.centered && isInNight(result.atMs, night.value)) {
-      setMark('target', 'done');
-    }
-  }
-);
 
 const coolTemp = computed(() => {
   const value = Number(settingsStore.simpleMode?.coolTemp);
@@ -662,6 +694,24 @@ const plan = computed(() => {
     doneAt: summary.remainingSeconds > 0 ? formatClock(summary.endMs) : '',
   };
 });
+// Targets that were given an object or coordinates (a fresh one still says RA 0 / Dec 0).
+const planTargets = computed(() =>
+  planSummary.value.targets.filter((target) => dsoContainerHasTarget(target.container))
+);
+const planTargetNames = computed(() =>
+  planTargets.value.map(
+    ({ container }) =>
+      dsoContainerName(container) ||
+      t('components.simpleMode.steps.target.coordinates', {
+        ra: Number(dsoContainerRaDegrees(container)).toFixed(2),
+        dec: Number(dsoContainerDecDegrees(container)).toFixed(2),
+      })
+  )
+);
+// Targets the plan would not slew to or not guide; the capture step offers to fix them.
+const missingSteps = computed(() =>
+  targetsMissingSteps(planSummary.value, { guiding: wantedSteps.value.startGuiding })
+);
 
 // --- Steps -----------------------------------------------------------------------------
 // --- Guiding: the guider built into PINS ------------------------------------------------
@@ -718,11 +768,19 @@ const guiderState = computed(() =>
     ? nativeGuiderStore.state
     : (store.guiderInfo.State ?? '')
 );
-const guiderBusy = computed(() =>
-  ['Guiding', 'Calibrating', 'Looping', 'Settling', 'Reacquiring', 'Paused', 'LostLock'].includes(
-    guiderState.value
-  )
+const guiderCalibrated = computed(
+  () => usesNativeGuider.value && store.guiderInfo.Connected && nativeGuiderStore.isCalibrated
 );
+// Calibrating, or on the way to the calibration position.
+const calibrating = computed(
+  () => guiderState.value === 'Calibrating' || nativeGuiderStore.summary.calibrationSlew === true
+);
+// Why the calibration cannot slew to its position now (locale key), or null.
+const calibrationBlocker = computed(() => {
+  if (!store.mountInfo.Connected) return 'components.simpleMode.needsMount';
+  if (store.mountInfo.AtPark) return 'components.simpleMode.steps.guide.unparkFirst';
+  return null;
+});
 watch(
   () => [usesNativeGuider.value, store.guiderInfo.Connected],
   ([native, connected]) => {
@@ -757,10 +815,17 @@ const steps = computed(() =>
       afDoneTonight: lastAfSucceededTonight.value,
     },
     // Always offered on PINS: the built-in guider needs no extra software, only a guide camera.
-    guider: { inProfile: true, state: guiderState.value },
+    guider: {
+      inProfile: true,
+      // The slew to the calibration position belongs to the calibration
+      state: calibrating.value ? 'Calibrating' : guiderState.value,
+      ready: usesNativeGuider.value && guideCameraChosen.value,
+      calibrated: guiderCalibrated.value,
+    },
     sequence: {
       running: sequenceStore.sequenceRunning,
       targets: plan.value.targets,
+      targetSet: planTargets.value.length > 0,
       totalSeconds: plan.value.totalSeconds,
       remainingSeconds: plan.value.remainingSeconds,
     },
@@ -777,6 +842,23 @@ const focusSettled = computed(() =>
 const doneCount = computed(
   () => steps.value.filter((step) => ['done', 'skipped'].includes(step.status)).length
 );
+
+// Without a calibration the plan calibrates at the first target. Near the pole or low in the
+// sky that goes wrong, so the target step asks for the one-time calibration first.
+const calibrationRiskKey = computed(() => {
+  const guide = steps.value.find((step) => step.id === 'guide')?.status;
+  if (guide === 'done' || guide === 'skipped') return null;
+  const next = planTargets.value.find((target) => target.remainingSeconds > 0)?.container;
+  if (!next) return null;
+  const ra = dsoContainerRaDegrees(next);
+  const dec = dsoContainerDecDegrees(next);
+  const location = store.profileInfo?.AstrometrySettings;
+  const altitude =
+    ra !== null && dec !== null && location
+      ? raDecToAltAz(ra, dec, location.Latitude ?? 0, location.Longitude ?? 0).altitude
+      : null;
+  return calibrationRisk({ decDeg: dec, altitudeDeg: altitude });
+});
 
 // What the camera was last told to cool to; the profile's temperature before the first run.
 const coolingTarget = computed(() => store.cameraInfo.TargetTemp ?? cameraStore.targetTemp);
@@ -855,7 +937,13 @@ const summaries = computed(() => {
         : store.mountInfo.TrackingEnabled
           ? t('components.simpleMode.rig.tracking')
           : t('components.simpleMode.rig.notTracking'),
-    target: targetSummary(),
+    target:
+      planTargetNames.value.length > 1
+        ? t('components.simpleMode.steps.target.summaryMany', {
+            name: planTargetNames.value[0],
+            count: planTargetNames.value.length - 1,
+          })
+        : (planTargetNames.value[0] ?? ''),
     focus:
       lastAf && isInNight(lastAfTimestamp.value, night.value)
         ? t(
@@ -865,21 +953,14 @@ const summaries = computed(() => {
             { time: formatClock(lastAf) }
           )
         : '',
-    guide: store.guiderInfo.Connected
-      ? t(`components.simpleMode.guiderState.${guiderStateKey(guiderState.value)}`)
-      : '',
+    guide: guiderCalibrated.value
+      ? t('components.simpleMode.steps.guide.calibratedSummary')
+      : store.guiderInfo.Connected
+        ? t(`components.simpleMode.guiderState.${guiderStateKey(guiderState.value)}`)
+        : '',
     capture: captureSummary(),
   };
 });
-
-function targetSummary() {
-  const last = framingStore.lastSlewResult;
-  if (last?.ok && last.centered && last.name && isInNight(last.atMs, night.value)) {
-    return t('components.simpleMode.steps.target.centeredSummary', { name: last.name });
-  }
-  if (!store.mountInfo.Connected) return '';
-  return `RA ${store.mountInfo.RightAscensionString ?? '–'} · Dec ${store.mountInfo.DeclinationString ?? '–'}`;
-}
 
 function captureSummary() {
   const { targets, totalSeconds, doneAt } = plan.value;
@@ -901,7 +982,14 @@ function guiderStateKey(state) {
 
 // --- Actions ---------------------------------------------------------------------------
 // One busy flag per step, so a slow backend cannot be triggered twice by an impatient tap.
-const busy = reactive({ cool: false, mount: false, focus: false, guide: false, capture: false });
+const busy = reactive({
+  cool: false,
+  mount: false,
+  focus: false,
+  guide: false,
+  plan: false,
+  capture: false,
+});
 const showEndNight = ref(false);
 
 async function withBusy(key, action) {
@@ -959,11 +1047,6 @@ function openPolarAlignment() {
   router.push('/mount');
 }
 
-function setAutoCenter(on) {
-  settingsStore.mount.useCenter = Boolean(on);
-  settingsStore.saveMountSettings();
-}
-
 function openAtlas() {
   store.showSkyAtlas = true;
 }
@@ -999,20 +1082,60 @@ async function switchToNativeGuider() {
   });
 }
 
-// Like the guider page: without a calibration the start calibrates first (no slew - it would
-// move the mount off the target), afterwards it guides straight away.
-function startGuiding() {
-  return withBusy('guide', () =>
-    nativeGuiderStore.runAction(
+// One-time calibration the calibration assistant's way: slew to the best spot on the mount's
+// current side (celestial equator, 5° from the meridian; no flip), calibrate there, then stop
+// guiding again - guiding is the plan's job, at the target. PINS keeps the calibration and
+// adapts it to every later pointing.
+let calibrationRun = null;
+function calibrateGuider() {
+  return withBusy('guide', async () => {
+    const confirmed = await toastStore.showConfirmation(
+      t('components.simpleMode.steps.guide.confirmCalibrateTitle'),
+      t('components.simpleMode.steps.guide.confirmCalibrateMessage'),
+      t('components.simpleMode.steps.guide.calibrate'),
+      t('common.cancel')
+    );
+    if (!confirmed) return;
+    const started = await nativeGuiderStore.runAction(
       'start-guiding',
-      { calibrate: !nativeGuiderStore.isCalibrated },
+      { calibrate: true, slew: 'stay' },
       { title: t('components.backendErrors.guidingStart') }
-    )
-  );
+    );
+    if (started) calibrationRun = { sawCalibrating: false };
+  });
 }
+watch(
+  () => [guiderState.value, nativeGuiderStore.isCalibrated, calibrating.value],
+  ([state, calibrated, busyCalibrating]) => {
+    if (!calibrationRun) return;
+    if (state === 'Calibrating') calibrationRun.sawCalibrating = true;
+    if (!calibrationRun.sawCalibrating) {
+      if (state === 'Failed') calibrationRun = null;
+      return;
+    }
+    if (calibrated && ['Guiding', 'Settling'].includes(state)) {
+      calibrationRun = null;
+      nativeGuiderStore.runAction('stop');
+    } else if (!busyCalibrating && ['Stopped', 'Failed'].includes(state)) {
+      // Stopped or failed on the way: nothing left to stop
+      calibrationRun = null;
+    }
+  }
+);
 
-function stopGuiding() {
-  return withBusy('guide', () => nativeGuiderStore.runAction('stop'));
+// Older plans, or a step switched off: the plan gets the simple mode's steps for every target.
+function fixMissingSteps() {
+  return withBusy('plan', async () => {
+    const result = await applyToTargets(missingSteps.value);
+    if (result.locked) {
+      toastStore.showToast({
+        type: 'error',
+        title: t('components.sequence.editFailed'),
+        message: t('components.sequence.controlsLockedMessage'),
+        autoClose: true,
+      });
+    }
+  });
 }
 
 function startCapture() {
@@ -1020,7 +1143,9 @@ function startCapture() {
     const confirmed = await toastStore.showConfirmation(
       t('components.simpleMode.steps.capture.confirmStartTitle'),
       t(
-        'components.simpleMode.steps.capture.confirmStartMessage',
+        wantedSteps.value.startGuiding
+          ? 'components.simpleMode.steps.capture.confirmStartMessage'
+          : 'components.simpleMode.steps.capture.confirmStartMessageNoGuiding',
         { targets: plan.value.targets, remaining: plan.value.remaining },
         plan.value.targets
       ),

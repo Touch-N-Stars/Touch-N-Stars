@@ -163,9 +163,14 @@
           :name="effectiveTargetName"
           :disabled="!hasMount || !hasValidCoordinates"
         />
+        <!-- Simple mode: the plan slews there by itself, slewing now only previews the framing -->
+        <p v-if="simpleMode && !framingStore.isMosaicMode" class="text-xs text-content-muted">
+          {{ $t('components.simpleMode.slewOptional') }}
+        </p>
         <setSequenceTarget
           v-if="!framingStore.isMosaicMode"
           class="w-full"
+          :class="{ 'order-first': simpleMode }"
           :raAngle="raDeg"
           :decAngle="decDeg"
           :name="effectiveTargetName"
@@ -253,6 +258,7 @@ import getImageRotation from '@/components/framing/getImageRotation.vue';
 import RotationRuler from '@/components/framing/RotationRuler.vue';
 import MosaicControls from '@/components/framing/MosaicControls.vue';
 import SkyChart from '@/components/framing/SkyChart.vue';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 
 // The single target panel of the Atlas. Its target is the tapped object while one is
 // selected, otherwise the live view centre; every action below works on that one
@@ -307,6 +313,7 @@ const emit = defineEmits(['clear-selection', 'scrub']);
 
 const store = apiStore();
 const framingStore = useFramingStore();
+const { active: simpleMode } = useSimpleMode();
 const router = useRouter();
 const { t, te } = useI18n();
 

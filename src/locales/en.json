@@ -5764,14 +5764,17 @@
           "action": "Open polar alignment"
         },
         "target": {
-          "title": "Choose and go to a target",
-          "description": "Pick your object in the sky atlas. The app goes there, takes a picture, works out where the telescope really points and corrects until the target sits in the middle.",
-          "action": "Open the sky atlas",
-          "howSearch": "Search for the object or tap it in the sky.",
-          "howSlew": "Tap “{button}” to go there. With automatic centering off, the button says “{slew}”.",
-          "howPlan": "Tap “{button}” to put it into your plan.",
-          "autoCenter": "Center the target automatically with a picture (recommended)",
-          "centeredSummary": "✓ {name} centered"
+          "title": "Choose a target",
+          "description": "Pick your object in the sky atlas and add it to your plan. When the pictures start, the plan goes there, centers the target with a picture and starts guiding – you don't have to do any of it by hand.",
+          "action": "Choose a target in the sky atlas",
+          "another": "Add another target",
+          "how": "Tap your object in the sky atlas (or search for it), then tap “{button}”.",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} and {count} more",
+          "calibrationRisk": {
+            "nearPole": "Your target is close to the celestial pole, where the guider cannot calibrate. Do the one-time calibration in “Set up guiding” first.",
+            "low": "Your target is low in the sky, where the guider calibrates badly. Do the one-time calibration in “Set up guiding” first."
+          }
         },
         "focus": {
           "title": "Focus",
@@ -5787,22 +5790,28 @@
           "setup": "Set up autofocus"
         },
         "guide": {
-          "title": "Start guiding",
-          "description": "The guide camera watches one star and corrects the mount, so long exposures stay sharp. PINS has a guider built in – no extra software needed. Go to your target first: the first start calibrates there automatically, which takes a few minutes and does not work close to the celestial pole.",
-          "start": "Start guiding",
-          "stop": "Stop guiding",
+          "title": "Set up guiding",
+          "description": "The guide camera watches one star and corrects the mount, so long exposures stay sharp. PINS has a guider built in – no extra software needed. It has to learn your mount once (calibration); after that your plan starts guiding at every target by itself.",
           "details": "Guiding details and graph",
-          "calibrateAndStart": "Calibrate and start guiding",
           "useNativeHint": "The simple mode guides with the guider built into PINS. Your profile uses a different guider right now.",
           "useNative": "Use the built-in guider",
           "nativeMissing": "This PINS version has no built-in guider yet. Update PINS under",
           "chooseCamera": "The built-in guider needs to know which camera is your guide camera. Pick it here – after that, “Connect everything” connects it too.",
           "chooseCameraAction": "Choose the guide camera…",
-          "noGuideCamera": "No guide camera found – plug it in and check “All devices”"
+          "noGuideCamera": "No guide camera found – plug it in and check “All devices”",
+          "calibrate": "Calibrate once (about 3 min)",
+          "calibrateHint": "The telescope moves to a spot close to the celestial equator, where the calibration is most accurate, and learns there how the guider moves it. This is needed only once: the calibration is kept for all later nights.",
+          "confirmCalibrateTitle": "Calibrate the guider?",
+          "confirmCalibrateMessage": "The telescope moves to the calibration spot and the guider calibrates there for a few minutes. Afterwards guiding stops again – your plan starts it at the target.",
+          "calibrating": "Calibrating – this takes a few minutes.",
+          "slewingToCalibration": "The telescope is moving to the calibration spot…",
+          "calibratedHint": "Calibrated. The calibration is kept for later nights too; your plan starts guiding at every target by itself.",
+          "calibratedSummary": "Calibrated",
+          "unparkFirst": "Make the telescope ready first (step “Telescope ready”)."
         },
         "capture": {
           "title": "Take pictures",
-          "description": "Your plan says which targets to shoot with which filter, exposure time and number of pictures. Start it and the app takes care of the rest.",
+          "description": "Your plan says which targets to shoot with which filter, exposure time and number of pictures. Start it and the app takes care of the rest: going to the target, centering, guiding and the pictures.",
           "targets": "Targets",
           "remaining": "Time left",
           "noPlan": "There is no plan yet. Create one with your target, filter, exposure time and number of pictures.",
@@ -5814,11 +5823,15 @@
           "summary": "{targets} target, done at about {time} | {targets} targets, done at about {time}",
           "summaryDone": "{targets} target, all pictures taken | {targets} targets, all pictures taken",
           "confirmStartTitle": "Start taking pictures?",
-          "confirmStartMessage": "The plan with {targets} target starts now and takes about {remaining}. The mount may move. | The plan with {targets} targets starts now and takes about {remaining}. The mount may move.",
+          "confirmStartMessage": "The plan with {targets} target starts now and takes about {remaining}. The telescope goes to the target, centers it and starts guiding before the first picture. | The plan with {targets} targets starts now and takes about {remaining}. The telescope goes to each target, centers it and starts guiding before the first picture.",
           "confirmStopTitle": "Stop taking pictures?",
           "confirmStopMessage": "The current picture is cancelled. You can start the plan again later.",
           "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
-          "summaryEmpty": "{targets} target, no pictures planned yet | {targets} targets, no pictures planned yet"
+          "summaryEmpty": "{targets} target, no pictures planned yet | {targets} targets, no pictures planned yet",
+          "confirmStartMessageNoGuiding": "The plan with {targets} target starts now and takes about {remaining}. The telescope goes to the target and centers it before the first picture. | The plan with {targets} targets starts now and takes about {remaining}. The telescope goes to each target and centers it before the first picture.",
+          "missingSteps": "{count} target in your plan is not gone to or guided automatically. | {count} targets in your plan are not gone to or guided automatically.",
+          "missingSlew": "{count} target in your plan is not gone to automatically. | {count} targets in your plan are not gone to automatically.",
+          "fixSteps": "Go there and guide automatically"
         },
         "end": {
           "title": "End the night",
@@ -5952,6 +5965,13 @@
         "frames": "Pictures",
         "integration": "Exposure",
         "medianHfr": "Median HFR"
+      },
+      "addToPlan": "Add to plan",
+      "slewOptional": "Your plan goes to the target, centers it and starts guiding by itself. Going there now is only needed to check the framing first.",
+      "coachHint": {
+        "text": "Your guiding was restless last night. The Guiding Coach measures your guide camera, the sky and the mount and tells you what helps. It takes about 15 minutes under the stars – best before you start your pictures.",
+        "open": "Open the Guiding Coach",
+        "dismiss": "Not now"
       }
     }
   },

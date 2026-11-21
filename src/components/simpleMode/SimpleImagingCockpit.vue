@@ -147,21 +147,29 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onBeforeUnmount, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CameraIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useImagetStore } from '@/store/imageStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import Spinner from '@/components/helpers/Spinner.vue';
 import { RA_COLOR, DEC_COLOR } from '@/components/guider/native/uplotTheme';
 import { lastSteps } from '@/components/guider/native/graphData';
 import { windowRms } from '@/utils/nativeGuider';
 import { arcsecPerPixel } from '@/utils/imageScale';
 import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';
-import { DEFAULT_CONTAINER_NAMES } from '@/composables/useDsoContainerTarget';
-import { hfrHealth, imagingActivity, rateGuiding, runningPlanPosition } from '@/utils/simpleMode';
+import { dsoContainerName } from '@/utils/sequenceTargets';
+import {
+  addGuidingTime,
+  hfrHealth,
+  imagingActivity,
+  nightKey,
+  rateGuiding,
+  runningPlanPosition,
+} from '@/utils/simpleMode';
 
 const props = defineProps({
   /** summarizeTargets() of the loaded plan */
@@ -189,11 +197,7 @@ const LEVEL_DOT = { good: 'bg-status-ok', ok: 'bg-status-warn', poor: 'bg-status
 
 // --- Where the plan stands -------------------------------------------------------------------
 const position = computed(() => runningPlanPosition(props.planSummary));
-const targetName = computed(() => {
-  const container = position.value?.container;
-  const name = container?.Target?.TargetName || container?.Name;
-  return name && !DEFAULT_CONTAINER_NAMES.includes(name) ? name : '';
-});
+const targetName = computed(() => dsoContainerName(position.value?.container));
 
 const guiding = computed(() => ['Guiding', 'Settling'].includes(props.guiderState));
 
@@ -279,6 +283,31 @@ const guideRms = computed(() => {
 });
 
 const guidingRating = computed(() => rateGuiding(guideRms.value?.total, imageScale.value));
+
+// The night's guiding tally behind the Guiding Coach recommendation (see addGuidingTime()).
+// Every new RMS adds the time since the previous one under the current rating. Kept here and
+// written to the settings once a minute, not on every guide step.
+const settingsStore = useSettingsStore();
+const TALLY_FLUSH_MS = 60000;
+let tally = null;
+let lastRatedAt = null;
+let lastFlushAt = Date.now();
+function flushTally() {
+  if (tally) settingsStore.setSimpleModeGuiding(tally);
+  lastFlushAt = Date.now();
+}
+watch(guideRms, () => {
+  const now = Date.now();
+  const level = guidingRating.value.level;
+  tally = addGuidingTime(tally ?? settingsStore.simpleMode?.guiding ?? null, {
+    night: nightKey(new Date(now)),
+    level,
+    elapsedMs: lastRatedAt === null ? 0 : now - lastRatedAt,
+  });
+  lastRatedAt = level ? now : null;
+  if (now - lastFlushAt >= TALLY_FLUSH_MS) flushTally();
+});
+onBeforeUnmount(flushTally);
 
 const isDeleted = (entry, index) =>
   isHistoryEntryDeleted(entry, historyEntryKey(index, entry), imageStore.deletedHistoryKeys);

@@ -118,3 +118,20 @@ test('dsoContainer*String return empty strings without coordinates', () => {
   assert.equal(dsoContainerRaString(container), '');
   assert.equal(dsoContainerDecString(container), '');
 });
+
+test('dsoContainerHasTarget tells a fresh container from one with a target', async () => {
+  const { dsoContainerHasTarget, dsoContainerDecDegrees } = await import('@/utils/sequenceTargets');
+  const fresh = {
+    Name: 'Deep Sky Object Instruction Set',
+    Target: 'RA: 00:00:00; Dec: 0° 0\' 0"; Epoch: J2000; Position Angle: 0',
+  };
+  assert.equal(dsoContainerHasTarget(fresh), false);
+  assert.equal(dsoContainerHasTarget({ ...fresh, Name: 'M 31' }), true);
+  const coordinatesOnly = {
+    ...fresh,
+    Target: 'RA: 00:42:44; Dec: -41° 16\' 07"; Epoch: J2000; Position Angle: 0',
+  };
+  assert.equal(dsoContainerHasTarget(coordinatesOnly), true);
+  assert.ok(Math.abs(dsoContainerDecDegrees(coordinatesOnly) + 41.2686) < 0.001);
+  assert.equal(dsoContainerHasTarget(null), false);
+});
