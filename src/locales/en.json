@@ -601,7 +601,7 @@
       },
       "starDatabase": {
         "title": "Star map for plate solving",
-        "description": "To find out where the telescope points, the rig compares a picture with a star map (\"plate solving\"). Polar alignment and centering a target need it. A fresh rig has no star map yet.",
+        "description": "To find out where the telescope points, the rig compares a picture with a star map (\"plate solving\"). Polar alignment and centering a target need it. PINS comes with the D80 star map; for very wide fields you can add another one here.",
         "otherSolver": "Your profile uses another plate solver than ASTAP, so there is nothing to install here.",
         "hint": "The download is large and can take a few minutes. You can tap Next meanwhile; the installation keeps running on the rig."
       }

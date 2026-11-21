@@ -7,7 +7,9 @@ import { apiStore } from '@/store/store';
 import {
   fieldOfViewDeg,
   hasInstalledAstapDatabase,
+  isRecommendationCovered,
   recommendAstapDatabase,
+  withImageDatabase,
 } from '@/utils/astapDatabases';
 
 const packages = ref([]);
@@ -21,7 +23,8 @@ async function refresh() {
   loading.value = true;
   try {
     const payload = (await apiPinsService.getAstapStarDatabases({ onlyNotInstalled: false })) || {};
-    packages.value = Array.isArray(payload.packages) ? payload.packages : [];
+    // The image's own database never shows up in the daemon's list, see withImageDatabase.
+    packages.value = withImageDatabase(payload.packages);
     checkedAt.value = payload.checkedAt || '';
     loadError.value = null;
     loaded.value = true;
@@ -55,6 +58,13 @@ export function useAstapDatabases() {
     });
   });
   const recommendedId = computed(() => recommendAstapDatabase(fovDeg.value));
+  /** The recommended database, or a denser one serving the same fields, is already there. */
+  const recommendationCovered = computed(() =>
+    isRecommendationCovered(
+      recommendedId.value,
+      installed.value.map((pkg) => pkg.databaseId)
+    )
+  );
 
   // The rig solves with ASTAP unless the profile says otherwise; only then does a missing
   // database block polar alignment and centering.
@@ -77,6 +87,7 @@ export function useAstapDatabases() {
     checkedAt,
     fovDeg,
     recommendedId,
+    recommendationCovered,
     refresh,
   };
 }

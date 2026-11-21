@@ -63,3 +63,40 @@ test('installed state is unknown without the flag or a list', () => {
   assert.equal(hasInstalledAstapDatabase([]), null);
   assert.equal(hasInstalledAstapDatabase(null), null);
 });
+
+test('the image database is always listed as installed', async () => {
+  const { withImageDatabase, hasInstalledAstapDatabase, PINS_IMAGE_DATABASE } =
+    await import('@/utils/astapDatabases');
+  // What the Pi's daemon reports while D80 sits on disk as plain files.
+  const daemon = ['D50', 'D05', 'G05', 'W08'].map((databaseId) => ({
+    databaseId,
+    installed: false,
+  }));
+  const list = withImageDatabase(daemon);
+  assert.equal(list.length, 5);
+  assert.deepEqual(list.at(-1), {
+    databaseId: PINS_IMAGE_DATABASE,
+    label: PINS_IMAGE_DATABASE,
+    installed: true,
+  });
+  assert.equal(hasInstalledAstapDatabase(list), true);
+  assert.equal(hasInstalledAstapDatabase(withImageDatabase(null)), true);
+});
+
+test('a daemon that lists the image database keeps its entry, marked installed', async () => {
+  const { withImageDatabase } = await import('@/utils/astapDatabases');
+  const list = withImageDatabase([{ databaseId: 'd80', label: 'D80', installed: false }]);
+  assert.equal(list.length, 1);
+  assert.equal(list[0].installed, true);
+  assert.equal(list[0].label, 'D80');
+});
+
+test('a denser database covers the lighter recommendation', async () => {
+  const { isRecommendationCovered } = await import('@/utils/astapDatabases');
+  assert.equal(isRecommendationCovered('D50', ['D80']), true);
+  assert.equal(isRecommendationCovered('D05', ['D80']), true);
+  assert.equal(isRecommendationCovered('D05', ['D50']), true);
+  assert.equal(isRecommendationCovered('D50', ['D05']), false);
+  assert.equal(isRecommendationCovered('W08', ['D80']), false);
+  assert.equal(isRecommendationCovered('G05', ['G05']), true);
+});

@@ -53,7 +53,7 @@
         <option v-for="pkg in packages" :key="pkg.databaseId" :value="pkg.databaseId">
           {{ pkg.label || pkg.databaseId }} - {{ pkg.description || pkg.databaseId
           }}{{
-            pkg.databaseId === recommendedId
+            pkg.databaseId === recommendedId && !recommendationCovered
               ? ` (${$t('components.settings.plate_solver.astapDatabaseRecommendedTag')})`
               : ''
           }}
@@ -126,7 +126,7 @@ import { useAstapDatabases } from '@/composables/useAstapDatabases';
 const { t } = useI18n();
 
 const astap = useAstapDatabases();
-const { installed, hasInstalled, recommendedId, fovDeg } = astap;
+const { installed, hasInstalled, recommendedId, recommendationCovered, fovDeg } = astap;
 // The select offers what can still be installed; installed ones are listed above it.
 const packages = astap.installable;
 const selectedDatabaseId = ref('');
@@ -176,7 +176,7 @@ const isProgressStalled = computed(
 
 const recommendationText = computed(() => {
   const id = recommendedId.value;
-  if (installed.value.some((pkg) => pkg.databaseId === id)) return '';
+  if (recommendationCovered.value) return '';
   if (!packages.value.some((pkg) => pkg.databaseId === id)) return '';
   return fovDeg.value
     ? t('components.settings.plate_solver.astapDatabaseRecommendedFov', {
@@ -321,13 +321,14 @@ async function loadPackages() {
     const availablePackages = packages.value;
 
     // Preselect the database that suits the rig; after an install the installed one leaves
-    // the list and the selection empties instead of jumping to an unrelated database.
+    // the list and the selection empties instead of jumping to an unrelated database. Nothing
+    // is preselected when an installed database already serves the rig's field of view.
     if (!availablePackages.some((pkg) => pkg.databaseId === selectedDatabaseId.value)) {
-      selectedDatabaseId.value = availablePackages.some(
-        (pkg) => pkg.databaseId === recommendedId.value
-      )
-        ? recommendedId.value
-        : '';
+      selectedDatabaseId.value =
+        !recommendationCovered.value &&
+        availablePackages.some((pkg) => pkg.databaseId === recommendedId.value)
+          ? recommendedId.value
+          : '';
     }
 
     if (!availablePackages.length) {

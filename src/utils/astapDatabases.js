@@ -13,6 +13,16 @@ const VERY_WIDE_MIN_FOV_DEG = 20;
 export const DEFAULT_ASTAP_DATABASE = 'D50';
 
 /**
+ * The database the PINS image ships. It is copied in as plain files (/opt/astap, linked into
+ * /usr/share/astap/data), not as a package, so the daemon - which only looks at dpkg - never
+ * reports it. It is shown as installed anyway, even though that cannot be proven from here.
+ */
+export const PINS_IMAGE_DATABASE = 'D80';
+
+// The denser D-series databases serve every field the lighter ones are recommended for.
+const COVERED_BY = { D50: ['D80'], D05: ['D80', 'D50'] };
+
+/**
  * The smaller side of the image in degrees - the value ASTAP calls its field of view.
  * @returns {number|null} null when an input is missing or not positive
  */
@@ -32,6 +42,29 @@ export function recommendAstapDatabase(fovDeg) {
   if (fovDeg >= WIDE_MIN_FOV_DEG) return 'G05';
   if (fovDeg >= D05_MIN_FOV_DEG) return 'D05';
   return 'D50';
+}
+
+/**
+ * The daemon's package list plus the image database, always marked installed.
+ * @param {object[]|null} packages
+ * @returns {object[]}
+ */
+export function withImageDatabase(packages) {
+  const list = Array.isArray(packages) ? packages : [];
+  const isImage = (pkg) => String(pkg?.databaseId || '').toUpperCase() === PINS_IMAGE_DATABASE;
+  if (list.some(isImage)) {
+    return list.map((pkg) => (isImage(pkg) ? { ...pkg, installed: true } : pkg));
+  }
+  return [
+    ...list,
+    { databaseId: PINS_IMAGE_DATABASE, label: PINS_IMAGE_DATABASE, installed: true },
+  ];
+}
+
+/** True when the recommended database or a denser one that serves the same fields is installed. */
+export function isRecommendationCovered(recommendedId, installedIds) {
+  const ids = new Set((installedIds || []).map((id) => String(id).toUpperCase()));
+  return ids.has(recommendedId) || (COVERED_BY[recommendedId] || []).some((id) => ids.has(id));
 }
 
 /**
