@@ -1,9 +1,80 @@
 <template>
   <!-- The newest picture with what matters about it, like the main screen of an all-in-one
        box: sharpness (HFR), stars, guiding and sensor temperature, the sharpness trend of the
-       night, and a test picture one tap away. -->
-  <section class="tns-card p-0! overflow-hidden flex flex-col">
+       night, and a test picture one tap away.
+       `hero`: while the plan runs the picture fills the stage window like on the camera page
+       (pinch to zoom, the zoom survives the next picture). The imaging cockpit fills the
+       slots: problems as banners on the picture (`top`), what the plan does on it
+       (`overlay-top`, `overlay-bottom`), its verdict in the panel below - beside it in
+       landscape - (default slot, `actions`). The numbers here then only show with `details`. -->
+  <section
+    :class="
+      hero
+        ? [
+            'fixed z-10 flex overflow-hidden rounded-[var(--stage-radius)] bg-ground',
+            isLandscape ? 'flex-row' : 'flex-col',
+          ]
+        : 'tns-card p-0! overflow-hidden flex flex-col'
+    "
+    :style="hero ? stageWindowStyle : undefined"
+  >
+    <div v-if="hero" class="relative flex-1 min-w-0 min-h-0 bg-black">
+      <ZoomableImage
+        :imageData="pictureUrl"
+        height="100%"
+        :showDownload="false"
+        :showFullscreen="false"
+        :showCrosshair="false"
+        :showLoupe="false"
+        :altText="$t('components.simpleMode.live.lastPicture')"
+      >
+        <template #placeholder>
+          <div class="flex flex-col items-center gap-2 p-4 text-center text-content-muted">
+            <PhotoIcon class="w-10 h-10" />
+            <span class="text-sm">{{ $t('components.simpleMode.live.firstPlanPicture') }}</span>
+          </div>
+        </template>
+      </ZoomableImage>
+
+      <!-- No loading overlay: with short exposures it would cover the picture every few
+           seconds; the old picture stays until the new one is there. -->
+      <!-- On top of the picture, but let pinch and pan through except where there is
+           something to tap. White on dark strips: the theme's text colours are made for
+           cards, not for pictures. -->
+      <div class="absolute top-0 inset-x-0 z-30 flex flex-col pointer-events-none">
+        <div
+          v-if="$slots['overlay-top']"
+          class="flex items-start justify-between gap-3 px-3 py-2 bg-black/60 text-white text-left"
+        >
+          <slot
+            name="overlay-top"
+            :caption="pictureUrl ? caption : ''"
+            :ago="pictureUrl ? ago : ''"
+          />
+        </div>
+        <div v-if="$slots.top" class="p-2 pointer-events-auto">
+          <slot name="top" />
+        </div>
+      </div>
+      <div class="absolute bottom-0 inset-x-0 z-30 pointer-events-none">
+        <div
+          v-if="$slots['overlay-bottom']"
+          class="flex items-center gap-2 px-3 py-1.5 bg-black/60 text-white text-left"
+        >
+          <slot name="overlay-bottom" />
+        </div>
+        <div class="h-1.5 bg-black/60">
+          <div
+            v-if="store.cameraInfo.IsExposing"
+            class="h-full bg-accent transition-[width] duration-500"
+            :style="{ width: `${Math.min(100, Math.max(0, cameraStore.exposureProgress))}%` }"
+          ></div>
+        </div>
+      </div>
+    </div>
+
     <button
+      v-else
       type="button"
       class="relative block w-full aspect-[3/2] bg-black"
       :disabled="!pictureUrl"
@@ -52,13 +123,23 @@
       </div>
     </button>
 
-    <div class="p-3 flex flex-col gap-3">
+    <!-- Hero: the panel keeps its own scroll, so the picture never scrolls away -->
+    <div
+      class="p-3 flex flex-col gap-3"
+      :class="
+        hero
+          ? [
+              'overflow-y-auto overscroll-contain bg-surface-1 border-line shrink-0',
+              isLandscape ? 'w-80 lg:w-96 border-l' : 'max-h-[60%] border-t',
+            ]
+          : ''
+      "
+    >
+      <slot />
+
       <!-- lg: the panel only gets half the page next to the night steps, too narrow for four
            tiles ("SHARPNESS (HFR)" was cut off on a 1024 px tablet) -->
-      <div
-        v-if="!compact"
-        class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2"
-      >
+      <div v-if="!hero" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2">
         <div v-for="tile in tiles" :key="tile.key" class="tns-stat-tile">
           <span class="tns-stat-label">{{ tile.label }}</span>
           <span class="tns-stat-value">{{ tile.value }}</span>
@@ -67,7 +148,7 @@
 
       <!-- Histogram of the shown picture: where the sky background sits, and how many pixels
            are at the darkest and brightest value (clipped background, saturated stars) -->
-      <div v-if="histogram" class="flex flex-col gap-1">
+      <div v-if="histogram && showNumbers" class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-2">
           <span class="tns-label">{{ $t('components.simpleMode.live.histogram') }}</span>
           <span class="text-xs text-content-faint tabular-nums">
@@ -131,7 +212,7 @@
       </div>
 
       <!-- Sharpness over the night -->
-      <div v-if="series.length >= 2" class="flex flex-col gap-1">
+      <div v-if="series.length >= 2 && showNumbers" class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-2">
           <span class="tns-label">
             {{ $t('components.simpleMode.live.trendTitle', { count: series.length }) }}
@@ -160,7 +241,7 @@
       </div>
 
       <!-- Test picture (not while the plan runs: the camera is the plan's) -->
-      <div v-if="store.cameraInfo.Connected && !compact" class="flex gap-2">
+      <div v-if="store.cameraInfo.Connected && !hero" class="flex gap-2">
         <label for="simple-mode-exposure" class="sr-only">
           {{ $t('components.simpleMode.live.exposure') }}
         </label>
@@ -195,12 +276,15 @@
           {{ $t('components.simpleMode.live.abort') }}
         </button>
       </div>
-      <p v-if="sequenceStore.sequenceRunning && !compact" class="text-xs text-content-faint">
+      <p v-if="sequenceStore.sequenceRunning && !hero" class="text-xs text-content-faint">
         {{ $t('components.simpleMode.live.planRunning') }}
       </p>
+
+      <slot name="actions" />
     </div>
 
     <ImageModal
+      v-if="!hero"
       :showModal="showFull"
       :imageData="pictureUrl"
       :isLoading="false"
@@ -222,6 +306,9 @@ import { useImagetStore } from '@/store/imageStore';
 import { usePolling } from '@/composables/usePolling';
 import Spinner from '@/components/helpers/Spinner.vue';
 import ImageModal from '@/components/helpers/imageModal.vue';
+import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
+import { useStageWindow } from '@/composables/useStageWindow';
+import { useOrientation } from '@/composables/useOrientation';
 import { hfrSeries, histogramSummary, latestPicture } from '@/utils/simpleMode';
 import {
   historyEntryKey,
@@ -230,11 +317,15 @@ import {
 } from '@/utils/imageHistoryUtils';
 import { parseRawImage } from '@/utils/rawImage/parseRawImage';
 
-defineProps({
-  // While the plan runs the imaging cockpit shows the numbers; the panel keeps the picture
-  // and the sharpness trend.
-  compact: { type: Boolean, default: false },
+const props = defineProps({
+  // While the plan runs the imaging cockpit wraps the picture (see the template)
+  hero: { type: Boolean, default: false },
+  // Hero only: show the histogram and the sharpness trend
+  details: { type: Boolean, default: false },
 });
+const showNumbers = computed(() => !props.hero || props.details);
+const { stageWindowStyle } = useStageWindow();
+const { isLandscape } = useOrientation();
 
 const { t, locale } = useI18n();
 const store = apiStore();
@@ -397,7 +488,8 @@ const caption = computed(() => {
   if (previewIsTestPicture.value || s.ImageType === 'SNAPSHOT') {
     parts.push(t('components.simpleMode.live.preview'));
   }
-  if (name) parts.push(name);
+  // In the hero the cockpit names the target above the caption already
+  if (name && !props.hero) parts.push(name);
   // The test picture's exposure is the one picked here; any other preview only says its own
   // exposure if the statistics carry it - the picker value would be a guess.
   const exposure = previewIsTestPicture.value ? ownCapture.value.exposure : num(s.ExposureTime);

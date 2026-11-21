@@ -403,6 +403,10 @@ test('the HFR trend keeps the last pictures with a usable HFR, oldest first', ()
 const {
   nightPhase,
   imagingActivity,
+  imagingVerdict,
+  QUALITY_SCALES,
+  rateCooling,
+  scalePercent,
   rateGuiding,
   hfrHealth,
   histogramSummary,
@@ -431,6 +435,40 @@ test('imagingActivity puts what pauses the pictures first', () => {
   assert.equal(imagingActivity({ ...base, guiderState: 'Calibrating' }), 'calibrating');
   assert.equal(imagingActivity({ ...base, settling: true }), 'settling');
   assert.equal(imagingActivity({ ...base, exposing: false }), 'busy');
+});
+
+test('imagingVerdict lets a listed problem win over the ratings', () => {
+  assert.equal(imagingVerdict({}), 'waiting');
+  assert.equal(imagingVerdict({ levels: [null, null] }), 'waiting');
+  assert.equal(imagingVerdict({ levels: ['good', null] }), 'good');
+  // "ok" guiding is still fine; only "poor" asks for a look
+  assert.equal(imagingVerdict({ levels: ['ok', 'good'] }), 'good');
+  assert.equal(imagingVerdict({ levels: ['good', 'poor'] }), 'warn');
+  assert.equal(imagingVerdict({ alerts: [{ level: 'warn' }], levels: ['good'] }), 'warn');
+  assert.equal(
+    imagingVerdict({ alerts: [{ level: 'warn' }, { level: 'danger' }], levels: ['good'] }),
+    'danger'
+  );
+});
+
+test('rateCooling allows a few degrees around the target', () => {
+  assert.deepEqual(rateCooling(-9, -10), { level: 'good', offset: 1 });
+  assert.equal(rateCooling(-12, -10).level, 'good');
+  assert.equal(rateCooling(-7.5, -10).level, 'poor');
+  assert.equal(rateCooling(-7.5, null).level, null);
+  assert.equal(rateCooling(null, -10).level, null);
+});
+
+test('scalePercent places a value on its quality scale', () => {
+  const scale = QUALITY_SCALES.sharpness;
+  // The scale's zones match the rating thresholds of hfrHealth
+  assert.ok(scale.good < scale.ok && scale.ok < scale.max);
+  assert.equal(scalePercent(0, scale), 0);
+  assert.equal(scalePercent(scale.max / 2, scale), 50);
+  // Smaller stars than before and values beyond the scale stay on it
+  assert.equal(scalePercent(-0.2, scale), 0);
+  assert.equal(scalePercent(5, scale), 100);
+  assert.equal(scalePercent(null, scale), null);
 });
 
 test('rateGuiding compares the RMS with the image scale', () => {

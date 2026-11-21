@@ -9,6 +9,22 @@
       </router-link>
     </div>
 
+    <!-- While the plan runs the page is the picture: the imaging cockpit fills the stage
+         window like the camera page and brings the verdict, the details and the stop. -->
+    <SimpleImagingCockpit
+      v-else-if="phase === 'imaging'"
+      :planSummary="planSummary"
+      :remaining="plan.remaining"
+      :doneAt="plan.doneAt"
+      :guiderState="guiderState"
+      :usesNativeGuider="usesNativeGuider"
+      :missingDevices="missingDevices"
+      :coolingTarget="cockpitCoolingTarget"
+      :stopping="busy.capture"
+      :moreLinks="moreLinks"
+      @stop="stopCapture"
+    />
+
     <template v-else>
       <header class="flex flex-col gap-1 px-1">
         <h1 class="text-2xl font-bold text-content">{{ $t('components.simpleMode.title') }}</h1>
@@ -30,27 +46,13 @@
       </div>
 
       <!-- What leads depends on the phase of the night (see `order`): while preparing, the
-           steps; while the plan runs, the imaging cockpit and the newest picture, with the
-           finished preparation folded away; afterwards, what the night brought.
+           steps; afterwards, what the night brought, with the finished preparation folded away.
            Tablet landscape: two columns (picture side left, night right). On a phone both
            columns dissolve (`contents`) into one list, ordered by `order`. -->
       <div class="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start">
         <div class="contents lg:flex lg:flex-col lg:gap-4">
-          <SimpleImagingCockpit
-            v-if="phase === 'imaging'"
-            :style="{ order: order.lead }"
-            :planSummary="planSummary"
-            :remaining="plan.remaining"
-            :doneAt="plan.doneAt"
-            :guiderState="guiderState"
-            :usesNativeGuider="usesNativeGuider"
-            :missingDevices="missingDevices"
-            :coolingTarget="cockpitCoolingTarget"
-            :stopping="busy.capture"
-            @stop="stopCapture"
-          />
           <SimpleNightSummary
-            v-else-if="phase === 'finished' || phase === 'ended'"
+            v-if="phase === 'finished' || phase === 'ended'"
             :style="{ order: order.lead }"
             :phase="phase"
             :night="night"
@@ -65,11 +67,10 @@
 
         <div class="contents lg:flex lg:flex-col lg:gap-4">
           <SimpleSetupChecks v-if="phase === 'prepare'" :style="{ order: order.checks }" />
-          <!-- Later: the picture next to the cockpit (tablet), right below it (phone) -->
+          <!-- After the plan: the picture next to the summary (tablet), right below it (phone) -->
           <SimpleLivePanel
-            v-if="phase !== 'prepare'"
+            v-if="phase === 'finished' || phase === 'ended'"
             :style="{ order: order.picture }"
-            :compact="phase === 'imaging'"
           />
 
           <section class="flex flex-col gap-2" :style="{ order: order.steps }">

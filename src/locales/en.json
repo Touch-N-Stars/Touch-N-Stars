@@ -5899,7 +5899,8 @@
         "max": "Max",
         "pixels": "{count} pixel | {count} pixels",
         "pixelsSaturated": "{count} pixel saturated | {count} pixels saturated",
-        "histogramHint": "Unstretched sensor data of the whole picture. Only the range around the sky background is shown; stars and saturated pixels lie further right and are counted under Max."
+        "histogramHint": "Unstretched sensor data of the whole picture. Only the range around the sky background is shown; stars and saturated pixels lie further right and are counted under Max.",
+        "firstPlanPicture": "The first picture of your plan appears here."
       },
       "setupChecks": {
         "title": "Before your first night",
@@ -5917,7 +5918,7 @@
         "title": "Taking pictures",
         "noTargetName": "Your plan",
         "doneAt": "Done at",
-        "remaining": "{time} of pictures left",
+        "remaining": "{time} left",
         "activity": {
           "autofocus": "Focusing (autofocus)",
           "slewing": "Telescope is moving (centering or meridian flip)",
@@ -5949,7 +5950,52 @@
           "cooling": "Sensor is at {temp} °C instead of {target} °C."
         },
         "hfrNoBaseline": "first pictures",
-        "lastPicture": "last picture"
+        "lastPicture": "last picture",
+        "verdict": {
+          "good": "Everything is running well",
+          "warn": "Running – one thing needs a look",
+          "danger": "Please check – the pictures are at risk",
+          "waiting": "Running – the first pictures will tell how well"
+        },
+        "paused": "paused",
+        "cooling": "Cooling",
+        "showDetails": "Show details",
+        "hideDetails": "Hide details",
+        "focus": "Focus",
+        "focusLevel": {
+          "good": "sharp",
+          "ok": "slightly soft",
+          "poor": "soft"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Guiding",
+            "what": "How closely the mount follows the stars: the wobble of the guide star, compared with the size of one pixel in your pictures.",
+            "now": "Now: {rms}″ wobble, that is {ratio} pixel (one pixel = {scale}″).",
+            "nowNoScale": "Now: {rms}″ wobble. To rate it, the profile needs the focal length and the pixel size.",
+            "nowOff": "Guiding is not running right now.",
+            "nowPaused": "Paused while the telescope focuses or moves.",
+            "limits": "Green up to {good} pixel, yellow up to {ok} pixel, red above – then stars turn into short lines.",
+            "fix": "If it turns red: wind, balance or a loose cable are the usual causes."
+          },
+          "focus": {
+            "title": "Focus",
+            "what": "How large the stars are in the newest picture compared with the earlier pictures of the same filter. Growing stars mean the focus is drifting – or dew or thin clouds are coming in.",
+            "now": "Now: star size (HFR) {hfr}, {change} % compared with before ({baseline}).",
+            "nowFirst": "Rated as soon as {count} pictures of one filter are there.",
+            "nowNone": "No picture yet.",
+            "limits": "Green up to {good} % larger, yellow up to {ok} %, red above.",
+            "fix": "If it turns red: focus again (autofocus). If that does not help, check the front of the telescope for dew."
+          },
+          "cooling": {
+            "title": "Cooling",
+            "what": "The temperature of the camera sensor. A cold sensor gives pictures with less noise.",
+            "now": "Now: {temp} °C, target {target} °C.",
+            "limits": "Green within {good} °C of the target, red beyond.",
+            "fix": "If it stays red: the cooler cannot reach the target in this warmth – choose a target a few degrees warmer."
+          }
+        },
+        "lightsHint": "Tap a light to see what it measures and where its limits are."
       },
       "summary": {
         "finished": {

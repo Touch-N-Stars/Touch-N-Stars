@@ -1,161 +1,263 @@
 <template>
-  <!-- While the plan takes pictures: what an imager watches - which target and frame, what
-       the rig is busy with, and whether the pictures are good (guiding, sharpness, star
-       count). Problems are listed on top, so a glance tells "all fine" or "act now". -->
-  <section class="tns-card border-accent/40! flex flex-col gap-3">
-    <div class="flex items-start justify-between gap-3">
+  <!-- While the plan takes pictures. The newest picture fills the stage; a problem stands on
+       it, so a glance tells "act now". In the panel one verdict and a traffic light per
+       quality (guiding, focus, cooling); the numbers behind them (RMS, HFR, guide graph,
+       histogram, trend) and the ways to other pages wait under "Details". -->
+  <SimpleLivePanel hero :details="detailsOpen">
+    <template v-if="alerts.length" #top>
+      <ul class="flex flex-col gap-2">
+        <li
+          v-for="alert in alerts"
+          :key="alert.key"
+          class="flex items-start gap-2 rounded-control border px-3 py-2 text-sm shadow-lg"
+          :class="
+            alert.level === 'danger'
+              ? 'border-status-danger bg-surface-1'
+              : 'border-status-warn bg-surface-1'
+          "
+        >
+          <ExclamationTriangleIcon
+            class="w-5 h-5 shrink-0"
+            :class="alert.level === 'danger' ? 'text-status-danger' : 'text-status-warn'"
+          />
+          <span class="flex-1 min-w-0 text-content">{{ alert.text }}</span>
+          <router-link
+            v-if="alert.to"
+            :to="alert.to"
+            class="text-xs text-accent underline shrink-0"
+          >
+            {{ $t('components.simpleMode.cockpit.check') }}
+          </router-link>
+        </li>
+      </ul>
+    </template>
+
+    <template #overlay-top="{ caption, ago }">
       <div class="min-w-0">
-        <span class="tns-label flex items-center gap-1.5">
-          <span class="tns-dot bg-status-ok animate-pulse"></span>
-          {{ $t('components.simpleMode.cockpit.title') }}
+        <span class="flex items-center gap-1.5 text-base font-bold leading-tight">
+          <span
+            class="tns-dot bg-status-ok animate-pulse"
+            :aria-label="$t('components.simpleMode.cockpit.title')"
+          ></span>
+          <span class="truncate">
+            {{ targetName || $t('components.simpleMode.cockpit.noTargetName') }}
+          </span>
         </span>
-        <h2 class="text-xl font-bold text-content leading-tight truncate">
-          {{ targetName || $t('components.simpleMode.cockpit.noTargetName') }}
-        </h2>
+        <span v-if="caption || ago" class="block text-xs text-white/70 truncate">
+          {{ [caption, ago].filter(Boolean).join(' · ') }}
+        </span>
       </div>
-      <div v-if="doneAt" class="text-right shrink-0">
-        <span class="tns-label block">{{ $t('components.simpleMode.cockpit.doneAt') }}</span>
-        <span class="text-lg font-semibold text-content tabular-nums">{{ doneAt }}</span>
+      <div v-if="doneAt" class="shrink-0 text-right leading-tight">
+        <span class="block text-xs text-white/70">
+          {{ $t('components.simpleMode.cockpit.doneAt') }}
+        </span>
+        <span class="text-base font-semibold tabular-nums">{{ doneAt }}</span>
       </div>
-    </div>
+    </template>
 
-    <!-- What happens right now -->
-    <div class="flex flex-col gap-1.5">
-      <div class="flex items-center gap-2 text-sm text-content">
-        <Spinner v-if="activity !== 'exposing'" size="sm" class="text-accent" />
-        <CameraIcon v-else class="w-4 h-4 text-accent shrink-0" />
-        <span class="min-w-0">{{ activityText }}</span>
-      </div>
-      <div v-if="activity === 'exposing'" class="h-1.5 rounded-full bg-surface-2 overflow-hidden">
-        <div
-          class="h-full bg-accent transition-[width] duration-500"
-          :style="{ width: `${exposurePercent}%` }"
-        ></div>
-      </div>
-      <p v-if="remaining" class="text-xs text-content-muted">
+    <template #overlay-bottom>
+      <Spinner v-if="activity !== 'exposing'" size="sm" class="text-accent" />
+      <CameraIcon v-else class="w-4 h-4 text-accent shrink-0" />
+      <span class="flex-1 min-w-0 truncate text-xs">{{ activityText }}</span>
+      <span v-if="remaining" class="shrink-0 text-xs text-white/70">
         {{ $t('components.simpleMode.cockpit.remaining', { time: remaining }) }}
+      </span>
+    </template>
+
+    <!-- The verdict: does anybody need to act? -->
+    <p class="flex items-center gap-2 font-semibold text-content">
+      <span class="tns-dot w-3! h-3!" :class="VERDICT_DOT[verdict]"></span>
+      {{ $t(`components.simpleMode.cockpit.verdict.${verdict}`) }}
+    </p>
+
+    <!-- Traffic lights: what decides whether the pictures are usable. Each draws its scale
+         (green, yellow, red zone) with a mark where it stands now, so "how far from bad" needs
+         no number; a tap explains what it measures and where its limits are. -->
+    <div class="flex flex-col gap-2">
+      <div class="grid gap-2" :class="lights.length === 3 ? 'grid-cols-3' : 'grid-cols-2'">
+        <button
+          v-for="light in lights"
+          :key="light.key"
+          type="button"
+          class="flex flex-col gap-0.5 rounded-control bg-surface-2 px-2.5 py-2 min-w-0 text-left border"
+          :class="openLight === light.key ? 'border-accent' : 'border-transparent'"
+          :aria-expanded="openLight === light.key"
+          :aria-controls="`simple-light-${light.key}`"
+          data-haptic="none"
+          @click="openLight = openLight === light.key ? null : light.key"
+        >
+          <span class="flex items-center gap-1.5 text-sm font-medium text-content min-w-0">
+            <span
+              class="tns-dot shrink-0"
+              :class="LEVEL_DOT[light.level] ?? 'bg-content-faint'"
+            ></span>
+            <span class="truncate">{{ light.label }}</span>
+          </span>
+          <span class="text-xs text-content-muted truncate">{{ light.word }}</span>
+          <span class="relative block mt-1.5 h-3" aria-hidden="true">
+            <span class="absolute inset-x-0 top-1 h-1 flex rounded-full overflow-hidden">
+              <span class="bg-status-ok/60" :style="{ width: `${light.zones.good}%` }"></span>
+              <span class="bg-status-warn/60" :style="{ width: `${light.zones.ok}%` }"></span>
+              <span class="flex-1 bg-status-danger/60"></span>
+            </span>
+            <span
+              v-if="light.percent !== null"
+              class="absolute top-0 h-3 w-1 -ml-0.5 rounded-full bg-content ring-2 ring-surface-2"
+              :style="{ left: `${light.percent}%` }"
+            ></span>
+          </span>
+        </button>
+      </div>
+
+      <!-- An icon in the light would cost the label its room on a phone -->
+      <p v-if="!openInfo" class="text-xs text-content-faint">
+        {{ $t('components.simpleMode.cockpit.lightsHint') }}
       </p>
-    </div>
-
-    <!-- Problems first -->
-    <ul v-if="alerts.length" class="flex flex-col gap-2">
-      <li
-        v-for="alert in alerts"
-        :key="alert.key"
-        class="flex items-start gap-2 rounded-control border px-3 py-2 text-sm"
-        :class="
-          alert.level === 'danger'
-            ? 'border-status-danger/50 bg-status-danger/10'
-            : 'border-status-warn/50 bg-status-warn/10'
-        "
-      >
-        <ExclamationTriangleIcon
-          class="w-5 h-5 shrink-0"
-          :class="alert.level === 'danger' ? 'text-status-danger' : 'text-status-warn'"
-        />
-        <span class="flex-1 min-w-0 text-content">{{ alert.text }}</span>
-        <router-link v-if="alert.to" :to="alert.to" class="text-xs text-accent underline shrink-0">
-          {{ $t('components.simpleMode.cockpit.check') }}
-        </router-link>
-      </li>
-    </ul>
-
-    <!-- What decides whether the pictures are usable: guiding, sharpness, stars -->
-    <div class="grid grid-cols-3 gap-2">
       <div
-        v-for="tile in tiles"
-        :key="tile.key"
-        class="tns-stat-tile min-w-0"
-        :class="tile.level === 'poor' ? 'tns-stat-tile-warn' : ''"
+        v-else
+        :id="`simple-light-${openInfo.key}`"
+        class="flex flex-col gap-1.5 rounded-control border border-line px-3 py-2.5 text-sm"
       >
-        <span class="tns-stat-label">{{ tile.label }}</span>
-        <span class="tns-stat-value text-lg!">
-          <span v-if="tile.level" class="tns-dot" :class="LEVEL_DOT[tile.level]"></span>
-          <span class="truncate">{{ tile.value }}</span>
-        </span>
-        <span class="text-[11px] leading-tight text-content-muted">{{ tile.note }}</span>
+        <p class="font-semibold text-content">{{ openInfo.title }}</p>
+        <p class="text-content-muted">{{ openInfo.what }}</p>
+        <p class="text-content">{{ openInfo.now }}</p>
+        <p class="text-content-muted">{{ openInfo.limits }}</p>
+        <p class="text-content-muted">{{ openInfo.fix }}</p>
       </div>
     </div>
 
-    <!-- Guide errors of the last steps (built-in guider only: it streams every step) -->
-    <div v-if="graph" class="flex flex-col gap-1">
-      <div class="flex items-baseline justify-between gap-2 text-xs">
-        <span class="flex items-center gap-3">
-          <span class="flex items-center gap-1">
-            <span class="w-3 h-0.5" :style="{ background: RA_COLOR }"></span>RA
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="w-3 h-0.5" :style="{ background: DEC_COLOR }"></span>Dec
-          </span>
-        </span>
-        <span class="text-content-faint tabular-nums">±{{ graph.range }}″</span>
-      </div>
-      <svg
-        :viewBox="`0 0 ${GRAPH_W} ${GRAPH_H}`"
-        preserveAspectRatio="none"
-        class="w-full h-16 rounded-chip bg-surface-2"
-        role="img"
-        :aria-label="$t('components.simpleMode.cockpit.guideGraph')"
-      >
-        <line
-          x1="0"
-          :x2="GRAPH_W"
-          :y1="GRAPH_H / 2"
-          :y2="GRAPH_H / 2"
-          stroke="currentColor"
-          class="text-line"
-          vector-effect="non-scaling-stroke"
-        />
-        <polyline
-          :points="graph.ra"
-          fill="none"
-          :stroke="RA_COLOR"
-          stroke-width="1.5"
-          vector-effect="non-scaling-stroke"
-          stroke-linejoin="round"
-        />
-        <polyline
-          :points="graph.dec"
-          fill="none"
-          :stroke="DEC_COLOR"
-          stroke-width="1.5"
-          vector-effect="non-scaling-stroke"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </div>
-
-    <div class="grid grid-cols-2 gap-2">
-      <router-link to="/seq-mon" class="tns-btn-secondary">
-        {{ $t('components.simpleMode.steps.capture.watch') }}
-      </router-link>
-      <router-link
-        :to="activity === 'autofocus' ? '/autofocus' : '/guider'"
-        class="tns-btn-secondary"
-      >
-        {{
-          activity === 'autofocus'
-            ? $t('components.simpleMode.steps.focus.watch')
-            : $t('components.simpleMode.steps.guide.details')
-        }}
-      </router-link>
-    </div>
-    <button type="button" class="tns-btn-danger" :disabled="stopping" @click="$emit('stop')">
-      {{ $t('components.simpleMode.steps.capture.stop') }}
+    <button
+      type="button"
+      class="flex items-center justify-between gap-2 min-h-touch -my-1 text-sm text-content-muted"
+      :aria-expanded="detailsOpen"
+      data-haptic="none"
+      @click="detailsOpen = !detailsOpen"
+    >
+      {{
+        $t(
+          detailsOpen
+            ? 'components.simpleMode.cockpit.hideDetails'
+            : 'components.simpleMode.cockpit.showDetails'
+        )
+      }}
+      <ChevronDownIcon
+        class="w-4 h-4 shrink-0 transition-transform"
+        :class="detailsOpen ? 'rotate-180' : ''"
+      />
     </button>
-  </section>
+
+    <template v-if="detailsOpen">
+      <div class="grid grid-cols-3 gap-2">
+        <div
+          v-for="tile in tiles"
+          :key="tile.key"
+          class="tns-stat-tile min-w-0"
+          :class="tile.level === 'poor' ? 'tns-stat-tile-warn' : ''"
+        >
+          <span class="tns-stat-label">{{ tile.label }}</span>
+          <span class="tns-stat-value text-lg!">
+            <span class="truncate">{{ tile.value }}</span>
+          </span>
+          <span class="text-[11px] leading-tight text-content-muted">{{ tile.note }}</span>
+        </div>
+      </div>
+
+      <!-- Guide errors of the last steps (built-in guider only: it streams every step) -->
+      <div v-if="graph" class="flex flex-col gap-1">
+        <div class="flex items-baseline justify-between gap-2 text-xs">
+          <span class="flex items-center gap-3">
+            <span class="flex items-center gap-1">
+              <span class="w-3 h-0.5" :style="{ background: RA_COLOR }"></span>RA
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="w-3 h-0.5" :style="{ background: DEC_COLOR }"></span>Dec
+            </span>
+          </span>
+          <span class="text-content-faint tabular-nums">±{{ graph.range }}″</span>
+        </div>
+        <svg
+          :viewBox="`0 0 ${GRAPH_W} ${GRAPH_H}`"
+          preserveAspectRatio="none"
+          class="w-full h-16 rounded-chip bg-surface-2"
+          role="img"
+          :aria-label="$t('components.simpleMode.cockpit.guideGraph')"
+        >
+          <line
+            x1="0"
+            :x2="GRAPH_W"
+            :y1="GRAPH_H / 2"
+            :y2="GRAPH_H / 2"
+            stroke="currentColor"
+            class="text-line"
+            vector-effect="non-scaling-stroke"
+          />
+          <polyline
+            :points="graph.ra"
+            fill="none"
+            :stroke="RA_COLOR"
+            stroke-width="1.5"
+            vector-effect="non-scaling-stroke"
+            stroke-linejoin="round"
+          />
+          <polyline
+            :points="graph.dec"
+            fill="none"
+            :stroke="DEC_COLOR"
+            stroke-width="1.5"
+            vector-effect="non-scaling-stroke"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    </template>
+
+    <template #actions>
+      <template v-if="detailsOpen">
+        <div class="grid grid-cols-2 gap-2">
+          <router-link to="/seq-mon" class="tns-btn-secondary">
+            {{ $t('components.simpleMode.steps.capture.watch') }}
+          </router-link>
+          <router-link
+            :to="activity === 'autofocus' ? '/autofocus' : '/guider'"
+            class="tns-btn-secondary"
+          >
+            {{
+              activity === 'autofocus'
+                ? $t('components.simpleMode.steps.focus.watch')
+                : $t('components.simpleMode.steps.guide.details')
+            }}
+          </router-link>
+        </div>
+        <!-- The start page shows only this view while the plan runs -->
+        <h3 class="tns-section-title">{{ $t('components.simpleMode.more.title') }}</h3>
+        <div class="grid grid-cols-2 gap-2">
+          <router-link
+            v-for="link in moreLinks"
+            :key="link.to"
+            :to="link.to"
+            class="tns-btn-secondary"
+          >
+            {{ $t(link.labelKey) }}
+          </router-link>
+        </div>
+      </template>
+      <button type="button" class="tns-btn-danger" :disabled="stopping" @click="$emit('stop')">
+        {{ $t('components.simpleMode.steps.capture.stop') }}
+      </button>
+    </template>
+  </SimpleLivePanel>
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CameraIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import { CameraIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
-import { useCameraStore } from '@/store/cameraStore';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useImagetStore } from '@/store/imageStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import Spinner from '@/components/helpers/Spinner.vue';
+import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import { RA_COLOR, DEC_COLOR } from '@/components/guider/native/uplotTheme';
 import { lastSteps } from '@/components/guider/native/graphData';
 import { windowRms } from '@/utils/nativeGuider';
@@ -166,8 +268,12 @@ import {
   addGuidingTime,
   hfrHealth,
   imagingActivity,
+  imagingVerdict,
   nightKey,
+  QUALITY_SCALES,
+  rateCooling,
   rateGuiding,
+  scalePercent,
   runningPlanPosition,
 } from '@/utils/simpleMode';
 
@@ -184,16 +290,25 @@ const props = defineProps({
   /** The camera's cooling target, null when the camera cannot cool */
   coolingTarget: { type: Number, default: null },
   stopping: { type: Boolean, default: false },
+  /** Other pages, as the start page lists them: { to, labelKey } */
+  moreLinks: { type: Array, default: () => [] },
 });
 defineEmits(['stop']);
 
 const { t } = useI18n();
 const store = apiStore();
-const cameraStore = useCameraStore();
 const nativeGuiderStore = useNativeGuiderStore();
 const imageStore = useImagetStore();
 
 const LEVEL_DOT = { good: 'bg-status-ok', ok: 'bg-status-warn', poor: 'bg-status-danger' };
+const VERDICT_DOT = {
+  good: 'bg-status-ok',
+  warn: 'bg-status-warn',
+  danger: 'bg-status-danger',
+  waiting: 'bg-content-faint',
+};
+
+const detailsOpen = ref(false);
 
 // --- Where the plan stands -------------------------------------------------------------------
 const position = computed(() => runningPlanPosition(props.planSummary));
@@ -238,10 +353,6 @@ const activityText = computed(() => {
   }
   return parts.join(' · ');
 });
-
-const exposurePercent = computed(() =>
-  Math.min(100, Math.max(0, Number(cameraStore.exposureProgress) || 0))
-);
 
 // --- Quality ------------------------------------------------------------------------------
 const imageScale = computed(() =>
@@ -353,7 +464,13 @@ const tiles = computed(() => {
 });
 
 // --- Problems -----------------------------------------------------------------------------
-const COOLING_ALERT_C = 2;
+const sensorTemp = computed(() => num(store.cameraInfo.Temperature));
+// level null while the camera has no cooling target to hold (no light shown then)
+const cooling = computed(() =>
+  props.coolingTarget === null || !store.cameraInfo.Connected
+    ? { level: null, offset: null }
+    : rateCooling(sensorTemp.value, props.coolingTarget)
+);
 // The rig pauses guiding for an autofocus run or a slew; that is no problem.
 const guidingPaused = computed(() =>
   ['autofocus', 'slewing', 'calibrating'].includes(activity.value)
@@ -405,20 +522,12 @@ const alerts = computed(() => {
       to: '/autofocus',
     });
   }
-  // Wider than the cooling step's tolerance: a cooler that overshoots by a degree during a
-  // filter change is normal.
-  const sensorTemp = num(store.cameraInfo.Temperature);
-  if (
-    props.coolingTarget !== null &&
-    store.cameraInfo.Connected &&
-    sensorTemp !== null &&
-    Math.abs(sensorTemp - props.coolingTarget) > COOLING_ALERT_C
-  ) {
+  if (cooling.value.level === 'poor') {
     list.push({
       key: 'cooling',
       level: 'warn',
       text: t('components.simpleMode.cockpit.alerts.cooling', {
-        temp: fmt(sensorTemp, 1),
+        temp: fmt(sensorTemp.value, 1),
         target: props.coolingTarget,
       }),
       to: '/camera',
@@ -426,6 +535,121 @@ const alerts = computed(() => {
   }
   return list;
 });
+
+// --- Verdict and traffic lights -----------------------------------------------------------
+const pct = (value) => Math.round(value * 100);
+
+// Widths of the green and yellow zone in percent of a scale's width
+function zones(scale) {
+  return {
+    good: (scale.good / scale.max) * 100,
+    ok: ((scale.ok - scale.good) / scale.max) * 100,
+  };
+}
+
+function signedPercent(change) {
+  return `${change >= 0 ? '+' : '−'}${Math.abs(pct(change))}`;
+}
+
+const lights = computed(() => {
+  const rms = guideRms.value;
+  const rating = guidingRating.value;
+  const h = hfr.value;
+  const E = 'components.simpleMode.cockpit.explain';
+  const G = QUALITY_SCALES.guiding;
+  const F = QUALITY_SCALES.sharpness;
+  const C = QUALITY_SCALES.cooling;
+
+  let guidingNow;
+  if (rms && rating.ratio !== null) {
+    guidingNow = t(`${E}.guiding.now`, {
+      rms: fmt(rms.total),
+      ratio: fmt(rating.ratio),
+      scale: fmt(imageScale.value),
+    });
+  } else if (rms) {
+    guidingNow = t(`${E}.guiding.nowNoScale`, { rms: fmt(rms.total) });
+  } else {
+    guidingNow = t(guidingPaused.value ? `${E}.guiding.nowPaused` : `${E}.guiding.nowOff`);
+  }
+
+  let focusNow;
+  if (!h) focusNow = t(`${E}.focus.nowNone`);
+  else if (h.change === null) focusNow = t(`${E}.focus.nowFirst`, { count: F.minPictures });
+  else {
+    focusNow = t(`${E}.focus.now`, {
+      hfr: fmt(h.hfr),
+      change: signedPercent(h.change),
+      baseline: fmt(h.baseline),
+    });
+  }
+
+  const list = [
+    {
+      key: 'guiding',
+      label: t('components.simpleMode.live.guiding'),
+      level: rating.level,
+      word: rms
+        ? t(`components.simpleMode.cockpit.guidingLevel.${rating.level ?? 'unknown'}`)
+        : t(
+            guidingPaused.value
+              ? 'components.simpleMode.cockpit.paused'
+              : 'components.simpleMode.cockpit.notGuiding'
+          ),
+      percent: scalePercent(rms ? rating.ratio : null, G),
+      zones: zones(G),
+      now: guidingNow,
+      limits: t(`${E}.guiding.limits`, { good: G.good, ok: G.ok }),
+    },
+    {
+      key: 'focus',
+      label: t('components.simpleMode.cockpit.focus'),
+      level: h?.level ?? null,
+      word: !h
+        ? t('components.simpleMode.cockpit.noFrame')
+        : h.level
+          ? t(`components.simpleMode.cockpit.focusLevel.${h.level}`)
+          : t('components.simpleMode.cockpit.hfrNoBaseline'),
+      percent: scalePercent(h?.change ?? null, F),
+      zones: zones(F),
+      now: focusNow,
+      limits: t(`${E}.focus.limits`, { good: pct(F.good), ok: pct(F.ok) }),
+    },
+  ];
+  if (cooling.value.level) {
+    list.push({
+      key: 'cooling',
+      label: t('components.simpleMode.cockpit.cooling'),
+      level: cooling.value.level,
+      word: `${fmt(sensorTemp.value, 1)} °C`,
+      percent: scalePercent(cooling.value.offset, C),
+      zones: zones(C),
+      now: t(`${E}.cooling.now`, { temp: fmt(sensorTemp.value, 1), target: props.coolingTarget }),
+      limits: t(`${E}.cooling.limits`, { good: C.good }),
+    });
+  }
+  return list;
+});
+
+// The explanation under the lights, for the one tapped last; closes when its light goes away
+const openLight = ref(null);
+const openInfo = computed(() => {
+  const light = lights.value.find((l) => l.key === openLight.value);
+  if (!light) return null;
+  const E = `components.simpleMode.cockpit.explain.${light.key}`;
+  return {
+    key: light.key,
+    title: t(`${E}.title`),
+    what: t(`${E}.what`),
+    now: light.now,
+    limits: light.limits,
+    fix: t(`${E}.fix`),
+  };
+});
+
+const verdict = computed(() =>
+  imagingVerdict({ alerts: alerts.value, levels: lights.value.map((light) => light.level) })
+);
 
 // --- Guide graph ----------------------------------------------------------------------------
 const GRAPH_W = 300;

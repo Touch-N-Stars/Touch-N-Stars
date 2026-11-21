@@ -321,6 +321,20 @@ export function imagingActivity({ afRunning, slewing, guiderState, settling, exp
   return 'busy';
 }
 
+/**
+ * One verdict on the running plan for the line under the picture, so nobody has to read the
+ * numbers to know whether to act. A problem the cockpit lists always wins; "waiting" until
+ * any quality value could be rated (no frame yet, guiding not rated).
+ * @param {{ alerts?: Array<{ level: 'danger'|'warn' }>, levels?: Array<string|null> }} input
+ *   levels: the ratings of guiding, sharpness, cooling ('good'|'ok'|'poor'|null)
+ * @returns {'danger'|'warn'|'good'|'waiting'}
+ */
+export function imagingVerdict({ alerts = [], levels = [] }) {
+  if (alerts.some((alert) => alert.level === 'danger')) return 'danger';
+  if (alerts.length || levels.includes('poor')) return 'warn';
+  return levels.some(Boolean) ? 'good' : 'waiting';
+}
+
 // Guide RMS as a share of the imaging pixel scale. Below half a pixel the guiding is invisible
 // in the picture, up to one pixel it softens the stars a little, beyond that it shows.
 const GUIDING_GOOD_RATIO = 0.5;
@@ -346,6 +360,8 @@ const HFR_MIN_BASELINE = 3;
 // How much larger than usual the HFR may get before it counts as drifting.
 const HFR_OK_RISE = 0.1;
 const HFR_POOR_RISE = 0.25;
+// How far the sensor may be off its cooling target while the plan runs.
+const COOLING_TOLERANCE_C = 2;
 
 function median(values) {
   const sorted = [...values].sort((a, b) => a - b);
@@ -387,6 +403,46 @@ export function hfrHealth(history, isDeleted = () => false) {
   const change = (latest.hfr - baseline) / baseline;
   const level = change <= HFR_OK_RISE ? 'good' : change <= HFR_POOR_RISE ? 'ok' : 'poor';
   return { ...latest, baseline, change, level };
+}
+
+/**
+ * The limits behind the cockpit's traffic lights, in the unit each one is rated in, so the
+ * page can draw them as a scale and spell them out. `good`/`ok` are the upper ends of the
+ * green and yellow zones (equal when there is no yellow zone), `max` the right end of the
+ * drawn scale.
+ *   guiding:   guide RMS in image pixels (see rateGuiding)
+ *   sharpness: HFR growth against the earlier pictures, 0.1 = 10 % (see hfrHealth)
+ *   cooling:   sensor temperature off its target, in °C (see rateCooling)
+ */
+export const QUALITY_SCALES = {
+  guiding: { good: GUIDING_GOOD_RATIO, ok: GUIDING_OK_RATIO, max: 1.5 },
+  // minPictures: the newest one plus the earlier ones it needs to be rated at all
+  sharpness: { good: HFR_OK_RISE, ok: HFR_POOR_RISE, max: 0.4, minPictures: HFR_MIN_BASELINE + 1 },
+  cooling: { good: COOLING_TOLERANCE_C, ok: COOLING_TOLERANCE_C, max: 2 * COOLING_TOLERANCE_C },
+};
+
+/**
+ * Rates the sensor temperature against the cooling target. The tolerance is wider than the
+ * cooling step's: a cooler that overshoots by a degree during a filter change is normal.
+ * @returns {{ level: 'good'|'poor'|null, offset: number|null }} level null without a target
+ *   or a reading; offset the distance from the target in °C
+ */
+export function rateCooling(sensorTemp, target) {
+  const temp = finiteOrNull(sensorTemp);
+  const goal = finiteOrNull(target);
+  if (temp === null || goal === null) return { level: null, offset: null };
+  const offset = Math.abs(temp - goal);
+  return { level: offset > COOLING_TOLERANCE_C ? 'poor' : 'good', offset };
+}
+
+/**
+ * Where a value sits on a quality scale, in percent of its width (clamped, below zero counts
+ * as zero: stars that got smaller are fine). null without a value.
+ */
+export function scalePercent(value, scale) {
+  const v = finiteOrNull(value);
+  if (v === null || !scale?.max) return null;
+  return Math.min(100, Math.max(0, (v / scale.max) * 100));
 }
 
 /**
