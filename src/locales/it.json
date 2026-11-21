@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Velocità di puntamento",
-        "description": "Imposta quanto velocemente il driver può muovere la montatura. Troppo alta e la montatura può perdere passi, troppo bassa e ogni puntamento dura un'eternità.",
         "maxSlewRate": "Velocità di puntamento max (°/s)",
-        "maxSlewRateHint": "È il limite del driver, non la velocità manuale nella schermata della montatura – quella deriva direttamente dalle capacità del driver.",
         "saveFailed": "Impossibile salvare: {message}"
       },
       "location": {

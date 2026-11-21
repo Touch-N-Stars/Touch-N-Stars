@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Velocidad de giro",
-        "description": "Define a qué velocidad puede mover el controlador tu montura. Demasiado alta y la montura puede perder pasos; demasiado baja y cada movimiento tarda una eternidad.",
         "maxSlewRate": "Velocidad de giro máx. (°/s)",
-        "maxSlewRateHint": "Es el límite del controlador, no la velocidad manual de la pantalla de la montura – esa viene directamente de las capacidades del propio controlador.",
         "saveFailed": "No se pudo guardar: {message}"
       },
       "location": {

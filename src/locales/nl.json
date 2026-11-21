@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Zwenksnelheid",
-        "description": "Stel in hoe snel het stuurprogramma je montering mag bewegen. Te hoog en de montering kan stappen verliezen, te laag en elke zwenk duurt eindeloos.",
         "maxSlewRate": "Max. zwenksnelheid (°/s)",
-        "maxSlewRateHint": "Dit is de limiet van het stuurprogramma, niet de handmatige zwenksnelheid op het monteringsscherm – die komt rechtstreeks uit de mogelijkheden van het stuurprogramma.",
         "saveFailed": "Opslaan mislukt: {message}"
       },
       "location": {

@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Velocidade de movimento",
-        "description": "Define a que velocidade o controlador pode mover a montagem. Demasiado alta e a montagem pode perder passos; demasiado baixa e cada movimento demora uma eternidade.",
         "maxSlewRate": "Velocidade máx. de movimento (°/s)",
-        "maxSlewRateHint": "É o limite do controlador, não a velocidade manual no ecrã da montagem – essa vem diretamente das capacidades do próprio controlador.",
         "saveFailed": "Não foi possível guardar: {message}"
       },
       "location": {

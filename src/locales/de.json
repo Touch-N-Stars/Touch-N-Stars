@@ -363,9 +363,7 @@
       },
       "slewRate": {
         "title": "Schwenkgeschwindigkeit",
-        "description": "Lege fest, wie schnell der Treiber deine Montierung fahren darf. Zu hoch verliert die Montierung Schritte, zu niedrig dauert jeder Slew ewig.",
         "maxSlewRate": "Max. Schwenkgeschwindigkeit (°/s)",
-        "maxSlewRateHint": "Das ist die Treibergrenze, nicht die manuelle Schwenkgeschwindigkeit auf dem Montierungs-Screen — die kommt direkt aus den Fähigkeiten des Treibers.",
         "saveFailed": "Konnte nicht gespeichert werden: {message}"
       },
       "location": {

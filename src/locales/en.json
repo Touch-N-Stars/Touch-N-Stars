@@ -432,10 +432,18 @@
       },
       "slewRate": {
         "title": "Slew speed",
-        "description": "Set how fast the driver may move your mount. Too high and the mount can lose steps, too low and every slew takes forever.",
         "maxSlewRate": "Max slew speed (°/s)",
-        "maxSlewRateHint": "This is the driver limit, not the manual slew speed on the mount screen — that one comes straight from the driver's own capabilities.",
-        "saveFailed": "Could not save: {message}"
+        "saveFailed": "Could not save: {message}",
+        "whatFor": "PINS needs your mount's top speed to time movements correctly, for example during polar alignment. It does not limit how fast the mount slews.",
+        "reading": "Reading the speeds from the mount driver…",
+        "derived": "Read from the driver: the fastest speed is {label}, that is {value} °/s. Saved — nothing to do here.",
+        "notNeeded": "This driver reports its speeds in °/s itself, so nothing needs to be set here.",
+        "unknown": "This driver names its speeds without numbers (e.g. \"Max\"), so the top speed cannot be read. Leave the default of {value} °/s unless you know your mount's top speed.",
+        "notConnected": "Connect the mount in the previous step, then the speed is read from it automatically. Without that the default of {value} °/s is used, which fits most mounts.",
+        "readFailed": "The speeds could not be read from the mount. The current value of {value} °/s stays.",
+        "readAgain": "Read from the mount",
+        "setManually": "Set by hand",
+        "manualHint": "Your mount's top slew speed in degrees per second, as given in its manual. A value you enter here is never replaced automatically."
       },
       "location": {
         "title": "Set your location",

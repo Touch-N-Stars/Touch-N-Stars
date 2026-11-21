@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Vitesse de pointage",
-        "description": "Règle la vitesse à laquelle le pilote peut déplacer ta monture. Trop élevée, la monture peut perdre des pas ; trop basse, chaque pointage dure une éternité.",
         "maxSlewRate": "Vitesse de pointage max. (°/s)",
-        "maxSlewRateHint": "C'est la limite du pilote, pas la vitesse manuelle de l'écran de la monture – celle-ci vient directement des capacités du pilote.",
         "saveFailed": "Impossible d'enregistrer : {message}"
       },
       "location": {

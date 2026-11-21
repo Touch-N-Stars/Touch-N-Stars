@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "转动速度",
-        "description": "设置驱动可以多快地移动赤道仪。太快可能丢步，太慢则每次转动都很漫长。",
         "maxSlewRate": "最大转动速度 (°/s)",
-        "maxSlewRateHint": "这是驱动的上限，而不是赤道仪页面上的手动转动速度——后者直接来自驱动自身的能力。",
         "saveFailed": "无法保存：{message}"
       },
       "location": {

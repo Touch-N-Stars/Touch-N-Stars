@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Prędkość obrotu",
-        "description": "Ustaw, jak szybko sterownik może obracać montaż. Za szybko – montaż może gubić kroki, za wolno – każdy obrót trwa wieki.",
         "maxSlewRate": "Maks. prędkość obrotu (°/s)",
-        "maxSlewRateHint": "To limit sterownika, a nie ręczna prędkość na ekranie montażu – ta wynika bezpośrednio z możliwości sterownika.",
         "saveFailed": "Nie udało się zapisać: {message}"
       },
       "location": {

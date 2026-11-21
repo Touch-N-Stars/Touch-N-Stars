@@ -322,9 +322,7 @@
       },
       "slewRate": {
         "title": "Rychlost přejezdu",
-        "description": "Nastav, jak rychle smí ovladač montáží pohybovat. Příliš rychle a montáž může ztrácet kroky, příliš pomalu a každý přejezd trvá věčnost.",
         "maxSlewRate": "Max. rychlost přejezdu (°/s)",
-        "maxSlewRateHint": "Jde o limit ovladače, ne o ruční rychlost na obrazovce montáže – ta vychází přímo z možností ovladače.",
         "saveFailed": "Nepodařilo se uložit: {message}"
       },
       "location": {

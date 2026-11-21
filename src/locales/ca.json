@@ -363,9 +363,7 @@
       },
       "slewRate": {
         "title": "Velocitat de gir",
-        "description": "Defineix a quina velocitat pot moure el controlador la muntura. Massa alta i la muntura pot perdre passos; massa baixa i cada moviment dura una eternitat.",
         "maxSlewRate": "Velocitat de gir màx. (°/s)",
-        "maxSlewRateHint": "És el límit del controlador, no la velocitat manual de la pantalla de la muntura – aquesta ve directament de les capacitats del controlador.",
         "saveFailed": "No s'ha pogut desar: {message}"
       },
       "location": {
