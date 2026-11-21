@@ -48,30 +48,11 @@
       {{ t('components.setupWizard.mount.notFound') }}
     </button>
 
+    <!-- The finder asks for the mount model and the cable, then sets (and if needed installs)
+         the matching driver. The plain driver list and the package search sit behind its own
+         "not in this list?" toggle. -->
     <div v-if="store.isPINS && showNotFound" class="flex flex-col gap-3">
-      <p class="text-sm text-content-muted">
-        {{ t('components.setupWizard.mount.notFoundDriverHint') }}
-      </p>
-
-      <IndiDriverSelect
-        ref="driverSelect"
-        deviceType="telescope"
-        settingPath="TelescopeSettings-IndiDriver"
-        listAction="mountAction"
-        rescanKey="mount"
-        profileSection="TelescopeSettings"
-        :label="t('components.setupWizard.mount.selectDriver')"
-      />
-
-      <p class="text-sm text-content-muted">
-        {{ t('components.setupWizard.mount.notFoundHint') }}
-      </p>
-
-      <Indi3rdpartyInstallPanel
-        search-seed="mount"
-        label-prefix="components.setupWizard.mount"
-        @installed="driverSelect?.loadDrivers()"
-      />
+      <MountDriverFinder />
     </div>
 
     <!-- Mount settings modal (same split as connectEquipment.vue).
@@ -110,14 +91,12 @@ import selectDevices from '@/components/equipment/selectDevices.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsOnStepXConnection from '@/components/equipment/SettingsOnStepXConnection.vue';
-import IndiDriverSelect from '../IndiDriverSelect.vue';
-import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
+import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
 
 const { t } = useI18n();
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
 
-const driverSelect = ref(null);
 const showMountSettings = ref(false);
 const selectedMountDevice = ref('');
 const selectedMountObj = ref(null);

@@ -114,6 +114,19 @@
           </option>
         </select>
       </div>
+      <!-- INDI labels say little about the hardware ("EQMod Mount" for an EQ6); the finder
+           goes from the mount model and its cable to the driver, installing it if needed. -->
+      <button
+        type="button"
+        class="tns-btn-ghost justify-end! px-0! text-sm! text-accent!"
+        :aria-expanded="showMountFinder"
+        @click="showMountFinder = !showMountFinder"
+      >
+        {{ $t('components.mountDriverFinder.openButton') }}
+      </button>
+      <div v-if="showMountFinder" class="rounded-control border border-line p-3">
+        <MountDriverFinder :showFallback="false" @applied="onMountDriverApplied" />
+      </div>
 
       <!-- Weather -->
       <div class="flex flex-row w-full items-center">
@@ -211,6 +224,7 @@
 import { computed, onMounted, ref } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
 import Spinner from '@/components/helpers/Spinner.vue';
+import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
@@ -238,6 +252,7 @@ const selectedFocuser = ref('None');
 const selectedFilterwheel = ref('None');
 const selectedRotator = ref('None');
 const selectedTelescope = ref('None');
+const showMountFinder = ref(false);
 const selectedWeather = ref('None');
 const selectedSwitches = ref('None');
 const selectedFlatpanel = ref('None');
@@ -319,6 +334,20 @@ const onTelescopeChange = async () => {
     console.error('[SelectIndi] Error Telescope selection:', error);
   }
 };
+
+// The finder wrote the driver itself; this only brings the dropdown in line, and refreshes
+// the list because the driver may just have been installed.
+async function onMountDriverApplied({ driver }) {
+  try {
+    const response = await apiPinsService.getINDIDeviceList('telescope');
+    if (Array.isArray(response?.Response)) {
+      telescope.value = [...response.Response].sort((a, b) => a.Label.localeCompare(b.Label));
+    }
+  } catch (error) {
+    console.error('[SelectIndi] Telescope driver list refresh failed:', error);
+  }
+  selectedTelescope.value = driver;
+}
 
 const onWeatherChange = async () => {
   try {

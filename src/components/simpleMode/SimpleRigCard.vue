@@ -51,18 +51,49 @@
               : $t('components.simpleMode.rig.connectAll')
         }}</span>
       </button>
+
+      <!-- The usual reason a mount is missing or will not connect on PINS is the wrong (or a
+           missing) INDI driver - offer the finder right where that shows. -->
+      <div v-if="offerMountDriver" class="flex flex-col gap-2">
+        <p class="text-xs text-content-muted">
+          {{
+            mountInProfile
+              ? $t('components.simpleMode.rig.mountFailedHint')
+              : $t('components.simpleMode.rig.noMountHint')
+          }}
+        </p>
+        <button type="button" class="tns-btn-secondary" @click="showMountFinder = true">
+          {{ $t('components.mountDriverFinder.openButton') }}
+        </button>
+      </div>
     </template>
+
+    <Modal
+      :show="showMountFinder"
+      :disableClose="finderBusy"
+      :closeOnBackdropClick="!finderBusy"
+      @close="showMountFinder = false"
+    >
+      <template #header>
+        <h2 class="text-xl font-semibold">{{ $t('components.mountDriverFinder.title') }}</h2>
+      </template>
+      <template #body>
+        <MountDriverFinder @busy="finderBusy = $event" @applied="mountAttemptFailed = false" />
+      </template>
+    </Modal>
   </section>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { CheckCircleIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useCameraStore } from '@/store/cameraStore';
 import Spinner from '@/components/helpers/Spinner.vue';
+import Modal from '@/components/helpers/Modal.vue';
+import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
 import { useEquipmentConnection } from '@/composables/useEquipmentConnection';
 
 const { t } = useI18n();
@@ -137,6 +168,33 @@ const GUIDER_STATE_KEYS = [
 function guiderStateKey(state) {
   return GUIDER_STATE_KEYS.includes(state) ? state : 'Idle';
 }
+
+const showMountFinder = ref(false);
+const finderBusy = ref(false);
+// Set when "connect all" finished without the mount: connectAll waits for the mount to report
+// connected before it moves on, so at that point a missing connection is a real failure.
+const mountAttemptFailed = ref(false);
+const mountInProfile = computed(() =>
+  equipmentToConnect.value.some((device) => device.apiName === 'mount')
+);
+watch(isConnecting, (connecting, wasConnecting) => {
+  if (wasConnecting && !connecting) {
+    mountAttemptFailed.value = mountInProfile.value && !isDeviceConnected('mount');
+  }
+});
+watch(
+  () => isDeviceConnected('mount'),
+  (connected) => {
+    if (connected) mountAttemptFailed.value = false;
+  }
+);
+// PINS only: INDI drivers do not exist on NINA/Windows.
+const offerMountDriver = computed(
+  () =>
+    store.isPINS &&
+    !isConnecting.value &&
+    (!mountInProfile.value || (mountAttemptFailed.value && !isDeviceConnected('mount')))
+);
 
 const devices = computed(() =>
   equipmentToConnect.value.map((device) => {

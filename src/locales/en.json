@@ -264,6 +264,70 @@
       "next": "Next",
       "skip": "Skip Tutorial"
     },
+    "mountDriverFinder": {
+      "searchLabel": "Which mount do you have?",
+      "searchPlaceholder": "e.g. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Type the model, or start with the brand:",
+      "noMatch": "No matching mount. Check the spelling or use \"Mount not in this list?\" below.",
+      "otherMount": "Other mount",
+      "howConnected": "How is it connected to PINS?",
+      "recommended": "Recommended",
+      "driverName": "Driver: {name}",
+      "checking": "Checking the installed drivers…",
+      "driverListFailed": "The driver list could not be loaded.",
+      "retry": "Try again",
+      "alreadySet": "This driver is already set.",
+      "useDriver": "Use this driver",
+      "needsInstall": "{name} is not installed on PINS yet.",
+      "installAndUse": "Install and use",
+      "installConfirm": "PINS downloads {name} from the internet and installs it. This takes about a minute. Continue?",
+      "installConfirmYes": "Install",
+      "cancel": "Cancel",
+      "unavailable": "{name} is not available on this PINS. Choose it from the full list below, or update PINS.",
+      "installing": "Downloading and installing {name}…",
+      "applying": "Setting up {name}…",
+      "applied": "Done: {name} is set and \"{device}\" is selected. Plug the mount in, switch it on and tap Connect.",
+      "appliedPickDevice": "Done: {name} is set. Choose your mount in the device list and tap Connect.",
+      "applyFailed": "The driver could not be set: {message}",
+      "noInternet": "PINS needs an internet connection to install the driver. Connect PINS to a Wi-Fi network with internet and try again.",
+      "packageMissing": "The driver package {name} is not available for download right now.",
+      "installedButMissing": "{name} was installed but does not show up in the driver list. Restart PINS and try again.",
+      "installFailed": "Installation failed: {message}",
+      "disconnectFirst": "Disconnect the mount before changing its driver.",
+      "notListed": "Mount not in this list?",
+      "openButton": "Find mount driver",
+      "title": "Find the driver for your mount",
+      "connections": {
+        "swDirect": {
+          "title": "USB cable directly to the mount",
+          "hint": "Into the mount's USB socket, or an EQDIR cable in the hand controller port. The hand controller is not needed."
+        },
+        "swHandController": {
+          "title": "Through the SynScan hand controller",
+          "hint": "Cable from PINS to the hand controller (USB socket or serial cable). Switch the hand controller on and go through its start menu first."
+        },
+        "celestronUsb": {
+          "title": "USB socket on the mount",
+          "hint": "USB cable into the socket on the mount head."
+        },
+        "celestronHandController": {
+          "title": "Through the NexStar hand controller",
+          "hint": "USB or serial cable into the bottom of the hand controller. Complete the hand controller's alignment start first."
+        },
+        "meadeHandController": {
+          "title": "Through the AutoStar hand controller",
+          "hint": "Serial or USB cable into the hand controller's port."
+        },
+        "usb": {
+          "title": "USB cable to the mount",
+          "hint": "USB cable from the mount to PINS."
+        },
+        "network": {
+          "title": "Network cable (LAN)",
+          "hint": "The mount is on the same network as PINS. Afterwards enter its IP address in the mount's connection settings."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Setup Assistant",
       "restart": "Start setup assistant",
@@ -364,8 +428,7 @@
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
         "installFailed": "Installation failed: {message}",
-        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there.",
-        "notFoundDriverHint": "Many mounts (EQMod, OnStep, Celestron, Sky-Watcher …) need an INDI driver. Select it here; afterwards the mount appears in the list above."
+        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there."
       },
       "slewRate": {
         "title": "Slew speed",
@@ -5636,6 +5699,8 @@
         "changeDevices": "Change devices",
         "empty": "No devices are set up yet. The setup assistant walks you through camera, mount and the rest.",
         "openWizard": "Open the setup assistant",
+        "noMountHint": "No mount set up yet? Find the right driver for it here.",
+        "mountFailedHint": "The mount did not connect. Often it needs a different driver.",
         "connecting": "Connecting…",
         "allConnected": "Everything connected",
         "connectAll": "Connect everything",
