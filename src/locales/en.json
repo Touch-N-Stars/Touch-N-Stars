@@ -187,7 +187,7 @@
       "confirmSetTargetTitle": "Confirm Target Selection",
       "confirmSetTargetMessage": "Are you sure you want to set this target as the sequence target?",
       "useNinaCache": "Use @:{'general.backendName'} cache for the target image",
-      "setSequnceTarget": "set to sequence target",
+      "setSequnceTarget": "Set to sequence target",
       "sequenceTargetPicker": {
         "title": "Sequence target",
         "hint": "Choose which target of the loaded sequence receives the framing coordinates.",
@@ -289,7 +289,8 @@
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Done",
-        "localization": "Regional settings"
+        "localization": "Regional settings",
+        "starDatabase": "Star map"
       },
       "driver": {
         "loading": "Loading drivers…",
@@ -306,7 +307,10 @@
         "description": "The language of the app. You can change it later in the settings."
       },
       "info": {
-        "openWiki": "Open the wiki"
+        "openWiki": "Open the wiki",
+        "pointDevices": "The next steps connect your mount, camera and the other devices one by one and ask for your telescope data.",
+        "pointPowered": "Switch all devices on and plug them into the rig before you continue.",
+        "pointLater": "Not sure about a value? Skip it with Next. Everything can be changed later in the settings."
       },
       "instance": {
         "description": "Address of the machine running @:{'general.backendName'}. On the same network the app can usually find it by itself.",
@@ -359,7 +363,9 @@
         "notFoundHint": "If your mount is missing, its driver may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
-        "installFailed": "Installation failed: {message}"
+        "installFailed": "Installation failed: {message}",
+        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there.",
+        "notFoundDriverHint": "Many mounts (EQMod, OnStep, Celestron, Sky-Watcher …) need an INDI driver. Select it here; afterwards the mount appears in the list above."
       },
       "slewRate": {
         "title": "Slew speed",
@@ -380,7 +386,10 @@
         "syncDirection": "Location sync direction",
         "save": "Save location",
         "saving": "Saving…",
-        "saveFailed": "Could not save the location: {message}"
+        "saveFailed": "Could not save the location: {message}",
+        "unsavedHint": "Not saved yet. It is saved automatically when you tap Next.",
+        "savedHint": "Location saved.",
+        "missingHint": "No location set yet. Polar alignment and the sky atlas need it."
       },
       "telescope": {
         "title": "Your telescope",
@@ -412,7 +421,8 @@
         "pixelSize": "Pixel size (µm)",
         "pixelSizeHint": "The pixel size is not reported by the driver. You will find it in your camera's manual.",
         "imageScale": "Resulting image scale: {scale} arcsec/px",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "chipSizeNotConnectedHint": "Connect the camera above and the sensor size is filled in by itself. Only a camera that does not report it (typical for DSLRs) needs the values below."
       },
       "focuser": {
         "title": "Set up your focuser",
@@ -424,7 +434,9 @@
         "notFoundHint": "If your focuser is missing, its driver may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
-        "installFailed": "Installation failed: {message}"
+        "installFailed": "Installation failed: {message}",
+        "descriptionDeviceFirst": "Pick your focuser from the list and connect it. A driver is only needed if it does not show up there. Autofocus parameters stay on the focus page.",
+        "notFoundDriverHint": "If your focuser is not in the list, select its INDI driver here. Afterwards it appears in the list above."
       },
       "filterWheel": {
         "title": "Set up your filter wheel",
@@ -438,7 +450,10 @@
         "notFoundHint": "If your filter wheel is missing, its driver may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
-        "installFailed": "Installation failed: {message}"
+        "installFailed": "Installation failed: {message}",
+        "descriptionDeviceFirst": "Pick your filter wheel from the list, connect it and give the slots the names you use. A driver is only needed if it does not show up there.",
+        "notFoundDriverHint": "If your filter wheel is not in the list, select its INDI driver here. Afterwards it appears in the list above.",
+        "noneHint": "No filter wheel? Just tap Next."
       },
       "guider": {
         "title": "Set up guiding",
@@ -466,19 +481,58 @@
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length in the guiding step.",
         "applyFailed": "Could not save: {message}",
         "nativeCamera": "PINS Native Guider",
-        "nativeCameraHint": "The native guider guides with the guide camera above, or with its built-in simulator for testing. Enter the focal length of the guide scope."
+        "nativeCameraHint": "The native guider guides with the guide camera above, or with its built-in simulator for testing. Enter the focal length of the guide scope.",
+        "descriptionNative": "The guider built into the rig keeps the stars in place while pictures are taken. Pick the guide camera and enter the focal length of the guide scope.",
+        "nativeFocalLengthMissing": "The guide scope focal length is still 0. Guiding works without it, but dithering and the guiding error in arc-seconds need it.",
+        "guidePixelSizeHintNative": "Used for this calculation only. The guider reads the pixel size from the guide camera once it is connected; until then, take it from the camera manual.",
+        "ditherMissingDataNative": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and the guide scope focal length in the guiding step.",
+        "ditherPlainHint": "Dithering shifts the picture a little between exposures, which removes noise patterns from the stacked result. The usual value is already filled in: tap \"{button}\" and you are done. Without guiding you can skip this step."
       },
       "done": {
         "title": "Your equipment is ready",
         "description": "Your rig is connected, up to date, and mount, camera, focuser, filter wheel and guiding are configured.",
         "descriptionPlain": "Mount, camera, focuser, filter wheel and your location are configured.",
         "moreDevicesHint": "Flat panel, weather and the remaining devices are configured on their own pages.",
-        "noConnectionHint": "No connection to a rig yet. You can add one under Settings → Connection at any time."
+        "noConnectionHint": "No connection to a rig yet. You can add one under Settings → Connection at any time.",
+        "summaryIntro": "This is what is set up now. Tap an entry to go back to its step.",
+        "status": {
+          "ok": {
+            "mount": "Selected",
+            "location": "Saved",
+            "telescope": "Focal length set",
+            "camera": "Selected",
+            "focuser": "Selected",
+            "filterWheel": "Selected",
+            "guider": "Selected",
+            "starDatabase": "Installed"
+          },
+          "warn": {
+            "mount": "No mount selected",
+            "location": "Missing: polar alignment and the sky atlas need it",
+            "telescope": "Focal length missing: plate solving needs it",
+            "camera": "No camera selected",
+            "starDatabase": "Not installed: plate solving cannot work"
+          },
+          "none": {
+            "focuser": "None, focus by hand",
+            "filterWheel": "None, that is fine",
+            "guider": "No guiding"
+          }
+        }
       },
       "cancel": "Cancel setup",
       "localization": {
         "title": "Set the rig regional settings",
-        "description": "Set these values before Wi-Fi so hotspot location, time and remote keyboard input match where the rig is used."
+        "description": "Set these values before Wi-Fi so hotspot location, time and remote keyboard input match where the rig is used.",
+        "localeHint": "Language and number format of the rig itself, e.g. en_US.UTF-8 or de_DE.UTF-8. C.UTF-8 is a neutral default and works too.",
+        "unappliedHint": "Not applied yet: tap \"{button}\" before Next, otherwise the changes are lost.",
+        "nothingToDoHint": "Nothing to change? Just tap Next."
+      },
+      "starDatabase": {
+        "title": "Star map for plate solving",
+        "description": "To find out where the telescope points, the rig compares a picture with a star map (\"plate solving\"). Polar alignment and centering a target need it. A fresh rig has no star map yet.",
+        "otherSolver": "Your profile uses another plate solver than ASTAP, so there is nothing to install here.",
+        "hint": "The download is large and can take a few minutes. You can tap Next meanwhile; the installation keeps running on the rig."
       }
     },
     "fileBrowser": {
@@ -731,7 +785,12 @@
         "astapDatabaseMissingJobId": "Install request succeeded but no jobId was returned.",
         "astapDatabaseJobStartedMessage": "Install job started for {databaseId}.",
         "astapDatabaseUnauthorizedStart": "Unauthorized while starting ASTAP star database install.",
-        "astapDatabaseStartFailed": "Failed to start install: {detail}"
+        "astapDatabaseStartFailed": "Failed to start install: {detail}",
+        "astapDatabaseInstalledList": "Installed: {list}",
+        "astapDatabaseNoneInstalled": "No star database is installed yet. Without one, plate solving (polar alignment, centering a target) cannot work.",
+        "astapDatabaseRecommendedTag": "recommended",
+        "astapDatabaseRecommendedFov": "Recommended for your telescope and camera (field of view {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Recommended: {id}. Enter focal length, pixel size and sensor size for a recommendation that fits your telescope."
       },
       "equipment": {
         "title": "Equipment",
@@ -823,7 +882,12 @@
     "selectDevices": {
       "deviceNotFound": "Device not found",
       "deviceNotFoundMessage": "The INDI driver was reloaded, but '{device}' did not appear. Check the power supply and select the device again.",
-      "reloadingDriver": "Reloading INDI driver…"
+      "reloadingDriver": "Reloading INDI driver…",
+      "configure": "Device settings",
+      "rescan": "Search for devices again",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "whyNotConnect": "Why can it not connect yet?"
     },
     "connectEquipment": {
       "camera": {
@@ -1063,7 +1127,8 @@
         "deleteTarget": "Delete target",
         "deleteTargetConfirm": "Delete {name} and all its exposures from the sequence?",
         "deleteExposure": "Delete exposure",
-        "deleteExposureConfirm": "Delete this exposure row from the sequence?"
+        "deleteExposureConfirm": "Delete this exposure row from the sequence?",
+        "addTargetNamed": "Add {name} as target"
       },
       "filter": "Filter",
       "triggers": "Triggers",
@@ -1498,7 +1563,8 @@
         },
         "noSync": {
           "label": "No sync"
-        }
+        },
+        "recommended": "Recommended"
       },
       "control": {
         "park": "Park",
@@ -4899,7 +4965,18 @@
         "help_log_error": "When enabled, a log file will be created with the polar alignment error adjustments and continuous errors after each adjustment."
       },
       "error_modal": {},
-      "tppa": "TPPA"
+      "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "Polar alignment cannot start",
+        "refused": "The rig refused to start the polar alignment",
+        "noLocation": "The rig does not know its location. Set latitude and longitude first, the calculation depends on them.",
+        "noDatabase": "No star map is installed, so no picture can be plate solved. Install one and start again.",
+        "notSent": "The start did not reach the rig. Check the connection and tap Start again."
+      },
+      "trackingOffAfterStop": "Polar alignment switched tracking off when it stopped.",
+      "resumeTracking": "Turn tracking back on",
+      "goodEnoughHint": "A total error below 1′ (one arc minute) is good. Once it is reached, stop the alignment.",
+      "tabSimple": "Polar alignment"
     },
     "slewAndCenter": {
       "title": "Slew and Center",
@@ -4924,7 +5001,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "Deviation to the target:"
-      }
+      },
+      "failed": "Slew or centering failed",
+      "centeredTitle": "Target centered",
+      "centered": "The target is in the middle of the picture.",
+      "centeredNamed": "{name} is in the middle of the picture."
     },
     "filterwheel": {
       "title": "Filter Wheel",
@@ -5594,13 +5675,15 @@
           "description": "A cooled sensor gives cleaner pictures. Cooling takes about 10 minutes, so start it early – you can carry on with the next steps meanwhile.",
           "targetTemp": "Target temperature (°C)",
           "start": "Cool to {temp} °C",
-          "failed": "Cooling could not be started"
+          "failed": "Cooling could not be started",
+          "warmingSummary": "Warming up · {temp}"
         },
         "mount": {
           "title": "Get the mount ready",
           "description": "The mount has to be unparked and follow the sky (tracking) before it can point at a target.",
           "action": "Unpark and start tracking",
-          "trackingFailed": "Tracking could not be switched on"
+          "trackingFailed": "Tracking could not be switched on",
+          "trackingOffAfterPolar": "Polar alignment switched tracking off. Tap the button to turn it back on."
         },
         "polar": {
           "title": "Polar alignment",
@@ -5614,7 +5697,8 @@
           "howSearch": "Search for the object or tap it in the sky.",
           "howSlew": "Tap “{button}” to go there. With automatic centering off, the button says “{slew}”.",
           "howPlan": "Tap “{button}” to put it into your plan.",
-          "autoCenter": "Center the target automatically with a picture (recommended)"
+          "autoCenter": "Center the target automatically with a picture (recommended)",
+          "centeredSummary": "✓ {name} centered"
         },
         "focus": {
           "title": "Focus",
@@ -5624,7 +5708,10 @@
           "manualHint": "No motor focuser connected: open the camera, take pictures in a loop and turn the focuser until the stars are as small as possible.",
           "manual": "Open the camera",
           "lastRun": "Last autofocus at {time}",
-          "lastFailed": "Last autofocus at {time} failed – check that stars are visible and try again"
+          "lastFailed": "Last autofocus at {time} failed – check that stars are visible and try again",
+          "pointAtStars": "Point the telescope at stars (sky atlas)",
+          "setupFirst": "Before the first autofocus with this telescope, set it up once: the assistant measures your focuser and camera and finds settings that work. Without it the autofocus often fails.",
+          "setup": "Set up autofocus"
         },
         "guide": {
           "title": "Start guiding",
@@ -5651,14 +5738,14 @@
           "watch": "Watch the pictures come in",
           "start": "Start taking pictures",
           "stop": "Stop taking pictures",
-          "summary": "{targets} target(s), done at about {time}",
-          "summaryDone": "{targets} target(s), all pictures taken",
+          "summary": "{targets} target, done at about {time} | {targets} targets, done at about {time}",
+          "summaryDone": "{targets} target, all pictures taken | {targets} targets, all pictures taken",
           "confirmStartTitle": "Start taking pictures?",
-          "confirmStartMessage": "The plan with {targets} target(s) starts now and takes about {remaining}. The mount may move.",
+          "confirmStartMessage": "The plan with {targets} target starts now and takes about {remaining}. The mount may move. | The plan with {targets} targets starts now and takes about {remaining}. The mount may move.",
           "confirmStopTitle": "Stop taking pictures?",
           "confirmStopMessage": "The current picture is cancelled. You can start the plan again later.",
           "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
-          "summaryEmpty": "{targets} target(s), no pictures planned yet"
+          "summaryEmpty": "{targets} target, no pictures planned yet | {targets} targets, no pictures planned yet"
         },
         "end": {
           "title": "End the night",
@@ -5721,7 +5808,19 @@
         "planRunning": "Your plan is taking pictures – new ones appear here as they come in.",
         "justNow": "just now",
         "minutesAgo": "{minutes} min ago"
-      }
+      },
+      "setupChecks": {
+        "title": "Before your first night",
+        "locationTitle": "Your location is missing",
+        "locationText": "The rig does not know where it stands. Polar alignment and the sky atlas cannot work without it.",
+        "locationAction": "Set location",
+        "databaseTitle": "No star map installed",
+        "databaseText": "Polar alignment and centering a target compare a picture with a star map. The rig has none yet.",
+        "databaseAction": "Install star map",
+        "blockedPolar": "Polar alignment cannot work yet, see \"Before your first night\" above.",
+        "blockedTarget": "Centering cannot work yet: no star map is installed, see \"Before your first night\" above."
+      },
+      "backToNight": "Back to your night"
     }
   },
   "plugins": {

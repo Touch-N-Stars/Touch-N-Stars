@@ -99,6 +99,8 @@
 
               <WizardGuiderStep v-else-if="currentStep.id === 'guider'" />
 
+              <WizardStarDatabaseStep v-else-if="currentStep.id === 'starDatabase'" />
+
               <WizardDitherStep v-else-if="currentStep.id === 'dither'" />
 
               <!-- Done -->
@@ -107,12 +109,9 @@
                   {{ t('components.setupWizard.done.title') }}
                 </h2>
                 <p class="text-sm text-content-muted">
-                  {{
-                    store.isPINS
-                      ? t('components.setupWizard.done.description')
-                      : t('components.setupWizard.done.descriptionPlain')
-                  }}
+                  {{ t('components.setupWizard.done.summaryIntro') }}
                 </p>
+                <WizardDoneSummary v-if="store.isBackendReachable" @go="goToStep" />
                 <p class="text-sm text-content-faint">
                   {{ t('components.setupWizard.done.moreDevicesHint') }}
                 </p>
@@ -194,6 +193,8 @@ import WizardFocuserStep from './steps/WizardFocuserStep.vue';
 import WizardFilterWheelStep from './steps/WizardFilterWheelStep.vue';
 import WizardGuiderStep from './steps/WizardGuiderStep.vue';
 import WizardDitherStep from './steps/WizardDitherStep.vue';
+import WizardStarDatabaseStep from './steps/WizardStarDatabaseStep.vue';
+import WizardDoneSummary from './WizardDoneSummary.vue';
 
 const emit = defineEmits(['close']);
 
@@ -235,13 +236,16 @@ const steps = computed(() => [
   // Telescope before camera on purpose: the camera step's image-scale readout
   // needs TelescopeSettings.FocalLength to be set.
   step('telescope'),
-  // Guiding runs through PHD2, which is only reachable on PINS. It needs a
+  // Guiding (PINS' built-in guider, or PHD2) is only reachable on PINS. It needs a
   // connected mount, and it has to come before the camera step: once the imaging
   // camera is connected, PHD2 can no longer scan for the guide camera.
   ...(store.isPINS ? [step('guider')] : []),
   step('camera'),
   step('focuser'),
   step('filterWheel'),
+  // The star database the rig plate-solves with: after the camera, so the recommendation can
+  // use focal length and sensor geometry. Installed through the PINS daemon.
+  ...(store.isPINS ? [step('starDatabase')] : []),
   // Dither last: the calculator needs the imaging camera and telescope values as
   // well as the guide setup from the steps above.
   ...(store.isPINS ? [step('dither')] : []),
@@ -263,9 +267,26 @@ const isLastStep = computed(() => currentStepIndex.value === steps.value.length 
 
 watch(currentStepId, (id) => settingsStore.setSetupWizardStep(id));
 
+// First run on PINS: the done step recommends the simple mode, so it starts selected. Before,
+// "All functions" was marked and a plain "Finish" landed a beginner in the full app. Later
+// runs (a new profile) keep whatever the user runs with.
+const isFirstRun = !settingsStore.setupWizard.completed;
+watch(
+  () => currentStep.value.id === 'done' && store.isPINS,
+  (atDone) => {
+    if (atDone && isFirstRun) settingsStore.preselectSimpleMode();
+  },
+  { immediate: true }
+);
+
 function goToIndex(index) {
   const target = steps.value[index];
   if (target) currentStepId.value = target.id;
+}
+
+// From the closing summary straight back to a step with a gap.
+function goToStep(id) {
+  if (steps.value.some((entry) => entry.id === id)) currentStepId.value = id;
 }
 
 function nextStep() {
@@ -285,6 +306,8 @@ function cancel() {
 }
 
 function finish() {
+  // Finishing with the preselection shown is a choice too.
+  if (store.isPINS) settingsStore.setSimpleModeEnabled(simpleModeChoice.value);
   settingsStore.completeSetupWizard(store.profileInfo?.Id);
   if (store.isPINS && simpleModeChoice.value) router.push('/start');
   emit('close');

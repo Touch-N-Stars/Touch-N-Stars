@@ -5,7 +5,11 @@
         {{ t('components.setupWizard.guider.title') }}
       </h2>
       <p class="text-sm text-content-muted mt-1">
-        {{ t('components.setupWizard.guider.description') }}
+        {{
+          isNativeGuider
+            ? t('components.setupWizard.guider.descriptionNative')
+            : t('components.setupWizard.guider.description')
+        }}
       </p>
     </div>
 
@@ -18,6 +22,7 @@
           {{ t('components.setupWizard.guider.guideCamera') }}
         </span>
         <selectDevices
+          labeledConnect
           apiAction="guideCameraAction"
           :deviceName="$t('components.connectEquipment.guideCamera.name')"
           :default-device-id="store.profileInfo?.GuideCameraSettings?.Id"
@@ -54,6 +59,7 @@
         {{ t('components.setupWizard.guider.connectDevice') }}
       </span>
       <selectDevices
+        labeledConnect
         apiAction="guiderAction"
         :deviceName="$t('components.connectEquipment.guider.name')"
         :default-device-id="store.profileInfo?.GuiderSettings?.GuiderName"
@@ -83,6 +89,10 @@
       <NativeSettingsSheet :names="NATIVE_WIZARD_SETTINGS" compact />
       <p class="text-xs text-content-faint">
         {{ t('components.setupWizard.guider.nativeCameraHint') }}
+      </p>
+      <!-- Guiding runs without it, which is why it stayed at 0 in the lay-user test -->
+      <p v-if="nativeFocalLengthMissing" class="text-xs text-status-warn">
+        {{ t('components.setupWizard.guider.nativeFocalLengthMissing') }}
       </p>
     </div>
 
@@ -128,15 +138,19 @@ import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { useSettingsStore } from '@/store/settingsStore';
+import apiService from '@/services/apiService';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import selectGuiderCam from '@/components/guider/PHD2/selectGuiderCam.vue';
 import Phd2FocalLength from '@/components/guider/PHD2/pins/Phd2FocalLength.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
-import { DEVICE_MAP, phd2ConnectBlockers } from '@/utils/equipmentDevices';
+import { DEVICE_MAP, phd2ConnectBlockers, setProfileDevice } from '@/utils/equipmentDevices';
 import {
   NATIVE_WIZARD_SETTINGS,
+  NATIVE_GUIDER_ID,
   isNativeGuiderInUse,
   usesGuideCameraSlot,
 } from '@/utils/nativeGuider';
@@ -146,6 +160,10 @@ const NativeSettingsSheet = defineAsyncComponent(
   () => import('@/components/guider/native/NativeSettingsSheet.vue')
 );
 const GUIDE_CAMERA = DEVICE_MAP.guideCameraAction;
+const nativeGuiderStore = useNativeGuiderStore();
+const settingsStore = useSettingsStore();
+// The wizard store flag flips at the end, so read it before: true only on the first run.
+const isFirstRun = !settingsStore.setupWizard.completed;
 
 const { t } = useI18n();
 const store = apiStore();
@@ -182,11 +200,39 @@ const phd2Blockers = computed(() =>
 const isGuiderConnectDisabled = computed(() => phd2Blockers.value.length > 0);
 const guiderDisabledMessage = computed(() => phd2Blockers.value.map((key) => t(key)).join(' '));
 
+const nativeFocalLengthMissing = computed(() => {
+  if (!isNativeGuider.value || !nativeGuiderStore.settings.length) return false;
+  const focal = nativeGuiderStore.settings.find((s) => s.name === 'FocalLengthMm');
+  return focal !== undefined && !(Number(focal.value) > 0);
+});
+
+// PINS ships its own guider, and with Alpaca cameras PHD2 does not even find the guide camera
+// (its list only offers "manual via VNC"). On a first run without a deliberate guider choice
+// the built-in one starts selected. A profile that already uses PHD2 on purpose is left alone:
+// a fresh NINA profile has no guider, or the PHD2 default nobody picked yet. A fresh PINS
+// profile stores "PHD2", which PINS then lists as "PHD2 (OFFLINE)" - not a device anyone chose.
+const UNCHOSEN_GUIDERS = ['', 'No_Guider', 'PHD2', 'PHD2_Single'];
+async function preselectNativeGuider() {
+  if (!store.isPINS || !isFirstRun || store.guiderInfo?.Connected) return;
+  const current = store.profileInfo?.GuiderSettings?.GuiderName ?? '';
+  if (!UNCHOSEN_GUIDERS.includes(current)) return;
+  try {
+    const response = await apiService.guiderAction('list-devices');
+    const list = Array.isArray(response?.Response) ? response.Response : [];
+    if (!list.some((d) => d?.Id === NATIVE_GUIDER_ID)) return;
+    await setProfileDevice('guiderAction', NATIVE_GUIDER_ID);
+    await apiService.guiderAction('rescan');
+  } catch (error) {
+    console.warn('[PinsWizard] Preselecting the native guider failed:', error);
+  }
+}
+
 onMounted(async () => {
   // The wizard can open over any route, so the profile may be stale or unread.
   // Fetch it first, then reload the device list - selectDevices only resolves
   // its preselection once defaultDeviceId is current.
   await store.fetchProfilInfos();
+  await preselectNativeGuider();
   equipmentStore.triggerReload();
 });
 </script>

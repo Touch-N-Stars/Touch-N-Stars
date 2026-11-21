@@ -21,6 +21,22 @@
       </button>
     </div>
 
+    <!-- What is there already: plate solving fails within milliseconds without any database,
+         and nothing else in the app says why. -->
+    <p v-if="installed.length" class="flex items-center gap-2 text-xs text-status-ok">
+      <span class="tns-dot bg-status-ok"></span>
+      {{
+        $t('components.settings.plate_solver.astapDatabaseInstalledList', {
+          list: installed.map((pkg) => pkg.label || pkg.databaseId).join(', '),
+        })
+      }}
+    </p>
+    <p v-else-if="hasInstalled === false" class="text-xs text-status-warn">
+      {{ $t('components.settings.plate_solver.astapDatabaseNoneInstalled') }}
+    </p>
+
+    <p v-if="recommendationText" class="text-xs text-content-muted">{{ recommendationText }}</p>
+
     <div class="flex items-center gap-2">
       <select
         v-model="selectedDatabaseId"
@@ -35,7 +51,12 @@
           }}
         </option>
         <option v-for="pkg in packages" :key="pkg.databaseId" :value="pkg.databaseId">
-          {{ pkg.label || pkg.databaseId }} - {{ pkg.description || pkg.databaseId }}
+          {{ pkg.label || pkg.databaseId }} - {{ pkg.description || pkg.databaseId
+          }}{{
+            pkg.databaseId === recommendedId
+              ? ` (${$t('components.settings.plate_solver.astapDatabaseRecommendedTag')})`
+              : ''
+          }}
         </option>
       </select>
 
@@ -54,15 +75,6 @@
       {{
         $t('components.settings.plate_solver.astapDatabaseLastChecked', {
           value: formatCheckedAt(checkedAt),
-        })
-      }}
-    </div>
-
-    <div v-if="jobId" class="text-xs text-accent">
-      {{
-        $t('components.settings.plate_solver.astapDatabaseJobStatus', {
-          jobId,
-          status: jobStatus || $t('components.settings.plate_solver.astapDatabaseJobStarted'),
         })
       }}
     </div>
@@ -109,14 +121,18 @@ import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
 import { isAppBackgrounded } from '@/utils/appLifecycle';
 import InfoModal from '@/components/helpers/infoModal.vue';
+import { useAstapDatabases } from '@/composables/useAstapDatabases';
 
 const { t } = useI18n();
 
-const packages = ref([]);
+const astap = useAstapDatabases();
+const { installed, hasInstalled, recommendedId, fovDeg } = astap;
+// The select offers what can still be installed; installed ones are listed above it.
+const packages = astap.installable;
 const selectedDatabaseId = ref('');
-const checkedAt = ref('');
+const checkedAt = astap.checkedAt;
 
-const isLoading = ref(false);
+const isLoading = astap.loading;
 const isInstalling = ref(false);
 const jobId = ref('');
 const jobStatus = ref('');
@@ -157,6 +173,18 @@ const isProgressStalled = computed(
     progressUpdatedAt.value > 0 &&
     currentTime.value - progressUpdatedAt.value >= 30000
 );
+
+const recommendationText = computed(() => {
+  const id = recommendedId.value;
+  if (installed.value.some((pkg) => pkg.databaseId === id)) return '';
+  if (!packages.value.some((pkg) => pkg.databaseId === id)) return '';
+  return fovDeg.value
+    ? t('components.settings.plate_solver.astapDatabaseRecommendedFov', {
+        id,
+        fov: fovDeg.value.toFixed(1),
+      })
+    : t('components.settings.plate_solver.astapDatabaseRecommendedDefault', { id });
+});
 
 const installButtonLabel = computed(() => {
   if (isJobActive.value) {
@@ -284,24 +312,28 @@ async function loadPackages() {
     return;
   }
 
-  isLoading.value = true;
   try {
-    const payload = (await apiPinsService.getAstapStarDatabases()) || {};
+    await astap.refresh();
     if (isDestroyed) {
       return;
     }
 
-    const availablePackages = Array.isArray(payload.packages) ? payload.packages : [];
-    packages.value = availablePackages;
-    checkedAt.value = payload.checkedAt || '';
+    const availablePackages = packages.value;
 
+    // Preselect the database that suits the rig; after an install the installed one leaves
+    // the list and the selection empties instead of jumping to an unrelated database.
     if (!availablePackages.some((pkg) => pkg.databaseId === selectedDatabaseId.value)) {
-      selectedDatabaseId.value = availablePackages[0]?.databaseId || '';
+      selectedDatabaseId.value = availablePackages.some(
+        (pkg) => pkg.databaseId === recommendedId.value
+      )
+        ? recommendedId.value
+        : '';
     }
 
     if (!availablePackages.length) {
       setFeedback(t('components.settings.plate_solver.astapDatabaseAllInstalled'), 'info');
-    } else if (feedbackTone.value !== 'error') {
+    } else if (feedbackTone.value === 'info') {
+      // An error and the success message of an install that just finished stay readable
       setFeedback('');
     }
   } catch (error) {
@@ -312,10 +344,6 @@ async function loadPackages() {
       }),
       'error'
     );
-  } finally {
-    if (!isDestroyed) {
-      isLoading.value = false;
-    }
   }
 }
 

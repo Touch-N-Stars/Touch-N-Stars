@@ -68,14 +68,16 @@ const FOCAL_RATIO_FALLBACK = 5.0;
 
 // Same settings as settingsTelescope.vue: each field follows the profile until it is saved,
 // so values that arrive with a late poll still show up.
+const positiveOr = (fallback) => (v) => (Number(v) > 0 ? Number(v) : fallback);
+
 const telescope = useProfileSetting('TelescopeSettings-Name', { fallback: '' });
 const focal = useProfileSetting('TelescopeSettings-FocalLength', {
   fallback: FOCAL_LENGTH_FALLBACK,
-  fromProfile: (v) => v || FOCAL_LENGTH_FALLBACK,
+  fromProfile: positiveOr(FOCAL_LENGTH_FALLBACK),
 });
 const ratio = useProfileSetting('TelescopeSettings-FocalRatio', {
   fallback: FOCAL_RATIO_FALLBACK,
-  fromProfile: (v) => v || FOCAL_RATIO_FALLBACK,
+  fromProfile: positiveOr(FOCAL_RATIO_FALLBACK),
 });
 const { value: telescopeName, glowClass: nameStatusClass } = telescope;
 const { value: focalLength } = focal;

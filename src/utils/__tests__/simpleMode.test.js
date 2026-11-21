@@ -11,6 +11,7 @@ const {
   nightSteps,
   currentStepId,
   endNightActions,
+  isWarmingUp,
 } = await import('@/utils/simpleMode');
 
 function snapshot(overrides = {}) {
@@ -124,6 +125,63 @@ test('cooling is read from the camera', () => {
   assert.equal(statusOf(nightSteps({ ...cam({}), marks: { cool: 'skipped' } }), 'cool'), 'skipped');
 });
 
+test('a cooler holding another temperature is no cooling in progress', () => {
+  const cam = (c) => snapshot({ camera: { connected: true, canCool: true, ...c } });
+  // Fresh profile with the simulator: holds -6 °C, target -10 °C, no ramp
+  const holding = {
+    coolerOn: true,
+    ramping: false,
+    setPoint: -6,
+    temperature: -6,
+    targetTemp: -10,
+  };
+  assert.equal(statusOf(nightSteps(cam(holding)), 'cool'), 'open');
+  // A ramp towards the target runs
+  assert.equal(
+    statusOf(nightSteps(cam({ ...holding, ramping: true, setPoint: -8 })), 'cool'),
+    'running'
+  );
+  // Ramp done, setpoint at the target, sensor still catching up
+  assert.equal(
+    statusOf(nightSteps(cam({ ...holding, setPoint: -10, temperature: -7 })), 'cool'),
+    'running'
+  );
+  // A skip stays a skip
+  assert.equal(
+    statusOf(nightSteps({ ...cam(holding), marks: { cool: 'skipped' } }), 'cool'),
+    'skipped'
+  );
+});
+
+test('a warm-up is no cooling in progress', () => {
+  const cam = (c) => snapshot({ camera: { connected: true, canCool: true, ...c } });
+  const warming = { coolerOn: true, warming: true, targetTemp: -10, temperature: -7 };
+  // Seen after "end the night": "Cool the camera - running -7 °C -> -10 °C" came first again
+  assert.equal(statusOf(nightSteps({ ...cam(warming), marks: { end: 'done' } }), 'cool'), 'done');
+  assert.equal(statusOf(nightSteps(cam(warming)), 'cool'), 'open');
+  assert.equal(
+    statusOf(nightSteps({ ...cam(warming), marks: { cool: 'skipped', end: 'done' } }), 'cool'),
+    'skipped'
+  );
+});
+
+test('a warm-up is recognised from the camera store or the setpoint', () => {
+  const at = (setPoint, temperature, coolingState = 'holding') => ({
+    coolingState,
+    setPoint,
+    temperature,
+    targetTemp: -10,
+  });
+  assert.equal(isWarmingUp(at(-10, -10, 'warming')), true);
+  // After a reload the store has no latch: the setpoint leads the sensor upwards
+  assert.equal(isWarmingUp(at(-4, -7)), true);
+  assert.equal(isWarmingUp(at(-6, -7, 'cooling')), true);
+  // A cool-down ramp: setpoint above the target, but below the sensor
+  assert.equal(isWarmingUp(at(15, 18, 'cooling')), false);
+  assert.equal(isWarmingUp(at(-10, -10)), false);
+  assert.equal(isWarmingUp(at('NaN', -7)), false);
+});
+
 test('mount is ready when unparked and tracking', () => {
   const m = (mount) => statusOf(nightSteps(snapshot({ mount })), 'mount');
   assert.equal(m({ connected: true, parked: false, tracking: true }), 'done');
@@ -194,6 +252,31 @@ test('the current step is the first that is neither done nor skipped', () => {
   );
   assert.equal(currentStepId(focused), 'target');
   assert.equal(currentStepId([{ id: 'a', status: 'done' }]), null);
+  // Cooling runs by itself: the next open step is the one to work on
+  const cooling = nightSteps(
+    snapshot({
+      camera: { connected: true, canCool: true, coolerOn: true, temperature: 15, targetTemp: -10 },
+    })
+  );
+  assert.equal(statusOf(cooling, 'cool'), 'running');
+  assert.equal(currentStepId(cooling), 'focus');
+  // After the night was ended nothing asks for attention, not even the parked mount
+  const ended = nightSteps(
+    snapshot({
+      mount: { connected: true, parked: true, tracking: false, slewing: false },
+      marks: { end: 'done' },
+    })
+  );
+  assert.equal(statusOf(ended, 'mount'), 'open');
+  assert.equal(currentStepId(ended), null);
+  // Nothing open: the running step is the one to watch
+  assert.equal(
+    currentStepId([
+      { id: 'a', status: 'done' },
+      { id: 'b', status: 'running' },
+    ]),
+    'b'
+  );
 });
 
 test('end of night runs only what applies, sequence first and camera last', () => {
@@ -223,11 +306,11 @@ test('the newest picture wins, preview or saved', () => {
 
   assert.equal(latestPicture({ preview: null, history }).index, 1);
   assert.equal(
-    latestPicture({ preview: { url: 'blob:x', atMs: t0505 + 1000 }, history }).source,
+    latestPicture({ preview: { url: 'blob:x', atMs: t0505 + 60000 }, history }).source,
     'preview'
   );
   assert.equal(
-    latestPicture({ preview: { url: 'blob:x', atMs: t0505 - 1000 }, history }).source,
+    latestPicture({ preview: { url: 'blob:x', atMs: t0505 - 60000 }, history }).source,
     'history'
   );
   assert.equal(
@@ -237,6 +320,42 @@ test('the newest picture wins, preview or saved', () => {
   assert.equal(latestPicture({ preview: null, history: [] }), null);
   // A deleted newest picture falls back to the one before
   assert.equal(latestPicture({ preview: null, history, isDeleted: (_, i) => i === 1 }).index, 0);
+});
+
+test('a preview and a saved picture of the same frame show the saved one', () => {
+  const history = [shot('2026-11-20T21:05:00Z', { TargetName: 'M 31', ExposureTime: 10 })];
+  const t0505 = Date.parse('2026-11-20T21:05:00Z');
+  // A plan frame arrives as preview a few seconds after it was saved
+  const same = latestPicture({ preview: { url: 'blob:x', atMs: t0505 + 3000 }, history });
+  assert.equal(same.source, 'history');
+  assert.equal(same.entry.TargetName, 'M 31');
+  // The rig's clock is off by an hour; the arrival time on this device decides
+  const arrived = Date.now();
+  assert.equal(
+    latestPicture({
+      preview: { url: 'blob:x', atMs: arrived + 2000 },
+      history,
+      historyArrivedAtMs: arrived,
+    }).source,
+    'history'
+  );
+  assert.equal(
+    latestPicture({
+      preview: { url: 'blob:x', atMs: arrived + 120000 },
+      history,
+      historyArrivedAtMs: arrived,
+    }).source,
+    'preview'
+  );
+  // A test picture right after the last plan frame is still the test picture
+  assert.equal(
+    latestPicture({
+      preview: { url: 'blob:x', atMs: arrived + 8000, own: true },
+      history,
+      historyArrivedAtMs: arrived,
+    }).source,
+    'preview'
+  );
 });
 
 test('the HFR trend keeps the last pictures with a usable HFR, oldest first', () => {

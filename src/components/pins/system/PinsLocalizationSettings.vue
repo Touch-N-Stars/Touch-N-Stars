@@ -35,6 +35,9 @@
               {{ value }}
             </option>
           </select>
+          <span v-if="embedded" class="text-xs text-content-faint">
+            {{ t('components.setupWizard.localization.localeHint') }}
+          </span>
         </label>
 
         <label class="flex flex-col gap-1">
@@ -110,6 +113,21 @@
           {{ t('components.settings.localization.saved') }}
         </span>
       </div>
+
+      <!-- Setup assistant: say whether "Next" alone is enough. Unapplied changes are lost. -->
+      <p
+        v-if="embedded"
+        class="text-xs"
+        :class="isDirty ? 'text-status-warn' : 'text-content-faint'"
+      >
+        {{
+          isDirty
+            ? t('components.setupWizard.localization.unappliedHint', {
+                button: t('components.settings.localization.save'),
+              })
+            : t('components.setupWizard.localization.nothingToDoHint')
+        }}
+      </p>
     </template>
 
     <p v-if="errorMessage" class="text-sm text-status-danger break-words">

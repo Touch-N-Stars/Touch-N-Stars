@@ -5,29 +5,19 @@
         {{ t('components.setupWizard.filterWheel.title') }}
       </h2>
       <p class="text-sm text-content-muted mt-1">
-        {{ t('components.setupWizard.filterWheel.description') }}
+        {{ t('components.setupWizard.filterWheel.descriptionDeviceFirst') }}
       </p>
     </div>
 
-    <!-- 1. INDI driver. PINS only: the driver list comes from the plugin's
-         indi/* routes, which a plain NINA backend does not serve. -->
-    <IndiDriverSelect
-      v-if="store.isPINS"
-      ref="driverSelect"
-      deviceType="filterwheel"
-      settingPath="FilterWheelSettings-IndiDriver"
-      listAction="filterAction"
-      rescanKey="filter"
-      profileSection="FilterWheelSettings"
-      :label="t('components.setupWizard.filterWheel.selectDriver')"
-    />
-
-    <!-- 2. Device + connect -->
+    <!-- 1. Device + connect. Alpaca and natively supported devices show up without an
+         INDI driver; the driver is behind "not listed?" (like the camera step), so a
+         beginner is not met with "INDI DRIVER" first. -->
     <div class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.filterWheel.connectDevice') }}
       </span>
       <selectDevices
+        labeledConnect
         apiAction="filterAction"
         :deviceName="$t('components.connectEquipment.filter.name')"
         :default-device-id="store.profileInfo?.FilterWheelSettings?.Id"
@@ -48,6 +38,10 @@
         }}
       </p>
     </div>
+
+    <p v-if="!store.filterInfo?.Connected" class="text-xs text-content-faint">
+      {{ t('components.setupWizard.filterWheel.noneHint') }}
+    </p>
 
     <!-- 3. Slot count. Hides itself for INDI and Alpaca wheels, which report
          their slots themselves. -->
@@ -79,7 +73,7 @@
       />
     </div>
 
-    <!-- 5. Filter wheel not found -> 3rd party driver. PINS only: the packages
+    <!-- 5. Filter wheel not listed -> INDI driver or a 3rd party driver. PINS only: the packages
          come from the daemon on port 8000. -->
     <button v-if="store.isPINS" class="tns-btn-secondary" @click="toggleNotFound">
       <ChevronDownIcon
@@ -90,6 +84,20 @@
     </button>
 
     <div v-if="store.isPINS && showNotFound" class="flex flex-col gap-3">
+      <p class="text-sm text-content-muted">
+        {{ t('components.setupWizard.filterWheel.notFoundDriverHint') }}
+      </p>
+
+      <IndiDriverSelect
+        ref="driverSelect"
+        deviceType="filterwheel"
+        settingPath="FilterWheelSettings-IndiDriver"
+        listAction="filterAction"
+        rescanKey="filter"
+        profileSection="FilterWheelSettings"
+        :label="t('components.setupWizard.filterWheel.selectDriver')"
+      />
+
       <p class="text-sm text-content-muted">
         {{ t('components.setupWizard.filterWheel.notFoundHint') }}
       </p>
@@ -149,7 +157,10 @@ const showFilterSettings = ref(false);
 const selectedFilterDevice = ref('');
 const selectedFilterObj = ref(null);
 
-const showNotFound = ref(false);
+// Open from the start when the profile already uses an INDI driver, so it stays visible.
+const showNotFound = ref(
+  !['', 'None', undefined, null].includes(store.profileInfo?.FilterWheelSettings?.IndiDriver)
+);
 
 const filters = computed(() => store.profileInfo?.FilterWheelSettings?.FilterWheelFilters ?? []);
 

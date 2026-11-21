@@ -26,11 +26,13 @@ entries — read them before reordering. The load-bearing ones:
 - **Guiding after mount and before camera**, because PHD2 needs a connected
   mount, and once the imaging camera is connected PHD2 can no longer scan for
   the guide camera.
+- **Star database after the camera** (PINS only), because its recommendation
+  (`src/utils/astapDatabases.js`) needs focal length, pixel size and sensor size.
 - **Dither last**, as its own step, because the calculator needs the imaging
   camera and telescope values as well as the guide setup.
 
 PINS-only steps (`localization`, `wifi`, `updates`, `slewRate`, `guider`,
-`dither`) are
+`starDatabase`, `dither`) are
 spliced in conditionally, which is why **steps are tracked by id, not by index**
 (`currentStepId`): the list grows underneath the user when `isPINS` flips.
 A persisted id that no longer exists falls back to index 0 rather than rendering
@@ -49,6 +51,12 @@ a profile added in the profile manager. Criteria live in
 `src/utils/setupWizardProfile.js`. Equipment is read from `profileInfo`, not
 `existingEquipmentList`: `clearAllStates()` empties that list on every
 transient connection loss while the profile stays.
+
+## Leaving a step saves
+
+The location step writes pending coordinates in `onBeforeUnmount` (steps unmount on
+Next/Back), so "Next" without "Save location" no longer leaves the profile at 0/0.
+A new step with an edit buffer should do the same rather than rely on a save button.
 
 ## z-index staffing
 

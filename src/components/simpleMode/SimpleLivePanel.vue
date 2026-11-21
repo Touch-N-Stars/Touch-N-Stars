@@ -53,7 +53,9 @@
     </button>
 
     <div class="p-3 flex flex-col gap-3">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+      <!-- lg: the panel only gets half the page next to the night steps, too narrow for four
+           tiles ("SHARPNESS (HFR)" was cut off on a 1024 px tablet) -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2">
         <div v-for="tile in tiles" :key="tile.key" class="tns-stat-tile">
           <span class="tns-stat-label">{{ tile.label }}</span>
           <span class="tns-stat-value">{{ tile.value }}</span>
@@ -202,12 +204,42 @@ function awaitPreviewStars(attempt = 0) {
 }
 onBeforeUnmount(() => clearTimeout(starStatsTimer));
 
+// When the newest saved picture appeared here, on this device's clock like previewAtMs.
+// Entries that were there when the page opened keep null (their own date then counts).
+const historyArrivedAtMs = ref(null);
+watch(
+  () => (Array.isArray(store.imageHistoryInfo) ? store.imageHistoryInfo.length : 0),
+  (length, previous) => {
+    if (previous !== undefined && length > previous) historyArrivedAtMs.value = Date.now();
+  },
+  { immediate: true }
+);
+
+// A test picture is one this panel asked for; everything else that lands in the camera's
+// preview (plan frames, plate solves of polar alignment and centering) is not.
+const ownCapture = ref(null);
+const OWN_CAPTURE_SLACK_MS = 60000;
+
+const previewIsOwn = computed(() => {
+  const own = ownCapture.value;
+  if (!own || !imageStore.imageData) return false;
+  const delay = previewAtMs.value - own.atMs;
+  return delay >= 0 && delay <= own.exposure * 1000 + OWN_CAPTURE_SLACK_MS;
+});
+
 const picture = computed(() =>
   latestPicture({
-    preview: imageStore.imageData ? { url: imageStore.imageData, atMs: previewAtMs.value } : null,
+    preview: imageStore.imageData
+      ? { url: imageStore.imageData, atMs: previewAtMs.value, own: previewIsOwn.value }
+      : null,
     history: store.imageHistoryInfo,
     isDeleted,
+    historyArrivedAtMs: historyArrivedAtMs.value,
   })
+);
+
+const previewIsTestPicture = computed(
+  () => previewIsOwn.value && picture.value?.source === 'preview'
 );
 
 // Saved pictures are fetched by index; one at a time, the newest request wins.
@@ -283,12 +315,13 @@ const caption = computed(() => {
   const s = stats.value;
   const parts = [];
   const name = s.TargetName && s.TargetName !== 'Snapshot' ? s.TargetName : '';
-  if (picture.value?.source === 'preview' || s.ImageType === 'SNAPSHOT') {
+  if (previewIsTestPicture.value || s.ImageType === 'SNAPSHOT') {
     parts.push(t('components.simpleMode.live.preview'));
   }
   if (name) parts.push(name);
-  const exposure =
-    picture.value?.source === 'history' ? num(s.ExposureTime) : num(exposureTime.value);
+  // The test picture's exposure is the one picked here; any other preview only says its own
+  // exposure if the statistics carry it - the picker value would be a guess.
+  const exposure = previewIsTestPicture.value ? ownCapture.value.exposure : num(s.ExposureTime);
   if (exposure !== null) parts.push(`${exposure} s`);
   if (s.Filter) parts.push(s.Filter);
   return parts.join(' · ');
@@ -310,15 +343,21 @@ const ago = computed(() => {
 const TREND_W = 300;
 const TREND_H = 48;
 const series = computed(() => hfrSeries(store.imageHistoryInfo, 30, isDeleted));
+// The vertical scale spans at least this much HFR. Scaled to the data alone, 1.392 and 1.388
+// filled the whole height and read as a steep change while the label said "1.39 - 1.39".
+const TREND_MIN_SPAN = 0.5;
 const trendBounds = computed(() => {
   const values = series.value.map((p) => p.hfr);
   const min = Math.min(...values);
   const max = Math.max(...values);
-  return { min, max, span: max - min || 1 };
+  const span = Math.max(max - min, TREND_MIN_SPAN);
+  // Centre a widened scale on the data, so a steady series draws a flat line in the middle
+  const bottom = (min + max) / 2 - span / 2;
+  return { min, max, bottom, span };
 });
 const trendPoints = computed(() => {
   const points = series.value;
-  const { min, span } = trendBounds.value;
+  const { bottom: min, span } = trendBounds.value;
   const pad = 4;
   return points
     .map((p, i) => {
@@ -338,6 +377,7 @@ const trendRange = computed(() => {
 const showFull = ref(false);
 
 function takeTestPicture() {
+  ownCapture.value = { atMs: Date.now(), exposure: exposureTime.value };
   cameraStore.capturePhoto(
     apiService,
     exposureTime.value,

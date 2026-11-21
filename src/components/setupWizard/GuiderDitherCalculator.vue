@@ -1,5 +1,14 @@
 <template>
   <div class="flex flex-col gap-3">
+    <!-- The calculation below is precise but technical; this is all a beginner needs. Only
+         with a result: without one there is no "apply" button to point at. -->
+    <p v-if="ditherGuidePixels" class="rounded-control bg-surface-2 p-3 text-sm text-content">
+      {{
+        t('components.setupWizard.guider.ditherPlainHint', {
+          button: t('components.setupWizard.guider.ditherApply'),
+        })
+      }}
+    </p>
     <!-- Desired dither, expressed the way the common recommendations are:
          in pixels of the imaging camera. -->
     <NumberInputPicker
@@ -31,7 +40,11 @@
         inputId="wizard-guide-pixel-size"
       />
       <p class="text-xs text-content-faint">
-        {{ t('components.setupWizard.guider.guidePixelSizeHint') }}
+        {{
+          native
+            ? t('components.setupWizard.guider.guidePixelSizeHintNative')
+            : t('components.setupWizard.guider.guidePixelSizeHint')
+        }}
       </p>
     </template>
 
@@ -93,7 +106,11 @@
     </div>
 
     <p v-else class="text-sm text-content-muted">
-      {{ t('components.setupWizard.guider.ditherMissingData') }}
+      {{
+        native
+          ? t('components.setupWizard.guider.ditherMissingDataNative')
+          : t('components.setupWizard.guider.ditherMissingData')
+      }}
     </p>
 
     <p v-if="errorMessage" class="text-sm text-status-danger break-words">{{ errorMessage }}</p>
@@ -106,6 +123,8 @@ import { useI18n } from 'vue-i18n';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
+import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
+import { isNativeGuiderInUse } from '@/utils/nativeGuider';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { arcsecPerPixel } from '@/utils/imageScale';
 
@@ -118,6 +137,15 @@ import { arcsecPerPixel } from '@/utils/imageScale';
 const { t } = useI18n();
 const store = apiStore();
 const guiderStore = useGuiderStore();
+const nativeGuiderStore = useNativeGuiderStore();
+
+// The guider built into PINS keeps focal length, pixel size and binning in its own settings;
+// PHD2 reports them over its API. Everything else of the calculation is the same.
+const native = computed(() => isNativeGuiderInUse(store));
+function nativeSetting(name) {
+  const value = Number(nativeGuiderStore.settings.find((s) => s.name === name)?.value);
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
 
 const DEFAULT_DITHER_MAIN_PIXELS = 10;
 const GUIDE_PIXEL_SIZE_FALLBACK = 3.75;
@@ -137,13 +165,23 @@ const mainScale = computed(
 );
 
 // Guide side. Binning matters: PHD2 counts dither in binned pixels.
-const reportedGuidePixelSize = computed(() => Number(guiderStore.phd2PixelSize) || 0);
+// Native guider: its own pixel size setting (0 = the camera's), else the guide camera slot's.
+const reportedGuidePixelSize = computed(() =>
+  native.value
+    ? nativeSetting('PixelSizeUm') || Number(store.profileInfo?.GuideCameraSettings?.PixelSize) || 0
+    : Number(guiderStore.phd2PixelSize) || 0
+);
 const guidePixelSize = computed(
   () => reportedGuidePixelSize.value || Number(manualGuidePixelSize.value) || 0
 );
-const guideBinning = computed(() => Number(guiderStore.phd2CameraBinning) || 1);
+const guideBinning = computed(() =>
+  native.value ? nativeSetting('Binning') || 1 : Number(guiderStore.phd2CameraBinning) || 1
+);
+const guideFocalLength = computed(() =>
+  native.value ? nativeSetting('FocalLengthMm') : guiderStore.phd2FocalLength
+);
 const guideScale = computed(
-  () => arcsecPerPixel(guidePixelSize.value, guiderStore.phd2FocalLength, guideBinning.value) ?? 0
+  () => arcsecPerPixel(guidePixelSize.value, guideFocalLength.value, guideBinning.value) ?? 0
 );
 
 const ditherArcsec = computed(() => Number(ditherMainPixels.value) * mainScale.value);
@@ -173,12 +211,17 @@ const alreadyApplied = computed(() => profileDitherPixels.value === ditherGuideP
 // its guiding readouts in arcsec wrong, so it is worth surfacing.
 const SCALE_MISMATCH_TOLERANCE = 0.05; // 5%
 const scaleMismatch = computed(() => {
+  if (native.value) return false;
   const phd2Scale = Number(guiderStore.phd2PixelScale);
   if (!(phd2Scale > 0) || !guideScale.value) return false;
   return Math.abs(guideScale.value - phd2Scale) / phd2Scale > SCALE_MISMATCH_TOLERANCE;
 });
 
 onMounted(async () => {
+  if (native.value) {
+    await nativeGuiderStore.loadSettings();
+    return;
+  }
   // All four are only reachable in PINS and no-op elsewhere. The focal length is
   // fetched here rather than relying on a sibling component having loaded it -
   // guideScale is useless without it, and the calculator has to stand on its own.

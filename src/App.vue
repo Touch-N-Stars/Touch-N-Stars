@@ -149,7 +149,12 @@
     <!-- First-run setup wizard (cancellable) -->
     <SetupWizard v-if="showSetupWizard" @close="closeSetupWizard" />
     <!-- Error Modal -->
-    <ToastModal v-if="settingsStore.setupCompleted || store.setupCheckConnectionDone" />
+    <!-- Also while the setup assistant is open: toasts raised there (a device's "connected",
+         an error, a confirmation the assistant waits for) otherwise piled up unseen and the
+         last one popped up after "Finish", minutes late. -->
+    <ToastModal
+      v-if="settingsStore.setupCompleted || store.setupCheckConnectionDone || showSetupWizard"
+    />
     <!-- Debug Console -->
     <ConsoleViewer class="fixed top-32 right-6 z-60" v-if="settingsStore.showDebugConsole" />
     <!-- LocationSyncModal -->
@@ -356,6 +361,7 @@ import LocationSyncModal from '@/components/app/LocationSyncModal.vue';
 import { useOrientation } from '@/composables/useOrientation';
 import { useStageWindow } from '@/composables/useStageWindow';
 import { useSimpleModeLanding } from '@/composables/useSimpleModeLanding';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 import { useRoute } from 'vue-router';
 import DialogModal from '@/components/app/DialogModal.vue';
 import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
@@ -420,6 +426,7 @@ const nightSummaryStore = useNightSummaryStore();
 const flipTestStore = useMeridianFlipTestStore();
 const route = useRoute();
 useSimpleModeLanding();
+const { active: simpleModeActive } = useSimpleMode();
 
 // A flip test that ran before a reload comes back once the backend answers.
 watch(
@@ -1389,7 +1396,13 @@ onMounted(async () => {
       const data = await res.json();
       whatsNewData.value = data;
       const lastShownVersion = localStorage.getItem('tns.whatsnew.version');
-      const shouldShow = data?.version && data.version !== lastShownVersion;
+      // A first install has nothing that is "new" to its user, and the setup assistant and
+      // tutorial already came before it: the version counts as seen.
+      const firstInstall = !lastShownVersion && !settingsStore.tutorial.completed;
+      if (firstInstall && data?.version) {
+        localStorage.setItem('tns.whatsnew.version', data.version);
+      }
+      const shouldShow = !firstInstall && data?.version && data.version !== lastShownVersion;
       if (shouldShow) {
         if (!showTutorial.value && !showSetupWizard.value) {
           showWhatsNew.value = true;
@@ -1486,6 +1499,17 @@ function closeTutorial() {
   settingsStore.completeTutorial();
   releaseWhatsNew();
 }
+
+// The tutorial tours equipment, dome, flat panel, guiding, sequence and monitoring - pages the
+// simple mode does not even show in its navigation. Its home page guides by itself, so the
+// tour is skipped there (it stays available in Settings).
+watch(
+  () => showTutorial.value && simpleModeActive.value && settingsStore.setupCompleted,
+  (skip) => {
+    if (skip) closeTutorial();
+  },
+  { immediate: true }
+);
 
 function closeSetupWizard() {
   showSetupWizard.value = false;

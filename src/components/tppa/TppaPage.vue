@@ -48,6 +48,49 @@
               {{ $t('components.tppa.stop_alignment') }}
             </button>
           </div>
+
+          <!-- Why it does not get anywhere: the socket never says so itself -->
+          <div
+            v-if="problemText"
+            role="alert"
+            class="mt-3 p-3 bg-surface-2 border border-status-danger/50 rounded-card text-sm flex flex-col gap-2"
+          >
+            <p class="font-bold text-status-danger">{{ problemText.title }}</p>
+            <p class="text-content">{{ problemText.body }}</p>
+            <router-link
+              v-if="problemText.link"
+              :to="problemText.link"
+              class="tns-btn-secondary"
+              @click="emit('close')"
+            >
+              {{ problemText.linkText }}
+            </router-link>
+          </div>
+
+          <!-- NINA stops tracking together with the alignment -->
+          <div
+            v-if="trackingOffAfterRun"
+            class="mt-3 p-3 bg-surface-2 border border-status-warn/50 rounded-card text-sm flex flex-col gap-2"
+          >
+            <p class="text-content">{{ $t('components.tppa.trackingOffAfterStop') }}</p>
+            <button class="tns-btn-secondary" :disabled="trackingBusy" @click="resumeTracking">
+              {{ $t('components.tppa.resumeTracking') }}
+            </button>
+          </div>
+
+          <p
+            v-if="!tppaStore.isRunning || tppaStore.showTotalError"
+            class="mt-3 text-xs text-content-muted"
+          >
+            {{ $t('components.tppa.goodEnoughHint') }}
+          </p>
+          <router-link
+            v-if="simpleModeActive && !tppaStore.isRunning"
+            to="/start"
+            class="tns-btn-ghost w-full! mt-2"
+          >
+            {{ $t('components.simpleMode.backToNight') }}
+          </router-link>
         </div>
         <div v-if="tppaStore.currentMessage" class="mt-10">
           <div class="space-y-4">
@@ -328,10 +371,20 @@ import moveAxis from '@/components/mount/moveAxis.vue';
 import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import { timeSync } from '@/utils/timeSync';
 import { buildTppaStartMessage, unparkMountForTppa } from '@/utils/tppaStart';
+import apiService from '@/services/apiService';
+import { useLogStore } from '@/store/logStore';
+import { useAstapDatabases } from '@/composables/useAstapDatabases';
+import { useSimpleMode } from '@/composables/useSimpleMode';
+import { hasProfileLocation } from '@/utils/location';
+import { newestLogTime } from '@/utils/plateSolveLog';
+import { tppaStartBlocker, tppaValidationError } from '@/utils/tppaProblems';
 
 const tppaStore = useTppaStore();
 const store = apiStore();
 const imageStore = useImagetStore();
+const logStore = useLogStore();
+const astap = useAstapDatabases();
+const { active: simpleModeActive } = useSimpleMode();
 const startStop = ref(false);
 const isConnected = ref(false);
 const showSettings = ref(false);
@@ -460,14 +513,117 @@ function formatMessage(message) {
   }
 }
 
+// --- Problems ------------------------------------------------------------------------------
+// Newest log time (host clock) when the alignment was started; log lines after it belong to it.
+let startLogTime = null;
+
+function clearProblems() {
+  tppaStore.problem = null;
+}
+
+const problemText = computed(() => {
+  const problem = tppaStore.problem;
+  const settingsLink = (tab) => ({ path: '/settings', query: { tab } });
+  if (problem?.key === 'noLocation') {
+    return {
+      title: t('components.tppa.problem.cannotStart'),
+      body: t('components.tppa.problem.noLocation'),
+      link: settingsLink('connection'),
+      linkText: t('components.simpleMode.setupChecks.locationAction'),
+    };
+  }
+  if (problem?.key === 'noDatabase') {
+    return {
+      title: t('components.tppa.problem.cannotStart'),
+      body: t('components.tppa.problem.noDatabase'),
+      link: settingsLink('plateSolver'),
+      linkText: t('components.simpleMode.setupChecks.databaseAction'),
+    };
+  }
+  if (problem?.key === 'validation') {
+    return {
+      title: t('components.tppa.problem.refused'),
+      body: problem.detail,
+    };
+  }
+  if (problem?.key === 'notSent') {
+    return {
+      title: t('components.tppa.problem.cannotStart'),
+      body: t('components.tppa.problem.notSent'),
+    };
+  }
+  return null;
+});
+
+// NINA refuses a start it cannot run (no location) only in its log; without this the page
+// showed "running" for half a minute and then silently nothing.
+watch(
+  () => logStore.LogsInfo.logs,
+  (logs) => {
+    if (startLogTime === null || !tppaStore.isRunning) return;
+    const reason = tppaValidationError(logs, startLogTime + 1);
+    if (!reason) return;
+    tppaStore.problem = { key: 'validation', detail: reason };
+    tppaStore.setRunning(false);
+    startStop.value = false;
+    startLogTime = null;
+  }
+);
+
+// --- Tracking after the alignment -------------------------------------------------------------
+const trackingBusy = ref(false);
+const trackingOffAfterRun = computed(
+  () =>
+    tppaStore.stoppedAfterRun &&
+    !tppaStore.isRunning &&
+    store.mountInfo.Connected &&
+    !store.mountIsParked &&
+    !store.mountInfo.TrackingEnabled
+);
+async function resumeTracking() {
+  trackingBusy.value = true;
+  try {
+    await apiService.setTrackingMode(0); // 0 = sidereal
+  } finally {
+    trackingBusy.value = false;
+  }
+}
+
 async function startAlignment() {
   tppaStore.isPause = false;
+  tppaStore.stoppedAfterRun = false;
   resetErrors();
+  clearProblems();
+
+  const blocker = tppaStartBlocker({
+    hasLocation: hasProfileLocation(store.profileInfo),
+    databaseMissing: astap.missing.value,
+  });
+  if (blocker) {
+    tppaStore.problem = { key: blocker };
+    return;
+  }
+
   await unparkMountForTppa(store);
+
+  // A start sent into a closed socket was lost without a word (seen right after a stop: the
+  // page showed "running" and NINA never heard of it). Dial first, and only report "running"
+  // when the message actually went out.
+  if (!websocketService.isOpen()) {
+    try {
+      await websocketService.connect();
+    } catch (error) {
+      console.warn('TPPA socket could not be opened:', error);
+    }
+  }
 
   const message = buildTppaStartMessage(tppaStore.settings, store);
   console.log('Sending TPPA start message:', message);
-  websocketService.sendMessage(JSON.stringify(message));
+  startLogTime = newestLogTime(logStore.LogsInfo.logs);
+  if (!websocketService.sendMessage(JSON.stringify(message))) {
+    tppaStore.problem = { key: 'notSent' };
+    return;
+  }
 
   // Set running state immediately
   tppaStore.setRunning(true);
@@ -490,6 +646,8 @@ function resetErrors() {
 
 function stopAlignment() {
   console.log("Sending 'stop-alignment' to the server");
+  if (tppaStore.isRunning) tppaStore.stoppedAfterRun = true;
+  clearProblems();
   //websocketService.sendMessage('stop-alignment');
   websocketService.sendMessage(
     JSON.stringify({
@@ -539,6 +697,8 @@ onMounted(() => {
   // Load the real TPPA status from the backend on open (an alignment may have
   // been started before mount or on another client).
   tppaStore.fetchInfo();
+  // Whether a star database is there decides if a start can work at all.
+  if (store.isPINS) astap.refresh().catch(() => {});
 
   // Check initial states if there's already a current message
   if (tppaStore.currentMessage?.message?.Response?.Status) {

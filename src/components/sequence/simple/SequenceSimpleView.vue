@@ -48,7 +48,11 @@
         @click="addFirstTarget"
       >
         <PlusIcon class="w-4 h-4" />
-        {{ $t('components.sequence.simple.addTarget') }}
+        {{
+          prefillName
+            ? $t('components.sequence.simple.addTargetNamed', { name: prefillName })
+            : $t('components.sequence.simple.addTarget')
+        }}
       </button>
     </div>
 
@@ -65,8 +69,10 @@ import SimpleGlobalSection from './SimpleGlobalSection.vue';
 import SimpleStartSection from './SimpleStartSection.vue';
 import SimpleTargetCard from './SimpleTargetCard.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
+import { useFramingStore } from '@/store/framingStore';
 import { useToastStore } from '@/store/toastStore';
 import { findTargetAreaContainer } from '@/utils/sequenceTargets';
+import { degreesToDMS, degreesToHMS } from '@/utils/utils';
 import {
   FRAME_OVERHEAD_SECONDS,
   summarizeTargets,
@@ -78,6 +84,7 @@ defineEmits(['show-full']);
 
 const { t } = useI18n();
 const store = useSequenceV2Store();
+const framingStore = useFramingStore();
 const toastStore = useToastStore();
 const adding = ref(false);
 
@@ -99,10 +106,27 @@ const summary = computed(() =>
 
 const hasTargetArea = computed(() => findTargetAreaContainer(store.data) !== null);
 
+// The target the mount was last sent to from the app (sky atlas, framing). A new target starts
+// with it - before, it came up as NINA's "Deep Sky Object Instruction Set" at 00:00:00 / +00°
+// and the user had to search the object they had just centered once more.
+const prefill = computed(() => {
+  const last = framingStore.lastTarget;
+  if (!last || !Number.isFinite(last.ra) || !Number.isFinite(last.dec)) return null;
+  return {
+    ...last,
+    name: last.name || `RA ${degreesToHMS(last.ra)} Dec ${degreesToDMS(last.dec)}`,
+  };
+});
+const prefillName = computed(() => prefill.value?.name ?? '');
+
 async function addFirstTarget() {
   adding.value = true;
   try {
-    const result = await store.addDsoTarget(null);
+    let result = await store.addDsoTarget(null);
+    if (result.ok && prefill.value) {
+      const { name, ra, dec } = prefill.value;
+      result = await store.setDsoTarget(result.id, name, ra, dec, framingStore.rotationAngle);
+    }
     if (result.ok) return;
     toastStore.showToast({
       type: 'error',

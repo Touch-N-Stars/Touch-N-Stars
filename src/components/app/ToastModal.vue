@@ -36,7 +36,12 @@
   </Modal>
 
   <!-- Non-blocking Toast Notifications -->
-  <div class="fixed top-4 right-4 z-toast space-y-3 max-w-sm pointer-events-none">
+  <!-- Portrait: below the top navigation and the sub navigation. A toast over the bar caught
+       the taps meant for it, and the next tap after closing it hit the bar instead. -->
+  <div
+    class="fixed right-4 z-toast space-y-3 max-w-sm pointer-events-none"
+    :class="isLandscape ? 'top-4' : 'top-[calc(82px+var(--subnav-offset)+0.5rem)] left-4 ml-auto'"
+  >
     <transition-group name="toast-slide">
       <div
         v-if="toastStore.newMessage && !toastStore.isConfirmation && toastStore.type !== 'critical'"
@@ -87,12 +92,14 @@
 </template>
 
 <script setup>
+import { useOrientation } from '@/composables/useOrientation';
 import { computed, watch, onBeforeUnmount } from 'vue';
 import { useToastStore } from '@/store/toastStore';
 import { XMarkIcon, GlobeAltIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 
 const toastStore = useToastStore();
+const { isLandscape } = useOrientation();
 
 // Auto-close Timer
 let autoCloseTimer = null;

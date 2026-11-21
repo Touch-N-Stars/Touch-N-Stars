@@ -1,7 +1,9 @@
 <template>
+  <!-- A solid strip behind the buttons: without it the plan scrolled through the gaps between
+       them and half-covered lines ("This sequence has no targets yet") were hard to read. -->
   <div
     :class="[
-      'fixed flex flex-wrap gap-2 z-10 transition-[bottom] duration-300',
+      'fixed flex flex-wrap gap-2 z-10 transition-[bottom] duration-300 p-1.5 rounded-card bg-ground/90 backdrop-blur-sm shadow-lg',
       isLandscape
         ? 'left-(--nav-offset) max-w-[calc(100vw-var(--nav-offset))]'
         : 'left-3 max-w-[calc(100vw-0.75rem)]',

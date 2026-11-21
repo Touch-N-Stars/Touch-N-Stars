@@ -16,6 +16,7 @@
         {{ t('components.setupWizard.camera.connectDevice') }}
       </span>
       <selectDevices
+        labeledConnect
         apiAction="cameraAction"
         :deviceName="$t('components.connectEquipment.camera.name')"
         :default-device-id="store.profileInfo?.CameraSettings?.Id"

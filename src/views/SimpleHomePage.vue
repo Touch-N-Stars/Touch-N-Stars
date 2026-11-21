@@ -35,6 +35,8 @@
         </div>
 
         <div class="flex flex-col gap-4">
+          <SimpleSetupChecks />
+
           <section class="flex flex-col gap-2">
             <div class="flex items-baseline justify-between gap-2 px-1">
               <h2 class="tns-section-title">{{ $t('components.simpleMode.night.title') }}</h2>
@@ -108,8 +110,14 @@
                   v-if="!store.mountInfo.Connected"
                   messageKey="components.simpleMode.needsMount"
                 />
+                <p
+                  v-else-if="step.status !== 'done' && tppaStore.stoppedAfterRun"
+                  class="text-xs text-status-warn"
+                >
+                  {{ $t('components.simpleMode.steps.mount.trackingOffAfterPolar') }}
+                </p>
                 <button
-                  v-else-if="step.status !== 'done'"
+                  v-if="store.mountInfo.Connected && step.status !== 'done'"
                   type="button"
                   class="tns-btn-primary"
                   :disabled="busy.mount || store.mountIsSlewing"
@@ -122,6 +130,9 @@
 
               <!-- 4. Polar alignment -->
               <template v-else-if="step.id === 'polar'">
+                <p v-if="locationMissing || databaseMissing" class="text-xs text-status-warn">
+                  {{ $t('components.simpleMode.setupChecks.blockedPolar') }}
+                </p>
                 <p v-if="!focusSettled" class="text-xs text-status-warn">
                   {{ $t('components.simpleMode.focusFirst') }}
                 </p>
@@ -143,6 +154,9 @@
 
               <!-- 5. Target: picked in the sky atlas, which slews, centers and fills the plan -->
               <template v-else-if="step.id === 'target'">
+                <p v-if="databaseMissing" class="text-xs text-status-warn">
+                  {{ $t('components.simpleMode.setupChecks.blockedTarget') }}
+                </p>
                 <p v-if="!focusSettled" class="text-xs text-status-warn">
                   {{ $t('components.simpleMode.focusFirst') }}
                 </p>
@@ -182,11 +196,35 @@
 
               <!-- 6. Focus -->
               <template v-else-if="step.id === 'focus'">
+                <!-- Autofocus needs a one-time setup per telescope (step size, exposure,
+                     star detection); unset, a run tends to fail. Hocus Focus brings the
+                     assistant for it. -->
+                <div
+                  v-if="afSetupNeeded"
+                  class="flex flex-col gap-2 rounded-control border border-status-warn/40 p-3"
+                >
+                  <p class="text-sm text-content">
+                    {{ $t('components.simpleMode.steps.focus.setupFirst') }}
+                  </p>
+                  <button type="button" class="tns-btn-primary" @click="showAfSetup = true">
+                    {{ $t('components.simpleMode.steps.focus.setup') }}
+                  </button>
+                </div>
+                <!-- Focus needs stars in the picture; the target step comes later, so the way
+                     to point the telescope somewhere is offered here too. -->
+                <button
+                  v-if="store.mountInfo.Connected"
+                  type="button"
+                  class="tns-btn-secondary"
+                  @click="openAtlas"
+                >
+                  {{ $t('components.simpleMode.steps.focus.pointAtStars') }}
+                </button>
                 <template v-if="store.focuserInfo.Connected">
                   <button
                     v-if="!store.focuserAfInfo?.autofocus_running"
                     type="button"
-                    class="tns-btn-primary"
+                    :class="afSetupNeeded ? 'tns-btn-secondary' : 'tns-btn-primary'"
                     :disabled="busy.focus || !store.cameraInfo.Connected"
                     @click="startAutofocus"
                   >
@@ -378,6 +416,13 @@
       </div>
     </template>
 
+    <HfSetupAssistant
+      v-if="hfStore.available"
+      :show="showAfSetup"
+      @finished="settingsStore.markAutofocusSetUp(store.profileInfo?.Id)"
+      @close="showAfSetup = false"
+    />
+
     <SimpleEndNightModal
       :show="showEndNight"
       @close="showEndNight = false"
@@ -400,6 +445,7 @@ import { useTppaStore } from '@/store/tppaStore';
 import { useToastStore } from '@/store/toastStore';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useEquipmentStore } from '@/store/equipmentStore';
+import { useFramingStore } from '@/store/framingStore';
 import { NATIVE_GUIDER_ID, isNativeGuiderInUse } from '@/utils/nativeGuider';
 import { setProfileDevice } from '@/utils/equipmentDevices';
 import { useSimpleMode } from '@/composables/useSimpleMode';
@@ -414,11 +460,16 @@ import SimpleRigCard from '@/components/simpleMode/SimpleRigCard.vue';
 import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import SimpleStepCard from '@/components/simpleMode/SimpleStepCard.vue';
 import SimpleEndNightModal from '@/components/simpleMode/SimpleEndNightModal.vue';
+import SimpleSetupChecks from '@/components/simpleMode/SimpleSetupChecks.vue';
+import HfSetupAssistant from '@/components/focuser/hocus/HfSetupAssistant.vue';
+import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { useSimpleSetupChecks } from '@/composables/useSimpleSetupChecks';
 import {
   MARKABLE_STEPS,
   SKIPPABLE_STEPS,
   currentStepId,
   isInNight,
+  isWarmingUp,
   marksForNight,
   nightKey,
   nightSteps,
@@ -447,8 +498,11 @@ const tppaStore = useTppaStore();
 const toastStore = useToastStore();
 const nativeGuiderStore = useNativeGuiderStore();
 const equipmentStore = useEquipmentStore();
+const framingStore = useFramingStore();
+const hfStore = useHocusFocusStore();
 const { available, enabled } = useSimpleMode();
 const { allConnected, equipmentToConnect, isDeviceConnected } = useEquipmentConnection();
+const { locationMissing, databaseMissing } = useSimpleSetupChecks();
 
 // --- Night and clock -------------------------------------------------------------------
 // A local clock, not a backend poll: it rolls the night over at noon and moves the
@@ -461,6 +515,17 @@ const marks = computed(() => marksForNight(settingsStore.simpleMode?.steps, nigh
 function setMark(stepId, mark) {
   settingsStore.setSimpleModeStepMark(night.value, stepId, mark);
 }
+
+// A target centered from the app (sky atlas) is the "target" step done - the user would
+// otherwise have to mark it by hand right after the app said "target centered".
+watch(
+  () => framingStore.lastSlewResult,
+  (result) => {
+    if (result?.ok && result.centered && isInNight(result.atMs, night.value)) {
+      setMark('target', 'done');
+    }
+  }
+);
 
 const coolTemp = computed(() => {
   const value = Number(settingsStore.simpleMode?.coolTemp);
@@ -486,6 +551,22 @@ watch(
   }
 );
 watch(() => store.focuserInfo.Connected, refreshLastAutofocus);
+
+// --- Autofocus setup ---------------------------------------------------------------------
+// Offered until the assistant was finished for this profile on this device. Only with Hocus
+// Focus, which brings the assistant; same availability probe as the focus page.
+const showAfSetup = ref(false);
+watch(
+  () => [store.isPINS, store.connectionEpoch],
+  () => hfStore.checkAvailability(),
+  { immediate: true }
+);
+const afSetupNeeded = computed(
+  () =>
+    hfStore.available === true &&
+    store.focuserInfo.Connected &&
+    !settingsStore.simpleMode?.afSetupProfiles?.includes(store.profileInfo?.Id)
+);
 
 // The last-af report carries no outcome: a failed run is written too (seen with Hocus Focus).
 // The plugin's autofocus info knows how the last run ended.
@@ -588,6 +669,9 @@ const steps = computed(() =>
       connected: store.cameraInfo.Connected,
       canCool: Boolean(store.cameraInfo.Connected && store.cameraInfo.CanSetTemperature),
       coolerOn: ['cooling', 'holding'].includes(cameraStore.coolingState),
+      warming: cameraWarming.value,
+      ramping: cameraStore.coolingState === 'cooling',
+      setPoint: store.cameraInfo.TemperatureSetPoint,
       temperature: store.cameraInfo.Temperature,
       targetTemp: coolingTarget.value,
     },
@@ -626,6 +710,16 @@ const doneCount = computed(
 
 // What the camera was last told to cool to; the profile's temperature before the first run.
 const coolingTarget = computed(() => store.cameraInfo.TargetTemp ?? cameraStore.targetTemp);
+const cameraWarming = computed(
+  () =>
+    Boolean(store.cameraInfo.Connected) &&
+    isWarmingUp({
+      coolingState: cameraStore.coolingState,
+      setPoint: store.cameraInfo.TemperatureSetPoint,
+      temperature: store.cameraInfo.Temperature,
+      targetTemp: coolingTarget.value,
+    })
+);
 
 function formatTemp(value) {
   return Number.isFinite(value) ? `${value.toFixed(1)} °C` : '–';
@@ -639,11 +733,15 @@ const summaries = computed(() => {
       connected,
       total: equipmentToConnect.value.length,
     }),
-    cool: store.cameraInfo.Connected
-      ? `${formatTemp(store.cameraInfo.Temperature)} → ${formatTemp(
-          cameraStore.coolingState === 'off' ? coolTemp.value : coolingTarget.value
-        )}`
-      : '',
+    cool: !store.cameraInfo.Connected
+      ? ''
+      : cameraWarming.value
+        ? t('components.simpleMode.steps.cool.warmingSummary', {
+            temp: formatTemp(store.cameraInfo.Temperature),
+          })
+        : `${formatTemp(store.cameraInfo.Temperature)} → ${formatTemp(
+            cameraStore.coolingState === 'off' ? coolTemp.value : coolingTarget.value
+          )}`,
     mount: !store.mountInfo.Connected
       ? ''
       : store.mountIsParked
@@ -651,9 +749,7 @@ const summaries = computed(() => {
         : store.mountInfo.TrackingEnabled
           ? t('components.simpleMode.rig.tracking')
           : t('components.simpleMode.rig.notTracking'),
-    target: store.mountInfo.Connected
-      ? `RA ${store.mountInfo.RightAscensionString ?? '–'} · Dec ${store.mountInfo.DeclinationString ?? '–'}`
-      : '',
+    target: targetSummary(),
     focus:
       lastAf && isInNight(lastAfTimestamp.value, night.value)
         ? t(
@@ -670,12 +766,25 @@ const summaries = computed(() => {
   };
 });
 
+function targetSummary() {
+  const last = framingStore.lastSlewResult;
+  if (last?.ok && last.centered && last.name && isInNight(last.atMs, night.value)) {
+    return t('components.simpleMode.steps.target.centeredSummary', { name: last.name });
+  }
+  if (!store.mountInfo.Connected) return '';
+  return `RA ${store.mountInfo.RightAscensionString ?? '–'} · Dec ${store.mountInfo.DeclinationString ?? '–'}`;
+}
+
 function captureSummary() {
   const { targets, totalSeconds, doneAt } = plan.value;
   if (targets === 0) return '';
-  if (totalSeconds === 0) return t('components.simpleMode.steps.capture.summaryEmpty', { targets });
-  if (doneAt) return t('components.simpleMode.steps.capture.summary', { targets, time: doneAt });
-  return t('components.simpleMode.steps.capture.summaryDone', { targets });
+  if (totalSeconds === 0) {
+    return t('components.simpleMode.steps.capture.summaryEmpty', { targets }, targets);
+  }
+  if (doneAt) {
+    return t('components.simpleMode.steps.capture.summary', { targets, time: doneAt }, targets);
+  }
+  return t('components.simpleMode.steps.capture.summaryDone', { targets }, targets);
 }
 
 function guiderStateKey(state) {
@@ -711,6 +820,8 @@ function startCooling() {
 }
 
 const UNPARK_TIMEOUT_MS = 60000;
+// Two device polls plus slack.
+const TRACKING_TIMEOUT_MS = 8000;
 
 function makeMountReady() {
   return withBusy('mount', async () => {
@@ -724,7 +835,15 @@ function makeMountReady() {
     if (!store.mountInfo.TrackingEnabled) {
       // 0 = sidereal tracking
       const response = await apiService.setTrackingMode(0);
-      reportBackendRefusal(response, 'components.simpleMode.steps.mount.trackingFailed');
+      // ninaAPI answers "Tracking mode changed" with Success: false although tracking starts
+      // (every time with the Alpaca simulator), so the flag alone would report a failure next
+      // to a step that turns "Done". The mount's own state decides; the answer only supplies
+      // the reason when tracking really stays off.
+      if (await waitForState(() => store.mountInfo.TrackingEnabled, TRACKING_TIMEOUT_MS)) return;
+      toastBackendError(
+        isBackendRefusal(response) ? response : null,
+        'components.simpleMode.steps.mount.trackingFailed'
+      );
     }
   });
 }
@@ -794,10 +913,11 @@ function startCapture() {
   return withBusy('capture', async () => {
     const confirmed = await toastStore.showConfirmation(
       t('components.simpleMode.steps.capture.confirmStartTitle'),
-      t('components.simpleMode.steps.capture.confirmStartMessage', {
-        targets: plan.value.targets,
-        remaining: plan.value.remaining,
-      }),
+      t(
+        'components.simpleMode.steps.capture.confirmStartMessage',
+        { targets: plan.value.targets, remaining: plan.value.remaining },
+        plan.value.targets
+      ),
       t('components.simpleMode.steps.capture.start'),
       t('common.cancel')
     );

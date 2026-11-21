@@ -250,6 +250,7 @@ export const useSettingsStore = defineStore('settings', {
       enabled: false,
       coolTemp: -10,
       steps: { night: '', marks: {} },
+      afSetupProfiles: [],
     },
   }),
   getters: {
@@ -265,13 +266,29 @@ export const useSettingsStore = defineStore('settings', {
         this.simpleMode = { enabled: false, coolTemp: -10, steps: { night: '', marks: {} } };
       }
       if (!this.simpleMode.steps) this.simpleMode.steps = { night: '', marks: {} };
+      if (!Array.isArray(this.simpleMode.afSetupProfiles)) this.simpleMode.afSetupProfiles = [];
       return this.simpleMode;
     },
     setSimpleModeEnabled(enabled) {
       const mode = this._ensureSimpleMode();
       mode.enabled = Boolean(enabled);
+      mode.chosen = true;
       // The simple mode's "Plan" is the simple sequence view.
       if (mode.enabled) this.setSequenceViewMode('simple');
+    },
+    // The setup assistant recommends the simple mode on a first PINS run. A preselection, not a
+    // choice: an explicit pick (here or in Settings > Interface) is never overridden.
+    preselectSimpleMode() {
+      const mode = this._ensureSimpleMode();
+      if (mode.chosen) return;
+      mode.enabled = true;
+      this.setSequenceViewMode('simple');
+    },
+    // Profiles whose autofocus was set up with the Hocus Focus assistant. Autofocus needs that
+    // once per telescope; until then the simple mode offers the assistant before a run.
+    markAutofocusSetUp(profileId) {
+      const list = this._ensureSimpleMode().afSetupProfiles;
+      if (profileId && !list.includes(profileId)) list.push(profileId);
     },
     setSimpleModeCoolTemp(temp) {
       this._ensureSimpleMode().coolTemp = temp;

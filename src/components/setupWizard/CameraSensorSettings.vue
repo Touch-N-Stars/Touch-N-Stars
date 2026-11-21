@@ -39,8 +39,14 @@
     </template>
 
     <template v-else>
+      <!-- Without a connected camera nothing is known yet; "does not report its sensor size -
+           typical for DSLRs" read like a verdict on a camera nobody had picked. -->
       <p class="text-sm text-content-muted">
-        {{ t('components.setupWizard.camera.chipSizeManualHint') }}
+        {{
+          store.cameraInfo?.Connected
+            ? t('components.setupWizard.camera.chipSizeManualHint')
+            : t('components.setupWizard.camera.chipSizeNotConnectedHint')
+        }}
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <NumberInputPicker

@@ -6,7 +6,8 @@
       :key="`${msg.timestamp}-${index}`"
       :style="{ color: msg.color }"
     >
-      <template v-if="index === 0">
+      <!-- The spinner marks the step in progress; a finished or failed run has none. -->
+      <template v-if="index === 0 && !msg.final">
         <Spinner size="sm" class="align-middle text-content-muted" />
       </template>
       <template v-else> {{ formatTime(msg.timestamp) }} - </template>
@@ -41,6 +42,7 @@ const lastMessages = computed(() =>
       timestamp: entry.timestamp,
       message: entry.kind === 'exposure' ? t('components.tppa.capture_running') : entry.message,
       color: KIND_COLORS[entry.kind] ?? 'inherit',
+      final: entry.kind in KIND_COLORS,
     }))
 );
 </script>

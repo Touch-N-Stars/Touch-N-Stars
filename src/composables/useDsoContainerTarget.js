@@ -11,6 +11,9 @@ import {
   dsoContainerDecString,
 } from '@/utils/sequenceTargets';
 
+// Names NINA gives a DSO container before it has a target (its instruction set's type name).
+const DEFAULT_CONTAINER_NAMES = ['Deep Sky Object Instruction Set', 'DeepSkyObjectContainer'];
+
 /**
  * Target of one DSO container in the V2 sequence tree: its coordinates for display and the
  * actions that change it. Shared by the full editor's DeepSkyObjectContainerItem and the
@@ -41,9 +44,12 @@ export function useDsoContainerTarget(getItem) {
   );
   const displayPositionAngle = computed(() => Number(positionAngle.value).toFixed(2));
 
-  const targetName = computed(
-    () => parsedTarget.value?.TargetName || getItem().Target?.TargetName || getItem().Name || ''
-  );
+  // A container without a target carries NINA's type name ("Deep Sky Object Instruction Set");
+  // shown as a target name it reads like one, so the caller's "unnamed" text is used instead.
+  const targetName = computed(() => {
+    const name = parsedTarget.value?.TargetName || getItem().Target?.TargetName || getItem().Name;
+    return name && !DEFAULT_CONTAINER_NAMES.includes(name) ? name : '';
+  });
 
   const currentRaDeg = computed(() => {
     const c = coords.value;

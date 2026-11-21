@@ -51,7 +51,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import TutorialModal from '@/components/TutorialModal.vue';
@@ -71,11 +71,16 @@ const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const store = apiStore();
 const router = useRouter();
+const route = useRoute();
 const pluginStore = usePluginStore();
 
 const emit = defineEmits(['navigate']);
 
-const activeTab = ref('connection');
+// Other pages link straight to a tab with /settings?tab=<value> (e.g. the simple mode home page
+// sends a missing location to 'connection' and a missing star database to 'plateSolver').
+const LINKABLE_TABS = ['connection', 'interface', 'image', 'equipment', 'plugins', 'plateSolver'];
+const requestedTab = route.query?.tab;
+const activeTab = ref(LINKABLE_TABS.includes(requestedTab) ? requestedTab : 'connection');
 
 const subNavItems = computed(() => [
   { name: t('components.settings.tabs.connection'), value: 'connection' },

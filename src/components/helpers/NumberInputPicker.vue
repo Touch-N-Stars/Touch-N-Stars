@@ -177,6 +177,10 @@ const sentinelActive = computed(() =>
     : props.min >= -1
 );
 
+// A value that is no number at all (NINA's "NaN" for an unset double, an empty string) shows
+// as an empty field instead of a red "NaN" the picker would then append digits to.
+const hasNumber = computed(() => Number.isFinite(Number(props.modelValue)));
+
 const isDefaultValue = computed(() => {
   if (props.modelValue === null || props.modelValue === undefined) {
     return true;
@@ -205,7 +209,7 @@ const defaultPlaceholder = computed(() => {
 });
 
 const formattedValue = computed(() => {
-  if (isDefaultValue.value) {
+  if (isDefaultValue.value || !hasNumber.value) {
     return '';
   }
   if (props.decimalPlaces !== null) {
@@ -228,6 +232,8 @@ function openPicker() {
   let valueToPass;
   if (isDefaultValue.value) {
     valueToPass = knownDefault.value !== null ? knownDefault.value : props.min;
+  } else if (!hasNumber.value) {
+    valueToPass = knownDefault.value;
   } else {
     valueToPass = props.modelValue;
   }

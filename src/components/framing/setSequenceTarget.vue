@@ -24,6 +24,7 @@ import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import {
   collectDsoContainers,
+  findTargetAreaContainer,
   dsoContainerRaString,
   dsoContainerDecString,
 } from '@/utils/sequenceTargets';
@@ -108,12 +109,6 @@ async function setSequenceTarget() {
     buildCoordinateName(framingStore.RAangle, framingStore.DECangle);
   const rotation = framingStore.rotationAngle;
 
-  if (!hasSequenceLoaded.value) {
-    console.error('No sequence loaded');
-    showError(t('components.fav_target.modal_sequence_error.message'));
-    return;
-  }
-
   pendingTarget.value = {
     name,
     ra: framingStore.RAangle,
@@ -124,6 +119,11 @@ async function setSequenceTarget() {
   // Without the plugin's sequence editor there is nothing to pick a target in -- legacy
   // behaviour: the first target of the sequence is overwritten.
   if (!store.sequenceEditorAvailable) {
+    if (!hasSequenceLoaded.value) {
+      console.error('No sequence loaded');
+      showError(t('components.fav_target.modal_sequence_error.message'));
+      return;
+    }
     try {
       await apiService.sequnceTargetSet(
         name,
@@ -147,8 +147,14 @@ async function setSequenceTarget() {
   await sequenceV2Store.loadCurrent();
   const containers = collectDsoContainers(sequenceV2Store.data);
 
-  // Nothing to pick from -- create the sequence's first target without asking.
+  // Nothing to pick from -- create the sequence's first target without asking. This is also
+  // the fresh rig, whose plan is NINA's empty default sequence: the legacy sequence info says
+  // "No sequence loaded" there, but the editor's tree has a target area to fill.
   if (containers.length === 0) {
+    if (!findTargetAreaContainer(sequenceV2Store.data)) {
+      showError(t('components.fav_target.modal_sequence_error.message'));
+      return;
+    }
     await applyToNewTarget(null);
     return;
   }

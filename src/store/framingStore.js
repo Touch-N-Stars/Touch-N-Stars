@@ -23,6 +23,11 @@ export const useFramingStore = defineStore('FramingStore', {
     containerWidth: 500,
     containerHeight: 500,
     rotationAngle: 0,
+    // The target of the last slew from the app ({ name, ra, dec, atMs }), so a new plan target
+    // can start with what the mount was just sent to instead of 00:00:00 / +00°.
+    lastTarget: null,
+    // How the last slew ended ({ ok, centered, name, atMs }), for "target centered" feedback.
+    lastSlewResult: null,
     // Sky position angle of the last plate solve and the timestamp of the log
     // line it came from. rotationAngle stays the target value (the one sent to
     // the hardware); these two are the measured value. Fed by logStore.
@@ -106,17 +111,34 @@ export const useFramingStore = defineStore('FramingStore', {
         this.isSlewingAndCentering = false;
       }
     },
-    async slewAndCenterRotate(RAangle, DECangle, center, rotate) {
+    // Resolves to the backend's answer (null on a request error). The request waits for the
+    // result, so Success says whether the slew - and the centering, if asked for - worked.
+    async slewAndCenterRotate(RAangle, DECangle, center, rotate, name = '') {
       this.slewIsStopt = false;
       console.log('SlewAndCenterRotate', RAangle, DECangle);
       this.isSlewingAndCentering = true;
+      this.lastTarget = { name: name || '', ra: RAangle, dec: DECangle, atMs: Date.now() };
+      let response = null;
       try {
-        await apiService.slewAndCenter(RAangle, DECangle, center, rotate, this.rotationAngle);
+        response = await apiService.slewAndCenter(
+          RAangle,
+          DECangle,
+          center,
+          rotate,
+          this.rotationAngle
+        );
       } catch (error) {
         console.error('SlewAndCenter Error', error);
       } finally {
         this.isSlewingAndCentering = false;
       }
+      this.lastSlewResult = {
+        ok: response?.Success === true,
+        centered: Boolean(center),
+        name: name || '',
+        atMs: Date.now(),
+      };
+      return response;
     },
     async slewStop() {
       console.log('slewStop');

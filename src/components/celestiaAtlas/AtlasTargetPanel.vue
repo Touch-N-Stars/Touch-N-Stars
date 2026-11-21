@@ -160,6 +160,7 @@
         <ButtonSlewCenterRotate
           :raAngle="raDeg"
           :decAngle="decDeg"
+          :name="effectiveTargetName"
           :disabled="!hasMount || !hasValidCoordinates"
         />
         <setSequenceTarget

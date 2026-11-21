@@ -17,8 +17,9 @@
         :title="$t('components.sequence.simple.exposureEnabled')"
         @update:statusValue="store.enable(row.id, $event)"
       />
+      <!-- Without a filter wheel (and no filter in the item) the select would be empty -->
       <select
-        v-if="row.filterItem"
+        v-if="row.filterItem && (filterNames.length || row.filterName)"
         :id="`simple-filter-${row.id}`"
         class="tns-select w-auto! min-w-0 flex-1 text-sm"
         :value="row.filterName"
@@ -68,7 +69,7 @@
           <NumberInputPicker
             :modelValue="row.exposureTime"
             :label="$t('components.sequence.simple.exposureTime')"
-            :labelKey="`simple-exposure-${row.id}`"
+            :labelKey="'components.sequence.simple.exposureTime'"
             :inputId="`simple-exposure-${row.id}`"
             :min="0"
             :max="3600"
@@ -82,7 +83,7 @@
           <NumberInputPicker
             :modelValue="row.iterations"
             :label="$t('components.sequence.simple.count')"
-            :labelKey="`simple-count-${row.id}`"
+            :labelKey="'components.sequence.simple.count'"
             :inputId="`simple-count-${row.id}`"
             :min="1"
             :max="9999"
@@ -113,7 +114,7 @@
           <GainInput
             v-if="typeof row.gain === 'number'"
             :modelValue="row.gain"
-            :labelKey="`simple-gain-${row.id}`"
+            labelKey="components.sequence.items.takeExposure.gain"
             :min="0"
             :max="1000"
             @change="saveExposure('Gain', $event)"
@@ -122,7 +123,7 @@
             v-if="typeof row.offset === 'number'"
             :modelValue="row.offset"
             :label="$t('components.sequence.items.takeExposure.offset')"
-            :labelKey="`simple-offset-${row.id}`"
+            :labelKey="'components.sequence.items.takeExposure.offset'"
             :inputId="`simple-offset-${row.id}`"
             :min="-1"
             :max="1000"

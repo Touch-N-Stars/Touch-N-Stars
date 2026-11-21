@@ -70,6 +70,33 @@ export function isCooled(temperature, targetTemp) {
   return Math.abs(temperature - targetTemp) <= COOLED_TOLERANCE_C;
 }
 
+// How far the cooler's setpoint has to sit above the cooling target to count as a warm-up ramp.
+const WARM_UP_SETPOINT_MARGIN_C = 0.5;
+
+/**
+ * Whether the camera is warming up rather than cooling. The camera store knows a warm-up it
+ * started itself; after a reload, or for a warm-up started elsewhere, the setpoint gives it
+ * away. A ramp's setpoint leads the sensor: above it and above the cooling target means
+ * warming. (A cool-down ramp also starts with the setpoint above the target, but below the
+ * sensor temperature.)
+ */
+export function isWarmingUp({ coolingState, setPoint, temperature, targetTemp }) {
+  if (coolingState === 'warming') return true;
+  const sp = finiteOrNull(setPoint);
+  const temp = finiteOrNull(temperature);
+  if (sp === null || temp === null || !Number.isFinite(targetTemp)) return false;
+  return sp > targetTemp + WARM_UP_SETPOINT_MARGIN_C && sp > temp + WARM_UP_SETPOINT_MARGIN_C;
+}
+
+// The cooler is on but holds a temperature other than the target, with no ramp running: cooling
+// to the target was never started (seen with a fresh profile: the camera held -6 °C while the
+// step said "running -6 °C -> -10 °C" for good). Unknown values keep the old "running".
+function holdsOtherTemperature({ ramping, setPoint, targetTemp }) {
+  const sp = finiteOrNull(setPoint);
+  if (ramping !== false || sp === null || !Number.isFinite(targetTemp)) return false;
+  return !isCooled(sp, targetTemp);
+}
+
 function markStatus(mark) {
   return mark === 'done' || mark === 'skipped' ? mark : 'open';
 }
@@ -81,7 +108,7 @@ function markStatus(mark) {
  * @param {object} s snapshot
  * @param {boolean} s.allConnected every device of the profile is connected
  * @param {boolean} s.hasEquipment the profile has at least one device
- * @param {{ connected: boolean, canCool: boolean, coolerOn: boolean, temperature: number, targetTemp: number }} s.camera
+ * @param {{ connected: boolean, canCool: boolean, coolerOn: boolean, warming?: boolean, ramping?: boolean, setPoint?: number, temperature: number, targetTemp: number }} s.camera
  * @param {{ connected: boolean, parked: boolean, tracking: boolean, slewing: boolean }} s.mount
  * @param {{ connected: boolean, afRunning: boolean, afDoneTonight: boolean }} s.focuser
  * @param {{ inProfile: boolean, state: string }} s.guider
@@ -102,8 +129,14 @@ export function nightSteps(s) {
 
   if (s.camera?.canCool) {
     let status = markStatus(marks.cool);
-    if (s.camera.coolerOn) {
-      status = isCooled(s.camera.temperature, s.camera.targetTemp) ? 'done' : 'running';
+    if (s.camera.warming) {
+      // Warming up ends the night (or was asked for on purpose): the cooling is behind us,
+      // and a "running" step would pull the user back to the top of the list.
+      if (marks.end === 'done' && status === 'open') status = 'done';
+    } else if (s.camera.coolerOn) {
+      if (isCooled(s.camera.temperature, s.camera.targetTemp)) status = 'done';
+      else if (holdsOtherTemperature(s.camera)) status = status === 'skipped' ? 'skipped' : 'open';
+      else status = 'running';
     }
     steps.push({ id: 'cool', status });
   }
@@ -156,11 +189,19 @@ export function nightSteps(s) {
 }
 
 /**
- * The step the user should look at now: the first one that is neither done nor skipped.
- * Null once everything is through.
+ * The step the user should look at now: the first open one. A running step (cooling, an
+ * autofocus run) needs no hand and stays expanded on its own, so the highlight moves on to what
+ * can be done meanwhile - the cooling text says "carry on", and the highlight used to stay
+ * behind. Only when nothing is open does a running step count. Null once everything is through,
+ * and once the night was ended: the parked mount must not ask to be made ready again.
  */
 export function currentStepId(steps) {
-  return steps.find((step) => step.status !== 'done' && step.status !== 'skipped')?.id ?? null;
+  if (steps.find((step) => step.id === 'end')?.status === 'done') return null;
+  return (
+    steps.find((step) => step.status === 'open')?.id ??
+    steps.find((step) => step.status === 'running')?.id ??
+    null
+  );
 }
 
 /** Steps the app cannot read from the devices, so the user marks them done by hand. */
@@ -187,18 +228,28 @@ function finiteOrNull(value) {
   return Number.isFinite(n) ? n : null;
 }
 
+// A preview and a history entry that arrive this close together are the same frame: a plan
+// exposure (or a plate solve) shows up as the camera's preview and as a saved picture.
+export const SAME_SHOT_MS = 20000;
+
 /**
  * The picture the home page shows: whichever is newer of the camera's last preview (a test
  * picture, a capture on the camera page) and the newest saved picture of the image history
- * (sequence frames, saved snapshots).
+ * (sequence frames, saved snapshots). When both are the same frame, the saved picture wins:
+ * it knows its target, exposure and filter.
  *
  * @param {object} p
- * @param {{ url: string, atMs: number } | null} p.preview the preview and when it arrived
+ * @param {{ url: string, atMs: number, own?: boolean } | null} p.preview the preview, when it
+ *   arrived, and whether it is a test picture taken on the home page (never saved, so it cannot
+ *   be the same frame as a saved one)
  * @param {object[] | null} p.history store.imageHistoryInfo
  * @param {(entry: object, index: number) => boolean} [p.isDeleted] hides deleted entries
+ * @param {number|null} [p.historyArrivedAtMs] when the newest history entry showed up on this
+ *   device (browser clock, like preview.atMs); compared instead of the entry's own date, which
+ *   comes from the rig's clock
  * @returns {{ source: 'preview', atMs: number } | { source: 'history', index: number, atMs: number, entry: object } | null}
  */
-export function latestPicture({ preview, history, isDeleted = () => false }) {
+export function latestPicture({ preview, history, isDeleted = () => false, historyArrivedAtMs }) {
   let latest = null;
   const list = Array.isArray(history) ? history : [];
   for (let i = list.length - 1; i >= 0; i--) {
@@ -212,6 +263,10 @@ export function latestPicture({ preview, history, isDeleted = () => false }) {
       };
       break;
     }
+  }
+  if (preview?.url && latest && !preview.own) {
+    const historyAt = Number.isFinite(historyArrivedAtMs) ? historyArrivedAtMs : latest.atMs;
+    if (Math.abs(preview.atMs - historyAt) <= SAME_SHOT_MS) return latest;
   }
   if (preview?.url && (!latest || preview.atMs >= latest.atMs)) {
     return { source: 'preview', atMs: preview.atMs };

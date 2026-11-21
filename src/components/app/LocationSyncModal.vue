@@ -13,14 +13,18 @@
 
         <!-- Sync Options -->
         <div class="space-y-3 mb-6">
-          <!-- Sync to Telescope -->
-          <button @click="selectOption(2)" class="tns-btn-secondary justify-start! text-left!">
+          <!-- Sync to Telescope: the recommendation of the text above, so it is the primary
+               button and says so - before it looked exactly like the other two. -->
+          <button @click="selectOption(2)" class="tns-btn-primary justify-start! text-left!">
             <span
-              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-status-ok/20 text-status-ok"
+              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-white/20 text-white"
             >
               <ArrowUpIcon class="w-3.5 h-3.5" />
             </span>
-            {{ $t('components.mount.location_sync.toTelescope.label') }}
+            <span class="flex-1">{{ $t('components.mount.location_sync.toTelescope.label') }}</span>
+            <span class="text-xs font-semibold uppercase opacity-90">
+              {{ $t('components.mount.location_sync.recommended') }}
+            </span>
           </button>
 
           <!-- Sync to Application -->
