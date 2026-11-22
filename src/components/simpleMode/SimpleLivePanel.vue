@@ -17,7 +17,9 @@
     "
     :style="hero ? stageWindowStyle : undefined"
   >
-    <div v-if="hero" class="absolute inset-0 bg-surface-1">
+    <!-- No own background: the stage's ground shows, darker than the bars around it, like
+         on the camera page -->
+    <div v-if="hero" class="absolute inset-0">
       <ZoomableImage
         :imageData="pictureUrl"
         height="100%"
