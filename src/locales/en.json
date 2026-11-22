@@ -6020,7 +6020,8 @@
             "fix": "If it stays red: the cooler cannot reach the target in this warmth – choose a target a few degrees warmer."
           }
         },
-        "statusBarHint": "Guiding, focus and cooling are rated in the status bar below – tap one to see what it means."
+        "statusBarHint": "Guiding, focus and cooling are rated in the status bar below – tap one to see what it means.",
+        "stop": "Stop"
       },
       "summary": {
         "finished": {

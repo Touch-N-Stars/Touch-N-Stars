@@ -1,9 +1,9 @@
 <template>
   <!-- While the plan takes pictures. The newest picture fills the stage; a problem stands on
-       it, so a glance tells "act now". The panel holds one verdict; guiding, focus and cooling
-       are rated in the status bar below (one segment each, a tap explains it), so they are not
-       shown twice. The picture's numbers (HFR, stars, histogram) and the ways to other pages
-       wait under "Details". -->
+       it, so a glance tells "act now". The floating panel is one line: the verdict and the stop;
+       guiding, focus and cooling are rated in the status bar below (one segment each, a tap
+       explains it), so they are not shown twice. The picture's numbers (HFR, stars, histogram)
+       and the ways to other pages wait until the verdict is tapped. -->
   <SimpleLivePanel hero :details="detailsOpen">
     <template v-if="alerts.length" #top>
       <ul class="flex flex-col gap-2">
@@ -44,12 +44,12 @@
             {{ targetName || $t('components.simpleMode.cockpit.noTargetName') }}
           </span>
         </span>
-        <span v-if="caption || ago" class="block text-xs text-white/70 truncate">
+        <span v-if="caption || ago" class="block text-xs text-content-muted truncate">
           {{ [caption, ago].filter(Boolean).join(' · ') }}
         </span>
       </div>
       <div v-if="doneAt" class="shrink-0 text-right leading-tight">
-        <span class="block text-xs text-white/70">
+        <span class="block text-xs text-content-muted">
           {{ $t('components.simpleMode.cockpit.doneAt') }}
         </span>
         <span class="text-base font-semibold tabular-nums">{{ doneAt }}</span>
@@ -60,41 +60,49 @@
       <Spinner v-if="activity !== 'exposing'" size="sm" class="text-accent" />
       <CameraIcon v-else class="w-4 h-4 text-accent shrink-0" />
       <span class="flex-1 min-w-0 truncate text-xs">{{ activityText }}</span>
-      <span v-if="remaining" class="shrink-0 text-xs text-white/70">
+      <span v-if="remaining" class="shrink-0 text-xs text-content-muted">
         {{ $t('components.simpleMode.cockpit.remaining', { time: remaining }) }}
       </span>
     </template>
 
-    <!-- The verdict: does anybody need to act? -->
-    <div class="flex flex-col gap-1">
-      <p class="flex items-center gap-2 font-semibold text-content">
-        <span class="tns-dot w-3! h-3!" :class="VERDICT_DOT[verdict]"></span>
-        {{ $t(`components.simpleMode.cockpit.verdict.${verdict}`) }}
-      </p>
-      <p class="text-xs text-content-faint">
-        {{ $t('components.simpleMode.cockpit.statusBarHint') }}
-      </p>
+    <!-- One line while folded, so the picture keeps the stage on a phone: the verdict (does
+         anybody need to act?), the stop, and the verdict itself opens the details. -->
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="flex flex-1 min-w-0 items-center gap-2 min-h-touch text-left text-sm font-semibold text-content"
+        :aria-expanded="detailsOpen"
+        :title="
+          $t(
+            detailsOpen
+              ? 'components.simpleMode.cockpit.hideDetails'
+              : 'components.simpleMode.cockpit.showDetails'
+          )
+        "
+        data-haptic="none"
+        @click="detailsOpen = !detailsOpen"
+      >
+        <span class="tns-dot w-3! h-3! shrink-0" :class="VERDICT_DOT[verdict]"></span>
+        <span class="truncate">{{ $t(`components.simpleMode.cockpit.verdict.${verdict}`) }}</span>
+        <ChevronUpIcon
+          class="w-4 h-4 shrink-0 ml-auto text-content-muted transition-transform"
+          :class="detailsOpen ? 'rotate-180' : ''"
+        />
+      </button>
+      <button
+        type="button"
+        class="tns-btn-danger w-auto! shrink-0 px-3!"
+        :disabled="stopping"
+        :aria-label="$t('components.simpleMode.steps.capture.stop')"
+        @click="$emit('stop')"
+      >
+        {{ $t('components.simpleMode.cockpit.stop') }}
+      </button>
     </div>
 
-    <button
-      type="button"
-      class="flex items-center justify-between gap-2 min-h-touch -my-1 text-sm text-content-muted"
-      :aria-expanded="detailsOpen"
-      data-haptic="none"
-      @click="detailsOpen = !detailsOpen"
-    >
-      {{
-        $t(
-          detailsOpen
-            ? 'components.simpleMode.cockpit.hideDetails'
-            : 'components.simpleMode.cockpit.showDetails'
-        )
-      }}
-      <ChevronDownIcon
-        class="w-4 h-4 shrink-0 transition-transform"
-        :class="detailsOpen ? 'rotate-180' : ''"
-      />
-    </button>
+    <p v-if="detailsOpen" class="text-xs text-content-faint">
+      {{ $t('components.simpleMode.cockpit.statusBarHint') }}
+    </p>
 
     <div v-if="detailsOpen" class="grid grid-cols-2 gap-2">
       <div
@@ -111,39 +119,34 @@
       </div>
     </div>
 
-    <template #actions>
-      <template v-if="detailsOpen">
-        <div class="grid grid-cols-2 gap-2">
-          <router-link to="/seq-mon" class="tns-btn-secondary">
-            {{ $t('components.simpleMode.steps.capture.watch') }}
-          </router-link>
-          <router-link
-            :to="activity === 'autofocus' ? '/autofocus' : '/guider'"
-            class="tns-btn-secondary"
-          >
-            {{
-              activity === 'autofocus'
-                ? $t('components.simpleMode.steps.focus.watch')
-                : $t('components.simpleMode.steps.guide.details')
-            }}
-          </router-link>
-        </div>
-        <!-- The start page shows only this view while the plan runs -->
-        <h3 class="tns-section-title">{{ $t('components.simpleMode.more.title') }}</h3>
-        <div class="grid grid-cols-2 gap-2">
-          <router-link
-            v-for="link in moreLinks"
-            :key="link.to"
-            :to="link.to"
-            class="tns-btn-secondary"
-          >
-            {{ $t(link.labelKey) }}
-          </router-link>
-        </div>
-      </template>
-      <button type="button" class="tns-btn-danger" :disabled="stopping" @click="$emit('stop')">
-        {{ $t('components.simpleMode.steps.capture.stop') }}
-      </button>
+    <template v-if="detailsOpen" #actions>
+      <div class="grid grid-cols-2 gap-2">
+        <router-link to="/seq-mon" class="tns-btn-secondary">
+          {{ $t('components.simpleMode.steps.capture.watch') }}
+        </router-link>
+        <router-link
+          :to="activity === 'autofocus' ? '/autofocus' : '/guider'"
+          class="tns-btn-secondary"
+        >
+          {{
+            activity === 'autofocus'
+              ? $t('components.simpleMode.steps.focus.watch')
+              : $t('components.simpleMode.steps.guide.details')
+          }}
+        </router-link>
+      </div>
+      <!-- The start page shows only this view while the plan runs -->
+      <h3 class="tns-section-title">{{ $t('components.simpleMode.more.title') }}</h3>
+      <div class="grid grid-cols-2 gap-2">
+        <router-link
+          v-for="link in moreLinks"
+          :key="link.to"
+          :to="link.to"
+          class="tns-btn-secondary"
+        >
+          {{ $t(link.labelKey) }}
+        </router-link>
+      </div>
     </template>
   </SimpleLivePanel>
 </template>
@@ -151,7 +154,7 @@
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { CameraIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
+import { CameraIcon, ChevronUpIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import Spinner from '@/components/helpers/Spinner.vue';

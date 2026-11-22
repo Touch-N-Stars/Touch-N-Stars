@@ -3,28 +3,21 @@
        box: sharpness (HFR), stars, guiding and sensor temperature, the sharpness trend of the
        night, and a test picture one tap away.
        `hero`: while the plan runs the picture fills the stage window like on the camera page
-       (pinch to zoom, the zoom survives the next picture). The imaging cockpit fills the
-       slots: problems as banners on the picture (`top`), what the plan does on it
-       (`overlay-top`, `overlay-bottom`), its verdict in the panel below - beside it in
-       landscape - (default slot, `actions`). The numbers here then only show with `details`. -->
+       (pinch to zoom, the zoom survives the next picture), and everything else floats on it.
+       The imaging cockpit fills the slots: what the plan does in one chip at the top
+       (`overlay-top`, `overlay-bottom`, with the exposure progress), problems as banners below
+       it (`top`), its verdict in a floating panel like the camera page's capture panel - a
+       single line at the bottom - (default slot, `actions`). The
+       numbers here then only show with `details`. -->
   <section
     :class="
       hero
-        ? [
-            'fixed z-10 flex overflow-hidden rounded-[var(--stage-radius)] bg-ground',
-            isLandscape ? 'flex-row' : 'flex-col',
-          ]
+        ? 'fixed z-10 overflow-hidden rounded-[var(--stage-radius)] bg-ground'
         : 'tns-card p-0! overflow-hidden flex flex-col'
     "
     :style="hero ? stageWindowStyle : undefined"
   >
-    <!-- Portrait: the picture keeps at least 40 % of the stage; when an open status bar panel
-         shrinks the stage, the panel below gives way and scrolls instead -->
-    <div
-      v-if="hero"
-      class="relative flex-1 min-w-0 bg-black"
-      :class="isLandscape ? 'min-h-0' : 'min-h-[40%]'"
-    >
+    <div v-if="hero" class="absolute inset-0 bg-surface-1">
       <ZoomableImage
         :imageData="pictureUrl"
         height="100%"
@@ -45,36 +38,34 @@
       <!-- No loading overlay: with short exposures it would cover the picture every few
            seconds; the old picture stays until the new one is there. -->
       <!-- On top of the picture, but let pinch and pan through except where there is
-           something to tap. White on dark strips: the theme's text colours are made for
-           cards, not for pictures. -->
-      <div class="absolute top-0 inset-x-0 z-30 flex flex-col pointer-events-none">
+           something to tap. A floating chip like the camera page's controls. -->
+      <div class="absolute top-0 inset-x-0 z-30 flex flex-col gap-2 p-2 pointer-events-none">
         <div
-          v-if="$slots['overlay-top']"
-          class="flex items-start justify-between gap-3 px-3 py-2 bg-black/60 text-white text-left"
+          class="rounded-control bg-surface-1/90 shadow-lg overflow-hidden text-content text-left"
         >
-          <slot
-            name="overlay-top"
-            :caption="pictureUrl ? caption : ''"
-            :ago="pictureUrl ? ago : ''"
-          />
-        </div>
-        <div v-if="$slots.top" class="p-2 pointer-events-auto">
-          <slot name="top" />
-        </div>
-      </div>
-      <div class="absolute bottom-0 inset-x-0 z-30 pointer-events-none">
-        <div
-          v-if="$slots['overlay-bottom']"
-          class="flex items-center gap-2 px-3 py-1.5 bg-black/60 text-white text-left"
-        >
-          <slot name="overlay-bottom" />
-        </div>
-        <div class="h-1.5 bg-black/60">
           <div
-            v-if="store.cameraInfo.IsExposing"
-            class="h-full bg-accent transition-[width] duration-500"
-            :style="{ width: `${Math.min(100, Math.max(0, cameraStore.exposureProgress))}%` }"
-          ></div>
+            v-if="$slots['overlay-top']"
+            class="flex items-start justify-between gap-3 px-3 pt-2"
+          >
+            <slot
+              name="overlay-top"
+              :caption="pictureUrl ? caption : ''"
+              :ago="pictureUrl ? ago : ''"
+            />
+          </div>
+          <div v-if="$slots['overlay-bottom']" class="flex items-center gap-2 px-3 py-1.5">
+            <slot name="overlay-bottom" />
+          </div>
+          <div class="h-1 bg-surface-3">
+            <div
+              v-if="store.cameraInfo.IsExposing"
+              class="h-full bg-accent transition-[width] duration-500"
+              :style="{ width: `${Math.min(100, Math.max(0, cameraStore.exposureProgress))}%` }"
+            ></div>
+          </div>
+        </div>
+        <div v-if="$slots.top" class="pointer-events-auto">
+          <slot name="top" />
         </div>
       </div>
     </div>
@@ -129,18 +120,16 @@
       </div>
     </button>
 
-    <!-- Hero: the panel keeps its own scroll, so the picture never scrolls away. In portrait
-         it steps aside while a status bar panel is open (that one explains a quality and takes
-         half the screen): picture and explanation then share the room. -->
+    <!-- Hero: the panel floats on the picture - a single line at the bottom, across the stage
+         on a phone, in the bottom right corner on a wider screen - and only grows when the
+         verdict is tapped open. It then keeps its own scroll, so the picture never scrolls
+         away. Placed by width, not orientation: a small desktop window counts as landscape,
+         and a side column took all of its width. -->
     <div
-      v-show="!hero || isLandscape || !statusBarStore.activePanel"
       class="p-3 flex flex-col gap-3"
       :class="
         hero
-          ? [
-              'overflow-y-auto overscroll-contain bg-surface-1 border-line',
-              isLandscape ? 'w-80 lg:w-96 shrink-0 border-l' : 'min-h-0 max-h-[60%] border-t',
-            ]
+          ? 'absolute z-30 left-2 right-2 bottom-2 md:left-auto md:w-96 max-h-[65%] overflow-y-auto overscroll-contain bg-ground/70 backdrop-blur-md rounded-card border border-line shadow-lg shadow-black'
           : ''
       "
     >
@@ -293,8 +282,6 @@ import ImageModal from '@/components/helpers/imageModal.vue';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
 import SimpleHfrTrend from '@/components/simpleMode/SimpleHfrTrend.vue';
 import { useStageWindow } from '@/composables/useStageWindow';
-import { useOrientation } from '@/composables/useOrientation';
-import { useStatusBarStore } from '@/store/statusBarStore';
 import { histogramSummary, latestPicture } from '@/utils/simpleMode';
 import {
   historyEntryKey,
@@ -311,8 +298,6 @@ const props = defineProps({
 });
 const showNumbers = computed(() => !props.hero || props.details);
 const { stageWindowStyle } = useStageWindow();
-const { isLandscape } = useOrientation();
-const statusBarStore = useStatusBarStore();
 
 const { t, locale } = useI18n();
 const store = apiStore();
