@@ -4808,6 +4808,7 @@
         "gain": "Gain",
         "filter": "Filtre",
         "filter_default": "Défaut",
+        "binning": "Regroupement",
         "nina_default": "Défaut @:{'general.backendName'}",
         "ManualMode": "Mode manuel"
       },

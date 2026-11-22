@@ -4854,6 +4854,7 @@
         "gain": "게인",
         "filter": "필터",
         "filter_default": "기본값",
+        "binning": "비닝",
         "nina_default": "@:{'general.backendName'} 기본값",
         "ManualMode": "수동 모드"
       },

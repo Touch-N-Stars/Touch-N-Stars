@@ -4808,6 +4808,7 @@
         "gain": "Guadagno",
         "filter": "Filtro",
         "filter_default": "Default",
+        "binning": "Binning",
         "nina_default": "Default @:{'general.backendName'}",
         "ManualMode": "Modalità manuale"
       },
