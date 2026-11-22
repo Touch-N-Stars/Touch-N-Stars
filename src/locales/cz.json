@@ -4808,6 +4808,7 @@
         "gain": "Zesílení",
         "filter": "Filtr",
         "filter_default": "Výchozí",
+        "binning": "Binning",
         "nina_default": "@:{'general.backendName'} Výchozí",
         "ManualMode": "Manuální režim"
       },

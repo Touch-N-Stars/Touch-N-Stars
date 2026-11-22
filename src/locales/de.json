@@ -4849,6 +4849,7 @@
         "gain": "Verstärkung",
         "filter": "Filter",
         "filter_default": "Standard",
+        "binning": "Binning",
         "nina_default": "@:{'general.backendName'} Standard",
         "ManualMode": "Manuell"
       },

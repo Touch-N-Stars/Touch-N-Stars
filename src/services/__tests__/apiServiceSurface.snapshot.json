@@ -110,6 +110,7 @@
   "getFitsParameters": "function",
   "getImageData": "function",
   "getImagePrepared": "function",
+  "getLastCaptureStatistics": "function",
   "getLastLogs": "function",
   "getLensControlInfo": "function",
   "getLensControlStatus": "function",

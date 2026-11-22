@@ -4817,6 +4817,7 @@
         "gain": "ゲイン",
         "filter": "フィルター",
         "filter_default": "デフォルト",
+        "binning": "ビニング",
         "nina_default": "@:{'general.backendName'} デフォルト",
         "ManualMode": "マニュアルモード"
       },

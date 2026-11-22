@@ -4808,6 +4808,7 @@
         "gain": "Wzmocnienie",
         "filter": "Filtr",
         "filter_default": "Domyślne",
+        "binning": "Binowanie",
         "nina_default": "Domyślne @:{'general.backendName'}",
         "ManualMode": "Tryb ręczny"
       },

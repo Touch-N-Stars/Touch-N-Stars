@@ -1076,7 +1076,8 @@ async function uploadZipBlob(zipBlob, zipFileName, uploadDescription, logToken) 
 
   const res = await axios.post(url, form, {
     headers: { Authorization: `Bearer ${token}` },
-    maxBodyLength: 50 * 1024 * 1024,
+    // Matches the server's ZIP upload limit (TNS-Website ARCHIVE_LIMITS.maxUploadBytes).
+    maxBodyLength: 70 * 1024 * 1024,
   });
 
   if (res.status >= 200 && res.status < 300) {
