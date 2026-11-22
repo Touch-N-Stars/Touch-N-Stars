@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App6.6.0-beta1] - 2026-11-22
+## [App6.6.0] - 2026-11-22
 
 ### Added
 
@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Log Collector (PINS): Only the guide logs of the last three nights are included, which keeps the log bundles much smaller.
+
+### Fixed
+
+- Hocus Focus: The setup assistant and the rough focus preview now measure their frames even when saving snapshots is turned off.
 
 ## [App6.5.0] - 2026-11-17
 
