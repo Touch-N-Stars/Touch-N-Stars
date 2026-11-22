@@ -4615,8 +4615,8 @@
             "description": "Fes imatges i mou l'enfocador fins que els estels siguin petits i rodons i l'HFR sigui tan baix com sigui possible."
           },
           "measure": {
-            "title": "Mida del pas",
-            "description": "Mesura com de ràpid creixen els estels quan es mou l'enfocador i suggereix una mida del pas per a l'autoenfocament. L'enfocador es mou cap enfora en passos creixents i al final torna a la posició inicial."
+            "title": "Mida del pas i joc",
+            "description": "Mesura com de ràpid creixen els estels quan es mou l'enfocador i quants passos perd quan canvia de sentit, i suggereix una mida del pas per a l'autoenfocament i la compensació de joc de NINA. L'enfocador primer retrocedeix força perquè cada posició s'assoleixi des del mateix costat, després avança a través del focus i al final torna a la posició inicial."
           },
           "run": {
             "title": "Prova",
@@ -4672,12 +4672,14 @@
         },
         "measure": {
           "current": "Actual: mida del pas {stepSize} · {offsetSteps} punts per costat",
-          "start": "Mesura la mida del pas",
+          "start": "Mesura la mida del pas i el joc",
           "restart": "Torna a mesurar",
           "stop": "Atura",
           "phase": {
-            "reference": "Fent una imatge a la posició actual …",
-            "probe": "Movent cap enfora i fent una imatge …",
+            "scan": "Cercant el focus i mesurant com de ràpid creixen els estels …",
+            "calibrate": "Prenent imatges al costat del focus …",
+            "walkIn": "Movent cap al focus fins que els estels s'encongeixen …",
+            "walkOut": "Tornant enfora fins que els estels creixen …",
             "return": "Tornant a la posició inicial …"
           },
           "reference": "Posició inicial: HFR {hfr} px · {stars} estels",
@@ -4693,6 +4695,32 @@
             "timeout": "L'enfocador o la càmera no ha respost a temps.",
             "error": "La mesura ha fallat.",
             "returnFailed": "L'enfocador no ha pogut tornar a la posició inicial. Comprova'n la posició abans de la propera execució."
+          }
+        },
+        "backlash": {
+          "current": "Compensació actual: {model} · Joc d'entrada {backlashIn} · Joc de sortida {backlashOut}",
+          "lopsided": "La compensació de NINA està en mode Absolut amb valors diferents (entrada {backlashIn}, sortida {backlashOut}). Aleshores NINA desplaça la seva escala de posició a cada canvi de sentit, i això espatlla la mesura. Posa tots dos a 0 primer; després la mesura suggereix valors nous.",
+          "resetCompensation": "Posa el joc d'entrada i de sortida a 0",
+          "calibration": "{offset} passos des del focus: HFR {hfr} px · {stars} estels",
+          "walkIn": "{steps} passos cap a dins: HFR {hfr} px · {stars} estels",
+          "walkOut": "{steps} passos de tornada enfora: HFR {hfr} px · {stars} estels",
+          "measured": "Joc mesurat: uns {steps} passos.",
+          "none": "El teu enfocador no té un joc que importi per a l'autoenfocament.",
+          "covered": "La compensació actual cobreix el joc.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Amb Sobreimpuls, l'enfocador passa de l'objectiu aquesta quantitat i torna, de manera que cada posició s'assoleix des del mateix costat.",
+          "apply": "Aplica",
+          "applied": "Aplicat. El proper moviment de l'enfocador fa servir la compensació nova.",
+          "refocus": "La compensació nova desplaça el focus a l'escala de l'enfocador fins al valor del joc. Torna a comprovar l'enfocament aproximat abans de la prova.",
+          "toRoughFocus": "Torna a l'enfocament aproximat",
+          "failure": {
+            "noRoom": "No queda prou recorregut al costat del focus per mesurar el joc. Mou l'enfocador més a prop del centre del seu recorregut i torna a mesurar.",
+            "notInFocus": "L'escaneig ha situat malament el focus: els estels eren més nítids a la posició {position} de l'enfocador. Torna a mesurar.",
+            "lost": "Massa pocs estels en una imatge. Comprova l'enfocament aproximat, l'exposició i el cel.",
+            "flat": "Els estels no han crescut al costat del focus, així que no se'n pot llegir el joc. Comprova l'enfocament aproximat i torna a mesurar.",
+            "tooLarge": "Els estels no han canviat ni després de {reach} passos. Comprova que l'enfocador es mogui de debò, o introdueix un valor aproximat a mà i torna a mesurar.",
+            "overcompensated": "Just després del canvi de sentit, l'enfocador s'ha mogut molt més del demanat. Probablement la compensació actual és massa gran: redueix-la i torna a mesurar.",
+            "unsteady": "La mida dels estels ha saltat entre imatges. Espera unes condicions més estables i torna a mesurar."
           }
         }
       }
@@ -4860,6 +4888,7 @@
         "gain": "Guany",
         "filter": "Filtre",
         "filter_default": "Per defecte",
+        "binning": "Binning",
         "nina_default": "Per defecte de @:{'general.backendName'}",
         "ManualMode": "Mode manual"
       },
@@ -5527,6 +5556,65 @@
       "devChannelHidden": "Canal d'actualització dev amagat.",
       "specialEnabled": "Marcador de mal d'ulls activat.",
       "specialDisabled": "S'ha acabat la diversió."
+    },
+    "secureObservatory": {
+      "title": "Acaba la nit",
+      "open": "Acaba la nit…",
+      "running": "Acabant la nit…",
+      "intro": "S'executa a l'ordinador del telescopi, així que continua encara que aquest mòbil perdi la Wi-Fi o entri en repòs. Els passos dels dispositius no connectats s'ometen.",
+      "always": "Sempre atura la seqüència, l'enfocament automàtic, els flats i altres tasques en curs, l'exposició i el guiatge.",
+      "start": "Acaba la nit",
+      "stop": "Atura",
+      "again": "Tria els passos",
+      "notConnected": "no connectat",
+      "domeNeedsPark": "La cúpula només es tanca sobre una muntura aparcada. Si no aparques, aparca primer la muntura o la cúpula quedarà oberta.",
+      "unsupported": "Cal un plugin de Touch-N-Stars més recent a l'ordinador del telescopi. Actualitza el plugin, o aparca, tanca i escalfa els dispositius un per un.",
+      "startFailed": "No s'ha pogut iniciar el tancament.",
+      "powerHint": "Aparca, tanca i escalfa abans d'apagar l'ordinador del telescopi.",
+      "showDetails": "Detalls",
+      "steps": {
+        "stop_sequence": "Atura la seqüència",
+        "stop_activities": "Atura l'enfocament automàtic, els flats i altres tasques",
+        "abort_exposure": "Avorta l'exposició",
+        "stop_guiding": "Atura el guiatge",
+        "park_mount": "Aparca la muntura",
+        "close_dome": "Tanca la cúpula",
+        "close_cover": "Tanca la tapa del panell de flats i apaga el llum",
+        "warm_camera": "Escalfa la càmera",
+        "disconnect": "Desconnecta tots els dispositius"
+      },
+      "result": {
+        "running": "Acabant la nit. Pots tancar això, continua a l'ordinador del telescopi.",
+        "done": "Nit acabada. Tots els passos han funcionat.",
+        "nothing": "No hi havia res connectat, així que no calia fer res.",
+        "failed": "No tot ha funcionat: {steps}. Revisa-ho abans de deixar l'equip.",
+        "cancelled": "Aturat. Els passos restants no s'han executat."
+      }
+    },
+    "rigChecks": {
+      "preflightTitle": "Comprova abans de començar",
+      "startAnyway": "Inicia igualment",
+      "startFailed": "No s'ha pogut iniciar la seqüència",
+      "stopFailed": "La seqüència no s'ha aturat",
+      "shutdownTitle": "L'equip no està assegurat",
+      "endNightFirst": "Primer acaba la nit",
+      "shutdownAnyway": "Apaga igualment",
+      "restartAnyway": "Reinicia igualment",
+      "unsafe": "El monitor de seguretat indica que no és segur.",
+      "mountNotConnected": "La muntura no està connectada.",
+      "mountParked": "La muntura està aparcada i la seqüència no la desaparca.",
+      "mountNotTracking": "La muntura no fa seguiment.",
+      "cameraNotConnected": "La càmera no està connectada.",
+      "coolerOff": "La refrigeració està apagada i la seqüència no refreda la càmera.",
+      "cameraNotAtSetpoint": "La càmera és a {temperature} °C i la consigna és {setpoint} °C.",
+      "guiderNotConnected": "La seqüència inicia el guiatge, però el guiador no està connectat.",
+      "imageFolderMissing": "La carpeta d'imatges {path} no existeix (unitat no muntada?). No es poden desar les preses.",
+      "lowDisk": "Només queden {free} GB lliures per a imatges.",
+      "sequenceRunning": "Hi ha una seqüència en marxa.",
+      "mountUnparked": "La muntura no està aparcada.",
+      "cameraCold": "La refrigeració de la càmera està activada ({temperature} °C).",
+      "domeOpen": "La cúpula no està tancada.",
+      "coverOpen": "La tapa del panell de flats és oberta."
     }
   },
   "plugins": {

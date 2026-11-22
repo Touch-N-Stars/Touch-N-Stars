@@ -4615,8 +4615,8 @@
             "description": "Mach Aufnahmen und bewege den Fokussierer, bis die Sterne klein und rund sind und der HFR möglichst niedrig ist."
           },
           "measure": {
-            "title": "Schrittgröße",
-            "description": "Misst, wie schnell die Sterne wachsen, wenn sich der Fokussierer bewegt, und schlägt eine Schrittgröße für den Autofokus vor. Der Fokussierer fährt in wachsenden Schritten nach außen und am Ende zurück zur Startposition."
+            "title": "Schrittgröße und Backlash",
+            "description": "Misst, wie schnell die Sterne wachsen, wenn sich der Fokussierer bewegt, und wie viele Schritte er bei einem Richtungswechsel verliert. Schlägt eine Schrittgröße für den Autofokus und die Backlash-Kompensation von NINA vor. Der Fokussierer fährt zuerst ein gutes Stück zurück, damit jede Position von derselben Seite angefahren wird, dann vorwärts durch den Fokus und am Ende zurück zur Startposition."
           },
           "run": {
             "title": "Testlauf",
@@ -4672,12 +4672,14 @@
         },
         "measure": {
           "current": "Aktuell: Schrittgröße {stepSize} · {offsetSteps} Punkte je Seite",
-          "start": "Schrittgröße messen",
+          "start": "Schrittgröße und Backlash messen",
           "restart": "Erneut messen",
           "stop": "Stopp",
           "phase": {
-            "reference": "Aufnahme an der aktuellen Position …",
-            "probe": "Nach außen fahren und Bild aufnehmen …",
+            "scan": "Sucht den Fokus und misst, wie schnell die Sterne wachsen …",
+            "calibrate": "Nimmt Bilder neben dem Fokus auf …",
+            "walkIn": "Fährt Richtung Fokus, bis die Sterne kleiner werden …",
+            "walkOut": "Fährt wieder nach außen, bis die Sterne wachsen …",
             "return": "Zurück zur Startposition …"
           },
           "reference": "Startposition: HFR {hfr} px · {stars} Sterne",
@@ -4693,6 +4695,32 @@
             "timeout": "Der Fokussierer oder die Kamera hat nicht rechtzeitig reagiert.",
             "error": "Die Messung ist fehlgeschlagen.",
             "returnFailed": "Der Fokussierer konnte nicht zur Startposition zurückfahren. Prüfe seine Position vor dem nächsten Lauf."
+          }
+        },
+        "backlash": {
+          "current": "Aktuelle Kompensation: {model} · Backlash nach innen {backlashIn} · Backlash nach außen {backlashOut}",
+          "lopsided": "Die Kompensation in NINA steht auf Absolute mit unterschiedlichen Werten (nach innen {backlashIn}, nach außen {backlashOut}). NINA verschiebt dann bei jedem Richtungswechsel seine Positionsskala, das verfälscht die Messung. Setze zuerst beide auf 0, die Messung schlägt danach neue Werte vor.",
+          "resetCompensation": "Backlash nach innen und außen auf 0 setzen",
+          "calibration": "{offset} Schritte neben dem Fokus: HFR {hfr} px · {stars} Sterne",
+          "walkIn": "{steps} Schritte nach innen: HFR {hfr} px · {stars} Sterne",
+          "walkOut": "{steps} Schritte zurück nach außen: HFR {hfr} px · {stars} Sterne",
+          "measured": "Gemessener Backlash: etwa {steps} Schritte.",
+          "none": "Dein Fokussierer hat keinen Backlash, der für den Autofokus eine Rolle spielt.",
+          "covered": "Die aktuelle Kompensation deckt den Backlash ab.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Bei Overshoot fährt der Fokussierer um diesen Wert über das Ziel hinaus und zurück, so wird jede Position von derselben Seite angefahren.",
+          "apply": "Übernehmen",
+          "applied": "Übernommen. Die nächste Fahrt des Fokussierers nutzt die neue Kompensation.",
+          "refocus": "Die neue Kompensation verschiebt den Fokus auf der Skala des Fokussierers um bis zu den Backlash. Prüfe vor dem Testlauf noch einmal den Grobfokus.",
+          "toRoughFocus": "Zurück zum Grobfokus",
+          "failure": {
+            "noRoom": "Neben dem Fokus bleibt zu wenig Fahrweg für die Backlash-Messung. Fahre den Fokussierer näher zur Mitte seines Bereichs und miss erneut.",
+            "notInFocus": "Der Scan hat den Fokus falsch eingeordnet: Am schärfsten waren die Sterne an Fokussiererposition {position}. Miss erneut.",
+            "lost": "Zu wenige Sterne in einem Bild. Prüfe Grobfokus, Belichtung und Himmel.",
+            "flat": "Neben dem Fokus wurden die Sterne nicht größer, daraus lässt sich der Backlash nicht ablesen. Prüfe den Grobfokus und miss erneut.",
+            "tooLarge": "Auch nach {reach} Schritten haben sich die Sterne nicht verändert. Prüfe, ob sich der Fokussierer wirklich bewegt, oder trage von Hand einen groben Wert ein und miss erneut.",
+            "overcompensated": "Direkt nach dem Richtungswechsel ist der Fokussierer viel weiter gefahren als verlangt. Die aktuelle Kompensation ist wohl zu groß: Verringere sie und miss erneut.",
+            "unsteady": "Die Sterngröße ist zwischen den Bildern gesprungen. Warte auf ruhigere Bedingungen und miss erneut."
           }
         }
       }
@@ -4847,6 +4875,7 @@
         "gain": "Verstärkung",
         "filter": "Filter",
         "filter_default": "Standard",
+        "binning": "Binning",
         "nina_default": "@:{'general.backendName'} Standard",
         "ManualMode": "Manuell"
       },
@@ -5527,6 +5556,65 @@
       "devChannelHidden": "Dev-Update-Kanal ausgeblendet.",
       "specialEnabled": "Augenschmerz-Markierer aktiviert.",
       "specialDisabled": "Vorbei der Spaß."
+    },
+    "secureObservatory": {
+      "title": "Nacht beenden",
+      "open": "Nacht beenden…",
+      "running": "Nacht wird beendet…",
+      "intro": "Läuft auf der Box und macht weiter, auch wenn dein Handy das WLAN verliert oder in den Ruhezustand geht. Schritte für nicht verbundene Geräte werden übersprungen.",
+      "always": "Stoppt immer Sequenz, Autofokus, Flats und andere laufende Vorgänge, Belichtung und Guiding.",
+      "start": "Nacht beenden",
+      "stop": "Stopp",
+      "again": "Schritte wählen",
+      "notConnected": "nicht verbunden",
+      "domeNeedsPark": "Die Kuppel schließt nur über einer geparkten Montierung. Ohne Parken musst du die Montierung vorher parken, sonst bleibt die Kuppel offen.",
+      "unsupported": "Dafür brauchst du ein neueres Touch-N-Stars-Plugin auf der Box. Aktualisiere das Plugin oder parke, schließe und wärme die Geräte einzeln auf.",
+      "startFailed": "Das Beenden der Nacht konnte nicht gestartet werden.",
+      "powerHint": "Parken, schließen und aufwärmen, bevor du die Box ausschaltest.",
+      "showDetails": "Details",
+      "steps": {
+        "stop_sequence": "Sequenz stoppen",
+        "stop_activities": "Autofokus, Flats und andere Vorgänge stoppen",
+        "abort_exposure": "Belichtung abbrechen",
+        "stop_guiding": "Guiding stoppen",
+        "park_mount": "Montierung parken",
+        "close_dome": "Kuppel schließen",
+        "close_cover": "Flat-Panel-Abdeckung schließen, Licht aus",
+        "warm_camera": "Kamera aufwärmen",
+        "disconnect": "Alle Geräte trennen"
+      },
+      "result": {
+        "running": "Nacht wird beendet. Du kannst das schließen, es läuft auf der Box weiter.",
+        "done": "Nacht beendet. Alle Schritte haben geklappt.",
+        "nothing": "Nichts war verbunden, es gab also nichts zu tun.",
+        "failed": "Nicht alles hat geklappt: {steps}. Prüfe das, bevor du das Rig verlässt.",
+        "cancelled": "Gestoppt. Die restlichen Schritte wurden nicht ausgeführt."
+      }
+    },
+    "rigChecks": {
+      "preflightTitle": "Vor dem Start prüfen",
+      "startAnyway": "Trotzdem starten",
+      "startFailed": "Die Sequenz konnte nicht gestartet werden",
+      "stopFailed": "Die Sequenz hat nicht gestoppt",
+      "shutdownTitle": "Das Rig ist nicht gesichert",
+      "endNightFirst": "Erst die Nacht beenden",
+      "shutdownAnyway": "Trotzdem herunterfahren",
+      "restartAnyway": "Trotzdem neu starten",
+      "unsafe": "Der Sicherheitsmonitor meldet unsicher.",
+      "mountNotConnected": "Die Montierung ist nicht verbunden.",
+      "mountParked": "Die Montierung ist geparkt und die Sequenz parkt sie nicht aus.",
+      "mountNotTracking": "Die Montierung führt nicht nach.",
+      "cameraNotConnected": "Die Kamera ist nicht verbunden.",
+      "coolerOff": "Die Kühlung ist aus und die Sequenz kühlt die Kamera nicht.",
+      "cameraNotAtSetpoint": "Die Kamera hat {temperature} °C, der Sollwert ist {setpoint} °C.",
+      "guiderNotConnected": "Die Sequenz startet Guiding, aber der Guider ist nicht verbunden.",
+      "imageFolderMissing": "Der Bildordner {path} existiert nicht (Laufwerk nicht eingehängt?). Bilder können nicht gespeichert werden.",
+      "lowDisk": "Nur noch {free} GB frei für Bilder.",
+      "sequenceRunning": "Eine Sequenz läuft.",
+      "mountUnparked": "Die Montierung ist nicht geparkt.",
+      "cameraCold": "Die Kamerakühlung ist an ({temperature} °C).",
+      "domeOpen": "Die Kuppel ist nicht geschlossen.",
+      "coverOpen": "Die Flat-Panel-Abdeckung ist offen."
     }
   },
   "plugins": {

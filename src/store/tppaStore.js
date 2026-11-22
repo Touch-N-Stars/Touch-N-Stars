@@ -25,6 +25,7 @@ const defaultSettings = () => ({
   ExposureTime: null,
   Gain: null,
   Filter: null,
+  Binning: null,
 });
 
 export const useTppaStore = defineStore('tppaStore', {

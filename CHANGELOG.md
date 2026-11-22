@@ -5,13 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [App6.6.0-beta1] - 2026-11-20
+## [App6.7.0-beta2] - 2026-11-22
 
 ### Added
 
 - PINS: New simple mode for getting started, with a start page that shows the latest picture with sharpness, stars, guiding and the sharpness trend of the night, leads through the night step by step (connect, cool, focus, polar alignment, guiding setup, target from the sky atlas, pictures, end of night) and a navigation with only the pages needed for it; it is offered at the end of the setup assistant and can be switched in Settings, Interface.
 - PINS: The simple mode start page adapts to the night: while the plan runs it puts guiding, sharpness and star count first and warns when one of them gets worse, and the newest picture shows its histogram with min and max pixel counts.
 - PINS: In the simple mode a target from the sky atlas goes straight into the plan, which slews there, centers it and starts guiding by itself; the guider is calibrated once at the best spot, and after a night of restless guiding the Guiding Coach is suggested.
+
+## [App6.7.0-beta1] - 2026-11-22
+
+### Added
+
+- End night: One button on the equipment page and in the power menu ends the night. The box stops the sequence, running jobs like autofocus or flats, the exposure and guiding, parks the mount, closes the dome and the flat panel cover, warms up the camera and disconnects everything, and keeps going when the phone drops off Wi-Fi. Each step can be switched off, and the dialog shows how far it got. The dome only closes over a parked mount, and devices stay connected when a step failed. A mount without a park position is turned to the pole with tracking off. It needs the updated Touch'N'Stars plugin.
+- Sequence: Before the start, the app checks the rig and warns about an unsafe safety monitor, a parked or not tracking mount, a camera that is not at its temperature, a missing guider, a missing image folder or less than 5 GB of free disk space. Steps the sequence does itself, like unparking or cooling, are not warned about. Start anyway is always possible.
+- System: Restarting or shutting down the box warns first when a sequence runs, the mount is not parked, the camera is cooled or the dome or flat panel cover is open, and offers to end the night first.
+- Focuser: The autofocus setup assistant now measures step size and backlash together on the stars and suggests both, no matter from which side the rough focus was approached.
+
+### Fixed
+
+- Sequence: A failed stop or start of the sequence now shows an error instead of failing silently.
+
+## [App6.6.0] - 2026-11-22
+
+### Added
+
+- TPPA: The camera settings of the polar alignment now offer a binning for its exposures.
+
+### Changed
+
+- Log Collector (PINS): Only the guide logs of the last three nights are included, which keeps the log bundles much smaller.
+
+### Fixed
+
+- Hocus Focus: The setup assistant and the rough focus preview now measure their frames even when saving snapshots is turned off.
 
 ## [App6.5.0] - 2026-11-17
 

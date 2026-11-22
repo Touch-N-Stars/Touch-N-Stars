@@ -13,6 +13,7 @@ import signalRDialogService from '@/services/signalRDialogService';
 import signalRMessageboxesService from '@/services/signalRMessageboxesService';
 import { useProgressStore } from '@/store/progressStore';
 import { useSessionTimelineStore } from '@/store/sessionTimelineStore';
+import { useSecureObservatoryStore } from '@/store/secureObservatoryStore';
 import { useLivestackStore } from '@/plugins/livestack/store/livestackStore';
 import { useNightSummaryStore } from '@/plugins/nightsummary/store/nightsummaryStore';
 import { useGuiderStore } from '@/store/guiderStore';
@@ -740,6 +741,9 @@ export const apiStore = defineStore('store', {
 
       // Session timeline mirrors backend buffers of the previous instance
       useSessionTimelineStore().reset();
+
+      // Ask the next session again whether the plugin has "End night"
+      useSecureObservatoryStore().forgetSupport();
 
       // Clear autofocus data from the previous instance
       const autofocusStore = useAutofocusStore();

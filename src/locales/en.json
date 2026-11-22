@@ -4754,8 +4754,8 @@
             "description": "Take images and move the focuser until the stars are small and round and the HFR is as low as possible."
           },
           "measure": {
-            "title": "Step size",
-            "description": "Measures how quickly the stars grow when the focuser moves, and suggests a step size for the autofocus. The focuser moves outwards in growing steps and returns to its start position at the end."
+            "title": "Step size and backlash",
+            "description": "Measures how quickly the stars grow when the focuser moves and how many steps it loses when it changes direction, and suggests a step size for the autofocus and NINA's backlash compensation. The focuser first moves back a long way so that every position is reached from the same side, then forward through focus, and returns to its start position at the end."
           },
           "run": {
             "title": "Test run",
@@ -4811,12 +4811,14 @@
         },
         "measure": {
           "current": "Current: step size {stepSize} · {offsetSteps} points per side",
-          "start": "Measure step size",
+          "start": "Measure step size and backlash",
           "restart": "Measure again",
           "stop": "Stop",
           "phase": {
-            "reference": "Taking a frame at the current position …",
-            "probe": "Moving out and taking a frame …",
+            "scan": "Searching focus and measuring how quickly the stars grow …",
+            "calibrate": "Taking frames beside focus …",
+            "walkIn": "Moving towards focus until the stars shrink …",
+            "walkOut": "Moving back out until the stars grow …",
             "return": "Returning to the start position …"
           },
           "reference": "Start position: HFR {hfr} px · {stars} stars",
@@ -4832,6 +4834,32 @@
             "timeout": "The focuser or the camera did not respond in time.",
             "error": "The measurement failed.",
             "returnFailed": "The focuser could not be moved back to its start position. Check its position before the next run."
+          }
+        },
+        "backlash": {
+          "current": "Current compensation: {model} · Backlash In {backlashIn} · Backlash Out {backlashOut}",
+          "lopsided": "NINA's compensation is set to Absolute with different values (In {backlashIn}, Out {backlashOut}). NINA then shifts its position scale on every change of direction, which spoils the measurement. Set both to 0 first; the measurement suggests new values afterwards.",
+          "resetCompensation": "Set Backlash In and Out to 0",
+          "calibration": "{offset} steps from focus: HFR {hfr} px · {stars} stars",
+          "walkIn": "{steps} steps in: HFR {hfr} px · {stars} stars",
+          "walkOut": "{steps} steps back out: HFR {hfr} px · {stars} stars",
+          "measured": "Measured backlash: about {steps} steps.",
+          "none": "Your focuser shows no backlash that matters for the autofocus.",
+          "covered": "The current compensation covers the backlash.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "With Overshoot, the focuser moves past the target by this amount and comes back, so every position is reached from the same side.",
+          "apply": "Apply",
+          "applied": "Applied. The next focuser move uses the new compensation.",
+          "refocus": "The new compensation shifts where focus sits on the focuser's scale by up to the backlash. Check the rough focus again before the test run.",
+          "toRoughFocus": "Back to rough focus",
+          "failure": {
+            "noRoom": "Not enough travel left beside focus to measure the backlash. Move the focuser closer to the middle of its range and measure again.",
+            "notInFocus": "The scan placed focus wrongly: the stars were sharpest at focuser position {position}. Measure again.",
+            "lost": "Too few stars in a frame. Check the rough focus, the exposure and the sky.",
+            "flat": "The stars did not grow beside focus, so the backlash cannot be read from them. Check the rough focus and measure again.",
+            "tooLarge": "The stars did not change even after {reach} steps. Check that the focuser really moves, or set a rough value by hand and measure again.",
+            "overcompensated": "The focuser moved much further than asked right after the change of direction. The current compensation is probably too large: lower it and measure again.",
+            "unsteady": "The star size jumped between frames. Wait for steadier conditions and measure again."
           }
         }
       }
@@ -4999,6 +5027,7 @@
         "gain": "Gain",
         "filter": "Filter",
         "filter_default": "Default",
+        "binning": "Binning",
         "nina_default": "@:{'general.backendName'} Default",
         "ManualMode": "Manual mode"
       },
@@ -6015,6 +6044,65 @@
         "open": "Open the Guiding Coach",
         "dismiss": "Not now"
       }
+    },
+    "secureObservatory": {
+      "title": "End the night",
+      "open": "End night…",
+      "running": "Ending the night…",
+      "intro": "Runs on the box, so it keeps going if this phone loses Wi-Fi or goes to sleep. Steps for devices that are not connected are skipped.",
+      "always": "Always stops the sequence, autofocus, flats and other running jobs, the exposure and guiding.",
+      "start": "End night",
+      "stop": "Stop",
+      "again": "Choose steps",
+      "notConnected": "not connected",
+      "domeNeedsPark": "The dome only closes over a parked mount. With parking off, park the mount first or the dome stays open.",
+      "unsupported": "This needs a newer Touch-N-Stars plugin on the box. Update the plugin, or park, close and warm up the devices one by one.",
+      "startFailed": "The shutdown could not be started.",
+      "powerHint": "Park, close and warm up before you switch the box off.",
+      "showDetails": "Details",
+      "steps": {
+        "stop_sequence": "Stop the sequence",
+        "stop_activities": "Stop autofocus, flats and other jobs",
+        "abort_exposure": "Abort the exposure",
+        "stop_guiding": "Stop guiding",
+        "park_mount": "Park the mount",
+        "close_dome": "Close the dome",
+        "close_cover": "Close the flat panel cover, light off",
+        "warm_camera": "Warm up the camera",
+        "disconnect": "Disconnect all devices"
+      },
+      "result": {
+        "running": "Ending the night. You can close this, it keeps going on the box.",
+        "done": "Night ended. Every step worked.",
+        "nothing": "Nothing was connected, so there was nothing to do.",
+        "failed": "Not everything worked: {steps}. Check these before you leave the rig.",
+        "cancelled": "Stopped. The remaining steps were not run."
+      }
+    },
+    "rigChecks": {
+      "preflightTitle": "Check before the start",
+      "startAnyway": "Start anyway",
+      "startFailed": "The sequence could not be started",
+      "stopFailed": "The sequence did not stop",
+      "shutdownTitle": "The rig is not secured",
+      "endNightFirst": "End the night first",
+      "shutdownAnyway": "Shut down anyway",
+      "restartAnyway": "Restart anyway",
+      "unsafe": "The safety monitor reports unsafe.",
+      "mountNotConnected": "The mount is not connected.",
+      "mountParked": "The mount is parked and the sequence does not unpark it.",
+      "mountNotTracking": "The mount is not tracking.",
+      "cameraNotConnected": "The camera is not connected.",
+      "coolerOff": "The cooler is off and the sequence does not cool the camera.",
+      "cameraNotAtSetpoint": "The camera is at {temperature} °C, the setpoint is {setpoint} °C.",
+      "guiderNotConnected": "The sequence starts guiding, but the guider is not connected.",
+      "imageFolderMissing": "The image folder {path} does not exist (drive not mounted?). Frames cannot be saved.",
+      "lowDisk": "Only {free} GB free for images.",
+      "sequenceRunning": "A sequence is running.",
+      "mountUnparked": "The mount is not parked.",
+      "cameraCold": "The camera cooler is on ({temperature} °C).",
+      "domeOpen": "The dome is not closed.",
+      "coverOpen": "The flat panel cover is open."
     }
   },
   "plugins": {

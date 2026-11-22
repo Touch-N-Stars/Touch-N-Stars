@@ -4574,8 +4574,8 @@
             "description": "Rób zdjęcia i przesuwaj fokuser, aż gwiazdy będą małe i okrągłe, a HFR jak najniższy."
           },
           "measure": {
-            "title": "Rozmiar kroku",
-            "description": "Mierzy, jak szybko rosną gwiazdy, gdy fokuser się porusza, i proponuje rozmiar kroku dla autofokusu. Fokuser przesuwa się na zewnątrz coraz większymi krokami, a na końcu wraca do pozycji startowej."
+            "title": "Rozmiar kroku i luz",
+            "description": "Mierzy, jak szybko rosną gwiazdy, gdy fokuser się porusza, i ile kroków traci przy zmianie kierunku, a potem proponuje rozmiar kroku dla autofokusa i kompensację luzu w NINA. Fokuser najpierw cofa się o spory kawałek, aby każdą pozycję osiągać z tej samej strony, potem jedzie do przodu przez ostrość i na koniec wraca do pozycji startowej."
           },
           "run": {
             "title": "Próba",
@@ -4631,12 +4631,14 @@
         },
         "measure": {
           "current": "Bieżący: rozmiar kroku {stepSize} · punkty na stronę: {offsetSteps}",
-          "start": "Zmierz rozmiar kroku",
+          "start": "Zmierz rozmiar kroku i luz",
           "restart": "Zmierz ponownie",
           "stop": "Zatrzymaj",
           "phase": {
-            "reference": "Wykonywanie klatki w bieżącej pozycji …",
-            "probe": "Przesuwanie na zewnątrz i wykonywanie klatki …",
+            "scan": "Szukanie ostrości i pomiar, jak szybko rosną gwiazdy …",
+            "calibrate": "Wykonywanie zdjęć obok ostrości …",
+            "walkIn": "Ruch w stronę ostrości, aż gwiazdy zmaleją …",
+            "walkOut": "Powrót na zewnątrz, aż gwiazdy urosną …",
             "return": "Powrót do pozycji startowej …"
           },
           "reference": "Pozycja startowa: HFR {hfr} px · gwiazdy: {stars}",
@@ -4652,6 +4654,32 @@
             "timeout": "Fokuser lub kamera nie odpowiedziały na czas.",
             "error": "Pomiar się nie powiódł.",
             "returnFailed": "Nie udało się przesunąć fokusera z powrotem do pozycji startowej. Sprawdź jego pozycję przed następnym uruchomieniem."
+          }
+        },
+        "backlash": {
+          "current": "Obecna kompensacja: {model} · Luz do wewnątrz {backlashIn} · Luz na zewnątrz {backlashOut}",
+          "lopsided": "Kompensacja w NINA jest ustawiona na model Absolutny z różnymi wartościami (do wewnątrz {backlashIn}, na zewnątrz {backlashOut}). NINA przesuwa wtedy swoją skalę pozycji przy każdej zmianie kierunku, co psuje pomiar. Najpierw ustaw obie na 0, a pomiar zaproponuje potem nowe wartości.",
+          "resetCompensation": "Ustaw luz do wewnątrz i na zewnątrz na 0",
+          "calibration": "{offset} kroków od ostrości: HFR {hfr} px · gwiazdy: {stars}",
+          "walkIn": "{steps} kroków do wewnątrz: HFR {hfr} px · gwiazdy: {stars}",
+          "walkOut": "{steps} kroków z powrotem na zewnątrz: HFR {hfr} px · gwiazdy: {stars}",
+          "measured": "Zmierzony luz: około {steps} kroków.",
+          "none": "Twój fokuser nie ma luzu, który miałby znaczenie dla autofokusa.",
+          "covered": "Obecna kompensacja pokrywa luz.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Przy Przeregulowaniu fokuser mija cel o tę wartość i wraca, dzięki czemu każdą pozycję osiąga z tej samej strony.",
+          "apply": "Zastosuj",
+          "applied": "Zastosowano. Następny ruch fokusera użyje nowej kompensacji.",
+          "refocus": "Nowa kompensacja przesuwa ostrość na skali fokusera maksymalnie o wartość luzu. Przed próbą sprawdź ponownie zgrubne ostrzenie.",
+          "toRoughFocus": "Wróć do zgrubnego ostrzenia",
+          "failure": {
+            "noRoom": "Obok ostrości zostało za mało drogi, by zmierzyć luz. Przesuń fokuser bliżej środka jego zakresu i zmierz ponownie.",
+            "notInFocus": "Skan źle określił ostrość: gwiazdy były najostrzejsze w pozycji fokusera {position}. Zmierz ponownie.",
+            "lost": "Za mało gwiazd na zdjęciu. Sprawdź zgrubne ostrzenie, ekspozycję i niebo.",
+            "flat": "Gwiazdy obok ostrości nie urosły, więc nie da się z nich odczytać luzu. Sprawdź zgrubne ostrzenie i zmierz ponownie.",
+            "tooLarge": "Gwiazdy nie zmieniły się nawet po {reach} krokach. Sprawdź, czy fokuser naprawdę się porusza, albo wpisz ręcznie przybliżoną wartość i zmierz ponownie.",
+            "overcompensated": "Tuż po zmianie kierunku fokuser przesunął się znacznie dalej, niż miał. Obecna kompensacja jest pewnie za duża: zmniejsz ją i zmierz ponownie.",
+            "unsteady": "Rozmiar gwiazd skakał między zdjęciami. Poczekaj na stabilniejsze warunki i zmierz ponownie."
           }
         }
       }
@@ -4806,6 +4834,7 @@
         "gain": "Wzmocnienie",
         "filter": "Filtr",
         "filter_default": "Domyślne",
+        "binning": "Binowanie",
         "nina_default": "Domyślne @:{'general.backendName'}",
         "ManualMode": "Tryb ręczny"
       },
@@ -5527,6 +5556,65 @@
       "devChannelHidden": "Ukryto kanał aktualizacji dev.",
       "specialEnabled": "Włączono znacznik bólu oczu.",
       "specialDisabled": "Koniec zabawy."
+    },
+    "secureObservatory": {
+      "title": "Zakończ noc",
+      "open": "Zakończ noc…",
+      "running": "Kończenie nocy…",
+      "intro": "Działa na komputerze przy teleskopie, więc nie przerwie się, gdy telefon straci Wi-Fi lub się uśpi. Kroki dla niepodłączonych urządzeń są pomijane.",
+      "always": "Zawsze zatrzymuje sekwencję, autofokus, flaty i inne trwające zadania, ekspozycję oraz prowadzenie.",
+      "start": "Zakończ noc",
+      "stop": "Zatrzymaj",
+      "again": "Wybierz kroki",
+      "notConnected": "niepodłączone",
+      "domeNeedsPark": "Kopuła zamyka się tylko nad zaparkowanym montażem. Bez parkowania najpierw zaparkuj montaż, inaczej kopuła zostanie otwarta.",
+      "unsupported": "Potrzebna jest nowsza wtyczka Touch-N-Stars na komputerze przy teleskopie. Zaktualizuj wtyczkę albo zaparkuj, zamknij i ogrzej urządzenia po kolei.",
+      "startFailed": "Nie udało się rozpocząć zamykania.",
+      "powerHint": "Zaparkuj, zamknij i ogrzej, zanim wyłączysz komputer przy teleskopie.",
+      "showDetails": "Szczegóły",
+      "steps": {
+        "stop_sequence": "Zatrzymaj sekwencję",
+        "stop_activities": "Zatrzymaj autofokus, flaty i inne zadania",
+        "abort_exposure": "Przerwij ekspozycję",
+        "stop_guiding": "Zatrzymaj prowadzenie",
+        "park_mount": "Zaparkuj montaż",
+        "close_dome": "Zamknij kopułę",
+        "close_cover": "Zamknij osłonę panelu flat, wyłącz światło",
+        "warm_camera": "Ogrzej kamerę",
+        "disconnect": "Rozłącz wszystkie urządzenia"
+      },
+      "result": {
+        "running": "Kończenie nocy. Możesz to zamknąć, proces trwa dalej na komputerze przy teleskopie.",
+        "done": "Noc zakończona. Wszystkie kroki się udały.",
+        "nothing": "Nic nie było podłączone, więc nie było nic do zrobienia.",
+        "failed": "Nie wszystko się udało: {steps}. Sprawdź to, zanim zostawisz zestaw.",
+        "cancelled": "Zatrzymano. Pozostałe kroki nie zostały wykonane."
+      }
+    },
+    "rigChecks": {
+      "preflightTitle": "Sprawdź przed startem",
+      "startAnyway": "Uruchom mimo to",
+      "startFailed": "Nie udało się uruchomić sekwencji",
+      "stopFailed": "Sekwencja się nie zatrzymała",
+      "shutdownTitle": "Zestaw nie jest zabezpieczony",
+      "endNightFirst": "Najpierw zakończ noc",
+      "shutdownAnyway": "Wyłącz mimo to",
+      "restartAnyway": "Uruchom ponownie mimo to",
+      "unsafe": "Monitor bezpieczeństwa zgłasza zagrożenie.",
+      "mountNotConnected": "Montaż nie jest podłączony.",
+      "mountParked": "Montaż jest zaparkowany, a sekwencja go nie odparkuje.",
+      "mountNotTracking": "Montaż nie śledzi.",
+      "cameraNotConnected": "Kamera nie jest podłączona.",
+      "coolerOff": "Chłodzenie jest wyłączone, a sekwencja nie chłodzi kamery.",
+      "cameraNotAtSetpoint": "Kamera ma {temperature} °C, zadana temperatura to {setpoint} °C.",
+      "guiderNotConnected": "Sekwencja uruchamia prowadzenie, ale guider nie jest podłączony.",
+      "imageFolderMissing": "Folder zdjęć {path} nie istnieje (dysk niezamontowany?). Nie można zapisać klatek.",
+      "lowDisk": "Tylko {free} GB wolnego miejsca na zdjęcia.",
+      "sequenceRunning": "Trwa sekwencja.",
+      "mountUnparked": "Montaż nie jest zaparkowany.",
+      "cameraCold": "Chłodzenie kamery jest włączone ({temperature} °C).",
+      "domeOpen": "Kopuła nie jest zamknięta.",
+      "coverOpen": "Osłona panelu flat jest otwarta."
     }
   },
   "plugins": {

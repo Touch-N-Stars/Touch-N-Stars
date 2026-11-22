@@ -4574,8 +4574,8 @@
             "description": "Tire imagens e mova o focalizador até as estrelas ficarem pequenas e redondas e o HFR ser o mais baixo possível."
           },
           "measure": {
-            "title": "Tamanho do passo",
-            "description": "Mede a rapidez com que as estrelas crescem quando o focalizador se move e sugere um tamanho do passo para o autofoco. O focalizador move-se para fora em passos crescentes e no fim regressa à posição inicial."
+            "title": "Tamanho do passo e folga",
+            "description": "Mede a rapidez com que as estrelas crescem quando o focalizador se move e quantos passos ele perde ao mudar de sentido, e sugere um tamanho do passo para o autofoco e a compensação de folga do NINA. O focalizador primeiro recua bastante para que cada posição seja alcançada do mesmo lado, depois avança através do foco e, no fim, regressa à posição inicial."
           },
           "run": {
             "title": "Teste",
@@ -4631,12 +4631,14 @@
         },
         "measure": {
           "current": "Atual: tamanho do passo {stepSize} · {offsetSteps} pontos por lado",
-          "start": "Medir tamanho do passo",
+          "start": "Medir tamanho do passo e folga",
           "restart": "Medir novamente",
           "stop": "Parar",
           "phase": {
-            "reference": "A captar uma imagem na posição atual …",
-            "probe": "A mover para fora e a captar uma imagem …",
+            "scan": "A procurar o foco e a medir a rapidez com que as estrelas crescem …",
+            "calibrate": "A tirar imagens ao lado do foco …",
+            "walkIn": "A mover em direção ao foco até as estrelas diminuírem …",
+            "walkOut": "A voltar para fora até as estrelas crescerem …",
             "return": "A regressar à posição inicial …"
           },
           "reference": "Posição inicial: HFR {hfr} px · {stars} estrelas",
@@ -4652,6 +4654,32 @@
             "timeout": "O focalizador ou a câmara não respondeu a tempo.",
             "error": "A medição falhou.",
             "returnFailed": "O focalizador não conseguiu regressar à posição inicial. Verifica a sua posição antes da próxima execução."
+          }
+        },
+        "backlash": {
+          "current": "Compensação atual: {model} · Folga (entrada) {backlashIn} · Folga (saída) {backlashOut}",
+          "lopsided": "A compensação do NINA está em Absoluto com valores diferentes (entrada {backlashIn}, saída {backlashOut}). O NINA desloca então a sua escala de posição a cada mudança de sentido, o que estraga a medição. Põe ambos a 0 primeiro; depois a medição sugere valores novos.",
+          "resetCompensation": "Pôr a folga de entrada e de saída a 0",
+          "calibration": "{offset} passos do foco: HFR {hfr} px · {stars} estrelas",
+          "walkIn": "{steps} passos para dentro: HFR {hfr} px · {stars} estrelas",
+          "walkOut": "{steps} passos de volta para fora: HFR {hfr} px · {stars} estrelas",
+          "measured": "Folga medida: cerca de {steps} passos.",
+          "none": "O teu focalizador não tem uma folga que importe para o autofoco.",
+          "covered": "A compensação atual cobre a folga.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Com Ultrapassar, o focalizador passa do alvo neste valor e regressa, para que cada posição seja alcançada do mesmo lado.",
+          "apply": "Aplicar",
+          "applied": "Aplicado. O próximo movimento do focalizador usa a nova compensação.",
+          "refocus": "A nova compensação desloca o foco na escala do focalizador até ao valor da folga. Verifica de novo a focagem aproximada antes do teste.",
+          "toRoughFocus": "Voltar à focagem aproximada",
+          "failure": {
+            "noRoom": "Não resta curso suficiente ao lado do foco para medir a folga. Move o focalizador para mais perto do meio do seu curso e mede novamente.",
+            "notInFocus": "O varrimento situou mal o foco: as estrelas estavam mais nítidas na posição {position} do focalizador. Mede novamente.",
+            "lost": "Poucas estrelas numa imagem. Verifica a focagem aproximada, a exposição e o céu.",
+            "flat": "As estrelas não cresceram ao lado do foco, por isso não é possível ler a folga. Verifica a focagem aproximada e mede novamente.",
+            "tooLarge": "As estrelas não mudaram nem depois de {reach} passos. Verifica se o focalizador se move mesmo, ou introduz à mão um valor aproximado e mede novamente.",
+            "overcompensated": "Logo após a mudança de sentido, o focalizador moveu-se muito mais do que o pedido. A compensação atual é provavelmente demasiado grande: reduz-a e mede novamente.",
+            "unsteady": "O tamanho das estrelas saltou entre imagens. Espera por condições mais estáveis e mede novamente."
           }
         }
       }
@@ -4806,6 +4834,7 @@
         "gain": "Ganho",
         "filter": "Filtro",
         "filter_default": "Padrão",
+        "binning": "Binning",
         "nina_default": "Padrão @:{'general.backendName'}",
         "ManualMode": "Modo manual"
       },
@@ -5527,6 +5556,65 @@
       "devChannelHidden": "Canal de atualização dev oculto.",
       "specialEnabled": "Marcador de dor nos olhos ativado.",
       "specialDisabled": "A diversão acabou."
+    },
+    "secureObservatory": {
+      "title": "Terminar a noite",
+      "open": "Terminar a noite…",
+      "running": "A terminar a noite…",
+      "intro": "Corre no computador do telescópio, por isso continua mesmo que este telemóvel perca o Wi-Fi ou entre em suspensão. Os passos de dispositivos não ligados são ignorados.",
+      "always": "Interrompe sempre a sequência, o autofoco, os flats e outras tarefas em curso, a exposição e a guiagem.",
+      "start": "Terminar a noite",
+      "stop": "Parar",
+      "again": "Escolher passos",
+      "notConnected": "não ligado",
+      "domeNeedsPark": "O domo só fecha sobre uma montagem estacionada. Sem estacionar, estacione primeiro a montagem ou o domo fica aberto.",
+      "unsupported": "É preciso um plugin Touch-N-Stars mais recente no computador do telescópio. Atualize o plugin ou estacione, feche e aqueça os dispositivos um a um.",
+      "startFailed": "Não foi possível iniciar o encerramento.",
+      "powerHint": "Estacione, feche e aqueça antes de desligar o computador do telescópio.",
+      "showDetails": "Detalhes",
+      "steps": {
+        "stop_sequence": "Parar a sequência",
+        "stop_activities": "Parar autofoco, flats e outras tarefas",
+        "abort_exposure": "Abortar a exposição",
+        "stop_guiding": "Parar a guiagem",
+        "park_mount": "Estacionar a montagem",
+        "close_dome": "Fechar o domo",
+        "close_cover": "Fechar a tampa do painel de flats, luz apagada",
+        "warm_camera": "Aquecer a câmara",
+        "disconnect": "Desligar todos os dispositivos"
+      },
+      "result": {
+        "running": "A terminar a noite. Pode fechar isto, continua no computador do telescópio.",
+        "done": "Noite terminada. Todos os passos correram bem.",
+        "nothing": "Nada estava ligado, por isso não havia nada a fazer.",
+        "failed": "Nem tudo correu bem: {steps}. Verifique isto antes de deixar o equipamento.",
+        "cancelled": "Parado. Os passos restantes não foram executados."
+      }
+    },
+    "rigChecks": {
+      "preflightTitle": "Verificar antes de iniciar",
+      "startAnyway": "Iniciar mesmo assim",
+      "startFailed": "Não foi possível iniciar a sequência",
+      "stopFailed": "A sequência não parou",
+      "shutdownTitle": "O equipamento não está protegido",
+      "endNightFirst": "Terminar a noite primeiro",
+      "shutdownAnyway": "Desligar mesmo assim",
+      "restartAnyway": "Reiniciar mesmo assim",
+      "unsafe": "O monitor de segurança indica inseguro.",
+      "mountNotConnected": "A montagem não está ligada.",
+      "mountParked": "A montagem está estacionada e a sequência não a desestaciona.",
+      "mountNotTracking": "A montagem não está em seguimento.",
+      "cameraNotConnected": "A câmara não está ligada.",
+      "coolerOff": "A refrigeração está desligada e a sequência não arrefece a câmara.",
+      "cameraNotAtSetpoint": "A câmara está a {temperature} °C, o ponto de ajuste é {setpoint} °C.",
+      "guiderNotConnected": "A sequência inicia a guiagem, mas o guiador não está ligado.",
+      "imageFolderMissing": "A pasta de imagens {path} não existe (unidade não montada?). Não é possível guardar as imagens.",
+      "lowDisk": "Só restam {free} GB livres para imagens.",
+      "sequenceRunning": "Está a decorrer uma sequência.",
+      "mountUnparked": "A montagem não está estacionada.",
+      "cameraCold": "A refrigeração da câmara está ligada ({temperature} °C).",
+      "domeOpen": "O domo não está fechado.",
+      "coverOpen": "A tampa do painel de flats está aberta."
     }
   },
   "plugins": {

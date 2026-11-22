@@ -181,24 +181,21 @@ test('checkPrerequisites reports missing optics and stacked binning', () => {
   );
 });
 
-test('focusSamples returns the newest and the sharpest new frame with its focuser position', () => {
-  const { focusSamples, historyEntryId } = advisor;
-  const old = { Id: 'a', HFR: 1.1, FocuserPosition: 900, Stars: 80 };
-  const history = [
-    old,
-    { Id: 'b', HFR: 2.4, FocuserPosition: 1000, Stars: 40 },
-    { Id: 'c', HFR: 1.6, FocuserPosition: 1100, Stars: 70 },
-    { Id: 'd', HFR: 1.9, FocuserPosition: 1150, Stars: 60 },
-    { Id: 'e', HFR: 0, FocuserPosition: 1200 },
-    { Id: 'f', HFR: 1.2, FocuserPosition: null },
+test('focusSamples returns the newest and the sharpest frame with its focuser position', () => {
+  const { focusSamples } = advisor;
+  const frames = [
+    { hfr: 2.4, position: 1000, stars: 40 },
+    { hfr: 1.6, position: 1100, stars: 70 },
+    { hfr: 1.9, position: 1150, stars: 60 },
+    { hfr: 0, position: 1200, stars: 0 },
+    { hfr: 1.2, position: null, stars: 90 },
   ];
-  assert.deepEqual(focusSamples(history, new Set([historyEntryId(old)])), {
+  assert.deepEqual(focusSamples(frames), {
     latest: { hfr: 1.9, position: 1150, stars: 60 },
     best: { hfr: 1.6, position: 1100, stars: 70 },
   });
-  assert.deepEqual(focusSamples([old], new Set(['a'])), { latest: null, best: null });
+  assert.deepEqual(focusSamples([]), { latest: null, best: null });
   assert.deepEqual(focusSamples(null), { latest: null, best: null });
-  assert.equal(historyEntryId({ Date: 'x', Filename: 'y.fits' }), 'x|y.fits');
 });
 
 // Aborted run on the PINS test Pi (Sky Simulator, step size 3000, 3 points per side): the outer
@@ -408,4 +405,416 @@ test('probeLimits moves away from the nearer end of travel', () => {
   assert.deepEqual(probeLimits(25000, 65535), { direction: 1, maxOffset: 16383.75 });
   assert.deepEqual(probeLimits(60000, 65535), { direction: -1, maxOffset: 16383.75 });
   assert.deepEqual(probeLimits(500, 0), { direction: 1, maxOffset: Infinity });
+});
+
+// --- Backlash measurement --------------------------------------------------------------------
+
+// A focuser with mechanical slack behind NINA's compensation decorators (FocuserDecorator in
+// N.I.N.A.). The drawtube sits at motor + gap; moving out first closes the gap, moving in first
+// opens it up to `backlash`. Positions are the reported ones, as the app sees them.
+function slackFocuser({ backlash, model = 'OVERSHOOT', backlashIn = 0, backlashOut = 0, start }) {
+  let motor = start;
+  let gap = 0;
+  let offset = 0;
+  let lastDirection = 0;
+  const drive = (target) => {
+    const delta = target - motor;
+    gap = delta > 0 ? Math.max(0, gap - delta) : Math.min(backlash, gap - delta);
+    motor = target;
+    if (delta) lastDirection = Math.sign(delta);
+  };
+  return {
+    get drawtube() {
+      return motor + gap;
+    },
+    get position() {
+      return motor - offset;
+    },
+    move(target) {
+      if (model === 'ABSOLUTE') {
+        const adjusted = target + offset;
+        const direction = Math.sign(adjusted - motor);
+        let comp = 0;
+        if (direction < 0 && lastDirection > 0) comp = -backlashIn;
+        if (direction > 0 && lastDirection < 0) comp = backlashOut;
+        offset += comp;
+        drive(adjusted + comp);
+      } else {
+        const direction = Math.sign(target - motor);
+        if (direction < 0 && backlashIn) drive(target - backlashIn);
+        if (direction > 0 && backlashOut) drive(target + backlashOut);
+        drive(target);
+      }
+    },
+  };
+}
+
+// Mirrors the backlash part of useFocuserProbe against a simulated focuser. Stars follow
+// a hyperbola that reaches three times the in-focus HFR at the AF half sweep (400 steps here).
+function measureBacklash(
+  rig,
+  { start = 30000, maxStep = 65535, focusAt = 0, seeing = [], stepSize = 100 } = {}
+) {
+  const settings = {
+    AutoFocusStepSize: stepSize,
+    AutoFocusInitialOffsetSteps: 4,
+    BacklashCompensationModel: rig.model || 'OVERSHOOT',
+    BacklashIn: rig.backlashIn || 0,
+    BacklashOut: rig.backlashOut || 0,
+  };
+  const plan = advisor.backlashPlan(start, maxStep, stepSize, 4);
+  const focuser = slackFocuser({ ...rig, start });
+  const width = plan.half / Math.sqrt(8);
+  const focus = start + plan.direction * focusAt;
+  let frames = 0;
+  const frame = () => {
+    const d = (focuser.drawtube - focus) / width;
+    return { hfr: 2 * Math.sqrt(1 + d * d) + (seeing[frames++ % seeing.length] || 0), stars: 100 };
+  };
+  const at = (offset) => start + plan.direction * offset;
+
+  focuser.move(at(plan.calibration[0] - plan.preload));
+  const calibration = plan.calibration.map((offset) => {
+    focuser.move(at(offset));
+    return { offset, ...frame() };
+  });
+  const failure = advisor.backlashCalibrationFailure(calibration);
+  if (failure) return { failure };
+
+  const walk = (from, startReading, sign) => {
+    const taken = [];
+    for (;;) {
+      const next = advisor.backlashWalk(plan, calibration, startReading, taken, sign);
+      if (next.action !== 'step')
+        return { ...next, offset: from + sign * taken.length * plan.step };
+      focuser.move(at(from + sign * (taken.length + 1) * plan.step));
+      taken.push(frame());
+    }
+  };
+  const last = calibration[calibration.length - 1];
+  const towards = walk(last.offset, advisor.backlashReader(calibration)(last), -1);
+  if (towards.action === 'fail') return { failure: towards.reason };
+  const away = walk(towards.offset, towards.end, 1);
+  if (away.action === 'fail') return { failure: away.reason };
+  const remainder = { towards: towards.remainder, away: away.remainder };
+  return {
+    remainder,
+    frames,
+    ...advisor.suggestBacklash(settings, remainder, plan.direction, stepSize),
+  };
+}
+
+const within = (actual, expected, tolerance) =>
+  assert.ok(
+    Math.abs(actual - expected) <= tolerance,
+    `expected ${actual} to be within ${tolerance} of ${expected}`
+  );
+
+test('backlashPlan scales with the AF sweep and needs room on both sides', () => {
+  const { backlashPlan } = advisor;
+  assert.deepEqual(backlashPlan(30000, 65535, 100, 4), {
+    direction: 1,
+    half: 400,
+    calibration: [200, 300, 400],
+    preload: 4200,
+    step: 200,
+    maxSteps: 20,
+    low: 100,
+    high: 640,
+    threshold: 60,
+  });
+  // Near the upper end the arm lies inwards.
+  assert.equal(backlashPlan(60000, 65535, 100, 4).direction, -1);
+  // Close to 0 the walk in runs out of room behind the start, and the preload with it.
+  const tight = backlashPlan(400, 65535, 100, 4);
+  assert.equal(tight.maxSteps, 3);
+  assert.equal(tight.preload, 600);
+  assert.equal(backlashPlan(0, 65535, 100, 4), null);
+  assert.equal(backlashPlan(30000, 65535, 0, 4), null);
+  assert.equal(backlashPlan(undefined, 65535, 100, 4), null);
+});
+
+test('backlash without compensation suggests an outward overshoot with margin', () => {
+  const result = measureBacklash({ backlash: 120 });
+  within(result.remainder.towards, 120, 12);
+  within(result.remainder.away, 120, 12);
+  assert.equal(result.model, 'OVERSHOOT');
+  within(result.backlash, 120, 12);
+  assert.equal(result.changes.length, 1);
+  assert.equal(result.changes[0].key, 'FocuserSettings-BacklashOut');
+  within(result.changes[0].value, 150, 15);
+});
+
+test('backlash is measured the same way on an inward arm', () => {
+  // Here the calibration is approached moving inwards, which leaves the drawtube 120 steps nearer
+  // to focus, where the V starts to bend: the straight line reads a little high.
+  const result = measureBacklash({ backlash: 120 }, { start: 60000 });
+  within(result.backlash, 120, 24);
+});
+
+test('an overshoot that covers the backlash needs no change', () => {
+  const result = measureBacklash({ backlash: 120, backlashOut: 200 });
+  assert.equal(result.backlash, null);
+  assert.deepEqual(result.changes, []);
+  // A set inward overshoot stays the side that is suggested.
+  const short = measureBacklash({ backlash: 120, backlashIn: 60 });
+  assert.equal(short.changes[0].key, 'FocuserSettings-BacklashIn');
+  within(short.backlash, 120, 12);
+});
+
+test('absolute compensation is corrected per reversal', () => {
+  const none = measureBacklash({ backlash: 120, model: 'ABSOLUTE' });
+  assert.deepEqual(
+    none.changes.map((c) => c.key),
+    ['FocuserSettings-BacklashIn', 'FocuserSettings-BacklashOut']
+  );
+  for (const c of none.changes) within(c.value, 120, 12);
+
+  const exact = measureBacklash({
+    backlash: 120,
+    model: 'ABSOLUTE',
+    backlashIn: 120,
+    backlashOut: 120,
+  });
+  assert.deepEqual(exact.changes, []);
+  within(exact.backlash, 120, 1);
+
+  // Overcompensation shows up as a negative remainder and lowers the value.
+  const over = measureBacklash({
+    backlash: 120,
+    model: 'ABSOLUTE',
+    backlashIn: 160,
+    backlashOut: 160,
+  });
+  for (const c of over.changes) within(c.value, 120, 12);
+
+  // Only the wrong side changes.
+  const lopsided = measureBacklash({
+    backlash: 120,
+    model: 'ABSOLUTE',
+    backlashIn: 120,
+    backlashOut: 0,
+  });
+  assert.deepEqual(
+    lopsided.changes.map((c) => c.key),
+    ['FocuserSettings-BacklashOut']
+  );
+  within(lopsided.changes[0].value, 120, 12);
+});
+
+test('a focuser without backlash keeps its settings', () => {
+  for (const model of ['OVERSHOOT', 'ABSOLUTE']) {
+    const result = measureBacklash({ backlash: 0, model });
+    assert.equal(result.backlash, 0);
+    assert.deepEqual(result.changes, []);
+  }
+});
+
+test('seeing jitter and an imperfect rough focus keep the estimate usable', () => {
+  // Rough focus 60 steps off towards the arm, and ±0.1 px HFR noise per frame.
+  const result = measureBacklash(
+    { backlash: 120 },
+    { focusAt: 60, seeing: [0.1, -0.1, 0.05, -0.1, 0.1, 0.05, -0.05] }
+  );
+  within(result.backlash, 120, 36);
+});
+
+test('backlash far larger than the AF sweep is still measured', () => {
+  // The docker sky simulator: 100 steps of backlash against a half sweep of 16.
+  const result = measureBacklash({ backlash: 100 }, { stepSize: 4 });
+  within(result.backlash, 100, 8);
+  const pi = measureBacklash({ backlash: 1500, model: 'ABSOLUTE' });
+  for (const c of pi.changes) within(c.value, 1500, 60);
+});
+
+test('backlash beyond the walk, overcompensation or flat stars fail instead of guessing', () => {
+  assert.equal(measureBacklash({ backlash: 5000 }).failure, 'tooLarge');
+  assert.equal(
+    measureBacklash({ backlash: 120, model: 'ABSOLUTE', backlashIn: 600, backlashOut: 600 })
+      .failure,
+    'overcompensated'
+  );
+  // Rough focus 300 steps off: the calibration straddles focus.
+  assert.equal(measureBacklash({ backlash: 120 }, { focusAt: 300 }).failure, 'notInFocus');
+  // The failing run on the docker simulator: start 24975, sharpest frame 51 steps out.
+  const straddling = [
+    { offset: 34, hfr: 2.43, stars: 82 },
+    { offset: 51, hfr: 1.44, stars: 158 },
+    { offset: 68, hfr: 1.85, stars: 130 },
+  ];
+  assert.equal(advisor.backlashCalibrationFailure(straddling), 'notInFocus');
+  assert.equal(advisor.sharpestCalibrationFrame(straddling).offset, 51);
+  const flat = [200, 300, 400].map((offset) => ({ offset, hfr: 2, stars: 100 }));
+  assert.equal(advisor.backlashCalibrationFailure(flat), 'flat');
+
+  const { backlashCalibrationFailure } = advisor;
+  const lost = [
+    { offset: 200, hfr: 3, stars: 100 },
+    { offset: 300, hfr: 0, stars: 0 },
+    { offset: 400, hfr: 6, stars: 90 },
+  ];
+  assert.equal(backlashCalibrationFailure(lost), 'lost');
+  // Far out of focus all frames have equally few stars: still lost, not flat (docker simulator).
+  const defocused = [
+    { offset: 14, hfr: 7.94, stars: 3 },
+    { offset: 21, hfr: 8.6, stars: 2 },
+    { offset: 28, hfr: 8.65, stars: 2 },
+  ];
+  assert.equal(backlashCalibrationFailure(defocused), 'lost');
+});
+
+// --- Combined focus scan and backlash ----------------------------------------------------------
+
+// Mirrors useFocuserProbe against a simulated focuser that was focused by hand, approaching the
+// rough focus from `cameFrom`. Stars follow a hyperbola that reaches three times the in-focus HFR
+// at 400 steps (so the right step size for 4 points per side is 100) and vanish beyond `lostAt`.
+function measureFocuser(
+  rig,
+  { cameFrom = 'in', start = 30000, lostAt = 700, maxStep = 65535, focusAhead = 0 } = {}
+) {
+  const focuser = slackFocuser({ ...rig, start });
+  focuser.move(cameFrom === 'in' ? start - 2000 : start + 2000);
+  focuser.move(start);
+  // `focusAhead`: the rough focus missed, focus lies that far outwards.
+  const focus = focuser.drawtube + focusAhead;
+  const width = 400 / Math.sqrt(8);
+  const frame = () => {
+    const d = Math.abs(focuser.drawtube - focus);
+    return d > lostAt
+      ? { hfr: 0, stars: 0 }
+      : { hfr: 2 * Math.sqrt(1 + (d / width) ** 2), stars: 100 };
+  };
+  const settings = {
+    AutoFocusInitialOffsetSteps: 4,
+    BacklashCompensationModel: rig.model || 'OVERSHOOT',
+    BacklashIn: rig.backlashIn || 0,
+    BacklashOut: rig.backlashOut || 0,
+  };
+
+  const { direction, maxOffset } = advisor.probeLimits(start, maxStep);
+  const preload = advisor.scanPreload(start, maxStep, direction);
+  const at = (offset) => start + direction * offset;
+  let last = null;
+  const approach = (offset) => {
+    if (last === null || offset < last) focuser.move(at(offset - preload));
+    focuser.move(at(offset));
+    last = offset;
+  };
+  const scan = [];
+  let done;
+  for (;;) {
+    const next = advisor.nextScanProbe(scan, { maxOffset }, 4);
+    if (next.action === 'fail') return { failure: next.reason };
+    if (next.action === 'done') {
+      done = next;
+      break;
+    }
+    approach(next.offset);
+    scan.push({ offset: next.offset, ...frame() });
+  }
+  const step = advisor.suggestStepSize(done.best, done.probes, 4);
+  const focusOffset = Math.round(done.best.offset + (step.focus || 0));
+  const p = advisor.backlashPlan(at(focusOffset), maxStep, step.stepSize, 4, direction);
+  const fromFocus = (offset) => at(focusOffset) + direction * offset;
+  focuser.move(fromFocus(p.calibration[0] - p.preload));
+  const calibration = p.calibration.map((offset) => {
+    focuser.move(fromFocus(offset));
+    return { offset, ...frame() };
+  });
+  const calibrationFailure = advisor.backlashCalibrationFailure(calibration);
+  if (calibrationFailure) return { stepSize: step.stepSize, failure: calibrationFailure };
+  const walk = (from, startReading, sign) => {
+    const taken = [];
+    for (;;) {
+      const next = advisor.backlashWalk(p, calibration, startReading, taken, sign);
+      if (next.action !== 'step') return { ...next, offset: from + sign * taken.length * p.step };
+      focuser.move(fromFocus(from + sign * (taken.length + 1) * p.step));
+      taken.push(frame());
+    }
+  };
+  const outermost = calibration[calibration.length - 1];
+  const towards = walk(outermost.offset, advisor.backlashReader(calibration)(outermost), -1);
+  if (towards.action === 'fail') return { stepSize: step.stepSize, failure: towards.reason };
+  const away = walk(towards.offset, towards.end, 1);
+  if (away.action === 'fail') return { stepSize: step.stepSize, failure: away.reason };
+  return {
+    stepSize: step.stepSize,
+    frames: scan.length + calibration.length,
+    ...advisor.suggestBacklash(
+      settings,
+      { towards: towards.remainder, away: away.remainder },
+      direction,
+      step.stepSize
+    ),
+  };
+}
+
+test('step size and backlash do not depend on how the rough focus was approached', () => {
+  for (const backlash of [0, 50, 150, 400, 1000]) {
+    for (const cameFrom of ['in', 'out']) {
+      const result = measureFocuser({ backlash }, { cameFrom });
+      const label = `backlash ${backlash}, rough focus from ${cameFrom}`;
+      assert.equal(result.failure, undefined, `${label}: ${result.failure}`);
+      within(result.stepSize, 100, 12);
+      within(result.backlash, backlash, Math.max(10, backlash * 0.1));
+    }
+  }
+});
+
+test('the focus scan with NINA compensation already set', () => {
+  // An overshoot that covers the backlash: every move ends the same way, nothing to change.
+  const covered = measureFocuser({ backlash: 300, backlashOut: 400 }, { cameFrom: 'out' });
+  within(covered.stepSize, 100, 12);
+  assert.deepEqual(covered.changes, []);
+  // Absolute compensation that is too small is topped up.
+  const short = measureFocuser({
+    backlash: 300,
+    model: 'ABSOLUTE',
+    backlashIn: 100,
+    backlashOut: 100,
+  });
+  within(short.stepSize, 100, 12);
+  for (const c of short.changes) within(c.value, 300, 30);
+});
+
+test('the focus scan copes with a missed rough focus and stars that fade right after focus', () => {
+  // The docker simulator run: start 75 steps short of focus, stars gone about 45 steps beyond it,
+  // which left only two usable frames past focus before the scan filled in.
+  for (const backlash of [0, 300]) {
+    const result = measureFocuser({ backlash }, { focusAhead: 750, lostAt: 450 });
+    assert.equal(result.failure, undefined, `backlash ${backlash}: ${result.failure}`);
+    within(result.backlash, backlash, Math.max(10, backlash * 0.1));
+  }
+});
+
+test('the focus scan fails cleanly without stars', () => {
+  assert.equal(measureFocuser({ backlash: 0 }, { lostAt: -1 }).failure, 'noReference');
+});
+
+test('ABSOLUTE compensation with In and Out apart blocks the measurement', () => {
+  const { compensationBlocksMeasurement } = advisor;
+  const absolute = (backlashIn, backlashOut) => ({
+    BacklashCompensationModel: 'ABSOLUTE',
+    BacklashIn: backlashIn,
+    BacklashOut: backlashOut,
+  });
+  assert.equal(compensationBlocksMeasurement(absolute(0, 150)), 'lopsidedAbsolute');
+  assert.equal(compensationBlocksMeasurement(absolute(150, 150)), null);
+  assert.equal(compensationBlocksMeasurement(absolute(0, 0)), null);
+  assert.equal(
+    compensationBlocksMeasurement({ BacklashCompensationModel: 'OVERSHOOT', BacklashOut: 300 }),
+    null
+  );
+  // Why: NINA's scale walks by the difference on every re-approach and the scan falls apart.
+  const lopsided = measureFocuser({ backlash: 150, model: 'ABSOLUTE', backlashOut: 400 });
+  assert.equal(lopsided.failure, 'lost');
+  // With both values equal, set or not, the measurement works.
+  const equal = measureFocuser({
+    backlash: 150,
+    model: 'ABSOLUTE',
+    backlashIn: 80,
+    backlashOut: 80,
+  });
+  within(equal.stepSize, 100, 12);
+  for (const c of equal.changes) within(c.value, 150, 15);
 });

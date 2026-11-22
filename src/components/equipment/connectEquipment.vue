@@ -21,6 +21,25 @@
       <Spinner v-if="isDisconnecting" size="sm" />
     </button>
   </div>
+  <!-- End of night: park, close, warm and disconnect on the server (needs a plugin that has it) -->
+  <div
+    v-if="secureObservatory.supported && (hasAnyConnection || secureObservatory.running)"
+    class="-mt-3 pb-5"
+  >
+    <button
+      class="tns-btn-secondary gap-2"
+      data-testid="end-night"
+      @click="secureObservatory.openDialog()"
+    >
+      <MoonIcon class="h-5 w-5 shrink-0" />
+      <span>{{
+        secureObservatory.running
+          ? $t('components.secureObservatory.running')
+          : $t('components.secureObservatory.open')
+      }}</span>
+      <Spinner v-if="secureObservatory.running" size="sm" />
+    </button>
+  </div>
   <div class="flex flex-col gap-2">
     <selectDevices
       apiAction="cameraAction"
@@ -368,7 +387,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
@@ -385,9 +404,18 @@ import SettingsFilterWheelSlotNum from '@/components/equipment/SettingsFilterWhe
 import SettingsSwitchSV241Pro from '@/components/equipment/SettingsSwitchSV241Pro.vue';
 import { phd2ConnectBlockers } from '@/utils/equipmentDevices';
 import { useEquipmentConnection } from '@/composables/useEquipmentConnection';
+import { useSecureObservatoryStore } from '@/store/secureObservatoryStore';
+import { MoonIcon } from '@heroicons/vue/24/outline';
 
 const { t } = useI18n();
 const store = apiStore();
+const secureObservatory = useSecureObservatoryStore();
+// Re-asked after every reconnect: the plugin may have been updated in between.
+watch(
+  () => store.isTnsPluginConnected,
+  (connected) => connected && secureObservatory.checkSupport(),
+  { immediate: true }
+);
 const guiderStore = useGuiderStore();
 const showGuiderSettings = ref(false);
 const selectedGuiderDevice = ref('');

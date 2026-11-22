@@ -4574,8 +4574,8 @@
             "description": "Pořizujte snímky a pohybujte ostřičem, dokud nejsou hvězdy malé a kulaté a HFR co nejnižší."
           },
           "measure": {
-            "title": "Velikost kroku",
-            "description": "Měří, jak rychle hvězdy rostou při pohybu ostřiče, a navrhne velikost kroku pro automatické zaostřování. Ostřič se pohybuje ven po rostoucích krocích a na konci se vrátí do výchozí polohy."
+            "title": "Velikost kroku a vůle",
+            "description": "Měří, jak rychle hvězdy rostou při pohybu ostřiče a kolik kroků ostřič ztratí při změně směru, a navrhne velikost kroku pro automatické zaostřování a kompenzaci vůle v NINA. Ostřič nejdřív couvne o pořádný kus, aby každou polohu najel ze stejné strany, pak jede vpřed přes ohnisko a nakonec se vrátí do výchozí polohy."
           },
           "run": {
             "title": "Zkušební běh",
@@ -4631,12 +4631,14 @@
         },
         "measure": {
           "current": "Aktuálně: velikost kroku {stepSize} · bodů na stranu: {offsetSteps}",
-          "start": "Změřit velikost kroku",
+          "start": "Změřit velikost kroku a vůli",
           "restart": "Změřit znovu",
           "stop": "Zastavit",
           "phase": {
-            "reference": "Pořizuji snímek v aktuální poloze …",
-            "probe": "Posouvám ven a pořizuji snímek …",
+            "scan": "Hledám ohnisko a měřím, jak rychle hvězdy rostou …",
+            "calibrate": "Pořizuji snímky vedle ohniska …",
+            "walkIn": "Jedu k ohnisku, dokud se hvězdy nezmenší …",
+            "walkOut": "Jedu zpět ven, dokud hvězdy nevzrostou …",
             "return": "Vracím se do výchozí polohy …"
           },
           "reference": "Výchozí poloha: HFR {hfr} px · hvězd: {stars}",
@@ -4652,6 +4654,32 @@
             "timeout": "Ostřič nebo kamera neodpověděly včas.",
             "error": "Měření selhalo.",
             "returnFailed": "Ostřič se nepodařilo vrátit do výchozí polohy. Před dalším během zkontroluj jeho polohu."
+          }
+        },
+        "backlash": {
+          "current": "Aktuální kompenzace: {model} · Vůle dovnitř {backlashIn} · Vůle ven {backlashOut}",
+          "lopsided": "Kompenzace v NINA je nastavena na Absolutní s rozdílnými hodnotami (dovnitř {backlashIn}, ven {backlashOut}). NINA pak při každé změně směru posune svou stupnici polohy, což měření pokazí. Nejdřív nastav obě na 0, měření pak navrhne nové hodnoty.",
+          "resetCompensation": "Nastavit vůli dovnitř i ven na 0",
+          "calibration": "{offset} kroků od ohniska: HFR {hfr} px · hvězd: {stars}",
+          "walkIn": "{steps} kroků dovnitř: HFR {hfr} px · hvězd: {stars}",
+          "walkOut": "{steps} kroků zpět ven: HFR {hfr} px · hvězd: {stars}",
+          "measured": "Naměřená vůle: asi {steps} kroků.",
+          "none": "Tvůj ostřič nemá vůli, na které by u automatického zaostřování záleželo.",
+          "covered": "Aktuální kompenzace vůli pokrývá.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "S volbou Přestřelit ostřič přejede cíl o tuto hodnotu a vrátí se, takže každou polohu najede ze stejné strany.",
+          "apply": "Použít",
+          "applied": "Použito. Příští pohyb ostřiče použije novou kompenzaci.",
+          "refocus": "Nová kompenzace posune ohnisko na stupnici ostřiče až o velikost vůle. Před zkušebním během znovu zkontroluj hrubé zaostření.",
+          "toRoughFocus": "Zpět na hrubé zaostření",
+          "failure": {
+            "noRoom": "Vedle ohniska nezbývá dost dráhy na měření vůle. Přesuň ostřič blíž ke středu jeho rozsahu a změř znovu.",
+            "notInFocus": "Sken určil ohnisko chybně: hvězdy byly nejostřejší v poloze ostřiče {position}. Změř znovu.",
+            "lost": "Na snímku je příliš málo hvězd. Zkontroluj hrubé zaostření, expozici a oblohu.",
+            "flat": "Hvězdy se vedle ohniska nezvětšily, takže z nich vůli nelze vyčíst. Zkontroluj hrubé zaostření a změř znovu.",
+            "tooLarge": "Hvězdy se nezměnily ani po {reach} krocích. Zkontroluj, zda se ostřič opravdu pohybuje, nebo zadej ručně přibližnou hodnotu a změř znovu.",
+            "overcompensated": "Hned po změně směru ostřič popojel mnohem dál, než měl. Aktuální kompenzace je nejspíš příliš velká: zmenši ji a změř znovu.",
+            "unsteady": "Velikost hvězd mezi snímky skákala. Počkej na klidnější podmínky a změř znovu."
           }
         }
       }
@@ -4806,6 +4834,7 @@
         "gain": "Zesílení",
         "filter": "Filtr",
         "filter_default": "Výchozí",
+        "binning": "Binning",
         "nina_default": "@:{'general.backendName'} Výchozí",
         "ManualMode": "Manuální režim"
       },
@@ -5527,6 +5556,65 @@
       "devChannelHidden": "Vývojářský aktualizační kanál skryt.",
       "specialEnabled": "Značkovač bolesti očí zapnut.",
       "specialDisabled": "Konec legrace."
+    },
+    "secureObservatory": {
+      "title": "Ukončit noc",
+      "open": "Ukončit noc…",
+      "running": "Ukončování noci…",
+      "intro": "Běží v počítači u dalekohledu, takže pokračuje, i když telefon ztratí Wi-Fi nebo usne. Kroky pro nepřipojená zařízení se přeskočí.",
+      "always": "Vždy zastaví sekvenci, autofokus, flaty a další běžící úlohy, expozici a navádění.",
+      "start": "Ukončit noc",
+      "stop": "Zastavit",
+      "again": "Vybrat kroky",
+      "notConnected": "nepřipojeno",
+      "domeNeedsPark": "Kopule se zavře jen nad zaparkovanou montáží. Bez parkování nejprve zaparkujte montáž, jinak kopule zůstane otevřená.",
+      "unsupported": "Je potřeba novější plugin Touch-N-Stars v počítači u dalekohledu. Aktualizujte plugin, nebo zařízení zaparkujte, zavřete a ohřejte jednotlivě.",
+      "startFailed": "Ukončení se nepodařilo spustit.",
+      "powerHint": "Před vypnutím počítače u dalekohledu vše zaparkujte, zavřete a ohřejte.",
+      "showDetails": "Podrobnosti",
+      "steps": {
+        "stop_sequence": "Zastavit sekvenci",
+        "stop_activities": "Zastavit autofokus, flaty a další úlohy",
+        "abort_exposure": "Přerušit expozici",
+        "stop_guiding": "Zastavit navádění",
+        "park_mount": "Zaparkovat montáž",
+        "close_dome": "Zavřít kopuli",
+        "close_cover": "Zavřít kryt flat panelu, vypnout světlo",
+        "warm_camera": "Ohřát kameru",
+        "disconnect": "Odpojit všechna zařízení"
+      },
+      "result": {
+        "running": "Ukončování noci. Můžete to zavřít, pokračuje v počítači u dalekohledu.",
+        "done": "Noc ukončena. Všechny kroky proběhly.",
+        "nothing": "Nic nebylo připojeno, nebylo co dělat.",
+        "failed": "Ne vše se povedlo: {steps}. Zkontrolujte to, než od sestavy odejdete.",
+        "cancelled": "Zastaveno. Zbývající kroky se neprovedly."
+      }
+    },
+    "rigChecks": {
+      "preflightTitle": "Kontrola před startem",
+      "startAnyway": "Přesto spustit",
+      "startFailed": "Sekvenci se nepodařilo spustit",
+      "stopFailed": "Sekvence se nezastavila",
+      "shutdownTitle": "Sestava není zabezpečená",
+      "endNightFirst": "Nejprve ukončit noc",
+      "shutdownAnyway": "Přesto vypnout",
+      "restartAnyway": "Přesto restartovat",
+      "unsafe": "Bezpečnostní monitor hlásí nebezpečí.",
+      "mountNotConnected": "Montáž není připojena.",
+      "mountParked": "Montáž je zaparkovaná a sekvence ji neodparkuje.",
+      "mountNotTracking": "Montáž nesleduje.",
+      "cameraNotConnected": "Kamera není připojena.",
+      "coolerOff": "Chlazení je vypnuté a sekvence kameru nechladí.",
+      "cameraNotAtSetpoint": "Kamera má {temperature} °C, nastavená teplota je {setpoint} °C.",
+      "guiderNotConnected": "Sekvence spouští navádění, ale guider není připojen.",
+      "imageFolderMissing": "Složka snímků {path} neexistuje (disk není připojen?). Snímky nelze uložit.",
+      "lowDisk": "Pro snímky zbývá jen {free} GB.",
+      "sequenceRunning": "Běží sekvence.",
+      "mountUnparked": "Montáž není zaparkovaná.",
+      "cameraCold": "Chlazení kamery je zapnuté ({temperature} °C).",
+      "domeOpen": "Kopule není zavřená.",
+      "coverOpen": "Kryt flat panelu je otevřený."
     }
   },
   "plugins": {
