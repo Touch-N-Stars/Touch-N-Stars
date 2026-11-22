@@ -441,6 +441,29 @@
                       {{ $t('components.simpleMode.steps.capture.fixSteps') }}
                     </button>
                   </div>
+                  <SimpleFlipForecast v-if="!flipTriggerMissing" :planSummary="planSummary" />
+                  <!-- Without NINA's flip trigger the plan tracks on into the tripod -->
+                  <div
+                    v-if="
+                      plan.remainingSeconds > 0 &&
+                      flipTriggerMissing &&
+                      !sequenceStore.sequenceRunning
+                    "
+                    class="flex flex-col gap-2 rounded-control border border-status-warn/40 p-3"
+                  >
+                    <p class="text-sm text-content">
+                      {{ $t('components.simpleMode.steps.capture.flipMissing') }}
+                    </p>
+                    <button
+                      type="button"
+                      class="tns-btn-secondary"
+                      :disabled="busy.plan || sequenceStore.sequenceControlsLocked"
+                      @click="fixFlipTrigger"
+                    >
+                      <Spinner v-if="busy.plan" size="sm" />
+                      {{ $t('components.simpleMode.steps.capture.addFlip') }}
+                    </button>
+                  </div>
                   <router-link to="/sequence" class="tns-btn-secondary">
                     {{
                       plan.targets > 0
@@ -560,6 +583,7 @@ import SimpleSetupChecks from '@/components/simpleMode/SimpleSetupChecks.vue';
 import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.vue';
 import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
 import SimpleCoachHint from '@/components/simpleMode/SimpleCoachHint.vue';
+import SimpleFlipForecast from '@/components/simpleMode/SimpleFlipForecast.vue';
 import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import { raDecToAltAz } from '@/utils/utils';
 import {
@@ -613,7 +637,7 @@ const hfStore = useHocusFocusStore();
 const { available, enabled } = useSimpleMode();
 const { allConnected, equipmentToConnect, isDeviceConnected } = useEquipmentConnection();
 const { locationMissing, databaseMissing } = useSimpleSetupChecks();
-const { wantedSteps, applyToTargets } = useSimplePlanTargets();
+const { wantedSteps, applyToTargets, flipTriggerMissing, addFlipTrigger } = useSimplePlanTargets();
 
 // --- Night and clock -------------------------------------------------------------------
 // A local clock, not a backend poll: it rolls the night over at noon and moves the
@@ -1123,6 +1147,12 @@ function fixMissingSteps() {
         autoClose: true,
       });
     }
+  });
+}
+
+function fixFlipTrigger() {
+  return withBusy('plan', async () => {
+    await addFlipTrigger();
   });
 }
 

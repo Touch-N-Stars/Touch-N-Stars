@@ -134,6 +134,19 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    Guiding-Coach (≈ 15 min) mit Knopf zum Coach-Tab (`/guider?tab=coach`). Öffnen oder
    „Jetzt nicht“ blendet die Empfehlung für diese Nacht aus. Während der Plan läuft, wird der
    Coach nie angeboten.
+   8c. Given ein Profil, dessen Meridian-Flip-Zeiten keinem Preset entsprechen und die auf diesem
+   Gerät nicht bestätigt wurden, then zeigt „Vor deiner ersten Nacht“ die Preset-Frage der
+   Flip-Einstellungen (ohne „Eigene Werte“) und „Diese Zeiten behalten“. Eine Wahl schreibt wie
+   in den Einstellungen ins Profil, bestätigt den Flip für dieses Profil
+   (`settingsStore.simpleMode.flipSetupProfiles`) und blendet den Punkt aus – er ist eine
+   einmalige Einrichtung, kein Schritt der Nacht. Ein Preset im Profil gilt auch ohne
+   Bestätigung als eingerichtet.
+   8d. Given „In den Plan“ oder ein Plan ohne aktiven `MeridianFlipTrigger`, then schaltet
+   „In den Plan“ ihn mit ein, und „Aufnahme“ warnt bei offenen Bildern mit einem Knopf, der ihn
+   einschaltet. Mit Trigger sagt „Aufnahme“, welches Ziel wann den Meridian erreicht und in
+   welchem Fenster der Plan umschwenkt (aus RA, Längengrad, geschätzten Zielzeiten und den
+   Flip-Zeiten), sonst „kein Flip nötig“, plus Link zu Flip-Einstellungen und Tagestest.
+   Während der Trigger läuft, zeigt das Cockpit „Meridian-Flip“ statt „Guiding läuft nicht“.
 9. Given der Setup-Assistent auf PINS, then bietet der letzte Schritt „Einfach“ oder „Alle
    Funktionen“ an. Die Wahl landet im selben Schalter wie in den Einstellungen.
 10. Alle neuen Texte sind übersetzbar. Die reine Logik (Nachtschlüssel, Schrittstatus, Navbar-
@@ -178,6 +191,14 @@ Neukalibrierung, danach läuft die Belichtung. Zentrieren ließ sich im Containe
 Zielprüfung, Guiding-Bilanz und `applySimpleTargetSteps`; `npm run test:browser` grün.
 Die UI-Abläufe (Atlas → „In den Plan“, Kalibrier-Knopf mit Auto-Stopp, Coach-Hinweis) sind
 noch nicht im echten Browser gegen PINS durchgeklickt.
+
+## Verification (2026-11-22, Meridian-Flip)
+
+Gegen PINS im Docker: Profil mit 5/10/0 zeigt den Punkt, „Behalten“ blendet ihn ohne
+Profiländerung aus, „Ein paar Minuten“ schreibt 0/5/15, Recenter und UseSideOfPier = true
+(Montierung meldet `pierEast`). Plan ohne GlobalTriggers → Warnung → Knopf legt den Trigger an;
+deaktivierter Trigger → Atlas „In den Plan“ (M 42) schaltet ihn wieder ein. Vorhersage für M 42
+(Transit 01:37) mit Python gegengerechnet. Der Flip selbst (Cockpit-Text) lief nicht durch.
 
 ## Open questions
 

@@ -5860,7 +5860,15 @@
           "confirmStartMessageNoGuiding": "The plan with {targets} target starts now and takes about {remaining}. The telescope goes to the target and centers it before the first picture. | The plan with {targets} targets starts now and takes about {remaining}. The telescope goes to each target and centers it before the first picture.",
           "missingSteps": "{count} target in your plan is not gone to or guided automatically. | {count} targets in your plan are not gone to or guided automatically.",
           "missingSlew": "{count} target in your plan is not gone to automatically. | {count} targets in your plan are not gone to automatically.",
-          "fixSteps": "Go there and guide automatically"
+          "fixSteps": "Go there and guide automatically",
+          "flipMissing": "Your plan does not turn the telescope at the meridian. It would keep tracking past it and could hit the tripod or pier.",
+          "addFlip": "Turn the meridian flip on",
+          "flipWindow": "{target} reaches the meridian at about {meridian}; the plan turns the telescope between {earliest} and {latest}.",
+          "flipFixed": "{target} reaches the meridian at about {meridian}; the plan turns the telescope at {earliest}.",
+          "flipPause": "{target} reaches the meridian at about {meridian}; the plan pauses at {pause} and turns the telescope at {earliest}.",
+          "flipNone": "No meridian flip needed with this plan.",
+          "flipYourTarget": "Your target",
+          "flipSettings": "Flip settings and daylight test"
         },
         "end": {
           "title": "End the night",
@@ -5939,6 +5947,14 @@
         "databaseTitle": "No star map installed",
         "databaseText": "Polar alignment and centering a target compare a picture with a star map. The rig has none yet.",
         "databaseAction": "Install star map",
+        "flipTitle": "Meridian flip not set up yet",
+        "flipText": "When a target crosses the meridian (the north–south line through the zenith), the telescope has to turn to the other side of the mount – otherwise it would soon hit the tripod or pier. Your plan does this by itself. Tell it once how far your mount can keep tracking past the meridian.",
+        "flipNotSure": "Not sure? Your mount's manual usually says how far it can track past the meridian. Until you know, “Barely” keeps the telescope safe, at the cost of a few minutes without pictures.",
+        "flipCurrentValues": "Your profile already has its own timing: {values}.",
+        "flipKeepValues": "Keep this timing",
+        "flipTimingWindow": "flip {min}–{max} min after the meridian",
+        "flipTimingFixed": "flip {min} min after the meridian",
+        "flipTimingPause": "pause {pause} min before, flip {min} min after the meridian",
         "blockedPolar": "Polar alignment cannot work yet, see \"Before your first night\" above.",
         "blockedTarget": "Centering cannot work yet: no star map is installed, see \"Before your first night\" above."
       },
@@ -5954,7 +5970,8 @@
           "calibrating": "Guider is calibrating",
           "settling": "Waiting for the guiding to settle",
           "exposing": "Exposing",
-          "busy": "Getting the next picture ready"
+          "busy": "Getting the next picture ready",
+          "flipping": "Meridian flip – the telescope turns to the other side"
         },
         "exposing": "Exposing {seconds} s",
         "frame": "picture {frame} of {frames}",

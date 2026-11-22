@@ -251,6 +251,8 @@ export const useSettingsStore = defineStore('settings', {
       coolTemp: -10,
       steps: { night: '', marks: {} },
       afSetupProfiles: [],
+      // Profiles whose meridian flip timing was chosen in the simple mode
+      flipSetupProfiles: [],
       // How long the plan guided last night and how much of it poorly (see addGuidingTime()),
       // and the night whose coach recommendation was taken up or dismissed.
       guiding: null,
@@ -273,6 +275,9 @@ export const useSettingsStore = defineStore('settings', {
       }
       if (!this.simpleMode.steps) this.simpleMode.steps = { night: '', marks: {} };
       if (!Array.isArray(this.simpleMode.afSetupProfiles)) this.simpleMode.afSetupProfiles = [];
+      if (!Array.isArray(this.simpleMode.flipSetupProfiles)) {
+        this.simpleMode.flipSetupProfiles = [];
+      }
       return this.simpleMode;
     },
     setSimpleModeEnabled(enabled) {
@@ -294,6 +299,12 @@ export const useSettingsStore = defineStore('settings', {
     // once per telescope; until then the simple mode offers the assistant before a run.
     markAutofocusSetUp(profileId) {
       const list = this._ensureSimpleMode().afSetupProfiles;
+      if (profileId && !list.includes(profileId)) list.push(profileId);
+    },
+    // Profiles whose meridian flip timing the user chose (a preset, or "keep my values"). The
+    // timing itself lives in the NINA profile; this only remembers that it was looked at.
+    markMeridianFlipSetUp(profileId) {
+      const list = this._ensureSimpleMode().flipSetupProfiles;
       if (profileId && !list.includes(profileId)) list.push(profileId);
     },
     setSimpleModeCoolTemp(temp) {

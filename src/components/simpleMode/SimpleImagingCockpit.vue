@@ -57,7 +57,7 @@
     </template>
 
     <template #overlay-bottom>
-      <Spinner v-if="activity !== 'exposing'" size="sm" class="text-accent" />
+      <Spinner v-if="shownActivity !== 'exposing'" size="sm" class="text-accent" />
       <CameraIcon v-else class="w-4 h-4 text-accent shrink-0" />
       <span class="flex-1 min-w-0 truncate text-xs">{{ activityText }}</span>
       <span v-if="remaining" class="shrink-0 text-xs text-content-muted">
@@ -162,6 +162,8 @@ import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import { fmt, useImagingQuality } from '@/composables/useImagingQuality';
 import { dsoContainerName } from '@/utils/sequenceTargets';
 import { addGuidingTime, imagingVerdict, nightKey, runningPlanPosition } from '@/utils/simpleMode';
+import { MERIDIAN_FLIP_TRIGGER_TYPE, findByType } from '@/utils/sequenceSimple';
+import { useSequenceV2Store } from '@/store/sequenceV2Store';
 
 const props = defineProps({
   /** summarizeTargets() of the loaded plan */
@@ -207,9 +209,17 @@ const detailsOpen = ref(false);
 const position = computed(() => runningPlanPosition(props.planSummary));
 const targetName = computed(() => dsoContainerName(position.value?.container));
 
+// NINA's flip trigger stays RUNNING from the flip slew through settling and recentering, so it
+// names the whole flip, including the plate solves and the guiding pause after it.
+const sequenceV2Store = useSequenceV2Store();
+const flipping = computed(
+  () => findByType(sequenceV2Store.globalTriggers, MERIDIAN_FLIP_TRIGGER_TYPE)?.Status === 'RUNNING'
+);
+const shownActivity = computed(() => (flipping.value ? 'flipping' : activity.value));
+
 const activityText = computed(() => {
-  if (activity.value !== 'exposing') {
-    return t(`components.simpleMode.cockpit.activity.${activity.value}`);
+  if (shownActivity.value !== 'exposing') {
+    return t(`components.simpleMode.cockpit.activity.${shownActivity.value}`);
   }
   const row = position.value?.row;
   const parts = [];
@@ -301,7 +311,12 @@ const alerts = computed(() => {
       text: t('components.simpleMode.cockpit.alerts.starLost'),
       to: '/guider',
     });
-  } else if (store.guiderInfo.Connected && !guiding.value && !guidingPaused.value) {
+  } else if (
+    store.guiderInfo.Connected &&
+    !guiding.value &&
+    !guidingPaused.value &&
+    !flipping.value
+  ) {
     list.push({
       key: 'guiding',
       level: 'warn',
