@@ -1,35 +1,19 @@
 <template>
+  <!-- Image first, then everything used while turning the focuser right below it, so the HFR and
+       the buttons stay in view together without scrolling. A smaller HFR means sharper stars. -->
   <div class="flex flex-col gap-3">
-    <NumberInputPicker
-      v-model="exposure"
-      :label="L('exposure')"
-      labelKey="components.focuser.hfAssistant.preview.exposure"
-      :min="0.1"
-      :max="600"
-      :step="0.5"
-      :decimalPlaces="1"
-      :useDefaultSentinel="false"
-      inputId="hf-preview-exposure"
-      labelPosition="top"
-      wrapperClass="w-full"
-    />
-
-    <div class="flex gap-2">
-      <template v-if="!looping">
-        <button class="tns-btn-secondary min-h-touch" :disabled="busy" @click="capture(false)">
-          {{ L('single') }}
-        </button>
-        <button class="tns-btn-primary min-h-touch" :disabled="busy" @click="capture(true)">
-          {{ L('loop') }}
-        </button>
-      </template>
-      <button v-else class="tns-btn-danger min-h-touch" @click="stop">
-        {{ L('stop') }}
-      </button>
+    <div class="h-64 sm:h-80 overflow-hidden rounded-control bg-ground">
+      <ZoomableImage
+        :imageData="imageStore.imageData"
+        :loading="cameraStore.loading || cameraStore.isLoadingImage"
+        :showDownload="false"
+        :showFullscreen="false"
+        height="100%"
+        :altText="L('alt')"
+        :placeholderText="L('placeholder')"
+      />
     </div>
 
-    <!-- Above the image so both stay in view while turning the focuser. A smaller HFR means
-         sharper stars. -->
     <div v-if="samples.latest" class="flex flex-col gap-1 rounded-control bg-surface-2 p-3">
       <p class="text-sm text-content">
         {{
@@ -47,19 +31,38 @@
         </span>
       </p>
     </div>
-
-    <div class="h-64 sm:h-80 overflow-hidden rounded-control bg-ground">
-      <ZoomableImage
-        :imageData="imageStore.imageData"
-        :loading="cameraStore.loading || cameraStore.isLoadingImage"
-        :showDownload="false"
-        :showFullscreen="false"
-        height="100%"
-        :altText="L('alt')"
-        :placeholderText="L('placeholder')"
-      />
-    </div>
     <p v-if="error" class="text-sm text-status-danger">{{ error }}</p>
+
+    <div class="flex gap-2">
+      <template v-if="!looping">
+        <button class="tns-btn-secondary min-h-touch" :disabled="busy" @click="capture(false)">
+          {{ L('single') }}
+        </button>
+        <button class="tns-btn-primary min-h-touch" :disabled="busy" @click="capture(true)">
+          {{ L('loop') }}
+        </button>
+      </template>
+      <button v-else class="tns-btn-danger min-h-touch" @click="stop">
+        {{ L('stop') }}
+      </button>
+    </div>
+
+    <!-- Focuser controls of the caller -->
+    <slot />
+
+    <NumberInputPicker
+      v-model="exposure"
+      :label="L('exposure')"
+      labelKey="components.focuser.hfAssistant.preview.exposure"
+      :min="0.1"
+      :max="600"
+      :step="0.5"
+      :decimalPlaces="1"
+      :useDefaultSentinel="false"
+      inputId="hf-preview-exposure"
+      labelPosition="top"
+      wrapperClass="w-full"
+    />
   </div>
 </template>
 

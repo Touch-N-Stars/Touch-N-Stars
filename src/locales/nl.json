@@ -4576,8 +4576,8 @@
             "description": "Maak opnames en beweeg de focuser tot de sterren klein en rond zijn en de HFR zo laag mogelijk is."
           },
           "measure": {
-            "title": "Stapgrootte",
-            "description": "Meet hoe snel de sterren groeien wanneer de focuser beweegt en stelt een stapgrootte voor de autofocus voor. De focuser beweegt in groeiende stappen naar buiten en keert aan het eind terug naar zijn startpositie."
+            "title": "Stapgrootte en backlash",
+            "description": "Meet hoe snel de sterren groeien wanneer de focuser beweegt en hoeveel stappen hij verliest bij een richtingswissel, en stelt een stapgrootte voor de autofocus en de backlash-compensatie van NINA voor. De focuser gaat eerst een flink stuk terug, zodat elke positie van dezelfde kant wordt benaderd, dan vooruit door de focus en keert aan het eind terug naar de startpositie."
           },
           "run": {
             "title": "Testrun",
@@ -4633,12 +4633,14 @@
         },
         "measure": {
           "current": "Huidig: stapgrootte {stepSize} · {offsetSteps} punten per kant",
-          "start": "Stapgrootte meten",
+          "start": "Stapgrootte en backlash meten",
           "restart": "Opnieuw meten",
           "stop": "Stoppen",
           "phase": {
-            "reference": "Beeld maken op de huidige positie …",
-            "probe": "Naar buiten bewegen en beeld maken …",
+            "scan": "Focus zoeken en meten hoe snel de sterren groeien …",
+            "calibrate": "Beelden maken naast de focus …",
+            "walkIn": "Richting focus bewegen tot de sterren kleiner worden …",
+            "walkOut": "Weer naar buiten bewegen tot de sterren groeien …",
             "return": "Terug naar de startpositie …"
           },
           "reference": "Startpositie: HFR {hfr} px · {stars} sterren",
@@ -4654,6 +4656,32 @@
             "timeout": "De focuser of de camera reageerde niet op tijd.",
             "error": "De meting is mislukt.",
             "returnFailed": "De focuser kon niet terug naar zijn startpositie. Controleer de positie vóór de volgende run."
+          }
+        },
+        "backlash": {
+          "current": "Huidige compensatie: {model} · Backlash in {backlashIn} · Backlash uit {backlashOut}",
+          "lopsided": "De compensatie in NINA staat op Absoluut met verschillende waarden (in {backlashIn}, uit {backlashOut}). NINA verschuift dan bij elke richtingswissel zijn positieschaal, wat de meting verstoort. Zet eerst beide op 0; de meting stelt daarna nieuwe waarden voor.",
+          "resetCompensation": "Backlash in en uit op 0 zetten",
+          "calibration": "{offset} stappen van de focus: HFR {hfr} px · {stars} sterren",
+          "walkIn": "{steps} stappen naar binnen: HFR {hfr} px · {stars} sterren",
+          "walkOut": "{steps} stappen terug naar buiten: HFR {hfr} px · {stars} sterren",
+          "measured": "Gemeten backlash: ongeveer {steps} stappen.",
+          "none": "Je focuser heeft geen backlash die voor de autofocus uitmaakt.",
+          "covered": "De huidige compensatie dekt de backlash af.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Met Overschrijding schiet de focuser deze waarde voorbij het doel en komt terug, zodat elke positie van dezelfde kant wordt benaderd.",
+          "apply": "Toepassen",
+          "applied": "Toegepast. De volgende beweging van de focuser gebruikt de nieuwe compensatie.",
+          "refocus": "De nieuwe compensatie verschuift de focus op de schaal van de focuser tot maximaal de backlash. Controleer de grove focus opnieuw vóór de testrun.",
+          "toRoughFocus": "Terug naar grof scherpstellen",
+          "failure": {
+            "noRoom": "Naast de focus is te weinig slag over om de backlash te meten. Zet de focuser dichter bij het midden van zijn bereik en meet opnieuw.",
+            "notInFocus": "De scan plaatste de focus verkeerd: de sterren waren het scherpst op focuserpositie {position}. Meet opnieuw.",
+            "lost": "Te weinig sterren in een beeld. Controleer de grove focus, de belichting en de hemel.",
+            "flat": "De sterren werden naast de focus niet groter, dus de backlash is er niet uit af te lezen. Controleer de grove focus en meet opnieuw.",
+            "tooLarge": "De sterren veranderden zelfs na {reach} stappen niet. Controleer of de focuser echt beweegt, of vul met de hand een ruwe waarde in en meet opnieuw.",
+            "overcompensated": "Direct na de richtingswissel bewoog de focuser veel verder dan gevraagd. De huidige compensatie is waarschijnlijk te groot: verlaag die en meet opnieuw.",
+            "unsteady": "De stergrootte sprong tussen de beelden. Wacht op rustigere omstandigheden en meet opnieuw."
           }
         }
       }

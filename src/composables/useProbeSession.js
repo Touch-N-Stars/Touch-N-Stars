@@ -4,19 +4,10 @@ import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import { useSettingsStore } from '@/store/settingsStore';
 import { POSITION_TOLERANCE, readFocuser, useFocusFrame } from '@/composables/useFocusFrame';
-import {
-  initialProbeOffset,
-  nextProbe,
-  PROBE_MAX_COUNT,
-  probeLimits,
-  suggestOffsetSteps,
-  suggestStepSize,
-} from '@/utils/hocusFocusAdvisor';
 
-// Measures a step size for the autofocus sweep: one frame at rough focus, then frames ever further
-// out until the stars visibly grow (see nextProbe() in hocusFocusAdvisor.js). One call to start()
-// runs the whole bounded sequence; stop() ends it early. Either way the focuser goes back to where
-// it started.
+// The focuser-and-camera loop the assistant's measurements share: move, wait until the focuser
+// has settled, take a frame there. run() drives one bounded measurement and always brings the
+// focuser back to where it started, whether the measurement finished, failed or was stopped.
 
 const MOVE_TIMEOUT_MS = 120000;
 const FRAME_TIMEOUT_EXTRA_MS = 30000;
@@ -25,7 +16,7 @@ const FRAME_ATTEMPTS = 3;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function useStepSizeProbe() {
+export function useProbeSession(logTag) {
   const store = apiStore();
   const cameraStore = useCameraStore();
   const settingsStore = useSettingsStore();
@@ -33,9 +24,6 @@ export function useStepSizeProbe() {
 
   const running = ref(false);
   const phase = ref('');
-  const reference = ref(null);
-  const probes = ref([]);
-  const result = ref(null);
   const failure = ref('');
   let aborted = false;
 
@@ -98,21 +86,19 @@ export function useStepSizeProbe() {
         return { hfr: sample.hfr, stars: sample.stars };
       }
       console.warn(
-        `[useStepSizeProbe] Frame taken at ${sample.position ?? 'a moving focuser'} instead of ${position}, retaking`
+        `[${logTag}] Frame taken at ${sample.position ?? 'a moving focuser'} instead of ${position}, retaking`
       );
       await moveTo(position);
     }
     throw new Error('timeout');
   }
 
-  // `handSamples` are the frames from focusing by hand; they choose the first probe distance.
-  async function start(handSamples = []) {
+  // Runs `measure(focuser)` with the focuser as read at the start. `measure` reports an expected
+  // outcome by setting `failure` itself; thrown errors become 'timeout' or 'error'.
+  async function run(measure) {
     if (running.value) return;
     running.value = true;
     aborted = false;
-    reference.value = null;
-    probes.value = [];
-    result.value = null;
     failure.value = '';
     cameraStore.isLooping = false;
 
@@ -120,7 +106,7 @@ export function useStepSizeProbe() {
     try {
       focuser = await readFocuser();
     } catch (err) {
-      console.error('[useStepSizeProbe] Error reading the focuser:', err);
+      console.error(`[${logTag}] Error reading the focuser:`, err);
     }
     const startPosition = Number(focuser.Position);
     if (!Number.isFinite(startPosition)) {
@@ -128,41 +114,11 @@ export function useStepSizeProbe() {
       running.value = false;
       return;
     }
-    const { direction, maxOffset } = probeLimits(startPosition, focuser.MaxStep);
     try {
-      phase.value = 'reference';
-      reference.value = await frame(startPosition);
-
-      const firstOffset = initialProbeOffset(handSamples);
-      for (;;) {
-        const next = nextProbe(
-          reference.value,
-          probes.value,
-          { maxOffset, maxCount: PROBE_MAX_COUNT },
-          firstOffset
-        );
-        if (next.action === 'fail') {
-          failure.value = next.reason;
-          break;
-        }
-        if (next.action === 'done') {
-          const offsetSteps = suggestOffsetSteps(
-            store.profileInfo?.FocuserSettings?.AutoFocusInitialOffsetSteps
-          );
-          const suggestion = suggestStepSize(reference.value, probes.value, offsetSteps);
-          if (suggestion) result.value = { offsetSteps, ...suggestion };
-          else failure.value = 'noSignal';
-          break;
-        }
-        phase.value = 'probe';
-        const target = startPosition + direction * next.offset;
-        await moveTo(target);
-        const sample = await frame(target);
-        probes.value = [...probes.value, { offset: next.offset, ...sample }];
-      }
+      await measure({ ...focuser, Position: startPosition });
     } catch (err) {
       if (err.message !== 'aborted') {
-        console.error('[useStepSizeProbe] Measurement failed:', err);
+        console.error(`[${logTag}] Measurement failed:`, err);
         failure.value = ['timeout', 'noImage'].includes(err.message) ? 'timeout' : 'error';
       }
     } finally {
@@ -171,7 +127,7 @@ export function useStepSizeProbe() {
       try {
         if (!near((await readFocuser()).Position, startPosition)) await moveTo(startPosition);
       } catch (err) {
-        console.error('[useStepSizeProbe] Error returning to the start position:', err);
+        console.error(`[${logTag}] Error returning to the start position:`, err);
         failure.value = failure.value || 'returnFailed';
       }
       phase.value = '';
@@ -187,10 +143,10 @@ export function useStepSizeProbe() {
       try {
         await cameraStore.abortExposure(apiService);
       } catch (err) {
-        console.error('[useStepSizeProbe] Error aborting exposure:', err);
+        console.error(`[${logTag}] Error aborting exposure:`, err);
       }
     }
   }
 
-  return { running, phase, reference, probes, result, failure, start, stop };
+  return { running, phase, failure, moveTo, frame, run, stop };
 }

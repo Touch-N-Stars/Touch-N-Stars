@@ -75,17 +75,17 @@
         </div>
 
         <!-- 4. Rough focus by hand -->
-        <div v-else-if="step === 'rough'" class="flex flex-col gap-3">
-          <HfRoughFocusPreview v-model:samples="handSamples" />
-          <MoveFocuser />
+        <HfRoughFocusPreview v-else-if="step === 'rough'" v-model:samples="handSamples">
           <ButtonsFastChangePositon />
-        </div>
+          <MoveFocuser />
+        </HfRoughFocusPreview>
 
-        <!-- 5. Step size measured on the real optics -->
-        <HfStepSizeProbe
+        <!-- 5. Step size and backlash measured on the real optics -->
+        <HfFocuserProbe
           v-else-if="step === 'measure'"
           :hand-samples="handSamples"
           @running="probeRunning = $event"
+          @refocus="goTo('rough')"
         />
 
         <!-- 6. Test run -->
@@ -189,7 +189,7 @@ import HfSelectField from './fields/HfSelectField.vue';
 import HfToggleRow from './fields/HfToggleRow.vue';
 import HfRunAdvice from './HfRunAdvice.vue';
 import HfRoughFocusPreview from './HfRoughFocusPreview.vue';
-import HfStepSizeProbe from './HfStepSizeProbe.vue';
+import HfFocuserProbe from './HfFocuserProbe.vue';
 import HfSweepPreview from './HfSweepPreview.vue';
 import { autofocusStartRefusal } from '@/utils/backendErrors';
 import HfSetupIssues from './HfSetupIssues.vue';
@@ -260,7 +260,7 @@ watch(
   }
 );
 
-// --- 5. Measure --------------------------------------------------------------------------
+// --- 5. Step size and backlash -----------------------------------------------------------
 const probeRunning = ref(false);
 
 // --- 6. Run ------------------------------------------------------------------------------

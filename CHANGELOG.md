@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.7.0-beta1] - 2026-11-22
+
+### Added
+
+- End night: One button on the equipment page and in the power menu ends the night. The box stops the sequence, running jobs like autofocus or flats, the exposure and guiding, parks the mount, closes the dome and the flat panel cover, warms up the camera and disconnects everything, and keeps going when the phone drops off Wi-Fi. Each step can be switched off, and the dialog shows how far it got. The dome only closes over a parked mount, and devices stay connected when a step failed. A mount without a park position is turned to the pole with tracking off. It needs the updated Touch'N'Stars plugin.
+- Sequence: Before the start, the app checks the rig and warns about an unsafe safety monitor, a parked or not tracking mount, a camera that is not at its temperature, a missing guider, a missing image folder or less than 5 GB of free disk space. Steps the sequence does itself, like unparking or cooling, are not warned about. Start anyway is always possible.
+- System: Restarting or shutting down the box warns first when a sequence runs, the mount is not parked, the camera is cooled or the dome or flat panel cover is open, and offers to end the night first.
+- Focuser: The autofocus setup assistant now measures step size and backlash together on the stars and suggests both, no matter from which side the rough focus was approached.
+
+### Fixed
+
+- Sequence: A failed stop or start of the sequence now shows an error instead of failing silently.
+
 ## [App6.6.0] - 2026-11-22
 
 ### Added
@@ -111,16 +124,9 @@ Summary of all changes since 6.4.0 (released in 6.5.0-beta1 to 6.5.0-beta29, see
 
 ## [App6.5.0 - beta 27] - 2026-11-13
 
-### Added
-
-- End night: One button on the equipment page and in the power menu ends the night. The box stops the sequence, running jobs like autofocus or flats, the exposure and guiding, parks the mount, closes the dome and the flat panel cover, warms up the camera and disconnects everything, and keeps going when the phone drops off Wi-Fi. Each step can be switched off, and the dialog shows how far it got. The dome only closes over a parked mount, and devices stay connected when a step failed. A mount without a park position is turned to the pole with tracking off. It needs the updated Touch'N'Stars plugin.
-- Sequence: Before the start, the app checks the rig and warns about an unsafe safety monitor, a parked or not tracking mount, a camera that is not at its temperature, a missing guider, a missing image folder or less than 5 GB of free disk space. Steps the sequence does itself, like unparking or cooling, are not warned about. Start anyway is always possible.
-- System: Restarting or shutting down the box warns first when a sequence runs, the mount is not parked, the camera is cooled or the dome or flat panel cover is open, and offers to end the night first.
-
 ### Fixed
 
 - PINS: The system update no longer keeps showing Running after it has finished. The app now always ends on Success, Failed with the exit code, or Unknown when the result cannot be determined, for example after a power loss during the update, and the update button becomes usable again. A second update started from another device now follows the running one instead of starting again. Needs the updated pinsdaemon.
-- Sequence: A failed stop or start of the sequence now shows an error instead of failing silently.
 - Focuser: After switching back to the app during an autofocus, the status messages and the autofocus graph now show up right away instead of only after the next focuser step, and the graph no longer shows points twice.
 
 ## [App6.5.0 - beta 26] - 2026-11-13

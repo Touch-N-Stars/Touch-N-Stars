@@ -4576,8 +4576,8 @@
             "description": "Prenez des images et déplacez le focaliseur jusqu'à ce que les étoiles soient petites et rondes et que le HFR soit le plus bas possible."
           },
           "measure": {
-            "title": "Taille du pas",
-            "description": "Mesure la vitesse à laquelle les étoiles grossissent quand le focaliseur bouge et propose une taille de pas pour l'autofocus. Le focaliseur sort par pas croissants et revient à sa position de départ à la fin."
+            "title": "Taille du pas et jeu",
+            "description": "Mesure la vitesse à laquelle les étoiles grossissent quand le focaliseur bouge et combien de pas il perd lorsqu'il change de sens, puis propose une taille du pas pour l'autofocus et la compensation du jeu de NINA. Le focaliseur recule d'abord nettement pour que chaque position soit atteinte du même côté, puis avance à travers la mise au point et revient à la fin à sa position de départ."
           },
           "run": {
             "title": "Essai",
@@ -4633,12 +4633,14 @@
         },
         "measure": {
           "current": "Actuel : taille du pas {stepSize} · {offsetSteps} points par côté",
-          "start": "Mesurer la taille du pas",
+          "start": "Mesurer la taille du pas et le jeu",
           "restart": "Mesurer à nouveau",
           "stop": "Arrêter",
           "phase": {
-            "reference": "Prise d'une image à la position actuelle …",
-            "probe": "Déplacement vers l'extérieur et prise d'une image …",
+            "scan": "Recherche de la mise au point et mesure de la croissance des étoiles …",
+            "calibrate": "Prise d'images à côté de la mise au point …",
+            "walkIn": "Déplacement vers la mise au point jusqu'à ce que les étoiles rétrécissent …",
+            "walkOut": "Retour vers l'extérieur jusqu'à ce que les étoiles grossissent …",
             "return": "Retour à la position de départ …"
           },
           "reference": "Position de départ : HFR {hfr} px · {stars} étoiles",
@@ -4654,6 +4656,32 @@
             "timeout": "Le focaliseur ou la caméra n'a pas répondu à temps.",
             "error": "La mesure a échoué.",
             "returnFailed": "Le focaliseur n'a pas pu revenir à sa position de départ. Vérifiez sa position avant le prochain essai."
+          }
+        },
+        "backlash": {
+          "current": "Compensation actuelle : {model} · Jeu entrant {backlashIn} · Jeu sortant {backlashOut}",
+          "lopsided": "La compensation de NINA est réglée sur Absolu avec des valeurs différentes (entrant {backlashIn}, sortant {backlashOut}). NINA décale alors son échelle de position à chaque changement de sens, ce qui fausse la mesure. Réglez d'abord les deux sur 0 ; la mesure proposera ensuite de nouvelles valeurs.",
+          "resetCompensation": "Régler le jeu entrant et sortant sur 0",
+          "calibration": "{offset} pas de la mise au point : HFR {hfr} px · {stars} étoiles",
+          "walkIn": "{steps} pas vers l'intérieur : HFR {hfr} px · {stars} étoiles",
+          "walkOut": "{steps} pas de retour vers l'extérieur : HFR {hfr} px · {stars} étoiles",
+          "measured": "Jeu mesuré : environ {steps} pas.",
+          "none": "Votre focaliseur n'a pas de jeu qui compte pour l'autofocus.",
+          "covered": "La compensation actuelle couvre le jeu.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Avec Dépasser, le focaliseur dépasse la cible de cette valeur puis revient, si bien que chaque position est atteinte du même côté.",
+          "apply": "Appliquer",
+          "applied": "Appliqué. Le prochain déplacement du focaliseur utilise la nouvelle compensation.",
+          "refocus": "La nouvelle compensation décale la mise au point sur l'échelle du focaliseur jusqu'à la valeur du jeu. Vérifiez à nouveau la mise au point grossière avant l'essai.",
+          "toRoughFocus": "Retour à la mise au point grossière",
+          "failure": {
+            "noRoom": "Il ne reste pas assez de course à côté de la mise au point pour mesurer le jeu. Rapprochez le focaliseur du milieu de sa course et mesurez à nouveau.",
+            "notInFocus": "Le balayage a mal placé la mise au point : les étoiles étaient les plus nettes à la position {position} du focaliseur. Mesurez à nouveau.",
+            "lost": "Trop peu d'étoiles dans une image. Vérifiez la mise au point grossière, l'exposition et le ciel.",
+            "flat": "Les étoiles n'ont pas grossi à côté de la mise au point, le jeu ne peut donc pas en être déduit. Vérifiez la mise au point grossière et mesurez à nouveau.",
+            "tooLarge": "Les étoiles n'ont pas changé même après {reach} pas. Vérifiez que le focaliseur bouge réellement, ou saisissez une valeur approximative à la main et mesurez à nouveau.",
+            "overcompensated": "Juste après le changement de sens, le focaliseur est allé bien plus loin que demandé. La compensation actuelle est probablement trop grande : réduisez-la et mesurez à nouveau.",
+            "unsteady": "La taille des étoiles a sauté d'une image à l'autre. Attendez des conditions plus stables et mesurez à nouveau."
           }
         }
       }

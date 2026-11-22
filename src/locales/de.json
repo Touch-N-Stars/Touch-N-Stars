@@ -4617,8 +4617,8 @@
             "description": "Mach Aufnahmen und bewege den Fokussierer, bis die Sterne klein und rund sind und der HFR möglichst niedrig ist."
           },
           "measure": {
-            "title": "Schrittgröße",
-            "description": "Misst, wie schnell die Sterne wachsen, wenn sich der Fokussierer bewegt, und schlägt eine Schrittgröße für den Autofokus vor. Der Fokussierer fährt in wachsenden Schritten nach außen und am Ende zurück zur Startposition."
+            "title": "Schrittgröße und Backlash",
+            "description": "Misst, wie schnell die Sterne wachsen, wenn sich der Fokussierer bewegt, und wie viele Schritte er bei einem Richtungswechsel verliert. Schlägt eine Schrittgröße für den Autofokus und die Backlash-Kompensation von NINA vor. Der Fokussierer fährt zuerst ein gutes Stück zurück, damit jede Position von derselben Seite angefahren wird, dann vorwärts durch den Fokus und am Ende zurück zur Startposition."
           },
           "run": {
             "title": "Testlauf",
@@ -4674,12 +4674,14 @@
         },
         "measure": {
           "current": "Aktuell: Schrittgröße {stepSize} · {offsetSteps} Punkte je Seite",
-          "start": "Schrittgröße messen",
+          "start": "Schrittgröße und Backlash messen",
           "restart": "Erneut messen",
           "stop": "Stopp",
           "phase": {
-            "reference": "Aufnahme an der aktuellen Position …",
-            "probe": "Nach außen fahren und Bild aufnehmen …",
+            "scan": "Sucht den Fokus und misst, wie schnell die Sterne wachsen …",
+            "calibrate": "Nimmt Bilder neben dem Fokus auf …",
+            "walkIn": "Fährt Richtung Fokus, bis die Sterne kleiner werden …",
+            "walkOut": "Fährt wieder nach außen, bis die Sterne wachsen …",
             "return": "Zurück zur Startposition …"
           },
           "reference": "Startposition: HFR {hfr} px · {stars} Sterne",
@@ -4695,6 +4697,32 @@
             "timeout": "Der Fokussierer oder die Kamera hat nicht rechtzeitig reagiert.",
             "error": "Die Messung ist fehlgeschlagen.",
             "returnFailed": "Der Fokussierer konnte nicht zur Startposition zurückfahren. Prüfe seine Position vor dem nächsten Lauf."
+          }
+        },
+        "backlash": {
+          "current": "Aktuelle Kompensation: {model} · Backlash nach innen {backlashIn} · Backlash nach außen {backlashOut}",
+          "lopsided": "Die Kompensation in NINA steht auf Absolute mit unterschiedlichen Werten (nach innen {backlashIn}, nach außen {backlashOut}). NINA verschiebt dann bei jedem Richtungswechsel seine Positionsskala, das verfälscht die Messung. Setze zuerst beide auf 0, die Messung schlägt danach neue Werte vor.",
+          "resetCompensation": "Backlash nach innen und außen auf 0 setzen",
+          "calibration": "{offset} Schritte neben dem Fokus: HFR {hfr} px · {stars} Sterne",
+          "walkIn": "{steps} Schritte nach innen: HFR {hfr} px · {stars} Sterne",
+          "walkOut": "{steps} Schritte zurück nach außen: HFR {hfr} px · {stars} Sterne",
+          "measured": "Gemessener Backlash: etwa {steps} Schritte.",
+          "none": "Dein Fokussierer hat keinen Backlash, der für den Autofokus eine Rolle spielt.",
+          "covered": "Die aktuelle Kompensation deckt den Backlash ab.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Bei Overshoot fährt der Fokussierer um diesen Wert über das Ziel hinaus und zurück, so wird jede Position von derselben Seite angefahren.",
+          "apply": "Übernehmen",
+          "applied": "Übernommen. Die nächste Fahrt des Fokussierers nutzt die neue Kompensation.",
+          "refocus": "Die neue Kompensation verschiebt den Fokus auf der Skala des Fokussierers um bis zu den Backlash. Prüfe vor dem Testlauf noch einmal den Grobfokus.",
+          "toRoughFocus": "Zurück zum Grobfokus",
+          "failure": {
+            "noRoom": "Neben dem Fokus bleibt zu wenig Fahrweg für die Backlash-Messung. Fahre den Fokussierer näher zur Mitte seines Bereichs und miss erneut.",
+            "notInFocus": "Der Scan hat den Fokus falsch eingeordnet: Am schärfsten waren die Sterne an Fokussiererposition {position}. Miss erneut.",
+            "lost": "Zu wenige Sterne in einem Bild. Prüfe Grobfokus, Belichtung und Himmel.",
+            "flat": "Neben dem Fokus wurden die Sterne nicht größer, daraus lässt sich der Backlash nicht ablesen. Prüfe den Grobfokus und miss erneut.",
+            "tooLarge": "Auch nach {reach} Schritten haben sich die Sterne nicht verändert. Prüfe, ob sich der Fokussierer wirklich bewegt, oder trage von Hand einen groben Wert ein und miss erneut.",
+            "overcompensated": "Direkt nach dem Richtungswechsel ist der Fokussierer viel weiter gefahren als verlangt. Die aktuelle Kompensation ist wohl zu groß: Verringere sie und miss erneut.",
+            "unsteady": "Die Sterngröße ist zwischen den Bildern gesprungen. Warte auf ruhigere Bedingungen und miss erneut."
           }
         }
       }
