@@ -192,7 +192,7 @@ test('a rejected global dither trigger leaves the Smart Exposures dithering', as
   );
 });
 
-test('switching global dithering off leaves the Smart Exposures alone', async (t) => {
+test('switching dithering off stops the exposure rows dithering too', async (t) => {
   const { store, calls, restore } = setup({
     globalTriggers: [{ Id: 'd', FullTypeName: DITHER_AFTER_EXPOSURES_TYPE, Status: 'CREATED' }],
   });
@@ -200,7 +200,48 @@ test('switching global dithering off leaves the Smart Exposures alone', async (t
 
   await store.setGlobalDither(false);
 
-  assert.deepEqual(calls, [{ name: 'sequenceEnable', args: ['d', false] }]);
+  assert.deepEqual(calls, [
+    { name: 'sequenceEnable', args: ['d', false] },
+    { name: 'sequenceSetProperty', args: ['l-dither', 'AfterExposures', 0] },
+    { name: 'sequenceSetProperty', args: ['g-dither', 'AfterExposures', 0] },
+  ]);
+});
+
+test('without a global trigger, off still stops the exposure rows', async (t) => {
+  // A fresh plan: only the dither triggers built into the Smart Exposures.
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  await store.setGlobalDither(false);
+
+  assert.deepEqual(calls, [
+    { name: 'sequenceSetProperty', args: ['l-dither', 'AfterExposures', 0] },
+    { name: 'sequenceSetProperty', args: ['g-dither', 'AfterExposures', 0] },
+  ]);
+});
+
+test('a new Smart Exposure does not dither twice while global dithering is on', async (t) => {
+  const { store, calls, restore } = setup({
+    globalTriggers: [{ Id: 'd', FullTypeName: DITHER_AFTER_EXPOSURES_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+
+  await store.addItem('dso', SMART_EXPOSURE_TYPE, true);
+
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddItem', args: ['dso', SMART_EXPOSURE_TYPE, true] },
+    { name: 'sequenceSetProperty', args: ['l-dither', 'AfterExposures', 0] },
+    { name: 'sequenceSetProperty', args: ['g-dither', 'AfterExposures', 0] },
+  ]);
+});
+
+test('without global dithering a new Smart Exposure keeps its own dither', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  await store.addItem('dso', SMART_EXPOSURE_TYPE, true);
+
+  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['dso', SMART_EXPOSURE_TYPE, true] }]);
 });
 
 test('park goes after warm camera at the end, warm camera before park', async (t) => {

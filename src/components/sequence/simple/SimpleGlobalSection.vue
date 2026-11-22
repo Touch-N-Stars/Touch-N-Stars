@@ -15,12 +15,16 @@
     <SimpleSwitchRow
       :label="$t('components.sequence.simple.dither')"
       :hint="$t('components.sequence.simple.ditherHint')"
-      :active="isActive(dither)"
+      :active="ditherActive"
       :disabled="isRunning(dither)"
       :change="(on) => store.setGlobalDither(on)"
     >
+      <!-- Without the global trigger the exposure rows dither themselves (NINA's default). -->
+      <p v-if="!isActive(dither) && exposureDitherText" class="text-xs text-content-muted">
+        {{ exposureDitherText }}
+      </p>
       <NumberInputPicker
-        v-if="dither"
+        v-else-if="dither"
         :modelValue="Number(dither.AfterExposures ?? 1)"
         :label="$t('components.sequence.simple.ditherEvery')"
         labelKey="simple-dither-every"
@@ -40,11 +44,13 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import SimpleAlsoActive from './SimpleAlsoActive.vue';
 import SimpleSwitchRow from './SimpleSwitchRow.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import {
+  collectSmartExposureDithers,
   enabledItemNames,
   findByType,
   isActive,
@@ -55,9 +61,20 @@ import {
 defineEmits(['show-full']);
 
 const store = useSequenceV2Store();
+const { t } = useI18n();
 
 const meridianFlip = computed(() => findByType(store.globalTriggers, MERIDIAN_FLIP_TRIGGER_TYPE));
 const dither = computed(() => findByType(store.globalTriggers, DITHER_AFTER_EXPOSURES_TYPE));
+// The dither triggers built into the Smart Exposures that still dither.
+const exposureDithers = computed(() => collectSmartExposureDithers(store.data));
+const ditherActive = computed(() => isActive(dither.value) || exposureDithers.value.length > 0);
+const exposureDitherText = computed(() => {
+  const intervals = new Set(exposureDithers.value.map((trigger) => Number(trigger.AfterExposures)));
+  if (!intervals.size) return '';
+  if (intervals.size > 1) return t('components.sequence.simple.ditherInExposuresMixed');
+  const [every] = intervals;
+  return t('components.sequence.simple.ditherInExposures', { count: every }, every);
+});
 
 const otherNames = computed(() =>
   enabledItemNames(store.globalTriggers, [MERIDIAN_FLIP_TRIGGER_TYPE, DITHER_AFTER_EXPOSURES_TYPE])

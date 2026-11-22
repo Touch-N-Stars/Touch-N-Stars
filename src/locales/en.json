@@ -1150,6 +1150,8 @@
         "dither": "Dithering",
         "ditherHint": "Move the guiding position slightly between frames. Needs a running guider.",
         "ditherEvery": "Dither every N frames",
+        "ditherInExposures": "Each exposure row dithers after every picture. | Each exposure row dithers after every {count} pictures.",
+        "ditherInExposuresMixed": "The exposure rows dither at their own intervals.",
         "coolCamera": "Cool camera",
         "coolCameraHint": "Cool the camera to the target temperature before the first target.",
         "unparkMount": "Unpark mount",
@@ -5892,7 +5894,7 @@
         "title": "End the night",
         "intro": "These steps run one after the other. Untick anything you want to keep running.",
         "nothingToDo": "Nothing is running and the mount is parked – there is nothing left to do.",
-        "someFailed": "Not everything worked. Check the messages and the mount before you switch off the power.",
+        "someFailed": "Not everything worked, the reason is under the step. Check the mount before you switch off the power.",
         "done": "All done. Wait until the camera has warmed up before you switch off the power.",
         "confirm": "End the night now",
         "actions": {

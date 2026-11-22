@@ -27,7 +27,7 @@
           <li
             v-for="action in actions"
             :key="action"
-            class="flex items-center gap-3 rounded-chip bg-surface-2 px-3 min-h-touch"
+            class="flex flex-wrap items-center gap-x-3 rounded-chip bg-surface-2 px-3 min-h-touch"
           >
             <input
               :id="`end-night-${action}`"
@@ -45,6 +45,13 @@
               v-else-if="results[action] === 'failed'"
               class="w-5 h-5 text-status-danger"
             />
+            <!-- The reason stays next to the step: a toast was gone before anyone read it. -->
+            <p
+              v-if="results[action] === 'failed'"
+              class="basis-full pb-2 text-xs text-status-danger wrap-break-word"
+            >
+              {{ reasons[action] }}
+            </p>
           </li>
         </ul>
         <p
@@ -97,7 +104,7 @@ import { useCameraStore } from '@/store/cameraStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { endNightActions } from '@/utils/simpleMode';
 import { waitForState } from '@/utils/waitForState';
-import { isBackendRefusal, toastBackendError } from '@/utils/backendErrors';
+import { isBackendRefusal } from '@/utils/backendErrors';
 
 const props = defineProps({
   show: { type: Boolean, default: false },
@@ -114,6 +121,8 @@ const sequenceStore = useSequenceStore();
 const actions = ref([]);
 const selected = reactive({});
 const results = reactive({});
+// Why a step failed, shown under it.
+const reasons = reactive({});
 const running = ref(false);
 const finished = ref(false);
 
@@ -129,6 +138,7 @@ watch(
     });
     for (const key of Object.keys(selected)) delete selected[key];
     for (const key of Object.keys(results)) delete results[key];
+    for (const key of Object.keys(reasons)) delete reasons[key];
     for (const action of actions.value) selected[action] = true;
     running.value = false;
     finished.value = false;
@@ -166,13 +176,6 @@ const RUNNERS = {
   },
 };
 
-const TITLE_KEYS = {
-  stopSequence: 'components.simpleMode.endNight.actions.stopSequence',
-  stopGuiding: 'components.simpleMode.endNight.actions.stopGuiding',
-  parkMount: 'components.backendErrors.mountPark',
-  warmCamera: 'components.simpleMode.endNight.actions.warmCamera',
-};
-
 async function run() {
   running.value = true;
   try {
@@ -186,7 +189,7 @@ async function run() {
       } catch (error) {
         console.error(`[Simple mode] end of night: ${action} failed`, error);
         results[action] = 'failed';
-        toastBackendError(error, TITLE_KEYS[action]);
+        reasons[action] = error?.Error || error?.message || t('components.backendErrors.noReason');
         // A sequence that keeps running would fight the mount and the camera over what
         // follows (it may slew or cool again), so nothing else runs after this failure.
         if (action === 'stopSequence') break;

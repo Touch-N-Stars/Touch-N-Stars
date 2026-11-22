@@ -503,6 +503,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         console.error('sequenceAddItem:', e);
       }
       await this.refresh();
+      // A new Smart Exposure comes with its own dither trigger; with the global one on it
+      // would dither every frame twice.
+      if (itemType === SMART_EXPOSURE_TYPE && this._globalDitherActive()) {
+        await this._zeroSmartExposureDithers();
+      }
     },
 
     async addTrigger(itemId, triggerType, insertAfter = true) {
@@ -743,22 +748,30 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.addTrigger(last?.Id ?? container.Id, fullTypeName, last ? true : null);
     },
 
-    // Global dithering. Switching it on also zeroes the dither triggers built into Smart
-    // Exposures -- otherwise those frames would be dithered by both. They are not restored
-    // when it is switched off again.
+    // Dithering of the whole plan. Every Smart Exposure brings its own dither trigger (NINA
+    // creates it with "after 1 exposure"), so a plan dithers even without the global one.
+    // On: the global trigger takes over and the built-in ones are zeroed -- otherwise those
+    // frames would be dithered twice. Off: the built-in ones are zeroed too, or "off" would
+    // change nothing. They are not restored when it is switched on again.
     async setGlobalDither(enabled) {
       if (this._isControlsLocked()) return;
 
       await this.setGlobalTriggerEnabled(DITHER_AFTER_EXPOSURES_TYPE, enabled);
-      if (!enabled) return;
       // Only when the global trigger really is active now -- after a rejected add the Smart
       // Exposures must keep dithering themselves.
-      if (!isActive(findByType(this.globalTriggers, DITHER_AFTER_EXPOSURES_TYPE))) return;
+      if (enabled && !this._globalDitherActive()) return;
+      await this._zeroSmartExposureDithers();
+    },
 
+    _globalDitherActive() {
+      return isActive(findByType(this.globalTriggers, DITHER_AFTER_EXPOSURES_TYPE));
+    },
+
+    _zeroSmartExposureDithers() {
       const changes = collectSmartExposureDithers(this.data)
         .filter((trigger) => !this._isItemRunning(trigger.Id))
         .map((trigger) => ({ id: trigger.Id, propertyName: 'AfterExposures', value: 0 }));
-      await this.setProperties(changes);
+      return this.setProperties(changes);
     },
 
     // Like setProperty() for several values, with one refresh at the end instead of one per
