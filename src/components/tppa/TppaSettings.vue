@@ -78,6 +78,9 @@
         />
       </div>
 
+      <!-- Binning -->
+      <TppaBinningSelect class="mt-2" />
+
       <!-- Filter -->
       <div v-if="store.filterInfo.Connected" class="mt-2">
         <label for="tppa-filter" class="tns-label mb-1 block">
@@ -103,6 +106,7 @@ import { useTppaStore } from '@/store/tppaStore';
 import { apiStore } from '@/store/store';
 import toggleButton from '../helpers/toggleButton.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
+import TppaBinningSelect from '@/components/tppa/TppaBinningSelect.vue';
 
 const tppaStore = useTppaStore();
 const store = apiStore();

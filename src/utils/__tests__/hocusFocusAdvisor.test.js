@@ -181,24 +181,21 @@ test('checkPrerequisites reports missing optics and stacked binning', () => {
   );
 });
 
-test('focusSamples returns the newest and the sharpest new frame with its focuser position', () => {
-  const { focusSamples, historyEntryId } = advisor;
-  const old = { Id: 'a', HFR: 1.1, FocuserPosition: 900, Stars: 80 };
-  const history = [
-    old,
-    { Id: 'b', HFR: 2.4, FocuserPosition: 1000, Stars: 40 },
-    { Id: 'c', HFR: 1.6, FocuserPosition: 1100, Stars: 70 },
-    { Id: 'd', HFR: 1.9, FocuserPosition: 1150, Stars: 60 },
-    { Id: 'e', HFR: 0, FocuserPosition: 1200 },
-    { Id: 'f', HFR: 1.2, FocuserPosition: null },
+test('focusSamples returns the newest and the sharpest frame with its focuser position', () => {
+  const { focusSamples } = advisor;
+  const frames = [
+    { hfr: 2.4, position: 1000, stars: 40 },
+    { hfr: 1.6, position: 1100, stars: 70 },
+    { hfr: 1.9, position: 1150, stars: 60 },
+    { hfr: 0, position: 1200, stars: 0 },
+    { hfr: 1.2, position: null, stars: 90 },
   ];
-  assert.deepEqual(focusSamples(history, new Set([historyEntryId(old)])), {
+  assert.deepEqual(focusSamples(frames), {
     latest: { hfr: 1.9, position: 1150, stars: 60 },
     best: { hfr: 1.6, position: 1100, stars: 70 },
   });
-  assert.deepEqual(focusSamples([old], new Set(['a'])), { latest: null, best: null });
+  assert.deepEqual(focusSamples([]), { latest: null, best: null });
   assert.deepEqual(focusSamples(null), { latest: null, best: null });
-  assert.equal(historyEntryId({ Date: 'x', Filename: 'y.fits' }), 'x|y.fits');
 });
 
 // Aborted run on the PINS test Pi (Sky Simulator, step size 3000, 3 points per side): the outer

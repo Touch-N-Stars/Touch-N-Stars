@@ -4862,6 +4862,7 @@
         "gain": "Guany",
         "filter": "Filtre",
         "filter_default": "Per defecte",
+        "binning": "Binning",
         "nina_default": "Per defecte de @:{'general.backendName'}",
         "ManualMode": "Mode manual"
       },

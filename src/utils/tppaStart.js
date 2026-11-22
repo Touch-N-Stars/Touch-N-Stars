@@ -32,6 +32,7 @@ export function buildTppaStartMessage(settings, api) {
   if (settings.ExposureTime !== null) message.ExposureTime = settings.ExposureTime;
   if (settings.Gain !== null) message.Gain = settings.Gain;
   if (settings.Filter) message.Filter = settings.Filter;
+  if (settings.Binning) message.Binning = settings.Binning;
 
   return message;
 }
