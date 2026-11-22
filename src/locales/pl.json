@@ -607,9 +607,11 @@
         "Threshold": "Tolerancja celowania (arcmin)",
         "RotationTolerance": "Tolerancja obrotu (°)",
         "MaxObjects": "Maksymalna liczba obiektów",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Czas ekspozycji w sekundach używany dla zdjęć wykonywanych przez rozwiązywacz płyt (plate solver). Dłuższe ekspozycje wychwytują więcej gwiazd, co pomaga przy rozwiązywaniu słabych lub ubogich w gwiazdy pól, ale spowalnia każdą próbę rozwiązania.",
           "Gain": "Wzmocnienie kamery używane przy ekspozycjach plate solvingu. Pozostaw puste, aby użyć domyślnego wzmocnienia kamery.",
+          "Binning": "Binning używany dla zdjęć wykonywanych przez plate solver, np. przy centrowaniu celu lub po Meridian Flip. Wyższy binning skraca pobieranie i daje jaśniejsze gwiazdy, co pomaga przy słabych polach, kosztem rozdzielczości.",
           "ASTAPLocation": "Ścieżka do pliku wykonywalnego ASTAP (astap.exe) w systemie, na którym działa @:{'general.backendName'}. Wymagane do lokalnego plate solvingu z ASTAP.",
           "SearchRadius": "Promień w stopniach wokół współrzędnych celu, w którym solver szuka podczas próby rozwiązania na ślepo (blind solve). Większy promień wydłuża czas rozwiązywania, ale pomaga, gdy początkowa pozycja montażu jest mniej dokładna.",
           "Threshold": "Maksymalne dopuszczalne odchylenie, w minutach kątowych, między rozwiązaną pozycją a celem podczas Slew & Center. Jeśli odchylenie jest większe niż ta wartość, uruchamiany jest kolejny cykl slew-and-solve.",
