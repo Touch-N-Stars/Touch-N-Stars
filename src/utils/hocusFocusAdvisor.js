@@ -450,7 +450,9 @@ export function suggestOffsetSteps(current) {
 // frames say the stars reach PROBE_HFR_RATIO, using the steepest estimate so the first probe
 // stays well inside the star field. Without usable frames the probe starts at PROBE_FIRST_OFFSET.
 export function initialProbeOffset(samples) {
-  const list = (Array.isArray(samples) ? samples : []).filter((s) => s.hfr > 0);
+  const list = (Array.isArray(samples) ? samples : []).filter(
+    (s) => s?.hfr > 0 && Number.isFinite(s.position)
+  );
   if (list.length < 2) return PROBE_FIRST_OFFSET;
   const best = list.reduce((b, s) => (s.hfr < b.hfr ? s : b));
   let steepest = 0;
@@ -500,37 +502,15 @@ export function fixLabelKey(fix) {
   return FIX_LABELS[fix?.key] || 'generic';
 }
 
-// Identifies an image-history entry; older backends may omit the Id.
-export function historyEntryId(entry) {
-  return entry?.Id || `${entry?.Date}|${entry?.Filename}`;
-}
-
-// The newest and the sharpest frame among the image-history entries not in `ignoreIds` (the
-// frames that existed before focusing by hand started). Each entry carries the focuser position
-// NINA recorded for that frame, so moving the focuser while the next frame downloads cannot mix
-// up the pairing. History is oldest first.
-export function focusSamples(history, ignoreIds = new Set()) {
+// The newest and the sharpest of the hand-focus frames ({ hfr, position, stars }, oldest first).
+// Frames without stars (HFR 0) or without a focuser position say nothing about the focus.
+export function focusSamples(samples) {
   let latest = null;
   let best = null;
-  for (const { hfr, position, stars } of historySamples(history, ignoreIds)) {
-    latest = { hfr, position, stars };
-    if (!best || hfr < best.hfr) best = latest;
+  for (const sample of Array.isArray(samples) ? samples : []) {
+    if (!(sample?.hfr > 0) || !Number.isFinite(sample.position)) continue;
+    latest = sample;
+    if (!best || sample.hfr < best.hfr) best = sample;
   }
   return { latest, best };
-}
-
-// Every image-history entry not in `ignoreIds` that has an HFR and a focuser position, oldest
-// first, as { id, hfr, position, stars }.
-export function historySamples(history, ignoreIds = new Set()) {
-  const samples = [];
-  for (const entry of Array.isArray(history) ? history : []) {
-    const hfr = Number(entry?.HFR);
-    const position = entry?.FocuserPosition;
-    // typeof, not Number(): Number(null) would turn a missing position into 0.
-    if (!(hfr > 0) || typeof position !== 'number' || !Number.isFinite(position)) continue;
-    const id = historyEntryId(entry);
-    if (ignoreIds.has(id)) continue;
-    samples.push({ id, hfr, position, stars: entry.Stars ?? null });
-  }
-  return samples;
 }

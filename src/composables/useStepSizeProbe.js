@@ -3,8 +3,8 @@ import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import { useSettingsStore } from '@/store/settingsStore';
+import { POSITION_TOLERANCE, readFocuser, useFocusFrame } from '@/composables/useFocusFrame';
 import {
-  historyEntryId,
   initialProbeOffset,
   nextProbe,
   PROBE_MAX_COUNT,
@@ -21,8 +21,6 @@ import {
 const MOVE_TIMEOUT_MS = 120000;
 const FRAME_TIMEOUT_EXTRA_MS = 30000;
 const POLL_MS = 500;
-// Drivers may stop a step or two short of the requested position.
-const POSITION_TOLERANCE = 2;
 const FRAME_ATTEMPTS = 3;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -31,6 +29,7 @@ export function useStepSizeProbe() {
   const store = apiStore();
   const cameraStore = useCameraStore();
   const settingsStore = useSettingsStore();
+  const focusFrame = useFocusFrame();
 
   const running = ref(false);
   const phase = ref('');
@@ -65,13 +64,8 @@ export function useStepSizeProbe() {
     }
   }
 
-  // Read fresh, not from the store: right after a move command the polled store still shows the
-  // old position, which may already lie within the tolerance of a small probe offset.
-  async function readFocuser() {
-    const response = await apiService.focusAction('info');
-    return response?.Response || {};
-  }
-
+  // readFocuser() reads fresh, not from the store: right after a move command the polled store
+  // still shows the old position, which may already lie within the tolerance of a small offset.
   const near = (position, target) => Math.abs(Number(position) - target) <= POSITION_TOLERANCE;
 
   // Waits for two settled readings in a row: NINA's backlash compensation moves in legs, and
@@ -89,11 +83,9 @@ export function useStepSizeProbe() {
     }
   }
 
-  const history = () => (Array.isArray(store.imageHistoryInfo) ? store.imageHistoryInfo : []);
-
   // Takes one frame at `position` and returns its HFR and star count. A frame without stars counts
-  // too (HFR 0): that is how a probe that went too far shows up. A frame NINA recorded elsewhere
-  // (focuser still settling) is taken again.
+  // too (HFR 0): that is how a probe that went too far shows up. A frame during which the focuser
+  // was not at `position` (still settling) is taken again.
   async function frame(position) {
     for (let attempt = 0; attempt < FRAME_ATTEMPTS; attempt++) {
       // A frame still in flight from the rough-focus loop must not count as this one.
@@ -101,23 +93,12 @@ export function useStepSizeProbe() {
         () => !store.cameraInfo?.IsExposing && !cameraStore.loading,
         exposure.value * 1000 + FRAME_TIMEOUT_EXTRA_MS
       );
-      const seen = new Set(history().map(historyEntryId));
-      await cameraStore.capturePhoto(apiService, exposure.value, gain());
-      checkAborted();
-      let entry = null;
-      await waitFor(
-        () => {
-          entry = history().find((e) => !seen.has(historyEntryId(e))) || null;
-          return !!entry;
-        },
-        exposure.value * 1000 + FRAME_TIMEOUT_EXTRA_MS
-      );
-      const recorded = entry.FocuserPosition;
-      if (typeof recorded !== 'number' || near(recorded, position)) {
-        return { hfr: Number(entry.HFR) || 0, stars: Number(entry.Stars) || 0 };
+      const sample = await focusFrame.capture(exposure.value, gain(), checkAborted);
+      if (sample.position !== null && near(sample.position, position)) {
+        return { hfr: sample.hfr, stars: sample.stars };
       }
       console.warn(
-        `[useStepSizeProbe] Frame taken at ${recorded} instead of ${position}, retaking`
+        `[useStepSizeProbe] Frame taken at ${sample.position ?? 'a moving focuser'} instead of ${position}, retaking`
       );
       await moveTo(position);
     }
@@ -182,7 +163,7 @@ export function useStepSizeProbe() {
     } catch (err) {
       if (err.message !== 'aborted') {
         console.error('[useStepSizeProbe] Measurement failed:', err);
-        failure.value = err.message === 'timeout' ? 'timeout' : 'error';
+        failure.value = ['timeout', 'noImage'].includes(err.message) ? 'timeout' : 'error';
       }
     } finally {
       phase.value = 'return';

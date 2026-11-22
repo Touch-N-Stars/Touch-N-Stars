@@ -4788,6 +4788,7 @@
         "gain": "Gain",
         "filter": "Фільтр",
         "filter_default": "За замовчуванням",
+        "binning": "Бінінг",
         "nina_default": "За замовчуванням @:{'general.backendName'}",
         "ManualMode": "Ручний режим"
       },

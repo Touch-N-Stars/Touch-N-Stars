@@ -5,7 +5,7 @@ import { addRecentNinaLogFiles } from '../ninaLogFiles.js';
 const NINA_PATH = '/home/pi/.local/share/NINA/Logs';
 const GUIDER_PATH = '/home/pi/.local/share/NINA/InternalGuider/Logs';
 
-test('collects the newest ten files from each source into separate archive directories', async () => {
+test('collects the newest ten NINA logs and three guide logs into separate archive directories', async () => {
   const browsed = [];
   const fetched = [];
   const filesMap = new Map();
@@ -29,14 +29,14 @@ test('collects the newest ten files from each source into separate archive direc
     filesMap
   );
   assert.deepEqual(browsed, [NINA_PATH, GUIDER_PATH]);
-  assert.equal(fetched.length, 20);
-  assert.equal(filesMap.size, 20);
-  for (const [directory, path] of [
-    ['nina-logs', NINA_PATH],
-    ['internal-guider-logs', GUIDER_PATH],
+  assert.equal(fetched.length, 13);
+  assert.equal(filesMap.size, 13);
+  for (const [directory, path, oldestKept] of [
+    ['nina-logs', NINA_PATH, 2],
+    ['internal-guider-logs', GUIDER_PATH, 9],
   ]) {
-    assert.equal(filesMap.has(`${directory}/0.log`), false);
-    assert.equal(filesMap.has(`${directory}/1.log`), false);
+    assert.equal(filesMap.has(`${directory}/${oldestKept - 1}.log`), false);
+    assert.equal(filesMap.has(`${directory}/${oldestKept}.log`), true);
     assert.equal(new TextDecoder().decode(filesMap.get(`${directory}/11.log`)), `${path}/11.log`);
   }
 });

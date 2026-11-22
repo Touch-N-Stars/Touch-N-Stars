@@ -15,7 +15,7 @@
     />
 
     <div class="flex gap-2">
-      <template v-if="!cameraStore.isLooping">
+      <template v-if="!looping">
         <button class="tns-btn-secondary min-h-touch" :disabled="busy" @click="capture(false)">
           {{ L('single') }}
         </button>
@@ -71,9 +71,10 @@ import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import { useImagetStore } from '@/store/imageStore';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useFocusFrame } from '@/composables/useFocusFrame';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
-import { focusSamples, historyEntryId } from '@/utils/hocusFocusAdvisor';
+import { focusSamples } from '@/utils/hocusFocusAdvisor';
 
 // Camera preview for focusing by hand: single frames or a loop, with HFR and star count of the
 // newest frame and the sharpest frame so far. Uses the camera page's capture path, so the image
@@ -85,13 +86,22 @@ const store = apiStore();
 const cameraStore = useCameraStore();
 const imageStore = useImagetStore();
 const settingsStore = useSettingsStore();
+const focusFrame = useFocusFrame();
+
+// Every measured frame of this step as { hfr, position, stars }, oldest first. The parent keeps
+// them: the step-size measurement picks its first distance from them.
+const frames = defineModel('samples', { type: Array, default: () => [] });
 
 // The autofocus exposure is a good start: it was chosen to show enough stars.
 const exposure = ref(Number(store.profileInfo?.FocuserSettings?.AutoFocusExposureTime) || 2);
 const error = ref('');
+const looping = ref(false);
+const capturing = ref(false);
+let stopped = false;
 
 const busy = computed(
   () =>
+    capturing.value ||
     !store.cameraInfo?.Connected ||
     !!store.cameraInfo?.IsExposing ||
     cameraStore.loading ||
@@ -106,28 +116,42 @@ const gain = computed(() => {
   return Number.isFinite(settingsGain) ? settingsGain : -1;
 });
 
-// Newest and sharpest frame since this step opened, with the focuser position NINA recorded for
-// each. Frames taken before are ignored so an old, sharper image cannot point at the wrong
-// position.
-const ignoredFrames = new Set(
-  (Array.isArray(store.imageHistoryInfo) ? store.imageHistoryInfo : []).map(historyEntryId)
-);
-const samples = computed(() => focusSamples(store.imageHistoryInfo, ignoredFrames));
+// Newest and sharpest frame, each with the focuser position it was taken at. A frame during which
+// the focuser moved has no position and is left out.
+const samples = computed(() => focusSamples(frames.value));
 
+function checkStopped() {
+  if (stopped) throw new Error('aborted');
+}
+
+// Own loop instead of the camera store's: every frame has to be measured before the next starts.
 async function capture(loop) {
   error.value = '';
-  cameraStore.isLooping = loop;
+  stopped = false;
+  looping.value = loop;
+  capturing.value = true;
+  cameraStore.isLooping = false;
   try {
-    await cameraStore.capturePhoto(apiService, Number(exposure.value) || 2, gain.value);
+    do {
+      const frame = await focusFrame.capture(Number(exposure.value) || 2, gain.value, checkStopped);
+      frames.value = [...frames.value, frame];
+    } while (looping.value && !stopped);
   } catch (err) {
-    console.error('[HfRoughFocusPreview] Error capturing:', err);
-    cameraStore.isLooping = false;
-    error.value = err.message || L('failed');
+    // The camera store has already reported a frame that brought no image.
+    if (err.message !== 'aborted' && err.message !== 'noImage') {
+      console.error('[HfRoughFocusPreview] Error capturing:', err);
+      error.value = L('failed');
+    }
+  } finally {
+    looping.value = false;
+    capturing.value = false;
   }
 }
 
 async function stop() {
-  cameraStore.isLooping = false;
+  stopped = true;
+  looping.value = false;
+  if (!store.cameraInfo?.IsExposing && !cameraStore.loading) return;
   try {
     await cameraStore.abortExposure(apiService);
   } catch (err) {
@@ -135,8 +159,8 @@ async function stop() {
   }
 }
 
-// Leaving the step must not leave the camera looping: the next step starts an autofocus.
+// Leaving the step must not leave the camera exposing: the next step starts its own frames.
 onBeforeUnmount(() => {
-  if (cameraStore.isLooping) stop();
+  if (capturing.value) stop();
 });
 </script>

@@ -4808,6 +4808,7 @@
         "gain": "Gain",
         "filter": "Filter",
         "filter_default": "Standaard",
+        "binning": "Binning",
         "nina_default": "@:{'general.backendName'} standaard",
         "ManualMode": "Manuele mode"
       },

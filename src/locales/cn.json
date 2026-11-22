@@ -4808,6 +4808,7 @@
         "gain": "增益",
         "filter": "滤镜",
         "filter_default": "默认值",
+        "binning": "像素合并",
         "nina_default": "@:{'general.backendName'} 默认值",
         "ManualMode": "手动模式"
       },
