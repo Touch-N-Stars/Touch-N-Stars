@@ -16,10 +16,7 @@
       :planSummary="planSummary"
       :remaining="plan.remaining"
       :doneAt="plan.doneAt"
-      :guiderState="guiderState"
-      :usesNativeGuider="usesNativeGuider"
       :missingDevices="missingDevices"
-      :coolingTarget="cockpitCoolingTarget"
       :stopping="busy.capture"
       :moreLinks="moreLinks"
       @stop="stopCapture"
@@ -898,16 +895,6 @@ const order = computed(() => {
   return missingDevices.value > 0 || !allConnected.value
     ? { checks: 1, rig: 2, steps: 3, picture: 4, more: 6, lead: 0 }
     : { checks: 1, steps: 2, picture: 3, rig: 4, more: 6, lead: 0 };
-});
-
-// The cockpit warns about a sensor off its temperature only while the cooler is meant to hold one.
-const cockpitCoolingTarget = computed(() => {
-  const target = Number(coolingTarget.value);
-  return store.cameraInfo.CanSetTemperature &&
-    ['cooling', 'holding'].includes(cameraStore.coolingState) &&
-    Number.isFinite(target)
-    ? target
-    : null;
 });
 
 function formatTemp(value) {

@@ -18,7 +18,13 @@
     "
     :style="hero ? stageWindowStyle : undefined"
   >
-    <div v-if="hero" class="relative flex-1 min-w-0 min-h-0 bg-black">
+    <!-- Portrait: the picture keeps at least 40 % of the stage; when an open status bar panel
+         shrinks the stage, the panel below gives way and scrolls instead -->
+    <div
+      v-if="hero"
+      class="relative flex-1 min-w-0 bg-black"
+      :class="isLandscape ? 'min-h-0' : 'min-h-[40%]'"
+    >
       <ZoomableImage
         :imageData="pictureUrl"
         height="100%"
@@ -123,14 +129,17 @@
       </div>
     </button>
 
-    <!-- Hero: the panel keeps its own scroll, so the picture never scrolls away -->
+    <!-- Hero: the panel keeps its own scroll, so the picture never scrolls away. In portrait
+         it steps aside while a status bar panel is open (that one explains a quality and takes
+         half the screen): picture and explanation then share the room. -->
     <div
+      v-show="!hero || isLandscape || !statusBarStore.activePanel"
       class="p-3 flex flex-col gap-3"
       :class="
         hero
           ? [
-              'overflow-y-auto overscroll-contain bg-surface-1 border-line shrink-0',
-              isLandscape ? 'w-80 lg:w-96 border-l' : 'max-h-[60%] border-t',
+              'overflow-y-auto overscroll-contain bg-surface-1 border-line',
+              isLandscape ? 'w-80 lg:w-96 shrink-0 border-l' : 'min-h-0 max-h-[60%] border-t',
             ]
           : ''
       "
@@ -211,34 +220,9 @@
         </div>
       </div>
 
-      <!-- Sharpness over the night -->
-      <div v-if="series.length >= 2 && showNumbers" class="flex flex-col gap-1">
-        <div class="flex items-baseline justify-between gap-2">
-          <span class="tns-label">
-            {{ $t('components.simpleMode.live.trendTitle', { count: series.length }) }}
-          </span>
-          <span class="text-xs text-content-faint tabular-nums">
-            {{ trendRange }}
-          </span>
-        </div>
-        <svg
-          :viewBox="`0 0 ${TREND_W} ${TREND_H}`"
-          preserveAspectRatio="none"
-          class="w-full h-12 rounded-chip bg-surface-2"
-          role="img"
-          :aria-label="$t('components.simpleMode.live.trendTitle', { count: series.length })"
-        >
-          <polyline
-            :points="trendPoints"
-            fill="none"
-            stroke="var(--color-accent)"
-            stroke-width="2"
-            vector-effect="non-scaling-stroke"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <p class="text-xs text-content-faint">{{ $t('components.simpleMode.live.trendHint') }}</p>
-      </div>
+      <!-- Sharpness over the night. While the plan runs it lives in the status bar's focus
+           panel instead. -->
+      <SimpleHfrTrend v-if="!hero" />
 
       <!-- Test picture (not while the plan runs: the camera is the plan's) -->
       <div v-if="store.cameraInfo.Connected && !hero" class="flex gap-2">
@@ -307,9 +291,11 @@ import { usePolling } from '@/composables/usePolling';
 import Spinner from '@/components/helpers/Spinner.vue';
 import ImageModal from '@/components/helpers/imageModal.vue';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
+import SimpleHfrTrend from '@/components/simpleMode/SimpleHfrTrend.vue';
 import { useStageWindow } from '@/composables/useStageWindow';
 import { useOrientation } from '@/composables/useOrientation';
-import { hfrSeries, histogramSummary, latestPicture } from '@/utils/simpleMode';
+import { useStatusBarStore } from '@/store/statusBarStore';
+import { histogramSummary, latestPicture } from '@/utils/simpleMode';
 import {
   historyEntryKey,
   historyRawSource,
@@ -320,12 +306,13 @@ import { parseRawImage } from '@/utils/rawImage/parseRawImage';
 const props = defineProps({
   // While the plan runs the imaging cockpit wraps the picture (see the template)
   hero: { type: Boolean, default: false },
-  // Hero only: show the histogram and the sharpness trend
+  // Hero only: show the histogram
   details: { type: Boolean, default: false },
 });
 const showNumbers = computed(() => !props.hero || props.details);
 const { stageWindowStyle } = useStageWindow();
 const { isLandscape } = useOrientation();
+const statusBarStore = useStatusBarStore();
 
 const { t, locale } = useI18n();
 const store = apiStore();
@@ -571,40 +558,6 @@ const histogramPoints = computed(() => {
 
 const countFormat = computed(() => new Intl.NumberFormat(locale.value));
 const formatCount = (count) => countFormat.value.format(count);
-
-// --- HFR trend ----------------------------------------------------------------------------
-const TREND_W = 300;
-const TREND_H = 48;
-const series = computed(() => hfrSeries(store.imageHistoryInfo, 30, isDeleted));
-// The vertical scale spans at least this much HFR. Scaled to the data alone, 1.392 and 1.388
-// filled the whole height and read as a steep change while the label said "1.39 - 1.39".
-const TREND_MIN_SPAN = 0.5;
-const trendBounds = computed(() => {
-  const values = series.value.map((p) => p.hfr);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const span = Math.max(max - min, TREND_MIN_SPAN);
-  // Centre a widened scale on the data, so a steady series draws a flat line in the middle
-  const bottom = (min + max) / 2 - span / 2;
-  return { min, max, bottom, span };
-});
-const trendPoints = computed(() => {
-  const points = series.value;
-  const { bottom: min, span } = trendBounds.value;
-  const pad = 4;
-  return points
-    .map((p, i) => {
-      const x = (i / (points.length - 1)) * TREND_W;
-      // Lower HFR = sharper = higher up, so "going down" reads as getting worse
-      const y = pad + ((p.hfr - min) / span) * (TREND_H - 2 * pad);
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(' ');
-});
-const trendRange = computed(() => {
-  const { min, max } = trendBounds.value;
-  return `HFR ${min.toFixed(2)} – ${max.toFixed(2)}`;
-});
 
 // --- Actions ------------------------------------------------------------------------------
 const showFull = ref(false);

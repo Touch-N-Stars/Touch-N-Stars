@@ -5931,16 +5931,14 @@
         "frame": "picture {frame} of {frames}",
         "check": "Check",
         "hfr": "HFR",
-        "notGuiding": "not guiding",
         "noFrame": "no picture yet",
         "hfrChange": "{change} % vs. before",
         "guidingLevel": {
           "good": "excellent",
-          "ok": "good",
+          "ok": "okay",
           "poor": "too high",
           "unknown": "scale unknown"
         },
-        "guideGraph": "Guide errors of the last steps",
         "alerts": {
           "devices": "{count} device is no longer connected. | {count} devices are no longer connected.",
           "starLost": "The guider lost its star. Pictures taken now will show trails.",
@@ -5957,8 +5955,6 @@
           "danger": "Please check – the pictures are at risk",
           "waiting": "Running – the first pictures will tell how well"
         },
-        "paused": "paused",
-        "cooling": "Cooling",
         "showDetails": "Show details",
         "hideDetails": "Hide details",
         "focus": "Focus",
@@ -5995,7 +5991,7 @@
             "fix": "If it stays red: the cooler cannot reach the target in this warmth – choose a target a few degrees warmer."
           }
         },
-        "lightsHint": "Tap a light to see what it measures and where its limits are."
+        "statusBarHint": "Guiding, focus and cooling are rated in the status bar below – tap one to see what it means."
       },
       "summary": {
         "finished": {
