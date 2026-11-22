@@ -127,3 +127,34 @@ test('a run where every step was skipped says nothing was connected', () => {
   );
   assert.equal(doneMessageKey({ steps: [] }), 'components.secureObservatory.result.done');
 });
+
+test('checkSupport asks the plugin once until the support is forgotten', async (t) => {
+  reset();
+  const probe = t.mock.method(apiService, 'secureObservatoryStatus', async () => ({
+    supported: true,
+    status: { state: 'idle', steps: [] },
+  }));
+
+  await Promise.all([store.checkSupport(), store.checkSupport()]);
+  await store.checkSupport();
+  assert.equal(store.supported, true);
+  assert.equal(probe.mock.callCount(), 1, 'one request for parallel and later checks');
+
+  store.forgetSupport();
+  assert.equal(store.supported, null);
+  await store.checkSupport();
+  assert.equal(probe.mock.callCount(), 2, 'asks again after a reconnect');
+});
+
+test('a status request without an answer keeps the known support', async (t) => {
+  reset();
+  store.supported = true;
+  t.mock.method(apiService, 'secureObservatoryStatus', async () => ({
+    supported: null,
+    status: null,
+  }));
+
+  await store.refresh();
+
+  assert.equal(store.supported, true);
+});

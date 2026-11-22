@@ -21,8 +21,11 @@
       <Spinner v-if="isDisconnecting" size="sm" />
     </button>
   </div>
-  <!-- End of night: park, close, warm and disconnect on the server -->
-  <div v-if="hasAnyConnection || secureObservatory.running" class="-mt-3 pb-5">
+  <!-- End of night: park, close, warm and disconnect on the server (needs a plugin that has it) -->
+  <div
+    v-if="secureObservatory.supported && (hasAnyConnection || secureObservatory.running)"
+    class="-mt-3 pb-5"
+  >
     <button
       class="tns-btn-secondary gap-2"
       data-testid="end-night"
@@ -419,6 +422,12 @@ import { equipmentInUse, isNativeGuiderInUse, usesGuideCameraSlot } from '@/util
 const { t } = useI18n();
 const store = apiStore();
 const secureObservatory = useSecureObservatoryStore();
+// Re-asked after every reconnect: the plugin may have been updated in between.
+watch(
+  () => store.isTnsPluginConnected,
+  (connected) => connected && secureObservatory.checkSupport(),
+  { immediate: true }
+);
 const guiderStore = useGuiderStore();
 const equipmentStore = useEquipmentStore();
 const isConnecting = ref(false);

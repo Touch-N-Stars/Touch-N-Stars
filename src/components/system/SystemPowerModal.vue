@@ -25,7 +25,7 @@
             {{ $t('components.settings.system.shutdown') }}
           </button>
         </div>
-        <div class="border-t border-line pt-4 space-y-2">
+        <div v-if="secureObservatory.supported" class="border-t border-line pt-4 space-y-2">
           <p class="text-content-muted text-sm text-center">
             {{ $t('components.secureObservatory.powerHint') }}
           </p>
@@ -64,7 +64,11 @@
               {{ $t(`components.rigChecks.${warning.key}`, warning.params) }}
             </li>
           </ul>
-          <button class="tns-btn-secondary gap-2" @click="openEndNight">
+          <button
+            v-if="secureObservatory.supported"
+            class="tns-btn-secondary gap-2"
+            @click="openEndNight"
+          >
             <MoonIcon class="h-5 w-5 shrink-0" />
             {{ $t('components.rigChecks.endNightFirst') }}
           </button>
@@ -128,6 +132,8 @@ const { t } = useI18n();
 const store = apiStore();
 const sequenceStore = useSequenceStore();
 const secureObservatory = useSecureObservatoryStore();
+// The "End night" entries only show once the plugin confirmed it has the endpoint.
+secureObservatory.checkSupport();
 
 const action = ref(props.initialAction);
 

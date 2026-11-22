@@ -53,6 +53,7 @@ export const useSecureObservatoryStore = defineStore('secureObservatory', {
     pollTimer: null,
     // The run whose end was already reported, so a later poll does not report it again.
     reportedStart: null,
+    supportCheck: null,
   }),
 
   getters: {
@@ -68,6 +69,26 @@ export const useSecureObservatoryStore = defineStore('secureObservatory', {
 
     closeDialog() {
       this.showDialog = false;
+    },
+
+    // Asks the plugin once whether it has the endpoint, so the entry points can stay hidden
+    // on an older plugin. Reset by forgetSupport() whenever the backend session ends.
+    checkSupport() {
+      if (this.supported !== null) return Promise.resolve(this.supported);
+      if (!this.supportCheck) {
+        this.supportCheck = this.refresh()
+          .catch((error) => console.warn('[secureObservatory] support check failed', error))
+          .finally(() => {
+            this.supportCheck = null;
+          });
+      }
+      return this.supportCheck;
+    },
+
+    // The plugin may have been updated (or another backend chosen) while the app was away.
+    // A run in progress keeps polling; its next status answer sets the flag again.
+    forgetSupport() {
+      this.supported = null;
     },
 
     async refresh() {
@@ -101,7 +122,8 @@ export const useSecureObservatoryStore = defineStore('secureObservatory', {
 
     apply(result) {
       if (!result) return;
-      this.supported = result.supported;
+      // null = the request got no answer, which says nothing about the plugin.
+      if (result.supported !== null) this.supported = result.supported;
       if (!result.status) return;
 
       const wasRunning = this.running;

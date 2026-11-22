@@ -292,7 +292,8 @@ export default {
   // The shutdown runs on the server (plugin >= this feature), so a phone that drops off
   // Wi-Fi halfway does not leave the mount unparked. Each call resolves to
   // { supported, status }: the error interceptor turns failures into resolved envelopes,
-  // so a 404 here means the plugin is too old for the endpoint.
+  // so a 404 here means the plugin is too old for the endpoint and `supported: null` that
+  // the backend did not answer at all.
   async secureObservatoryStatus() {
     const { API_URL } = getUrls();
     const response = await axios.get(`${API_URL}secure-observatory`, {
@@ -336,7 +337,9 @@ export default {
 };
 
 function secureObservatoryResult(response) {
-  if (response?.status === 404) return { supported: false, status: null };
+  // No HTTP answer at all (network error 0, aborted 499): support is unknown.
+  if (!response?.status || response.status === 499) return { supported: null, status: null };
+  if (response.status === 404) return { supported: false, status: null };
   const data = response?.data;
   if (response?.status !== 200 || !data || data.Success === false || !data.state) {
     return { supported: true, status: null, error: data?.Error || data?.error || null };
