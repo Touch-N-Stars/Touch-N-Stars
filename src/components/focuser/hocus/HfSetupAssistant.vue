@@ -76,7 +76,7 @@
 
         <!-- 4. Rough focus by hand -->
         <div v-else-if="step === 'rough'" class="flex flex-col gap-3">
-          <HfRoughFocusPreview />
+          <HfRoughFocusPreview v-model:samples="handSamples" />
           <MoveFocuser />
           <ButtonsFastChangePositon />
         </div>
@@ -177,13 +177,7 @@ import { useI18n } from 'vue-i18n';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
-import {
-  evaluateRun,
-  historyEntryId,
-  historySamples,
-  imageScale,
-  suggestPixelScalePreset,
-} from '@/utils/hocusFocusAdvisor';
+import { evaluateRun, imageScale, suggestPixelScalePreset } from '@/utils/hocusFocusAdvisor';
 import Modal from '@/components/helpers/Modal.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import MoveFocuser from '@/components/focuser/MoveFocuser.vue';
@@ -257,23 +251,17 @@ const suggestedLabel = computed(() => {
 });
 
 // --- 4. Rough focus ----------------------------------------------------------------------
-// Frames taken before the rough-focus step are not hand-focus samples.
-const roughIgnoredFrames = ref(new Set());
+// The frames of the last visit to this step; the step-size measurement starts from them.
+const handSamples = ref([]);
 watch(
   () => step.value === 'rough',
   (isRough) => {
-    if (!isRough) return;
-    roughIgnoredFrames.value = new Set(
-      (Array.isArray(store.imageHistoryInfo) ? store.imageHistoryInfo : []).map(historyEntryId)
-    );
+    if (isRough) handSamples.value = [];
   }
 );
 
 // --- 5. Measure --------------------------------------------------------------------------
 const probeRunning = ref(false);
-const handSamples = computed(() =>
-  historySamples(store.imageHistoryInfo, roughIgnoredFrames.value)
-);
 
 // --- 6. Run ------------------------------------------------------------------------------
 const running = computed(() => !!store.focuserAfInfo?.autofocus_running);

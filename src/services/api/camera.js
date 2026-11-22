@@ -36,6 +36,13 @@ export default {
     return simpleGetRequest(`${BASE_URL}/equipment/camera/capture/statistics/full`);
   },
 
+  // Upstream ninaAPI: star detection rerun on the stretched preview PNG of the last capture, so
+  // its HFR differs from the raw-image value of getCaptureStatisticsFull() (PINS only).
+  async getLastCaptureStatistics() {
+    const { BASE_URL } = getUrls();
+    return simpleGetRequest(`${BASE_URL}/equipment/camera/capture/statistics`);
+  },
+
   async getPreparedImageStatistics() {
     const { BASE_URL } = getUrls();
     return simpleGetRequest(`${BASE_URL}/prepared-image/statistics`);
