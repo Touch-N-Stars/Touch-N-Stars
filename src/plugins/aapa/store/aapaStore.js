@@ -6,7 +6,7 @@ import { apiStore } from '@/store/store';
 import { useTppaStore } from '@/store/tppaStore';
 import apiService from '@/services/apiService';
 import websocketTppa from '@/services/websocketTppa';
-import { buildTppaStartMessage, unparkMountForTppa } from '@/utils/tppaStart';
+import { buildTppaStartMessage, slewToTppaStart, unparkMountForTppa } from '@/utils/tppaStart';
 import {
   DEFAULT_WS_PORT,
   LOG_LIMIT,
@@ -198,7 +198,16 @@ export const useAapaStore = defineStore('aapaStore', {
 
       await unparkMountForTppa(api);
       if (this.assist !== 'startingTppa') return;
-      const message = buildTppaStartMessage(useTppaStore().settings, api);
+      let startSettings;
+      try {
+        startSettings = await slewToTppaStart(useTppaStore().settings, api);
+      } catch (error) {
+        console.error('Slew to the TPPA start position failed:', error);
+        if (this.assist === 'startingTppa') this.abortAssist('tppaStartSlewFailed');
+        return;
+      }
+      if (this.assist !== 'startingTppa') return;
+      const message = buildTppaStartMessage(startSettings, api);
       websocketTppa.sendMessage(JSON.stringify(message));
       this.tppaStartedByUs = true;
       clearTimeout(assistTimer);

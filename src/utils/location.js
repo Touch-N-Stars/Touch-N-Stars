@@ -4,9 +4,10 @@ import { Geolocation } from '@capacitor/geolocation';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
+import { hasProfileLocation, syncDirectionForSelect } from '@/utils/profileLocation';
 
 // Pure, so code without stores (and its tests) can use it too.
-export { hasProfileLocation } from '@/utils/profileLocation';
+export { hasProfileLocation, syncDirectionForSelect } from '@/utils/profileLocation';
 
 export const latitude = ref(0);
 export const longitude = ref(0);
@@ -131,9 +132,12 @@ export function useLocationStore() {
         elevation: settings.Elevation ?? null,
       };
 
-      // Load current sync direction; normalise PROMPT → NOSYNC for the dropdown
       const raw = store.profileInfo?.TelescopeSettings?.TelescopeLocationSyncDirection;
-      syncDirection.value = raw && raw !== 'PROMPT' ? raw : 'NOSYNC';
+      syncDirection.value = syncDirectionForSelect(
+        raw,
+        store.isPINS,
+        hasProfileLocation(store.profileInfo)
+      );
     },
 
     /**

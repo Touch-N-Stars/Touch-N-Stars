@@ -36,11 +36,17 @@
             <ErrorCircle />
           </div>
           <div class="flex gap-2">
-            <button class="tns-btn-primary" @click="startAlignment" :disabled="tppaStore.isRunning">
+            <button
+              class="tns-btn-primary"
+              @click="startAlignment"
+              :disabled="tppaStore.isRunning || movingToStart"
+            >
               {{
-                tppaStore.isRunning
-                  ? $t('components.tppa.running')
-                  : $t('components.tppa.start_alignment')
+                movingToStart
+                  ? $t('components.tppa.movingToStart')
+                  : tppaStore.isRunning
+                    ? $t('components.tppa.running')
+                    : $t('components.tppa.start_alignment')
               }}
             </button>
             <ButtonPause class="w-28" v-if="tppaStore.isRunning" />
@@ -370,7 +376,7 @@ import QuickAccessButton from '@/components/helpers/QuickAccessButton.vue';
 import moveAxis from '@/components/mount/moveAxis.vue';
 import { Cog6ToothIcon } from '@heroicons/vue/24/outline';
 import { timeSync } from '@/utils/timeSync';
-import { buildTppaStartMessage, unparkMountForTppa } from '@/utils/tppaStart';
+import { buildTppaStartMessage, slewToTppaStart, unparkMountForTppa } from '@/utils/tppaStart';
 import apiService from '@/services/apiService';
 import { useLogStore } from '@/store/logStore';
 import { useAstapDatabases } from '@/composables/useAstapDatabases';
@@ -386,6 +392,9 @@ const logStore = useLogStore();
 const astap = useAstapDatabases();
 const { active: simpleModeActive } = useSimpleMode();
 const startStop = ref(false);
+// The app slews to the start position before TPPA runs, see slewToTppaStart().
+const movingToStart = ref(false);
+let startCancelled = false;
 const isConnected = ref(false);
 const showSettings = ref(false);
 const showImageModal = ref(false);
@@ -546,6 +555,12 @@ const problemText = computed(() => {
       body: problem.detail,
     };
   }
+  if (problem?.key === 'startSlewFailed') {
+    return {
+      title: t('components.tppa.problem.cannotStart'),
+      body: t('components.tppa.problem.startSlewFailed'),
+    };
+  }
   if (problem?.key === 'notSent') {
     return {
       title: t('components.tppa.problem.cannotStart'),
@@ -606,6 +621,20 @@ async function startAlignment() {
 
   await unparkMountForTppa(store);
 
+  let startSettings = tppaStore.settings;
+  startCancelled = false;
+  movingToStart.value = true;
+  try {
+    startSettings = await slewToTppaStart(tppaStore.settings, store);
+  } catch (error) {
+    console.error('Slew to the TPPA start position failed:', error);
+    if (!startCancelled) tppaStore.problem = { key: 'startSlewFailed' };
+    return;
+  } finally {
+    movingToStart.value = false;
+  }
+  if (startCancelled) return;
+
   // A start sent into a closed socket was lost without a word (seen right after a stop: the
   // page showed "running" and NINA never heard of it). Dial first, and only report "running"
   // when the message actually went out.
@@ -617,7 +646,7 @@ async function startAlignment() {
     }
   }
 
-  const message = buildTppaStartMessage(tppaStore.settings, store);
+  const message = buildTppaStartMessage(startSettings, store);
   console.log('Sending TPPA start message:', message);
   startLogTime = newestLogTime(logStore.LogsInfo.logs);
   if (!websocketService.sendMessage(JSON.stringify(message))) {
@@ -645,6 +674,11 @@ function resetErrors() {
 }
 
 function stopAlignment() {
+  if (movingToStart.value) {
+    // TPPA has not been told anything yet: stop the app's own slew and do not start.
+    startCancelled = true;
+    apiService.slewStop().catch((error) => console.error('Stopping the slew failed:', error));
+  }
   console.log("Sending 'stop-alignment' to the server");
   if (tppaStore.isRunning) tppaStore.stoppedAfterRun = true;
   clearProblems();

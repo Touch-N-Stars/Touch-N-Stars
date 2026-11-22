@@ -228,11 +228,13 @@ const steps = computed(() => [
   // Set the rig's regional defaults before Wi-Fi regulatory settings are used.
   // These steps talk to the PINS daemon on port 8000.
   ...(store.isPINS ? [step('localization'), step('wifi'), step('updates')] : []),
-  // Mount before location: the location sync needs a connected mount.
+  // Location before mount: NINA syncs the location when the mount connects. The other way
+  // round the first connect sent the still empty profile location (0°/0°) to the mount and
+  // overwrote the location it already knew (e.g. from an ASIAIR).
+  step('location'),
   step('mount'),
   // IndiMaxSlewRateDps is an INDI driver limit and meaningless without it.
   ...(store.isPINS ? [step('slewRate')] : []),
-  step('location'),
   // Telescope before camera on purpose: the camera step's image-scale readout
   // needs TelescopeSettings.FocalLength to be set.
   step('telescope'),

@@ -1635,7 +1635,8 @@
         "noSync": {
           "label": "No sync"
         },
-        "recommended": "Recommended"
+        "recommended": "Recommended",
+        "noLocationHint": "Your location is not set yet. “Sync to telescope” would send 0° / 0° to the mount and overwrite the location it knows. Choose “No sync” for now: once you set your location, the app sends it to the mount."
       },
       "control": {
         "park": "Park",
@@ -5010,6 +5011,7 @@
       "warn_east_west_title": "Correction field within {deg}° of East/West",
       "warn_east_west_body": "The current field is within 5° of exact East or West. If the live solution is unstable, slew to a field farther from East/West and rerun.",
       "running": "RUNNING",
+      "movingToStart": "Moving to the start…",
       "plate_solve_start": "Platesolve start",
       "plate_solve_ok": "Platesolve successful",
       "plate_solve_error": "Platesolve error",
@@ -5071,7 +5073,8 @@
         "refused": "The rig refused to start the polar alignment",
         "noLocation": "The rig does not know its location. Set latitude and longitude first, the calculation depends on them.",
         "noDatabase": "No star map is installed, so no picture can be plate solved. Install one and start again.",
-        "notSent": "The start did not reach the rig. Check the connection and tap Start again."
+        "notSent": "The start did not reach the rig. Check the connection and tap Start again.",
+        "startSlewFailed": "The telescope could not move to the start position. Check the mount and tap Start again."
       },
       "trackingOffAfterStop": "Polar alignment switched tracking off when it stopped.",
       "resumeTracking": "Turn tracking back on",
@@ -6383,6 +6386,7 @@
         "errors": {
           "tppaUnavailable": "The TPPA connection could not be opened.",
           "tppaNoResponse": "TPPA did not respond to the start request.",
+          "tppaStartSlewFailed": "The telescope could not move to the start position of the polar alignment.",
           "tppaError": "TPPA reported an error. Check camera, mount and plate solver.",
           "tppaSilent": "TPPA has not sent anything for two minutes. TPPA and the Auto-Pilot were stopped.",
           "autoPilotNotStarted": "The Auto-Pilot did not start. Check the AAPA log; TPPA was stopped if it was started here.",

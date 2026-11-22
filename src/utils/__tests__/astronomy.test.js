@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const {
+  altAzToEquatorial,
   angularSeparationDeg,
   equatorialToAltAz,
   getMoonAltitudeDeg,
@@ -187,4 +188,32 @@ test('rise/transit/set reports circumpolar and never-rising objects explicitly',
 
   assert.equal(getRiseTransitSet(NaN, 0, start, 50, 10), null);
   assert.equal(getRiseTransitSet(10, 0, 'not a date', 50, 10), null);
+});
+
+test('altAzToEquatorial inverts equatorialToAltAz', () => {
+  const date = new Date('2026-11-22T20:00:00Z');
+  for (const [lat, lon] of [
+    [48.137, 11.575],
+    [-33.9, 18.4],
+  ]) {
+    for (const [alt, az] of [
+      [50, 1],
+      [30, 120],
+      [10, 250],
+      [70, 181],
+    ]) {
+      const { raDeg, decDeg } = altAzToEquatorial(alt, az, date, lat, lon);
+      const back = equatorialToAltAz(raDeg, decDeg, date, lat, lon);
+      assert.ok(Math.abs(back.altDeg - alt) < 1e-6, `alt ${alt}/${az} at ${lat}`);
+      assert.ok(
+        Math.abs(((back.azDeg - az + 540) % 360) - 180) < 1e-6,
+        `az ${alt}/${az} at ${lat}`
+      );
+    }
+  }
+});
+
+test('altAzToEquatorial puts the northern pole altitude at the celestial pole', () => {
+  const { decDeg } = altAzToEquatorial(48, 0, new Date('2026-11-22T20:00:00Z'), 48, 11);
+  assert.ok(Math.abs(decDeg - 90) < 1e-6);
 });

@@ -68,6 +68,25 @@ export function equatorialToAltAz(raDeg, decDeg, date, latDeg, lonDeg) {
   return { altDeg: toDeg(alt), azDeg: toDeg(az) };
 }
 
+// Altitude/azimuth (deg, azimuth from north towards east) at a given time and site -> RA/Dec
+// (deg) of date. The inverse of equatorialToAltAz, without refraction.
+export function altAzToEquatorial(altDeg, azDeg, date, latDeg, lonDeg) {
+  const alt = toRad(altDeg);
+  const az = toRad(azDeg);
+  const lat = toRad(latDeg);
+
+  const sinDec = Math.sin(alt) * Math.sin(lat) + Math.cos(alt) * Math.cos(lat) * Math.cos(az);
+  const dec = Math.asin(clampValue(sinDec, -1, 1));
+  // Hour angle, positive west of the meridian.
+  const hourAngle = Math.atan2(
+    -Math.sin(az) * Math.cos(alt),
+    Math.cos(lat) * Math.sin(alt) - Math.sin(lat) * Math.cos(alt) * Math.cos(az)
+  );
+  const raDeg = normalizeDeg360(localSiderealTimeDeg(date, lonDeg) - toDeg(hourAngle));
+
+  return { raDeg, decDeg: toDeg(dec) };
+}
+
 export function eclipticToEquatorial(lambdaDeg, betaDeg, date) {
   const epsDeg = 23.439291 - 0.00000036 * daysSinceJ2000(date);
 

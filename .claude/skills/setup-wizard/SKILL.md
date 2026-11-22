@@ -20,7 +20,14 @@ entries — read them before reordering. The load-bearing ones:
 
 - **Localization before Wi-Fi**, so the regulatory country, timezone, locale and
   remote keyboard layout are set before networking is configured.
-- **Mount before location**, because the location sync needs a connected mount.
+- **Location before mount**, because NINA syncs the location when the mount connects.
+  The other way round the first connect sent the empty profile location (0°/0°) to the
+  mount and overwrote the location it already knew. On PINS the step's dropdown shows
+  `PROMPT` as "sync to telescope" (`syncDirectionForSelect`), so the connect in the next
+  step pushes the new location without the sync dialog. Without a profile location the
+  dialog (`LocationSyncModal`) recommends "no sync" instead; while the profile still has no
+  location the dropdown shows that NOSYNC as "sync to telescope" too, so saving the first
+  location reconnects a connected mount and NINA pushes it (NINA syncs only on connect).
 - **Telescope before camera**, because the camera step's image-scale readout
   needs `TelescopeSettings.FocalLength`.
 - **Guiding after mount and before camera**, because PHD2 needs a connected

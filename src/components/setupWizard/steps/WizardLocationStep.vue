@@ -35,7 +35,8 @@
         </p>
       </div>
 
-      <div class="rounded-control bg-surface-2 p-3">
+      <!-- The mount is connected in the next step; until then this card has nothing to show. -->
+      <div v-if="mountCoords.connected" class="rounded-control bg-surface-2 p-3">
         <div class="flex items-center justify-between mb-2 gap-2">
           <p class="text-xs font-medium text-content-muted">
             {{ t('components.setupWizard.location.mountCoords') }}
@@ -175,6 +176,7 @@ import {
   formatCoord,
   hasProfileLocation,
   parseCoordinate,
+  syncDirectionForSelect,
 } from '@/utils/location';
 
 const { t } = useI18n();
@@ -219,8 +221,10 @@ const isDirty = computed(() => {
     if (value === null) return false;
     return saved === null || Math.abs(value - Number(saved)) > COORD_TOLERANCE / 10;
   });
+  // Compared through the same mapping that filled the dropdown: its default for PROMPT is not
+  // a change. Otherwise skipping the step would save 0/0 together with "sync to telescope".
   const raw = store.profileInfo?.TelescopeSettings?.TelescopeLocationSyncDirection;
-  const savedDirection = raw && raw !== 'PROMPT' ? raw : 'NOSYNC';
+  const savedDirection = syncDirectionForSelect(raw, store.isPINS, hasLocation.value);
   return fieldsDiffer || (store.isPINS && syncDirection.value !== savedDirection);
 });
 
