@@ -4576,8 +4576,8 @@
             "description": "拍摄图像并移动调焦器，直到星点又小又圆、HFR 尽可能低。"
           },
           "measure": {
-            "title": "步长",
-            "description": "测量调焦器移动时星点变大的速度，并为自动对焦建议步长。调焦器以逐渐增大的步数向外移动，最后返回起始位置。"
+            "title": "步长与间隙",
+            "description": "测量调焦器移动时星点变大的速度，以及调焦器换向时丢失的步数，并为自动对焦建议步长和 NINA 的间隙补偿。调焦器先大幅后退，使每个位置都从同一侧到达，然后向前穿过焦点，最后返回起始位置。"
           },
           "run": {
             "title": "测试运行",
@@ -4633,12 +4633,14 @@
         },
         "measure": {
           "current": "当前：步长 {stepSize} · 每侧 {offsetSteps} 个点",
-          "start": "测量步长",
+          "start": "测量步长和间隙",
           "restart": "重新测量",
           "stop": "停止",
           "phase": {
-            "reference": "正在当前位置拍摄图像 …",
-            "probe": "正在向外移动并拍摄图像 …",
+            "scan": "正在寻找焦点并测量星点变大的速度 …",
+            "calibrate": "正在焦点旁拍摄图像 …",
+            "walkIn": "正在向焦点移动，直到星点变小 …",
+            "walkOut": "正在向外移回，直到星点变大 …",
             "return": "正在返回起始位置 …"
           },
           "reference": "起始位置：HFR {hfr} px · {stars} 颗星",
@@ -4654,6 +4656,32 @@
             "timeout": "调焦器或相机未及时响应。",
             "error": "测量失败。",
             "returnFailed": "调焦器无法返回起始位置。请在下次运行前检查其位置。"
+          }
+        },
+        "backlash": {
+          "current": "当前补偿：{model} · 内向间隙 {backlashIn} · 外向间隙 {backlashOut}",
+          "lopsided": "NINA 的补偿设为绝对，且内外数值不同（内向 {backlashIn}，外向 {backlashOut}）。这样 NINA 每次换向都会平移其位置刻度，导致测量失真。请先将两者都设为 0，测量完成后会建议新值。",
+          "resetCompensation": "将内向和外向间隙设为 0",
+          "calibration": "距焦点 {offset} 步：HFR {hfr} px · {stars} 颗星",
+          "walkIn": "向内 {steps} 步：HFR {hfr} px · {stars} 颗星",
+          "walkOut": "向外移回 {steps} 步：HFR {hfr} px · {stars} 颗星",
+          "measured": "测得间隙：约 {steps} 步。",
+          "none": "你的调焦器没有影响自动对焦的间隙。",
+          "covered": "当前补偿已覆盖间隙。",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "使用超调时，调焦器会越过目标这么多步再返回，因此每个位置都从同一侧到达。",
+          "apply": "应用",
+          "applied": "已应用。调焦器下一次移动将使用新的补偿。",
+          "refocus": "新的补偿会使焦点在调焦器刻度上最多偏移一个间隙量。测试运行前请再次检查粗调对焦。",
+          "toRoughFocus": "返回粗调对焦",
+          "failure": {
+            "noRoom": "焦点旁剩余行程不足，无法测量间隙。请将调焦器移到更靠近其行程中间的位置，然后重新测量。",
+            "notInFocus": "扫描定位的焦点有误：星点在调焦器位置 {position} 最清晰。请重新测量。",
+            "lost": "某张图像中的星点太少。请检查粗调对焦、曝光和天空。",
+            "flat": "焦点旁的星点没有变大，因此无法从中读出间隙。请检查粗调对焦并重新测量。",
+            "tooLarge": "移动 {reach} 步后星点仍没有变化。请检查调焦器是否真的在移动，或手动输入一个大致的值后重新测量。",
+            "overcompensated": "换向后调焦器移动得远超要求。当前补偿可能过大：请减小后重新测量。",
+            "unsteady": "图像之间的星点大小跳动。请等待更稳定的条件后重新测量。"
           }
         }
       }

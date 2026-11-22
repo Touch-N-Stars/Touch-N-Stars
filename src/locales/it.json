@@ -4576,8 +4576,8 @@
             "description": "Scatta immagini e muovi il focheggiatore finché le stelle sono piccole e rotonde e l’HFR è il più basso possibile."
           },
           "measure": {
-            "title": "Dimensione del passo",
-            "description": "Misura quanto velocemente crescono le stelle quando il focheggiatore si muove e suggerisce una dimensione del passo per l'autofocus. Il focheggiatore si sposta verso l'esterno a passi crescenti e alla fine torna alla posizione iniziale."
+            "title": "Dimensione del passo e gioco",
+            "description": "Misura quanto velocemente crescono le stelle quando il focheggiatore si muove e quanti passi perde quando cambia direzione, e suggerisce una dimensione del passo per l'autofocus e la compensazione del gioco di NINA. Il focheggiatore prima arretra di un buon tratto, così ogni posizione viene raggiunta dallo stesso lato, poi avanza attraverso il fuoco e alla fine torna alla posizione iniziale."
           },
           "run": {
             "title": "Prova",
@@ -4633,12 +4633,14 @@
         },
         "measure": {
           "current": "Attuale: dimensione del passo {stepSize} · {offsetSteps} punti per lato",
-          "start": "Misura dimensione del passo",
+          "start": "Misura dimensione del passo e gioco",
           "restart": "Misura di nuovo",
           "stop": "Ferma",
           "phase": {
-            "reference": "Ripresa di un fotogramma nella posizione attuale …",
-            "probe": "Spostamento verso l'esterno e ripresa di un fotogramma …",
+            "scan": "Ricerca del fuoco e misura di quanto velocemente crescono le stelle …",
+            "calibrate": "Acquisizione di immagini accanto al fuoco …",
+            "walkIn": "Movimento verso il fuoco finché le stelle si rimpiccioliscono …",
+            "walkOut": "Ritorno verso l'esterno finché le stelle crescono …",
             "return": "Ritorno alla posizione iniziale …"
           },
           "reference": "Posizione iniziale: HFR {hfr} px · {stars} stelle",
@@ -4654,6 +4656,32 @@
             "timeout": "Il focheggiatore o la camera non ha risposto in tempo.",
             "error": "La misura non è riuscita.",
             "returnFailed": "Il focheggiatore non è potuto tornare alla posizione iniziale. Controlla la sua posizione prima del prossimo ciclo."
+          }
+        },
+        "backlash": {
+          "current": "Compensazione attuale: {model} · Gioco in ingresso {backlashIn} · Gioco in uscita {backlashOut}",
+          "lopsided": "La compensazione di NINA è impostata su Assoluto con valori diversi (ingresso {backlashIn}, uscita {backlashOut}). NINA sposta allora la sua scala di posizione a ogni cambio di direzione, falsando la misura. Imposta prima entrambi a 0; la misura suggerirà poi nuovi valori.",
+          "resetCompensation": "Imposta il gioco in ingresso e in uscita a 0",
+          "calibration": "{offset} passi dal fuoco: HFR {hfr} px · {stars} stelle",
+          "walkIn": "{steps} passi verso l'interno: HFR {hfr} px · {stars} stelle",
+          "walkOut": "{steps} passi di ritorno verso l'esterno: HFR {hfr} px · {stars} stelle",
+          "measured": "Gioco misurato: circa {steps} passi.",
+          "none": "Il tuo focheggiatore non ha un gioco che conti per l'autofocus.",
+          "covered": "La compensazione attuale copre il gioco.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Con Superamento, il focheggiatore oltrepassa l'obiettivo di questo valore e torna indietro, così ogni posizione viene raggiunta dallo stesso lato.",
+          "apply": "Applica",
+          "applied": "Applicato. Il prossimo movimento del focheggiatore usa la nuova compensazione.",
+          "refocus": "La nuova compensazione sposta il fuoco sulla scala del focheggiatore fino al valore del gioco. Ricontrolla la messa a fuoco approssimativa prima della prova.",
+          "toRoughFocus": "Torna alla messa a fuoco approssimativa",
+          "failure": {
+            "noRoom": "Accanto al fuoco non resta abbastanza corsa per misurare il gioco. Sposta il focheggiatore più vicino al centro della sua corsa e misura di nuovo.",
+            "notInFocus": "La scansione ha collocato male il fuoco: le stelle erano più nitide alla posizione {position} del focheggiatore. Misura di nuovo.",
+            "lost": "Troppe poche stelle in un'immagine. Controlla la messa a fuoco approssimativa, l'esposizione e il cielo.",
+            "flat": "Le stelle non sono cresciute accanto al fuoco, quindi il gioco non si può ricavare. Controlla la messa a fuoco approssimativa e misura di nuovo.",
+            "tooLarge": "Le stelle non sono cambiate nemmeno dopo {reach} passi. Controlla che il focheggiatore si muova davvero, oppure inserisci a mano un valore approssimativo e misura di nuovo.",
+            "overcompensated": "Subito dopo il cambio di direzione il focheggiatore si è spostato molto più del richiesto. La compensazione attuale è probabilmente troppo grande: riducila e misura di nuovo.",
+            "unsteady": "La dimensione delle stelle è saltata tra un'immagine e l'altra. Attendi condizioni più stabili e misura di nuovo."
           }
         }
       }

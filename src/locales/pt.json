@@ -4576,8 +4576,8 @@
             "description": "Tire imagens e mova o focalizador até as estrelas ficarem pequenas e redondas e o HFR ser o mais baixo possível."
           },
           "measure": {
-            "title": "Tamanho do passo",
-            "description": "Mede a rapidez com que as estrelas crescem quando o focalizador se move e sugere um tamanho do passo para o autofoco. O focalizador move-se para fora em passos crescentes e no fim regressa à posição inicial."
+            "title": "Tamanho do passo e folga",
+            "description": "Mede a rapidez com que as estrelas crescem quando o focalizador se move e quantos passos ele perde ao mudar de sentido, e sugere um tamanho do passo para o autofoco e a compensação de folga do NINA. O focalizador primeiro recua bastante para que cada posição seja alcançada do mesmo lado, depois avança através do foco e, no fim, regressa à posição inicial."
           },
           "run": {
             "title": "Teste",
@@ -4633,12 +4633,14 @@
         },
         "measure": {
           "current": "Atual: tamanho do passo {stepSize} · {offsetSteps} pontos por lado",
-          "start": "Medir tamanho do passo",
+          "start": "Medir tamanho do passo e folga",
           "restart": "Medir novamente",
           "stop": "Parar",
           "phase": {
-            "reference": "A captar uma imagem na posição atual …",
-            "probe": "A mover para fora e a captar uma imagem …",
+            "scan": "A procurar o foco e a medir a rapidez com que as estrelas crescem …",
+            "calibrate": "A tirar imagens ao lado do foco …",
+            "walkIn": "A mover em direção ao foco até as estrelas diminuírem …",
+            "walkOut": "A voltar para fora até as estrelas crescerem …",
             "return": "A regressar à posição inicial …"
           },
           "reference": "Posição inicial: HFR {hfr} px · {stars} estrelas",
@@ -4654,6 +4656,32 @@
             "timeout": "O focalizador ou a câmara não respondeu a tempo.",
             "error": "A medição falhou.",
             "returnFailed": "O focalizador não conseguiu regressar à posição inicial. Verifica a sua posição antes da próxima execução."
+          }
+        },
+        "backlash": {
+          "current": "Compensação atual: {model} · Folga (entrada) {backlashIn} · Folga (saída) {backlashOut}",
+          "lopsided": "A compensação do NINA está em Absoluto com valores diferentes (entrada {backlashIn}, saída {backlashOut}). O NINA desloca então a sua escala de posição a cada mudança de sentido, o que estraga a medição. Põe ambos a 0 primeiro; depois a medição sugere valores novos.",
+          "resetCompensation": "Pôr a folga de entrada e de saída a 0",
+          "calibration": "{offset} passos do foco: HFR {hfr} px · {stars} estrelas",
+          "walkIn": "{steps} passos para dentro: HFR {hfr} px · {stars} estrelas",
+          "walkOut": "{steps} passos de volta para fora: HFR {hfr} px · {stars} estrelas",
+          "measured": "Folga medida: cerca de {steps} passos.",
+          "none": "O teu focalizador não tem uma folga que importe para o autofoco.",
+          "covered": "A compensação atual cobre a folga.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Com Ultrapassar, o focalizador passa do alvo neste valor e regressa, para que cada posição seja alcançada do mesmo lado.",
+          "apply": "Aplicar",
+          "applied": "Aplicado. O próximo movimento do focalizador usa a nova compensação.",
+          "refocus": "A nova compensação desloca o foco na escala do focalizador até ao valor da folga. Verifica de novo a focagem aproximada antes do teste.",
+          "toRoughFocus": "Voltar à focagem aproximada",
+          "failure": {
+            "noRoom": "Não resta curso suficiente ao lado do foco para medir a folga. Move o focalizador para mais perto do meio do seu curso e mede novamente.",
+            "notInFocus": "O varrimento situou mal o foco: as estrelas estavam mais nítidas na posição {position} do focalizador. Mede novamente.",
+            "lost": "Poucas estrelas numa imagem. Verifica a focagem aproximada, a exposição e o céu.",
+            "flat": "As estrelas não cresceram ao lado do foco, por isso não é possível ler a folga. Verifica a focagem aproximada e mede novamente.",
+            "tooLarge": "As estrelas não mudaram nem depois de {reach} passos. Verifica se o focalizador se move mesmo, ou introduz à mão um valor aproximado e mede novamente.",
+            "overcompensated": "Logo após a mudança de sentido, o focalizador moveu-se muito mais do que o pedido. A compensação atual é provavelmente demasiado grande: reduz-a e mede novamente.",
+            "unsteady": "O tamanho das estrelas saltou entre imagens. Espera por condições mais estáveis e mede novamente."
           }
         }
       }

@@ -4617,8 +4617,8 @@
             "description": "Take images and move the focuser until the stars are small and round and the HFR is as low as possible."
           },
           "measure": {
-            "title": "Step size",
-            "description": "Measures how quickly the stars grow when the focuser moves, and suggests a step size for the autofocus. The focuser moves outwards in growing steps and returns to its start position at the end."
+            "title": "Step size and backlash",
+            "description": "Measures how quickly the stars grow when the focuser moves and how many steps it loses when it changes direction, and suggests a step size for the autofocus and NINA's backlash compensation. The focuser first moves back a long way so that every position is reached from the same side, then forward through focus, and returns to its start position at the end."
           },
           "run": {
             "title": "Test run",
@@ -4674,12 +4674,14 @@
         },
         "measure": {
           "current": "Current: step size {stepSize} · {offsetSteps} points per side",
-          "start": "Measure step size",
+          "start": "Measure step size and backlash",
           "restart": "Measure again",
           "stop": "Stop",
           "phase": {
-            "reference": "Taking a frame at the current position …",
-            "probe": "Moving out and taking a frame …",
+            "scan": "Searching focus and measuring how quickly the stars grow …",
+            "calibrate": "Taking frames beside focus …",
+            "walkIn": "Moving towards focus until the stars shrink …",
+            "walkOut": "Moving back out until the stars grow …",
             "return": "Returning to the start position …"
           },
           "reference": "Start position: HFR {hfr} px · {stars} stars",
@@ -4695,6 +4697,32 @@
             "timeout": "The focuser or the camera did not respond in time.",
             "error": "The measurement failed.",
             "returnFailed": "The focuser could not be moved back to its start position. Check its position before the next run."
+          }
+        },
+        "backlash": {
+          "current": "Current compensation: {model} · Backlash In {backlashIn} · Backlash Out {backlashOut}",
+          "lopsided": "NINA's compensation is set to Absolute with different values (In {backlashIn}, Out {backlashOut}). NINA then shifts its position scale on every change of direction, which spoils the measurement. Set both to 0 first; the measurement suggests new values afterwards.",
+          "resetCompensation": "Set Backlash In and Out to 0",
+          "calibration": "{offset} steps from focus: HFR {hfr} px · {stars} stars",
+          "walkIn": "{steps} steps in: HFR {hfr} px · {stars} stars",
+          "walkOut": "{steps} steps back out: HFR {hfr} px · {stars} stars",
+          "measured": "Measured backlash: about {steps} steps.",
+          "none": "Your focuser shows no backlash that matters for the autofocus.",
+          "covered": "The current compensation covers the backlash.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "With Overshoot, the focuser moves past the target by this amount and comes back, so every position is reached from the same side.",
+          "apply": "Apply",
+          "applied": "Applied. The next focuser move uses the new compensation.",
+          "refocus": "The new compensation shifts where focus sits on the focuser's scale by up to the backlash. Check the rough focus again before the test run.",
+          "toRoughFocus": "Back to rough focus",
+          "failure": {
+            "noRoom": "Not enough travel left beside focus to measure the backlash. Move the focuser closer to the middle of its range and measure again.",
+            "notInFocus": "The scan placed focus wrongly: the stars were sharpest at focuser position {position}. Measure again.",
+            "lost": "Too few stars in a frame. Check the rough focus, the exposure and the sky.",
+            "flat": "The stars did not grow beside focus, so the backlash cannot be read from them. Check the rough focus and measure again.",
+            "tooLarge": "The stars did not change even after {reach} steps. Check that the focuser really moves, or set a rough value by hand and measure again.",
+            "overcompensated": "The focuser moved much further than asked right after the change of direction. The current compensation is probably too large: lower it and measure again.",
+            "unsteady": "The star size jumped between frames. Wait for steadier conditions and measure again."
           }
         }
       }

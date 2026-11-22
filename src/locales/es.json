@@ -4576,8 +4576,8 @@
             "description": "Toma imágenes y mueve el enfocador hasta que las estrellas sean pequeñas y redondas y el HFR sea lo más bajo posible."
           },
           "measure": {
-            "title": "Tamaño del paso",
-            "description": "Mide lo rápido que crecen las estrellas al mover el enfocador y sugiere un tamaño del paso para el autoenfoque. El enfocador se mueve hacia fuera en pasos crecientes y al final vuelve a su posición inicial."
+            "title": "Tamaño del paso y backlash",
+            "description": "Mide lo rápido que crecen las estrellas al mover el enfocador y cuántos pasos pierde al cambiar de sentido, y sugiere un tamaño del paso para el autoenfoque y la compensación de backlash de NINA. El enfocador primero retrocede bastante para que cada posición se alcance desde el mismo lado, luego avanza a través del foco y al final vuelve a la posición inicial."
           },
           "run": {
             "title": "Prueba",
@@ -4633,12 +4633,14 @@
         },
         "measure": {
           "current": "Actual: tamaño del paso {stepSize} · {offsetSteps} puntos por lado",
-          "start": "Medir tamaño del paso",
+          "start": "Medir tamaño del paso y backlash",
           "restart": "Medir de nuevo",
           "stop": "Detener",
           "phase": {
-            "reference": "Tomando una imagen en la posición actual …",
-            "probe": "Moviendo hacia fuera y tomando una imagen …",
+            "scan": "Buscando el foco y midiendo lo rápido que crecen las estrellas …",
+            "calibrate": "Tomando imágenes junto al foco …",
+            "walkIn": "Moviendo hacia el foco hasta que las estrellas se encogen …",
+            "walkOut": "Volviendo hacia afuera hasta que las estrellas crecen …",
             "return": "Volviendo a la posición inicial …"
           },
           "reference": "Posición inicial: HFR {hfr} px · {stars} estrellas",
@@ -4654,6 +4656,32 @@
             "timeout": "El enfocador o la cámara no respondió a tiempo.",
             "error": "La medición falló.",
             "returnFailed": "El enfocador no pudo volver a su posición inicial. Comprueba su posición antes de la próxima ejecución."
+          }
+        },
+        "backlash": {
+          "current": "Compensación actual: {model} · Backlash hacia adentro {backlashIn} · Backlash hacia afuera {backlashOut}",
+          "lopsided": "La compensación de NINA está en Absoluto con valores distintos (adentro {backlashIn}, afuera {backlashOut}). NINA desplaza entonces su escala de posición en cada cambio de sentido, lo que estropea la medición. Pon ambos a 0 primero; después la medición sugiere valores nuevos.",
+          "resetCompensation": "Poner backlash hacia adentro y hacia afuera a 0",
+          "calibration": "{offset} pasos desde el foco: HFR {hfr} px · {stars} estrellas",
+          "walkIn": "{steps} pasos hacia adentro: HFR {hfr} px · {stars} estrellas",
+          "walkOut": "{steps} pasos de vuelta hacia afuera: HFR {hfr} px · {stars} estrellas",
+          "measured": "Backlash medido: unos {steps} pasos.",
+          "none": "Tu enfocador no tiene un backlash que importe para el autoenfoque.",
+          "covered": "La compensación actual cubre el backlash.",
+          "change": "{label}: {from} → {to}",
+          "overshootHint": "Con Sobreimpulso, el enfocador se pasa del objetivo esta cantidad y vuelve, así cada posición se alcanza desde el mismo lado.",
+          "apply": "Aplicar",
+          "applied": "Aplicado. El próximo movimiento del enfocador usa la nueva compensación.",
+          "refocus": "La nueva compensación desplaza el foco en la escala del enfocador hasta el valor del backlash. Vuelve a comprobar el enfoque aproximado antes de la prueba.",
+          "toRoughFocus": "Volver al enfoque aproximado",
+          "failure": {
+            "noRoom": "No queda suficiente recorrido junto al foco para medir el backlash. Mueve el enfocador más cerca del centro de su recorrido y vuelve a medir.",
+            "notInFocus": "El escaneo situó mal el foco: las estrellas eran más nítidas en la posición {position} del enfocador. Vuelve a medir.",
+            "lost": "Demasiadas pocas estrellas en una imagen. Comprueba el enfoque aproximado, la exposición y el cielo.",
+            "flat": "Las estrellas no crecieron junto al foco, así que no se puede leer el backlash. Comprueba el enfoque aproximado y vuelve a medir.",
+            "tooLarge": "Las estrellas no cambiaron ni después de {reach} pasos. Comprueba que el enfocador realmente se mueve, o introduce un valor aproximado a mano y vuelve a medir.",
+            "overcompensated": "Justo después del cambio de sentido, el enfocador se movió mucho más de lo pedido. La compensación actual probablemente es demasiado grande: redúcela y vuelve a medir.",
+            "unsteady": "El tamaño de las estrellas saltó entre imágenes. Espera condiciones más estables y vuelve a medir."
           }
         }
       }

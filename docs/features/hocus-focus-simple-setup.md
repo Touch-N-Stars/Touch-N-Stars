@@ -46,6 +46,20 @@ and offers the fix with one tap. Builds on
    given the backend restarts during the assistant, it shows the error and can be continued.
 7. The evaluation logic lives in `src/utils/hocusFocusAdvisor.js` and is covered by unit tests
    with five run fixtures: good, flat, steep, not bracketed, too few stars.
+8. The step-size step measures step size and backlash in one run and suggests both:
+   `FocuserSettings-AutoFocusStepSize`/`-InitialOffsetSteps`, and `-BacklashIn`/`-BacklashOut`
+   for the active compensation model (ABSOLUTE: one value per reversal; OVERSHOOT: one side,
+   outward by default, with margin). Every frame is reached moving the same way after a preload
+   behind it, and the scan finds focus itself instead of taking the start as focus, so neither
+   result depends on how the rough focus was approached. After the scan, three calibration frames
+   beside the found focus and a walk towards focus and back out measure the backlash. It reads
+   what is left over the current compensation, so a compensation that already fits leads to no
+   suggestion; NINA's compensation stays on. Only ABSOLUTE with different In and Out values
+   blocks the start (NINA shifts its position scale by the difference on every reversal); a tap
+   sets both to 0. It starts only on a tap, writes only on "Apply", never changes the model (NINA
+   picks that up on reconnect only) and returns the focuser to its start position. After applying
+   the backlash it asks to check the rough focus again: the compensation moves focus on the
+   focuser's scale by up to the backlash.
 
 ## Heuristics (to tune on real runs)
 
@@ -59,6 +73,9 @@ and offers the fix with one tap. Builds on
 | Too few stars             | `AcceptedStarCountMax` < 15 → exposure × 2, narrowband-specific text        |
 | Bad fit                   | hyperbolic R² below the HF threshold → check exposure/stars; never lower R² |
 | Worse after the run       | final HFR > 1.1 × initial → hint on backlash, no fix                        |
+| Backlash measurement      | frames at 0.5/0.75/1 × half sweep, approaches from 1.5 × further out        |
+| Backlash relevant         | ≥ 0.1 × AF step size                                                        |
+| Overshoot value           | measured backlash × 1.25                                                    |
 
 Target from the HF docs: about four points per side, outer stars about 3× as wide as in focus.
 The thresholds live as named constants in `src/utils/hocusFocusAdvisor.js`.
@@ -85,7 +102,16 @@ thresholds; those need runs on real optics.
 ## Open questions
 
 - `ReverseInitialDirection` is now exposed via the AutoFocus options (toggle in the basic card), but the assistant
-  still has no SCT/backlash question that sets it. (user)
+  still has no SCT question that sets it. (user)
+- Simulated with gear slack 0–1000 and either approach side of the rough focus: step size
+  within ±15 % and backlash within ±10 % at ±0.2 px HFR jitter. On the docker Sky Simulator
+  (`backlash=100`, NINA compensation off) three runs (rough focus from inside, from outside,
+  75 steps off focus) all gave step size 6 and backlash 99–100. The simulator renders HFR in
+  ~10-step stairs and loses steps on every reversal instead of having gear slack, so the case
+  "compensation already set" needs runs on real focusers. The scan preload has to exceed the
+  backlash; 2 % of the travel is a guess to check on real focusers. (user)
+- One run takes longer than the old step-size measurement: on the simulator (100 steps/s, 4 s
+  exposure) about 6 minutes for ~30 frames and the preloads. (user)
 - Thresholds need tuning on real optics (see above). (user)
 - If PINS does not preselect HF as Star Detector / Auto Focus, a plugin-server endpoint for
   `PluggableBehaviorSettings` is the real fix — follow-up feature. (user)
