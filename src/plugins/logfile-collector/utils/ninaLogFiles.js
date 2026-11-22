@@ -1,9 +1,10 @@
 import { PINS_INTERNAL_GUIDER_LOG_PATH, PINS_NINA_LOG_PATH } from './diagnosticsSupport.js';
 
-const LOG_FILE_COUNT = 10;
+// The native guider writes one guide log per night (noon to noon). Those files run to
+// several MB each and compress poorly, so only the last three nights are collected.
 const LOG_SOURCES = [
-  { path: PINS_NINA_LOG_PATH, directory: 'nina-logs' },
-  { path: PINS_INTERNAL_GUIDER_LOG_PATH, directory: 'internal-guider-logs' },
+  { path: PINS_NINA_LOG_PATH, directory: 'nina-logs', count: 10 },
+  { path: PINS_INTERNAL_GUIDER_LOG_PATH, directory: 'internal-guider-logs', count: 3 },
 ];
 
 export async function addRecentNinaLogFiles(apiService, filesMap, logger = console) {
@@ -13,7 +14,7 @@ export async function addRecentNinaLogFiles(apiService, filesMap, logger = conso
       const files = Array.isArray(listing?.files) ? listing.files : [];
       const recentFiles = [...files]
         .sort((a, b) => new Date(b.lastModified) - new Date(a.lastModified))
-        .slice(0, LOG_FILE_COUNT);
+        .slice(0, source.count);
 
       for (const file of recentFiles) {
         try {
