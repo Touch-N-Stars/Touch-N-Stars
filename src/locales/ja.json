@@ -93,6 +93,10 @@
     "gpsConfiguration": "GPS設定",
     "currentNinaCoords": "プロファイルの位置",
     "currentMountCoords": "赤道儀の位置",
+    "syncDirection": "マウント接続時",
+    "syncDirectionNosync": "場所を同期しない",
+    "syncDirectionToApplication": "マウントから場所を取得",
+    "syncDirectionToTelescope": "自分の場所をマウントに送信",
     "mountNotConnected": "赤道儀が接続されていません",
     "coordsNotSupported": "ドライバーが非対応です",
     "loadingCoords": "読み込み中…",
@@ -226,6 +230,70 @@
       "next": "次へ",
       "skip": "チュートリアルをスキップ"
     },
+    "mountDriverFinder": {
+      "searchLabel": "お使いのマウントは？",
+      "searchPlaceholder": "例: EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "モデル名を入力するか、ブランド名から始めてください:",
+      "noMatch": "一致するマウントがありません。綴りを確認するか、下の「一覧にないマウント」を使ってください。",
+      "otherMount": "その他のマウント",
+      "howConnected": "PINSとどう接続していますか？",
+      "recommended": "おすすめ",
+      "driverName": "ドライバー: {name}",
+      "checking": "インストール済みドライバーを確認中…",
+      "driverListFailed": "ドライバー一覧を読み込めませんでした。",
+      "retry": "再試行",
+      "alreadySet": "このドライバーは設定済みです。",
+      "useDriver": "このドライバーを使用",
+      "needsInstall": "{name}はまだPINSにインストールされていません。",
+      "installAndUse": "インストールして使用",
+      "installConfirm": "PINSが{name}をインターネットからダウンロードしてインストールします。約1分かかります。続行しますか？",
+      "installConfirmYes": "インストール",
+      "cancel": "キャンセル",
+      "unavailable": "このPINSでは{name}を利用できません。下の全リストから選ぶか、PINSを更新してください。",
+      "installing": "{name}をダウンロードしてインストール中…",
+      "applying": "{name}を設定中…",
+      "applied": "完了: {name}を設定し、「{device}」を選択しました。マウントを接続して電源を入れ、「接続」をタップしてください。",
+      "appliedPickDevice": "完了: {name}を設定しました。デバイス一覧からマウントを選び、「接続」をタップしてください。",
+      "applyFailed": "ドライバーを設定できませんでした: {message}",
+      "noInternet": "ドライバーのインストールにはPINSのインターネット接続が必要です。インターネットに接続できるWi-FiにPINSを接続して、もう一度お試しください。",
+      "packageMissing": "ドライバーパッケージ{name}は現在ダウンロードできません。",
+      "installedButMissing": "{name}はインストールされましたが、ドライバー一覧に表示されません。PINSを再起動してもう一度お試しください。",
+      "installFailed": "インストールに失敗しました: {message}",
+      "disconnectFirst": "ドライバーを変更する前にマウントを切断してください。",
+      "notListed": "一覧にないマウント",
+      "openButton": "マウントドライバーを探す",
+      "title": "マウントのドライバーを探す",
+      "connections": {
+        "swDirect": {
+          "title": "マウントに直接USB接続",
+          "hint": "マウントのUSBポート、またはハンドコントローラーポートにEQDIRケーブルを接続します。ハンドコントローラーは不要です。"
+        },
+        "swHandController": {
+          "title": "SynScanハンドコントローラー経由",
+          "hint": "PINSからハンドコントローラーへケーブルで接続します(USBポートまたはシリアルケーブル)。ハンドコントローラーの電源を入れ、先に起動メニューを進めてください。"
+        },
+        "celestronUsb": {
+          "title": "マウントのUSBポート",
+          "hint": "マウント本体のポートにUSBケーブルを接続します。"
+        },
+        "celestronHandController": {
+          "title": "NexStarハンドコントローラー経由",
+          "hint": "ハンドコントローラー下部にUSBまたはシリアルケーブルを接続します。先にハンドコントローラーのアライメント開始を完了してください。"
+        },
+        "meadeHandController": {
+          "title": "AutoStarハンドコントローラー経由",
+          "hint": "ハンドコントローラーのポートにシリアルまたはUSBケーブルを接続します。"
+        },
+        "usb": {
+          "title": "マウントにUSBケーブル接続",
+          "hint": "マウントからPINSへUSBケーブルで接続します。"
+        },
+        "network": {
+          "title": "ネットワークケーブル(LAN)",
+          "hint": "マウントはPINSと同じネットワーク上にあります。その後、マウントの接続設定にIPアドレスを入力してください。"
+        }
+      }
+    },
     "setupWizard": {
       "title": "セットアップアシスタント",
       "restart": "セットアップアシスタントを開始",
@@ -251,7 +319,8 @@
         "guider": "Guiding",
         "dither": "ディザリング",
         "done": "Done",
-        "localization": "地域設定"
+        "localization": "地域設定",
+        "starDatabase": "星図"
       },
       "driver": {
         "loading": "ドライバーを読み込み中 …",
@@ -266,6 +335,11 @@
       },
       "language": {
         "description": "アプリの言語です。後から設定で変更できます。"
+      },
+      "info": {
+        "pointDevices": "次のステップで、マウント、カメラなどの機器を1つずつ接続し、望遠鏡のデータを入力します。",
+        "pointPowered": "続行する前に、すべての機器の電源を入れ、機材に接続してください。",
+        "pointLater": "値が分からない場合は「次へ」でスキップできます。すべて後から設定で変更できます。"
       },
       "instance": {
         "description": "@:{'general.backendName'} が動いているマシンのアドレスです。同じネットワーク内なら、通常アプリが自動で見つけます。",
@@ -318,12 +392,23 @@
         "notFoundHint": "架台が見つからない場合、ドライバーがまだインストールされていない可能性があります。サードパーティの INDI ドライバーを検索し、該当するものをインストールしてください。",
         "installing": "Installing {label}…",
         "installSuccess": "{label} をインストールしました。上のドライバー一覧から選んでください。",
-        "installFailed": "インストールに失敗しました：{message}"
+        "installFailed": "インストールに失敗しました：{message}",
+        "descriptionDeviceFirst": "一覧からマウントを選んで接続してください。ドライバーは、一覧に表示されない場合のみ必要です。"
       },
       "slewRate": {
         "title": "導入速度",
         "maxSlewRate": "最大導入速度 (°/s)",
-        "saveFailed": "保存できませんでした：{message}"
+        "saveFailed": "保存できませんでした：{message}",
+        "whatFor": "PINSは極軸合わせなどで動きのタイミングを正しく計るため、マウントの最高速度を必要とします。マウントのスルー速度を制限するものではありません。",
+        "reading": "マウントドライバーから速度を読み取り中…",
+        "derived": "ドライバーから読み取りました: 最高速度は{label}、{value} °/sです。保存済みなので、ここでの操作は不要です。",
+        "notNeeded": "このドライバーは速度を°/sで報告するため、ここでの設定は不要です。",
+        "unknown": "このドライバーは速度を数値なしの名前(例: \"Max\")で扱うため、最高速度を読み取れません。マウントの最高速度が分からない場合は、初期値の{value} °/sのままにしてください。",
+        "notConnected": "前のステップでマウントを接続すると、速度が自動で読み取られます。接続しない場合は、ほとんどのマウントに合う初期値の{value} °/sが使われます。",
+        "readFailed": "マウントから速度を読み取れませんでした。現在の値{value} °/sのままになります。",
+        "readAgain": "マウントから読み取る",
+        "setManually": "手動で設定",
+        "manualHint": "マウントの最高スルー速度(度/秒)を、取扱説明書の値で入力します。ここで入力した値が自動で置き換えられることはありません。"
       },
       "location": {
         "title": "観測地を設定",
@@ -334,9 +419,14 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "現在地を使用",
+        "locating": "現在地を取得中…",
+        "syncDirection": "マウント接続時",
         "save": "観測地を保存",
         "saving": "Saving…",
-        "saveFailed": "観測地を保存できませんでした：{message}"
+        "saveFailed": "観測地を保存できませんでした：{message}",
+        "unsavedHint": "まだ保存されていません。「次へ」をタップすると自動で保存されます。",
+        "savedHint": "場所を保存しました。",
+        "missingHint": "場所が未設定です。極軸合わせと星空アトラスに必要です。"
       },
       "telescope": {
         "title": "望遠鏡",
@@ -368,7 +458,8 @@
         "pixelSize": "ピクセルサイズ (µm)",
         "pixelSizeHint": "ドライバーはピクセルサイズを報告しません。カメラの取扱説明書で確認してください。",
         "imageScale": "撮像スケール：{scale} arcsec/px",
-        "applyFailed": "保存できませんでした：{message}"
+        "applyFailed": "保存できませんでした：{message}",
+        "chipSizeNotConnectedHint": "上でカメラを接続すると、センササイズが自動で入力されます。センササイズを報告しないカメラ(一般的にDSLR)のみ、下の値が必要です。"
       },
       "focuser": {
         "title": "フォーカサーを設定",
@@ -380,7 +471,9 @@
         "notFoundHint": "フォーカサーが見つからない場合、ドライバーがまだインストールされていない可能性があります。サードパーティの INDI ドライバーを検索し、該当するものをインストールしてください。",
         "installing": "Installing {label}…",
         "installSuccess": "{label} をインストールしました。上のドライバー一覧から選んでください。",
-        "installFailed": "インストールに失敗しました：{message}"
+        "installFailed": "インストールに失敗しました：{message}",
+        "descriptionDeviceFirst": "一覧からフォーカサーを選んで接続してください。ドライバーは、一覧に表示されない場合のみ必要です。オートフォーカスのパラメーターはフォーカスページにあります。",
+        "notFoundDriverHint": "フォーカサーが一覧にない場合は、ここでINDIドライバーを選択してください。その後、上の一覧に表示されます。"
       },
       "filterWheel": {
         "title": "フィルターホイールを設定",
@@ -394,7 +487,11 @@
         "notFoundHint": "フィルターホイールが見つからない場合、ドライバーがまだインストールされていない可能性があります。サードパーティの INDI ドライバーを検索し、該当するものをインストールしてください。",
         "installing": "Installing {label}…",
         "installSuccess": "{label} をインストールしました。上のドライバー一覧から選んでください。",
-        "installFailed": "インストールに失敗しました：{message}"
+        "installFailed": "インストールに失敗しました：{message}",
+        "descriptionDeviceFirst": "一覧からフィルターホイールを選んで接続し、各スロットに使用する名前を付けてください。ドライバーは、一覧に表示されない場合のみ必要です。",
+        "notFoundDriverHint": "フィルターホイールが一覧にない場合は、ここでINDIドライバーを選択してください。その後、上の一覧に表示されます。",
+        "noneHint": "フィルターホイールがない場合は「次へ」をタップしてください。",
+        "addFilter": "フィルターを追加"
       },
       "guider": {
         "title": "ガイドを設定",
@@ -421,19 +518,64 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "保存できませんでした：{message}",
-        "nativeCamera": "ガイドカメラ（PINS ネイティブガイダー）"
+        "nativeCamera": "ガイドカメラ（PINS ネイティブガイダー）",
+        "nativeCameraHint": "ガイドスコープの焦点距離を入力してください。ガイダーは星がどれだけ動いたかを判断するために必要とします。",
+        "descriptionNative": "PINS内蔵のガイダーは、撮影中に星を同じ位置に保ちます。PINS専用に開発され、機材上で直接動作します。別のプログラムを起動したり接続したりする必要はありません。PHD2の実績あるガイド方式をベースに、マウントのギアの周期誤差やマウントのドリフトを学習し、キャリブレーションを夜をまたいで保持します。そのため、PHD2より安定してガイドできることが多くあります。ガイドカメラを選び、ガイドスコープの焦点距離を入力してください。",
+        "nativeRecommended": "ヒント: PINSには独自のガイダー(上の一覧の「Internal Guider」)があります。PINS専用に開発され、別のプログラムなしで機材上で直接動作し、PHD2より安定してガイドできることが多くあります。PHD2での設定は引き継がれ、PHD2を選び直すといつでも戻せます。",
+        "nativeFocalLengthMissing": "ガイドスコープの焦点距離がまだ0です。ガイドは動作しますが、Ditherと秒角単位のガイド誤差には必要です。",
+        "guidePixelSizeHintNative": "この計算にのみ使用します。ガイダーは接続後にガイドカメラからピクセルサイズを読み取ります。それまではカメラの取扱説明書の値を使ってください。",
+        "ditherMissingDataNative": "Ditherを計算するには、撮影側とガイド側の両方のピクセルサイズと焦点距離が必要です。カメラと望遠鏡のステップ、およびガイドのステップでガイドスコープの焦点距離を入力してください。",
+        "guideCameraNotFound": "ガイドカメラが一覧にない場合",
+        "guideCameraNotFoundHint": "ガイドカメラがネイティブ対応でない場合は、ここでINDIドライバーを選択してください。その後、上のデバイス一覧に表示されます。",
+        "ditherIntro": "Ditherは露出ごとに画像を少しずらし、スタック結果からノイズパターンを除去します。ガイドを使わない場合は、このステップをスキップできます。",
+        "ditherReadyHint": "一般的な値は入力済みです。「{button}」をタップすれば完了です。"
       },
       "done": {
         "title": "機材の準備ができました",
         "description": "機材は接続済みで最新です。架台、カメラ、フォーカサー、フィルターホイール、ガイドの設定も完了しました。",
         "descriptionPlain": "架台、カメラ、フォーカサー、フィルターホイール、観測地の設定が完了しました。",
         "moreDevicesHint": "フラットパネル、気象、その他の機器はそれぞれのページで設定します。",
-        "noConnectionHint": "まだ機材に接続していません。設定 → 接続 からいつでも追加できます。"
+        "noConnectionHint": "まだ機材に接続していません。設定 → 接続 からいつでも追加できます。",
+        "summaryIntro": "現在の設定内容です。項目をタップすると、そのステップに戻ります。",
+        "status": {
+          "ok": {
+            "mount": "選択済み",
+            "location": "保存済み",
+            "telescope": "焦点距離設定済み",
+            "camera": "選択済み",
+            "focuser": "選択済み",
+            "filterWheel": "選択済み",
+            "guider": "選択済み",
+            "starDatabase": "インストール済み"
+          },
+          "warn": {
+            "mount": "マウント未選択",
+            "location": "未設定: 極軸合わせと星空アトラスに必要です",
+            "telescope": "焦点距離なし: プレートソルブに必要です",
+            "camera": "カメラ未選択",
+            "starDatabase": "未インストール: プレートソルブは動作しません"
+          },
+          "none": {
+            "focuser": "なし、手動でフォーカス",
+            "filterWheel": "なし、問題ありません",
+            "guider": "ガイドなし"
+          }
+        }
       },
       "cancel": "セットアップを中止",
       "localization": {
         "title": "機材の地域設定を行う",
-        "description": "ホットスポットの場所、時刻、リモートキーボード入力を機材の使用場所に合わせるため、Wi-Fi より先にこれらの値を設定してください。"
+        "description": "ホットスポットの場所、時刻、リモートキーボード入力を機材の使用場所に合わせるため、Wi-Fi より先にこれらの値を設定してください。",
+        "localeHint": "機材本体の言語と数値形式です。例: en_US.UTF-8 や de_DE.UTF-8。中立的な初期値のC.UTF-8も使用できます。",
+        "unappliedHint": "まだ適用されていません。「次へ」の前に「{button}」をタップしないと、変更が失われます。",
+        "nothingToDoHint": "変更がなければ「次へ」をタップしてください。",
+        "rigLanguage": "機材の言語とキーボード"
+      },
+      "starDatabase": {
+        "title": "プレートソルブ用の星図",
+        "description": "望遠鏡の向きを調べるため、機材は画像を星図と照合します(「プレートソルブ」)。極軸合わせやターゲットの導入に必要です。PINSにはD80星図が付属しており、非常に広い視野用には別の星図をここで追加できます。",
+        "otherSolver": "プロファイルはASTAP以外のプレートソルバーを使用しているため、ここでインストールするものはありません。",
+        "hint": "ダウンロードは大きく、数分かかることがあります。その間に「次へ」をタップしても構いません。インストールは機材上で続行されます。"
       }
     },
     "fileBrowser": {
@@ -680,6 +822,11 @@
         "astapDatabaseNoInstallable": "インストール可能な ASTAP スター データベースがありません",
         "astapDatabaseSelectPlaceholder": "データベースを選択してください",
         "astapDatabaseStartFailed": "インストールを開始できませんでした: {detail}",
+        "astapDatabaseInstalledList": "インストール済み: {list}",
+        "astapDatabaseNoneInstalled": "星データベースがまだインストールされていません。ないとプレートソルブ(極軸合わせ、ターゲットの導入)は動作しません。",
+        "astapDatabaseRecommendedTag": "おすすめ",
+        "astapDatabaseRecommendedFov": "お使いの望遠鏡とカメラ向けのおすすめ(視野 {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "おすすめ: {id}。望遠鏡に合ったおすすめを表示するには、焦点距離、ピクセルサイズ、センササイズを入力してください。",
         "astapDatabaseStartInstall": "{databaseId} のインストールを開始しています...",
         "astapDatabaseStarting": "起動...",
         "astapDatabaseStatusCheckFailedRetrying": "ステータスチェックに失敗しました: {detail}。 再試行中...",
@@ -778,7 +925,12 @@
     "selectDevices": {
       "deviceNotFound": "デバイスが見つかりません",
       "deviceNotFoundMessage": "INDI ドライバーを再読み込みしましたが、「{device}」は現れませんでした。電源を確認して、デバイスを選び直してください。",
-      "reloadingDriver": "INDI ドライバーを再読み込みしています…"
+      "reloadingDriver": "INDI ドライバーを再読み込みしています…",
+      "configure": "デバイス設定",
+      "rescan": "デバイスを再検索",
+      "connect": "接続",
+      "disconnect": "切断",
+      "whyNotConnect": "なぜまだ接続できないのですか？"
     },
     "connectEquipment": {
       "camera": {
@@ -1358,6 +1510,18 @@
       "resetStatus": "ステータスをリセット",
       "delete": "削除",
       "runningLocked": "この項目は実行中のため変更できません",
+      "plan": {
+        "title": "プラン",
+        "startSequence": "プランを開始",
+        "resetSequence": "プランをリセット",
+        "resetConfirmationMessage": "プランをリセットして最初からやり直しますか？この操作は元に戻せません。",
+        "clearConfirmationMessage": "プランからすべて削除しますか？この操作は元に戻せません。",
+        "manageSequences": "プランの読み込み/保存",
+        "saveSequenceAs": "現在のプランに名前を付けて保存",
+        "sequenceFolder": "プランフォルダー",
+        "sequenceFolderSaveError": "プランフォルダーを変更できませんでした。",
+        "controlsLockedMessage": "プランの実行中は操作できません。"
+      },
       "controlsLockedMessage": "シーケンスの実行中はシーケンス コントロールがロックされます。",
       "lockControls": "ロック",
       "unlockControls": "ロックを解除する",
@@ -1384,6 +1548,8 @@
         "dither": "ディザリング",
         "ditherHint": "フレーム間でガイド位置をわずかにずらします。ガイドの実行が必要です。",
         "ditherEvery": "N枚ごとにディザー",
+        "ditherInExposures": "各露出行は毎枚Ditherします。 | 各露出行は{count}枚ごとにDitherします。",
+        "ditherInExposuresMixed": "露出行ごとに独自の間隔でDitherします。",
         "coolCamera": "カメラを冷却",
         "coolCameraHint": "最初のターゲットの前にカメラを目標温度まで冷却します。",
         "unparkMount": "架台のパーク解除",
@@ -1432,7 +1598,8 @@
         "deleteTarget": "ターゲットを削除",
         "deleteTargetConfirm": "{name} とそのすべての露出をシーケンスから削除しますか？",
         "deleteExposure": "露出を削除",
-        "deleteExposureConfirm": "この露出行をシーケンスから削除しますか？"
+        "deleteExposureConfirm": "この露出行をシーケンスから削除しますか？",
+        "addTargetNamed": "{name}をターゲットに追加"
       }
     },
     "mount": {
@@ -1441,6 +1608,21 @@
       "skyChart": {
         "title": "赤道儀の現在位置",
         "parked": "赤道儀はパーク中のため、表示する位置がありません。"
+      },
+      "location_sync": {
+        "title": "マウントの場所",
+        "confirmationMessage": "マウント接続時に、アプリが現在地をマウントへ送信し、空の正しい位置を向くようにできます。動作を選択してください。後から場所の設定で変更できます。",
+        "toTelescope": {
+          "label": "自分の場所をマウントに送信"
+        },
+        "toApplication": {
+          "label": "マウントから場所を取得"
+        },
+        "noSync": {
+          "label": "場所を同期しない"
+        },
+        "recommended": "おすすめ",
+        "noLocationHint": "現在地がまだ設定されていません。「自分の場所をマウントに送信」を選ぶと0° / 0°が送信され、マウントが持つ場所が上書きされます。今は「場所を同期しない」を選んでください。場所を設定すると、アプリがマウントに送信します。"
       },
       "control": {
         "park": "パーク",
@@ -1456,6 +1638,7 @@
           "unpark": "アンパーク中にエラーが発生しました",
           "tracking": "追尾モード設定中にエラーが発生しました"
         },
+        "setLocationSyncToMount": "常に自分の場所をマウントに送信",
         "slewRateINDI": "導入速度",
         "reverse_axis": "軸方向",
         "slewRateDriverControlled": "導入速度はドライバーによって制御されます",
@@ -4542,20 +4725,24 @@
         "stepCounter": "ステップ {current} / {total}",
         "steps": {
           "check": {
-            "title": "前提条件"
+            "title": "前提条件",
+            "description": "オートフォーカスには、接続済みのカメラとフォーカサーが必要です。"
           },
           "optics": {
             "title": "光学系",
             "description": "焦点距離とピクセルサイズで星の大きさが決まります。望遠鏡とカメラの仕様と照らし合わせて確認してください。"
           },
           "rig": {
-            "title": "あなたの機材"
+            "title": "あなたの機材",
+            "description": "機材についていくつか質問します。回答に応じて適切なオートフォーカスのプリセットが設定されます。"
           },
           "rough": {
-            "title": "おおまかなピント合わせ"
+            "title": "おおまかなピント合わせ",
+            "description": "画像を撮影しながら、星が小さく丸くなるまでフォーカサーを動かします。HFRは星のサイズで、小さいほどシャープです。"
           },
           "measure": {
-            "title": "ステップサイズとバックラッシュ"
+            "title": "ステップサイズとバックラッシュ",
+            "description": "フォーカサーを動かしたときに星がどれだけ速く大きくなるか、向きを変えたときに何ステップ失われるかを測定し、オートフォーカスとバックラッシュ補正のステップサイズを提案します。フォーカサーはまず大きく戻り、すべての位置に同じ側から到達するようにしてから、ピントを通過して前進し、最後に開始位置へ戻ります。"
           },
           "run": {
             "title": "テスト実行",
@@ -4572,7 +4759,8 @@
         },
         "checks": {
           "camera": "カメラ接続済み",
-          "focuser": "フォーカサー接続済み"
+          "focuser": "フォーカサー接続済み",
+          "hocusFocus": "オートフォーカスプラグインをインストール済み"
         },
         "focalLength": "焦点距離 (mm)",
         "pixelSize": "ピクセルサイズ (µm)",
@@ -4588,6 +4776,7 @@
         "startRun": "オートフォーカス開始",
         "stopRun": "オートフォーカス停止",
         "runFailed": "オートフォーカスを開始できませんでした。",
+        "noResult": "判定できる完了済みのオートフォーカス結果がまだありません。",
         "runAgain": "再実行",
         "openOptimizer": "オプティマイザーを開く",
         "useOptimized": "最適化された設定を使用",
@@ -4794,6 +4983,7 @@
       "up": "上",
       "not_available": "利用不可",
       "running": "実行中",
+      "movingToStart": "開始位置へ移動中…",
       "plate_solve_start": "プレートソルブ開始",
       "plate_solve_ok": "プレートソルブ成功",
       "plate_solve_error": "プレートソルブエラー",
@@ -4850,6 +5040,18 @@
       },
       "error_modal": {},
       "tppa": "極軸合わせ (TPPA)",
+      "problem": {
+        "cannotStart": "極軸合わせを開始できません",
+        "refused": "機材が極軸合わせの開始を拒否しました",
+        "noLocation": "機材が場所を認識していません。計算に必要なので、先に緯度と経度を設定してください。",
+        "noDatabase": "星図がインストールされていないため、画像をプレートソルブできません。インストールしてからやり直してください。",
+        "notSent": "開始が機材に届きませんでした。接続を確認して、もう一度「開始」をタップしてください。",
+        "startSlewFailed": "望遠鏡を開始位置へ移動できませんでした。マウントを確認して、もう一度「開始」をタップしてください。"
+      },
+      "trackingOffAfterStop": "極軸合わせの停止時にトラッキングがオフになりました。",
+      "resumeTracking": "トラッキングを再開",
+      "goodEnoughHint": "合計誤差が1′(1分角)未満なら良好です。達したら極軸合わせを停止してください。",
+      "tabSimple": "極軸合わせ",
       "warn_dec_spread_body": "マウントの報告された偏角は、測定間で {arcsec}\" だけ変化しました。これは極軸合わせの精度に影響を与える可能性があります。測定中は赤経軸のみが移動するようにしてください。",
       "warn_dec_spread_title": "赤緯広がりが検出されました",
       "warn_east_west_body": "現在のフィールドは正確な東または西から 5° 以内にあります。 ライブ ソリューションが不安定な場合は、東/西から離れたフィールドに移動して再実行してください。",
@@ -4882,7 +5084,11 @@
       "az": "方位:",
       "slew_modal": {
         "deviation_target": "目標との偏差:"
-      }
+      },
+      "failed": "スルーまたはセンタリングに失敗しました",
+      "centeredTitle": "ターゲットを中央に導入しました",
+      "centered": "ターゲットは画像の中央にあります。",
+      "centeredNamed": "{name}は画像の中央にあります。"
     },
     "filterwheel": {
       "title": "フィルターホイール",
@@ -5524,6 +5730,415 @@
       "devChannelHidden": "開発版アップデート・チャンネルを非表示にしました。",
       "specialEnabled": "目が痛いマーカーを有効にしました。",
       "specialDisabled": "お楽しみはここまでです。"
+    },
+    "simpleMode": {
+      "title": "今夜",
+      "subtitle": "今夜を順番に進めます。ハイライトされたステップをタップして、上から下へ進めてください。",
+      "pinsOnly": "シンプルモードは、Touch'N'StarsをPINSデバイスに接続している場合のみ使用できます。",
+      "offHint": "シンプルモードはオフのため、ナビゲーションにすべてのページが表示されます。",
+      "turnOn": "シンプルモードを使用",
+      "showAll": "すべての機能を表示(シンプルモードをオフ)",
+      "status": {
+        "done": "完了",
+        "running": "実行中",
+        "open": "未完了",
+        "skipped": "スキップ"
+      },
+      "markDone": "完了にする",
+      "skip": "今夜はスキップ",
+      "undoMark": "元に戻す",
+      "needsCamera": "先にカメラを接続してください。",
+      "needsMount": "先にマウントを接続してください。",
+      "needsGuider": "ガイダーがまだ接続されていません。上の「すべて接続」をタップしてください。",
+      "needsCameraAndMount": "カメラとマウントの接続が必要です。",
+      "rig": {
+        "title": "お使いの機材",
+        "changeDevices": "デバイスを変更",
+        "empty": "デバイスがまだ設定されていません。セットアップアシスタントがカメラやマウントなどを順に案内します。",
+        "openWizard": "セットアップアシスタントを開く",
+        "noMountHint": "マウントが未設定ですか？ここで適切なドライバーを探せます。",
+        "mountFailedHint": "マウントに接続できませんでした。別のドライバーが必要なことがよくあります。",
+        "connecting": "接続中…",
+        "allConnected": "すべて接続済み",
+        "connectAll": "すべて接続",
+        "exposing": "撮影中",
+        "coolingTo": "{temp}に冷却中",
+        "parked": "パーク中",
+        "slewing": "移動中",
+        "tracking": "天体を追尾中",
+        "notTracking": "追尾していません",
+        "autofocusRunning": "オートフォーカス実行中",
+        "position": "位置 {position}",
+        "connected": "接続済み",
+        "notConnected": "未接続"
+      },
+      "guiderState": {
+        "Guiding": "ガイド中",
+        "Calibrating": "キャリブレーション中",
+        "Looping": "星を探しています",
+        "LostLock": "星をロスト",
+        "Idle": "停止中",
+        "Paused": "一時停止中",
+        "Reacquiring": "星を再探索中"
+      },
+      "night": {
+        "title": "今夜の進行",
+        "progress": "{total}件中{done}件完了"
+      },
+      "steps": {
+        "connect": {
+          "title": "機材を接続",
+          "description": "機材の電源を入れ、ワンタップですべてのデバイスを接続します。",
+          "hint": "接続できないデバイスは、ケーブルと電源を確認してから、もう一度「すべて接続」をタップしてください。",
+          "summary": "{total}台中{connected}台接続済み"
+        },
+        "cool": {
+          "title": "カメラを冷却",
+          "description": "センサーを冷却するとよりきれいな画像になります。冷却には数分かかるので早めに開始し、その間に次のステップを進めてください。",
+          "targetTemp": "目標温度(°C)",
+          "start": "{temp} °Cまで冷却",
+          "failed": "冷却を開始できませんでした",
+          "warmingSummary": "昇温中 · {temp}",
+          "setup": {
+            "question": "カメラはどのくらいの速さで冷却できますか？",
+            "text": "プロファイルごとに1回だけ質問します。冷却や昇温が速すぎると一部のセンサーに負担がかかり、急に昇温すると結露することがあります。昇温は夜を終えるときに実行されます。",
+            "presets": {
+              "fast": {
+                "title": "速い",
+                "description": "すぐに冷却し、{warm}分で昇温します。最近の冷却CMOSカメラの多くに適しています。クーラーは自動で制限されます。"
+              },
+              "gentle": {
+                "title": "ゆっくり",
+                "description": "{cool}分で冷却し、{warm}分で昇温します。"
+              },
+              "veryGentle": {
+                "title": "とてもゆっくり",
+                "description": "{cool}分で冷却し、{warm}分で昇温します。古いカメラやCCDセンサー向けです。"
+              }
+            },
+            "notSure": "分からない場合は、カメラの取扱説明書でゆっくり冷却が必要か確認してください。分かるまでは「ゆっくり」が安全です。後からカメラページで変更できます。",
+            "currentValues": "プロファイルには独自の設定があります: {cool}分で冷却、{warm}分で昇温。",
+            "keepValues": "この設定を維持",
+            "applyFailed": "設定をプロファイルに保存できませんでした。"
+          }
+        },
+        "mount": {
+          "title": "マウントを準備",
+          "description": "ターゲットを向く前に、マウントのパークを解除し、天体を追尾(トラッキング)させる必要があります。",
+          "action": "パーク解除してトラッキング開始",
+          "trackingFailed": "トラッキングをオンにできませんでした",
+          "trackingOffAfterPolar": "極軸合わせでトラッキングがオフになりました。ボタンをタップして再びオンにしてください。"
+        },
+        "polar": {
+          "title": "極軸合わせ",
+          "description": "マウントを天の極に合わせます。アプリが3枚の画像を撮影し、その間にマウントを回転させ、調整ノブをどれだけ回すかを表示します。セットアップごとに1回で十分です。",
+          "action": "極軸合わせを開く"
+        },
+        "target": {
+          "title": "ターゲットを選択",
+          "description": "星空アトラスで天体を選び、プランに追加します。撮影を開始すると、プランがそこへ移動し、画像でターゲットを中央に導入してガイドを開始します。手動での操作は不要です。",
+          "action": "星空アトラスでターゲットを選択",
+          "another": "別のターゲットを追加",
+          "how": "星空アトラスで天体をタップ(または検索)してから、「{button}」をタップしてください。",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name}ほか{count}件",
+          "calibrationRisk": {
+            "nearPole": "ターゲットが天の極に近く、ガイダーがキャリブレーションできません。先に「ガイドを設定」で1回きりのキャリブレーションを行ってください。",
+            "low": "ターゲットが空の低い位置にあり、ガイダーのキャリブレーション精度が下がります。先に「ガイドを設定」で1回きりのキャリブレーションを行ってください。"
+          }
+        },
+        "focus": {
+          "title": "フォーカス",
+          "description": "シャープな星は夜の成否を左右し、次のステップにも必要です。極軸合わせやターゲットの導入は画像から位置を割り出します。星のある空の領域に望遠鏡を向けてください。電動フォーカサーならオートフォーカスが自動で行い、ない場合はライブ画像を見ながら手動でフォーカスします。",
+          "autofocus": "オートフォーカスを開始",
+          "watch": "フォーカスカーブを見る",
+          "manualHint": "電動フォーカサーが接続されていません。カメラを開いて連続撮影し、星が最も小さくなるようフォーカサーを回してください。",
+          "manual": "カメラを開く",
+          "lastRun": "前回のオートフォーカス: {time}",
+          "lastFailed": "前回のオートフォーカス({time})は失敗しました。星が写っているか確認して、もう一度お試しください",
+          "pointAtStars": "望遠鏡を星に向ける(星空アトラス)",
+          "setupFirst": "この望遠鏡で最初のオートフォーカスを行う前に、1回セットアップしてください。アシスタントがフォーカサーとカメラを測定し、適切な設定を見つけます。これがないとオートフォーカスは失敗しがちです。",
+          "setup": "オートフォーカスを設定"
+        },
+        "guide": {
+          "title": "ガイドを設定",
+          "description": "ガイドカメラが1つの星を監視してマウントを補正するため、長時間露出でもシャープさを保てます。PINSには専用に開発された独自のガイダーがあり、別のプログラムなしで機材上で直接動作し、PHD2より安定してガイドできることが多くあります。マウントを1回学習(キャリブレーション)する必要があり、その後はプランが各ターゲットで自動的にガイドを開始します。",
+          "details": "ガイドの詳細とグラフ",
+          "useNativeHint": "現在のプロファイルは別のガイダーを使用しています。シンプルモードはPINS内蔵のガイダーでガイドします。PINS専用に開発され、機材上で直接動作し、PHD2より安定してガイドできることが多く、マウントのギアの周期誤差を学習し、キャリブレーションを夜をまたいで保持します。PHD2での設定は引き継がれます。",
+          "useNative": "内蔵ガイダーを使用",
+          "nativeMissing": "このPINSバージョンには内蔵ガイダーがまだありません。PINSを更新してください:",
+          "chooseCamera": "内蔵ガイダーは、どのカメラがガイドカメラかを知る必要があります。ここで選択してください。その後は「すべて接続」で一緒に接続されます。",
+          "chooseCameraAction": "ガイドカメラを選択…",
+          "noGuideCamera": "ガイドカメラが見つかりません。接続して「すべてのデバイス」を確認してください",
+          "calibrate": "1回キャリブレーション(約3分)",
+          "calibrateHint": "望遠鏡は天の赤道に近い、キャリブレーション精度が最も高い位置へ移動し、そこでガイダーがどう動かすかを学習します。必要なのは1回だけで、キャリブレーションは以降の夜も保持されます。",
+          "confirmCalibrateTitle": "ガイダーをキャリブレーションしますか？",
+          "confirmCalibrateMessage": "望遠鏡はキャリブレーション位置へ移動し、ガイダーがそこで数分間キャリブレーションします。その後ガイドは再び停止し、プランがターゲットで開始します。",
+          "calibrating": "キャリブレーション中です。数分かかります。",
+          "slewingToCalibration": "望遠鏡がキャリブレーション位置へ移動中…",
+          "calibratedHint": "キャリブレーション済みです。以降の夜も保持され、プランが各ターゲットで自動的にガイドを開始します。",
+          "calibratedSummary": "キャリブレーション済み",
+          "unparkFirst": "先に望遠鏡を準備してください(「望遠鏡の準備」のステップ)。"
+        },
+        "capture": {
+          "title": "撮影",
+          "description": "プランには、どのターゲットをどのフィルター、露出時間、枚数で撮るかが書かれています。開始すれば、ターゲットへの移動、センタリング、ガイド、撮影までアプリが行います。",
+          "targets": "ターゲット",
+          "remaining": "残り時間",
+          "noPlan": "プランがまだありません。ターゲット、フィルター、露出時間、枚数を指定して作成してください。",
+          "editPlan": "プランを編集",
+          "createPlan": "プランを作成",
+          "watch": "届く画像を見る",
+          "start": "撮影を開始",
+          "stop": "撮影を停止",
+          "summary": "{targets}ターゲット、{time}頃に完了 | {targets}ターゲット、{time}頃に完了",
+          "summaryDone": "{targets}ターゲット、全画像を撮影済み | {targets}ターゲット、全画像を撮影済み",
+          "confirmStartTitle": "撮影を開始しますか？",
+          "confirmStartMessage": "{targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡がターゲットへ移動し、センタリングしてガイドを開始します。 | {targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡が各ターゲットへ移動し、センタリングしてガイドを開始します。",
+          "confirmStopTitle": "撮影を停止しますか？",
+          "confirmStopMessage": "現在の撮影はキャンセルされます。プランは後からもう一度開始できます。",
+          "noExposures": "プランにはターゲットがありますが、まだ撮影内容がありません。プランを開き、「露出を追加」をタップして、フィルター、露出時間、枚数を選んでください。",
+          "summaryEmpty": "{targets}ターゲット、撮影内容が未設定 | {targets}ターゲット、撮影内容が未設定",
+          "confirmStartMessageNoGuiding": "{targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡がターゲットへ移動してセンタリングします。 | {targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡が各ターゲットへ移動してセンタリングします。",
+          "missingSteps": "プラン内の{count}ターゲットは、自動で移動もガイドもされません。 | プラン内の{count}ターゲットは、自動で移動もガイドもされません。",
+          "missingSlew": "プラン内の{count}ターゲットは、自動で移動されません。 | プラン内の{count}ターゲットは、自動で移動されません。",
+          "fixSteps": "自動で移動してガイド",
+          "flipMissing": "プランはメリディアンで望遠鏡を反転しません。そのままトラッキングを続けると、三脚やピアに衝突するおそれがあります。",
+          "addFlip": "Meridian Flipをオンにする",
+          "flipWindow": "{target}は{meridian}頃にメリディアンに達し、プランは{earliest}から{latest}の間に望遠鏡を反転します。",
+          "flipFixed": "{target}は{meridian}頃にメリディアンに達し、プランは{earliest}に望遠鏡を反転します。",
+          "flipPause": "{target}は{meridian}頃にメリディアンに達し、プランは{pause}に一時停止して{earliest}に望遠鏡を反転します。",
+          "flipNone": "このプランではMeridian Flipは不要です。",
+          "flipYourTarget": "ターゲット",
+          "flipSettings": "Flip設定とテスト"
+        },
+        "flats": {
+          "title": "Flat",
+          "description": "Flatは、画像からホコリの影や四隅の暗さを取り除きます。何かが変わる前に今撮影してください。フォーカス、カメラの回転、カメラの位置は撮影時のままにしておく必要があります。今夜は不要ですか？このステップをスキップしてください。",
+          "lightSource": "光源",
+          "panel": "Flatパネル",
+          "panelHint": "パネルの明るさは機材が自動で設定します。",
+          "panelMissing": "調光可能なFlatパネルが接続されていません。",
+          "tablet": "タブレットまたはライトフォイル",
+          "tabletHint": "望遠鏡の前に均一に光らせて置いてください。露出時間は機材が見つけます。",
+          "filters": "フィルター",
+          "count": "フィルターごとのFlat枚数",
+          "countNoWheel": "Flat枚数",
+          "darks": "Dark Flatも撮影",
+          "darksHint": "Dark Flatでキャリブレーションする場合のみ必要です。撮影中は望遠鏡を覆う必要があり、アプリがその時に知らせます。",
+          "start": "Flatを撮影",
+          "stop": "Flatを停止",
+          "allSettings": "すべてのFlat設定",
+          "needsPlugin": "このページのFlatには、機材上のより新しいTouch'N'Starsプラグインが必要です。更新するか、下のFlatアシスタントで撮影してください。",
+          "planRunning": "プランがまだ実行中です。Flatはプランの完了または停止後に撮影できます。",
+          "noFilterSelected": "フィルターを1つ以上選択してください。",
+          "noFilter": "Flat",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark Flat",
+          "endBlocked": "Flatがまだ実行中です。完了または停止してから夜を終了してください。",
+          "runningSummary": "Flat撮影中",
+          "doneSummary": "今夜撮影したFlat",
+          "result": {
+            "success": "Flatを1枚撮影しました | Flatを{count}枚撮影しました",
+            "dim": "暗すぎます。より明るい光を使うか、Flat設定でより長い露出を許可してください。",
+            "bright": "明るすぎます。光を弱めるか、Flat設定でより短い露出を許可してください。",
+            "failed": "Flatを撮影できませんでした。",
+            "stopped": "停止しました"
+          }
+        },
+        "end": {
+          "title": "夜を終了",
+          "description": "すべてを正しい順序で停止し、マウントをパークして、センサーに結露しないようカメラをゆっくり昇温します。",
+          "action": "夜を終了"
+        }
+      },
+      "more": {
+        "title": "その他",
+        "equipment": "すべてのデバイス",
+        "mount": "マウント",
+        "focus": "フォーカス",
+        "guider": "ガイド",
+        "system": "Wi-Fi、更新、システム",
+        "settings": "設定"
+      },
+      "endNight": {
+        "title": "夜を終了",
+        "intro": "これらのステップは順番に実行されます。そのまま続けたいものはチェックを外してください。",
+        "nothingToDo": "実行中のものはなく、マウントもパーク済みです。やることは残っていません。",
+        "someFailed": "すべてが成功したわけではありません。理由は各ステップの下に表示されます。電源を切る前にマウントを確認してください。",
+        "done": "すべて完了しました。電源を切る前に、カメラの昇温が終わるまで待ってください。",
+        "confirm": "今すぐ夜を終了",
+        "actions": {
+          "stopSequence": "撮影を停止",
+          "stopGuiding": "ガイドを停止",
+          "parkMount": "マウントをパーク",
+          "warmCamera": "カメラを昇温({minutes}分)"
+        },
+        "parkTimeout": "マウントが3分以内に「パーク済み」を報告しませんでした。電源を切る前に確認してください。",
+        "doneNoWarmUp": "すべて完了しました。電源を切って構いません。"
+      },
+      "settings": {
+        "title": "シンプルモード",
+        "description": "夜の進行を案内するスタートページと、そのために必要なページだけのナビゲーションです。オフにするとすべての機能が再び表示されます。",
+        "navbarHint": "シンプルモードがオンの間、下のナビゲーションのカスタマイズは反映されません。モードをオフにすると、そのまま元に戻ります。"
+      },
+      "wizard": {
+        "title": "アプリをどのように使いますか？",
+        "simpleTitle": "シンプル(最初はおすすめ)",
+        "simpleText": "スタートページが夜の進行を順に案内し、必要なページだけを表示します。",
+        "fullTitle": "すべての機能",
+        "fullText": "すべてのページと設定をナビゲーションに表示します。経験者向けです。"
+      },
+      "focusFirst": "先にフォーカス: このステップは画像から位置を割り出すため、シャープな星が必要です。",
+      "live": {
+        "lastPicture": "最新の画像",
+        "openFull": "画像を全画面で表示",
+        "noPicture": "画像がまだありません。テスト撮影をして、カメラの映像を確認してください。",
+        "preview": "テスト画像",
+        "hfr": "シャープさ(HFR)",
+        "stars": "星",
+        "guiding": "ガイド",
+        "sensor": "センサー",
+        "trendTitle": "直近{count}枚のシャープさ",
+        "trendHint": "星がシャープなほど上に描かれます。夜の間に線が下がったら、もう一度フォーカスしてください。",
+        "exposure": "露出時間",
+        "testPicture": "テスト撮影",
+        "abort": "露出を停止",
+        "planRunning": "プランが撮影中です。新しい画像はここに順次表示されます。",
+        "justNow": "たった今",
+        "minutesAgo": "{minutes}分前",
+        "histogram": "ヒストグラム",
+        "min": "最小",
+        "max": "最大",
+        "pixels": "{count}ピクセル | {count}ピクセル",
+        "pixelsSaturated": "{count}ピクセルが飽和 | {count}ピクセルが飽和",
+        "histogramHint": "画像全体のストレッチ前のセンサーデータです。空の背景付近の範囲のみ表示され、星や飽和したピクセルはさらに右側にあり、「最大」に集計されます。",
+        "firstPlanPicture": "プランの最初の画像がここに表示されます。"
+      },
+      "setupChecks": {
+        "title": "最初の夜の前に",
+        "locationTitle": "場所が未設定です",
+        "locationText": "機材が自分の位置を認識していません。場所がないと、極軸合わせと星空アトラスは動作しません。",
+        "locationAction": "場所を設定",
+        "databaseTitle": "星図がインストールされていません",
+        "databaseText": "極軸合わせとターゲットの導入は、画像を星図と照合します。機材にはまだ星図がありません。",
+        "databaseAction": "星図をインストール",
+        "flipTitle": "Meridian Flipが未設定です",
+        "flipText": "ターゲットがメリディアン(天頂を通る南北の線)を越えると、望遠鏡はマウントの反対側へ反転する必要があります。そうしないと、すぐに三脚やピアに衝突します。プランが自動で行います。マウントがメリディアンを越えてどこまでトラッキングを続けられるかを、1回だけ教えてください。",
+        "flipNotSure": "分からない場合は、マウントの取扱説明書にメリディアンを越えてどこまでトラッキングできるかが通常書かれています。分かるまでは「ほとんどできない」を選ぶと望遠鏡の安全が保たれますが、数分間撮影できません。",
+        "flipCurrentValues": "プロファイルには独自の設定があります: {values}。",
+        "flipKeepValues": "この設定を維持",
+        "flipTimingWindow": "メリディアン通過後{min}〜{max}分でFlip",
+        "flipTimingFixed": "メリディアン通過後{min}分でFlip",
+        "flipTimingPause": "{pause}分前に一時停止、メリディアン通過後{min}分でFlip",
+        "blockedPolar": "極軸合わせはまだ動作しません。上の「最初の夜の前に」を確認してください。",
+        "blockedTarget": "センタリングはまだ動作しません。星図がインストールされていません。上の「最初の夜の前に」を確認してください。"
+      },
+      "backToNight": "今夜に戻る",
+      "cockpit": {
+        "title": "撮影中",
+        "noTargetName": "プラン",
+        "doneAt": "完了予定",
+        "remaining": "残り{time}",
+        "activity": {
+          "autofocus": "フォーカス中(オートフォーカス)",
+          "slewing": "望遠鏡が移動中(センタリングまたはMeridian Flip)",
+          "calibrating": "ガイダーがキャリブレーション中",
+          "settling": "ガイドの安定を待っています",
+          "exposing": "露出中",
+          "busy": "次の撮影を準備中",
+          "flipping": "Meridian Flip: 望遠鏡が反対側へ反転します"
+        },
+        "exposing": "露出中 {seconds} 秒",
+        "frame": "{frames}枚中{frame}枚目",
+        "check": "確認",
+        "hfr": "HFR",
+        "noFrame": "画像なし",
+        "hfrChange": "以前比 {change} %",
+        "guidingLevel": {
+          "good": "優秀",
+          "ok": "良好",
+          "poor": "大きすぎ",
+          "unknown": "スケール不明"
+        },
+        "alerts": {
+          "devices": "{count}台のデバイスが接続されていません。 | {count}台のデバイスが接続されていません。",
+          "starLost": "ガイダーが星をロストしました。今撮影する画像には星の流れが写ります。",
+          "notGuiding": "プランはガイドなしで実行されています。",
+          "guidingPoor": "ガイド({rms}″)が画像の1ピクセル({scale}″)より大きく、星が甘くなります。風、バランス、ケーブルの緩みがよくある原因です。",
+          "hfrRising": "星が以前の画像より{change} %大きくなっています。フォーカスがずれたか、結露や雲が出てきた可能性があります。",
+          "cooling": "センサー温度は{target} °Cではなく{temp} °Cです。"
+        },
+        "hfrNoBaseline": "最初の画像",
+        "lastPicture": "最新の画像",
+        "verdict": {
+          "good": "すべて順調です",
+          "warn": "実行中: 1点確認が必要です",
+          "danger": "確認してください: 画像に影響するおそれがあります",
+          "waiting": "実行中: 最初の画像で状態が分かります"
+        },
+        "showDetails": "詳細を表示",
+        "hideDetails": "詳細を隠す",
+        "focus": "フォーカス",
+        "focusLevel": {
+          "good": "シャープ",
+          "ok": "やや甘い",
+          "poor": "甘い"
+        },
+        "explain": {
+          "guiding": {
+            "title": "ガイド",
+            "what": "マウントが星にどれだけ正確に追従しているかです。ガイド星の揺れを、画像の1ピクセルの大きさと比較します。",
+            "now": "現在: 揺れ {rms}″、つまり{ratio}ピクセル(1ピクセル = {scale}″)。",
+            "nowNoScale": "現在: 揺れ {rms}″。評価するには、プロファイルに焦点距離とピクセルサイズが必要です。",
+            "nowOff": "現在ガイドは動作していません。",
+            "nowPaused": "望遠鏡のフォーカスまたは移動中は一時停止します。",
+            "limits": "{good}ピクセルまで緑、{ok}ピクセルまで黄、それ以上は赤です。赤では星が短い線になります。",
+            "fix": "赤になった場合: 風、バランス、ケーブルの緩みが主な原因です。"
+          },
+          "focus": {
+            "title": "フォーカス",
+            "what": "最新の画像の星の大きさを、同じフィルターの以前の画像と比較します。星が大きくなっている場合は、フォーカスがずれているか、結露や薄雲が出てきています。",
+            "now": "現在: 星のサイズ(HFR) {hfr}、以前({baseline})比 {change} %。",
+            "nowFirst": "同じフィルターの画像が{count}枚たまると評価されます。",
+            "nowNone": "画像がまだありません。",
+            "limits": "{good} %増まで緑、{ok} %増まで黄、それ以上は赤です。",
+            "fix": "赤になった場合: もう一度フォーカス(オートフォーカス)してください。改善しない場合は、望遠鏡の前面に結露がないか確認してください。"
+          },
+          "cooling": {
+            "title": "冷却",
+            "what": "カメラセンサーの温度です。センサーが冷えているとノイズの少ない画像になります。",
+            "now": "現在: {temp} °C、目標 {target} °C。",
+            "limits": "目標から{good} °C以内なら緑、それを超えると赤です。",
+            "fix": "赤のままの場合: この気温ではクーラーが目標に届きません。数度高い目標を選んでください。"
+          }
+        },
+        "statusBarHint": "ガイド、フォーカス、冷却は下のステータスバーで評価されます。タップすると意味が分かります。",
+        "stop": "停止"
+      },
+      "summary": {
+        "finished": {
+          "title": "プラン完了",
+          "text": "プランのすべての画像を撮影しました。夜を終了して、望遠鏡をパークしカメラを昇温してください。",
+          "textFlats": "プランのすべての画像を撮影しました。何も変わらないうちにFlatを撮影してから、夜を終了してください。"
+        },
+        "ended": {
+          "title": "夜を終了しました",
+          "text": "お疲れさまでした。今夜の成果です。",
+          "notParked": "望遠鏡がまだパークされていません",
+          "resume": "夜を再開"
+        },
+        "frames": "画像",
+        "integration": "露出",
+        "medianHfr": "HFR中央値"
+      },
+      "addToPlan": "プランに追加",
+      "slewOptional": "プランが自動でターゲットへ移動し、センタリングしてガイドを開始します。今移動するのは、先にFramingを確認したい場合のみです。",
+      "coachHint": {
+        "text": "昨夜のガイドが不安定でした。Guiding Coachがガイドカメラ、空、マウントを測定し、改善策を教えます。星空の下で約15分かかります。撮影を始める前がおすすめです。",
+        "open": "Guiding Coachを開く",
+        "dismiss": "今はしない"
+      }
     },
     "secureObservatory": {
       "title": "観測を終了",
@@ -8844,6 +9459,7 @@
         "errors": {
           "tppaUnavailable": "TPPA への接続を開けませんでした。",
           "tppaNoResponse": "TPPA が開始要求に応答しませんでした。",
+          "tppaStartSlewFailed": "望遠鏡を極軸合わせの開始位置へ移動できませんでした。",
           "tppaError": "TPPA がエラーを報告しました。カメラ、架台、plate solver を確認してください。",
           "tppaSilent": "TPPA から2分間何も送信されていません。TPPA と Auto-Pilot を停止しました。",
           "autoPilotNotStarted": "Auto-Pilot が起動しませんでした。AAPA のログを確認してください。ここで起動した TPPA は停止しました。",
@@ -9455,7 +10071,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "設定",
-    "about": "About"
+    "about": "About",
+    "home": "スタート",
+    "plan": "プラン",
+    "target": "ターゲット"
   },
   "nightsummary": {
     "tnsPluginToOld": "Touch N Stars プラグインが古すぎてこの機能を使用できません。バージョン 1.2.8.0 以降に更新してください。",

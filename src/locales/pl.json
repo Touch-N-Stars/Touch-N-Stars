@@ -99,6 +99,10 @@
     "coordUnit": "M",
     "coordsNotSupported": "Nieobsługiwane przez sterownik",
     "currentMountCoords": "Lokalizacja montażu",
+    "syncDirection": "Po połączeniu montażu",
+    "syncDirectionNosync": "Nie synchronizuj lokalizacji",
+    "syncDirectionToApplication": "Pobierz lokalizację z montażu",
+    "syncDirectionToTelescope": "Wyślij moją lokalizację do montażu",
     "currentNinaCoords": "Lokalizacja profilu",
     "loadingCoords": "Ładowanie współrzędnych…",
     "mountNotConnected": "Montaż nie jest podłączony"
@@ -217,6 +221,70 @@
       "next": "Następny",
       "skip": "Pomiń samouczek"
     },
+    "mountDriverFinder": {
+      "searchLabel": "Jaki masz montaż?",
+      "searchPlaceholder": "np. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Wpisz model lub zacznij od marki:",
+      "noMatch": "Brak pasującego montażu. Sprawdź pisownię lub użyj poniżej opcji „Montażu nie ma na liście?”.",
+      "otherMount": "Inny montaż",
+      "howConnected": "Jak jest podłączony do PINS?",
+      "recommended": "Zalecane",
+      "driverName": "Sterownik: {name}",
+      "checking": "Sprawdzanie zainstalowanych sterowników…",
+      "driverListFailed": "Nie udało się wczytać listy sterowników.",
+      "retry": "Spróbuj ponownie",
+      "alreadySet": "Ten sterownik jest już ustawiony.",
+      "useDriver": "Użyj tego sterownika",
+      "needsInstall": "{name} nie jest jeszcze zainstalowany na PINS.",
+      "installAndUse": "Zainstaluj i użyj",
+      "installConfirm": "PINS pobierze {name} z internetu i go zainstaluje. Potrwa to około minuty. Kontynuować?",
+      "installConfirmYes": "Zainstaluj",
+      "cancel": "Anuluj",
+      "unavailable": "{name} nie jest dostępny w tej wersji PINS. Wybierz go z pełnej listy poniżej lub zaktualizuj PINS.",
+      "installing": "Pobieranie i instalowanie {name}…",
+      "applying": "Konfigurowanie {name}…",
+      "applied": "Gotowe: {name} jest ustawiony, a „{device}” wybrany. Podłącz montaż, włącz go i naciśnij Połącz.",
+      "appliedPickDevice": "Gotowe: {name} jest ustawiony. Wybierz montaż na liście urządzeń i naciśnij Połącz.",
+      "applyFailed": "Nie udało się ustawić sterownika: {message}",
+      "noInternet": "PINS potrzebuje internetu, aby zainstalować sterownik. Połącz PINS z siecią Wi-Fi z dostępem do internetu i spróbuj ponownie.",
+      "packageMissing": "Pakiet sterownika {name} nie jest teraz dostępny do pobrania.",
+      "installedButMissing": "{name} został zainstalowany, ale nie pojawia się na liście sterowników. Uruchom PINS ponownie i spróbuj jeszcze raz.",
+      "installFailed": "Instalacja nie powiodła się: {message}",
+      "disconnectFirst": "Rozłącz montaż przed zmianą sterownika.",
+      "notListed": "Montażu nie ma na liście?",
+      "openButton": "Znajdź sterownik montażu",
+      "title": "Znajdź sterownik do swojego montażu",
+      "connections": {
+        "swDirect": {
+          "title": "Kabel USB bezpośrednio do montażu",
+          "hint": "Do gniazda USB montażu lub kabel EQDIR do portu pilota. Pilot nie jest potrzebny."
+        },
+        "swHandController": {
+          "title": "Przez pilot SynScan",
+          "hint": "Kabel z PINS do pilota (gniazdo USB lub kabel szeregowy). Włącz pilot i najpierw przejdź jego menu startowe."
+        },
+        "celestronUsb": {
+          "title": "Gniazdo USB w montażu",
+          "hint": "Kabel USB do gniazda w głowicy montażu."
+        },
+        "celestronHandController": {
+          "title": "Przez pilot NexStar",
+          "hint": "Kabel USB lub szeregowy do spodu pilota. Najpierw zakończ start alignmentu pilota."
+        },
+        "meadeHandController": {
+          "title": "Przez pilot AutoStar",
+          "hint": "Kabel szeregowy lub USB do portu pilota."
+        },
+        "usb": {
+          "title": "Kabel USB do montażu",
+          "hint": "Kabel USB z montażu do PINS."
+        },
+        "network": {
+          "title": "Kabel sieciowy (LAN)",
+          "hint": "Montaż jest w tej samej sieci co PINS. Następnie wpisz jego adres IP w ustawieniach połączenia montażu."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Asystent konfiguracji",
       "restart": "Zrestartuj asystenta konfiguracji",
@@ -242,7 +310,8 @@
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Zrobione",
-        "localization": "Ustawienia regionalne"
+        "localization": "Ustawienia regionalne",
+        "starDatabase": "Mapa gwiazd"
       },
       "driver": {
         "loading": "Ładowanie sterowników…",
@@ -257,6 +326,11 @@
       },
       "language": {
         "description": "Język aplikacji, możesz go zmienić później z poziomu ustawień."
+      },
+      "info": {
+        "pointDevices": "Kolejne kroki łączą montaż, kamerę i pozostałe urządzenia jedno po drugim i pytają o dane teleskopu.",
+        "pointPowered": "Włącz wszystkie urządzenia i podłącz je do zestawu, zanim przejdziesz dalej.",
+        "pointLater": "Nie jesteś pewien wartości? Pomiń ją przyciskiem Dalej. Wszystko można zmienić później w ustawieniach."
       },
       "instance": {
         "description": "Adres komputera, na którym działa @:{'general.backendName'} W tej samej sieci aplikacja zwykle znajdzie go sama.",
@@ -309,12 +383,23 @@
         "notFoundHint": "Jeśli twojego montażu brakuje, jego sterownik może nie być jeszcze zainstalowany. Wyszukaj w sterownikach INDI innych firm i zainstaluj pasujący.",
         "installing": "Installing {label}…",
         "installSuccess": "Zainstalowano {label}. Wybierz go z listy sterowników powyżej.",
-        "installFailed": "Instalacja nieudana: {message}"
+        "installFailed": "Instalacja nieudana: {message}",
+        "descriptionDeviceFirst": "Wybierz montaż z listy i połącz go. Sterownik jest potrzebny tylko wtedy, gdy montażu tam nie ma."
       },
       "slewRate": {
         "title": "Prędkość obrotu",
         "maxSlewRate": "Maks. prędkość obrotu (°/s)",
-        "saveFailed": "Nie udało się zapisać: {message}"
+        "saveFailed": "Nie udało się zapisać: {message}",
+        "whatFor": "PINS potrzebuje maksymalnej prędkości montażu, aby poprawnie mierzyć czas ruchów, np. podczas ustawiania na biegun. Nie ogranicza to prędkości przemieszczania montażu.",
+        "reading": "Odczyt prędkości ze sterownika montażu…",
+        "derived": "Odczytano ze sterownika: największa prędkość to {label}, czyli {value} °/s. Zapisano – nic tu nie trzeba robić.",
+        "notNeeded": "Ten sterownik sam podaje prędkości w °/s, więc nic nie trzeba tu ustawiać.",
+        "unknown": "Ten sterownik nazywa prędkości bez liczb (np. „Max”), więc maksymalnej prędkości nie można odczytać. Zostaw domyślne {value} °/s, chyba że znasz maksymalną prędkość swojego montażu.",
+        "notConnected": "Połącz montaż w poprzednim kroku, a prędkość zostanie odczytana automatycznie. Bez tego używane jest domyślne {value} °/s, które pasuje do większości montaży.",
+        "readFailed": "Nie udało się odczytać prędkości z montażu. Pozostaje obecna wartość {value} °/s.",
+        "readAgain": "Odczytaj z montażu",
+        "setManually": "Ustaw ręcznie",
+        "manualHint": "Maksymalna prędkość przemieszczania montażu w stopniach na sekundę, zgodnie z instrukcją. Wpisana tu wartość nigdy nie jest zastępowana automatycznie."
       },
       "location": {
         "title": "Ustaw swoją lokalizację",
@@ -325,9 +410,14 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Użyj bieżącej lokalizacji",
+        "locating": "Ustalanie lokalizacji…",
+        "syncDirection": "Po połączeniu montażu",
         "save": "Zapisz lokalizację",
         "saving": "Saving…",
-        "saveFailed": "Nie udało się zapisać lokalizacji: {message}"
+        "saveFailed": "Nie udało się zapisać lokalizacji: {message}",
+        "unsavedHint": "Jeszcze nie zapisano. Zapisze się automatycznie po naciśnięciu Dalej.",
+        "savedHint": "Lokalizacja zapisana.",
+        "missingHint": "Lokalizacja nie jest jeszcze ustawiona. Potrzebują jej ustawianie na biegun i atlas nieba."
       },
       "telescope": {
         "title": "Twój teleskop",
@@ -359,7 +449,8 @@
         "pixelSize": "Rozmiar piksela (µm)",
         "pixelSizeHint": "Sterownik nie podaje rozmiaru piksela. Znajdziesz go w instrukcji kamery.",
         "imageScale": "Wynikowa skala obrazu: {scale} arcsec/px",
-        "applyFailed": "Nie udało się zapisać: {message}"
+        "applyFailed": "Nie udało się zapisać: {message}",
+        "chipSizeNotConnectedHint": "Połącz kamerę powyżej, a rozmiar matrycy wypełni się sam. Wartości poniżej są potrzebne tylko dla kamery, która go nie podaje (typowe dla lustrzanek)."
       },
       "focuser": {
         "title": "Skonfiguruj focuser",
@@ -371,7 +462,9 @@
         "notFoundHint": "Jeśli twojego focusera brakuje, jego sterownik może nie być jeszcze zainstalowany. Wyszukaj w sterownikach INDI innych firm i zainstaluj pasujący.",
         "installing": "Installing {label}…",
         "installSuccess": "Zainstalowano {label}. Wybierz go z listy sterowników powyżej.",
-        "installFailed": "Instalacja nieudana: {message}"
+        "installFailed": "Instalacja nieudana: {message}",
+        "descriptionDeviceFirst": "Wybierz focuser z listy i połącz go. Sterownik jest potrzebny tylko wtedy, gdy focusera tam nie ma. Parametry autofocusa pozostają na stronie ostrości.",
+        "notFoundDriverHint": "Jeśli focusera nie ma na liście, wybierz tu jego sterownik INDI. Potem pojawi się na liście powyżej."
       },
       "filterWheel": {
         "title": "Skonfiguruj koło filtrowe",
@@ -385,7 +478,11 @@
         "notFoundHint": "Jeśli twojego koła filtrowego brakuje, jego sterownik może nie być jeszcze zainstalowany. Wyszukaj w sterownikach INDI innych firm i zainstaluj pasujący.",
         "installing": "Installing {label}…",
         "installSuccess": "Zainstalowano {label}. Wybierz go z listy sterowników powyżej.",
-        "installFailed": "Instalacja nieudana: {message}"
+        "installFailed": "Instalacja nieudana: {message}",
+        "descriptionDeviceFirst": "Wybierz koło filtrów z listy, połącz je i nadaj pozycjom używane przez siebie nazwy. Sterownik jest potrzebny tylko wtedy, gdy koła tam nie ma.",
+        "notFoundDriverHint": "Jeśli koła filtrów nie ma na liście, wybierz tu jego sterownik INDI. Potem pojawi się na liście powyżej.",
+        "noneHint": "Brak koła filtrów? Po prostu naciśnij Dalej.",
+        "addFilter": "Dodaj filtr"
       },
       "guider": {
         "title": "Skonfiguruj prowadzenie",
@@ -412,19 +509,64 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Nie udało się zapisać: {message}",
-        "nativeCamera": "Kamera prowadząca (PINS Native Guider)"
+        "nativeCamera": "Kamera prowadząca (PINS Native Guider)",
+        "nativeCameraHint": "Wpisz ogniskową lunety prowadzącej. Guider potrzebuje jej, aby ocenić, jak daleko przesuwają się gwiazdy.",
+        "descriptionNative": "Guider wbudowany w PINS utrzymuje gwiazdy w miejscu podczas robienia zdjęć. Powstał specjalnie dla PINS i działa bezpośrednio na zestawie – bez dodatkowego programu do uruchamiania i łączenia. Opiera się na sprawdzonym sposobie prowadzenia PHD2 i dodaje własny: uczy się cyklicznego błędu przekładni montażu oraz dryfu montażu i zachowuje kalibrację z nocy na noc. Dlatego często prowadzi stabilniej niż PHD2. Wybierz kamerę prowadzącą i wpisz ogniskową lunety prowadzącej.",
+        "nativeRecommended": "Wskazówka: PINS ma własny guider („Internal Guider” na liście powyżej). Powstał specjalnie dla PINS, działa bezpośrednio na zestawie bez osobnego programu i często prowadzi stabilniej niż PHD2. Ustawienia z PHD2 zostają przeniesione, a w każdej chwili możesz wrócić, wybierając ponownie PHD2.",
+        "nativeFocalLengthMissing": "Ogniskowa lunety prowadzącej wciąż wynosi 0. Guiding działa bez niej, ale dithering i błąd prowadzenia w sekundach łuku jej wymagają.",
+        "guidePixelSizeHintNative": "Używane tylko do tego obliczenia. Guider odczytuje rozmiar piksela z kamery prowadzącej po jej połączeniu; do tego czasu weź go z instrukcji kamery.",
+        "ditherMissingDataNative": "Do obliczenia dithera potrzebne są rozmiar piksela i ogniskowa zarówno zestawu obrazującego, jak i prowadzącego. Uzupełnij kroki kamery i teleskopu oraz ogniskową lunety prowadzącej w kroku guidingu.",
+        "guideCameraNotFound": "Nie ma kamery prowadzącej na liście?",
+        "guideCameraNotFoundHint": "Jeśli kamera prowadząca nie jest obsługiwana natywnie, wybierz tu dla niej sterownik INDI. Potem pojawi się na liście urządzeń powyżej.",
+        "ditherIntro": "Dithering lekko przesuwa obraz między ekspozycjami, co usuwa wzory szumu ze złożonego wyniku. Bez guidingu możesz pominąć ten krok.",
+        "ditherReadyHint": "Typowa wartość jest już wpisana: naciśnij „{button}” i gotowe."
       },
       "done": {
         "title": "Twój sprzęt jest gotowy",
         "description": "Twój zestaw jest połączony i aktualny, a montaż, kamera, focuser, koło filtrowe i prowadzenie są skonfigurowane.",
         "descriptionPlain": "Montaż, kamera, focuser, koło filtrowe i twoja lokalizacja są skonfigurowane.",
         "moreDevicesHint": "Panel do flatów, pogodę i pozostałe urządzenia konfiguruje się na ich własnych stronach.",
-        "noConnectionHint": "Brak jeszcze połączenia z zestawem. Możesz je dodać w każdej chwili w Ustawienia → Połączenie."
+        "noConnectionHint": "Brak jeszcze połączenia z zestawem. Możesz je dodać w każdej chwili w Ustawienia → Połączenie.",
+        "summaryIntro": "Oto, co jest teraz skonfigurowane. Naciśnij pozycję, aby wrócić do jej kroku.",
+        "status": {
+          "ok": {
+            "mount": "Wybrano",
+            "location": "Zapisano",
+            "telescope": "Ogniskowa ustawiona",
+            "camera": "Wybrano",
+            "focuser": "Wybrano",
+            "filterWheel": "Wybrano",
+            "guider": "Wybrano",
+            "starDatabase": "Zainstalowano"
+          },
+          "warn": {
+            "mount": "Nie wybrano montażu",
+            "location": "Brak: potrzebują jej ustawianie na biegun i atlas nieba",
+            "telescope": "Brak ogniskowej: potrzebuje jej plate solving",
+            "camera": "Nie wybrano kamery",
+            "starDatabase": "Nie zainstalowano: plate solving nie zadziała"
+          },
+          "none": {
+            "focuser": "Brak, ostrość ręcznie",
+            "filterWheel": "Brak, to w porządku",
+            "guider": "Bez guidingu"
+          }
+        }
       },
       "cancel": "Anuluj konfigurację",
       "localization": {
         "title": "Skonfiguruj ustawienia regionalne zestawu",
-        "description": "Ustaw te wartości przed konfiguracją Wi-Fi, aby lokalizacja hotspotu, czas i zdalny układ klawiatury odpowiadały miejscu używania zestawu."
+        "description": "Ustaw te wartości przed konfiguracją Wi-Fi, aby lokalizacja hotspotu, czas i zdalny układ klawiatury odpowiadały miejscu używania zestawu.",
+        "localeHint": "Język i format liczb samego zestawu, np. en_US.UTF-8 lub de_DE.UTF-8. C.UTF-8 to neutralna wartość domyślna i też działa.",
+        "unappliedHint": "Jeszcze nie zastosowano: naciśnij „{button}” przed Dalej, w przeciwnym razie zmiany przepadną.",
+        "nothingToDoHint": "Nic do zmiany? Po prostu naciśnij Dalej.",
+        "rigLanguage": "Język i klawiatura zestawu"
+      },
+      "starDatabase": {
+        "title": "Mapa gwiazd do plate solvingu",
+        "description": "Aby ustalić, gdzie celuje teleskop, zestaw porównuje zdjęcie z mapą gwiazd („plate solving”). Potrzebują go ustawianie na biegun i centrowanie obiektu. PINS zawiera mapę gwiazd D80; dla bardzo szerokich pól możesz tu dodać kolejną.",
+        "otherSolver": "Twój profil używa innego plate solvera niż ASTAP, więc nie ma tu nic do zainstalowania.",
+        "hint": "Pobieranie jest duże i może potrwać kilka minut. Możesz w międzyczasie nacisnąć Dalej; instalacja trwa dalej na zestawie."
       }
     },
     "fileBrowser": {
@@ -629,6 +771,11 @@
         "astapDatabaseNoInstallable": "Brak dostępnych baz danych gwiazdek ASTAP do zainstalowania",
         "astapDatabaseSelectPlaceholder": "Wybierz bazę danych",
         "astapDatabaseStartFailed": "Nie udało się rozpocząć instalacji: {detail}",
+        "astapDatabaseInstalledList": "Zainstalowano: {list}",
+        "astapDatabaseNoneInstalled": "Nie zainstalowano jeszcze żadnej bazy gwiazd. Bez niej plate solving (ustawianie na biegun, centrowanie obiektu) nie zadziała.",
+        "astapDatabaseRecommendedTag": "zalecane",
+        "astapDatabaseRecommendedFov": "Zalecane dla Twojego teleskopu i kamery (pole widzenia {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Zalecane: {id}. Wpisz ogniskową, rozmiar piksela i rozmiar matrycy, aby uzyskać rekomendację pasującą do Twojego teleskopu.",
         "astapDatabaseStartInstall": "Rozpoczęcie instalacji dla {databaseId}...",
         "astapDatabaseStarting": "Uruchamianie...",
         "astapDatabaseStatusCheckFailedRetrying": "Sprawdzenie statusu nie powiodło się: {detail}. Ponawiam próbę...",
@@ -769,7 +916,12 @@
     "selectDevices": {
       "deviceNotFound": "Nie znaleziono urządzenia",
       "deviceNotFoundMessage": "Sterownik INDI został ponownie załadowany, ale „{device}” się nie pojawił. Sprawdź zasilanie i wybierz urządzenie ponownie.",
-      "reloadingDriver": "Ponowne ładowanie sterownika INDI…"
+      "reloadingDriver": "Ponowne ładowanie sterownika INDI…",
+      "configure": "Ustawienia urządzenia",
+      "rescan": "Wyszukaj urządzenia ponownie",
+      "connect": "Połącz",
+      "disconnect": "Rozłącz",
+      "whyNotConnect": "Dlaczego jeszcze się nie łączy?"
     },
     "connectEquipment": {
       "camera": {
@@ -1349,6 +1501,18 @@
       "resetStatus": "Resetuj status",
       "delete": "Usuń",
       "runningLocked": "Ten element jest wykonywany i nie można go zmienić",
+      "plan": {
+        "title": "Plan",
+        "startSequence": "Uruchom plan",
+        "resetSequence": "Zresetuj plan",
+        "resetConfirmationMessage": "Zresetować plan, aby znów zaczął od początku? Tej operacji nie można cofnąć.",
+        "clearConfirmationMessage": "Usunąć wszystko z planu? Tej operacji nie można cofnąć.",
+        "manageSequences": "Wczytaj / zapisz plany",
+        "saveSequenceAs": "Zapisz bieżący plan jako",
+        "sequenceFolder": "Folder planów",
+        "sequenceFolderSaveError": "Nie udało się zmienić folderu planów.",
+        "controlsLockedMessage": "Sterowanie planem jest zablokowane, gdy plan działa."
+      },
       "controlsLockedMessage": "Sterowanie sekwencją jest zablokowane na czas trwania sekwencji.",
       "lockControls": "Zablokuj",
       "unlockControls": "Odblokować",
@@ -1375,6 +1539,8 @@
         "dither": "Dithering",
         "ditherHint": "Lekko przesuwaj pozycję prowadzenia między klatkami. Wymaga działającego guidera.",
         "ditherEvery": "Dither co N klatek",
+        "ditherInExposures": "Każdy wiersz ekspozycji wykonuje dither po każdym zdjęciu. | Każdy wiersz ekspozycji wykonuje dither po każdych {count} zdjęciach.",
+        "ditherInExposuresMixed": "Wiersze ekspozycji wykonują dither we własnych odstępach.",
         "coolCamera": "Chłodź kamerę",
         "coolCameraHint": "Schłodź kamerę do temperatury docelowej przed pierwszym celem.",
         "unparkMount": "Odparkuj montaż",
@@ -1423,7 +1589,8 @@
         "deleteTarget": "Usuń cel",
         "deleteTargetConfirm": "Usunąć {name} i wszystkie jego ekspozycje z sekwencji?",
         "deleteExposure": "Usuń ekspozycję",
-        "deleteExposureConfirm": "Usunąć ten wiersz ekspozycji z sekwencji?"
+        "deleteExposureConfirm": "Usunąć ten wiersz ekspozycji z sekwencji?",
+        "addTargetNamed": "Dodaj {name} jako cel"
       }
     },
     "mount": {
@@ -1432,6 +1599,21 @@
       "skyChart": {
         "title": "Aktualna pozycja montażu",
         "parked": "Montaż jest zaparkowany, więc nie ma pozycji do wyświetlenia."
+      },
+      "location_sync": {
+        "title": "Lokalizacja montażu",
+        "confirmationMessage": "Po połączeniu montażu aplikacja może wysłać do niego Twoją lokalizację, aby celował we właściwe miejsce na niebie. Wybierz, co ma się stać; możesz to później zmienić w ustawieniach lokalizacji.",
+        "toTelescope": {
+          "label": "Wyślij moją lokalizację do montażu"
+        },
+        "toApplication": {
+          "label": "Pobierz lokalizację z montażu"
+        },
+        "noSync": {
+          "label": "Nie synchronizuj lokalizacji"
+        },
+        "recommended": "Zalecane",
+        "noLocationHint": "Twoja lokalizacja nie jest jeszcze ustawiona. „Wyślij moją lokalizację do montażu” wysłałoby 0° / 0° i nadpisało lokalizację znaną montażowi. Na razie wybierz „Nie synchronizuj lokalizacji”: po ustawieniu lokalizacji aplikacja wyśle ją do montażu."
       },
       "control": {
         "park": "Parkuj",
@@ -1447,6 +1629,7 @@
           "unpark": "Błąd podczas odparkowania montażu",
           "tracking": "Błąd ustawiania trybu śledzenia"
         },
+        "setLocationSyncToMount": "Zawsze wysyłaj moją lokalizację do montażu",
         "slewRateINDI": "Prędkość ruchu",
         "reverse_axis": "Kierunek osi",
         "slewRateDriverControlled": "Prędkość obrotu jest kontrolowana przez sterownik",
@@ -4533,20 +4716,24 @@
         "stepCounter": "Krok {current} z {total}",
         "steps": {
           "check": {
-            "title": "Wymagania"
+            "title": "Wymagania",
+            "description": "Autofocus wymaga podłączonej kamery i focusera."
           },
           "optics": {
             "title": "Optyka",
             "description": "Ogniskowa i rozmiar piksela decydują o tym, jak duże są gwiazdy. Sprawdź oba z danymi teleskopu i kamery."
           },
           "rig": {
-            "title": "Twój zestaw"
+            "title": "Twój zestaw",
+            "description": "Kilka pytań o Twój sprzęt. Odpowiedzi ustawiają odpowiednie presety autofocusa."
           },
           "rough": {
-            "title": "Zgrubne ostrzenie"
+            "title": "Zgrubne ostrzenie",
+            "description": "Rób zdjęcia i przesuwaj focuser, aż gwiazdy będą małe i okrągłe. HFR to rozmiar gwiazdy: im mniejszy, tym ostrzej."
           },
           "measure": {
-            "title": "Rozmiar kroku i luz"
+            "title": "Rozmiar kroku i luz",
+            "description": "Mierzy, jak szybko rosną gwiazdy przy ruchu focusera i ile kroków traci on przy zmianie kierunku, a następnie sugeruje rozmiar kroku dla autofocusa i kompensacji luzu (backlash). Focuser najpierw cofa się daleko, aby każdą pozycję osiągać z tej samej strony, potem jedzie do przodu przez ognisko i na koniec wraca do pozycji startowej."
           },
           "run": {
             "title": "Próba",
@@ -4563,7 +4750,8 @@
         },
         "checks": {
           "camera": "Kamera podłączona",
-          "focuser": "Fokuser podłączony"
+          "focuser": "Fokuser podłączony",
+          "hocusFocus": "Wtyczka autofocusa zainstalowana"
         },
         "focalLength": "Ogniskowa (mm)",
         "pixelSize": "Rozmiar piksela (µm)",
@@ -4579,6 +4767,7 @@
         "startRun": "Rozpocznij autofokus",
         "stopRun": "Zatrzymaj autofokus",
         "runFailed": "Nie udało się uruchomić autofokusu.",
+        "noResult": "Nie ma jeszcze zakończonego przebiegu autofocusa do oceny.",
         "runAgain": "Powtórz",
         "openOptimizer": "Otwórz optymalizator",
         "useOptimized": "Użyj zoptymalizowanych ustawień",
@@ -4785,6 +4974,7 @@
       "up": "Góra",
       "not_available": "Niedostępny",
       "running": "W TRAKCIE",
+      "movingToStart": "Przemieszczanie do pozycji startowej…",
       "plate_solve_start": "Start plate solve",
       "plate_solve_ok": "Plate solve udany",
       "plate_solve_error": "Błąd plate solve",
@@ -4841,6 +5031,18 @@
       },
       "error_modal": {},
       "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "Nie można rozpocząć ustawiania na biegun",
+        "refused": "Zestaw odmówił rozpoczęcia ustawiania na biegun",
+        "noLocation": "Zestaw nie zna swojej lokalizacji. Najpierw ustaw szerokość i długość geograficzną, bo obliczenia od nich zależą.",
+        "noDatabase": "Nie zainstalowano mapy gwiazd, więc żadne zdjęcie nie może zostać rozwiązane (plate solved). Zainstaluj ją i zacznij od nowa.",
+        "notSent": "Polecenie startu nie dotarło do zestawu. Sprawdź połączenie i naciśnij Start ponownie.",
+        "startSlewFailed": "Teleskop nie mógł przemieścić się do pozycji startowej. Sprawdź montaż i naciśnij Start ponownie."
+      },
+      "trackingOffAfterStop": "Ustawianie na biegun wyłączyło śledzenie po zatrzymaniu.",
+      "resumeTracking": "Włącz śledzenie ponownie",
+      "goodEnoughHint": "Całkowity błąd poniżej 1′ (jedna minuta łuku) jest dobry. Gdy go osiągniesz, zatrzymaj ustawianie.",
+      "tabSimple": "Ustawianie na biegun",
       "warn_dec_spread_body": "Zgłoszona deklinacja mocowania zmieniała się o {arcsec}” pomiędzy pomiarami. Może to mieć wpływ na dokładność ustawienia biegunowego — upewnij się, że podczas pomiaru porusza się tylko oś RA.",
       "warn_dec_spread_title": "Wykryto rozproszenie deklinacji",
       "warn_east_west_body": "Aktualne pole znajduje się w promieniu 5° od dokładnego wschodu lub zachodu. Jeśli rozwiązanie na żywo jest niestabilne, skieruj się na pole położone dalej od wschodu/zachodu i uruchom ponownie.",
@@ -4873,7 +5075,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "Odchylenie od celu:"
-      }
+      },
+      "failed": "Przemieszczanie lub centrowanie nie powiodło się",
+      "centeredTitle": "Cel wycentrowany",
+      "centered": "Cel jest na środku zdjęcia.",
+      "centeredNamed": "{name} jest na środku zdjęcia."
     },
     "filterwheel": {
       "title": "Koło filtrów",
@@ -5524,6 +5730,415 @@
       "devChannelHidden": "Ukryto kanał aktualizacji dev.",
       "specialEnabled": "Włączono znacznik bólu oczu.",
       "specialDisabled": "Koniec zabawy."
+    },
+    "simpleMode": {
+      "title": "Dzisiejsza noc",
+      "subtitle": "Twoja noc krok po kroku: naciśnij wyróżniony krok i idź od góry do dołu.",
+      "pinsOnly": "Tryb prosty jest dostępny tylko wtedy, gdy Touch'N'Stars jest połączony z urządzeniem PINS.",
+      "offHint": "Tryb prosty jest wyłączony, więc nawigacja pokazuje wszystkie strony.",
+      "turnOn": "Użyj trybu prostego",
+      "showAll": "Pokaż wszystkie funkcje (wyłącz tryb prosty)",
+      "status": {
+        "done": "Gotowe",
+        "running": "W toku",
+        "open": "Do zrobienia",
+        "skipped": "Pominięto"
+      },
+      "markDone": "Oznacz jako gotowe",
+      "skip": "Pomiń tej nocy",
+      "undoMark": "Cofnij",
+      "needsCamera": "Najpierw połącz kamerę.",
+      "needsMount": "Najpierw połącz montaż.",
+      "needsGuider": "Guider nie jest jeszcze połączony. Naciśnij wyżej „Połącz wszystko”.",
+      "needsCameraAndMount": "Wymaga podłączonej kamery i montażu.",
+      "rig": {
+        "title": "Twój sprzęt",
+        "changeDevices": "Zmień urządzenia",
+        "empty": "Nie skonfigurowano jeszcze żadnych urządzeń. Asystent konfiguracji przeprowadzi Cię przez kamerę, montaż i resztę.",
+        "openWizard": "Otwórz asystenta konfiguracji",
+        "noMountHint": "Nie skonfigurowano jeszcze montażu? Znajdź tu odpowiedni sterownik.",
+        "mountFailedHint": "Montaż się nie połączył. Często potrzebuje innego sterownika.",
+        "connecting": "Łączenie…",
+        "allConnected": "Wszystko połączone",
+        "connectAll": "Połącz wszystko",
+        "exposing": "Robienie zdjęcia",
+        "coolingTo": "chłodzenie do {temp}",
+        "parked": "Zaparkowany",
+        "slewing": "W ruchu",
+        "tracking": "Śledzi niebo",
+        "notTracking": "Nie śledzi",
+        "autofocusRunning": "Autofocus w toku",
+        "position": "Pozycja {position}",
+        "connected": "Połączono",
+        "notConnected": "Niepołączony"
+      },
+      "guiderState": {
+        "Guiding": "Guiding",
+        "Calibrating": "Kalibracja",
+        "Looping": "Szukanie gwiazdy",
+        "LostLock": "Utracono gwiazdę",
+        "Idle": "Zatrzymany",
+        "Paused": "Wstrzymany",
+        "Reacquiring": "Ponowne szukanie gwiazdy"
+      },
+      "night": {
+        "title": "Twoja noc",
+        "progress": "{done} z {total} gotowe"
+      },
+      "steps": {
+        "connect": {
+          "title": "Połącz sprzęt",
+          "description": "Włącz zasilanie zestawu, a potem połącz wszystkie urządzenia jednym dotknięciem.",
+          "hint": "Jeśli urządzenie się nie łączy, sprawdź jego kabel i zasilanie, a potem naciśnij „Połącz wszystko” ponownie.",
+          "summary": "Połączono {connected} z {total}"
+        },
+        "cool": {
+          "title": "Schłodź kamerę",
+          "description": "Schłodzona matryca daje czystsze zdjęcia. Chłodzenie trwa kilka minut, więc zacznij wcześnie – w międzyczasie możesz przejść do kolejnych kroków.",
+          "targetTemp": "Temperatura docelowa (°C)",
+          "start": "Schłodź do {temp} °C",
+          "failed": "Nie udało się rozpocząć chłodzenia",
+          "warmingSummary": "Ogrzewanie · {temp}",
+          "setup": {
+            "question": "Jak szybko może się chłodzić Twoja kamera?",
+            "text": "Pytanie zadawane raz dla tego profilu. Zbyt szybkie chłodzenie lub ogrzewanie obciąża niektóre matryce, a zbyt szybko ogrzewana matryca może zaparować. Ogrzewanie uruchamia się po zakończeniu nocy.",
+            "presets": {
+              "fast": {
+                "title": "Szybko",
+                "description": "Chłodzi od razu, ogrzewa w {warm} min. Dobre dla większości obecnych chłodzonych kamer CMOS – same ograniczają swój chłodnik."
+              },
+              "gentle": {
+                "title": "Łagodnie",
+                "description": "Chłodzi w {cool} min, ogrzewa w {warm} min."
+              },
+              "veryGentle": {
+                "title": "Bardzo łagodnie",
+                "description": "Chłodzi w {cool} min, ogrzewa w {warm} min. Dla starszych kamer i matryc CCD."
+              }
+            },
+            "notSure": "Nie jesteś pewien? Instrukcja kamery podaje, czy wymaga powolnego chłodzenia. Dopóki nie wiesz, „Łagodnie” to bezpieczny wybór. Możesz to później zmienić na stronie kamery.",
+            "currentValues": "Twój profil ma już własne czasy: chłodzi w {cool} min, ogrzewa w {warm} min.",
+            "keepValues": "Zachowaj te czasy",
+            "applyFailed": "Nie udało się zapisać czasów w profilu."
+          }
+        },
+        "mount": {
+          "title": "Przygotuj montaż",
+          "description": "Montaż musi być odparkowany i śledzić niebo (tracking), zanim będzie mógł celować w obiekt.",
+          "action": "Odparkuj i włącz śledzenie",
+          "trackingFailed": "Nie udało się włączyć śledzenia",
+          "trackingOffAfterPolar": "Ustawianie na biegun wyłączyło śledzenie. Naciśnij przycisk, aby włączyć je ponownie."
+        },
+        "polar": {
+          "title": "Ustawianie na biegun",
+          "description": "Ustawia montaż względem bieguna niebieskiego. Aplikacja robi trzy zdjęcia, obraca montaż między nimi i pokazuje, jak daleko przekręcić śruby regulacyjne. Wystarczy raz na ustawienie.",
+          "action": "Otwórz ustawianie na biegun"
+        },
+        "target": {
+          "title": "Wybierz cel",
+          "description": "Wybierz obiekt w atlasie nieba i dodaj go do planu. Gdy ruszą zdjęcia, plan sam tam przejdzie, wycentruje cel zdjęciem i uruchomi guiding – nie musisz nic robić ręcznie.",
+          "action": "Wybierz cel w atlasie nieba",
+          "another": "Dodaj kolejny cel",
+          "how": "Naciśnij obiekt w atlasie nieba (lub go wyszukaj), a potem naciśnij „{button}”.",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} i {count} więcej",
+          "calibrationRisk": {
+            "nearPole": "Twój cel jest blisko bieguna niebieskiego, gdzie guider nie może się skalibrować. Najpierw wykonaj jednorazową kalibrację w „Ustaw guiding”.",
+            "low": "Twój cel jest nisko na niebie, gdzie guider kalibruje się słabo. Najpierw wykonaj jednorazową kalibrację w „Ustaw guiding”."
+          }
+        },
+        "focus": {
+          "title": "Ostrość",
+          "description": "Ostre gwiazdy decydują o powodzeniu nocy – i potrzebują ich też kolejne kroki: ustawianie na biegun i centrowanie celu ustalają pozycję ze zdjęcia. Skieruj teleskop na fragment nieba z gwiazdami. Przy focuserze z silnikiem pracę wykonuje autofocus; bez niego ostrość ustawia się ręcznie.",
+          "autofocus": "Uruchom autofocus",
+          "watch": "Obserwuj krzywą ostrości",
+          "manualHint": "Brak podłączonego focusera z silnikiem: otwórz kamerę, rób zdjęcia w pętli i kręć focuserem, aż gwiazdy będą jak najmniejsze.",
+          "manual": "Otwórz kamerę",
+          "lastRun": "Ostatni autofocus o {time}",
+          "lastFailed": "Ostatni autofocus o {time} nie powiódł się – sprawdź, czy widać gwiazdy, i spróbuj ponownie",
+          "pointAtStars": "Skieruj teleskop na gwiazdy (atlas nieba)",
+          "setupFirst": "Przed pierwszym autofocusem z tym teleskopem skonfiguruj go raz: asystent zmierzy Twój focuser i kamerę i znajdzie działające ustawienia. Bez tego autofocus często zawodzi.",
+          "setup": "Skonfiguruj autofocus"
+        },
+        "guide": {
+          "title": "Ustaw guiding",
+          "description": "Kamera prowadząca obserwuje jedną gwiazdę i koryguje montaż, dzięki czemu długie ekspozycje pozostają ostre. PINS ma własny guider, stworzony specjalnie dla niego: działa bezpośrednio na zestawie bez dodatkowego programu i często prowadzi stabilniej niż PHD2. Musi raz poznać Twój montaż (kalibracja); potem plan sam uruchamia guiding przy każdym celu.",
+          "details": "Szczegóły i wykres guidingu",
+          "useNativeHint": "Twój profil używa teraz innego guidera. Tryb prosty prowadzi wbudowanym guiderem PINS: powstał specjalnie dla PINS, działa bezpośrednio na zestawie i często prowadzi stabilniej niż PHD2 – uczy się cyklicznego błędu przekładni montażu i zachowuje kalibrację z nocy na noc. Ustawienia z PHD2 zostają przeniesione.",
+          "useNative": "Użyj wbudowanego guidera",
+          "nativeMissing": "Ta wersja PINS nie ma jeszcze wbudowanego guidera. Zaktualizuj PINS w",
+          "chooseCamera": "Wbudowany guider musi wiedzieć, która kamera jest kamerą prowadzącą. Wybierz ją tutaj – potem „Połącz wszystko” połączy też ją.",
+          "chooseCameraAction": "Wybierz kamerę prowadzącą…",
+          "noGuideCamera": "Nie znaleziono kamery prowadzącej – podłącz ją i sprawdź „Wszystkie urządzenia”",
+          "calibrate": "Skalibruj raz (około 3 min)",
+          "calibrateHint": "Teleskop przemieszcza się w miejsce blisko równika niebieskiego, gdzie kalibracja jest najdokładniejsza, i uczy się tam, jak guider go porusza. Potrzebne tylko raz: kalibracja zostaje na wszystkie kolejne noce.",
+          "confirmCalibrateTitle": "Skalibrować guider?",
+          "confirmCalibrateMessage": "Teleskop przemieści się w miejsce kalibracji, a guider będzie tam kalibrował się kilka minut. Potem guiding znów się zatrzyma – Twój plan uruchomi go przy celu.",
+          "calibrating": "Kalibracja – potrwa kilka minut.",
+          "slewingToCalibration": "Teleskop przemieszcza się w miejsce kalibracji…",
+          "calibratedHint": "Skalibrowano. Kalibracja zostaje także na kolejne noce; Twój plan sam uruchamia guiding przy każdym celu.",
+          "calibratedSummary": "Skalibrowano",
+          "unparkFirst": "Najpierw przygotuj teleskop (krok „Teleskop gotowy”)."
+        },
+        "capture": {
+          "title": "Rób zdjęcia",
+          "description": "Twój plan określa, jakie cele fotografować z jakim filtrem, czasem ekspozycji i liczbą zdjęć. Uruchom go, a aplikacja zajmie się resztą: przejściem do celu, centrowaniem, guidingiem i zdjęciami.",
+          "targets": "Cele",
+          "remaining": "Pozostały czas",
+          "noPlan": "Nie ma jeszcze planu. Utwórz go z celem, filtrem, czasem ekspozycji i liczbą zdjęć.",
+          "editPlan": "Edytuj plan",
+          "createPlan": "Utwórz plan",
+          "watch": "Obserwuj napływające zdjęcia",
+          "start": "Rozpocznij zdjęcia",
+          "stop": "Zatrzymaj zdjęcia",
+          "summary": "{targets} cel, gotowe około {time} | {targets} celów, gotowe około {time}",
+          "summaryDone": "{targets} cel, wszystkie zdjęcia zrobione | {targets} celów, wszystkie zdjęcia zrobione",
+          "confirmStartTitle": "Rozpocząć zdjęcia?",
+          "confirmStartMessage": "Plan z {targets} celem rusza teraz i potrwa około {remaining}. Teleskop przejdzie do celu, wycentruje go i uruchomi guiding przed pierwszym zdjęciem. | Plan z {targets} celami rusza teraz i potrwa około {remaining}. Teleskop przejdzie do każdego celu, wycentruje go i uruchomi guiding przed pierwszym zdjęciem.",
+          "confirmStopTitle": "Zatrzymać zdjęcia?",
+          "confirmStopMessage": "Bieżące zdjęcie zostanie anulowane. Plan możesz uruchomić ponownie później.",
+          "noExposures": "Twój plan ma cel, ale jeszcze żadnych zdjęć. Otwórz plan i naciśnij „Dodaj ekspozycję”, aby wybrać filtr, czas ekspozycji i liczbę zdjęć.",
+          "summaryEmpty": "{targets} cel, brak zaplanowanych zdjęć | {targets} celów, brak zaplanowanych zdjęć",
+          "confirmStartMessageNoGuiding": "Plan z {targets} celem rusza teraz i potrwa około {remaining}. Teleskop przejdzie do celu i wycentruje go przed pierwszym zdjęciem. | Plan z {targets} celami rusza teraz i potrwa około {remaining}. Teleskop przejdzie do każdego celu i wycentruje go przed pierwszym zdjęciem.",
+          "missingSteps": "{count} cel w Twoim planie nie jest ani automatycznie osiągany, ani prowadzony. | {count} celów w Twoim planie nie jest automatycznie osiąganych ani prowadzonych.",
+          "missingSlew": "{count} cel w Twoim planie nie jest automatycznie osiągany. | {count} celów w Twoim planie nie jest automatycznie osiąganych.",
+          "fixSteps": "Przejdź tam i prowadź automatycznie",
+          "flipMissing": "Twój plan nie obraca teleskopu na meridianie. Śledziłby dalej poza nim i mógłby uderzyć w statyw lub kolumnę.",
+          "addFlip": "Włącz Meridian Flip",
+          "flipWindow": "{target} osiąga meridian około {meridian}; plan obraca teleskop między {earliest} a {latest}.",
+          "flipFixed": "{target} osiąga meridian około {meridian}; plan obraca teleskop o {earliest}.",
+          "flipPause": "{target} osiąga meridian około {meridian}; plan robi przerwę o {pause} i obraca teleskop o {earliest}.",
+          "flipNone": "Ten plan nie wymaga Meridian Flip.",
+          "flipYourTarget": "Twój cel",
+          "flipSettings": "Ustawienia flipa i test światła dziennego"
+        },
+        "flats": {
+          "title": "Flaty",
+          "description": "Flaty usuwają cienie kurzu i ciemne rogi ze zdjęć. Zrób je teraz, zanim cokolwiek się zmieni: ostrość, obrót kamery i jej pozycja muszą zostać takie jak przy zdjęciach. Niepotrzebne tej nocy? Pomiń ten krok.",
+          "lightSource": "Źródło światła",
+          "panel": "Panel flat",
+          "panelHint": "Zestaw sam ustawia jasność panelu.",
+          "panelMissing": "Brak podłączonego panelu flat z regulacją jasności.",
+          "tablet": "Tablet lub folia świetlna",
+          "tabletHint": "Ustaw go równomiernie oświetlony przed teleskopem; zestaw dobierze czas ekspozycji.",
+          "filters": "Filtry",
+          "count": "Flatów na filtr",
+          "countNoWheel": "Liczba flatów",
+          "darks": "Zrób też dark flaty",
+          "darksHint": "Potrzebne tylko, jeśli kalibrujesz dark flatami. Teleskop musi być wtedy zakryty; aplikacja poinformuje, kiedy.",
+          "start": "Zrób flaty",
+          "stop": "Zatrzymaj flaty",
+          "allSettings": "Wszystkie ustawienia flatów",
+          "needsPlugin": "Flaty na tej stronie wymagają nowszej wtyczki Touch'N'Stars na zestawie. Zaktualizuj ją lub zrób flaty asystentem flatów poniżej.",
+          "planRunning": "Plan wciąż działa. Flaty można zrobić po jego zakończeniu lub zatrzymaniu.",
+          "noFilterSelected": "Zaznacz co najmniej jeden filtr.",
+          "noFilter": "Flaty",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flaty",
+          "endBlocked": "Flaty wciąż trwają. Zakończ noc, gdy skończą się lub zostaną zatrzymane.",
+          "runningSummary": "Robienie flatów",
+          "doneSummary": "Flaty zrobione tej nocy",
+          "result": {
+            "success": "Zrobiono jeden flat | Zrobiono {count} flatów",
+            "dim": "Za ciemno: użyj jaśniejszego światła lub zezwól na dłuższą ekspozycję w ustawieniach flatów.",
+            "bright": "Za jasno: przyciemnij światło lub zezwól na krótszą ekspozycję w ustawieniach flatów.",
+            "failed": "Nie udało się zrobić flatów.",
+            "stopped": "Zatrzymano"
+          }
+        },
+        "end": {
+          "title": "Zakończ noc",
+          "description": "Zatrzymuje wszystko we właściwej kolejności, parkuje montaż i powoli ogrzewa kamerę, aby na matrycy nie skraplała się wilgoć.",
+          "action": "Zakończ noc"
+        }
+      },
+      "more": {
+        "title": "Więcej",
+        "equipment": "Wszystkie urządzenia",
+        "mount": "Montaż",
+        "focus": "Ostrość",
+        "guider": "Guiding",
+        "system": "Wi-Fi, aktualizacje i system",
+        "settings": "Ustawienia"
+      },
+      "endNight": {
+        "title": "Zakończ noc",
+        "intro": "Te kroki wykonują się jeden po drugim. Odznacz to, co ma dalej działać.",
+        "nothingToDo": "Nic nie działa, a montaż jest zaparkowany – nie ma nic do zrobienia.",
+        "someFailed": "Nie wszystko się udało, powód jest pod krokiem. Sprawdź montaż, zanim wyłączysz zasilanie.",
+        "done": "Gotowe. Poczekaj, aż kamera się ogrzeje, zanim wyłączysz zasilanie.",
+        "confirm": "Zakończ noc teraz",
+        "actions": {
+          "stopSequence": "Zatrzymaj zdjęcia",
+          "stopGuiding": "Zatrzymaj guiding",
+          "parkMount": "Zaparkuj montaż",
+          "warmCamera": "Ogrzej kamerę ({minutes} min)"
+        },
+        "parkTimeout": "Montaż nie zgłosił stanu „zaparkowany” w ciągu 3 minut. Sprawdź go, zanim wyłączysz zasilanie.",
+        "doneNoWarmUp": "Gotowe. Możesz teraz wyłączyć zasilanie."
+      },
+      "settings": {
+        "title": "Tryb prosty",
+        "description": "Strona startowa prowadząca przez noc i nawigacja tylko ze stronami, których do tego potrzebujesz. Wyłącz go, aby znów zobaczyć wszystkie funkcje.",
+        "navbarHint": "Gdy tryb prosty jest włączony, poniższe dostosowanie nawigacji nie działa. Wraca niezmienione po wyłączeniu trybu."
+      },
+      "wizard": {
+        "title": "Jak chcesz używać aplikacji?",
+        "simpleTitle": "Prosty (zalecany na początek)",
+        "simpleText": "Strona startowa prowadzi przez noc krok po kroku, tylko ze stronami, których potrzebujesz.",
+        "fullTitle": "Wszystkie funkcje",
+        "fullText": "Każda strona i ustawienie w nawigacji, dla doświadczonych użytkowników."
+      },
+      "focusFirst": "Najpierw ostrość: ten krok ustala pozycję ze zdjęcia, a do tego potrzebne są ostre gwiazdy.",
+      "live": {
+        "lastPicture": "Ostatnie zdjęcie",
+        "openFull": "Pokaż zdjęcie na pełnym ekranie",
+        "noPicture": "Brak zdjęcia. Zrób zdjęcie testowe, aby zobaczyć, co widzi kamera.",
+        "preview": "Zdjęcie testowe",
+        "hfr": "Ostrość (HFR)",
+        "stars": "Gwiazdy",
+        "guiding": "Guiding",
+        "sensor": "Matryca",
+        "trendTitle": "Ostrość ostatnich {count} zdjęć",
+        "trendHint": "Ostrzejsze gwiazdy są rysowane wyżej. Jeśli linia opada w ciągu nocy, ustaw ostrość ponownie.",
+        "exposure": "Czas ekspozycji",
+        "testPicture": "Zrób zdjęcie testowe",
+        "abort": "Przerwij ekspozycję",
+        "planRunning": "Twój plan robi zdjęcia – nowe pojawiają się tu w miarę napływania.",
+        "justNow": "przed chwilą",
+        "minutesAgo": "{minutes} min temu",
+        "histogram": "Histogram",
+        "min": "Min",
+        "max": "Max",
+        "pixels": "{count} piksel | {count} pikseli",
+        "pixelsSaturated": "{count} piksel przesycony | {count} pikseli przesyconych",
+        "histogramHint": "Nierozciągnięte dane z matrycy dla całego zdjęcia. Pokazany jest tylko zakres wokół tła nieba; gwiazdy i przesycone piksele leżą dalej w prawo i są liczone w Max.",
+        "firstPlanPicture": "Pierwsze zdjęcie Twojego planu pojawi się tutaj."
+      },
+      "setupChecks": {
+        "title": "Przed pierwszą nocą",
+        "locationTitle": "Brakuje Twojej lokalizacji",
+        "locationText": "Zestaw nie wie, gdzie stoi. Ustawianie na biegun i atlas nieba nie działają bez tego.",
+        "locationAction": "Ustaw lokalizację",
+        "databaseTitle": "Nie zainstalowano mapy gwiazd",
+        "databaseText": "Ustawianie na biegun i centrowanie celu porównują zdjęcie z mapą gwiazd. Zestaw jeszcze jej nie ma.",
+        "databaseAction": "Zainstaluj mapę gwiazd",
+        "flipTitle": "Meridian Flip nie jest jeszcze skonfigurowany",
+        "flipText": "Gdy cel przekracza meridian (linię północ–południe przez zenit), teleskop musi obrócić się na drugą stronę montażu – inaczej wkrótce uderzyłby w statyw lub kolumnę. Twój plan robi to sam. Powiedz mu raz, jak daleko Twój montaż może śledzić poza meridian.",
+        "flipNotSure": "Nie jesteś pewien? Instrukcja montażu zwykle podaje, jak daleko może śledzić poza meridian. Dopóki nie wiesz, „Ledwo” chroni teleskop kosztem kilku minut bez zdjęć.",
+        "flipCurrentValues": "Twój profil ma już własne czasy: {values}.",
+        "flipKeepValues": "Zachowaj te czasy",
+        "flipTimingWindow": "flip {min}–{max} min po meridianie",
+        "flipTimingFixed": "flip {min} min po meridianie",
+        "flipTimingPause": "przerwa {pause} min przed, flip {min} min po meridianie",
+        "blockedPolar": "Ustawianie na biegun jeszcze nie zadziała, zobacz „Przed pierwszą nocą” powyżej.",
+        "blockedTarget": "Centrowanie jeszcze nie zadziała: nie zainstalowano mapy gwiazd, zobacz „Przed pierwszą nocą” powyżej."
+      },
+      "backToNight": "Wróć do swojej nocy",
+      "cockpit": {
+        "title": "Robienie zdjęć",
+        "noTargetName": "Twój plan",
+        "doneAt": "Gotowe o",
+        "remaining": "Pozostało {time}",
+        "activity": {
+          "autofocus": "Ustawianie ostrości (autofocus)",
+          "slewing": "Teleskop się porusza (centrowanie lub Meridian Flip)",
+          "calibrating": "Guider się kalibruje",
+          "settling": "Oczekiwanie na ustabilizowanie guidingu",
+          "exposing": "Ekspozycja",
+          "busy": "Przygotowanie następnego zdjęcia",
+          "flipping": "Meridian Flip – teleskop obraca się na drugą stronę"
+        },
+        "exposing": "Ekspozycja {seconds} s",
+        "frame": "zdjęcie {frame} z {frames}",
+        "check": "Sprawdź",
+        "hfr": "HFR",
+        "noFrame": "jeszcze brak zdjęcia",
+        "hfrChange": "{change} % wobec poprzednich",
+        "guidingLevel": {
+          "good": "doskonały",
+          "ok": "w porządku",
+          "poor": "zbyt duży",
+          "unknown": "skala nieznana"
+        },
+        "alerts": {
+          "devices": "{count} urządzenie nie jest już połączone. | {count} urządzeń nie jest już połączonych.",
+          "starLost": "Guider utracił gwiazdę. Zdjęcia robione teraz będą miały smugi.",
+          "notGuiding": "Plan działa bez guidingu.",
+          "guidingPoor": "Guiding ({rms}″) jest większy niż jeden piksel obrazu ({scale}″) – gwiazdy się rozmywają. Częste przyczyny to wiatr, wyważenie lub luźny kabel.",
+          "hfrRising": "Gwiazdy są o {change} % większe niż na wcześniejszych zdjęciach. Ostrość mogła uciec albo nadciąga rosa lub chmury.",
+          "cooling": "Matryca ma {temp} °C zamiast {target} °C."
+        },
+        "hfrNoBaseline": "pierwsze zdjęcia",
+        "lastPicture": "ostatnie zdjęcie",
+        "verdict": {
+          "good": "Wszystko działa dobrze",
+          "warn": "Działa – jedna rzecz wymaga uwagi",
+          "danger": "Sprawdź – zdjęcia są zagrożone",
+          "waiting": "Działa – pierwsze zdjęcia pokażą, jak dobrze"
+        },
+        "showDetails": "Pokaż szczegóły",
+        "hideDetails": "Ukryj szczegóły",
+        "focus": "Ostrość",
+        "focusLevel": {
+          "good": "ostro",
+          "ok": "lekko miękko",
+          "poor": "miękko"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Guiding",
+            "what": "Jak dokładnie montaż podąża za gwiazdami: drgania gwiazdy prowadzącej w porównaniu z rozmiarem jednego piksela na zdjęciach.",
+            "now": "Teraz: drgania {rms}″, czyli {ratio} piksela (jeden piksel = {scale}″).",
+            "nowNoScale": "Teraz: drgania {rms}″. Aby je ocenić, profil potrzebuje ogniskowej i rozmiaru piksela.",
+            "nowOff": "Guiding teraz nie działa.",
+            "nowPaused": "Wstrzymany, gdy teleskop ustawia ostrość lub się porusza.",
+            "limits": "Zielony do {good} piksela, żółty do {ok} piksela, powyżej czerwony – wtedy gwiazdy zamieniają się w krótkie kreski.",
+            "fix": "Jeśli zrobi się czerwony: zwykle winny jest wiatr, wyważenie lub luźny kabel."
+          },
+          "focus": {
+            "title": "Ostrość",
+            "what": "Jak duże są gwiazdy na najnowszym zdjęciu w porównaniu z wcześniejszymi zdjęciami tym samym filtrem. Rosnące gwiazdy oznaczają uciekającą ostrość – albo nadciągającą rosę lub cienkie chmury.",
+            "now": "Teraz: rozmiar gwiazdy (HFR) {hfr}, {change} % wobec poprzednich ({baseline}).",
+            "nowFirst": "Ocena pojawi się, gdy będzie {count} zdjęć jednym filtrem.",
+            "nowNone": "Jeszcze brak zdjęcia.",
+            "limits": "Zielony do {good} % większe, żółty do {ok} %, powyżej czerwony.",
+            "fix": "Jeśli zrobi się czerwony: ustaw ostrość ponownie (autofocus). Jeśli to nie pomoże, sprawdź przód teleskopu pod kątem rosy."
+          },
+          "cooling": {
+            "title": "Chłodzenie",
+            "what": "Temperatura matrycy kamery. Zimna matryca daje zdjęcia z mniejszym szumem.",
+            "now": "Teraz: {temp} °C, cel {target} °C.",
+            "limits": "Zielony w granicach {good} °C od celu, czerwony poza nimi.",
+            "fix": "Jeśli pozostaje czerwony: chłodnik nie osiąga celu w takim cieple – wybierz cel o kilka stopni cieplejszy."
+          }
+        },
+        "statusBarHint": "Guiding, ostrość i chłodzenie są oceniane na pasku stanu poniżej – naciśnij jedno, aby zobaczyć, co oznacza.",
+        "stop": "Stop"
+      },
+      "summary": {
+        "finished": {
+          "title": "Plan zakończony",
+          "text": "Wszystkie zdjęcia z Twojego planu są zrobione. Zakończ noc, aby zaparkować teleskop i ogrzać kamerę.",
+          "textFlats": "Wszystkie zdjęcia z Twojego planu są zrobione. Zrób teraz flaty, póki nic się nie zmieniło, a potem zakończ noc."
+        },
+        "ended": {
+          "title": "Noc zakończona",
+          "text": "Czystego nieba! Oto, co przyniosła ta noc.",
+          "notParked": "Teleskop jeszcze nie zaparkowany",
+          "resume": "Kontynuuj noc"
+        },
+        "frames": "Zdjęcia",
+        "integration": "Ekspozycja",
+        "medianHfr": "Mediana HFR"
+      },
+      "addToPlan": "Dodaj do planu",
+      "slewOptional": "Twój plan sam przejdzie do celu, wycentruje go i uruchomi guiding. Przejście tam teraz jest potrzebne tylko, by najpierw sprawdzić kadr (Framing).",
+      "coachHint": {
+        "text": "Twój guiding był wczoraj niespokojny. Guiding Coach mierzy Twoją kamerę prowadzącą, niebo i montaż i podpowiada, co pomaga. Trwa to około 15 minut pod gwiazdami – najlepiej przed rozpoczęciem zdjęć.",
+        "open": "Otwórz Guiding Coach",
+        "dismiss": "Nie teraz"
+      }
     },
     "secureObservatory": {
       "title": "Zakończ noc",
@@ -8844,6 +9459,7 @@
         "errors": {
           "tppaUnavailable": "Nie udało się otworzyć połączenia z TPPA.",
           "tppaNoResponse": "TPPA nie odpowiedziało na żądanie startu.",
+          "tppaStartSlewFailed": "Teleskop nie mógł przemieścić się do pozycji startowej ustawiania na biegun.",
           "tppaError": "TPPA zgłosiło błąd. Sprawdź kamerę, montaż i plate solver.",
           "tppaSilent": "TPPA nic nie wysłało od dwóch minut. TPPA i Auto-Pilot zostały zatrzymane.",
           "autoPilotNotStarted": "Auto-Pilot nie uruchomił się. Sprawdź log AAPA; TPPA zostało zatrzymane, jeśli zostało uruchomione tutaj.",
@@ -9455,7 +10071,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Ustaw.",
-    "about": "Info"
+    "about": "Info",
+    "home": "Start",
+    "plan": "Plan",
+    "target": "Cel"
   },
   "nightsummary": {
     "tnsPluginToOld": "Wtyczka Touch N Stars jest zbyt stara dla tej funkcji. Zaktualizuj do wersji 1.2.8.0 lub nowszej.",
