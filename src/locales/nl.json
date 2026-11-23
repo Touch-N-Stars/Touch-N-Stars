@@ -5478,6 +5478,22 @@
         "camera_field": "Cameraveld",
         "actions": "Acties",
         "more": "Meer"
+      },
+      "tonight": {
+        "title": "Vannacht zichtbaar",
+        "intro": "De beste doelen voor vannacht op jouw locatie, de beste eerst. Tik op een doel om het in de atlas te selecteren.",
+        "noSite": "Stel eerst je locatie in het profiel in, dan verschijnen hier de beste doelen voor vannacht.",
+        "noDarkNight": "Vannacht wordt het op jouw locatie niet donker genoeg.",
+        "nothing": "Vannacht komt geen enkel doel hoog genoeg aan de hemel.",
+        "maxAlt": "tot {alt}° hoog",
+        "types": {
+          "galaxy": "Sterrenstelsel",
+          "nebula": "Nevel",
+          "planetary_nebula": "Planetaire nevel",
+          "cluster": "Sterrenhoop",
+          "dark_nebula": "Donkere nevel",
+          "widefield": "Groothoek"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "De huidige foto wordt geannuleerd. Je kunt het plan later opnieuw starten.",
           "noExposures": "Je plan heeft een doel maar nog geen foto's. Open het plan en tik op “Add exposure” om filter, belichtingstijd en aantal foto's te kiezen.",
           "summaryEmpty": "{targets} doel, nog geen foto's gepland | {targets} doelen, nog geen foto's gepland",
+          "confirmStartFocus": "Na elke filterwissel wordt opnieuw scherpgesteld.",
           "confirmStartMessageNoGuiding": "Het plan met {targets} doel start nu en duurt ongeveer {remaining}. De telescoop gaat naar het doel en centreert het vóór de eerste foto. | Het plan met {targets} doelen start nu en duurt ongeveer {remaining}. De telescoop gaat naar elk doel en centreert het vóór de eerste foto.",
-          "missingSteps": "{count} doel in je plan wordt niet automatisch aangestuurd of geguided. | {count} doelen in je plan worden niet automatisch aangestuurd of geguided.",
+          "missingSteps": "{count} doel in je plan doet dit nog niet automatisch: {steps}. | {count} doelen in je plan doen dit nog niet automatisch: {steps}.",
+          "missingStepParts": {
+            "slew": "erheen gaan",
+            "guide": "guiden",
+            "focus": "opnieuw scherpstellen na een filterwissel"
+          },
           "fixSteps": "Automatisch erheen gaan en guiden",
           "flipMissing": "Je plan voert geen Meridian Flip uit. De telescoop zou erna blijven volgen en tegen het statief of de pier kunnen botsen.",
           "addFlip": "Meridian Flip aanzetten",

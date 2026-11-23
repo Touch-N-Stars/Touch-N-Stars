@@ -5478,6 +5478,22 @@
         "camera_field": "Campo de la cámara",
         "actions": "Acciones",
         "more": "Más"
+      },
+      "tonight": {
+        "title": "Visible esta noche",
+        "intro": "Los mejores objetivos de esta noche en tu ubicación, los mejores primero. Toca uno para seleccionarlo en el atlas.",
+        "noSite": "Primero define tu ubicación en el perfil y aquí aparecerán los mejores objetivos de esta noche.",
+        "noDarkNight": "Esta noche no oscurece lo suficiente en tu ubicación.",
+        "nothing": "Ningún objetivo sube lo bastante alto en el cielo esta noche.",
+        "maxAlt": "hasta {alt}° de altura",
+        "types": {
+          "galaxy": "Galaxia",
+          "nebula": "Nebulosa",
+          "planetary_nebula": "Nebulosa planetaria",
+          "cluster": "Cúmulo estelar",
+          "dark_nebula": "Nebulosa oscura",
+          "widefield": "Campo amplio"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "La imagen actual se cancela. Puedes iniciar el plan de nuevo más tarde.",
           "noExposures": "Tu plan tiene un objetivo pero aún ninguna imagen. Abre el plan y pulsa “Añadir exposición” para elegir filtro, tiempo de exposición y número de imágenes.",
           "summaryEmpty": "{targets} objetivo, aún sin imágenes planificadas | {targets} objetivos, aún sin imágenes planificadas",
+          "confirmStartFocus": "Después de cada cambio de filtro vuelve a enfocar.",
           "confirmStartMessageNoGuiding": "El plan con {targets} objetivo empieza ahora y dura unos {remaining}. El telescopio va al objetivo y lo centra antes de la primera imagen. | El plan con {targets} objetivos empieza ahora y dura unos {remaining}. El telescopio va a cada objetivo y lo centra antes de la primera imagen.",
-          "missingSteps": "{count} objetivo de tu plan no se apunta ni se guía automáticamente. | {count} objetivos de tu plan no se apuntan ni se guían automáticamente.",
+          "missingSteps": "{count} objetivo de tu plan aún no lo hace automáticamente: {steps}. | {count} objetivos de tu plan aún no lo hacen automáticamente: {steps}.",
+          "missingStepParts": {
+            "slew": "ir hasta allí",
+            "guide": "guiar",
+            "focus": "volver a enfocar tras un cambio de filtro"
+          },
           "fixSteps": "Ir allí y guiar automáticamente",
           "flipMissing": "Tu plan no gira el telescopio en el meridiano. Seguiría el seguimiento más allá y podría chocar con el trípode o el pilar.",
           "addFlip": "Activar el Meridian Flip",

@@ -5478,6 +5478,22 @@
         "camera_field": "Pole kamery",
         "actions": "Akcje",
         "more": "Więcej"
+      },
+      "tonight": {
+        "title": "Widoczne tej nocy",
+        "intro": "Najlepsze cele na tę noc w Twojej lokalizacji, najlepsze na początku. Stuknij jeden, aby wybrać go w atlasie.",
+        "noSite": "Najpierw ustaw swoją lokalizację w profilu, a tu pojawią się najlepsze cele na tę noc.",
+        "noDarkNight": "Tej nocy w Twojej lokalizacji nie zrobi się wystarczająco ciemno.",
+        "nothing": "Tej nocy żaden cel nie wznosi się dostatecznie wysoko na niebie.",
+        "maxAlt": "do {alt}° wysokości",
+        "types": {
+          "galaxy": "Galaktyka",
+          "nebula": "Mgławica",
+          "planetary_nebula": "Mgławica planetarna",
+          "cluster": "Gromada gwiazd",
+          "dark_nebula": "Mgławica ciemna",
+          "widefield": "Szerokie pole"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "Bieżące zdjęcie zostanie anulowane. Plan możesz uruchomić ponownie później.",
           "noExposures": "Twój plan ma cel, ale jeszcze żadnych zdjęć. Otwórz plan i naciśnij „Dodaj ekspozycję”, aby wybrać filtr, czas ekspozycji i liczbę zdjęć.",
           "summaryEmpty": "{targets} cel, brak zaplanowanych zdjęć | {targets} celów, brak zaplanowanych zdjęć",
+          "confirmStartFocus": "Po każdej zmianie filtra ostrość jest ustawiana ponownie.",
           "confirmStartMessageNoGuiding": "Plan z {targets} celem rusza teraz i potrwa około {remaining}. Teleskop przejdzie do celu i wycentruje go przed pierwszym zdjęciem. | Plan z {targets} celami rusza teraz i potrwa około {remaining}. Teleskop przejdzie do każdego celu i wycentruje go przed pierwszym zdjęciem.",
-          "missingSteps": "{count} cel w Twoim planie nie jest ani automatycznie osiągany, ani prowadzony. | {count} celów w Twoim planie nie jest automatycznie osiąganych ani prowadzonych.",
+          "missingSteps": "{count} cel w Twoim planie nie robi tego jeszcze automatycznie: {steps}. | {count} celów w Twoim planie nie robi tego jeszcze automatycznie: {steps}.",
+          "missingStepParts": {
+            "slew": "najechać na cel",
+            "guide": "prowadzić",
+            "focus": "ponownie ustawić ostrość po zmianie filtra"
+          },
           "fixSteps": "Przejdź tam i prowadź automatycznie",
           "flipMissing": "Twój plan nie obraca teleskopu na meridianie. Śledziłby dalej poza nim i mógłby uderzyć w statyw lub kolumnę.",
           "addFlip": "Włącz Meridian Flip",

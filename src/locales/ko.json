@@ -5524,6 +5524,22 @@
         "camera_field": "카메라 시야",
         "actions": "작업",
         "more": "더 보기"
+      },
+      "tonight": {
+        "title": "오늘 밤 관측 가능",
+        "intro": "현재 위치에서 오늘 밤 가장 좋은 대상을 좋은 순서대로 보여 줍니다. 대상을 누르면 아틀라스에서 선택됩니다.",
+        "noSite": "먼저 프로필에서 위치를 설정하면 오늘 밤 가장 좋은 대상이 여기에 표시됩니다.",
+        "noDarkNight": "오늘 밤 현재 위치에서는 충분히 어두워지지 않습니다.",
+        "nothing": "오늘 밤 충분히 높이 올라오는 대상이 없습니다.",
+        "maxAlt": "최대 고도 {alt}°",
+        "types": {
+          "galaxy": "은하",
+          "nebula": "성운",
+          "planetary_nebula": "행성상 성운",
+          "cluster": "성단",
+          "dark_nebula": "암흑 성운",
+          "widefield": "광시야"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "현재 이미지는 취소됩니다. 플랜은 나중에 다시 시작할 수 있습니다.",
           "noExposures": "플랜에 대상은 있지만 아직 촬영 설정이 없습니다. 플랜을 열고 \"노출 추가\"를 눌러 필터, 노출 시간, 장수를 선택하세요.",
           "summaryEmpty": "대상 {targets}개, 아직 계획된 촬영 없음 | 대상 {targets}개, 아직 계획된 촬영 없음",
+          "confirmStartFocus": "필터를 바꿀 때마다 다시 초점을 맞춥니다.",
           "confirmStartMessageNoGuiding": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 대상으로 이동해 센터링합니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 각 대상으로 이동해 센터링합니다.",
-          "missingSteps": "플랜의 대상 {count}개가 자동으로 이동 및 가이딩되지 않습니다. | 플랜의 대상 {count}개가 자동으로 이동 및 가이딩되지 않습니다.",
+          "missingSteps": "플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}. | 플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}.",
+          "missingStepParts": {
+            "slew": "이동",
+            "guide": "가이딩",
+            "focus": "필터 변경 후 다시 초점 맞추기"
+          },
           "fixSteps": "자동으로 이동 및 가이딩",
           "flipMissing": "플랜에 자오선에서 망원경을 돌리는 단계가 없습니다. 자오선을 지나서도 계속 추적하여 삼각대나 피어에 부딪힐 수 있습니다.",
           "addFlip": "Meridian Flip 켜기",

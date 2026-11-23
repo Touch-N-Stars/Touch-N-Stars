@@ -5478,6 +5478,22 @@
         "camera_field": "Champ de la caméra",
         "actions": "Actions",
         "more": "Plus"
+      },
+      "tonight": {
+        "title": "Visible cette nuit",
+        "intro": "Les meilleures cibles de cette nuit à votre position, les meilleures en premier. Touchez-en une pour la sélectionner dans l'atlas.",
+        "noSite": "Définissez d'abord votre position dans le profil : les meilleures cibles de la nuit s'afficheront ici.",
+        "noDarkNight": "Il ne fait pas assez sombre cette nuit à votre position.",
+        "nothing": "Aucune cible ne monte assez haut dans le ciel cette nuit.",
+        "maxAlt": "jusqu'à {alt}° de hauteur",
+        "types": {
+          "galaxy": "Galaxie",
+          "nebula": "Nébuleuse",
+          "planetary_nebula": "Nébuleuse planétaire",
+          "cluster": "Amas d'étoiles",
+          "dark_nebula": "Nébuleuse obscure",
+          "widefield": "Grand champ"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "L'image en cours est annulée. Vous pourrez redémarrer le plan plus tard.",
           "noExposures": "Votre plan a une cible mais pas encore d'images. Ouvrez le plan et appuyez sur « Ajouter une pose » pour choisir filtre, temps de pose et nombre d'images.",
           "summaryEmpty": "{targets} cible, aucune image prévue pour l'instant | {targets} cibles, aucune image prévue pour l'instant",
+          "confirmStartFocus": "Après chaque changement de filtre, la mise au point est refaite.",
           "confirmStartMessageNoGuiding": "Le plan avec {targets} cible démarre maintenant et dure environ {remaining}. Le télescope se rend à la cible et la centre avant la première image. | Le plan avec {targets} cibles démarre maintenant et dure environ {remaining}. Le télescope se rend à chaque cible et la centre avant la première image.",
-          "missingSteps": "{count} cible de votre plan n'est pas pointée ni guidée automatiquement. | {count} cibles de votre plan ne sont pas pointées ni guidées automatiquement.",
+          "missingSteps": "{count} cible de votre plan ne le fait pas encore automatiquement : {steps}. | {count} cibles de votre plan ne le font pas encore automatiquement : {steps}.",
+          "missingStepParts": {
+            "slew": "s'y rendre",
+            "guide": "guider",
+            "focus": "refaire la mise au point après un changement de filtre"
+          },
           "fixSteps": "Pointer et guider automatiquement",
           "flipMissing": "Votre plan ne retourne pas le télescope au méridien. Il continuerait à suivre au-delà et pourrait heurter le trépied ou le pilier.",
           "addFlip": "Activer le Meridian Flip",

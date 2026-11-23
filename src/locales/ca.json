@@ -5524,6 +5524,22 @@
         "camera_field": "Camp de la càmera",
         "actions": "Accions",
         "more": "Més"
+      },
+      "tonight": {
+        "title": "Visible aquesta nit",
+        "intro": "Els millors objectius d'aquesta nit a la teva ubicació, els millors primer. Toca'n un per seleccionar-lo a l'atles.",
+        "noSite": "Defineix primer la teva ubicació al perfil i aquí apareixeran els millors objectius d'aquesta nit.",
+        "noDarkNight": "Aquesta nit no es fa prou fosc a la teva ubicació.",
+        "nothing": "Cap objectiu arriba prou amunt al cel aquesta nit.",
+        "maxAlt": "fins a {alt}° d'alçada",
+        "types": {
+          "galaxy": "Galàxia",
+          "nebula": "Nebulosa",
+          "planetary_nebula": "Nebulosa planetària",
+          "cluster": "Cúmul estel·lar",
+          "dark_nebula": "Nebulosa fosca",
+          "widefield": "Camp ampli"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "La imatge actual es cancel·la. Pots tornar a iniciar el pla més tard.",
           "noExposures": "El teu pla té un objectiu però encara cap imatge. Obre el pla i toca \"Afegeix exposició\" per triar filtre, temps d'exposició i nombre d'imatges.",
           "summaryEmpty": "{targets} objectiu, encara sense imatges previstes | {targets} objectius, encara sense imatges previstes",
+          "confirmStartFocus": "Després de cada canvi de filtre, torna a enfocar.",
           "confirmStartMessageNoGuiding": "El pla amb {targets} objectiu comença ara i triga uns {remaining}. El telescopi va a l'objectiu i el centra abans de la primera imatge. | El pla amb {targets} objectius comença ara i triga uns {remaining}. El telescopi va a cada objectiu i el centra abans de la primera imatge.",
-          "missingSteps": "{count} objectiu del teu pla no s'apunta ni es guia automàticament. | {count} objectius del teu pla no s'apunten ni es guien automàticament.",
+          "missingSteps": "{count} objectiu del teu pla encara no ho fa automàticament: {steps}. | {count} objectius del teu pla encara no ho fan automàticament: {steps}.",
+          "missingStepParts": {
+            "slew": "apuntar-hi",
+            "guide": "guiar",
+            "focus": "tornar a enfocar després d'un canvi de filtre"
+          },
           "fixSteps": "Ves-hi i guia automàticament",
           "flipMissing": "El teu pla no gira el telescopi al meridià. Continuaria el seguiment més enllà i podria xocar amb el trípode o el pilar.",
           "addFlip": "Activa el Meridian Flip",

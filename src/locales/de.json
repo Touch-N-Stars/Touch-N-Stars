@@ -5519,6 +5519,22 @@
         "camera_field": "Kamerafeld",
         "actions": "Aktionen",
         "more": "Mehr"
+      },
+      "tonight": {
+        "title": "Heute Nacht sichtbar",
+        "intro": "Die besten Ziele für heute Nacht an deinem Standort, die besten zuerst. Tippe eines an, um es im Atlas auszuwählen.",
+        "noSite": "Lege zuerst deinen Standort im Profil fest, dann erscheinen hier die besten Ziele für heute Nacht.",
+        "noDarkNight": "Heute Nacht wird es an deinem Standort nicht dunkel genug.",
+        "nothing": "Heute Nacht steigt kein Ziel hoch genug am Himmel.",
+        "maxAlt": "bis {alt}° hoch",
+        "types": {
+          "galaxy": "Galaxie",
+          "nebula": "Nebel",
+          "planetary_nebula": "Planetarischer Nebel",
+          "cluster": "Sternhaufen",
+          "dark_nebula": "Dunkelnebel",
+          "widefield": "Weitwinkel"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "Das aktuelle Bild wird abgebrochen. Du kannst den Plan später erneut starten.",
           "noExposures": "Dein Plan hat ein Ziel, aber noch keine Bilder. Öffne den Plan und tippe auf „Belichtung hinzufügen“, um Filter, Belichtungszeit und Bildanzahl zu wählen.",
           "summaryEmpty": "{targets} Ziel, noch keine Bilder geplant | {targets} Ziele, noch keine Bilder geplant",
+          "confirmStartFocus": "Nach jedem Filterwechsel wird neu fokussiert.",
           "confirmStartMessageNoGuiding": "Der Plan mit {targets} Ziel startet jetzt und dauert etwa {remaining}. Das Teleskop fährt zum Ziel und zentriert es vor dem ersten Bild. | Der Plan mit {targets} Zielen startet jetzt und dauert etwa {remaining}. Das Teleskop fährt zu jedem Ziel und zentriert es vor dem ersten Bild.",
-          "missingSteps": "{count} Ziel in deinem Plan wird nicht automatisch angefahren oder geguidet. | {count} Ziele in deinem Plan werden nicht automatisch angefahren oder geguidet.",
+          "missingSteps": "{count} Ziel in deinem Plan macht das noch nicht von selbst: {steps}. | {count} Ziele in deinem Plan machen das noch nicht von selbst: {steps}.",
+          "missingStepParts": {
+            "slew": "dorthin fahren",
+            "guide": "guiden",
+            "focus": "nach Filterwechsel neu fokussieren"
+          },
           "fixSteps": "Automatisch anfahren und guiden",
           "flipMissing": "Dein Plan wendet das Teleskop nicht am Meridian. Es würde darüber hinaus nachführen und könnte gegen Stativ oder Säule stoßen.",
           "addFlip": "Meridian Flip einschalten",

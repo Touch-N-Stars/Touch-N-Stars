@@ -5524,6 +5524,22 @@
         "camera_field": "Camera field",
         "actions": "Actions",
         "more": "More"
+      },
+      "tonight": {
+        "title": "Visible tonight",
+        "intro": "The best targets for tonight at your location, best first. Tap one to select it in the atlas.",
+        "noSite": "Set your location in the profile first, then the best targets for tonight show up here.",
+        "noDarkNight": "It does not get dark enough tonight at your location.",
+        "nothing": "No target gets high enough in the sky tonight.",
+        "maxAlt": "up to {alt}° high",
+        "types": {
+          "galaxy": "Galaxy",
+          "nebula": "Nebula",
+          "planetary_nebula": "Planetary nebula",
+          "cluster": "Star cluster",
+          "dark_nebula": "Dark nebula",
+          "widefield": "Wide field"
+        }
       }
     },
     "profile": {

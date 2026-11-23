@@ -491,7 +491,8 @@ import { useFramingStore } from '@/store/framingStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { apiStore } from '@/store/store';
 import { useObservationPlanerStore } from '../store/observationPlanerStore';
-import { clampValue as clamp, equatorialToAltAz, getMoonDataForTarget } from '@/utils/astronomy';
+import { getMoonDataForTarget } from '@/utils/astronomy';
+import { buildTrack, calculateTonightScore, parseDecDeg, parseRaHours } from '@/utils/tonightPicks';
 import {
   ArrowPathIcon,
   ArrowUpRightIcon,
@@ -508,71 +509,6 @@ import { useLocationStore, ninaCoords } from '../../../utils/location';
 const { t: tr } = useI18n();
 const tp = (key, params) => tr(`observationPlaner.${key}`, params);
 const router = useRouter();
-
-function parseRaToDeg(v) {
-  // Accepts: number (deg or hours), "HH:MM:SS", "HH MM SS", "HHhMMmSSs"
-  // Returns HOURS when given sexagesimal; caller converts to degrees if needed.
-  if (v == null) return null;
-  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
-
-  const s = String(v).trim();
-  if (!s) return null;
-
-  const n = Number(s.replace(',', '.'));
-  if (Number.isFinite(n)) return n;
-
-  const cleaned = s
-    .toLowerCase()
-    .replace(/[h]/g, ':')
-    .replace(/[m]/g, ':')
-    .replace(/[s]/g, '')
-    .replace(/\s+/g, ':')
-    .replace(/::+/g, ':')
-    .replace(/[^0-9:+-]/g, ':');
-
-  const parts = cleaned.split(':').filter(Boolean).slice(0, 3);
-  if (!parts.length) return null;
-
-  const hh = Number(parts[0]);
-  const mm = parts.length > 1 ? Number(parts[1]) : 0;
-  const ss = parts.length > 2 ? Number(parts[2]) : 0;
-  if (![hh, mm, ss].every(Number.isFinite)) return null;
-
-  return hh + mm / 60 + ss / 3600;
-}
-
-function parseDecToDeg(v) {
-  // Accepts: number (deg), "+DD:MM:SS", "DD MM SS", "DDdMMmSSs"
-  if (v == null) return null;
-  if (typeof v === 'number') return Number.isFinite(v) ? v : null;
-
-  const s = String(v).trim();
-  if (!s) return null;
-
-  const n = Number(s.replace(',', '.'));
-  if (Number.isFinite(n)) return n;
-
-  const sign = s.startsWith('-') ? -1 : 1;
-
-  const cleaned = s
-    .toLowerCase()
-    .replace(/[d°]/g, ':')
-    .replace(/[m]/g, ':')
-    .replace(/[s]/g, '')
-    .replace(/\s+/g, ':')
-    .replace(/::+/g, ':')
-    .replace(/[^0-9:+-]/g, ':');
-
-  const parts = cleaned.split(':').filter(Boolean).slice(0, 3);
-  if (!parts.length) return null;
-
-  const dd = Math.abs(Number(parts[0]));
-  const mm = parts.length > 1 ? Number(parts[1]) : 0;
-  const ss = parts.length > 2 ? Number(parts[2]) : 0;
-  if (![dd, mm, ss].every(Number.isFinite)) return null;
-
-  return sign * (dd + mm / 60 + ss / 3600);
-}
 
 // --------------------------
 // State
@@ -1159,15 +1095,11 @@ function normalizeFavorites(list) {
 
     // RA: numbers assumed degrees; strings assumed HMS (hours)
     let raDeg =
-      typeof raRaw === 'number' ? (Number.isFinite(raRaw) ? raRaw : null) : parseRaToDeg(raRaw);
+      typeof raRaw === 'number' ? (Number.isFinite(raRaw) ? raRaw : null) : parseRaHours(raRaw);
 
     // Dec: numbers assumed degrees; strings assumed DMS
     let decDeg =
-      typeof decRaw === 'number'
-        ? Number.isFinite(decRaw)
-          ? decRaw
-          : null
-        : parseDecToDeg(decRaw);
+      typeof decRaw === 'number' ? (Number.isFinite(decRaw) ? decRaw : null) : parseDecDeg(decRaw);
 
     // heuristic: if RA looks like hours (0..24) and no explicit deg field provided
     if (
@@ -1230,23 +1162,6 @@ function hashString(str) {
     h |= 0;
   }
   return Math.abs(h);
-}
-
-// --------------------------
-// Track over window
-// --------------------------
-function buildTrack(raDeg, decDeg, start, end, stepMin, latDeg, lonDeg) {
-  const msStep = Math.max(2, stepMin) * 60 * 1000;
-  const points = [];
-  let best = { altDeg: -999, azDeg: 0, time: new Date(start) };
-
-  for (let t = start.getTime(); t <= end.getTime(); t += msStep) {
-    const dt = new Date(t);
-    const { altDeg, azDeg } = equatorialToAltAz(raDeg, decDeg, dt, latDeg, lonDeg);
-    points.push({ time: dt, altDeg, azDeg });
-    if (altDeg > best.altDeg) best = { altDeg, azDeg, time: dt };
-  }
-  return { points, best };
 }
 
 // --------------------------
@@ -1316,9 +1231,9 @@ const seedTargetsNormalized = computed(() => {
     const name = t?.name ?? t?.Name ?? t?.title ?? `Seed ${idx + 1}`;
     const type = t?.type ?? t?.Type ?? 'unknown';
 
-    const raH = parseRaToDeg(t?.ra ?? t?.Ra ?? t?.RA ?? t?.RaString ?? null);
+    const raH = parseRaHours(t?.ra ?? t?.Ra ?? t?.RA ?? t?.RaString ?? null);
     const raDeg = raH == null ? null : raH * 15.0;
-    const decDeg = parseDecToDeg(t?.dec ?? t?.Dec ?? t?.DEC ?? t?.DecString ?? null);
+    const decDeg = parseDecDeg(t?.dec ?? t?.Dec ?? t?.DEC ?? t?.DecString ?? null);
 
     const stableId = t?.id ?? t?.Id ?? t?._id ?? makeStableFavoriteId(name, raDeg, decDeg);
 
@@ -1433,57 +1348,6 @@ function extractErr(e, fallback) {
     e?.message ||
     '';
   return msg ? String(msg) : fallback;
-}
-
-function calculateTonightScore(target, moon) {
-  const samples = Array.isArray(target?.track?.samples)
-    ? target.track.samples
-    : Array.isArray(target?.track?.points)
-      ? target.track.points
-      : [];
-
-  if (!samples.length) return 0;
-
-  const MIN_ALT = 20;
-
-  // A) Altitude factor
-  const maxAlt = target.track.best?.altDeg ?? 0;
-  const altitudeFactor = clamp(maxAlt / 90, 0, 1);
-
-  // B) Visibility duration
-  const visibleSamples = samples.filter((s) => (s?.altDeg ?? -999) >= MIN_ALT).length;
-
-  const smRaw = target.track.sampleMinutes ?? 5;
-  const sampleMinutes = Number.isFinite(smRaw) ? smRaw : Number(smRaw) || 5;
-
-  const visibilityHours = (visibleSamples * sampleMinutes) / 60;
-
-  // C) Moon penalty
-  let moonPenalty = 0;
-  if (moon) {
-    const illumination = clamp(moon.illumination ?? 0, 0, 1);
-    const separationDeg = moon.separationDeg ?? 180;
-    const separationFactor = clamp((separationDeg - 30) / 90, 0, 1);
-
-    const typeFactor =
-      {
-        galaxy: 1.0,
-        nebula: 0.8,
-        planetary_nebula: 0.3,
-        cluster: 0.2,
-        widefield: 1.2,
-        unknown: 0.7,
-      }[target?.type] ?? 0.7;
-
-    moonPenalty = illumination * (1 - separationFactor) * typeFactor * 2.0;
-  }
-
-  // Favorite bonus
-  const favoriteBonus = target?.source === 'favorite' ? 1.15 : 1.0;
-
-  // Final score
-  const score = altitudeFactor * visibilityHours * favoriteBonus - moonPenalty;
-  return Math.max(0, score);
 }
 
 function tonightKey(score) {

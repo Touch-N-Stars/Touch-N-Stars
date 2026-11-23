@@ -5478,6 +5478,22 @@
         "camera_field": "相机视场",
         "actions": "操作",
         "more": "更多"
+      },
+      "tonight": {
+        "title": "今晚可见",
+        "intro": "你所在位置今晚最适合的目标，最佳的排在最前。点按一个即可在星图中选中它。",
+        "noSite": "请先在配置文件中设置你的位置，这里就会显示今晚最适合的目标。",
+        "noDarkNight": "今晚你所在的位置天不够黑。",
+        "nothing": "今晚没有目标升到足够高。",
+        "maxAlt": "最高 {alt}°",
+        "types": {
+          "galaxy": "星系",
+          "nebula": "星云",
+          "planetary_nebula": "行星状星云",
+          "cluster": "星团",
+          "dark_nebula": "暗星云",
+          "widefield": "广角"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "当前这张照片会被取消。你可以稍后重新开始计划。",
           "noExposures": "你的计划有目标但还没有照片。请打开计划并点击“添加曝光”，选择滤镜、曝光时间和张数。",
           "summaryEmpty": "{targets} 个目标，尚未规划照片 | {targets} 个目标，尚未规划照片",
+          "confirmStartFocus": "每次更换滤镜后都会重新对焦。",
           "confirmStartMessageNoGuiding": "包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会前往目标并在第一张照片前居中。 | 包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会依次前往每个目标并在第一张照片前居中。",
-          "missingSteps": "计划中有 {count} 个目标不会自动前往或导星。 | 计划中有 {count} 个目标不会自动前往或导星。",
+          "missingSteps": "计划中有 {count} 个目标还不会自动完成以下操作：{steps}。 | 计划中有 {count} 个目标还不会自动完成以下操作：{steps}。",
+          "missingStepParts": {
+            "slew": "前往目标",
+            "guide": "导星",
+            "focus": "更换滤镜后重新对焦"
+          },
           "fixSteps": "自动前往并导星",
           "flipMissing": "你的计划不会在子午线处翻转望远镜。它会继续跟踪越过子午线，可能撞到三脚架或立柱。",
           "addFlip": "打开 Meridian Flip",

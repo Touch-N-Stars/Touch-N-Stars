@@ -5478,6 +5478,22 @@
         "camera_field": "Campo della camera",
         "actions": "Azioni",
         "more": "Altro"
+      },
+      "tonight": {
+        "title": "Visibile stanotte",
+        "intro": "I target migliori di stanotte nella tua posizione, i migliori per primi. Tocca un target per selezionarlo nell'atlante.",
+        "noSite": "Imposta prima la tua posizione nel profilo, poi qui compaiono i target migliori di stanotte.",
+        "noDarkNight": "Stanotte nella tua posizione non fa abbastanza buio.",
+        "nothing": "Stanotte nessun target sale abbastanza in alto nel cielo.",
+        "maxAlt": "fino a {alt}° di altezza",
+        "types": {
+          "galaxy": "Galassia",
+          "nebula": "Nebulosa",
+          "planetary_nebula": "Nebulosa planetaria",
+          "cluster": "Ammasso stellare",
+          "dark_nebula": "Nebulosa oscura",
+          "widefield": "Grande campo"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "L'immagine in corso viene annullata. Puoi riavviare il piano più tardi.",
           "noExposures": "Il piano ha un target ma ancora nessuna immagine. Apri il piano e tocca “Aggiungi esposizione” per scegliere filtro, tempo di esposizione e numero di immagini.",
           "summaryEmpty": "{targets} target, nessuna immagine ancora pianificata | {targets} target, nessuna immagine ancora pianificata",
+          "confirmStartFocus": "Dopo ogni cambio di filtro rimette a fuoco.",
           "confirmStartMessageNoGuiding": "Il piano con {targets} target parte ora e richiede circa {remaining}. Il telescopio va sul target e lo centra prima della prima immagine. | Il piano con {targets} target parte ora e richiede circa {remaining}. Il telescopio va su ogni target e lo centra prima della prima immagine.",
-          "missingSteps": "{count} target del piano non viene raggiunto né guidato automaticamente. | {count} target del piano non vengono raggiunti né guidati automaticamente.",
+          "missingSteps": "{count} target del piano non lo fa ancora automaticamente: {steps}. | {count} target del piano non lo fanno ancora automaticamente: {steps}.",
+          "missingStepParts": {
+            "slew": "raggiungerlo",
+            "guide": "guidare",
+            "focus": "rimettere a fuoco dopo un cambio di filtro"
+          },
           "fixSteps": "Raggiungi e guida automaticamente",
           "flipMissing": "Il piano non ruota il telescopio al meridiano. Continuerebbe a inseguire oltre e potrebbe urtare il treppiede o il pilastro.",
           "addFlip": "Attiva il Meridian Flip",

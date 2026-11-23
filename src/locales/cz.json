@@ -5478,6 +5478,22 @@
         "camera_field": "Zorné pole kamery",
         "actions": "Akce",
         "more": "Více"
+      },
+      "tonight": {
+        "title": "Dnes v noci viditelné",
+        "intro": "Nejlepší cíle pro dnešní noc na vaší poloze, nejlepší první. Klepnutím cíl vyberete v atlasu.",
+        "noSite": "Nejprve nastavte svou polohu v profilu, pak se tu zobrazí nejlepší cíle pro dnešní noc.",
+        "noDarkNight": "Dnes v noci nebude na vaší poloze dost tma.",
+        "nothing": "Dnes v noci nevystoupí žádný cíl dostatečně vysoko na oblohu.",
+        "maxAlt": "až {alt}° vysoko",
+        "types": {
+          "galaxy": "Galaxie",
+          "nebula": "Mlhovina",
+          "planetary_nebula": "Planetární mlhovina",
+          "cluster": "Hvězdokupa",
+          "dark_nebula": "Temná mlhovina",
+          "widefield": "Široké pole"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "Aktuální snímek se zruší. Plán můžete později spustit znovu.",
           "noExposures": "Váš plán má cíl, ale zatím žádné snímky. Otevřete plán a klepnutím na „Přidat expozici“ vyberte filtr, expoziční dobu a počet snímků.",
           "summaryEmpty": "{targets} cíl, zatím žádné snímky | {targets} cílů, zatím žádné snímky",
+          "confirmStartFocus": "Po každé výměně filtru se znovu zaostří.",
           "confirmStartMessageNoGuiding": "Plán s {targets} cílem se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede k cíli a vycentruje ho. | Plán s {targets} cíli se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede ke každému cíli a vycentruje ho.",
-          "missingSteps": "{count} cíl ve vašem plánu se automaticky nenavádí ani nepointuje. | {count} cílů ve vašem plánu se automaticky nenavádí ani nepointuje.",
+          "missingSteps": "{count} cíl ve vašem plánu to zatím nedělá automaticky: {steps}. | {count} cílů ve vašem plánu to zatím nedělá automaticky: {steps}.",
+          "missingStepParts": {
+            "slew": "najet na cíl",
+            "guide": "guidovat",
+            "focus": "po výměně filtru znovu zaostřit"
+          },
           "fixSteps": "Přejet a pointovat automaticky",
           "flipMissing": "Váš plán neotáčí dalekohled na meridiánu. Sledoval by dál za něj a mohl by narazit do stativu nebo sloupu.",
           "addFlip": "Zapnout Meridian Flip",

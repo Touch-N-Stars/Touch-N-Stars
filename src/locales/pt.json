@@ -5478,6 +5478,22 @@
         "camera_field": "Campo da câmara",
         "actions": "Ações",
         "more": "Mais"
+      },
+      "tonight": {
+        "title": "Visível esta noite",
+        "intro": "Os melhores alvos desta noite na sua localização, os melhores primeiro. Toque num alvo para o selecionar no atlas.",
+        "noSite": "Defina primeiro a sua localização no perfil; aqui aparecerão os melhores alvos desta noite.",
+        "noDarkNight": "Esta noite não escurece o suficiente na sua localização.",
+        "nothing": "Nenhum alvo sobe alto o suficiente no céu esta noite.",
+        "maxAlt": "até {alt}° de altura",
+        "types": {
+          "galaxy": "Galáxia",
+          "nebula": "Nebulosa",
+          "planetary_nebula": "Nebulosa planetária",
+          "cluster": "Aglomerado estelar",
+          "dark_nebula": "Nebulosa escura",
+          "widefield": "Campo amplo"
+        }
       }
     },
     "profile": {
@@ -5899,8 +5915,14 @@
           "confirmStopMessage": "A imagem atual é cancelada. Você pode iniciar o plano novamente depois.",
           "noExposures": "Seu plano tem um alvo, mas ainda nenhuma imagem. Abra o plano e toque em “Adicionar exposição” para escolher filtro, tempo de exposição e número de imagens.",
           "summaryEmpty": "{targets} alvo, nenhuma imagem planejada ainda | {targets} alvos, nenhuma imagem planejada ainda",
+          "confirmStartFocus": "Depois de cada troca de filtro, volta a focar.",
           "confirmStartMessageNoGuiding": "O plano com {targets} alvo começa agora e leva cerca de {remaining}. O telescópio vai ao alvo e o centraliza antes da primeira imagem. | O plano com {targets} alvos começa agora e leva cerca de {remaining}. O telescópio vai a cada alvo e o centraliza antes da primeira imagem.",
-          "missingSteps": "{count} alvo do seu plano não é alcançado nem guiado automaticamente. | {count} alvos do seu plano não são alcançados nem guiados automaticamente.",
+          "missingSteps": "{count} alvo do seu plano ainda não faz isso automaticamente: {steps}. | {count} alvos do seu plano ainda não fazem isso automaticamente: {steps}.",
+          "missingStepParts": {
+            "slew": "ir até lá",
+            "guide": "guiar",
+            "focus": "voltar a focar após uma troca de filtro"
+          },
           "fixSteps": "Ir até lá e guiar automaticamente",
           "flipMissing": "Seu plano não gira o telescópio no meridiano. Ele continuaria rastreando além dele e poderia bater no tripé ou no pilar.",
           "addFlip": "Ativar o Meridian Flip",
