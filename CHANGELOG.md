@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: In the simple mode a target from the sky atlas goes straight into the plan, which slews there, centers it and starts guiding by itself; the guider is calibrated once at the best spot, and after a night of restless guiding the Guiding Coach is suggested.
 - PINS: In the simple mode the plan parks the mount and warms the camera up when it is done, so a night left alone does not track into the tripod.
 
+### Fixed
+
+- PINS: The setup assistant can join a Wi-Fi network while the rig still runs its own hotspot.
+
 ## [App6.7.0-beta1] - 2026-11-22
 
 ### Added

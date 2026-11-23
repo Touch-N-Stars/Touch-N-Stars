@@ -34,7 +34,12 @@
       class="flex items-start gap-3 rounded-control border border-status-warn/40 bg-status-warn/10 p-3"
     >
       <span class="tns-dot bg-status-warn mt-1.5"></span>
-      <p class="text-sm text-content">{{ t('components.setupWizard.wifi.notConnected') }}</p>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm text-content">{{ t('components.setupWizard.wifi.notConnected') }}</p>
+        <p class="text-xs text-content-muted mt-1">
+          {{ t('components.setupWizard.wifi.notConnectedHint') }}
+        </p>
+      </div>
     </div>
 
     <!-- Network transition feedback -->
@@ -47,14 +52,19 @@
       {{ t('components.setupWizard.wifi.retryFind') }}
     </button>
 
-    <!-- Change network -->
+    <!-- Join a network. Not connected is the first-run state: the rig runs its own hotspot
+         and the phone is on it, so this is the only way into the home network here. -->
     <button
-      v-if="isConnected && !showPicker"
+      v-if="statusLoaded && !showPicker"
       class="tns-btn-secondary"
       :disabled="isBusy"
       @click="openPicker"
     >
-      {{ t('components.setupWizard.wifi.chooseOtherNetwork') }}
+      {{
+        isConnected
+          ? t('components.setupWizard.wifi.chooseOtherNetwork')
+          : t('components.setupWizard.wifi.scan')
+      }}
     </button>
 
     <template v-if="showPicker">
@@ -146,6 +156,8 @@ const isScanning = ref(false);
 const isConnecting = ref(false);
 const isRecovering = ref(false);
 const hasScanned = ref(false);
+// Set after the first status read, so the join button does not flash up while it loads.
+const statusLoaded = ref(false);
 const showPicker = ref(false);
 const errorMessage = ref('');
 
@@ -180,6 +192,7 @@ async function loadStatus() {
     wifiStatus.value = null;
   } finally {
     isLoadingStatus.value = false;
+    statusLoaded.value = true;
   }
 }
 

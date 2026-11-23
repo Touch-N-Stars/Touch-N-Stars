@@ -386,6 +386,7 @@
         "loadingStatus": "Reading Wi-Fi status…",
         "connectedTo": "Connected to {ssid}",
         "notConnected": "The rig is not connected to a Wi-Fi network.",
+        "notConnectedHint": "Without a network it opens its own hotspot. For updates and the star map download it needs your home network: tap “Scan for networks”.",
         "chooseOtherNetwork": "Choose a different network",
         "scan": "Scan for networks",
         "scanning": "Scanning…",
