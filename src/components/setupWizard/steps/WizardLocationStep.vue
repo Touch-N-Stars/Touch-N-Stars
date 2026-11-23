@@ -100,9 +100,18 @@
       </label>
     </div>
 
-    <button class="tns-btn-secondary" :disabled="isSaving" @click="useCurrentLocation">
-      <MapPinIcon class="w-5 h-5" />
-      {{ t('components.setupWizard.location.useCurrentLocation') }}
+    <button
+      class="tns-btn-secondary"
+      :disabled="isSaving || gpsLoading"
+      @click="useCurrentLocation"
+    >
+      <Spinner v-if="gpsLoading" size="sm" />
+      <MapPinIcon v-else class="w-5 h-5" />
+      {{
+        gpsLoading
+          ? t('components.setupWizard.location.locating')
+          : t('components.setupWizard.location.useCurrentLocation')
+      }}
     </button>
     <p v-if="gpsError" class="text-sm text-status-danger break-words">{{ gpsError }}</p>
 
@@ -159,6 +168,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowPathIcon, MapPinIcon } from '@heroicons/vue/24/outline';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import ButtonSetLocationSyncToMount from '@/components/mount/ButtonSetLocationSyncToMount.vue';
@@ -167,6 +177,7 @@ import {
   longitude,
   altitude,
   gpsError,
+  gpsLoading,
   getCurrentLocation,
   useLocationStore,
   syncDirection,

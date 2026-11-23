@@ -163,10 +163,16 @@
            "take the location from this device". -->
       <button
         @click="getCurrentLocation"
+        :disabled="gpsLoading"
         class="tns-btn-secondary w-auto! md:shrink-0 col-span-2 md:self-end whitespace-nowrap"
       >
-        <MapPinIcon class="h-5 w-5" />
-        {{ $t('components.setupWizard.location.useCurrentLocation') }}
+        <Spinner v-if="gpsLoading" size="sm" />
+        <MapPinIcon v-else class="h-5 w-5" />
+        {{
+          gpsLoading
+            ? $t('components.setupWizard.location.locating')
+            : $t('components.setupWizard.location.useCurrentLocation')
+        }}
       </button>
     </div>
     <div v-if="gpsError" class="mt-2 text-sm text-status-danger">
@@ -191,6 +197,7 @@
 
 <script setup>
 import { MapPinIcon } from '@heroicons/vue/24/outline';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { computed, onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import {
@@ -198,6 +205,7 @@ import {
   longitude,
   altitude,
   gpsError,
+  gpsLoading,
   getCurrentLocation,
   useLocationStore,
   syncDirection,

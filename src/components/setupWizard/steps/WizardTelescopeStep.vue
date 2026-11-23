@@ -56,12 +56,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onBeforeUnmount, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { apiStore } from '@/store/store';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const { t } = useI18n();
+const store = apiStore();
 
 const FOCAL_LENGTH_FALLBACK = 500;
 const FOCAL_RATIO_FALLBACK = 5.0;
@@ -97,4 +99,21 @@ async function write(setting) {
 const updateTelescopeName = () => write(telescope);
 const updateFocalLength = () => write(focal);
 const updateFocalRatio = () => write(ratio);
+
+// The fields show 500 mm and f/5 while the profile has no value, but only a change saved them.
+// Leaving them as shown left the profile without a focal length - plate solving, the dither
+// calculator and the summary then reported it missing although the user saw a value. Leaving
+// the step (Next, Back, close) saves what is shown wherever the profile still has nothing.
+const hasValue = (key) => Number(store.profileInfo?.TelescopeSettings?.[key]) > 0;
+onBeforeUnmount(async () => {
+  // An unread profile is not an empty one: never overwrite values that were not loaded yet.
+  if (!store.profileInfo?.TelescopeSettings) return;
+  const pending = [];
+  if (!hasValue('FocalLength') && !focal.saving.value) pending.push(focal.save());
+  if (!hasValue('FocalRatio') && !ratio.saving.value) pending.push(ratio.save());
+  if (!pending.length) return;
+  await Promise.all(pending);
+  // The next step may already have read the profile before these writes landed.
+  await store.fetchProfilInfos();
+});
 </script>

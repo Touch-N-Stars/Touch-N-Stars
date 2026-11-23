@@ -17,6 +17,8 @@ export const latitude = ref(0);
 export const longitude = ref(0);
 export const altitude = ref(0);
 export const gpsError = ref(null);
+// True while the device is asked for its position; a high-accuracy fix can take up to 10 s.
+export const gpsLoading = ref(false);
 
 // Sync direction: NOSYNC | TOAPPLICATION | TOTELESCOPE  (PROMPT is excluded)
 export const syncDirection = ref('NOSYNC');
@@ -56,6 +58,9 @@ const SYNC_DIRECTION_VALUES = {
 };
 
 export async function getCurrentLocation() {
+  // A second tap while the first fix is pending would only start a parallel request.
+  if (gpsLoading.value) return;
+  gpsLoading.value = true;
   try {
     // Check for location permission
     if (Capacitor.getPlatform() !== 'web') {
@@ -81,6 +86,8 @@ export async function getCurrentLocation() {
     return pos;
   } catch (error) {
     gpsError.value = error.message || 'Failed to get GPS location';
+  } finally {
+    gpsLoading.value = false;
   }
 }
 

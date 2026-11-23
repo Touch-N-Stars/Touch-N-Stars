@@ -13,6 +13,15 @@
       </p>
     </div>
 
+    <!-- PHD2 picked on a rig that offers the built-in guider: say why the built-in one is
+         recommended, since the device list alone does not tell the difference. -->
+    <p
+      v-if="store.isPINS && !isNativeGuider && nativeGuiderOffered"
+      class="rounded-control border border-accent/40 bg-accent/10 p-3 text-sm text-content"
+    >
+      {{ t('components.setupWizard.guider.nativeRecommended') }}
+    </p>
+
     <!-- 1. Guide camera. The PINS native guider uses PINS' guide camera slot, with
          device and INDI driver picked like the imaging camera's. Its cog sets the slot's
          own Alpaca static IP. -->
@@ -240,14 +249,17 @@ const nativeFocalLengthMissing = computed(() => {
 // a fresh NINA profile has no guider, or the PHD2 default nobody picked yet. A fresh PINS
 // profile stores "PHD2", which PINS then lists as "PHD2 (OFFLINE)" - not a device anyone chose.
 const UNCHOSEN_GUIDERS = ['', 'No_Guider', 'PHD2', 'PHD2_Single'];
+// Whether PINS lists the built-in guider as a device (older PINS builds do not have it).
+const nativeGuiderOffered = ref(false);
 async function preselectNativeGuider() {
-  if (!store.isPINS || !isFirstRun || store.guiderInfo?.Connected) return;
-  const current = store.profileInfo?.GuiderSettings?.GuiderName ?? '';
-  if (!UNCHOSEN_GUIDERS.includes(current)) return;
+  if (!store.isPINS) return;
   try {
     const response = await apiService.guiderAction('list-devices');
     const list = Array.isArray(response?.Response) ? response.Response : [];
-    if (!list.some((d) => d?.Id === NATIVE_GUIDER_ID)) return;
+    nativeGuiderOffered.value = list.some((d) => d?.Id === NATIVE_GUIDER_ID);
+    if (!nativeGuiderOffered.value || !isFirstRun || store.guiderInfo?.Connected) return;
+    const current = store.profileInfo?.GuiderSettings?.GuiderName ?? '';
+    if (!UNCHOSEN_GUIDERS.includes(current)) return;
     await setProfileDevice('guiderAction', NATIVE_GUIDER_ID);
     await apiService.guiderAction('rescan');
   } catch (error) {

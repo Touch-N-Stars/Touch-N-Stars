@@ -14,7 +14,7 @@
         })
       }}
     </p>
-    <HfSweepPreview />
+    <HfSweepPreview :frozen="probe.running.value" />
 
     <!-- ABSOLUTE with In ≠ Out shifts NINA's position scale on every reversal -->
     <div
@@ -108,6 +108,7 @@
       <HfSweepPreview
         :step-size="stepSuggestion.stepSize"
         :offset-steps="stepSuggestion.offsetSteps"
+        :frozen="probe.running.value"
       />
       <p v-if="stepApply === 'done'" class="text-xs text-status-ok">{{ M('applied') }}</p>
       <button

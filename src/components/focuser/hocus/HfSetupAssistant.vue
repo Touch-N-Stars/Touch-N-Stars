@@ -92,7 +92,7 @@
         <!-- 6. Test run -->
         <div v-else-if="step === 'run'" class="flex flex-col gap-3">
           <HfSetupIssues :only="SWEEP_ISSUES" />
-          <HfSweepPreview />
+          <HfSweepPreview :frozen="running" />
           <button
             v-if="!running"
             class="tns-btn-primary min-h-touch"
