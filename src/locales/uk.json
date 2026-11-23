@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "Мій екземпляр",
       "ipLabel": "IP-адреса / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Адреса комплекту",
+      "advanced": "Розширені: назва і порт",
       "portLabel": "Порт",
       "portPlaceholder": "5000",
       "modalTitle": "Знайдені екземпляри",
@@ -133,6 +135,7 @@
       "discoveringMessage": "Виявлення екземплярів Touch-N-Stars...",
       "noFoundMessage": "Екземпляри Touch-N-Stars не знайдено через mDNS.",
       "selectionSuccess": "Обрано {label} ({ip}:{port}).",
+      "hotspotFound": "Комплект знайдено у власній Wi-Fi: {name}",
       "foundSingle": "Знайдено 1 екземпляр Touch-N-Stars.",
       "foundMultiple": "Знайдено {count} екземплярів Touch-N-Stars.",
       "discoveryFailedStatus": "Помилка виявлення: {message}",
@@ -334,7 +337,10 @@
         "pointLater": "Не впевнені щодо значення? Пропустіть його кнопкою «Далі». Усе можна змінити пізніше в налаштуваннях."
       },
       "instance": {
-        "description": "Адреса комп'ютера, на якому працює @:{'general.backendName'} У тій самій мережі застосунок зазвичай знаходить його сам.",
+        "title": "Підключитися до свого комплекту",
+        "description": "Телефон зв’язується з комплектом через Wi-Fi.",
+        "hotspotHint": "Спершу підключи телефон до Wi-Fi комплекту. Новий комплект відкриває власну точку доступу «pins-…», пароль — «touchnstars».",
+        "homeNetworkHint": "Комплект уже в твоїй домашній мережі? Тоді залишайся в ній. Застосунок шукає сам; якщо нічого не знайде, введи нижче адресу комплекту.",
         "connect": "Зберегти й підключити",
         "connecting": "Connecting…",
         "connected": "Підключено до {name}",

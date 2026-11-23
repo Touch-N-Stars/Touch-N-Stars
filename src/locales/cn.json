@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "我的实例",
       "ipLabel": "IP 地址 / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "设备地址",
+      "advanced": "高级：名称和端口",
       "portLabel": "端口",
       "portPlaceholder": "5000",
       "modalTitle": "已发现的实例",
@@ -133,6 +135,7 @@
       "discoveringMessage": "正在发现 Touch-N-Stars 实例…",
       "noFoundMessage": "通过 mDNS 未找到 Touch-N-Stars 实例。",
       "selectionSuccess": "已选择 {label}（{ip}:{port}）。",
+      "hotspotFound": "在设备自己的 Wi-Fi 上找到：{name}",
       "foundSingle": "找到 1 个 Touch-N-Stars 实例。",
       "foundMultiple": "找到 {count} 个 Touch-N-Stars 实例。",
       "discoveryFailedStatus": "发现失败：{message}",
@@ -334,7 +337,10 @@
         "pointLater": "不确定某个值？点击下一步跳过。以后都可以在设置中更改。"
       },
       "instance": {
-        "description": "运行 @:{'general.backendName'} 的电脑地址。在同一网络中，应用通常能自动找到它。",
+        "title": "连接到你的设备",
+        "description": "你的手机通过 Wi-Fi 与设备通信。",
+        "hotspotHint": "先把手机连接到设备的 Wi-Fi。新设备会开启名为“pins-…”的热点，密码是“touchnstars”。",
+        "homeNetworkHint": "设备已经在你的家庭网络中？那就留在该网络。应用会自动搜索；如果找不到，请在下方输入设备地址。",
         "connect": "保存并连接",
         "connecting": "Connecting…",
         "connected": "已连接到 {name}",

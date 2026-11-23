@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { Capacitor } from '@capacitor/core';
 import apiService from '@/services/apiService';
 import apiPinsService from '@/services/apiPinsService';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -312,6 +313,12 @@ export const apiStore = defineStore('store', {
 
       const showConnectionErrorToast = (messageKey) => {
         if (pinsStore.shouldSuppressConnectionToasts || this.errorMessageShown) {
+          return;
+        }
+        // A freshly installed phone app has no rig yet and the setup assistant is asking for
+        // one; "check the settings in NINA" on top of that only scares. The browser always
+        // comes from a rig, so it keeps the message.
+        if (Capacitor.isNativePlatform() && !useSettingsStore().connection.ip) {
           return;
         }
 

@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "Mijn Installatie",
       "ipLabel": "IP-adres/FQDN",
       "ipPlaceholder": "192.168.xx",
+      "rigAddressLabel": "Adres van de rig",
+      "advanced": "Geavanceerd: naam en poort",
       "portLabel": "Poort",
       "portPlaceholder": "5000",
       "modalTitle": "Gevonden Installaties",
@@ -133,6 +135,7 @@
       "discoveringMessage": "Zoeken naar Touch-N-Stars instanties...",
       "noFoundMessage": "Geen Touch-N-Stars instanties gevonden via mDNS.",
       "selectionSuccess": "Selecteer {label} ({ip}:{port}).",
+      "hotspotFound": "Rig gevonden op zijn eigen wifi: {name}",
       "foundSingle": "1 Touch-N-Stars instantie gevonden.",
       "foundMultiple": "{count} Touch-N-Stars instanties gevonden.",
       "discoveryFailedStatus": "Zoeken mislukt: {message}",
@@ -334,7 +337,10 @@
         "pointLater": "Waarde niet zeker? Sla over met Volgende. Alles kan later in de instellingen worden gewijzigd."
       },
       "instance": {
-        "description": "Adres van de computer waarop @:{'general.backendName'} draait. Op hetzelfde netwerk vindt de app hem meestal zelf.",
+        "title": "Verbinden met je rig",
+        "description": "Je telefoon praat via wifi met de rig.",
+        "hotspotHint": "Verbind je telefoon eerst met de wifi van de rig. Een nieuwe rig opent een eigen hotspot ‘pins-…’, het wachtwoord is ‘touchnstars’.",
+        "homeNetworkHint": "Zit de rig al in je thuisnetwerk? Blijf daar dan. De app zoekt zelf; vindt hij niets, vul dan hieronder het adres van de rig in.",
         "connect": "Opslaan en verbinden",
         "connecting": "Connecting…",
         "connected": "Verbonden met {name}",

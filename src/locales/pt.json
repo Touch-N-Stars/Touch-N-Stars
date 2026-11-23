@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "Minha instância",
       "ipLabel": "Endereço IP / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Endereço do equipamento",
+      "advanced": "Avançado: nome e porta",
       "portLabel": "Porta",
       "portPlaceholder": "5000",
       "modalTitle": "Instâncias encontradas",
@@ -133,6 +135,7 @@
       "discoveringMessage": "Descobrindo instâncias Touch-N-Stars…",
       "noFoundMessage": "Nenhuma instância Touch-N-Stars encontrada via mDNS.",
       "selectionSuccess": "{label} ({ip}:{port}) selecionada.",
+      "hotspotFound": "Equipamento encontrado no seu próprio Wi-Fi: {name}",
       "foundSingle": "Foi encontrada 1 instância Touch-N-Stars.",
       "foundMultiple": "Foram encontradas {count} instâncias Touch-N-Stars.",
       "discoveryFailedStatus": "Falha na descoberta: {message}",
@@ -334,7 +337,10 @@
         "pointLater": "Não tem certeza de um valor? Pule com Avançar. Tudo pode ser alterado depois nas configurações."
       },
       "instance": {
-        "description": "Endereço do computador onde corre o @:{'general.backendName'} Na mesma rede, a app normalmente encontra-o sozinha.",
+        "title": "Liga-te ao teu equipamento",
+        "description": "O teu telemóvel comunica com o equipamento por Wi-Fi.",
+        "hotspotHint": "Liga primeiro o telemóvel ao Wi-Fi do equipamento. Um equipamento novo abre o seu próprio hotspot «pins-…», a palavra-passe é «touchnstars».",
+        "homeNetworkHint": "O equipamento já está na tua rede de casa? Então fica nela. A app procura sozinha; se não encontrar nada, introduz abaixo o endereço do equipamento.",
         "connect": "Guardar e ligar",
         "connecting": "Connecting…",
         "connected": "Ligado a {name}",

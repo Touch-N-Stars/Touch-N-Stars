@@ -161,6 +161,8 @@
       "instanceNamePlaceholder": "La meva instància",
       "ipLabel": "Adreça IP / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Adreça de l’equip",
+      "advanced": "Avançat: nom i port",
       "portLabel": "Port",
       "portPlaceholder": "5000",
       "modalTitle": "Instàncies detectades",
@@ -174,6 +176,7 @@
       "discoveringMessage": "Descobrint instàncies de Touch-N-Stars…",
       "noFoundMessage": "No s'ha trobat cap instància de Touch-N-Stars via mDNS.",
       "selectionSuccess": "S'ha seleccionat {label} ({ip}:{port}).",
+      "hotspotFound": "Equip trobat a la seva pròpia wifi: {name}",
       "foundSingle": "S'ha trobat 1 instància de Touch-N-Stars.",
       "foundMultiple": "S'han trobat {count} instàncies de Touch-N-Stars.",
       "discoveryFailedStatus": "Error en la detecció: {message}",
@@ -375,7 +378,10 @@
         "pointLater": "No estàs segur d'un valor? Omet-lo amb Següent. Tot es pot canviar més tard a la configuració."
       },
       "instance": {
-        "description": "Adreça de l'ordinador on s'executa @:{'general.backendName'} A la mateixa xarxa, l'app normalment el troba sola.",
+        "title": "Connecta’t al teu equip",
+        "description": "El telèfon es comunica amb l’equip per wifi.",
+        "hotspotHint": "Connecta primer el telèfon a la wifi de l’equip. Un equip nou obre el seu propi punt d’accés «pins-…», la contrasenya és «touchnstars».",
+        "homeNetworkHint": "L’equip ja és a la xarxa de casa? Doncs queda’t en aquesta. L’app cerca sola; si no troba res, introdueix a sota l’adreça de l’equip.",
         "connect": "Desa i connecta",
         "connecting": "Connecting…",
         "connected": "Connectat a {name}",

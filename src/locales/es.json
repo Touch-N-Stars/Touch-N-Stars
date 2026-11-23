@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "Mi instancia",
       "ipLabel": "Dirección IP / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Dirección del equipo",
+      "advanced": "Avanzado: nombre y puerto",
       "portLabel": "Puerto",
       "portPlaceholder": "5000",
       "modalTitle": "Instancias detectadas",
@@ -133,6 +135,7 @@
       "discoveringMessage": "Descubriendo instancias de Touch-N-Stars…",
       "noFoundMessage": "No se encontraron instancias de Touch-N-Stars mediante mDNS.",
       "selectionSuccess": "Se seleccionó {label} ({ip}:{port}).",
+      "hotspotFound": "Equipo encontrado en su propio wifi: {name}",
       "foundSingle": "Se encontró 1 instancia de Touch-N-Stars.",
       "foundMultiple": "Se encontraron {count} instancias de Touch-N-Stars.",
       "discoveryFailedStatus": "Error en la detección: {message}",
@@ -334,7 +337,10 @@
         "pointLater": "¿No estás seguro de un valor? Omítelo con Siguiente. Todo se puede cambiar después en los ajustes."
       },
       "instance": {
-        "description": "Dirección del equipo en el que se ejecuta @:{'general.backendName'} En la misma red, la app suele encontrarlo sola.",
+        "title": "Conéctate a tu equipo",
+        "description": "Tu teléfono se comunica con el equipo por wifi.",
+        "hotspotHint": "Conecta primero tu teléfono al wifi del equipo. Un equipo nuevo abre su propio punto de acceso «pins-…», la contraseña es «touchnstars».",
+        "homeNetworkHint": "¿El equipo ya está en tu red doméstica? Entonces quédate en ella. La app busca sola; si no encuentra nada, introduce abajo la dirección del equipo.",
         "connect": "Guardar y conectar",
         "connecting": "Connecting…",
         "connected": "Conectado a {name}",

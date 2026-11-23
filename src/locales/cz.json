@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "Moje instance",
       "ipLabel": "IP adresa / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Adresa sestavy",
+      "advanced": "Pokročilé: název a port",
       "portLabel": "Přístav",
       "portPlaceholder": "5000",
       "modalTitle": "Nalezené instance",
@@ -133,6 +135,7 @@
       "discoveringMessage": "Probíhá detekce instancí Touch-N-Stars…",
       "noFoundMessage": "Nebyla nalezena žádná instance Touch-N-Stars prostřednictvím mDNS.",
       "selectionSuccess": "Vybráno {label} ({ip}:{port}).",
+      "hotspotFound": "Sestava nalezena na vlastní Wi-Fi: {name}",
       "foundSingle": "Nalezena 1 instance Touch-N-Stars.",
       "foundMultiple": "Nalezeno {count} instancí Touch-N-Stars.",
       "discoveryFailedStatus": "Vyhledávání selhalo: {message}",
@@ -334,7 +337,10 @@
         "pointLater": "Nejste si jistí hodnotou? Přeskočte ji tlačítkem Další. Vše lze později změnit v nastavení."
       },
       "instance": {
-        "description": "Adresa počítače, na kterém běží @:{'general.backendName'} Ve stejné síti ho aplikace obvykle najde sama.",
+        "title": "Připoj se ke své sestavě",
+        "description": "Telefon komunikuje se sestavou přes Wi-Fi.",
+        "hotspotHint": "Nejdřív připoj telefon k Wi-Fi sestavy. Nová sestava otevře vlastní hotspot „pins-…“, heslo je „touchnstars“.",
+        "homeNetworkHint": "Je sestava už ve tvé domácí síti? Tak v ní zůstaň. Aplikace hledá sama; když nic nenajde, zadej níže adresu sestavy.",
         "connect": "Uložit a připojit",
         "connecting": "Connecting…",
         "connected": "Připojeno k {name}",

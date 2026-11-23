@@ -161,6 +161,8 @@
       "instanceNamePlaceholder": "Meine Instanz",
       "ipLabel": "IP-Adresse / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Adresse des Rigs",
+      "advanced": "Erweitert: Name und Port",
       "portLabel": "Port",
       "portPlaceholder": "5000",
       "modalTitle": "Gefundene Instanzen",
@@ -174,6 +176,7 @@
       "discoveringMessage": "Touch-N-Stars-Instanzen werden gesucht…",
       "noFoundMessage": "Es wurden keine Touch-N-Stars-Instanzen per mDNS gefunden.",
       "selectionSuccess": "{label} ({ip}:{port}) wurde ausgewählt.",
+      "hotspotFound": "Rig im eigenen WLAN gefunden: {name}",
       "foundSingle": "Eine Touch-N-Stars-Instanz gefunden.",
       "foundMultiple": "{count} Touch-N-Stars-Instanzen gefunden.",
       "discoveryFailedStatus": "Erkennung fehlgeschlagen: {message}",
@@ -375,7 +378,10 @@
         "pointLater": "Unsicher bei einem Wert? Überspringe ihn mit Weiter. Alles lässt sich später in den Einstellungen ändern."
       },
       "instance": {
-        "description": "Adresse des Rechners, auf dem @:{'general.backendName'} läuft. Im selben Netzwerk findet die App ihn meist von selbst.",
+        "title": "Mit deinem Rig verbinden",
+        "description": "Dein Handy spricht über WLAN mit dem Rig.",
+        "hotspotHint": "Verbinde dein Handy zuerst mit dem WLAN des Rigs. Ein neues Rig öffnet einen eigenen Hotspot „pins-…“, das Passwort ist „touchnstars“.",
+        "homeNetworkHint": "Ist das Rig schon in deinem Heimnetz? Dann bleib dort. Die App sucht von selbst; findet sie nichts, gib unten die Adresse des Rigs ein.",
         "connect": "Speichern und verbinden",
         "connecting": "Verbinde…",
         "connected": "Verbunden mit {name}",

@@ -129,6 +129,8 @@
       "instanceNamePlaceholder": "マイ インスタンス",
       "ipLabel": "IP アドレス / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "リグのアドレス",
+      "advanced": "詳細：名前とポート",
       "portLabel": "ポート",
       "portPlaceholder": "5000",
       "modalTitle": "検出されたインスタンス",
@@ -142,6 +144,7 @@
       "discoveringMessage": "Touch-N-Stars インスタンスを検出中...",
       "noFoundMessage": "mDNS経由で Touch-N-Stars インスタンスが見つかりませんでした。",
       "selectionSuccess": "{label} ({ip}:{port}) を選択しました。",
+      "hotspotFound": "リグ自身のWi-Fiで見つかりました：{name}",
       "foundSingle": "1 つの Touch-N-Stars インスタンスが見つかりました。",
       "foundMultiple": "{count} つの Touch-N-Stars インスタンスが見つかりました。",
       "discoveryFailedStatus": "検出失敗: {message}",
@@ -343,7 +346,10 @@
         "pointLater": "値が分からない場合は「次へ」でスキップできます。すべて後から設定で変更できます。"
       },
       "instance": {
-        "description": "@:{'general.backendName'} が動いているマシンのアドレスです。同じネットワーク内なら、通常アプリが自動で見つけます。",
+        "title": "リグに接続",
+        "description": "スマートフォンはWi-Fiでリグと通信します。",
+        "hotspotHint": "まずスマートフォンをリグのWi-Fiに接続してください。新しいリグは「pins-…」という独自のホットスポットを開きます。パスワードは「touchnstars」です。",
+        "homeNetworkHint": "リグがすでに自宅のネットワークにある場合は、そのままで構いません。アプリが自動で探します。見つからない場合は、下にリグのアドレスを入力してください。",
         "connect": "保存して接続",
         "connecting": "Connecting…",
         "connected": "{name} に接続しました",

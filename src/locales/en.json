@@ -161,6 +161,8 @@
       "instanceNamePlaceholder": "My Instance",
       "ipLabel": "IP Address / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Address of the rig",
+      "advanced": "Advanced: name and port",
       "portLabel": "Port",
       "portPlaceholder": "5000",
       "modalTitle": "Discovered Instances",
@@ -174,6 +176,7 @@
       "discoveringMessage": "Discovering Touch-N-Stars instances...",
       "noFoundMessage": "No Touch-N-Stars instances found via mDNS.",
       "selectionSuccess": "Selected {label} ({ip}:{port}).",
+      "hotspotFound": "Found the rig on its own Wi-Fi: {name}",
       "foundSingle": "Found 1 Touch-N-Stars instance.",
       "foundMultiple": "Found {count} Touch-N-Stars instances.",
       "discoveryFailedStatus": "Discovery failed: {message}",
@@ -375,7 +378,10 @@
         "pointLater": "Not sure about a value? Skip it with Next. Everything can be changed later in the settings."
       },
       "instance": {
-        "description": "Address of the machine running @:{'general.backendName'}. On the same network the app can usually find it by itself.",
+        "title": "Connect to your rig",
+        "description": "Your phone talks to the rig over Wi-Fi.",
+        "hotspotHint": "First connect your phone to the rig’s Wi-Fi. A new rig opens its own hotspot named “pins-…”, the password is “touchnstars”.",
+        "homeNetworkHint": "Is the rig already on your home network? Then stay on it. The app searches by itself; if it finds nothing, enter the rig’s address below.",
         "connect": "Save and connect",
         "connecting": "Connecting…",
         "connected": "Connected to {name}",

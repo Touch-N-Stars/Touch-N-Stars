@@ -38,7 +38,7 @@
       <h3 class="text-lg font-medium text-white">
         {{ t('components.instanceDetection.manualConfigTitle') }}
       </h3>
-      <div>
+      <div v-if="!beginner">
         <label class="block text-sm font-medium text-content-muted mb-1">
           {{ t('components.instanceDetection.instanceNameLabel') }}
         </label>
@@ -51,16 +51,48 @@
       </div>
       <div>
         <label class="block text-sm font-medium text-content-muted mb-1">
-          {{ t('components.instanceDetection.ipLabel') }}
+          {{
+            beginner
+              ? t('components.instanceDetection.rigAddressLabel')
+              : t('components.instanceDetection.ipLabel')
+          }}
         </label>
         <input
           v-model="instanceIP"
           type="text"
+          inputmode="url"
+          autocapitalize="off"
           class="w-full px-3 py-2 bg-surface-3 text-content rounded-md"
           :placeholder="t('components.instanceDetection.ipPlaceholder')"
         />
       </div>
-      <div>
+      <!-- For beginners the name and the port wait behind "Advanced": the name is only a
+           label, and PINS always serves the app on 5000. -->
+      <button
+        v-if="beginner"
+        type="button"
+        class="w-full min-h-touch flex items-center gap-2 text-left text-sm text-content-muted"
+        :aria-expanded="showAdvanced"
+        @click="showAdvanced = !showAdvanced"
+      >
+        <ChevronRightIcon
+          class="w-4 h-4 shrink-0 transition-transform duration-200"
+          :class="{ 'rotate-90': showAdvanced }"
+        />
+        {{ t('components.instanceDetection.advanced') }}
+      </button>
+      <div v-if="beginner && showAdvanced">
+        <label class="block text-sm font-medium text-content-muted mb-1">
+          {{ t('components.instanceDetection.instanceNameLabel') }}
+        </label>
+        <input
+          v-model="instanceName"
+          type="text"
+          class="w-full px-3 py-2 bg-surface-3 text-content rounded-md"
+          :placeholder="t('components.instanceDetection.instanceNamePlaceholder')"
+        />
+      </div>
+      <div v-if="!beginner || showAdvanced">
         <label class="block text-sm font-medium text-content-muted mb-1">
           {{ t('components.instanceDetection.portLabel') }}
         </label>
@@ -148,15 +180,16 @@
   </Modal>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { ChevronRightIcon } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import { Capacitor } from '@capacitor/core';
 import { mDNS } from '@acovanconis/capacitor-mdns';
 import { useI18n } from 'vue-i18n';
-import { probePinsHealth } from '@/services/rigEndpointResolver';
+import { PINS_HOTSPOT_HOST, probePinsHealth } from '@/services/rigEndpointResolver';
+import { PINS_DAEMON_SERVICE_TYPE, mergeDiscoveredServices } from '@/utils/mdnsInstances';
 
 const MDNS_SERVICE_TYPES = ['_touchnstars._tcp', '_pinsdaemon._tcp'];
-const PINS_DAEMON_SERVICE_TYPE = '_pinsdaemon._tcp';
 const MDNS_INSTANCE_PREFIX = 'touchnstars_';
 const MDNS_DISCOVERY_TIMEOUT = 6000;
 
@@ -172,6 +205,17 @@ const props = defineProps({
     }),
   },
   hideManualConfig: {
+    type: Boolean,
+    default: false,
+  },
+  // Search as soon as the component shows (native apps only), take a single find over
+  // without asking, and try the rig's own hotspot when the network search finds nothing.
+  autoDetect: {
+    type: Boolean,
+    default: false,
+  },
+  // Address field only; name and port behind "Advanced".
+  beginner: {
     type: Boolean,
     default: false,
   },
@@ -191,6 +235,7 @@ const detectionSuccess = ref(false);
 const showNoInstanceMessage = ref(false);
 
 const showDiscoveryModal = ref(false);
+const showAdvanced = ref(false);
 const discoveredInstances = ref([]);
 const modalMessage = ref('');
 const discoveryError = ref('');
@@ -198,6 +243,19 @@ const discoveryError = ref('');
 const platform = Capacitor.getPlatform();
 const supportsMdnsDiscovery =
   Capacitor.isNativePlatform() && (platform === 'android' || platform === 'ios');
+
+// The name a find filled in, so a hand-typed address can drop it again.
+let discoveredName = '';
+
+// An address typed by hand that is not one of the found rig's hosts is another backend: the
+// found rig's id, hosts and name would otherwise make the app look for the wrong rig later.
+watch(instanceIP, (ip) => {
+  if (!ip || instanceCandidateHosts.value.includes(ip)) return;
+  instanceRigId.value = '';
+  instanceCandidateHosts.value = [];
+  if (discoveredName && instanceName.value === discoveredName) instanceName.value = '';
+  discoveredName = '';
+});
 
 watch([instanceName, instanceIP, instancePort, instanceRigId, instanceCandidateHosts], () => {
   emit('update:modelValue', {
@@ -243,19 +301,82 @@ async function handleInstanceSelected(instance) {
     try {
       const result = await probePinsHealth({ host: instance.ip });
       instanceRigId.value = result.health.rigId;
+      // mDNS renames a second announcement of the same host ("pins-503ce-2"); the rig id is
+      // the real name, the one its hotspot carries too.
+      if (instanceName.value.startsWith(result.health.rigId)) {
+        instanceName.value = result.health.rigId;
+      }
     } catch (error) {
       console.warn('PINS identity probe failed:', error?.message || error);
     }
   }
   detectionSuccess.value = true;
   detectionMessage.value = t('components.instanceDetection.selectionSuccess', {
-    label: instance.label,
+    label: instanceName.value,
     ip: instance.ip,
     port: instance.port,
   });
   showNoInstanceMessage.value = false;
+  discoveredName = instanceName.value;
   closeDiscoveryModal();
 }
+
+/**
+ * A rig on its own hotspot is always at the same address. mDNS often does not get through
+ * there (or the phone blocks it), so the wizard asks that address directly before it gives up.
+ */
+async function tryRigHotspot() {
+  try {
+    const { health } = await probePinsHealth({ host: PINS_HOTSPOT_HOST });
+    await handleInstanceSelected({
+      label: health.rigId,
+      ip: PINS_HOTSPOT_HOST,
+      port: 5000,
+      hosts: [PINS_HOTSPOT_HOST],
+    });
+    instanceRigId.value = health.rigId;
+    detectionMessage.value = t('components.instanceDetection.hotspotFound', {
+      name: health.rigId,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The automatic search of the wizard: no list for a single find, and no dialog to close
+ * when nothing turned up. Only several rigs need a choice.
+ */
+async function autoDetectInstances() {
+  if (!supportsMdnsDiscovery || isDetecting.value || instanceIP.value) return;
+  isDetecting.value = true;
+  detectionSuccess.value = false;
+  showNoInstanceMessage.value = false;
+  discoveryError.value = '';
+  detectionMessage.value = t('components.instanceDetection.scanningMessage');
+
+  await discoverViaMdns();
+  const found = discoveredInstances.value;
+  if (found.length === 1) {
+    await handleInstanceSelected(found[0]);
+  } else if (found.length > 1) {
+    modalMessage.value = '';
+    showDiscoveryModal.value = true;
+  } else if (!(await tryRigHotspot())) {
+    // A refused search (e.g. no "nearby devices" permission) says why, not just "nothing".
+    detectionSuccess.value = false;
+    detectionMessage.value = discoveryError.value
+      ? t('components.instanceDetection.discoveryFailedStatus', { message: discoveryError.value })
+      : t('components.instanceDetection.noFoundMessage');
+    showNoInstanceMessage.value = !discoveryError.value;
+  }
+  isDetecting.value = false;
+}
+
+onMounted(() => {
+  if (props.autoDetect) autoDetectInstances();
+});
 
 async function detectInstances() {
   if (isDetecting.value) {
@@ -356,7 +477,7 @@ async function discoverViaMdns() {
 }
 
 function applyDiscoveryResults(services) {
-  const normalized = dedupeServices(services).sort((a, b) =>
+  const normalized = mergeDiscoveredServices(services).sort((a, b) =>
     a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
   );
   discoveredInstances.value = normalized;
@@ -452,20 +573,6 @@ function resolvePort(txtPort, fallbackPort) {
     return fallbackPort;
   }
   return 0;
-}
-
-function dedupeServices(services) {
-  const unique = new Map();
-  for (const service of services) {
-    if (!service.ip || !service.port) {
-      continue;
-    }
-    const key = `${service.instanceId || service.rawName}|${service.ip}|${service.port}`;
-    if (!unique.has(key)) {
-      unique.set(key, service);
-    }
-  }
-  return Array.from(unique.values());
 }
 
 function enhanceDiscoveryError(rawMessage) {

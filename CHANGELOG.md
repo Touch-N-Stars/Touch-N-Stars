@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - PINS: The setup assistant can join a Wi-Fi network while the rig still runs its own hotspot.
+- PINS: In the phone app the setup assistant explains the rig's hotspot, finds the rig by itself (also on the hotspot), lists a rig only once and needs no name, and no connection error shows before a rig is set up.
 - PINS: In the simple mode plan the filter of an exposure gets a line of its own, so its name is readable on a phone, and a new exposure starts with the next filter the target does not use yet.
 - PINS: The simple mode and the setup assistant write decimals the way the app language does (2,99 in German), the camera step takes the pixel size the camera reports, and switches tell screen readers what they switch.
 

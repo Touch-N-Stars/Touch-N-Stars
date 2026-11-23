@@ -120,6 +120,8 @@
       "instanceNamePlaceholder": "Moja instancja",
       "ipLabel": "Adres IP / FQDN",
       "ipPlaceholder": "192.168.xx",
+      "rigAddressLabel": "Adres zestawu",
+      "advanced": "Zaawansowane: nazwa i port",
       "portLabel": "Port",
       "portPlaceholder": "5000",
       "modalTitle": "Wykryte instancje",
@@ -133,6 +135,7 @@
       "discoveringMessage": "Wykrywanie instancji Touch-N-Stars…",
       "noFoundMessage": "Nie znaleziono instancji Touch-N-Stars przez mDNS.",
       "selectionSuccess": "Wybrano {label} ({ip}:{port}).",
+      "hotspotFound": "Znaleziono zestaw w jego własnym Wi-Fi: {name}",
       "foundSingle": "Znaleziono 1 instancję Touch-N-Stars.",
       "foundMultiple": "Znaleziono {count} instancji Touch-N-Stars.",
       "discoveryFailedStatus": "Wykrywanie nie powiodło się: {message}",
@@ -334,7 +337,10 @@
         "pointLater": "Nie jesteś pewien wartości? Pomiń ją przyciskiem Dalej. Wszystko można zmienić później w ustawieniach."
       },
       "instance": {
-        "description": "Adres komputera, na którym działa @:{'general.backendName'} W tej samej sieci aplikacja zwykle znajdzie go sama.",
+        "title": "Połącz się ze swoim zestawem",
+        "description": "Telefon łączy się z zestawem przez Wi-Fi.",
+        "hotspotHint": "Najpierw połącz telefon z Wi-Fi zestawu. Nowy zestaw otwiera własny hotspot „pins-…”, hasło to „touchnstars”.",
+        "homeNetworkHint": "Zestaw jest już w twojej sieci domowej? To zostań w niej. Aplikacja szuka sama; jeśli nic nie znajdzie, wpisz poniżej adres zestawu.",
         "connect": "Zapisz i połącz",
         "connecting": "Connecting…",
         "connected": "Połączono z {name}",
