@@ -5792,11 +5792,33 @@
         },
         "cool": {
           "title": "Cool the camera",
-          "description": "A cooled sensor gives cleaner pictures. Cooling takes about 10 minutes, so start it early – you can carry on with the next steps meanwhile.",
+          "description": "A cooled sensor gives cleaner pictures. Cooling takes a few minutes, so start it early – you can carry on with the next steps meanwhile.",
           "targetTemp": "Target temperature (°C)",
           "start": "Cool to {temp} °C",
           "failed": "Cooling could not be started",
-          "warmingSummary": "Warming up · {temp}"
+          "warmingSummary": "Warming up · {temp}",
+          "setup": {
+            "question": "How fast may your camera cool down?",
+            "text": "Asked once for this profile. Cooling too fast or warming up too fast stresses some sensors, and a sensor that warms up too quickly can fog up. The warm-up runs when you end the night.",
+            "presets": {
+              "fast": {
+                "title": "Fast",
+                "description": "Cools straight away, warms up in {warm} min. Fine for most current cooled CMOS cameras – they limit their cooler themselves."
+              },
+              "gentle": {
+                "title": "Gentle",
+                "description": "Cools in {cool} min, warms up in {warm} min."
+              },
+              "veryGentle": {
+                "title": "Very gentle",
+                "description": "Cools in {cool} min, warms up in {warm} min. For older cameras and CCD sensors."
+              }
+            },
+            "notSure": "Not sure? Your camera's manual says whether it needs a slow cool-down. Until you know, “Gentle” is a safe choice. You can change it later on the camera page.",
+            "currentValues": "Your profile already has its own timing: cools in {cool} min, warms up in {warm} min.",
+            "keepValues": "Keep this timing",
+            "applyFailed": "The timing could not be saved to the profile."
+          }
         },
         "mount": {
           "title": "Get the mount ready",
@@ -5948,7 +5970,7 @@
           "stopSequence": "Stop taking pictures",
           "stopGuiding": "Stop guiding",
           "parkMount": "Park the mount",
-          "warmCamera": "Warm up the camera (10 min)"
+          "warmCamera": "Warm up the camera ({minutes} min)"
         },
         "parkTimeout": "The mount did not report “parked” within 3 minutes. Check it before you switch off the power.",
         "doneNoWarmUp": "All done. You can switch off the power now."

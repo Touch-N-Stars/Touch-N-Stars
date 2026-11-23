@@ -99,6 +99,14 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    (Montierung → TPPA), Himmelsatlas öffnen, Autofokus starten bzw. Kamera öffnen, Guider
    einmal kalibrieren, Plan öffnen, Aufnahme starten/stoppen. Eine Ablehnung durch das Backend
    erscheint als Toast.
+   6c. Given der Schritt „Kamera kühlen“ und ein Profil, dessen Kühl-/Aufwärmzeit
+   (`CameraSettings-CoolingDuration` / `-WarmingDuration`) zu keiner Stufe passt und für das
+   noch nicht gewählt wurde, then fragt er statt des Kühlknopfs einmal, wie schnell die Kamera
+   kühlen darf: Schnell (0 / 5 min), Sanft (5 / 10), Sehr sanft (10 / 15). Die Wahl landet im
+   NINA-Profil, damit Auto-Kühlen beim Verbinden und die Kameraseite dieselben Werte nutzen.
+   Eigene Werte (nicht NINAs 0 / 0) lassen sich mit einem Tipp behalten. Danach kühlt der
+   Schritt mit der Profilzeit statt fest 10 min, „Nacht beenden“ wärmt mit der Profilzeit
+   (ohne eigene Zeit 10 min) und zeigt sie an.
    6a. Given der Himmelsatlas im Einfach-Modus, then steht „In den Plan“ als Hauptknopf vorn,
    „Slew and Center“ ist mit dem Hinweis versehen, dass Anfahren nur zum Prüfen des
    Bildausschnitts nötig ist. „In den Plan“ setzt das Ziel (Auswahl neu/ersetzen/kopieren wie
@@ -156,17 +164,17 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
 
 ## Dimensions considered
 
-| Dimension        | Applies | Note                                                                                   |
-| ---------------- | ------- | -------------------------------------------------------------------------------------- |
-| Runtime modes    | yes     | Nur PINS, über `store.isPINS` gegated                                                  |
-| Polling          | yes     | Kein neuer Poller für Geräte; Sequenzbaum per vorhandenem `sequenceV2Store`            |
-| Mobile           | yes     | Karten mit `min-h-touch`, `tns-*`, keine Hover-Abhängigkeit                            |
-| i18n             | yes     | Neue Texte erst in `en.json`, die anderen 13 Sprachen gesammelt vor dem Commit         |
-| Equipment safety | yes     | Nur explizite Knopfdrücke; „Nacht beenden“ nur nach Bestätigung                        |
-| Error paths      | yes     | Backend-Ablehnungen → Toast; Gerät weg → Schritt zeigt „Nicht verbunden“               |
-| Native           | no      | Keine Capacitor-API                                                                    |
-| Persistence      | yes     | `settingsStore.simpleMode` (an/aus, Kühltemperatur, Nachtmarkierungen, Guiding-Bilanz) |
-| Tests            | yes     | `src/utils/simpleMode.js` + Composable für „Alles verbinden“                           |
+| Dimension        | Applies | Note                                                                                                               |
+| ---------------- | ------- | ------------------------------------------------------------------------------------------------------------------ |
+| Runtime modes    | yes     | Nur PINS, über `store.isPINS` gegated                                                                              |
+| Polling          | yes     | Kein neuer Poller für Geräte; Sequenzbaum per vorhandenem `sequenceV2Store`                                        |
+| Mobile           | yes     | Karten mit `min-h-touch`, `tns-*`, keine Hover-Abhängigkeit                                                        |
+| i18n             | yes     | Neue Texte erst in `en.json`, die anderen 13 Sprachen gesammelt vor dem Commit                                     |
+| Equipment safety | yes     | Nur explizite Knopfdrücke; „Nacht beenden“ nur nach Bestätigung                                                    |
+| Error paths      | yes     | Backend-Ablehnungen → Toast; Gerät weg → Schritt zeigt „Nicht verbunden“                                           |
+| Native           | no      | Keine Capacitor-API                                                                                                |
+| Persistence      | yes     | `settingsStore.simpleMode` (an/aus, Kühltemperatur, Kühlzeit gewählt je Profil, Nachtmarkierungen, Guiding-Bilanz) |
+| Tests            | yes     | `src/utils/simpleMode.js` + Composable für „Alles verbinden“                                                       |
 
 ## Verification (2026-11-20)
 

@@ -157,6 +157,10 @@
                     v-if="!store.cameraInfo.Connected"
                     messageKey="components.simpleMode.needsCamera"
                   />
+                  <SimpleCoolingSetup
+                    v-else-if="step.status !== 'done' && coolingSetupMissing"
+                    @chosen="settingsStore.markCoolingSetUp(store.profileInfo?.Id)"
+                  />
                   <template v-else-if="step.status !== 'done'">
                     <NumberInputPicker
                       :modelValue="coolTemp"
@@ -619,6 +623,8 @@ import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.v
 import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
 import SimpleCoachHint from '@/components/simpleMode/SimpleCoachHint.vue';
 import SimpleFlipForecast from '@/components/simpleMode/SimpleFlipForecast.vue';
+import SimpleCoolingSetup from '@/components/simpleMode/SimpleCoolingSetup.vue';
+import { CUSTOM_COOLING_ID, matchCoolingPreset } from '@/utils/coolingPresets';
 import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import { raDecToAltAz } from '@/utils/utils';
 import {
@@ -1069,9 +1075,22 @@ async function withBusy(key, action) {
   }
 }
 
+// How fast the camera may cool is asked once per profile (see utils/coolingPresets.js). It
+// counts as chosen once picked or kept here, or when the profile holds one of the presets.
+const coolingSetupMissing = computed(() => {
+  const profile = store.profileInfo;
+  if (!profile?.Id || !profile.CameraSettings) return false;
+  if (settingsStore.simpleMode?.coolSetupProfiles?.includes(profile.Id)) return false;
+  return matchCoolingPreset(profile.CameraSettings) === CUSTOM_COOLING_ID;
+});
+
 function startCooling() {
   return withBusy('cool', async () => {
-    const response = await cameraStore.startCooling(coolTemp.value, 10);
+    // The profile's ramp, like the auto-cool on connect and the camera page.
+    const response = await cameraStore.startCooling(
+      coolTemp.value,
+      store.profileInfo?.CameraSettings?.CoolingDuration
+    );
     if (isBackendRefusal(response)) {
       toastBackendError(response, 'components.simpleMode.steps.cool.failed');
     }

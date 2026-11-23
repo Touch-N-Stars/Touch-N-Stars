@@ -37,7 +37,7 @@
               :disabled="running || results[action] !== undefined"
             />
             <label :for="`end-night-${action}`" class="flex-1 text-sm text-content py-2">
-              {{ $t(`components.simpleMode.endNight.actions.${action}`) }}
+              {{ $t(`components.simpleMode.endNight.actions.${action}`, { minutes: warmMinutes }) }}
             </label>
             <Spinner v-if="results[action] === 'running'" size="sm" class="text-accent" />
             <CheckIcon v-else-if="results[action] === 'ok'" class="w-5 h-5 text-status-ok" />
@@ -103,6 +103,7 @@ import { apiStore } from '@/store/store';
 import { useCameraStore } from '@/store/cameraStore';
 import { useSequenceStore } from '@/store/sequenceStore';
 import { endNightActions } from '@/utils/simpleMode';
+import { warmUpMinutes } from '@/utils/coolingPresets';
 import { waitForState } from '@/utils/waitForState';
 import { isBackendRefusal } from '@/utils/backendErrors';
 
@@ -149,7 +150,8 @@ watch(
 const anySelected = computed(() => actions.value.some((action) => selected[action]));
 const anyFailed = computed(() => Object.values(results).includes('failed'));
 
-const WARM_UP_MINUTES = 10;
+// The profile's warm-up ramp, chosen with the cooling timing on the start page.
+const warmMinutes = computed(() => warmUpMinutes(store.profileInfo?.CameraSettings));
 const PARK_TIMEOUT_MS = 3 * 60 * 1000;
 
 const RUNNERS = {
@@ -172,7 +174,7 @@ const RUNNERS = {
     }
   },
   async warmCamera() {
-    await cameraStore.startWarming(WARM_UP_MINUTES);
+    await cameraStore.startWarming(warmMinutes.value);
   },
 };
 

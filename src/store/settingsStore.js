@@ -253,6 +253,8 @@ export const useSettingsStore = defineStore('settings', {
       afSetupProfiles: [],
       // Profiles whose meridian flip timing was chosen in the simple mode
       flipSetupProfiles: [],
+      // Profiles whose cooling and warm-up timing was chosen in the simple mode
+      coolSetupProfiles: [],
       // How long the plan guided last night and how much of it poorly (see addGuidingTime()),
       // and the night whose coach recommendation was taken up or dismissed.
       guiding: null,
@@ -277,6 +279,9 @@ export const useSettingsStore = defineStore('settings', {
       if (!Array.isArray(this.simpleMode.afSetupProfiles)) this.simpleMode.afSetupProfiles = [];
       if (!Array.isArray(this.simpleMode.flipSetupProfiles)) {
         this.simpleMode.flipSetupProfiles = [];
+      }
+      if (!Array.isArray(this.simpleMode.coolSetupProfiles)) {
+        this.simpleMode.coolSetupProfiles = [];
       }
       return this.simpleMode;
     },
@@ -305,6 +310,12 @@ export const useSettingsStore = defineStore('settings', {
     // timing itself lives in the NINA profile; this only remembers that it was looked at.
     markMeridianFlipSetUp(profileId) {
       const list = this._ensureSimpleMode().flipSetupProfiles;
+      if (profileId && !list.includes(profileId)) list.push(profileId);
+    },
+    // Profiles whose cooling timing the user chose (a preset, or "keep my values"). The minutes
+    // live in the NINA profile; this only remembers that they were looked at.
+    markCoolingSetUp(profileId) {
+      const list = this._ensureSimpleMode().coolSetupProfiles;
       if (profileId && !list.includes(profileId)) list.push(profileId);
     },
     setSimpleModeCoolTemp(temp) {
