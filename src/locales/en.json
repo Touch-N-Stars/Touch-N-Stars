@@ -863,7 +863,15 @@
         "astapDatabaseAllInstalled": "All ASTAP star databases are already installed.",
         "astapDatabaseLoadFailed": "Failed to load databases: {detail}",
         "astapDatabaseInstallSuccess": "ASTAP star database {databaseId} installed successfully.",
-        "astapDatabaseInstallFailed": "ASTAP star database install failed{exitCode}.",
+        "astapDatabaseDownloadFailed": "Installing {databaseId} failed. The rig downloads the star map from the internet: is it on a network with internet access? Then try again.",
+        "astapDatabaseLastAttemptFailed": "The last attempt to install {databaseId} failed ({time}). The rig downloads the star map from the internet: is it on a network with internet access? Then try again.",
+        "astapDatabaseRetry": "Install {databaseId} again",
+        "astapDatabasePhase": {
+          "downloading": "Downloading",
+          "installing": "Installing",
+          "finalizing": "Finishing",
+          "complete": "Done"
+        },
         "astapDatabaseUnauthorizedStatus": "Unauthorized while checking install status.",
         "astapDatabaseStatusCheckFailedRetrying": "Status check failed: {detail}. Retrying...",
         "astapDatabaseStartInstall": "Starting installation for {databaseId}...",
@@ -5105,7 +5113,30 @@
       "trackingOffAfterStop": "Polar alignment switched tracking off when it stopped.",
       "resumeTracking": "Turn tracking back on",
       "goodEnoughHint": "A total error below 1′ (one arc minute) is good. Once it is reached, stop the alignment.",
-      "tabSimple": "Polar alignment"
+      "tabSimple": "Polar alignment",
+      "simpleIntroMove": "First the mount moves by itself to a start position near the celestial pole, then it turns twice a little around its axis while it takes pictures. Check that the cables are long enough and nothing is in the way.",
+      "simpleIntroAdjust": "Then this page shows which way to turn the altitude and azimuth knobs. The numbers update after every picture until the total error is below 1′.",
+      "adjustHint": "Turn the altitude and azimuth knobs a little at a time the way the arrows point. The numbers update after every picture.",
+      "lastMeasurement": "Last measurement",
+      "markedDone": "Polar alignment is marked as done for tonight.",
+      "confirmStartTitle": "Start polar alignment?",
+      "confirmStartMessage": "The mount now moves to the start position near the celestial pole and turns during the measurement. Check that the cables are long enough and nothing is in the way.",
+      "status": {
+        "capturing": "Taking a picture…",
+        "solving": "Plate solving the picture…",
+        "captureRetry": "The picture failed, trying again…",
+        "solveRetry": "Plate solving failed, trying again…",
+        "nextPoint": "Moving to the next point",
+        "firstPoint": "Measuring the first point",
+        "secondPoint": "Measuring the second point",
+        "finalPoint": "Measuring the third point",
+        "waitMount": "Waiting for the mount to stop",
+        "waitDome": "Waiting for the dome",
+        "settling": "Letting the mount settle",
+        "slewInitial": "Moving to the start position",
+        "movingAxis": "Turning the axis",
+        "solveAttempt": "Plate solving the picture…"
+      }
     },
     "slewAndCenter": {
       "title": "Slew and Center",

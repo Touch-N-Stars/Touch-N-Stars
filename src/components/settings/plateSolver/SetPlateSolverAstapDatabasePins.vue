@@ -81,7 +81,7 @@
 
     <div v-if="isJobActive && progressPhase" class="flex flex-col gap-1" aria-live="polite">
       <div class="flex items-center justify-between gap-2 text-xs text-content">
-        <span class="capitalize">{{ progressPhase }}</span>
+        <span>{{ progressPhaseLabel }}</span>
         <span v-if="progressBytes > 0">
           <template v-if="hasDeterminateProgress">{{ progressPercent }}% · </template>
           {{ formatBytes(progressBytes) }}
@@ -112,6 +112,18 @@
     <div v-if="feedbackMessage" :class="feedbackClass" class="text-xs">
       {{ feedbackMessage }}
     </div>
+    <!-- A failed install, seen live or found on opening the page, can be started again -->
+    <button
+      v-if="failedDatabaseId && !isJobActive && !isInstalling"
+      type="button"
+      class="tns-btn-secondary"
+      :disabled="isLoading"
+      @click="retryFailedInstall"
+    >
+      {{
+        $t('components.settings.plate_solver.astapDatabaseRetry', { databaseId: failedDatabaseId })
+      }}
+    </button>
   </div>
 </template>
 
@@ -122,6 +134,7 @@ import apiPinsService from '@/services/apiPinsService';
 import { isAppBackgrounded } from '@/utils/appLifecycle';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import { useAstapDatabases } from '@/composables/useAstapDatabases';
+import { astapJobDatabaseId } from '@/utils/astapDatabases';
 
 const { t } = useI18n();
 
@@ -142,6 +155,9 @@ const progressBytes = ref(0);
 const progressTotalBytes = ref(0);
 const progressUpdatedAt = ref(0);
 const currentTime = ref(Date.now());
+
+// The database of the last failed install, for the retry button
+const failedDatabaseId = ref('');
 
 const feedbackMessage = ref('');
 const feedbackTone = ref('info');
@@ -185,6 +201,14 @@ const recommendationText = computed(() => {
       })
     : t('components.settings.plate_solver.astapDatabaseRecommendedDefault', { id });
 });
+
+const KNOWN_PHASES = ['downloading', 'installing', 'finalizing', 'complete'];
+// The daemon reports its phases in English; known ones are translated.
+const progressPhaseLabel = computed(() =>
+  KNOWN_PHASES.includes(progressPhase.value)
+    ? t(`components.settings.plate_solver.astapDatabasePhase.${progressPhase.value}`)
+    : progressPhase.value
+);
 
 const installButtonLabel = computed(() => {
   if (isJobActive.value) {
@@ -377,10 +401,11 @@ async function pollJobStatus() {
 
     if (currentStatus === 'failed') {
       isInstalling.value = false;
-      const exitCode = response?.exitCode ?? response?.exit_code;
+      // The daemon's exit code means nothing to a user; the likely cause and the way out do.
+      failedDatabaseId.value = astapJobDatabaseId(response) || selectedDatabaseId.value;
       setFeedback(
-        t('components.settings.plate_solver.astapDatabaseInstallFailed', {
-          exitCode: typeof exitCode === 'number' ? ` (${exitCode})` : '',
+        t('components.settings.plate_solver.astapDatabaseDownloadFailed', {
+          databaseId: failedDatabaseId.value,
         }),
         'error'
       );
@@ -424,6 +449,7 @@ async function installSelectedDatabase() {
   }
 
   isInstalling.value = true;
+  failedDatabaseId.value = '';
   progressPhase.value = '';
   progressPercent.value = 0;
   progressBytes.value = 0;
@@ -491,8 +517,49 @@ async function installSelectedDatabase() {
   }
 }
 
-onMounted(() => {
-  loadPackages();
+function retryFailedInstall() {
+  selectedDatabaseId.value = failedDatabaseId.value;
+  return installSelectedDatabase();
+}
+
+/**
+ * Picks up the rig's last star database job. One still running is shown and followed again,
+ * one that failed is reported with a retry. Without this a download that failed - the normal
+ * case at the field hotspot without internet - vanished as soon as the page was left, and the
+ * page went on saying only what is installed.
+ */
+async function resumeLatestJob() {
+  let job;
+  try {
+    job = await apiPinsService.getPinsDaemonLatestJob();
+  } catch {
+    return;
+  }
+  const databaseId = astapJobDatabaseId(job);
+  if (isDestroyed || !databaseId || jobId.value) return;
+
+  const status = normalizeStatus(job.status);
+  if (status === 'started' || status === 'running') {
+    jobId.value = String(job.jobId);
+    jobStatus.value = status;
+    selectedDatabaseId.value = databaseId;
+    updateProgress(job);
+    scheduleJobPoll(0);
+  } else if (status === 'failed') {
+    failedDatabaseId.value = databaseId;
+    setFeedback(
+      t('components.settings.plate_solver.astapDatabaseLastAttemptFailed', {
+        databaseId,
+        time: formatCheckedAt(Number(job.finishedAt) * 1000),
+      }),
+      'error'
+    );
+  }
+}
+
+onMounted(async () => {
+  await loadPackages();
+  await resumeLatestJob();
 });
 
 onBeforeUnmount(() => {

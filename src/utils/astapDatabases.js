@@ -79,3 +79,15 @@ export function hasInstalledAstapDatabase(packages) {
   if (!packages.some((pkg) => typeof pkg?.installed === 'boolean')) return null;
   return packages.some((pkg) => pkg?.installed === true);
 }
+
+const ASTAP_INSTALL_COMMAND = /install-astap-star-database\.sh\s+(\S+)\s*$/;
+
+/**
+ * The database a daemon job installs ("sudo -n …/install-astap-star-database.sh D05" -> "D05"),
+ * or null when the job is not a star database install. /jobs/latest returns whatever job ran
+ * last on the rig, an upgrade or a Wi-Fi change just as well.
+ */
+export function astapJobDatabaseId(job) {
+  const match = String(job?.command ?? '').match(ASTAP_INSTALL_COMMAND);
+  return match ? match[1] : null;
+}

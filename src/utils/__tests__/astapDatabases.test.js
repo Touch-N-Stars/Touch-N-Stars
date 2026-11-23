@@ -100,3 +100,14 @@ test('a denser database covers the lighter recommendation', async () => {
   assert.equal(isRecommendationCovered('W08', ['D80']), false);
   assert.equal(isRecommendationCovered('G05', ['G05']), true);
 });
+
+test('astapJobDatabaseId reads the database of a star database install job only', async () => {
+  const { astapJobDatabaseId } = await import('../astapDatabases.js');
+  assert.equal(
+    astapJobDatabaseId({ command: 'sudo -n /usr/local/bin/install-astap-star-database.sh D05' }),
+    'D05'
+  );
+  assert.equal(astapJobDatabaseId({ command: 'sudo -n /usr/local/bin/pins-upgrade.sh' }), null);
+  assert.equal(astapJobDatabaseId({}), null);
+  assert.equal(astapJobDatabaseId(null), null);
+});
