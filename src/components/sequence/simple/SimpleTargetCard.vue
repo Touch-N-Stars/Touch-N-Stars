@@ -204,6 +204,7 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useToastStore } from '@/store/toastStore';
 import { apiStore } from '@/store/store';
 import { useDsoContainerTarget } from '@/composables/useDsoContainerTarget';
+import { filterNameChoices, nextUnusedFilter, switchFilterUpdate } from '@/utils/sequenceFilter';
 import {
   formatClock,
   formatDuration,
@@ -291,14 +292,26 @@ function onFavoriteSelected(favorite) {
 }
 
 // New rows go behind the last exposure row, or behind the target's steps when there is none.
-function addExposureRow() {
+// With a filter wheel a new row starts with the next filter the target does not use yet, the
+// usual way to build an LRGB or narrowband plan; otherwise it would keep the current filter.
+async function addExposureRow() {
+  const before = new Set(props.target.rows.map((r) => r.id));
+  const used = props.target.rows.map((r) => r.filterName).filter(Boolean);
   const { targetId, insertAfter } = insertionPoint(
     container.value,
     SMART_EXPOSURE_TYPE,
     TARGET_ORDER,
     'bottom'
   );
-  store.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
+  await store.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
+
+  const row = props.target.rows.find((r) => !before.has(r.id));
+  if (!row?.filterItem?.Id || row.filterName) return;
+  const names = filterNameChoices(row.filterItem, mainStore.filterInfo, mainStore.profileInfo);
+  const next = nextUnusedFilter(names, used);
+  if (!next) return;
+  const { property, value } = switchFilterUpdate(row.filterItem, names, next);
+  await store.setProperty(row.filterItem.Id, property, value);
 }
 
 async function copyTarget() {

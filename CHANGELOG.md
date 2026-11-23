@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - PINS: The setup assistant can join a Wi-Fi network while the rig still runs its own hotspot.
+- PINS: In the simple mode plan the filter of an exposure gets a line of its own, so its name is readable on a phone, and a new exposure starts with the next filter the target does not use yet.
 
 ## [App6.7.0-beta1] - 2026-11-22
 

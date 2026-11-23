@@ -9,7 +9,8 @@
           : 'border-line bg-surface-2'
     "
   >
-    <!-- Enabled + filter + progress + delete -->
+    <!-- Enabled + progress + delete. The filter has a line of its own below: nested in the
+         target card the row is too narrow on a phone to show its name next to these. -->
     <div class="flex items-center gap-2">
       <ToggleButton
         :statusValue="row.enabled"
@@ -17,29 +18,7 @@
         :title="$t('components.sequence.simple.exposureEnabled')"
         @update:statusValue="store.enable(row.id, $event)"
       />
-      <!-- Without a filter wheel (and no filter in the item) the select would be empty -->
-      <select
-        v-if="row.filterItem && (filterNames.length || row.filterName)"
-        :id="`simple-filter-${row.id}`"
-        class="tns-select w-auto! min-w-0 flex-1 text-sm"
-        :value="row.filterName"
-        :disabled="isRunning"
-        :aria-label="$t('components.sequence.items.switchFilter.filter')"
-        @change="saveFilter($event.target.value)"
-      >
-        <option
-          v-if="row.filterName && !filterNames.includes(row.filterName)"
-          :value="row.filterName"
-        >
-          {{ row.filterName }}
-        </option>
-        <option v-for="(name, i) in filterNames" :key="i" :value="name">{{ name }}</option>
-      </select>
-      <span v-else class="flex-1 min-w-0 truncate text-sm text-content-faint">
-        {{ $t('components.sequence.simple.noFilter') }}
-      </span>
-
-      <span class="shrink-0 text-xs font-mono tabular-nums text-content-faint">
+      <span class="flex-1 min-w-0 text-xs font-mono tabular-nums text-content-faint">
         {{ row.completed }} / {{ row.iterations }}
       </span>
       <button
@@ -58,6 +37,32 @@
     <div class="h-1 rounded-full bg-surface-3 overflow-hidden">
       <div class="h-full bg-accent transition-all duration-300" :style="{ width: progressWidth }" />
     </div>
+
+    <!-- Without a filter wheel (and no filter in the item) the select would be empty -->
+    <div v-if="row.filterItem && (filterNames.length || row.filterName)" class="space-y-1">
+      <label :for="`simple-filter-${row.id}`" class="tns-label">
+        {{ $t('components.sequence.items.switchFilter.filter') }}
+      </label>
+      <select
+        :id="`simple-filter-${row.id}`"
+        class="tns-select"
+        :value="row.filterName"
+        :disabled="isRunning"
+        @change="saveFilter($event.target.value)"
+      >
+        <option
+          v-if="row.filterName && !filterNames.includes(row.filterName)"
+          :value="row.filterName"
+        >
+          {{ row.filterName }}
+        </option>
+        <option v-for="(name, i) in filterNames" :key="i" :value="name">{{ name }}</option>
+      </select>
+    </div>
+    <!-- Only worth a line with a filter wheel: a colour camera has nothing to choose here -->
+    <p v-else-if="filterNames.length" class="text-sm text-content-faint">
+      {{ $t('components.sequence.simple.noFilter') }}
+    </p>
 
     <template v-if="row.exposureItem && row.loopCondition">
       <div
@@ -179,7 +184,7 @@ import GainInput from '@/components/helpers/GainInput.vue';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { apiStore } from '@/store/store';
-import { switchFilterUpdate } from '@/utils/sequenceFilter';
+import { filterNameChoices, switchFilterUpdate } from '@/utils/sequenceFilter';
 
 // row: an entry from exposureRow() in src/utils/sequenceSimple.js. Every edit is written to
 // the raw child item it came from, exactly like SmartExposureItem / TakeManyExposuresItem.
@@ -223,16 +228,10 @@ function finiteOrNull(value) {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
-// Sources in order: the item itself, the connected filter wheel, then the active profile. The
-// profile keeps the list available while the wheel is disconnected, e.g. when planning the
-// sequence during the day. All three use the wheel's slot order, so the index stays valid.
-const filterNames = computed(() => {
-  const fw = props.row.filterItem;
-  if (fw?.FilterNames?.length) return fw.FilterNames;
-  const wheel = mainStore.filterInfo?.AvailableFilters?.map((f) => f.Name) ?? [];
-  if (wheel.length) return wheel;
-  return mainStore.profileInfo?.FilterWheelSettings?.FilterWheelFilters?.map((f) => f.Name) ?? [];
-});
+// All sources use the wheel's slot order, so the index stays valid.
+const filterNames = computed(() =>
+  filterNameChoices(props.row.filterItem, mainStore.filterInfo, mainStore.profileInfo)
+);
 
 // Same convention as SmartExposureItem.vue
 function saveFilter(name) {

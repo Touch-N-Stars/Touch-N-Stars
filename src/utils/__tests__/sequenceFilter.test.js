@@ -1,6 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { switchFilterName, switchFilterUpdate } from '../sequenceFilter.js';
+import {
+  filterNameChoices,
+  nextUnusedFilter,
+  switchFilterName,
+  switchFilterUpdate,
+} from '../sequenceFilter.js';
 
 const NAMES = ['L', 'R', 'G', 'B'];
 
@@ -34,4 +39,21 @@ test('NINA shape reads the name from the FilterInfo object', () => {
   assert.equal(switchFilterName(ninaItem), 'G');
   assert.equal(switchFilterName(ninaCurrentFilter), '');
   assert.equal(switchFilterName(null), '');
+});
+
+test('filterNameChoices takes the item, then the connected wheel, then the profile', () => {
+  const wheel = { AvailableFilters: [{ Name: 'Ha' }, { Name: 'OIII' }] };
+  const profile = { FilterWheelSettings: { FilterWheelFilters: [{ Name: 'P1' }] } };
+  assert.deepEqual(filterNameChoices(pinsItem, wheel, profile), NAMES);
+  assert.deepEqual(filterNameChoices(ninaItem, wheel, profile), ['Ha', 'OIII']);
+  assert.deepEqual(filterNameChoices(ninaItem, null, profile), ['P1']);
+  assert.deepEqual(filterNameChoices(null, null, null), []);
+});
+
+test('nextUnusedFilter picks the first filter in wheel order the target does not use yet', () => {
+  assert.equal(nextUnusedFilter(NAMES, []), 'L');
+  assert.equal(nextUnusedFilter(NAMES, ['L', 'G']), 'R');
+  assert.equal(nextUnusedFilter(NAMES, NAMES), null);
+  assert.equal(nextUnusedFilter([], ['L']), null);
+  assert.equal(nextUnusedFilter(['', 'Ha'], undefined), 'Ha');
 });
