@@ -20,7 +20,8 @@
     "expand": "Rozbalit",
     "collapse": "Sbalit",
     "drag": "Přetáhnout",
-    "showImage": "Zobrazit snímek"
+    "showImage": "Zobrazit snímek",
+    "onOff": "Zap/Vyp"
   },
   "general": {
     "cancel": "Zrušit",
@@ -345,6 +346,7 @@
         "loadingStatus": "Načítání stavu Wi-Fi…",
         "connectedTo": "Připojeno k {ssid}",
         "notConnected": "Sestava není připojena k žádné síti Wi-Fi.",
+        "notConnectedHint": "Bez sítě otevře vlastní hotspot. Pro aktualizace a stažení hvězdné mapy potřebuje tvou domácí síť: klepni na „Hledat sítě“.",
         "chooseOtherNetwork": "Vybrat jinou síť",
         "scan": "Hledat sítě",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Výška čipu (px)",
         "pixelSize": "Velikost pixelu (µm)",
         "pixelSizeHint": "Ovladač velikost pixelu nehlásí. Najdeš ji v návodu ke kameře.",
+        "pixelSizeReported": "Hlášeno kamerou: {size} µm.",
+        "pixelSizeReportedDiffers": "Kamera hlásí {size} µm, v profilu je jiná hodnota.",
         "imageScale": "Výsledné měřítko snímku: {scale} arcsec/px",
         "applyFailed": "Nepodařilo se uložit: {message}",
         "chipSizeNotConnectedHint": "Připojte výše kameru a velikost senzoru se doplní sama. Hodnoty níže potřebuje jen kamera, která ji nehlásí (typicky DSLR)."
@@ -5915,6 +5919,12 @@
           "noExposures": "Váš plán má cíl, ale zatím žádné snímky. Otevřete plán a klepnutím na „Přidat expozici“ vyberte filtr, expoziční dobu a počet snímků.",
           "summaryEmpty": "{targets} cíl, zatím žádné snímky | {targets} cílů, zatím žádné snímky",
           "confirmStartFocus": "Po každé výměně filtru se znovu zaostří.",
+          "confirmStartEnd": {
+            "both": "Na konci montáž zaparkuje a kamera se zahřeje.",
+            "park": "Na konci montáž zaparkuje.",
+            "warm": "Na konci se kamera zahřeje. Montáž dál sleduje, dokud noc neukončíš.",
+            "none": "Na konci montáž dál sleduje, dokud noc neukončíš."
+          },
           "confirmStartMessageNoGuiding": "Plán s {targets} cílem se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede k cíli a vycentruje ho. | Plán s {targets} cíli se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede ke každému cíli a vycentruje ho.",
           "missingSteps": "{count} cíl ve vašem plánu to zatím nedělá automaticky: {steps}. | {count} cílů ve vašem plánu to zatím nedělá automaticky: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Přejet a pointovat automaticky",
           "flipMissing": "Váš plán neotáčí dalekohled na meridiánu. Sledoval by dál za něj a mohl by narazit do stativu nebo sloupu.",
           "addFlip": "Zapnout Meridian Flip",
+          "endMissing": {
+            "park": "Až plán skončí, montáž dál sleduje. Za poledníkem může narazit do stativu nebo sloupu, pokud noc nikdo neukončí.",
+            "warm": "Až plán skončí, kamera zůstane studená, dokud noc neukončíš.",
+            "both": "Až plán skončí, montáž dál sleduje a kamera zůstane studená. Za poledníkem může dalekohled narazit do stativu nebo sloupu, pokud noc nikdo neukončí."
+          },
+          "addEnd": {
+            "park": "Po plánu zaparkovat montáž",
+            "warm": "Po plánu zahřát kameru",
+            "both": "Po plánu zaparkovat a zahřát"
+          },
           "flipWindow": "{target} dosáhne meridiánu kolem {meridian}; plán otočí dalekohled mezi {earliest} a {latest}.",
           "flipFixed": "{target} dosáhne meridiánu kolem {meridian}; plán otočí dalekohled v {earliest}.",
           "flipPause": "{target} dosáhne meridiánu kolem {meridian}; plán se v {pause} pozastaví a otočí dalekohled v {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Vaše pointace byla minulou noc neklidná. Guiding Coach změří vaši pointační kameru, oblohu a montáž a poradí, co pomůže. Zabere asi 15 minut pod hvězdami – nejlépe před zahájením snímání.",
         "open": "Otevřít Guiding Coach",
         "dismiss": "Teď ne"
+      },
+      "camera": {
+        "title": "Kamera",
+        "hint": "Testovací snímek a každý snímek tvého plánu používají tyto hodnoty, pokud expozici v plánu nedáš vlastní. Doporučený gain a offset najdeš v návodu ke kameře."
       }
     },
     "secureObservatory": {

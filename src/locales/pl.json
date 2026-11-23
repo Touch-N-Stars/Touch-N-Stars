@@ -20,7 +20,8 @@
     "expand": "Rozwiń",
     "collapse": "Zwiń",
     "drag": "Przeciągnij",
-    "showImage": "Pokaż obraz"
+    "showImage": "Pokaż obraz",
+    "onOff": "Wł./Wył."
   },
   "general": {
     "cancel": "Anuluj",
@@ -345,6 +346,7 @@
         "loadingStatus": "Odczytywanie stanu Wi-Fi…",
         "connectedTo": "Połączono z {ssid}",
         "notConnected": "Zestaw nie jest połączony z żadną siecią Wi-Fi.",
+        "notConnectedHint": "Bez sieci otwiera własny hotspot. Do aktualizacji i pobrania mapy gwiazd potrzebuje twojej sieci domowej: dotknij „Szukaj sieci”.",
         "chooseOtherNetwork": "Wybierz inną sieć",
         "scan": "Szukaj sieci",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Wysokość matrycy (px)",
         "pixelSize": "Rozmiar piksela (µm)",
         "pixelSizeHint": "Sterownik nie podaje rozmiaru piksela. Znajdziesz go w instrukcji kamery.",
+        "pixelSizeReported": "Podane przez kamerę: {size} µm.",
+        "pixelSizeReportedDiffers": "Kamera podaje {size} µm, w profilu jest inna wartość.",
         "imageScale": "Wynikowa skala obrazu: {scale} arcsec/px",
         "applyFailed": "Nie udało się zapisać: {message}",
         "chipSizeNotConnectedHint": "Połącz kamerę powyżej, a rozmiar matrycy wypełni się sam. Wartości poniżej są potrzebne tylko dla kamery, która go nie podaje (typowe dla lustrzanek)."
@@ -5915,6 +5919,12 @@
           "noExposures": "Twój plan ma cel, ale jeszcze żadnych zdjęć. Otwórz plan i naciśnij „Dodaj ekspozycję”, aby wybrać filtr, czas ekspozycji i liczbę zdjęć.",
           "summaryEmpty": "{targets} cel, brak zaplanowanych zdjęć | {targets} celów, brak zaplanowanych zdjęć",
           "confirmStartFocus": "Po każdej zmianie filtra ostrość jest ustawiana ponownie.",
+          "confirmStartEnd": {
+            "both": "Na końcu montaż zaparkuje się, a kamera się ogrzeje.",
+            "park": "Na końcu montaż zaparkuje się.",
+            "warm": "Na końcu kamera się ogrzeje. Montaż prowadzi dalej, dopóki nie zakończysz nocy.",
+            "none": "Na końcu montaż prowadzi dalej, dopóki nie zakończysz nocy."
+          },
           "confirmStartMessageNoGuiding": "Plan z {targets} celem rusza teraz i potrwa około {remaining}. Teleskop przejdzie do celu i wycentruje go przed pierwszym zdjęciem. | Plan z {targets} celami rusza teraz i potrwa około {remaining}. Teleskop przejdzie do każdego celu i wycentruje go przed pierwszym zdjęciem.",
           "missingSteps": "{count} cel w Twoim planie nie robi tego jeszcze automatycznie: {steps}. | {count} celów w Twoim planie nie robi tego jeszcze automatycznie: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Przejdź tam i prowadź automatycznie",
           "flipMissing": "Twój plan nie obraca teleskopu na meridianie. Śledziłby dalej poza nim i mógłby uderzyć w statyw lub kolumnę.",
           "addFlip": "Włącz Meridian Flip",
+          "endMissing": {
+            "park": "Po zakończeniu planu montaż dalej prowadzi. Za południkiem może uderzyć w statyw lub kolumnę, jeśli nikt nie zakończy nocy.",
+            "warm": "Po zakończeniu planu kamera pozostaje zimna, dopóki nie zakończysz nocy.",
+            "both": "Po zakończeniu planu montaż dalej prowadzi, a kamera pozostaje zimna. Za południkiem teleskop może uderzyć w statyw lub kolumnę, jeśli nikt nie zakończy nocy."
+          },
+          "addEnd": {
+            "park": "Zaparkuj montaż po planie",
+            "warm": "Ogrzej kamerę po planie",
+            "both": "Zaparkuj i ogrzej po planie"
+          },
           "flipWindow": "{target} osiąga meridian około {meridian}; plan obraca teleskop między {earliest} a {latest}.",
           "flipFixed": "{target} osiąga meridian około {meridian}; plan obraca teleskop o {earliest}.",
           "flipPause": "{target} osiąga meridian około {meridian}; plan robi przerwę o {pause} i obraca teleskop o {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Twój guiding był wczoraj niespokojny. Guiding Coach mierzy Twoją kamerę prowadzącą, niebo i montaż i podpowiada, co pomaga. Trwa to około 15 minut pod gwiazdami – najlepiej przed rozpoczęciem zdjęć.",
         "open": "Otwórz Guiding Coach",
         "dismiss": "Nie teraz"
+      },
+      "camera": {
+        "title": "Kamera",
+        "hint": "Zdjęcie testowe i każde zdjęcie twojego planu używają tych wartości, chyba że ekspozycja w planie ma własne. Zalecany gain i offset znajdziesz w instrukcji kamery."
       }
     },
     "secureObservatory": {

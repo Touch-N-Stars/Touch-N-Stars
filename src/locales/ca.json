@@ -20,7 +20,8 @@
     "expand": "Expandeix",
     "collapse": "Replega",
     "drag": "Arrossega",
-    "showImage": "Mostra la imatge"
+    "showImage": "Mostra la imatge",
+    "onOff": "Engegat/Apagat"
   },
   "general": {
     "cancel": "Cancel·la",
@@ -386,6 +387,7 @@
         "loadingStatus": "Llegint l'estat de la Wi-Fi…",
         "connectedTo": "Connectat a {ssid}",
         "notConnected": "L'equip no està connectat a cap xarxa Wi-Fi.",
+        "notConnectedHint": "Sense xarxa obre el seu propi punt d’accés. Per a les actualitzacions i la baixada del mapa estel·lar necessita la teva xarxa de casa: toca «Cerca xarxes».",
         "chooseOtherNetwork": "Tria una altra xarxa",
         "scan": "Cerca xarxes",
         "scanning": "Scanning…",
@@ -489,6 +491,8 @@
         "chipHeight": "Alçada del sensor (px)",
         "pixelSize": "Mida del píxel (µm)",
         "pixelSizeHint": "El controlador no informa de la mida del píxel. La trobaràs al manual de la càmera.",
+        "pixelSizeReported": "Informat per la càmera: {size} µm.",
+        "pixelSizeReportedDiffers": "La càmera informa {size} µm, el perfil té un altre valor.",
         "imageScale": "Escala d'imatge resultant: {scale} arcsec/px",
         "applyFailed": "No s'ha pogut desar: {message}",
         "chipSizeNotConnectedHint": "Connecta la càmera a dalt i la mida del sensor s'omple sola. Només una càmera que no la informa (típic de les rèflex) necessita els valors de sota."
@@ -5915,6 +5919,12 @@
           "noExposures": "El teu pla té un objectiu però encara cap imatge. Obre el pla i toca \"Afegeix exposició\" per triar filtre, temps d'exposició i nombre d'imatges.",
           "summaryEmpty": "{targets} objectiu, encara sense imatges previstes | {targets} objectius, encara sense imatges previstes",
           "confirmStartFocus": "Després de cada canvi de filtre, torna a enfocar.",
+          "confirmStartEnd": {
+            "both": "En acabar, la muntura s’aparca i la càmera s’escalfa.",
+            "park": "En acabar, la muntura s’aparca.",
+            "warm": "En acabar, la càmera s’escalfa. La muntura continua el seguiment fins que acabis la nit.",
+            "none": "En acabar, la muntura continua el seguiment fins que acabis la nit."
+          },
           "confirmStartMessageNoGuiding": "El pla amb {targets} objectiu comença ara i triga uns {remaining}. El telescopi va a l'objectiu i el centra abans de la primera imatge. | El pla amb {targets} objectius comença ara i triga uns {remaining}. El telescopi va a cada objectiu i el centra abans de la primera imatge.",
           "missingSteps": "{count} objectiu del teu pla encara no ho fa automàticament: {steps}. | {count} objectius del teu pla encara no ho fan automàticament: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Ves-hi i guia automàticament",
           "flipMissing": "El teu pla no gira el telescopi al meridià. Continuaria el seguiment més enllà i podria xocar amb el trípode o el pilar.",
           "addFlip": "Activa el Meridian Flip",
+          "endMissing": {
+            "park": "Quan el pla acabi, la muntura continuarà el seguiment. Passat el meridià pot topar amb el trípode o la columna si ningú no acaba la nit.",
+            "warm": "Quan el pla acabi, la càmera es quedarà freda fins que acabis la nit.",
+            "both": "Quan el pla acabi, la muntura continuarà el seguiment i la càmera es quedarà freda. Passat el meridià el telescopi pot topar amb el trípode o la columna si ningú no acaba la nit."
+          },
+          "addEnd": {
+            "park": "Aparcar la muntura en acabar el pla",
+            "warm": "Escalfar la càmera en acabar el pla",
+            "both": "Aparcar i escalfar en acabar el pla"
+          },
           "flipWindow": "{target} arriba al meridià cap a les {meridian}; el pla gira el telescopi entre les {earliest} i les {latest}.",
           "flipFixed": "{target} arriba al meridià cap a les {meridian}; el pla gira el telescopi a les {earliest}.",
           "flipPause": "{target} arriba al meridià cap a les {meridian}; el pla fa una pausa a les {pause} i gira el telescopi a les {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "El teu guiatge ha estat inquiet la nit passada. El Guiding Coach mesura la teva càmera de guiatge, el cel i la muntura i t'indica què ajuda. Triga uns 15 minuts sota els estels: millor abans de començar les imatges.",
         "open": "Obre el Guiding Coach",
         "dismiss": "Ara no"
+      },
+      "camera": {
+        "title": "Càmera",
+        "hint": "La imatge de prova i cada imatge del teu pla fan servir aquests valors, tret que donis valors propis a una exposició del pla. El manual de la càmera indica el guany i l’offset recomanats."
       }
     },
     "secureObservatory": {

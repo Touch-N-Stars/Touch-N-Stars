@@ -20,7 +20,8 @@
     "expand": "Espandi",
     "collapse": "Comprimi",
     "drag": "Trascina",
-    "showImage": "Mostra immagine"
+    "showImage": "Mostra immagine",
+    "onOff": "On/Off"
   },
   "general": {
     "cancel": "Annulla",
@@ -345,6 +346,7 @@
         "loadingStatus": "Lettura dello stato del Wi-Fi…",
         "connectedTo": "Connesso a {ssid}",
         "notConnected": "Il setup non è connesso a nessuna rete Wi-Fi.",
+        "notConnectedHint": "Senza rete apre un proprio hotspot. Per gli aggiornamenti e il download della mappa stellare serve la tua rete di casa: tocca «Cerca reti».",
         "chooseOtherNetwork": "Scegli un'altra rete",
         "scan": "Cerca reti",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Altezza sensore (px)",
         "pixelSize": "Dimensione pixel (µm)",
         "pixelSizeHint": "Il driver non indica la dimensione dei pixel. La trovi nel manuale della camera.",
+        "pixelSizeReported": "Indicato dalla camera: {size} µm.",
+        "pixelSizeReportedDiffers": "La camera indica {size} µm, il profilo contiene un valore diverso.",
         "imageScale": "Scala dell'immagine risultante: {scale} arcsec/px",
         "applyFailed": "Impossibile salvare: {message}",
         "chipSizeNotConnectedHint": "Connetti la camera qui sopra e la dimensione del sensore si compila da sola. Solo una camera che non la comunica (tipico delle DSLR) richiede i valori qui sotto."
@@ -5915,6 +5919,12 @@
           "noExposures": "Il piano ha un target ma ancora nessuna immagine. Apri il piano e tocca “Aggiungi esposizione” per scegliere filtro, tempo di esposizione e numero di immagini.",
           "summaryEmpty": "{targets} target, nessuna immagine ancora pianificata | {targets} target, nessuna immagine ancora pianificata",
           "confirmStartFocus": "Dopo ogni cambio di filtro rimette a fuoco.",
+          "confirmStartEnd": {
+            "both": "Alla fine la montatura va in park e la camera si riscalda.",
+            "park": "Alla fine la montatura va in park.",
+            "warm": "Alla fine la camera si riscalda. La montatura continua a inseguire finché non termini la notte.",
+            "none": "Alla fine la montatura continua a inseguire finché non termini la notte."
+          },
           "confirmStartMessageNoGuiding": "Il piano con {targets} target parte ora e richiede circa {remaining}. Il telescopio va sul target e lo centra prima della prima immagine. | Il piano con {targets} target parte ora e richiede circa {remaining}. Il telescopio va su ogni target e lo centra prima della prima immagine.",
           "missingSteps": "{count} target del piano non lo fa ancora automaticamente: {steps}. | {count} target del piano non lo fanno ancora automaticamente: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Raggiungi e guida automaticamente",
           "flipMissing": "Il piano non ruota il telescopio al meridiano. Continuerebbe a inseguire oltre e potrebbe urtare il treppiede o il pilastro.",
           "addFlip": "Attiva il Meridian Flip",
+          "endMissing": {
+            "park": "Quando il piano è finito, la montatura continua a inseguire. Oltre il meridiano può urtare il treppiede o la colonna se nessuno termina la notte.",
+            "warm": "Quando il piano è finito, la camera resta fredda finché non termini la notte.",
+            "both": "Quando il piano è finito, la montatura continua a inseguire e la camera resta fredda. Oltre il meridiano il telescopio può urtare il treppiede o la colonna se nessuno termina la notte."
+          },
+          "addEnd": {
+            "park": "Park della montatura a fine piano",
+            "warm": "Riscaldare la camera a fine piano",
+            "both": "Park e riscaldamento a fine piano"
+          },
           "flipWindow": "{target} raggiunge il meridiano verso le {meridian}; il piano ruota il telescopio tra le {earliest} e le {latest}.",
           "flipFixed": "{target} raggiunge il meridiano verso le {meridian}; il piano ruota il telescopio alle {earliest}.",
           "flipPause": "{target} raggiunge il meridiano verso le {meridian}; il piano si ferma alle {pause} e ruota il telescopio alle {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Ieri notte la tua guida era agitata. Il Guiding Coach misura la camera di guida, il cielo e la montatura e ti dice cosa aiuta. Richiede circa 15 minuti sotto le stelle, meglio prima di iniziare le riprese.",
         "open": "Apri il Guiding Coach",
         "dismiss": "Non ora"
+      },
+      "camera": {
+        "title": "Camera",
+        "hint": "L’immagine di prova e ogni immagine del tuo piano usano questi valori, a meno che tu non dia valori propri a un’esposizione del piano. Il manuale della camera indica gain e offset consigliati."
       }
     },
     "secureObservatory": {

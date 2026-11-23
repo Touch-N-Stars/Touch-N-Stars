@@ -20,7 +20,8 @@
     "expand": "Expandir",
     "collapse": "Contraer",
     "drag": "Arrastrar",
-    "showImage": "Mostrar imagen"
+    "showImage": "Mostrar imagen",
+    "onOff": "Encendido/Apagado"
   },
   "general": {
     "cancel": "Cancelar",
@@ -345,6 +346,7 @@
         "loadingStatus": "Leyendo el estado del Wi-Fi…",
         "connectedTo": "Conectado a {ssid}",
         "notConnected": "El equipo no está conectado a ninguna red Wi-Fi.",
+        "notConnectedHint": "Sin red abre su propio punto de acceso. Para las actualizaciones y la descarga del mapa estelar necesita tu red doméstica: toca «Buscar redes».",
         "chooseOtherNetwork": "Elegir otra red",
         "scan": "Buscar redes",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Alto del sensor (px)",
         "pixelSize": "Tamaño de píxel (µm)",
         "pixelSizeHint": "El controlador no informa del tamaño de píxel. Lo encontrarás en el manual de tu cámara.",
+        "pixelSizeReported": "Informado por la cámara: {size} µm.",
+        "pixelSizeReportedDiffers": "La cámara informa {size} µm, el perfil tiene otro valor.",
         "imageScale": "Escala de imagen resultante: {scale} arcsec/px",
         "applyFailed": "No se pudo guardar: {message}",
         "chipSizeNotConnectedHint": "Conecta arriba la cámara y el tamaño del sensor se rellena solo. Solo una cámara que no lo informa (típico de las DSLR) necesita los valores de abajo."
@@ -5915,6 +5919,12 @@
           "noExposures": "Tu plan tiene un objetivo pero aún ninguna imagen. Abre el plan y pulsa “Añadir exposición” para elegir filtro, tiempo de exposición y número de imágenes.",
           "summaryEmpty": "{targets} objetivo, aún sin imágenes planificadas | {targets} objetivos, aún sin imágenes planificadas",
           "confirmStartFocus": "Después de cada cambio de filtro vuelve a enfocar.",
+          "confirmStartEnd": {
+            "both": "Al terminar, la montura se aparca y la cámara se calienta.",
+            "park": "Al terminar, la montura se aparca.",
+            "warm": "Al terminar, la cámara se calienta. La montura sigue con el seguimiento hasta que termines la noche.",
+            "none": "Al terminar, la montura sigue con el seguimiento hasta que termines la noche."
+          },
           "confirmStartMessageNoGuiding": "El plan con {targets} objetivo empieza ahora y dura unos {remaining}. El telescopio va al objetivo y lo centra antes de la primera imagen. | El plan con {targets} objetivos empieza ahora y dura unos {remaining}. El telescopio va a cada objetivo y lo centra antes de la primera imagen.",
           "missingSteps": "{count} objetivo de tu plan aún no lo hace automáticamente: {steps}. | {count} objetivos de tu plan aún no lo hacen automáticamente: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Ir allí y guiar automáticamente",
           "flipMissing": "Tu plan no gira el telescopio en el meridiano. Seguiría el seguimiento más allá y podría chocar con el trípode o el pilar.",
           "addFlip": "Activar el Meridian Flip",
+          "endMissing": {
+            "park": "Cuando tu plan termine, la montura seguirá con el seguimiento. Pasado el meridiano puede chocar con el trípode o la columna si nadie termina la noche.",
+            "warm": "Cuando tu plan termine, la cámara seguirá fría hasta que termines la noche.",
+            "both": "Cuando tu plan termine, la montura seguirá con el seguimiento y la cámara seguirá fría. Pasado el meridiano el telescopio puede chocar con el trípode o la columna si nadie termina la noche."
+          },
+          "addEnd": {
+            "park": "Aparcar la montura al terminar el plan",
+            "warm": "Calentar la cámara al terminar el plan",
+            "both": "Aparcar y calentar al terminar el plan"
+          },
           "flipWindow": "{target} llega al meridiano hacia las {meridian}; el plan gira el telescopio entre {earliest} y {latest}.",
           "flipFixed": "{target} llega al meridiano hacia las {meridian}; el plan gira el telescopio a las {earliest}.",
           "flipPause": "{target} llega al meridiano hacia las {meridian}; el plan hace una pausa a las {pause} y gira el telescopio a las {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Tu guiado estuvo inquieto anoche. El Guiding Coach mide tu cámara de guiado, el cielo y la montura y te dice qué ayuda. Tarda unos 15 minutos bajo las estrellas, mejor antes de empezar tus imágenes.",
         "open": "Abrir el Guiding Coach",
         "dismiss": "Ahora no"
+      },
+      "camera": {
+        "title": "Cámara",
+        "hint": "La imagen de prueba y cada imagen de tu plan usan estos valores, salvo que des valores propios a una exposición del plan. El manual de tu cámara indica la ganancia y el offset recomendados."
       }
     },
     "secureObservatory": {

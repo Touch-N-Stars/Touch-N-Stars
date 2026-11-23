@@ -20,7 +20,8 @@
     "expand": "Expandir",
     "collapse": "Recolher",
     "drag": "Arrastar",
-    "showImage": "Mostrar imagem"
+    "showImage": "Mostrar imagem",
+    "onOff": "Ligado/Desligado"
   },
   "general": {
     "cancel": "Cancelar",
@@ -345,6 +346,7 @@
         "loadingStatus": "A ler o estado do Wi-Fi…",
         "connectedTo": "Ligado a {ssid}",
         "notConnected": "O equipamento não está ligado a nenhuma rede Wi-Fi.",
+        "notConnectedHint": "Sem rede, abre o seu próprio hotspot. Para atualizações e para descarregar o mapa estelar precisa da tua rede de casa: toca em «Procurar redes».",
         "chooseOtherNetwork": "Escolher outra rede",
         "scan": "Procurar redes",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Altura do sensor (px)",
         "pixelSize": "Tamanho do píxel (µm)",
         "pixelSizeHint": "O controlador não indica o tamanho do píxel. Encontras o valor no manual da câmara.",
+        "pixelSizeReported": "Indicado pela câmara: {size} µm.",
+        "pixelSizeReportedDiffers": "A câmara indica {size} µm, o perfil tem outro valor.",
         "imageScale": "Escala de imagem resultante: {scale} arcsec/px",
         "applyFailed": "Não foi possível guardar: {message}",
         "chipSizeNotConnectedHint": "Conecte a câmera acima e o tamanho do sensor é preenchido sozinho. Apenas uma câmera que não o informa (típico de DSLRs) precisa dos valores abaixo."
@@ -5915,6 +5919,12 @@
           "noExposures": "Seu plano tem um alvo, mas ainda nenhuma imagem. Abra o plano e toque em “Adicionar exposição” para escolher filtro, tempo de exposição e número de imagens.",
           "summaryEmpty": "{targets} alvo, nenhuma imagem planejada ainda | {targets} alvos, nenhuma imagem planejada ainda",
           "confirmStartFocus": "Depois de cada troca de filtro, volta a focar.",
+          "confirmStartEnd": {
+            "both": "No fim, a montagem estaciona e a câmara aquece.",
+            "park": "No fim, a montagem estaciona.",
+            "warm": "No fim, a câmara aquece. A montagem continua o seguimento até terminares a noite.",
+            "none": "No fim, a montagem continua o seguimento até terminares a noite."
+          },
           "confirmStartMessageNoGuiding": "O plano com {targets} alvo começa agora e leva cerca de {remaining}. O telescópio vai ao alvo e o centraliza antes da primeira imagem. | O plano com {targets} alvos começa agora e leva cerca de {remaining}. O telescópio vai a cada alvo e o centraliza antes da primeira imagem.",
           "missingSteps": "{count} alvo do seu plano ainda não faz isso automaticamente: {steps}. | {count} alvos do seu plano ainda não fazem isso automaticamente: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Ir até lá e guiar automaticamente",
           "flipMissing": "Seu plano não gira o telescópio no meridiano. Ele continuaria rastreando além dele e poderia bater no tripé ou no pilar.",
           "addFlip": "Ativar o Meridian Flip",
+          "endMissing": {
+            "park": "Quando o teu plano terminar, a montagem continua o seguimento. Depois do meridiano pode bater no tripé ou na coluna se ninguém terminar a noite.",
+            "warm": "Quando o teu plano terminar, a câmara fica fria até terminares a noite.",
+            "both": "Quando o teu plano terminar, a montagem continua o seguimento e a câmara fica fria. Depois do meridiano o telescópio pode bater no tripé ou na coluna se ninguém terminar a noite."
+          },
+          "addEnd": {
+            "park": "Estacionar a montagem no fim do plano",
+            "warm": "Aquecer a câmara no fim do plano",
+            "both": "Estacionar e aquecer no fim do plano"
+          },
           "flipWindow": "{target} chega ao meridiano por volta das {meridian}; o plano gira o telescópio entre {earliest} e {latest}.",
           "flipFixed": "{target} chega ao meridiano por volta das {meridian}; o plano gira o telescópio às {earliest}.",
           "flipPause": "{target} chega ao meridiano por volta das {meridian}; o plano pausa às {pause} e gira o telescópio às {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Sua guiagem estava instável na noite passada. O Guiding Coach mede sua câmera de guiagem, o céu e a montagem e diz o que ajuda. Leva cerca de 15 minutos sob as estrelas – o melhor é antes de começar suas imagens.",
         "open": "Abrir o Guiding Coach",
         "dismiss": "Agora não"
+      },
+      "camera": {
+        "title": "Câmara",
+        "hint": "A imagem de teste e cada imagem do teu plano usam estes valores, a menos que dês valores próprios a uma exposição do plano. O manual da tua câmara indica o ganho e o offset recomendados."
       }
     },
     "secureObservatory": {

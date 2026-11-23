@@ -20,7 +20,8 @@
     "expand": "Développer",
     "collapse": "Réduire",
     "drag": "Glisser",
-    "showImage": "Afficher l'image"
+    "showImage": "Afficher l'image",
+    "onOff": "Marche/Arrêt"
   },
   "general": {
     "cancel": "Annuler",
@@ -345,6 +346,7 @@
         "loadingStatus": "Lecture de l'état du Wi-Fi…",
         "connectedTo": "Connecté à {ssid}",
         "notConnected": "Le setup n'est connecté à aucun réseau Wi-Fi.",
+        "notConnectedHint": "Sans réseau, il ouvre son propre point d’accès. Pour les mises à jour et le téléchargement de la carte stellaire, il a besoin de ton réseau domestique : touche « Rechercher des réseaux ».",
         "chooseOtherNetwork": "Choisir un autre réseau",
         "scan": "Rechercher des réseaux",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Hauteur du capteur (px)",
         "pixelSize": "Taille des pixels (µm)",
         "pixelSizeHint": "Le pilote n'indique pas la taille des pixels. Tu la trouveras dans le manuel de ta caméra.",
+        "pixelSizeReported": "Indiqué par la caméra : {size} µm.",
+        "pixelSizeReportedDiffers": "La caméra indique {size} µm, le profil contient une autre valeur.",
         "imageScale": "Échantillonnage obtenu : {scale} arcsec/px",
         "applyFailed": "Impossible d'enregistrer : {message}",
         "chipSizeNotConnectedHint": "Connectez la caméra ci-dessus et la taille du capteur est renseignée automatiquement. Seule une caméra qui ne la communique pas (typique des reflex) a besoin des valeurs ci-dessous."
@@ -5915,6 +5919,12 @@
           "noExposures": "Votre plan a une cible mais pas encore d'images. Ouvrez le plan et appuyez sur « Ajouter une pose » pour choisir filtre, temps de pose et nombre d'images.",
           "summaryEmpty": "{targets} cible, aucune image prévue pour l'instant | {targets} cibles, aucune image prévue pour l'instant",
           "confirmStartFocus": "Après chaque changement de filtre, la mise au point est refaite.",
+          "confirmStartEnd": {
+            "both": "Ensuite, la monture se parque et la caméra se réchauffe.",
+            "park": "Ensuite, la monture se parque.",
+            "warm": "Ensuite, la caméra se réchauffe. La monture continue de suivre jusqu’à ce que tu termines la nuit.",
+            "none": "Ensuite, la monture continue de suivre jusqu’à ce que tu termines la nuit."
+          },
           "confirmStartMessageNoGuiding": "Le plan avec {targets} cible démarre maintenant et dure environ {remaining}. Le télescope se rend à la cible et la centre avant la première image. | Le plan avec {targets} cibles démarre maintenant et dure environ {remaining}. Le télescope se rend à chaque cible et la centre avant la première image.",
           "missingSteps": "{count} cible de votre plan ne le fait pas encore automatiquement : {steps}. | {count} cibles de votre plan ne le font pas encore automatiquement : {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Pointer et guider automatiquement",
           "flipMissing": "Votre plan ne retourne pas le télescope au méridien. Il continuerait à suivre au-delà et pourrait heurter le trépied ou le pilier.",
           "addFlip": "Activer le Meridian Flip",
+          "endMissing": {
+            "park": "Quand ton plan est terminé, la monture continue de suivre. Après le méridien, elle peut heurter le trépied ou la colonne si personne ne termine la nuit.",
+            "warm": "Quand ton plan est terminé, la caméra reste froide jusqu’à ce que tu termines la nuit.",
+            "both": "Quand ton plan est terminé, la monture continue de suivre et la caméra reste froide. Après le méridien, le télescope peut heurter le trépied ou la colonne si personne ne termine la nuit."
+          },
+          "addEnd": {
+            "park": "Parquer la monture après le plan",
+            "warm": "Réchauffer la caméra après le plan",
+            "both": "Parquer et réchauffer après le plan"
+          },
           "flipWindow": "{target} atteint le méridien vers {meridian} ; le plan retourne le télescope entre {earliest} et {latest}.",
           "flipFixed": "{target} atteint le méridien vers {meridian} ; le plan retourne le télescope à {earliest}.",
           "flipPause": "{target} atteint le méridien vers {meridian} ; le plan se met en pause à {pause} et retourne le télescope à {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Votre guidage était agité la nuit dernière. Le Guiding Coach mesure votre caméra de guidage, le ciel et la monture et vous dit ce qui aide. Cela prend environ 15 minutes sous les étoiles – idéalement avant de commencer vos prises de vue.",
         "open": "Ouvrir le Guiding Coach",
         "dismiss": "Pas maintenant"
+      },
+      "camera": {
+        "title": "Caméra",
+        "hint": "L’image de test et chaque image de ton plan utilisent ces valeurs, sauf si tu donnes à une pose du plan ses propres valeurs. Le manuel de ta caméra indique le gain et l’offset recommandés."
       }
     },
     "secureObservatory": {

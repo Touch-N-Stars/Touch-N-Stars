@@ -20,7 +20,8 @@
     "expand": "펼치기",
     "collapse": "접기",
     "drag": "드래그",
-    "showImage": "이미지 표시"
+    "showImage": "이미지 표시",
+    "onOff": "켜기/끄기"
   },
   "general": {
     "cancel": "취소",
@@ -386,6 +387,7 @@
         "loadingStatus": "Wi-Fi 상태 읽는 중 …",
         "connectedTo": "{ssid}에 연결됨",
         "notConnected": "장비가 Wi-Fi 네트워크에 연결되어 있지 않습니다.",
+        "notConnectedHint": "네트워크가 없으면 자체 핫스팟을 엽니다. 업데이트와 별 지도 다운로드에는 집 네트워크가 필요합니다: \"네트워크 검색\"을 탭하세요.",
         "chooseOtherNetwork": "다른 네트워크 선택",
         "scan": "네트워크 검색",
         "scanning": "Scanning…",
@@ -489,6 +491,8 @@
         "chipHeight": "센서 높이 (px)",
         "pixelSize": "픽셀 크기 (µm)",
         "pixelSizeHint": "드라이버가 픽셀 크기를 보고하지 않습니다. 카메라 설명서에서 확인하세요.",
+        "pixelSizeReported": "카메라 보고값: {size} µm.",
+        "pixelSizeReportedDiffers": "카메라는 {size} µm를 보고하지만 프로필에는 다른 값이 있습니다.",
         "imageScale": "결과 이미지 스케일: {scale} arcsec/px",
         "applyFailed": "저장하지 못했습니다: {message}",
         "chipSizeNotConnectedHint": "위에서 카메라를 연결하면 센서 크기가 자동으로 입력됩니다. 센서 크기를 알려주지 않는 카메라(DSLR 등)만 아래 값이 필요합니다."
@@ -5915,6 +5919,12 @@
           "noExposures": "플랜에 대상은 있지만 아직 촬영 설정이 없습니다. 플랜을 열고 \"노출 추가\"를 눌러 필터, 노출 시간, 장수를 선택하세요.",
           "summaryEmpty": "대상 {targets}개, 아직 계획된 촬영 없음 | 대상 {targets}개, 아직 계획된 촬영 없음",
           "confirmStartFocus": "필터를 바꿀 때마다 다시 초점을 맞춥니다.",
+          "confirmStartEnd": {
+            "both": "끝나면 마운트가 파킹되고 카메라가 예열됩니다.",
+            "park": "끝나면 마운트가 파킹됩니다.",
+            "warm": "끝나면 카메라가 예열됩니다. 마운트는 밤을 종료할 때까지 추적을 계속합니다.",
+            "none": "끝나도 마운트는 밤을 종료할 때까지 추적을 계속합니다."
+          },
           "confirmStartMessageNoGuiding": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 대상으로 이동해 센터링합니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 각 대상으로 이동해 센터링합니다.",
           "missingSteps": "플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}. | 플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "자동으로 이동 및 가이딩",
           "flipMissing": "플랜에 자오선에서 망원경을 돌리는 단계가 없습니다. 자오선을 지나서도 계속 추적하여 삼각대나 피어에 부딪힐 수 있습니다.",
           "addFlip": "Meridian Flip 켜기",
+          "endMissing": {
+            "park": "플랜이 끝나도 마운트는 추적을 계속합니다. 아무도 밤을 종료하지 않으면 자오선을 지나 삼각대나 피어에 부딪힐 수 있습니다.",
+            "warm": "플랜이 끝나도 밤을 종료할 때까지 카메라는 차가운 상태로 남습니다.",
+            "both": "플랜이 끝나도 마운트는 추적을 계속하고 카메라는 차가운 상태로 남습니다. 아무도 밤을 종료하지 않으면 자오선을 지나 망원경이 삼각대나 피어에 부딪힐 수 있습니다."
+          },
+          "addEnd": {
+            "park": "플랜 후 마운트 파킹",
+            "warm": "플랜 후 카메라 예열",
+            "both": "플랜 후 파킹 및 예열"
+          },
           "flipWindow": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {earliest}에서 {latest} 사이에 망원경을 돌립니다.",
           "flipFixed": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {earliest}에 망원경을 돌립니다.",
           "flipPause": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {pause}에 일시정지하고 {earliest}에 망원경을 돌립니다.",
@@ -6158,6 +6178,10 @@
         "text": "어젯밤 가이딩이 불안정했습니다. Guiding Coach가 가이드 카메라, 하늘, 마운트를 측정해 무엇이 도움이 되는지 알려줍니다. 별 아래에서 약 15분 걸리며, 촬영을 시작하기 전에 하는 것이 가장 좋습니다.",
         "open": "Guiding Coach 열기",
         "dismiss": "나중에"
+      },
+      "camera": {
+        "title": "카메라",
+        "hint": "테스트 사진과 플랜의 모든 사진은 이 값을 사용합니다. 플랜의 노출에 별도 값을 지정한 경우는 예외입니다. 권장 게인과 오프셋은 카메라 설명서에 나와 있습니다."
       }
     },
     "secureObservatory": {

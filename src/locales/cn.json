@@ -20,7 +20,8 @@
     "expand": "展开",
     "collapse": "收起",
     "drag": "拖拽",
-    "showImage": "显示图像"
+    "showImage": "显示图像",
+    "onOff": "开/关"
   },
   "general": {
     "cancel": "取消",
@@ -345,6 +346,7 @@
         "loadingStatus": "正在读取 Wi-Fi 状态 …",
         "connectedTo": "已连接到 {ssid}",
         "notConnected": "设备未连接到任何 Wi-Fi 网络。",
+        "notConnectedHint": "没有网络时，它会开启自己的热点。更新和下载星图需要你的家庭网络：点按“搜索网络”。",
         "chooseOtherNetwork": "选择其他网络",
         "scan": "搜索网络",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "传感器高度 (px)",
         "pixelSize": "像素尺寸 (µm)",
         "pixelSizeHint": "驱动不报告像素尺寸。可在相机说明书中查到。",
+        "pixelSizeReported": "相机报告：{size} µm。",
+        "pixelSizeReportedDiffers": "相机报告 {size} µm，配置文件中的值不同。",
         "imageScale": "得到的成像比例：{scale} arcsec/px",
         "applyFailed": "无法保存：{message}",
         "chipSizeNotConnectedHint": "在上方连接相机后，传感器尺寸会自动填入。只有不报告尺寸的相机（常见于单反）才需要下方的值。"
@@ -5915,6 +5919,12 @@
           "noExposures": "你的计划有目标但还没有照片。请打开计划并点击“添加曝光”，选择滤镜、曝光时间和张数。",
           "summaryEmpty": "{targets} 个目标，尚未规划照片 | {targets} 个目标，尚未规划照片",
           "confirmStartFocus": "每次更换滤镜后都会重新对焦。",
+          "confirmStartEnd": {
+            "both": "完成后，赤道仪归位停放，相机回温。",
+            "park": "完成后，赤道仪归位停放。",
+            "warm": "完成后，相机回温。赤道仪会继续跟踪，直到你结束今晚。",
+            "none": "完成后，赤道仪会继续跟踪，直到你结束今晚。"
+          },
           "confirmStartMessageNoGuiding": "包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会前往目标并在第一张照片前居中。 | 包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会依次前往每个目标并在第一张照片前居中。",
           "missingSteps": "计划中有 {count} 个目标还不会自动完成以下操作：{steps}。 | 计划中有 {count} 个目标还不会自动完成以下操作：{steps}。",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "自动前往并导星",
           "flipMissing": "你的计划不会在子午线处翻转望远镜。它会继续跟踪越过子午线，可能撞到三脚架或立柱。",
           "addFlip": "打开 Meridian Flip",
+          "endMissing": {
+            "park": "计划完成后，赤道仪会继续跟踪。如果没人结束今晚，过了子午线后它可能撞到三脚架或立柱。",
+            "warm": "计划完成后，相机会一直保持低温，直到你结束今晚。",
+            "both": "计划完成后，赤道仪会继续跟踪，相机保持低温。如果没人结束今晚，过了子午线后望远镜可能撞到三脚架或立柱。"
+          },
+          "addEnd": {
+            "park": "计划完成后停放赤道仪",
+            "warm": "计划完成后相机回温",
+            "both": "计划完成后停放并回温"
+          },
           "flipWindow": "{target} 约在 {meridian} 到达子午线；计划会在 {earliest} 到 {latest} 之间翻转望远镜。",
           "flipFixed": "{target} 约在 {meridian} 到达子午线；计划会在 {earliest} 翻转望远镜。",
           "flipPause": "{target} 约在 {meridian} 到达子午线；计划会在 {pause} 暂停，并在 {earliest} 翻转望远镜。",
@@ -6158,6 +6178,10 @@
         "text": "昨晚你的导星不稳。Guiding Coach 会测量你的导星相机、天空和赤道仪，并告诉你怎么改善。在星空下大约需要 15 分钟，最好在开始拍摄前进行。",
         "open": "打开 Guiding Coach",
         "dismiss": "暂不"
+      },
+      "camera": {
+        "title": "相机",
+        "hint": "测试图像和计划中的每张图像都使用这些值，除非你为计划中的某个曝光单独设置。推荐的增益和偏置见相机说明书。"
       }
     },
     "secureObservatory": {

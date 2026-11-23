@@ -20,7 +20,8 @@
     "expand": "Uitvouwen",
     "collapse": "Inklappen",
     "drag": "Sleep",
-    "showImage": "Toon beeld"
+    "showImage": "Toon beeld",
+    "onOff": "Aan/Uit"
   },
   "general": {
     "cancel": "Annuleer",
@@ -345,6 +346,7 @@
         "loadingStatus": "Wifi-status uitlezen…",
         "connectedTo": "Verbonden met {ssid}",
         "notConnected": "De opstelling is niet met een wifinetwerk verbonden.",
+        "notConnectedHint": "Zonder netwerk opent hij zijn eigen hotspot. Voor updates en het downloaden van de sterrenkaart heeft hij je thuisnetwerk nodig: tik op ‘Netwerken zoeken’.",
         "chooseOtherNetwork": "Ander netwerk kiezen",
         "scan": "Netwerken zoeken",
         "scanning": "Scanning…",
@@ -448,6 +450,8 @@
         "chipHeight": "Sensorhoogte (px)",
         "pixelSize": "Pixelgrootte (µm)",
         "pixelSizeHint": "Het stuurprogramma meldt de pixelgrootte niet. Die vind je in de handleiding van je camera.",
+        "pixelSizeReported": "Door de camera gemeld: {size} µm.",
+        "pixelSizeReportedDiffers": "De camera meldt {size} µm, in het profiel staat een andere waarde.",
         "imageScale": "Resulterende beeldschaal: {scale} arcsec/px",
         "applyFailed": "Opslaan mislukt: {message}",
         "chipSizeNotConnectedHint": "Verbind hierboven de camera en de sensorgrootte wordt vanzelf ingevuld. Alleen een camera die dit niet meldt (typisch voor DSLR's) heeft de waarden hieronder nodig."
@@ -5915,6 +5919,12 @@
           "noExposures": "Je plan heeft een doel maar nog geen foto's. Open het plan en tik op “Add exposure” om filter, belichtingstijd en aantal foto's te kiezen.",
           "summaryEmpty": "{targets} doel, nog geen foto's gepland | {targets} doelen, nog geen foto's gepland",
           "confirmStartFocus": "Na elke filterwissel wordt opnieuw scherpgesteld.",
+          "confirmStartEnd": {
+            "both": "Daarna parkeert de montering en warmt de camera op.",
+            "park": "Daarna parkeert de montering.",
+            "warm": "Daarna warmt de camera op. De montering blijft volgen tot je de nacht beëindigt.",
+            "none": "Daarna blijft de montering volgen tot je de nacht beëindigt."
+          },
           "confirmStartMessageNoGuiding": "Het plan met {targets} doel start nu en duurt ongeveer {remaining}. De telescoop gaat naar het doel en centreert het vóór de eerste foto. | Het plan met {targets} doelen start nu en duurt ongeveer {remaining}. De telescoop gaat naar elk doel en centreert het vóór de eerste foto.",
           "missingSteps": "{count} doel in je plan doet dit nog niet automatisch: {steps}. | {count} doelen in je plan doen dit nog niet automatisch: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Automatisch erheen gaan en guiden",
           "flipMissing": "Je plan voert geen Meridian Flip uit. De telescoop zou erna blijven volgen en tegen het statief of de pier kunnen botsen.",
           "addFlip": "Meridian Flip aanzetten",
+          "endMissing": {
+            "park": "Als je plan klaar is, blijft de montering volgen. Voorbij de meridiaan kan hij tegen het statief of de pier stoten als niemand de nacht beëindigt.",
+            "warm": "Als je plan klaar is, blijft de camera koud tot je de nacht beëindigt.",
+            "both": "Als je plan klaar is, blijft de montering volgen en blijft de camera koud. Voorbij de meridiaan kan de telescoop tegen het statief of de pier stoten als niemand de nacht beëindigt."
+          },
+          "addEnd": {
+            "park": "Montering parkeren na het plan",
+            "warm": "Camera opwarmen na het plan",
+            "both": "Parkeren en opwarmen na het plan"
+          },
           "flipWindow": "{target} bereikt de meridiaan rond {meridian}; het plan draait de telescoop tussen {earliest} en {latest}.",
           "flipFixed": "{target} bereikt de meridiaan rond {meridian}; het plan draait de telescoop om {earliest}.",
           "flipPause": "{target} bereikt de meridiaan rond {meridian}; het plan pauzeert om {pause} en draait de telescoop om {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Je guiding was gisteravond onrustig. De Guiding Coach meet je guidecamera, de hemel en de mount en vertelt wat helpt. Het duurt ongeveer 15 minuten onder de sterren – het best voordat je met je foto's begint.",
         "open": "De Guiding Coach openen",
         "dismiss": "Nu niet"
+      },
+      "camera": {
+        "title": "Camera",
+        "hint": "De testopname en elke opname van je plan gebruiken deze waarden, tenzij je een belichting in het plan eigen waarden geeft. De handleiding van je camera noemt de aanbevolen gain en offset."
       }
     },
     "secureObservatory": {

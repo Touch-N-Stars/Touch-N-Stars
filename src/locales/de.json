@@ -20,7 +20,8 @@
     "expand": "Erweitern",
     "collapse": "Minimieren",
     "drag": "Ziehen",
-    "showImage": "Bild anzeigen"
+    "showImage": "Bild anzeigen",
+    "onOff": "Ein/Aus"
   },
   "general": {
     "cancel": "Abbrechen",
@@ -93,10 +94,10 @@
     "gpsConfiguration": "GPS-Konfiguration",
     "completeSetup": "Einrichtung abschließen",
     "instanceConfiguration": "@:{'general.backendName'} Verbindungsdetails",
-    "coordAlt": "Alt",
-    "coordLat": "Lat",
+    "coordAlt": "Höhe",
+    "coordLat": "Breite",
     "coordLon": "Länge",
-    "coordUnit": "M",
+    "coordUnit": "m",
     "coordsNotSupported": "Wird vom Treiber nicht unterstützt",
     "currentMountCoords": "Montierungsstandort",
     "syncDirection": "Beim Verbinden der Montierung",
@@ -386,6 +387,7 @@
         "loadingStatus": "WLAN-Status wird gelesen…",
         "connectedTo": "Verbunden mit {ssid}",
         "notConnected": "Das Rig ist mit keinem WLAN verbunden.",
+        "notConnectedHint": "Ohne Netzwerk öffnet es seinen eigenen Hotspot. Für Updates und den Download der Sternkarte braucht es dein Heimnetz: Tippe auf „Netzwerke suchen“.",
         "chooseOtherNetwork": "Anderes Netzwerk wählen",
         "scan": "Netzwerke suchen",
         "scanning": "Suche läuft…",
@@ -489,6 +491,8 @@
         "chipHeight": "Chiphöhe (px)",
         "pixelSize": "Pixelgröße (µm)",
         "pixelSizeHint": "Die Pixelgröße wird vom Treiber nicht gemeldet. Du findest sie im Handbuch deiner Kamera.",
+        "pixelSizeReported": "Von der Kamera gemeldet: {size} µm.",
+        "pixelSizeReportedDiffers": "Die Kamera meldet {size} µm, im Profil steht ein anderer Wert.",
         "imageScale": "Resultierende Bildskala: {scale} Bogensekunden/px",
         "applyFailed": "Konnte nicht gespeichert werden: {message}",
         "chipSizeNotConnectedHint": "Verbinde oben die Kamera, dann wird die Sensorgröße automatisch ausgefüllt. Nur eine Kamera, die sie nicht meldet (typisch bei DSLRs), braucht die Werte unten."
@@ -982,7 +986,7 @@
         "name": "Montierung"
       },
       "focuser": {
-        "name": "Fokusierer"
+        "name": "Fokussierer"
       },
       "rotator": {
         "name": "Rotator"
@@ -5915,6 +5919,12 @@
           "noExposures": "Dein Plan hat ein Ziel, aber noch keine Bilder. Öffne den Plan und tippe auf „Belichtung hinzufügen“, um Filter, Belichtungszeit und Bildanzahl zu wählen.",
           "summaryEmpty": "{targets} Ziel, noch keine Bilder geplant | {targets} Ziele, noch keine Bilder geplant",
           "confirmStartFocus": "Nach jedem Filterwechsel wird neu fokussiert.",
+          "confirmStartEnd": {
+            "both": "Danach parkt die Montierung und die Kamera wärmt auf.",
+            "park": "Danach parkt die Montierung.",
+            "warm": "Danach wärmt die Kamera auf. Die Montierung führt weiter nach, bis du die Nacht beendest.",
+            "none": "Danach führt die Montierung weiter nach, bis du die Nacht beendest."
+          },
           "confirmStartMessageNoGuiding": "Der Plan mit {targets} Ziel startet jetzt und dauert etwa {remaining}. Das Teleskop fährt zum Ziel und zentriert es vor dem ersten Bild. | Der Plan mit {targets} Zielen startet jetzt und dauert etwa {remaining}. Das Teleskop fährt zu jedem Ziel und zentriert es vor dem ersten Bild.",
           "missingSteps": "{count} Ziel in deinem Plan macht das noch nicht von selbst: {steps}. | {count} Ziele in deinem Plan machen das noch nicht von selbst: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5935,16 @@
           "fixSteps": "Automatisch anfahren und guiden",
           "flipMissing": "Dein Plan wendet das Teleskop nicht am Meridian. Es würde darüber hinaus nachführen und könnte gegen Stativ oder Säule stoßen.",
           "addFlip": "Meridian Flip einschalten",
+          "endMissing": {
+            "park": "Wenn dein Plan fertig ist, führt die Montierung weiter nach. Nach dem Meridian kann sie gegen Stativ oder Säule stoßen, wenn niemand die Nacht beendet.",
+            "warm": "Wenn dein Plan fertig ist, bleibt die Kamera kalt, bis du die Nacht beendest.",
+            "both": "Wenn dein Plan fertig ist, führt die Montierung weiter nach und die Kamera bleibt kalt. Nach dem Meridian kann das Teleskop gegen Stativ oder Säule stoßen, wenn niemand die Nacht beendet."
+          },
+          "addEnd": {
+            "park": "Nach dem Plan Montierung parken",
+            "warm": "Nach dem Plan Kamera aufwärmen",
+            "both": "Nach dem Plan parken und aufwärmen"
+          },
           "flipWindow": "{target} erreicht den Meridian gegen {meridian}; der Plan wendet das Teleskop zwischen {earliest} und {latest}.",
           "flipFixed": "{target} erreicht den Meridian gegen {meridian}; der Plan wendet das Teleskop um {earliest}.",
           "flipPause": "{target} erreicht den Meridian gegen {meridian}; der Plan pausiert um {pause} und wendet das Teleskop um {earliest}.",
@@ -6158,6 +6178,10 @@
         "text": "Dein Guiding war letzte Nacht unruhig. Der Guiding Coach vermisst deine Guiding-Kamera, den Himmel und die Montierung und sagt dir, was hilft. Das dauert etwa 15 Minuten unter Sternen – am besten, bevor du mit den Aufnahmen beginnst.",
         "open": "Guiding Coach öffnen",
         "dismiss": "Jetzt nicht"
+      },
+      "camera": {
+        "title": "Kamera",
+        "hint": "Das Testbild und jedes Bild deines Plans nutzen diese Werte, außer du gibst einer Belichtung im Plan eigene. Empfohlenes Gain und Offset stehen im Handbuch deiner Kamera."
       }
     },
     "secureObservatory": {
