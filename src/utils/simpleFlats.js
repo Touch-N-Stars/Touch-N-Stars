@@ -89,7 +89,7 @@ export function flatFilterConfig(profileInfo, filterId, count = SIMPLE_FLAT_COUN
     gain: -1,
     offset: -1,
     binning: '1x1',
-    histogramMean: percent(general?.HistogramMeanTarget, 50),
+    histogramMean: percent(general?.HistogramMeanTarget, 35),
     meanTolerance: percent(general?.HistogramTolerance, 10),
     minExposure: 0.01,
     maxExposure: 20,

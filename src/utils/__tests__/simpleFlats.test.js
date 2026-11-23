@@ -146,7 +146,7 @@ test('without a filter wheel the general flat wizard values apply', () => {
 
 test('an unknown filter falls back to the defaults the flat assistant always used', () => {
   const config = flatFilterConfig({ FlatWizardSettings: { HistogramMeanTarget: 0.4 } }, 3, 20);
-  assert.equal(config.histogramMean, 50);
+  assert.equal(config.histogramMean, 35);
   assert.equal(config.meanTolerance, 10);
 });
 
