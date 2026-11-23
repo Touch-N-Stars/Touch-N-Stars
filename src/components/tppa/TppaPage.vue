@@ -12,6 +12,14 @@
           <p class="text-status-danger">{{ $t('components.tppa.camera_mount_required') }}</p>
         </div>
         <div v-else>
+          <!-- What is about to happen, before the mount moves: ASIAIR users are used to it -->
+          <div
+            v-if="simpleModeActive && !tppaStore.isRunning && !movingToStart"
+            class="mb-3 flex flex-col gap-1 text-sm text-content-muted"
+          >
+            <p>{{ $t('components.tppa.simpleIntroMove') }}</p>
+            <p>{{ $t('components.tppa.simpleIntroAdjust') }}</p>
+          </div>
           <div data-testid="tppa-actions" class="pb-2 flex justify-center gap-2">
             <QuickAccessButton
               v-if="!tppaStore.isRunning"
@@ -50,7 +58,12 @@
               }}
             </button>
             <ButtonPause class="w-28" v-if="tppaStore.isRunning" />
-            <button class="tns-btn-danger" @click="stopAlignment">
+            <!-- Stop stays available (it also clears a run the page did not see start), but only
+                 looks urgent while something runs -->
+            <button
+              :class="tppaStore.isRunning || movingToStart ? 'tns-btn-danger' : 'tns-btn-secondary'"
+              @click="stopAlignment"
+            >
               {{ $t('components.tppa.stop_alignment') }}
             </button>
           </div>
@@ -90,6 +103,16 @@
           >
             {{ $t('components.tppa.goodEnoughHint') }}
           </p>
+          <p
+            v-if="simpleModeActive && tppaStore.isRunning && tppaStore.showTotalError"
+            class="mt-1 text-xs text-content-muted"
+          >
+            {{ $t('components.tppa.adjustHint') }}
+          </p>
+          <p v-if="polarMarkedDone" class="mt-2 flex items-center gap-2 text-xs text-status-ok">
+            <span class="tns-dot bg-status-ok"></span>
+            {{ $t('components.tppa.markedDone') }}
+          </p>
           <router-link
             v-if="simpleModeActive && !tppaStore.isRunning"
             to="/start"
@@ -99,6 +122,12 @@
           </router-link>
         </div>
         <div v-if="tppaStore.currentMessage" class="mt-10">
+          <p
+            v-if="!tppaStore.isRunning && tppaStore.showTotalError"
+            class="mb-2 text-xs text-content-faint"
+          >
+            {{ $t('components.tppa.lastMeasurement') }}
+          </p>
           <div class="space-y-4">
             <div class="flex space-x-4">
               <p class="w-52">
@@ -384,6 +413,9 @@ import { useSimpleMode } from '@/composables/useSimpleMode';
 import { hasProfileLocation } from '@/utils/location';
 import { newestLogTime } from '@/utils/plateSolveLog';
 import { tppaStartBlocker, tppaValidationError } from '@/utils/tppaProblems';
+import { useToastStore } from '@/store/toastStore';
+import { useSettingsStore } from '@/store/settingsStore';
+import { nightKey } from '@/utils/simpleMode';
 
 const tppaStore = useTppaStore();
 const store = apiStore();
@@ -391,6 +423,10 @@ const imageStore = useImagetStore();
 const logStore = useLogStore();
 const astap = useAstapDatabases();
 const { active: simpleModeActive } = useSimpleMode();
+const toastStore = useToastStore();
+const settingsStore = useSettingsStore();
+// Set when stopping under the tolerance marked the night's polar alignment step as done
+const polarMarkedDone = ref(false);
 const startStop = ref(false);
 // The app slews to the start position before TPPA runs, see slewToTppaStart().
 const movingToStart = ref(false);
@@ -605,6 +641,17 @@ async function resumeTracking() {
 }
 
 async function startAlignment() {
+  // The mount is about to move on its own: in the simple mode say so first.
+  if (simpleModeActive.value) {
+    const confirmed = await toastStore.showConfirmation(
+      t('components.tppa.confirmStartTitle'),
+      t('components.tppa.confirmStartMessage'),
+      t('components.tppa.start_alignment'),
+      t('common.cancel')
+    );
+    if (!confirmed) return;
+  }
+  polarMarkedDone.value = false;
   tppaStore.isPause = false;
   tppaStore.stoppedAfterRun = false;
   resetErrors();
@@ -681,6 +728,11 @@ function stopAlignment() {
   }
   console.log("Sending 'stop-alignment' to the server");
   if (tppaStore.isRunning) tppaStore.stoppedAfterRun = true;
+  // Stopping under the tolerance is how the alignment ends: the simple mode's step is done.
+  if (simpleModeActive.value && tppaStore.isWithinTolerance) {
+    settingsStore.setSimpleModeStepMark(nightKey(), 'polar', 'done');
+    polarMarkedDone.value = true;
+  }
   clearProblems();
   //websocketService.sendMessage('stop-alignment');
   websocketService.sendMessage(
@@ -761,10 +813,11 @@ onMounted(() => {
     tppaStore.currentMessage = JSON.parse(JSON.stringify(newMessage));
 
     // Update running state based on message
+    // The last measurement stays on screen after a stop: it is the result the user worked
+    // towards. A new start clears it.
     if (message.Response === 'stopped procedure') {
       tppaStore.setRunning(false);
       startStop.value = false;
-      resetErrors();
     } else if (message.Response) {
       // Any other response means TPPA is running
       tppaStore.setRunning(true);
@@ -787,7 +840,6 @@ onMounted(() => {
           console.log('No WebSocket messages for 30 seconds - assuming TPPA stopped');
           tppaStore.setRunning(false);
           startStop.value = false;
-          resetErrors();
         }, 30000);
       } else {
         // Clear timeout when paused
