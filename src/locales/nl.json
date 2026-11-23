@@ -93,8 +93,6 @@
     "gpsConfiguration": "GPS Configuratie",
     "completeSetup": "Afronden Setup",
     "instanceConfiguration": "@:{'general.backendName'} connectie details",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Gedetailleerde instructies vind je in de wiki",
     "coordAlt": "Alt",
     "coordLat": "Lat",
     "coordLon": "Lengte",
@@ -263,9 +261,6 @@
       },
       "language": {
         "description": "De taal van de app. Je kunt die later in de instellingen wijzigen."
-      },
-      "info": {
-        "openWiki": "Wiki openen"
       },
       "instance": {
         "description": "Adres van de computer waarop @:{'general.backendName'} draait. Op hetzelfde netwerk vindt de app hem meestal zelf.",

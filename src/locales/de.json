@@ -93,8 +93,6 @@
     "gpsConfiguration": "GPS-Konfiguration",
     "completeSetup": "Einrichtung abschließen",
     "instanceConfiguration": "@:{'general.backendName'} Verbindungsdetails",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "In unserem Wiki finden Sie detaillierte Anleitungen",
     "coordAlt": "Alt",
     "coordLat": "Lat",
     "coordLon": "Länge",
@@ -304,9 +302,6 @@
       },
       "language": {
         "description": "Die Sprache der App. Du kannst sie später in den Einstellungen ändern."
-      },
-      "info": {
-        "openWiki": "Wiki öffnen"
       },
       "instance": {
         "description": "Adresse des Rechners, auf dem @:{'general.backendName'} läuft. Im selben Netzwerk findet die App ihn meist von selbst.",

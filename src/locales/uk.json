@@ -93,8 +93,6 @@
     "gpsConfiguration": "Налаштування GPS",
     "completeSetup": "Завершити налаштування",
     "instanceConfiguration": "Параметри з'єднання з @:{'general.backendName'}",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Детальні інструкції можна знайти в нашому wiki",
     "currentNinaCoords": "Місцезнаходження профілю",
     "currentMountCoords": "Місцезнаходження монтування",
     "syncDirection": "Напрямок синхронізації місцезнаходження",
@@ -263,9 +261,6 @@
       },
       "language": {
         "description": "Мова застосунку. Її можна змінити пізніше в налаштуваннях."
-      },
-      "info": {
-        "openWiki": "Відкрити вікі"
       },
       "instance": {
         "description": "Адреса комп'ютера, на якому працює @:{'general.backendName'} У тій самій мережі застосунок зазвичай знаходить його сам.",

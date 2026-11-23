@@ -93,8 +93,6 @@
     "gpsConfiguration": "GPS 配置",
     "completeSetup": "完成设置",
     "instanceConfiguration": "@:{'general.backendName'} 连接详情",
-    "InfoAppsTitel": "维基",
-    "check_wki": "您可以在我们的维基中找到详细说明",
     "coordAlt": "海拔",
     "coordLat": "纬度",
     "coordLon": "经度",
@@ -263,9 +261,6 @@
       },
       "language": {
         "description": "应用的语言。之后可以在设置中更改。"
-      },
-      "info": {
-        "openWiki": "打开 Wiki"
       },
       "instance": {
         "description": "运行 @:{'general.backendName'} 的电脑地址。在同一网络中，应用通常能自动找到它。",

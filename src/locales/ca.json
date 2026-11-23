@@ -105,9 +105,7 @@
     "coordAlt": "Alt",
     "coordUnit": "m",
     "completeSetup": "Finalitza la configuració",
-    "instanceConfiguration": "Detalls de connexió @:{'general.backendName'}",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Podeu trobar instruccions detallades a la nostra wiki"
+    "instanceConfiguration": "Detalls de connexió @:{'general.backendName'}"
   },
   "components": {
     "fitsPlatesolve": {
@@ -304,9 +302,6 @@
       },
       "language": {
         "description": "L'idioma de l'app. El pots canviar més tard a la configuració."
-      },
-      "info": {
-        "openWiki": "Obre la wiki"
       },
       "instance": {
         "description": "Adreça de l'ordinador on s'executa @:{'general.backendName'} A la mateixa xarxa, l'app normalment el troba sola.",

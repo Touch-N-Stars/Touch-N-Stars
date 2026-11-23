@@ -105,9 +105,7 @@
     "coordAlt": "고도",
     "coordUnit": "m",
     "completeSetup": "설정 완료",
-    "instanceConfiguration": "@:{'general.backendName'} 연결 정보",
-    "InfoAppsTitel": "위키",
-    "check_wki": "자세한 안내는 위키에서 확인할 수 있습니다"
+    "instanceConfiguration": "@:{'general.backendName'} 연결 정보"
   },
   "components": {
     "fitsPlatesolve": {
@@ -304,9 +302,6 @@
       },
       "language": {
         "description": "앱의 언어입니다. 나중에 설정에서 바꿀 수 있습니다."
-      },
-      "info": {
-        "openWiki": "위키 열기"
       },
       "instance": {
         "description": "@:{'general.backendName'}가 실행 중인 컴퓨터의 주소입니다. 같은 네트워크라면 보통 앱이 직접 찾습니다.",

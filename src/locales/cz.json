@@ -93,8 +93,6 @@
     "gpsConfiguration": "Konfigurace GPS",
     "completeSetup": "Dokončit nastavení",
     "instanceConfiguration": "Podrobnosti o připojení @:{'general.backendName'}",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Podrobné pokyny najdete na naší wiki",
     "coordAlt": "Alt",
     "coordLat": "lat",
     "coordLon": "Dél.",
@@ -263,9 +261,6 @@
       },
       "language": {
         "description": "Jazyk aplikace. Později ho můžeš změnit v nastavení."
-      },
-      "info": {
-        "openWiki": "Otevřít wiki"
       },
       "instance": {
         "description": "Adresa počítače, na kterém běží @:{'general.backendName'} Ve stejné síti ho aplikace obvykle najde sama.",
