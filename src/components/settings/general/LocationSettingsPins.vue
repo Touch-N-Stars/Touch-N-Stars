@@ -205,13 +205,13 @@ import {
   mountCoords,
   mountCoordsLoading,
   formatCoord,
+  mountSiteDiffers,
 } from '@/utils/location';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
 const store = apiStore();
 const locationStore = useLocationStore();
 
-const COORD_TOLERANCE = 0.001; // ~100 m
 const coordsMismatch = computed(() => {
   if (
     !mountCoords.value.connected ||
@@ -219,9 +219,7 @@ const coordsMismatch = computed(() => {
     mountCoordsLoading.value
   )
     return false;
-  const latDiff = Math.abs((ninaCoords.value.latitude ?? 0) - (mountCoords.value.latitude ?? 0));
-  const lonDiff = Math.abs((ninaCoords.value.longitude ?? 0) - (mountCoords.value.longitude ?? 0));
-  return latDiff > COORD_TOLERANCE || lonDiff > COORD_TOLERANCE;
+  return mountSiteDiffers(ninaCoords.value, mountCoords.value);
 });
 
 async function saveLocation() {

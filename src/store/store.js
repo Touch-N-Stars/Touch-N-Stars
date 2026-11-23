@@ -28,6 +28,7 @@ import websocketMountControlService from '@/services/websocketMountControl';
 import websocketTppaService from '@/services/websocketTppa';
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { createPoller } from '@/utils/poller';
+import { isMountLocationSyncError, mountSiteDiffers } from '@/utils/profileLocation';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
 import { takeProfileStale } from '@/services/api/profileStaleness';
 import { handleFailureEvent } from '@/utils/backendErrors';
@@ -520,10 +521,17 @@ export const apiStore = defineStore('store', {
             console.log('[API Store] SignalR Status:', status);
           });
 
-          signalRNotificationService.setNotificationCallback((notification) => {
+          signalRNotificationService.setNotificationCallback(async (notification) => {
             //console.log('[API Store] SignalR Notification:', notification);
 
             if (notification.message === 'Not a 10u mount. 10u utilities disabled.') {
+              return;
+            }
+
+            // NINA checks the location it sent to the mount to 0.001°, which a mount that
+            // stores its site rounded fails on every connect although the location arrived.
+            if (notification.type === 3 && (await this.isRoundedMountLocation(notification))) {
+              console.info('[API Store] Mount stores the location rounded:', notification.message);
               return;
             }
 
@@ -1049,6 +1057,39 @@ export const apiStore = defineStore('store', {
       } catch (error) {
         console.error('Error fetching guider info:', error);
       }
+    },
+
+    /**
+     * Whether a NINA error notification is "Unable to set mount latitude/longitude" for a
+     * mount that took the location but stores it rounded (see profileLocation.js). Reads the
+     * mount right away: the notification comes in during the connect, before the next poll.
+     */
+    async isRoundedMountLocation(notification) {
+      const profileCoords = () => {
+        const settings = this.profileInfo?.AstrometrySettings;
+        return { latitude: settings?.Latitude, longitude: settings?.Longitude };
+      };
+      if (!isMountLocationSyncError(notification.message, profileCoords())) {
+        // The location may have been saved a moment ago, ahead of the profile poll.
+        await this.fetchProfilInfos();
+        if (!isMountLocationSyncError(notification.message, profileCoords())) return false;
+      }
+      // The mount info may still be from before the connect for a moment.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+          const info = (await apiService.mountAction('info'))?.Response;
+          if (info?.Connected && info.SiteLatitude != null) {
+            return !mountSiteDiffers(profileCoords(), {
+              latitude: info.SiteLatitude,
+              longitude: info.SiteLongitude,
+            });
+          }
+        } catch {
+          // Unknown: show the notification.
+        }
+      }
+      return false;
     },
 
     async fetchProfilInfos() {

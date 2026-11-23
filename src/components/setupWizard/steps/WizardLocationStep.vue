@@ -175,6 +175,7 @@ import {
   mountCoordsLoading,
   formatCoord,
   hasProfileLocation,
+  mountSiteDiffers,
   parseCoordinate,
   syncDirectionForSelect,
 } from '@/utils/location';
@@ -183,9 +184,6 @@ const { t } = useI18n();
 const store = apiStore();
 const toastStore = useToastStore();
 const locationStore = useLocationStore();
-
-// ~100 m, same threshold LocationSettingsPins.vue uses.
-const COORD_TOLERANCE = 0.001;
 
 const isSaving = ref(false);
 const errorMessage = ref('');
@@ -197,13 +195,7 @@ const showCoordCards = computed(
 
 const coordsMismatch = computed(() => {
   if (!mountCoords.value.connected || !mountCoords.value.siteLocationSupported) return false;
-  const pairs = [
-    [ninaCoords.value.latitude, mountCoords.value.latitude],
-    [ninaCoords.value.longitude, mountCoords.value.longitude],
-  ];
-  return pairs.some(
-    ([a, b]) => a !== null && b !== null && Math.abs(Number(a) - Number(b)) > COORD_TOLERANCE
-  );
+  return mountSiteDiffers(ninaCoords.value, mountCoords.value);
 });
 
 // The profile is the source of truth; the fields are only an edit buffer.

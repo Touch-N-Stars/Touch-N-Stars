@@ -7,7 +7,11 @@ import { useGuiderStore } from '@/store/guiderStore';
 import { hasProfileLocation, syncDirectionForSelect } from '@/utils/profileLocation';
 
 // Pure, so code without stores (and its tests) can use it too.
-export { hasProfileLocation, syncDirectionForSelect } from '@/utils/profileLocation';
+export {
+  hasProfileLocation,
+  mountSiteDiffers,
+  syncDirectionForSelect,
+} from '@/utils/profileLocation';
 
 export const latitude = ref(0);
 export const longitude = ref(0);
