@@ -35,8 +35,14 @@ const {
   glowClass: statusClass,
 } = useProfileSetting('FilterWheelSettings-SlotNum', { fallback: -1 });
 
+// NINA's manual and networked wheels have no slots of their own: their filters are the
+// profile's filter list, so a slot count changes nothing for them.
+const SLOTLESS_WHEEL_IDS = ['Manual Filter Wheel', 'Networked Filter Wheel'];
+
 const isVisible = computed(() => {
   if (props.selectedDeviceObj?.Category === 'ASCOM Alpaca') return false;
+  const deviceId = props.selectedDeviceObj?.Id ?? store.filterInfo?.DeviceId;
+  if (SLOTLESS_WHEEL_IDS.includes(deviceId)) return false;
   const deviceName = props.selectedDevice.toLowerCase();
   const driverInfo = store.filterInfo?.DriverInfo?.toLowerCase() || '';
   const category = store.filterInfo?.Category?.toLowerCase() || '';

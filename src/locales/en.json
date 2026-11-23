@@ -524,7 +524,8 @@
         "installFailed": "Installation failed: {message}",
         "descriptionDeviceFirst": "Pick your filter wheel from the list, connect it and give the slots the names you use. A driver is only needed if it does not show up there.",
         "notFoundDriverHint": "If your filter wheel is not in the list, select its INDI driver here. Afterwards it appears in the list above.",
-        "noneHint": "No filter wheel? Just tap Next."
+        "noneHint": "No filter wheel? Just tap Next.",
+        "addFilter": "Add filter"
       },
       "guider": {
         "title": "Set up guiding",

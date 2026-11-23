@@ -12,7 +12,7 @@
     </svg>
   </button>
 
-  <Modal :show="showModal" @close="showModal = false" maxWidth="max-w-md">
+  <Modal :show="showModal" :zIndex="zIndex" @close="showModal = false" maxWidth="max-w-md">
     <template #header>
       <h2 class="text-lg font-bold text-status-danger">
         {{ $t('components.RemoveFilter.confirmTitle') }}
@@ -45,6 +45,11 @@ const props = defineProps({
   filterId: {
     type: [String, Number],
     required: true,
+  },
+  // Layer of the confirm dialog; the setup wizard needs one above its overlay.
+  zIndex: {
+    type: String,
+    default: 'z-modal',
   },
 });
 

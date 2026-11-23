@@ -44,7 +44,8 @@
     </p>
 
     <!-- 3. Slot count. Hides itself for INDI and Alpaca wheels, which report
-         their slots themselves. -->
+         their slots themselves, and for the manual and networked wheels, which
+         have none. -->
     <SettingsFilterWheelSlotNum
       v-if="store.filterInfo?.Connected"
       :selectedDevice="slotNumDevice"
@@ -52,11 +53,10 @@
     />
 
     <!-- 4. Filter names. PINS only: on a plain NINA backend the wheel connects
-         but its filters are managed in NINA itself, not from here. -->
-    <div
-      v-if="store.isPINS && store.filterInfo?.Connected && filters.length"
-      class="flex flex-col gap-2"
-    >
+         but its filters are managed in NINA itself, not from here. A manual or
+         networked wheel has no slots of its own and takes this list as it is, so
+         filters can be added and removed here as in the filter wheel settings. -->
+    <div v-if="store.isPINS && store.filterInfo?.Connected" class="flex flex-col gap-2">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.filterWheel.filterNames') }}
       </span>
@@ -65,12 +65,22 @@
       </p>
       <!-- SetFilterName seeds its input in onMounted only, so re-key it when the
            profile delivers a different name for a slot. -->
-      <SetFilterName
+      <div
         v-for="(filter, index) in filters"
         :key="`${index}-${filter.Name}`"
-        :modelValue="filter.Name || ''"
-        :settingKey="`FilterWheelSettings-FilterWheelFilters-${index}-Name`"
-      />
+        class="flex items-center gap-2"
+      >
+        <SetFilterName
+          class="flex-1 min-w-0"
+          :modelValue="filter.Name || ''"
+          :settingKey="`FilterWheelSettings-FilterWheelFilters-${index}-Name`"
+        />
+        <RemoveFilter v-if="filters.length > 1" :filterId="index" zIndex="z-overlay-modal" />
+      </div>
+      <button class="tns-btn-secondary" :disabled="addingFilter" @click="addFilter">
+        <PlusIcon class="w-5 h-5" />
+        {{ t('components.setupWizard.filterWheel.addFilter') }}
+      </button>
     </div>
 
     <!-- 5. Filter wheel not listed -> INDI driver or a 3rd party driver. PINS only: the packages
@@ -136,7 +146,8 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ChevronDownIcon } from '@heroicons/vue/24/outline';
+import { ChevronDownIcon, PlusIcon } from '@heroicons/vue/24/outline';
+import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
 import Modal from '@/components/helpers/Modal.vue';
@@ -145,6 +156,7 @@ import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vu
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsFilterWheelSlotNum from '@/components/equipment/SettingsFilterWheelSlotNum.vue';
 import SetFilterName from '@/components/filterwheel/settings/SetFilterName.vue';
+import RemoveFilter from '@/components/filterwheel/settings/RemoveFilter.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
 
@@ -188,6 +200,20 @@ onMounted(async () => {
   await store.fetchProfilInfos();
   equipmentStore.triggerReload();
 });
+
+const addingFilter = ref(false);
+
+async function addFilter() {
+  addingFilter.value = true;
+  try {
+    await apiService.filterAction('add-filter');
+    await store.fetchProfilInfos();
+  } catch (error) {
+    console.error('[SetupWizard] Error adding a filter:', error);
+  } finally {
+    addingFilter.value = false;
+  }
+}
 
 function toggleNotFound() {
   showNotFound.value = !showNotFound.value;
