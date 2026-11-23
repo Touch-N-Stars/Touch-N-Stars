@@ -302,6 +302,13 @@
                   >
                     {{ $t('components.simpleMode.steps.focus.pointAtStars') }}
                   </button>
+                  <!-- The running curve: NINA's autofocus window is hidden in the simple mode -->
+                  <div
+                    v-if="store.focuserAfInfo?.autofocus_running"
+                    class="simple-af-graph overflow-hidden"
+                  >
+                    <AfShowGraph />
+                  </div>
                   <template v-if="store.focuserInfo.Connected">
                     <button
                       v-if="!store.focuserAfInfo?.autofocus_running"
@@ -687,6 +694,7 @@ import {
   toastBackendError,
 } from '@/utils/backendErrors';
 import { localDecimal } from '@/utils/localeNumber';
+import AfShowGraph from '@/components/focuser/AfShowGraph.vue';
 
 const { seqT } = usePlanTerms();
 const { t } = useI18n();
@@ -1367,3 +1375,10 @@ onMounted(() => {
 
 onUnmounted(() => sequenceV2Store.stopPolling());
 </script>
+
+<style scoped>
+/* The same compact height as in NINA's autofocus dialog */
+.simple-af-graph :deep(.h-72) {
+  height: 12rem !important;
+}
+</style>

@@ -90,34 +90,43 @@ import MeridianFlipDialog from '@/components/dialogs/MeridianFlipDialog.vue';
 import MeridianFlipSignalRDialog from '@/components/dialogs/MeridianFlipSignalRDialog.vue';
 import DefaultDialog from '@/components/dialogs/DefaultDialog.vue';
 import { MinusIcon, Square2StackIcon } from '@heroicons/vue/24/outline';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 
 const dialogStore = useDialogStore();
 const store = apiStore();
 
+const AUTOFOCUS_DIALOG_TYPES = [
+  'NINA.Joko.Plugins.HocusFocus.AutoFocus.HocusFocusVM',
+  'NINA.WPF.Base.ViewModel.AutoFocus.AutoFocusVM',
+];
+
+const { active: simpleModeActive } = useSimpleMode();
+
+// Which of NINA's open windows the app mirrors. Docked tool windows and notifications are not
+// dialogs. In the simple mode NINA's autofocus window stays hidden: the start page and the
+// cockpit show the curve themselves, and closing this window stops the autofocus - a beginner
+// tapping X over the cockpit cancelled the plan's refocus.
+function isMirroredDialog(dialog) {
+  return (
+    !dialog.ContentType?.includes('AvalonDock') &&
+    !dialog.ContentType?.includes('FloatingWindowContentHost') &&
+    dialog.WindowType !== 'NINA.Core.Utility.Notification.NotificationHostWindow' &&
+    !(simpleModeActive.value && AUTOFOCUS_DIALOG_TYPES.includes(dialog.ContentType))
+  );
+}
+
 const showDialog = computed(() => {
   if (!dialogStore.dialogs || dialogStore.dialogs.length === 0) return false;
-
-  // Zeige Dialog nur, wenn es keinen AvalonDock floating window gibt
-  return dialogStore.dialogs.some((dialog) => {
-    return (
-      !dialog.ContentType?.includes('AvalonDock') &&
-      !dialog.ContentType?.includes('FloatingWindowContentHost') &&
-      dialog.WindowType !== 'NINA.Core.Utility.Notification.NotificationHostWindow'
-    );
-  });
+  return dialogStore.dialogs.some(isMirroredDialog);
 });
 
 const currentDialog = computed(() => {
   if (!dialogStore.dialogs || dialogStore.dialogs.length === 0) return null;
 
-  // Zeige den letzten Dialog aus dem Array (neuester), außer AvalonDock floating windows
+  // The newest mirrored window
   for (let i = dialogStore.dialogs.length - 1; i >= 0; i--) {
     const dialog = dialogStore.dialogs[i];
-    if (
-      !dialog.ContentType?.includes('AvalonDock') &&
-      !dialog.ContentType?.includes('FloatingWindowContentHost') &&
-      dialog.WindowType !== 'NINA.Core.Utility.Notification.NotificationHostWindow'
-    ) {
+    if (isMirroredDialog(dialog)) {
       return dialog;
     }
   }
@@ -156,10 +165,7 @@ const isSignalRRotatorDialog = computed(() => {
 
 // AutoFocus Dialog Detection
 const isAutoFocusDialog = computed(() => {
-  return (
-    currentDialog.value?.ContentType === 'NINA.Joko.Plugins.HocusFocus.AutoFocus.HocusFocusVM' ||
-    currentDialog.value?.ContentType === 'NINA.WPF.Base.ViewModel.AutoFocus.AutoFocusVM'
-  );
+  return AUTOFOCUS_DIALOG_TYPES.includes(currentDialog.value?.ContentType);
 });
 
 // Meridian Flip Dialog Detection

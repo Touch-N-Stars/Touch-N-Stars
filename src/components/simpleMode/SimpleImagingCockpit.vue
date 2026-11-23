@@ -100,6 +100,11 @@
       </button>
     </div>
 
+    <!-- The autofocus curve while it runs: NINA's own window is hidden in the simple mode -->
+    <div v-if="activity === 'autofocus'" class="cockpit-af-graph overflow-hidden">
+      <AfShowGraph />
+    </div>
+
     <p v-if="detailsOpen" class="text-xs text-content-faint">
       {{ $t('components.simpleMode.cockpit.statusBarHint') }}
     </p>
@@ -159,6 +164,7 @@ import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import Spinner from '@/components/helpers/Spinner.vue';
 import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
+import AfShowGraph from '@/components/focuser/AfShowGraph.vue';
 import { fmt, useImagingQuality } from '@/composables/useImagingQuality';
 import { dsoContainerName } from '@/utils/sequenceTargets';
 import { addGuidingTime, imagingVerdict, nightKey, runningPlanPosition } from '@/utils/simpleMode';
@@ -366,3 +372,10 @@ const verdict = computed(() =>
   })
 );
 </script>
+
+<style scoped>
+/* The same compact height as in NINA's autofocus dialog */
+.cockpit-af-graph :deep(.h-72) {
+  height: 12rem !important;
+}
+</style>
