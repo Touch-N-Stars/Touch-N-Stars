@@ -101,11 +101,7 @@
     "currentMountCoords": "Locatie montering",
     "currentNinaCoords": "Profiel Locatie",
     "loadingCoords": "Laden…",
-    "mountNotConnected": "Mount niet aangesloten",
-    "syncDirection": "Locatiesynchronisatierichting",
-    "syncDirectionNosync": "Geen synchronisatie",
-    "syncDirectionToApplication": "Synchroniseer van montering naar profiel",
-    "syncDirectionToTelescope": "Synchroniseer van profiel naar montering"
+    "mountNotConnected": "Mount niet aangesloten"
   },
   "components": {
     "instanceDetection": {
@@ -329,7 +325,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Huidige locatie gebruiken",
-        "syncDirection": "Synchronisatierichting van de locatie",
         "save": "Locatie opslaan",
         "saving": "Saving…",
         "saveFailed": "De locatie kon niet worden opgeslagen: {message}"
@@ -417,8 +412,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Opslaan mislukt: {message}",
-        "nativeCamera": "Guide-camera (PINS Native Guider)",
-        "nativeCameraHint": "De native guider stuurt de guide-camera rechtstreeks aan. Kies het INDI-stuurprogramma en apparaat en voer de brandpuntsafstand van de guide-scoop in."
+        "nativeCamera": "Guide-camera (PINS Native Guider)"
       },
       "done": {
         "title": "Je apparatuur is klaar",
@@ -1439,19 +1433,6 @@
         "title": "Huidige positie van de montering",
         "parked": "De montering is geparkeerd, dus er is geen positie om weer te geven."
       },
-      "location_sync": {
-        "title": "Locatie sync instellingen",
-        "confirmationMessage": "Als 'Locatie Sync' in @:{'general.backendName'} is ingesteld op 'Prompt', dan kan een bevestigingsscherm worden getoond voordat de coordinaten naar de telescoop worden gestuurd. Om dit te voorkomen moet u TNS toestaan om automatisch de coordinaten in te stellen, we adviseren om de instellingen te wijzigen naar 'Sync naar Telescoop'",
-        "toTelescope": {
-          "label": "Sync naar Telescoop"
-        },
-        "toApplication": {
-          "label": "Sync to applicatie"
-        },
-        "noSync": {
-          "label": "Geen sync"
-        }
-      },
       "control": {
         "park": "Park",
         "unpark": "Uitparkeren",
@@ -1466,7 +1447,6 @@
           "unpark": "Fout unpark montering",
           "tracking": "Fout bij instellen tracking mode"
         },
-        "setLocationSyncToMount": "Stel in \"Sync naar Telescoop\"",
         "slewRateINDI": "Bewegingssnelheid",
         "reverse_axis": "Asrichting",
         "slewRateDriverControlled": "De slew-snelheid wordt geregeld door het stuurprogramma",
@@ -4553,24 +4533,20 @@
         "stepCounter": "Stap {current} van {total}",
         "steps": {
           "check": {
-            "title": "Vereisten",
-            "description": "Hocus Focus heeft een verbonden camera en focuser nodig."
+            "title": "Vereisten"
           },
           "optics": {
             "title": "Optiek",
             "description": "Brandpuntsafstand en pixelgrootte bepalen hoe groot sterren verschijnen. Controleer beide aan de hand van je telescoop en camera."
           },
           "rig": {
-            "title": "Jouw opstelling",
-            "description": "Een paar vragen over je apparatuur. Je antwoorden zetten de voorinstellingen van Hocus Focus."
+            "title": "Jouw opstelling"
           },
           "rough": {
-            "title": "Grof scherpstellen",
-            "description": "Maak opnames en beweeg de focuser tot de sterren klein en rond zijn en de HFR zo laag mogelijk is."
+            "title": "Grof scherpstellen"
           },
           "measure": {
-            "title": "Stapgrootte en backlash",
-            "description": "Meet hoe snel de sterren groeien wanneer de focuser beweegt en hoeveel stappen hij verliest bij een richtingswissel, en stelt een stapgrootte voor de autofocus en de backlash-compensatie van NINA voor. De focuser gaat eerst een flink stuk terug, zodat elke positie van dezelfde kant wordt benaderd, dan vooruit door de focus en keert aan het eind terug naar de startpositie."
+            "title": "Stapgrootte en backlash"
           },
           "run": {
             "title": "Testrun",
@@ -4587,9 +4563,7 @@
         },
         "checks": {
           "camera": "Camera verbonden",
-          "focuser": "Focuser verbonden",
-          "hocusFocus": "Hocus Focus beschikbaar",
-          "engineHint": "In @:{'general.backendName'} moeten 'Auto Focus' en 'Star Detector' allebei op Hocus Focus staan. De resultaatstap meldt het als dat niet zo is."
+          "focuser": "Focuser verbonden"
         },
         "focalLength": "Brandpuntsafstand (mm)",
         "pixelSize": "Pixelgrootte (µm)",
@@ -4605,7 +4579,6 @@
         "startRun": "Autofocus starten",
         "stopRun": "Autofocus stoppen",
         "runFailed": "De autofocus kon niet worden gestart.",
-        "noResult": "Er is nog geen voltooide Hocus Focus-autofocus om te beoordelen.",
         "runAgain": "Opnieuw",
         "openOptimizer": "Optimalisator openen",
         "useOptimized": "Geoptimaliseerde instellingen gebruiken",

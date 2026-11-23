@@ -32,9 +32,7 @@
           clip-rule="evenodd"
         />
       </svg>
-      <span class="text-[9px] leading-none font-medium">{{
-        $t('components.sequence.startSequence')
-      }}</span>
+      <span class="text-[9px] leading-none font-medium">{{ seqT('startSequence') }}</span>
     </button>
 
     <button
@@ -108,9 +106,7 @@
           clip-rule="evenodd"
         />
       </svg>
-      <span class="text-[9px] leading-none font-medium">{{
-        $t('components.sequence.resetSequence')
-      }}</span>
+      <span class="text-[9px] leading-none font-medium">{{ seqT('resetSequence') }}</span>
     </button>
 
     <button
@@ -146,23 +142,21 @@
       @click="openFileManager"
     >
       <FolderOpenIcon class="h-6 w-6" />
-      <span class="text-[9px] leading-none font-medium">{{
-        $t('components.sequence.manageSequences')
-      }}</span>
+      <span class="text-[9px] leading-none font-medium">{{ seqT('manageSequences') }}</span>
     </button>
 
     <!-- File Manager Modal -->
     <Modal :show="showFileManager" max-width="max-w-lg" @close="showFileManager = false">
       <template #header>
         <h2 class="text-xl font-bold text-accent">
-          {{ $t('components.sequence.manageSequences') }}
+          {{ seqT('manageSequences') }}
         </h2>
       </template>
       <template #body>
         <div class="w-full flex flex-col gap-4">
           <!-- Sequence folder -->
           <div class="flex flex-col gap-2">
-            <label class="tns-label">{{ $t('components.sequence.sequenceFolder') }}</label>
+            <label class="tns-label">{{ seqT('sequenceFolder') }}</label>
             <div class="flex items-center gap-2 min-w-0">
               <div
                 class="flex-1 flex items-center min-h-touch overflow-x-auto scrollbar-thin px-3 py-2 rounded-lg border border-line bg-surface-2 min-w-0"
@@ -238,7 +232,7 @@
 
           <!-- Save section -->
           <div class="border-t border-line pt-3 flex flex-col gap-2">
-            <label class="tns-label">{{ $t('components.sequence.saveSequenceAs') }}</label>
+            <label class="tns-label">{{ seqT('saveSequenceAs') }}</label>
             <div class="flex gap-2">
               <input
                 v-model="saveFileName"
@@ -264,7 +258,7 @@
       v-model="showFolderBrowser"
       mode="directory"
       :initial-path="sequenceFolder"
-      :title="$t('components.sequence.sequenceFolder')"
+      :title="seqT('sequenceFolder')"
       @select="onFolderSelected"
     />
 
@@ -371,7 +365,7 @@
       </template>
       <template #body>
         <div class="w-full flex flex-col gap-6">
-          <p>{{ $t('components.sequence.resetConfirmationMessage') }}</p>
+          <p>{{ seqT('resetConfirmationMessage') }}</p>
           <div class="flex justify-end space-x-4">
             <button class="tns-btn-secondary" @click="showResetConfirmation = false">
               {{ $t('general.cancel') }}
@@ -387,6 +381,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { ref, computed } from 'vue';
 import apiService from '@/services/apiService';
 import { useSequenceStore } from '@/store/sequenceStore';
@@ -412,6 +407,7 @@ import {
 import Modal from '@/components/helpers/Modal.vue';
 import FileBrowser from '@/components/helpers/fileBrowser.vue';
 
+const { seqT } = usePlanTerms();
 const sequenceStore = useSequenceStore();
 const sequenceV2Store = useSequenceV2Store();
 const store = apiStore();
@@ -453,8 +449,8 @@ async function onFolderSelected(path) {
   if (!ok) {
     toastStore.showToast({
       type: 'error',
-      title: t('components.sequence.sequenceFolder'),
-      message: t('components.sequence.sequenceFolderSaveError'),
+      title: seqT('sequenceFolder'),
+      message: seqT('sequenceFolderSaveError'),
     });
     return;
   }
@@ -724,7 +720,7 @@ async function clearSequence() {
   // Clearing removes every item from the sequence and cannot be undone.
   const confirmed = await toastStore.showConfirmation(
     t('components.sequence.clearConfirmationTitle'),
-    t('components.sequence.clearConfirmationMessage'),
+    seqT('clearConfirmationMessage'),
     t('components.sequence.clearSequence'),
     t('general.cancel')
   );

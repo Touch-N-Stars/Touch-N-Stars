@@ -22,7 +22,8 @@
             ></span>
             <span>{{ L(`checks.${c.key}`) }}</span>
           </p>
-          <p class="text-sm text-content-muted">{{ L('checks.engineHint') }}</p>
+          <!-- Whether Auto Focus and Star Detector are set to the plugin shows only after a
+               run, so the result step reports it (notActive) instead of a hint up front. -->
         </div>
 
         <!-- 2. Optics -->

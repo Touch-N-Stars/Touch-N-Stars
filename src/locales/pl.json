@@ -101,11 +101,7 @@
     "currentMountCoords": "Lokalizacja montażu",
     "currentNinaCoords": "Lokalizacja profilu",
     "loadingCoords": "Ładowanie współrzędnych…",
-    "mountNotConnected": "Montaż nie jest podłączony",
-    "syncDirection": "Kierunek synchronizacji lokalizacji",
-    "syncDirectionNosync": "Brak synchronizacji",
-    "syncDirectionToApplication": "Synchronizuj z Montażu do Profilu",
-    "syncDirectionToTelescope": "Synchronizuj z profilu do montażu"
+    "mountNotConnected": "Montaż nie jest podłączony"
   },
   "components": {
     "instanceDetection": {
@@ -329,7 +325,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Użyj bieżącej lokalizacji",
-        "syncDirection": "Kierunek synchronizacji lokalizacji",
         "save": "Zapisz lokalizację",
         "saving": "Saving…",
         "saveFailed": "Nie udało się zapisać lokalizacji: {message}"
@@ -417,8 +412,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Nie udało się zapisać: {message}",
-        "nativeCamera": "Kamera prowadząca (PINS Native Guider)",
-        "nativeCameraHint": "Natywny guider steruje bezpośrednio kamerą prowadzącą. Wybierz jej sterownik i urządzenie INDI oraz podaj ogniskową tubusu prowadzącego."
+        "nativeCamera": "Kamera prowadząca (PINS Native Guider)"
       },
       "done": {
         "title": "Twój sprzęt jest gotowy",
@@ -1439,19 +1433,6 @@
         "title": "Aktualna pozycja montażu",
         "parked": "Montaż jest zaparkowany, więc nie ma pozycji do wyświetlenia."
       },
-      "location_sync": {
-        "title": "Ustawienia synchronizacji lokalizacji",
-        "confirmationMessage": "Jeśli 'Location Sync' w @:{'general.backendName'} jest ustawione na 'Prompt', przed wysłaniem współrzędnych do teleskopu może pojawić się okno potwierdzenia. Aby tego uniknąć i umożliwić TNS automatyczne ustawianie współrzędnych, zalecamy zmianę ustawienia na 'Sync to Telescope'",
-        "toTelescope": {
-          "label": "Synchronizuj z teleskopem"
-        },
-        "toApplication": {
-          "label": "Synchronizuj z aplikacją"
-        },
-        "noSync": {
-          "label": "Brak synchronizacji"
-        }
-      },
       "control": {
         "park": "Parkuj",
         "unpark": "Odparkuj",
@@ -1466,7 +1447,6 @@
           "unpark": "Błąd podczas odparkowania montażu",
           "tracking": "Błąd ustawiania trybu śledzenia"
         },
-        "setLocationSyncToMount": "Ustaw \"Synchronizuj z teleskopem\"",
         "slewRateINDI": "Prędkość ruchu",
         "reverse_axis": "Kierunek osi",
         "slewRateDriverControlled": "Prędkość obrotu jest kontrolowana przez sterownik",
@@ -4553,24 +4533,20 @@
         "stepCounter": "Krok {current} z {total}",
         "steps": {
           "check": {
-            "title": "Wymagania",
-            "description": "Hocus Focus potrzebuje podłączonej kamery i fokusera."
+            "title": "Wymagania"
           },
           "optics": {
             "title": "Optyka",
             "description": "Ogniskowa i rozmiar piksela decydują o tym, jak duże są gwiazdy. Sprawdź oba z danymi teleskopu i kamery."
           },
           "rig": {
-            "title": "Twój zestaw",
-            "description": "Kilka pytań o twój sprzęt. Odpowiedzi ustawiają wstępne ustawienia Hocus Focus."
+            "title": "Twój zestaw"
           },
           "rough": {
-            "title": "Zgrubne ostrzenie",
-            "description": "Rób zdjęcia i przesuwaj fokuser, aż gwiazdy będą małe i okrągłe, a HFR jak najniższy."
+            "title": "Zgrubne ostrzenie"
           },
           "measure": {
-            "title": "Rozmiar kroku i luz",
-            "description": "Mierzy, jak szybko rosną gwiazdy, gdy fokuser się porusza, i ile kroków traci przy zmianie kierunku, a potem proponuje rozmiar kroku dla autofokusa i kompensację luzu w NINA. Fokuser najpierw cofa się o spory kawałek, aby każdą pozycję osiągać z tej samej strony, potem jedzie do przodu przez ostrość i na koniec wraca do pozycji startowej."
+            "title": "Rozmiar kroku i luz"
           },
           "run": {
             "title": "Próba",
@@ -4587,9 +4563,7 @@
         },
         "checks": {
           "camera": "Kamera podłączona",
-          "focuser": "Fokuser podłączony",
-          "hocusFocus": "Hocus Focus dostępny",
-          "engineHint": "W @:{'general.backendName'} 'Auto Focus' i 'Star Detector' muszą być oba ustawione na Hocus Focus. Krok wyniku poinformuje cię, jeśli tak nie jest."
+          "focuser": "Fokuser podłączony"
         },
         "focalLength": "Ogniskowa (mm)",
         "pixelSize": "Rozmiar piksela (µm)",
@@ -4605,7 +4579,6 @@
         "startRun": "Rozpocznij autofokus",
         "stopRun": "Zatrzymaj autofokus",
         "runFailed": "Nie udało się uruchomić autofokusu.",
-        "noResult": "Nie ma jeszcze zakończonego autofokusu Hocus Focus do oceny.",
         "runAgain": "Powtórz",
         "openOptimizer": "Otwórz optymalizator",
         "useOptimized": "Użyj zoptymalizowanych ustawień",

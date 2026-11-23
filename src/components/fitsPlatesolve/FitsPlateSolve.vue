@@ -419,6 +419,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { ref, computed } from 'vue';
 
 // Multiple root nodes (button + FileBrowser + Teleport) = fragment → Vue won't auto-inherit attrs.
@@ -438,6 +439,7 @@ import apiService from '@/services/apiService';
 import { positionAngleFromFitsAnalysis } from '@/integrations/celestiaAtlas/positionAngle';
 
 const { t } = useI18n();
+const { seqT } = usePlanTerms();
 const framingStore = useFramingStore();
 const sequenceStore = useSequenceStore();
 const toastStore = useToastStore();
@@ -666,7 +668,7 @@ async function useAsTarget() {
     if (!hasSequenceLoaded.value) {
       toastStore.showToast({
         type: 'error',
-        title: t('components.fav_target.modal_sequence.titel'),
+        title: seqT('title'),
         message: t('components.fav_target.modal_sequence_error.message'),
       });
       return;
@@ -681,13 +683,13 @@ async function useAsTarget() {
       );
       toastStore.showToast({
         type: 'success',
-        title: t('components.fav_target.modal_sequence.titel'),
+        title: seqT('title'),
         message: t('components.fav_target.modal_sequence_ok.message'),
       });
     } catch (error) {
       toastStore.showToast({
         type: 'error',
-        title: t('components.fav_target.modal_sequence.titel'),
+        title: seqT('title'),
         message:
           error?.response?.data?.Message || t('components.fav_target.modal_sequence_error.message'),
       });

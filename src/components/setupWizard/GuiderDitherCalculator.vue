@@ -4,7 +4,7 @@
          with a result: without one there is no "apply" button to point at. -->
     <p v-if="ditherGuidePixels" class="rounded-control bg-surface-2 p-3 text-sm text-content">
       {{
-        t('components.setupWizard.guider.ditherPlainHint', {
+        t('components.setupWizard.guider.ditherReadyHint', {
           button: t('components.setupWizard.guider.ditherApply'),
         })
       }}

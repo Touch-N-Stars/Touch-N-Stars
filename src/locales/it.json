@@ -101,11 +101,7 @@
     "currentMountCoords": "Posizione della montatura",
     "currentNinaCoords": "Posizione del profilo",
     "loadingCoords": "Caricamento…",
-    "mountNotConnected": "Montatura non connessa",
-    "syncDirection": "Direzione della sincronizzazione della posizione",
-    "syncDirectionNosync": "Nessuna sincronizzazione",
-    "syncDirectionToApplication": "Sincronizza dalla montatura al profilo",
-    "syncDirectionToTelescope": "Sincronizza dal profilo alla montatura"
+    "mountNotConnected": "Montatura non connessa"
   },
   "components": {
     "instanceDetection": {
@@ -329,7 +325,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Usa la posizione attuale",
-        "syncDirection": "Direzione di sincronizzazione della posizione",
         "save": "Salva posizione",
         "saving": "Saving…",
         "saveFailed": "Impossibile salvare la posizione: {message}"
@@ -417,8 +412,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Impossibile salvare: {message}",
-        "nativeCamera": "Camera guida (PINS Native Guider)",
-        "nativeCameraHint": "Il native guider controlla direttamente la camera guida. Scegli il suo driver INDI e il dispositivo e inserisci la lunghezza focale del telescopio guida."
+        "nativeCamera": "Camera guida (PINS Native Guider)"
       },
       "done": {
         "title": "La tua attrezzatura è pronta",
@@ -1439,19 +1433,6 @@
         "title": "Posizione attuale della montatura",
         "parked": "La montatura è parcheggiata, quindi non c'è alcuna posizione da mostrare."
       },
-      "location_sync": {
-        "title": "Impostazioni di sincronizzazione della posizione",
-        "confirmationMessage": "Se la \"sincronizzazione della posizione\" in @:{'general.backendName'} è impostata su \"prompt\", può apparire una finestra di conferma prima che le coordinate vengano inviate al telescopio. Per evitare questo e consentire a TNS di impostare automaticamente le coordinate, ti consigliamo di modificare l'impostazione in \"Sincronizzazione in Telescope\"",
-        "toTelescope": {
-          "label": "Sincronizzazione al telescopio"
-        },
-        "toApplication": {
-          "label": "Sincronizzazione all'applicazione"
-        },
-        "noSync": {
-          "label": "Nessuna sincronizzazione"
-        }
-      },
       "control": {
         "park": "Parcheggia",
         "unpark": "Rimuovi parcheggio",
@@ -1466,7 +1447,6 @@
           "unpark": "Errore rimozione parcheggio montatura",
           "tracking": "Errore impostazione modalità inseguimento"
         },
-        "setLocationSyncToMount": "Imposta \"Sincronizza con telescopio\"",
         "slewRateINDI": "Velocità di movimento",
         "reverse_axis": "Direzione assi",
         "slewRateDriverControlled": "La velocità di slew è controllata dal driver",
@@ -4553,24 +4533,20 @@
         "stepCounter": "Passaggio {current} di {total}",
         "steps": {
           "check": {
-            "title": "Requisiti",
-            "description": "Hocus Focus ha bisogno di una camera e di un focheggiatore collegati."
+            "title": "Requisiti"
           },
           "optics": {
             "title": "Ottica",
             "description": "Lunghezza focale e dimensione dei pixel determinano quanto appaiono grandi le stelle. Controllale rispetto al tuo telescopio e alla tua camera."
           },
           "rig": {
-            "title": "La tua attrezzatura",
-            "description": "Alcune domande sulla tua attrezzatura. Le risposte impostano i preset di Hocus Focus."
+            "title": "La tua attrezzatura"
           },
           "rough": {
-            "title": "Messa a fuoco approssimativa",
-            "description": "Scatta immagini e muovi il focheggiatore finché le stelle sono piccole e rotonde e l’HFR è il più basso possibile."
+            "title": "Messa a fuoco approssimativa"
           },
           "measure": {
-            "title": "Dimensione del passo e gioco",
-            "description": "Misura quanto velocemente crescono le stelle quando il focheggiatore si muove e quanti passi perde quando cambia direzione, e suggerisce una dimensione del passo per l'autofocus e la compensazione del gioco di NINA. Il focheggiatore prima arretra di un buon tratto, così ogni posizione viene raggiunta dallo stesso lato, poi avanza attraverso il fuoco e alla fine torna alla posizione iniziale."
+            "title": "Dimensione del passo e gioco"
           },
           "run": {
             "title": "Prova",
@@ -4587,9 +4563,7 @@
         },
         "checks": {
           "camera": "Camera collegata",
-          "focuser": "Focheggiatore collegato",
-          "hocusFocus": "Hocus Focus disponibile",
-          "engineHint": "In @:{'general.backendName'} 'Auto Focus' e 'Star Detector' devono essere entrambi impostati su Hocus Focus. Il passaggio Risultato ti avvisa se non è così."
+          "focuser": "Focheggiatore collegato"
         },
         "focalLength": "Lunghezza focale (mm)",
         "pixelSize": "Dimensione pixel (µm)",
@@ -4605,7 +4579,6 @@
         "startRun": "Avvia autofocus",
         "stopRun": "Ferma autofocus",
         "runFailed": "Impossibile avviare l'autofocus.",
-        "noResult": "Non c’è ancora un autofocus Hocus Focus completato da valutare.",
         "runAgain": "Ripeti",
         "openOptimizer": "Apri ottimizzatore",
         "useOptimized": "Usa impostazioni ottimizzate",

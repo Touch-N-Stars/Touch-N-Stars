@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import apiService from '@/services/apiService';
@@ -45,6 +46,7 @@ import {
 import { degreesToHMS, degreesToDMS } from '@/utils/utils';
 import { useI18n } from 'vue-i18n';
 
+const { seqT } = usePlanTerms();
 const props = defineProps({
   raAngle: Number,
   decAngle: Number,
@@ -81,7 +83,7 @@ function buildCoordinateName(ra, dec) {
 function showError(message) {
   toastStore.showToast({
     type: 'error',
-    title: t('components.fav_target.modal_sequence.titel'),
+    title: seqT('title'),
     message,
   });
 }
@@ -89,7 +91,7 @@ function showError(message) {
 function showSuccess() {
   toastStore.showToast({
     type: 'success',
-    title: t('components.fav_target.modal_sequence.titel'),
+    title: seqT('title'),
     message: t('components.fav_target.modal_sequence_ok.message'),
   });
 }
@@ -107,7 +109,7 @@ function reportResult(result, fallbackMessage) {
     return;
   }
   if (result?.locked) {
-    showError(t('components.sequence.controlsLockedMessage'));
+    showError(seqT('controlsLockedMessage'));
     return;
   }
   showError(result?.error || fallbackMessage);

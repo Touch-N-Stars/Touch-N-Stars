@@ -93,10 +93,10 @@
     "gpsConfiguration": "GPS Configuration",
     "currentNinaCoords": "Profile Location",
     "currentMountCoords": "Mount Location",
-    "syncDirection": "Location Sync Direction",
-    "syncDirectionNosync": "No Sync",
-    "syncDirectionToApplication": "Sync from Mount to Profile",
-    "syncDirectionToTelescope": "Sync from Profile to Mount",
+    "syncDirection": "When the mount connects",
+    "syncDirectionNosync": "Don’t sync the location",
+    "syncDirectionToApplication": "Take the location from the mount",
+    "syncDirectionToTelescope": "Send my location to the mount",
     "mountNotConnected": "Mount not connected",
     "coordsNotSupported": "Not supported by driver",
     "loadingCoords": "Loading…",
@@ -451,7 +451,7 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Use current location",
-        "syncDirection": "Location sync direction",
+        "syncDirection": "When the mount connects",
         "save": "Save location",
         "saving": "Saving…",
         "saveFailed": "Could not save the location: {message}",
@@ -550,12 +550,15 @@
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length in the guiding step.",
         "applyFailed": "Could not save: {message}",
         "nativeCamera": "PINS Native Guider",
-        "nativeCameraHint": "The native guider guides with the guide camera above, or with its built-in simulator for testing. Enter the focal length of the guide scope.",
+        "nativeCameraHint": "Enter the focal length of the guide scope. The guider needs it to judge how far the stars move.",
         "descriptionNative": "The guider built into the rig keeps the stars in place while pictures are taken. Pick the guide camera and enter the focal length of the guide scope.",
         "nativeFocalLengthMissing": "The guide scope focal length is still 0. Guiding works without it, but dithering and the guiding error in arc-seconds need it.",
         "guidePixelSizeHintNative": "Used for this calculation only. The guider reads the pixel size from the guide camera once it is connected; until then, take it from the camera manual.",
         "ditherMissingDataNative": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and the guide scope focal length in the guiding step.",
-        "ditherPlainHint": "Dithering shifts the picture a little between exposures, which removes noise patterns from the stacked result. The usual value is already filled in: tap \"{button}\" and you are done. Without guiding you can skip this step."
+        "guideCameraNotFound": "Guide camera not listed?",
+        "guideCameraNotFoundHint": "If your guide camera is not natively supported, select an INDI driver for it here. Afterwards it appears in the device list above.",
+        "ditherIntro": "Dithering shifts the picture a little between exposures, which removes noise patterns from the stacked result. Without guiding you can skip this step.",
+        "ditherReadyHint": "The usual value is already filled in: tap “{button}” and you are done."
       },
       "done": {
         "title": "Your equipment is ready",
@@ -595,7 +598,8 @@
         "description": "Set these values before Wi-Fi so hotspot location, time and remote keyboard input match where the rig is used.",
         "localeHint": "Language and number format of the rig itself, e.g. en_US.UTF-8 or de_DE.UTF-8. C.UTF-8 is a neutral default and works too.",
         "unappliedHint": "Not applied yet: tap \"{button}\" before Next, otherwise the changes are lost.",
-        "nothingToDoHint": "Nothing to change? Just tap Next."
+        "nothingToDoHint": "Nothing to change? Just tap Next.",
+        "rigLanguage": "Language and keyboard of the rig"
       },
       "starDatabase": {
         "title": "Star map for plate solving",
@@ -1614,7 +1618,19 @@
       "disable": "Disable",
       "resetStatus": "Reset status",
       "delete": "Delete",
-      "runningLocked": "This item is running and cannot be changed"
+      "runningLocked": "This item is running and cannot be changed",
+      "plan": {
+        "title": "Plan",
+        "startSequence": "Start plan",
+        "resetSequence": "Reset plan",
+        "resetConfirmationMessage": "Reset the plan so it starts from the beginning again? This cannot be undone.",
+        "clearConfirmationMessage": "Remove everything from the plan? This cannot be undone.",
+        "manageSequences": "Load / save plans",
+        "saveSequenceAs": "Save current plan as",
+        "sequenceFolder": "Plan folder",
+        "sequenceFolderSaveError": "Could not change the plan folder.",
+        "controlsLockedMessage": "The plan controls are locked while the plan is running."
+      }
     },
     "mount": {
       "title": "Mount",
@@ -1624,19 +1640,19 @@
         "parked": "The mount is parked, so there is no position to chart."
       },
       "location_sync": {
-        "title": "Location sync settings",
-        "confirmationMessage": "If 'Location Sync' in @:{'general.backendName'} is set to 'Prompt', a confirmation window may appear before coordinates are sent to the telescope. To avoid this and allow TNS to automatically set the coordinates, we recommend changing the setting to 'Sync to Telescope'",
+        "title": "Location of the mount",
+        "confirmationMessage": "When the mount connects, the app can send your location to it, so it points to the right spot in the sky. Choose what should happen; you can change it later in the location settings.",
         "toTelescope": {
-          "label": "Sync to telescope"
+          "label": "Send my location to the mount"
         },
         "toApplication": {
-          "label": "Sync to application"
+          "label": "Take the location from the mount"
         },
         "noSync": {
-          "label": "No sync"
+          "label": "Don’t sync the location"
         },
         "recommended": "Recommended",
-        "noLocationHint": "Your location is not set yet. “Sync to telescope” would send 0° / 0° to the mount and overwrite the location it knows. Choose “No sync” for now: once you set your location, the app sends it to the mount."
+        "noLocationHint": "Your location is not set yet. “Send my location to the mount” would send 0° / 0° and overwrite the location the mount knows. Choose “Don’t sync the location” for now: once you set your location, the app sends it to the mount."
       },
       "control": {
         "park": "Park",
@@ -1657,7 +1673,7 @@
           "unpark": "Error unparking mount",
           "tracking": "Error setting tracking mode"
         },
-        "setLocationSyncToMount": "Set \"Sync to telescope\"",
+        "setLocationSyncToMount": "Always send my location to the mount",
         "slewRateINDI": "Slewspeed",
         "reverse_axis": "Axis direction",
         "confirmParkTitle": "Park mount",
@@ -4740,7 +4756,7 @@
         "steps": {
           "check": {
             "title": "Requirements",
-            "description": "Hocus Focus needs a connected camera and focuser."
+            "description": "The autofocus needs a connected camera and focuser."
           },
           "optics": {
             "title": "Optics",
@@ -4748,15 +4764,15 @@
           },
           "rig": {
             "title": "Your setup",
-            "description": "A few questions about your equipment. Your answers set the Hocus Focus presets."
+            "description": "A few questions about your equipment. Your answers set suitable autofocus presets."
           },
           "rough": {
             "title": "Rough focus",
-            "description": "Take images and move the focuser until the stars are small and round and the HFR is as low as possible."
+            "description": "Take images and move the focuser until the stars are small and round. The HFR is the star size: the smaller, the sharper."
           },
           "measure": {
             "title": "Step size and backlash",
-            "description": "Measures how quickly the stars grow when the focuser moves and how many steps it loses when it changes direction, and suggests a step size for the autofocus and NINA's backlash compensation. The focuser first moves back a long way so that every position is reached from the same side, then forward through focus, and returns to its start position at the end."
+            "description": "Measures how quickly the stars grow when the focuser moves and how many steps it loses when it changes direction, and suggests a step size for the autofocus and the backlash compensation. The focuser first moves back a long way so that every position is reached from the same side, then forward through focus, and returns to its start position at the end."
           },
           "run": {
             "title": "Test run",
@@ -4774,8 +4790,7 @@
         "checks": {
           "camera": "Camera connected",
           "focuser": "Focuser connected",
-          "hocusFocus": "Hocus Focus available",
-          "engineHint": "In @:{'general.backendName'}, 'Auto Focus' and 'Star Detector' must both be set to Hocus Focus. The result step tells you if that is not the case."
+          "hocusFocus": "Autofocus plugin installed"
         },
         "focalLength": "Focal length (mm)",
         "pixelSize": "Pixel size (µm)",
@@ -4791,7 +4806,7 @@
         "startRun": "Start autofocus",
         "stopRun": "Stop autofocus",
         "runFailed": "The autofocus could not be started.",
-        "noResult": "There is no finished Hocus Focus run to judge yet.",
+        "noResult": "There is no finished autofocus run to judge yet.",
         "runAgain": "Run again",
         "openOptimizer": "Open optimizer",
         "useOptimized": "Use optimized settings",

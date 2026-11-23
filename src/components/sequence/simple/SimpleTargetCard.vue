@@ -179,6 +179,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
@@ -212,6 +213,7 @@ import {
   TARGET_ORDER,
 } from '@/utils/sequenceSimple';
 
+const { seqT } = usePlanTerms();
 // target: an entry from summarizeTargets() in src/utils/sequenceSimple.js
 const props = defineProps({
   target: { type: Object, required: true },
@@ -306,7 +308,7 @@ async function copyTarget() {
     type: 'error',
     title: t('components.sequence.editFailed'),
     message: result.locked
-      ? t('components.sequence.controlsLockedMessage')
+      ? seqT('controlsLockedMessage')
       : result.error || t('components.sequence.simple.copyFailed'),
     autoClose: true,
   });

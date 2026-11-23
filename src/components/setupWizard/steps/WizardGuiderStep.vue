@@ -30,14 +30,28 @@
           @open-config="openGuideCameraSettings"
         />
       </div>
-      <IndiDriverSelect
-        deviceType="camera"
-        :settingPath="`${GUIDE_CAMERA.section}-IndiDriver`"
-        listAction="guideCameraAction"
-        :rescanKey="GUIDE_CAMERA.rescanKey"
-        :profileSection="GUIDE_CAMERA.section"
-        :label="t('components.setupWizard.camera.selectDriver')"
-      />
+      <!-- The INDI driver list is long and technical: behind "not listed?", as in the
+           camera step. Open from the start when the profile already uses a driver. -->
+      <button class="tns-btn-secondary" @click="showGuideCameraDriver = !showGuideCameraDriver">
+        <ChevronDownIcon
+          class="w-5 h-5 transition-transform"
+          :class="{ 'rotate-180': showGuideCameraDriver }"
+        />
+        {{ t('components.setupWizard.guider.guideCameraNotFound') }}
+      </button>
+      <div v-if="showGuideCameraDriver" class="flex flex-col gap-3">
+        <p class="text-sm text-content-muted">
+          {{ t('components.setupWizard.guider.guideCameraNotFoundHint') }}
+        </p>
+        <IndiDriverSelect
+          deviceType="camera"
+          :settingPath="`${GUIDE_CAMERA.section}-IndiDriver`"
+          listAction="guideCameraAction"
+          :rescanKey="GUIDE_CAMERA.rescanKey"
+          :profileSection="GUIDE_CAMERA.section"
+          :label="t('components.setupWizard.camera.selectDriver')"
+        />
+      </div>
     </div>
 
     <!-- PHD2 enumerates its own drivers, so unlike every other device step there
@@ -86,7 +100,7 @@
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.guider.nativeCamera') }}
       </span>
-      <NativeSettingsSheet :names="NATIVE_WIZARD_SETTINGS" compact />
+      <NativeSettingsSheet :names="nativeWizardSettings" compact />
       <p class="text-xs text-content-faint">
         {{ t('components.setupWizard.guider.nativeCameraHint') }}
       </p>
@@ -135,6 +149,7 @@
 <script setup>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
 import { useEquipmentStore } from '@/store/equipmentStore';
@@ -199,6 +214,19 @@ const phd2Blockers = computed(() =>
 );
 const isGuiderConnectDisabled = computed(() => phd2Blockers.value.length > 0);
 const guiderDisabledMessage = computed(() => phd2Blockers.value.map((key) => t(key)).join(' '));
+
+const showGuideCameraDriver = ref(
+  !['', 'None', undefined, null].includes(store.profileInfo?.[GUIDE_CAMERA.section]?.IndiDriver)
+);
+
+// The guide source only matters when it is not the guide camera: a beginner never wants the
+// simulator, so it shows up only to switch a simulator back.
+const nativeWizardSettings = computed(() => {
+  const source = nativeGuiderStore.settings.find((s) => s.name === 'GuideSource')?.value;
+  return NATIVE_WIZARD_SETTINGS.filter(
+    (name) => name !== 'GuideSource' || (source !== undefined && source !== 'GuideCamera')
+  );
+});
 
 const nativeFocalLengthMissing = computed(() => {
   if (!isNativeGuider.value || !nativeGuiderStore.settings.length) return false;

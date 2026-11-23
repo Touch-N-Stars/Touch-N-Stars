@@ -93,10 +93,6 @@
     "gpsConfiguration": "GPS設定",
     "currentNinaCoords": "プロファイルの位置",
     "currentMountCoords": "赤道儀の位置",
-    "syncDirection": "位置情報の同期方向",
-    "syncDirectionNosync": "同期しない",
-    "syncDirectionToApplication": "赤道儀からプロファイルへ同期",
-    "syncDirectionToTelescope": "プロファイルから赤道儀へ同期",
     "mountNotConnected": "赤道儀が接続されていません",
     "coordsNotSupported": "ドライバーが非対応です",
     "loadingCoords": "読み込み中…",
@@ -338,7 +334,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "現在地を使用",
-        "syncDirection": "観測地の同期方向",
         "save": "観測地を保存",
         "saving": "Saving…",
         "saveFailed": "観測地を保存できませんでした：{message}"
@@ -426,8 +421,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "保存できませんでした：{message}",
-        "nativeCamera": "ガイドカメラ（PINS ネイティブガイダー）",
-        "nativeCameraHint": "ネイティブガイダーはガイドカメラを直接制御します。INDI ドライバーとデバイスを選び、ガイド鏡の焦点距離を入力してください。"
+        "nativeCamera": "ガイドカメラ（PINS ネイティブガイダー）"
       },
       "done": {
         "title": "機材の準備ができました",
@@ -1448,19 +1442,6 @@
         "title": "赤道儀の現在位置",
         "parked": "赤道儀はパーク中のため、表示する位置がありません。"
       },
-      "location_sync": {
-        "title": "位置同期設定",
-        "confirmationMessage": "@:{'general.backendName'}のLocation SyncがPromptに設定されている場合、座標を望遠鏡に送信する前に確認ウィンドウが表示されることがあります。この表示を抑制しTNSが自動的に座標を設定できるようにするには、設定をSync to Telescope（望遠鏡に同期）に変更することをお勧めします。",
-        "toTelescope": {
-          "label": "望遠鏡に同期"
-        },
-        "toApplication": {
-          "label": "アプリに同期"
-        },
-        "noSync": {
-          "label": "同期しない"
-        }
-      },
       "control": {
         "park": "パーク",
         "unpark": "アンパーク",
@@ -1475,7 +1456,6 @@
           "unpark": "アンパーク中にエラーが発生しました",
           "tracking": "追尾モード設定中にエラーが発生しました"
         },
-        "setLocationSyncToMount": "「望遠鏡に同期」に設定",
         "slewRateINDI": "導入速度",
         "reverse_axis": "軸方向",
         "slewRateDriverControlled": "導入速度はドライバーによって制御されます",
@@ -4562,24 +4542,20 @@
         "stepCounter": "ステップ {current} / {total}",
         "steps": {
           "check": {
-            "title": "前提条件",
-            "description": "Hocus Focus には接続されたカメラとフォーカサーが必要です。"
+            "title": "前提条件"
           },
           "optics": {
             "title": "光学系",
             "description": "焦点距離とピクセルサイズで星の大きさが決まります。望遠鏡とカメラの仕様と照らし合わせて確認してください。"
           },
           "rig": {
-            "title": "あなたの機材",
-            "description": "機材についていくつか質問します。回答に応じて Hocus Focus のプリセットを設定します。"
+            "title": "あなたの機材"
           },
           "rough": {
-            "title": "おおまかなピント合わせ",
-            "description": "撮影しながらフォーカサーを動かし、星が小さく丸く、HFR ができるだけ小さくなるようにします。"
+            "title": "おおまかなピント合わせ"
           },
           "measure": {
-            "title": "ステップサイズとバックラッシュ",
-            "description": "フォーカサーを動かしたときに星がどれだけ速く大きくなるか、また方向転換時に何ステップ失うかを測定し、オートフォーカス用のステップサイズと NINA のバックラッシュ補正を提案します。フォーカサーはまず大きく後退して各位置を同じ側から合わせ、その後ピント位置を通って前進し、最後に開始位置へ戻ります。"
+            "title": "ステップサイズとバックラッシュ"
           },
           "run": {
             "title": "テスト実行",
@@ -4596,9 +4572,7 @@
         },
         "checks": {
           "camera": "カメラ接続済み",
-          "focuser": "フォーカサー接続済み",
-          "hocusFocus": "Hocus Focus 利用可能",
-          "engineHint": "@:{'general.backendName'} で 'Auto Focus' と 'Star Detector' の両方を Hocus Focus に設定する必要があります。そうでない場合は結果ステップで通知されます。"
+          "focuser": "フォーカサー接続済み"
         },
         "focalLength": "焦点距離 (mm)",
         "pixelSize": "ピクセルサイズ (µm)",
@@ -4614,7 +4588,6 @@
         "startRun": "オートフォーカス開始",
         "stopRun": "オートフォーカス停止",
         "runFailed": "オートフォーカスを開始できませんでした。",
-        "noResult": "評価できる完了済みの Hocus Focus の結果はまだありません。",
         "runAgain": "再実行",
         "openOptimizer": "オプティマイザーを開く",
         "useOptimized": "最適化された設定を使用",

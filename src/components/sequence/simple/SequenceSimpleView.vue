@@ -61,6 +61,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { PlusIcon } from '@heroicons/vue/24/outline';
@@ -80,6 +81,7 @@ import {
   formatDuration,
 } from '@/utils/sequenceSimple';
 
+const { seqT } = usePlanTerms();
 defineEmits(['show-full']);
 
 const { t } = useI18n();
@@ -132,7 +134,7 @@ async function addFirstTarget() {
       type: 'error',
       title: t('components.sequence.editFailed'),
       message: result.locked
-        ? t('components.sequence.controlsLockedMessage')
+        ? seqT('controlsLockedMessage')
         : result.error || t('components.framing.sequenceTargetPicker.addFailed'),
       autoClose: true,
     });

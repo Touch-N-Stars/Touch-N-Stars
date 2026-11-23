@@ -101,11 +101,7 @@
     "currentMountCoords": "Umístění montáže",
     "currentNinaCoords": "Umístění profilu",
     "loadingCoords": "Načítání…",
-    "mountNotConnected": "Montáž není připojena",
-    "syncDirection": "Směr synchronizace polohy",
-    "syncDirectionNosync": "Žádná synchronizace",
-    "syncDirectionToApplication": "Synchronizace z Mount do profilu",
-    "syncDirectionToTelescope": "Synchronizace z profilu do montáže"
+    "mountNotConnected": "Montáž není připojena"
   },
   "components": {
     "instanceDetection": {
@@ -329,7 +325,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Použít aktuální polohu",
-        "syncDirection": "Směr synchronizace polohy",
         "save": "Uložit polohu",
         "saving": "Saving…",
         "saveFailed": "Polohu se nepodařilo uložit: {message}"
@@ -417,8 +412,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Nepodařilo se uložit: {message}",
-        "nativeCamera": "Naváděcí kamera (PINS Native Guider)",
-        "nativeCameraHint": "Nativní guider ovládá naváděcí kameru přímo. Vyberte její ovladač a zařízení INDI a zadejte ohniskovou vzdálenost naváděcího dalekohledu."
+        "nativeCamera": "Naváděcí kamera (PINS Native Guider)"
       },
       "done": {
         "title": "Tvé vybavení je připraveno",
@@ -1439,19 +1433,6 @@
         "title": "Aktuální pozice montáže",
         "parked": "Montáž je zaparkovaná, takže není co zobrazit."
       },
-      "location_sync": {
-        "title": "Předvolby synchronizace polohy",
-        "confirmationMessage": "Pokud je v aplikaci @:{'general.backendName'} nastavena možnost „Synchronizace polohy“ na „Vyžádat potvrzení“, může se před odesláním souřadnic do dalekohledu zobrazit potvrzovací okno. Abyste tomu zabránili a umožnili aplikaci TNS automaticky nastavit souřadnice, doporučujeme změnit nastavení na „Synchronizovat s dalekohledem“.",
-        "toTelescope": {
-          "label": "Synchronizace s dalekohledem"
-        },
-        "toApplication": {
-          "label": "Synchronizovat s aplikací"
-        },
-        "noSync": {
-          "label": "Nesynchronivat"
-        }
-      },
       "control": {
         "park": "Park",
         "unpark": "Odparkovat",
@@ -1466,7 +1447,6 @@
           "unpark": "Chyba při odparkování montáže",
           "tracking": "Chyba při nastavování režimu sledování"
         },
-        "setLocationSyncToMount": "Nastavit 'Synchronizovat s dalekohledem'",
         "slewRateINDI": "Rychlost pohybu",
         "reverse_axis": "Směr os",
         "slewRateDriverControlled": "Rychlost přejezdu řídí ovladač",
@@ -4553,24 +4533,20 @@
         "stepCounter": "Krok {current} z {total}",
         "steps": {
           "check": {
-            "title": "Předpoklady",
-            "description": "Hocus Focus potřebuje připojenou kameru a ostřič."
+            "title": "Předpoklady"
           },
           "optics": {
             "title": "Optika",
             "description": "Ohnisková vzdálenost a velikost pixelu určují, jak velké hvězdy jsou. Zkontrolujte obojí podle dalekohledu a kamery."
           },
           "rig": {
-            "title": "Vaše sestava",
-            "description": "Několik otázek k vašemu vybavení. Odpovědi nastaví předvolby Hocus Focus."
+            "title": "Vaše sestava"
           },
           "rough": {
-            "title": "Hrubé zaostření",
-            "description": "Pořizujte snímky a pohybujte ostřičem, dokud nejsou hvězdy malé a kulaté a HFR co nejnižší."
+            "title": "Hrubé zaostření"
           },
           "measure": {
-            "title": "Velikost kroku a vůle",
-            "description": "Měří, jak rychle hvězdy rostou při pohybu ostřiče a kolik kroků ostřič ztratí při změně směru, a navrhne velikost kroku pro automatické zaostřování a kompenzaci vůle v NINA. Ostřič nejdřív couvne o pořádný kus, aby každou polohu najel ze stejné strany, pak jede vpřed přes ohnisko a nakonec se vrátí do výchozí polohy."
+            "title": "Velikost kroku a vůle"
           },
           "run": {
             "title": "Zkušební běh",
@@ -4587,9 +4563,7 @@
         },
         "checks": {
           "camera": "Kamera připojena",
-          "focuser": "Ostřič připojen",
-          "hocusFocus": "Hocus Focus dostupný",
-          "engineHint": "V @:{'general.backendName'} musí být 'Auto Focus' i 'Star Detector' nastaveny na Hocus Focus. Krok výsledku vám řekne, pokud tomu tak není."
+          "focuser": "Ostřič připojen"
         },
         "focalLength": "Ohnisková vzdálenost (mm)",
         "pixelSize": "Velikost pixelu (µm)",
@@ -4605,7 +4579,6 @@
         "startRun": "Spustit autofokus",
         "stopRun": "Zastavit autofokus",
         "runFailed": "Autofokus se nepodařilo spustit.",
-        "noResult": "Zatím není k vyhodnocení žádný dokončený autofokus Hocus Focus.",
         "runAgain": "Opakovat",
         "openOptimizer": "Otevřít optimalizátor",
         "useOptimized": "Použít optimalizované nastavení",

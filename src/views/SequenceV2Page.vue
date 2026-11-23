@@ -2,7 +2,7 @@
   <div>
     <SubNav
       :items="[
-        { name: $t('components.sequence.title'), value: 'showSequence' },
+        { name: seqT('title'), value: 'showSequence' },
         { name: $t('components.settings.title'), value: 'showSettings' },
       ]"
       v-model:activeItem="sequenceStore.currentTab"
@@ -41,12 +41,14 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import SubNav from '@/components/SubNav.vue';
 import SequenceCurrentView from '@/components/sequence/SequenceCurrentView.vue';
 import SequenceSettings from '@/components/sequence/SequenceSettings.vue';
 import LoadingOverlay from '@/components/helpers/LoadingOverlay.vue';
 import { useSequenceStore } from '@/store/sequenceStore';
 
+const { seqT } = usePlanTerms();
 // The tab lives in the store, not in a local ref: App.vue remounts the
 // router-view on every orientation change, which would drop a local one and
 // throw the user back to the sequence tab mid-edit.

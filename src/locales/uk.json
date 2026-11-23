@@ -95,10 +95,6 @@
     "instanceConfiguration": "Параметри з'єднання з @:{'general.backendName'}",
     "currentNinaCoords": "Місцезнаходження профілю",
     "currentMountCoords": "Місцезнаходження монтування",
-    "syncDirection": "Напрямок синхронізації місцезнаходження",
-    "syncDirectionNosync": "Без синхронізації",
-    "syncDirectionToApplication": "Синхронізувати з монтування в профіль",
-    "syncDirectionToTelescope": "Синхронізувати з профілю в монтування",
     "mountNotConnected": "Монтування не підключено",
     "coordsNotSupported": "Не підтримується драйвером",
     "loadingCoords": "Завантаження…",
@@ -329,7 +325,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Використати поточне місцеположення",
-        "syncDirection": "Напрям синхронізації місцеположення",
         "save": "Зберегти місцеположення",
         "saving": "Saving…",
         "saveFailed": "Не вдалося зберегти місцеположення: {message}"
@@ -417,8 +412,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Не вдалося зберегти: {message}",
-        "nativeCamera": "Гід-камера (PINS Native Guider)",
-        "nativeCameraHint": "Нативний гідер керує гід-камерою напряму. Оберіть її драйвер та пристрій INDI і вкажіть фокусну відстань гід-телескопа."
+        "nativeCamera": "Гід-камера (PINS Native Guider)"
       },
       "done": {
         "title": "Твоє обладнання готове",
@@ -1419,19 +1413,6 @@
         "title": "Поточна позиція монтування",
         "parked": "Монтування запарковане, тому немає позиції для відображення."
       },
-      "location_sync": {
-        "title": "Налаштування синхронізації місцезнаходження",
-        "confirmationMessage": "Якщо «Location Sync» у @:{'general.backendName'} встановлено на «Prompt», перед відправкою координат на телескоп може з'явитися вікно підтвердження. Щоб уникнути цього і дозволити TNS автоматично встановлювати координати, рекомендуємо змінити налаштування на «Sync to Telescope»",
-        "toTelescope": {
-          "label": "Синхронізувати з телескопом"
-        },
-        "toApplication": {
-          "label": "Синхронізувати з додатком"
-        },
-        "noSync": {
-          "label": "Без синхронізації"
-        }
-      },
       "control": {
         "park": "Паркування",
         "unpark": "Розпаркування",
@@ -1446,7 +1427,6 @@
           "unpark": "Помилка розпаркування монтування",
           "tracking": "Помилка встановлення режиму стеження"
         },
-        "setLocationSyncToMount": "Встановити «Синхронізацію з телескопом»",
         "slewRateINDI": "Швидкість наведення",
         "reverse_axis": "Напрямок осі",
         "slewRateUnavailable": "Підключіть монтування, щоб відрегулювати швидкість наведення",
@@ -4533,24 +4513,20 @@
         "stepCounter": "Крок {current} з {total}",
         "steps": {
           "check": {
-            "title": "Вимоги",
-            "description": "Hocus Focus потребує підключених камери та фокусера."
+            "title": "Вимоги"
           },
           "optics": {
             "title": "Оптика",
             "description": "Фокусна відстань і розмір пікселя визначають розмір зірок. Звірте обидва з телескопом і камерою."
           },
           "rig": {
-            "title": "Ваш комплект",
-            "description": "Кілька запитань про ваше обладнання. Відповіді встановлюють передустановки Hocus Focus."
+            "title": "Ваш комплект"
           },
           "rough": {
-            "title": "Грубе фокусування",
-            "description": "Робіть знімки й рухайте фокусер, доки зірки не стануть малими й круглими, а HFR — якомога меншим."
+            "title": "Грубе фокусування"
           },
           "measure": {
-            "title": "Розмір кроку і люфт",
-            "description": "Вимірює, як швидко зростають зірки під час руху фокусера і скільки кроків він втрачає при зміні напрямку, та пропонує розмір кроку для автофокусу і компенсацію люфту в NINA. Фокусер спершу відходить назад на чималу відстань, щоб кожну позицію досягати з того самого боку, потім рухається вперед через фокус і наприкінці повертається у початкову позицію."
+            "title": "Розмір кроку і люфт"
           },
           "run": {
             "title": "Тестовий запуск",
@@ -4567,9 +4543,7 @@
         },
         "checks": {
           "camera": "Камеру підключено",
-          "focuser": "Фокусер підключено",
-          "hocusFocus": "Hocus Focus доступний",
-          "engineHint": "У @:{'general.backendName'} і 'Auto Focus', і 'Star Detector' мають бути встановлені на Hocus Focus. Крок результату повідомить, якщо це не так."
+          "focuser": "Фокусер підключено"
         },
         "focalLength": "Фокусна відстань (мм)",
         "pixelSize": "Розмір пікселя (мкм)",
@@ -4585,7 +4559,6 @@
         "startRun": "Запустити автофокус",
         "stopRun": "Зупинити автофокус",
         "runFailed": "Не вдалося запустити автофокус.",
-        "noResult": "Ще немає завершеного автофокусу Hocus Focus для оцінки.",
         "runAgain": "Повторити",
         "openOptimizer": "Відкрити оптимізатор",
         "useOptimized": "Використовувати оптимізовані налаштування",

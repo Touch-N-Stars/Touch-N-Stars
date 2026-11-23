@@ -584,6 +584,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -656,6 +657,7 @@ import {
   toastBackendError,
 } from '@/utils/backendErrors';
 
+const { seqT } = usePlanTerms();
 const { t } = useI18n();
 const router = useRouter();
 const store = apiStore();
@@ -1194,7 +1196,7 @@ function fixMissingSteps() {
       toastStore.showToast({
         type: 'error',
         title: t('components.sequence.editFailed'),
-        message: t('components.sequence.controlsLockedMessage'),
+        message: seqT('controlsLockedMessage'),
         autoClose: true,
       });
     }

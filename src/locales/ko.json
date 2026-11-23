@@ -93,10 +93,6 @@
     "gpsConfiguration": "GPS 설정",
     "currentNinaCoords": "프로필 위치",
     "currentMountCoords": "마운트 위치",
-    "syncDirection": "위치 동기화 방향",
-    "syncDirectionNosync": "동기화 안 함",
-    "syncDirectionToApplication": "마운트에서 프로필로 동기화",
-    "syncDirectionToTelescope": "프로필에서 마운트로 동기화",
     "mountNotConnected": "마운트가 연결되지 않음",
     "coordsNotSupported": "드라이버에서 지원하지 않음",
     "loadingCoords": "로딩 중…",
@@ -370,7 +366,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "현재 위치 사용",
-        "syncDirection": "위치 동기화 방향",
         "save": "위치 저장",
         "saving": "Saving…",
         "saveFailed": "위치를 저장하지 못했습니다: {message}"
@@ -458,8 +453,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "저장하지 못했습니다: {message}",
-        "nativeCamera": "가이드 카메라 (PINS 네이티브 가이더)",
-        "nativeCameraHint": "네이티브 가이더가 가이드 카메라를 직접 제어합니다. INDI 드라이버와 장치를 선택하고 가이드 경통의 초점 거리를 입력하세요."
+        "nativeCamera": "가이드 카메라 (PINS 네이티브 가이더)"
       },
       "done": {
         "title": "장비 준비 완료",
@@ -1480,19 +1474,6 @@
         "title": "현재 마운트 위치",
         "parked": "마운트가 파킹되어 있어 표시할 위치가 없습니다."
       },
-      "location_sync": {
-        "title": "위치 동기화 설정",
-        "confirmationMessage": "@:{'general.backendName'}의 'Location Sync'가 'Prompt'로 설정되어 있으면 좌표를 망원경으로 보내기 전에 확인 창이 나타날 수 있습니다. 이를 피하고 TNS가 좌표를 자동으로 설정하도록 하려면 'Sync to Telescope'로 변경하는 것을 권장합니다",
-        "toTelescope": {
-          "label": "망원경으로 동기화"
-        },
-        "toApplication": {
-          "label": "애플리케이션으로 동기화"
-        },
-        "noSync": {
-          "label": "동기화 안 함"
-        }
-      },
       "control": {
         "park": "파킹",
         "unpark": "파킹 해제",
@@ -1507,7 +1488,6 @@
           "unpark": "마운트 파킹 해제 오류",
           "tracking": "추적 모드 설정 오류"
         },
-        "setLocationSyncToMount": "\"망원경으로 동기화\" 설정",
         "slewRateINDI": "슬루 속도",
         "reverse_axis": "축 방향",
         "slewRateDriverControlled": "슬루율은 드라이버에 의해 제어됩니다.",
@@ -4594,24 +4574,20 @@
         "stepCounter": "{total}단계 중 {current}단계",
         "steps": {
           "check": {
-            "title": "사전 조건",
-            "description": "Hocus Focus에는 연결된 카메라와 포커서가 필요합니다."
+            "title": "사전 조건"
           },
           "optics": {
             "title": "광학계",
             "description": "초점 거리와 픽셀 크기가 별의 크기를 결정합니다. 망원경과 카메라 사양으로 둘 다 확인하세요."
           },
           "rig": {
-            "title": "내 장비",
-            "description": "장비에 대한 몇 가지 질문입니다. 답변에 따라 Hocus Focus 프리셋이 설정됩니다."
+            "title": "내 장비"
           },
           "rough": {
-            "title": "대략적인 초점 맞추기",
-            "description": "촬영하면서 별이 작고 둥글어지고 HFR이 최대한 낮아질 때까지 포커서를 움직이세요."
+            "title": "대략적인 초점 맞추기"
           },
           "measure": {
-            "title": "스텝 크기와 백래시",
-            "description": "포커서가 움직일 때 별이 얼마나 빨리 커지는지, 그리고 방향을 바꿀 때 몇 스텝을 잃는지 측정하여 오토포커스용 스텝 크기와 NINA의 백래시 보정을 제안합니다. 포커서는 먼저 크게 뒤로 이동해 모든 위치에 같은 쪽에서 접근한 뒤, 초점을 지나 앞으로 이동하고 마지막에 시작 위치로 돌아갑니다."
+            "title": "스텝 크기와 백래시"
           },
           "run": {
             "title": "테스트 실행",
@@ -4628,9 +4604,7 @@
         },
         "checks": {
           "camera": "카메라 연결됨",
-          "focuser": "포커서 연결됨",
-          "hocusFocus": "Hocus Focus 사용 가능",
-          "engineHint": "@:{'general.backendName'}에서 'Auto Focus'와 'Star Detector'를 모두 Hocus Focus로 설정해야 합니다. 그렇지 않으면 결과 단계에서 알려 줍니다."
+          "focuser": "포커서 연결됨"
         },
         "focalLength": "초점 거리 (mm)",
         "pixelSize": "픽셀 크기 (µm)",
@@ -4646,7 +4620,6 @@
         "startRun": "오토포커스 시작",
         "stopRun": "오토포커스 중지",
         "runFailed": "오토포커스를 시작하지 못했습니다.",
-        "noResult": "아직 평가할 완료된 Hocus Focus 결과가 없습니다.",
         "runAgain": "다시 실행",
         "openOptimizer": "옵티마이저 열기",
         "useOptimized": "최적화된 설정 사용",

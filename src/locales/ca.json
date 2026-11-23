@@ -93,10 +93,6 @@
     "gpsConfiguration": "Configuració GPS",
     "currentNinaCoords": "Ubicació del perfil",
     "currentMountCoords": "Ubicació de la muntura",
-    "syncDirection": "Direcció de sincronització d'ubicació",
-    "syncDirectionNosync": "Sense sincronització",
-    "syncDirectionToApplication": "Sincronitza des de la muntura al perfil",
-    "syncDirectionToTelescope": "Sincronitza des del perfil a la muntura",
     "mountNotConnected": "Muntura no connectada",
     "coordsNotSupported": "No compatible amb el controlador",
     "loadingCoords": "Carregant…",
@@ -370,7 +366,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Fes servir la ubicació actual",
-        "syncDirection": "Direcció de sincronització de la ubicació",
         "save": "Desa la ubicació",
         "saving": "Saving…",
         "saveFailed": "No s'ha pogut desar la ubicació: {message}"
@@ -458,8 +453,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "No s'ha pogut desar: {message}",
-        "nativeCamera": "Càmera de guiatge (Guiador Natiu de PINS)",
-        "nativeCameraHint": "El guiador natiu controla directament la càmera de guiatge. Trieu-ne el controlador INDI i el dispositiu, i introduïu la distància focal del telescopi de guiatge."
+        "nativeCamera": "Càmera de guiatge (Guiador Natiu de PINS)"
       },
       "done": {
         "title": "El teu equip està llest",
@@ -1480,19 +1474,6 @@
         "title": "Posició actual de la muntura",
         "parked": "La muntura està aparcada, així que no hi ha cap posició per mostrar."
       },
-      "location_sync": {
-        "title": "Configuració de sincronització d'ubicació",
-        "confirmationMessage": "Si la 'Sincronització d'ubicació' a @:{'general.backendName'} és 'Pregunta', pot aparèixer una finestra de confirmació abans que les coordenades s'enviïn al telescopi. Per evitar-ho i permetre que TNS estableixi automàticament les coordenades, recomanem canviar la configuració a 'Sincronitza al telescopi'",
-        "toTelescope": {
-          "label": "Sincronitza al telescopi"
-        },
-        "toApplication": {
-          "label": "Sincronitza a l'aplicació"
-        },
-        "noSync": {
-          "label": "Sense sincronització"
-        }
-      },
       "control": {
         "park": "Aparca",
         "unpark": "Desaparca",
@@ -1512,7 +1493,6 @@
           "unpark": "Error en desaparcar la muntura",
           "tracking": "Error en establir el mode de seguiment"
         },
-        "setLocationSyncToMount": "Estableix \"Sincronitza al telescopi\"",
         "slewRateINDI": "Velocitat de desplaçament",
         "reverse_axis": "Direcció dels eixos",
         "confirmParkTitle": "Aparca la muntura",
@@ -4594,24 +4574,20 @@
         "stepCounter": "Pas {current} de {total}",
         "steps": {
           "check": {
-            "title": "Requisits",
-            "description": "Hocus Focus necessita una càmera i un enfocador connectats."
+            "title": "Requisits"
           },
           "optics": {
             "title": "Òptica",
             "description": "La distància focal i la mida del píxel determinen la mida dels estels. Comprova-les amb el teu telescopi i la teva càmera."
           },
           "rig": {
-            "title": "El teu equip",
-            "description": "Unes quantes preguntes sobre el teu equip. Les respostes defineixen els predefinits de Hocus Focus."
+            "title": "El teu equip"
           },
           "rough": {
-            "title": "Enfocament aproximat",
-            "description": "Fes imatges i mou l'enfocador fins que els estels siguin petits i rodons i l'HFR sigui tan baix com sigui possible."
+            "title": "Enfocament aproximat"
           },
           "measure": {
-            "title": "Mida del pas i joc",
-            "description": "Mesura com de ràpid creixen els estels quan es mou l'enfocador i quants passos perd quan canvia de sentit, i suggereix una mida del pas per a l'autoenfocament i la compensació de joc de NINA. L'enfocador primer retrocedeix força perquè cada posició s'assoleixi des del mateix costat, després avança a través del focus i al final torna a la posició inicial."
+            "title": "Mida del pas i joc"
           },
           "run": {
             "title": "Prova",
@@ -4628,9 +4604,7 @@
         },
         "checks": {
           "camera": "Càmera connectada",
-          "focuser": "Enfocador connectat",
-          "hocusFocus": "Hocus Focus disponible",
-          "engineHint": "A @:{'general.backendName'}, 'Auto Focus' i 'Star Detector' han d'estar tots dos a Hocus Focus. El pas Resultat t'ho indica si no és així."
+          "focuser": "Enfocador connectat"
         },
         "focalLength": "Distància focal (mm)",
         "pixelSize": "Mida del píxel (µm)",
@@ -4646,7 +4620,6 @@
         "startRun": "Inicia l'enfocament automàtic",
         "stopRun": "Atura l'enfocament automàtic",
         "runFailed": "No s'ha pogut iniciar l'enfocament automàtic.",
-        "noResult": "Encara no hi ha cap enfocament de Hocus Focus acabat per avaluar.",
         "runAgain": "Torna-ho a provar",
         "openOptimizer": "Obre l'optimitzador",
         "useOptimized": "Fes servir els ajustos optimitzats",

@@ -101,11 +101,7 @@
     "currentMountCoords": "Montierungsstandort",
     "currentNinaCoords": "Profilstandort",
     "loadingCoords": "Laden…",
-    "mountNotConnected": "Montierung nicht verbunden",
-    "syncDirection": "Richtung der Standortsynchronisierung",
-    "syncDirectionNosync": "Keine Synchronisierung",
-    "syncDirectionToApplication": "Vom Mount zum Profil synchronisieren",
-    "syncDirectionToTelescope": "Vom Profil zum Mount synchronisieren"
+    "mountNotConnected": "Montierung nicht verbunden"
   },
   "components": {
     "fitsPlatesolve": {
@@ -370,7 +366,6 @@
         "longitude": "Längengrad",
         "altitude": "Höhe",
         "useCurrentLocation": "Aktuellen Standort verwenden",
-        "syncDirection": "Richtung des Standortabgleichs",
         "save": "Standort speichern",
         "saving": "Wird gespeichert…",
         "saveFailed": "Standort konnte nicht gespeichert werden: {message}"
@@ -458,8 +453,7 @@
         "ditherApplied": "Übernommen",
         "ditherMissingData": "Für die Dither-Berechnung werden Pixelgröße und Brennweite von Aufnahme- und Guiding-Seite gebraucht. Fülle die Kamera- und Teleskop-Schritte aus und trage oben die Brennweite des Leitrohrs ein.",
         "applyFailed": "Konnte nicht gespeichert werden: {message}",
-        "nativeCamera": "Guide-Kamera (PINS Native Guider)",
-        "nativeCameraHint": "Der native Guider steuert die Guide-Kamera direkt an. Wähle den INDI-Treiber und das Gerät und gib die Brennweite des Guide-Teleskops ein."
+        "nativeCamera": "Guide-Kamera (PINS Native Guider)"
       },
       "done": {
         "title": "Die Ausrüstung ist bereit",
@@ -1480,19 +1474,6 @@
         "title": "Aktuelle Position der Montierung",
         "parked": "Die Montierung ist geparkt, daher gibt es keine Position zum Anzeigen."
       },
-      "location_sync": {
-        "title": "Standortsynchronisierungseinstellungen",
-        "confirmationMessage": "Wenn die Option ‚Location Sync‘ in @:{'general.backendName'} auf ‚Prompt‘ gesetzt ist, kann es sein, dass vor dem Übertragen der Koordinaten an das Teleskop ein Bestätigungsfenster erscheint. Um dies zu vermeiden und TNS die automatische Übergabe der Koordinaten zu ermöglichen, empfehlen wir, die Einstellung auf ‚Sync to Telescope‘ zu ändern.",
-        "toTelescope": {
-          "label": "Synchronisation mit dem Teleskop"
-        },
-        "toApplication": {
-          "label": "Synchronisation mit NINA"
-        },
-        "noSync": {
-          "label": "Keine Synchronisierung"
-        }
-      },
       "control": {
         "park": "Parken",
         "unpark": "Ausparken",
@@ -1507,7 +1488,6 @@
           "unpark": "Fehler beim Ausparken der Montierung",
           "tracking": "Fehler beim Einstellen des Nachführungsmodus"
         },
-        "setLocationSyncToMount": "Setze \"Sync to telescope\"",
         "slewRateINDI": "Schwenkgeschwindigkeit",
         "reverse_axis": "Achsenrichtung",
         "slewRateDriverControlled": "Die Schwenkgeschwindigkeit wird vom Treiber gesteuert",
@@ -4594,24 +4574,20 @@
         "stepCounter": "Schritt {current} von {total}",
         "steps": {
           "check": {
-            "title": "Voraussetzungen",
-            "description": "Hocus Focus braucht eine verbundene Kamera und einen verbundenen Fokussierer."
+            "title": "Voraussetzungen"
           },
           "optics": {
             "title": "Optik",
             "description": "Brennweite und Pixelgröße bestimmen, wie groß Sterne erscheinen. Prüfe beides anhand von Teleskop und Kamera."
           },
           "rig": {
-            "title": "Dein Setup",
-            "description": "Ein paar Fragen zu deiner Ausrüstung. Deine Antworten setzen die Voreinstellungen von Hocus Focus."
+            "title": "Dein Setup"
           },
           "rough": {
-            "title": "Grob fokussieren",
-            "description": "Mach Aufnahmen und bewege den Fokussierer, bis die Sterne klein und rund sind und der HFR möglichst niedrig ist."
+            "title": "Grob fokussieren"
           },
           "measure": {
-            "title": "Schrittgröße und Backlash",
-            "description": "Misst, wie schnell die Sterne wachsen, wenn sich der Fokussierer bewegt, und wie viele Schritte er bei einem Richtungswechsel verliert. Schlägt eine Schrittgröße für den Autofokus und die Backlash-Kompensation von NINA vor. Der Fokussierer fährt zuerst ein gutes Stück zurück, damit jede Position von derselben Seite angefahren wird, dann vorwärts durch den Fokus und am Ende zurück zur Startposition."
+            "title": "Schrittgröße und Backlash"
           },
           "run": {
             "title": "Testlauf",
@@ -4628,9 +4604,7 @@
         },
         "checks": {
           "camera": "Kamera verbunden",
-          "focuser": "Fokussierer verbunden",
-          "hocusFocus": "Hocus Focus verfügbar",
-          "engineHint": "In @:{'general.backendName'} müssen 'Auto Focus' und 'Star Detector' beide auf Hocus Focus stehen. Der Ergebnis-Schritt sagt dir, falls das nicht so ist."
+          "focuser": "Fokussierer verbunden"
         },
         "focalLength": "Brennweite (mm)",
         "pixelSize": "Pixelgröße (µm)",
@@ -4646,7 +4620,6 @@
         "startRun": "Autofokus starten",
         "stopRun": "Autofokus stoppen",
         "runFailed": "Der Autofokus konnte nicht gestartet werden.",
-        "noResult": "Es gibt noch keinen abgeschlossenen Hocus-Focus-Lauf zum Bewerten.",
         "runAgain": "Erneut starten",
         "openOptimizer": "Optimierer öffnen",
         "useOptimized": "Optimierte Einstellungen verwenden",

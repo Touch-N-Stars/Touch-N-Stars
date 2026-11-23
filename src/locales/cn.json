@@ -101,11 +101,7 @@
     "currentMountCoords": "赤道仪位置",
     "currentNinaCoords": "个人资料位置",
     "loadingCoords": "加载中…",
-    "mountNotConnected": "赤道仪未连接",
-    "syncDirection": "位置同步方向",
-    "syncDirectionNosync": "无同步",
-    "syncDirectionToApplication": "从赤道仪同步到配置文件",
-    "syncDirectionToTelescope": "从配置文件同步到赤道仪"
+    "mountNotConnected": "赤道仪未连接"
   },
   "components": {
     "instanceDetection": {
@@ -329,7 +325,6 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "使用当前位置",
-        "syncDirection": "位置同步方向",
         "save": "保存位置",
         "saving": "Saving…",
         "saveFailed": "无法保存位置：{message}"
@@ -417,8 +412,7 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "无法保存：{message}",
-        "nativeCamera": "导星相机（PINS 原生导星仪）",
-        "nativeCameraHint": "原生导星仪直接驱动导星相机。请选择其 INDI 驱动和设备，并输入导星镜焦距。"
+        "nativeCamera": "导星相机（PINS 原生导星仪）"
       },
       "done": {
         "title": "你的器材已就绪",
@@ -1439,19 +1433,6 @@
         "title": "赤道仪当前位置",
         "parked": "赤道仪已停靠，没有可显示的位置。"
       },
-      "location_sync": {
-        "title": "位置同步设置",
-        "confirmationMessage": "如果@:{'general.backendName'}中的\"位置同步\"设置为\"提示\"，在坐标发送到望远镜之前可能会出现确认窗口。为了避免这种情况并允许TNS自动设置坐标，我们建议将设置更改为\"与望远镜同步\"",
-        "toTelescope": {
-          "label": "与望远镜同步"
-        },
-        "toApplication": {
-          "label": "与应用同步"
-        },
-        "noSync": {
-          "label": "不同步"
-        }
-      },
       "control": {
         "park": "停靠",
         "unpark": "解除停靠",
@@ -1466,7 +1447,6 @@
           "unpark": "解除停靠赤道仪时出错",
           "tracking": "设置跟踪模式时出错"
         },
-        "setLocationSyncToMount": "设置\"与望远镜同步\"",
         "slewRateINDI": "运动速度",
         "reverse_axis": "轴向方向",
         "slewRateDriverControlled": "转动速度由驱动控制",
@@ -4553,24 +4533,20 @@
         "stepCounter": "第 {current} 步，共 {total} 步",
         "steps": {
           "check": {
-            "title": "前提条件",
-            "description": "Hocus Focus 需要已连接的相机和调焦器。"
+            "title": "前提条件"
           },
           "optics": {
             "title": "光学系统",
             "description": "焦距和像素尺寸决定星点的大小。请对照望远镜和相机核对两者。"
           },
           "rig": {
-            "title": "你的设备",
-            "description": "关于你设备的几个问题。你的回答将设置 Hocus Focus 的预设。"
+            "title": "你的设备"
           },
           "rough": {
-            "title": "粗调对焦",
-            "description": "拍摄图像并移动调焦器，直到星点又小又圆、HFR 尽可能低。"
+            "title": "粗调对焦"
           },
           "measure": {
-            "title": "步长与间隙",
-            "description": "测量调焦器移动时星点变大的速度，以及调焦器换向时丢失的步数，并为自动对焦建议步长和 NINA 的间隙补偿。调焦器先大幅后退，使每个位置都从同一侧到达，然后向前穿过焦点，最后返回起始位置。"
+            "title": "步长与间隙"
           },
           "run": {
             "title": "测试运行",
@@ -4587,9 +4563,7 @@
         },
         "checks": {
           "camera": "相机已连接",
-          "focuser": "调焦器已连接",
-          "hocusFocus": "Hocus Focus 可用",
-          "engineHint": "在 @:{'general.backendName'} 中，'Auto Focus' 和 'Star Detector' 都必须设置为 Hocus Focus。如果没有，结果步骤会提示你。"
+          "focuser": "调焦器已连接"
         },
         "focalLength": "焦距 (mm)",
         "pixelSize": "像素尺寸 (µm)",
@@ -4605,7 +4579,6 @@
         "startRun": "启动自动对焦",
         "stopRun": "停止自动对焦",
         "runFailed": "无法启动自动对焦。",
-        "noResult": "目前还没有可评估的已完成 Hocus Focus 结果。",
         "runAgain": "再次运行",
         "openOptimizer": "打开优化器",
         "useOptimized": "使用优化设置",
