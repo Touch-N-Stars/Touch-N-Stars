@@ -863,7 +863,15 @@
         "astapDatabaseAllInstalled": "Totes les bases de dades d'estrelles ASTAP ja estan instal·lades.",
         "astapDatabaseLoadFailed": "No s'han pogut carregar les bases de dades: {detail}",
         "astapDatabaseInstallSuccess": "La base de dades d'estrelles ASTAP {databaseId} s'ha instal·lat correctament.",
-        "astapDatabaseInstallFailed": "La instal·lació de la base de dades ASTAP ha fallat{exitCode}.",
+        "astapDatabaseDownloadFailed": "La instal·lació de {databaseId} ha fallat. L’equip baixa el mapa estel·lar d’internet: és en una xarxa amb accés a internet? Doncs torna-ho a provar.",
+        "astapDatabaseLastAttemptFailed": "L’últim intent d’instal·lar {databaseId} ha fallat ({time}). L’equip baixa el mapa estel·lar d’internet: és en una xarxa amb accés a internet? Doncs torna-ho a provar.",
+        "astapDatabaseRetry": "Torna a instal·lar {databaseId}",
+        "astapDatabasePhase": {
+          "downloading": "Baixant",
+          "installing": "Instal·lant",
+          "finalizing": "Acabant",
+          "complete": "Fet"
+        },
         "astapDatabaseUnauthorizedStatus": "No autoritzat en comprovar l'estat de la instal·lació.",
         "astapDatabaseStatusCheckFailedRetrying": "Error en la comprovació d'estat: {detail}. Reintentant...",
         "astapDatabaseStartInstall": "Iniciant la instal·lació per a {databaseId}...",
@@ -5105,7 +5113,30 @@
       "trackingOffAfterStop": "L'alineació polar ha desactivat el seguiment en aturar-se.",
       "resumeTracking": "Torna a activar el seguiment",
       "goodEnoughHint": "Un error total inferior a 1′ (un minut d'arc) és bo. Quan s'assoleixi, atura l'alineació.",
-      "tabSimple": "Alineació polar"
+      "tabSimple": "Alineació polar",
+      "simpleIntroMove": "Primer la muntura va sola a una posició inicial a prop del pol celeste i després gira dues vegades una mica sobre el seu eix mentre fa imatges. Comprova que els cables siguin prou llargs i que res no faci nosa.",
+      "simpleIntroAdjust": "Després aquesta pàgina mostra cap a on cal girar els cargols d’altura i d’azimut. Els valors s’actualitzen després de cada imatge fins que l’error total és inferior a 1′.",
+      "adjustHint": "Gira els cargols d’altura i d’azimut a poc a poc en el sentit de les fletxes. Els valors s’actualitzen després de cada imatge.",
+      "lastMeasurement": "Darrera mesura",
+      "markedDone": "L’alineació polar està marcada com a feta per a aquesta nit.",
+      "confirmStartTitle": "Vols iniciar l’alineació polar?",
+      "confirmStartMessage": "La muntura va ara a la posició inicial a prop del pol celeste i gira durant la mesura. Comprova que els cables siguin prou llargs i que res no faci nosa.",
+      "status": {
+        "capturing": "Fent una imatge…",
+        "solving": "Resolent la imatge (plate solving)…",
+        "captureRetry": "La imatge ha fallat, nou intent…",
+        "solveRetry": "El plate solving ha fallat, nou intent…",
+        "nextPoint": "Anant al punt següent",
+        "firstPoint": "Mesurant el primer punt",
+        "secondPoint": "Mesurant el segon punt",
+        "finalPoint": "Mesurant el tercer punt",
+        "waitMount": "Esperant que la muntura s’aturi",
+        "waitDome": "Esperant la cúpula",
+        "settling": "La muntura s’estabilitza",
+        "slewInitial": "Anant a la posició inicial",
+        "movingAxis": "Girant l’eix",
+        "solveAttempt": "Resolent la imatge (plate solving)…"
+      }
     },
     "slewAndCenter": {
       "title": "Desplaça i centra",

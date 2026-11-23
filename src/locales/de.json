@@ -838,8 +838,16 @@
         "astapDatabaseAllInstalled": "Alle ASTAP-Star-Datenbanken sind bereits installiert.",
         "astapDatabaseDescription": "Installieren Sie fehlende ASTAP-Star-Datenbanken direkt auf Ihrem PINS-Gerät.",
         "astapDatabaseInstall": "Installieren",
-        "astapDatabaseInstallFailed": "Die Installation der ASTAP Star-Datenbank ist fehlgeschlagen{exitCode}.",
         "astapDatabaseInstallSuccess": "Die ASTAP-Sterndatenbank {databaseId} wurde erfolgreich installiert.",
+        "astapDatabaseDownloadFailed": "Die Installation von {databaseId} ist fehlgeschlagen. Das Rig lädt die Sternkarte aus dem Internet: Ist es in einem Netz mit Internetzugang? Dann versuche es erneut.",
+        "astapDatabaseLastAttemptFailed": "Der letzte Versuch, {databaseId} zu installieren, ist fehlgeschlagen ({time}). Das Rig lädt die Sternkarte aus dem Internet: Ist es in einem Netz mit Internetzugang? Dann versuche es erneut.",
+        "astapDatabaseRetry": "{databaseId} erneut installieren",
+        "astapDatabasePhase": {
+          "downloading": "Wird heruntergeladen",
+          "installing": "Wird installiert",
+          "finalizing": "Wird abgeschlossen",
+          "complete": "Fertig"
+        },
         "astapDatabaseInstalling": "Installieren...",
         "astapDatabaseProgressStalled": "Seit 30 Sekunden kein Download-Fortschritt. Der Vorgang wird weiterhin überwacht.",
         "astapDatabaseJobStarted": "begonnen",
@@ -3166,7 +3174,7 @@
             "camera": {
               "combination": "Belichtung {exposureSeconds} · Gain {gain} ({index}/{total})"
             },
-            "calibrating": "Kalibriert",
+            "calibrating": "Kalibrierung läuft",
             "drift": {
               "measuring": "Misst"
             },
@@ -5093,6 +5101,29 @@
       "resumeTracking": "Nachführung wieder einschalten",
       "goodEnoughHint": "Ein Gesamtfehler unter 1′ (eine Bogenminute) ist gut. Wenn er erreicht ist, beende die Ausrichtung.",
       "tabSimple": "Polausrichtung",
+      "simpleIntroMove": "Zuerst fährt die Montierung von selbst zu einer Startposition nahe dem Himmelspol, dann dreht sie sich zweimal ein Stück um ihre Achse und macht dabei Bilder. Prüfe, dass die Kabel lang genug sind und nichts im Weg ist.",
+      "simpleIntroAdjust": "Danach zeigt diese Seite, in welche Richtung du die Höhen- und Azimutschrauben drehen sollst. Die Werte aktualisieren sich nach jedem Bild, bis der Gesamtfehler unter 1′ liegt.",
+      "adjustHint": "Drehe die Höhen- und Azimutschrauben in kleinen Schritten in Pfeilrichtung. Die Werte aktualisieren sich nach jedem Bild.",
+      "lastMeasurement": "Letzte Messung",
+      "markedDone": "Die Polausrichtung ist für heute Nacht als erledigt markiert.",
+      "confirmStartTitle": "Polausrichtung starten?",
+      "confirmStartMessage": "Die Montierung fährt jetzt zur Startposition nahe dem Himmelspol und dreht sich während der Messung. Prüfe, dass die Kabel lang genug sind und nichts im Weg ist.",
+      "status": {
+        "capturing": "Nimmt ein Bild auf…",
+        "solving": "Löst das Bild per Plate Solving…",
+        "captureRetry": "Bild fehlgeschlagen, neuer Versuch…",
+        "solveRetry": "Plate Solving fehlgeschlagen, neuer Versuch…",
+        "nextPoint": "Fährt zum nächsten Punkt",
+        "firstPoint": "Misst den ersten Punkt",
+        "secondPoint": "Misst den zweiten Punkt",
+        "finalPoint": "Misst den dritten Punkt",
+        "waitMount": "Wartet, bis die Montierung steht",
+        "waitDome": "Wartet auf die Kuppel",
+        "settling": "Montierung beruhigt sich",
+        "slewInitial": "Fährt zur Startposition",
+        "movingAxis": "Dreht die Achse",
+        "solveAttempt": "Löst das Bild per Plate Solving…"
+      },
       "warn_dec_spread_body": "Die gemeldete Deklination der Montierung änderte sich zwischen den Messungen um {arcsec}\". Dies kann die Genauigkeit der Polausrichtung beeinträchtigen. Stellen Sie sicher, dass sich während der Messung nur die RA-Achse bewegt.",
       "warn_dec_spread_title": "Deklinationsausbreitung erkannt",
       "warn_east_west_body": "Das aktuelle Feld liegt innerhalb von 5° vom genauen Osten oder Westen. Wenn die Live-Lösung instabil ist, schwenken Sie zu einem Feld, das weiter von Ost/West entfernt ist, und führen Sie es erneut aus.",
@@ -5799,7 +5830,7 @@
       },
       "guiderState": {
         "Guiding": "Guiding",
-        "Calibrating": "Kalibriert",
+        "Calibrating": "Kalibrierung läuft",
         "Looping": "Sucht einen Stern",
         "LostLock": "Stern verloren",
         "Idle": "Gestoppt",
@@ -6087,7 +6118,7 @@
         "doneAt": "Fertig um",
         "remaining": "noch {time}",
         "activity": {
-          "autofocus": "Fokussiert (Autofokus)",
+          "autofocus": "Autofokus läuft",
           "slewing": "Teleskop bewegt sich (Zentrieren oder Meridian Flip)",
           "calibrating": "Guider kalibriert",
           "settling": "Wartet, bis sich das Guiding einpendelt",
