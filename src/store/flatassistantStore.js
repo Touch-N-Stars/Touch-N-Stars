@@ -312,9 +312,10 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
 
     /**
      * Starts a plugin-side run. `filters` holds one config per filter in run order
-     * (filterId null = keep the current filter); percentages are 0-100.
+     * (filterId null = keep the current filter); percentages are 0-100. `targetName` overrides
+     * the flat assistant's own target name setting (the simple mode takes it from the plan).
      */
-    async startServerRun({ mode, keepClosed, darkCount, filters }) {
+    async startServerRun({ mode, keepClosed, darkCount, filters, targetName }) {
       const settingsStore = useSettingsStore();
       this.startManagedRun(filters.length > 1 ? 'flats-multi' : 'flats');
       for (const filter of filters) {
@@ -332,7 +333,9 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
         mode,
         keepClosed: Boolean(keepClosed),
         darkCount: Math.max(0, int(darkCount, 0)),
-        targetName: settingsStore.flats.targetNameEnabled ? settingsStore.flats.targetName : '',
+        targetName:
+          targetName ??
+          (settingsStore.flats.targetNameEnabled ? settingsStore.flats.targetName : ''),
         filters: filters.map((f) => ({
           filterId:
             f.filterId !== null && Number.isInteger(Number(f.filterId)) ? Number(f.filterId) : null,

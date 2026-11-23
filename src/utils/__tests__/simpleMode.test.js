@@ -9,6 +9,7 @@ const {
   isInNight,
   marksForNight,
   nightSteps,
+  SKIPPABLE_STEPS,
   currentStepId,
   endNightActions,
   isWarmingUp,
@@ -98,6 +99,7 @@ test('steps come in the order of a night and optional ones only when they apply'
     'guide',
     'target',
     'capture',
+    'flats',
     'end',
   ]);
 
@@ -644,4 +646,21 @@ test('the coach is recommended after a long, mostly poor guided night', () => {
   // Too short to judge
   assert.equal(guidingWasPoor({ guidedMs: 10 * min, poorMs: 10 * min }), false);
   assert.equal(guidingWasPoor(null), false);
+});
+
+test('the flats step follows the flat run and the marks of the night', () => {
+  const flats = (overrides) => statusOf(nightSteps(snapshot(overrides)), 'flats');
+  assert.equal(flats({}), 'open');
+  assert.equal(flats({ flats: { running: true, succeededTonight: false } }), 'running');
+  assert.equal(flats({ flats: { running: false, succeededTonight: true } }), 'done');
+  assert.equal(flats({ marks: { flats: 'skipped' } }), 'skipped');
+  // A run that starts after skipping shows as running.
+  assert.equal(
+    flats({ marks: { flats: 'skipped' }, flats: { running: true, succeededTonight: false } }),
+    'running'
+  );
+});
+
+test('flats can be skipped for the night', () => {
+  assert.equal(SKIPPABLE_STEPS.includes('flats'), true);
 });

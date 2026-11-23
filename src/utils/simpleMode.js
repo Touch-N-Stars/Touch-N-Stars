@@ -110,6 +110,8 @@ function markStatus(mark) {
  * @param {{ running: boolean, targets: number, targetSet?: boolean, totalSeconds: number, remainingSeconds: number }} s.sequence
  *   targetSet: at least one target of the plan has an object or coordinates
  * @param {boolean} s.tppaRunning
+ * @param {{ running: boolean, succeededTonight: boolean }} [s.flats] the flat run, see
+ *   simpleFlats.js flatsRunState()
  * @param {Record<string, 'done'|'skipped'>} s.marks
  */
 // The order follows the night. Focus comes before polar alignment and the target: both
@@ -179,6 +181,15 @@ export function nightSteps(s) {
     steps.push({ id: 'capture', status });
   }
 
+  {
+    // Flats belong after the pictures and before the night ends: focus and rotation still
+    // match the lights, and the camera is still cold.
+    let status = markStatus(marks.flats);
+    if (s.flats?.running) status = 'running';
+    else if (s.flats?.succeededTonight) status = 'done';
+    steps.push({ id: 'flats', status });
+  }
+
   steps.push({ id: 'end', status: marks.end === 'done' ? 'done' : 'open' });
 
   return steps;
@@ -204,7 +215,7 @@ export function currentStepId(steps) {
 export const MARKABLE_STEPS = ['polar', 'focus'];
 
 /** Steps a session can do without; the user may skip them. Skipping 'guide' = no guiding. */
-export const SKIPPABLE_STEPS = ['cool', 'polar', 'focus', 'guide'];
+export const SKIPPABLE_STEPS = ['cool', 'polar', 'focus', 'guide', 'flats'];
 
 /**
  * The end-of-night actions that apply right now, in the order they have to run: the sequence

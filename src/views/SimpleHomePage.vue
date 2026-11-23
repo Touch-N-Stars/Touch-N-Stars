@@ -54,9 +54,27 @@
             :phase="phase"
             :night="night"
             :warming="cameraWarming"
+            :endBlocked="flatsRun.running"
+            :flatsPending="showFlatsCard"
             @end="showEndNight = true"
             @resume="setMark('end', null)"
           />
+          <!-- After the plan the steps fold away; the flats are what comes next. -->
+          <SimpleStepCard
+            v-if="showFlatsCard"
+            :style="{ order: order.flats }"
+            :number="flatsStepNumber"
+            :status="flatsStep.status"
+            :current="true"
+            :title="$t('components.simpleMode.steps.flats.title')"
+            :description="$t('components.simpleMode.steps.flats.description')"
+            :summary="summaries.flats || ''"
+            :skippable="true"
+            :hasMark="Boolean(marks.flats)"
+            @mark="setMark('flats', $event)"
+          >
+            <SimpleFlatsStep :night="night" />
+          </SimpleStepCard>
           <!-- Preparing: the picture sits on the left, beside the steps -->
           <SimpleLivePanel v-if="phase === 'prepare'" :style="{ order: order.picture }" />
           <SimpleRigCard v-if="showRig" :style="{ order: order.rig }" />
@@ -501,9 +519,22 @@
                   </button>
                 </template>
 
+                <!-- Flats -->
+                <template v-else-if="step.id === 'flats'">
+                  <SimpleFlatsStep :night="night" />
+                </template>
+
                 <!-- End of night -->
                 <template v-else-if="step.id === 'end'">
-                  <button type="button" class="tns-btn-danger" @click="showEndNight = true">
+                  <p v-if="flatsRun.running" class="text-xs text-status-warn">
+                    {{ $t('components.simpleMode.steps.flats.endBlocked') }}
+                  </p>
+                  <button
+                    type="button"
+                    class="tns-btn-danger"
+                    :disabled="flatsRun.running"
+                    @click="showEndNight = true"
+                  >
                     {{ $t('components.simpleMode.steps.end.action') }}
                   </button>
                 </template>
@@ -579,6 +610,9 @@ import SimpleRigCard from '@/components/simpleMode/SimpleRigCard.vue';
 import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import SimpleStepCard from '@/components/simpleMode/SimpleStepCard.vue';
 import SimpleEndNightModal from '@/components/simpleMode/SimpleEndNightModal.vue';
+import SimpleFlatsStep from '@/components/simpleMode/SimpleFlatsStep.vue';
+import { useFlatassistantStore } from '@/store/flatassistantStore';
+import { flatsRunState } from '@/utils/simpleFlats';
 import SimpleSetupChecks from '@/components/simpleMode/SimpleSetupChecks.vue';
 import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.vue';
 import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
@@ -811,6 +845,10 @@ watch(
   { immediate: true }
 );
 
+// --- Flats ------------------------------------------------------------------------------
+const flatsStore = useFlatassistantStore();
+const flatsRun = computed(() => flatsRunState(flatsStore.status, night.value));
+
 const steps = computed(() =>
   nightSteps({
     hasEquipment: equipmentToConnect.value.length > 0,
@@ -852,6 +890,7 @@ const steps = computed(() =>
       remainingSeconds: plan.value.remainingSeconds,
     },
     tppaRunning: tppaStore.isRunning,
+    flats: flatsRun.value,
     marks: marks.value,
   })
 );
@@ -898,6 +937,13 @@ const cameraWarming = computed(
 // --- Phase of the night: what leads the page ---------------------------------------------
 const phase = computed(() => nightPhase(steps.value));
 
+const flatsStep = computed(() => steps.value.find((step) => step.id === 'flats'));
+const flatsStepNumber = computed(() => steps.value.findIndex((step) => step.id === 'flats') + 1);
+// After the plan the flats are the next thing to do, before "End the night".
+const showFlatsCard = computed(
+  () => phase.value === 'finished' && ['open', 'running'].includes(flatsStep.value?.status)
+);
+
 // The steps are open while preparing; afterwards folded, unless the user opens them. A new
 // phase starts folded again.
 const stepsToggled = ref(null);
@@ -913,12 +959,12 @@ const showRig = computed(() => phase.value === 'prepare' || missingDevices.value
 // Phone order (CSS `order`) per phase; on a tablet only the order inside a column counts.
 const order = computed(() => {
   if (phase.value !== 'prepare') {
-    return { lead: 1, rig: 2, picture: 3, checks: 4, steps: 5, more: 6 };
+    return { lead: 1, flats: 2, rig: 3, picture: 4, checks: 5, steps: 6, more: 7 };
   }
   // Nothing connected yet: the equipment card holds the "connect everything" button.
   return missingDevices.value > 0 || !allConnected.value
-    ? { checks: 1, rig: 2, steps: 3, picture: 4, more: 6, lead: 0 }
-    : { checks: 1, steps: 2, picture: 3, rig: 4, more: 6, lead: 0 };
+    ? { checks: 1, rig: 2, steps: 3, picture: 4, more: 6, lead: 0, flats: 0 }
+    : { checks: 1, steps: 2, picture: 3, rig: 4, more: 6, lead: 0, flats: 0 };
 });
 
 function formatTemp(value) {
@@ -949,6 +995,11 @@ const summaries = computed(() => {
         : store.mountInfo.TrackingEnabled
           ? t('components.simpleMode.rig.tracking')
           : t('components.simpleMode.rig.notTracking'),
+    flats: flatsRun.value.running
+      ? t('components.simpleMode.steps.flats.runningSummary')
+      : flatsRun.value.succeededTonight
+        ? t('components.simpleMode.steps.flats.doneSummary')
+        : '',
     target:
       planTargetNames.value.length > 1
         ? t('components.simpleMode.steps.target.summaryMany', {

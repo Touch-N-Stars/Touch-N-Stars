@@ -9,7 +9,11 @@
       </h2>
     </div>
     <p class="text-sm text-content-muted">
-      {{ $t(`components.simpleMode.summary.${phase}.text`) }}
+      {{
+        phase === 'finished' && flatsPending
+          ? $t('components.simpleMode.summary.finished.textFlats')
+          : $t(`components.simpleMode.summary.${phase}.text`)
+      }}
     </p>
 
     <div class="grid grid-cols-3 gap-2">
@@ -54,9 +58,20 @@
       </li>
     </ul>
 
-    <button v-if="phase === 'finished'" type="button" class="tns-btn-primary" @click="$emit('end')">
-      {{ $t('components.simpleMode.steps.end.action') }}
-    </button>
+    <template v-if="phase === 'finished'">
+      <p v-if="endBlocked" class="text-xs text-status-warn">
+        {{ $t('components.simpleMode.steps.flats.endBlocked') }}
+      </p>
+      <!-- While the flats are still to do they lead; ending the night stays one tap away. -->
+      <button
+        type="button"
+        :class="flatsPending ? 'tns-btn-secondary' : 'tns-btn-primary'"
+        :disabled="endBlocked"
+        @click="$emit('end')"
+      >
+        {{ $t('components.simpleMode.steps.end.action') }}
+      </button>
+    </template>
     <!-- Ended by mistake, or the sky cleared again: back to the night -->
     <button
       v-if="phase === 'ended'"
@@ -88,6 +103,10 @@ const props = defineProps({
   phase: { type: String, required: true },
   night: { type: String, required: true },
   warming: { type: Boolean, default: false },
+  // Flats are running: ending the night would cut them off.
+  endBlocked: { type: Boolean, default: false },
+  // Flats are still to do tonight (neither done nor skipped)
+  flatsPending: { type: Boolean, default: false },
 });
 defineEmits(['end', 'resume']);
 

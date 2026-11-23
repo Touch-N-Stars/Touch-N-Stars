@@ -328,6 +328,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 import setDarkCount from '@/components/flatassistant/setDarkCount.vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
+import { flatFilterConfig } from '@/utils/simpleFlats';
 
 const store = apiStore();
 const flatsStore = useFlatassistantStore();
@@ -355,43 +356,7 @@ function debounce(fn, delay) {
 }
 
 function defaultConfig(filterId) {
-  const pf =
-    store.profileInfo?.FilterWheelSettings?.FilterWheelFilters?.[filterId]
-      ?.FlatWizardFilterSettings;
-
-  if (pf) {
-    const cameraGain = store.profileInfo?.CameraSettings?.Gain ?? 0;
-    const cameraOffset = store.profileInfo?.CameraSettings?.Offset ?? 0;
-    return {
-      count: 20, // local only
-      gain: pf.Gain === -1 ? cameraGain : pf.Gain,
-      offset: pf.Offset === -1 ? cameraOffset : pf.Offset,
-      binning: pf.Binning?.Name ?? '1x1',
-      histogramMean: Math.round(pf.HistogramMeanTarget * 100),
-      meanTolerance: Math.round(pf.HistogramTolerance * 100),
-      minExposure: pf.MinFlatExposureTime,
-      maxExposure: pf.MaxFlatExposureTime,
-      brightness: 50, // local only (% panel brightness)
-      exposureTime: 2, // local only
-      minBrightness: pf.MinAbsoluteFlatDeviceBrightness,
-      maxBrightness: pf.MaxAbsoluteFlatDeviceBrightness,
-    };
-  }
-  // Fallback when profile is not yet loaded
-  return {
-    count: 20,
-    gain: -1,
-    offset: -1,
-    binning: '1x1',
-    histogramMean: 50,
-    meanTolerance: 10,
-    minExposure: 0.01,
-    maxExposure: 20,
-    brightness: 50,
-    exposureTime: 2,
-    minBrightness: 0,
-    maxBrightness: 32000,
-  };
+  return flatFilterConfig(store.profileInfo, filterId, 20);
 }
 
 function ensureFilterConfig(filterId) {

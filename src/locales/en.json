@@ -5875,6 +5875,40 @@
           "flipYourTarget": "Your target",
           "flipSettings": "Flip settings and daylight test"
         },
+        "flats": {
+          "title": "Flats",
+          "description": "Flats remove dust shadows and dark corners from your pictures. Take them now, before anything changes: focus, camera rotation and the camera's position must stay as they were for the pictures. Not needed tonight? Skip this step.",
+          "lightSource": "Light source",
+          "panel": "Flat panel",
+          "panelHint": "The rig sets the panel's brightness by itself.",
+          "panelMissing": "No dimmable flat panel connected.",
+          "tablet": "Tablet or light foil",
+          "tabletHint": "Put it evenly lit in front of the telescope; the rig finds the exposure time.",
+          "filters": "Filters",
+          "count": "Flats per filter",
+          "countNoWheel": "Number of flats",
+          "darks": "Also take dark flats",
+          "darksHint": "Needed only if you calibrate with dark flats. The telescope has to be covered for them; the app tells you when.",
+          "start": "Take flats",
+          "stop": "Stop flats",
+          "allSettings": "All flat settings",
+          "needsPlugin": "Flats on this page need a newer Touch'N'Stars plugin on the rig. Update it, or take the flats with the flat assistant below.",
+          "planRunning": "The plan is still running. Flats can be taken once it is done or stopped.",
+          "noFilterSelected": "Tick at least one filter.",
+          "noFilter": "Flats",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flats",
+          "endBlocked": "Flats are still running. End the night once they are done or stopped.",
+          "runningSummary": "Taking flats",
+          "doneSummary": "Flats taken tonight",
+          "result": {
+            "success": "One flat taken | {count} flats taken",
+            "dim": "Too dim: use a brighter light, or allow a longer exposure in the flat settings.",
+            "bright": "Too bright: dim the light, or allow a shorter exposure in the flat settings.",
+            "failed": "Could not take the flats.",
+            "stopped": "Stopped"
+          }
+        },
         "end": {
           "title": "End the night",
           "description": "Stops everything in the right order, parks the mount and warms up the camera slowly so no moisture forms on the sensor.",
@@ -6048,7 +6082,8 @@
       "summary": {
         "finished": {
           "title": "Plan finished",
-          "text": "All pictures of your plan are taken. End the night to park the telescope and warm up the camera."
+          "text": "All pictures of your plan are taken. End the night to park the telescope and warm up the camera.",
+          "textFlats": "All pictures of your plan are taken. Take your flats now, while nothing has changed, then end the night."
         },
         "ended": {
           "title": "Night ended",
