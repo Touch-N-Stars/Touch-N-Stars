@@ -27,6 +27,12 @@ const {
   MERIDIAN_FLIP_TRIGGER_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
   COOL_CAMERA_TYPE,
+  END_AREA_TYPE,
+  END_ORDER,
+  PARK_SCOPE_TYPE,
+  WARM_CAMERA_TYPE,
+  missingEndSteps,
+  endOfPlan,
 } = await import('@/utils/sequenceSimple');
 
 const DSO = 'NINA.Sequencer.Container.DeepSkyObjectContainer';
@@ -353,4 +359,60 @@ test('binningLabel and formatClock', () => {
   assert.equal(binningLabel(null), '1x1');
   assert.equal(formatClock(null), '');
   assert.match(formatClock(Date.UTC(2026, 0, 1, 12, 5)), /^\d{2}:\d{2}$/);
+});
+
+const endTree = (...items) => [
+  { FullTypeName: START_AREA_TYPE, Items: [] },
+  { FullTypeName: END_AREA_TYPE, Id: 'end', Items: items },
+];
+
+test('missingEndSteps asks for parking always and for the warm-up only with a cooler', () => {
+  assert.deepEqual(missingEndSteps(endTree(), { canCool: true }), [
+    PARK_SCOPE_TYPE,
+    WARM_CAMERA_TYPE,
+  ]);
+  assert.deepEqual(missingEndSteps(endTree(), { canCool: false }), [PARK_SCOPE_TYPE]);
+  assert.deepEqual(missingEndSteps(endTree()), [PARK_SCOPE_TYPE]);
+});
+
+test('missingEndSteps counts a switched-off step as missing and an active one as done', () => {
+  const tree = endTree(
+    { FullTypeName: PARK_SCOPE_TYPE, Status: 'DISABLED' },
+    { FullTypeName: WARM_CAMERA_TYPE, Status: 'CREATED' }
+  );
+  assert.deepEqual(missingEndSteps(tree, { canCool: true }), [PARK_SCOPE_TYPE]);
+  // A finished plan still has its steps: FINISHED is not DISABLED.
+  const done = endTree(
+    { FullTypeName: PARK_SCOPE_TYPE, Status: 'FINISHED' },
+    { FullTypeName: WARM_CAMERA_TYPE, Status: 'FINISHED' }
+  );
+  assert.deepEqual(missingEndSteps(done, { canCool: true }), []);
+});
+
+test('missingEndSteps has nothing to ask for without an end area', () => {
+  assert.deepEqual(missingEndSteps([{ FullTypeName: START_AREA_TYPE, Items: [] }]), []);
+  assert.deepEqual(missingEndSteps(null, { canCool: true }), []);
+});
+
+test('the end area parks before it warms up', () => {
+  assert.deepEqual(END_ORDER, [PARK_SCOPE_TYPE, WARM_CAMERA_TYPE]);
+  const warmOnly = { Id: 'end', Items: [{ Id: 'w', FullTypeName: WARM_CAMERA_TYPE }] };
+  assert.deepEqual(insertionPoint(warmOnly, PARK_SCOPE_TYPE, END_ORDER, 'bottom'), {
+    targetId: 'w',
+    insertAfter: false,
+  });
+});
+
+test('endOfPlan reports what the plan does after its last picture', () => {
+  assert.deepEqual(endOfPlan(endTree()), { park: false, warm: false });
+  assert.deepEqual(
+    endOfPlan(
+      endTree(
+        { FullTypeName: PARK_SCOPE_TYPE, Status: 'CREATED' },
+        { FullTypeName: WARM_CAMERA_TYPE, Status: 'DISABLED' }
+      )
+    ),
+    { park: true, warm: false }
+  );
+  assert.deepEqual(endOfPlan(null), { park: false, warm: false });
 });

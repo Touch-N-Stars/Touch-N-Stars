@@ -42,7 +42,9 @@ export const SLEW_MODE_TYPES = {
 // The order new optional items are placed in, per area. The steps of a target come before
 // its exposures, like in NINA's own target template.
 export const START_ORDER = [COOL_CAMERA_TYPE, UNPARK_SCOPE_TYPE];
-export const END_ORDER = [WARM_CAMERA_TYPE, PARK_SCOPE_TYPE];
+// Park before the warm-up: NINA's warm-up waits for its whole ramp, and the mount would track
+// on for that long after the last picture.
+export const END_ORDER = [PARK_SCOPE_TYPE, WARM_CAMERA_TYPE];
 export const TARGET_ORDER = [
   [SLEW_TYPE, CENTER_TYPE, CENTER_AND_ROTATE_TYPE],
   START_GUIDING_TYPE,
@@ -209,6 +211,31 @@ export function findByType(items, fullTypeName) {
 /** Whether an optional item exists and is switched on. */
 export function isActive(item) {
   return !!item && item.Status !== 'DISABLED';
+}
+
+/**
+ * The closing steps a plan should run on its own but does not: parking always, the warm-up
+ * only with a camera that cools. Without them a plan left alone ends with the mount tracking
+ * on past the meridian into the tripod or pier, and the camera cold until someone ends the
+ * night. Empty when the tree has no end area (nothing to switch on there).
+ */
+export function missingEndSteps(tree, { canCool = false } = {}) {
+  const endArea = findAreaContainer(tree, END_AREA_TYPE);
+  if (!endArea) return [];
+  return END_ORDER.filter(
+    (type) =>
+      (type === PARK_SCOPE_TYPE || (type === WARM_CAMERA_TYPE && canCool)) &&
+      !isActive(findByType(endArea.Items, type))
+  );
+}
+
+/** What the plan does after its last picture: `{ park, warm }`. */
+export function endOfPlan(tree) {
+  const items = findAreaContainer(tree, END_AREA_TYPE)?.Items;
+  return {
+    park: isActive(findByType(items, PARK_SCOPE_TYPE)),
+    warm: isActive(findByType(items, WARM_CAMERA_TYPE)),
+  };
 }
 
 /** The active approach of a target: 'off', 'slew', 'center' or 'centerAndRotate'. */

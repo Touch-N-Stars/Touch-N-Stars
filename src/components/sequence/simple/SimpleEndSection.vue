@@ -4,6 +4,14 @@
       {{ $t('components.sequence.simple.end') }}
     </div>
 
+    <!-- Same order as the plan runs them: park first, then the warm-up -->
+    <SimpleSwitchRow
+      :label="$t('components.sequence.simple.parkMount')"
+      :active="isActive(park)"
+      :disabled="!endArea || park?.Status === 'RUNNING'"
+      :change="(on) => store.setEndItemEnabled(PARK_SCOPE_TYPE, on)"
+    />
+
     <SimpleSwitchRow
       :label="$t('components.sequence.simple.warmCamera')"
       :active="isActive(warmCamera)"
@@ -24,13 +32,6 @@
         @change="store.setProperty(warmCamera.Id, 'Duration', $event)"
       />
     </SimpleSwitchRow>
-
-    <SimpleSwitchRow
-      :label="$t('components.sequence.simple.parkMount')"
-      :active="isActive(park)"
-      :disabled="!endArea || park?.Status === 'RUNNING'"
-      :change="(on) => store.setEndItemEnabled(PARK_SCOPE_TYPE, on)"
-    />
 
     <SimpleAlsoActive :names="otherNames" @click="$emit('show-full')" />
   </div>

@@ -484,6 +484,30 @@
                       {{ $t('components.simpleMode.steps.capture.addFlip') }}
                     </button>
                   </div>
+                  <!-- A plan left alone overnight has to park and warm up by itself -->
+                  <div
+                    v-if="
+                      plan.remainingSeconds > 0 &&
+                      endStepsMissing.length &&
+                      !sequenceStore.sequenceRunning
+                    "
+                    class="flex flex-col gap-2 rounded-control border border-status-warn/40 p-3"
+                  >
+                    <p class="text-sm text-content">
+                      {{
+                        $t(`components.simpleMode.steps.capture.endMissing.${endStepsMissingKey}`)
+                      }}
+                    </p>
+                    <button
+                      type="button"
+                      class="tns-btn-secondary"
+                      :disabled="busy.plan || sequenceStore.sequenceControlsLocked"
+                      @click="fixEndSteps"
+                    >
+                      <Spinner v-if="busy.plan" size="sm" />
+                      {{ $t(`components.simpleMode.steps.capture.addEnd.${endStepsMissingKey}`) }}
+                    </button>
+                  </div>
                   <router-link to="/sequence" class="tns-btn-secondary">
                     {{
                       plan.targets > 0
@@ -650,6 +674,8 @@ import {
 } from '@/utils/simpleMode';
 import {
   FRAME_OVERHEAD_SECONDS,
+  PARK_SCOPE_TYPE,
+  endOfPlan,
   formatClock,
   formatDuration,
   summarizeTargets,
@@ -677,7 +703,20 @@ const hfStore = useHocusFocusStore();
 const { available, enabled } = useSimpleMode();
 const { allConnected, equipmentToConnect, isDeviceConnected } = useEquipmentConnection();
 const { locationMissing, databaseMissing } = useSimpleSetupChecks();
-const { wantedSteps, applyToTargets, flipTriggerMissing, addFlipTrigger } = useSimplePlanTargets();
+const {
+  wantedSteps,
+  applyToTargets,
+  flipTriggerMissing,
+  addFlipTrigger,
+  endStepsMissing,
+  addEndSteps,
+} = useSimplePlanTargets();
+// Which closing steps the warning names: 'park', 'warm' or 'both'.
+const endStepsMissingKey = computed(() => {
+  const park = endStepsMissing.value.includes(PARK_SCOPE_TYPE);
+  if (park && endStepsMissing.value.length > 1) return 'both';
+  return park ? 'park' : 'warm';
+});
 
 // --- Night and clock -------------------------------------------------------------------
 // A local clock, not a backend poll: it rolls the night over at noon and moves the
@@ -1236,6 +1275,19 @@ function fixFlipTrigger() {
   });
 }
 
+function fixEndSteps() {
+  return withBusy('plan', async () => {
+    await addEndSteps();
+  });
+}
+
+// The last sentence of the start confirmation: what happens once the last picture is taken.
+function endOfPlanSentence() {
+  const { park, warm } = endOfPlan(sequenceV2Store.data);
+  const key = park && warm ? 'both' : park ? 'park' : warm ? 'warm' : 'none';
+  return t(`components.simpleMode.steps.capture.confirmStartEnd.${key}`);
+}
+
 function startCapture() {
   return withBusy('capture', async () => {
     const confirmed = await toastStore.showConfirmation(
@@ -1249,7 +1301,8 @@ function startCapture() {
       ) +
         (wantedSteps.value.afOnFilterChange
           ? ` ${t('components.simpleMode.steps.capture.confirmStartFocus')}`
-          : ''),
+          : '') +
+        ` ${endOfPlanSentence()}`,
       t('components.simpleMode.steps.capture.start'),
       t('common.cancel')
     );

@@ -5915,6 +5915,12 @@
           "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
           "summaryEmpty": "{targets} target, no pictures planned yet | {targets} targets, no pictures planned yet",
           "confirmStartFocus": "After every filter change it focuses again.",
+          "confirmStartEnd": {
+            "both": "When it is done, the mount parks and the camera warms up.",
+            "park": "When it is done, the mount parks.",
+            "warm": "When it is done, the camera warms up. The mount keeps tracking until you end the night.",
+            "none": "When it is done, the mount keeps tracking until you end the night."
+          },
           "confirmStartMessageNoGuiding": "The plan with {targets} target starts now and takes about {remaining}. The telescope goes to the target and centers it before the first picture. | The plan with {targets} targets starts now and takes about {remaining}. The telescope goes to each target and centers it before the first picture.",
           "missingSteps": "{count} target in your plan does not yet do this by itself: {steps}. | {count} targets in your plan do not yet do this by themselves: {steps}.",
           "missingStepParts": {
@@ -5925,6 +5931,16 @@
           "fixSteps": "Add the missing steps",
           "flipMissing": "Your plan does not turn the telescope at the meridian. It would keep tracking past it and could hit the tripod or pier.",
           "addFlip": "Turn the meridian flip on",
+          "endMissing": {
+            "park": "When your plan is done, the mount keeps tracking. Past the meridian it can hit the tripod or pier if nobody ends the night.",
+            "warm": "When your plan is done, the camera stays cold until you end the night.",
+            "both": "When your plan is done, the mount keeps tracking and the camera stays cold. Past the meridian the telescope can hit the tripod or pier if nobody ends the night."
+          },
+          "addEnd": {
+            "park": "Park the mount when the plan is done",
+            "warm": "Warm the camera up when the plan is done",
+            "both": "Park and warm up when the plan is done"
+          },
           "flipWindow": "{target} reaches the meridian at about {meridian}; the plan turns the telescope between {earliest} and {latest}.",
           "flipFixed": "{target} reaches the meridian at about {meridian}; the plan turns the telescope at {earliest}.",
           "flipPause": "{target} reaches the meridian at about {meridian}; the plan pauses at {pause} and turns the telescope at {earliest}.",

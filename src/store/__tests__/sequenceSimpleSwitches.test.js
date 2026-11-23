@@ -245,7 +245,7 @@ test('without global dithering a new Smart Exposure keeps its own dither', async
   assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['dso', SMART_EXPOSURE_TYPE, true] }]);
 });
 
-test('park goes after warm camera at the end, warm camera before park', async (t) => {
+test('the end parks before it warms up: a new park goes before the warm-up', async (t) => {
   const { store, calls, restore } = setup({
     endItems: [{ Id: 'warm', FullTypeName: WARM_CAMERA_TYPE, Status: 'CREATED' }],
   });
@@ -253,7 +253,18 @@ test('park goes after warm camera at the end, warm camera before park', async (t
 
   await store.setEndItemEnabled(PARK_SCOPE_TYPE, true);
 
-  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['warm', PARK_SCOPE_TYPE, true] }]);
+  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['warm', PARK_SCOPE_TYPE, false] }]);
+});
+
+test('a new warm-up goes after the park', async (t) => {
+  const { store, calls, restore } = setup({
+    endItems: [{ Id: 'park', FullTypeName: PARK_SCOPE_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+
+  await store.setEndItemEnabled(WARM_CAMERA_TYPE, true);
+
+  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['park', WARM_CAMERA_TYPE, true] }]);
 });
 
 test('a new target step goes before the first exposure', async (t) => {
