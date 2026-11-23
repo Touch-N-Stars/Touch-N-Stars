@@ -28,7 +28,7 @@
       <div class="tns-stat-tile min-w-0">
         <span class="tns-stat-label">{{ $t('components.simpleMode.summary.medianHfr') }}</span>
         <span class="tns-stat-value">
-          {{ frames.medianHfr !== null ? frames.medianHfr.toFixed(2) : '–' }}
+          {{ frames.medianHfr !== null ? localDecimal(frames.medianHfr, 2) : '–' }}
         </span>
       </div>
     </div>
@@ -52,7 +52,7 @@
         <Spinner size="sm" class="text-accent" />
         {{
           $t('components.simpleMode.steps.cool.warmingSummary', {
-            temp: `${Number(store.cameraInfo.Temperature).toFixed(1)} °C`,
+            temp: `${localDecimal(store.cameraInfo.Temperature, 1)} °C`,
           })
         }}
       </li>
@@ -97,6 +97,7 @@ import SimpleCoachHint from './SimpleCoachHint.vue';
 import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';
 import { formatDuration } from '@/utils/sequenceSimple';
 import { nightFrames } from '@/utils/simpleMode';
+import { localDecimal } from '@/utils/localeNumber';
 
 const props = defineProps({
   /** 'finished' | 'ended' */

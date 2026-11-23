@@ -16,6 +16,7 @@
         :statusValue="row.enabled"
         :disabled="isRunning"
         :title="$t('components.sequence.simple.exposureEnabled')"
+        :label="$t('components.sequence.simple.exposureEnabled')"
         @update:statusValue="store.enable(row.id, $event)"
       />
       <span class="flex-1 min-w-0 text-xs font-mono tabular-nums text-content-faint">

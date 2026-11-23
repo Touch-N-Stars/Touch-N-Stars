@@ -294,6 +294,7 @@ import {
   isHistoryEntryDeleted,
 } from '@/utils/imageHistoryUtils';
 import { parseRawImage } from '@/utils/rawImage/parseRawImage';
+import { localDecimal } from '@/utils/localeNumber';
 
 const props = defineProps({
   // While the plan runs the imaging cockpit wraps the picture (see the template)
@@ -442,18 +443,18 @@ const tiles = computed(() => {
     {
       key: 'hfr',
       label: t('components.simpleMode.live.hfr'),
-      value: hfr !== null && hfr > 0 ? hfr.toFixed(2) : '–',
+      value: hfr !== null && hfr > 0 ? localDecimal(hfr, 2) : '–',
     },
     { key: 'stars', label: t('components.simpleMode.live.stars'), value: stars ?? '–' },
     {
       key: 'guiding',
       label: t('components.simpleMode.live.guiding'),
-      value: guidingRms.value ? `${guidingRms.value.toFixed(2)}″` : '–',
+      value: guidingRms.value ? `${localDecimal(guidingRms.value, 2)}″` : '–',
     },
     {
       key: 'temp',
       label: t('components.simpleMode.live.sensor'),
-      value: temp !== null ? `${temp.toFixed(1)} °C` : '–',
+      value: temp !== null ? `${localDecimal(temp, 1)} °C` : '–',
     },
   ];
 });

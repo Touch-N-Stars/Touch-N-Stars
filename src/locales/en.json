@@ -20,7 +20,8 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "drag": "Drag",
-    "showImage": "Show image"
+    "showImage": "Show image",
+    "onOff": "On/Off"
   },
   "general": {
     "cancel": "Cancel",
@@ -490,6 +491,8 @@
         "chipHeight": "Chip height (px)",
         "pixelSize": "Pixel size (µm)",
         "pixelSizeHint": "The pixel size is not reported by the driver. You will find it in your camera's manual.",
+        "pixelSizeReported": "Reported by the camera: {size} µm.",
+        "pixelSizeReportedDiffers": "The camera reports {size} µm, the profile holds a different value.",
         "imageScale": "Resulting image scale: {scale} arcsec/px",
         "applyFailed": "Could not save: {message}",
         "chipSizeNotConnectedHint": "Connect the camera above and the sensor size is filled in by itself. Only a camera that does not report it (typical for DSLRs) needs the values below."

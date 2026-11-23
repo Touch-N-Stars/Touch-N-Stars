@@ -11,7 +11,8 @@
       type="button"
       :aria-pressed="statusValue?.toString() || 'false'"
     >
-      <span class="sr-only">Toggle</span>
+      <!-- What a screen reader announces: the caller's label, otherwise a generic "On/Off" -->
+      <span class="sr-only">{{ label || t('common.onOff') }}</span>
 
       <!-- Toggle Knopf -->
       <span
@@ -27,8 +28,17 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 // Props definition
 const props = defineProps({
+  // Name of the setting the switch turns on and off, for screen readers
+  label: {
+    type: String,
+    default: '',
+  },
   statusValue: {
     type: Boolean,
     required: true,

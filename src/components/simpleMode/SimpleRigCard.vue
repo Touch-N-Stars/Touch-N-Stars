@@ -95,6 +95,7 @@ import Spinner from '@/components/helpers/Spinner.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
 import { useEquipmentConnection } from '@/composables/useEquipmentConnection';
+import { localDecimal } from '@/utils/localeNumber';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -120,7 +121,7 @@ const LABEL_KEYS = {
 };
 
 function formatTemp(value) {
-  return Number.isFinite(value) ? `${value.toFixed(1)} °C` : '';
+  return Number.isFinite(value) ? `${localDecimal(value, 1)} °C` : '';
 }
 
 function connectedDetail(apiName) {

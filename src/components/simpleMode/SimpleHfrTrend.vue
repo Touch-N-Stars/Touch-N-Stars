@@ -36,6 +36,7 @@ import { apiStore } from '@/store/store';
 import { useImagetStore } from '@/store/imageStore';
 import { hfrSeries } from '@/utils/simpleMode';
 import { historyEntryKey, isHistoryEntryDeleted } from '@/utils/imageHistoryUtils';
+import { localDecimal } from '@/utils/localeNumber';
 
 const store = apiStore();
 const imageStore = useImagetStore();
@@ -73,6 +74,6 @@ const trendPoints = computed(() => {
 });
 const trendRange = computed(() => {
   const { min, max } = trendBounds.value;
-  return `HFR ${min.toFixed(2)} – ${max.toFixed(2)}`;
+  return `HFR ${localDecimal(min, 2)} – ${localDecimal(max, 2)}`;
 });
 </script>

@@ -7,6 +7,7 @@
       </div>
       <ToggleButton
         :statusValue="active"
+        :label="label"
         :disabled="disabled || busy"
         @update:statusValue="toggle"
       />

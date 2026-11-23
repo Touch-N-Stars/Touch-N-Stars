@@ -52,12 +52,12 @@
          value NINA actually wants. -->
     <div v-if="ditherGuidePixels" class="flex flex-col gap-1 rounded-control bg-surface-2 p-3">
       <p class="text-xs text-content-muted">
-        {{ t('components.setupWizard.guider.mainScale', { scale: mainScale.toFixed(2) }) }}
+        {{ t('components.setupWizard.guider.mainScale', { scale: localDecimal(mainScale, 2) }) }}
       </p>
       <p class="text-xs text-content-muted">
         {{
           t('components.setupWizard.guider.guideScale', {
-            scale: guideScale.toFixed(2),
+            scale: localDecimal(guideScale, 2),
             binning: guideBinning,
           })
         }}
@@ -71,13 +71,15 @@
         <span>
           {{
             t('components.setupWizard.guider.scaleMismatch', {
-              scale: Number(guiderStore.phd2PixelScale).toFixed(2),
+              scale: localDecimal(guiderStore.phd2PixelScale, 2),
             })
           }}
         </span>
       </p>
       <p class="text-xs text-content-muted">
-        {{ t('components.setupWizard.guider.ditherArcsec', { arcsec: ditherArcsec.toFixed(1) }) }}
+        {{
+          t('components.setupWizard.guider.ditherArcsec', { arcsec: localDecimal(ditherArcsec, 1) })
+        }}
       </p>
       <p class="text-sm text-content mt-1">
         {{ t('components.setupWizard.guider.ditherResult', { pixels: ditherGuidePixels }) }}
@@ -127,6 +129,7 @@ import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { isNativeGuiderInUse } from '@/utils/nativeGuider';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { arcsecPerPixel } from '@/utils/imageScale';
+import { localDecimal } from '@/utils/localeNumber';
 
 /**
  * GuiderSettings-DitherPixels is expressed in *guide camera* pixels, while the
@@ -201,7 +204,7 @@ const profileDitherPixels = computed(() => {
 // usually the moment users realise their dither was far too small.
 const profileDitherAsMainPixels = computed(() => {
   if (profileDitherPixels.value === null || !mainScale.value || !guideScale.value) return '—';
-  return ((profileDitherPixels.value * guideScale.value) / mainScale.value).toFixed(1);
+  return localDecimal((profileDitherPixels.value * guideScale.value) / mainScale.value, 1);
 });
 
 const alreadyApplied = computed(() => profileDitherPixels.value === ditherGuidePixels.value);

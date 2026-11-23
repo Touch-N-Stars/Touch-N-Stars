@@ -21,6 +21,7 @@ import {
   rateGuiding,
   scalePercent,
 } from '@/utils/simpleMode';
+import { localDecimal } from '@/utils/localeNumber';
 
 // Enough steps for a calm RMS, few enough to follow a change within a minute or two.
 const RMS_STEPS = 50;
@@ -31,7 +32,7 @@ function num(value) {
 }
 
 export const fmt = (value, digits = 2) =>
-  value === null || value === undefined ? '–' : value.toFixed(digits);
+  value === null || value === undefined ? '–' : localDecimal(value, digits);
 
 const pct = (value) => Math.round(value * 100);
 

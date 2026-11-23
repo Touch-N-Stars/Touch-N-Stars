@@ -18,7 +18,7 @@
       <p class="text-sm text-content">
         {{
           L('current', {
-            hfr: samples.latest.hfr.toFixed(2),
+            hfr: localDecimal(samples.latest.hfr, 2),
             position: samples.latest.position,
             stars: samples.latest.stars ?? '–',
           })
@@ -27,7 +27,9 @@
       <p class="flex items-start gap-2 text-sm text-content">
         <span class="tns-dot bg-status-ok mt-1.5 shrink-0"></span>
         <span>
-          {{ L('best', { hfr: samples.best.hfr.toFixed(2), position: samples.best.position }) }}
+          {{
+            L('best', { hfr: localDecimal(samples.best.hfr, 2), position: samples.best.position })
+          }}
         </span>
       </p>
     </div>
@@ -78,6 +80,7 @@ import { useFocusFrame } from '@/composables/useFocusFrame';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
 import { focusSamples } from '@/utils/hocusFocusAdvisor';
+import { localDecimal } from '@/utils/localeNumber';
 
 // Camera preview for focusing by hand: single frames or a loop, with HFR and star count of the
 // newest frame and the sharpest frame so far. Uses the camera page's capture path, so the image
