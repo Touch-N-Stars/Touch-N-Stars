@@ -96,7 +96,19 @@
           />
         </div>
 
-        <!-- Gain, offset, type, binning: collapsed to one summary line -->
+        <!-- Gain stays in view: it changes with the target and the filter. -1 means the
+             camera's default, set on the home page. -->
+        <GainInput
+          v-if="typeof row.gain === 'number'"
+          :modelValue="row.gain"
+          labelKey="components.sequence.items.takeExposure.gain"
+          :min="-1"
+          :max="1000"
+          :defaultValue="profileGain"
+          :inputId="`simple-gain-${row.id}`"
+          @change="saveExposure('Gain', $event)"
+        />
+        <!-- Offset (set once per camera), type and binning: collapsed to one summary line -->
         <button
           type="button"
           class="w-full min-h-touch flex items-center gap-2 text-left text-xs text-content-faint hover:text-content-muted"
@@ -111,14 +123,6 @@
         </button>
 
         <div v-if="showDetails" class="space-y-2">
-          <GainInput
-            v-if="typeof row.gain === 'number'"
-            :modelValue="row.gain"
-            labelKey="components.sequence.items.takeExposure.gain"
-            :min="0"
-            :max="1000"
-            @change="saveExposure('Gain', $event)"
-          />
           <NumberInputPicker
             v-if="typeof row.offset === 'number'"
             :modelValue="row.offset"
@@ -128,6 +132,8 @@
             :min="-1"
             :max="1000"
             :step="1"
+            :decimalPlaces="0"
+            :defaultValue="profileOffset"
             @change="saveExposure('Offset', $event)"
           />
           <div class="flex items-center gap-3">
@@ -200,24 +206,22 @@ const progressWidth = computed(() => {
   return `${Math.min(100, (completed / iterations) * 100)}%`;
 });
 
-// -1 means "whatever the camera is set to", like in the full editor.
-function cameraValue(value) {
-  return value === -1 || value === undefined || value === null
-    ? t('components.sequence.simple.cameraDefault')
-    : value;
-}
-
 const detailSummary = computed(() => {
-  const { gain, offset, binning, imageType } = props.row;
-  return [
-    `${t('components.sequence.simple.gainShort')} ${cameraValue(gain)}`,
-    `${t('components.sequence.simple.offsetShort')} ${cameraValue(offset)}`,
-    binning,
-    imageType,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  const { offset, binning, imageType } = props.row;
+  const offsetText =
+    typeof offset === 'number'
+      ? `${t('components.sequence.simple.offsetShort')} ${offset === -1 ? (profileOffset.value ?? '–') : offset}`
+      : '';
+  return [offsetText, imageType, binning].filter(Boolean).join(' · ');
 });
+
+// What -1 stands for: the profile default the home page sets
+const profileGain = computed(() => finiteOrNull(mainStore.profileInfo?.CameraSettings?.Gain));
+const profileOffset = computed(() => finiteOrNull(mainStore.profileInfo?.CameraSettings?.Offset));
+
+function finiteOrNull(value) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
 
 // Sources in order: the item itself, the connected filter wheel, then the active profile. The
 // profile keeps the list available while the wheel is disconnected, e.g. when planning the

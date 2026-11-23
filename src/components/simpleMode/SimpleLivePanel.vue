@@ -254,6 +254,8 @@
       <p v-if="sequenceStore.sequenceRunning && !hero" class="text-xs text-content-faint">
         {{ $t('components.simpleMode.live.planRunning') }}
       </p>
+      <!-- Default gain, offset and readout mode of the test picture and the plan -->
+      <SimpleCameraSettings v-if="!hero" />
 
       <slot name="actions" />
     </div>
@@ -283,6 +285,7 @@ import Spinner from '@/components/helpers/Spinner.vue';
 import ImageModal from '@/components/helpers/imageModal.vue';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
 import SimpleHfrTrend from '@/components/simpleMode/SimpleHfrTrend.vue';
+import SimpleCameraSettings from '@/components/simpleMode/SimpleCameraSettings.vue';
 import { useStageWindow } from '@/composables/useStageWindow';
 import { histogramSummary, latestPicture } from '@/utils/simpleMode';
 import {
@@ -551,10 +554,12 @@ const showFull = ref(false);
 
 function takeTestPicture() {
   ownCapture.value = { atMs: Date.now(), exposure: exposureTime.value };
+  // The camera's default gain (set below the button), the one the plan's exposures use too.
+  // -1 leaves it to N.I.N.A., which falls back to the same profile default.
   cameraStore.capturePhoto(
     apiService,
     exposureTime.value,
-    store.profileInfo?.SnapShotControlSettings?.Gain
+    store.profileInfo?.CameraSettings?.Gain ?? -1
   );
 }
 

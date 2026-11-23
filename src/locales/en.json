@@ -1180,7 +1180,6 @@
         "afAfterHfr": "After HFR increase",
         "coordinates": "Coordinates",
         "exposureEnabled": "Take this exposure",
-        "cameraDefault": "camera",
         "gainShort": "Gain",
         "offsetShort": "Offset",
         "empty": "This sequence has no targets yet.",
@@ -6159,6 +6158,10 @@
         "text": "Your guiding was restless last night. The Guiding Coach measures your guide camera, the sky and the mount and tells you what helps. It takes about 15 minutes under the stars – best before you start your pictures.",
         "open": "Open the Guiding Coach",
         "dismiss": "Not now"
+      },
+      "camera": {
+        "title": "Camera",
+        "hint": "The test picture and every picture of your plan use these values, unless you give an exposure in the plan its own. Your camera's manual lists the recommended gain and offset."
       }
     },
     "secureObservatory": {

@@ -1606,7 +1606,6 @@
         "afAfterHfr": "Nach HFR-Anstieg",
         "coordinates": "Koordinaten",
         "exposureEnabled": "Diese Belichtung aufnehmen",
-        "cameraDefault": "Kamera",
         "gainShort": "Gain",
         "offsetShort": "Offset",
         "empty": "Diese Sequenz hat noch keine Targets.",
