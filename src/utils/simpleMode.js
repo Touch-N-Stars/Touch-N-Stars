@@ -3,7 +3,13 @@
 import { binColumns, cumulative, percentile } from '@/utils/rawImage/histogramView';
 import { MAD_SCALE, maxAdu } from '@/utils/rawImage/stretch';
 import { COACH_POSITION } from '@/utils/nativeGuiderCoach';
-import { START_GUIDING_TYPE, findByType, isActive, slewMode } from '@/utils/sequenceSimple';
+import {
+  AF_AFTER_FILTER_CHANGE_TYPE,
+  START_GUIDING_TYPE,
+  findByType,
+  isActive,
+  slewMode,
+} from '@/utils/sequenceSimple';
 
 /** Navigation entries the simple mode keeps, in the order it shows them. */
 // Five entries fit a 390 px phone without scrolling. Targets are picked in the sky atlas
@@ -565,27 +571,41 @@ export function histogramSummary(raw, columns = HISTOGRAM_COLUMNS) {
 /**
  * How the simple mode wants every target approached: centered with a plate solve (and turned
  * to its framing angle when a rotator is there), then guided - unless guiding was skipped.
- * The plan does both on its own, so the user never slews or starts guiding by hand.
+ * With a focuser and a filter wheel it also focuses again after every filter change: each
+ * filter focuses a little differently, so pictures in the second filter would come out soft.
+ * The plan does all of it on its own, so the user never slews or starts guiding by hand.
  */
-export function simpleTargetSteps({ rotator = false, guiding = true } = {}) {
-  return { slewMode: rotator ? 'centerAndRotate' : 'center', startGuiding: Boolean(guiding) };
+export function simpleTargetSteps({
+  rotator = false,
+  guiding = true,
+  focusOnFilterChange = false,
+} = {}) {
+  return {
+    slewMode: rotator ? 'centerAndRotate' : 'center',
+    startGuiding: Boolean(guiding),
+    afOnFilterChange: Boolean(focusOnFilterChange),
+  };
 }
 
 /**
- * Targets with pictures left that the plan would not slew to or not guide (a plan from before
- * the simple mode, or a step switched off in the plan). Finished targets do not matter.
+ * Targets with pictures left that the plan would not slew to, not guide or not refocus after a
+ * filter change (a plan from before the simple mode, or a step switched off in the plan).
+ * Finished targets do not matter.
  *
  * @param {object} summary summarizeTargets()
- * @param {{ guiding: boolean }} wanted whether the targets should start guiding
+ * @param {{ guiding?: boolean, afOnFilterChange?: boolean }} wanted simpleTargetSteps() as
+ *   { guiding: startGuiding, afOnFilterChange }
  * @returns {object[]} their DSO containers
  */
-export function targetsMissingSteps(summary, { guiding = true } = {}) {
+export function targetsMissingSteps(summary, { guiding = true, afOnFilterChange = false } = {}) {
   return (summary?.targets ?? [])
     .filter((t) => t.remainingSeconds > 0 && t.container?.Status !== 'RUNNING')
     .filter(
       (t) =>
         slewMode(t.container) === 'off' ||
-        (guiding && !isActive(findByType(t.container.Items, START_GUIDING_TYPE)))
+        (guiding && !isActive(findByType(t.container.Items, START_GUIDING_TYPE))) ||
+        (afOnFilterChange &&
+          !isActive(findByType(t.container.Triggers, AF_AFTER_FILTER_CHANGE_TYPE)))
     )
     .map((t) => t.container);
 }

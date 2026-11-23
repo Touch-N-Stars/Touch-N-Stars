@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} objectiu, encara sense imatges previstes | {targets} objectius, encara sense imatges previstes",
           "confirmStartMessageNoGuiding": "El pla amb {targets} objectiu comença ara i triga uns {remaining}. El telescopi va a l'objectiu i el centra abans de la primera imatge. | El pla amb {targets} objectius comença ara i triga uns {remaining}. El telescopi va a cada objectiu i el centra abans de la primera imatge.",
           "missingSteps": "{count} objectiu del teu pla no s'apunta ni es guia automàticament. | {count} objectius del teu pla no s'apunten ni es guien automàticament.",
-          "missingSlew": "{count} objectiu del teu pla no s'apunta automàticament. | {count} objectius del teu pla no s'apunten automàticament.",
           "fixSteps": "Ves-hi i guia automàticament",
           "flipMissing": "El teu pla no gira el telescopi al meridià. Continuaria el seguiment més enllà i podria xocar amb el trípode o el pilar.",
           "addFlip": "Activa el Meridian Flip",

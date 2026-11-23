@@ -16,6 +16,7 @@ import {
   findByType,
   insertionPoint,
   isActive,
+  AF_AFTER_FILTER_CHANGE_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
   END_AREA_TYPE,
   END_ORDER,
@@ -703,8 +704,8 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (type) await this.setTargetItemEnabled(containerId, type, true);
     },
 
-    // Simple mode: the plan slews to the target and starts guiding there, so the user never
-    // does either by hand. `steps` comes from simpleTargetSteps(). With `addExposure` a target
+    // Simple mode: the plan slews to the target, starts guiding there and refocuses after a
+    // filter change, so the user never does any of it by hand. `steps` comes from simpleTargetSteps(). With `addExposure` a target
     // without pictures also gets an exposure row to fill in.
     async applySimpleTargetSteps(containerId, steps, { addExposure = false } = {}) {
       if (this._isControlsLocked()) return { ok: false, locked: true };
@@ -712,6 +713,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
 
       await this.setTargetSlewMode(containerId, steps.slewMode);
       await this.setTargetItemEnabled(containerId, START_GUIDING_TYPE, steps.startGuiding);
+      // Only ever switched on: without a filter wheel the trigger never fires, so a trigger
+      // the user added by hand stays.
+      if (steps.afOnFilterChange) {
+        await this.setContainerTriggerEnabled(containerId, AF_AFTER_FILTER_CHANGE_TYPE, true);
+      }
 
       const container = this.findById(containerId);
       const hasExposure = (container?.Items ?? []).some((i) =>

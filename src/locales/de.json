@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} Ziel, noch keine Bilder geplant | {targets} Ziele, noch keine Bilder geplant",
           "confirmStartMessageNoGuiding": "Der Plan mit {targets} Ziel startet jetzt und dauert etwa {remaining}. Das Teleskop fährt zum Ziel und zentriert es vor dem ersten Bild. | Der Plan mit {targets} Zielen startet jetzt und dauert etwa {remaining}. Das Teleskop fährt zu jedem Ziel und zentriert es vor dem ersten Bild.",
           "missingSteps": "{count} Ziel in deinem Plan wird nicht automatisch angefahren oder geguidet. | {count} Ziele in deinem Plan werden nicht automatisch angefahren oder geguidet.",
-          "missingSlew": "{count} Ziel in deinem Plan wird nicht automatisch angefahren. | {count} Ziele in deinem Plan werden nicht automatisch angefahren.",
           "fixSteps": "Automatisch anfahren und guiden",
           "flipMissing": "Dein Plan wendet das Teleskop nicht am Meridian. Es würde darüber hinaus nachführen und könnte gegen Stativ oder Säule stoßen.",
           "addFlip": "Meridian Flip einschalten",

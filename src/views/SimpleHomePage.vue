@@ -445,10 +445,8 @@
                     <p class="text-sm text-content">
                       {{
                         $t(
-                          wantedSteps.startGuiding
-                            ? 'components.simpleMode.steps.capture.missingSteps'
-                            : 'components.simpleMode.steps.capture.missingSlew',
-                          { count: missingSteps.length },
+                          'components.simpleMode.steps.capture.missingSteps',
+                          { count: missingSteps.length, steps: wantedStepNames },
                           missingSteps.length
                         )
                       }}
@@ -774,7 +772,17 @@ const planTargetNames = computed(() =>
 );
 // Targets the plan would not slew to or not guide; the capture step offers to fix them.
 const missingSteps = computed(() =>
-  targetsMissingSteps(planSummary.value, { guiding: wantedSteps.value.startGuiding })
+  targetsMissingSteps(planSummary.value, {
+    guiding: wantedSteps.value.startGuiding,
+    afOnFilterChange: wantedSteps.value.afOnFilterChange,
+  })
+);
+// What the plan should do at every target, in words: "go there, guide, refocus after …".
+const wantedStepNames = computed(() =>
+  ['slew', wantedSteps.value.startGuiding && 'guide', wantedSteps.value.afOnFilterChange && 'focus']
+    .filter(Boolean)
+    .map((part) => t(`components.simpleMode.steps.capture.missingStepParts.${part}`))
+    .join(', ')
 );
 
 // --- Steps -----------------------------------------------------------------------------
@@ -1238,7 +1246,10 @@ function startCapture() {
           : 'components.simpleMode.steps.capture.confirmStartMessageNoGuiding',
         { targets: plan.value.targets, remaining: plan.value.remaining },
         plan.value.targets
-      ),
+      ) +
+        (wantedSteps.value.afOnFilterChange
+          ? ` ${t('components.simpleMode.steps.capture.confirmStartFocus')}`
+          : ''),
       t('components.simpleMode.steps.capture.start'),
       t('common.cancel')
     );

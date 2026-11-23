@@ -22,6 +22,7 @@ const {
   CENTER_AND_ROTATE_TYPE,
   START_GUIDING_TYPE,
   AF_AFTER_TIME_TYPE,
+  AF_AFTER_FILTER_CHANGE_TYPE,
 } = await import('@/utils/sequenceSimple');
 
 const STUBBED = ['sequenceEnable', 'sequenceAddTrigger', 'sequenceAddItem', 'sequenceSetProperty'];
@@ -344,6 +345,33 @@ test('simple target steps leave a complete target alone and switch guiding off w
 
   await store.applySimpleTargetSteps('dso', { slewMode: 'center', startGuiding: false });
   assert.deepEqual(calls, [{ name: 'sequenceEnable', args: ['guide', false] }]);
+});
+
+test('simple target steps switch on autofocus after a filter change, and never off', async (t) => {
+  const { store, calls, restore } = setup({
+    dsoSteps: [
+      { Id: 'center', FullTypeName: CENTER_TYPE, Status: 'CREATED' },
+      { Id: 'guide', FullTypeName: START_GUIDING_TYPE, Status: 'CREATED' },
+    ],
+    dsoTriggers: [{ Id: 'aft', FullTypeName: AF_AFTER_TIME_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+
+  const steps = { slewMode: 'center', startGuiding: true };
+  await store.applySimpleTargetSteps('dso', { ...steps, afOnFilterChange: true });
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddTrigger', args: ['aft', AF_AFTER_FILTER_CHANGE_TYPE, true] },
+  ]);
+
+  // A trigger the user added stays when the rig has no filter wheel
+  calls.length = 0;
+  store.data[2].Items[0].Triggers.push({
+    Id: 'afc',
+    FullTypeName: AF_AFTER_FILTER_CHANGE_TYPE,
+    Status: 'CREATED',
+  });
+  await store.applySimpleTargetSteps('dso', { ...steps, afOnFilterChange: false });
+  assert.deepEqual(calls, []);
 });
 
 test('a simple target without pictures gets an exposure row', async (t) => {

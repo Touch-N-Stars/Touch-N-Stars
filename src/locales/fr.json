@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} cible, aucune image prévue pour l'instant | {targets} cibles, aucune image prévue pour l'instant",
           "confirmStartMessageNoGuiding": "Le plan avec {targets} cible démarre maintenant et dure environ {remaining}. Le télescope se rend à la cible et la centre avant la première image. | Le plan avec {targets} cibles démarre maintenant et dure environ {remaining}. Le télescope se rend à chaque cible et la centre avant la première image.",
           "missingSteps": "{count} cible de votre plan n'est pas pointée ni guidée automatiquement. | {count} cibles de votre plan ne sont pas pointées ni guidées automatiquement.",
-          "missingSlew": "{count} cible de votre plan n'est pas pointée automatiquement. | {count} cibles de votre plan ne sont pas pointées automatiquement.",
           "fixSteps": "Pointer et guider automatiquement",
           "flipMissing": "Votre plan ne retourne pas le télescope au méridien. Il continuerait à suivre au-delà et pourrait heurter le trépied ou le pilier.",
           "addFlip": "Activer le Meridian Flip",

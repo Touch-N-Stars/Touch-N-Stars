@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} cel, brak zaplanowanych zdjęć | {targets} celów, brak zaplanowanych zdjęć",
           "confirmStartMessageNoGuiding": "Plan z {targets} celem rusza teraz i potrwa około {remaining}. Teleskop przejdzie do celu i wycentruje go przed pierwszym zdjęciem. | Plan z {targets} celami rusza teraz i potrwa około {remaining}. Teleskop przejdzie do każdego celu i wycentruje go przed pierwszym zdjęciem.",
           "missingSteps": "{count} cel w Twoim planie nie jest ani automatycznie osiągany, ani prowadzony. | {count} celów w Twoim planie nie jest automatycznie osiąganych ani prowadzonych.",
-          "missingSlew": "{count} cel w Twoim planie nie jest automatycznie osiągany. | {count} celów w Twoim planie nie jest automatycznie osiąganych.",
           "fixSteps": "Przejdź tam i prowadź automatycznie",
           "flipMissing": "Twój plan nie obraca teleskopu na meridianie. Śledziłby dalej poza nim i mógłby uderzyć w statyw lub kolumnę.",
           "addFlip": "Włącz Meridian Flip",

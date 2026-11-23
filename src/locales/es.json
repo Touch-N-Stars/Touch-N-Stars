@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} objetivo, aún sin imágenes planificadas | {targets} objetivos, aún sin imágenes planificadas",
           "confirmStartMessageNoGuiding": "El plan con {targets} objetivo empieza ahora y dura unos {remaining}. El telescopio va al objetivo y lo centra antes de la primera imagen. | El plan con {targets} objetivos empieza ahora y dura unos {remaining}. El telescopio va a cada objetivo y lo centra antes de la primera imagen.",
           "missingSteps": "{count} objetivo de tu plan no se apunta ni se guía automáticamente. | {count} objetivos de tu plan no se apuntan ni se guían automáticamente.",
-          "missingSlew": "{count} objetivo de tu plan no se apunta automáticamente. | {count} objetivos de tu plan no se apuntan automáticamente.",
           "fixSteps": "Ir allí y guiar automáticamente",
           "flipMissing": "Tu plan no gira el telescopio en el meridiano. Seguiría el seguimiento más allá y podría chocar con el trípode o el pilar.",
           "addFlip": "Activar el Meridian Flip",

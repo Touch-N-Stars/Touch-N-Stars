@@ -19,7 +19,8 @@ const {
   addGuidingTime,
   guidingWasPoor,
 } = await import('@/utils/simpleMode');
-const { START_GUIDING_TYPE, CENTER_TYPE, SLEW_TYPE } = await import('@/utils/sequenceSimple');
+const { START_GUIDING_TYPE, CENTER_TYPE, SLEW_TYPE, AF_AFTER_FILTER_CHANGE_TYPE } =
+  await import('@/utils/sequenceSimple');
 
 function snapshot(overrides = {}) {
   return {
@@ -578,11 +579,19 @@ test('histogramSummary counts the pixels at the extremes and zooms to the data',
 });
 
 test('simple targets are centered, turned with a rotator and guided unless guiding is skipped', () => {
-  assert.deepEqual(simpleTargetSteps(), { slewMode: 'center', startGuiding: true });
-  assert.deepEqual(simpleTargetSteps({ rotator: true, guiding: false }), {
-    slewMode: 'centerAndRotate',
-    startGuiding: false,
+  assert.deepEqual(simpleTargetSteps(), {
+    slewMode: 'center',
+    startGuiding: true,
+    afOnFilterChange: false,
   });
+  assert.deepEqual(
+    simpleTargetSteps({ rotator: true, guiding: false, focusOnFilterChange: true }),
+    {
+      slewMode: 'centerAndRotate',
+      startGuiding: false,
+      afOnFilterChange: true,
+    }
+  );
 });
 
 test('targetsMissingSteps lists targets with pictures left that are not slewed to or guided', () => {
@@ -612,6 +621,32 @@ test('targetsMissingSteps lists targets with pictures left that are not slewed t
     ['noSlew']
   );
   assert.deepEqual(targetsMissingSteps(null), []);
+});
+
+test('targetsMissingSteps lists targets that do not refocus after a filter change', () => {
+  const steps = [
+    { FullTypeName: CENTER_TYPE, Status: 'CREATED' },
+    { FullTypeName: START_GUIDING_TYPE, Status: 'CREATED' },
+  ];
+  const target = (id, triggers) => ({
+    container: { Id: id, Status: 'CREATED', Items: steps, Triggers: triggers },
+    remainingSeconds: 100,
+  });
+  const afc = { FullTypeName: AF_AFTER_FILTER_CHANGE_TYPE, Status: 'CREATED' };
+  const summary = {
+    targets: [
+      target('ok', [afc]),
+      target('none', []),
+      target('off', [{ ...afc, Status: 'DISABLED' }]),
+    ],
+  };
+
+  assert.deepEqual(
+    targetsMissingSteps(summary, { afOnFilterChange: true }).map((c) => c.Id),
+    ['none', 'off']
+  );
+  // Without a filter wheel the trigger is not asked for
+  assert.deepEqual(targetsMissingSteps(summary), []);
 });
 
 test('calibrationRisk flags targets near the pole or low in the sky', () => {

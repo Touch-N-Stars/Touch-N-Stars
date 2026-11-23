@@ -112,7 +112,8 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    Bildausschnitts nötig ist. „In den Plan“ setzt das Ziel (Auswahl neu/ersetzen/kopieren wie
    bisher) und schaltet für dieses Ziel Zentrieren (mit verbundenem Rotator: Zentrieren und
    Drehen) und „Guiding starten“ ein – Letzteres nicht, wenn der Guiding-Schritt übersprungen
-   wurde. Ein Ziel ohne Belichtung bekommt eine Belichtungszeile. Danach schließt der Atlas
+   wurde. Hat das Profil Fokussierer und Filterrad, bekommt das Ziel außerdem den Trigger
+   „Autofokus nach Filterwechsel“ (wird nur ein-, nie ausgeschaltet). Ein Ziel ohne Belichtung bekommt eine Belichtungszeile. Danach schließt der Atlas
    und die Startseite erscheint.
    6b. Given der Schritt „Ziel wählen“, then listet er die Ziele des Plans. Ist der Guider noch
    nicht kalibriert und steht das nächste Ziel über 60° Deklination oder unter 30° Höhe
@@ -124,7 +125,8 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
 8. Given der Schritt „Aufnahme“, then zeigt er Anzahl Ziele und Restdauer des geladenen Plans
    (gleiche Rechnung wie die einfache Sequenzansicht) bzw. „Noch kein Plan“, und führt in die
    einfache Sequenzansicht. Ziele mit offenen Bildern, die der Plan nicht anfährt oder (bei
-   eingerichtetem Guiding) nicht guidet, meldet er mit einem Knopf, der das für alle nachholt.
+   eingerichtetem Guiding) nicht guidet oder (mit Fokussierer und Filterrad) nach einem
+   Filterwechsel nicht neu fokussiert, meldet er mit einem Knopf, der das für alle nachholt.
    Ohne Ziel mit Koordinaten lässt sich die Aufnahme nicht starten.
    8a. Given der Schritt „Guiding“ und ein anderer Guider im Profil (PHD2, keiner), then bietet
    er „Eingebauten Guider verwenden“ an, wenn PINS ihn als Gerät führt (`InternalGuider`),

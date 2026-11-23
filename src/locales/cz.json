@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} cíl, zatím žádné snímky | {targets} cílů, zatím žádné snímky",
           "confirmStartMessageNoGuiding": "Plán s {targets} cílem se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede k cíli a vycentruje ho. | Plán s {targets} cíli se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede ke každému cíli a vycentruje ho.",
           "missingSteps": "{count} cíl ve vašem plánu se automaticky nenavádí ani nepointuje. | {count} cílů ve vašem plánu se automaticky nenavádí ani nepointuje.",
-          "missingSlew": "{count} cíl ve vašem plánu se automaticky nenavádí. | {count} cílů ve vašem plánu se automaticky nenavádí.",
           "fixSteps": "Přejet a pointovat automaticky",
           "flipMissing": "Váš plán neotáčí dalekohled na meridiánu. Sledoval by dál za něj a mohl by narazit do stativu nebo sloupu.",
           "addFlip": "Zapnout Meridian Flip",

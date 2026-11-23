@@ -1,5 +1,5 @@
-// Simple mode: every target of the plan is slewed to, centered and guided by the plan itself,
-// and the plan flips at the meridian. Shared by the atlas' "Add to plan" button and the home page's capture step, so both put the
+// Simple mode: every target of the plan is slewed to, centered, guided and refocused after a
+// filter change by the plan itself, and the plan flips at the meridian. Shared by the atlas' "Add to plan" button and the home page's capture step, so both put the
 // same steps into a target.
 import { computed } from 'vue';
 import { apiStore } from '@/store/store';
@@ -25,10 +25,19 @@ export function useSimplePlanTargets() {
     () => !isActive(findByType(sequenceV2Store.globalTriggers, MERIDIAN_FLIP_TRIGGER_TYPE))
   );
 
+  // From the profile, not the connection: targets are often added before the rig is connected.
+  const inProfile = (settings) => Boolean(settings?.Id) && settings.Id !== 'No_Device';
+  const focusOnFilterChange = computed(
+    () =>
+      inProfile(store.profileInfo?.FocuserSettings) &&
+      inProfile(store.profileInfo?.FilterWheelSettings)
+  );
+
   const wantedSteps = computed(() =>
     simpleTargetSteps({
       rotator: Boolean(store.rotatorInfo?.Connected),
       guiding: !guidingSkipped.value,
+      focusOnFilterChange: focusOnFilterChange.value,
     })
   );
 

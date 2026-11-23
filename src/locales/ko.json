@@ -5901,7 +5901,6 @@
           "summaryEmpty": "대상 {targets}개, 아직 계획된 촬영 없음 | 대상 {targets}개, 아직 계획된 촬영 없음",
           "confirmStartMessageNoGuiding": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 대상으로 이동해 센터링합니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 각 대상으로 이동해 센터링합니다.",
           "missingSteps": "플랜의 대상 {count}개가 자동으로 이동 및 가이딩되지 않습니다. | 플랜의 대상 {count}개가 자동으로 이동 및 가이딩되지 않습니다.",
-          "missingSlew": "플랜의 대상 {count}개가 자동으로 이동되지 않습니다. | 플랜의 대상 {count}개가 자동으로 이동되지 않습니다.",
           "fixSteps": "자동으로 이동 및 가이딩",
           "flipMissing": "플랜에 자오선에서 망원경을 돌리는 단계가 없습니다. 자오선을 지나서도 계속 추적하여 삼각대나 피어에 부딪힐 수 있습니다.",
           "addFlip": "Meridian Flip 켜기",

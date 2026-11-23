@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} doel, nog geen foto's gepland | {targets} doelen, nog geen foto's gepland",
           "confirmStartMessageNoGuiding": "Het plan met {targets} doel start nu en duurt ongeveer {remaining}. De telescoop gaat naar het doel en centreert het vóór de eerste foto. | Het plan met {targets} doelen start nu en duurt ongeveer {remaining}. De telescoop gaat naar elk doel en centreert het vóór de eerste foto.",
           "missingSteps": "{count} doel in je plan wordt niet automatisch aangestuurd of geguided. | {count} doelen in je plan worden niet automatisch aangestuurd of geguided.",
-          "missingSlew": "{count} doel in je plan wordt niet automatisch aangestuurd. | {count} doelen in je plan worden niet automatisch aangestuurd.",
           "fixSteps": "Automatisch erheen gaan en guiden",
           "flipMissing": "Je plan voert geen Meridian Flip uit. De telescoop zou erna blijven volgen en tegen het statief of de pier kunnen botsen.",
           "addFlip": "Meridian Flip aanzetten",

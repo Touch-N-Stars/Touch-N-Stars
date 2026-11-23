@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} alvo, nenhuma imagem planejada ainda | {targets} alvos, nenhuma imagem planejada ainda",
           "confirmStartMessageNoGuiding": "O plano com {targets} alvo começa agora e leva cerca de {remaining}. O telescópio vai ao alvo e o centraliza antes da primeira imagem. | O plano com {targets} alvos começa agora e leva cerca de {remaining}. O telescópio vai a cada alvo e o centraliza antes da primeira imagem.",
           "missingSteps": "{count} alvo do seu plano não é alcançado nem guiado automaticamente. | {count} alvos do seu plano não são alcançados nem guiados automaticamente.",
-          "missingSlew": "{count} alvo do seu plano não é alcançado automaticamente. | {count} alvos do seu plano não são alcançados automaticamente.",
           "fixSteps": "Ir até lá e guiar automaticamente",
           "flipMissing": "Seu plano não gira o telescópio no meridiano. Ele continuaria rastreando além dele e poderia bater no tripé ou no pilar.",
           "addFlip": "Ativar o Meridian Flip",

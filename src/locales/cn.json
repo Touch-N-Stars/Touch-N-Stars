@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} 个目标，尚未规划照片 | {targets} 个目标，尚未规划照片",
           "confirmStartMessageNoGuiding": "包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会前往目标并在第一张照片前居中。 | 包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会依次前往每个目标并在第一张照片前居中。",
           "missingSteps": "计划中有 {count} 个目标不会自动前往或导星。 | 计划中有 {count} 个目标不会自动前往或导星。",
-          "missingSlew": "计划中有 {count} 个目标不会自动前往。 | 计划中有 {count} 个目标不会自动前往。",
           "fixSteps": "自动前往并导星",
           "flipMissing": "你的计划不会在子午线处翻转望远镜。它会继续跟踪越过子午线，可能撞到三脚架或立柱。",
           "addFlip": "打开 Meridian Flip",

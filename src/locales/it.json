@@ -5901,7 +5901,6 @@
           "summaryEmpty": "{targets} target, nessuna immagine ancora pianificata | {targets} target, nessuna immagine ancora pianificata",
           "confirmStartMessageNoGuiding": "Il piano con {targets} target parte ora e richiede circa {remaining}. Il telescopio va sul target e lo centra prima della prima immagine. | Il piano con {targets} target parte ora e richiede circa {remaining}. Il telescopio va su ogni target e lo centra prima della prima immagine.",
           "missingSteps": "{count} target del piano non viene raggiunto né guidato automaticamente. | {count} target del piano non vengono raggiunti né guidati automaticamente.",
-          "missingSlew": "{count} target del piano non viene raggiunto automaticamente. | {count} target del piano non vengono raggiunti automaticamente.",
           "fixSteps": "Raggiungi e guida automaticamente",
           "flipMissing": "Il piano non ruota il telescopio al meridiano. Continuerebbe a inseguire oltre e potrebbe urtare il treppiede o il pilastro.",
           "addFlip": "Attiva il Meridian Flip",
