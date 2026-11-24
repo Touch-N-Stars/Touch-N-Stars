@@ -217,7 +217,7 @@
       }}
     </p>
     <div
-      v-if="rangeHint || showReset"
+      v-if="!compact && (rangeHint || showReset)"
       class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1"
     >
       <span v-if="rangeHint" class="text-xs text-content-faint tabular-nums">{{ rangeHint }}</span>

@@ -115,7 +115,9 @@
     <!-- Editable inputs -->
     <div class="grid grid-cols-2 md:flex md:gap-4 md:items-end gap-2">
       <div class="flex flex-col min-w-0 md:flex-1">
-        <label class="text-xs md:text-sm text-content mb-1">Latitude</label>
+        <label class="text-xs md:text-sm text-content mb-1">{{
+          $t('components.setupWizard.location.latitude')
+        }}</label>
         <NumberInputPicker
           v-model="latitude"
           :label="``"
@@ -124,13 +126,15 @@
           :max="90"
           :step="0.001"
           :decimalPlaces="3"
-          placeholder="Latitude"
+          :placeholder="$t('components.setupWizard.location.latitude')"
           inputId="latitude"
           wrapperClass="w-full"
         />
       </div>
       <div class="flex flex-col min-w-0 md:flex-1">
-        <label class="text-xs md:text-sm text-content mb-1">Longitude</label>
+        <label class="text-xs md:text-sm text-content mb-1">{{
+          $t('components.setupWizard.location.longitude')
+        }}</label>
         <NumberInputPicker
           v-model="longitude"
           :label="``"
@@ -139,13 +143,15 @@
           :max="180"
           :step="0.001"
           :decimalPlaces="3"
-          placeholder="Longitude"
+          :placeholder="$t('components.setupWizard.location.longitude')"
           inputId="longitude"
           wrapperClass="w-full"
         />
       </div>
       <div class="flex flex-col min-w-0 md:flex-1">
-        <label class="text-xs md:text-sm text-content mb-1">Altitude</label>
+        <label class="text-xs md:text-sm text-content mb-1">{{
+          $t('components.setupWizard.location.altitude')
+        }}</label>
         <NumberInputPicker
           v-model="altitude"
           :label="``"
@@ -154,7 +160,7 @@
           :max="9000"
           :step="1"
           :decimalPlaces="0"
-          placeholder="Altitude"
+          :placeholder="$t('components.setupWizard.location.altitude')"
           inputId="altitude"
           wrapperClass="w-full"
         />

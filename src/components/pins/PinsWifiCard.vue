@@ -137,6 +137,7 @@
     </div>
 
     <div
+      v-if="!simple"
       class="w-full relative z-10 rounded-card border border-line bg-surface-2 p-4 flex flex-col gap-3"
     >
       <div class="flex items-start justify-between gap-3">
@@ -369,7 +370,7 @@
           </select>
         </div>
 
-        <div class="flex flex-col gap-2" v-if="selectedSsid">
+        <div class="flex flex-col gap-2" v-if="selectedSsid && !simple">
           <span class="tns-label">{{ $t('plugins.pins.wifiBand') }}</span>
           <div class="flex flex-wrap gap-x-4">
             <label
@@ -454,7 +455,7 @@
                   : $t('plugins.pins.hotspotNotConfigured')
               }}
             </p>
-            <p>
+            <p v-if="!simple">
               {{
                 $t('plugins.pins.hotspotMetaLine', {
                   source: hotspotSource || 'default',
@@ -489,7 +490,7 @@
         </button>
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div v-if="!simple" class="flex flex-col gap-2">
         <label for="pinsHotspotBand" class="tns-label">
           {{ $t('plugins.pins.hotspotBandLabel') }}
         </label>
@@ -506,7 +507,7 @@
         </select>
       </div>
 
-      <div class="flex flex-col gap-2">
+      <div v-if="!simple" class="flex flex-col gap-2">
         <label for="pinsHotspotChannel" class="tns-label">
           {{ $t('plugins.pins.hotspotChannelLabel') }}
         </label>
@@ -616,6 +617,11 @@ const bandOptions = computed(() => [
 ]);
 
 const props = defineProps({
+  // Simple mode: hides adapter assignment, bands and channels
+  simple: {
+    type: Boolean,
+    default: false,
+  },
   stationaryMode: {
     type: Boolean,
     required: true,

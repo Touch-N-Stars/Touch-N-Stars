@@ -7,7 +7,7 @@
       <p class="text-sm text-content-muted mt-1">
         {{
           isNativeGuider
-            ? t('components.setupWizard.guider.descriptionNative')
+            ? t('components.setupWizard.guider.descriptionBuiltIn')
             : t('components.setupWizard.guider.description')
         }}
       </p>
@@ -54,11 +54,10 @@
         </p>
         <IndiDriverSelect
           deviceType="camera"
-          :settingPath="`${GUIDE_CAMERA.section}-IndiDriver`"
           listAction="guideCameraAction"
-          :rescanKey="GUIDE_CAMERA.rescanKey"
           :profileSection="GUIDE_CAMERA.section"
           :label="t('components.setupWizard.camera.selectDriver')"
+          :connected="Boolean(store.guideCameraInfo?.Connected)"
         />
       </div>
     </div>
@@ -107,7 +106,7 @@
     <!-- Native guider: guide source and optics from its own settings. -->
     <div v-if="isNativeGuider" class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
-        {{ t('components.setupWizard.guider.nativeCamera') }}
+        {{ t('components.setupWizard.guider.guideScope') }}
       </span>
       <NativeSettingsSheet :names="nativeWizardSettings" compact />
       <p class="text-xs text-content-faint">

@@ -38,6 +38,8 @@
         @restart-system="restartSystem"
         @shutdown-system="shutdownSystem"
       />
+
+      <ExpertToggle v-model="showExpert" />
     </div>
   </div>
 
@@ -56,6 +58,8 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import TutorialModal from '@/components/TutorialModal.vue';
 import SubNav from '@/components/SubNav.vue';
+import ExpertToggle from '@/components/simpleMode/ExpertToggle.vue';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 import SettingsConnectionTab from '@/components/settings/SettingsConnectionTab.vue';
 import SettingsInterfaceTab from '@/components/settings/SettingsInterfaceTab.vue';
 import SettingsSystemTab from '@/components/settings/SettingsSystemTab.vue';
@@ -82,7 +86,18 @@ const LINKABLE_TABS = ['connection', 'interface', 'image', 'equipment', 'plugins
 const requestedTab = route.query?.tab;
 const activeTab = ref(LINKABLE_TABS.includes(requestedTab) ? requestedTab : 'connection');
 
-const subNavItems = computed(() => [
+// The simple mode leaves these out until "expert settings" is tapped. A tab another page linked
+// to stays in the list, e.g. the plate solver from a missing star database.
+const EXPERT_TABS = ['image', 'plugins', 'plateSolver'];
+const { active: simpleModeActive } = useSimpleMode();
+const showExpert = ref(false);
+const isTabShown = (value) =>
+  !simpleModeActive.value ||
+  showExpert.value ||
+  !EXPERT_TABS.includes(value) ||
+  value === activeTab.value;
+
+const allTabs = computed(() => [
   { name: t('components.settings.tabs.connection'), value: 'connection' },
   { name: t('components.settings.tabs.interface'), value: 'interface' },
   { name: t('components.settings.image.title'), value: 'image' },
@@ -94,6 +109,7 @@ const subNavItems = computed(() => [
   // The PINS device settings live on their own page; this entry only links there.
   ...(store.isPINS ? [{ name: t('nav.pins'), value: 'pins' }] : []),
 ]);
+const subNavItems = computed(() => allTabs.value.filter((tab) => isTabShown(tab.value)));
 
 function selectTab(value) {
   if (value === 'pins') {

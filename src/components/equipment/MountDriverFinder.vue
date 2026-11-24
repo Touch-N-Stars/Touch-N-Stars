@@ -228,11 +228,10 @@
         <IndiDriverSelect
           ref="driverSelect"
           deviceType="telescope"
-          settingPath="TelescopeSettings-IndiDriver"
           listAction="mountAction"
-          rescanKey="mount"
           profileSection="TelescopeSettings"
           :label="t('components.setupWizard.mount.selectDriver')"
+          :connected="mountConnected"
         />
         <p class="text-sm text-content-muted">
           {{ t('components.setupWizard.mount.notFoundHint') }}
@@ -256,17 +255,12 @@ import { apiStore } from '@/store/store';
 import Spinner from '@/components/helpers/Spinner.vue';
 import IndiDriverSelect from '@/components/setupWizard/IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '@/components/setupWizard/Indi3rdpartyInstallPanel.vue';
-import {
-  buildIndiInstallPayload,
-  extractIndiInstallErrorDetail,
-  parseIndiInstallJobId,
-} from '@/components/pins/composables/indiInstallUtils';
-import { pollJobUntilFinished } from '@/components/pins/composables/pinsJobPolling';
+import { extractIndiInstallErrorDetail } from '@/components/pins/composables/indiInstallUtils';
+import { installIndiDriver } from '@/components/pins/composables/installIndiDriver';
 import { applyIndiDriver } from '@/utils/equipmentDevices';
 import {
   MOUNT_DRIVERS,
   driverAvailability,
-  findPackageAsset,
   mountDriverLabel,
   mountVendors,
   searchMountModels,
@@ -402,13 +396,6 @@ async function useDriver() {
   await applyDriver(selectedConnection.value.driver);
 }
 
-// The pinsdaemon answers 502 when it cannot reach the release server - in practice: PINS has
-// no internet. The global axios interceptor turns errors into { Success: false } responses
-// instead of throwing.
-function isNoInternet(response) {
-  return response?.Success === false && Number(response?.StatusCode) === 502;
-}
-
 async function installAndUse() {
   const connection = selectedConnection.value;
   if (busy.value || mountConnected.value || !connection) return;
@@ -423,41 +410,14 @@ async function installAndUse() {
   });
 
   try {
-    const list = await apiPinsService.getPinsIndi3rdpartyPackages({
-      onlyNotInstalled: false,
-      q: packageName,
-    });
-    if (isNoInternet(list)) {
-      errorText.value = t('components.mountDriverFinder.noInternet');
-      return;
-    }
-    if (!Array.isArray(list?.packages)) {
-      throw new Error(list?.Error || list?.detail || 'no package list');
-    }
-    const asset = findPackageAsset(packageName, list.packages);
-    if (!asset) {
-      errorText.value = t('components.mountDriverFinder.packageMissing', { name: packageName });
-      return;
-    }
-
-    // Already installed but not in the driver list (an older install without registry
-    // entry) - installing again rewrites the registry entry, which is what is missing.
-    const payload = buildIndiInstallPayload(asset, {
+    const result = await installIndiDriver({
+      packageName,
       type: 'telescope',
       label: mountDriverLabel(driver),
     });
-    const started = await apiPinsService.installPinsIndi3rdparty(payload);
-    if (isNoInternet(started)) {
-      errorText.value = t('components.mountDriverFinder.noInternet');
+    if (result !== 'installed') {
+      errorText.value = t(`components.mountDriverFinder.${result}`, { name: packageName });
       return;
-    }
-    if (started?.Success === false) {
-      throw new Error(started.detail || started.Error || 'install failed');
-    }
-    const jobId = parseIndiInstallJobId(started);
-    if (jobId) {
-      const result = await pollJobUntilFinished(jobId);
-      if (!result.success) throw new Error(result.result?.status || 'install failed');
     }
 
     await loadInstalledDrivers();

@@ -54,11 +54,10 @@
       <IndiDriverSelect
         ref="driverSelect"
         deviceType="focuser"
-        settingPath="FocuserSettings-IndiDriver"
         listAction="focusAction"
-        rescanKey="focus"
         profileSection="FocuserSettings"
         :label="t('components.setupWizard.focuser.selectDriver')"
+        :connected="Boolean(store.focuserInfo?.Connected)"
       />
 
       <p class="text-sm text-content-muted">

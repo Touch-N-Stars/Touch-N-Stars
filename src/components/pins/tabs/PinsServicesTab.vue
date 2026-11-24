@@ -3,6 +3,7 @@
     <PinsSambaCard :enabled="sambaEnabled" :disabled="isBusy" @toggle="toggleSamba" />
 
     <PinsPhd2Card
+      v-if="!simple"
       :enabled="phd2Enabled"
       :running="phd2Running"
       :disabled="isBusy"
@@ -17,6 +18,11 @@ import PinsSambaCard from '../PinsSambaCard.vue';
 import PinsPhd2Card from '../PinsPhd2Card.vue';
 import { usePinsJobRunner } from '../composables/usePinsJobRunner';
 import { usePinsServices } from '../composables/usePinsServices';
+
+defineProps({
+  // Simple mode: guides with the built-in guider, so PHD2's autostart is left out
+  simple: { type: Boolean, default: false },
+});
 
 const { t } = useI18n();
 const runner = usePinsJobRunner({ t });

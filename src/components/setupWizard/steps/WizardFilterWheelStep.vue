@@ -98,14 +98,20 @@
         {{ t('components.setupWizard.filterWheel.notFoundDriverHint') }}
       </p>
 
+      <BrandDriverFinder
+        deviceType="filterwheel"
+        apiAction="filterAction"
+        :connected="Boolean(store.filterInfo?.Connected)"
+        @applied="driverSelect?.loadDrivers()"
+      />
+
       <IndiDriverSelect
         ref="driverSelect"
         deviceType="filterwheel"
-        settingPath="FilterWheelSettings-IndiDriver"
         listAction="filterAction"
-        rescanKey="filter"
         profileSection="FilterWheelSettings"
         :label="t('components.setupWizard.filterWheel.selectDriver')"
+        :connected="Boolean(store.filterInfo?.Connected)"
       />
 
       <p class="text-sm text-content-muted">
@@ -157,6 +163,7 @@ import SettingsSerialConnection from '@/components/equipment/SettingsSerialConne
 import SettingsFilterWheelSlotNum from '@/components/equipment/SettingsFilterWheelSlotNum.vue';
 import SetFilterName from '@/components/filterwheel/settings/SetFilterName.vue';
 import RemoveFilter from '@/components/filterwheel/settings/RemoveFilter.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
 

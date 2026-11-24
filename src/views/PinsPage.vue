@@ -7,7 +7,7 @@
         <h5
           class="text-2xl text-center font-bold text-content mb-2 flex items-center justify-center gap-3"
         >
-          <span>{{ $t('plugins.pins.title') }}</span>
+          <span>{{ $t(simple ? 'components.simpleMode.more.system' : 'plugins.pins.title') }}</span>
         </h5>
 
         <button
@@ -24,13 +24,15 @@
           drops PINS detection.
         -->
         <div v-show="store.isPINS" class="flex flex-col space-y-6 animate-fade-in-up">
-          <PinsNetworkTab v-show="activeTab === 'network'" />
-          <PinsServicesTab v-show="activeTab === 'services'" />
-          <PinsSystemTab v-show="activeTab === 'system'" />
+          <PinsNetworkTab v-show="activeTab === 'network'" :simple="simple" />
+          <PinsServicesTab v-show="activeTab === 'services'" :simple="simple" />
+          <PinsSystemTab v-show="activeTab === 'system'" :simple="simple" />
           <PinsIndiTab v-show="activeTab === 'indi'" />
           <PinsSoftwareTab v-show="activeTab === 'software'" />
           <PinsUpgradeTab v-show="activeTab === 'upgrade'" />
         </div>
+
+        <ExpertToggle v-if="store.isPINS" v-model="showExpert" />
 
         <div
           v-if="!store.isPINS"
@@ -58,11 +60,13 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import SubNav from '@/components/SubNav.vue';
+import ExpertToggle from '@/components/simpleMode/ExpertToggle.vue';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 import PinsNetworkTab from '@/components/pins/tabs/PinsNetworkTab.vue';
 import PinsServicesTab from '@/components/pins/tabs/PinsServicesTab.vue';
 import PinsSystemTab from '@/components/pins/tabs/PinsSystemTab.vue';
@@ -74,16 +78,33 @@ const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const store = apiStore();
 
+const { active: simpleModeActive } = useSimpleMode();
+// The simple mode shows what a night needs; everything else waits behind one tap.
+const showExpert = ref(false);
+const simple = computed(() => simpleModeActive.value && !showExpert.value);
+
 const activeTab = ref('network');
 
-const pinsNavItems = computed(() => [
-  { name: t('plugins.pins.tabs.network'), value: 'network' },
-  { name: t('plugins.pins.tabs.services'), value: 'services' },
-  { name: t('plugins.pins.tabs.system'), value: 'system' },
-  { name: t('plugins.pins.tabs.indi'), value: 'indi' },
-  { name: t('plugins.pins.tabs.software'), value: 'software' },
-  { name: t('plugins.pins.tabs.upgrade'), value: 'upgrade' },
-]);
+const EXPERT_TABS = ['indi', 'software'];
+
+const pinsNavItems = computed(() =>
+  [
+    { name: t('plugins.pins.tabs.network'), value: 'network' },
+    {
+      // Without the PHD2 service only the share for the pictures is left in here
+      name: t(simple.value ? 'plugins.pins.tabs.pictures' : 'plugins.pins.tabs.services'),
+      value: 'services',
+    },
+    { name: t('plugins.pins.tabs.system'), value: 'system' },
+    { name: t('plugins.pins.tabs.indi'), value: 'indi' },
+    { name: t('plugins.pins.tabs.software'), value: 'software' },
+    { name: t('plugins.pins.tabs.upgrade'), value: 'upgrade' },
+  ].filter((item) => !simple.value || !EXPERT_TABS.includes(item.value))
+);
+
+watch(simple, (isSimple) => {
+  if (isSimple && EXPERT_TABS.includes(activeTab.value)) activeTab.value = 'network';
+});
 </script>
 
 <style scoped>

@@ -362,7 +362,9 @@
         "loading": "Loading drivers…",
         "applying": "Applying driver…",
         "listFailed": "Could not load drivers: {message}",
-        "changeFailed": "Could not apply the driver: {message}"
+        "changeFailed": "Could not apply the driver: {message}",
+        "none": "No driver",
+        "installMissing": "Driver not in the list?"
       },
       "welcome": {
         "title": "Let's set up Touch'N'Stars",
@@ -560,10 +562,10 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length in the guiding step.",
         "applyFailed": "Could not save: {message}",
-        "nativeCamera": "PINS Native Guider",
+        "guideScope": "Guide scope",
         "nativeCameraHint": "Enter the focal length of the guide scope. The guider needs it to judge how far the stars move.",
-        "descriptionNative": "The guider built into PINS keeps the stars in place while pictures are taken. It was developed especially for PINS and runs directly on the rig – no extra program to start or connect. It builds on PHD2's proven way of guiding and adds its own: it learns the recurring error of your mount's gears and how the mount drifts, and keeps its calibration from night to night. That is why it often guides more steadily than PHD2. Pick the guide camera and enter the focal length of the guide scope.",
-        "nativeRecommended": "Tip: PINS has its own guider (“Internal Guider” in the list above). It was developed especially for PINS, runs directly on the rig without a separate program and often guides more steadily than PHD2. Settings you made in PHD2 carry over, and you can switch back any time by picking PHD2 again.",
+        "descriptionBuiltIn": "PINS has a built-in guider that keeps the stars in place while pictures are taken, with no extra program. Pick the guide camera and enter the focal length of the guide scope.",
+        "nativeRecommended": "Tip: PINS has its own guider (“Native Guider” in the list above). It was developed especially for PINS, runs directly on the rig without a separate program and often guides more steadily than PHD2. Settings you made in PHD2 carry over, and you can switch back any time by picking PHD2 again.",
         "nativeFocalLengthMissing": "The guide scope focal length is still 0. Guiding works without it, but dithering and the guiding error in arc-seconds need it.",
         "guidePixelSizeHintNative": "Used for this calculation only. The guider reads the pixel size from the guide camera once it is connected; until then, take it from the camera manual.",
         "ditherMissingDataNative": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and the guide scope focal length in the guiding step.",
@@ -957,6 +959,17 @@
         "loadError": "Could not read swap configuration: {message}",
         "saveError": "Could not save swap configuration: {message}",
         "missingJob": "The daemon did not return a swap job."
+      },
+      "instances": {
+        "discovery": "Find rigs in the network",
+        "add": "Add a rig",
+        "edit": "Edit rig",
+        "configured": "Saved rigs",
+        "none": "No rig saved yet",
+        "noneHint": "Use the search above or enter the address yourself.",
+        "active": "Active",
+        "setActive": "Use this rig",
+        "delete": "Remove rig"
       }
     },
     "alpacaDirect": {
@@ -2899,7 +2912,7 @@
           "loading": "Loading settings…",
           "loadFailed": "Settings could not be loaded",
           "empty": "No settings available.",
-          "notConnectedHint": "The native guider is not connected. Changes are saved to the profile; camera changes take effect on the next connect.",
+          "notConnectedHint": "The built-in guider is not connected. Changes are saved to the profile; camera changes take effect on the next connect.",
           "requiresReconnect": "Applies after reconnect",
           "valueInUse": "In use: {value} {unit}, adjusted while guiding.",
           "range": "{min} – {max}",
@@ -6220,6 +6233,10 @@
       "camera": {
         "title": "Camera",
         "hint": "The test picture and every picture of your plan use these values, unless you give an exposure in the plan its own. Your camera's manual lists the recommended gain and offset."
+      },
+      "expert": {
+        "show": "Show expert settings",
+        "hide": "Hide expert settings"
       }
     },
     "secureObservatory": {
@@ -6280,6 +6297,13 @@
       "cameraCold": "The camera cooler is on ({temperature} °C).",
       "domeOpen": "The dome is not closed.",
       "coverOpen": "The flat panel cover is open."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Which brand is it?",
+      "otherBrand": "Other brand",
+      "disconnectFirst": "Disconnect the device before changing its driver.",
+      "applied": "Done: “{device}” is selected. Plug it in, switch it on and tap Connect.",
+      "appliedPickDevice": "The driver is set, but no device was found yet. Plug it in, switch it on, refresh the list above, choose it and tap Connect."
     }
   },
   "plugins": {
@@ -6679,6 +6703,7 @@
       "tabs": {
         "network": "Network",
         "services": "Services",
+        "pictures": "Pictures",
         "software": "Software",
         "upgrade": "Upgrade",
         "system": "System",
