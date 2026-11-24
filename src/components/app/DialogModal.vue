@@ -104,8 +104,8 @@ const { active: simpleModeActive } = useSimpleMode();
 
 // Which of NINA's open windows the app mirrors. Docked tool windows and notifications are not
 // dialogs. In the simple mode NINA's autofocus window stays hidden: the start page and the
-// cockpit show the curve themselves, and closing this window stops the autofocus - a beginner
-// tapping X over the cockpit cancelled the plan's refocus.
+// cockpit show the curve themselves. Closing this window cancels an autofocus the app started,
+// but not the plan's refocus - there the app would only show it as ended while it goes on.
 function isMirroredDialog(dialog) {
   return (
     !dialog.ContentType?.includes('AvalonDock') &&

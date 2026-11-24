@@ -5790,6 +5790,7 @@
       "sequenceStart": "Sequence could not be started",
       "guidingStart": "Guiding could not be started",
       "autofocusStart": "Autofocus could not be started",
+      "autofocusStop": "Autofocus could not be cancelled",
       "binning": "Binning could not be changed",
       "readout": "Readout mode could not be changed",
       "switchSet": "Switch could not be set"
@@ -5927,6 +5928,7 @@
           "lastFailed": "Last autofocus at {time} failed – check that stars are visible and try again",
           "pointAtStars": "Point the telescope at stars (sky atlas)",
           "setupFirst": "Before the first autofocus with this telescope, set it up once: the assistant measures your focuser and camera and finds settings that work. Without it the autofocus often fails.",
+          "cancelled": "Autofocus cancelled. The focuser goes back to where it was before.",
           "setup": "Set up autofocus"
         },
         "guide": {

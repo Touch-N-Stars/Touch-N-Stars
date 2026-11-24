@@ -320,6 +320,19 @@
                       <Spinner v-if="busy.focus" size="sm" />
                       {{ $t('components.simpleMode.steps.focus.autofocus') }}
                     </button>
+                    <button
+                      v-else
+                      type="button"
+                      class="tns-btn-danger"
+                      :disabled="busy.focus"
+                      @click="cancelAutofocus"
+                    >
+                      <Spinner v-if="busy.focus" size="sm" />
+                      {{ $t('components.focuser.cancel_autofocus') }}
+                    </button>
+                    <p v-if="store.afCancelled" class="text-xs text-content-muted">
+                      {{ $t('components.simpleMode.steps.focus.cancelled') }}
+                    </p>
                     <router-link to="/autofocus" class="tns-btn-secondary">
                       {{ $t('components.simpleMode.steps.focus.watch') }}
                     </router-link>
@@ -691,6 +704,7 @@ import {
 } from '@/utils/sequenceSimple';
 import {
   autofocusStartRefusal,
+  autofocusStopRefusal,
   isBackendRefusal,
   reportBackendRefusal,
   toastBackendError,
@@ -786,8 +800,9 @@ const afSetupNeeded = computed(
 );
 
 // The last-af report carries no outcome: a failed run is written too (seen with Hocus Focus).
-// The plugin's autofocus info knows how the last run ended.
-const lastAfFailed = computed(() => store.focuserAfInfo?.afError === true);
+// The plugin's autofocus info knows how the last run ended. A run the user cancelled counts as
+// an error there, but it writes no report: the last report and its focus still hold.
+const lastAfFailed = computed(() => store.focuserAfInfo?.afError === true && !store.afCancelled);
 const lastAfSucceededTonight = computed(
   () => isInNight(lastAfTimestamp.value, night.value) && !lastAfFailed.value
 );
@@ -1206,6 +1221,28 @@ function startAutofocus() {
     }
     store.afTimestampLastStart = Date.now();
     store.afCurveData = [];
+    store.afCancelled = false;
+  });
+}
+
+const AF_CANCEL_TIMEOUT_MS = 15000;
+
+// Only for a run started by the app: the plan's own autofocus ignores this request (NINA holds
+// another cancellation token for it), and the cockpit stands here while the plan runs.
+function cancelAutofocus() {
+  return withBusy('focus', async () => {
+    const response = await apiService.focuserAfAction('stopp');
+    const refusal = autofocusStopRefusal(response);
+    if (refusal !== null) {
+      toastBackendError({ Error: refusal }, 'components.backendErrors.autofocusStop');
+      return;
+    }
+    store.afCancelled = true;
+    // The focuser drives back to where it started; a new run must not begin meanwhile.
+    await waitForState(
+      () => !store.focuserAfInfo?.autofocus_running && !store.focuserInfo.IsMoving,
+      AF_CANCEL_TIMEOUT_MS
+    );
   });
 }
 

@@ -35,13 +35,23 @@ export function reportBackendRefusal(response, titleKey) {
 // Success: false and the Error; older ones only send a fixed German message
 // ("Fehler beim Starten des Autofokus: <reason>"), which stays the fallback.
 const AF_START_ERROR_PREFIX = 'Fehler beim Starten des Autofokus';
+const AF_STOP_ERROR_PREFIX = 'Fehler beim Stoppen des Autofokus';
+
+function autofocusRefusal(response, prefix) {
+  if (isBackendRefusal(response)) return response.Error || '';
+  const message = typeof response?.message === 'string' ? response.message : '';
+  if (!message.startsWith(prefix)) return null;
+  return message.slice(prefix.length).replace(/^:\s*/, '');
+}
 
 /** The reason the autofocus start was refused ('' when none is given), or null if it started. */
 export function autofocusStartRefusal(response) {
-  if (isBackendRefusal(response)) return response.Error || '';
-  const message = typeof response?.message === 'string' ? response.message : '';
-  if (!message.startsWith(AF_START_ERROR_PREFIX)) return null;
-  return message.slice(AF_START_ERROR_PREFIX.length).replace(/^:\s*/, '');
+  return autofocusRefusal(response, AF_START_ERROR_PREFIX);
+}
+
+/** The reason the autofocus cancel was refused ('' when none is given), or null if it stopped. */
+export function autofocusStopRefusal(response) {
+  return autofocusRefusal(response, AF_STOP_ERROR_PREFIX);
 }
 
 // Background actions (park, filter change, focuser move, ...) answer their request at once and

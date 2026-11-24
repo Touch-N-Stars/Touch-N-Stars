@@ -199,6 +199,8 @@ export const apiStore = defineStore('store', {
     weatherInfo: { Connected: false },
     afTimestampLastStart: null,
     afCurveData: [],
+    // The last autofocus was cancelled by the user (the plugin reports that as an error)
+    afCancelled: false,
     attemptsToConnect: 0,
     isBackendReachable: false,
     isWebSocketConnected: false,
@@ -734,6 +736,7 @@ export const apiStore = defineStore('store', {
       this.imageData = null;
       this.afCurveData = [];
       this.afTimestampLastStart = null;
+      this.afCancelled = false;
       this.currentApiVersion = null;
       this.currentTnsPluginVersion = null;
       this.currentPinsVersion = null;
@@ -945,6 +948,10 @@ export const apiStore = defineStore('store', {
       }
 
       if (focuserAfResponse?.Success) {
+        // Only a new run: a poll sent before the cancel may still report the old one running
+        if (focuserAfResponse.autofocus_running && !this.focuserAfInfo?.autofocus_running) {
+          this.afCancelled = false;
+        }
         this.setInfoIfChanged('focuserAfInfo', focuserAfResponse);
       } else if (focuserAfResponse) {
         console.error('Error in focuser AF API response:', focuserAfResponse.Error);
