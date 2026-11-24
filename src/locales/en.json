@@ -6031,6 +6031,7 @@
       },
       "more": {
         "title": "More",
+        "pictures": "Pictures of the night",
         "equipment": "All devices",
         "mount": "Mount",
         "focus": "Focus",
@@ -6663,6 +6664,15 @@
       "dryRun": "Dry Run Mode",
       "sambaTitle": "Samba Share",
       "sambaDescription": "Enable or disable network file sharing",
+      "samba": {
+        "firstEnable": "Switch this on to copy the pictures to a computer in the same network. The first time the rig may have to download software for it and then needs internet access.",
+        "howTo": "On a computer in the same network as the rig, enter this address:",
+        "windows": "Windows: address bar of the Explorer",
+        "mac": "Mac: Finder, Go, Connect to Server",
+        "login": "If it asks for a login: user “{user}”, password “{password}” unless it was changed.",
+        "outside": "Your pictures are saved in {folder}. The share shows {share}, so they may not appear there.",
+        "openAccess": "While it is on, anyone in this network can open, change and delete these files without a password."
+      },
       "phd2Title": "PHD2 Autostart",
       "phd2Running": "Service is currently running",
       "phd2Stopped": "Service is currently stopped",

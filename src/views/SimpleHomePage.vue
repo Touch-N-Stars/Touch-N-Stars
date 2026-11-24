@@ -608,6 +608,8 @@
       @close="showAfSetup = false"
     />
 
+    <SequencePreflightDialog :warnings="preflightWarnings" @answer="answerPreflight" />
+
     <SimpleEndNightModal
       :show="showEndNight"
       @close="showEndNight = false"
@@ -695,6 +697,8 @@ import {
 } from '@/utils/backendErrors';
 import { localDecimal } from '@/utils/localeNumber';
 import AfShowGraph from '@/components/focuser/AfShowGraph.vue';
+import SequencePreflightDialog from '@/components/sequence/SequencePreflightDialog.vue';
+import { useSequencePreflight } from '@/composables/useSequencePreflight';
 
 const { seqT } = usePlanTerms();
 const { t } = useI18n();
@@ -710,6 +714,7 @@ const nativeGuiderStore = useNativeGuiderStore();
 const equipmentStore = useEquipmentStore();
 const hfStore = useHocusFocusStore();
 const { available, enabled } = useSimpleMode();
+const { preflightWarnings, answerPreflight, confirmPreflight } = useSequencePreflight();
 const { allConnected, equipmentToConnect, isDeviceConnected } = useEquipmentConnection();
 const { locationMissing, databaseMissing } = useSimpleSetupChecks();
 const {
@@ -1316,6 +1321,8 @@ function startCapture() {
       t('common.cancel')
     );
     if (!confirmed) return;
+    // The same rig check as on the plan page (unsafe, parked, warm, disk full, ...)
+    if (!(await confirmPreflight(sequenceV2Store.data))) return;
     sequenceStore.setSequenceRunning(true);
     const response = await apiService.sequenceAction('start');
     if (reportBackendRefusal(response, 'components.backendErrors.sequenceStart')) {
@@ -1349,6 +1356,7 @@ function switchMode(on) {
 }
 
 const moreLinks = [
+  { to: '/seq-mon?tab=images', labelKey: 'components.simpleMode.more.pictures' },
   { to: '/equipment', labelKey: 'components.simpleMode.more.equipment' },
   { to: '/mount', labelKey: 'components.simpleMode.more.mount' },
   { to: '/autofocus', labelKey: 'components.simpleMode.more.focus' },

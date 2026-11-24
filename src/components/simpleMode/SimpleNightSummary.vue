@@ -81,6 +81,9 @@
     >
       {{ $t('components.simpleMode.summary.ended.resume') }}
     </button>
+    <router-link to="/seq-mon?tab=images" class="tns-btn-secondary">
+      {{ $t('components.simpleMode.more.pictures') }}
+    </router-link>
     <router-link to="/sequence" class="tns-btn-secondary">
       {{ $t('components.simpleMode.steps.capture.editPlan') }}
     </router-link>

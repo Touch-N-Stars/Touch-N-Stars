@@ -320,39 +320,7 @@
       </template>
     </Modal>
 
-    <!-- Preflight: what looks wrong before the start -->
-    <Modal
-      :show="preflightWarnings.length > 0"
-      max-width="max-w-md"
-      @close="answerPreflight(false)"
-    >
-      <template #header>
-        <h2 class="text-xl font-bold text-status-warn">
-          {{ $t('components.rigChecks.preflightTitle') }}
-        </h2>
-      </template>
-      <template #body>
-        <div class="w-full flex flex-col gap-4" data-testid="preflight-warnings">
-          <ul class="list-disc pl-5 text-sm text-content space-y-1">
-            <li v-for="warning in preflightWarnings" :key="warning.key">
-              {{ $t(`components.rigChecks.${warning.key}`, warning.params) }}
-            </li>
-          </ul>
-          <div class="flex justify-end gap-3">
-            <button class="tns-btn-secondary w-auto!" @click="answerPreflight(false)">
-              {{ $t('general.cancel') }}
-            </button>
-            <button
-              class="tns-btn-primary w-auto!"
-              data-testid="preflight-start-anyway"
-              @click="answerPreflight(true)"
-            >
-              {{ $t('components.rigChecks.startAnyway') }}
-            </button>
-          </div>
-        </div>
-      </template>
-    </Modal>
+    <SequencePreflightDialog :warnings="preflightWarnings" @answer="answerPreflight" />
 
     <!-- Reset Confirmation Dialog -->
     <Modal
@@ -390,7 +358,7 @@ import { useOrientation } from '@/composables/useOrientation';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import { reportBackendRefusal } from '@/utils/backendErrors';
-import { sequencePreflight } from '@/utils/rigChecks';
+import { useSequencePreflight } from '@/composables/useSequencePreflight';
 import { useI18n } from 'vue-i18n';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 import { joinSequenceFilePath, isRelativeFolder } from '@/utils/sequenceFilePath';
@@ -406,6 +374,7 @@ import {
 } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import FileBrowser from '@/components/helpers/fileBrowser.vue';
+import SequencePreflightDialog from '@/components/sequence/SequencePreflightDialog.vue';
 
 const { seqT } = usePlanTerms();
 const sequenceStore = useSequenceStore();
@@ -416,6 +385,7 @@ const { t } = useI18n();
 const showResetConfirmation = ref(false);
 const isLoading = computed(() => sequenceStore.sequenceRunning);
 const { isLandscape } = useOrientation();
+const { preflightWarnings, answerPreflight, confirmPreflight } = useSequencePreflight();
 
 // File manager state
 const showFileManager = ref(false);
@@ -614,39 +584,8 @@ async function saveCurrentFile() {
   }
 }
 
-// Warnings of the check before the start; the dialog is open while the list is not empty.
-const preflightWarnings = ref([]);
-let preflightResolver = null;
-
-function answerPreflight(start) {
-  preflightWarnings.value = [];
-  preflightResolver?.(start);
-  preflightResolver = null;
-}
-
-// Silent when everything looks fine; otherwise the user decides. Never blocks: many
-// sequences unpark, cool and start guiding themselves.
-async function confirmPreflight() {
-  const imageDisk = await apiService.fetchImageDisk().catch(() => null);
-  const warnings = sequencePreflight(
-    {
-      mountInfo: store.mountInfo,
-      cameraInfo: store.cameraInfo,
-      guiderInfo: store.guiderInfo,
-      safetyInfo: store.safetyInfo,
-    },
-    sequenceStore.sequenceInfo,
-    imageDisk
-  );
-  if (warnings.length === 0) return true;
-  return new Promise((resolve) => {
-    preflightResolver = resolve;
-    preflightWarnings.value = warnings;
-  });
-}
-
 async function startSequence() {
-  if (!(await confirmPreflight())) return;
+  if (!(await confirmPreflight(sequenceStore.sequenceInfo))) return;
   console.log('Starting sequence');
   sequenceStore.setSequenceRunning(true);
   try {
