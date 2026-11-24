@@ -97,7 +97,7 @@
       <p v-if="!target.rows.length" class="text-sm text-content-faint">
         {{ $t('components.sequence.simple.noExposures') }}
       </p>
-      <button type="button" class="tns-btn-secondary" @click="addExposureRow">
+      <button type="button" class="tns-btn-secondary" @click="store.addExposureRow(container.Id)">
         <PlusIcon class="w-4 h-4" />
         {{ $t('components.sequence.simple.addExposure') }}
       </button>
@@ -204,15 +204,7 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useToastStore } from '@/store/toastStore';
 import { apiStore } from '@/store/store';
 import { useDsoContainerTarget } from '@/composables/useDsoContainerTarget';
-import { filterNameChoices, nextUnusedFilter, switchFilterUpdate } from '@/utils/sequenceFilter';
-import {
-  formatClock,
-  formatDuration,
-  insertionPoint,
-  itemDisplayName,
-  SMART_EXPOSURE_TYPE,
-  TARGET_ORDER,
-} from '@/utils/sequenceSimple';
+import { formatClock, formatDuration, itemDisplayName } from '@/utils/sequenceSimple';
 
 const { seqT } = usePlanTerms();
 // target: an entry from summarizeTargets() in src/utils/sequenceSimple.js
@@ -289,29 +281,6 @@ async function onSearchSelected(targetData) {
 function onFavoriteSelected(favorite) {
   setFromFavorite(favorite);
   showFavPicker.value = false;
-}
-
-// New rows go behind the last exposure row, or behind the target's steps when there is none.
-// With a filter wheel a new row starts with the next filter the target does not use yet, the
-// usual way to build an LRGB or narrowband plan; otherwise it would keep the current filter.
-async function addExposureRow() {
-  const before = new Set(props.target.rows.map((r) => r.id));
-  const used = props.target.rows.map((r) => r.filterName).filter(Boolean);
-  const { targetId, insertAfter } = insertionPoint(
-    container.value,
-    SMART_EXPOSURE_TYPE,
-    TARGET_ORDER,
-    'bottom'
-  );
-  await store.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
-
-  const row = props.target.rows.find((r) => !before.has(r.id));
-  if (!row?.filterItem?.Id || row.filterName) return;
-  const names = filterNameChoices(row.filterItem, mainStore.filterInfo, mainStore.profileInfo);
-  const next = nextUnusedFilter(names, used);
-  if (!next) return;
-  const { property, value } = switchFilterUpdate(row.filterItem, names, next);
-  await store.setProperty(row.filterItem.Id, property, value);
 }
 
 async function copyTarget() {

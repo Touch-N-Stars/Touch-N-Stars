@@ -1222,6 +1222,7 @@
         "favorites": "Favorites",
         "framing": "Framing",
         "noFilter": "No filter change",
+        "chooseFilter": "Choose a filter",
         "exposureTime": "Exposure (s)",
         "count": "Count",
         "noExposures": "No exposures for this target yet.",

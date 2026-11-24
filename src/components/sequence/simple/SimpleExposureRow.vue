@@ -47,15 +47,21 @@
       <select
         :id="`simple-filter-${row.id}`"
         class="tns-select"
-        :value="row.filterName"
+        :value="filterChoice"
         :disabled="isRunning"
         @change="saveFilter($event.target.value)"
       >
+        <option v-if="!filterChoice" value="" disabled>
+          {{ $t('components.sequence.simple.chooseFilter') }}
+        </option>
         <option
-          v-if="row.filterName && !filterNames.includes(row.filterName)"
-          :value="row.filterName"
+          v-if="filterChoice === KEEP_CURRENT || canKeepCurrentFilter(row.filterItem)"
+          :value="KEEP_CURRENT"
         >
-          {{ row.filterName }}
+          {{ currentFilterLabel }}
+        </option>
+        <option v-if="filterName && !filterNames.includes(filterName)" :value="filterName">
+          {{ filterName }}
         </option>
         <option v-for="(name, i) in filterNames" :key="i" :value="name">{{ name }}</option>
       </select>
@@ -185,7 +191,13 @@ import GainInput from '@/components/helpers/GainInput.vue';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { apiStore } from '@/store/store';
-import { filterNameChoices, switchFilterUpdate } from '@/utils/sequenceFilter';
+import {
+  canKeepCurrentFilter,
+  filterNameChoices,
+  isFilterUnset,
+  matchFilterName,
+  switchFilterUpdate,
+} from '@/utils/sequenceFilter';
 
 // row: an entry from exposureRow() in src/utils/sequenceSimple.js. Every edit is written to
 // the raw child item it came from, exactly like SmartExposureItem / TakeManyExposuresItem.
@@ -234,10 +246,26 @@ const filterNames = computed(() =>
   filterNameChoices(props.row.filterItem, mainStore.filterInfo, mainStore.profileInfo)
 );
 
+const filterName = computed(() => matchFilterName(filterNames.value, props.row.filterName));
+
+// Value of the "current filter" option; '' is a row nothing was chosen for yet.
+const KEEP_CURRENT = '(current)';
+const filterChoice = computed(
+  () => filterName.value || (isFilterUnset(props.row.filterItem) ? '' : KEEP_CURRENT)
+);
+
+// NINA takes the pictures with whatever filter is in the light path then
+const currentFilterLabel = computed(() => {
+  const label = t('components.filterwheel.currentFilter');
+  const name = mainStore.filterInfo?.Connected && mainStore.filterInfo.SelectedFilter?.Name;
+  return name ? `${label} (${name})` : label;
+});
+
 // Same convention as SmartExposureItem.vue
-function saveFilter(name) {
+function saveFilter(choice) {
   const item = props.row.filterItem;
   if (!item?.Id) return;
+  const name = choice === KEEP_CURRENT ? '' : choice;
   const { property, value } = switchFilterUpdate(item, filterNames.value, name);
   store.setProperty(item.Id, property, value);
 }

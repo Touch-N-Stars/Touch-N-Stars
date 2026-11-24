@@ -11,11 +11,19 @@ import {
   DSO_CONTAINER_TYPE,
 } from '@/utils/sequenceTargets';
 import {
+  canKeepCurrentFilter,
+  filterNameChoices,
+  matchFilterName,
+  nextUnusedFilter,
+  switchFilterUpdate,
+} from '@/utils/sequenceFilter';
+import {
   collectSmartExposureDithers,
   findAreaContainer,
   findByType,
   insertionPoint,
   isActive,
+  summarizeDsoContainer,
   AF_AFTER_FILTER_CHANGE_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
   END_AREA_TYPE,
@@ -724,15 +732,41 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         [SMART_EXPOSURE_TYPE, TAKE_MANY_EXPOSURES_TYPE].includes(i?.FullTypeName)
       );
       if (addExposure && container && !hasExposure) {
-        const { targetId, insertAfter } = insertionPoint(
-          container,
-          SMART_EXPOSURE_TYPE,
-          TARGET_ORDER,
-          'bottom'
-        );
-        await this.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
+        await this.addExposureRow(containerId);
       }
       return { ok: true };
+    },
+
+    // New rows go behind the last exposure row, or behind the target's steps when there is
+    // none. With a filter wheel a new row starts with the next filter the target does not use
+    // yet, the usual way to build an LRGB or narrowband plan. Without a filter left it is told
+    // to keep the current one: untouched, PINS would move the wheel to its first slot.
+    async addExposureRow(containerId) {
+      if (this._isControlsLocked()) return;
+      const container = this.findById(containerId);
+      if (!container) return;
+
+      const before = summarizeDsoContainer(container).rows;
+      const { targetId, insertAfter } = insertionPoint(
+        container,
+        SMART_EXPOSURE_TYPE,
+        TARGET_ORDER,
+        'bottom'
+      );
+      await this.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
+
+      const knownIds = new Set(before.map((r) => r.id));
+      const row = summarizeDsoContainer(this.findById(containerId)).rows.find(
+        (r) => !knownIds.has(r.id)
+      );
+      if (!row?.filterItem?.Id || row.filterName) return;
+      const { filterInfo, profileInfo } = apiStore();
+      const names = filterNameChoices(row.filterItem, filterInfo, profileInfo);
+      const used = before.map((r) => matchFilterName(names, r.filterName));
+      const next = nextUnusedFilter(names, used);
+      if (!next && !canKeepCurrentFilter(row.filterItem)) return;
+      const { property, value } = switchFilterUpdate(row.filterItem, names, next ?? '');
+      await this.setProperty(row.filterItem.Id, property, value);
     },
 
     // Optional trigger of a container (the autofocus triggers of a target). Off disables,

@@ -403,3 +403,44 @@ test('a simple target without pictures gets an exposure row', async (t) => {
     { name: 'sequenceAddItem', args: ['center', SMART_EXPOSURE_TYPE, true] },
   ]);
 });
+
+// The backend adds the row with an untouched filter, which PINS runs as "first slot".
+function exposureWithFilter(id, switchFilter) {
+  return {
+    ...smartExposure(id, 1),
+    Items: [
+      {
+        Id: `${id}-filter`,
+        FullTypeName: 'NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter',
+        ...switchFilter,
+      },
+    ],
+  };
+}
+
+test('a new exposure row starts with the next filter, or is told to keep the current one', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+  const names = ['L', 'R'];
+  const dso = store.data[2].Items[0];
+  const unset = { SelectedFilter: 0, ComboBoxText: null, FilterNames: names };
+  const added = ['a', 'b', 'c'];
+  apiService.sequenceAddItem = async () => {
+    dso.Items = [...dso.Items, exposureWithFilter(added.shift(), { ...unset })];
+    return { Success: true };
+  };
+  apiService.sequenceSetProperty = async (id, property, value) => {
+    calls.push([id, property, value]);
+    const filter = dso.Items.flatMap((i) => i.Items ?? []).find((i) => i.Id === id);
+    filter.ComboBoxText = value === 0 ? '(Current)' : names[value - 1];
+    return { Success: true };
+  };
+
+  for (let i = 0; i < 3; i += 1) await store.addExposureRow('dso');
+
+  assert.deepEqual(calls, [
+    ['a-filter', 'SelectedFilter', 1],
+    ['b-filter', 'SelectedFilter', 2],
+    ['c-filter', 'SelectedFilter', 0],
+  ]);
+});
