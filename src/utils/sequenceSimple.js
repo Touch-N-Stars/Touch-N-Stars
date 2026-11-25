@@ -237,7 +237,7 @@ const RAN_STATUSES = new Set(['FINISHED', 'SKIPPED', 'FAILED']);
  * again. A new target added to such a plan runs, but "park" and "warm up" keep their FINISHED
  * from the first run and are skipped, so the mount tracks on (seen on PINS). The first item of
  * each area is enough: the plugin's reset takes the following ones along. Empty when the plan
- * has not reached its end area: stopping and starting again must not redo the start.
+ * has not reached its end area; see stepsToReopen() for a stopped plan.
  * @returns {string[]} item Ids
  */
 export function itemsToRearm(tree) {
@@ -246,6 +246,40 @@ export function itemsToRearm(tree) {
   const closing = firstRan(END_AREA_TYPE);
   if (!closing) return [];
   return [firstRan(START_AREA_TYPE), closing].filter(Boolean).map((item) => item.Id);
+}
+
+/**
+ * What has to be opened again, one item at a time, before a plan continues: stopping it keeps the
+ * FINISHED of "slew and center" and "start guiding", so the remaining pictures were taken
+ * unguided wherever the telescope stood by then (seen on PINS). Per target with pictures left:
+ * - the target itself, or pictures added to a finished target never run
+ * - its approach, guiding and autofocus steps
+ * - the filter change and exposure of its unfinished rows: the first picture would be taken in
+ *   whatever filter is in, and a row stopped while dithering (both FINISHED) would just end
+ * `start` adds unparking and cooling, which a plan stopped last night needs again tonight. The
+ * rest of the start area, and everything a target holds beyond that, stays as it is.
+ * @returns {string[]} item Ids
+ */
+export function stepsToReopen(tree, { start = true } = {}) {
+  const ran = (item) => RAN_STATUSES.has(item?.Status);
+  const ids = [];
+  if (start) {
+    for (const item of findAreaContainer(tree, START_AREA_TYPE)?.Items ?? []) {
+      if (START_ORDER.includes(item?.FullTypeName) && ran(item)) ids.push(item.Id);
+    }
+  }
+  for (const { container, rows, remainingSeconds } of summarizeTargets(tree).targets) {
+    if (remainingSeconds <= 0) continue;
+    if (ran(container)) ids.push(container.Id);
+    for (const item of container.Items ?? []) {
+      if (TARGET_STEP_TYPES.has(item?.FullTypeName) && ran(item)) ids.push(item.Id);
+    }
+    for (const row of rows) {
+      if (row.remainingSeconds <= 0) continue;
+      ids.push(...(row.item.Items ?? []).filter(ran).map((item) => item.Id));
+    }
+  }
+  return ids;
 }
 
 /** What the plan does after its last picture: `{ park, warm }`. */

@@ -588,8 +588,8 @@ async function saveCurrentFile() {
 
 async function startSequence() {
   if (!(await confirmPreflight(sequenceStore.sequenceInfo))) return;
-  // The simple mode's plan has to park again at the end of a second run
-  if (simpleModeActive.value && !(await sequenceV2Store.rearmFinishedPlan())) {
+  // The simple mode's plan has to slew, guide and park again on a second start
+  if (simpleModeActive.value && !(await sequenceV2Store.rearmPlan())) {
     toastBackendError(null, 'components.backendErrors.sequenceStart');
     return;
   }

@@ -156,6 +156,11 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    oder im Plan) wieder gestartet wird, then werden vorher Start- und Endschritte zurückgesetzt.
    PINS führt nur Schritte mit Status CREATED aus und ließ sonst „Montierung parken“ aus. Lehnt
    das Backend das ab, startet der Plan nicht.
+   8i. Given ein gestoppter Plan mit offenen Bildern, when er wieder gestartet wird, then fährt er
+   das Ziel erneut an, zentriert und startet das Guiding; der Fortschritt der Belichtungen bleibt.
+   Dafür werden je Ziel mit offenen Bildern das Ziel selbst, seine Anfahrt-, Guiding- und
+   Autofokus-Schritte und Filterwechsel/Belichtung der offenen Zeilen einzeln wieder geöffnet,
+   dazu Kühlen und Entparken. Auch Bilder, die an ein fertiges Ziel angehängt wurden, laufen so.
    8h. Given ein Plan, der schon geparkt und aufgewärmt hat, then lässt sich die Nacht trotzdem
    beenden: der Dialog hat ohne Aktionen nur die Bestätigung. Ist die Montierung nicht verbunden,
    behauptet er nicht, sie sei geparkt.

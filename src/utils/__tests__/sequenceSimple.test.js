@@ -76,6 +76,67 @@ function takeMany(id, { time, iterations, completed = 0 }) {
   };
 }
 
+test('stepsToReopen opens what a stopped plan needs again, and nothing else', async () => {
+  const m = await import('@/utils/sequenceSimple');
+  const item = (Id, FullTypeName, Status = 'FINISHED', extra = {}) => ({
+    Id,
+    FullTypeName,
+    Status,
+    ...extra,
+  });
+  const smart = (Id, Status, done, childStatus) =>
+    item(Id, m.SMART_EXPOSURE_TYPE, Status, {
+      Items: [
+        item(`${Id}-filter`, 'NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter'),
+        item(`${Id}-take`, 'NINA.Sequencer.SequenceItem.Imaging.TakeExposure', childStatus, {
+          ExposureTime: 60,
+        }),
+      ],
+      Conditions: [
+        {
+          FullTypeName: 'NINA.Sequencer.Conditions.LoopCondition',
+          Iterations: 10,
+          CompletedIterations: done,
+        },
+      ],
+    });
+  const dso = (Id, Status, Items) =>
+    item(Id, 'NINA.Sequencer.Container.DeepSkyObjectContainer', Status, { Items, Triggers: [] });
+  const tree = [
+    { GlobalTriggers: [] },
+    item('start', m.START_AREA_TYPE, 'FINISHED', {
+      Items: [
+        item('cool', m.COOL_CAMERA_TYPE),
+        item('unpark', m.UNPARK_SCOPE_TYPE, 'DISABLED'),
+        item('own', 'NINA.Sequencer.SequenceItem.Utility.WaitForTime'),
+      ],
+    }),
+    item('targets', 'NINA.Sequencer.Container.TargetAreaContainer', 'CREATED', {
+      Items: [
+        dso('through', 'FINISHED', [
+          item('through-center', m.CENTER_TYPE),
+          smart('through-row', 'FINISHED', 10, 'FINISHED'),
+        ]),
+        dso('stopped', 'CREATED', [
+          item('slew', m.SLEW_TYPE, 'DISABLED'),
+          item('center', m.CENTER_TYPE),
+          item('guide', m.START_GUIDING_TYPE, 'FAILED'),
+          item('focus', m.RUN_AUTOFOCUS_TYPE, 'CREATED'),
+          item('script', 'NINA.Sequencer.SequenceItem.Utility.ExternalScript'),
+          smart('l', 'FINISHED', 10, 'FINISHED'),
+          smart('r', 'CREATED', 3, 'CREATED'),
+        ]),
+        // Pictures added to a finished target
+        dso('extended', 'FINISHED', [smart('new', 'CREATED', 0, 'CREATED')]),
+      ],
+    }),
+  ];
+  const targets = ['center', 'guide', 'r-filter', 'extended', 'new-filter'];
+  assert.deepEqual(m.stepsToReopen(tree), ['cool', ...targets]);
+  assert.deepEqual(m.stepsToReopen(tree, { start: false }), targets);
+  assert.deepEqual(m.stepsToReopen(null), []);
+});
+
 test('exposureRow reads filter, time and progress of a Smart Exposure', () => {
   const row = exposureRow(smart('s', { filter: 'Ha', time: 300, iterations: 20, completed: 5 }));
   assert.equal(row.filterName, 'Ha');

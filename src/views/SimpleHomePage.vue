@@ -1381,7 +1381,7 @@ function startCapture() {
     if (!confirmed) return;
     // The same rig check as on the plan page (unsafe, parked, warm, disk full, ...)
     if (!(await confirmPreflight(sequenceV2Store.data))) return;
-    if (!(await sequenceV2Store.rearmFinishedPlan())) {
+    if (!(await sequenceV2Store.rearmPlan())) {
       toastBackendError(null, 'components.backendErrors.sequenceStart');
       return;
     }

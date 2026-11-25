@@ -95,13 +95,35 @@ function setup(treeOptions) {
 
 const ran = (Id, FullTypeName, Status = 'FINISHED') => ({ Id, FullTypeName, Status });
 
+// A Smart Exposure with pictures left
+const row = (Id, { iterations }) => ({
+  Id,
+  FullTypeName: SMART_EXPOSURE_TYPE,
+  Status: 'CREATED',
+  Items: [
+    {
+      Id: `${Id}-take`,
+      FullTypeName: 'NINA.Sequencer.SequenceItem.Imaging.TakeExposure',
+      Status: 'CREATED',
+      ExposureTime: 60,
+    },
+  ],
+  Conditions: [
+    {
+      FullTypeName: 'NINA.Sequencer.Conditions.LoopCondition',
+      Iterations: iterations,
+      CompletedIterations: 2,
+    },
+  ],
+});
+
 test('a plan that ran to its end prepares and parks again on the next start', async (t) => {
   const { store, calls, restore } = setup({
     startItems: [ran('cool', COOL_CAMERA_TYPE)],
     endItems: [ran('off', SLEW_TYPE, 'DISABLED'), ran('park', PARK_SCOPE_TYPE)],
   });
   t.after(restore);
-  assert.equal(await store.rearmFinishedPlan(), true);
+  assert.equal(await store.rearmPlan(), true);
   assert.deepEqual(
     calls.map((c) => [c.name, c.args[0]]),
     [
@@ -111,25 +133,51 @@ test('a plan that ran to its end prepares and parks again on the next start', as
   );
 });
 
-test('a stopped plan that has not reached its end keeps its progress', async (t) => {
+test('a stopped plan reopens its steps one by one, without resetting what follows', async (t) => {
   const { store, calls, restore } = setup({
     startItems: [ran('cool', COOL_CAMERA_TYPE)],
+    dsoSteps: [row('row', { iterations: 5 }), ran('center', CENTER_TYPE)],
     endItems: [ran('park', PARK_SCOPE_TYPE, 'CREATED')],
   });
   t.after(restore);
-  assert.equal(await store.rearmFinishedPlan(), true);
+  assert.equal(await store.rearmPlan(), true);
+  assert.deepEqual(
+    calls.map((c) => [c.name, ...c.args]),
+    ['cool', 'center'].flatMap((id) => [
+      ['sequenceEnable', id, false],
+      ['sequenceEnable', id, true],
+    ])
+  );
+});
+
+test('a fresh plan is left alone', async (t) => {
+  const { store, calls, restore } = setup({
+    startItems: [ran('cool', COOL_CAMERA_TYPE, 'CREATED')],
+    dsoSteps: [row('row', { iterations: 5 }), ran('center', CENTER_TYPE, 'CREATED')],
+  });
+  t.after(restore);
+  assert.equal(await store.rearmPlan(), true);
   assert.deepEqual(calls, []);
+});
+
+test('a step that cannot be reopened keeps the plan from starting', async (t) => {
+  const { store, restore } = setup({
+    dsoSteps: [row('row', { iterations: 5 }), ran('center', CENTER_TYPE)],
+  });
+  t.after(restore);
+  apiService.sequenceEnable = async (id, enabled) => ({ Success: !enabled });
+  assert.equal(await store.rearmPlan(), false);
 });
 
 test('a refused reset keeps the plan from starting without its park', async (t) => {
   const { store, restore } = setup({ endItems: [ran('park', PARK_SCOPE_TYPE)] });
   t.after(restore);
   apiService.sequenceResetStatus = async () => ({ Success: false });
-  assert.equal(await store.rearmFinishedPlan(), false);
+  assert.equal(await store.rearmPlan(), false);
   apiService.sequenceResetStatus = async () => {
     throw new Error('offline');
   };
-  assert.equal(await store.rearmFinishedPlan(), false);
+  assert.equal(await store.rearmPlan(), false);
 });
 
 test('switching on a missing global trigger appends it to the global triggers', async (t) => {

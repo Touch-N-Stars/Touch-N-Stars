@@ -24,6 +24,7 @@ import {
   insertionPoint,
   isActive,
   itemsToRearm,
+  stepsToReopen,
   summarizeDsoContainer,
   AF_AFTER_FILTER_CHANGE_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
@@ -455,21 +456,30 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.refresh();
     },
 
-    // Before a plan that already ran to its end starts again, see itemsToRearm(). Not bound to
-    // the controls lock: it belongs to the start, not to editing. Returns whether the plan is
-    // ready to start; on false it must not start, it would not park.
-    async rearmFinishedPlan() {
+    // Before a plan that ran to its end or was stopped starts again, see itemsToRearm() and
+    // stepsToReopen(). Not bound to the controls lock: it belongs to the start, not to editing.
+    // Returns whether the plan is ready; on false it must not start, it would take pictures
+    // without its slew and guiding, or not park.
+    async rearmPlan() {
       await this.loadCurrent();
-      const ids = itemsToRearm(this.data);
-      if (!ids.length) return true;
+      const rearm = itemsToRearm(this.data);
+      const reopen = stepsToReopen(this.data, { start: rearm.length === 0 });
+      if (!rearm.length && !reopen.length) return true;
+      const accepted = (res) => {
+        if (res?.Success === false) throw new Error(res.Error || 'refused');
+      };
       let ok = true;
       try {
-        for (const id of ids) {
-          const res = await apiService.sequenceResetStatus(id);
-          if (res?.Success === false) ok = false;
+        for (const id of rearm) accepted(await apiService.sequenceResetStatus(id));
+        // reset-status would take the following items along and drop the progress of the
+        // exposures, so these are switched off and on: the plugin only sets a disabled item
+        // back to CREATED, and nothing around it changes.
+        for (const id of reopen) {
+          accepted(await apiService.sequenceEnable(id, false));
+          accepted(await apiService.sequenceEnable(id, true));
         }
       } catch (e) {
-        console.error('sequenceResetStatus:', e);
+        console.error('rearmPlan:', e);
         ok = false;
       }
       await this.refresh();
