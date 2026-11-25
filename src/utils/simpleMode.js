@@ -128,7 +128,8 @@ export function planUsedUp(sequence) {
  * @param {{ inProfile: boolean, state: string, ready?: boolean, calibrated?: boolean }} s.guider
  *   ready: the built-in guider and a guide camera are chosen; calibrated: the guider holds a
  *   calibration (PINS keeps it across nights and adapts it to the pointing)
- * @param {{ running: boolean, targets: number, targetSet?: boolean, totalSeconds: number, remainingSeconds: number, takenTonight?: boolean }} s.sequence
+ * @param {{ running: boolean, targets: number, targetSet?: boolean, totalSeconds: number, remainingSeconds: number, takenTonight?: boolean, cutOff?: boolean }} s.sequence
+ *   cutOff: pictures are left, but dawn or the targets' altitude allow none of them now;
  *   targetSet: at least one target of the plan has an object or coordinates; takenTonight:
  *   false when no picture of a plan was saved tonight, see planUsedUp()
  * @param {boolean} s.tppaRunning
@@ -204,6 +205,9 @@ export function nightSteps(s) {
     else if (s.sequence?.totalSeconds > 0 && s.sequence.remainingSeconds <= 0 && !usedUp) {
       status = 'done';
     }
+    // Dawn ended the plan: the rest is for another night. Before the night's first picture the
+    // same state only means that it is not dark yet.
+    else if (s.sequence?.cutOff && s.sequence.takenTonight === true) status = 'done';
     steps.push({ id: 'capture', status });
   }
 

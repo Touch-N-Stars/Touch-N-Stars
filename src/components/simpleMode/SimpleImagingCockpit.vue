@@ -168,7 +168,7 @@ import AfShowGraph from '@/components/focuser/AfShowGraph.vue';
 import { fmt, useImagingQuality } from '@/composables/useImagingQuality';
 import { dsoContainerName } from '@/utils/sequenceTargets';
 import { addGuidingTime, imagingVerdict, nightKey, runningPlanPosition } from '@/utils/simpleMode';
-import { MERIDIAN_FLIP_TRIGGER_TYPE, findByType } from '@/utils/sequenceSimple';
+import { MERIDIAN_FLIP_TRIGGER_TYPE, darknessWait, findByType } from '@/utils/sequenceSimple';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 
 const props = defineProps({
@@ -176,6 +176,8 @@ const props = defineProps({
   planSummary: { type: Object, required: true },
   remaining: { type: String, default: '' },
   doneAt: { type: String, default: '' },
+  /** When it is dark enough, while the plan waits for it */
+  darkAt: { type: String, default: '' },
   /** Devices of the profile that are not connected (any lost one stops the plan sooner or later) */
   missingDevices: { type: Number, default: 0 },
   stopping: { type: Boolean, default: false },
@@ -221,9 +223,18 @@ const sequenceV2Store = useSequenceV2Store();
 const flipping = computed(
   () => findByType(sequenceV2Store.globalTriggers, MERIDIAN_FLIP_TRIGGER_TYPE)?.Status === 'RUNNING'
 );
-const shownActivity = computed(() => (flipping.value ? 'flipping' : activity.value));
+// Nothing else runs while the plan waits for darkness, and nobody has to guide yet.
+const darkness = computed(() => darknessWait(sequenceV2Store.data).wait);
+const waitingForDark = computed(() => darkness.value?.Status === 'RUNNING');
+const shownActivity = computed(() => {
+  if (waitingForDark.value) return 'waitingForDark';
+  return flipping.value ? 'flipping' : activity.value;
+});
 
 const activityText = computed(() => {
+  if (waitingForDark.value && props.darkAt) {
+    return t('components.simpleMode.cockpit.waitingUntil', { time: props.darkAt });
+  }
   if (shownActivity.value !== 'exposing') {
     return t(`components.simpleMode.cockpit.activity.${shownActivity.value}`);
   }
@@ -321,6 +332,7 @@ const alerts = computed(() => {
     store.guiderInfo.Connected &&
     !guiding.value &&
     !guidingPaused.value &&
+    !waitingForDark.value &&
     !flipping.value
   ) {
     list.push({

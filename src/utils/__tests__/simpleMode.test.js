@@ -274,6 +274,17 @@ test("an earlier night's finished plan is not tonight's target or pictures", () 
   // A new target was added to the old plan
   assert.deepEqual(at({ remainingSeconds: 50, takenTonight: false }), ['done', 'open', 'prepare']);
   assert.equal(at({ remainingSeconds: 0, takenTonight: false, running: true })[1], 'running');
+  // Dawn ended the plan; before the night's first picture it is only not dark yet
+  assert.deepEqual(at({ remainingSeconds: 50, takenTonight: true, cutOff: true }), [
+    'done',
+    'done',
+    'finished',
+  ]);
+  assert.deepEqual(at({ remainingSeconds: 50, takenTonight: false, cutOff: true }), [
+    'done',
+    'open',
+    'prepare',
+  ]);
 });
 
 test('planPicturesTaken looks at what a plan takes, in the given night', () => {

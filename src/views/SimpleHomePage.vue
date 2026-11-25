@@ -16,6 +16,7 @@
       :planSummary="planSummary"
       :remaining="plan.remaining"
       :doneAt="plan.doneAt"
+      :darkAt="planTimes.notBeforeMs ? formatClock(planTimes.notBeforeMs) : ''"
       :missingDevices="missingDevices"
       :stopping="busy.capture"
       :moreLinks="moreLinks"
@@ -56,6 +57,7 @@
             :warming="cameraWarming"
             :endBlocked="flatsRun.running"
             :flatsPending="showFlatsCard"
+            :cutOff="cutOffTonight ? planProgress : null"
             @end="showEndNight = true"
             @resume="setMark('end', null)"
           />
@@ -493,6 +495,11 @@
                       {{ $t('components.simpleMode.steps.capture.fixSteps') }}
                     </button>
                   </div>
+                  <SimpleNightWindow
+                    v-if="!sequenceStore.sequenceRunning"
+                    :planSummary="planSummary"
+                    :planTimes="planTimes"
+                  />
                   <SimpleFlipForecast v-if="!flipTriggerMissing" :planSummary="planSummary" />
                   <!-- Without NINA's flip trigger the plan tracks on into the tripod -->
                   <div
@@ -679,9 +686,11 @@ import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.v
 import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
 import SimpleCoachHint from '@/components/simpleMode/SimpleCoachHint.vue';
 import SimpleUsedUpPlan from '@/components/simpleMode/SimpleUsedUpPlan.vue';
+import SimpleNightWindow from '@/components/simpleMode/SimpleNightWindow.vue';
 import SimpleFlipForecast from '@/components/simpleMode/SimpleFlipForecast.vue';
 import SimpleCoolingSetup from '@/components/simpleMode/SimpleCoolingSetup.vue';
 import { CUSTOM_COOLING_ID, matchCoolingPreset } from '@/utils/coolingPresets';
+import { usePlanSummary } from '@/composables/usePlanSummary';
 import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import { raDecToAltAz } from '@/utils/utils';
 import {
@@ -709,14 +718,7 @@ import {
   planUsedUp,
   targetsMissingSteps,
 } from '@/utils/simpleMode';
-import {
-  FRAME_OVERHEAD_SECONDS,
-  PARK_SCOPE_TYPE,
-  endOfPlan,
-  formatClock,
-  formatDuration,
-  summarizeTargets,
-} from '@/utils/sequenceSimple';
+import { PARK_SCOPE_TYPE, endOfPlan, formatClock, formatDuration } from '@/utils/sequenceSimple';
 import {
   autofocusStartRefusal,
   autofocusStopRefusal,
@@ -823,12 +825,18 @@ const lastAfSucceededTonight = computed(
 );
 
 // --- Plan ------------------------------------------------------------------------------
-const planSummary = computed(() =>
-  summarizeTargets(sequenceV2Store.data, {
-    overheadSeconds: FRAME_OVERHEAD_SECONDS,
-    nowMs: nowMs.value,
-  })
+const { planSummary, planTimes, cutOff } = usePlanSummary(nowMs);
+// A plan ends at dawn between two ticks of the clock
+watch(
+  () => sequenceStore.sequenceRunning,
+  () => (nowMs.value = Date.now())
 );
+// Pictures taken and planned over all targets, for the summary of a plan that dawn ended.
+const planProgress = computed(() => {
+  const rows = planSummary.value.targets.flatMap((target) => target.rows);
+  const sum = (key) => rows.reduce((total, row) => total + (row.enabled ? row[key] : 0), 0);
+  return { taken: sum('completed'), planned: sum('iterations') };
+});
 const plan = computed(() => {
   const summary = planSummary.value;
   return {
@@ -948,13 +956,16 @@ watch(
 const flatsStore = useFlatassistantStore();
 const flatsRun = computed(() => flatsRunState(flatsStore.status, night.value));
 
+const takenTonight = computed(() => planPicturesTaken(store.imageHistoryInfo, night.value));
+const cutOffTonight = computed(() => cutOff.value && takenTonight.value === true);
 const sequenceState = computed(() => ({
   running: sequenceStore.sequenceRunning,
   targets: plan.value.targets,
   targetSet: planTargets.value.length > 0,
   totalSeconds: plan.value.totalSeconds,
   remainingSeconds: plan.value.remainingSeconds,
-  takenTonight: planPicturesTaken(store.imageHistoryInfo, night.value),
+  takenTonight: takenTonight.value,
+  cutOff: cutOff.value,
 }));
 // The plan of an earlier night is still loaded, with nothing left to take
 const usedUp = computed(() => planUsedUp(sequenceState.value));
@@ -1135,6 +1146,9 @@ function captureSummary() {
   if (targets === 0) return '';
   if (totalSeconds === 0) {
     return t('components.simpleMode.steps.capture.summaryEmpty', { targets }, targets);
+  }
+  if (cutOffTonight.value) {
+    return t('components.simpleMode.steps.capture.summaryCutOff', planProgress.value);
   }
   if (doneAt) {
     return t('components.simpleMode.steps.capture.summary', { targets, time: doneAt }, targets);
@@ -1360,6 +1374,15 @@ function endOfPlanSentence() {
   return t(`components.simpleMode.steps.capture.confirmStartEnd.${key}`);
 }
 
+// Started before dusk the plan first stands still; unannounced that looks like a failed start.
+function waitSentence() {
+  const { notBeforeMs } = planTimes.value;
+  if (!notBeforeMs) return '';
+  return ` ${t('components.simpleMode.steps.capture.confirmStartWait', {
+    time: formatClock(notBeforeMs),
+  })}`;
+}
+
 function startCapture() {
   return withBusy('capture', async () => {
     const confirmed = await toastStore.showConfirmation(
@@ -1374,6 +1397,7 @@ function startCapture() {
         (wantedSteps.value.afOnFilterChange
           ? ` ${t('components.simpleMode.steps.capture.confirmStartFocus')}`
           : '') +
+        waitSentence() +
         ` ${endOfPlanSentence()}`,
       t('components.simpleMode.steps.capture.start'),
       t('common.cancel')

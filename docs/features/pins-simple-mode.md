@@ -154,13 +154,41 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    „erledigt“. Ohne offene Bilder lässt sich die Aufnahme nicht starten.
    8g. Given ein Plan, der schon bis in den Endbereich gelaufen ist, when er (auf der Startseite
    oder im Plan) wieder gestartet wird, then werden vorher Start- und Endschritte zurückgesetzt.
-   PINS führt nur Schritte mit Status CREATED aus und ließ sonst „Montierung parken“ aus. Lehnt
+   PINS führt nur Schritte mit Status CREATED aus und ließ sonst „Montierung parken“ aus. Jeder
+   Schritt wird einzeln zurückgesetzt, das Plugin auf PINS nimmt die folgenden nicht mit. Lehnt
    das Backend das ab, startet der Plan nicht.
    8i. Given ein gestoppter Plan mit offenen Bildern, when er wieder gestartet wird, then fährt er
    das Ziel erneut an, zentriert und startet das Guiding; der Fortschritt der Belichtungen bleibt.
    Dafür werden je Ziel mit offenen Bildern das Ziel selbst, seine Anfahrt-, Guiding- und
    Autofokus-Schritte und Filterwechsel/Belichtung der offenen Zeilen einzeln wieder geöffnet,
    dazu Kühlen und Entparken. Auch Bilder, die an ein fertiges Ziel angehängt wurden, laufen so.
+   8j. Given ein fertiger oder abgebrochener Belichtungseintrag, dessen Anzahl über die schon
+   aufgenommenen Bilder hinaus erhöht wurde (20 → 25), then zählt der Einfach-Modus die fehlenden
+   Bilder als verbleibend und nimmt sie beim nächsten Start auf. Außerhalb des Einfach-Modus
+   bleibt die Zeile fertig, dort öffnet der Start nichts wieder.
+   8k. Given „In den Plan“ oder „Automatisch anfahren und guiden“, then bekommt der Plan, was ihm
+   davon fehlt: „Auf Dunkelheit warten“ im Startbereich (`WaitForSunAltitude`, Vorgabe −12°, in
+   hellen Sommernächten −9° oder −6°, nie dunkel: gar nicht) vor dem Entparken, davor Nachführung
+   aus und danach wieder an; am Ziel das Ende bei Dämmerung (`SunAltitudeCondition`) und unter 20°
+   Höhe (`AltitudeCondition`). Beide brauchen am Ziel eine `LoopCondition` mit 1, weil eine
+   Bedingung in NINA sonst „wiederhole, solange“ heißt: So endet das Ziel nach seiner Anzahl oder
+   an der Grenze. Hat ein Ziel schon eigene Bedingungen, kommt keine Schleife dazu. Was der Nutzer
+   im Plan unter „Night“ ausgeschaltet hat, bleibt aus, auch für weitere Ziele. Beginn und Ende
+   haben je eine eigene Auswahl mit Uhrzeit; das Ende liegt nie dunkler als der Beginn, weil NINAs
+   Bedingung Abend und Morgen nicht unterscheidet und das Ziel sonst sofort endet. „Ziel hinzufügen“
+   im leeren Plan setzt dieselben Schritte und Grenzen. Ohne Ziel sind die Schalter der
+   Zielgrenzen gesperrt und sagen warum, ebenso während ein Ziel läuft.
+   8l. Given ein Plan mit diesen Grenzen, then nennen „Aufnahme“ und der Plan, wann er beginnt,
+   wann er spätestens endet und wie viele der Bilder in die Nacht passen; wird es nicht so dunkel,
+   warnen sie. Die Startabfrage nennt die Wartezeit, das Cockpit zeigt „wartet auf Dunkelheit“ und
+   warnt solange nicht vor fehlendem Guiding.
+   8m. Given ein Plan, den Dämmerung oder Höhe vor dem letzten Bild beendet hat, then zeigt die
+   Startseite die Bilanz mit „x von y Bildern“ statt der Vorbereitung. Ab der nächsten Nacht ist
+   „Aufnahme“ wieder offen, der Start setzt die 1er-Schleife zurück und nimmt den Rest auf.
+   8n. Given ein neues Ziel ohne Bilder, then beginnt es mit einer Stunde Aufnahmezeit: 120 s mit
+   Guiding, 60 s ohne. Auf der Zielkarte rechnet „Wie lange willst du aufnehmen?“ eine Zeit in die
+   Anzahl je Filter um (gleiche Zeit pro Filter, schon Aufgenommenes bleibt), dazu „So lange die
+   Nacht reicht“. Eine weitere Belichtung übernimmt Zeit und Anzahl der letzten.
    8h. Given ein Plan, der schon geparkt und aufgewärmt hat, then lässt sich die Nacht trotzdem
    beenden: der Dialog hat ohne Aktionen nur die Bestätigung. Ist die Montierung nicht verbunden,
    behauptet er nicht, sie sei geparkt.
@@ -234,6 +262,17 @@ Profiländerung aus, „Ein paar Minuten“ schreibt 0/5/15, Recenter und UseSid
 (Montierung meldet `pierEast`). Plan ohne GlobalTriggers → Warnung → Knopf legt den Trigger an;
 deaktivierter Trigger → Atlas „In den Plan“ (M 42) schaltet ihn wieder ein. Vorhersage für M 42
 (Transit 01:37) mit Python gegengerechnet. Der Flip selbst (Cockpit-Text) lief nicht durch.
+
+## Verification (2026-11-25, Anzahl und Grenzen der Nacht)
+
+Gegen den Test-Pi mit Simulatoren, über die Oberfläche: Schalter legen die Schritte richtig an,
+vorhergesagte Dunkelheit 17:38 wie in PINS. Plan wartet mit stehender Nachführung, Stopp und
+Neustart, Anfahren und Belichten mit einmaliger Schleife, „Dämmerung“ (Grenze per API verschoben)
+beendet das Ziel und parkt, Bilanz „3 von 40“, zweiter Lauf entparkt, fährt an und nimmt den Rest
+auf, danach 12 → 15 Bilder mit drittem Lauf. Über die API mit drei Zielen: Das untergehende wird
+übersprungen, die anderen laufen. Nicht geprüft: echte Dämmerung über Nacht, mehrere Filter,
+Meridian-Flip und Guiding zusammen mit den Grenzen, der Weg über den Atlas, echte Geräte. Bewusst
+nicht abgefangen: ein noch tiefes, aber aufgehendes Ziel (NINAs Höhenbedingung lässt es laufen).
 
 ## Open questions
 

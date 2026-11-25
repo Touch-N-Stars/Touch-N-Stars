@@ -29,6 +29,13 @@
     <!-- Switches for the global triggers and the start area -->
     <SimpleGlobalSection @show-full="$emit('show-full')" />
     <SimpleStartSection @show-full="$emit('show-full')" />
+    <SimpleNightLimits
+      v-if="simpleMode"
+      :planSummary="summary"
+      :planTimes="planTimes"
+      :site="site"
+      :nowMs="nowMs"
+    />
 
     <!-- Targets -->
     <SimpleTargetCard
@@ -61,12 +68,15 @@
 </template>
 
 <script setup>
+import { usePlanSummary } from '@/composables/usePlanSummary';
 import { usePlanTerms } from '@/composables/usePlanTerms';
+import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { PlusIcon } from '@heroicons/vue/24/outline';
 import SimpleEndSection from './SimpleEndSection.vue';
 import SimpleGlobalSection from './SimpleGlobalSection.vue';
+import SimpleNightLimits from './SimpleNightLimits.vue';
 import SimpleStartSection from './SimpleStartSection.vue';
 import SimpleTargetCard from './SimpleTargetCard.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
@@ -74,18 +84,14 @@ import { useFramingStore } from '@/store/framingStore';
 import { useToastStore } from '@/store/toastStore';
 import { findTargetAreaContainer } from '@/utils/sequenceTargets';
 import { degreesToDMS, degreesToHMS } from '@/utils/utils';
-import {
-  FRAME_OVERHEAD_SECONDS,
-  summarizeTargets,
-  formatClock,
-  formatDuration,
-} from '@/utils/sequenceSimple';
+import { formatClock, formatDuration } from '@/utils/sequenceSimple';
 
 const { seqT } = usePlanTerms();
 defineEmits(['show-full']);
 
 const { t } = useI18n();
 const store = useSequenceV2Store();
+const { active: simpleMode, applyToTarget } = useSimplePlanTargets();
 const framingStore = useFramingStore();
 const toastStore = useToastStore();
 const adding = ref(false);
@@ -99,12 +105,7 @@ onMounted(() => {
 });
 onUnmounted(() => clearInterval(clockTimer));
 
-const summary = computed(() =>
-  summarizeTargets(store.data, {
-    overheadSeconds: FRAME_OVERHEAD_SECONDS,
-    nowMs: nowMs.value,
-  })
-);
+const { planSummary: summary, planTimes, site } = usePlanSummary(nowMs);
 
 const hasTargetArea = computed(() => findTargetAreaContainer(store.data) !== null);
 
@@ -127,7 +128,13 @@ async function addFirstTarget() {
     let result = await store.addDsoTarget(null);
     if (result.ok && prefill.value) {
       const { name, ra, dec } = prefill.value;
-      result = await store.setDsoTarget(result.id, name, ra, dec, framingStore.rotationAngle);
+      const id = result.id;
+      result = await store.setDsoTarget(id, name, ra, dec, framingStore.rotationAngle);
+      result.id = id;
+    }
+    // Same steps and limits as a target added from the atlas
+    if (result.ok && simpleMode.value) {
+      result = await applyToTarget(result.id, { addExposure: true });
     }
     if (result.ok) return;
     toastStore.showToast({

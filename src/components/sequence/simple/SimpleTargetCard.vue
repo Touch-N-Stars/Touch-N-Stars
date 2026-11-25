@@ -97,7 +97,8 @@
       <p v-if="!target.rows.length" class="text-sm text-content-faint">
         {{ $t('components.sequence.simple.noExposures') }}
       </p>
-      <button type="button" class="tns-btn-secondary" @click="store.addExposureRow(container.Id)">
+      <SimpleTimeBudget v-if="simpleMode" :target="target" />
+      <button type="button" class="tns-btn-secondary" @click="addExposure">
         <PlusIcon class="w-4 h-4" />
         {{ $t('components.sequence.simple.addExposure') }}
       </button>
@@ -200,9 +201,11 @@ import DsoFavoritePickerModal from '@/components/sequence/items/DsoFavoritePicke
 import DsoCoordinateFields from '@/components/sequence/items/DsoCoordinateFields.vue';
 import SimpleExposureRow from './SimpleExposureRow.vue';
 import SimpleTargetOptions from './SimpleTargetOptions.vue';
+import SimpleTimeBudget from './SimpleTimeBudget.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useToastStore } from '@/store/toastStore';
 import { apiStore } from '@/store/store';
+import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import { useDsoContainerTarget } from '@/composables/useDsoContainerTarget';
 import { formatClock, formatDuration, itemDisplayName } from '@/utils/sequenceSimple';
 
@@ -218,6 +221,7 @@ const { t } = useI18n();
 const store = useSequenceV2Store();
 const toastStore = useToastStore();
 const mainStore = apiStore();
+const { active: simpleMode, newExposure } = useSimplePlanTargets();
 
 const container = computed(() => props.target.container);
 const {
@@ -272,6 +276,17 @@ const statusDot = computed(() => {
 });
 
 const otherStepNames = computed(() => props.target.otherItems.map(itemDisplayName).join(', '));
+
+// Simple mode: a further filter usually gets the same exposures as the one before.
+function addExposure() {
+  if (!simpleMode.value) return store.addExposureRow(container.value.Id);
+  const last = props.target.rows.at(-1);
+  const exposure =
+    last?.exposureTime > 0 && last.iterations > 0
+      ? { exposureTime: last.exposureTime, iterations: last.iterations }
+      : newExposure.value;
+  return store.addExposureRow(container.value.Id, exposure);
+}
 
 async function onSearchSelected(targetData) {
   await setFromSearch(targetData);

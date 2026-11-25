@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: The simple mode start page adapts to the night: while the plan runs it puts guiding, sharpness and star count first and warns when one of them gets worse, and the newest picture shows its histogram with min and max pixel counts.
 - PINS: In the simple mode a target from the sky atlas goes straight into the plan, which slews there, centers it and starts guiding by itself; the guider is calibrated once at the best spot, and after a night of restless guiding the Guiding Coach is suggested.
 - PINS: In the simple mode the plan parks the mount and warms the camera up when it is done, so a night left alone does not track into the tripod.
+- PINS: In the simple mode the plan waits until it is dark, without tracking meanwhile, and a target ends at dawn or when it gets too low, with the pictures it has by then; the rest can be taken another night. The limits are set with the target and can be switched off in the plan.
+- PINS: In the simple mode plan an imaging time can be given instead of a number of pictures, also as long as the night allows, and a new target starts with an hour of pictures instead of 2 x 60 s.
 
 ### Fixed
 
@@ -23,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: A star database download that failed - the rule at the field hotspot without internet - now says so in plain words with a button to try again, also after leaving and reopening the page, and a running download shows its progress again.
 - PINS: A target added to the simple mode plan from the sky atlas starts with a filter instead of an empty field, and a filter chosen for an exposure added before the filter wheel was connected is kept.
 - PINS: In the simple mode plan the filter of an exposure gets a line of its own, so its name is readable on a phone, and a new exposure starts with the next filter the target does not use yet.
+- PINS: In the simple mode a raised number of pictures is taken even when the exposure was already finished.
+- PINS: In the simple mode a plan that runs a second time unparks, warms up and does all its other opening and closing steps again, not only the first of them.
 - PINS: The simple mode and the setup assistant write decimals the way the app language does (2,99 in German), the camera step takes the pixel size the camera reports, and switches tell screen readers what they switch.
 
 ## [App6.7.0-beta1] - 2026-11-22

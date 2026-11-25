@@ -23,12 +23,20 @@ const {
   START_GUIDING_TYPE,
   AF_AFTER_TIME_TYPE,
   AF_AFTER_FILTER_CHANGE_TYPE,
+  ALTITUDE_CONDITION_TYPE,
+  LOOP_CONDITION_TYPE,
+  SET_TRACKING_TYPE,
+  SUN_CONDITION_TYPE,
+  UNPARK_SCOPE_TYPE,
+  WAIT_FOR_SUN_TYPE,
 } = await import('@/utils/sequenceSimple');
 
 const STUBBED = [
   'sequenceEnable',
   'sequenceAddTrigger',
   'sequenceAddItem',
+  'sequenceAddCondition',
+  'sequenceRemove',
   'sequenceSetProperty',
   'sequenceResetStatus',
 ];
@@ -119,8 +127,12 @@ const row = (Id, { iterations }) => ({
 
 test('a plan that ran to its end prepares and parks again on the next start', async (t) => {
   const { store, calls, restore } = setup({
-    startItems: [ran('cool', COOL_CAMERA_TYPE)],
-    endItems: [ran('off', SLEW_TYPE, 'DISABLED'), ran('park', PARK_SCOPE_TYPE)],
+    startItems: [ran('cool', COOL_CAMERA_TYPE), ran('unpark', UNPARK_SCOPE_TYPE)],
+    endItems: [
+      ran('off', SLEW_TYPE, 'DISABLED'),
+      ran('park', PARK_SCOPE_TYPE),
+      ran('warm', WARM_CAMERA_TYPE),
+    ],
   });
   t.after(restore);
   assert.equal(await store.rearmPlan(), true);
@@ -128,7 +140,9 @@ test('a plan that ran to its end prepares and parks again on the next start', as
     calls.map((c) => [c.name, c.args[0]]),
     [
       ['sequenceResetStatus', 'cool'],
+      ['sequenceResetStatus', 'unpark'],
       ['sequenceResetStatus', 'park'],
+      ['sequenceResetStatus', 'warm'],
     ]
   );
 });
@@ -536,4 +550,195 @@ test('a new exposure row starts with the next filter, or is told to keep the cur
     ['b-filter', 'SelectedFilter', 2],
     ['c-filter', 'SelectedFilter', 0],
   ]);
+});
+
+// Lets the stubbed calls change the held tree as the plugin would, with N.I.N.A.'s defaults.
+function simulatePlugin(store, { refuse = () => false } = {}) {
+  let next = 1;
+  const defaults = (type) => {
+    if (type === LOOP_CONDITION_TYPE) return { Iterations: 2, CompletedIterations: 0 };
+    if (type === SET_TRACKING_TYPE) return { TrackingMode: 'Sidereal' };
+    if (type === WAIT_FOR_SUN_TYPE || type === ALTITUDE_CONDITION_TYPE) return { Offset: 30 };
+    return { Offset: 0 };
+  };
+  const create = (type) => ({
+    Id: `new${next++}`,
+    FullTypeName: type,
+    Status: 'CREATED',
+    ...defaults(type),
+  });
+  const everywhere = (id, visit) => {
+    for (const area of store.data) {
+      for (const list of [area.Items, ...(area.Items ?? []).map((c) => c.Conditions)]) {
+        const index = list?.findIndex((i) => i.Id === id) ?? -1;
+        if (index >= 0) visit(list, index);
+      }
+    }
+  };
+  Object.assign(apiService, {
+    sequenceAddItem: async (targetId, type, insertAfter) => {
+      const container = store.findById(targetId);
+      if (insertAfter === null) container.Items.push(create(type));
+      else {
+        everywhere(targetId, (list, i) => list.splice(insertAfter ? i + 1 : i, 0, create(type)));
+      }
+      return { Success: true };
+    },
+    sequenceAddCondition: async (id, type) => {
+      const container = store.findById(id);
+      container.Conditions = [...(container.Conditions ?? []), create(type)];
+      return { Success: true };
+    },
+    sequenceSetProperty: async (id, name, value) => {
+      if (refuse(id, name)) return { Success: false, Error: 'refused' };
+      store.findById(id)[name] = name === 'TrackingMode' && value === 5 ? 'Stopped' : value;
+      return { Success: true };
+    },
+    sequenceEnable: async (id, enabled) => {
+      store.findById(id).Status = enabled ? 'CREATED' : 'DISABLED';
+      return { Success: true };
+    },
+    sequenceRemove: async (id) => {
+      everywhere(id, (list, i) => list.splice(i, 1));
+      return { Success: true };
+    },
+  });
+}
+
+const startItems = (store) =>
+  store.data[1].Items.map((i) =>
+    [i.FullTypeName.split('.').at(-1), i.TrackingMode ?? i.Offset, i.Status].filter(
+      (part) => part !== undefined
+    )
+  );
+const conditions = (store) =>
+  store
+    .findById('dso')
+    .Conditions.map((c) => [c.FullTypeName.split('.').at(-1), c.Iterations ?? c.Offset, c.Status]);
+
+test('the wait for darkness comes before the unparking, with the tracking off meanwhile', async (t) => {
+  const { store, restore } = setup({
+    startItems: [
+      ran('cool', COOL_CAMERA_TYPE, 'CREATED'),
+      ran('unpark', UNPARK_SCOPE_TYPE, 'CREATED'),
+    ],
+  });
+  t.after(restore);
+  simulatePlugin(store);
+
+  await store.setDarknessWait(true, -12);
+  const on = [
+    ['CoolCamera', 'CREATED'],
+    ['SetTracking', 'Stopped', 'CREATED'],
+    ['WaitForSunAltitude', -12, 'CREATED'],
+    ['UnparkScope', 'CREATED'],
+    ['SetTracking', 'Sidereal', 'CREATED'],
+  ];
+  assert.deepEqual(startItems(store), on);
+
+  // Off keeps the items, so the plan remembers it; on again adds nothing
+  await store.setDarknessWait(false);
+  assert.deepEqual(
+    startItems(store).map((parts) => parts.at(-1)),
+    ['CREATED', 'DISABLED', 'DISABLED', 'CREATED', 'DISABLED']
+  );
+  await store.setDarknessWait(true, -12);
+  assert.deepEqual(startItems(store), on);
+});
+
+test('a refused tracking stop leaves no second tracking item behind', async (t) => {
+  const { store, restore } = setup({ startItems: [] });
+  t.after(restore);
+  simulatePlugin(store, { refuse: (id, name) => name === 'TrackingMode' });
+  await store.setDarknessWait(true, -12);
+  assert.deepEqual(startItems(store), [['WaitForSunAltitude', -12, 'CREATED']]);
+});
+
+test('a limit comes with a loop of one, so the pictures are not repeated until dawn', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store);
+
+  assert.equal(await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12), true);
+  assert.equal(await store.setTargetLimit('dso', ALTITUDE_CONDITION_TYPE, true, 20), true);
+  assert.deepEqual(conditions(store), [
+    ['LoopCondition', 1, 'CREATED'],
+    ['SunAltitudeCondition', -12, 'CREATED'],
+    ['AltitudeCondition', 20, 'CREATED'],
+  ]);
+
+  await store.setTargetLimit('dso', SUN_CONDITION_TYPE, false);
+  await store.setTargetLimit('dso', ALTITUDE_CONDITION_TYPE, true, 25);
+  assert.deepEqual(conditions(store), [
+    ['LoopCondition', 1, 'CREATED'],
+    ['SunAltitudeCondition', -12, 'DISABLED'],
+    ['AltitudeCondition', 25, 'CREATED'],
+  ]);
+});
+
+test('a target with conditions of its own keeps its loop', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store);
+  store.findById('dso').Conditions = [
+    { Id: 'own', FullTypeName: LOOP_CONDITION_TYPE, Status: 'CREATED', Iterations: 3 },
+  ];
+  await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12);
+  assert.deepEqual(conditions(store), [
+    ['LoopCondition', 3, 'CREATED'],
+    ['SunAltitudeCondition', -12, 'CREATED'],
+  ]);
+});
+
+test('a loop that cannot be set to one goes again, and the limit is not added', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store, { refuse: (id, name) => name === 'Iterations' });
+  assert.equal(await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12), false);
+  assert.deepEqual(conditions(store), []);
+});
+
+test('a limit that cannot be set does not stay at its default', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store, { refuse: (id, name) => name === 'Offset' });
+  assert.equal(await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12), false);
+  assert.deepEqual(conditions(store), [['LoopCondition', 1, 'CREATED']]);
+});
+
+test('the loop of a target with pictures left starts over with the plan', async (t) => {
+  const { store, calls, restore } = setup({ dsoSteps: [row('row', { iterations: 5 })] });
+  t.after(restore);
+  store.findById('dso').Conditions = [
+    {
+      Id: 'once',
+      FullTypeName: LOOP_CONDITION_TYPE,
+      Status: 'FINISHED',
+      Iterations: 1,
+      CompletedIterations: 1,
+    },
+  ];
+  assert.equal(await store.rearmPlan(), true);
+  assert.deepEqual(calls, [
+    { name: 'sequenceSetProperty', args: ['once', 'CompletedIterations', 0] },
+  ]);
+});
+
+test('a new exposure row takes the suggested exposure', async (t) => {
+  const { store, calls, restore } = setup({ dsoSteps: [] });
+  t.after(restore);
+  const added = row('added', { iterations: 2 });
+  added.Conditions[0].Id = 'added-loop';
+  apiService.sequenceAddItem = async () => {
+    store.findById('dso').Items.push(added);
+    return { Success: true };
+  };
+  await store.addExposureRow('dso', { exposureTime: 120, iterations: 28 });
+  assert.deepEqual(
+    calls.filter((c) => c.name === 'sequenceSetProperty').map((c) => c.args),
+    [
+      ['added-take', 'ExposureTime', 120],
+      ['added-loop', 'Iterations', 28],
+    ]
+  );
 });

@@ -1236,7 +1236,39 @@
         "deleteTargetConfirm": "Delete {name} and all its exposures from the sequence?",
         "deleteExposure": "Delete exposure",
         "deleteExposureConfirm": "Delete this exposure row from the sequence?",
-        "addTargetNamed": "Add {name} as target"
+        "addTargetNamed": "Add {name} as target",
+        "limits": {
+          "title": "Night",
+          "wait": "Wait until it is dark",
+          "waitHint": "The plan starts as soon as it is dark. The mount does not track while it waits.",
+          "dawn": "Stop at dawn",
+          "dawnHint": "Ends the plan when it gets light, even if pictures are missing. The rest can be taken the next night.",
+          "from": "from {time}",
+          "notTonight": "not tonight",
+          "low": "Stop when the target stands too low",
+          "lowHint": "Close to the horizon the air blurs the stars, and trees or houses get in the way. The plan then goes on with the next target.",
+          "minAltitude": "Lowest height above the horizon (°)",
+          "noTarget": "Add a target to the plan first. This is then switched on by itself.",
+          "targetRunning": "Cannot be changed while a target is being imaged.",
+          "sunBelow": "sun {degrees}° below the horizon",
+          "darknessName": {
+            "bright": "still bright",
+            "dusky": "almost dark",
+            "usual": "usual",
+            "dark": "darker",
+            "darkest": "fully dark"
+          },
+          "minAltitudeHint": "0° is the horizon, 90° is straight overhead. Two fists on top of each other at arm’s length are about 20°.",
+          "startAt": "Start of the night",
+          "endAt": "End of the night",
+          "until": "until {time}"
+        },
+        "budget": {
+          "question": "How long do you want to image this target? (hours)",
+          "pictures": "{count} picture of {seconds} s | {count} pictures of {seconds} s",
+          "apply": "Use this number of pictures",
+          "wholeNight": "As long as the night allows ({time})"
+        }
       },
       "filter": "Filter",
       "triggers": "Triggers",
@@ -6006,7 +6038,9 @@
           "flipPause": "{target} reaches the meridian at about {meridian}; the plan pauses at {pause} and turns the telescope at {earliest}.",
           "flipNone": "No meridian flip needed with this plan.",
           "flipYourTarget": "Your target",
-          "flipSettings": "Flip settings and daylight test"
+          "flipSettings": "Flip settings and daylight test",
+          "summaryCutOff": "{taken} of {planned} pictures taken",
+          "confirmStartWait": "It waits until it is dark, at about {time}."
         },
         "flats": {
           "title": "Flats",
@@ -6145,7 +6179,8 @@
           "settling": "Waiting for the guiding to settle",
           "exposing": "Exposing",
           "busy": "Getting the next picture ready",
-          "flipping": "Meridian flip – the telescope turns to the other side"
+          "flipping": "Meridian flip – the telescope turns to the other side",
+          "waitingForDark": "Waiting until it is dark"
         },
         "exposing": "Exposing {seconds} s",
         "frame": "picture {frame} of {frames}",
@@ -6212,13 +6247,16 @@
           }
         },
         "statusBarHint": "Guiding, focus and cooling are rated in the status bar below – tap one to see what it means.",
-        "stop": "Stop"
+        "stop": "Stop",
+        "waitingUntil": "Waiting until it is dark, at about {time}"
       },
       "summary": {
         "finished": {
           "title": "Plan finished",
           "text": "All pictures of your plan are taken. End the night to park the telescope and warm up the camera.",
-          "textFlats": "All pictures of your plan are taken. Take your flats now, while nothing has changed, then end the night."
+          "textFlats": "All pictures of your plan are taken. Take your flats now, while nothing has changed, then end the night.",
+          "cutOffTitle": "Done for tonight",
+          "cutOff": "It got light or your target got too low: {taken} of {planned} pictures are taken. Start the plan again another night to take the rest."
         },
         "ended": {
           "title": "Night ended",
@@ -6244,6 +6282,20 @@
       "expert": {
         "show": "Show expert settings",
         "hide": "Hide expert settings"
+      },
+      "window": {
+        "waits": "The plan waits until it is dark, at about {time}.",
+        "tooMany": "Only about {fit} of {left} pictures fit into this night. The rest can be taken another night.",
+        "noDarkness": "It does not get this dark tonight, the plan would wait without end. Choose a brighter sky under “Night” in the plan.",
+        "limit": {
+          "light": "It stops at {time} at the latest, because it gets light then.",
+          "low": "It stops at {time} at the latest, because your target stands too low then."
+        },
+        "nothing": {
+          "light": "It is too light now, the plan would end at once without a picture. Switch on “Wait until it is dark” in the plan: then it starts at about {time}.",
+          "low": "Your target stands too low above the horizon and is sinking, the plan would end without a picture. Choose another target or a lower height.",
+          "other": "Started like this, the plan would end at once without a picture."
+        }
       }
     },
     "secureObservatory": {

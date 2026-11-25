@@ -55,6 +55,7 @@ import { computed } from 'vue';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import SimpleAlsoActive from './SimpleAlsoActive.vue';
 import SimpleSwitchRow from './SimpleSwitchRow.vue';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import {
   enabledItemNames,
@@ -63,17 +64,23 @@ import {
   isActive,
   COOL_CAMERA_TYPE,
   START_AREA_TYPE,
-  START_ORDER,
   UNPARK_SCOPE_TYPE,
+  darknessWait,
 } from '@/utils/sequenceSimple';
 
 defineEmits(['show-full']);
 
 const store = useSequenceV2Store();
+const { active: simpleMode } = useSimpleMode();
 
 const startArea = computed(() => findAreaContainer(store.data, START_AREA_TYPE));
 const coolCamera = computed(() => findByType(startArea.value?.Items, COOL_CAMERA_TYPE));
 const unpark = computed(() => findByType(startArea.value?.Items, UNPARK_SCOPE_TYPE));
 
-const otherNames = computed(() => enabledItemNames(startArea.value?.Items, START_ORDER));
+// The wait for darkness has its switch in SimpleNightLimits, which only the simple mode shows.
+const otherNames = computed(() => {
+  const waitParts = simpleMode.value ? Object.values(darknessWait(store.data)) : [];
+  const items = (startArea.value?.Items ?? []).filter((item) => !waitParts.includes(item));
+  return enabledItemNames(items, [COOL_CAMERA_TYPE, UNPARK_SCOPE_TYPE]);
+});
 </script>

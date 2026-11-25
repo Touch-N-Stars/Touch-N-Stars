@@ -1,6 +1,7 @@
 // Simple mode: every target of the plan is slewed to, centered, guided and refocused after a
 // filter change by the plan itself, the plan flips at the meridian, and when it is done it parks
-// the mount and warms the camera up. Shared by the atlas' "Add to plan" button and the home
+// the mount and warms the camera up. It starts when it is dark, and a target ends at dawn or when
+// it gets too low, with the pictures it has by then. Shared by the atlas' "Add to plan" button and the home
 // page's capture step, so both put the same steps into a plan.
 import { computed } from 'vue';
 import { apiStore } from '@/store/store';
@@ -10,14 +11,31 @@ import { useSimpleMode } from '@/composables/useSimpleMode';
 import { marksForNight, nightKey, simpleTargetSteps } from '@/utils/simpleMode';
 import { warmUpMinutes } from '@/utils/coolingPresets';
 import {
+  MIN_TARGET_ALT_DEG,
+  clampEndDarkness,
+  defaultDarkness,
+  planLimitState,
+  siteFromProfile,
+} from '@/utils/planLimits';
+import { collectDsoContainers } from '@/utils/sequenceTargets';
+import {
+  ALTITUDE_CONDITION_TYPE,
   END_AREA_TYPE,
+  FRAME_OVERHEAD_SECONDS,
   MERIDIAN_FLIP_TRIGGER_TYPE,
+  SUN_CONDITION_TYPE,
   WARM_CAMERA_TYPE,
+  darknessWait,
   findAreaContainer,
   findByType,
   isActive,
   missingEndSteps,
 } from '@/utils/sequenceSimple';
+
+// What a new target starts with instead of PINS' 2 x 60 s: an hour of pictures. Short exposures
+// without guiding, where stars turn into lines sooner. Both stay adjustable in the plan.
+const DEFAULT_EXPOSURE_SECONDS = { guided: 120, unguided: 60 };
+const DEFAULT_IMAGING_SECONDS = 3600;
 
 export function useSimplePlanTargets() {
   const store = apiStore();
@@ -60,6 +78,40 @@ export function useSimplePlanTargets() {
     })
   );
 
+  const newExposure = computed(() => {
+    const exposureTime =
+      DEFAULT_EXPOSURE_SECONDS[wantedSteps.value.startGuiding ? 'guided' : 'unguided'];
+    const iterations = Math.floor(
+      DEFAULT_IMAGING_SECONDS / (exposureTime + FRAME_OVERHEAD_SECONDS)
+    );
+    return { exposureTime, iterations };
+  });
+
+  /**
+   * The plan waits for darkness, and this target ends at dawn or when it gets too low. Only where
+   * it is missing: what the user switched off in the plan stays off, also for further targets.
+   */
+  async function addLimits(containerId) {
+    const tree = sequenceV2Store.data;
+    const site = siteFromProfile(store.profileInfo);
+    const state = planLimitState(tree, collectDsoContainers(tree));
+    const container = sequenceV2Store.findById(containerId);
+    const usual = defaultDarkness(Date.now(), site);
+    const start = state.startDarkness ?? usual;
+    const addWait = !darknessWait(tree).wait && start !== null;
+    if (addWait) await sequenceV2Store.setDarknessWait(true, start);
+    if ((state.endDarkness ?? usual) !== null) {
+      if (!state.dawnDeclined && !findByType(container?.Conditions, SUN_CONDITION_TYPE)) {
+        const end = clampEndDarkness(state.endDarkness ?? usual, start, state.waits || addWait);
+        await sequenceV2Store.setTargetLimit(containerId, SUN_CONDITION_TYPE, true, end);
+      }
+    }
+    if (!state.lowDeclined && !findByType(container?.Conditions, ALTITUDE_CONDITION_TYPE)) {
+      const minAltitude = state.minAltitude ?? MIN_TARGET_ALT_DEG;
+      await sequenceV2Store.setTargetLimit(containerId, ALTITUDE_CONDITION_TYPE, true, minAltitude);
+    }
+  }
+
   /** Switches the plan's meridian flip on (re-enables a disabled one, or adds it). */
   function addFlipTrigger() {
     return sequenceV2Store.setGlobalTriggerEnabled(MERIDIAN_FLIP_TRIGGER_TYPE, true);
@@ -88,14 +140,16 @@ export function useSimplePlanTargets() {
 
   /**
    * Puts the simple steps into one target; a target without pictures gets an exposure row.
-   * The plan gets its meridian flip and its closing steps along with it.
+   * The plan gets its meridian flip, its limits and its closing steps along with it.
    */
   async function applyToTarget(containerId, { addExposure = false } = {}) {
     const result = await sequenceV2Store.applySimpleTargetSteps(containerId, wantedSteps.value, {
       addExposure,
+      exposure: newExposure.value,
     });
     if (result.ok && flipTriggerMissing.value) await addFlipTrigger();
     if (result.ok && endStepsMissing.value.length) await addEndSteps();
+    if (result.ok) await addLimits(containerId);
     return result;
   }
 
@@ -113,6 +167,7 @@ export function useSimplePlanTargets() {
     active,
     guidingSkipped,
     wantedSteps,
+    newExposure,
     flipTriggerMissing,
     addFlipTrigger,
     endStepsMissing,

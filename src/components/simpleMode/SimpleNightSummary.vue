@@ -5,15 +5,21 @@
     <div class="flex items-center gap-2">
       <CheckCircleIcon class="w-6 h-6 text-status-ok shrink-0" />
       <h2 class="text-xl font-bold text-content leading-tight">
-        {{ $t(`components.simpleMode.summary.${phase}.title`) }}
+        {{
+          phase === 'finished' && cutOff
+            ? $t('components.simpleMode.summary.finished.cutOffTitle')
+            : $t(`components.simpleMode.summary.${phase}.title`)
+        }}
       </h2>
     </div>
     <p class="text-sm text-content-muted">
-      {{
-        phase === 'finished' && flatsPending
-          ? $t('components.simpleMode.summary.finished.textFlats')
-          : $t(`components.simpleMode.summary.${phase}.text`)
-      }}
+      <template v-if="phase === 'finished' && cutOff">
+        {{ $t('components.simpleMode.summary.finished.cutOff', cutOff) }}
+      </template>
+      <template v-else-if="phase === 'finished' && flatsPending">
+        {{ $t('components.simpleMode.summary.finished.textFlats') }}
+      </template>
+      <template v-else>{{ $t(`components.simpleMode.summary.${phase}.text`) }}</template>
     </p>
 
     <div class="grid grid-cols-3 gap-2">
@@ -111,6 +117,8 @@ const props = defineProps({
   endBlocked: { type: Boolean, default: false },
   // Flats are still to do tonight (neither done nor skipped)
   flatsPending: { type: Boolean, default: false },
+  // { taken, planned } when dawn or the targets' altitude ended the plan before its last picture
+  cutOff: { type: Object, default: null },
 });
 defineEmits(['end', 'resume']);
 

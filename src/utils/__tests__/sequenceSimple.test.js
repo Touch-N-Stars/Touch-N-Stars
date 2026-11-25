@@ -137,6 +137,148 @@ test('stepsToReopen opens what a stopped plan needs again, and nothing else', as
   assert.deepEqual(m.stepsToReopen(null), []);
 });
 
+test('a raised count and a row cut off by dawn run again on the next start', async () => {
+  const m = await import('@/utils/sequenceSimple');
+  const dso = (Id, Status, Items, Conditions = []) => ({
+    Id,
+    FullTypeName: DSO,
+    Status,
+    Items,
+    Conditions,
+  });
+  const loop = (Id, Iterations, CompletedIterations, Status = 'FINISHED') => ({
+    Id,
+    FullTypeName: m.LOOP_CONDITION_TYPE,
+    Status,
+    Iterations,
+    CompletedIterations,
+  });
+  const raised = dso(
+    'raised',
+    'FINISHED',
+    [
+      smart('l', { filter: 'L', time: 60, iterations: 25, completed: 20, status: 'FINISHED' }),
+      smart('r', { filter: 'R', time: 60, iterations: 20, completed: 20, status: 'FINISHED' }),
+    ],
+    [loop('once', 1, 1), loop('own', 3, 3), loop('off', 1, 1, 'DISABLED')]
+  );
+  // Seen on PINS: the running row ends FINISHED, the rest of the target SKIPPED
+  const dawn = dso(
+    'dawn',
+    'FINISHED',
+    [
+      { Id: 'center', FullTypeName: CENTER_TYPE, Status: 'SKIPPED' },
+      smart('g', { filter: 'G', time: 60, iterations: 20, status: 'SKIPPED' }),
+      smart('b', { filter: 'B', time: 60, iterations: 20, status: 'DISABLED' }),
+    ],
+    [loop('dawn-once', 1, 1)]
+  );
+  const through = dso(
+    'through',
+    'FINISHED',
+    [smart('x', { filter: 'L', time: 60, iterations: 5, completed: 5, status: 'FINISHED' })],
+    [loop('through-once', 1, 1)]
+  );
+  const tree = [{ Id: 'targets', Items: [raised, dawn, through] }];
+  assert.deepEqual(m.stepsToReopen(tree), ['raised', 'l', 'dawn', 'center', 'g']);
+  assert.deepEqual(m.loopsToRestart(tree), ['once', 'dawn-once']);
+
+  const resumable = summarizeTargets(tree, { resumable: true });
+  assert.deepEqual(
+    resumable.targets.map((t) => t.framesLeft),
+    [5, 20, 0]
+  );
+  assert.equal(resumable.remainingSeconds, 25 * 60);
+  // While the plan runs, and outside the simple mode, the sequencer is through with them
+  assert.equal(summarizeTargets(tree).remainingSeconds, 0);
+});
+
+test('pictures of a target the running plan is through with are not awaited any more', () => {
+  // Interrupted by dawn during an exposure: the target FINISHED, its rows still CREATED
+  const tree = [
+    {
+      Id: 'dso',
+      FullTypeName: DSO,
+      Status: 'FINISHED',
+      Items: [smart('l', { filter: 'L', time: 60, iterations: 20, completed: 4 })],
+    },
+  ];
+  assert.equal(summarizeTargets(tree).remainingSeconds, 0);
+  assert.equal(summarizeTargets(tree, { resumable: true }).remainingSeconds, 16 * 60);
+});
+
+test('limits cut a target off and free the time for the next one', () => {
+  const dso = (Id, time, iterations) => ({
+    Id,
+    FullTypeName: DSO,
+    Status: 'CREATED',
+    Items: [
+      smart(`${Id}-l`, { filter: 'L', time, iterations }),
+      smart(`${Id}-r`, { filter: 'R', time, iterations }),
+    ],
+  });
+  const tree = [{ Id: 'targets', Items: [dso('a', 60, 10), dso('b', 60, 10)] }];
+  const summary = summarizeTargets(tree, {
+    nowMs: 0,
+    notBeforeMs: 600000,
+    limitAt: (container, startMs) => (container.Id === 'a' ? startMs + 750000 : null),
+  });
+  const [a, b] = summary.targets;
+  assert.deepEqual([a.startMs, a.endMs, a.framesLeft, a.framesFit], [600000, 1350000, 20, 12]);
+  assert.deepEqual([b.startMs, b.limitMs, b.framesFit], [1350000, null, 20]);
+  assert.deepEqual([summary.framesLeft, summary.framesFit], [40, 32]);
+  // Limit already passed: skipped at once
+  const gone = summarizeTargets(tree, { nowMs: 5000, limitAt: () => 5000 });
+  assert.deepEqual([gone.framesFit, gone.endMs], [0, 5000]);
+});
+
+test('an imaging time is shared evenly between the filters', async () => {
+  const { framesForTime } = await import('@/utils/sequenceSimple');
+  const rows = [
+    smart('l', { filter: 'L', time: 55, iterations: 10, completed: 4 }),
+    smart('ha', { filter: 'Ha', time: 295, iterations: 10 }),
+    smart('off', { filter: 'R', time: 60, iterations: 10, status: 'DISABLED' }),
+  ].map((item) => exposureRow(item, 5));
+  const dark = exposureRow(smart('d', { filter: 'L', time: 60, iterations: 10 }), 5);
+  dark.imageType = 'DARK';
+  const plan = framesForTime([...rows, dark], 7200);
+  assert.deepEqual(
+    plan.map((p) => [p.row.id, p.frames, p.iterations]),
+    [
+      ['l', 60, 64],
+      ['ha', 12, 12],
+    ]
+  );
+  // Never less than one picture
+  assert.deepEqual(
+    framesForTime(rows, 60).map((p) => p.frames),
+    [1, 1]
+  );
+  assert.deepEqual(framesForTime([], 3600), []);
+});
+
+test('the wait for darkness is found with the tracking around it', async () => {
+  const { darknessWait, WAIT_FOR_SUN_TYPE, SET_TRACKING_TYPE } =
+    await import('@/utils/sequenceSimple');
+  const tracking = (Id, TrackingMode) => ({ Id, FullTypeName: SET_TRACKING_TYPE, TrackingMode });
+  const tree = (Items) => [{ Id: 'start', FullTypeName: START_AREA_TYPE, Items }];
+  const wait = { Id: 'wait', FullTypeName: WAIT_FOR_SUN_TYPE };
+  const ids = (Items) => Object.values(darknessWait(tree(Items))).map((item) => item?.Id ?? null);
+  assert.deepEqual(
+    ids([
+      tracking('own', 'Sidereal'),
+      tracking('stop', 'Stopped'),
+      { Id: 'cool', FullTypeName: COOL_CAMERA_TYPE },
+      wait,
+      tracking('late', 'Stopped'),
+      tracking('resume', 'Sidereal'),
+    ]),
+    ['wait', 'stop', 'resume']
+  );
+  assert.deepEqual(ids([wait]), ['wait', null, null]);
+  assert.deepEqual(ids([tracking('stop', 'Stopped')]), [null, null, null]);
+});
+
 test('exposureRow reads filter, time and progress of a Smart Exposure', () => {
   const row = exposureRow(smart('s', { filter: 'Ha', time: 300, iterations: 20, completed: 5 }));
   assert.equal(row.filterName, 'Ha');

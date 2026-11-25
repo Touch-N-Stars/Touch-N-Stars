@@ -19,17 +19,22 @@ import {
 } from '@/utils/sequenceFilter';
 import {
   collectSmartExposureDithers,
+  darknessWait,
   findAreaContainer,
   findByType,
   insertionPoint,
   isActive,
   itemsToRearm,
+  loopsToRestart,
+  needsSingleRun,
   stepsToReopen,
   summarizeDsoContainer,
   AF_AFTER_FILTER_CHANGE_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
   END_AREA_TYPE,
   END_ORDER,
+  LOOP_CONDITION_TYPE,
+  SET_TRACKING_TYPE,
   SLEW_MODE_TYPES,
   SMART_EXPOSURE_TYPE,
   START_AREA_TYPE,
@@ -37,6 +42,8 @@ import {
   START_ORDER,
   TAKE_MANY_EXPOSURES_TYPE,
   TARGET_ORDER,
+  UNPARK_SCOPE_TYPE,
+  WAIT_FOR_SUN_TYPE,
 } from '@/utils/sequenceSimple';
 
 const RUNTIME_FIELDS = [
@@ -456,27 +463,31 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.refresh();
     },
 
-    // Before a plan that ran to its end or was stopped starts again, see itemsToRearm() and
-    // stepsToReopen(). Not bound to the controls lock: it belongs to the start, not to editing.
+    // Before a plan that ran to its end or was stopped starts again, see itemsToRearm(),
+    // stepsToReopen() and loopsToRestart(). Not bound to the controls lock: it belongs to the start, not to editing.
     // Returns whether the plan is ready; on false it must not start, it would take pictures
     // without its slew and guiding, or not park.
     async rearmPlan() {
       await this.loadCurrent();
       const rearm = itemsToRearm(this.data);
       const reopen = stepsToReopen(this.data, { start: rearm.length === 0 });
-      if (!rearm.length && !reopen.length) return true;
+      const loops = loopsToRestart(this.data);
+      if (!rearm.length && !reopen.length && !loops.length) return true;
       const accepted = (res) => {
         if (res?.Success === false) throw new Error(res.Error || 'refused');
       };
       let ok = true;
       try {
         for (const id of rearm) accepted(await apiService.sequenceResetStatus(id));
-        // reset-status would take the following items along and drop the progress of the
-        // exposures, so these are switched off and on: the plugin only sets a disabled item
+        // reset-status can take the following items along and drop the progress of the
+        // exposures (it depends on the plugin), so these are switched off and on: the plugin only sets a disabled item
         // back to CREATED, and nothing around it changes.
         for (const id of reopen) {
           accepted(await apiService.sequenceEnable(id, false));
           accepted(await apiService.sequenceEnable(id, true));
+        }
+        for (const id of loops) {
+          accepted(await apiService.sequenceSetProperty(id, 'CompletedIterations', 0));
         }
       } catch (e) {
         console.error('rearmPlan:', e);
@@ -724,6 +735,94 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.setContainerItemEnabled(end.Id, fullTypeName, enabled, END_ORDER, 'bottom');
     },
 
+    // Simple mode: the plan waits until the sun is at or below sunAltitude before it unparks. The
+    // mount does not track meanwhile, or a plan started in daylight would run it into the tripod.
+    // Off disables the items, so a plan remembers that the user does not want to wait.
+    async setDarknessWait(enabled, sunAltitude) {
+      if (this._isControlsLocked()) return;
+      const start = findAreaContainer(this.data, START_AREA_TYPE);
+      if (!start) return;
+
+      const parts = () => darknessWait(this.data);
+      if (!enabled) {
+        for (const item of Object.values(parts())) {
+          if (isActive(item)) await this.enable(item.Id, false);
+        }
+        return;
+      }
+      if (this._isItemRunning(parts().wait?.Id)) return;
+
+      // NINA's default (30 degrees) never waits, so the wait only counts once its value is set.
+      await this.setStartItemEnabled(WAIT_FOR_SUN_TYPE, true);
+      const { wait } = parts();
+      if (!wait || !(await this.setProperty(wait.Id, 'Offset', sunAltitude))) return;
+
+      if (!parts().stop) {
+        const known = new Set(this.findById(start.Id).Items.map((i) => i.Id));
+        await this.addItem(wait.Id, SET_TRACKING_TYPE, false);
+        const added = this.findById(start.Id).Items.find((i) => !known.has(i.Id));
+        // 5 = stopped. Left on sidereal it would be one more "tracking on", so it goes again.
+        if (added && !(await this.setProperty(added.Id, 'TrackingMode', 5))) {
+          await this.remove(added.Id);
+        }
+      }
+      // Without the "off" nothing has to be switched back on
+      if (parts().stop && !parts().resume) {
+        const unpark = findByType(this.findById(start.Id).Items, UNPARK_SCOPE_TYPE);
+        // A new one is sidereal. Behind the unparking: a parked mount refuses to track.
+        await this.addItem(unpark?.Id ?? wait.Id, SET_TRACKING_TYPE, true);
+      }
+      const { stop, resume } = parts();
+      for (const item of [resume, stop]) {
+        if (item && !isActive(item)) await this.enable(item.Id, true);
+      }
+    },
+
+    // Simple mode: a target ends when `conditionType` (sun or altitude condition) cuts it off, with
+    // the pictures it has by then. See needsSingleRun() for the loop that comes with it. Returns
+    // whether the limit is as asked for.
+    async setTargetLimit(containerId, conditionType, enabled, offset) {
+      if (this._isControlsLocked()) return false;
+      const container = () => this.findById(containerId);
+      if (!container()) return false;
+      const existing = findByType(container().Conditions, conditionType);
+
+      if (!enabled) {
+        if (isActive(existing)) await this.enable(existing.Id, false);
+        return true;
+      }
+      if (existing) {
+        if (existing.Offset !== offset && !(await this.setProperty(existing.Id, 'Offset', offset)))
+          return false;
+        if (isActive(existing)) return true;
+        if (!(await this._ensureSingleRun(containerId))) return false;
+        await this.enable(existing.Id, true);
+        return true;
+      }
+      if (!(await this._ensureSingleRun(containerId))) return false;
+      await this.addCondition(containerId, conditionType, null);
+      const added = findByType(container()?.Conditions, conditionType);
+      if (!added) return false;
+      if (await this.setProperty(added.Id, 'Offset', offset)) return true;
+      // At its default (sun 0 degrees, target 30 degrees) it would cut off at the wrong moment
+      await this.remove(added.Id);
+      return false;
+    },
+
+    // The "loop once" a limited target needs. NINA creates the condition with 2 repetitions: it
+    // must not stay when setting it to 1 fails, the target would be taken twice.
+    async _ensureSingleRun(containerId) {
+      const conditions = () => this.findById(containerId)?.Conditions ?? [];
+      if (!needsSingleRun(this.findById(containerId))) return true;
+      const known = new Set(conditions().map((c) => c.Id));
+      await this.addCondition(containerId, LOOP_CONDITION_TYPE, null);
+      const added = conditions().find((c) => !known.has(c.Id));
+      if (!added) return false;
+      if (await this.setProperty(added.Id, 'Iterations', 1)) return true;
+      await this.remove(added.Id);
+      return false;
+    },
+
     // Optional step of a target (start guiding, autofocus at the start), placed before its
     // exposures.
     async setTargetItemEnabled(containerId, fullTypeName, enabled) {
@@ -745,9 +844,14 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
     },
 
     // Simple mode: the plan slews to the target, starts guiding there and refocuses after a
-    // filter change, so the user never does any of it by hand. `steps` comes from simpleTargetSteps(). With `addExposure` a target
-    // without pictures also gets an exposure row to fill in.
-    async applySimpleTargetSteps(containerId, steps, { addExposure = false } = {}) {
+    // filter change, so the user never does any of it by hand. `steps` comes from
+    // simpleTargetSteps(). With `addExposure` a target without pictures also gets an exposure
+    // row, filled in with `exposure` (see addExposureRow()).
+    async applySimpleTargetSteps(
+      containerId,
+      steps,
+      { addExposure = false, exposure = null } = {}
+    ) {
       if (this._isControlsLocked()) return { ok: false, locked: true };
       if (!this.findById(containerId)) return { ok: false };
 
@@ -764,7 +868,7 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         [SMART_EXPOSURE_TYPE, TAKE_MANY_EXPOSURES_TYPE].includes(i?.FullTypeName)
       );
       if (addExposure && container && !hasExposure) {
-        await this.addExposureRow(containerId);
+        await this.addExposureRow(containerId, exposure);
       }
       return { ok: true };
     },
@@ -773,7 +877,8 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
     // none. With a filter wheel a new row starts with the next filter the target does not use
     // yet, the usual way to build an LRGB or narrowband plan. Without a filter left it is told
     // to keep the current one: untouched, PINS would move the wheel to its first slot.
-    async addExposureRow(containerId) {
+    // `exposure` = { exposureTime, iterations } replaces NINA's values for a new row.
+    async addExposureRow(containerId, exposure = null) {
       if (this._isControlsLocked()) return;
       const container = this.findById(containerId);
       if (!container) return;
@@ -791,6 +896,22 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       const row = summarizeDsoContainer(this.findById(containerId)).rows.find(
         (r) => !knownIds.has(r.id)
       );
+      if (row && exposure) {
+        await this.setProperties(
+          [
+            {
+              id: row.exposureItem?.Id,
+              propertyName: 'ExposureTime',
+              value: exposure.exposureTime,
+            },
+            {
+              id: row.loopCondition?.Id,
+              propertyName: 'Iterations',
+              value: exposure.iterations,
+            },
+          ].filter((change) => change.id)
+        );
+      }
       if (!row?.filterItem?.Id || row.filterName) return;
       const { filterInfo, profileInfo } = apiStore();
       const names = filterNameChoices(row.filterItem, filterInfo, profileInfo);

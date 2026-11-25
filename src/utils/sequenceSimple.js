@@ -21,6 +21,11 @@ export const PARK_SCOPE_TYPE = 'NINA.Sequencer.SequenceItem.Telescope.ParkScope'
 export const SLEW_TYPE = 'NINA.Sequencer.SequenceItem.Telescope.SlewScopeToRaDec';
 export const CENTER_TYPE = 'NINA.Sequencer.SequenceItem.Platesolving.Center';
 export const CENTER_AND_ROTATE_TYPE = 'NINA.Sequencer.SequenceItem.Platesolving.CenterAndRotate';
+export const SET_TRACKING_TYPE = 'NINA.Sequencer.SequenceItem.Telescope.SetTracking';
+export const WAIT_FOR_SUN_TYPE = 'NINA.Sequencer.SequenceItem.Utility.WaitForSunAltitude';
+export const LOOP_CONDITION_TYPE = 'NINA.Sequencer.Conditions.LoopCondition';
+export const SUN_CONDITION_TYPE = 'NINA.Sequencer.Conditions.SunAltitudeCondition';
+export const ALTITUDE_CONDITION_TYPE = 'NINA.Sequencer.Conditions.AltitudeCondition';
 export const START_GUIDING_TYPE = 'NINA.Sequencer.SequenceItem.Guider.StartGuiding';
 export const RUN_AUTOFOCUS_TYPE = 'NINA.Sequencer.SequenceItem.Autofocus.RunAutofocus';
 export const AF_AFTER_FILTER_CHANGE_TYPE =
@@ -41,7 +46,9 @@ export const SLEW_MODE_TYPES = {
 
 // The order new optional items are placed in, per area. The steps of a target come before
 // its exposures, like in NINA's own target template.
-export const START_ORDER = [COOL_CAMERA_TYPE, UNPARK_SCOPE_TYPE];
+// Cooling before the wait for darkness, so the camera is cold when the first picture can start;
+// unparking after it, so the mount does not stand there tracking.
+export const START_ORDER = [COOL_CAMERA_TYPE, WAIT_FOR_SUN_TYPE, UNPARK_SCOPE_TYPE];
 // Park before the warm-up: NINA's warm-up waits for its whole ramp, and the mount would track
 // on for that long after the last picture.
 export const END_ORDER = [PARK_SCOPE_TYPE, WARM_CAMERA_TYPE];
@@ -88,8 +95,12 @@ export const FRAME_OVERHEAD_SECONDS = 5;
  * filterItem, exposureItem and loopCondition are the raw children whose Ids the editor
  * writes to; filterItem is null for Take Many Exposures, which has no filter switch.
  * overheadSeconds is added to every frame (download, saving, guider settle).
+ *
+ * resumable: the next start takes the pictures missing from a finished or skipped row too (the
+ * simple mode, see stepsToReopen()): the count was raised, or dawn cut the row off. Otherwise
+ * such a row is done, the sequencer does not run it again.
  */
-export function exposureRow(item, overheadSeconds = 0) {
+export function exposureRow(item, overheadSeconds = 0, { resumable = false } = {}) {
   if (!EXPOSURE_ROW_TYPES.has(item?.FullTypeName)) return null;
 
   const isSmart = item.FullTypeName === SMART_EXPOSURE_TYPE;
@@ -107,7 +118,8 @@ export function exposureRow(item, overheadSeconds = 0) {
   const frameSeconds = exposureTime + Math.max(toNumber(overheadSeconds), 0);
   const iterations = toNumber(loopCondition?.Iterations);
   const completed = Math.min(toNumber(loopCondition?.CompletedIterations), iterations);
-  const remaining = DONE_STATUSES.has(item.Status) ? 0 : Math.max(iterations - completed, 0);
+  const done = resumable ? item.Status === 'DISABLED' : DONE_STATUSES.has(item.Status);
+  const remaining = done ? 0 : Math.max(iterations - completed, 0);
 
   return {
     id: item.Id,
@@ -126,6 +138,8 @@ export function exposureRow(item, overheadSeconds = 0) {
     binning: binningLabel(exposureItem?.Binning),
     iterations,
     completed,
+    frameSeconds,
+    remainingFrames: remaining,
     totalSeconds: item.Status === 'DISABLED' ? 0 : iterations * frameSeconds,
     remainingSeconds: remaining * frameSeconds,
   };
@@ -146,11 +160,15 @@ export function binningLabel(binning) {
  * as rows nor as switches. Only direct children are read: a nested container counts as one
  * "other" step, even if it holds exposures itself.
  */
-export function summarizeDsoContainer(container, overheadSeconds = 0) {
+export function summarizeDsoContainer(container, overheadSeconds = 0, { resumable = false } = {}) {
   const rows = [];
   const otherItems = [];
+  // A target the plan is through with keeps CREATED rows when dawn interrupted it, and pictures
+  // added to it do not run either.
+  const passed = !resumable && DONE_STATUSES.has(container?.Status);
   for (const child of container?.Items ?? []) {
-    const row = exposureRow(child, overheadSeconds);
+    const row = exposureRow(child, overheadSeconds, { resumable });
+    if (row && passed) Object.assign(row, { remainingFrames: 0, remainingSeconds: 0 });
     if (row) rows.push(row);
     else if (!TARGET_STEP_TYPES.has(child?.FullTypeName)) otherItems.push(child);
   }
@@ -162,28 +180,63 @@ export function summarizeDsoContainer(container, overheadSeconds = 0) {
   };
 }
 
+/** How many of the rows' remaining pictures fit into the given time, taken row by row. */
+function framesWithin(rows, seconds) {
+  let left = seconds;
+  let frames = 0;
+  for (const row of rows) {
+    if (!row.remainingFrames || row.frameSeconds <= 0) continue;
+    const fit = Math.min(row.remainingFrames, Math.floor(left / row.frameSeconds + 1e-6));
+    frames += fit;
+    left -= fit * row.frameSeconds;
+    if (fit < row.remainingFrames) break;
+  }
+  return frames;
+}
+
 /**
  * Every DSO container of the tree with its summary, plus the totals over all of them.
  *
  * With nowMs, every target also gets the clock times it is expected to run: targets are
  * imaged one after the other, each starting when the remaining frames of the previous one
  * are done. A finished target has startMs === endMs.
+ *
+ * notBeforeMs: the plan waits for darkness until then. limitAt(container, startMs) is when a
+ * target that starts at startMs is cut off (dawn, or too low), null without a limit; see
+ * planWindow() in planLimits.js. Targets carry it as limitMs and end there at the latest.
+ * framesLeft / framesFit: pictures still to take, and how many of them the limits leave time for.
  */
-export function summarizeTargets(tree, { overheadSeconds = 0, nowMs = null } = {}) {
-  let cursor = nowMs;
+export function summarizeTargets(
+  tree,
+  { overheadSeconds = 0, nowMs = null, resumable = false, notBeforeMs = null, limitAt = null } = {}
+) {
+  let cursor = nowMs === null ? null : Math.max(nowMs, notBeforeMs ?? nowMs);
   const targets = collectDsoContainers(tree).map((container) => {
-    const summary = { container, ...summarizeDsoContainer(container, overheadSeconds) };
+    const summary = {
+      container,
+      ...summarizeDsoContainer(container, overheadSeconds, { resumable }),
+    };
+    summary.framesLeft = summary.rows.reduce((sum, r) => sum + r.remainingFrames, 0);
+    summary.framesFit = summary.framesLeft;
     if (cursor !== null) {
       summary.startMs = cursor;
-      cursor += summary.remainingSeconds * 1000;
-      summary.endMs = cursor;
+      summary.endMs = cursor + summary.remainingSeconds * 1000;
+      summary.limitMs = limitAt?.(container, cursor) ?? null;
+      if (summary.limitMs !== null && summary.endMs > summary.limitMs) {
+        summary.endMs = Math.max(cursor, summary.limitMs);
+        summary.framesFit = framesWithin(summary.rows, (summary.endMs - cursor) / 1000);
+      }
+      cursor = summary.endMs;
     }
     return summary;
   });
+  const total = (key) => targets.reduce((sum, t) => sum + t[key], 0);
   return {
     targets,
-    totalSeconds: targets.reduce((sum, t) => sum + t.totalSeconds, 0),
-    remainingSeconds: targets.reduce((sum, t) => sum + t.remainingSeconds, 0),
+    totalSeconds: total('totalSeconds'),
+    remainingSeconds: total('remainingSeconds'),
+    framesLeft: total('framesLeft'),
+    framesFit: total('framesFit'),
     endMs: cursor,
   };
 }
@@ -235,17 +288,20 @@ const RAN_STATUSES = new Set(['FINISHED', 'SKIPPED', 'FAILED']);
 /**
  * The items whose reset makes a plan that already ran to its end prepare and close the night
  * again. A new target added to such a plan runs, but "park" and "warm up" keep their FINISHED
- * from the first run and are skipped, so the mount tracks on (seen on PINS). The first item of
- * each area is enough: the plugin's reset takes the following ones along. Empty when the plan
+ * from the first run and are skipped, so the mount tracks on (seen on PINS). Every item is listed:
+ * newer plugins reset the following ones along with the first, the one on PINS images does not
+ * (seen: unparking stayed FINISHED, and the slew failed on the parked mount). Empty when the plan
  * has not reached its end area; see stepsToReopen() for a stopped plan.
  * @returns {string[]} item Ids
  */
 export function itemsToRearm(tree) {
-  const firstRan = (areaType) =>
-    findAreaContainer(tree, areaType)?.Items?.find((item) => RAN_STATUSES.has(item?.Status));
-  const closing = firstRan(END_AREA_TYPE);
-  if (!closing) return [];
-  return [firstRan(START_AREA_TYPE), closing].filter(Boolean).map((item) => item.Id);
+  const ran = (areaType) =>
+    (findAreaContainer(tree, areaType)?.Items ?? []).filter((item) =>
+      RAN_STATUSES.has(item?.Status)
+    );
+  const closing = ran(END_AREA_TYPE);
+  if (!closing.length) return [];
+  return [...ran(START_AREA_TYPE), ...closing].map((item) => item.Id);
 }
 
 /**
@@ -254,10 +310,12 @@ export function itemsToRearm(tree) {
  * unguided wherever the telescope stood by then (seen on PINS). Per target with pictures left:
  * - the target itself, or pictures added to a finished target never run
  * - its approach, guiding and autofocus steps
- * - the filter change and exposure of its unfinished rows: the first picture would be taken in
- *   whatever filter is in, and a row stopped while dithering (both FINISHED) would just end
- * `start` adds unparking and cooling, which a plan stopped last night needs again tonight. The
- * rest of the start area, and everything a target holds beyond that, stays as it is.
+ * - its unfinished rows with their filter change and exposure: the first picture would be taken
+ *   in whatever filter is in, a row stopped while dithering (both FINISHED) would just end, and a
+ *   row that is through (count raised, cut off by dawn) would not run at all
+ * `start` adds cooling, the wait for darkness and unparking, which a plan stopped last night needs
+ * again tonight. The rest of the start area, and everything a target holds beyond that, stays as
+ * it is.
  * @returns {string[]} item Ids
  */
 export function stepsToReopen(tree, { start = true } = {}) {
@@ -265,21 +323,102 @@ export function stepsToReopen(tree, { start = true } = {}) {
   const ids = [];
   if (start) {
     for (const item of findAreaContainer(tree, START_AREA_TYPE)?.Items ?? []) {
-      if (START_ORDER.includes(item?.FullTypeName) && ran(item)) ids.push(item.Id);
+      const type = item?.FullTypeName;
+      if ((START_ORDER.includes(type) || type === SET_TRACKING_TYPE) && ran(item))
+        ids.push(item.Id);
     }
   }
-  for (const { container, rows, remainingSeconds } of summarizeTargets(tree).targets) {
-    if (remainingSeconds <= 0) continue;
+  for (const { container, rows, framesLeft } of summarizeTargets(tree, { resumable: true })
+    .targets) {
+    if (framesLeft <= 0) continue;
     if (ran(container)) ids.push(container.Id);
     for (const item of container.Items ?? []) {
       if (TARGET_STEP_TYPES.has(item?.FullTypeName) && ran(item)) ids.push(item.Id);
     }
     for (const row of rows) {
-      if (row.remainingSeconds <= 0) continue;
+      if (row.remainingFrames <= 0) continue;
+      if (ran(row.item)) ids.push(row.id);
       ids.push(...(row.item.Items ?? []).filter(ran).map((item) => item.Id));
     }
   }
   return ids;
+}
+
+/**
+ * The "once" loops (see needsSingleRun()) of targets with pictures left that already count as
+ * done: they have to start over, or the target ends before its first picture.
+ * @returns {string[]} condition Ids
+ */
+export function loopsToRestart(tree) {
+  return summarizeTargets(tree, { resumable: true })
+    .targets.filter((target) => target.framesLeft > 0)
+    .flatMap((target) => target.container.Conditions ?? [])
+    .filter(
+      (c) =>
+        c?.FullTypeName === LOOP_CONDITION_TYPE &&
+        isActive(c) &&
+        toNumber(c.Iterations) === 1 &&
+        toNumber(c.CompletedIterations) >= 1
+    )
+    .map((c) => c.Id);
+}
+
+/**
+ * Whether a target needs a "loop once" condition before it gets a limit (dawn, altitude). In NINA
+ * a condition means "repeat while it holds": alone, a limit would take the pictures over and over
+ * until dawn. All conditions have to hold, so with the loop the target ends after its count or at
+ * the limit, whichever comes first (seen on PINS). A target that has conditions already is looped
+ * by the user's own design and only gets the limit on top.
+ */
+export function needsSingleRun(container) {
+  return !(container?.Conditions ?? []).some(isActive);
+}
+
+/**
+ * The plan's wait for darkness and the two tracking items around it: the mount must not track for
+ * hours while it waits. `stop` is the last "tracking off" before the wait, `resume` the first
+ * "tracking on" after it. Each null when missing.
+ */
+export function darknessWait(tree) {
+  const items = findAreaContainer(tree, START_AREA_TYPE)?.Items ?? [];
+  const index = items.findIndex((i) => i?.FullTypeName === WAIT_FOR_SUN_TYPE);
+  if (index < 0) return { wait: null, stop: null, resume: null };
+  const tracking = (i) => i?.FullTypeName === SET_TRACKING_TYPE;
+  const stopped = (i) => i.TrackingMode === 'Stopped';
+  return {
+    wait: items[index],
+    stop: items.filter((i, n) => n < index && tracking(i) && stopped(i)).at(-1) ?? null,
+    resume: items.find((i, n) => n > index && tracking(i) && !stopped(i)) ?? null,
+  };
+}
+
+/** The limits a target stops at: `{ sun, altitude }`, the condition items or null. */
+export function targetLimits(container) {
+  return {
+    sun: findByType(container?.Conditions, SUN_CONDITION_TYPE),
+    altitude: findByType(container?.Conditions, ALTITUDE_CONDITION_TYPE),
+  };
+}
+
+function isLight(row) {
+  return !row.imageType || String(row.imageType).toUpperCase() === 'LIGHT';
+}
+
+/**
+ * The number of pictures per row for an imaging time: every filter gets the same share of it, and
+ * at least one picture. Pictures already taken stay on top.
+ * @param {object[]} rows exposureRow() entries
+ * @returns {{ row: object, frames: number, iterations: number }[]}
+ */
+export function framesForTime(rows, seconds) {
+  const usable = (rows ?? []).filter(
+    (r) => r.enabled && r.loopCondition?.Id && r.frameSeconds > 0 && isLight(r)
+  );
+  const share = Math.max(0, toNumber(seconds)) / Math.max(1, usable.length);
+  return usable.map((row) => {
+    const frames = Math.max(1, Math.floor(share / row.frameSeconds + 1e-6));
+    return { row, frames, iterations: row.completed + frames };
+  });
 }
 
 /** What the plan does after its last picture: `{ park, warm }`. */
