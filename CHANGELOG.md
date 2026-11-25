@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Connection: When PINS or N.I.N.A. does not answer, the app now says what is wrong and what to do: a rig without power or in another Wi-Fi, PINS still starting, N.I.N.A. not running, a missing Advanced API or an outdated plugin. It keeps searching and goes back to a known rig by itself when its address has changed or it runs its own hotspot, and offers other rigs and computers it finds.
 - End night: One button on the equipment page and in the power menu ends the night. The box stops the sequence, running jobs like autofocus or flats, the exposure and guiding, parks the mount, closes the dome and the flat panel cover, warms up the camera and disconnects everything, and keeps going when the phone drops off Wi-Fi. Each step can be switched off, and the dialog shows how far it got. The dome only closes over a parked mount, and devices stay connected when a step failed. A mount without a park position is turned to the pole with tracking off. It needs the updated Touch'N'Stars plugin.
 - Sequence: Before the start, the app checks the rig and warns about an unsafe safety monitor, a parked or not tracking mount, a camera that is not at its temperature, a missing guider, a missing image folder or less than 5 GB of free disk space. Steps the sequence does itself, like unparking or cooling, are not warned about. Start anyway is always possible.
 - System: Restarting or shutting down the box warns first when a sequence runs, the mount is not parked, the camera is cooled or the dome or flat panel cover is open, and offers to end the night first.
@@ -16,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Connection (Android): With mobile data on, a rig on its own hotspot is found again even when the app last knew it at another address.
+- Connection (iOS): PINS rigs can be found by their own announcement in the network.
 - Sequence: A failed stop or start of the sequence now shows an error instead of failing silently.
 
 ## [App6.6.0] - 2026-11-22

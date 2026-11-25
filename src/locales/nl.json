@@ -45,18 +45,78 @@
       "title": "Verbindingsfout",
       "message_api": "API plugin is niet beschikbaar. Controleer instellingen in @:{'general.backendName'}",
       "message_api_version": "API plugin is te oud. Voer update uit",
-      "message_tns": "De Touch'N'Stars plugin is niet beschikbaar. Controleer instellingen in @:{'general.backendName'}",
+      "message_unreachable": "Geen antwoord. Controleer of de rig of de computer met N.I.N.A. aan staat en in hetzelfde netwerk zit als dit apparaat.",
+      "message_live_updates": "De verbinding voor live gegevens komt niet tot stand. Een firewall, VPN of proxy ertussen kan die blokkeren.",
       "message_tns_version": "De Touch N Stars plugin is te oud. Voer update uit"
+    },
+    "connection_help": {
+      "searchAgain": "Opnieuw zoeken",
+      "keepsTrying": "De app blijft het proberen en verbindt vanzelf.",
+      "advanced": "Geavanceerd",
+      "changeAddress": "Adres wijzigen",
+      "searching": {
+        "title": "Verbinden…",
+        "titleNamed": "Verbinden met {name}…",
+        "text": "Dit duurt meestal een paar seconden."
+      },
+      "found": {
+        "title": "Een andere gevonden",
+        "text": "De jouwe antwoordt niet, maar dit is in je netwerk gevonden. Is het niet de juiste, loop dan de punten hieronder na.",
+        "connect": "Verbinden met {name}"
+      },
+      "pinsStarting": {
+        "title": "Je rig staat aan, PINS start nog",
+        "text": "Dit kan een tot twee minuten duren. De app verbindt vanzelf."
+      },
+      "pinsDown": {
+        "title": "Je rig staat aan, maar PINS antwoordt niet",
+        "text": "Wacht nog een minuut. Verandert er niets, zet de rig dan uit en weer aan."
+      },
+      "rigSilent": {
+        "title": "Je rig antwoordt niet",
+        "text": "Loop deze punten na:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. antwoordt niet",
+        "text": "Loop deze punten na:"
+      },
+      "silent": {
+        "title": "Geen antwoord",
+        "text": "Loop de punten na die bij jouw opstelling horen:"
+      },
+      "apiMissing": {
+        "title": "De Advanced API ontbreekt",
+        "text": "Touch'N'Stars is gevonden, maar de plugin ‘Advanced API’ van N.I.N.A. antwoordt niet. Installeer deze in N.I.N.A. onder Plugins, zet de API aan in de opties en start N.I.N.A. opnieuw."
+      },
+      "liveBlocked": {
+        "title": "Bijna verbonden",
+        "text": "De verbinding voor live gegevens komt niet tot stand. Een firewall, VPN of proxy ertussen kan die blokkeren."
+      },
+      "update": {
+        "title": "Er is een update nodig",
+        "text": "De plugin {plugin} heeft versie {current}, de app heeft minstens {minimum} nodig. Werk deze in N.I.N.A. bij onder Plugins en start N.I.N.A. opnieuw. Werk op een PINS-rig PINS bij."
+      },
+      "sections": {
+        "rig": "PINS-rig",
+        "nina": "Computer met N.I.N.A."
+      },
+      "checks": {
+        "power": "Heeft de rig stroom? Na het inschakelen heeft hij een tot twee minuten nodig.",
+        "hotspot": "Buiten: verbind dit apparaat met de wifi van de rig, ‘{name}’. Het wachtwoord is ‘touchnstars’, tenzij je het hebt gewijzigd. Blijf verbonden, ook als er staat dat er geen internet is.",
+        "home": "Thuis: dit apparaat moet in hetzelfde netwerk zitten als de rig, niet op mobiele data of de gastwifi.",
+        "computer": "Staat de computer aan en draait N.I.N.A.?",
+        "network": "Dit apparaat moet in hetzelfde netwerk zitten als de computer, niet op mobiele data of de gastwifi.",
+        "plugin": "Is de plugin Touch'N'Stars in N.I.N.A. geïnstalleerd en ingeschakeld?",
+        "firewall": "Laat de firewall van de computer N.I.N.A. toe in privénetwerken (poort {port})?",
+        "iosLocalNetwork": "iPhone en iPad: bij Instellingen, Privacy en beveiliging, Lokaal netwerk moet Touch'N'Stars aan staan.",
+        "nearbyDevices": "De app mag het netwerk niet doorzoeken. Sta ‘Apparaten in de buurt’ toe voor Touch'N'Stars in de systeeminstellingen.",
+        "browser": "De browser kan niet zoeken. Is het adres veranderd, open dan het nieuwe."
+      }
     },
     "connection_splash": {
       "connecting": "Verbinden…",
-      "trying": "Opnieuw verbinden met {instance}…",
-      "delayed": "Nog steeds geen verbinding met {instance}. Dit kan op een probleem duiden — open Instellingen om je Touch-N-Stars-instantie te controleren.",
-      "retry_now": "Nu opnieuw proberen",
-      "show_details": "Details tonen",
       "details": "Doel: {endpoint} · {elapsed}s verstreken",
-      "configured_instance": "geconfigureerd exemplaar",
-      "default_instance_name": "geselecteerde exemplaar"
+      "configured_instance": "geconfigureerd exemplaar"
     }
   },
   "whatsnew": {

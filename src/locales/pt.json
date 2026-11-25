@@ -45,18 +45,78 @@
       "title": "Erro de conexão",
       "message_api": "O plugin API não está disponível. Verifique as configurações no @:{'general.backendName'}",
       "message_api_version": "O plugin API está muito antigo. Execute uma atualização",
-      "message_tns": "O plugin TouchNStars não está disponível. Verifique as configurações no @:{'general.backendName'}",
+      "message_unreachable": "Sem resposta. Verifica se o equipamento ou o computador com N.I.N.A. está ligado e na mesma rede que este dispositivo.",
+      "message_live_updates": "A ligação para os dados em direto não se estabelece. Uma firewall, VPN ou proxy pode estar a bloqueá-la.",
       "message_tns_version": "O plugin Touch N Stars está muito antigo. Execute uma atualização"
+    },
+    "connection_help": {
+      "searchAgain": "Procurar novamente",
+      "keepsTrying": "A app continua a tentar e liga-se sozinha.",
+      "advanced": "Avançado",
+      "changeAddress": "Alterar endereço",
+      "searching": {
+        "title": "A ligar…",
+        "titleNamed": "A ligar a {name}…",
+        "text": "Normalmente demora alguns segundos."
+      },
+      "found": {
+        "title": "Foi encontrado outro",
+        "text": "O teu não responde, mas isto foi encontrado na tua rede. Se não for o certo, verifica os pontos abaixo.",
+        "connect": "Ligar a {name}"
+      },
+      "pinsStarting": {
+        "title": "O teu equipamento está ligado, o PINS está a arrancar",
+        "text": "Pode demorar um a dois minutos. A app liga-se sozinha."
+      },
+      "pinsDown": {
+        "title": "O teu equipamento está ligado, mas o PINS não responde",
+        "text": "Espera mais um minuto. Se nada mudar, desliga o equipamento e volta a ligá-lo."
+      },
+      "rigSilent": {
+        "title": "O teu equipamento não responde",
+        "text": "Verifica estes pontos:"
+      },
+      "ninaSilent": {
+        "title": "O N.I.N.A. não responde",
+        "text": "Verifica estes pontos:"
+      },
+      "silent": {
+        "title": "Sem resposta",
+        "text": "Verifica os pontos que se aplicam ao teu caso:"
+      },
+      "apiMissing": {
+        "title": "Falta a Advanced API",
+        "text": "O Touch'N'Stars foi encontrado, mas o plugin «Advanced API» do N.I.N.A. não responde. Instala-o no N.I.N.A. em Plugins, ativa a API nas opções e reinicia o N.I.N.A."
+      },
+      "liveBlocked": {
+        "title": "Quase ligado",
+        "text": "A ligação para os dados em direto não se estabelece. Uma firewall, VPN ou proxy pode estar a bloqueá-la."
+      },
+      "update": {
+        "title": "É necessária uma atualização",
+        "text": "O plugin {plugin} tem a versão {current}, a app precisa pelo menos da {minimum}. No N.I.N.A., atualiza-o em Plugins e reinicia o N.I.N.A. Num equipamento PINS, atualiza o PINS."
+      },
+      "sections": {
+        "rig": "Equipamento PINS",
+        "nina": "Computador com N.I.N.A."
+      },
+      "checks": {
+        "power": "O equipamento tem corrente? Depois de ligado, precisa de um a dois minutos.",
+        "hotspot": "Ao ar livre: liga este dispositivo ao Wi-Fi do equipamento, «{name}». A palavra-passe é «touchnstars» se não a mudaste. Mantém a ligação mesmo que indique que não há internet.",
+        "home": "Em casa: este dispositivo tem de estar na mesma rede que o equipamento, não em dados móveis nem no Wi-Fi de convidados.",
+        "computer": "O computador está ligado e o N.I.N.A. em execução?",
+        "network": "Este dispositivo tem de estar na mesma rede que o computador, não em dados móveis nem no Wi-Fi de convidados.",
+        "plugin": "O plugin Touch'N'Stars está instalado e ativado no N.I.N.A.?",
+        "firewall": "A firewall do computador permite o N.I.N.A. em redes privadas (porta {port})?",
+        "iosLocalNetwork": "iPhone e iPad: em Definições, Privacidade e segurança, Rede local, o Touch'N'Stars tem de estar ativado.",
+        "nearbyDevices": "A app não pode procurar na rede. Permite «Dispositivos próximos» para o Touch'N'Stars nas definições do sistema.",
+        "browser": "O navegador não consegue procurar. Se o endereço mudou, abre o novo."
+      }
     },
     "connection_splash": {
       "connecting": "Conectando…",
-      "trying": "Reconectando a {instance}…",
-      "delayed": "Ainda não foi possível conectar a {instance}. Isso pode indicar um problema — abra Configurações para verificar sua instância Touch-N-Stars.",
-      "retry_now": "Tentar novamente",
-      "show_details": "Mostrar detalhes",
       "details": "Destino: {endpoint} · {elapsed}s decorridos",
-      "configured_instance": "instância configurada",
-      "default_instance_name": "instância selecionada"
+      "configured_instance": "instância configurada"
     }
   },
   "whatsnew": {

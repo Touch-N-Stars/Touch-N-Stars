@@ -291,6 +291,9 @@ const DAEMON_ROUTES = Object.fromEntries(
 );
 const PINS_DAEMON_PORT = 8000;
 
+// Switched off while checkConnectionHelp runs: the plugin server is what the app asks first.
+let backendDown = false;
+
 // A loaded sequence, served only while checkSequence runs so /sequence stays empty elsewhere.
 let sequenceFixtures = false;
 const PLUGIN_ROUTES = {
@@ -302,6 +305,7 @@ const PLUGIN_ROUTES = {
   ),
   ...GUIDER_PLUGIN_ROUTES,
   ...FOCUSER_PLUGIN_ROUTES,
+  '/api/version': () => (backendDown ? undefined : { version: '99.0.0.0' }),
 };
 
 const BACKEND_ROUTES = {
@@ -1395,6 +1399,43 @@ async function checkSequence(page, viewportName, backend) {
   return failures;
 }
 
+// Runs last: the page starts over without a connection.
+async function checkConnectionHelp(page, viewportName, backend) {
+  const failures = [];
+  const expect = (condition, label) => {
+    console.log(`${condition ? 'ok  ' : 'FAIL'} ${viewportName} connection: ${label}`);
+    if (!condition) failures.push(`${viewportName} connection: ${label}`);
+  };
+  const help = `document.querySelector('[data-testid="connection-help"]')`;
+
+  backendDown = true;
+  page.exceptions.length = 0;
+  await page.navigate(`${backend.origin}/equipment`);
+  await page.waitFor(`!!${help}`, 'the connection help', 30000);
+  expect(!(await page.evaluate(`!!${help}.querySelector('ol')`)), 'starts without a checklist');
+  await page.waitFor(`!!${help}.querySelector('ol')`, 'the checklist', 30000);
+  expect(
+    (await page.evaluate(`${help}.querySelectorAll('ol').length`)) === 2,
+    'explains both kinds of backend when it knows neither'
+  );
+  expect(
+    await page.evaluate(
+      `!document.body.innerText.includes('Connection error') && !document.querySelector('.stage-frame')`
+    ),
+    'no toast on top of it'
+  );
+  failures.push(...(await checkPage(page, viewportName, 'connection help', 'connection-help')));
+
+  await page.evaluate(`document.querySelector('[data-testid="connection-search"]').click()`);
+  await page.evaluate(SETTLE);
+  expect(await page.evaluate(`!!${help}?.querySelector('ol')`), 'search again keeps the help');
+
+  backendDown = false;
+  await page.waitFor(`!!document.querySelector('.stage-frame')`, 'the app to reconnect', 30000);
+  expect(!(await page.evaluate(`!!${help}`)), 'goes away once connected');
+  return failures;
+}
+
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.error('dist/ not found. Run npm run build:app first.');
   process.exit(1);
@@ -1436,6 +1477,7 @@ try {
     failures.push(...(await checkFocuser(page, viewportName)));
     failures.push(...(await checkPins(page, viewportName, backend)));
     failures.push(...(await checkSequence(page, viewportName, backend)));
+    failures.push(...(await checkConnectionHelp(page, viewportName, backend)));
     await page.close();
   }
 } finally {
