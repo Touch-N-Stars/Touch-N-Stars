@@ -1504,7 +1504,7 @@
         },
         "polarAlignment": {
           "searchRadius": "Search Radius (°)",
-          "alignmentTolerance": "Alignment Tolerance (arcsec)",
+          "alignmentTolerance": "Alignment Tolerance (arcmin)",
           "moveRate": "Move Rate (°/s)",
           "targetDistance": "Target Distance (°)",
           "eastDirection": "East Direction",
@@ -5173,7 +5173,7 @@
       "goodEnoughHint": "A total error below 1′ (one arc minute) is good. Once it is reached, stop the alignment.",
       "tabSimple": "Polar alignment",
       "simpleIntroMove": "First the mount moves by itself to a start position near the celestial pole, then it turns twice a little around its axis while it takes pictures. Check that the cables are long enough and nothing is in the way.",
-      "simpleIntroAdjust": "Then this page shows which way to turn the altitude and azimuth knobs. The numbers update after every picture until the total error is below 1′.",
+      "simpleIntroAdjust": "Then this page shows which way to turn the altitude and azimuth knobs. The numbers update after every picture. Keep adjusting until the total error is below 1′ (one arc minute), then stop the alignment yourself.",
       "adjustHint": "Turn the altitude and azimuth knobs a little at a time the way the arrows point. The numbers update after every picture.",
       "lastMeasurement": "Last measurement",
       "markedDone": "Polar alignment is marked as done for tonight.",

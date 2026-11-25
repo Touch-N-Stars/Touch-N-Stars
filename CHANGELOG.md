@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: In the phone app the setup assistant explains the rig's hotspot, finds the rig by itself (also on the hotspot), lists a rig only once and needs no name, and no connection error shows before a rig is set up.
 - PINS: In the simple mode NINA's autofocus window no longer covers the cockpit; the curve shows in the cockpit and in the focus step instead, where an autofocus started there can also be cancelled.
 - PINS: Polar alignment in the simple mode says beforehand what the mount will do and asks before it moves, explains how to turn the knobs, keeps the last result on screen after the stop and ticks the step off below 1′; its status lines are translated.
+- Sequence: The tolerance of the polar alignment instruction is labeled in arcminutes, as the TPPA plugin reads it.
 - PINS: A star database download that failed - the rule at the field hotspot without internet - now says so in plain words with a button to try again, also after leaving and reopening the page, and a running download shows its progress again.
 - PINS: A target added to the simple mode plan from the sky atlas starts with a filter instead of an empty field, and a filter chosen for an exposure added before the filter wheel was connected is kept.
 - PINS: In the simple mode plan the filter of an exposure gets a line of its own, so its name is readable on a phone, and a new exposure starts with the next filter the target does not use yet.
