@@ -101,6 +101,21 @@ function markStatus(mark) {
 }
 
 /**
+ * Whether the loaded plan is a leftover: nothing left to take, and none of it was taken tonight.
+ * PINS keeps the plan while the rig stays on, so the next evening began with "Plan finished".
+ * An unknown takenTonight (the image history is not loaded yet) claims nothing.
+ */
+export function planUsedUp(sequence) {
+  return Boolean(
+    sequence &&
+    !sequence.running &&
+    sequence.totalSeconds > 0 &&
+    sequence.remainingSeconds <= 0 &&
+    sequence.takenTonight === false
+  );
+}
+
+/**
  * The steps of the night in their order, each with a status: done | running | open | skipped.
  * What the devices report wins over a manual mark, except that a step marked done stays done.
  *
@@ -113,8 +128,9 @@ function markStatus(mark) {
  * @param {{ inProfile: boolean, state: string, ready?: boolean, calibrated?: boolean }} s.guider
  *   ready: the built-in guider and a guide camera are chosen; calibrated: the guider holds a
  *   calibration (PINS keeps it across nights and adapts it to the pointing)
- * @param {{ running: boolean, targets: number, targetSet?: boolean, totalSeconds: number, remainingSeconds: number }} s.sequence
- *   targetSet: at least one target of the plan has an object or coordinates
+ * @param {{ running: boolean, targets: number, targetSet?: boolean, totalSeconds: number, remainingSeconds: number, takenTonight?: boolean }} s.sequence
+ *   targetSet: at least one target of the plan has an object or coordinates; takenTonight:
+ *   false when no picture of a plan was saved tonight, see planUsedUp()
  * @param {boolean} s.tppaRunning
  * @param {{ running: boolean, succeededTonight: boolean }} [s.flats] the flat run, see
  *   simpleFlats.js flatsRunState()
@@ -177,13 +193,17 @@ export function nightSteps(s) {
     steps.push({ id: 'guide', status });
   }
 
-  steps.push({ id: 'target', status: s.sequence?.targetSet ? 'done' : 'open' });
+  // The used-up plan of an earlier night is neither tonight's target nor tonight's pictures.
+  const usedUp = planUsedUp(s.sequence);
+  steps.push({ id: 'target', status: s.sequence?.targetSet && !usedUp ? 'done' : 'open' });
 
   {
     let status = 'open';
     if (s.sequence?.running) status = 'running';
     // A target without exposures has nothing left either, but nothing was taken.
-    else if (s.sequence?.totalSeconds > 0 && s.sequence.remainingSeconds <= 0) status = 'done';
+    else if (s.sequence?.totalSeconds > 0 && s.sequence.remainingSeconds <= 0 && !usedUp) {
+      status = 'done';
+    }
     steps.push({ id: 'capture', status });
   }
 
@@ -481,6 +501,22 @@ export function nightFrames(history, key, isDeleted = () => false) {
     if (hfr !== null && hfr > 0) hfrs.push(hfr);
   });
   return { frames, seconds, medianHfr: hfrs.length ? median(hfrs) : null };
+}
+
+// What a plan takes. Snapshots and flats are taken outside of it, also before a night's plan.
+const PLAN_IMAGE_TYPES = ['LIGHT', 'DARK', 'BIAS'];
+
+/**
+ * Whether pictures of a plan were saved in the given night; undefined while the history is not
+ * known. Pictures the user deleted still count: the plan took them.
+ */
+export function planPicturesTaken(history, key) {
+  if (!Array.isArray(history)) return undefined;
+  return history.some(
+    (entry) =>
+      PLAN_IMAGE_TYPES.includes(String(entry?.ImageType ?? '').toUpperCase()) &&
+      isInNight(entry.Date, key)
+  );
 }
 
 /**

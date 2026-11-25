@@ -23,6 +23,7 @@ import {
   findByType,
   insertionPoint,
   isActive,
+  itemsToRearm,
   summarizeDsoContainer,
   AF_AFTER_FILTER_CHANGE_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
@@ -452,6 +453,27 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         console.error('sequenceResetStatus:', e);
       }
       await this.refresh();
+    },
+
+    // Before a plan that already ran to its end starts again, see itemsToRearm(). Not bound to
+    // the controls lock: it belongs to the start, not to editing. Returns whether the plan is
+    // ready to start; on false it must not start, it would not park.
+    async rearmFinishedPlan() {
+      await this.loadCurrent();
+      const ids = itemsToRearm(this.data);
+      if (!ids.length) return true;
+      let ok = true;
+      try {
+        for (const id of ids) {
+          const res = await apiService.sequenceResetStatus(id);
+          if (res?.Success === false) ok = false;
+        }
+      } catch (e) {
+        console.error('sequenceResetStatus:', e);
+        ok = false;
+      }
+      await this.refresh();
+      return ok;
     },
 
     async fetchAvailableItems() {

@@ -9,6 +9,7 @@ const {
   isInNight,
   marksForNight,
   nightSteps,
+  planPicturesTaken,
   SKIPPABLE_STEPS,
   currentStepId,
   endNightActions,
@@ -258,6 +259,32 @@ test('capture runs with the sequence and is done once the plan is through', () =
   assert.equal(c({ running: false, targets: 2, totalSeconds: 100, remainingSeconds: 50 }), 'open');
   // A target without any exposure is not "all pictures taken"
   assert.equal(c({ running: false, targets: 1, totalSeconds: 0, remainingSeconds: 0 }), 'open');
+});
+
+test("an earlier night's finished plan is not tonight's target or pictures", () => {
+  const base = { running: false, targets: 1, targetSet: true, totalSeconds: 100 };
+  const at = (sequence) => {
+    const steps = nightSteps(snapshot({ sequence: { ...base, ...sequence } }));
+    return [statusOf(steps, 'target'), statusOf(steps, 'capture'), nightPhase(steps)];
+  };
+  assert.deepEqual(at({ remainingSeconds: 0, takenTonight: true }), ['done', 'done', 'finished']);
+  assert.deepEqual(at({ remainingSeconds: 0, takenTonight: false }), ['open', 'open', 'prepare']);
+  // Unknown history: nothing is claimed about the night
+  assert.deepEqual(at({ remainingSeconds: 0 }), ['done', 'done', 'finished']);
+  // A new target was added to the old plan
+  assert.deepEqual(at({ remainingSeconds: 50, takenTonight: false }), ['done', 'open', 'prepare']);
+  assert.equal(at({ remainingSeconds: 0, takenTonight: false, running: true })[1], 'running');
+});
+
+test('planPicturesTaken looks at what a plan takes, in the given night', () => {
+  const taken = (ImageType, Date) => planPicturesTaken([{ ImageType, Date }], '2026-11-20');
+  assert.equal(taken('LIGHT', '2026-11-21T02:00:00'), true);
+  assert.equal(taken('DARK', '2026-11-20T23:00:00'), true);
+  assert.equal(taken('LIGHT', '2026-11-20T02:00:00'), false);
+  assert.equal(taken('SNAPSHOT', '2026-11-20T23:00:00'), false);
+  assert.equal(taken('FLAT', '2026-11-20T18:00:00'), false);
+  assert.equal(planPicturesTaken([], '2026-11-20'), false);
+  assert.equal(planPicturesTaken(null, '2026-11-20'), undefined);
 });
 
 test('the current step is the first that is neither done nor skipped', () => {

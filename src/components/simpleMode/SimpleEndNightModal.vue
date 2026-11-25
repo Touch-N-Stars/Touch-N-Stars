@@ -20,7 +20,9 @@
           {{
             actions.length
               ? $t('components.simpleMode.endNight.intro')
-              : $t('components.simpleMode.endNight.nothingToDo')
+              : store.mountInfo.Connected
+                ? $t('components.simpleMode.endNight.nothingToDo')
+                : $t('components.simpleMode.endNight.nothingToDoNoMount')
           }}
         </p>
         <ul class="flex flex-col gap-2">
@@ -84,6 +86,16 @@
             @click="run"
           >
             <Spinner v-if="running" size="sm" />
+            {{ $t('components.simpleMode.endNight.confirm') }}
+          </button>
+          <!-- The plan already parked and warmed up by itself: the night still has to end here,
+               or the start page keeps asking for it. -->
+          <button
+            v-else-if="!finished"
+            type="button"
+            class="tns-btn-primary"
+            @click="endWithoutActions"
+          >
             {{ $t('components.simpleMode.endNight.confirm') }}
           </button>
         </div>
@@ -177,6 +189,11 @@ const RUNNERS = {
     await cameraStore.startWarming(warmMinutes.value);
   },
 };
+
+function endWithoutActions() {
+  emit('finished', true);
+  emit('close');
+}
 
 async function run() {
   running.value = true;

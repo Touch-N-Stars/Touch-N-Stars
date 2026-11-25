@@ -242,8 +242,14 @@
                   <p v-if="databaseMissing" class="text-xs text-status-warn">
                     {{ $t('components.simpleMode.setupChecks.blockedTarget') }}
                   </p>
+                  <SimpleUsedUpPlan
+                    v-if="usedUp"
+                    :busy="busy.plan"
+                    :disabled="sequenceStore.sequenceControlsLocked"
+                    @repeat="repeatPlan"
+                  />
                   <ul
-                    v-if="planTargetNames.length"
+                    v-else-if="planTargetNames.length"
                     class="flex flex-col gap-1 text-sm text-content"
                   >
                     <li v-for="(name, index) in planTargetNames" :key="index" class="truncate">
@@ -457,6 +463,12 @@
                   >
                     {{ $t('components.simpleMode.steps.capture.noExposures') }}
                   </p>
+                  <SimpleUsedUpPlan
+                    v-if="usedUp"
+                    :busy="busy.plan"
+                    :disabled="sequenceStore.sequenceControlsLocked"
+                    @repeat="repeatPlan"
+                  />
                   <!-- A plan from before the simple mode, or a step switched off in the plan -->
                   <div
                     v-if="missingSteps.length && !sequenceStore.sequenceRunning"
@@ -554,7 +566,7 @@
                     class="tns-btn-primary"
                     :disabled="
                       busy.capture ||
-                      plan.totalSeconds === 0 ||
+                      plan.remainingSeconds === 0 ||
                       planTargets.length === 0 ||
                       sequenceStore.sequenceControlsLocked
                     "
@@ -666,6 +678,7 @@ import SimpleSetupChecks from '@/components/simpleMode/SimpleSetupChecks.vue';
 import SimpleImagingCockpit from '@/components/simpleMode/SimpleImagingCockpit.vue';
 import SimpleNightSummary from '@/components/simpleMode/SimpleNightSummary.vue';
 import SimpleCoachHint from '@/components/simpleMode/SimpleCoachHint.vue';
+import SimpleUsedUpPlan from '@/components/simpleMode/SimpleUsedUpPlan.vue';
 import SimpleFlipForecast from '@/components/simpleMode/SimpleFlipForecast.vue';
 import SimpleCoolingSetup from '@/components/simpleMode/SimpleCoolingSetup.vue';
 import { CUSTOM_COOLING_ID, matchCoolingPreset } from '@/utils/coolingPresets';
@@ -692,6 +705,8 @@ import {
   nightKey,
   nightPhase,
   nightSteps,
+  planPicturesTaken,
+  planUsedUp,
   targetsMissingSteps,
 } from '@/utils/simpleMode';
 import {
@@ -933,6 +948,17 @@ watch(
 const flatsStore = useFlatassistantStore();
 const flatsRun = computed(() => flatsRunState(flatsStore.status, night.value));
 
+const sequenceState = computed(() => ({
+  running: sequenceStore.sequenceRunning,
+  targets: plan.value.targets,
+  targetSet: planTargets.value.length > 0,
+  totalSeconds: plan.value.totalSeconds,
+  remainingSeconds: plan.value.remainingSeconds,
+  takenTonight: planPicturesTaken(store.imageHistoryInfo, night.value),
+}));
+// The plan of an earlier night is still loaded, with nothing left to take
+const usedUp = computed(() => planUsedUp(sequenceState.value));
+
 const steps = computed(() =>
   nightSteps({
     hasEquipment: equipmentToConnect.value.length > 0,
@@ -966,13 +992,7 @@ const steps = computed(() =>
       ready: usesNativeGuider.value && guideCameraChosen.value,
       calibrated: guiderCalibrated.value,
     },
-    sequence: {
-      running: sequenceStore.sequenceRunning,
-      targets: plan.value.targets,
-      targetSet: planTargets.value.length > 0,
-      totalSeconds: plan.value.totalSeconds,
-      remainingSeconds: plan.value.remainingSeconds,
-    },
+    sequence: sequenceState.value,
     tppaRunning: tppaStore.isRunning,
     flats: flatsRun.value,
     marks: marks.value,
@@ -1084,8 +1104,9 @@ const summaries = computed(() => {
       : flatsRun.value.succeededTonight
         ? t('components.simpleMode.steps.flats.doneSummary')
         : '',
-    target:
-      planTargetNames.value.length > 1
+    target: usedUp.value
+      ? ''
+      : planTargetNames.value.length > 1
         ? t('components.simpleMode.steps.target.summaryMany', {
             name: planTargetNames.value[0],
             count: planTargetNames.value.length - 1,
@@ -1360,6 +1381,10 @@ function startCapture() {
     if (!confirmed) return;
     // The same rig check as on the plan page (unsafe, parked, warm, disk full, ...)
     if (!(await confirmPreflight(sequenceV2Store.data))) return;
+    if (!(await sequenceV2Store.rearmFinishedPlan())) {
+      toastBackendError(null, 'components.backendErrors.sequenceStart');
+      return;
+    }
     sequenceStore.setSequenceRunning(true);
     const response = await apiService.sequenceAction('start');
     if (reportBackendRefusal(response, 'components.backendErrors.sequenceStart')) {
@@ -1367,6 +1392,18 @@ function startCapture() {
       return;
     }
     await sequenceStore.getSequenceInfo();
+  });
+}
+
+// Takes the used-up plan's pictures once more: every target starts from zero.
+function repeatPlan() {
+  return withBusy('plan', async () => {
+    const response = await apiService.sequenceAction('reset');
+    if (response?.Success !== true) {
+      toastBackendError(response, 'components.simpleMode.steps.capture.repeatFailed');
+      return;
+    }
+    await sequenceV2Store.loadCurrent();
   });
 }
 

@@ -357,7 +357,8 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useOrientation } from '@/composables/useOrientation';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
-import { reportBackendRefusal } from '@/utils/backendErrors';
+import { reportBackendRefusal, toastBackendError } from '@/utils/backendErrors';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 import { useSequencePreflight } from '@/composables/useSequencePreflight';
 import { useI18n } from 'vue-i18n';
 import { useProfileSetting } from '@/composables/useProfileSetting';
@@ -377,6 +378,7 @@ import FileBrowser from '@/components/helpers/fileBrowser.vue';
 import SequencePreflightDialog from '@/components/sequence/SequencePreflightDialog.vue';
 
 const { seqT } = usePlanTerms();
+const { active: simpleModeActive } = useSimpleMode();
 const sequenceStore = useSequenceStore();
 const sequenceV2Store = useSequenceV2Store();
 const store = apiStore();
@@ -586,6 +588,11 @@ async function saveCurrentFile() {
 
 async function startSequence() {
   if (!(await confirmPreflight(sequenceStore.sequenceInfo))) return;
+  // The simple mode's plan has to park again at the end of a second run
+  if (simpleModeActive.value && !(await sequenceV2Store.rearmFinishedPlan())) {
+    toastBackendError(null, 'components.backendErrors.sequenceStart');
+    return;
+  }
   console.log('Starting sequence');
   sequenceStore.setSequenceRunning(true);
   try {

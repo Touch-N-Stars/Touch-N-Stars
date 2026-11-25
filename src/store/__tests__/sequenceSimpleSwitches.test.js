@@ -25,7 +25,13 @@ const {
   AF_AFTER_FILTER_CHANGE_TYPE,
 } = await import('@/utils/sequenceSimple');
 
-const STUBBED = ['sequenceEnable', 'sequenceAddTrigger', 'sequenceAddItem', 'sequenceSetProperty'];
+const STUBBED = [
+  'sequenceEnable',
+  'sequenceAddTrigger',
+  'sequenceAddItem',
+  'sequenceSetProperty',
+  'sequenceResetStatus',
+];
 
 function smartExposure(id, ditherAfter) {
   return {
@@ -86,6 +92,45 @@ function setup(treeOptions) {
   const restore = () => Object.assign(apiService, original);
   return { store, calls, restore };
 }
+
+const ran = (Id, FullTypeName, Status = 'FINISHED') => ({ Id, FullTypeName, Status });
+
+test('a plan that ran to its end prepares and parks again on the next start', async (t) => {
+  const { store, calls, restore } = setup({
+    startItems: [ran('cool', COOL_CAMERA_TYPE)],
+    endItems: [ran('off', SLEW_TYPE, 'DISABLED'), ran('park', PARK_SCOPE_TYPE)],
+  });
+  t.after(restore);
+  assert.equal(await store.rearmFinishedPlan(), true);
+  assert.deepEqual(
+    calls.map((c) => [c.name, c.args[0]]),
+    [
+      ['sequenceResetStatus', 'cool'],
+      ['sequenceResetStatus', 'park'],
+    ]
+  );
+});
+
+test('a stopped plan that has not reached its end keeps its progress', async (t) => {
+  const { store, calls, restore } = setup({
+    startItems: [ran('cool', COOL_CAMERA_TYPE)],
+    endItems: [ran('park', PARK_SCOPE_TYPE, 'CREATED')],
+  });
+  t.after(restore);
+  assert.equal(await store.rearmFinishedPlan(), true);
+  assert.deepEqual(calls, []);
+});
+
+test('a refused reset keeps the plan from starting without its park', async (t) => {
+  const { store, restore } = setup({ endItems: [ran('park', PARK_SCOPE_TYPE)] });
+  t.after(restore);
+  apiService.sequenceResetStatus = async () => ({ Success: false });
+  assert.equal(await store.rearmFinishedPlan(), false);
+  apiService.sequenceResetStatus = async () => {
+    throw new Error('offline');
+  };
+  assert.equal(await store.rearmFinishedPlan(), false);
+});
 
 test('switching on a missing global trigger appends it to the global triggers', async (t) => {
   const { store, calls, restore } = setup({

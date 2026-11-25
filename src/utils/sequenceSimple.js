@@ -229,6 +229,25 @@ export function missingEndSteps(tree, { canCool = false } = {}) {
   );
 }
 
+// Statuses an item does not run from again: the sequencer only picks up CREATED ones.
+const RAN_STATUSES = new Set(['FINISHED', 'SKIPPED', 'FAILED']);
+
+/**
+ * The items whose reset makes a plan that already ran to its end prepare and close the night
+ * again. A new target added to such a plan runs, but "park" and "warm up" keep their FINISHED
+ * from the first run and are skipped, so the mount tracks on (seen on PINS). The first item of
+ * each area is enough: the plugin's reset takes the following ones along. Empty when the plan
+ * has not reached its end area: stopping and starting again must not redo the start.
+ * @returns {string[]} item Ids
+ */
+export function itemsToRearm(tree) {
+  const firstRan = (areaType) =>
+    findAreaContainer(tree, areaType)?.Items?.find((item) => RAN_STATUSES.has(item?.Status));
+  const closing = firstRan(END_AREA_TYPE);
+  if (!closing) return [];
+  return [firstRan(START_AREA_TYPE), closing].filter(Boolean).map((item) => item.Id);
+}
+
 /** What the plan does after its last picture: `{ park, warm }`. */
 export function endOfPlan(tree) {
   const items = findAreaContainer(tree, END_AREA_TYPE)?.Items;

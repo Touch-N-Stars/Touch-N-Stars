@@ -147,6 +147,18 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    behält die Kalibrierung über Nächte und passt sie an Deklination und Pierseite an; der
    Schritt bleibt erledigt, bis PINS sie verwirft (andere Guidekamera, Binning, Brennweite).
    Einen Start/Stopp-Knopf gibt es nicht mehr, das Guiding startet der Plan am Ziel.
+   8f. Given ein Plan ohne offene Bilder, von dem in der laufenden Nacht keines gespeichert wurde
+   (LIGHT, DARK, BIAS in der Bildhistorie), then gilt er als aufgebraucht: „Ziel wählen“ und
+   „Aufnahme“ sind offen, die Startseite zeigt die Vorbereitung, und beide Schritte bieten
+   „Nochmal aufnehmen“ an (setzt den Plan zurück). Solange die Historie unbekannt ist, bleibt er
+   „erledigt“. Ohne offene Bilder lässt sich die Aufnahme nicht starten.
+   8g. Given ein Plan, der schon bis in den Endbereich gelaufen ist, when er (auf der Startseite
+   oder im Plan) wieder gestartet wird, then werden vorher Start- und Endschritte zurückgesetzt.
+   PINS führt nur Schritte mit Status CREATED aus und ließ sonst „Montierung parken“ aus. Lehnt
+   das Backend das ab, startet der Plan nicht.
+   8h. Given ein Plan, der schon geparkt und aufgewärmt hat, then lässt sich die Nacht trotzdem
+   beenden: der Dialog hat ohne Aktionen nur die Bestätigung. Ist die Montierung nicht verbunden,
+   behauptet er nicht, sie sei geparkt.
    8b. Given eine Nacht, in der der Plan mindestens 15 min geguidet hat und davon mindestens 30 %
    mit roter Guiding-Ampel, then empfehlen die Bilanz und die nächste Vorbereitung den
    Guiding-Coach (≈ 15 min) mit Knopf zum Coach-Tab (`/guider?tab=coach`). Öffnen oder

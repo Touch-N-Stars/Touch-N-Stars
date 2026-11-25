@@ -82,7 +82,15 @@ const emit = defineEmits(['navigate']);
 
 // Other pages link straight to a tab with /settings?tab=<value> (e.g. the simple mode home page
 // sends a missing location to 'connection' and a missing star database to 'plateSolver').
-const LINKABLE_TABS = ['connection', 'interface', 'image', 'equipment', 'plugins', 'plateSolver'];
+const LINKABLE_TABS = [
+  'connection',
+  'interface',
+  'image',
+  'equipment',
+  'plugins',
+  'plateSolver',
+  'meridianFlip',
+];
 const requestedTab = route.query?.tab;
 const activeTab = ref(LINKABLE_TABS.includes(requestedTab) ? requestedTab : 'connection');
 
