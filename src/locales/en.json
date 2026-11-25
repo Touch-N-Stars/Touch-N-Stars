@@ -1265,6 +1265,16 @@
           "endAt": "End of the night",
           "until": "until {time}"
         },
+        "refocus": {
+          "title": "Focus",
+          "label": "Focus again regularly",
+          "hint": "The focus drifts as the night gets colder. The plan then focuses again between two pictures; that takes a few minutes each time.",
+          "howOften": "How often",
+          "every": {
+            "minutes": "every minute | every {count} minutes",
+            "hours": "every hour | every {count} hours"
+          }
+        },
         "budget": {
           "question": "How long do you want to image this target? (hours)",
           "pictures": "{count} picture of {seconds} s | {count} pictures of {seconds} s",
@@ -6009,6 +6019,7 @@
           "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
           "summaryEmpty": "{targets} target, no pictures planned yet | {targets} targets, no pictures planned yet",
           "confirmStartFocus": "After every filter change it focuses again.",
+          "confirmStartRefocus": "It focuses again {interval}.",
           "confirmStartEnd": {
             "both": "When it is done, the mount parks and the camera warms up.",
             "park": "When it is done, the mount parks.",

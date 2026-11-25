@@ -198,6 +198,13 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    ist; laufende Flats sperren ihn. Der Knopf öffnet die vorhandene Rückfrage mit ihrer
    Rig-Prüfung. Nimmt die Box das Herunterfahren an, sagt der Dialog, wann der Strom weg darf, und
    bleibt stehen, auch wenn die Verbindung abreißt. Lehnt sie ab, steht der Grund im Dialog.
+   8p. Given ein Profil mit Fokussierer, then hat der Plan die Karte „Scharfstellen“ mit einem Schalter
+   „Regelmäßig nachfokussieren“ und der Auswahl 30/60/90/120 min (ein anderer Wert aus dem
+   Experten-Editor bleibt wählbar). Dahinter steht ein globaler `AutofocusAfterTimeTrigger`, er gilt
+   also für alle Ziele. „In den Plan“, „Ziel hinzufügen“ und „Automatisch anfahren und guiden“
+   schalten ihn mit 60 min ein, aber nicht, wenn der Plan ihn schon hat (auch ausgeschaltet), ein
+   Ziel einen eigenen Zeit-Trigger hat oder „Scharfstellen“ diese Nacht übersprungen wurde: NINA
+   wiederholt einen fehlgeschlagenen Autofokus vor jedem Bild. Die Startabfrage nennt den Abstand.
    8b. Given eine Nacht, in der der Plan mindestens 15 min geguidet hat und davon mindestens 30 %
    mit roter Guiding-Ampel, then empfehlen die Bilanz und die nächste Vorbereitung den
    Guiding-Coach (≈ 15 min) mit Knopf zum Coach-Tab (`/guider?tab=coach`). Öffnen oder

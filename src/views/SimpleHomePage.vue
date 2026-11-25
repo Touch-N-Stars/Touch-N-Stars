@@ -719,6 +719,7 @@ import {
   nightSteps,
   planPicturesTaken,
   planUsedUp,
+  refocusInterval,
   targetsMissingSteps,
 } from '@/utils/simpleMode';
 import { PARK_SCOPE_TYPE, endOfPlan, formatClock, formatDuration } from '@/utils/sequenceSimple';
@@ -754,6 +755,7 @@ const { locationMissing, databaseMissing } = useSimpleSetupChecks();
 const {
   wantedSteps,
   applyToTargets,
+  refocus,
   flipTriggerMissing,
   addFlipTrigger,
   endStepsMissing,
@@ -1383,6 +1385,13 @@ function endOfPlanSentence() {
   return t(`components.simpleMode.steps.capture.confirmStartEnd.${key}`);
 }
 
+function refocusSentence() {
+  if (!refocus.value.active || refocus.value.minutes === null) return '';
+  const { unit, count } = refocusInterval(refocus.value.minutes);
+  const interval = t(`components.sequence.simple.refocus.every.${unit}`, { count }, count);
+  return ` ${t('components.simpleMode.steps.capture.confirmStartRefocus', { interval })}`;
+}
+
 // Started before dusk the plan first stands still; unannounced that looks like a failed start.
 function waitSentence() {
   const { notBeforeMs } = planTimes.value;
@@ -1406,6 +1415,7 @@ function startCapture() {
         (wantedSteps.value.afOnFilterChange
           ? ` ${t('components.simpleMode.steps.capture.confirmStartFocus')}`
           : '') +
+        refocusSentence() +
         waitSentence() +
         ` ${endOfPlanSentence()}`,
       t('components.simpleMode.steps.capture.start'),

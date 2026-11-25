@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: In the simple mode the plan parks the mount and warms the camera up when it is done, so a night left alone does not track into the tripod.
 - PINS: In the simple mode the plan waits until it is dark, without tracking meanwhile, and a target ends at dawn or when it gets too low, with the pictures it has by then; the rest can be taken another night. The limits are set with the target and can be switched off in the plan.
 - PINS: In the simple mode plan an imaging time can be given instead of a number of pictures, also as long as the night allows, and a new target starts with an hour of pictures instead of 2 x 60 s.
+- PINS: In the simple mode the plan focuses again every hour; how often is set in the plan, where it can also be switched off.
 - PINS: After the night has ended, the simple mode has a button to shut the rig down, and the shutdown dialog says when the power can be switched off and shows the reason when the shutdown does not work.
 
 ### Fixed

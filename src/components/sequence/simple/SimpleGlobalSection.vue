@@ -58,6 +58,10 @@ import {
   MERIDIAN_FLIP_TRIGGER_TYPE,
 } from '@/utils/sequenceSimple';
 
+const props = defineProps({
+  /** Trigger types another card shows, so they are not listed as "also active" here */
+  shownElsewhere: { type: Array, default: () => [] },
+});
 defineEmits(['show-full']);
 
 const store = useSequenceV2Store();
@@ -77,7 +81,11 @@ const exposureDitherText = computed(() => {
 });
 
 const otherNames = computed(() =>
-  enabledItemNames(store.globalTriggers, [MERIDIAN_FLIP_TRIGGER_TYPE, DITHER_AFTER_EXPOSURES_TYPE])
+  enabledItemNames(store.globalTriggers, [
+    MERIDIAN_FLIP_TRIGGER_TYPE,
+    DITHER_AFTER_EXPOSURES_TYPE,
+    ...props.shownElsewhere,
+  ])
 );
 
 function isRunning(item) {

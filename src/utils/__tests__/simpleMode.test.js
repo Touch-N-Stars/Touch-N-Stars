@@ -16,12 +16,19 @@ const {
   isWarmingUp,
   simpleTargetSteps,
   targetsMissingSteps,
+  refocusInterval,
+  refocusState,
   calibrationRisk,
   addGuidingTime,
   guidingWasPoor,
 } = await import('@/utils/simpleMode');
-const { START_GUIDING_TYPE, CENTER_TYPE, SLEW_TYPE, AF_AFTER_FILTER_CHANGE_TYPE } =
-  await import('@/utils/sequenceSimple');
+const {
+  START_GUIDING_TYPE,
+  CENTER_TYPE,
+  SLEW_TYPE,
+  AF_AFTER_FILTER_CHANGE_TYPE,
+  AF_AFTER_TIME_TYPE,
+} = await import('@/utils/sequenceSimple');
 
 function snapshot(overrides = {}) {
   return {
@@ -736,4 +743,32 @@ test('the flats step follows the flat run and the marks of the night', () => {
 
 test('flats can be skipped for the night', () => {
   assert.equal(SKIPPABLE_STEPS.includes('flats'), true);
+});
+
+test('regular refocusing is read from the global trigger', () => {
+  const trigger = { FullTypeName: AF_AFTER_TIME_TYPE, Status: 'CREATED', Amount: 90 };
+  assert.deepEqual(refocusState([trigger]), {
+    active: true,
+    minutes: 90,
+    running: false,
+    chosen: true,
+  });
+  assert.deepEqual(refocusState([], [{ Triggers: [] }]), {
+    active: false,
+    minutes: null,
+    running: false,
+    chosen: false,
+  });
+  // Switched off, or a target's own trigger: a new target must not switch it on
+  const off = refocusState([{ ...trigger, Status: 'DISABLED' }]);
+  assert.equal(off.active, false);
+  assert.equal(off.chosen, true);
+  assert.equal(refocusState([], [{ Triggers: [trigger] }]).chosen, true);
+});
+
+test('the refocus interval names full hours as hours', () => {
+  assert.deepEqual(refocusInterval(30), { unit: 'minutes', count: 30 });
+  assert.deepEqual(refocusInterval(60), { unit: 'hours', count: 1 });
+  assert.deepEqual(refocusInterval(90), { unit: 'minutes', count: 90 });
+  assert.deepEqual(refocusInterval(120), { unit: 'hours', count: 2 });
 });

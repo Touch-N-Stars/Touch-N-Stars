@@ -30,6 +30,7 @@ import {
   stepsToReopen,
   summarizeDsoContainer,
   AF_AFTER_FILTER_CHANGE_TYPE,
+  AF_AFTER_TIME_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
   END_AREA_TYPE,
   END_ORDER,
@@ -698,6 +699,16 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       const targetId = last?.Id ?? this.data[0]?.Id;
       if (!targetId) return;
       await this.addTrigger(targetId, fullTypeName, last ? true : null);
+    },
+
+    // Simple mode: the plan refocuses every `minutes`, at all targets. A trigger that was only
+    // switched off comes back with its own interval.
+    async setRegularRefocus(enabled, minutes) {
+      const existed = Boolean(findByType(this.globalTriggers, AF_AFTER_TIME_TYPE));
+      await this.setGlobalTriggerEnabled(AF_AFTER_TIME_TYPE, enabled);
+      if (!enabled || existed) return;
+      const added = findByType(this.globalTriggers, AF_AFTER_TIME_TYPE);
+      if (added) await this.setProperty(added.Id, 'Amount', minutes);
     },
 
     // Switches an optional item of a container on or off, like setGlobalTriggerEnabled():

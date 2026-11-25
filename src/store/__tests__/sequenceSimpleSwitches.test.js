@@ -432,6 +432,38 @@ test('an autofocus trigger is appended to the target or re-enabled', async (t) =
   ]);
 });
 
+test('regular refocusing adds a global trigger with its interval and keeps an old one', async (t) => {
+  const { store, calls, restore } = setup({
+    globalTriggers: [{ Id: 'flip', FullTypeName: MERIDIAN_FLIP_TRIGGER_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+  const add = apiService.sequenceAddTrigger;
+  apiService.sequenceAddTrigger = async (...args) => {
+    store.data[0].GlobalTriggers.push({
+      Id: 'aft',
+      FullTypeName: AF_AFTER_TIME_TYPE,
+      Status: 'CREATED',
+      Amount: 30,
+    });
+    return add(...args);
+  };
+
+  await store.setRegularRefocus(true, 60);
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddTrigger', args: ['flip', AF_AFTER_TIME_TYPE, true] },
+    { name: 'sequenceSetProperty', args: ['aft', 'Amount', 60] },
+  ]);
+
+  calls.length = 0;
+  await store.setRegularRefocus(false, 60);
+  store.data[0].GlobalTriggers[1].Status = 'DISABLED';
+  await store.setRegularRefocus(true, 60);
+  assert.deepEqual(calls, [
+    { name: 'sequenceEnable', args: ['aft', false] },
+    { name: 'sequenceEnable', args: ['aft', true] },
+  ]);
+});
+
 test('simple target steps switch on centering and guiding before the exposures', async (t) => {
   const { store, calls, restore } = setup();
   t.after(restore);

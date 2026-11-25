@@ -1,14 +1,21 @@
 // Simple mode: every target of the plan is slewed to, centered, guided and refocused after a
 // filter change by the plan itself, the plan flips at the meridian, and when it is done it parks
 // the mount and warms the camera up. It starts when it is dark, and a target ends at dawn or when
-// it gets too low, with the pictures it has by then. Shared by the atlas' "Add to plan" button and the home
-// page's capture step, so both put the same steps into a plan.
+// it gets too low, with the pictures it has by then. With a focuser it refocuses regularly.
+// Shared by the atlas' "Add to plan" button and the home page's capture step, so both put the same
+// steps into a plan.
 import { computed } from 'vue';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useSimpleMode } from '@/composables/useSimpleMode';
-import { marksForNight, nightKey, simpleTargetSteps } from '@/utils/simpleMode';
+import {
+  DEFAULT_REFOCUS_MINUTES,
+  marksForNight,
+  nightKey,
+  refocusState,
+  simpleTargetSteps,
+} from '@/utils/simpleMode';
 import { warmUpMinutes } from '@/utils/coolingPresets';
 import {
   MIN_TARGET_ALT_DEG,
@@ -44,9 +51,9 @@ export function useSimplePlanTargets() {
   const { active } = useSimpleMode();
 
   // Skipping the guiding step means "no guiding tonight": new targets then do not start it.
-  const guidingSkipped = computed(
-    () => marksForNight(settingsStore.simpleMode?.steps, nightKey()).guide === 'skipped'
-  );
+  const skipped = (step) =>
+    marksForNight(settingsStore.simpleMode?.steps, nightKey())[step] === 'skipped';
+  const guidingSkipped = computed(() => skipped('guide'));
   // NINA's flip trigger is global: without it the plan tracks on past the meridian until the
   // telescope hits the tripod or pier, whatever the flip settings say.
   const flipTriggerMissing = computed(
@@ -64,11 +71,23 @@ export function useSimplePlanTargets() {
 
   // From the profile, not the connection: targets are often added before the rig is connected.
   const inProfile = (settings) => Boolean(settings?.Id) && settings.Id !== 'No_Device';
+  const focuserInProfile = computed(() => inProfile(store.profileInfo?.FocuserSettings));
   const focusOnFilterChange = computed(
-    () =>
-      inProfile(store.profileInfo?.FocuserSettings) &&
-      inProfile(store.profileInfo?.FilterWheelSettings)
+    () => focuserInProfile.value && inProfile(store.profileInfo?.FilterWheelSettings)
   );
+
+  const refocus = computed(() =>
+    refocusState(sequenceV2Store.globalTriggers, collectDsoContainers(sequenceV2Store.data))
+  );
+
+  /**
+   * The focus drifts as the night gets colder. Not without a focuser or when focusing was skipped
+   * tonight: NINA repeats a failed run before every picture.
+   */
+  async function addRefocus() {
+    if (!focuserInProfile.value || skipped('focus') || refocus.value.chosen) return;
+    await sequenceV2Store.setRegularRefocus(true, DEFAULT_REFOCUS_MINUTES);
+  }
 
   const wantedSteps = computed(() =>
     simpleTargetSteps({
@@ -140,7 +159,8 @@ export function useSimplePlanTargets() {
 
   /**
    * Puts the simple steps into one target; a target without pictures gets an exposure row.
-   * The plan gets its meridian flip, its limits and its closing steps along with it.
+   * The plan gets its meridian flip, its refocusing, its limits and its closing steps along with
+   * it.
    */
   async function applyToTarget(containerId, { addExposure = false } = {}) {
     const result = await sequenceV2Store.applySimpleTargetSteps(containerId, wantedSteps.value, {
@@ -148,6 +168,7 @@ export function useSimplePlanTargets() {
       exposure: newExposure.value,
     });
     if (result.ok && flipTriggerMissing.value) await addFlipTrigger();
+    if (result.ok) await addRefocus();
     if (result.ok && endStepsMissing.value.length) await addEndSteps();
     if (result.ok) await addLimits(containerId);
     return result;
@@ -167,6 +188,8 @@ export function useSimplePlanTargets() {
     active,
     guidingSkipped,
     wantedSteps,
+    focuserInProfile,
+    refocus,
     newExposure,
     flipTriggerMissing,
     addFlipTrigger,

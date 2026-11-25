@@ -27,8 +27,12 @@
     </p>
 
     <!-- Switches for the global triggers and the start area -->
-    <SimpleGlobalSection @show-full="$emit('show-full')" />
+    <SimpleGlobalSection
+      :shownElsewhere="showRefocus ? [AF_AFTER_TIME_TYPE] : []"
+      @show-full="$emit('show-full')"
+    />
     <SimpleStartSection @show-full="$emit('show-full')" />
+    <SimpleRefocusSection v-if="showRefocus" :refocus="refocus" />
     <SimpleNightLimits
       v-if="simpleMode"
       :planSummary="summary"
@@ -77,6 +81,7 @@ import { PlusIcon } from '@heroicons/vue/24/outline';
 import SimpleEndSection from './SimpleEndSection.vue';
 import SimpleGlobalSection from './SimpleGlobalSection.vue';
 import SimpleNightLimits from './SimpleNightLimits.vue';
+import SimpleRefocusSection from './SimpleRefocusSection.vue';
 import SimpleStartSection from './SimpleStartSection.vue';
 import SimpleTargetCard from './SimpleTargetCard.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
@@ -84,14 +89,15 @@ import { useFramingStore } from '@/store/framingStore';
 import { useToastStore } from '@/store/toastStore';
 import { findTargetAreaContainer } from '@/utils/sequenceTargets';
 import { degreesToDMS, degreesToHMS } from '@/utils/utils';
-import { formatClock, formatDuration } from '@/utils/sequenceSimple';
+import { AF_AFTER_TIME_TYPE, formatClock, formatDuration } from '@/utils/sequenceSimple';
 
 const { seqT } = usePlanTerms();
 defineEmits(['show-full']);
 
 const { t } = useI18n();
 const store = useSequenceV2Store();
-const { active: simpleMode, applyToTarget } = useSimplePlanTargets();
+const { active: simpleMode, applyToTarget, focuserInProfile, refocus } = useSimplePlanTargets();
+const showRefocus = computed(() => simpleMode.value && focuserInProfile.value);
 const framingStore = useFramingStore();
 const toastStore = useToastStore();
 const adding = ref(false);

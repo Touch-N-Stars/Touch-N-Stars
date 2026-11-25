@@ -5,6 +5,7 @@ import { MAD_SCALE, maxAdu } from '@/utils/rawImage/stretch';
 import { COACH_POSITION } from '@/utils/nativeGuiderCoach';
 import {
   AF_AFTER_FILTER_CHANGE_TYPE,
+  AF_AFTER_TIME_TYPE,
   START_GUIDING_TYPE,
   findByType,
   isActive,
@@ -648,6 +649,41 @@ export function targetsMissingSteps(summary, { guiding = true, afOnFilterChange 
           !isActive(findByType(t.container.Triggers, AF_AFTER_FILTER_CHANGE_TYPE)))
     )
     .map((t) => t.container);
+}
+
+// --- Regular refocusing ----------------------------------------------------------------------
+
+/** Minutes between two autofocus runs the plan offers, and the one a new plan starts with. */
+export const REFOCUS_MINUTES = [30, 60, 90, 120];
+export const DEFAULT_REFOCUS_MINUTES = 60;
+
+/**
+ * The plan's regular refocusing: NINA's "autofocus after time" as a global trigger, so it covers
+ * every target, also one added later.
+ *
+ * chosen: the plan already says something about it - switched off counts, and so does a target
+ * that brings its own trigger - so adding a target must not switch it on.
+ *
+ * @returns {{ active: boolean, minutes: number|null, running: boolean, chosen: boolean }}
+ */
+export function refocusState(globalTriggers, containers = []) {
+  const trigger = findByType(globalTriggers, AF_AFTER_TIME_TYPE);
+  const minutes = finiteOrNull(trigger?.Amount);
+  return {
+    active: isActive(trigger),
+    minutes: minutes !== null && minutes > 0 ? minutes : null,
+    running: trigger?.Status === 'RUNNING',
+    chosen:
+      Boolean(trigger) ||
+      containers.some((c) => Boolean(findByType(c?.Triggers, AF_AFTER_TIME_TYPE))),
+  };
+}
+
+/** The interval in words as a locale key of `refocus.every` and its count: full hours as hours. */
+export function refocusInterval(minutes) {
+  return minutes >= 60 && minutes % 60 === 0
+    ? { unit: 'hours', count: minutes / 60 }
+    : { unit: 'minutes', count: minutes };
 }
 
 /**
