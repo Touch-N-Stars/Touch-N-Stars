@@ -46,18 +46,78 @@
       "title": "Chyba připojení",
       "message_api": "Zásuvný modul API není k dispozici. Zkontrolujte nastavení v @:{'general.backendName'}",
       "message_api_version": "Zásuvný modul API je příliš starý. Proveďte aktualizaci",
-      "message_tns": "Zásuvný modul TouchNStars není k dispozici. Zkontrolujte prosím nastavení v @:{'general.backendName'}",
+      "message_unreachable": "Žádná odpověď. Zkontroluj, zda je sestava nebo počítač s N.I.N.A. zapnutý a ve stejné síti jako toto zařízení.",
+      "message_live_updates": "Spojení pro živá data se nenaváže. Může ho blokovat firewall, VPN nebo proxy.",
       "message_tns_version": "Zásuvný modul Touch N Stars je příliš starý. Proveďte prosím aktualizaci"
+    },
+    "connection_help": {
+      "searchAgain": "Hledat znovu",
+      "keepsTrying": "Aplikace to zkouší dál a připojí se sama.",
+      "advanced": "Pokročilé",
+      "changeAddress": "Změnit adresu",
+      "searching": {
+        "title": "Připojování…",
+        "titleNamed": "Připojování k {name}…",
+        "text": "Obvykle to trvá pár sekund."
+      },
+      "found": {
+        "title": "Nalezeno něco jiného",
+        "text": "Tvoje zařízení neodpovídá, ale v síti bylo nalezeno toto. Pokud to není ono, projdi body níže.",
+        "connect": "Připojit k {name}"
+      },
+      "pinsStarting": {
+        "title": "Sestava je zapnutá, PINS se spouští",
+        "text": "Může to trvat jednu až dvě minuty. Aplikace se připojí sama."
+      },
+      "pinsDown": {
+        "title": "Sestava je zapnutá, ale PINS neodpovídá",
+        "text": "Počkej ještě minutu. Pokud se nic nezmění, sestavu vypni a znovu zapni."
+      },
+      "rigSilent": {
+        "title": "Sestava neodpovídá",
+        "text": "Projdi tyto body:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. neodpovídá",
+        "text": "Projdi tyto body:"
+      },
+      "silent": {
+        "title": "Žádná odpověď",
+        "text": "Projdi body, které se tě týkají:"
+      },
+      "apiMissing": {
+        "title": "Chybí Advanced API",
+        "text": "Touch'N'Stars byl nalezen, ale zásuvný modul „Advanced API“ v N.I.N.A. neodpovídá. Nainstaluj ho v N.I.N.A. v části Plugins, zapni API v jeho možnostech a restartuj N.I.N.A."
+      },
+      "liveBlocked": {
+        "title": "Téměř připojeno",
+        "text": "Spojení pro živá data se nenaváže. Může ho blokovat firewall, VPN nebo proxy."
+      },
+      "update": {
+        "title": "Je potřeba aktualizace",
+        "text": "Zásuvný modul {plugin} má verzi {current}, aplikace potřebuje alespoň {minimum}. V N.I.N.A. ho aktualizuj v části Plugins a restartuj N.I.N.A. Na sestavě s PINS aktualizuj PINS."
+      },
+      "sections": {
+        "rig": "Sestava s PINS",
+        "nina": "Počítač s N.I.N.A."
+      },
+      "checks": {
+        "power": "Má sestava napájení? Po zapnutí potřebuje jednu až dvě minuty.",
+        "hotspot": "Venku: připoj toto zařízení k Wi-Fi sestavy „{name}“. Heslo je „touchnstars“, pokud jsi ho nezměnil/a. Zůstaň připojený/á, i když hlásí, že není internet.",
+        "home": "Doma: toto zařízení musí být ve stejné síti jako sestava, ne na mobilních datech ani na Wi-Fi pro hosty.",
+        "computer": "Je počítač zapnutý a N.I.N.A. spuštěná?",
+        "network": "Toto zařízení musí být ve stejné síti jako počítač, ne na mobilních datech ani na Wi-Fi pro hosty.",
+        "plugin": "Je zásuvný modul Touch'N'Stars v N.I.N.A. nainstalovaný a zapnutý?",
+        "firewall": "Povoluje firewall počítače N.I.N.A. v soukromých sítích (port {port})?",
+        "iosLocalNetwork": "iPhone a iPad: v Nastavení, Soukromí a zabezpečení, Místní síť musí být Touch'N'Stars zapnutý.",
+        "nearbyDevices": "Aplikace nesmí prohledávat síť. Povol pro Touch'N'Stars v nastavení systému „Zařízení v okolí“.",
+        "browser": "Prohlížeč neumí hledat. Pokud se adresa změnila, otevři novou."
+      }
     },
     "connection_splash": {
       "connecting": "Připojování…",
-      "trying": "Připojuji se znovu k {instance}…",
-      "delayed": "Stále se nedaří připojit k {instance}. To může znamenat problém — otevřete Nastavení a zkontrolujte svou instanci Touch-N-Stars.",
-      "retry_now": "Zkusit znovu",
-      "show_details": "Zobrazit podrobnosti",
       "details": "Cíl: {endpoint} · uplynulo {elapsed} s",
-      "configured_instance": "nakonfigurovaná instance",
-      "default_instance_name": "vybraná instance"
+      "configured_instance": "nakonfigurovaná instance"
     }
   },
   "whatsnew": {
@@ -750,9 +810,11 @@
         "Threshold": "Tolerance zaměření (obloukové minuty)",
         "RotationTolerance": "Tolerance otáčení (°)",
         "MaxObjects": "Max objektů",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Doba expozice v sekundách použitá pro snímky pořízené řešitelem desky. Delší expozice zachytí více hvězd, což pomáhá při řešení slabých nebo řídkých polí, ale zpomaluje každý pokus o řešení.",
           "Gain": "Zesílení kamery použité pro expozice při plate solvingu. Ponechte prázdné pro použití výchozího zesílení kamery.",
+          "Binning": "Binning snímků pořízených plate solverem, například při centrování cíle nebo po Meridian Flipu. Vyšší binning zkracuje stahování a zjasňuje hvězdy, což pomáhá u slabých polí, na úkor rozlišení.",
           "ASTAPLocation": "Cesta ke spustitelnému souboru ASTAP (astap.exe) v systému, na kterém běží @:{'general.backendName'}. Vyžadováno pro lokální plate solving pomocí ASTAP.",
           "SearchRadius": "Poloměr ve stupních kolem cílových souřadnic, ve kterém řešitel hledá při pokusu o slepé řešení (blind solve). Větší poloměr prodlužuje dobu řešení, ale pomáhá, když je počáteční poloha montáže méně přesná.",
           "Threshold": "Maximální povolená odchylka v obloukových minutách mezi vyřešenou polohou a cílem během Slew & Center. Pokud je řešení odchýleno více než o tuto hodnotu, spustí se další cyklus slew-and-solve.",

@@ -60,6 +60,7 @@
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_touchnstars._tcp.</string>
+		<string>_pinsdaemon._tcp.</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>

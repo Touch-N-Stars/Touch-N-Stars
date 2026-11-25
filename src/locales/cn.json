@@ -46,18 +46,78 @@
       "title": "连接错误",
       "message_api": "API 插件不可用。请检查 @:{'general.backendName'} 中的设置",
       "message_api_version": "API 插件版本过旧。请进行更新",
-      "message_tns": "TouchNStars 插件不可用。请检查 @:{'general.backendName'} 中的设置",
+      "message_unreachable": "没有响应。请检查设备或运行 N.I.N.A. 的电脑是否已开机，并与本机在同一网络。",
+      "message_live_updates": "实时数据的连接无法建立。可能被防火墙、VPN 或代理阻止。",
       "message_tns_version": "Touch N Stars 插件版本过于陈旧。请进行更新"
+    },
+    "connection_help": {
+      "searchAgain": "重新搜索",
+      "keepsTrying": "应用会继续尝试并自动连接。",
+      "advanced": "高级",
+      "changeAddress": "更改地址",
+      "searching": {
+        "title": "正在连接…",
+        "titleNamed": "正在连接 {name}…",
+        "text": "通常只需几秒钟。"
+      },
+      "found": {
+        "title": "找到了另一台",
+        "text": "你的设备没有响应，但在网络中找到了这一台。如果不是你要的，请检查以下几点。",
+        "connect": "连接 {name}"
+      },
+      "pinsStarting": {
+        "title": "设备已开机，PINS 正在启动",
+        "text": "可能需要一两分钟。应用会自动连接。"
+      },
+      "pinsDown": {
+        "title": "设备已开机，但 PINS 没有响应",
+        "text": "请再等一分钟。如果没有变化，请将设备关机后重新开机。"
+      },
+      "rigSilent": {
+        "title": "设备没有响应",
+        "text": "请检查以下几点："
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. 没有响应",
+        "text": "请检查以下几点："
+      },
+      "silent": {
+        "title": "没有响应",
+        "text": "请根据你的情况检查以下几点："
+      },
+      "apiMissing": {
+        "title": "缺少 Advanced API",
+        "text": "已找到 Touch'N'Stars，但 N.I.N.A. 的“Advanced API”插件没有响应。请在 N.I.N.A. 的 Plugins 中安装它，在其选项中启用 API，然后重启 N.I.N.A.。"
+      },
+      "liveBlocked": {
+        "title": "即将连接成功",
+        "text": "实时数据的连接无法建立。可能被防火墙、VPN 或代理阻止。"
+      },
+      "update": {
+        "title": "需要更新",
+        "text": "插件 {plugin} 的版本为 {current}，应用至少需要 {minimum}。请在 N.I.N.A. 的 Plugins 中更新并重启 N.I.N.A.。如果是 PINS 设备，请更新 PINS。"
+      },
+      "sections": {
+        "rig": "PINS 设备",
+        "nina": "运行 N.I.N.A. 的电脑"
+      },
+      "checks": {
+        "power": "设备通电了吗？开机后需要一两分钟。",
+        "hotspot": "在户外：把本机连接到设备的 Wi-Fi“{name}”。如果没有改过，密码是“touchnstars”。即使提示没有互联网，也请保持连接。",
+        "home": "在家中：本机必须与设备在同一网络，不能使用移动数据或访客 Wi-Fi。",
+        "computer": "电脑是否开机，N.I.N.A. 是否在运行？",
+        "network": "本机必须与电脑在同一网络，不能使用移动数据或访客 Wi-Fi。",
+        "plugin": "N.I.N.A. 中是否已安装并启用 Touch'N'Stars 插件？",
+        "firewall": "电脑的防火墙是否允许 N.I.N.A. 使用专用网络（端口 {port}）？",
+        "iosLocalNetwork": "iPhone 和 iPad：在“设置”>“隐私与安全性”>“本地网络”中，Touch'N'Stars 必须打开。",
+        "nearbyDevices": "应用无权搜索网络。请在系统设置中为 Touch'N'Stars 允许“附近的设备”。",
+        "browser": "浏览器无法搜索。如果地址已更改，请打开新地址。"
+      }
     },
     "connection_splash": {
       "connecting": "正在连接…",
-      "trying": "正在重新连接到 {instance}…",
-      "delayed": "仍无法连接到 {instance}，这可能表示存在问题 — 请打开设置以检查您的 Touch-N-Stars 实例。",
-      "retry_now": "立即重试",
-      "show_details": "显示详情",
       "details": "目标：{endpoint} · 已用时 {elapsed} 秒",
-      "configured_instance": "已配置的实例",
-      "default_instance_name": "选定的实例"
+      "configured_instance": "已配置的实例"
     }
   },
   "whatsnew": {
@@ -750,9 +810,11 @@
         "Threshold": "指向公差（角分）",
         "RotationTolerance": "旋转公差(°)",
         "MaxObjects": "最大对象数",
+        "Binning": "像素合并",
         "help": {
           "ExposureTime": "解析器拍摄图像所用的曝光时间（秒）。曝光时间越长，捕获的星点越多，有助于解析暗弱或星点稀疏的天区，但会拖慢每次解析尝试的速度。",
           "Gain": "用于解析曝光的相机增益。留空则使用相机的默认增益。",
+          "Binning": "解析器拍摄图像所用的像素合并（binning），例如居中目标或中天翻转之后。更高的合并值可缩短下载时间并使星点更亮，有助于解析暗弱天区，但会牺牲分辨率。",
           "ASTAPLocation": "运行 @:{'general.backendName'} 的系统上 ASTAP 可执行文件（astap.exe）的路径。使用 ASTAP 进行本地解析时需要此项。",
           "SearchRadius": "尝试盲解析时，解析器在目标坐标周围搜索的半径（度）。半径越大解析耗时越长，但在赤道仪初始指向不够精确时会有帮助。",
           "Threshold": "在 Slew & Center（转向并居中）过程中，解析位置与目标位置之间允许的最大偏差（角分）。若偏差超过此值，将触发另一轮转向并解析。",

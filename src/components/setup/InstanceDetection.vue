@@ -186,11 +186,15 @@ import Modal from '@/components/helpers/Modal.vue';
 import { Capacitor } from '@capacitor/core';
 import { mDNS } from '@acovanconis/capacitor-mdns';
 import { useI18n } from 'vue-i18n';
-import { PINS_HOTSPOT_HOST, probePinsHealth } from '@/services/rigEndpointResolver';
-import { PINS_DAEMON_SERVICE_TYPE, mergeDiscoveredServices } from '@/utils/mdnsInstances';
+import {
+  PINS_HOTSPOT_HOST,
+  PINS_MDNS_SERVICE_TYPE,
+  probePinsHealth,
+} from '@/services/rigEndpointResolver';
+import { mergeDiscoveredServices } from '@/utils/mdnsInstances';
+import { normalizeMdnsService, TNS_MDNS_SERVICE_TYPE } from '@/utils/mdnsServices';
 
-const MDNS_SERVICE_TYPES = ['_touchnstars._tcp', '_pinsdaemon._tcp'];
-const MDNS_INSTANCE_PREFIX = 'touchnstars_';
+const MDNS_SERVICE_TYPES = [TNS_MDNS_SERVICE_TYPE, PINS_MDNS_SERVICE_TYPE];
 const MDNS_DISCOVERY_TIMEOUT = 6000;
 
 const { t } = useI18n();
@@ -297,7 +301,7 @@ async function handleInstanceSelected(instance) {
   instanceIP.value = instance.ip;
   instancePort.value = instance.port;
   instanceCandidateHosts.value = Array.from(new Set([instance.ip, ...(instance.hosts || [])]));
-  if (instance.sourceType === PINS_DAEMON_SERVICE_TYPE) {
+  if (instance.sourceType === PINS_MDNS_SERVICE_TYPE) {
     try {
       const result = await probePinsHealth({ host: instance.ip });
       instanceRigId.value = result.health.rigId;
@@ -482,97 +486,6 @@ function applyDiscoveryResults(services) {
   );
   discoveredInstances.value = normalized;
   return normalized.length;
-}
-
-function normalizeMdnsService(service, sourceType) {
-  const txt = service?.txt || {};
-  const { baseName, suffix } = splitInstanceName(service?.name ?? '');
-  const ipFromTxt = typeof txt.ip === 'string' ? txt.ip.trim() : '';
-  const ipFromHosts = pickPreferredHost(service?.hosts || []);
-  const ip = ipFromTxt || ipFromHosts || '';
-  const port =
-    sourceType === PINS_DAEMON_SERVICE_TYPE
-      ? resolvePort(txt.backendPort, 5000)
-      : resolvePort(txt.port, service?.port);
-  const preferredName =
-    (typeof txt.instanceName === 'string' && txt.instanceName.trim()) ||
-    baseName ||
-    service?.name ||
-    '';
-  const label = stripInstancePrefix(preferredName);
-  const instanceId = (typeof txt.instanceId === 'string' && txt.instanceId.trim()) || suffix || '';
-  const rawName = service?.name || preferredName;
-
-  return {
-    label,
-    ip,
-    port,
-    instanceId,
-    hosts: service?.hosts || [],
-    txt,
-    rawName,
-    sourceType,
-  };
-}
-
-function splitInstanceName(name) {
-  if (typeof name !== 'string') {
-    return { baseName: '', suffix: '' };
-  }
-  const trimmed = name.trim();
-  if (!trimmed) {
-    return { baseName: '', suffix: '' };
-  }
-
-  const suffixMatch = trimmed.match(/-([0-9a-fA-F]{6})$/);
-  const suffix = suffixMatch ? suffixMatch[1] : '';
-  const baseWithoutSuffix = suffixMatch
-    ? trimmed.slice(0, trimmed.length - suffix.length - 1).trim()
-    : trimmed;
-
-  return { baseName: stripInstancePrefix(baseWithoutSuffix), suffix };
-}
-
-function stripInstancePrefix(value) {
-  if (typeof value !== 'string') {
-    return '';
-  }
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return '';
-  }
-  const prefix = MDNS_INSTANCE_PREFIX;
-  const lower = trimmed.toLowerCase();
-  const lowerPrefix = prefix.toLowerCase();
-  if (lower.startsWith(lowerPrefix)) {
-    return trimmed.slice(prefix.length);
-  }
-  return trimmed;
-}
-
-function pickPreferredHost(hosts) {
-  if (!Array.isArray(hosts)) {
-    return '';
-  }
-  const ipv4 = hosts.find((host) => typeof host === 'string' && host.includes('.'));
-  const firstHost = hosts.find((host) => typeof host === 'string');
-  return ipv4 || firstHost || '';
-}
-
-function resolvePort(txtPort, fallbackPort) {
-  if (typeof txtPort === 'number' && Number.isFinite(txtPort)) {
-    return txtPort;
-  }
-  if (typeof txtPort === 'string') {
-    const parsed = parseInt(txtPort, 10);
-    if (Number.isFinite(parsed)) {
-      return parsed;
-    }
-  }
-  if (typeof fallbackPort === 'number' && Number.isFinite(fallbackPort)) {
-    return fallbackPort;
-  }
-  return 0;
 }
 
 function enhanceDiscoveryError(rawMessage) {

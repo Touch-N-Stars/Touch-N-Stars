@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { Capacitor } from '@capacitor/core';
 import apiService from '@/services/apiService';
 import apiPinsService from '@/services/apiPinsService';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -235,7 +234,10 @@ export const apiStore = defineStore('store', {
       currentTab: 'showFocus',
     },
     closeErrorModal: false,
-    errorMessageShown: false,
+    // Why the last connection attempt failed, null while connected or before the first attempt:
+    // { type: 'unreachable' | 'tnsVersion' | 'api' | 'apiVersion' | 'liveUpdates' }, the version
+    // types with { current, minimum }. Survives clearAllStates(), which runs on every failure.
+    connectionIssue: null,
     connectingAttempts: 2,
     setupCheckConnectionDone: false,
     pageReturnedFromBackground: false,
@@ -299,7 +301,13 @@ export const apiStore = defineStore('store', {
       return Object.fromEntries(pending.map(([, key], index) => [key, responses[index]]));
     },
 
-    async fetchAllInfos(t) {
+    // Called on every failed attempt; the same issue again must not re-trigger watchers.
+    setConnectionIssue(type, details = {}) {
+      if (this.connectionIssue?.type === type) return;
+      this.connectionIssue = { type, ...details };
+    },
+
+    async fetchAllInfos() {
       // Staleness guard: if switchBackend() bumps the epoch while this cycle
       // is parked on an await, every result below belongs to the OLD instance.
       // Each checkpoint bails BEFORE the result is inspected, so a stale cycle
@@ -309,28 +317,8 @@ export const apiStore = defineStore('store', {
       const isStale = () => this.connectionEpoch !== startEpoch;
 
       const toastStore = useToastStore();
-      const pinsStore = usePinsStore();
       //const settingsStore = useSettingsStore();
       //this.isPINS = settingsStore.isPinsEnabled;
-
-      const showConnectionErrorToast = (messageKey) => {
-        if (pinsStore.shouldSuppressConnectionToasts || this.errorMessageShown) {
-          return;
-        }
-        // A freshly installed phone app has no rig yet and the setup assistant is asking for
-        // one; "check the settings in NINA" on top of that only scares. The browser always
-        // comes from a rig, so it keeps the message.
-        if (Capacitor.isNativePlatform() && !useSettingsStore().connection.ip) {
-          return;
-        }
-
-        toastStore.showToast({
-          type: 'error',
-          title: t('app.connection_error_toast.title'),
-          message: t(messageKey),
-          autoClose: false,
-        });
-      };
 
       const tryWithRetry = async (fn, retries = 1, delay = 2000) => {
         let result = null;
@@ -370,7 +358,7 @@ export const apiStore = defineStore('store', {
         if (isStale()) return;
         if (!tnsVersionResponse) {
           console.warn('TNS-Plugin not reachable');
-          showConnectionErrorToast('app.connection_error_toast.message_tns');
+          this.setConnectionIssue('unreachable');
           this.isTnsPluginConnected = false;
           this.clearAllStates();
           return;
@@ -387,7 +375,10 @@ export const apiStore = defineStore('store', {
             );
             if (!this.isTnsPluginVersionNewerOrEqual) {
               console.warn('TNS version incompatible', this.currentTnsPluginVersion);
-              showConnectionErrorToast('app.connection_error_toast.message_tns_version');
+              this.setConnectionIssue('tnsVersion', {
+                current: this.currentTnsPluginVersion,
+                minimum: this.minimumTnsPluginVersion,
+              });
               this.clearAllStates();
               this.isTnsPluginVersionNewerOrEqual = false;
               return;
@@ -408,7 +399,7 @@ export const apiStore = defineStore('store', {
           //console.log('API Port response:', response);
           if (!response) {
             console.error('API not reachable');
-            showConnectionErrorToast('app.connection_error_toast.message_api');
+            this.setConnectionIssue('api');
             this.isApiConnected = false;
             this.apiPort = null;
             this.clearAllStates();
@@ -416,7 +407,7 @@ export const apiStore = defineStore('store', {
           }
           if (response.data === -1) {
             console.error('API not reachable');
-            showConnectionErrorToast('app.connection_error_toast.message_api');
+            this.setConnectionIssue('api');
             this.isApiConnected = false;
             this.apiPort = null;
             this.clearAllStates();
@@ -441,7 +432,7 @@ export const apiStore = defineStore('store', {
           // branch and mark the API as connected.
           if (!responseApiVersion || responseApiVersion.Success === false) {
             console.warn('API-Plugin not reachable');
-            showConnectionErrorToast('app.connection_error_toast.message_api');
+            this.setConnectionIssue('api');
             this.clearAllStates();
             return;
           } else {
@@ -459,7 +450,10 @@ export const apiStore = defineStore('store', {
 
               if (!this.isApiVersionNewerOrEqual) {
                 console.warn('API version incompatible', this.currentApiVersion);
-                showConnectionErrorToast('app.connection_error_toast.message_api_version');
+                this.setConnectionIssue('apiVersion', {
+                  current: this.currentApiVersion,
+                  minimum: this.minimumApiVersion,
+                });
                 this.clearAllStates();
                 return;
               }
@@ -590,11 +584,13 @@ export const apiStore = defineStore('store', {
             settingsStore.loadAllBackendSettings();
           }
           this.isBackendReachable = true;
+          this.connectionIssue = null;
           this.attemptsToConnect = 0;
           //console.log('Backend is reachable', new Date().toLocaleTimeString());
         } else if (this.attemptsToConnect < 5) {
           // Backend ist NICHT erreichbar - Flag explizit auf false setzen
           this.isBackendReachable = false;
+          this.setConnectionIssue('liveUpdates');
           this.attemptsToConnect += 1;
           // WICHTIG: Bei Backend-Ausfall auch Equipment-Anfragen überspringen!
           console.log(
@@ -605,7 +601,7 @@ export const apiStore = defineStore('store', {
           return; // Equipment-Anfragen überspringen wenn Backend nicht erreichbar
         } else {
           this.clearAllStates();
-          showConnectionErrorToast('app.connection_error_toast.message_api');
+          this.setConnectionIssue('liveUpdates');
           console.warn(
             'Backend not reachable after multiple attempts, clearing states',
             new Date().toLocaleTimeString()
@@ -659,7 +655,6 @@ export const apiStore = defineStore('store', {
         this.closeErrorModal = true;
         console.log('Backend is reachable');
         toastStore.newMessage = false;
-        this.errorMessageShown = false;
       }
     },
 
@@ -679,7 +674,6 @@ export const apiStore = defineStore('store', {
       // the state would stay stuck at the cleared defaults.
       lastWrittenInfoJson = {};
       this.isBackendReachable = false;
-      this.errorMessageShown = true;
       this.isApiConnected = false;
       this.isTnsPluginConnected = false;
       this.isWebSocketConnected = false;
@@ -1013,6 +1007,8 @@ export const apiStore = defineStore('store', {
       abortInFlightRequests('instance-switch');
       this.clearAllStates();
 
+      this.connectionIssue = null;
+
       // Instance-only resets, deliberately NOT in clearAllStates(): that also
       // runs on transient connection losses, where the profile and the last
       // image still belong to the current instance and should survive.
@@ -1033,17 +1029,16 @@ export const apiStore = defineStore('store', {
       if (tppaWasArmed) websocketTppaService.connect().catch(() => {});
 
       // Startup (App.vue onMounted) and pause/resume own polling otherwise.
-      if (!wasPolling || !this._infoPollerT) return;
-      await this.fetchAllInfos(this._infoPollerT);
+      if (!wasPolling) return;
+      await this.fetchAllInfos();
       // Rapid double-switch: a newer switchBackend() owns the restart.
       if (this.connectionEpoch !== myEpoch) return;
-      this.startFetchingInfo(this._infoPollerT);
+      this.startFetchingInfo();
     },
 
-    startFetchingInfo(t) {
-      this._infoPollerT = t;
+    startFetchingInfo() {
       if (!this._infoPoller) {
-        this._infoPoller = createPoller(() => this.fetchAllInfos(this._infoPollerT), 2000);
+        this._infoPoller = createPoller(() => this.fetchAllInfos(), 2000);
       }
       if (!this._infoPoller.isRunning()) {
         this.attemptsToConnect = 0;

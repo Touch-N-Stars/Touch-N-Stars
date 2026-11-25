@@ -46,18 +46,78 @@
       "title": "Connection error",
       "message_api": "The API plugin is not available. Please check the settings in @:{'general.backendName'}",
       "message_api_version": "The API plugin is too old. Please perform an update",
-      "message_tns": "The Touch'N'Stars plugin is not available. Please check the settings in @:{'general.backendName'}",
+      "message_unreachable": "No answer. Check that the rig or the computer with N.I.N.A. is on and in the same network as this device.",
+      "message_live_updates": "The connection for live updates does not open. A firewall, VPN or proxy in between can block it.",
       "message_tns_version": "The Touch N Stars plugin is too old. Please perform an update"
+    },
+    "connection_help": {
+      "searchAgain": "Search again",
+      "keepsTrying": "The app keeps trying and connects by itself.",
+      "advanced": "Advanced",
+      "changeAddress": "Change address",
+      "searching": {
+        "title": "Connecting…",
+        "titleNamed": "Connecting to {name}…",
+        "text": "This usually takes a few seconds."
+      },
+      "found": {
+        "title": "Found another one",
+        "text": "Yours does not answer, but this was found in your network. If it is not the right one, go through the points below.",
+        "connect": "Connect to {name}"
+      },
+      "pinsStarting": {
+        "title": "Your rig is on, PINS is starting",
+        "text": "This can take one or two minutes. The app connects by itself."
+      },
+      "pinsDown": {
+        "title": "Your rig is on, but PINS does not answer",
+        "text": "Wait another minute. If nothing changes, switch the rig off and on again."
+      },
+      "rigSilent": {
+        "title": "Your rig does not answer",
+        "text": "Go through these points:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. does not answer",
+        "text": "Go through these points:"
+      },
+      "silent": {
+        "title": "No answer",
+        "text": "Go through the points for your setup:"
+      },
+      "apiMissing": {
+        "title": "The Advanced API is missing",
+        "text": "Touch'N'Stars was found, but N.I.N.A.'s “Advanced API” plugin does not answer. Install it in N.I.N.A. under Plugins, switch the API on in its options and restart N.I.N.A."
+      },
+      "liveBlocked": {
+        "title": "Almost connected",
+        "text": "The connection for live updates does not open. A firewall, VPN or proxy in between can block it."
+      },
+      "update": {
+        "title": "An update is needed",
+        "text": "The plugin {plugin} is version {current}, the app needs at least {minimum}. In N.I.N.A., update it under Plugins and restart N.I.N.A. On a PINS rig, update PINS."
+      },
+      "sections": {
+        "rig": "PINS rig",
+        "nina": "Computer with N.I.N.A."
+      },
+      "checks": {
+        "power": "Does the rig have power? After switching on it needs one to two minutes.",
+        "hotspot": "Outdoors: connect this device to the Wi-Fi of the rig, “{name}”. The password is “touchnstars” unless you changed it. Stay connected even if it says there is no internet.",
+        "home": "At home: this device has to be in the same network as the rig, not on mobile data or the guest Wi-Fi.",
+        "computer": "Is the computer on and N.I.N.A. running?",
+        "network": "This device has to be in the same network as the computer, not on mobile data or the guest Wi-Fi.",
+        "plugin": "Is the Touch'N'Stars plugin installed and switched on in N.I.N.A.?",
+        "firewall": "Does the computer's firewall allow N.I.N.A. in private networks (port {port})?",
+        "iosLocalNetwork": "iPhone and iPad: in Settings, Privacy & Security, Local Network, Touch'N'Stars has to be on.",
+        "nearbyDevices": "The app may not search the network. Allow “Nearby devices” for Touch'N'Stars in the system settings.",
+        "browser": "The browser cannot search. If the address has changed, open the new one."
+      }
     },
     "connection_splash": {
       "connecting": "Connecting…",
-      "trying": "Reconnecting to {instance}…",
-      "delayed": "Still trying to reach {instance}. This may indicate a problem — open Settings to verify your Touch-N-Stars instance.",
-      "retry_now": "Retry now",
-      "show_details": "Show details",
       "details": "Target: {endpoint} · {elapsed}s elapsed",
-      "configured_instance": "configured instance",
-      "default_instance_name": "selected instance"
+      "configured_instance": "configured instance"
     }
   },
   "whatsnew": {
@@ -833,9 +893,11 @@
         "Threshold": "Pointing tolerance (arcmin)",
         "RotationTolerance": "Rotation tolerance (°)",
         "MaxObjects": "Max objects",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Exposure time, in seconds, used for the images taken by the plate solver. Longer exposures pick up more stars, which helps with solving faint or sparse fields, but slow down each solve attempt.",
           "Gain": "Camera gain used for plate-solving exposures. Leave empty to use the camera's default gain.",
+          "Binning": "Binning used for the images taken by the plate solver, for example when centering a target or after a meridian flip. Higher binning gives shorter downloads and brighter stars, which helps with faint fields, at the cost of resolution.",
           "ASTAPLocation": "Path to the ASTAP executable (astap.exe) on the system running @:{'general.backendName'}. Required for local plate solving with ASTAP.",
           "SearchRadius": "Radius in degrees around the target coordinates that the solver searches when attempting a blind solve. A larger radius increases solve time but helps when the mount's initial position is less accurate.",
           "Threshold": "Maximum allowed deviation, in arcminutes, between the solved position and the target during Slew & Center. If the solve is farther off than this, another slew-and-solve cycle is triggered.",

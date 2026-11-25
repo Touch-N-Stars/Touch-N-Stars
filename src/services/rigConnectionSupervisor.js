@@ -4,9 +4,11 @@ import {
   buildPinsEndpointCandidates,
   discoverPinsDaemonHosts,
   normalizeCandidateHost,
+  PINS_HOTSPOT_HOST,
   probePinsHealth,
   resolvePinsEndpoint,
 } from '@/services/rigEndpointResolver';
+import { withWifiBindingTo } from '@/services/wifiBindingService';
 
 const TRANSITION_STORAGE_KEY = 'tns.pins.network-transition.v1';
 const DEFAULT_TRANSITION_TIMEOUT_MS = 90000;
@@ -111,7 +113,13 @@ function modeReached(status, requestedMode) {
   return true;
 }
 
-async function promoteEndpoint(result) {
+/** True while a recovery or a network switch of the rig is looking for it already. */
+export function isRigRecoveryRunning() {
+  return ['probing', 'reconnecting', 'network-transition'].includes(rigConnectionState.phase);
+}
+
+/** Moves the selected instance to the address its rig answered at and reconnects there. */
+export async function promoteEndpoint(result) {
   const instance = selectedInstance();
   if (!instance) return;
   const currentHost = settingsStoreRef.connection.ip;
@@ -183,7 +191,8 @@ async function probeRound({ expectedRigId, includeFieldFallback, signal }) {
     includeFieldFallback,
   }).filter((candidate) => candidate.host !== currentHost);
   rigConnectionState.attemptedHosts = candidates.map((candidate) => candidate.host);
-  return resolvePinsEndpoint({ candidates, expectedRigId, signal });
+  const resolve = () => resolvePinsEndpoint({ candidates, expectedRigId, signal });
+  return includeFieldFallback ? withWifiBindingTo(PINS_HOTSPOT_HOST, resolve) : resolve();
 }
 
 export async function recoverRigConnection({

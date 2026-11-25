@@ -46,18 +46,78 @@
       "title": "Erreur de connexion",
       "message_api": "Le plugin API n'est pas disponible. Veuillez vérifier les paramètres de @:{'general.backendName'}",
       "message_api_version": "Le plugin API est trop vieux. Veuillez effectuer une mise à jour",
-      "message_tns": "Le plugin TouchNStars n'est pas disponible. Veuillez vérifier les paramètres de @:{'general.backendName'}",
+      "message_unreachable": "Pas de réponse. Vérifie que le rig ou l’ordinateur avec N.I.N.A. est allumé et sur le même réseau que cet appareil.",
+      "message_live_updates": "La connexion pour les données en direct ne s’établit pas. Un pare-feu, un VPN ou un proxy peut la bloquer.",
       "message_tns_version": "Le plugin Touch N Stars est trop ancien. Veuillez effectuer une mise à jour"
+    },
+    "connection_help": {
+      "searchAgain": "Chercher à nouveau",
+      "keepsTrying": "L’app continue d’essayer et se connecte toute seule.",
+      "advanced": "Avancé",
+      "changeAddress": "Modifier l’adresse",
+      "searching": {
+        "title": "Connexion…",
+        "titleNamed": "Connexion à {name}…",
+        "text": "Cela prend normalement quelques secondes."
+      },
+      "found": {
+        "title": "Autre appareil trouvé",
+        "text": "Le tien ne répond pas, mais ceci a été trouvé sur ton réseau. Si ce n’est pas le bon, vérifie les points ci-dessous.",
+        "connect": "Se connecter à {name}"
+      },
+      "pinsStarting": {
+        "title": "Ton rig est allumé, PINS démarre",
+        "text": "Cela peut prendre une à deux minutes. L’app se connecte toute seule."
+      },
+      "pinsDown": {
+        "title": "Ton rig est allumé, mais PINS ne répond pas",
+        "text": "Attends encore une minute. Si rien ne change, éteins le rig et rallume-le."
+      },
+      "rigSilent": {
+        "title": "Ton rig ne répond pas",
+        "text": "Vérifie ces points :"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. ne répond pas",
+        "text": "Vérifie ces points :"
+      },
+      "silent": {
+        "title": "Pas de réponse",
+        "text": "Vérifie les points qui correspondent à ton installation :"
+      },
+      "apiMissing": {
+        "title": "L’Advanced API est introuvable",
+        "text": "Touch'N'Stars a été trouvé, mais le plugin « Advanced API » de N.I.N.A. ne répond pas. Installe-le dans N.I.N.A. sous Plugins, active l’API dans ses options et redémarre N.I.N.A."
+      },
+      "liveBlocked": {
+        "title": "Presque connecté",
+        "text": "La connexion pour les données en direct ne s’établit pas. Un pare-feu, un VPN ou un proxy peut la bloquer."
+      },
+      "update": {
+        "title": "Une mise à jour est nécessaire",
+        "text": "Le plugin {plugin} est en version {current}, l’app a besoin au moins de la {minimum}. Dans N.I.N.A., mets-le à jour sous Plugins et redémarre N.I.N.A. Sur un rig PINS, mets PINS à jour."
+      },
+      "sections": {
+        "rig": "Rig PINS",
+        "nina": "Ordinateur avec N.I.N.A."
+      },
+      "checks": {
+        "power": "Le rig est-il alimenté ? Après la mise sous tension, il lui faut une à deux minutes.",
+        "hotspot": "En extérieur : connecte cet appareil au Wi-Fi du rig, « {name} ». Le mot de passe est « touchnstars » si tu ne l’as pas changé. Reste connecté même si l’absence d’Internet est signalée.",
+        "home": "À la maison : cet appareil doit être sur le même réseau que le rig, pas en données mobiles ni sur le Wi-Fi invité.",
+        "computer": "L’ordinateur est-il allumé et N.I.N.A. lancé ?",
+        "network": "Cet appareil doit être sur le même réseau que l’ordinateur, pas en données mobiles ni sur le Wi-Fi invité.",
+        "plugin": "Le plugin Touch'N'Stars est-il installé et activé dans N.I.N.A. ?",
+        "firewall": "Le pare-feu de l’ordinateur autorise-t-il N.I.N.A. sur les réseaux privés (port {port}) ?",
+        "iosLocalNetwork": "iPhone et iPad : dans Réglages, Confidentialité et sécurité, Réseau local, Touch'N'Stars doit être activé.",
+        "nearbyDevices": "L’app n’a pas le droit de chercher sur le réseau. Autorise « Appareils à proximité » pour Touch'N'Stars dans les paramètres du système.",
+        "browser": "Le navigateur ne peut pas chercher. Si l’adresse a changé, ouvre la nouvelle."
+      }
     },
     "connection_splash": {
       "connecting": "Connexion en cours…",
-      "trying": "Reconnexion à {instance}…",
-      "delayed": "Toujours impossible de joindre {instance}. Cela peut indiquer un problème — ouvrez les Paramètres pour vérifier votre instance Touch-N-Stars.",
-      "retry_now": "Réessayer maintenant",
-      "show_details": "Afficher les détails",
       "details": "Cible : {endpoint} · {elapsed}s écoulées",
-      "configured_instance": "instance configurée",
-      "default_instance_name": "instance sélectionnée"
+      "configured_instance": "instance configurée"
     }
   },
   "whatsnew": {
@@ -750,9 +810,11 @@
         "Threshold": "Tolérance de pointage (arcmin)",
         "RotationTolerance": "Tolérance de rotation (°)",
         "MaxObjects": "Nombre maximum d'objets",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Temps de pose, en secondes, utilisé pour les images prises par le solveur de plaques. Des poses plus longues captent plus d'étoiles, ce qui aide à résoudre des champs faibles ou peu étoilés, mais ralentit chaque tentative de résolution.",
           "Gain": "Gain de la caméra utilisé pour les poses de résolution de plaques. Laissez vide pour utiliser le gain par défaut de la caméra.",
+          "Binning": "Binning utilisé pour les images prises par le solveur de plaques, par exemple lors du centrage d'une cible ou après un Meridian Flip. Un binning plus élevé raccourcit les téléchargements et rend les étoiles plus brillantes, ce qui aide sur les champs faibles, au prix de la résolution.",
           "ASTAPLocation": "Chemin vers l'exécutable ASTAP (astap.exe) sur le système exécutant @:{'general.backendName'}. Requis pour la résolution de plaques locale avec ASTAP.",
           "SearchRadius": "Rayon en degrés autour des coordonnées cibles dans lequel le solveur cherche lors d'une tentative de résolution à l'aveugle (blind solve). Un rayon plus grand augmente le temps de résolution mais aide lorsque la position initiale de la monture est moins précise.",
           "Threshold": "Écart maximal autorisé, en minutes d'arc, entre la position résolue et la cible pendant Slew & Center. Si l'écart de résolution dépasse cette valeur, un nouveau cycle de slew-and-solve est déclenché.",

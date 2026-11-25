@@ -46,18 +46,78 @@
       "title": "Error de connexió",
       "message_api": "El connector API no està disponible. Comprova la configuració a @:{'general.backendName'}",
       "message_api_version": "El connector API és massa antic. Fes una actualització",
-      "message_tns": "El connector TouchNStars no està disponible. Comprova la configuració a @:{'general.backendName'}",
+      "message_unreachable": "Sense resposta. Comprova que l’equip o l’ordinador amb N.I.N.A. és encès i a la mateixa xarxa que aquest dispositiu.",
+      "message_live_updates": "La connexió per a les dades en directe no s’estableix. Un tallafoc, una VPN o un proxy la pot bloquejar.",
       "message_tns_version": "El connector Touch N Stars és massa antic. Actualitza'l"
+    },
+    "connection_help": {
+      "searchAgain": "Torna a cercar",
+      "keepsTrying": "L’app ho continua intentant i es connecta sola.",
+      "advanced": "Avançat",
+      "changeAddress": "Canvia l’adreça",
+      "searching": {
+        "title": "Connectant…",
+        "titleNamed": "Connectant amb {name}…",
+        "text": "Normalment triga uns segons."
+      },
+      "found": {
+        "title": "S’ha trobat un altre dispositiu",
+        "text": "El teu no respon, però s’ha trobat aquest a la teva xarxa. Si no és el correcte, repassa els punts de sota.",
+        "connect": "Connecta amb {name}"
+      },
+      "pinsStarting": {
+        "title": "El teu equip és encès, PINS s’està iniciant",
+        "text": "Pot trigar un o dos minuts. L’app es connecta sola."
+      },
+      "pinsDown": {
+        "title": "El teu equip és encès, però PINS no respon",
+        "text": "Espera un minut més. Si res no canvia, apaga l’equip i torna’l a encendre."
+      },
+      "rigSilent": {
+        "title": "El teu equip no respon",
+        "text": "Repassa aquests punts:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. no respon",
+        "text": "Repassa aquests punts:"
+      },
+      "silent": {
+        "title": "Sense resposta",
+        "text": "Repassa els punts que corresponguin al teu cas:"
+      },
+      "apiMissing": {
+        "title": "Falta l’Advanced API",
+        "text": "S’ha trobat Touch'N'Stars, però el connector «Advanced API» de N.I.N.A. no respon. Instal·la’l a N.I.N.A. a Plugins, activa l’API a les seves opcions i reinicia N.I.N.A."
+      },
+      "liveBlocked": {
+        "title": "Gairebé connectat",
+        "text": "La connexió per a les dades en directe no s’estableix. Un tallafoc, una VPN o un proxy la pot bloquejar."
+      },
+      "update": {
+        "title": "Cal una actualització",
+        "text": "El connector {plugin} té la versió {current}, l’app necessita com a mínim la {minimum}. A N.I.N.A., actualitza’l a Plugins i reinicia N.I.N.A. En un equip PINS, actualitza PINS."
+      },
+      "sections": {
+        "rig": "Equip PINS",
+        "nina": "Ordinador amb N.I.N.A."
+      },
+      "checks": {
+        "power": "L’equip té corrent? Després d’encendre’l necessita un o dos minuts.",
+        "hotspot": "A l’aire lliure: connecta aquest dispositiu a la wifi de l’equip, «{name}». La contrasenya és «touchnstars» si no l’has canviada. Continua connectat encara que indiqui que no hi ha internet.",
+        "home": "A casa: aquest dispositiu ha de ser a la mateixa xarxa que l’equip, no amb dades mòbils ni a la wifi de convidats.",
+        "computer": "L’ordinador és encès i N.I.N.A. en marxa?",
+        "network": "Aquest dispositiu ha de ser a la mateixa xarxa que l’ordinador, no amb dades mòbils ni a la wifi de convidats.",
+        "plugin": "El connector Touch'N'Stars està instal·lat i activat a N.I.N.A.?",
+        "firewall": "El tallafoc de l’ordinador permet N.I.N.A. en xarxes privades (port {port})?",
+        "iosLocalNetwork": "iPhone i iPad: a Configuració, Privacitat i seguretat, Xarxa local, Touch'N'Stars ha d’estar activat.",
+        "nearbyDevices": "L’app no té permís per cercar a la xarxa. Permet «Dispositius propers» per a Touch'N'Stars a la configuració del sistema.",
+        "browser": "El navegador no pot cercar. Si l’adreça ha canviat, obre la nova."
+      }
     },
     "connection_splash": {
       "connecting": "Connectant…",
-      "trying": "Reconnectant amb {instance}…",
-      "delayed": "Encara no es pot connectar amb {instance}. Pot indicar un problema — obre Configuració per verificar la instància de Touch-N-Stars.",
-      "retry_now": "Reintenta ara",
-      "show_details": "Mostra els detalls",
       "details": "Destinació: {endpoint} · {elapsed}s transcorreguts",
-      "configured_instance": "instància configurada",
-      "default_instance_name": "instància seleccionada"
+      "configured_instance": "instància configurada"
     }
   },
   "whatsnew": {
@@ -833,9 +893,11 @@
         "Threshold": "Tolerància d'apuntament (arcmin)",
         "RotationTolerance": "Tolerància de rotació (°)",
         "MaxObjects": "Màx. objectes",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Temps d'exposició, en segons, usat per a les imatges preses pel solucionador de placa. Les exposicions més llargues capturen més estrelles, cosa que ajuda a resoldre camps febles o dispersos, però alenteix cada intent de resolució.",
           "Gain": "Guany de la càmera usat per a les exposicions de resolució de placa. Deixa buit per usar el guany per defecte de la càmera.",
+          "Binning": "Binning de les imatges preses pel solucionador de placa, per exemple en centrar un objectiu o després d'un Meridian Flip. Un binning més alt dona descàrregues més curtes i estrelles més brillants, cosa que ajuda en camps febles, a costa de la resolució.",
           "ASTAPLocation": "Ruta a l'executable d'ASTAP (astap.exe) al sistema on s'executa @:{'general.backendName'}. Necessari per a la resolució local de placa amb ASTAP.",
           "SearchRadius": "Radi en graus al voltant de les coordenades objectiu en el qual el solucionador cerca quan intenta una resolució cega. Un radi més gran augmenta el temps de resolució però ajuda quan la posició inicial de la muntura és menys precisa.",
           "Threshold": "Desviació màxima permesa, en minuts d'arc, entre la posició resolta i l'objectiu durant Slew & Center. Si la resolució s'allunya més, s'activa un altre cicle de slew-and-solve.",

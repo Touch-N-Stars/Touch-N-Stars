@@ -46,18 +46,78 @@
       "title": "Error de conexión",
       "message_api": "El complemento API no está disponible. Consulte la configuración en @:{'general.backendName'}",
       "message_api_version": "El complemento API es demasiado antiguo. Por favor realice una actualización",
-      "message_tns": "El complemento TouchNstars no está disponible. Consulte la configuración en @:{'general.backendName'}",
+      "message_unreachable": "Sin respuesta. Comprueba que el equipo o el ordenador con N.I.N.A. está encendido y en la misma red que este dispositivo.",
+      "message_live_updates": "La conexión para los datos en directo no se establece. Un cortafuegos, una VPN o un proxy puede bloquearla.",
       "message_tns_version": "El complemento Touch N Stars es demasiado antiguo. Por favor actualice el complemento"
+    },
+    "connection_help": {
+      "searchAgain": "Buscar de nuevo",
+      "keepsTrying": "La app sigue intentándolo y se conecta sola.",
+      "advanced": "Avanzado",
+      "changeAddress": "Cambiar dirección",
+      "searching": {
+        "title": "Conectando…",
+        "titleNamed": "Conectando con {name}…",
+        "text": "Suele tardar unos segundos."
+      },
+      "found": {
+        "title": "Se ha encontrado otro",
+        "text": "El tuyo no responde, pero se ha encontrado esto en tu red. Si no es el correcto, repasa los puntos de abajo.",
+        "connect": "Conectar con {name}"
+      },
+      "pinsStarting": {
+        "title": "Tu equipo está encendido, PINS se está iniciando",
+        "text": "Puede tardar uno o dos minutos. La app se conecta sola."
+      },
+      "pinsDown": {
+        "title": "Tu equipo está encendido, pero PINS no responde",
+        "text": "Espera un minuto más. Si nada cambia, apaga el equipo y vuelve a encenderlo."
+      },
+      "rigSilent": {
+        "title": "Tu equipo no responde",
+        "text": "Repasa estos puntos:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. no responde",
+        "text": "Repasa estos puntos:"
+      },
+      "silent": {
+        "title": "Sin respuesta",
+        "text": "Repasa los puntos que correspondan a tu caso:"
+      },
+      "apiMissing": {
+        "title": "Falta la Advanced API",
+        "text": "Se ha encontrado Touch'N'Stars, pero el complemento «Advanced API» de N.I.N.A. no responde. Instálalo en N.I.N.A. en Plugins, activa la API en sus opciones y reinicia N.I.N.A."
+      },
+      "liveBlocked": {
+        "title": "Casi conectado",
+        "text": "La conexión para los datos en directo no se establece. Un cortafuegos, una VPN o un proxy puede bloquearla."
+      },
+      "update": {
+        "title": "Hace falta una actualización",
+        "text": "El complemento {plugin} tiene la versión {current}, la app necesita al menos la {minimum}. En N.I.N.A., actualízalo en Plugins y reinicia N.I.N.A. En un equipo PINS, actualiza PINS."
+      },
+      "sections": {
+        "rig": "Equipo PINS",
+        "nina": "Ordenador con N.I.N.A."
+      },
+      "checks": {
+        "power": "¿Tiene corriente el equipo? Tras encenderlo necesita uno o dos minutos.",
+        "hotspot": "Al aire libre: conecta este dispositivo al wifi del equipo, «{name}». La contraseña es «touchnstars» si no la has cambiado. Sigue conectado aunque indique que no hay internet.",
+        "home": "En casa: este dispositivo debe estar en la misma red que el equipo, no con datos móviles ni en el wifi de invitados.",
+        "computer": "¿Está encendido el ordenador y N.I.N.A. en marcha?",
+        "network": "Este dispositivo debe estar en la misma red que el ordenador, no con datos móviles ni en el wifi de invitados.",
+        "plugin": "¿Está el complemento Touch'N'Stars instalado y activado en N.I.N.A.?",
+        "firewall": "¿Permite el cortafuegos del ordenador N.I.N.A. en redes privadas (puerto {port})?",
+        "iosLocalNetwork": "iPhone y iPad: en Ajustes, Privacidad y seguridad, Red local, Touch'N'Stars debe estar activado.",
+        "nearbyDevices": "La app no tiene permiso para buscar en la red. Permite «Dispositivos cercanos» para Touch'N'Stars en los ajustes del sistema.",
+        "browser": "El navegador no puede buscar. Si la dirección ha cambiado, abre la nueva."
+      }
     },
     "connection_splash": {
       "connecting": "Conectando…",
-      "trying": "Reconectando con {instance}…",
-      "delayed": "Aún no se puede conectar con {instance}. Esto podría indicar un problema — abre Configuración para verificar tu instancia de Touch-N-Stars.",
-      "retry_now": "Reintentar ahora",
-      "show_details": "Mostrar detalles",
       "details": "Destino: {endpoint} · {elapsed}s transcurridos",
-      "configured_instance": "instancia configurada",
-      "default_instance_name": "instancia seleccionada"
+      "configured_instance": "instancia configurada"
     }
   },
   "whatsnew": {
@@ -750,9 +810,11 @@
         "Threshold": "Tolerancia de apuntado (arcmin)",
         "RotationTolerance": "Tolerancia de rotación (°)",
         "MaxObjects": "Máximo núm de objetos",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Tiempo de exposición, en segundos, usado para las imágenes tomadas por el resolutor de placas. Exposiciones más largas capturan más estrellas, lo que ayuda a resolver campos débiles o con pocas estrellas, pero ralentiza cada intento de resolución.",
           "Gain": "Ganancia de la cámara usada para las exposiciones de resolución de placas. Déjalo vacío para usar la ganancia predeterminada de la cámara.",
+          "Binning": "Binning usado para las imágenes tomadas por el resolutor de placas, por ejemplo al centrar un objetivo o tras un Meridian Flip. Un binning mayor acorta las descargas y da estrellas más brillantes, lo que ayuda en campos débiles, a costa de la resolución.",
           "ASTAPLocation": "Ruta al ejecutable de ASTAP (astap.exe) en el sistema donde se ejecuta @:{'general.backendName'}. Necesario para la resolución de placas local con ASTAP.",
           "SearchRadius": "Radio en grados alrededor de las coordenadas objetivo en el que el resolutor busca al intentar una resolución ciega (blind solve). Un radio mayor aumenta el tiempo de resolución, pero ayuda cuando la posición inicial de la montura es menos precisa.",
           "Threshold": "Desviación máxima permitida, en minutos de arco, entre la posición resuelta y el objetivo durante Slew & Center. Si la resolución se desvía más que esto, se activa otro ciclo de slew-and-solve.",

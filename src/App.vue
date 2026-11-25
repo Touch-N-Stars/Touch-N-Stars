@@ -14,104 +14,43 @@
       <Transition name="splash">
         <div
           v-if="shouldShowConnectionSplash"
-          class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-surface-1 p-4"
+          class="fixed inset-0 z-40 flex flex-col overflow-y-auto bg-surface-1 px-4 pt-[calc(1rem+env(safe-area-inset-top))] pb-[calc(1rem+env(safe-area-inset-bottom))]"
         >
-          <!-- Reconnect status: calm spinner-only while just lost, escalates to a
-               fuller message + actions after a few seconds (connectionPhase) -->
-          <div
-            v-if="connectionPhase !== 'hidden'"
-            class="absolute top-16 flex flex-col items-center gap-3"
-          >
-            <div
-              class="w-8 h-8 border-4 border-t-transparent border-solid rounded-full animate-spin"
-              :class="connectionIsStalled ? 'border-status-warn' : 'border-accent'"
-            ></div>
-
-            <p
-              v-if="connectionPhase === 'connecting'"
-              class="text-content text-sm sm:text-base font-medium text-center"
-            >
-              {{ connectionConnectingMessage }}
-            </p>
-
-            <p
-              v-if="connectionPhase === 'attention'"
-              class="text-sm sm:text-base font-medium bg-surface-2 px-4 py-2 rounded-lg max-w-[calc(100%-2rem)] text-center"
-              :class="
-                connectionIsStalled
-                  ? 'text-status-warn border border-status-warn/30'
-                  : 'text-accent border border-accent/30'
-              "
-            >
-              {{ connectionAttentionMessage }}
-            </p>
-
-            <div v-if="connectionPhase === 'attention'" class="text-center">
-              <button
-                v-if="!showConnectionDetails"
-                @click="showConnectionDetails = true"
-                class="text-xs text-content-muted hover:text-content underline"
-              >
-                {{ $t('app.connection_splash.show_details') }}
-              </button>
-              <p v-else class="text-xs text-content-muted mt-1">
-                {{
-                  $t('app.connection_splash.details', {
-                    endpoint: connectionTargetLabel,
-                    elapsed: connectionElapsedSeconds,
-                  })
-                }}
+          <!-- m-auto instead of justify-center: centered while it fits, scrollable from the
+               top when the help is taller than the screen. -->
+          <div class="m-auto w-full flex flex-col items-center gap-6">
+            <!-- Calm spinner while just lost, then what is wrong and what to do -->
+            <div v-if="connectionPhase === 'connecting'" class="flex flex-col items-center gap-3">
+              <Spinner class="text-accent" />
+              <p class="text-content text-sm sm:text-base font-medium text-center">
+                {{ $t('app.connection_splash.connecting') }}
               </p>
             </div>
-          </div>
 
-          <!-- Actions: only once we've escalated to the attention phase -->
-          <div
-            v-if="connectionPhase === 'attention'"
-            class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex items-center gap-3"
-          >
-            <button
-              @click="retryConnectionNow"
-              class="px-4 py-2 sm:px-6 sm:py-3 bg-accent-action hover:brightness-110 text-white text-sm sm:text-base rounded-lg transition-colors flex items-center gap-2"
-            >
-              {{ $t('app.connection_splash.retry_now') }}
-            </button>
-            <button
-              @click="showSettingsModal = true"
-              class="px-4 py-2 sm:px-6 sm:py-3 bg-surface-3 hover:bg-surface-2 text-white text-sm sm:text-base rounded-lg border border-line-strong hover:border-content-faint transition-colors flex items-center gap-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 sm:h-5 sm:w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+            <div class="flex flex-col items-center">
+              <h1
+                class="text-content font-mono font-bold mb-4"
+                :class="
+                  connectionPhase === 'attention' ? 'text-2xl' : 'text-3xl sm:text-4xl md:text-5xl'
+                "
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              {{ $t('components.settings.title') }}
-            </button>
-          </div>
+                {{ $t('app.title') }}
+              </h1>
+              <img
+                :class="connectionPhase === 'attention' ? 'w-24 h-24' : 'w-72 h-72'"
+                src="@/assets/Logo_TouchNStars_600x600.png"
+                alt="TouchNStars Logo"
+              />
+            </div>
 
-          <h1 class="text-3xl sm:text-4xl md:text-5xl text-content font-mono font-bold mb-4">
-            {{ $t('app.title') }}
-          </h1>
-          <img
-            class="w-72 h-72"
-            src="@/assets/Logo_TouchNStars_600x600.png"
-            alt="TouchNStars Logo"
-          />
+            <ConnectionHelp
+              v-if="connectionPhase === 'attention'"
+              :elapsed="connectionElapsedSeconds"
+              :target="connectionTargetLabel"
+              @retry="retryConnectionNow"
+              @settings="showSettingsModal = true"
+            />
+          </div>
         </div>
       </Transition>
 
@@ -368,11 +307,14 @@ import { usePickerStore } from '@/store/pickerStore';
 import { useI18n } from 'vue-i18n';
 import ToastModal from '@/components/app/ToastModal.vue';
 import StatusBar from '@/components/status/StatusBar.vue';
+import ConnectionHelp from '@/components/app/ConnectionHelp.vue';
+import Spinner from '@/components/helpers/Spinner.vue';
 import LocationSyncModal from '@/components/app/LocationSyncModal.vue';
 import { useOrientation } from '@/composables/useOrientation';
 import { useStageWindow } from '@/composables/useStageWindow';
 import { useSimpleModeLanding } from '@/composables/useSimpleModeLanding';
 import { useSimpleMode } from '@/composables/useSimpleMode';
+import { useBackendKindMemory } from '@/composables/useConnectionHelp';
 import { useRoute } from 'vue-router';
 import DialogModal from '@/components/app/DialogModal.vue';
 import SecureObservatoryDialog from '@/components/system/SecureObservatoryDialog.vue';
@@ -402,6 +344,7 @@ import {
 } from '@/services/updateService';
 import { getDeviceDateTimePayload, parsePinsTimeToSeconds } from '@/utils/pinsTimeUtils';
 import { abortInFlightRequests } from '@/utils/httpLifecycle';
+import { HELP_AFTER_SECONDS } from '@/utils/connectionDiagnosis';
 import { setAppBackgrounded, useBackgroundAwarePolling } from '@/utils/appLifecycle';
 import { setLocaleLanguage, setBackendName } from '@/i18n';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
@@ -442,6 +385,7 @@ const statusBarStore = useStatusBarStore();
 const route = useRoute();
 useSimpleModeLanding();
 const { active: simpleModeActive } = useSimpleMode();
+useBackendKindMemory();
 
 // A flip test that ran before a reload comes back once the backend answers.
 watch(
@@ -624,11 +568,6 @@ useBackgroundAwarePolling(
   // At a 5 minute interval an under-voltage warning must not wait a full cycle after resume
   { immediate: true, immediateOnResume: true }
 );
-// Reconnecting after being backgrounded routinely takes up to ~12s on its own (Android
-// radio/network wake-up after Doze, see websocketChannelSocket reconnect timing) - that
-// is normal, not a stall. CONNECTION_STALL_HINT_SECONDS must stay comfortably above that
-// so the "this may indicate a problem" wording only kicks in once it's genuinely unusual.
-const CONNECTION_STALL_HINT_SECONDS = 15;
 const CONNECTION_ATTENTION_THRESHOLD_SECONDS = 3;
 // Short grace period before the reconnect overlay actually renders. isBackendReachable
 // flips false immediately on every resume (even ones that recover in well under a
@@ -637,7 +576,6 @@ const CONNECTION_ATTENTION_THRESHOLD_SECONDS = 3;
 const RECONNECT_SPLASH_GRACE_MS = 300;
 const connectionAttemptStartedAt = ref(Date.now());
 const connectionElapsedSeconds = ref(0);
-const showConnectionDetails = ref(false);
 const showReconnectOverlay = ref(false);
 let connectionElapsedIntervalId = null;
 let reconnectSplashGraceTimer = null;
@@ -768,21 +706,11 @@ const connectionTargetLabel = computed(() => {
   return `${host}:${port}`;
 });
 
-const connectionInstanceName = computed(() => {
-  const selectedId = settingsStore.selectedInstanceId;
-  const selectedInstance = selectedId ? settingsStore.getInstance(selectedId) : null;
-  return selectedInstance?.name || t('app.connection_splash.default_instance_name');
-});
-
-const connectionRemainingSeconds = computed(() => {
-  return Math.max(CONNECTION_STALL_HINT_SECONDS - connectionElapsedSeconds.value, 0);
-});
-
 // 'hidden': backend reachable (or first-ever check still pending) - splash content
 // stays hidden entirely. 'connecting': just lost the connection, show a calm spinner
 // only - covers the common case of a brief background/foreground blip without ever
 // showing an alarming error state. 'attention': still not reachable after a few
-// seconds - now show the full message plus actionable buttons.
+// seconds - now show ConnectionHelp.
 const connectionPhase = computed(() => {
   if (!connectionCheckCompleted.value || store.isBackendReachable) return 'hidden';
   return connectionElapsedSeconds.value < CONNECTION_ATTENTION_THRESHOLD_SECONDS
@@ -790,31 +718,9 @@ const connectionPhase = computed(() => {
     : 'attention';
 });
 
-const connectionConnectingMessage = computed(() => t('app.connection_splash.connecting'));
-
-// Only true once we're past the normal-reconnect window (CONNECTION_STALL_HINT_SECONDS) -
-// drives both the wording and the color (blue/neutral while still within the expected
-// up-to-~12s reconnect time, amber only once it's genuinely taking unusually long).
-const connectionIsStalled = computed(
-  () => connectionPhase.value === 'attention' && connectionRemainingSeconds.value === 0
-);
-
-const connectionAttentionMessage = computed(() => {
-  if (connectionIsStalled.value) {
-    return t('app.connection_splash.delayed', {
-      instance: connectionInstanceName.value,
-    });
-  }
-
-  return t('app.connection_splash.trying', {
-    instance: connectionInstanceName.value,
-  });
-});
-
 function resetConnectionAttemptTimer() {
   connectionAttemptStartedAt.value = Date.now();
   connectionElapsedSeconds.value = 0;
-  showConnectionDetails.value = false;
 }
 
 function updateConnectionElapsed() {
@@ -989,11 +895,9 @@ function resumeApp() {
 
 // Manual "Retry now" trigger from the connection splash. performResume() is already
 // re-entrancy-guarded (isResuming/resumePending) and sets isBackendReachable = false
-// itself, so calling it directly here is safe. Resetting the timer first drops the
-// splash back to the calm "connecting" phase immediately instead of staying on the
-// attention view while the new attempt is in flight.
+// itself, so calling it directly here is safe. The timer keeps running: the help the
+// user is reading must not vanish for the length of another attempt.
 function retryConnectionNow() {
-  resetConnectionAttemptTimer();
   void performResume();
 }
 
@@ -1040,12 +944,12 @@ async function performResume() {
     // reconnect probes below would queue behind them for many seconds.
     abortInFlightRequests();
 
-    await store.fetchAllInfos(t);
+    await store.fetchAllInfos();
     // The app may have been paused again while we were awaiting above (long async
     // chain racing a quick foreground->background). Bail out instead of restarting
     // intervals pauseApp() already stopped.
     if (isPaused) return;
-    store.startFetchingInfo(t);
+    store.startFetchingInfo();
     logStore.startFetchingLog();
     // Only restart the guider graph poller if the guiding view was actually
     // open when we paused - otherwise this would start polling for a view
@@ -1351,12 +1255,12 @@ onMounted(async () => {
     connectionCheckCompleted.value = true;
   }, 3000);
 
-  await store.fetchAllInfos(t);
+  await store.fetchAllInfos();
   // Connection check is completed after first connection attempt
   connectionCheckCompleted.value = true;
   clearTimeout(connectionTimeout);
 
-  store.startFetchingInfo(t);
+  store.startFetchingInfo();
   logStore.startFetchingLog();
 
   // PINS detection already ran inside fetchAllInfos() above; see the resume
@@ -1431,13 +1335,41 @@ onMounted(async () => {
   }
 });
 
+// The connection page explains a failed connection. Where it cannot show (the settings page,
+// the setup wizard), one toast per outage says it instead - after the same time as the help, so a
+// quick reconnect stays silent.
+const CONNECTION_TOAST_KEYS = {
+  unreachable: 'message_unreachable',
+  tnsVersion: 'message_tns_version',
+  api: 'message_api',
+  apiVersion: 'message_api_version',
+  liveUpdates: 'message_live_updates',
+};
+const connectionToastDue = computed(
+  () =>
+    store.connectionIssue !== null &&
+    connectionElapsedSeconds.value >= HELP_AFTER_SECONDS &&
+    (showSetupWizard.value || route.path === '/settings') &&
+    !pinsStore.shouldSuppressConnectionToasts &&
+    // A freshly installed phone app has no rig yet, and the setup assistant is asking for one.
+    !(isNativePlatform() && !settingsStore.connection.ip)
+);
+watch(connectionToastDue, (due) => {
+  if (!due) return;
+  toastStore.showToast({
+    type: 'error',
+    title: t('app.connection_error_toast.title'),
+    message: t(`app.connection_error_toast.${CONNECTION_TOAST_KEYS[store.connectionIssue.type]}`),
+    autoClose: false,
+  });
+});
+
 // Watch for backend connection and add delay before hiding splash screen
 watch(
   () => store.isBackendReachable,
   async (isReachable, wasReachable) => {
     if (isReachable) {
       connectionElapsedSeconds.value = 0;
-      showConnectionDetails.value = false;
       stopConnectionTimer();
     } else if (wasReachable) {
       startConnectionTimer();

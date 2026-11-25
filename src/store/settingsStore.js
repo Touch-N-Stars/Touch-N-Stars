@@ -700,6 +700,13 @@ export const useSettingsStore = defineStore('settings', {
       );
     },
 
+    // What the instance turned out to be ('pins' | 'nina'). The connection page needs it when
+    // the backend does not answer and cannot be asked any more.
+    rememberBackendKind(kind) {
+      const instance = this.selectedInstanceId ? this.getInstance(this.selectedInstanceId) : null;
+      if (instance && instance.backendKind !== kind) instance.backendKind = kind;
+    },
+
     promoteInstanceEndpoint(id, { host, rigId }) {
       const instance = this.getInstance(id);
       if (!instance || !host) return false;
