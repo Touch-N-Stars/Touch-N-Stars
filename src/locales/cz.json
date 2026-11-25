@@ -6378,8 +6378,7 @@
       "brandLabel": "Jaká je to značka?",
       "otherBrand": "Jiná značka",
       "disconnectFirst": "Před změnou ovladače zařízení odpoj.",
-      "applied": "Hotovo: je vybráno „{device}“. Připoj ho kabelem, zapni a klepni na „Připojit“.",
-      "appliedPickDevice": "Ovladač je nastaven, ale zatím nebylo nalezeno žádné zařízení. Připoj ho kabelem, zapni, obnov seznam výše, vyber ho a klepni na „Připojit“."
+      "applied": "Hotovo: je vybráno „{device}“. Připoj ho kabelem, zapni a klepni na „Připojit“."
     }
   },
   "plugins": {

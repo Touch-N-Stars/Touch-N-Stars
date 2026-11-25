@@ -6378,8 +6378,7 @@
       "brandLabel": "Di che marca è?",
       "otherBrand": "Altra marca",
       "disconnectFirst": "Disconnetti il dispositivo prima di cambiare il driver.",
-      "applied": "Fatto: “{device}” è selezionato. Collegalo, accendilo e tocca “Connetti”.",
-      "appliedPickDevice": "Il driver è impostato, ma non è ancora stato trovato alcun dispositivo. Collegalo, accendilo, aggiorna l’elenco sopra, sceglilo e tocca “Connetti”."
+      "applied": "Fatto: “{device}” è selezionato. Collegalo, accendilo e tocca “Connetti”."
     }
   },
   "plugins": {

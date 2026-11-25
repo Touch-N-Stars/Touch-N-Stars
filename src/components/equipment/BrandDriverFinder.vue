@@ -8,7 +8,9 @@
     </p>
 
     <template v-if="!selected">
-      <span class="tns-label">{{ t('components.deviceDriverFinder.brandLabel') }}</span>
+      <span class="tns-label">{{
+        t(`components.deviceDriverFinder.${isFocuser ? 'focuserLabel' : 'brandLabel'}`)
+      }}</span>
       <div class="flex flex-wrap gap-2">
         <button
           v-for="entry in brands"
@@ -31,7 +33,7 @@
           :disabled="busy"
           @click="select(null)"
         >
-          {{ t('components.deviceDriverFinder.otherBrand') }}
+          {{ t(`components.deviceDriverFinder.${isFocuser ? 'otherFocuser' : 'otherBrand'}`) }}
         </button>
       </div>
 
@@ -107,7 +109,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
 import { apiStore } from '@/store/store';
@@ -115,26 +117,27 @@ import Spinner from '@/components/helpers/Spinner.vue';
 import { installIndiDriver } from '@/components/pins/composables/installIndiDriver';
 import { extractIndiInstallErrorDetail } from '@/components/pins/composables/indiInstallUtils';
 import { DEVICE_MAP, applyIndiDriver } from '@/utils/equipmentDevices';
-import { DEVICE_BRANDS, brandAvailability } from '@/utils/deviceDriverCatalog';
+import { DEVICE_BRANDS, brandAvailability, driverListTypes } from '@/utils/deviceDriverCatalog';
 
 /**
- * "Which driver does my camera / filter wheel need?" for PINS: the user taps the brand and the
- * matching INDI driver is set, installed first if it is missing, and its device selected.
+ * "Which driver does my camera / focuser / filter wheel need?" for PINS: the user taps the brand
+ * and the matching INDI driver is set, installed first if it is missing, and its device selected.
  * Connecting stays a tap of its own.
  */
 const props = defineProps({
-  // INDI device type and key of DEVICE_BRANDS: 'camera' | 'filterwheel'
+  // INDI device type and key of DEVICE_BRANDS: 'camera' | 'focuser' | 'filterwheel'
   deviceType: { type: String, required: true },
   // e.g. 'cameraAction'
   apiAction: { type: String, required: true },
   // Changing the driver restarts it, which would cut a live connection
   connected: { type: Boolean, default: false },
 });
-const emit = defineEmits(['applied']);
+const emit = defineEmits(['applied', 'busy']);
 
 const { t } = useI18n();
 const store = apiStore();
 
+const isFocuser = props.deviceType === 'focuser';
 const brands = DEVICE_BRANDS[props.deviceType] ?? [];
 const selected = ref(null);
 const installedDrivers = ref([]);
@@ -153,6 +156,8 @@ const isCurrentDriver = computed(
     store.profileInfo?.[DEVICE_MAP[props.apiAction].section]?.IndiDriver === selected.value.driver
 );
 
+watch(busy, (value) => emit('busy', value));
+
 function select(entry) {
   selected.value = entry;
   confirmInstall.value = false;
@@ -164,9 +169,13 @@ async function loadInstalledDrivers() {
   loadingDrivers.value = true;
   driverListFailed.value = false;
   try {
-    const response = await apiPinsService.getINDIDeviceList(props.deviceType);
-    if (!Array.isArray(response?.Response)) throw new Error(response?.Error || 'no list');
-    installedDrivers.value = response.Response.map((driver) => driver.Name);
+    const lists = await Promise.all(
+      driverListTypes(props.deviceType).map((type) => apiPinsService.getINDIDeviceList(type))
+    );
+    installedDrivers.value = lists.flatMap((response) => {
+      if (!Array.isArray(response?.Response)) throw new Error(response?.Error || 'no list');
+      return response.Response.map((driver) => driver.Name);
+    });
   } catch (error) {
     console.error('[BrandDriverFinder] INDI driver list failed:', error);
     driverListFailed.value = true;
@@ -204,10 +213,14 @@ async function install(entry) {
 async function apply(entry) {
   progressText.value = t('components.mountDriverFinder.applying', { name: entry.brand });
   try {
-    const { deviceId } = await applyIndiDriver(props.apiAction, entry.driver);
+    const { deviceId, deviceCount } = await applyIndiDriver(props.apiAction, entry.driver);
     resultText.value = deviceId
       ? t('components.deviceDriverFinder.applied', { device: deviceId })
-      : t('components.deviceDriverFinder.appliedPickDevice');
+      : t(
+          deviceCount > 1
+            ? 'components.deviceDriverFinder.appliedSeveral'
+            : 'components.deviceDriverFinder.appliedNoDevice'
+        );
     emit('applied', { driver: entry.driver, deviceId });
   } catch (error) {
     throw new Error(

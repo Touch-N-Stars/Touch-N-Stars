@@ -53,7 +53,8 @@
       </button>
 
       <!-- The usual reason a mount is missing or will not connect on PINS is the wrong (or a
-           missing) INDI driver - offer the finder right where that shows. -->
+           missing) INDI driver - offer the finder right where that shows. The other devices
+           are optional, so only a failed connect brings it up for them. -->
       <div v-if="offerMountDriver" class="flex flex-col gap-2">
         <p class="text-xs text-content-muted">
           {{
@@ -62,23 +63,69 @@
               : $t('components.simpleMode.rig.noMountHint')
           }}
         </p>
-        <button type="button" class="tns-btn-secondary" @click="showMountFinder = true">
+        <button type="button" class="tns-btn-secondary" @click="openFinder('mount')">
           {{ $t('components.mountDriverFinder.openButton') }}
+        </button>
+      </div>
+      <div v-if="brandOffers.length" class="flex flex-col gap-2">
+        <p class="text-xs text-content-muted">
+          {{
+            $t('components.simpleMode.rig.devicesFailedHint', {
+              devices: brandOffers.map(deviceLabel).join(', '),
+            })
+          }}
+        </p>
+        <button
+          v-for="apiName in brandOffers"
+          :key="apiName"
+          type="button"
+          class="tns-btn-secondary"
+          @click="openFinder(apiName)"
+        >
+          {{ $t('components.deviceDriverFinder.openButton', { device: deviceLabel(apiName) }) }}
         </button>
       </div>
     </template>
 
     <Modal
-      :show="showMountFinder"
+      :show="showFinder"
       :disableClose="finderBusy"
       :closeOnBackdropClick="!finderBusy"
-      @close="showMountFinder = false"
+      @close="showFinder = false"
     >
       <template #header>
-        <h2 class="text-xl font-semibold">{{ $t('components.mountDriverFinder.title') }}</h2>
+        <h2 class="text-xl font-semibold">
+          {{
+            finderFor === 'mount'
+              ? $t('components.mountDriverFinder.title')
+              : $t('components.deviceDriverFinder.openButton', { device: deviceLabel(finderFor) })
+          }}
+        </h2>
       </template>
       <template #body>
-        <MountDriverFinder @busy="finderBusy = $event" @applied="mountAttemptFailed = false" />
+        <MountDriverFinder
+          v-if="finderFor === 'mount'"
+          @busy="finderBusy = $event"
+          @applied="clearFailed('mount')"
+        />
+        <div v-else-if="BRAND_FINDERS[finderFor]" :key="finderFor" class="flex flex-col gap-3">
+          <BrandDriverFinder
+            :deviceType="BRAND_FINDERS[finderFor].deviceType"
+            :apiAction="apiActionForApiName(finderFor)"
+            :connected="Boolean(isDeviceConnected(finderFor))"
+            @busy="finderBusy = $event"
+            @applied="onBrandApplied"
+          />
+          <IndiDriverSelect
+            ref="driverSelect"
+            :deviceType="BRAND_FINDERS[finderFor].deviceType"
+            :listAction="apiActionForApiName(finderFor)"
+            :profileSection="DEVICE_MAP[apiActionForApiName(finderFor)].section"
+            :label="$t(BRAND_FINDERS[finderFor].selectLabelKey)"
+            :connected="Boolean(isDeviceConnected(finderFor))"
+            @driver-applied="clearFailed(finderFor)"
+          />
+        </div>
       </template>
     </Modal>
   </section>
@@ -94,15 +141,24 @@ import { useCameraStore } from '@/store/cameraStore';
 import Spinner from '@/components/helpers/Spinner.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
+import IndiDriverSelect from '@/components/setupWizard/IndiDriverSelect.vue';
 import { useEquipmentConnection } from '@/composables/useEquipmentConnection';
+import { DEVICE_MAP, apiActionForApiName } from '@/utils/equipmentDevices';
 import { localDecimal } from '@/utils/localeNumber';
 
 const { t } = useI18n();
 const store = apiStore();
 const settingsStore = useSettingsStore();
 const cameraStore = useCameraStore();
-const { isConnecting, allConnected, equipmentToConnect, isDeviceConnected, connectAll } =
-  useEquipmentConnection();
+const {
+  isConnecting,
+  allConnected,
+  failedConnects,
+  equipmentToConnect,
+  isDeviceConnected,
+  connectAll,
+} = useEquipmentConnection();
 
 // Label key per apiName under components.connectEquipment.<key>.name
 const LABEL_KEYS = {
@@ -119,6 +175,11 @@ const LABEL_KEYS = {
   switch: 'switch',
   weather: 'weather',
 };
+
+function deviceLabel(apiName) {
+  const labelKey = LABEL_KEYS[apiName];
+  return labelKey ? t(`components.connectEquipment.${labelKey}.name`) : apiName;
+}
 
 function formatTemp(value) {
   return Number.isFinite(value) ? `${localDecimal(value, 1)} °C` : '';
@@ -170,42 +231,76 @@ function guiderStateKey(state) {
   return GUIDER_STATE_KEYS.includes(state) ? state : 'Idle';
 }
 
-const showMountFinder = ref(false);
+// Devices whose driver depends on the brand only, by apiName.
+const BRAND_FINDERS = {
+  camera: {
+    deviceType: 'camera',
+    selectLabelKey: 'components.setupWizard.camera.selectDriver',
+  },
+  guidecamera: {
+    deviceType: 'camera',
+    selectLabelKey: 'components.setupWizard.camera.selectDriver',
+  },
+  focuser: {
+    deviceType: 'focuser',
+    selectLabelKey: 'components.setupWizard.focuser.selectDriver',
+  },
+  filter: {
+    deviceType: 'filterwheel',
+    selectLabelKey: 'components.setupWizard.filterWheel.selectDriver',
+  },
+};
+
+const showFinder = ref(false);
+const finderFor = ref('');
 const finderBusy = ref(false);
-// Set when "connect all" finished without the mount: connectAll waits for the mount to report
-// connected before it moves on, so at that point a missing connection is a real failure.
-const mountAttemptFailed = ref(false);
+const driverSelect = ref(null);
+
+function openFinder(apiName) {
+  finderFor.value = apiName;
+  showFinder.value = true;
+}
+
+// Devices the last "connect all" failed on, until they connect or get another driver.
+const failedDevices = ref([]);
+
+function clearFailed(apiName) {
+  failedDevices.value = failedDevices.value.filter((name) => name !== apiName);
+}
+
+function onBrandApplied() {
+  clearFailed(finderFor.value);
+  driverSelect.value?.loadDrivers();
+}
+
+watch(isConnecting, (connecting) => {
+  failedDevices.value = connecting ? [] : [...failedConnects.value];
+});
+watch(
+  () => failedDevices.value.filter((name) => isDeviceConnected(name)),
+  (connected) => connected.forEach(clearFailed)
+);
+
 const mountInProfile = computed(() =>
   equipmentToConnect.value.some((device) => device.apiName === 'mount')
 );
-watch(isConnecting, (connecting, wasConnecting) => {
-  if (wasConnecting && !connecting) {
-    mountAttemptFailed.value = mountInProfile.value && !isDeviceConnected('mount');
-  }
-});
-watch(
-  () => isDeviceConnected('mount'),
-  (connected) => {
-    if (connected) mountAttemptFailed.value = false;
-  }
-);
 // PINS only: INDI drivers do not exist on NINA/Windows.
+const offersPossible = computed(() => store.isPINS && !isConnecting.value);
 const offerMountDriver = computed(
-  () =>
-    store.isPINS &&
-    !isConnecting.value &&
-    (!mountInProfile.value || (mountAttemptFailed.value && !isDeviceConnected('mount')))
+  () => offersPossible.value && (!mountInProfile.value || failedDevices.value.includes('mount'))
+);
+const brandOffers = computed(() =>
+  offersPossible.value ? failedDevices.value.filter((apiName) => BRAND_FINDERS[apiName]) : []
 );
 
 const devices = computed(() =>
   equipmentToConnect.value.map((device) => {
     const connected = isDeviceConnected(device.apiName);
-    const labelKey = LABEL_KEYS[device.apiName];
     const detail = connected ? connectedDetail(device.apiName) : '';
     return {
       apiName: device.apiName,
       connected,
-      label: labelKey ? t(`components.connectEquipment.${labelKey}.name`) : device.apiName,
+      label: deviceLabel(device.apiName),
       detail: connected
         ? detail || t('components.simpleMode.rig.connected')
         : t('components.simpleMode.rig.notConnected'),

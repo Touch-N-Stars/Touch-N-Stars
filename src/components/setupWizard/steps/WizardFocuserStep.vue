@@ -51,6 +51,13 @@
         {{ t('components.setupWizard.focuser.notFoundDriverHint') }}
       </p>
 
+      <BrandDriverFinder
+        deviceType="focuser"
+        apiAction="focusAction"
+        :connected="Boolean(store.focuserInfo?.Connected)"
+        @applied="driverSelect?.loadDrivers()"
+      />
+
       <IndiDriverSelect
         ref="driverSelect"
         deviceType="focuser"
@@ -109,6 +116,7 @@ import Modal from '@/components/helpers/Modal.vue';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
 

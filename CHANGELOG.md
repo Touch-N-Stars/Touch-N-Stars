@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: In the simple mode the plan waits until it is dark, without tracking meanwhile, and a target ends at dawn or when it gets too low, with the pictures it has by then; the rest can be taken another night. The limits are set with the target and can be switched off in the plan.
 - PINS: In the simple mode plan an imaging time can be given instead of a number of pictures, also as long as the night allows, and a new target starts with an hour of pictures instead of 2 x 60 s.
 - PINS: In the simple mode the plan focuses again every hour; how often is set in the plan, where it can also be switched off.
+- PINS: The driver finder now also covers focuser and guide camera: tap the model or brand and it is set, and installed if needed. Besides the setup assistant it is in the INDI setup and, after a failed connect, on the simple mode start page.
 - PINS: After the night has ended, the simple mode has a button to shut the rig down, and the shutdown dialog says when the power can be switched off and shows the reason when the shutdown does not work.
 
 ### Fixed
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: In the simple mode plan the filter of an exposure gets a line of its own, so its name is readable on a phone, and a new exposure starts with the next filter the target does not use yet.
 - PINS: In the simple mode a raised number of pictures is taken even when the exposure was already finished.
 - PINS: In the simple mode a plan that runs a second time unparks, warms up and does all its other opening and closing steps again, not only the first of them.
+- PINS: The driver finder recognizes ZWO filter wheel drivers that PINS lists under cameras instead of offering to install them again.
 - PINS: The simple mode and the setup assistant write decimals the way the app language does (2,99 in German), the camera step takes the pixel size the camera reports, and switches tell screen readers what they switch.
 
 ## [App6.7.0-beta1] - 2026-11-22

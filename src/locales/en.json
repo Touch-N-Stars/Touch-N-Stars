@@ -5872,6 +5872,7 @@
         "empty": "No devices are set up yet. The setup assistant walks you through camera, mount and the rest.",
         "openWizard": "Open the setup assistant",
         "noMountHint": "No mount set up yet? Find the right driver for it here.",
+        "devicesFailedHint": "Not connected: {devices}. Check power and cable first; if both are fine, a different driver may be needed.",
         "mountFailedHint": "The mount did not connect. Often it needs a different driver.",
         "connecting": "Connecting…",
         "allConnected": "Everything connected",
@@ -6388,9 +6389,13 @@
     "deviceDriverFinder": {
       "brandLabel": "Which brand is it?",
       "otherBrand": "Other brand",
+      "focuserLabel": "Which focuser is it?",
+      "otherFocuser": "Other focuser",
       "disconnectFirst": "Disconnect the device before changing its driver.",
       "applied": "Done: “{device}” is selected. Plug it in, switch it on and tap Connect.",
-      "appliedPickDevice": "The driver is set, but no device was found yet. Plug it in, switch it on, refresh the list above, choose it and tap Connect."
+      "appliedSeveral": "The driver is set and found several devices. Choose yours in the device list and tap Connect.",
+      "appliedNoDevice": "The driver is set, but no device was found yet. Plug it in, switch it on, refresh the device list, choose it and tap Connect.",
+      "openButton": "Find driver: {device}"
     }
   },
   "plugins": {

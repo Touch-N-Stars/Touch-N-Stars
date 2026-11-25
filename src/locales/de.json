@@ -6378,8 +6378,7 @@
       "brandLabel": "Welche Marke ist es?",
       "otherBrand": "Andere Marke",
       "disconnectFirst": "Trenne das Gerät, bevor du den Treiber wechselst.",
-      "applied": "Fertig: „{device}“ ist ausgewählt. Schließe es an, schalte es ein und tippe auf „Verbinden“.",
-      "appliedPickDevice": "Der Treiber ist eingestellt, aber es wurde noch kein Gerät gefunden. Schließe es an, schalte es ein, aktualisiere die Liste oben, wähle es aus und tippe auf „Verbinden“."
+      "applied": "Fertig: „{device}“ ist ausgewählt. Schließe es an, schalte es ein und tippe auf „Verbinden“."
     }
   },
   "plugins": {

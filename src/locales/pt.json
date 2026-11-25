@@ -6378,8 +6378,7 @@
       "brandLabel": "De que marca é?",
       "otherBrand": "Outra marca",
       "disconnectFirst": "Desliga a ligação ao dispositivo antes de mudar o driver.",
-      "applied": "Pronto: “{device}” está selecionado. Liga-o ao cabo, acende-o e toca em “Conectar”.",
-      "appliedPickDevice": "O driver está definido, mas ainda não foi encontrado nenhum dispositivo. Liga-o ao cabo, acende-o, atualiza a lista acima, escolhe-o e toca em “Conectar”."
+      "applied": "Pronto: “{device}” está selecionado. Liga-o ao cabo, acende-o e toca em “Conectar”."
     }
   },
   "plugins": {

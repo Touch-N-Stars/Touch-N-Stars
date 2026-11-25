@@ -51,6 +51,8 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    Poll-Zyklus (2 s). „Alles verbinden“ verbindet in derselben Reihenfolge wie die
    Geräteseite (gemeinsamer Code) und ist ausgegraut, wenn alles verbunden ist. Ohne Geräte
    im Profil erscheint ein Hinweis mit Knopf zum Setup-Assistenten.
+   Lehnt PINS beim Verbinden Kamera, Guidekamera, Fokussierer oder Filterrad ab, nennt die Karte
+   sie mit Knopf zur Treibersuche; bei der Montierung auch, wenn keine im Profil ist.
    4a. Given die Startseite, then steht oben das neueste Bild – die letzte Vorschau der Kamera
    oder das zuletzt gespeicherte Bild, je nachdem was neuer ist – mit Ziel, Belichtung, Filter
    und Alter, darunter HFR, Sterne, Guiding-RMS (nur während des Guidings) und

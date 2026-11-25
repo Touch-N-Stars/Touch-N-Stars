@@ -6378,8 +6378,7 @@
       "brandLabel": "Quelle est la marque ?",
       "otherBrand": "Autre marque",
       "disconnectFirst": "Déconnecte l’appareil avant de changer son pilote.",
-      "applied": "C’est fait : « {device} » est sélectionné. Branche-le, allume-le et touche « Connecter ».",
-      "appliedPickDevice": "Le pilote est réglé, mais aucun appareil n’a encore été trouvé. Branche-le, allume-le, actualise la liste ci-dessus, choisis-le et touche « Connecter »."
+      "applied": "C’est fait : « {device} » est sélectionné. Branche-le, allume-le et touche « Connecter »."
     }
   },
   "plugins": {

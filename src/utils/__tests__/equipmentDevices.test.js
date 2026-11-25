@@ -19,6 +19,7 @@ const {
   redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
+  isUnlistedIndiDriver,
   setProfileDevice,
   MANUAL_FILTER_WHEEL_ID,
 } = await import('@/utils/equipmentDevices');
@@ -382,7 +383,7 @@ test('applyIndiDriver starts the driver with rescan and selects its device', asy
     { Id: 'OnStepX', DisplayName: 'OnStepX (serial)', Category: 'OnStepX' },
   ]);
 
-  assert.deepEqual(result, { deviceId: 'SynScan' });
+  assert.deepEqual(result, { deviceId: 'SynScan', deviceCount: 1 });
   assert.deepEqual(calls, [
     'profileChangeValue:TelescopeSettings-IndiDriver=indi_synscan_telescope',
     'mountAction:rescan',
@@ -397,7 +398,7 @@ test('applyIndiDriver leaves the device choice to the user when it is ambiguous'
     { Id: 'A', DisplayName: 'A (INDI)', Category: 'INDI' },
     { Id: 'B', DisplayName: 'B (INDI)', Category: 'INDI' },
   ]);
-  assert.deepEqual(result, { deviceId: null });
+  assert.deepEqual(result, { deviceId: null, deviceCount: 2 });
   assert.ok(!calls.some((c) => c.startsWith('profileChangeValue:TelescopeSettings-Id')));
   assert.equal(calls.at(-1), 'fetchProfilInfos');
 });
@@ -412,4 +413,14 @@ test('applyIndiDriver stops when the profile rejects the driver', async () => {
     apiService.profileChangeValue = original;
   }
   await assert.rejects(applyIndiDriver('guiderAction', 'indi_x'), /No INDI device type/);
+});
+
+test('isUnlistedIndiDriver finds a configured driver its own list does not have', () => {
+  const list = [{ Name: 'indi_ieaf_focus' }];
+  assert.equal(isUnlistedIndiDriver('focuser', 'indi_asi_focuser', list), true);
+  assert.equal(isUnlistedIndiDriver('focuser', 'indi_ieaf_focus', list), false);
+  assert.equal(isUnlistedIndiDriver('focuser', 'None', list), false);
+  assert.equal(isUnlistedIndiDriver('focuser', undefined, list), false);
+  // Hidden on purpose, so not brought back either
+  assert.equal(isUnlistedIndiDriver('filterwheel', 'indi_manual_wheel', []), false);
 });

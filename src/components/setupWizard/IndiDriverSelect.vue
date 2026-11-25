@@ -11,6 +11,8 @@
       <option v-for="driver in drivers" :key="driver.Name" :value="driver.Name">
         {{ driverLabel(driver) }}
       </option>
+      <!-- Set by the brand finder, but filed under another type in PINS' driver list -->
+      <option v-if="unlistedDriver" :value="unlistedDriver">{{ unlistedDriver }}</option>
     </select>
     <span v-if="loading" class="text-xs text-content-faint">
       {{ t('components.setupWizard.driver.loading') }}
@@ -29,11 +31,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
 import { apiStore } from '@/store/store';
-import { applyIndiDriver, isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import {
+  applyIndiDriver,
+  isHiddenIndiDriver,
+  isUnlistedIndiDriver,
+} from '@/utils/equipmentDevices';
 
 /**
  * Single-device INDI driver picker. Mirrors the per-device blocks of
@@ -63,6 +69,12 @@ const loading = ref(false);
 const saving = ref(false);
 const errorMessage = ref('');
 const resultText = ref('');
+
+const unlistedDriver = computed(() => {
+  const name = selectedDriver.value;
+  if (loading.value) return '';
+  return isUnlistedIndiDriver(props.deviceType, name, drivers.value) ? name : '';
+});
 
 // selectIndi.vue renames this one driver because its INDI label is unhelpful.
 function driverLabel(driver) {

@@ -23,6 +23,14 @@
           </option>
         </select>
       </div>
+      <DriverFinderToggle :label="finderLabel('camera')">
+        <BrandDriverFinder
+          deviceType="camera"
+          apiAction="cameraAction"
+          :connected="Boolean(store.cameraInfo?.Connected)"
+          @applied="onBrandDriverApplied('cameraAction', $event)"
+        />
+      </DriverFinderToggle>
 
       <!-- Guide camera (PINS' second camera slot, same driver list as the camera). Only the
            native guider uses it; PHD2 picks its camera with its own drivers. -->
@@ -42,6 +50,14 @@
           </option>
         </select>
       </div>
+      <DriverFinderToggle v-if="showGuideCamera" :label="finderLabel('guideCamera')">
+        <BrandDriverFinder
+          deviceType="camera"
+          apiAction="guideCameraAction"
+          :connected="Boolean(store.guideCameraInfo?.Connected)"
+          @applied="onBrandDriverApplied('guideCameraAction', $event)"
+        />
+      </DriverFinderToggle>
 
       <!-- Focuser -->
       <div class="flex flex-row w-full items-center">
@@ -60,6 +76,14 @@
           </option>
         </select>
       </div>
+      <DriverFinderToggle :label="finderLabel('focuser')">
+        <BrandDriverFinder
+          deviceType="focuser"
+          apiAction="focusAction"
+          :connected="Boolean(store.focuserInfo?.Connected)"
+          @applied="onBrandDriverApplied('focusAction', $event)"
+        />
+      </DriverFinderToggle>
 
       <!-- Filterwheel -->
       <div class="flex flex-row w-full items-center">
@@ -78,6 +102,14 @@
           </option>
         </select>
       </div>
+      <DriverFinderToggle :label="finderLabel('filter')">
+        <BrandDriverFinder
+          deviceType="filterwheel"
+          apiAction="filterAction"
+          :connected="Boolean(store.filterInfo?.Connected)"
+          @applied="onBrandDriverApplied('filterAction', $event)"
+        />
+      </DriverFinderToggle>
 
       <!-- Rotator -->
       <div class="flex flex-row w-full items-center">
@@ -116,17 +148,9 @@
       </div>
       <!-- INDI labels say little about the hardware ("EQMod Mount" for an EQ6); the finder
            goes from the mount model and its cable to the driver, installing it if needed. -->
-      <button
-        type="button"
-        class="tns-btn-ghost justify-end! px-0! text-sm! text-accent!"
-        :aria-expanded="showMountFinder"
-        @click="showMountFinder = !showMountFinder"
-      >
-        {{ $t('components.mountDriverFinder.openButton') }}
-      </button>
-      <div v-if="showMountFinder" class="rounded-control border border-line p-3">
+      <DriverFinderToggle :label="$t('components.mountDriverFinder.openButton')">
         <MountDriverFinder :showFallback="false" @applied="onMountDriverApplied" />
-      </div>
+      </DriverFinderToggle>
 
       <!-- Weather -->
       <div class="flex flex-row w-full items-center">
@@ -222,15 +246,19 @@
 </template>
 <script setup>
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
 import Spinner from '@/components/helpers/Spinner.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
+import DriverFinderToggle from '@/components/equipment/DriverFinderToggle.vue';
 import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useEquipmentStore } from '@/store/equipmentStore';
-import { DEVICE_MAP, isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import { DEVICE_MAP, isHiddenIndiDriver, isUnlistedIndiDriver } from '@/utils/equipmentDevices';
 import { usesGuideCameraSlot } from '@/utils/nativeGuider';
 
+const { t } = useI18n();
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
 const showGuideCamera = computed(() => usesGuideCameraSlot(store));
@@ -252,7 +280,6 @@ const selectedFocuser = ref('None');
 const selectedFilterwheel = ref('None');
 const selectedRotator = ref('None');
 const selectedTelescope = ref('None');
-const showMountFinder = ref(false);
 const selectedWeather = ref('None');
 const selectedSwitches = ref('None');
 const selectedFlatpanel = ref('None');
@@ -349,6 +376,46 @@ async function onMountDriverApplied({ driver }) {
   selectedTelescope.value = driver;
 }
 
+function finderLabel(deviceKey) {
+  return t('components.deviceDriverFinder.openButton', {
+    device: t(`components.connectEquipment.${deviceKey}.name`),
+  });
+}
+
+// Lists as the dropdowns show them, with the configured driver added where PINS files it under
+// another type.
+const sortByLabel = (arr) => [...arr].sort((a, b) => a.Label.localeCompare(b.Label));
+const getFocuserLabel = (item) =>
+  item.Name === 'indi_myfocuserpro2_focus' ? 'Gemini / MyFocuserPro2' : item.Label;
+
+function driverOptions(type, arr, current) {
+  const list = arr.filter((item) => !isHiddenIndiDriver(type, item.Name));
+  if (isUnlistedIndiDriver(type, current, list)) list.push({ Name: current, Label: current });
+  if (type !== 'focuser') return sortByLabel(list);
+  return list.sort((a, b) => getFocuserLabel(a).localeCompare(getFocuserLabel(b)));
+}
+
+const BRAND_FINDER_TARGETS = {
+  cameraAction: { type: 'camera', list: camera, selected: selectedCamera },
+  guideCameraAction: { type: 'camera', list: camera, selected: selectedGuideCamera },
+  focusAction: { type: 'focuser', list: focuser, selected: selectedFocuser },
+  filterAction: { type: 'filterwheel', list: filterwheel, selected: selectedFilterwheel },
+};
+
+// As onMountDriverApplied: the finder wrote the driver, possibly a freshly installed one.
+async function onBrandDriverApplied(apiAction, { driver }) {
+  const { type, list, selected } = BRAND_FINDER_TARGETS[apiAction];
+  try {
+    const response = await apiPinsService.getINDIDeviceList(type);
+    if (Array.isArray(response?.Response)) {
+      list.value = driverOptions(type, response.Response, driver);
+    }
+  } catch (error) {
+    console.error('[SelectIndi] Driver list refresh failed:', error);
+  }
+  selected.value = driver;
+}
+
 const onWeatherChange = async () => {
   try {
     await apiService.profileChangeValue('WeatherDataSettings-IndiDriver', selectedWeather.value);
@@ -438,17 +505,22 @@ onMounted(async () => {
       apiPinsService.getINDIDeviceList('safetymonitor'),
     ]);
 
-    const sortByLabel = (arr) => [...arr].sort((a, b) => a.Label.localeCompare(b.Label));
-    const getFocuserLabel = (item) =>
-      item.Name === 'indi_myfocuserpro2_focus' ? 'Gemini / MyFocuserPro2' : item.Label;
-    const sortFocuserByLabel = (arr) =>
-      [...arr].sort((a, b) => getFocuserLabel(a).localeCompare(getFocuserLabel(b)));
-
-    const visible = (type, arr) => arr.filter((item) => !isHiddenIndiDriver(type, item.Name));
-
-    camera.value = sortByLabel(cameraResponse.Response);
-    focuser.value = sortFocuserByLabel(visible('focuser', focuserResponse.Response));
-    filterwheel.value = sortByLabel(visible('filterwheel', filterwheelResponse.Response));
+    const profile = store.profileInfo;
+    camera.value = driverOptions(
+      'camera',
+      cameraResponse.Response,
+      profile?.CameraSettings?.IndiDriver
+    );
+    focuser.value = driverOptions(
+      'focuser',
+      focuserResponse.Response,
+      profile?.FocuserSettings?.IndiDriver
+    );
+    filterwheel.value = driverOptions(
+      'filterwheel',
+      filterwheelResponse.Response,
+      profile?.FilterWheelSettings?.IndiDriver
+    );
     rotator.value = sortByLabel(rotatorResponse.Response);
     telescope.value = sortByLabel(telescopeResponse.Response);
     weather.value = sortByLabel(weatherResponse.Response);

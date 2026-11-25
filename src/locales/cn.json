@@ -6378,8 +6378,7 @@
       "brandLabel": "是什么品牌？",
       "otherBrand": "其他品牌",
       "disconnectFirst": "更换驱动前请先断开设备。",
-      "applied": "完成：已选择“{device}”。请插好设备、打开电源，然后点按“连接”。",
-      "appliedPickDevice": "驱动已设置，但尚未找到设备。请插好设备、打开电源，刷新上方列表，选择设备，然后点按“连接”。"
+      "applied": "完成：已选择“{device}”。请插好设备、打开电源，然后点按“连接”。"
     }
   },
   "plugins": {

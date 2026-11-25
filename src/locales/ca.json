@@ -6378,8 +6378,7 @@
       "brandLabel": "De quina marca és?",
       "otherBrand": "Una altra marca",
       "disconnectFirst": "Desconnecta el dispositiu abans de canviar-ne el controlador.",
-      "applied": "Fet: \"{device}\" està seleccionat. Endolla’l, engega’l i toca \"Connecta\".",
-      "appliedPickDevice": "El controlador està configurat, però encara no s’ha trobat cap dispositiu. Endolla’l, engega’l, actualitza la llista de dalt, tria’l i toca \"Connecta\"."
+      "applied": "Fet: \"{device}\" està seleccionat. Endolla’l, engega’l i toca \"Connecta\"."
     }
   },
   "plugins": {

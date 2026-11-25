@@ -22,6 +22,9 @@ import { equipmentInUse, isNativeGuiderInUse, usesGuideCameraSlot } from '@/util
 // Module level, so a connect started on one page still shows as running on the other.
 const isConnecting = ref(false);
 const isDisconnecting = ref(false);
+// apiNames of the devices with a driver finder that the last connectAll could not connect. Taken
+// from the connect's own answer: the polled state follows the event history and may lag by 15 s.
+const failedConnects = ref([]);
 
 /**
  * @param {{ selectedGuiderDevice?: import('vue').Ref<string> | string }} [options]
@@ -174,6 +177,10 @@ export function useEquipmentConnection({ selectedGuiderDevice = '' } = {}) {
 
   async function connectAll() {
     isConnecting.value = true;
+    failedConnects.value = [];
+    const noteFailure = (apiName, response) => {
+      if (response?.Success === false) failedConnects.value.push(apiName);
+    };
     try {
       const hasSwitch = store.existingEquipmentList.some((d) => d.apiName === 'switch');
       if (hasSwitch) {
@@ -187,10 +194,10 @@ export function useEquipmentConnection({ selectedGuiderDevice = '' } = {}) {
       for (const device of equipmentToConnect.value) {
         switch (device.apiName) {
           case 'camera':
-            await apiService.cameraAction('connect');
+            noteFailure('camera', await apiService.cameraAction('connect'));
             break;
           case 'guidecamera':
-            await apiService.guideCameraAction('connect');
+            noteFailure('guidecamera', await apiService.guideCameraAction('connect'));
             break;
           case 'mount': {
             const canConnect = await checkMountConnectionPermission(t);
@@ -198,14 +205,14 @@ export function useEquipmentConnection({ selectedGuiderDevice = '' } = {}) {
               return;
             }
             await apiService.mountAction('connect');
-            await waitForMountConnected();
+            if (!(await waitForMountConnected())) failedConnects.value.push('mount');
             break;
           }
           case 'filter':
-            await apiService.filterAction('connect');
+            noteFailure('filter', await apiService.filterAction('connect'));
             break;
           case 'focuser':
-            await apiService.focusAction('connect');
+            noteFailure('focuser', await apiService.focusAction('connect'));
             break;
           case 'rotator':
             await apiService.rotatorAction('connect');
@@ -310,6 +317,7 @@ export function useEquipmentConnection({ selectedGuiderDevice = '' } = {}) {
   return {
     isConnecting,
     isDisconnecting,
+    failedConnects,
     isNativeGuiderChoice,
     guideCameraSlot,
     equipmentToConnect,

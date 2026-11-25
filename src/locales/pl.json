@@ -6378,8 +6378,7 @@
       "brandLabel": "Jaka to marka?",
       "otherBrand": "Inna marka",
       "disconnectFirst": "Rozłącz urządzenie, zanim zmienisz sterownik.",
-      "applied": "Gotowe: wybrano „{device}”. Podłącz je, włącz i dotknij „Połącz”.",
-      "appliedPickDevice": "Sterownik jest ustawiony, ale nie znaleziono jeszcze urządzenia. Podłącz je, włącz, odśwież listę powyżej, wybierz je i dotknij „Połącz”."
+      "applied": "Gotowe: wybrano „{device}”. Podłącz je, włącz i dotknij „Połącz”."
     }
   },
   "plugins": {

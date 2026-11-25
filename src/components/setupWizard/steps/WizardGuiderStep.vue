@@ -52,7 +52,14 @@
         <p class="text-sm text-content-muted">
           {{ t('components.setupWizard.guider.guideCameraNotFoundHint') }}
         </p>
+        <BrandDriverFinder
+          deviceType="camera"
+          apiAction="guideCameraAction"
+          :connected="Boolean(store.guideCameraInfo?.Connected)"
+          @applied="guideCameraDriverSelect?.loadDrivers()"
+        />
         <IndiDriverSelect
+          ref="guideCameraDriverSelect"
           deviceType="camera"
           listAction="guideCameraAction"
           :profileSection="GUIDE_CAMERA.section"
@@ -169,6 +176,7 @@ import Modal from '@/components/helpers/Modal.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import selectGuiderCam from '@/components/guider/PHD2/selectGuiderCam.vue';
 import Phd2FocalLength from '@/components/guider/PHD2/pins/Phd2FocalLength.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import { DEVICE_MAP, phd2ConnectBlockers, setProfileDevice } from '@/utils/equipmentDevices';
 import {
@@ -223,6 +231,7 @@ const phd2Blockers = computed(() =>
 const isGuiderConnectDisabled = computed(() => phd2Blockers.value.length > 0);
 const guiderDisabledMessage = computed(() => phd2Blockers.value.map((key) => t(key)).join(' '));
 
+const guideCameraDriverSelect = ref(null);
 const showGuideCameraDriver = ref(
   !['', 'None', undefined, null].includes(store.profileInfo?.[GUIDE_CAMERA.section]?.IndiDriver)
 );

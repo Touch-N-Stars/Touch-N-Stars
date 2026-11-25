@@ -185,7 +185,8 @@ export async function reloadIndiDriver(apiAction) {
  * Unlike reloadIndiDriver this does trigger the rescan signal: the caller is not a
  * selectDevices instance, and any open device list has to show the new device.
  *
- * @returns {Promise<{ deviceId: string|null }>} the device written into the profile, if any
+ * @returns {Promise<{ deviceId: string|null, deviceCount: number }>} the device written into the
+ *   profile, if any, and how many live INDI devices the rescan found
  */
 export async function applyIndiDriver(apiAction, driverName) {
   const mapping = DEVICE_MAP[apiAction];
@@ -210,7 +211,7 @@ export async function applyIndiDriver(apiAction, driverName) {
   }
 
   useEquipmentStore().triggerRescan(mapping.rescanKey);
-  return { deviceId };
+  return { deviceId, deviceCount: indiDevices.length };
 }
 
 // NINA's built-in manual filter wheel. It prompts through MyMessageBox, which PINS forwards
@@ -233,6 +234,18 @@ const HIDDEN_INDI_DRIVERS = {
 
 export function isHiddenIndiDriver(deviceType, driverName) {
   return (HIDDEN_INDI_DRIVERS[deviceType] || []).includes(driverName);
+}
+
+/**
+ * Whether a dropdown has to add the configured driver itself: the pinsdaemon files some drivers
+ * under another type (see driverListTypes in deviceDriverCatalog.js), and a select without the
+ * matching option would look as if no driver was set.
+ */
+export function isUnlistedIndiDriver(deviceType, driverName, drivers) {
+  if (!driverName || driverName === 'None' || isHiddenIndiDriver(deviceType, driverName)) {
+    return false;
+  }
+  return !(drivers ?? []).some((driver) => driver.Name === driverName);
 }
 
 /**

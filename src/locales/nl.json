@@ -6378,8 +6378,7 @@
       "brandLabel": "Welk merk is het?",
       "otherBrand": "Ander merk",
       "disconnectFirst": "Verbreek de verbinding met het apparaat voordat je de driver wijzigt.",
-      "applied": "Klaar: “{device}” is gekozen. Sluit het aan, zet het aan en tik op “Verbinden”.",
-      "appliedPickDevice": "De driver is ingesteld, maar er is nog geen apparaat gevonden. Sluit het aan, zet het aan, ververs de lijst hierboven, kies het en tik op “Verbinden”."
+      "applied": "Klaar: “{device}” is gekozen. Sluit het aan, zet het aan en tik op “Verbinden”."
     }
   },
   "plugins": {
