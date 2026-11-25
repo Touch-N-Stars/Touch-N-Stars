@@ -16,6 +16,25 @@
       </select>
     </div>
 
+    <!-- PINS simple mode: guided home page and a reduced navigation -->
+    <div v-if="store.isPINS" class="tns-card flex flex-col gap-2 sm:gap-3">
+      <h3 class="tns-section-title">
+        {{ $t('components.simpleMode.settings.title') }}
+      </h3>
+      <div class="flex items-center justify-between">
+        <p class="text-content text-sm mr-4">
+          {{ $t('components.simpleMode.settings.description') }}
+        </p>
+        <ToggleButton
+          :statusValue="settingsStore.simpleMode?.enabled === true"
+          @update:statusValue="onToggleSimpleMode"
+        />
+      </div>
+      <p v-if="settingsStore.simpleMode?.enabled" class="text-xs text-content-faint">
+        {{ $t('components.simpleMode.settings.navbarHint') }}
+      </p>
+    </div>
+
     <!-- Keep Screen Awake (mobile only) -->
     <div
       class="tns-card flex flex-col gap-2 sm:gap-3"
@@ -100,6 +119,7 @@ import apiService from '@/services/apiService';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import { Capacitor } from '@capacitor/core';
+import { useRouter } from 'vue-router';
 import { KeepAwake } from '@capacitor-community/keep-awake';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
 import NavbarCustomizationSettings from '@/components/settings/general/NavbarCustomizationSettings.vue';
@@ -108,6 +128,13 @@ import StatusBarCustomizationSettings from '@/components/settings/general/Status
 const { locale } = useI18n();
 const settingsStore = useSettingsStore();
 const store = apiStore();
+const router = useRouter();
+
+// Switching the simple mode on lands on its home page, so the change is visible at once.
+function onToggleSimpleMode(enabled) {
+  settingsStore.setSimpleModeEnabled(enabled);
+  if (enabled) router.push('/start');
+}
 
 const currentLanguage = ref(settingsStore.getLanguage());
 const languages = getAvailableLanguages();

@@ -5,10 +5,13 @@
   >
     <label class="text-sm sm:w-36 shrink-0" for="deviceSelect">{{ deviceName }}:</label>
     <div class="flex flex-col gap-1 w-full">
-      <div class="flex gap-2 items-center w-full">
+      <!-- With a spelled-out connect button the row is too narrow on a phone: the device name
+           shrank to a few letters. The buttons then wrap below the select. -->
+      <div class="flex gap-2 items-center w-full" :class="{ 'flex-wrap': labeledConnect }">
         <select
           id="deviceSelect"
           class="w-full tns-select min-w-0"
+          :class="{ 'basis-full': labeledConnect }"
           v-model="selectedDevice"
           :disabled="isConnected"
           @change="onDeviceSelected"
@@ -28,6 +31,8 @@
         <div class="flex shrink-0 gap-1">
           <button
             v-if="store.isPINS && !props.hideConfig"
+            :aria-label="$t('components.selectDevices.configure')"
+            :title="$t('components.selectDevices.configure')"
             @click="configDevice"
             :disabled="configDisabled"
             class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-70"
@@ -35,6 +40,8 @@
             <Cog6ToothIcon class="w-6 h-6" :class="{ 'text-content-faint': configDisabled }" />
           </button>
           <button
+            :aria-label="$t('components.selectDevices.rescan')"
+            :title="$t('components.selectDevices.rescan')"
             @click="rescanDevices"
             :disabled="isScanning || isConnected"
             class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-70"
@@ -50,7 +57,10 @@
                   : toggleConnection()
             "
             :disabled="isToggleCon && !store.isPINS"
-            class="flex justify-center items-center w-10 h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-30"
+            :aria-label="connectLabel"
+            :title="connectLabel"
+            class="flex justify-center items-center h-10 border border-line-strong bg-surface-3 text-content rounded-control hover:bg-surface-2 disabled:opacity-30"
+            :class="labeledConnect ? 'gap-2 px-3 text-sm' : 'w-10'"
           >
             <XCircleIcon v-if="isToggleCon && store.isPINS" class="w-6 h-6 text-status-warn" />
             <InformationCircleIcon
@@ -59,6 +69,7 @@
             />
             <LinkIcon v-else-if="!isConnected" class="w-6 h-6" />
             <LinkSlashIcon v-else class="w-6 h-6 text-status-danger" />
+            <span v-if="labeledConnect">{{ connectLabel }}</span>
           </button>
         </div>
       </div>
@@ -128,6 +139,19 @@ const props = defineProps({
   // Device ids whose settings live in Touch'N'Stars itself, so the cog is enabled for them even
   // when the driver has no setup dialog (e.g. pins' native OnStepX driver)
   configDeviceIds: { type: Array, default: () => [] },
+  // Spells out "Connect" / "Disconnect" next to the chain icon (setup assistant), where an
+  // unlabelled chain link left beginners guessing.
+  labeledConnect: { type: Boolean, default: false },
+});
+
+const connectLabel = computed(() => {
+  if (isToggleCon.value && store.isPINS) return t('common.cancel');
+  if (props.disableConnect && props.disableConnectMessage) {
+    return t('components.selectDevices.whyNotConnect');
+  }
+  return props.isConnected
+    ? t('components.selectDevices.disconnect')
+    : t('components.selectDevices.connect');
 });
 
 const devices = ref([]);

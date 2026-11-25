@@ -14,7 +14,7 @@
         })
       }}
     </p>
-    <HfSweepPreview />
+    <HfSweepPreview :frozen="probe.running.value" />
 
     <!-- ABSOLUTE with In ≠ Out shifts NINA's position scale on every reversal -->
     <div
@@ -64,26 +64,26 @@
     >
       <p v-for="(p, i) in probe.scan.value" :key="`s${i}`">
         <template v-if="p.offset === 0">
-          {{ M('reference', { hfr: p.hfr.toFixed(2), stars: p.stars }) }}
+          {{ M('reference', { hfr: localDecimal(p.hfr, 2), stars: p.stars }) }}
         </template>
         <template v-else>
           {{
             t(
               'components.focuser.hfAssistant.measure.probe',
-              { offset: p.offset, hfr: p.hfr.toFixed(2), stars: p.stars },
+              { offset: p.offset, hfr: localDecimal(p.hfr, 2), stars: p.stars },
               p.offset
             )
           }}
         </template>
       </p>
       <p v-for="(p, i) in probe.calibration.value" :key="`c${i}`">
-        {{ B('calibration', { offset: p.offset, hfr: p.hfr.toFixed(2), stars: p.stars }) }}
+        {{ B('calibration', { offset: p.offset, hfr: localDecimal(p.hfr, 2), stars: p.stars }) }}
       </p>
       <p v-for="(w, i) in probe.walk.value" :key="`w${i}`">
         {{
           B(w.sign < 0 ? 'walkIn' : 'walkOut', {
             steps: w.steps,
-            hfr: w.hfr.toFixed(2),
+            hfr: localDecimal(w.hfr, 2),
             stars: w.stars,
           })
         }}
@@ -108,6 +108,7 @@
       <HfSweepPreview
         :step-size="stepSuggestion.stepSize"
         :offset-steps="stepSuggestion.offsetSteps"
+        :frozen="probe.running.value"
       />
       <p v-if="stepApply === 'done'" class="text-xs text-status-ok">{{ M('applied') }}</p>
       <button
@@ -172,6 +173,7 @@ import { useHocusFocusStore } from '@/store/hocusFocusStore';
 import { useFocuserProbe } from '@/composables/useFocuserProbe';
 import { compensationBlocksMeasurement } from '@/utils/hocusFocusAdvisor';
 import HfSweepPreview from './HfSweepPreview.vue';
+import { localDecimal } from '@/utils/localeNumber';
 
 // Assistant step that measures the autofocus step size and the focuser's backlash on the real
 // optics in one run, and offers both for one-tap use. Nothing is written without an "apply" tap;

@@ -572,7 +572,7 @@ import { apiStore } from '@/store/store';
 import { useTppaStore } from '@/store/tppaStore';
 import apiService from '@/services/apiService';
 import websocket from '@/services/websocketTppa';
-import { buildTppaStartMessage } from '@/utils/tppaStart';
+import { buildTppaStartMessage, slewToTppaStart } from '@/utils/tppaStart';
 import { rpaRequest } from '../api';
 import { startAutomaticAlignment } from '../workflow';
 import { connectionForDisplay } from '../connection';
@@ -944,7 +944,9 @@ const start = () =>
             'Could not load current TPPA camera settings. Open TPPA settings and retry.'
           );
         current();
-        return buildTppaStartMessage({ ...tppa.settings, ManualMode: false }, rig);
+        const startSettings = await slewToTppaStart({ ...tppa.settings, ManualMode: false }, rig);
+        current();
+        return buildTppaStartMessage(startSettings, rig);
       },
       select: () => rpaRequest('select-controller', {}),
       enable: () => rpaRequest('automation', { enabled: true }),

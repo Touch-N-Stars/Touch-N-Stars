@@ -1,7 +1,9 @@
 <template>
+  <!-- A solid strip behind the buttons: without it the plan scrolled through the gaps between
+       them and half-covered lines ("This sequence has no targets yet") were hard to read. -->
   <div
     :class="[
-      'fixed flex flex-wrap gap-2 z-10 transition-[bottom] duration-300',
+      'fixed flex flex-wrap gap-2 z-10 transition-[bottom] duration-300 p-1.5 rounded-card bg-ground/90 backdrop-blur-sm shadow-lg',
       isLandscape
         ? 'left-(--nav-offset) max-w-[calc(100vw-var(--nav-offset))]'
         : 'left-3 max-w-[calc(100vw-0.75rem)]',
@@ -30,9 +32,7 @@
           clip-rule="evenodd"
         />
       </svg>
-      <span class="text-[9px] leading-none font-medium">{{
-        $t('components.sequence.startSequence')
-      }}</span>
+      <span class="text-[9px] leading-none font-medium">{{ seqT('startSequence') }}</span>
     </button>
 
     <button
@@ -106,9 +106,7 @@
           clip-rule="evenodd"
         />
       </svg>
-      <span class="text-[9px] leading-none font-medium">{{
-        $t('components.sequence.resetSequence')
-      }}</span>
+      <span class="text-[9px] leading-none font-medium">{{ seqT('resetSequence') }}</span>
     </button>
 
     <button
@@ -144,23 +142,21 @@
       @click="openFileManager"
     >
       <FolderOpenIcon class="h-6 w-6" />
-      <span class="text-[9px] leading-none font-medium">{{
-        $t('components.sequence.manageSequences')
-      }}</span>
+      <span class="text-[9px] leading-none font-medium">{{ seqT('manageSequences') }}</span>
     </button>
 
     <!-- File Manager Modal -->
     <Modal :show="showFileManager" max-width="max-w-lg" @close="showFileManager = false">
       <template #header>
         <h2 class="text-xl font-bold text-accent">
-          {{ $t('components.sequence.manageSequences') }}
+          {{ seqT('manageSequences') }}
         </h2>
       </template>
       <template #body>
         <div class="w-full flex flex-col gap-4">
           <!-- Sequence folder -->
           <div class="flex flex-col gap-2">
-            <label class="tns-label">{{ $t('components.sequence.sequenceFolder') }}</label>
+            <label class="tns-label">{{ seqT('sequenceFolder') }}</label>
             <div class="flex items-center gap-2 min-w-0">
               <div
                 class="flex-1 flex items-center min-h-touch overflow-x-auto scrollbar-thin px-3 py-2 rounded-lg border border-line bg-surface-2 min-w-0"
@@ -236,7 +232,7 @@
 
           <!-- Save section -->
           <div class="border-t border-line pt-3 flex flex-col gap-2">
-            <label class="tns-label">{{ $t('components.sequence.saveSequenceAs') }}</label>
+            <label class="tns-label">{{ seqT('saveSequenceAs') }}</label>
             <div class="flex gap-2">
               <input
                 v-model="saveFileName"
@@ -262,7 +258,7 @@
       v-model="showFolderBrowser"
       mode="directory"
       :initial-path="sequenceFolder"
-      :title="$t('components.sequence.sequenceFolder')"
+      :title="seqT('sequenceFolder')"
       @select="onFolderSelected"
     />
 
@@ -324,39 +320,7 @@
       </template>
     </Modal>
 
-    <!-- Preflight: what looks wrong before the start -->
-    <Modal
-      :show="preflightWarnings.length > 0"
-      max-width="max-w-md"
-      @close="answerPreflight(false)"
-    >
-      <template #header>
-        <h2 class="text-xl font-bold text-status-warn">
-          {{ $t('components.rigChecks.preflightTitle') }}
-        </h2>
-      </template>
-      <template #body>
-        <div class="w-full flex flex-col gap-4" data-testid="preflight-warnings">
-          <ul class="list-disc pl-5 text-sm text-content space-y-1">
-            <li v-for="warning in preflightWarnings" :key="warning.key">
-              {{ $t(`components.rigChecks.${warning.key}`, warning.params) }}
-            </li>
-          </ul>
-          <div class="flex justify-end gap-3">
-            <button class="tns-btn-secondary w-auto!" @click="answerPreflight(false)">
-              {{ $t('general.cancel') }}
-            </button>
-            <button
-              class="tns-btn-primary w-auto!"
-              data-testid="preflight-start-anyway"
-              @click="answerPreflight(true)"
-            >
-              {{ $t('components.rigChecks.startAnyway') }}
-            </button>
-          </div>
-        </div>
-      </template>
-    </Modal>
+    <SequencePreflightDialog :warnings="preflightWarnings" @answer="answerPreflight" />
 
     <!-- Reset Confirmation Dialog -->
     <Modal
@@ -369,7 +333,7 @@
       </template>
       <template #body>
         <div class="w-full flex flex-col gap-6">
-          <p>{{ $t('components.sequence.resetConfirmationMessage') }}</p>
+          <p>{{ seqT('resetConfirmationMessage') }}</p>
           <div class="flex justify-end space-x-4">
             <button class="tns-btn-secondary" @click="showResetConfirmation = false">
               {{ $t('general.cancel') }}
@@ -385,6 +349,7 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { ref, computed } from 'vue';
 import apiService from '@/services/apiService';
 import { useSequenceStore } from '@/store/sequenceStore';
@@ -392,8 +357,9 @@ import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useOrientation } from '@/composables/useOrientation';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
-import { reportBackendRefusal } from '@/utils/backendErrors';
-import { sequencePreflight } from '@/utils/rigChecks';
+import { reportBackendRefusal, toastBackendError } from '@/utils/backendErrors';
+import { useSimpleMode } from '@/composables/useSimpleMode';
+import { useSequencePreflight } from '@/composables/useSequencePreflight';
 import { useI18n } from 'vue-i18n';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 import { joinSequenceFilePath, isRelativeFolder } from '@/utils/sequenceFilePath';
@@ -409,7 +375,10 @@ import {
 } from '@heroicons/vue/24/outline';
 import Modal from '@/components/helpers/Modal.vue';
 import FileBrowser from '@/components/helpers/fileBrowser.vue';
+import SequencePreflightDialog from '@/components/sequence/SequencePreflightDialog.vue';
 
+const { seqT } = usePlanTerms();
+const { active: simpleModeActive } = useSimpleMode();
 const sequenceStore = useSequenceStore();
 const sequenceV2Store = useSequenceV2Store();
 const store = apiStore();
@@ -418,6 +387,7 @@ const { t } = useI18n();
 const showResetConfirmation = ref(false);
 const isLoading = computed(() => sequenceStore.sequenceRunning);
 const { isLandscape } = useOrientation();
+const { preflightWarnings, answerPreflight, confirmPreflight } = useSequencePreflight();
 
 // File manager state
 const showFileManager = ref(false);
@@ -451,8 +421,8 @@ async function onFolderSelected(path) {
   if (!ok) {
     toastStore.showToast({
       type: 'error',
-      title: t('components.sequence.sequenceFolder'),
-      message: t('components.sequence.sequenceFolderSaveError'),
+      title: seqT('sequenceFolder'),
+      message: seqT('sequenceFolderSaveError'),
     });
     return;
   }
@@ -616,39 +586,13 @@ async function saveCurrentFile() {
   }
 }
 
-// Warnings of the check before the start; the dialog is open while the list is not empty.
-const preflightWarnings = ref([]);
-let preflightResolver = null;
-
-function answerPreflight(start) {
-  preflightWarnings.value = [];
-  preflightResolver?.(start);
-  preflightResolver = null;
-}
-
-// Silent when everything looks fine; otherwise the user decides. Never blocks: many
-// sequences unpark, cool and start guiding themselves.
-async function confirmPreflight() {
-  const imageDisk = await apiService.fetchImageDisk().catch(() => null);
-  const warnings = sequencePreflight(
-    {
-      mountInfo: store.mountInfo,
-      cameraInfo: store.cameraInfo,
-      guiderInfo: store.guiderInfo,
-      safetyInfo: store.safetyInfo,
-    },
-    sequenceStore.sequenceInfo,
-    imageDisk
-  );
-  if (warnings.length === 0) return true;
-  return new Promise((resolve) => {
-    preflightResolver = resolve;
-    preflightWarnings.value = warnings;
-  });
-}
-
 async function startSequence() {
-  if (!(await confirmPreflight())) return;
+  if (!(await confirmPreflight(sequenceStore.sequenceInfo))) return;
+  // The simple mode's plan has to slew, guide and park again on a second start
+  if (simpleModeActive.value && !(await sequenceV2Store.rearmPlan())) {
+    toastBackendError(null, 'components.backendErrors.sequenceStart');
+    return;
+  }
   console.log('Starting sequence');
   sequenceStore.setSequenceRunning(true);
   try {
@@ -722,7 +666,7 @@ async function clearSequence() {
   // Clearing removes every item from the sequence and cannot be undone.
   const confirmed = await toastStore.showConfirmation(
     t('components.sequence.clearConfirmationTitle'),
-    t('components.sequence.clearConfirmationMessage'),
+    seqT('clearConfirmationMessage'),
     t('components.sequence.clearSequence'),
     t('general.cancel')
   );

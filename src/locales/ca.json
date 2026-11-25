@@ -20,7 +20,8 @@
     "expand": "Expandeix",
     "collapse": "Replega",
     "drag": "Arrossega",
-    "showImage": "Mostra la imatge"
+    "showImage": "Mostra la imatge",
+    "onOff": "Engegat/Apagat"
   },
   "general": {
     "cancel": "Cancel·la",
@@ -153,10 +154,10 @@
     "gpsConfiguration": "Configuració GPS",
     "currentNinaCoords": "Ubicació del perfil",
     "currentMountCoords": "Ubicació de la muntura",
-    "syncDirection": "Direcció de sincronització d'ubicació",
-    "syncDirectionNosync": "Sense sincronització",
-    "syncDirectionToApplication": "Sincronitza des de la muntura al perfil",
-    "syncDirectionToTelescope": "Sincronitza des del perfil a la muntura",
+    "syncDirection": "Quan es connecta la muntura",
+    "syncDirectionNosync": "No sincronitzis la ubicació",
+    "syncDirectionToApplication": "Pren la ubicació de la muntura",
+    "syncDirectionToTelescope": "Envia la meva ubicació a la muntura",
     "mountNotConnected": "Muntura no connectada",
     "coordsNotSupported": "No compatible amb el controlador",
     "loadingCoords": "Carregant…",
@@ -165,9 +166,7 @@
     "coordAlt": "Alt",
     "coordUnit": "m",
     "completeSetup": "Finalitza la configuració",
-    "instanceConfiguration": "Detalls de connexió @:{'general.backendName'}",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Podeu trobar instruccions detallades a la nostra wiki"
+    "instanceConfiguration": "Detalls de connexió @:{'general.backendName'}"
   },
   "components": {
     "fitsPlatesolve": {
@@ -222,6 +221,8 @@
       "instanceNamePlaceholder": "La meva instància",
       "ipLabel": "Adreça IP / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Adreça de l’equip",
+      "advanced": "Avançat: nom i port",
       "portLabel": "Port",
       "portPlaceholder": "5000",
       "modalTitle": "Instàncies detectades",
@@ -235,6 +236,7 @@
       "discoveringMessage": "Descobrint instàncies de Touch-N-Stars…",
       "noFoundMessage": "No s'ha trobat cap instància de Touch-N-Stars via mDNS.",
       "selectionSuccess": "S'ha seleccionat {label} ({ip}:{port}).",
+      "hotspotFound": "Equip trobat a la seva pròpia wifi: {name}",
       "foundSingle": "S'ha trobat 1 instància de Touch-N-Stars.",
       "foundMultiple": "S'han trobat {count} instàncies de Touch-N-Stars.",
       "discoveryFailedStatus": "Error en la detecció: {message}",
@@ -247,7 +249,7 @@
       "confirmSetTargetTitle": "Confirma la selecció de l'objectiu",
       "confirmSetTargetMessage": "Estàs segur que vols establir aquest objectiu com a objectiu de la seqüència?",
       "useNinaCache": "Usa la memòria cau de @:{'general.backendName'} per a la imatge de l'objectiu",
-      "setSequnceTarget": "estableix com a objectiu de la seqüència",
+      "setSequnceTarget": "Estableix com a objectiu de la seqüència",
       "sequenceTargetPicker": {
         "title": "Objectiu de la seqüència",
         "hint": "Escolliu quin objectiu de la seqüència carregada rebrà les coordenades d'enquadrament.",
@@ -324,38 +326,105 @@
       "next": "Següent",
       "skip": "Salta el tutorial"
     },
+    "mountDriverFinder": {
+      "searchLabel": "Quina muntura tens?",
+      "searchPlaceholder": "p. ex. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Escriu el model o comença per la marca:",
+      "noMatch": "Cap muntura coincident. Revisa l'ortografia o usa \"No és a la llista?\" a sota.",
+      "otherMount": "Una altra muntura",
+      "howConnected": "Com està connectada a PINS?",
+      "recommended": "Recomanat",
+      "driverName": "Controlador: {name}",
+      "checking": "Comprovant els controladors instal·lats…",
+      "driverListFailed": "No s'ha pogut carregar la llista de controladors.",
+      "retry": "Torna-ho a provar",
+      "alreadySet": "Aquest controlador ja està definit.",
+      "useDriver": "Usa aquest controlador",
+      "needsInstall": "{name} encara no està instal·lat a PINS.",
+      "installAndUse": "Instal·la i usa",
+      "installConfirm": "PINS baixa {name} d'internet i l'instal·la. Això triga aproximadament un minut. Vols continuar?",
+      "installConfirmYes": "Instal·la",
+      "cancel": "Cancel·la",
+      "unavailable": "{name} no està disponible en aquest PINS. Tria'l de la llista completa a sota o actualitza PINS.",
+      "installing": "Baixant i instal·lant {name}…",
+      "applying": "Configurant {name}…",
+      "applied": "Fet: {name} està definit i \"{device}\" està seleccionat. Connecta la muntura, encén-la i toca Connecta.",
+      "appliedPickDevice": "Fet: {name} està definit. Tria la teva muntura a la llista de dispositius i toca Connecta.",
+      "applyFailed": "No s'ha pogut definir el controlador: {message}",
+      "noInternet": "PINS necessita connexió a internet per instal·lar el controlador. Connecta PINS a una xarxa Wi-Fi amb internet i torna-ho a provar.",
+      "packageMissing": "El paquet del controlador {name} no està disponible per baixar ara mateix.",
+      "installedButMissing": "{name} s'ha instal·lat però no apareix a la llista de controladors. Reinicia PINS i torna-ho a provar.",
+      "installFailed": "La instal·lació ha fallat: {message}",
+      "disconnectFirst": "Desconnecta la muntura abans de canviar-ne el controlador.",
+      "notListed": "No és a la llista?",
+      "openButton": "Troba el controlador de la muntura",
+      "title": "Troba el controlador de la teva muntura",
+      "connections": {
+        "swDirect": {
+          "title": "Cable USB directament a la muntura",
+          "hint": "Al port USB de la muntura o un cable EQDIR al port del comandament. El comandament no és necessari."
+        },
+        "swHandController": {
+          "title": "Mitjançant el comandament SynScan",
+          "hint": "Cable de PINS al comandament (port USB o cable sèrie). Encén el comandament i passa primer pel seu menú d'inici."
+        },
+        "celestronUsb": {
+          "title": "Port USB de la muntura",
+          "hint": "Cable USB al port del cap de la muntura."
+        },
+        "celestronHandController": {
+          "title": "Mitjançant el comandament NexStar",
+          "hint": "Cable USB o sèrie a la part inferior del comandament. Completa primer l'inici d'alineació del comandament."
+        },
+        "meadeHandController": {
+          "title": "Mitjançant el comandament AutoStar",
+          "hint": "Cable sèrie o USB al port del comandament."
+        },
+        "usb": {
+          "title": "Cable USB a la muntura",
+          "hint": "Cable USB de la muntura a PINS."
+        },
+        "network": {
+          "title": "Cable de xarxa (LAN)",
+          "hint": "La muntura és a la mateixa xarxa que PINS. Després introdueix-ne l'adreça IP a la configuració de connexió de la muntura."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Assistent de configuració",
       "restart": "Inicia l'assistent de configuració",
       "stepCounter": "Pas {current} de {total}",
-      "next": "Next",
-      "back": "Back",
-      "finish": "Finish",
+      "next": "Següent",
+      "back": "Enrere",
+      "finish": "Acaba",
       "remindLater": "Recorda-m'ho més tard",
       "steps": {
-        "welcome": "Welcome",
-        "language": "Language",
+        "welcome": "Benvinguda",
+        "language": "Idioma",
         "info": "Primers passos",
-        "instance": "Connection",
+        "instance": "Connexió",
         "wifi": "Wi-Fi",
-        "updates": "Updates",
-        "mount": "Mount",
+        "updates": "Actualitzacions",
+        "mount": "Muntura",
         "slewRate": "Velocitat de gir",
-        "location": "Location",
-        "telescope": "Telescope",
-        "camera": "Camera",
-        "focuser": "Focuser",
+        "location": "Ubicació",
+        "telescope": "Telescopi",
+        "camera": "Càmera",
+        "focuser": "Enfocador",
         "filterWheel": "Roda de filtres",
-        "guider": "Guiding",
+        "guider": "Guiatge",
         "dither": "Dither",
-        "done": "Done",
-        "localization": "Configuració regional"
+        "done": "Fet",
+        "localization": "Configuració regional",
+        "starDatabase": "Mapa estel·lar"
       },
       "driver": {
         "loading": "Carregant els controladors…",
         "applying": "Aplicant el controlador…",
         "listFailed": "No s'han pogut carregar els controladors: {message}",
-        "changeFailed": "No s'ha pogut aplicar el controlador: {message}"
+        "changeFailed": "No s'ha pogut aplicar el controlador: {message}",
+        "none": "Sense controlador",
+        "installMissing": "El controlador no és a la llista?"
       },
       "welcome": {
         "title": "Configurem Touch'N'Stars",
@@ -366,12 +435,17 @@
         "description": "L'idioma de l'app. El pots canviar més tard a la configuració."
       },
       "info": {
-        "openWiki": "Obre la wiki"
+        "pointDevices": "Els passos següents connecten la teva muntura, la càmera i els altres dispositius un per un i et demanen les dades del telescopi.",
+        "pointPowered": "Encén tots els dispositius i connecta'ls a l'equip abans de continuar.",
+        "pointLater": "No estàs segur d'un valor? Omet-lo amb Següent. Tot es pot canviar més tard a la configuració."
       },
       "instance": {
-        "description": "Adreça de l'ordinador on s'executa @:{'general.backendName'} A la mateixa xarxa, l'app normalment el troba sola.",
+        "title": "Connecta’t al teu equip",
+        "description": "El telèfon es comunica amb l’equip per wifi.",
+        "hotspotHint": "Connecta primer el telèfon a la wifi de l’equip. Un equip nou obre el seu propi punt d’accés «pins-…», la contrasenya és «touchnstars».",
+        "homeNetworkHint": "L’equip ja és a la xarxa de casa? Doncs queda’t en aquesta. L’app cerca sola; si no troba res, introdueix a sota l’adreça de l’equip.",
         "connect": "Desa i connecta",
-        "connecting": "Connecting…",
+        "connecting": "Connectant…",
         "connected": "Connectat a {name}",
         "connectFailed": "Error de connexió: {message}"
       },
@@ -381,15 +455,16 @@
         "loadingStatus": "Llegint l'estat de la Wi-Fi…",
         "connectedTo": "Connectat a {ssid}",
         "notConnected": "L'equip no està connectat a cap xarxa Wi-Fi.",
+        "notConnectedHint": "Sense xarxa obre el seu propi punt d’accés. Per a les actualitzacions i la baixada del mapa estel·lar necessita la teva xarxa de casa: toca «Cerca xarxes».",
         "chooseOtherNetwork": "Tria una altra xarxa",
         "scan": "Cerca xarxes",
-        "scanning": "Scanning…",
+        "scanning": "Cercant…",
         "selectNetwork": "Selecciona la xarxa",
-        "password": "Password",
+        "password": "Contrasenya",
         "passwordPlaceholder": "Contrasenya de la xarxa",
         "autoConnect": "Connecta't automàticament a aquesta xarxa",
-        "connect": "Connect",
-        "connecting": "Connecting…",
+        "connect": "Connecta",
+        "connecting": "Connectant…",
         "noNetworks": "No s'ha trobat cap xarxa. Apropa l'equip al router i torna a cercar.",
         "transitionHint": "L'equip canvia d'adreça en canviar de xarxa. Tornant-lo a cercar…",
         "retryFind": "Torna a cercar l'equip",
@@ -413,34 +488,47 @@
         "title": "Configura la muntura",
         "description": "Tria el controlador INDI de la teva muntura i després connecta-la.",
         "selectDriver": "Controlador INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositiu",
         "connected": "Muntura connectada: {name}",
         "notFound": "La muntura no és a la llista?",
         "notFoundHint": "Si la teva muntura no hi és, potser el controlador encara no està instal·lat. Cerca entre els controladors INDI de tercers i instal·la el que correspongui.",
-        "installing": "Installing {label}…",
+        "installing": "Instal·lant {label}…",
         "installSuccess": "{label} instal·lat. Selecciona'l a la llista de controladors de dalt.",
-        "installFailed": "Error en la instal·lació: {message}"
+        "installFailed": "Error en la instal·lació: {message}",
+        "descriptionDeviceFirst": "Tria la teva muntura de la llista i connecta-la. Només cal un controlador si no hi apareix."
       },
       "slewRate": {
         "title": "Velocitat de gir",
-        "description": "Defineix a quina velocitat pot moure el controlador la muntura. Massa alta i la muntura pot perdre passos; massa baixa i cada moviment dura una eternitat.",
         "maxSlewRate": "Velocitat de gir màx. (°/s)",
-        "maxSlewRateHint": "És el límit del controlador, no la velocitat manual de la pantalla de la muntura – aquesta ve directament de les capacitats del controlador.",
-        "saveFailed": "No s'ha pogut desar: {message}"
+        "saveFailed": "No s'ha pogut desar: {message}",
+        "whatFor": "PINS necessita la velocitat màxima de la teva muntura per cronometrar bé els moviments, per exemple durant l'alineació polar. No limita la velocitat de gir de la muntura.",
+        "reading": "Llegint les velocitats del controlador de la muntura…",
+        "derived": "Llegit del controlador: la velocitat màxima és {label}, és a dir {value} °/s. Desat: no cal fer res aquí.",
+        "notNeeded": "Aquest controlador informa ell mateix de les velocitats en °/s, així que no cal definir res aquí.",
+        "unknown": "Aquest controlador anomena les velocitats sense números (p. ex. \"Max\"), així que no es pot llegir la velocitat màxima. Deixa el valor per defecte de {value} °/s tret que en sàpigues la velocitat màxima.",
+        "notConnected": "Connecta la muntura al pas anterior i la velocitat es llegirà automàticament. Sense això s'usa el valor per defecte de {value} °/s, que serveix per a la majoria de muntures.",
+        "readFailed": "No s'han pogut llegir les velocitats de la muntura. Es manté el valor actual de {value} °/s.",
+        "readAgain": "Llegeix de la muntura",
+        "setManually": "Defineix manualment",
+        "manualHint": "La velocitat màxima de gir de la teva muntura en graus per segon, segons el seu manual. Un valor que introdueixis aquí no se substitueix mai automàticament."
       },
       "location": {
         "title": "Defineix la teva ubicació",
         "description": "Les teves coordenades serveixen per als càlculs d'hora, el gir de meridià, l'horitzó i l'enquadrament. Pren-les del dispositiu o introdueix-les a mà.",
         "profileCoords": "Ubicació del perfil",
         "mountCoords": "Ubicació de la muntura",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "altitude": "Altitude",
+        "latitude": "Latitud",
+        "longitude": "Longitud",
+        "altitude": "Altitud",
         "useCurrentLocation": "Fes servir la ubicació actual",
-        "syncDirection": "Direcció de sincronització de la ubicació",
+        "locating": "Obtenint la teva ubicació…",
+        "syncDirection": "Quan es connecta la muntura",
         "save": "Desa la ubicació",
-        "saving": "Saving…",
-        "saveFailed": "No s'ha pogut desar la ubicació: {message}"
+        "saving": "Desant…",
+        "saveFailed": "No s'ha pogut desar la ubicació: {message}",
+        "unsavedHint": "Encara no desat. Es desa automàticament en tocar Següent.",
+        "savedHint": "Ubicació desada.",
+        "missingHint": "Encara no hi ha ubicació. L'alineació polar i l'atles del cel la necessiten."
       },
       "telescope": {
         "title": "El teu telescopi",
@@ -452,13 +540,13 @@
       "camera": {
         "title": "Configura la càmera",
         "description": "Moltes càmeres són compatibles de manera nativa. Tria la teva a la llista de sota – només cal un controlador INDI si no hi apareix.",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositiu",
         "connected": "Càmera connectada: {name}",
         "notFound": "La càmera no és a la llista?",
         "notFoundHint": "Si la teva càmera no és compatible de manera nativa, tria aquí un controlador INDI. Després apareixerà a la llista de dispositius de dalt.",
         "thirdPartyHint": "Si falta el controlador del tot, cerca entre els controladors INDI de tercers i instal·la el que correspongui.",
         "selectDriver": "Controlador INDI",
-        "installing": "Installing {label}…",
+        "installing": "Instal·lant {label}…",
         "installSuccess": "{label} instal·lat. Selecciona'l a la llista de controladors de dalt.",
         "installFailed": "Error en la instal·lació: {message}",
         "sensorTitle": "Paràmetres del sensor",
@@ -471,41 +559,50 @@
         "chipHeight": "Alçada del sensor (px)",
         "pixelSize": "Mida del píxel (µm)",
         "pixelSizeHint": "El controlador no informa de la mida del píxel. La trobaràs al manual de la càmera.",
+        "pixelSizeReported": "Informat per la càmera: {size} µm.",
+        "pixelSizeReportedDiffers": "La càmera informa {size} µm, el perfil té un altre valor.",
         "imageScale": "Escala d'imatge resultant: {scale} arcsec/px",
-        "applyFailed": "No s'ha pogut desar: {message}"
+        "applyFailed": "No s'ha pogut desar: {message}",
+        "chipSizeNotConnectedHint": "Connecta la càmera a dalt i la mida del sensor s'omple sola. Només una càmera que no la informa (típic de les rèflex) necessita els valors de sota."
       },
       "focuser": {
         "title": "Configura l'enfocador",
         "description": "Tria el controlador INDI de l'enfocador i després connecta'l. Els paràmetres d'autoenfocament queden a la pàgina d'enfocament – aquest pas només estableix la comunicació.",
         "selectDriver": "Controlador INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositiu",
         "connected": "Enfocador connectat: {name}",
         "notFound": "L'enfocador no és a la llista?",
         "notFoundHint": "Si el teu enfocador no hi és, potser el controlador encara no està instal·lat. Cerca entre els controladors INDI de tercers i instal·la el que correspongui.",
-        "installing": "Installing {label}…",
+        "installing": "Instal·lant {label}…",
         "installSuccess": "{label} instal·lat. Selecciona'l a la llista de controladors de dalt.",
-        "installFailed": "Error en la instal·lació: {message}"
+        "installFailed": "Error en la instal·lació: {message}",
+        "descriptionDeviceFirst": "Tria el teu enfocador de la llista i connecta'l. Només cal un controlador si no hi apareix. Els paràmetres d'autofocus es queden a la pàgina d'enfocament.",
+        "notFoundDriverHint": "Si el teu enfocador no és a la llista, selecciona-hi aquí el seu controlador INDI. Després apareixerà a la llista de dalt."
       },
       "filterWheel": {
         "title": "Configura la roda de filtres",
         "description": "Tria el controlador INDI de la roda de filtres, connecta-la i posa a les posicions els noms que fas servir a les seqüències.",
         "selectDriver": "Controlador INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositiu",
         "connected": "Roda de filtres connectada: {name}",
         "filterNames": "Noms dels filtres",
         "filterNamesHint": "El nom de cada posició, en l'ordre que tenen a la roda. Només lletres i xifres.",
         "notFound": "La roda de filtres no és a la llista?",
         "notFoundHint": "Si la teva roda de filtres no hi és, potser el controlador encara no està instal·lat. Cerca entre els controladors INDI de tercers i instal·la el que correspongui.",
-        "installing": "Installing {label}…",
+        "installing": "Instal·lant {label}…",
         "installSuccess": "{label} instal·lat. Selecciona'l a la llista de controladors de dalt.",
-        "installFailed": "Error en la instal·lació: {message}"
+        "installFailed": "Error en la instal·lació: {message}",
+        "descriptionDeviceFirst": "Tria la teva roda de filtres de la llista, connecta-la i dona un nom a les ranures. Només cal un controlador si no hi apareix.",
+        "notFoundDriverHint": "Si la teva roda de filtres no és a la llista, selecciona-hi aquí el seu controlador INDI. Després apareixerà a la llista de dalt.",
+        "noneHint": "No tens roda de filtres? Toca Següent.",
+        "addFilter": "Afegeix filtre"
       },
       "guider": {
         "title": "Configura el guiatge",
         "description": "El guiatge funciona amb PHD2. Tria la càmera de guiatge, connecta el guiatge i indica a PHD2 el teu telescopi guia.",
         "guideCamera": "Càmera de guiatge",
         "guideCameraHint": "PHD2 porta els seus propis controladors, així que aquí no cal triar cap controlador INDI. Si la llista és buida, fes servir el botó d'actualitzar – la càmera ha d'estar encesa i lliure, no en ús com a càmera d'imatge.",
-        "connectDevice": "Guider",
+        "connectDevice": "Guia",
         "connected": "Guiatge connectat: {name}",
         "focalLength": "Focal del telescopi guia",
         "focalLengthHint": "Focal del telescopi guia en mm. Es desa al perfil de PHD2, separada del telescopi principal, i permet a PHD2 mostrar el guiatge en segons d'arc.",
@@ -522,23 +619,67 @@
         "ditherResult": "Configuració del dither: {pixels} píxels de guiatge",
         "ditherCurrent": "Ara al perfil: {pixels} píxels de guiatge ({mainPixels} píxels d'imatge).",
         "ditherApply": "Aplica al perfil",
-        "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherApplied": "Aplicat",
+        "ditherMissingData": "Per calcular el dither calen la mida de píxel i la focal tant de l'equip d'imatge com del de guiatge. Omple els passos de càmera i telescopi i indica la focal del telescopi guia al pas de guiatge.",
         "applyFailed": "No s'ha pogut desar: {message}",
-        "nativeCamera": "Càmera de guiatge (Guiador Natiu de PINS)",
-        "nativeCameraHint": "El guiador natiu controla directament la càmera de guiatge. Trieu-ne el controlador INDI i el dispositiu, i introduïu la distància focal del telescopi de guiatge."
+        "guideScope": "Telescopi guia",
+        "nativeCameraHint": "Introdueix la distància focal del telescopi guia. El guiatge la necessita per jutjar quant es mouen els estels.",
+        "descriptionBuiltIn": "PINS té un guiador integrat que manté els estels al seu lloc mentre es fan les imatges, sense cap altre programa. Tria la càmera de guiatge i introdueix la distància focal del telescopi guia.",
+        "nativeRecommended": "Consell: PINS té el seu propi guiador (\"Native Guider\" a la llista de dalt). Va ser desenvolupat especialment per a PINS, funciona directament a l'equip sense cap programa a part i sovint guia amb més estabilitat que PHD2. La configuració feta a PHD2 es conserva i pots tornar-hi en qualsevol moment triant PHD2 de nou.",
+        "nativeFocalLengthMissing": "La distància focal del telescopi guia encara és 0. El guiatge funciona sense ella, però el dither i l'error de guiatge en segons d'arc la necessiten.",
+        "guidePixelSizeHintNative": "Només s'usa per a aquest càlcul. El guiador llegeix la mida del píxel de la càmera de guiatge un cop connectada; fins llavors, treu-la del manual de la càmera.",
+        "ditherMissingDataNative": "Per calcular el dither calen la mida del píxel i la distància focal tant de la configuració d'imatge com de la de guiatge. Omple els passos de càmera i telescopi i la distància focal del telescopi guia al pas de guiatge.",
+        "guideCameraNotFound": "La càmera de guiatge no hi és?",
+        "guideCameraNotFoundHint": "Si la teva càmera de guiatge no té suport natiu, selecciona-hi aquí un controlador INDI. Després apareixerà a la llista de dispositius de dalt.",
+        "ditherIntro": "El dither desplaça una mica la imatge entre exposicions, cosa que elimina els patrons de soroll del resultat apilat. Sense guiatge pots ometre aquest pas.",
+        "ditherReadyHint": "El valor habitual ja està omplert: toca \"{button}\" i ja està."
       },
       "done": {
         "title": "El teu equip està llest",
         "description": "El teu equip està connectat i actualitzat, i la muntura, la càmera, l'enfocador, la roda de filtres i el guiatge estan configurats.",
         "descriptionPlain": "La muntura, la càmera, l'enfocador, la roda de filtres i la teva ubicació estan configurats.",
         "moreDevicesHint": "El panell de flats, el temps i la resta de dispositius es configuren a les seves pròpies pàgines.",
-        "noConnectionHint": "Encara no hi ha connexió amb cap equip. En pots afegir una en qualsevol moment a Configuració → Connexió."
+        "noConnectionHint": "Encara no hi ha connexió amb cap equip. En pots afegir una en qualsevol moment a Configuració → Connexió.",
+        "summaryIntro": "Això és el que està configurat ara. Toca una entrada per tornar-ne al pas.",
+        "status": {
+          "ok": {
+            "mount": "Seleccionat",
+            "location": "Desada",
+            "telescope": "Distància focal definida",
+            "camera": "Seleccionada",
+            "focuser": "Seleccionat",
+            "filterWheel": "Seleccionada",
+            "guider": "Seleccionat",
+            "starDatabase": "Instal·lat"
+          },
+          "warn": {
+            "mount": "Cap muntura seleccionada",
+            "location": "Falta: l'alineació polar i l'atles del cel la necessiten",
+            "telescope": "Falta la distància focal: el plate solving la necessita",
+            "camera": "Cap càmera seleccionada",
+            "starDatabase": "No instal·lat: el plate solving no pot funcionar"
+          },
+          "none": {
+            "focuser": "Cap, enfoca a mà",
+            "filterWheel": "Cap, no passa res",
+            "guider": "Sense guiatge"
+          }
+        }
       },
       "cancel": "Cancel·la la configuració",
       "localization": {
         "title": "Configura els paràmetres regionals de l'equip",
-        "description": "Configura aquests valors abans de la Wi-Fi perquè la ubicació del punt d'accés, l'hora i l'entrada del teclat remot coincideixin amb el lloc on s'utilitza l'equip."
+        "description": "Configura aquests valors abans de la Wi-Fi perquè la ubicació del punt d'accés, l'hora i l'entrada del teclat remot coincideixin amb el lloc on s'utilitza l'equip.",
+        "localeHint": "Idioma i format de números de l'equip, p. ex. en_US.UTF-8 o de_DE.UTF-8. C.UTF-8 és un valor neutre per defecte i també funciona.",
+        "unappliedHint": "Encara no aplicat: toca \"{button}\" abans de Següent, o es perdran els canvis.",
+        "nothingToDoHint": "Res a canviar? Toca Següent.",
+        "rigLanguage": "Idioma i teclat de l'equip"
+      },
+      "starDatabase": {
+        "title": "Mapa estel·lar per al plate solving",
+        "description": "Per saber cap a on apunta el telescopi, l'equip compara una imatge amb un mapa estel·lar (\"plate solving\"). L'alineació polar i el centrat d'un objectiu el necessiten. PINS inclou el mapa estel·lar D80; per a camps molt amplis pots afegir-ne un altre aquí.",
+        "otherSolver": "El teu perfil usa un altre plate solver que ASTAP, així que aquí no hi ha res a instal·lar.",
+        "hint": "La baixada és gran i pot trigar uns minuts. Mentrestant pots tocar Següent; la instal·lació continua a l'equip."
       }
     },
     "fileBrowser": {
@@ -737,7 +878,9 @@
         "restartInfoTitle": "El sistema s'està reiniciant",
         "restartInfoMessage": "El sistema s'està reiniciant.",
         "shutdownInfoTitle": "El sistema s'està apagant",
-        "shutdownInfoMessage": "El sistema s'està apagant. Aquesta pàgina ja no serà accessible."
+        "shutdownInfoMessage": "El sistema s'està apagant. Aquesta pàgina ja no serà accessible.",
+        "shutdownPowerHint": "Espera cosa d’un minut; després pots apagar l’alimentació.",
+        "shutdownFailed": "No s’ha pogut aturar: {reason}"
       },
       "plate_solver": {
         "title": "Solucionador de placa",
@@ -786,14 +929,27 @@
         "astapDatabaseAllInstalled": "Totes les bases de dades d'estrelles ASTAP ja estan instal·lades.",
         "astapDatabaseLoadFailed": "No s'han pogut carregar les bases de dades: {detail}",
         "astapDatabaseInstallSuccess": "La base de dades d'estrelles ASTAP {databaseId} s'ha instal·lat correctament.",
-        "astapDatabaseInstallFailed": "La instal·lació de la base de dades ASTAP ha fallat{exitCode}.",
+        "astapDatabaseDownloadFailed": "La instal·lació de {databaseId} ha fallat. L’equip baixa el mapa estel·lar d’internet: és en una xarxa amb accés a internet? Doncs torna-ho a provar.",
+        "astapDatabaseLastAttemptFailed": "L’últim intent d’instal·lar {databaseId} ha fallat ({time}). L’equip baixa el mapa estel·lar d’internet: és en una xarxa amb accés a internet? Doncs torna-ho a provar.",
+        "astapDatabaseRetry": "Torna a instal·lar {databaseId}",
+        "astapDatabasePhase": {
+          "downloading": "Baixant",
+          "installing": "Instal·lant",
+          "finalizing": "Acabant",
+          "complete": "Fet"
+        },
         "astapDatabaseUnauthorizedStatus": "No autoritzat en comprovar l'estat de la instal·lació.",
         "astapDatabaseStatusCheckFailedRetrying": "Error en la comprovació d'estat: {detail}. Reintentant...",
         "astapDatabaseStartInstall": "Iniciant la instal·lació per a {databaseId}...",
         "astapDatabaseMissingJobId": "La sol·licitud d'instal·lació ha tingut èxit però no s'ha retornat cap jobId.",
         "astapDatabaseJobStartedMessage": "Tasca d'instal·lació iniciada per a {databaseId}.",
         "astapDatabaseUnauthorizedStart": "No autoritzat en iniciar la instal·lació de la base de dades d'estrelles ASTAP.",
-        "astapDatabaseStartFailed": "No s'ha pogut iniciar la instal·lació: {detail}"
+        "astapDatabaseStartFailed": "No s'ha pogut iniciar la instal·lació: {detail}",
+        "astapDatabaseInstalledList": "Instal·lat: {list}",
+        "astapDatabaseNoneInstalled": "Encara no hi ha cap base de dades d'estels instal·lada. Sense una, el plate solving (alineació polar, centrat d'un objectiu) no pot funcionar.",
+        "astapDatabaseRecommendedTag": "recomanat",
+        "astapDatabaseRecommendedFov": "Recomanat per al teu telescopi i càmera (camp de visió {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Recomanat: {id}. Introdueix distància focal, mida del píxel i mida del sensor per obtenir una recomanació adequada al teu telescopi."
       },
       "equipment": {
         "title": "Equip",
@@ -853,20 +1009,31 @@
         "loading": "Llegint la configuració del swap…",
         "current": "Swap del sistema actiu: {size} GB",
         "size": "Mida de swap configurada",
-        "choose": "Choose a size",
+        "choose": "Tria una mida",
         "defaultSize": "2 GB (valor per defecte de la imatge)",
         "recommendedSize": "8 GB (recomanat)",
         "freeSpace": "Emmagatzematge lliure: {size} GB",
         "pending": "Hi ha {size} GB configurats. Reinicia el Pi quan acabi la sessió de captura per aplicar-ho.",
         "saved": "Configuració del swap desada.",
-        "saving": "Saving…",
+        "saving": "Desant…",
         "save": "Desa la mida del swap",
-        "refresh": "Refresh",
+        "refresh": "Actualitza",
         "unsupported": "Aquest sistema no té una configuració de swap en disc compatible.",
         "unavailable": "La configuració del swap no està disponible. Actualitza pinsdaemon al Pi.",
         "loadError": "No s'ha pogut llegir la configuració del swap: {message}",
         "saveError": "No s'ha pogut desar la configuració del swap: {message}",
         "missingJob": "El daemon no ha retornat cap tasca de swap."
+      },
+      "instances": {
+        "discovery": "Cerca equips a la xarxa",
+        "add": "Afegeix un equip",
+        "edit": "Edita l’equip",
+        "configured": "Equips desats",
+        "none": "Encara no hi ha cap equip desat",
+        "noneHint": "Fes servir la cerca de dalt o introdueix tu l’adreça.",
+        "active": "Actiu",
+        "setActive": "Fes servir aquest equip",
+        "delete": "Elimina l’equip"
       }
     },
     "alpacaDirect": {
@@ -885,7 +1052,12 @@
     "selectDevices": {
       "deviceNotFound": "Dispositiu no trobat",
       "deviceNotFoundMessage": "S'ha tornat a carregar el controlador INDI, però «{device}» no ha aparegut. Comprova l'alimentació i torna a seleccionar el dispositiu.",
-      "reloadingDriver": "S'està tornant a carregar el controlador INDI…"
+      "reloadingDriver": "S'està tornant a carregar el controlador INDI…",
+      "configure": "Configuració del dispositiu",
+      "rescan": "Torna a cercar dispositius",
+      "connect": "Connecta",
+      "disconnect": "Desconnecta",
+      "whyNotConnect": "Per què encara no es pot connectar?"
     },
     "connectEquipment": {
       "camera": {
@@ -916,8 +1088,8 @@
         "guideCamRequired": "Cal seleccionar una càmera guia vàlida."
       },
       "guiderCam": {
-        "name": "Càmera guia",
-        "manualVnc": "Manual via VNC"
+        "name": "Càmera PHD2",
+        "manualVnc": "Manual per VNC"
       },
       "safety": {
         "name": "Monitor de seguretat"
@@ -960,7 +1132,7 @@
           "mount": "Muntura",
           "flip": "Flip",
           "guide": "Guiatge",
-          "align": "Align",
+          "align": "Alineació",
           "focus": "Enfocament",
           "capture": "Captura"
         },
@@ -1276,7 +1448,7 @@
         },
         "polarAlignment": {
           "searchRadius": "Radi de cerca (°)",
-          "alignmentTolerance": "Tolerància d'alineació (arcsec)",
+          "alignmentTolerance": "Tolerància d'alineació (arcmin)",
           "moveRate": "Velocitat de moviment (°/s)",
           "targetDistance": "Distància objectiu (°)",
           "eastDirection": "Direcció est",
@@ -1468,14 +1640,26 @@
       "resetStatus": "Restableix l'estat",
       "delete": "Elimina",
       "runningLocked": "Aquest element s’està executant i no es pot modificar",
+      "plan": {
+        "title": "Pla",
+        "startSequence": "Inicia el pla",
+        "resetSequence": "Reinicia el pla",
+        "resetConfirmationMessage": "Reiniciar el pla perquè torni a començar des del principi? Això no es pot desfer.",
+        "clearConfirmationMessage": "Treure-ho tot del pla? Això no es pot desfer.",
+        "manageSequences": "Carrega / desa plans",
+        "saveSequenceAs": "Desa el pla actual com a",
+        "sequenceFolder": "Carpeta de plans",
+        "sequenceFolderSaveError": "No s'ha pogut canviar la carpeta de plans.",
+        "controlsLockedMessage": "Els controls del pla estan bloquejats mentre el pla s'executa."
+      },
       "simple": {
         "viewMode": "Vista de la seqüència",
-        "viewModeHint": "Simple mostra una targeta per objectiu amb les opcions més habituals. Expert mostra l'arbre complet de la seqüència.",
+        "viewModeHint": "Simple mostra una targeta per objectiu amb les opcions més habituals. Completa mostra tot l'arbre de la seqüència.",
         "mode": {
           "simple": "Simple",
-          "full": "Expert"
+          "full": "Completa"
         },
-        "openExpert": "Edita a l'editor expert",
+        "openFull": "Edita a l'editor complet",
         "targets": "Objectius",
         "remaining": "Restant",
         "total": "Total",
@@ -1491,6 +1675,8 @@
         "dither": "Dithering",
         "ditherHint": "Desplaça lleugerament la posició de guiatge entre imatges. Cal un guiatge actiu.",
         "ditherEvery": "Dither cada N imatges",
+        "ditherInExposures": "Cada fila d'exposició fa dither després de cada imatge. | Cada fila d'exposició fa dither després de cada {count} imatges.",
+        "ditherInExposuresMixed": "Les files d'exposició fan dither a intervals propis.",
         "coolCamera": "Refreda la càmera",
         "coolCameraHint": "Refreda la càmera fins a la temperatura objectiu abans del primer objectiu.",
         "unparkMount": "Desaparca la muntura",
@@ -1515,7 +1701,6 @@
         "afAfterHfr": "Després d'un augment de HFR",
         "coordinates": "Coordenades",
         "exposureEnabled": "Fes aquesta exposició",
-        "cameraDefault": "càmera",
         "gainShort": "Guany",
         "offsetShort": "Offset",
         "empty": "Aquesta seqüència encara no té objectius.",
@@ -1527,6 +1712,7 @@
         "favorites": "Preferits",
         "framing": "Framing",
         "noFilter": "Sense canvi de filtre",
+        "chooseFilter": "Tria un filtre",
         "exposureTime": "Exposició (s)",
         "count": "Quantitat",
         "noExposures": "Aquest objectiu encara no té exposicions.",
@@ -1539,7 +1725,50 @@
         "deleteTarget": "Elimina l'objectiu",
         "deleteTargetConfirm": "Vols eliminar {name} i totes les seves exposicions de la seqüència?",
         "deleteExposure": "Elimina l'exposició",
-        "deleteExposureConfirm": "Vols eliminar aquesta fila d'exposició de la seqüència?"
+        "deleteExposureConfirm": "Vols eliminar aquesta fila d'exposició de la seqüència?",
+        "addTargetNamed": "Afegeix {name} com a objectiu",
+        "limits": {
+          "title": "Nit",
+          "wait": "Espera que sigui fosc",
+          "waitHint": "El pla comença tan bon punt és fosc. La muntura no fa seguiment mentre espera.",
+          "dawn": "Atura a l’alba",
+          "dawnHint": "Acaba el pla quan es fa clar, encara que faltin imatges. La resta es pot fer la nit següent.",
+          "from": "des de les {time}",
+          "notTonight": "aquesta nit no",
+          "low": "Atura quan l’objectiu és massa baix",
+          "lowHint": "Prop de l’horitzó l’aire difumina els estels, i els arbres o les cases fan nosa. Llavors el pla continua amb l’objectiu següent.",
+          "minAltitude": "Alçada mínima sobre l’horitzó (°)",
+          "noTarget": "Afegeix primer un objectiu al pla. Després això s’activa sol.",
+          "targetRunning": "No es pot canviar mentre es fan imatges d’un objectiu.",
+          "sunBelow": "sol {degrees}° sota l’horitzó",
+          "darknessName": {
+            "bright": "encara clar",
+            "dusky": "gairebé fosc",
+            "usual": "habitual",
+            "dark": "més fosc",
+            "darkest": "del tot fosc"
+          },
+          "minAltitudeHint": "0° és l’horitzó, 90° és just a sobre teu. Dos punys un sobre l’altre amb el braç estirat són uns 20°.",
+          "startAt": "Inici de la nit",
+          "endAt": "Final de la nit",
+          "until": "fins a les {time}"
+        },
+        "refocus": {
+          "title": "Enfocament",
+          "label": "Reenfoca regularment",
+          "hint": "L'enfocament es desplaça quan la nit es refreda. El pla torna a enfocar entre dues imatges; cada vegada triga uns minuts.",
+          "howOften": "Cada quan",
+          "every": {
+            "minutes": "cada minut | cada {count} minuts",
+            "hours": "cada hora | cada {count} hores"
+          }
+        },
+        "budget": {
+          "question": "Quant de temps vols fotografiar aquest objectiu? (hores)",
+          "pictures": "{count} imatge de {seconds} s | {count} imatges de {seconds} s",
+          "apply": "Fes servir aquest nombre d’imatges",
+          "wholeNight": "Tant com la nit ho permeti ({time})"
+        }
       }
     },
     "mount": {
@@ -1550,17 +1779,19 @@
         "parked": "La muntura està aparcada, així que no hi ha cap posició per mostrar."
       },
       "location_sync": {
-        "title": "Configuració de sincronització d'ubicació",
-        "confirmationMessage": "Si la 'Sincronització d'ubicació' a @:{'general.backendName'} és 'Pregunta', pot aparèixer una finestra de confirmació abans que les coordenades s'enviïn al telescopi. Per evitar-ho i permetre que TNS estableixi automàticament les coordenades, recomanem canviar la configuració a 'Sincronitza al telescopi'",
+        "title": "Ubicació de la muntura",
+        "confirmationMessage": "Quan es connecta la muntura, l'aplicació pot enviar-hi la teva ubicació perquè apunti al lloc correcte del cel. Tria què ha de passar; ho pots canviar més tard a la configuració d'ubicació.",
         "toTelescope": {
-          "label": "Sincronitza al telescopi"
+          "label": "Envia la meva ubicació a la muntura"
         },
         "toApplication": {
-          "label": "Sincronitza a l'aplicació"
+          "label": "Pren la ubicació de la muntura"
         },
         "noSync": {
-          "label": "Sense sincronització"
-        }
+          "label": "No sincronitzis la ubicació"
+        },
+        "recommended": "Recomanat",
+        "noLocationHint": "Encara no tens definida la ubicació. \"Envia la meva ubicació a la muntura\" enviaria 0° / 0° i sobreescriuria la ubicació que coneix la muntura. Tria \"No sincronitzis la ubicació\" per ara: quan defineixis la ubicació, l'aplicació l'enviarà a la muntura."
       },
       "control": {
         "park": "Aparca",
@@ -1581,7 +1812,7 @@
           "unpark": "Error en desaparcar la muntura",
           "tracking": "Error en establir el mode de seguiment"
         },
-        "setLocationSyncToMount": "Estableix \"Sincronitza al telescopi\"",
+        "setLocationSyncToMount": "Envia sempre la meva ubicació a la muntura",
         "slewRateINDI": "Velocitat de desplaçament",
         "reverse_axis": "Direcció dels eixos",
         "confirmParkTitle": "Aparca la muntura",
@@ -2788,7 +3019,7 @@
           "loading": "Carregant els ajustos…",
           "loadFailed": "No s'han pogut carregar els ajustos",
           "empty": "No hi ha ajustos disponibles.",
-          "notConnectedHint": "El guiador natiu no està connectat. Els canvis es desen al perfil; els canvis de càmera tenen efecte a la propera connexió.",
+          "notConnectedHint": "El guiador integrat no està connectat. Els canvis es desen al perfil; els canvis de càmera tenen efecte a la propera connexió.",
           "requiresReconnect": "S'aplica després de reconnectar",
           "valueInUse": "En ús: {value} {unit}, ajustat durant el guiatge.",
           "range": "{min} – {max}",
@@ -2925,14 +3156,14 @@
           "descriptions": {
             "GuideSource": "D'on vénen les imatges de guiatge. Càmera de guiatge: la càmera de la ranura de càmera de guiatge de l'equip. Simulador: una simulació integrada de muntura, cel i càmera, per provar el guiatge sense maquinari o de dia.",
             "ExposureSeconds": "Temps d'exposició de cada imatge de guiatge. Les exposicions més curtes reaccionen més de pressa al vent i als errors de la muntura; el moviment mínim evita que persegueixin el seeing. 1 s va bé per a la majoria de muntures; feu servir exposicions més llargues quan l'estrella guia sigui massa feble.",
-            "Gain": "-1 manté el guany actual del controlador. (El guany de PHD2 és un percentatge, per això no es trasllada.)",
-            "Offset": "-1 manté l'offset actual del controlador.",
+            "Gain": "Guany de la càmera de guiatge per als fotogrames de guiatge. -1 (per defecte) fa servir el guany dels ajustos de la càmera de guiatge. Un guany més alt fa més brillants les estrelles febles, però afegeix soroll. El guany de PHD2 és un percentatge i, per tant, no es transfereix.",
+            "Offset": "Offset (nivell de negre) de la càmera de guiatge. -1 (per defecte) fa servir l'offset dels ajustos de la càmera de guiatge. Apuja'l només si el fons dels fotogrames de guiatge queda retallat a negre.",
             "Binning": "Binning per maquinari de les imatges de guiatge. 2×2 fa la càmera més sensible i la transferència més ràpida, a costa de resolució; útil amb píxels petits o una focal de guiatge llarga. Torna a calibrar després d'un canvi.",
-            "FocalLengthMm": "Distància focal del telescopi de guiatge (o del telescopi principal amb un OAG). Cal per als valors en segons d'arc i per al pas de calibratge.",
-            "PixelSizeUm": "0 fa servir la mida de píxel del controlador de la càmera.",
+            "FocalLengthMm": "Distància focal del telescopi de guiatge en mil·límetres, o del telescopi principal si guies amb un guiador fora d'eix. Juntament amb la mida de píxel determina l'escala d'imatge, de la qual el guiador obté els segons d'arc i tria el pas de calibratge i el moviment mínim; per això cal indicar-la correctament.",
+            "PixelSizeUm": "Mida de píxel de la càmera de guiatge en micròmetres, usada per a l'escala d'imatge. 0 (per defecte) la pren del controlador de la càmera; indica-la només si el controlador no en dona cap o en dona una d'incorrecta.",
             "NoiseReduction": "Suavitza cada imatge de guiatge abans de mesurar les estrelles. Mean 2×2 fa la mitjana dels píxels veïns, Median 3×3 també elimina píxels calents aïllats. Ajuda amb imatges molt sorolloses, p. ex. de càmeres sense refrigeració; en imatges netes, None dona les posicions d'estrella més precises.",
-            "UseDarkLibrary": "Resta foscos: la biblioteca nativa si s'ha creat; si no, la biblioteca de foscos de PHD2 per a les dimensions d'aquesta càmera.",
-            "PulseOutput": "Mount: guiatge per polsos a través del controlador de la muntura connectada. CameraST4: a través del port ST4 de la càmera de guiatge.",
+            "UseDarkLibrary": "Resta un fotograma fosc de cada fotograma de guiatge, cosa que elimina els píxels calents i la resplendor de l'amplificador perquè no es confonguin amb estrelles. Fa servir la biblioteca de foscos nativa un cop creada; si no, la de PHD2 per a aquesta mida de càmera.",
+            "PulseOutput": "On s'envien els polsos de guiatge. Muntura: a través del controlador de la muntura connectada (pulse guiding), l'opció habitual. ST4 de la càmera: pel port ST4 de la càmera de guiatge fins a l'entrada ST4 de la muntura (només càmeres INDI).",
             "MultiStar": "Mesura diverses estrelles alhora i guia sobre la seva posició combinada en lloc d'una sola estrella. Això fa la mitjana de bona part del seeing i manté el guiatge quan una estrella s'afebleix. Millor deixar-ho activat.",
             "MaxStars": "Nombre màxim d'estrelles per al guiatge multiestrella. Més estrelles fan la mitjana de més seeing; amb poques estrelles útils al camp, el guiatge fa servir les que troba. 1 guia sobre una sola estrella.",
             "MinSnr": "Relació senyal/soroll que necessita una estrella per ser triada com a estrella guia. Un valor massa alt fa que no se'n trobi cap; en lloc de baixar-lo, prova una exposició més llarga, més guany o una biblioteca de darks nova.",
@@ -2941,48 +3172,48 @@
             "MaxHfd": "Mida màxima (diàmetre de mig flux, en píxels) d'una estrella guia. Les taques inflades o desenfocades per sobre s'ignoren en seleccionar estrelles.",
             "MassChangeEnabled": "Vigila la brillantor (massa) de l'estrella guia i tracta un canvi sobtat com a estrella perduda, perquè el guiatge no salti a una estrella veïna ni guiï sobre un píxel calent quan passen núvols.",
             "MassChangeThreshold": "Quant pot canviar la massa de l'estrella abans que es consideri perduda: 0,5 permet un canvi de la meitat respecte a les imatges recents. Puja-ho si surten alarmes d'estrella perduda tot i que l'estrella es veu clarament, p. ex. amb transparència canviant.",
-            "PrimaryDropoutFallback": "Quan l'estrella primària falla en un fotograma, n'estima la posició a partir de ≥3 estrelles secundàries concordants.",
-            "SaturationAdu": "0 = detecta la saturació a partir del perfil de l'estrella.",
-            "RaAlgorithm": "Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent, de manera que l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
-            "RaAggression": "Fracció de l'error que es corregeix a cada fotograma (0..1).",
+            "PrimaryDropoutFallback": "Quan l'estrella primària falla en un fotograma (un núvol que passa, un satèl·lit), el guiador n'estima la posició a partir d'almenys 3 estrelles secundàries concordants i continua guiant en lloc de fer una pausa. Cal el guiatge multiestrella.",
+            "SaturationAdu": "Valor de píxel a partir del qual una estrella es considera saturada; les estrelles saturades no es fan servir, perquè el seu centre no es pot mesurar amb precisió. 0 (per defecte) detecta la saturació per la forma de l'estrella. Si no, introdueix el valor màxim de la càmera, p. ex. 65535 per a 16 bits.",
+            "RaAlgorithm": "Com l'error RA mesurat es converteix en correcció. Hysteresis (per defecte) corregeix una part de l'error i la suavitza amb les correccions anteriors. Lowpass2 i Lowpass reaccionen més suaument, bé per a muntures que segueixen bé. None no envia cap correcció RA. Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent; l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
+            "RaAggression": "Part de l'error RA mesurat que es corregeix en cada fotograma: 0,7 corregeix el 70 %. Els valors baixos eviten sobrepassar-se i perseguir el seeing, els alts retornen l'estrella més de pressa. Abaixa'l si l'estrella oscil·la d'un costat a l'altre, apuja'l si l'estrella va endarrerida.",
             "RaHysteresis": "Pes de la correcció RA anterior davant l'últim error: 0,1 barreja un 10 % de l'última correcció. Valors més alts suavitzen les correccions però reaccionen més lentament a un canvi real de direcció.",
             "RaLowpass2Aggressiveness": "Lowpass2 ajusta una recta als últims errors RA i corregeix aquesta tendència en lloc d'imatges soltes. És la part de la tendència corregida per imatge, en percentatge; baixa-ho si les correccions es passen.",
-            "RaMinMove": "0 = automàtic segons l'escala d'imatge.",
+            "RaMinMove": "Error RA més petit, en píxels, que rep una correcció; els errors menors s'ignoren perquè el guiador no persegueixi el seeing. 0 (per defecte) calcula un valor a partir de l'escala d'imatge. És l'ajust que més val la pena adaptar al seeing de la nit.",
             "RaCorrectionPace": "Part de l'error restant que l'algorisme Predictive corregeix per imatge: 0,5 elimina un desplaçament en 2–3 imatges sense passar de zero, 1 ho corregeix tot de cop. La deriva i l'error periòdic sempre es corregeixen del tot.",
             "PeriodicErrorPrediction": "Aprèn l'error periòdic del vis sens fi d'RA i el corregeix abans que es noti. La corba apresa es desa per perfil i muntura.",
             "WormPeriodUnit": "Indica el vis sens fi d'RA per les dents de la seva corona o pel seu període en segons, p. ex. del manual de la muntura o d'una eina PEC. Els segons també serveixen per a una transmissió el període de la qual no és un nombre enter de dents (reductora harmònica, corretja). Només es fa servir el valor triat.",
-            "WormTeeth": "Dents de la corona d'RA (p. ex. 180 en una EQ6-R, 135 en una HEQ5); dona el període exacte del vis sens fi. 0 = detecta el període a partir dels fotogrames de guiatge.",
+            "WormTeeth": "Dents de la corona del vis sens fi de RA (p. ex. 180 en una EQ6-R, 135 en una HEQ5); dona el període exacte del vis sens fi. 0 (per defecte) detecta el període a partir dels fotogrames de guiatge.",
             "WormPeriodSeconds": "Període del vis sens fi d'RA en segons (p. ex. 478,7 per a 180 dents); llavors no es detecta. Després d'un gir de meridià la seva fase es torna a aprendre, com sense nombre de dents. 0 (per defecte) = detecta el període a partir de les imatges de guiatge; el guiador accepta de 180 a 1200 s.",
             "ForgetPeriodicError": "Oblida l'error periòdic après per a aquesta muntura, p. ex. després d'ajustar el vis sens fi; després es torna a aprendre.",
-            "DecAlgorithm": "Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent, de manera que l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
+            "DecAlgorithm": "Com l'error Dec mesurat es converteix en correcció. ResistSwitch (per defecte) només inverteix el sentit de Dec quan l'error ho demana clarament, perquè el joc de Dec no faci oscil·lar el guiatge. Hysteresis, Lowpass2 i Lowpass funcionen com en RA; None no envia cap correcció Dec. Predictive (experimental) aprèn el seeing i el moviment propi de la muntura a partir dels fotogrames de guiatge i corregeix l'error que prediu per al fotograma següent; l'agressivitat, la histèresi i el moviment mínim no s'hi apliquen.",
             "DecAggression": "Part de l'error Dec mesurat que es corregeix a cada imatge: 1,0 ho corregeix tot. Baixa-ho si Dec es passa.",
             "DecHysteresis": "Pes de la correcció Dec anterior davant l'últim error: 0,1 barreja un 10 % de l'última correcció. Valors més alts suavitzen les correccions però reaccionen més lentament a un canvi real de direcció.",
             "DecLowpass2Aggressiveness": "Lowpass2 ajusta una recta als últims errors Dec i corregeix aquesta tendència en lloc d'imatges soltes. És la part de la tendència corregida per imatge, en percentatge; baixa-ho si les correccions es passen.",
             "DecFastSwitch": "Amb ResistSwitch: deixa que Dec inverteixi la direcció de seguida quan l'error és gran (més de 3 × min move), en lloc d'esperar que diverses imatges coincideixin. Recupera ràpidament un error Dec gran.",
-            "DecMinMove": "0 = automàtic segons l'escala d'imatge.",
+            "DecMinMove": "Error Dec més petit, en píxels, que rep una correcció; els errors menors s'ignoren perquè el guiador no persegueixi el seeing. 0 (per defecte) calcula un valor a partir de l'escala d'imatge. És l'ajust que més val la pena adaptar al seeing de la nit.",
             "DecCorrectionPace": "Part de l'error restant que l'algorisme Predictive corregeix per imatge: 0,5 elimina un desplaçament en 2–3 imatges sense passar de zero, 1 ho corregeix tot de cop. La deriva i l'error periòdic sempre es corregeixen del tot.",
             "DecGuideMode": "Auto guia Dec en totes dues direccions; Només Nord o Només Sud, en una sola; Desactivat, en cap. Drift segueix la deriva: mesura la deriva en Dec mentre guia i només guia en contra seva, de manera que els engranatges de Dec no inverteixen mai el sentit i el joc deixa d'importar; canvia de direcció quan la deriva s'inverteix i guia en totes dues direccions fins que coneix la deriva, mentre s'estabilitza i per recuperar un error gran.",
             "MaxRaDurationMs": "Pols de guiatge RA individual més llarg. Limita una correcció quan una mesura està molt desviada (estrella equivocada, ràfega de vent), perquè la muntura no surti disparada lluny. Puja-ho només si els errors grans triguen moltes imatges a corregir-se.",
             "MaxDecDurationMs": "Pols de guiatge Dec individual més llarg. Limita una correcció quan una mesura està molt desviada (estrella equivocada, ràfega de vent), perquè la muntura no surti disparada lluny. Puja-ho només si els errors grans triguen moltes imatges a corregir-se.",
-            "MinPulseMs": "Els polsos de guiatge més curts s'arrodoneixen a 0 o a aquesta durada: algunes muntures gestionen malament els polsos molt curts. 0 = qualsevol durada.",
+            "MinPulseMs": "Els polsos de guiatge més curts s'arrodoneixen a 0 o a aquesta durada, perquè algunes muntures gestionen malament els polsos molt curts. 0 envia polsos de qualsevol durada.",
             "SimultaneousPulses": "Envia els polsos RA i Dec d'una imatge alhora en lloc d'un després de l'altre, cosa que escurça el cicle de guiatge. Només amb muntures que temporitzen els dos eixos per separat (el controlador OnStepX natiu de pins); les altres muntures continuen un després de l'altre.",
             "BacklashCompensation": "Afegeix un pols extra quan Dec inverteix la direcció, per absorbir el joc dels engranatges Dec. Útil amb backlash Dec apreciable; deixa-ho desactivat si Dec guia bé. El mode de guiatge Dec Drift evita del tot les inversions.",
             "BacklashPulseMs": "Durada del pols extra en una inversió de Dec. A partir d'aquí, el guiatge ajusta el pols automàticament entre 20 ms i 1,5 × aquest valor, segons com respon l'estrella. Amb el model de joc, el valor només és la primera estimació del joc, que després el model aprèn.",
             "PulseModel": "Aprèn dels dithers quant mou realment un pols l'estrella en cada eix i dimensiona els polsos en conseqüència, perquè una calibració inexacta ja no faci que el guiatge corregeixi de més o de menys. Comença amb els valors de calibració, només canvia el que els dithers mostren clarament i conserva el que ha après per perfil i muntura fins a la propera calibració.",
-            "CalibrationStepMs": "0 = automàtic segons l'òptica, la velocitat de guiatge i la declinació.",
-            "ReuseCalibration": "Conserva el calibratge entre sessions i l'ajusta segons la declinació i el costat del pilar.",
+            "CalibrationStepMs": "Durada de cada pols durant el calibratge. 0 (per defecte) la calcula a partir de la distància focal, la mida de píxel, la velocitat de guiatge i la declinació. Indica-la tu només si el calibratge fa massa pocs o massa passos.",
+            "ReuseCalibration": "Conserva l'últim calibratge entre sessions i l'adapta a la declinació i al costat del pilar, perquè no calgui calibrar cada nit. Torna a calibrar després de girar a mà la càmera de guiatge o de canviar el telescopi guia.",
             "AssumeOrthogonal": "La calibració normalment mesura les direccions RA i Dec per separat. Això força Dec a ser exactament perpendicular a RA, cosa que ajuda quan un gran error periòdic, el backlash Dec o un mal seeing distorsionen la calibració Dec.",
             "DecCompensation": "Adapta les correccions RA a la declinació actual, perquè una calibració feta en una declinació continuï servint en una altra. La muntura connectada ha d'informar de la seva posició; deixa-ho activat. No és el mateix que la compensació del backlash Dec.",
-            "DecFlipRequired": "Ajust per muntura; el corregeix automàticament l'autocomprovació de Dec després del gir.",
+            "DecFlipRequired": "Si les correccions Dec s'han d'invertir després d'un gir de meridià. Depèn de la muntura i es desa per a cada muntura; l'autocomprovació de Dec després del gir ho corregeix automàticament si és incorrecte.",
             "VerifyDecAfterFlip": "Després d'un gir de meridià, comprova les primeres correccions Dec: si allunyen l'estrella en lloc d'apropar-la, el guiatge inverteix Dec per si mateix i corregeix «Inverteix Dec després del gir de meridià» per a aquesta muntura.",
             "RotatorTurnsGuideCamera": "Si el rotador connectat també gira la càmera de guiatge: Sí quan el rotador és entre el telescopi i l'OAG, No amb un telescopi de guiatge o amb un rotador entre l'OAG i la càmera d'imatge. Amb Sí, el guiatge espera mentre el rotador gira i després comença amb una nova estrella de guiatge i el calibratge desat girat amb el rotador, així que no cal tornar a calibrar després d'un gir. Si amb Sí el guiatge allunya l'estrella després de moure el rotador, trieu «Sí, invertit» i torneu a calibrar. El rotador manual de NINA no se segueix.",
             "DitherMode": "Com es tria cada dither. Random: una distància i direcció aleatòries. Spiral: passos al llarg d'una espiral al voltant de la posició inicial, útil contra el soroll de patró fix de la càmera de captura.",
             "DitherScale": "Multiplica la distància de dither que demana el programari de captura: 2 fa el dither el doble de lluny, 0,5 la meitat.",
             "FastRecenter": "Després d'un dither, porta l'estrella a la nova posició de bloqueig amb grans polsos directes en lloc de passos de guiatge normals, perquè el dither s'estabilitzi abans. Millor deixar-ho activat.",
             "ReacquireTimeoutSec": "Quant de temps busca el guiatge una estrella perduda abans de donar l'alarma. Després continua buscant i reprèn el guiatge tan bon punt l'estrella torna.",
-            "MaxPulseDutyPercent": "El guiatge s'atura quan un eix rep polsos durant més d'aquesta fracció d'un minut (protecció contra el guiatge descontrolat).",
+            "MaxPulseDutyPercent": "El guiatge s'atura quan un eix rep polsos durant més d'aquesta part d'un minut. Protegeix d'un moviment descontrolat, p. ex. després d'un calibratge incorrecte o amb Dec invertida.",
             "PauseWhenSlewing": "Posa en pausa les correccions mentre la muntura indica que s'està desplaçant o que està aparcada. Desactiveu-ho només si el controlador de la muntura indica sempre «desplaçant-se».",
-            "PauseWhenTrackingOff": "Posa en pausa les correccions mentre la muntura indica que el seguiment està desactivat. Desactiveu-ho si el controlador de la muntura no pot informar del seu estat de seguiment.",
+            "PauseWhenTrackingOff": "Posa en pausa les correccions mentre la muntura indica que el seguiment està desactivat. Desactiveu-ho si el controlador de la muntura no pot informar de l'estat del seguiment.",
             "SaveGuideLog": "Registre de guiatge compatible amb PHD2 a ~/.local/share/NINA/InternalGuider/Logs. El connector Registres de guiatge el mostra a l'app.",
             "IncidentRecorder": "Conserva a la memòria els fotogrames de guiatge dels últims minuts i els desa al voltant de pèrdues d'estrella, guiatge descontrolat, problemes de muntura i càmera i pics d'error, per tornar-los a veure i descarregar-los.",
             "IncidentBudgetMb": "Espai de disc per a les incidències enregistrades; primer s'esborren les més antigues que no s'han conservat. Les incidències del simulador tenen els seus propis 200 MB.",
@@ -4664,7 +4895,7 @@
         "steps": {
           "check": {
             "title": "Requisits",
-            "description": "Hocus Focus necessita una càmera i un enfocador connectats."
+            "description": "L'autofocus necessita una càmera i un enfocador connectats."
           },
           "optics": {
             "title": "Òptica",
@@ -4672,15 +4903,15 @@
           },
           "rig": {
             "title": "El teu equip",
-            "description": "Unes quantes preguntes sobre el teu equip. Les respostes defineixen els predefinits de Hocus Focus."
+            "description": "Unes quantes preguntes sobre el teu equipament. Les teves respostes defineixen uns valors d'autofocus adequats."
           },
           "rough": {
             "title": "Enfocament aproximat",
-            "description": "Fes imatges i mou l'enfocador fins que els estels siguin petits i rodons i l'HFR sigui tan baix com sigui possible."
+            "description": "Fes imatges i mou l'enfocador fins que els estels siguin petits i rodons. L'HFR és la mida de l'estel: com més petit, més nítid."
           },
           "measure": {
             "title": "Mida del pas i joc",
-            "description": "Mesura com de ràpid creixen els estels quan es mou l'enfocador i quants passos perd quan canvia de sentit, i suggereix una mida del pas per a l'autoenfocament i la compensació de joc de NINA. L'enfocador primer retrocedeix força perquè cada posició s'assoleixi des del mateix costat, després avança a través del focus i al final torna a la posició inicial."
+            "description": "Mesura com creixen ràpidament els estels quan l'enfocador es mou i quants passos perd en canviar de sentit, i suggereix una mida de pas per a l'autofocus i la compensació del backlash. L'enfocador primer retrocedeix molt perquè cada posició s'assoleixi pel mateix costat, després avança passant pel focus i al final torna a la posició d'inici."
           },
           "run": {
             "title": "Prova",
@@ -4692,14 +4923,13 @@
           },
           "optimize": {
             "title": "Optimitza",
-            "description": "Opcional: l'optimitzador ajusta la detecció d'estels amb un enfocament desat."
+            "description": "Opcional: l'optimitzador ajusta la detecció d'estels amb un escombratge d'autofocus nou o amb una execució desada."
           }
         },
         "checks": {
           "camera": "Càmera connectada",
           "focuser": "Enfocador connectat",
-          "hocusFocus": "Hocus Focus disponible",
-          "engineHint": "A @:{'general.backendName'}, 'Auto Focus' i 'Star Detector' han d'estar tots dos a Hocus Focus. El pas Resultat t'ho indica si no és així."
+          "hocusFocus": "Plugin d'autofocus instal·lat"
         },
         "focalLength": "Distància focal (mm)",
         "pixelSize": "Mida del píxel (µm)",
@@ -4715,7 +4945,7 @@
         "startRun": "Inicia l'enfocament automàtic",
         "stopRun": "Atura l'enfocament automàtic",
         "runFailed": "No s'ha pogut iniciar l'enfocament automàtic.",
-        "noResult": "Encara no hi ha cap enfocament de Hocus Focus acabat per avaluar.",
+        "noResult": "Encara no hi ha cap execució d'autofocus acabada per valorar.",
         "runAgain": "Torna-ho a provar",
         "openOptimizer": "Obre l'optimitzador",
         "useOptimized": "Fes servir els ajustos optimitzats",
@@ -4935,6 +5165,7 @@
       "warn_east_west_title": "Camp de correcció dins de {deg}° d'Est/Oest",
       "warn_east_west_body": "El camp actual és dins de 5° d'exactament Est o Oest. Si la solució en directe és inestable, desplaça't a un camp més allunyat d'Est/Oest i torna a executar.",
       "running": "EN EXECUCIÓ",
+      "movingToStart": "Movent-se a l'inici…",
       "plate_solve_start": "Inicia la resolució de placa",
       "plate_solve_ok": "Resolució de placa correcta",
       "plate_solve_error": "Error de resolució de placa",
@@ -4990,7 +5221,42 @@
         "help_log_error": "Quan s'activa, es crearà un fitxer de registre amb els ajustos de l'error d'alineació polar."
       },
       "error_modal": {},
-      "tppa": "TPPA"
+      "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "L'alineació polar no pot començar",
+        "refused": "L'equip ha rebutjat iniciar l'alineació polar",
+        "noLocation": "L'equip no coneix la seva ubicació. Defineix primer la latitud i la longitud, el càlcul en depèn.",
+        "noDatabase": "No hi ha cap mapa estel·lar instal·lat, així que no es pot fer plate solving de cap imatge. Instal·la'n un i comença de nou.",
+        "notSent": "L'inici no ha arribat a l'equip. Revisa la connexió i toca Inicia de nou.",
+        "startSlewFailed": "El telescopi no ha pogut moure's a la posició d'inici. Revisa la muntura i toca Inicia de nou."
+      },
+      "trackingOffAfterStop": "L'alineació polar ha desactivat el seguiment en aturar-se.",
+      "resumeTracking": "Torna a activar el seguiment",
+      "goodEnoughHint": "Un error total inferior a 1′ (un minut d'arc) és bo. Quan s'assoleixi, atura l'alineació.",
+      "tabSimple": "Alineació polar",
+      "simpleIntroMove": "Primer la muntura va sola a una posició inicial a prop del pol celeste i després gira dues vegades una mica sobre el seu eix mentre fa imatges. Comprova que els cables siguin prou llargs i que res no faci nosa.",
+      "simpleIntroAdjust": "Després aquesta pàgina mostra cap a on cal girar els cargols d’altura i d’azimut. Els valors s’actualitzen després de cada imatge. Continua ajustant fins que l’error total sigui inferior a 1′ (un minut d’arc) i llavors atura tu l’alineació.",
+      "adjustHint": "Gira els cargols d’altura i d’azimut a poc a poc en el sentit de les fletxes. Els valors s’actualitzen després de cada imatge.",
+      "lastMeasurement": "Darrera mesura",
+      "markedDone": "L’alineació polar està marcada com a feta per a aquesta nit.",
+      "confirmStartTitle": "Vols iniciar l’alineació polar?",
+      "confirmStartMessage": "La muntura va ara a la posició inicial a prop del pol celeste i gira durant la mesura. Comprova que els cables siguin prou llargs i que res no faci nosa.",
+      "status": {
+        "capturing": "Fent una imatge…",
+        "solving": "Resolent la imatge (plate solving)…",
+        "captureRetry": "La imatge ha fallat, nou intent…",
+        "solveRetry": "El plate solving ha fallat, nou intent…",
+        "nextPoint": "Anant al punt següent",
+        "firstPoint": "Mesurant el primer punt",
+        "secondPoint": "Mesurant el segon punt",
+        "finalPoint": "Mesurant el tercer punt",
+        "waitMount": "Esperant que la muntura s’aturi",
+        "waitDome": "Esperant la cúpula",
+        "settling": "La muntura s’estabilitza",
+        "slewInitial": "Anant a la posició inicial",
+        "movingAxis": "Girant l’eix",
+        "solveAttempt": "Resolent la imatge (plate solving)…"
+      }
     },
     "slewAndCenter": {
       "title": "Desplaça i centra",
@@ -5015,7 +5281,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "Desviació respecte a l'objectiu:"
-      }
+      },
+      "failed": "Gir o centrat fallit",
+      "centeredTitle": "Objectiu centrat",
+      "centered": "L'objectiu és al mig de la imatge.",
+      "centeredNamed": "{name} és al mig de la imatge."
     },
     "filterwheel": {
       "title": "Roda de filtres",
@@ -5222,7 +5492,7 @@
         "toggle": "Activa/desactiva l'apuntament al cel",
         "hint": "Apuntament al cel actiu. Apunta a través de la part posterior de la pantalla. Arrossega per aturar-lo; pinça per fer zoom.",
         "low_accuracy": "La precisió de la brúixola és baixa. Allunya't de metalls i imants i calibra la brúixola movent el dispositiu en forma de vuit.",
-        "unavailable": "Sky pointing requires a supported native app and a north-referenced motion sensor. Manual browsing is available.",
+        "unavailable": "Els sensors d'orientació no estan disponibles. Fes servir l'aplicació nativa en un dispositiu amb sensors compatibles o navega manualment.",
         "permission_denied": "S'ha denegat l'accés als sensors de moviment. Permet-lo a la configuració del sistema o navega manualment.",
         "location_required": "L'apuntament al cel necessita una ubicació d'observació. Defineix el teu lloc o permet l'accés a la ubicació.",
         "sensor_error": "L'apuntament al cel s'ha aturat perquè no hi ha dades dels sensors. Torna-ho a provar o navega manualment."
@@ -5414,6 +5684,22 @@
         "camera_field": "Camp de la càmera",
         "actions": "Accions",
         "more": "Més"
+      },
+      "tonight": {
+        "title": "Visible aquesta nit",
+        "intro": "Els millors objectius d'aquesta nit a la teva ubicació, els millors primer. Toca'n un per seleccionar-lo a l'atles.",
+        "noSite": "Defineix primer la teva ubicació al perfil i aquí apareixeran els millors objectius d'aquesta nit.",
+        "noDarkNight": "Aquesta nit no es fa prou fosc a la teva ubicació.",
+        "nothing": "Cap objectiu arriba prou amunt al cel aquesta nit.",
+        "maxAlt": "fins a {alt}° d'alçada",
+        "types": {
+          "galaxy": "Galàxia",
+          "nebula": "Nebulosa",
+          "planetary_nebula": "Nebulosa planetària",
+          "cluster": "Cúmul estel·lar",
+          "dark_nebula": "Nebulosa fosca",
+          "widefield": "Camp ampli"
+        }
       }
     },
     "profile": {
@@ -5611,6 +5897,7 @@
       "sequenceStart": "No s'ha pogut iniciar la seqüència",
       "guidingStart": "No s'ha pogut iniciar el guiatge",
       "autofocusStart": "No s'ha pogut iniciar l'autoenfocament",
+      "autofocusStop": "No s'ha pogut cancel·lar l'autoenfocament",
       "binning": "No s'ha pogut canviar el binning",
       "readout": "No s'ha pogut canviar el mode de lectura",
       "switchSet": "No s'ha pogut ajustar l'interruptor"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "Canal d'actualització dev amagat.",
       "specialEnabled": "Marcador de mal d'ulls activat.",
       "specialDisabled": "S'ha acabat la diversió."
+    },
+    "simpleMode": {
+      "title": "Aquesta nit",
+      "subtitle": "La teva nit pas a pas: toca el pas ressaltat i segueix-lo de dalt a baix.",
+      "pinsOnly": "El mode simple només està disponible quan Touch'N'Stars està connectat a un dispositiu PINS.",
+      "offHint": "El mode simple està desactivat, així que la navegació mostra totes les pàgines.",
+      "turnOn": "Usa el mode simple",
+      "showAll": "Mostra totes les funcions (desactiva el mode simple)",
+      "status": {
+        "done": "Fet",
+        "running": "En curs",
+        "open": "Per fer",
+        "skipped": "Omès"
+      },
+      "markDone": "Marca com a fet",
+      "skip": "Omet aquesta nit",
+      "undoMark": "Desfés",
+      "needsCamera": "Connecta primer la càmera.",
+      "needsMount": "Connecta primer la muntura.",
+      "needsGuider": "El guiador encara no està connectat. Toca \"Connecta-ho tot\" a dalt.",
+      "needsCameraAndMount": "Necessita una càmera i una muntura connectades.",
+      "rig": {
+        "title": "El teu equipament",
+        "changeDevices": "Canvia els dispositius",
+        "empty": "Encara no hi ha cap dispositiu configurat. L'assistent de configuració et guia amb la càmera, la muntura i la resta.",
+        "openWizard": "Obre l'assistent de configuració",
+        "noMountHint": "Encara no tens muntura configurada? Troba-hi aquí el controlador adequat.",
+        "devicesFailedHint": "Sense connexió: {devices}. Comprova primer l'alimentació i el cable; si tots dos estan bé, pot caldre un altre controlador.",
+        "mountFailedHint": "La muntura no s'ha connectat. Sovint necessita un altre controlador.",
+        "connecting": "Connectant…",
+        "allConnected": "Tot connectat",
+        "connectAll": "Connecta-ho tot",
+        "exposing": "Fent una imatge",
+        "coolingTo": "refredant a {temp}",
+        "parked": "Aparcada",
+        "slewing": "Movent-se",
+        "tracking": "Seguint el cel",
+        "notTracking": "Sense seguiment",
+        "autofocusRunning": "Autofocus en curs",
+        "position": "Posició {position}",
+        "connected": "Connectat",
+        "notConnected": "No connectat"
+      },
+      "guiderState": {
+        "Guiding": "Guiant",
+        "Calibrating": "Calibrant",
+        "Looping": "Cercant un estel",
+        "LostLock": "Estel perdut",
+        "Idle": "Aturat",
+        "Paused": "En pausa",
+        "Reacquiring": "Tornant a cercar l'estel"
+      },
+      "night": {
+        "title": "La teva nit",
+        "progress": "{done} de {total} fets"
+      },
+      "steps": {
+        "connect": {
+          "title": "Connecta el teu equipament",
+          "description": "Encén l'alimentació del teu equip i connecta tots els dispositius amb un toc.",
+          "hint": "Si un dispositiu no es connecta, revisa'n el cable i l'alimentació i toca \"Connecta-ho tot\" de nou.",
+          "summary": "{connected} de {total} connectats"
+        },
+        "cool": {
+          "title": "Refreda la càmera",
+          "description": "Un sensor refredat dona imatges més netes. El refredament triga uns minuts, així que comença aviat: mentrestant pots continuar amb els passos següents.",
+          "targetTemp": "Temperatura objectiu (°C)",
+          "start": "Refreda a {temp} °C",
+          "failed": "No s'ha pogut iniciar el refredament",
+          "warmingSummary": "Escalfant · {temp}",
+          "setup": {
+            "question": "Amb quina rapidesa pot refredar-se la teva càmera?",
+            "text": "Es pregunta una vegada per perfil. Refredar o escalfar massa de pressa estressa alguns sensors, i un sensor que s'escalfa massa de pressa es pot entelar. L'escalfament s'executa en acabar la nit.",
+            "presets": {
+              "fast": {
+                "title": "Ràpid",
+                "description": "Refreda de seguida, s'escalfa en {warm} min. Va bé per a la majoria de càmeres CMOS refredades actuals: ja limiten ells mateixos el refredador."
+              },
+              "gentle": {
+                "title": "Suau",
+                "description": "Refreda en {cool} min, s'escalfa en {warm} min."
+              },
+              "veryGentle": {
+                "title": "Molt suau",
+                "description": "Refreda en {cool} min, s'escalfa en {warm} min. Per a càmeres més antigues i sensors CCD."
+              }
+            },
+            "notSure": "No n'estàs segur? El manual de la càmera diu si necessita un refredament lent. Fins que ho sàpigues, \"Suau\" és una opció segura. Ho pots canviar més tard a la pàgina de la càmera.",
+            "currentValues": "El teu perfil ja té els seus propis temps: refreda en {cool} min, s'escalfa en {warm} min.",
+            "keepValues": "Mantén aquests temps",
+            "applyFailed": "No s'han pogut desar els temps al perfil."
+          }
+        },
+        "mount": {
+          "title": "Prepara la muntura",
+          "description": "La muntura s'ha de desaparcar i seguir el cel (seguiment) abans de poder apuntar a un objectiu.",
+          "action": "Desaparca i inicia el seguiment",
+          "trackingFailed": "No s'ha pogut activar el seguiment",
+          "trackingOffAfterPolar": "L'alineació polar ha desactivat el seguiment. Toca el botó per tornar-lo a activar."
+        },
+        "polar": {
+          "title": "Alineació polar",
+          "description": "Alinea la muntura amb el pol celeste. L'aplicació fa tres imatges, gira la muntura entre elles i t'indica quant has de girar els cargols d'ajust. Amb una vegada per configuració n'hi ha prou.",
+          "action": "Obre l'alineació polar"
+        },
+        "target": {
+          "title": "Tria un objectiu",
+          "description": "Tria el teu objecte a l'atles del cel i afegeix-lo al pla. Quan comencin les imatges, el pla hi va, centra l'objectiu amb una imatge i inicia el guiatge: no cal que facis res a mà.",
+          "action": "Tria un objectiu a l'atles del cel",
+          "another": "Afegeix un altre objectiu",
+          "how": "Toca el teu objecte a l'atles del cel (o cerca'l) i després toca \"{button}\".",
+          "coordinates": "AR {ra}° · Dec {dec}°",
+          "summaryMany": "{name} i {count} més",
+          "calibrationRisk": {
+            "nearPole": "El teu objectiu és a prop del pol celeste, on el guiador no pot calibrar. Fes primer el calibratge únic a \"Configura el guiatge\".",
+            "low": "El teu objectiu és baix al cel, on el guiador calibra malament. Fes primer el calibratge únic a \"Configura el guiatge\"."
+          }
+        },
+        "focus": {
+          "title": "Enfocament",
+          "description": "Els estels nítids fan o desfan la nit, i els passos següents també els necessiten: l'alineació polar i el centrat de l'objectiu calculen la posició a partir d'una imatge. Apunta el telescopi a una part del cel amb estels. Amb un enfocador motoritzat, l'autofocus fa la feina; sense, enfoca a mà amb imatges en directe.",
+          "autofocus": "Inicia l'autofocus",
+          "watch": "Mira la corba de focus",
+          "manualHint": "No hi ha cap enfocador motoritzat connectat: obre la càmera, fes imatges en bucle i gira l'enfocador fins que els estels siguin el més petits possible.",
+          "manual": "Obre la càmera",
+          "lastRun": "Últim autofocus a les {time}",
+          "lastFailed": "Últim autofocus a les {time} fallit: comprova que es vegin estels i torna-ho a provar",
+          "pointAtStars": "Apunta el telescopi a estels (atles del cel)",
+          "setupFirst": "Abans del primer autofocus amb aquest telescopi, configura'l una vegada: l'assistent mesura el teu enfocador i càmera i troba uns valors que funcionen. Sense això, l'autofocus sovint falla.",
+          "cancelled": "Autoenfocament cancel·lat. L’enfocador torna on era abans.",
+          "setup": "Configura l'autofocus"
+        },
+        "guide": {
+          "title": "Configura el guiatge",
+          "description": "La càmera de guiatge observa un estel i corregeix la muntura, així que les exposicions llargues es mantenen nítides. PINS té el seu propi guiador, desenvolupat especialment per a ell: funciona directament a l'equip sense cap programa extra i sovint guia amb més estabilitat que PHD2. Ha d'aprendre la teva muntura una vegada (calibratge); després el teu pla inicia el guiatge a cada objectiu per si sol.",
+          "details": "Detalls i gràfic del guiatge",
+          "useNativeHint": "El teu perfil usa ara un altre guiador. El mode simple guia amb el guiador integrat a PINS: va ser desenvolupat especialment per a PINS, funciona directament a l'equip i sovint guia amb més estabilitat que PHD2: aprèn l'error periòdic dels engranatges de la teva muntura i conserva el calibratge d'una nit a l'altra. La configuració feta a PHD2 es conserva.",
+          "useNative": "Usa el guiador integrat",
+          "nativeMissing": "Aquesta versió de PINS encara no té guiador integrat. Actualitza PINS a",
+          "chooseCamera": "El guiador integrat ha de saber quina és la teva càmera de guiatge. Tria-la aquí: després, \"Connecta-ho tot\" també la connecta.",
+          "chooseCameraAction": "Tria la càmera de guiatge…",
+          "noGuideCamera": "No s'ha trobat cap càmera de guiatge: connecta-la i revisa \"Tots els dispositius\"",
+          "calibrate": "Calibra una vegada (uns 3 min)",
+          "calibrateHint": "El telescopi es mou a un punt proper a l'equador celeste, on el calibratge és més precís, i hi aprèn com el mou el guiador. Només cal fer-ho una vegada: el calibratge es conserva per a totes les nits següents.",
+          "confirmCalibrateTitle": "Calibrar el guiador?",
+          "confirmCalibrateMessage": "El telescopi es mou al punt de calibratge i el guiador hi calibra durant uns minuts. Després el guiatge s'atura de nou: el teu pla l'inicia a l'objectiu.",
+          "calibrating": "Calibrant: això triga uns minuts.",
+          "slewingToCalibration": "El telescopi es mou al punt de calibratge…",
+          "calibratedHint": "Calibrat. El calibratge es conserva també per a les nits següents; el teu pla inicia el guiatge a cada objectiu per si sol.",
+          "calibratedSummary": "Calibrat",
+          "unparkFirst": "Prepara primer el telescopi (pas \"{step}\")."
+        },
+        "capture": {
+          "title": "Fes imatges",
+          "description": "El teu pla indica quins objectius fotografiar amb quin filtre, temps d'exposició i nombre d'imatges. Inicia'l i l'aplicació s'encarrega de la resta: anar a l'objectiu, centrar, guiar i fer les imatges.",
+          "targets": "Objectius",
+          "remaining": "Temps restant",
+          "noPlan": "Encara no hi ha cap pla. Crea'n un amb el teu objectiu, filtre, temps d'exposició i nombre d'imatges.",
+          "nothingLeft": "Al teu pla no li queden imatges per fer. Tria un objectiu nou o torna a fer les imatges d’aquest pla.",
+          "repeat": "Torna a fer les imatges",
+          "repeatFailed": "No s’ha pogut restablir el pla",
+          "editPlan": "Edita el pla",
+          "createPlan": "Crea un pla",
+          "watch": "Mira com arriben les imatges",
+          "start": "Comença a fer imatges",
+          "stop": "Atura les imatges",
+          "summary": "{targets} objectiu, acabat cap a les {time} | {targets} objectius, acabats cap a les {time}",
+          "summaryDone": "{targets} objectiu, totes les imatges fetes | {targets} objectius, totes les imatges fetes",
+          "confirmStartTitle": "Començar a fer imatges?",
+          "confirmStartPlan": "El pla comença ara amb {targets} objectiu i triga uns {remaining}. | El pla comença ara amb {targets} objectius i triga uns {remaining}.",
+          "confirmStartApproach": {
+            "center": "El telescopi va a l’objectiu i el centra. | El telescopi va a cada objectiu i el centra.",
+            "slew": "El telescopi va a l’objectiu, però no el centra. | El telescopi va a cada objectiu, però no el centra.",
+            "off": "El telescopi no va a l’objectiu, fa les imatges on apunta ara. | El telescopi no va als objectius, fa les imatges on apunta ara.",
+            "mixed": "No es va a tots els objectius ni se centren tots, mira el pla."
+          },
+          "confirmStartGuiding": {
+            "all": "El guiatge comença abans de la primera imatge.",
+            "none": "El pla s'executa sense guiatge.",
+            "mixed": "No tots els objectius tenen guiatge, mira el pla."
+          },
+          "confirmStopTitle": "Aturar les imatges?",
+          "confirmStopMessage": "La imatge actual es cancel·la. Pots tornar a iniciar el pla més tard.",
+          "noExposures": "El teu pla té un objectiu però encara cap imatge. Obre el pla i toca \"Afegeix exposició\" per triar filtre, temps d'exposició i nombre d'imatges.",
+          "summaryEmpty": "{targets} objectiu, encara sense imatges previstes | {targets} objectius, encara sense imatges previstes",
+          "confirmStartFocus": "Després de cada canvi de filtre, torna a enfocar.",
+          "confirmStartRefocus": "Reenfoca {interval}.",
+          "confirmStartEnd": {
+            "both": "En acabar, la muntura s’aparca i la càmera s’escalfa.",
+            "park": "En acabar, la muntura s’aparca.",
+            "warm": "En acabar, la càmera s’escalfa. La muntura continua el seguiment fins que acabis la nit.",
+            "none": "En acabar, la muntura continua el seguiment fins que acabis la nit."
+          },
+          "missingSteps": "{count} objectiu del teu pla encara no ho fa automàticament: {steps}. | {count} objectius del teu pla encara no ho fan automàticament: {steps}.",
+          "missingStepParts": {
+            "slew": "apuntar-hi",
+            "guide": "guiar",
+            "focus": "tornar a enfocar després d'un canvi de filtre"
+          },
+          "fixSteps": "Afegeix els passos que falten",
+          "flipMissing": "El teu pla no gira el telescopi al meridià. Continuaria el seguiment més enllà i podria xocar amb el trípode o el pilar.",
+          "addFlip": "Activa el Meridian Flip",
+          "endMissing": {
+            "park": "Quan el pla acabi, la muntura continuarà el seguiment. Passat el meridià pot topar amb el trípode o la columna si ningú no acaba la nit.",
+            "warm": "Quan el pla acabi, la càmera es quedarà freda fins que acabis la nit.",
+            "both": "Quan el pla acabi, la muntura continuarà el seguiment i la càmera es quedarà freda. Passat el meridià el telescopi pot topar amb el trípode o la columna si ningú no acaba la nit."
+          },
+          "addEnd": {
+            "park": "Aparcar la muntura en acabar el pla",
+            "warm": "Escalfar la càmera en acabar el pla",
+            "both": "Aparcar i escalfar en acabar el pla"
+          },
+          "flipWindow": "{target} arriba al meridià cap a les {meridian}; el pla gira el telescopi entre les {earliest} i les {latest}.",
+          "flipFixed": "{target} arriba al meridià cap a les {meridian}; el pla gira el telescopi a les {earliest}.",
+          "flipPause": "{target} arriba al meridià cap a les {meridian}; el pla fa una pausa a les {pause} i gira el telescopi a les {earliest}.",
+          "flipNone": "Aquest pla no necessita Meridian Flip.",
+          "flipYourTarget": "El teu objectiu",
+          "flipSettings": "Configuració del flip i prova de llum diürna",
+          "summaryCutOff": "{taken} de {planned} imatges fetes",
+          "confirmStartWait": "Espera que sigui fosc, cap a les {time}."
+        },
+        "flats": {
+          "title": "Flats",
+          "description": "Els flats eliminen les ombres de pols i les cantonades fosques de les teves imatges. Fes-los ara, abans que res canviï: l'enfocament, la rotació de la càmera i la posició de la càmera han de quedar com eren per a les imatges. No cal aquesta nit? Omet aquest pas.",
+          "lightSource": "Font de llum",
+          "panel": "Panell de flats",
+          "panelHint": "L'equip ajusta ell mateix la brillantor del panell.",
+          "panelMissing": "No hi ha cap panell de flats regulable connectat.",
+          "tablet": "Tauleta o làmina de llum",
+          "tabletHint": "Posa-la ben il·luminada de manera uniforme davant del telescopi; l'equip troba el temps d'exposició.",
+          "filters": "Filtres",
+          "count": "Flats per filtre",
+          "countNoWheel": "Nombre de flats",
+          "darks": "Fes també dark flats",
+          "darksHint": "Només cal si calibres amb dark flats. El telescopi ha d'estar tapat; l'aplicació t'avisa quan.",
+          "start": "Fes flats",
+          "stop": "Atura els flats",
+          "allSettings": "Tota la configuració dels flats",
+          "needsPlugin": "Els flats d'aquesta pàgina necessiten un plugin Touch'N'Stars més nou a l'equip. Actualitza'l o fes els flats amb l'assistent de flats de sota.",
+          "planRunning": "El pla encara s'executa. Els flats es poden fer quan acabi o s'aturi.",
+          "noFilterSelected": "Marca almenys un filtre.",
+          "noFilter": "Flats",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flats",
+          "endBlocked": "Els flats encara s'executen. Acaba la nit quan hagin acabat o s'hagin aturat.",
+          "runningSummary": "Fent flats",
+          "doneSummary": "Flats fets aquesta nit",
+          "result": {
+            "success": "Un flat fet | {count} flats fets",
+            "dim": "Massa fosc: usa una llum més brillant o permet una exposició més llarga a la configuració dels flats.",
+            "bright": "Massa brillant: atenua la llum o permet una exposició més curta a la configuració dels flats.",
+            "failed": "No s'han pogut fer els flats.",
+            "stopped": "Aturat"
+          }
+        },
+        "end": {
+          "title": "Acaba la nit",
+          "description": "Atura-ho tot en l'ordre correcte, aparca la muntura i escalfa la càmera lentament perquè no es formi humitat al sensor.",
+          "action": "Acaba la nit"
+        }
+      },
+      "more": {
+        "title": "Més",
+        "pictures": "Imatges de la nit",
+        "equipment": "Tots els dispositius",
+        "mount": "Muntura",
+        "focus": "Enfocament",
+        "guider": "Guiatge",
+        "system": "Wi-Fi, actualitzacions i sistema",
+        "settings": "Configuració"
+      },
+      "endNight": {
+        "title": "Acaba la nit",
+        "intro": "Aquests passos s'executen un darrere l'altre. Desmarca el que vulguis mantenir en marxa.",
+        "nothingToDo": "No hi ha res en marxa i la muntura està aparcada: no queda res per fer.",
+        "nothingToDoNoMount": "No hi ha res en marxa. La muntura no està connectada, així que comprova tu que estigui aparcada.",
+        "someFailed": "No tot ha funcionat, el motiu és sota el pas. Revisa la muntura abans d'apagar l'alimentació.",
+        "doneWarming": "Tot fet. Quan la càmera s’hagi escalfat, atura l’equip a la pàgina d’inici abans d’apagar l’alimentació.",
+        "confirm": "Acaba la nit ara",
+        "actions": {
+          "stopSequence": "Atura les imatges",
+          "stopGuiding": "Atura el guiatge",
+          "parkMount": "Aparca la muntura",
+          "warmCamera": "Escalfa la càmera ({minutes} min)"
+        },
+        "parkTimeout": "La muntura no ha informat \"aparcada\" en 3 minuts. Revisa-la abans d'apagar l'alimentació.",
+        "doneShutdown": "Tot fet. Atura l’equip abans d’apagar l’alimentació."
+      },
+      "settings": {
+        "title": "Mode simple",
+        "description": "Una pàgina d'inici que et guia durant la nit i una navegació només amb les pàgines que hi necessites. Desactiva'l per veure de nou totes les funcions.",
+        "navbarHint": "Mentre el mode simple està activat, la personalització de la navegació de sota no té efecte. Torna intacta quan desactivis el mode."
+      },
+      "wizard": {
+        "title": "Com vols usar l'aplicació?",
+        "simpleTitle": "Simple (recomanat per començar)",
+        "simpleText": "Una pàgina d'inici et guia durant la nit pas a pas, només amb les pàgines que necessites.",
+        "fullTitle": "Totes les funcions",
+        "fullText": "Cada pàgina i configuració a la navegació, per a usuaris experimentats."
+      },
+      "focusFirst": "Primer l'enfocament: aquest pas calcula la posició a partir d'una imatge, i això necessita estels nítids.",
+      "live": {
+        "lastPicture": "Última imatge",
+        "openFull": "Mostra la imatge a pantalla completa",
+        "noPicture": "Encara no hi ha cap imatge. Fes una imatge de prova per veure què veu la càmera.",
+        "preview": "Imatge de prova",
+        "hfr": "Nitidesa (HFR)",
+        "stars": "Estels",
+        "guiding": "Guiatge",
+        "sensor": "Sensor",
+        "trendTitle": "Nitidesa de les últimes {count} imatges",
+        "trendHint": "Els estels més nítids es dibuixen més amunt. Si la línia baixa durant la nit, torna a enfocar.",
+        "exposure": "Temps d'exposició",
+        "testPicture": "Fes una imatge de prova",
+        "abort": "Atura l'exposició",
+        "planRunning": "El teu pla està fent imatges: les noves apareixen aquí a mesura que arriben.",
+        "justNow": "ara mateix",
+        "minutesAgo": "fa {minutes} min",
+        "histogram": "Histograma",
+        "min": "Mín",
+        "max": "Màx",
+        "pixels": "{count} píxel | {count} píxels",
+        "pixelsSaturated": "{count} píxel saturat | {count} píxels saturats",
+        "histogramHint": "Dades del sensor sense estirar de tota la imatge. Només es mostra el rang al voltant del fons del cel; els estels i els píxels saturats són més a la dreta i es compten a Màx.",
+        "firstPlanPicture": "La primera imatge del teu pla apareix aquí."
+      },
+      "setupChecks": {
+        "title": "Abans de la primera nit",
+        "locationTitle": "Falta la teva ubicació",
+        "locationText": "L'equip no sap on és. L'alineació polar i l'atles del cel no poden funcionar sense ella.",
+        "locationAction": "Defineix la ubicació",
+        "databaseTitle": "No hi ha cap mapa estel·lar instal·lat",
+        "databaseText": "L'alineació polar i el centrat d'un objectiu comparen una imatge amb un mapa estel·lar. L'equip encara no en té cap.",
+        "databaseAction": "Instal·la el mapa estel·lar",
+        "flipTitle": "Meridian Flip encara no configurat",
+        "flipText": "Quan un objectiu creua el meridià (la línia nord–sud que passa pel zenit), el telescopi s'ha de girar a l'altre costat de la muntura; si no, aviat xocaria amb el trípode o el pilar. El teu pla ho fa per si sol. Digues-li una vegada fins on pot seguir la teva muntura més enllà del meridià.",
+        "flipNotSure": "No n'estàs segur? El manual de la muntura sol dir fins on pot seguir més enllà del meridià. Fins que ho sàpigues, \"Just\" manté el telescopi segur, a costa d'uns minuts sense imatges.",
+        "flipCurrentValues": "El teu perfil ja té els seus propis temps: {values}.",
+        "flipKeepValues": "Mantén aquests temps",
+        "flipTimingWindow": "flip {min}–{max} min després del meridià",
+        "flipTimingFixed": "flip {min} min després del meridià",
+        "flipTimingPause": "pausa {pause} min abans, flip {min} min després del meridià",
+        "blockedPolar": "L'alineació polar encara no pot funcionar, vegeu \"Abans de la primera nit\" a dalt.",
+        "blockedTarget": "El centrat encara no pot funcionar: no hi ha cap mapa estel·lar instal·lat, vegeu \"Abans de la primera nit\" a dalt."
+      },
+      "backToNight": "Torna a la teva nit",
+      "cockpit": {
+        "title": "Fent imatges",
+        "noTargetName": "El teu pla",
+        "doneAt": "Acabat a les",
+        "remaining": "Queden {time}",
+        "activity": {
+          "autofocus": "Enfocant (autofocus)",
+          "slewing": "El telescopi es mou",
+          "centering": "Centrant l’objectiu",
+          "startingGuiding": "Iniciant el guiatge",
+          "closing": "Acabant el pla (aparcar, escalfar)",
+          "calibrating": "El guiador està calibrant",
+          "settling": "Esperant que el guiatge s'estabilitzi",
+          "exposing": "Exposant",
+          "busy": "Preparant la imatge següent",
+          "flipping": "Meridian Flip: el telescopi gira a l'altre costat",
+          "waitingForDark": "Esperant que sigui fosc"
+        },
+        "exposing": "Exposant {seconds} s",
+        "frame": "imatge {frame} de {frames}",
+        "check": "Comprova",
+        "hfr": "HFR",
+        "noFrame": "encara cap imatge",
+        "hfrChange": "{change} % respecte a abans",
+        "guidingLevel": {
+          "good": "excel·lent",
+          "ok": "correcte",
+          "poor": "massa alt",
+          "unknown": "escala desconeguda"
+        },
+        "alerts": {
+          "devices": "{count} dispositiu ja no està connectat. | {count} dispositius ja no estan connectats.",
+          "starLost": "El guiador ha perdut el seu estel. Les imatges fetes ara mostraran traces.",
+          "notGuiding": "El pla s'executa sense guiatge.",
+          "guidingPoor": "El guiatge ({rms}″) és més gran que un píxel d'imatge ({scale}″): els estels es tornen borrosos. El vent, el balanç o un cable fluix en són causes habituals.",
+          "hfrRising": "Els estels són un {change} % més grans que a les imatges anteriors. Potser l'enfocament s'ha desviat, o arriben rosada o núvols.",
+          "cooling": "El sensor és a {temp} °C en lloc de {target} °C."
+        },
+        "hfrNoBaseline": "primeres imatges",
+        "lastPicture": "última imatge",
+        "verdict": {
+          "good": "Tot funciona bé",
+          "warn": "En marxa: una cosa necessita una ullada",
+          "danger": "Revisa-ho: les imatges estan en risc",
+          "waiting": "En marxa: les primeres imatges diran com va"
+        },
+        "showDetails": "Mostra els detalls",
+        "hideDetails": "Amaga els detalls",
+        "focus": "Enfocament",
+        "focusLevel": {
+          "good": "nítid",
+          "ok": "una mica borrós",
+          "poor": "borrós"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Guiatge",
+            "what": "Com de a prop segueix la muntura els estels: el balanceig de l'estel guia, comparat amb la mida d'un píxel a les teves imatges.",
+            "now": "Ara: balanceig de {rms}″, és a dir {ratio} píxel (un píxel = {scale}″).",
+            "nowNoScale": "Ara: balanceig de {rms}″. Per valorar-lo, el perfil necessita la distància focal i la mida del píxel.",
+            "nowOff": "El guiatge no s'està executant ara.",
+            "nowPaused": "En pausa mentre el telescopi enfoca o es mou.",
+            "limits": "Verd fins a {good} píxel, groc fins a {ok} píxel, vermell per sobre: llavors els estels es converteixen en línies curtes.",
+            "fix": "Si es posa vermell: el vent, el balanç o un cable fluix en són les causes habituals."
+          },
+          "focus": {
+            "title": "Enfocament",
+            "what": "Com de grans són els estels a la imatge més recent comparats amb les imatges anteriors del mateix filtre. Estels que creixen vol dir que l'enfocament es desvia, o que arriben rosada o núvols prims.",
+            "now": "Ara: mida de l'estel (HFR) {hfr}, {change} % comparat amb abans ({baseline}).",
+            "nowFirst": "Es valora tan bon punt hi ha {count} imatges d'un filtre.",
+            "nowNone": "Encara cap imatge.",
+            "limits": "Verd fins a un {good} % més grans, groc fins a un {ok} %, vermell per sobre.",
+            "fix": "Si es posa vermell: torna a enfocar (autofocus). Si no ajuda, revisa si hi ha rosada a la part davantera del telescopi."
+          },
+          "cooling": {
+            "title": "Refredament",
+            "what": "La temperatura del sensor de la càmera. Un sensor fred dona imatges amb menys soroll.",
+            "now": "Ara: {temp} °C, objectiu {target} °C.",
+            "limits": "Verd a menys de {good} °C de l'objectiu, vermell més enllà.",
+            "fix": "Si es queda vermell: el refredador no pot assolir l'objectiu amb aquesta calor: tria un objectiu uns graus més càlid."
+          }
+        },
+        "statusBarHint": "El guiatge, l'enfocament i el refredament es valoren a la barra d'estat de sota: toca'n un per veure què significa.",
+        "stop": "Atura",
+        "waitingUntil": "Esperant que sigui fosc, cap a les {time}"
+      },
+      "summary": {
+        "finished": {
+          "title": "Pla acabat",
+          "text": "Totes les imatges del teu pla estan fetes. Acaba la nit per aparcar el telescopi i escalfar la càmera.",
+          "textFlats": "Totes les imatges del teu pla estan fetes. Fes ara els teus flats, mentre res no ha canviat, i després acaba la nit.",
+          "cutOffTitle": "Fet per aquesta nit",
+          "cutOff": "S’ha fet clar o l’objectiu era massa baix: s’han fet {taken} de {planned} imatges. Torna a iniciar el pla una altra nit per fer la resta."
+        },
+        "ended": {
+          "title": "Nit acabada",
+          "text": "Cels clars! Això és el que ha donat aquesta nit.",
+          "notParked": "Telescopi encara no aparcat",
+          "shutdown": "Atura l’equip",
+          "shutdownWait": "Abans d’aturar-lo, espera que la càmera s’hagi escalfat i el telescopi estigui aparcat.",
+          "resume": "Continua la nit"
+        },
+        "frames": "Imatges",
+        "integration": "Exposició",
+        "medianHfr": "HFR mitjà"
+      },
+      "addToPlan": "Afegeix al pla",
+      "slewOptional": "El teu pla va a l'objectiu, el centra i inicia el guiatge per si sol. Anar-hi ara només cal per comprovar primer el Framing.",
+      "coachHint": {
+        "text": "El teu guiatge ha estat inquiet la nit passada. El Guiding Coach mesura la teva càmera de guiatge, el cel i la muntura i t'indica què ajuda. Triga uns 15 minuts sota els estels: millor abans de començar les imatges.",
+        "open": "Obre el Guiding Coach",
+        "dismiss": "Ara no"
+      },
+      "camera": {
+        "title": "Càmera",
+        "hint": "La imatge de prova i cada imatge del teu pla fan servir aquests valors, tret que donis valors propis a una exposició del pla. El manual de la càmera indica el guany i l’offset recomanats."
+      },
+      "expert": {
+        "show": "Mostra la configuració d’expert",
+        "hide": "Amaga la configuració d’expert"
+      },
+      "window": {
+        "waits": "El pla espera que sigui fosc, cap a les {time}.",
+        "tooMany": "Només caben unes {fit} de {left} imatges en aquesta nit. La resta es pot fer una altra nit.",
+        "noDarkness": "Aquesta nit no es fa tan fosc, el pla esperaria sense fi. Tria un cel més clar a \"Nit\" dins del pla.",
+        "limit": {
+          "light": "S’atura com a molt tard a les {time}, perquè llavors es fa clar.",
+          "low": "S’atura com a molt tard a les {time}, perquè llavors l’objectiu és massa baix."
+        },
+        "nothing": {
+          "light": "Ara hi ha massa llum, el pla acabaria de seguida sense cap imatge. Activa \"Espera que sigui fosc\" al pla: llavors comença cap a les {time}.",
+          "low": "L’objectiu és massa baix sobre l’horitzó i baixa, el pla acabaria sense cap imatge. Tria un altre objectiu o una alçada menor.",
+          "other": "Iniciat així, el pla acabaria de seguida sense cap imatge."
+        }
+      }
     },
     "secureObservatory": {
       "title": "Acaba la nit",
@@ -5679,6 +6447,17 @@
       "cameraCold": "La refrigeració de la càmera està activada ({temperature} °C).",
       "domeOpen": "La cúpula no està tancada.",
       "coverOpen": "La tapa del panell de flats és oberta."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "De quina marca és?",
+      "otherBrand": "Una altra marca",
+      "focuserLabel": "Quin enfocador és?",
+      "otherFocuser": "Un altre enfocador",
+      "disconnectFirst": "Desconnecta el dispositiu abans de canviar-ne el controlador.",
+      "applied": "Fet: \"{device}\" està seleccionat. Endolla’l, engega’l i toca \"Connecta\".",
+      "appliedSeveral": "El controlador està configurat i ha trobat diversos dispositius. Tria el teu a la llista de dispositius i toca \"Connecta\".",
+      "appliedNoDevice": "El controlador està configurat, però encara no s'ha trobat cap dispositiu. Endolla'l, engega'l, actualitza la llista de dispositius, tria'l i toca \"Connecta\".",
+      "openButton": "Troba el controlador: {device}"
     }
   },
   "plugins": {
@@ -5921,12 +6700,22 @@
       "dryRun": "Mode de prova en sec",
       "sambaTitle": "Compartició Samba",
       "sambaDescription": "Activa o desactiva la compartició de fitxers en xarxa",
+      "samba": {
+        "firstEnable": "Activa-ho per copiar les imatges a un ordinador de la mateixa xarxa. La primera vegada l’equip pot haver de baixar programari i llavors necessita internet.",
+        "howTo": "En un ordinador de la mateixa xarxa que l’equip, introdueix aquesta adreça:",
+        "windows": "Windows: barra d’adreces de l’Explorador",
+        "mac": "Mac: Finder, Vés, Connecta’t al servidor",
+        "login": "Si demana iniciar sessió: usuari «{user}», contrasenya «{password}», si no s’ha canviat.",
+        "outside": "Les teves imatges es desen a {folder}. La compartició mostra {share}, així que potser no hi apareixen.",
+        "openAccess": "Mentre estigui activada, qualsevol persona d’aquesta xarxa pot obrir, canviar i esborrar aquests fitxers sense contrasenya."
+      },
       "phd2Title": "Inici automàtic de PHD2",
       "phd2Running": "El servei s'està executant ara",
       "phd2Stopped": "El servei està aturat ara",
       "tabs": {
         "network": "Xarxa",
         "services": "Serveis",
+        "pictures": "Imatges",
         "system": "Sistema",
         "indi": "INDI",
         "software": "Programari",
@@ -6359,7 +7148,7 @@
         "optionsLoadFailed": "No s'han pogut carregar les opcions de diagnòstics. Usant els valors per defecte.",
         "startFailed": "No s'ha pogut iniciar l'arxiu de diagnòstics.",
         "pollFailed": "No s'ha pogut obtenir l'estat dels diagnòstics.",
-        "stillPreparing": "L'arxiu s'està preparant. Torna a intentar la descàrrega en breu.",
+        "stillPreparing": "L'arxiu encara s'està preparant al dispositiu.",
         "downloadFailed": "No s'ha pogut descarregar l'arxiu de diagnòstics.",
         "validationSections": "Selecciona almenys una secció.",
         "validationJournalLines": "Les línies de diari han d'estar entre 100 i 50000.",
@@ -8940,6 +9729,7 @@
         "errors": {
           "tppaUnavailable": "No s'ha pogut obrir la connexió amb TPPA.",
           "tppaNoResponse": "TPPA no ha respost a la sol·licitud d'inici.",
+          "tppaStartSlewFailed": "El telescopi no ha pogut moure's a la posició d'inici de l'alineació polar.",
           "tppaError": "TPPA ha informat d'un error. Comprova la càmera, la muntura i el plate solver.",
           "tppaSilent": "TPPA no ha enviat res en dos minuts. S'han aturat TPPA i l'Auto-Pilot.",
           "autoPilotNotStarted": "L'Auto-Pilot no s'ha iniciat. Revisa el registre d'AAPA; TPPA s'ha aturat si s'havia iniciat aquí.",
@@ -9322,7 +10112,7 @@
     "mount": "Muntura",
     "dome": "Cúpula",
     "flatDevice": "Flat",
-    "switch": "Switch",
+    "switch": "Interruptor",
     "filterWheel": "Filtre",
     "rotator": "Rotador",
     "guider": "Guiador",
@@ -9333,7 +10123,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Configuració",
-    "about": "Quant a"
+    "about": "Quant a",
+    "home": "Inici",
+    "plan": "Pla",
+    "target": "Objectiu"
   },
   "indi": {
     "config": {
@@ -9814,7 +10607,7 @@
       "eqmodToggleDescription": "EQMOD llegeix la taxa d'AR com a arcsegons/seg en brut en lloc del que envia @:{'general.backendName'}, fent que el seguiment sigui ~15× massa lent si no es corregeix. Activa-ho només si la muntura fa servir EQMOD.",
       "eqmodDetectedHint": "{name} sembla un controlador EQMOD — probablement voldràs activar-ho.",
       "reapplyIntervalTitle": "Interval de reaplicació",
-      "reapplyIntervalDescription": "Amb quina freqüència Quick Track recalcula i reenvia la taxa de seguiment. El valor per defecte de 900 s (15 min) és adequat per a cometes i asteroides.",
+      "reapplyIntervalDescription": "Amb quina freqüència Quick Track recalcula i reenvia la taxa de seguiment. El valor per defecte de 900 s (15 min) és adequat per a cometes i asteroides; escurça'l fins a un mínim de 5 segons per a un objecte que es mogui inusualment ràpid.",
       "secondsUnit": "s",
       "addToSequenceDescriptionRest": "afegeix un objectiu d'apuntar + seguir + captura a la seqüència ja carregada al seqüenciador de PINS, perquè la revisis i la iniciïs -- els teus objectius existents no es toquen.",
       "downloadSequence": "Descarrega la seqüència",

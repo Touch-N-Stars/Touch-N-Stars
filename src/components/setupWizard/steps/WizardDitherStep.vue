@@ -5,11 +5,16 @@
         {{ t('components.setupWizard.guider.ditherTitle') }}
       </h2>
       <p class="text-sm text-content-muted mt-1">
-        {{ t('components.setupWizard.guider.ditherDescription') }}
+        {{ t('components.setupWizard.guider.ditherIntro') }}
       </p>
     </div>
 
     <GuiderDitherCalculator />
+
+    <!-- Why there is a conversion at all: for those who want to know, after the plain part. -->
+    <p class="text-xs text-content-faint">
+      {{ t('components.setupWizard.guider.ditherDescription') }}
+    </p>
   </div>
 </template>
 

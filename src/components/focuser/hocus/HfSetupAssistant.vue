@@ -22,7 +22,8 @@
             ></span>
             <span>{{ L(`checks.${c.key}`) }}</span>
           </p>
-          <p class="text-sm text-content-muted">{{ L('checks.engineHint') }}</p>
+          <!-- Whether Auto Focus and Star Detector are set to the plugin shows only after a
+               run, so the result step reports it (notActive) instead of a hint up front. -->
         </div>
 
         <!-- 2. Optics -->
@@ -91,7 +92,7 @@
         <!-- 6. Test run -->
         <div v-else-if="step === 'run'" class="flex flex-col gap-3">
           <HfSetupIssues :only="SWEEP_ISSUES" />
-          <HfSweepPreview />
+          <HfSweepPreview :frozen="running" />
           <button
             v-if="!running"
             class="tns-btn-primary min-h-touch"
@@ -156,7 +157,7 @@
           >
             {{ L('next') }}
           </button>
-          <button v-else class="tns-btn-primary min-h-touch" @click="emit('close')">
+          <button v-else class="tns-btn-primary min-h-touch" @click="finish">
             {{ L('finish') }}
           </button>
         </div>
@@ -198,7 +199,13 @@ import StarDetectionOptimizer from './optimizer/StarDetectionOptimizer.vue';
 const props = defineProps({
   show: { type: Boolean, default: false },
 });
-const emit = defineEmits(['close']);
+// 'finished': the assistant was gone through to the end (the simple mode stops asking for it).
+const emit = defineEmits(['close', 'finished']);
+
+function finish() {
+  emit('finished');
+  emit('close');
+}
 
 const STEPS = ['check', 'optics', 'rig', 'rough', 'measure', 'run', 'review', 'optimize'];
 // Setup issues that make the test run itself go wrong; the others are shown on the focus page.

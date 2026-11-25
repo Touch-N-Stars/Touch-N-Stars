@@ -111,6 +111,7 @@
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router';
 import { computed, ref } from 'vue';
 import SubNav from '@/components/SubNav.vue';
 import Modal from '@/components/helpers/Modal.vue';
@@ -129,7 +130,8 @@ import SequenceRunningConditions from '@/components/sequence/SequenceRunningCond
 import totalExposureTime from '@/components/imageHistory/totalExposureTime.vue';
 import ImageFilterControls from '@/components/imageHistory/ImageFilterControls.vue';
 
-const currentTab = ref('showStats');
+// ?tab=images opens the pictures directly (simple mode's "Pictures of the night")
+const currentTab = ref(useRoute().query.tab === 'images' ? 'showImageHistory' : 'showStats');
 
 const store = apiStore();
 const settingsStore = useSettingsStore();

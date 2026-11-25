@@ -12,7 +12,11 @@
       @change="emit('change', Number($event.target.value))"
     >
       <option v-if="allowDefault" :value="-1">
-        {{ $t('components.camera.gainDefault') }}
+        {{
+          defaultValue === null
+            ? $t('components.camera.gainDefault')
+            : `${$t('components.camera.gainDefault')} (${defaultValue})`
+        }}
       </option>
       <!-- Keep a value that came from a different camera visible instead of silently showing
            someone else's gain. -->
@@ -29,6 +33,9 @@
     :max="cameraGainMax"
     :step="1"
     :decimalPlaces="0"
+    :inputId="inputId"
+    :useDefaultSentinel="useDefaultSentinel"
+    :defaultValue="defaultValue"
     @change="emit('change', $event)"
   />
 </template>
@@ -44,6 +51,11 @@ const props = defineProps({
   labelKey: { type: String, required: true },
   min: { type: Number, required: true },
   max: { type: Number, required: true },
+  // Passed to NumberInputPicker; null keeps its own defaults
+  inputId: { type: String, default: undefined },
+  useDefaultSentinel: { type: Boolean, default: null },
+  // The value -1 stands for, shown in the placeholder ("Default (100)")
+  defaultValue: { type: Number, default: null },
 });
 
 const emit = defineEmits(['change']);

@@ -5,29 +5,19 @@
         {{ t('components.setupWizard.mount.title') }}
       </h2>
       <p class="text-sm text-content-muted mt-1">
-        {{ t('components.setupWizard.mount.description') }}
+        {{ t('components.setupWizard.mount.descriptionDeviceFirst') }}
       </p>
     </div>
 
-    <!-- 1. INDI driver. PINS only: the driver list comes from the plugin's
-         indi/* routes, which a plain NINA backend does not serve. -->
-    <IndiDriverSelect
-      v-if="store.isPINS"
-      ref="driverSelect"
-      deviceType="telescope"
-      settingPath="TelescopeSettings-IndiDriver"
-      listAction="mountAction"
-      rescanKey="mount"
-      profileSection="TelescopeSettings"
-      :label="t('components.setupWizard.mount.selectDriver')"
-    />
-
-    <!-- 2. Device + connect -->
+    <!-- 1. Device + connect. Alpaca and natively supported devices show up without an
+         INDI driver; the driver is behind "not listed?" (like the camera step), so a
+         beginner is not met with "INDI DRIVER" first. -->
     <div class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.mount.connectDevice') }}
       </span>
       <selectDevices
+        labeledConnect
         apiAction="mountAction"
         :deviceName="$t('components.connectEquipment.mount.name')"
         :default-device-id="store.profileInfo?.TelescopeSettings?.Id"
@@ -47,7 +37,7 @@
       </p>
     </div>
 
-    <!-- 3. Mount not found -> 3rd party driver. Collapsed by default so the step
+    <!-- 2. Mount not listed -> INDI driver or a 3rd party driver. Collapsed by default so the step
          stays focused, but everything inside opens at once. PINS only: the
          packages come from the daemon on port 8000. -->
     <button v-if="store.isPINS" class="tns-btn-secondary" @click="toggleNotFound">
@@ -58,16 +48,11 @@
       {{ t('components.setupWizard.mount.notFound') }}
     </button>
 
+    <!-- The finder asks for the mount model and the cable, then sets (and if needed installs)
+         the matching driver. The plain driver list and the package search sit behind its own
+         "not in this list?" toggle. -->
     <div v-if="store.isPINS && showNotFound" class="flex flex-col gap-3">
-      <p class="text-sm text-content-muted">
-        {{ t('components.setupWizard.mount.notFoundHint') }}
-      </p>
-
-      <Indi3rdpartyInstallPanel
-        search-seed="mount"
-        label-prefix="components.setupWizard.mount"
-        @installed="driverSelect?.loadDrivers()"
-      />
+      <MountDriverFinder />
     </div>
 
     <!-- Mount settings modal (same split as connectEquipment.vue).
@@ -106,19 +91,20 @@ import selectDevices from '@/components/equipment/selectDevices.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsOnStepXConnection from '@/components/equipment/SettingsOnStepXConnection.vue';
-import IndiDriverSelect from '../IndiDriverSelect.vue';
-import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
+import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
 
 const { t } = useI18n();
 const store = apiStore();
 const equipmentStore = useEquipmentStore();
 
-const driverSelect = ref(null);
 const showMountSettings = ref(false);
 const selectedMountDevice = ref('');
 const selectedMountObj = ref(null);
 
-const showNotFound = ref(false);
+// Open from the start when the profile already uses an INDI driver, so it stays visible.
+const showNotFound = ref(
+  !['', 'None', undefined, null].includes(store.profileInfo?.TelescopeSettings?.IndiDriver)
+);
 
 const isAlpacaDirect = (device) => device?.Category === 'ASCOM Alpaca';
 

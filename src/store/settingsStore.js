@@ -242,6 +242,24 @@ export const useSettingsStore = defineStore('settings', {
     screenLock: {
       active: false,
     },
+    // PINS simple mode: guided home page and a reduced navigation for users coming from
+    // all-in-one boxes. Per device on purpose (not in the shared rig settings): a phone can run
+    // the simple mode while a tablet on the same rig shows everything. `steps` holds the steps
+    // marked by hand, valid for one night only (see utils/simpleMode.js).
+    simpleMode: {
+      enabled: false,
+      coolTemp: -10,
+      steps: { night: '', marks: {} },
+      afSetupProfiles: [],
+      // Profiles whose meridian flip timing was chosen in the simple mode
+      flipSetupProfiles: [],
+      // Profiles whose cooling and warm-up timing was chosen in the simple mode
+      coolSetupProfiles: [],
+      // How long the plan guided last night and how much of it poorly (see addGuidingTime()),
+      // and the night whose coach recommendation was taken up or dismissed.
+      guiding: null,
+      coachHintNight: '',
+    },
     // The steps last chosen in the "End night" dialog; null until it was used once.
     endNight: null,
   }),
@@ -252,6 +270,71 @@ export const useSettingsStore = defineStore('settings', {
     },
   },
   actions: {
+    // Older persisted settings have no `simpleMode` block yet.
+    _ensureSimpleMode() {
+      if (!this.simpleMode) {
+        this.simpleMode = { enabled: false, coolTemp: -10, steps: { night: '', marks: {} } };
+      }
+      if (!this.simpleMode.steps) this.simpleMode.steps = { night: '', marks: {} };
+      if (!Array.isArray(this.simpleMode.afSetupProfiles)) this.simpleMode.afSetupProfiles = [];
+      if (!Array.isArray(this.simpleMode.flipSetupProfiles)) {
+        this.simpleMode.flipSetupProfiles = [];
+      }
+      if (!Array.isArray(this.simpleMode.coolSetupProfiles)) {
+        this.simpleMode.coolSetupProfiles = [];
+      }
+      return this.simpleMode;
+    },
+    setSimpleModeEnabled(enabled) {
+      const mode = this._ensureSimpleMode();
+      mode.enabled = Boolean(enabled);
+      mode.chosen = true;
+      // The simple mode's "Plan" is the simple sequence view.
+      if (mode.enabled) this.setSequenceViewMode('simple');
+    },
+    // The setup assistant recommends the simple mode on a first PINS run. A preselection, not a
+    // choice: an explicit pick (here or in Settings > Interface) is never overridden.
+    preselectSimpleMode() {
+      const mode = this._ensureSimpleMode();
+      if (mode.chosen) return;
+      mode.enabled = true;
+      this.setSequenceViewMode('simple');
+    },
+    // Profiles whose autofocus was set up with the Hocus Focus assistant. Autofocus needs that
+    // once per telescope; until then the simple mode offers the assistant before a run.
+    markAutofocusSetUp(profileId) {
+      const list = this._ensureSimpleMode().afSetupProfiles;
+      if (profileId && !list.includes(profileId)) list.push(profileId);
+    },
+    // Profiles whose meridian flip timing the user chose (a preset, or "keep my values"). The
+    // timing itself lives in the NINA profile; this only remembers that it was looked at.
+    markMeridianFlipSetUp(profileId) {
+      const list = this._ensureSimpleMode().flipSetupProfiles;
+      if (profileId && !list.includes(profileId)) list.push(profileId);
+    },
+    // Profiles whose cooling timing the user chose (a preset, or "keep my values"). The minutes
+    // live in the NINA profile; this only remembers that they were looked at.
+    markCoolingSetUp(profileId) {
+      const list = this._ensureSimpleMode().coolSetupProfiles;
+      if (profileId && !list.includes(profileId)) list.push(profileId);
+    },
+    setSimpleModeCoolTemp(temp) {
+      this._ensureSimpleMode().coolTemp = temp;
+    },
+    // mark: 'done' | 'skipped' | null (clear). Marks of an earlier night are dropped first.
+    setSimpleModeStepMark(night, stepId, mark) {
+      const mode = this._ensureSimpleMode();
+      if (mode.steps.night !== night) mode.steps = { night, marks: {} };
+      if (mark) mode.steps.marks[stepId] = mark;
+      else delete mode.steps.marks[stepId];
+    },
+    setSimpleModeGuiding(tally) {
+      this._ensureSimpleMode().guiding = tally;
+    },
+    // The coach recommendation for `night` was followed or dismissed: it does not come back.
+    dismissSimpleModeCoachHint(night) {
+      this._ensureSimpleMode().coachHintNight = night ?? '';
+    },
     // Older persisted settings have no `sequence` block yet.
     setSequenceViewMode(mode) {
       if (!this.sequence) this.sequence = { viewMode: mode };

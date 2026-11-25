@@ -2,29 +2,41 @@
   <div class="space-y-6">
     <!-- Instance Detection Section -->
     <div class="tns-card">
-      <h3 class="text-lg font-semibold text-white mb-4">NINA Instance Discovery</h3>
+      <h3 class="text-lg font-semibold text-white mb-4">
+        {{ $t('components.settings.instances.discovery') }}
+      </h3>
       <InstanceDetection v-model="tempInstance" :hide-manual-config="true" />
     </div>
 
     <!-- Add/Edit Instance Form -->
     <div class="tns-card">
       <h3 class="text-lg font-semibold text-white mb-4">
-        {{ editingInstance ? 'Edit Instance' : 'Add New Instance' }}
+        {{
+          $t(
+            editingInstance
+              ? 'components.settings.instances.edit'
+              : 'components.settings.instances.add'
+          )
+        }}
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div>
-          <label class="block text-sm font-medium text-content mb-2">Instance Name</label>
+          <label class="block text-sm font-medium text-content mb-2">{{
+            $t('components.instanceDetection.instanceNameLabel')
+          }}</label>
           <input
             v-model="tempInstance.name"
             type="text"
             class="tns-select"
-            placeholder="My NINA Instance"
+            :placeholder="$t('components.instanceDetection.instanceNamePlaceholder')"
           />
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-content mb-2">IP Address / FQDN</label>
+          <label class="block text-sm font-medium text-content mb-2">{{
+            $t('components.instanceDetection.ipLabel')
+          }}</label>
           <input
             v-model="tempInstance.ip"
             type="text"
@@ -36,7 +48,8 @@
         <div>
           <NumberInputPicker
             v-model="tempInstance.port"
-            :label="`Port`"
+            :label="$t('components.instanceDetection.portLabel')"
+            labelKey="components.instanceDetection.portLabel"
             :min="1"
             :max="65535"
             :step="1"
@@ -72,7 +85,9 @@
           {{ editingInstance ? $t('components.settings.update') : $t('components.settings.add') }}
         </button>
 
-        <button v-if="editingInstance" @click="cancelEdit" class="tns-btn-secondary">Cancel</button>
+        <button v-if="editingInstance" @click="cancelEdit" class="tns-btn-secondary">
+          {{ $t('common.cancel') }}
+        </button>
       </div>
     </div>
 
@@ -80,7 +95,7 @@
     <div class="tns-card">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold text-white">
-          Configured Instances
+          {{ $t('components.settings.instances.configured') }}
           <span class="text-sm text-content-muted font-normal ml-2">({{ instances.length }})</span>
         </h3>
       </div>
@@ -100,8 +115,10 @@
             d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
           />
         </svg>
-        <p class="text-content-muted text-sm">No instances configured yet</p>
-        <p class="text-content-faint text-xs mt-1">Use the detection above or add manually</p>
+        <p class="text-content-muted text-sm">{{ $t('components.settings.instances.none') }}</p>
+        <p class="text-content-faint text-xs mt-1">
+          {{ $t('components.settings.instances.noneHint') }}
+        </p>
       </div>
 
       <!-- Instance Cards -->
@@ -122,7 +139,7 @@
             v-if="selectedInstance === instance.id"
             class="absolute -top-2 -right-2 bg-accent-action text-white text-xs px-2 py-1 rounded-full font-medium"
           >
-            Active
+            {{ $t('components.settings.instances.active') }}
           </div>
 
           <div class="flex items-center justify-between">
@@ -132,7 +149,7 @@
                 <div
                   v-if="selectedInstance === instance.id"
                   class="ml-2 w-2 h-2 bg-status-ok rounded-full"
-                  title="Currently selected"
+                  :title="$t('components.settings.instances.active')"
                 ></div>
               </div>
               <div class="flex items-center text-content-muted text-sm">
@@ -158,7 +175,13 @@
                     ? 'text-status-ok bg-status-ok/15'
                     : 'text-content-muted hover:text-status-ok hover:bg-status-ok/10',
                 ]"
-                :title="selectedInstance === instance.id ? 'Currently Active' : 'Set as Active'"
+                :title="
+                  $t(
+                    selectedInstance === instance.id
+                      ? 'components.settings.instances.active'
+                      : 'components.settings.instances.setActive'
+                  )
+                "
               >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
@@ -172,7 +195,7 @@
               <button
                 @click="editInstance(instance.id)"
                 class="p-2 text-content-muted hover:text-accent hover:bg-accent/10 rounded-md transition-colors"
-                title="Edit Instance"
+                :title="$t('components.settings.instances.edit')"
               >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
@@ -184,7 +207,7 @@
               <button
                 @click="removeInstance(instance.id)"
                 class="p-2 text-content-muted hover:text-status-danger hover:bg-status-danger/10 rounded-md transition-colors"
-                title="Delete Instance"
+                :title="$t('components.settings.instances.delete')"
               >
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path
@@ -214,7 +237,7 @@ const editingInstance = ref(null);
 const selectedInstance = ref(settingsStore.selectedInstanceId);
 const emptyFieldsError = ref(false);
 const tempInstance = ref({
-  name: 'My NINA',
+  name: '',
   ip: '',
   port: 5000,
 });
@@ -226,10 +249,13 @@ function saveInstance() {
   instanceError.value = null;
 
   // Validate fields
-  if (!tempInstance.value.name || !tempInstance.value.ip || !tempInstance.value.port) {
+  if (!tempInstance.value.ip || !tempInstance.value.port) {
     emptyFieldsError.value = true;
     return;
   }
+
+  // The name is only a label: the address stands in for it
+  if (!tempInstance.value.name?.trim()) tempInstance.value.name = tempInstance.value.ip;
 
   // Save instance
   if (editingInstance.value) {
@@ -261,7 +287,7 @@ function clearForm() {
   editingInstance.value = null;
   emptyFieldsError.value = false;
   tempInstance.value = {
-    name: 'My NINA',
+    name: '',
     ip: '',
     port: 5000,
   };

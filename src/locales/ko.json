@@ -20,7 +20,8 @@
     "expand": "펼치기",
     "collapse": "접기",
     "drag": "드래그",
-    "showImage": "이미지 표시"
+    "showImage": "이미지 표시",
+    "onOff": "켜기/끄기"
   },
   "general": {
     "cancel": "취소",
@@ -153,10 +154,10 @@
     "gpsConfiguration": "GPS 설정",
     "currentNinaCoords": "프로필 위치",
     "currentMountCoords": "마운트 위치",
-    "syncDirection": "위치 동기화 방향",
-    "syncDirectionNosync": "동기화 안 함",
-    "syncDirectionToApplication": "마운트에서 프로필로 동기화",
-    "syncDirectionToTelescope": "프로필에서 마운트로 동기화",
+    "syncDirection": "마운트 연결 시",
+    "syncDirectionNosync": "위치를 동기화하지 않음",
+    "syncDirectionToApplication": "마운트에서 위치 가져오기",
+    "syncDirectionToTelescope": "내 위치를 마운트로 보내기",
     "mountNotConnected": "마운트가 연결되지 않음",
     "coordsNotSupported": "드라이버에서 지원하지 않음",
     "loadingCoords": "로딩 중…",
@@ -165,9 +166,7 @@
     "coordAlt": "고도",
     "coordUnit": "m",
     "completeSetup": "설정 완료",
-    "instanceConfiguration": "@:{'general.backendName'} 연결 정보",
-    "InfoAppsTitel": "위키",
-    "check_wki": "자세한 안내는 위키에서 확인할 수 있습니다"
+    "instanceConfiguration": "@:{'general.backendName'} 연결 정보"
   },
   "components": {
     "fitsPlatesolve": {
@@ -222,6 +221,8 @@
       "instanceNamePlaceholder": "내 인스턴스",
       "ipLabel": "IP 주소 / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "리그 주소",
+      "advanced": "고급: 이름과 포트",
       "portLabel": "포트",
       "portPlaceholder": "5000",
       "modalTitle": "발견된 인스턴스",
@@ -235,6 +236,7 @@
       "discoveringMessage": "Touch-N-Stars 인스턴스를 찾는 중...",
       "noFoundMessage": "mDNS로 Touch-N-Stars 인스턴스를 찾지 못했습니다.",
       "selectionSuccess": "{label} ({ip}:{port})을(를) 선택했습니다.",
+      "hotspotFound": "리그 자체 Wi-Fi에서 찾았습니다: {name}",
       "foundSingle": "Touch-N-Stars 인스턴스 1개를 찾았습니다.",
       "foundMultiple": "Touch-N-Stars 인스턴스 {count}개를 찾았습니다.",
       "discoveryFailedStatus": "검색 실패: {message}",
@@ -324,38 +326,105 @@
       "next": "다음",
       "skip": "튜토리얼 건너뛰기"
     },
+    "mountDriverFinder": {
+      "searchLabel": "어떤 마운트를 사용하시나요?",
+      "searchPlaceholder": "예: EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "모델명을 입력하거나 브랜드로 시작하세요:",
+      "noMatch": "일치하는 마운트가 없습니다. 철자를 확인하거나 아래의 \"목록에 없는 마운트인가요?\"를 사용하세요.",
+      "otherMount": "다른 마운트",
+      "howConnected": "PINS에 어떻게 연결되어 있나요?",
+      "recommended": "권장",
+      "driverName": "드라이버: {name}",
+      "checking": "설치된 드라이버 확인 중…",
+      "driverListFailed": "드라이버 목록을 불러오지 못했습니다.",
+      "retry": "다시 시도",
+      "alreadySet": "이 드라이버는 이미 설정되어 있습니다.",
+      "useDriver": "이 드라이버 사용",
+      "needsInstall": "{name}이(가) 아직 PINS에 설치되어 있지 않습니다.",
+      "installAndUse": "설치 후 사용",
+      "installConfirm": "PINS가 인터넷에서 {name}을(를) 다운로드하여 설치합니다. 약 1분 걸립니다. 계속하시겠습니까?",
+      "installConfirmYes": "설치",
+      "cancel": "취소",
+      "unavailable": "이 PINS에서는 {name}을(를) 사용할 수 없습니다. 아래 전체 목록에서 선택하거나 PINS를 업데이트하세요.",
+      "installing": "{name} 다운로드 및 설치 중…",
+      "applying": "{name} 설정 중…",
+      "applied": "완료: {name}이(가) 설정되었고 \"{device}\"이(가) 선택되었습니다. 마운트를 연결하고 전원을 켠 다음 연결을 누르세요.",
+      "appliedPickDevice": "완료: {name}이(가) 설정되었습니다. 장치 목록에서 마운트를 선택하고 연결을 누르세요.",
+      "applyFailed": "드라이버를 설정하지 못했습니다: {message}",
+      "noInternet": "드라이버를 설치하려면 PINS에 인터넷 연결이 필요합니다. PINS를 인터넷이 되는 Wi-Fi에 연결한 후 다시 시도하세요.",
+      "packageMissing": "드라이버 패키지 {name}을(를) 지금은 다운로드할 수 없습니다.",
+      "installedButMissing": "{name}이(가) 설치되었지만 드라이버 목록에 나타나지 않습니다. PINS를 다시 시작한 후 다시 시도하세요.",
+      "installFailed": "설치 실패: {message}",
+      "disconnectFirst": "드라이버를 변경하기 전에 마운트 연결을 해제하세요.",
+      "notListed": "목록에 없는 마운트인가요?",
+      "openButton": "마운트 드라이버 찾기",
+      "title": "마운트 드라이버 찾기",
+      "connections": {
+        "swDirect": {
+          "title": "마운트에 USB 케이블 직접 연결",
+          "hint": "마운트의 USB 포트 또는 핸드 컨트롤러 포트의 EQDIR 케이블에 연결합니다. 핸드 컨트롤러는 필요 없습니다."
+        },
+        "swHandController": {
+          "title": "SynScan 핸드 컨트롤러 경유",
+          "hint": "PINS에서 핸드 컨트롤러로 케이블 연결(USB 포트 또는 시리얼 케이블). 핸드 컨트롤러 전원을 켜고 먼저 시작 메뉴를 진행하세요."
+        },
+        "celestronUsb": {
+          "title": "마운트의 USB 포트",
+          "hint": "마운트 헤드의 포트에 USB 케이블을 연결합니다."
+        },
+        "celestronHandController": {
+          "title": "NexStar 핸드 컨트롤러 경유",
+          "hint": "핸드 컨트롤러 하단에 USB 또는 시리얼 케이블을 연결합니다. 먼저 핸드 컨트롤러의 정렬 시작을 완료하세요."
+        },
+        "meadeHandController": {
+          "title": "AutoStar 핸드 컨트롤러 경유",
+          "hint": "핸드 컨트롤러 포트에 시리얼 또는 USB 케이블을 연결합니다."
+        },
+        "usb": {
+          "title": "마운트에 USB 케이블 연결",
+          "hint": "마운트에서 PINS로 USB 케이블을 연결합니다."
+        },
+        "network": {
+          "title": "네트워크 케이블(LAN)",
+          "hint": "마운트가 PINS와 같은 네트워크에 있습니다. 이후 마운트 연결 설정에서 IP 주소를 입력하세요."
+        }
+      }
+    },
     "setupWizard": {
       "title": "설정 도우미",
       "restart": "설정 도우미 시작",
       "stepCounter": "{total}단계 중 {current}단계",
-      "next": "Next",
-      "back": "Back",
-      "finish": "Finish",
+      "next": "다음",
+      "back": "뒤로",
+      "finish": "완료",
       "remindLater": "나중에 알림",
       "steps": {
-        "welcome": "Welcome",
-        "language": "Language",
+        "welcome": "환영합니다",
+        "language": "언어",
         "info": "시작하기",
-        "instance": "Connection",
+        "instance": "연결",
         "wifi": "Wi-Fi",
-        "updates": "Updates",
-        "mount": "Mount",
+        "updates": "업데이트",
+        "mount": "마운트",
         "slewRate": "슬루 속도",
-        "location": "Location",
-        "telescope": "Telescope",
-        "camera": "Camera",
-        "focuser": "Focuser",
+        "location": "위치",
+        "telescope": "망원경",
+        "camera": "카메라",
+        "focuser": "포커서",
         "filterWheel": "필터 휠",
-        "guider": "Guiding",
+        "guider": "가이딩",
         "dither": "디더",
-        "done": "Done",
-        "localization": "지역 설정"
+        "done": "완료",
+        "localization": "지역 설정",
+        "starDatabase": "별 지도"
       },
       "driver": {
         "loading": "드라이버 불러오는 중 …",
         "applying": "드라이버 적용 중 …",
         "listFailed": "드라이버를 불러오지 못했습니다: {message}",
-        "changeFailed": "드라이버를 적용하지 못했습니다: {message}"
+        "changeFailed": "드라이버를 적용하지 못했습니다: {message}",
+        "none": "드라이버 없음",
+        "installMissing": "드라이버가 목록에 없나요?"
       },
       "welcome": {
         "title": "Touch'N'Stars를 설정해 봅시다",
@@ -366,12 +435,17 @@
         "description": "앱의 언어입니다. 나중에 설정에서 바꿀 수 있습니다."
       },
       "info": {
-        "openWiki": "위키 열기"
+        "pointDevices": "다음 단계에서는 마운트, 카메라 및 기타 장치를 차례로 연결하고 망원경 정보를 입력합니다.",
+        "pointPowered": "계속하기 전에 모든 장치의 전원을 켜고 장비에 연결하세요.",
+        "pointLater": "값을 잘 모르시나요? 다음으로 건너뛰세요. 모든 것은 나중에 설정에서 변경할 수 있습니다."
       },
       "instance": {
-        "description": "@:{'general.backendName'}가 실행 중인 컴퓨터의 주소입니다. 같은 네트워크라면 보통 앱이 직접 찾습니다.",
+        "title": "리그에 연결",
+        "description": "휴대폰은 Wi-Fi로 리그와 통신합니다.",
+        "hotspotHint": "먼저 휴대폰을 리그의 Wi-Fi에 연결하세요. 새 리그는 \"pins-…\"라는 자체 핫스팟을 엽니다. 비밀번호는 \"touchnstars\"입니다.",
+        "homeNetworkHint": "리그가 이미 집 네트워크에 있나요? 그러면 그대로 두세요. 앱이 자동으로 찾습니다. 찾지 못하면 아래에 리그 주소를 입력하세요.",
         "connect": "저장 후 연결",
-        "connecting": "Connecting…",
+        "connecting": "연결 중…",
         "connected": "{name}에 연결됨",
         "connectFailed": "연결 실패: {message}"
       },
@@ -381,15 +455,16 @@
         "loadingStatus": "Wi-Fi 상태 읽는 중 …",
         "connectedTo": "{ssid}에 연결됨",
         "notConnected": "장비가 Wi-Fi 네트워크에 연결되어 있지 않습니다.",
+        "notConnectedHint": "네트워크가 없으면 자체 핫스팟을 엽니다. 업데이트와 별 지도 다운로드에는 집 네트워크가 필요합니다: \"네트워크 검색\"을 탭하세요.",
         "chooseOtherNetwork": "다른 네트워크 선택",
         "scan": "네트워크 검색",
-        "scanning": "Scanning…",
+        "scanning": "검색 중…",
         "selectNetwork": "네트워크 선택",
-        "password": "Password",
+        "password": "비밀번호",
         "passwordPlaceholder": "네트워크 비밀번호",
         "autoConnect": "이 네트워크에 자동 연결",
-        "connect": "Connect",
-        "connecting": "Connecting…",
+        "connect": "연결",
+        "connecting": "연결 중…",
         "noNetworks": "네트워크를 찾지 못했습니다. 장비를 공유기 가까이 옮긴 뒤 다시 검색하세요.",
         "transitionHint": "네트워크를 바꾸면 장비 주소가 달라집니다. 다시 찾는 중 …",
         "retryFind": "장비 다시 찾기",
@@ -413,34 +488,47 @@
         "title": "마운트 설정",
         "description": "마운트의 INDI 드라이버를 고른 뒤 연결하세요.",
         "selectDriver": "INDI 드라이버",
-        "connectDevice": "Device",
+        "connectDevice": "장치",
         "connected": "마운트 연결됨: {name}",
         "notFound": "목록에 마운트가 없나요?",
         "notFoundHint": "마운트가 없다면 드라이버가 아직 설치되지 않았을 수 있습니다. 서드파티 INDI 드라이버에서 검색해 맞는 것을 설치하세요.",
-        "installing": "Installing {label}…",
+        "installing": "{label} 설치 중…",
         "installSuccess": "{label} 설치됨. 위 드라이버 목록에서 선택하세요.",
-        "installFailed": "설치 실패: {message}"
+        "installFailed": "설치 실패: {message}",
+        "descriptionDeviceFirst": "목록에서 마운트를 선택하고 연결하세요. 목록에 나타나지 않을 때만 드라이버가 필요합니다."
       },
       "slewRate": {
         "title": "슬루 속도",
-        "description": "드라이버가 마운트를 움직일 수 있는 속도를 정합니다. 너무 빠르면 스텝을 잃을 수 있고, 너무 느리면 슬루할 때마다 오래 걸립니다.",
         "maxSlewRate": "최대 슬루 속도 (°/s)",
-        "maxSlewRateHint": "이것은 드라이버의 한계이며, 마운트 화면의 수동 슬루 속도가 아닙니다. 수동 속도는 드라이버 자체 기능에서 바로 정해집니다.",
-        "saveFailed": "저장하지 못했습니다: {message}"
+        "saveFailed": "저장하지 못했습니다: {message}",
+        "whatFor": "PINS는 극축 정렬 등에서 이동 시간을 정확히 맞추기 위해 마운트의 최고 속도가 필요합니다. 마운트의 슬루 속도를 제한하지는 않습니다.",
+        "reading": "마운트 드라이버에서 속도 읽는 중…",
+        "derived": "드라이버에서 읽음: 최고 속도는 {label}, 즉 {value} °/s입니다. 저장됨 - 여기서 할 일은 없습니다.",
+        "notNeeded": "이 드라이버는 속도를 °/s로 직접 알려주므로 여기서 설정할 필요가 없습니다.",
+        "unknown": "이 드라이버는 속도를 숫자 없이(예: \"Max\") 표시하므로 최고 속도를 읽을 수 없습니다. 마운트의 최고 속도를 모른다면 기본값 {value} °/s를 그대로 두세요.",
+        "notConnected": "이전 단계에서 마운트를 연결하면 속도를 자동으로 읽어옵니다. 연결하지 않으면 대부분의 마운트에 맞는 기본값 {value} °/s가 사용됩니다.",
+        "readFailed": "마운트에서 속도를 읽지 못했습니다. 현재 값 {value} °/s가 유지됩니다.",
+        "readAgain": "마운트에서 읽기",
+        "setManually": "직접 설정",
+        "manualHint": "마운트 설명서에 있는 최고 슬루 속도(초당 도)입니다. 여기에 입력한 값은 자동으로 바뀌지 않습니다."
       },
       "location": {
         "title": "위치 설정",
         "description": "좌표는 시간 계산, 자오선 반전, 지평선, 프레이밍에 쓰입니다. 기기에서 가져오거나 직접 입력하세요.",
         "profileCoords": "프로필 위치",
         "mountCoords": "마운트 위치",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "altitude": "Altitude",
+        "latitude": "위도",
+        "longitude": "경도",
+        "altitude": "고도",
         "useCurrentLocation": "현재 위치 사용",
-        "syncDirection": "위치 동기화 방향",
+        "locating": "위치 확인 중…",
+        "syncDirection": "마운트 연결 시",
         "save": "위치 저장",
-        "saving": "Saving…",
-        "saveFailed": "위치를 저장하지 못했습니다: {message}"
+        "saving": "저장 중…",
+        "saveFailed": "위치를 저장하지 못했습니다: {message}",
+        "unsavedHint": "아직 저장되지 않았습니다. 다음을 누르면 자동으로 저장됩니다.",
+        "savedHint": "위치가 저장되었습니다.",
+        "missingHint": "아직 위치가 설정되지 않았습니다. 극축 정렬과 스카이 아틀라스에 필요합니다."
       },
       "telescope": {
         "title": "망원경",
@@ -452,13 +540,13 @@
       "camera": {
         "title": "카메라 설정",
         "description": "많은 카메라가 기본 지원됩니다. 아래 목록에서 카메라를 고르세요. 목록에 없을 때만 INDI 드라이버가 필요합니다.",
-        "connectDevice": "Device",
+        "connectDevice": "장치",
         "connected": "카메라 연결됨: {name}",
         "notFound": "목록에 카메라가 없나요?",
         "notFoundHint": "카메라가 기본 지원되지 않으면 여기서 INDI 드라이버를 고르세요. 그러면 위 기기 목록에 나타납니다.",
         "thirdPartyHint": "드라이버가 아예 없다면 서드파티 INDI 드라이버에서 검색해 맞는 것을 설치하세요.",
         "selectDriver": "INDI 드라이버",
-        "installing": "Installing {label}…",
+        "installing": "{label} 설치 중…",
         "installSuccess": "{label} 설치됨. 위 드라이버 목록에서 선택하세요.",
         "installFailed": "설치 실패: {message}",
         "sensorTitle": "센서 매개변수",
@@ -471,45 +559,54 @@
         "chipHeight": "센서 높이 (px)",
         "pixelSize": "픽셀 크기 (µm)",
         "pixelSizeHint": "드라이버가 픽셀 크기를 보고하지 않습니다. 카메라 설명서에서 확인하세요.",
+        "pixelSizeReported": "카메라 보고값: {size} µm.",
+        "pixelSizeReportedDiffers": "카메라는 {size} µm를 보고하지만 프로필에는 다른 값이 있습니다.",
         "imageScale": "결과 이미지 스케일: {scale} arcsec/px",
-        "applyFailed": "저장하지 못했습니다: {message}"
+        "applyFailed": "저장하지 못했습니다: {message}",
+        "chipSizeNotConnectedHint": "위에서 카메라를 연결하면 센서 크기가 자동으로 입력됩니다. 센서 크기를 알려주지 않는 카메라(DSLR 등)만 아래 값이 필요합니다."
       },
       "focuser": {
         "title": "포커서 설정",
         "description": "포커서의 INDI 드라이버를 고른 뒤 연결하세요. 오토포커스 설정은 포커스 페이지에 그대로 있습니다. 이 단계는 통신만 연결합니다.",
         "selectDriver": "INDI 드라이버",
-        "connectDevice": "Device",
+        "connectDevice": "장치",
         "connected": "포커서 연결됨: {name}",
         "notFound": "목록에 포커서가 없나요?",
         "notFoundHint": "포커서가 없다면 드라이버가 아직 설치되지 않았을 수 있습니다. 서드파티 INDI 드라이버에서 검색해 맞는 것을 설치하세요.",
-        "installing": "Installing {label}…",
+        "installing": "{label} 설치 중…",
         "installSuccess": "{label} 설치됨. 위 드라이버 목록에서 선택하세요.",
-        "installFailed": "설치 실패: {message}"
+        "installFailed": "설치 실패: {message}",
+        "descriptionDeviceFirst": "목록에서 포커서를 선택하고 연결하세요. 목록에 나타나지 않을 때만 드라이버가 필요합니다. 오토포커스 매개변수는 포커스 페이지에 있습니다.",
+        "notFoundDriverHint": "포커서가 목록에 없으면 여기서 INDI 드라이버를 선택하세요. 이후 위 목록에 나타납니다."
       },
       "filterWheel": {
         "title": "필터 휠 설정",
         "description": "필터 휠의 INDI 드라이버를 고르고 연결한 뒤, 각 슬롯에 시퀀스에서 쓰는 이름을 붙이세요.",
         "selectDriver": "INDI 드라이버",
-        "connectDevice": "Device",
+        "connectDevice": "장치",
         "connected": "필터 휠 연결됨: {name}",
         "filterNames": "필터 이름",
         "filterNamesHint": "휠에 있는 순서대로 각 슬롯의 이름을 입력합니다. 영문자와 숫자만 가능합니다.",
         "notFound": "목록에 필터 휠이 없나요?",
         "notFoundHint": "필터 휠이 없다면 드라이버가 아직 설치되지 않았을 수 있습니다. 서드파티 INDI 드라이버에서 검색해 맞는 것을 설치하세요.",
-        "installing": "Installing {label}…",
+        "installing": "{label} 설치 중…",
         "installSuccess": "{label} 설치됨. 위 드라이버 목록에서 선택하세요.",
-        "installFailed": "설치 실패: {message}"
+        "installFailed": "설치 실패: {message}",
+        "descriptionDeviceFirst": "목록에서 필터 휠을 선택하고 연결한 다음 슬롯에 사용하는 이름을 지정하세요. 목록에 나타나지 않을 때만 드라이버가 필요합니다.",
+        "notFoundDriverHint": "필터 휠이 목록에 없으면 여기서 INDI 드라이버를 선택하세요. 이후 위 목록에 나타납니다.",
+        "noneHint": "필터 휠이 없나요? 다음을 누르세요.",
+        "addFilter": "필터 추가"
       },
       "guider": {
         "title": "가이딩 설정",
         "description": "가이딩은 PHD2로 합니다. 가이드 카메라를 고르고 가이더를 연결한 뒤 가이드 망원경 정보를 PHD2에 알려 주세요.",
         "guideCamera": "가이드 카메라",
         "guideCameraHint": "PHD2는 자체 드라이버를 쓰므로 여기서 INDI 드라이버를 고를 필요가 없습니다. 목록이 비어 있으면 새로 고침 버튼을 누르세요. 카메라는 전원이 켜져 있고 메인 카메라로 사용 중이 아니어야 합니다.",
-        "connectDevice": "Guider",
+        "connectDevice": "가이더",
         "connected": "가이더 연결됨: {name}",
         "focalLength": "가이드 망원경 초점거리",
         "focalLengthHint": "가이드 망원경의 초점거리(mm)입니다. 메인 망원경과 별도로 PHD2 프로필에 저장되며, PHD2가 가이딩을 각초로 표시하는 데 쓰입니다.",
-        "ditherTitle": "Dither",
+        "ditherTitle": "디더링",
         "ditherDescription": "@:{'general.backendName'}는 디더를 가이드 카메라 픽셀로 설정하지만, 일반적인 권장값은 메인 카메라 픽셀 기준입니다. 여기서 둘 사이를 환산합니다.",
         "ditherMainPixels": "디더 (메인 카메라 픽셀)",
         "ditherMainPixelsHint": "디더 한 번에 대상이 메인 카메라 센서에서 얼마나 움직여야 하는지입니다. 10~15픽셀이 좋은 시작점입니다.",
@@ -522,23 +619,67 @@
         "ditherResult": "디더 설정: 가이드 픽셀 {pixels}",
         "ditherCurrent": "현재 프로필: 가이드 픽셀 {pixels} (메인 카메라 픽셀 {mainPixels}).",
         "ditherApply": "프로필에 적용",
-        "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherApplied": "적용됨",
+        "ditherMissingData": "디더를 계산하려면 촬영 장비와 가이드 장비 모두의 픽셀 크기와 초점 거리가 필요합니다. 카메라와 망원경 단계를 입력하고 가이딩 단계에서 가이드 스코프의 초점 거리를 설정하세요.",
         "applyFailed": "저장하지 못했습니다: {message}",
-        "nativeCamera": "가이드 카메라 (PINS 네이티브 가이더)",
-        "nativeCameraHint": "네이티브 가이더가 가이드 카메라를 직접 제어합니다. INDI 드라이버와 장치를 선택하고 가이드 경통의 초점 거리를 입력하세요."
+        "guideScope": "가이드 망원경",
+        "nativeCameraHint": "가이드 스코프의 초점 거리를 입력하세요. 가이더가 별의 이동량을 판단하는 데 필요합니다.",
+        "descriptionBuiltIn": "PINS에는 촬영 중 별을 제자리에 유지하는 가이더가 내장되어 있어 다른 프로그램이 필요 없습니다. 가이드 카메라를 고르고 가이드 망원경의 초점 거리를 입력하세요.",
+        "nativeRecommended": "팁: PINS에는 자체 가이더(위 목록의 \"Native Guider\")가 있습니다. PINS를 위해 특별히 개발되었고 별도 프로그램 없이 장비에서 직접 실행되며 PHD2보다 더 안정적으로 가이딩하는 경우가 많습니다. PHD2에서 설정한 값은 그대로 이어지며, PHD2를 다시 선택하면 언제든 되돌릴 수 있습니다.",
+        "nativeFocalLengthMissing": "가이드 스코프 초점 거리가 아직 0입니다. 가이딩은 그 없이도 작동하지만 Dither와 초 단위 가이딩 오차에는 필요합니다.",
+        "guidePixelSizeHintNative": "이 계산에만 사용됩니다. 가이더는 가이드 카메라가 연결되면 픽셀 크기를 직접 읽으며, 그 전까지는 카메라 설명서의 값을 사용하세요.",
+        "ditherMissingDataNative": "Dither를 계산하려면 촬영 장비와 가이드 장비 모두의 픽셀 크기와 초점 거리가 필요합니다. 카메라 및 망원경 단계와 가이딩 단계의 가이드 스코프 초점 거리를 입력하세요.",
+        "guideCameraNotFound": "가이드 카메라가 목록에 없나요?",
+        "guideCameraNotFoundHint": "가이드 카메라가 기본 지원되지 않으면 여기서 INDI 드라이버를 선택하세요. 이후 위 장치 목록에 나타납니다.",
+        "ditherIntro": "Dither는 노출 사이에 이미지를 조금씩 이동시켜 스택 결과의 노이즈 패턴을 없애줍니다. 가이딩을 사용하지 않으면 이 단계를 건너뛸 수 있습니다.",
+        "ditherReadyHint": "일반적인 값이 이미 입력되어 있습니다. \"{button}\"을(를) 누르면 끝납니다."
       },
       "done": {
         "title": "장비 준비 완료",
         "description": "장비가 연결되어 최신 상태이며, 마운트, 카메라, 포커서, 필터 휠, 가이딩 설정이 끝났습니다.",
         "descriptionPlain": "마운트, 카메라, 포커서, 필터 휠, 위치 설정이 끝났습니다.",
         "moreDevicesHint": "플랫 패널, 날씨 및 나머지 기기는 각자의 페이지에서 설정합니다.",
-        "noConnectionHint": "아직 장비에 연결되지 않았습니다. 설정 → 연결에서 언제든 추가할 수 있습니다."
+        "noConnectionHint": "아직 장비에 연결되지 않았습니다. 설정 → 연결에서 언제든 추가할 수 있습니다.",
+        "summaryIntro": "현재 설정된 내용입니다. 항목을 누르면 해당 단계로 돌아갑니다.",
+        "status": {
+          "ok": {
+            "mount": "선택됨",
+            "location": "저장됨",
+            "telescope": "초점 거리 설정됨",
+            "camera": "선택됨",
+            "focuser": "선택됨",
+            "filterWheel": "선택됨",
+            "guider": "선택됨",
+            "starDatabase": "설치됨"
+          },
+          "warn": {
+            "mount": "마운트가 선택되지 않음",
+            "location": "없음: 극축 정렬과 스카이 아틀라스에 필요",
+            "telescope": "초점 거리 없음: 플레이트 솔빙에 필요",
+            "camera": "카메라가 선택되지 않음",
+            "starDatabase": "설치되지 않음: 플레이트 솔빙을 할 수 없음"
+          },
+          "none": {
+            "focuser": "없음, 수동 포커스",
+            "filterWheel": "없음, 괜찮습니다",
+            "guider": "가이딩 없음"
+          }
+        }
       },
       "cancel": "설정 취소",
       "localization": {
         "title": "장비의 지역 설정 구성",
-        "description": "핫스팟 위치, 시간 및 원격 키보드 입력이 장비 사용 위치와 일치하도록 Wi-Fi보다 먼저 이 값을 설정하세요."
+        "description": "핫스팟 위치, 시간 및 원격 키보드 입력이 장비 사용 위치와 일치하도록 Wi-Fi보다 먼저 이 값을 설정하세요.",
+        "localeHint": "장비 자체의 언어 및 숫자 형식입니다. 예: en_US.UTF-8 또는 de_DE.UTF-8. C.UTF-8은 중립 기본값이며 이것도 사용할 수 있습니다.",
+        "unappliedHint": "아직 적용되지 않음: 다음을 누르기 전에 \"{button}\"을(를) 누르세요. 그렇지 않으면 변경 사항이 사라집니다.",
+        "nothingToDoHint": "변경할 것이 없나요? 다음을 누르세요.",
+        "rigLanguage": "장비의 언어 및 키보드"
+      },
+      "starDatabase": {
+        "title": "플레이트 솔빙용 별 지도",
+        "description": "망원경이 가리키는 위치를 알아내기 위해 장비는 이미지를 별 지도와 비교합니다(\"플레이트 솔빙\"). 극축 정렬과 대상 센터링에 필요합니다. PINS에는 D80 별 지도가 포함되어 있으며, 매우 넓은 시야에는 여기서 다른 지도를 추가할 수 있습니다.",
+        "otherSolver": "프로필이 ASTAP이 아닌 다른 플레이트 솔버를 사용하므로 여기서 설치할 것이 없습니다.",
+        "hint": "다운로드 용량이 커서 몇 분 걸릴 수 있습니다. 그동안 다음을 눌러도 됩니다. 설치는 장비에서 계속 진행됩니다."
       }
     },
     "fileBrowser": {
@@ -737,7 +878,9 @@
         "restartInfoTitle": "시스템 재시작 중",
         "restartInfoMessage": "시스템을 재시작하고 있습니다.",
         "shutdownInfoTitle": "시스템 종료 중",
-        "shutdownInfoMessage": "시스템을 종료하고 있습니다. 이 페이지에는 더 이상 접속할 수 없습니다."
+        "shutdownInfoMessage": "시스템을 종료하고 있습니다. 이 페이지에는 더 이상 접속할 수 없습니다.",
+        "shutdownPowerHint": "1분 정도 기다린 뒤 전원을 꺼도 됩니다.",
+        "shutdownFailed": "종료하지 못했습니다: {reason}"
       },
       "plate_solver": {
         "title": "플레이트 솔버",
@@ -774,8 +917,16 @@
         "astapDatabaseAllInstalled": "모든 ASTAP 스타 데이터베이스가 이미 설치되어 있습니다.",
         "astapDatabaseDescription": "누락된 ASTAP 스타 데이터베이스를 PINS 장치에 직접 설치하십시오.",
         "astapDatabaseInstall": "설치",
-        "astapDatabaseInstallFailed": "ASTAP 스타 데이터베이스 설치에 실패했습니다{exitCode}.",
         "astapDatabaseInstallSuccess": "ASTAP 스타 데이터베이스 {databaseId}가 성공적으로 설치되었습니다.",
+        "astapDatabaseDownloadFailed": "{databaseId} 설치에 실패했습니다. 리그는 인터넷에서 별 지도를 다운로드합니다. 인터넷에 연결된 네트워크에 있나요? 그렇다면 다시 시도하세요.",
+        "astapDatabaseLastAttemptFailed": "{databaseId}의 마지막 설치 시도가 실패했습니다({time}). 리그는 인터넷에서 별 지도를 다운로드합니다. 인터넷에 연결된 네트워크에 있나요? 그렇다면 다시 시도하세요.",
+        "astapDatabaseRetry": "{databaseId} 다시 설치",
+        "astapDatabasePhase": {
+          "downloading": "다운로드 중",
+          "installing": "설치 중",
+          "finalizing": "마무리 중",
+          "complete": "완료"
+        },
         "astapDatabaseInstalling": "설치 중...",
         "astapDatabaseProgressStalled": "30초 동안 다운로드 진행이 없습니다. 작업을 계속 모니터링하고 있습니다.",
         "astapDatabaseJobStarted": "시작됨",
@@ -787,6 +938,11 @@
         "astapDatabaseNoInstallable": "설치 가능한 ASTAP 스타 데이터베이스가 없습니다.",
         "astapDatabaseSelectPlaceholder": "데이터베이스 선택",
         "astapDatabaseStartFailed": "설치를 시작하지 못했습니다: {detail}",
+        "astapDatabaseInstalledList": "설치됨: {list}",
+        "astapDatabaseNoneInstalled": "아직 설치된 별 데이터베이스가 없습니다. 없으면 플레이트 솔빙(극축 정렬, 대상 센터링)을 할 수 없습니다.",
+        "astapDatabaseRecommendedTag": "권장",
+        "astapDatabaseRecommendedFov": "사용 중인 망원경과 카메라에 권장(시야 {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "권장: {id}. 망원경에 맞는 권장 항목을 보려면 초점 거리, 픽셀 크기, 센서 크기를 입력하세요.",
         "astapDatabaseStartInstall": "{databaseId} 설치 시작 중...",
         "astapDatabaseStarting": "시작 중...",
         "astapDatabaseStatusCheckFailedRetrying": "상태 확인 실패: {detail}. 재시도 중...",
@@ -853,20 +1009,31 @@
         "loading": "스왑 설정 읽는 중…",
         "current": "활성 시스템 스왑: {size} GB",
         "size": "설정된 스왑 크기",
-        "choose": "Choose a size",
+        "choose": "크기 선택",
         "defaultSize": "2 GB (이미지 기본값)",
         "recommendedSize": "8 GB (권장)",
         "freeSpace": "여유 공간: {size} GB",
         "pending": "{size} GB가 설정되었습니다. 촬영 세션이 끝나면 Pi를 다시 시작해 적용하세요.",
         "saved": "스왑 설정을 저장했습니다.",
-        "saving": "Saving…",
+        "saving": "저장 중…",
         "save": "스왑 크기 저장",
-        "refresh": "Refresh",
+        "refresh": "새로고침",
         "unsupported": "이 시스템에는 지원되는 디스크 스왑 설정이 없습니다.",
         "unavailable": "스왑 설정을 사용할 수 없습니다. Pi의 pinsdaemon을 업데이트하세요.",
         "loadError": "스왑 설정을 읽지 못했습니다: {message}",
         "saveError": "스왑 설정을 저장하지 못했습니다: {message}",
         "missingJob": "데몬이 스왑 작업을 반환하지 않았습니다."
+      },
+      "instances": {
+        "discovery": "네트워크에서 리그 찾기",
+        "add": "리그 추가",
+        "edit": "리그 편집",
+        "configured": "저장된 리그",
+        "none": "저장된 리그가 아직 없습니다",
+        "noneHint": "위의 검색을 사용하거나 주소를 직접 입력하세요.",
+        "active": "사용 중",
+        "setActive": "이 리그 사용",
+        "delete": "리그 제거"
       }
     },
     "alpacaDirect": {
@@ -885,7 +1052,12 @@
     "selectDevices": {
       "deviceNotFound": "장치를 찾을 수 없음",
       "deviceNotFoundMessage": "INDI 드라이버를 다시 불러왔지만 \"{device}\"이(가) 나타나지 않았습니다. 전원을 확인하고 장치를 다시 선택하세요.",
-      "reloadingDriver": "INDI 드라이버를 다시 불러오는 중…"
+      "reloadingDriver": "INDI 드라이버를 다시 불러오는 중…",
+      "configure": "장치 설정",
+      "rescan": "장치 다시 검색",
+      "connect": "연결",
+      "disconnect": "연결 해제",
+      "whyNotConnect": "아직 연결할 수 없는 이유는?"
     },
     "connectEquipment": {
       "camera": {
@@ -916,7 +1088,7 @@
         "guideCamRequired": "유효한 가이드 카메라를 선택해야 합니다."
       },
       "guiderCam": {
-        "name": "가이드 카메라",
+        "name": "PHD2 카메라",
         "manualVnc": "VNC를 통해 수동으로"
       },
       "safety": {
@@ -1044,8 +1216,8 @@
       "resetConfirmationTitle": "초기화 확인",
       "resetConfirmationMessage": "시퀀스를 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
       "clearSequence": "모두 지우기",
-      "clearConfirmationTitle": "지우기 확인",
-      "clearConfirmationMessage": "전체 시퀀스를 지우시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+      "clearConfirmationTitle": "모두 지우기",
+      "clearConfirmationMessage": "시퀀스에서 모든 항목을 제거할까요? 이 작업은 되돌릴 수 없습니다.",
       "load_sequence": "디렉터리에서 시퀀스 불러오기",
       "choose_sequence": "시퀀스 선택",
       "saved_sequences": "TNS 시퀀스 생성기",
@@ -1276,7 +1448,7 @@
         },
         "polarAlignment": {
           "searchRadius": "검색 반경 (°)",
-          "alignmentTolerance": "정렬 허용 오차 (arcsec)",
+          "alignmentTolerance": "정렬 허용 오차 (arcmin)",
           "moveRate": "이동 속도 (°/s)",
           "targetDistance": "목표 거리 (°)",
           "eastDirection": "동쪽 방향",
@@ -1468,14 +1640,26 @@
       "resetStatus": "상태 초기화",
       "delete": "삭제",
       "runningLocked": "이 항목은 실행 중이어서 변경할 수 없습니다",
+      "plan": {
+        "title": "플랜",
+        "startSequence": "플랜 시작",
+        "resetSequence": "플랜 초기화",
+        "resetConfirmationMessage": "플랜을 처음부터 다시 시작하도록 초기화하시겠습니까? 되돌릴 수 없습니다.",
+        "clearConfirmationMessage": "플랜의 모든 내용을 삭제하시겠습니까? 되돌릴 수 없습니다.",
+        "manageSequences": "플랜 불러오기 / 저장",
+        "saveSequenceAs": "현재 플랜을 다음 이름으로 저장",
+        "sequenceFolder": "플랜 폴더",
+        "sequenceFolderSaveError": "플랜 폴더를 변경하지 못했습니다.",
+        "controlsLockedMessage": "플랜이 실행되는 동안에는 플랜 제어가 잠깁니다."
+      },
       "simple": {
         "viewMode": "시퀀스 보기",
-        "viewModeHint": "간단은 대상마다 주요 옵션이 담긴 카드를 보여줍니다. 전문가는 전체 시퀀스 트리를 보여줍니다.",
+        "viewModeHint": "간단은 대상마다 주요 옵션이 담긴 카드를 보여줍니다. 전체는 시퀀스 트리를 모두 보여줍니다.",
         "mode": {
           "simple": "간단",
-          "full": "전문가"
+          "full": "전체"
         },
-        "openExpert": "전문가 편집기에서 편집",
+        "openFull": "전체 편집기에서 편집",
         "targets": "대상",
         "remaining": "남음",
         "total": "합계",
@@ -1491,6 +1675,8 @@
         "dither": "디더링",
         "ditherHint": "프레임 사이에 가이드 위치를 약간 이동합니다. 가이더가 실행 중이어야 합니다.",
         "ditherEvery": "N 프레임마다 디더",
+        "ditherInExposures": "각 노출 행은 매 촬영 후 Dither합니다. | 각 노출 행은 {count}장마다 Dither합니다.",
+        "ditherInExposuresMixed": "노출 행마다 각자의 간격으로 Dither합니다.",
         "coolCamera": "카메라 냉각",
         "coolCameraHint": "첫 번째 대상 전에 카메라를 목표 온도로 냉각합니다.",
         "unparkMount": "마운트 언파크",
@@ -1515,7 +1701,6 @@
         "afAfterHfr": "HFR 증가 후",
         "coordinates": "좌표",
         "exposureEnabled": "이 노출 촬영",
-        "cameraDefault": "카메라",
         "gainShort": "게인",
         "offsetShort": "오프셋",
         "empty": "이 시퀀스에는 아직 대상이 없습니다.",
@@ -1527,6 +1712,7 @@
         "favorites": "즐겨찾기",
         "framing": "프레이밍",
         "noFilter": "필터 변경 없음",
+        "chooseFilter": "필터 선택",
         "exposureTime": "노출 (초)",
         "count": "수량",
         "noExposures": "이 대상에는 아직 노출이 없습니다.",
@@ -1539,7 +1725,50 @@
         "deleteTarget": "대상 삭제",
         "deleteTargetConfirm": "{name} 및 모든 노출을 시퀀스에서 삭제할까요?",
         "deleteExposure": "노출 삭제",
-        "deleteExposureConfirm": "이 노출 행을 시퀀스에서 삭제할까요?"
+        "deleteExposureConfirm": "이 노출 행을 시퀀스에서 삭제할까요?",
+        "addTargetNamed": "{name}을(를) 대상으로 추가",
+        "limits": {
+          "title": "밤",
+          "wait": "어두워질 때까지 기다리기",
+          "waitHint": "어두워지면 바로 플랜이 시작됩니다. 기다리는 동안 마운트는 추적하지 않습니다.",
+          "dawn": "새벽에 멈추기",
+          "dawnHint": "사진이 남아 있어도 밝아지면 플랜을 끝냅니다. 나머지는 다음 밤에 찍을 수 있습니다.",
+          "from": "{time}부터",
+          "notTonight": "오늘 밤 없음",
+          "low": "대상이 너무 낮아지면 멈추기",
+          "lowHint": "지평선 근처에서는 대기 때문에 별이 흐려지고 나무나 집이 가립니다. 그러면 플랜은 다음 대상으로 넘어갑니다.",
+          "minAltitude": "지평선 위 최저 고도(°)",
+          "noTarget": "먼저 플랜에 대상을 추가하세요. 그러면 자동으로 켜집니다.",
+          "targetRunning": "대상을 촬영하는 동안에는 바꿀 수 없습니다.",
+          "sunBelow": "태양이 지평선 아래 {degrees}°",
+          "darknessName": {
+            "bright": "아직 밝음",
+            "dusky": "거의 어두움",
+            "usual": "보통",
+            "dark": "더 어두움",
+            "darkest": "완전히 어두움"
+          },
+          "minAltitudeHint": "0°는 지평선, 90°는 바로 머리 위입니다. 팔을 뻗어 주먹 두 개를 겹치면 약 20°입니다.",
+          "startAt": "밤의 시작",
+          "endAt": "밤의 끝",
+          "until": "{time}까지"
+        },
+        "refocus": {
+          "title": "포커스",
+          "label": "정기적으로 다시 초점 맞추기",
+          "hint": "밤 기온이 내려가면 초점이 이동합니다. 계획이 두 사진 사이에 초점을 다시 맞추며, 매번 몇 분이 걸립니다.",
+          "howOften": "간격",
+          "every": {
+            "minutes": "1분마다 | {count}분마다",
+            "hours": "1시간마다 | {count}시간마다"
+          }
+        },
+        "budget": {
+          "question": "이 대상을 얼마나 오래 촬영할까요? (시간)",
+          "pictures": "{seconds}초 사진 {count}장 | {seconds}초 사진 {count}장",
+          "apply": "이 사진 수 사용",
+          "wholeNight": "밤이 허락하는 만큼 ({time})"
+        }
       }
     },
     "mount": {
@@ -1550,17 +1779,19 @@
         "parked": "마운트가 파킹되어 있어 표시할 위치가 없습니다."
       },
       "location_sync": {
-        "title": "위치 동기화 설정",
-        "confirmationMessage": "@:{'general.backendName'}의 'Location Sync'가 'Prompt'로 설정되어 있으면 좌표를 망원경으로 보내기 전에 확인 창이 나타날 수 있습니다. 이를 피하고 TNS가 좌표를 자동으로 설정하도록 하려면 'Sync to Telescope'로 변경하는 것을 권장합니다",
+        "title": "마운트 위치",
+        "confirmationMessage": "마운트가 연결되면 앱이 내 위치를 마운트로 보내 하늘의 올바른 곳을 가리키게 할 수 있습니다. 어떻게 할지 선택하세요. 나중에 위치 설정에서 변경할 수 있습니다.",
         "toTelescope": {
-          "label": "망원경으로 동기화"
+          "label": "내 위치를 마운트로 보내기"
         },
         "toApplication": {
-          "label": "애플리케이션으로 동기화"
+          "label": "마운트에서 위치 가져오기"
         },
         "noSync": {
-          "label": "동기화 안 함"
-        }
+          "label": "위치를 동기화하지 않음"
+        },
+        "recommended": "권장",
+        "noLocationHint": "아직 위치가 설정되지 않았습니다. \"내 위치를 마운트로 보내기\"를 선택하면 0° / 0°를 보내 마운트가 알고 있는 위치를 덮어씁니다. 지금은 \"위치를 동기화하지 않음\"을 선택하세요. 위치를 설정하면 앱이 마운트로 보냅니다."
       },
       "control": {
         "park": "파킹",
@@ -1576,7 +1807,7 @@
           "unpark": "마운트 파킹 해제 오류",
           "tracking": "추적 모드 설정 오류"
         },
-        "setLocationSyncToMount": "\"망원경으로 동기화\" 설정",
+        "setLocationSyncToMount": "항상 내 위치를 마운트로 보내기",
         "slewRateINDI": "슬루 속도",
         "reverse_axis": "축 방향",
         "slewRateDriverControlled": "슬루율은 드라이버에 의해 제어됩니다.",
@@ -1908,7 +2139,7 @@
         "title": "캘리브레이션 도우미",
         "info": "캘리브레이션 도우미는 캘리브레이션을 위해 마운트를 최적의 위치에 배치하고 정확한 캘리브레이션을 수행하도록 도와줍니다.",
         "positionSettings": "위치 설정",
-        "decOffset": "Dec",
+        "decOffset": "적위",
         "meridianOffset": "자오선 오프셋",
         "direction": "방향",
         "west": "서",
@@ -2131,11 +2362,11 @@
         "maxStarHFD": "최대 별 HFD (픽셀)",
         "beepForLostStar": "별을 잃으면 경고음",
         "starMassDetection": "별 질량 감지",
-        "massChangeEnabled": "Enable",
-        "massChangeThreshold": "Tolerance",
+        "massChangeEnabled": "사용",
+        "massChangeThreshold": "허용 오차",
         "backlash": {
           "title": "백래시 보정",
-          "enabled": "Enable",
+          "enabled": "사용",
           "amount": "양 (ms)",
           "min": "Min (ms)",
           "max": "최대 (ms)"
@@ -2144,12 +2375,12 @@
         "autoSelectDownsample": "자동 선택 프레임 다운샘플",
         "saturationByADU": "ADU 기준 포화",
         "saturationADUValue": "포화 ADU 값",
-        "dither": "Dither",
+        "dither": "디더링",
         "ditherMode": "디더 모드",
         "ditherRaOnly": "RA로만 디더",
         "ditherScale": "디더 배율",
-        "ditherModeRandom": "Random",
-        "ditherModeSpiral": "Spiral",
+        "ditherModeRandom": "무작위",
+        "ditherModeSpiral": "나선형",
         "imageDisplay": "이미지 표시",
         "imageGamma": "스트레치 (감마)",
         "imageGammaHint": "낮음 = 강한 스트레치, 높음 = 선형"
@@ -2788,7 +3019,7 @@
           "loading": "설정 불러오는 중…",
           "loadFailed": "설정을 불러오지 못했습니다",
           "empty": "사용 가능한 설정이 없습니다.",
-          "notConnectedHint": "네이티브 가이더가 연결되지 않았습니다. 변경 사항은 프로필에 저장되며, 카메라 변경은 다음 연결 시 적용됩니다.",
+          "notConnectedHint": "내장 가이더가 연결되지 않았습니다. 변경 사항은 프로필에 저장되며, 카메라 변경은 다음 연결 시 적용됩니다.",
           "requiresReconnect": "재연결 후 적용됨",
           "valueInUse": "사용 중: {value} {unit}, 가이딩 중 조정됨.",
           "range": "{min} ~ {max}",
@@ -2925,14 +3156,14 @@
           "descriptions": {
             "GuideSource": "가이드 프레임을 가져오는 곳. 가이드 카메라: 장비의 가이드 카메라 슬롯에 있는 카메라. 시뮬레이터: 마운트, 하늘, 카메라를 내장 시뮬레이션하여 하드웨어 없이 또는 낮에도 가이더를 시험해 볼 수 있습니다.",
             "ExposureSeconds": "각 가이드 이미지의 노출 시간입니다. 짧은 노출은 바람과 마운트 오차에 더 빨리 반응하며, 최소 이동량이 시잉을 쫓지 않게 해 줍니다. 대부분의 마운트에는 1 s가 맞습니다. 가이드 별이 너무 어두우면 더 긴 노출을 사용하세요.",
-            "Gain": "-1이면 드라이버의 현재 게인을 유지합니다. (PHD2의 게인은 백분율이므로 가져오지 않습니다.)",
-            "Offset": "-1이면 드라이버의 현재 오프셋을 유지합니다.",
+            "Gain": "가이드 프레임에 쓰는 가이드 카메라의 게인입니다. -1(기본값)은 가이드 카메라 설정의 게인을 사용합니다. 게인이 높을수록 어두운 별이 밝아지지만 노이즈가 늘어납니다. PHD2의 게인은 백분율이므로 이어받지 않습니다.",
+            "Offset": "가이드 카메라의 오프셋(블랙 레벨)입니다. -1(기본값)은 가이드 카메라 설정의 오프셋을 사용합니다. 가이드 프레임의 배경이 검게 잘릴 때만 올리세요.",
             "Binning": "가이드 프레임의 하드웨어 비닝. 2×2는 카메라 감도를 높이고 프레임 전송을 빠르게 하지만 해상도가 줄어듭니다. 픽셀이 작거나 가이드 초점거리가 길 때 유용합니다. 변경 후 다시 캘리브레이션하세요.",
-            "FocalLengthMm": "가이드 경통(OAG 사용 시 메인 경통)의 초점거리입니다. 각초 값과 보정 스텝 계산에 필요합니다.",
-            "PixelSizeUm": "0이면 카메라 드라이버의 픽셀 크기를 사용합니다.",
+            "FocalLengthMm": "가이드 경통의 초점거리(밀리미터)이며, 비축 가이더를 쓰면 메인 경통의 초점거리입니다. 픽셀 크기와 함께 이미지 스케일을 결정하고, 가이더는 이를 바탕으로 각초를 표시하고 보정 스텝과 최소 이동을 정하므로 정확히 설정하세요.",
+            "PixelSizeUm": "가이드 카메라의 픽셀 크기(마이크로미터)로, 이미지 스케일에 사용됩니다. 0(기본값)은 카메라 드라이버 값을 사용합니다. 드라이버가 값을 보고하지 않거나 잘못 보고할 때만 설정하세요.",
             "NoiseReduction": "별을 측정하기 전에 각 가이드 프레임을 부드럽게 합니다. Mean 2×2는 이웃 픽셀을 평균하고, Median 3×3은 단일 핫픽셀도 제거합니다. 비냉각 카메라처럼 노이즈가 매우 많은 프레임에 도움이 됩니다. 깨끗한 프레임에서는 None이 가장 정확한 별 위치를 제공합니다.",
-            "UseDarkLibrary": "다크를 뺍니다. 네이티브 라이브러리가 만들어져 있으면 그것을, 없으면 이 카메라 크기에 맞는 PHD2 다크 라이브러리를 사용합니다.",
-            "PulseOutput": "Mount: 연결된 마운트 드라이버를 통한 펄스 가이딩. CameraST4: 가이드 카메라의 ST4 포트를 통한 가이딩.",
+            "UseDarkLibrary": "각 가이드 프레임에서 다크 프레임을 빼 핫픽셀과 앰프 글로를 제거하여 별로 오인되지 않게 합니다. 네이티브 다크 라이브러리를 만들었으면 그것을, 아니면 이 카메라 크기에 맞는 PHD2 라이브러리를 사용합니다.",
+            "PulseOutput": "가이드 펄스를 보내는 경로입니다. 마운트: 연결된 마운트 드라이버를 통해(펄스 가이딩) 보내며 일반적인 선택입니다. 카메라 ST4: 가이드 카메라의 ST4 포트에서 마운트의 ST4 입력으로 보냅니다(INDI 카메라만).",
             "MultiStar": "여러 별을 동시에 측정해 한 별이 아닌 결합된 위치로 가이드합니다. 시잉의 많은 부분이 평균화되고, 한 별이 어두워져도 가이드가 유지됩니다. 켜 두는 것이 가장 좋습니다.",
             "MaxStars": "멀티스타 가이드에 쓰는 최대 별 수. 별이 많을수록 시잉이 더 평균화됩니다. 시야에 쓸 만한 별이 적으면 찾은 별을 사용합니다. 1은 단일 별로 가이드합니다.",
             "MinSnr": "별이 가이드 별로 선택되는 데 필요한 신호 대 잡음비. 값이 너무 높으면 별을 찾지 못합니다. 낮추기보다는 더 긴 노출, 더 높은 게인 또는 새 다크 라이브러리를 시도하세요.",
@@ -2941,48 +3172,48 @@
             "MaxHfd": "가이드 별이 가질 수 있는 최대 크기(반광속 직경, 픽셀). 이보다 큰 부푼 별이나 초점이 맞지 않은 얼룩은 별 선택 시 무시됩니다.",
             "MassChangeEnabled": "가이드 별의 밝기(질량)를 감시하고 급격한 변화를 별 손실로 처리하여, 구름이 지나갈 때 가이더가 이웃 별로 넘어가거나 핫픽셀로 가이드하지 않게 합니다.",
             "MassChangeThreshold": "별이 손실된 것으로 간주되기 전까지 허용되는 질량 변화. 0.5는 최근 프레임 대비 절반의 변화를 허용합니다. 투명도가 변할 때처럼 별이 분명히 보이는데도 별 손실 경보가 뜨면 올리세요.",
-            "PrimaryDropoutFallback": "주 별이 한 프레임 동안 사라지면, 서로 일치하는 보조 별 ≥3개로 그 위치를 추정합니다.",
-            "SaturationAdu": "0 = 별 프로파일에서 포화를 감지합니다.",
-            "RaAlgorithm": "Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습하고 다음 프레임에 대해 예측한 오차를 교정합니다. 따라서 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
-            "RaAggression": "프레임마다 교정하는 오차의 비율(0..1).",
+            "PrimaryDropoutFallback": "주 별이 한 프레임 동안 사라지면(지나가는 구름, 위성) 가이더가 서로 일치하는 보조 별 3개 이상으로 위치를 추정해 멈추지 않고 가이딩을 계속합니다. 다중 별 가이딩이 필요합니다.",
+            "SaturationAdu": "별이 포화된 것으로 보는 픽셀 값입니다. 포화된 별은 중심을 정확히 측정할 수 없어 사용하지 않습니다. 0(기본값)은 별의 모양으로 포화를 감지합니다. 그렇지 않으면 카메라의 최댓값(예: 16비트는 65535)을 입력하세요.",
+            "RaAlgorithm": "측정된 RA 오차를 교정으로 바꾸는 방식입니다. Hysteresis(기본값)는 오차의 일부를 교정하고 이전 교정으로 부드럽게 합니다. Lowpass2와 Lowpass는 더 완만하게 반응하며 추적이 좋은 마운트에 적합합니다. None은 RA 교정을 보내지 않습니다. Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습해 다음 프레임에 예측되는 오차를 교정합니다. 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
+            "RaAggression": "측정된 RA 오차 중 프레임마다 교정하는 비율입니다. 0.7은 70 %를 교정합니다. 낮은 값은 과잉 교정과 시잉 추적을 막고, 높은 값은 별을 더 빨리 되돌립니다. 별이 좌우로 흔들리면 낮추고, 뒤처지면 높이세요.",
             "RaHysteresis": "최신 오차에 대한 이전 RA 보정의 가중치. 0.1은 마지막 보정의 10%를 섞습니다. 값이 클수록 보정이 부드러워지지만 실제 방향 전환에는 느리게 반응합니다.",
             "RaLowpass2Aggressiveness": "Lowpass2는 최근 RA 오차에 직선을 맞추고 개별 프레임 대신 그 추세를 보정합니다. 이 값은 프레임마다 보정하는 추세의 비율(%)입니다. 보정이 지나치면 낮추세요.",
-            "RaMinMove": "0 = 이미지 스케일에서 자동으로 결정.",
+            "RaMinMove": "교정을 받는 가장 작은 RA 오차(픽셀)입니다. 더 작은 오차는 무시하여 가이더가 시잉을 쫓지 않게 합니다. 0(기본값)은 이미지 스케일로 값을 계산합니다. 그날 밤 시잉에 맞춰 조정할 가치가 가장 큰 설정입니다.",
             "RaCorrectionPace": "Predictive 알고리즘이 프레임마다 보정하는 남은 오차의 비율. 0.5는 0을 넘어가지 않고 2–3프레임에 걸쳐 오프셋을 없애고, 1은 한 번에 모두 보정합니다. 드리프트와 주기 오차는 항상 전부 보정됩니다.",
             "PeriodicErrorPrediction": "RA 웜의 주기 오차를 학습해 드러나기 전에 교정합니다. 학습한 곡선은 프로필과 마운트별로 저장됩니다.",
             "WormPeriodUnit": "RA 웜을 웜 휠의 톱니 수 또는 초 단위 주기로 지정합니다(예: 마운트 설명서나 PEC 도구). 초는 주기가 정수 톱니 수가 아닌 구동(하모닉 감속기, 벨트)에도 맞습니다. 선택한 값만 사용됩니다.",
-            "WormTeeth": "RA 웜 휠의 톱니 수(예: EQ6-R은 180, HEQ5는 135)로, 정확한 웜 주기를 알 수 있습니다. 0 = 가이드 프레임에서 주기를 감지.",
+            "WormTeeth": "RA 웜휠의 잇수(예: EQ6-R은 180, HEQ5는 135)로, 정확한 웜 주기를 알 수 있습니다. 0(기본값)은 가이드 프레임에서 주기를 감지합니다.",
             "WormPeriodSeconds": "RA 웜의 주기(초, 예: 180톱니는 478.7). 이 경우 주기를 감지하지 않습니다. 자오선 전환 후에는 톱니 수가 없을 때처럼 위상을 다시 학습합니다. 0(기본값) = 가이드 프레임에서 주기 감지. 가이더는 180~1200초를 받습니다.",
             "ForgetPeriodicError": "이 마운트에 대해 학습한 주기 오차를 잊습니다(예: 웜을 조정한 후). 이후 새로 학습합니다.",
-            "DecAlgorithm": "Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습하고 다음 프레임에 대해 예측한 오차를 교정합니다. 따라서 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
+            "DecAlgorithm": "측정된 Dec 오차를 교정으로 바꾸는 방식입니다. ResistSwitch(기본값)는 오차가 분명히 요구할 때만 Dec 방향을 바꿔 Dec 백래시로 가이딩이 흔들리지 않게 합니다. Hysteresis, Lowpass2, Lowpass는 RA와 동일하게 동작하고 None은 Dec 교정을 보내지 않습니다. Predictive(실험적)는 가이드 프레임에서 시잉과 마운트 자체의 움직임을 학습해 다음 프레임에 예측되는 오차를 교정합니다. 적극성, 히스테리시스, 최소 이동은 적용되지 않습니다.",
             "DecAggression": "각 프레임에서 보정하는 측정된 Dec 오차의 비율. 1.0은 전부 보정합니다. Dec가 지나치면 낮추세요.",
             "DecHysteresis": "최신 오차에 대한 이전 Dec 보정의 가중치. 0.1은 마지막 보정의 10%를 섞습니다. 값이 클수록 보정이 부드러워지지만 실제 방향 전환에는 느리게 반응합니다.",
             "DecLowpass2Aggressiveness": "Lowpass2는 최근 Dec 오차에 직선을 맞추고 개별 프레임 대신 그 추세를 보정합니다. 이 값은 프레임마다 보정하는 추세의 비율(%)입니다. 보정이 지나치면 낮추세요.",
             "DecFastSwitch": "ResistSwitch와 함께: 오차가 클 때(최소 이동량의 3배 초과) 여러 프레임이 일치할 때까지 기다리지 않고 Dec 방향을 즉시 바꿉니다. 큰 Dec 오차를 빠르게 되돌립니다.",
-            "DecMinMove": "0 = 이미지 스케일에서 자동으로 결정.",
+            "DecMinMove": "교정을 받는 가장 작은 Dec 오차(픽셀)입니다. 더 작은 오차는 무시하여 가이더가 시잉을 쫓지 않게 합니다. 0(기본값)은 이미지 스케일로 값을 계산합니다. 그날 밤 시잉에 맞춰 조정할 가치가 가장 큰 설정입니다.",
             "DecCorrectionPace": "Predictive 알고리즘이 프레임마다 보정하는 남은 오차의 비율. 0.5는 0을 넘어가지 않고 2–3프레임에 걸쳐 오프셋을 없애고, 1은 한 번에 모두 보정합니다. 드리프트와 주기 오차는 항상 전부 보정됩니다.",
             "DecGuideMode": "Auto는 Dec를 양방향으로, 북쪽만·남쪽만은 한 방향으로만 가이드하며, 끄기는 전혀 가이드하지 않습니다. Drift는 드리프트를 따릅니다. 가이드 중에 Dec 드리프트를 측정해 그 반대 방향으로만 가이드하므로 Dec 기어가 반전되지 않아 백래시가 더 이상 문제되지 않습니다. 드리프트가 반대로 바뀌면 방향을 전환하며, 드리프트를 알기 전까지, 안정화 중, 그리고 큰 오차를 되돌릴 때는 양방향으로 가이드합니다.",
             "MaxRaDurationMs": "단일 RA 가이드 펄스의 최대 길이. 측정이 크게 빗나갔을 때(잘못된 별, 돌풍) 보정을 제한해 마운트가 멀리 튕겨 나가지 않게 합니다. 큰 오차를 보정하는 데 많은 프레임이 걸릴 때만 늘리세요.",
             "MaxDecDurationMs": "단일 Dec 가이드 펄스의 최대 길이. 측정이 크게 빗나갔을 때(잘못된 별, 돌풍) 보정을 제한해 마운트가 멀리 튕겨 나가지 않게 합니다. 큰 오차를 보정하는 데 많은 프레임이 걸릴 때만 늘리세요.",
-            "MinPulseMs": "더 짧은 가이드 펄스는 0 또는 이 길이로 반올림됩니다. 일부 마운트는 매우 짧은 펄스를 제대로 처리하지 못합니다. 0 = 길이 제한 없음.",
+            "MinPulseMs": "더 짧은 가이드 펄스는 0 또는 이 길이로 반올림됩니다. 일부 마운트가 매우 짧은 펄스를 제대로 처리하지 못하기 때문입니다. 0이면 모든 길이의 펄스를 보냅니다.",
             "SimultaneousPulses": "한 프레임의 RA와 Dec 펄스를 차례로가 아니라 동시에 보내 가이드 주기를 줄입니다. 두 축의 타이밍을 따로 처리하는 마운트(pins의 네이티브 OnStepX 드라이버)에서만 동작하며, 다른 마운트는 계속 차례로 펄스를 보냅니다.",
             "BacklashCompensation": "Dec 방향이 바뀔 때 추가 펄스를 더해 Dec 기어의 유격을 흡수합니다. Dec 백래시가 뚜렷할 때 유용하며, Dec가 깔끔하게 가이드되면 꺼 두세요. Dec 가이드 모드 Drift는 방향 전환 자체를 피합니다.",
             "BacklashPulseMs": "Dec 방향 전환 시 추가 펄스의 길이. 이 값을 시작점으로 가이더가 별의 반응에 따라 20 ms에서 이 값의 1.5배 사이로 펄스를 자동 조정합니다. 유격 모델에서는 이 값이 유격의 첫 추정치일 뿐이며, 이후 모델이 스스로 학습합니다.",
             "PulseModel": "디더에서 가이드 펄스가 각 축에서 실제로 별을 얼마나 움직이는지 학습하고 그에 맞춰 펄스 크기를 정하므로, 어긋난 캘리브레이션 때문에 과보정이나 저보정이 생기지 않습니다. 캘리브레이션 값에서 시작해 디더가 분명히 보여 주는 부분만 바꾸고, 학습한 내용을 다음 캘리브레이션까지 프로필과 마운트별로 유지합니다.",
-            "CalibrationStepMs": "0 = 광학계, 가이드 속도, 적위에서 자동으로 결정.",
-            "ReuseCalibration": "세션이 바뀌어도 보정을 유지하고 적위와 피어 방향에 맞게 조정합니다.",
+            "CalibrationStepMs": "보정 중 각 펄스의 길이입니다. 0(기본값)은 초점거리, 픽셀 크기, 가이드 속도, 적위로 계산합니다. 보정 스텝이 지나치게 적거나 많을 때만 직접 설정하세요.",
+            "ReuseCalibration": "세션이 바뀌어도 마지막 보정을 유지하고 적위와 피어 방향에 맞게 조정하므로 매일 밤 보정할 필요가 없습니다. 가이드 카메라를 손으로 돌리거나 가이드 스코프를 바꾼 뒤에는 다시 보정하세요.",
             "AssumeOrthogonal": "캘리브레이션은 보통 RA와 Dec 방향을 독립적으로 측정합니다. 이 옵션은 Dec를 RA에 정확히 수직으로 강제하며, 큰 주기 오차, Dec 백래시 또는 나쁜 시잉이 Dec 캘리브레이션을 왜곡할 때 도움이 됩니다.",
             "DecCompensation": "현재 적위에 맞춰 RA 보정을 조정하여, 한 적위에서 한 캘리브레이션이 다른 적위에서도 계속 동작하게 합니다. 연결된 마운트가 위치를 보고해야 합니다. 켜 두세요. Dec 백래시 보정과는 다릅니다.",
-            "DecFlipRequired": "마운트별 설정이며, “반전 후 Dec 자가 점검”이 자동으로 수정합니다.",
+            "DecFlipRequired": "자오선 반전 후 Dec 교정을 반대로 해야 하는지 여부입니다. 마운트에 따라 다르며 마운트별로 저장됩니다. 잘못된 경우 “반전 후 Dec 자가 점검”이 자동으로 수정합니다.",
             "VerifyDecAfterFlip": "자오선 반전 후 처음 Dec 보정을 확인합니다. 보정이 별을 되돌리지 않고 더 멀리 밀어내면 가이더가 스스로 Dec를 반대로 하고 이 마운트의 '자오선 반전 후 Dec 반대로' 설정을 고칩니다.",
             "RotatorTurnsGuideCamera": "연결된 로테이터가 가이드 카메라도 회전시키는지 여부입니다. 로테이터가 망원경과 OAG 사이에 있으면 '예', 가이드 경통이거나 로테이터가 OAG와 촬영 카메라 사이에 있으면 '아니요'를 선택합니다. '예'로 하면 로테이터가 도는 동안 가이드가 기다렸다가 새 가이드 별과 로테이터에 맞춰 회전한 저장된 보정으로 시작하므로 회전 후 다시 보정할 필요가 없습니다. '예'에서 로테이터를 움직인 뒤 가이드가 별을 밀어내면 '예, 반대 방향'을 선택하고 한 번 더 보정하세요. NINA의 수동 로테이터는 따르지 않습니다.",
             "DitherMode": "각 디더를 정하는 방식. Random: 임의의 거리와 방향. Spiral: 시작 위치 주변을 나선을 따라 이동하며, 촬영 카메라의 고정 패턴 노이즈에 유용합니다.",
             "DitherScale": "촬영 소프트웨어가 요청한 디더 거리에 곱하는 배율. 2는 두 배, 0.5는 절반 거리로 디더합니다.",
             "FastRecenter": "디더 후 일반 가이드 단계 대신 큰 직접 펄스로 별을 새 고정 위치로 옮겨 디더가 더 빨리 안정되게 합니다. 켜 두는 것이 가장 좋습니다.",
             "ReacquireTimeoutSec": "가이더가 경보를 울리기 전에 잃어버린 별을 찾는 시간. 그 후에도 계속 찾고, 별이 돌아오는 즉시 가이드를 재개합니다.",
-            "MaxPulseDutyPercent": "한 축에 1분 중 이 비율보다 오래 펄스를 보내면 가이딩을 멈춥니다(폭주 방지).",
+            "MaxPulseDutyPercent": "한 축에 1분 중 이 비율보다 오래 펄스가 전송되면 가이딩을 멈춥니다. 잘못된 보정이나 Dec 반전 등으로 인한 폭주를 막습니다.",
             "PauseWhenSlewing": "마운트가 슬루 중/파킹됨을 보고하는 동안 교정을 일시정지합니다. 마운트 드라이버가 항상 “슬루 중”으로 보고하는 경우에만 끄세요.",
-            "PauseWhenTrackingOff": "마운트가 추적 꺼짐을 보고하는 동안 교정을 일시정지합니다. 마운트 드라이버가 추적 상태를 보고하지 못하면 끄세요.",
+            "PauseWhenTrackingOff": "마운트가 추적 꺼짐을 보고하는 동안 교정을 일시정지합니다. 마운트 드라이버가 추적 상태를 보고할 수 없으면 끄세요.",
             "SaveGuideLog": "PHD2 호환 가이드 로그를 ~/.local/share/NINA/InternalGuider/Logs에 기록합니다. 앱에서는 가이드 로그 플러그인으로 볼 수 있습니다.",
             "IncidentRecorder": "최근 몇 분간의 가이드 프레임을 메모리에 보관하고, 별 놓침, 폭주, 마운트 및 카메라 문제, 스파이크 전후의 프레임을 저장해 재생하고 다운로드할 수 있게 합니다.",
             "IncidentBudgetMb": "기록된 인시던트용 디스크 공간입니다. 보존되지 않은 가장 오래된 인시던트부터 삭제됩니다. 시뮬레이터 인시던트는 별도로 200 MB를 사용합니다.",
@@ -4092,7 +4323,7 @@
           "noPlotData": "이번 실행의 최종 노출에서 표시할 수 있는 유효한 별 측정값이 나오지 않았습니다.",
           "sensorModelMissing": "센서 곡선 모델이 활성화되어 있지만 이번 실행에서 모델이 생성되지 않았습니다. 프레임 간에 일치한 별이 너무 적었을 수 있습니다.",
           "unitMicrons": "µm",
-          "unitSteps": "steps"
+          "unitSteps": "스텝"
         },
         "sensorModel": {
           "starsInModel": "모델 내 점 수",
@@ -4664,7 +4895,7 @@
         "steps": {
           "check": {
             "title": "사전 조건",
-            "description": "Hocus Focus에는 연결된 카메라와 포커서가 필요합니다."
+            "description": "오토포커스에는 연결된 카메라와 포커서가 필요합니다."
           },
           "optics": {
             "title": "광학계",
@@ -4672,15 +4903,15 @@
           },
           "rig": {
             "title": "내 장비",
-            "description": "장비에 대한 몇 가지 질문입니다. 답변에 따라 Hocus Focus 프리셋이 설정됩니다."
+            "description": "장비에 대한 몇 가지 질문입니다. 답변에 따라 알맞은 오토포커스 프리셋이 설정됩니다."
           },
           "rough": {
             "title": "대략적인 초점 맞추기",
-            "description": "촬영하면서 별이 작고 둥글어지고 HFR이 최대한 낮아질 때까지 포커서를 움직이세요."
+            "description": "별이 작고 둥글어질 때까지 이미지를 촬영하며 포커서를 움직이세요. HFR은 별의 크기이며, 작을수록 선명합니다."
           },
           "measure": {
             "title": "스텝 크기와 백래시",
-            "description": "포커서가 움직일 때 별이 얼마나 빨리 커지는지, 그리고 방향을 바꿀 때 몇 스텝을 잃는지 측정하여 오토포커스용 스텝 크기와 NINA의 백래시 보정을 제안합니다. 포커서는 먼저 크게 뒤로 이동해 모든 위치에 같은 쪽에서 접근한 뒤, 초점을 지나 앞으로 이동하고 마지막에 시작 위치로 돌아갑니다."
+            "description": "포커서를 움직일 때 별이 얼마나 빨리 커지는지, 방향을 바꿀 때 몇 스텝을 잃는지 측정하여 오토포커스와 백래시 보정에 맞는 스텝 크기를 제안합니다. 포커서는 모든 위치에 같은 방향에서 도달하도록 먼저 멀리 뒤로 이동한 다음 초점을 지나 앞으로 이동하고, 마지막에 시작 위치로 돌아갑니다."
           },
           "run": {
             "title": "테스트 실행",
@@ -4692,14 +4923,13 @@
           },
           "optimize": {
             "title": "최적화",
-            "description": "선택 사항: 옵티마이저가 저장된 결과로 별 검출을 조정합니다."
+            "description": "선택 사항: 옵티마이저가 새 자동 초점 스윕이나 저장된 실행 결과로 별 검출을 조정합니다."
           }
         },
         "checks": {
           "camera": "카메라 연결됨",
           "focuser": "포커서 연결됨",
-          "hocusFocus": "Hocus Focus 사용 가능",
-          "engineHint": "@:{'general.backendName'}에서 'Auto Focus'와 'Star Detector'를 모두 Hocus Focus로 설정해야 합니다. 그렇지 않으면 결과 단계에서 알려 줍니다."
+          "hocusFocus": "오토포커스 플러그인 설치됨"
         },
         "focalLength": "초점 거리 (mm)",
         "pixelSize": "픽셀 크기 (µm)",
@@ -4715,7 +4945,7 @@
         "startRun": "오토포커스 시작",
         "stopRun": "오토포커스 중지",
         "runFailed": "오토포커스를 시작하지 못했습니다.",
-        "noResult": "아직 평가할 완료된 Hocus Focus 결과가 없습니다.",
+        "noResult": "평가할 완료된 오토포커스 실행이 아직 없습니다.",
         "runAgain": "다시 실행",
         "openOptimizer": "옵티마이저 열기",
         "useOptimized": "최적화된 설정 사용",
@@ -4888,9 +5118,9 @@
       "warm_up": "예열",
       "cooler_status": "쿨러 상태",
       "cooler_status_off": "꺼짐",
-      "cooler_status_cooling": "작동 중 - 냉각 목표",
-      "cooler_status_holding": "작동 중 - 목표 온도 도달",
-      "cooler_status_warming": "작동 중 - 예열 목표",
+      "cooler_status_cooling": "냉각 목표",
+      "cooler_status_holding": "목표 온도 도달",
+      "cooler_status_warming": "예열 중",
       "set_save_snapshot": "스냅샷 저장",
       "snapshotTargetName": "대상 이름",
       "set_use_solve_sync_to_mount": "마운트에 동기화",
@@ -4927,6 +5157,7 @@
       "up": "위",
       "not_available": "사용 불가",
       "running": "실행 중",
+      "movingToStart": "시작 위치로 이동 중…",
       "plate_solve_start": "플레이트 솔빙 시작",
       "plate_solve_ok": "플레이트 솔빙 성공",
       "plate_solve_error": "플레이트 솔빙 오류",
@@ -4983,6 +5214,41 @@
       },
       "error_modal": {},
       "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "극축 정렬을 시작할 수 없습니다",
+        "refused": "장비가 극축 정렬 시작을 거부했습니다",
+        "noLocation": "장비가 위치를 알지 못합니다. 계산에 필요하므로 먼저 위도와 경도를 설정하세요.",
+        "noDatabase": "설치된 별 지도가 없어 이미지를 플레이트 솔빙할 수 없습니다. 설치한 후 다시 시작하세요.",
+        "notSent": "시작 명령이 장비에 전달되지 않았습니다. 연결을 확인하고 시작을 다시 누르세요.",
+        "startSlewFailed": "망원경이 시작 위치로 이동하지 못했습니다. 마운트를 확인하고 시작을 다시 누르세요."
+      },
+      "trackingOffAfterStop": "극축 정렬이 중지되면서 추적을 껐습니다.",
+      "resumeTracking": "추적 다시 켜기",
+      "goodEnoughHint": "총 오차가 1′(1 아크분) 미만이면 양호합니다. 도달하면 정렬을 중지하세요.",
+      "tabSimple": "극축 정렬",
+      "simpleIntroMove": "먼저 마운트가 스스로 천구 극 근처의 시작 위치로 이동한 뒤, 사진을 찍으며 축을 중심으로 두 번 조금씩 회전합니다. 케이블이 충분히 길고 아무것도 방해하지 않는지 확인하세요.",
+      "simpleIntroAdjust": "그다음 이 페이지가 고도와 방위 나사를 돌릴 방향을 보여 줍니다. 값은 사진마다 갱신됩니다. 전체 오차가 1′(1 아크분) 미만이 될 때까지 조정한 뒤 직접 정렬을 중지하세요.",
+      "adjustHint": "고도와 방위 나사를 화살표 방향으로 조금씩 돌리세요. 사진마다 값이 갱신됩니다.",
+      "lastMeasurement": "마지막 측정",
+      "markedDone": "오늘 밤 극축 정렬이 완료로 표시되었습니다.",
+      "confirmStartTitle": "극축 정렬을 시작할까요?",
+      "confirmStartMessage": "마운트가 이제 천구 극 근처의 시작 위치로 이동하고 측정 중에 회전합니다. 케이블이 충분히 길고 아무것도 방해하지 않는지 확인하세요.",
+      "status": {
+        "capturing": "사진 촬영 중…",
+        "solving": "사진 플레이트 솔빙 중…",
+        "captureRetry": "사진 실패, 다시 시도 중…",
+        "solveRetry": "플레이트 솔빙 실패, 다시 시도 중…",
+        "nextPoint": "다음 지점으로 이동 중",
+        "firstPoint": "첫 번째 지점 측정 중",
+        "secondPoint": "두 번째 지점 측정 중",
+        "finalPoint": "세 번째 지점 측정 중",
+        "waitMount": "마운트 정지 대기 중",
+        "waitDome": "돔 대기 중",
+        "settling": "마운트 안정화 중",
+        "slewInitial": "시작 위치로 이동 중",
+        "movingAxis": "축 회전 중",
+        "solveAttempt": "사진 플레이트 솔빙 중…"
+      },
       "warn_dec_spread_body": "보고된 마운트의 편각은 측정 사이에 {arcsec}\"만큼 변경되었습니다. 이는 극 정렬 정확도에 영향을 미칠 수 있습니다. 측정 중에 적경 축만 이동하는지 확인하세요.",
       "warn_dec_spread_title": "적위 확산 감지됨",
       "warn_east_west_body": "현재 필드는 정확한 동쪽 또는 서쪽에서 5° 이내에 있습니다. 라이브 솔루션이 불안정한 경우 동쪽/서쪽에서 더 멀리 떨어진 필드로 이동한 후 다시 실행하세요.",
@@ -5015,7 +5281,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "목표와의 편차:"
-      }
+      },
+      "failed": "이동 또는 센터링 실패",
+      "centeredTitle": "대상 센터링 완료",
+      "centered": "대상이 이미지 중앙에 있습니다.",
+      "centeredNamed": "{name}이(가) 이미지 중앙에 있습니다."
     },
     "filterwheel": {
       "title": "필터휠",
@@ -5222,7 +5492,7 @@
         "toggle": "하늘 가리키기 켜기/끄기",
         "hint": "하늘 가리키기가 켜져 있습니다. 화면 뒷면 너머로 하늘을 겨누세요. 드래그하면 멈추고, 핀치하면 확대/축소합니다.",
         "low_accuracy": "나침반 정확도가 낮습니다. 금속과 자석에서 떨어진 뒤 8자 모양으로 움직여 나침반을 보정하세요.",
-        "unavailable": "Sky pointing requires a supported native app and a north-referenced motion sensor. Manual browsing is available.",
+        "unavailable": "하늘 가리키기 센서를 사용할 수 없습니다. 지원되는 센서가 있는 기기에서 네이티브 앱을 사용하거나 수동으로 탐색하세요.",
         "permission_denied": "동작 센서 접근이 거부되었습니다. 시스템 설정에서 허용하거나 직접 탐색하세요.",
         "location_required": "하늘 가리키기에는 관측 위치가 필요합니다. 관측지를 설정하거나 위치 접근을 허용하세요.",
         "sensor_error": "센서 데이터를 사용할 수 없어 하늘 가리키기를 중지했습니다. 다시 시도하거나 직접 탐색하세요."
@@ -5414,6 +5684,22 @@
         "camera_field": "카메라 시야",
         "actions": "작업",
         "more": "더 보기"
+      },
+      "tonight": {
+        "title": "오늘 밤 관측 가능",
+        "intro": "현재 위치에서 오늘 밤 가장 좋은 대상을 좋은 순서대로 보여 줍니다. 대상을 누르면 아틀라스에서 선택됩니다.",
+        "noSite": "먼저 프로필에서 위치를 설정하면 오늘 밤 가장 좋은 대상이 여기에 표시됩니다.",
+        "noDarkNight": "오늘 밤 현재 위치에서는 충분히 어두워지지 않습니다.",
+        "nothing": "오늘 밤 충분히 높이 올라오는 대상이 없습니다.",
+        "maxAlt": "최대 고도 {alt}°",
+        "types": {
+          "galaxy": "은하",
+          "nebula": "성운",
+          "planetary_nebula": "행성상 성운",
+          "cluster": "성단",
+          "dark_nebula": "암흑 성운",
+          "widefield": "광시야"
+        }
       }
     },
     "profile": {
@@ -5611,6 +5897,7 @@
       "sequenceStart": "시퀀스를 시작할 수 없습니다",
       "guidingStart": "가이딩을 시작할 수 없습니다",
       "autofocusStart": "오토포커스를 시작할 수 없습니다",
+      "autofocusStop": "오토포커스를 취소할 수 없습니다",
       "binning": "비닝을 변경할 수 없습니다",
       "readout": "읽기 모드를 변경할 수 없습니다",
       "switchSet": "스위치를 설정할 수 없습니다"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "개발 업데이트 채널을 숨겼습니다.",
       "specialEnabled": "눈 아픈 마커가 활성화되었습니다.",
       "specialDisabled": "재미는 여기까지입니다."
+    },
+    "simpleMode": {
+      "title": "오늘 밤",
+      "subtitle": "오늘 밤을 단계별로: 강조된 단계를 누르고 위에서 아래로 따라가세요.",
+      "pinsOnly": "간단 모드는 Touch'N'Stars가 PINS 장치에 연결되어 있을 때만 사용할 수 있습니다.",
+      "offHint": "간단 모드가 꺼져 있어 내비게이션에 모든 페이지가 표시됩니다.",
+      "turnOn": "간단 모드 사용",
+      "showAll": "모든 기능 표시(간단 모드 끄기)",
+      "status": {
+        "done": "완료",
+        "running": "실행 중",
+        "open": "할 일",
+        "skipped": "건너뜀"
+      },
+      "markDone": "완료로 표시",
+      "skip": "오늘 밤은 건너뛰기",
+      "undoMark": "되돌리기",
+      "needsCamera": "먼저 카메라를 연결하세요.",
+      "needsMount": "먼저 마운트를 연결하세요.",
+      "needsGuider": "가이더가 아직 연결되지 않았습니다. 위의 \"모두 연결\"을 누르세요.",
+      "needsCameraAndMount": "카메라와 마운트 연결이 필요합니다.",
+      "rig": {
+        "title": "내 장비",
+        "changeDevices": "장치 변경",
+        "empty": "아직 설정된 장치가 없습니다. 설정 도우미가 카메라, 마운트 등을 안내합니다.",
+        "openWizard": "설정 도우미 열기",
+        "noMountHint": "아직 마운트를 설정하지 않았나요? 여기서 맞는 드라이버를 찾으세요.",
+        "devicesFailedHint": "연결되지 않음: {devices}. 먼저 전원과 케이블을 확인하세요. 둘 다 정상이면 다른 드라이버가 필요할 수 있습니다.",
+        "mountFailedHint": "마운트가 연결되지 않았습니다. 다른 드라이버가 필요한 경우가 많습니다.",
+        "connecting": "연결 중…",
+        "allConnected": "모두 연결됨",
+        "connectAll": "모두 연결",
+        "exposing": "촬영 중",
+        "coolingTo": "{temp}로 냉각 중",
+        "parked": "파킹됨",
+        "slewing": "이동 중",
+        "tracking": "하늘 추적 중",
+        "notTracking": "추적 안 함",
+        "autofocusRunning": "오토포커스 실행 중",
+        "position": "위치 {position}",
+        "connected": "연결됨",
+        "notConnected": "연결되지 않음"
+      },
+      "guiderState": {
+        "Guiding": "가이딩 중",
+        "Calibrating": "캘리브레이션 중",
+        "Looping": "별 찾는 중",
+        "LostLock": "별 놓침",
+        "Idle": "중지됨",
+        "Paused": "일시정지됨",
+        "Reacquiring": "별 다시 찾는 중"
+      },
+      "night": {
+        "title": "오늘 밤",
+        "progress": "{total}개 중 {done}개 완료"
+      },
+      "steps": {
+        "connect": {
+          "title": "장비 연결",
+          "description": "장비의 전원을 켠 다음 한 번의 탭으로 모든 장치를 연결하세요.",
+          "hint": "장치가 연결되지 않으면 케이블과 전원을 확인한 후 \"모두 연결\"을 다시 누르세요.",
+          "summary": "{total}개 중 {connected}개 연결됨"
+        },
+        "cool": {
+          "title": "카메라 냉각",
+          "description": "냉각된 센서는 더 깨끗한 이미지를 만듭니다. 냉각에는 몇 분이 걸리므로 일찍 시작하세요. 그동안 다음 단계를 진행할 수 있습니다.",
+          "targetTemp": "목표 온도(°C)",
+          "start": "{temp} °C로 냉각",
+          "failed": "냉각을 시작하지 못했습니다",
+          "warmingSummary": "온도 올리는 중 · {temp}",
+          "setup": {
+            "question": "카메라를 얼마나 빠르게 냉각해도 되나요?",
+            "text": "이 프로필에서 한 번만 묻습니다. 너무 빠른 냉각이나 승온은 일부 센서에 무리를 주며, 너무 빨리 따뜻해지면 센서에 김이 서릴 수 있습니다. 승온은 밤을 종료할 때 실행됩니다.",
+            "presets": {
+              "fast": {
+                "title": "빠르게",
+                "description": "바로 냉각하고 {warm}분에 걸쳐 승온합니다. 대부분의 최신 냉각 CMOS 카메라에 적합하며, 냉각기를 스스로 제한합니다."
+              },
+              "gentle": {
+                "title": "완만하게",
+                "description": "{cool}분에 걸쳐 냉각하고 {warm}분에 걸쳐 승온합니다."
+              },
+              "veryGentle": {
+                "title": "매우 완만하게",
+                "description": "{cool}분에 걸쳐 냉각하고 {warm}분에 걸쳐 승온합니다. 오래된 카메라와 CCD 센서용입니다."
+              }
+            },
+            "notSure": "잘 모르시나요? 카메라 설명서에 천천히 냉각해야 하는지 나와 있습니다. 확실히 알기 전에는 \"완만하게\"가 안전합니다. 나중에 카메라 페이지에서 변경할 수 있습니다.",
+            "currentValues": "프로필에 이미 자체 시간이 있습니다: {cool}분에 냉각, {warm}분에 승온.",
+            "keepValues": "이 시간 유지",
+            "applyFailed": "프로필에 시간을 저장하지 못했습니다."
+          }
+        },
+        "mount": {
+          "title": "마운트 준비",
+          "description": "마운트가 대상을 가리키려면 먼저 파킹을 해제하고 하늘을 따라가야 합니다(추적).",
+          "action": "파킹 해제 및 추적 시작",
+          "trackingFailed": "추적을 켜지 못했습니다",
+          "trackingOffAfterPolar": "극축 정렬이 추적을 껐습니다. 버튼을 눌러 다시 켜세요."
+        },
+        "polar": {
+          "title": "극축 정렬",
+          "description": "마운트를 천구의 극에 맞춥니다. 앱이 이미지 세 장을 촬영하고 그 사이에 마운트를 회전시킨 뒤 조정 노브를 얼마나 돌려야 하는지 알려줍니다. 설치할 때마다 한 번이면 충분합니다.",
+          "action": "극축 정렬 열기"
+        },
+        "target": {
+          "title": "대상 선택",
+          "description": "스카이 아틀라스에서 대상을 선택해 플랜에 추가하세요. 촬영이 시작되면 플랜이 그곳으로 이동해 이미지로 대상을 센터링하고 가이딩을 시작합니다. 직접 할 일은 없습니다.",
+          "action": "스카이 아틀라스에서 대상 선택",
+          "another": "대상 추가",
+          "how": "스카이 아틀라스에서 대상을 누르거나 검색한 다음 \"{button}\"을(를) 누르세요.",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} 외 {count}개",
+          "calibrationRisk": {
+            "nearPole": "대상이 천구의 극 근처라 가이더가 캘리브레이션할 수 없습니다. 먼저 \"가이딩 설정\"에서 1회 캘리브레이션을 하세요.",
+            "low": "대상이 하늘 낮은 곳에 있어 가이더 캘리브레이션이 부정확합니다. 먼저 \"가이딩 설정\"에서 1회 캘리브레이션을 하세요."
+          }
+        },
+        "focus": {
+          "title": "포커스",
+          "description": "선명한 별이 밤의 성패를 좌우하며, 다음 단계에도 필요합니다. 극축 정렬과 대상 센터링은 이미지에서 위치를 계산합니다. 망원경을 별이 있는 하늘로 향하게 하세요. 모터 포커서가 있으면 오토포커스가 알아서 하고, 없으면 라이브 이미지를 보며 수동으로 포커스를 맞추세요.",
+          "autofocus": "오토포커스 시작",
+          "watch": "포커스 곡선 보기",
+          "manualHint": "모터 포커서가 연결되어 있지 않습니다. 카메라를 열어 이미지를 연속 촬영하며 별이 가장 작아질 때까지 포커서를 돌리세요.",
+          "manual": "카메라 열기",
+          "lastRun": "마지막 오토포커스: {time}",
+          "lastFailed": "마지막 오토포커스({time}) 실패 - 별이 보이는지 확인하고 다시 시도하세요",
+          "pointAtStars": "망원경을 별로 향하게 하기(스카이 아틀라스)",
+          "setupFirst": "이 망원경으로 첫 오토포커스를 하기 전에 한 번 설정하세요. 도우미가 포커서와 카메라를 측정해 작동하는 설정을 찾습니다. 그렇지 않으면 오토포커스가 실패하는 경우가 많습니다.",
+          "cancelled": "오토포커스를 취소했습니다. 포커서가 이전 위치로 돌아갑니다.",
+          "setup": "오토포커스 설정"
+        },
+        "guide": {
+          "title": "가이딩 설정",
+          "description": "가이드 카메라가 별 하나를 관찰하며 마운트를 보정해 긴 노출에서도 선명함을 유지합니다. PINS에는 특별히 개발된 자체 가이더가 있어 별도 프로그램 없이 장비에서 직접 실행되며 PHD2보다 더 안정적으로 가이딩하는 경우가 많습니다. 마운트를 한 번 학습해야 하며(캘리브레이션), 이후에는 플랜이 모든 대상에서 자동으로 가이딩을 시작합니다.",
+          "details": "가이딩 상세 및 그래프",
+          "useNativeHint": "현재 프로필은 다른 가이더를 사용합니다. 간단 모드는 PINS 내장 가이더로 가이딩합니다. PINS를 위해 특별히 개발되어 장비에서 직접 실행되며, 마운트 기어의 주기 오차를 학습하고 캘리브레이션을 매일 밤 유지해 PHD2보다 더 안정적인 경우가 많습니다. PHD2에서 설정한 값은 그대로 이어집니다.",
+          "useNative": "내장 가이더 사용",
+          "nativeMissing": "이 PINS 버전에는 아직 내장 가이더가 없습니다. 다음에서 PINS를 업데이트하세요",
+          "chooseCamera": "내장 가이더는 어떤 카메라가 가이드 카메라인지 알아야 합니다. 여기서 선택하세요. 이후 \"모두 연결\"이 함께 연결합니다.",
+          "chooseCameraAction": "가이드 카메라 선택…",
+          "noGuideCamera": "가이드 카메라를 찾을 수 없음 - 연결하고 \"모든 장치\"를 확인하세요",
+          "calibrate": "1회 캘리브레이션(약 3분)",
+          "calibrateHint": "망원경이 캘리브레이션이 가장 정확한 천구 적도 근처로 이동해 가이더가 망원경을 움직이는 방식을 학습합니다. 한 번만 필요하며 캘리브레이션은 이후 모든 밤에 유지됩니다.",
+          "confirmCalibrateTitle": "가이더를 캘리브레이션할까요?",
+          "confirmCalibrateMessage": "망원경이 캘리브레이션 위치로 이동하고 가이더가 그곳에서 몇 분간 캘리브레이션합니다. 이후 가이딩은 다시 중지되며, 플랜이 대상에서 시작합니다.",
+          "calibrating": "캘리브레이션 중 - 몇 분 걸립니다.",
+          "slewingToCalibration": "망원경이 캘리브레이션 위치로 이동 중…",
+          "calibratedHint": "캘리브레이션 완료. 캘리브레이션은 이후 밤에도 유지되며, 플랜이 모든 대상에서 자동으로 가이딩을 시작합니다.",
+          "calibratedSummary": "캘리브레이션 완료",
+          "unparkFirst": "먼저 망원경을 준비하세요(\"{step}\" 단계)."
+        },
+        "capture": {
+          "title": "촬영",
+          "description": "플랜은 어떤 대상을 어떤 필터, 노출 시간, 장수로 촬영할지 정합니다. 시작하면 대상으로 이동, 센터링, 가이딩, 촬영까지 앱이 알아서 처리합니다.",
+          "targets": "대상",
+          "remaining": "남은 시간",
+          "noPlan": "아직 플랜이 없습니다. 대상, 필터, 노출 시간, 장수로 플랜을 만드세요.",
+          "nothingLeft": "플랜에 촬영할 사진이 남아 있지 않습니다. 새 대상을 고르거나 이 플랜의 사진을 다시 촬영하세요.",
+          "repeat": "다시 촬영",
+          "repeatFailed": "플랜을 초기화할 수 없습니다",
+          "editPlan": "플랜 편집",
+          "createPlan": "플랜 만들기",
+          "watch": "이미지가 들어오는 것 보기",
+          "start": "촬영 시작",
+          "stop": "촬영 중지",
+          "summary": "대상 {targets}개, 약 {time}에 완료 | 대상 {targets}개, 약 {time}에 완료",
+          "summaryDone": "대상 {targets}개, 모든 이미지 촬영 완료 | 대상 {targets}개, 모든 이미지 촬영 완료",
+          "confirmStartTitle": "촬영을 시작할까요?",
+          "confirmStartPlan": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다.",
+          "confirmStartApproach": {
+            "center": "망원경이 대상으로 이동해 센터링합니다. | 망원경이 각 대상으로 이동해 센터링합니다.",
+            "slew": "망원경이 대상으로 이동하지만 센터링하지 않습니다. | 망원경이 각 대상으로 이동하지만 센터링하지 않습니다.",
+            "off": "망원경이 대상으로 이동하지 않고 지금 향한 곳을 촬영합니다. | 망원경이 대상들로 이동하지 않고 지금 향한 곳을 촬영합니다.",
+            "mixed": "일부 대상은 이동과 센터링을 하지 않습니다. 플랜을 확인하세요."
+          },
+          "confirmStartGuiding": {
+            "all": "첫 사진을 찍기 전에 가이딩을 시작합니다.",
+            "none": "플랜이 가이딩 없이 실행됩니다.",
+            "mixed": "일부 대상은 가이딩하지 않습니다. 플랜을 확인하세요."
+          },
+          "confirmStopTitle": "촬영을 중지할까요?",
+          "confirmStopMessage": "현재 이미지는 취소됩니다. 플랜은 나중에 다시 시작할 수 있습니다.",
+          "noExposures": "플랜에 대상은 있지만 아직 촬영 설정이 없습니다. 플랜을 열고 \"노출 추가\"를 눌러 필터, 노출 시간, 장수를 선택하세요.",
+          "summaryEmpty": "대상 {targets}개, 아직 계획된 촬영 없음 | 대상 {targets}개, 아직 계획된 촬영 없음",
+          "confirmStartFocus": "필터를 바꿀 때마다 다시 초점을 맞춥니다.",
+          "confirmStartRefocus": "{interval} 초점을 다시 맞춥니다.",
+          "confirmStartEnd": {
+            "both": "끝나면 마운트가 파킹되고 카메라가 예열됩니다.",
+            "park": "끝나면 마운트가 파킹됩니다.",
+            "warm": "끝나면 카메라가 예열됩니다. 마운트는 밤을 종료할 때까지 추적을 계속합니다.",
+            "none": "끝나도 마운트는 밤을 종료할 때까지 추적을 계속합니다."
+          },
+          "missingSteps": "플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}. | 플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}.",
+          "missingStepParts": {
+            "slew": "이동",
+            "guide": "가이딩",
+            "focus": "필터 변경 후 다시 초점 맞추기"
+          },
+          "fixSteps": "빠진 단계 추가",
+          "flipMissing": "플랜에 자오선에서 망원경을 돌리는 단계가 없습니다. 자오선을 지나서도 계속 추적하여 삼각대나 피어에 부딪힐 수 있습니다.",
+          "addFlip": "Meridian Flip 켜기",
+          "endMissing": {
+            "park": "플랜이 끝나도 마운트는 추적을 계속합니다. 아무도 밤을 종료하지 않으면 자오선을 지나 삼각대나 피어에 부딪힐 수 있습니다.",
+            "warm": "플랜이 끝나도 밤을 종료할 때까지 카메라는 차가운 상태로 남습니다.",
+            "both": "플랜이 끝나도 마운트는 추적을 계속하고 카메라는 차가운 상태로 남습니다. 아무도 밤을 종료하지 않으면 자오선을 지나 망원경이 삼각대나 피어에 부딪힐 수 있습니다."
+          },
+          "addEnd": {
+            "park": "플랜 후 마운트 파킹",
+            "warm": "플랜 후 카메라 예열",
+            "both": "플랜 후 파킹 및 예열"
+          },
+          "flipWindow": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {earliest}에서 {latest} 사이에 망원경을 돌립니다.",
+          "flipFixed": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {earliest}에 망원경을 돌립니다.",
+          "flipPause": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {pause}에 일시정지하고 {earliest}에 망원경을 돌립니다.",
+          "flipNone": "이 플랜에는 Meridian Flip이 필요하지 않습니다.",
+          "flipYourTarget": "내 대상",
+          "flipSettings": "Flip 설정 및 주간 테스트",
+          "summaryCutOff": "{planned}장 중 {taken}장 촬영됨",
+          "confirmStartWait": "어두워질 때까지 기다립니다(약 {time})."
+        },
+        "flats": {
+          "title": "Flat",
+          "description": "Flat은 이미지의 먼지 그림자와 어두운 모서리를 없애줍니다. 아무것도 바뀌기 전에 지금 촬영하세요. 포커스, 카메라 회전, 카메라 위치가 촬영할 때와 같아야 합니다. 오늘 밤 필요 없나요? 이 단계를 건너뛰세요.",
+          "lightSource": "광원",
+          "panel": "Flat 패널",
+          "panelHint": "장비가 패널 밝기를 자동으로 설정합니다.",
+          "panelMissing": "밝기 조절 가능한 Flat 패널이 연결되지 않았습니다.",
+          "tablet": "태블릿 또는 라이트 포일",
+          "tabletHint": "망원경 앞에 고르게 빛나게 놓으세요. 장비가 노출 시간을 찾습니다.",
+          "filters": "필터",
+          "count": "필터당 Flat 수",
+          "countNoWheel": "Flat 수",
+          "darks": "Dark Flat도 촬영",
+          "darksHint": "Dark Flat으로 캘리브레이션할 때만 필요합니다. 촬영 시 망원경을 덮어야 하며, 앱이 알려줍니다.",
+          "start": "Flat 촬영",
+          "stop": "Flat 중지",
+          "allSettings": "모든 Flat 설정",
+          "needsPlugin": "이 페이지의 Flat에는 장비에 더 새로운 Touch'N'Stars 플러그인이 필요합니다. 업데이트하거나 아래 Flat 도우미로 촬영하세요.",
+          "planRunning": "플랜이 아직 실행 중입니다. 플랜이 끝나거나 중지된 후에 Flat을 촬영할 수 있습니다.",
+          "noFilterSelected": "필터를 하나 이상 선택하세요.",
+          "noFilter": "Flat",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark Flat",
+          "endBlocked": "Flat이 아직 실행 중입니다. 끝나거나 중지된 후에 밤을 종료하세요.",
+          "runningSummary": "Flat 촬영 중",
+          "doneSummary": "오늘 밤 촬영한 Flat",
+          "result": {
+            "success": "Flat 1장 촬영 완료 | Flat {count}장 촬영 완료",
+            "dim": "너무 어두움: 더 밝은 광원을 쓰거나 Flat 설정에서 더 긴 노출을 허용하세요.",
+            "bright": "너무 밝음: 광원을 어둡게 하거나 Flat 설정에서 더 짧은 노출을 허용하세요.",
+            "failed": "Flat을 촬영하지 못했습니다.",
+            "stopped": "중지됨"
+          }
+        },
+        "end": {
+          "title": "밤 종료",
+          "description": "모든 것을 올바른 순서로 중지하고, 마운트를 파킹하고, 센서에 습기가 생기지 않도록 카메라를 천천히 승온합니다.",
+          "action": "밤 종료"
+        }
+      },
+      "more": {
+        "title": "더보기",
+        "pictures": "오늘 밤의 사진",
+        "equipment": "모든 장치",
+        "mount": "마운트",
+        "focus": "포커스",
+        "guider": "가이딩",
+        "system": "Wi-Fi, 업데이트 및 시스템",
+        "settings": "설정"
+      },
+      "endNight": {
+        "title": "밤 종료",
+        "intro": "이 단계들은 차례로 실행됩니다. 계속 실행하려는 항목은 체크를 해제하세요.",
+        "nothingToDo": "실행 중인 것이 없고 마운트가 파킹되어 있습니다. 할 일이 남아 있지 않습니다.",
+        "nothingToDoNoMount": "실행 중인 것이 없습니다. 마운트가 연결되어 있지 않으니 파킹되어 있는지 직접 확인하세요.",
+        "someFailed": "모두 성공하지는 않았으며 이유는 해당 단계 아래에 있습니다. 전원을 끄기 전에 마운트를 확인하세요.",
+        "doneWarming": "모두 끝났습니다. 카메라가 승온되면 전원을 끄기 전에 시작 페이지에서 리그를 종료하세요.",
+        "confirm": "지금 밤 종료",
+        "actions": {
+          "stopSequence": "촬영 중지",
+          "stopGuiding": "가이딩 중지",
+          "parkMount": "마운트 파킹",
+          "warmCamera": "카메라 승온({minutes}분)"
+        },
+        "parkTimeout": "마운트가 3분 안에 \"파킹됨\"을 보고하지 않았습니다. 전원을 끄기 전에 확인하세요.",
+        "doneShutdown": "모두 끝났습니다. 전원을 끄기 전에 리그를 종료하세요."
+      },
+      "settings": {
+        "title": "간단 모드",
+        "description": "밤 동안 안내해 주는 시작 페이지와 필요한 페이지만 있는 내비게이션입니다. 끄면 모든 기능이 다시 표시됩니다.",
+        "navbarHint": "간단 모드가 켜져 있는 동안 아래의 내비게이션 사용자 지정은 적용되지 않습니다. 모드를 끄면 그대로 돌아옵니다."
+      },
+      "wizard": {
+        "title": "앱을 어떻게 사용하시겠습니까?",
+        "simpleTitle": "간단(처음 시작할 때 권장)",
+        "simpleText": "필요한 페이지만 있는 시작 페이지가 밤을 단계별로 안내합니다.",
+        "fullTitle": "모든 기능",
+        "fullText": "숙련된 사용자를 위해 내비게이션에 모든 페이지와 설정이 있습니다."
+      },
+      "focusFirst": "먼저 포커스: 이 단계는 이미지에서 위치를 계산하므로 선명한 별이 필요합니다.",
+      "live": {
+        "lastPicture": "마지막 이미지",
+        "openFull": "이미지를 전체 화면으로 보기",
+        "noPicture": "아직 이미지가 없습니다. 테스트 이미지를 촬영해 카메라가 보는 것을 확인하세요.",
+        "preview": "테스트 이미지",
+        "hfr": "선명도(HFR)",
+        "stars": "별",
+        "guiding": "가이딩",
+        "sensor": "센서",
+        "trendTitle": "최근 {count}장의 선명도",
+        "trendHint": "별이 선명할수록 위쪽에 그려집니다. 밤 동안 선이 내려가면 다시 포커스를 맞추세요.",
+        "exposure": "노출 시간",
+        "testPicture": "테스트 이미지 촬영",
+        "abort": "노출 중지",
+        "planRunning": "플랜이 촬영 중입니다. 새 이미지가 들어오는 대로 여기에 표시됩니다.",
+        "justNow": "방금",
+        "minutesAgo": "{minutes}분 전",
+        "histogram": "히스토그램",
+        "min": "최소",
+        "max": "최대",
+        "pixels": "{count} 픽셀 | {count} 픽셀",
+        "pixelsSaturated": "{count} 픽셀 포화 | {count} 픽셀 포화",
+        "histogramHint": "이미지 전체의 스트레치되지 않은 센서 데이터입니다. 하늘 배경 주변 범위만 표시되며, 별과 포화 픽셀은 더 오른쪽에 있고 최대에 집계됩니다.",
+        "firstPlanPicture": "플랜의 첫 이미지가 여기에 표시됩니다."
+      },
+      "setupChecks": {
+        "title": "첫 밤 전에",
+        "locationTitle": "위치가 없습니다",
+        "locationText": "장비가 자신의 위치를 모릅니다. 위치 없이는 극축 정렬과 스카이 아틀라스가 작동하지 않습니다.",
+        "locationAction": "위치 설정",
+        "databaseTitle": "설치된 별 지도 없음",
+        "databaseText": "극축 정렬과 대상 센터링은 이미지를 별 지도와 비교합니다. 장비에 아직 별 지도가 없습니다.",
+        "databaseAction": "별 지도 설치",
+        "flipTitle": "Meridian Flip이 아직 설정되지 않음",
+        "flipText": "대상이 자오선(천정을 지나는 남북선)을 넘으면 망원경이 마운트의 반대편으로 돌아야 합니다. 그렇지 않으면 곧 삼각대나 피어에 부딪힙니다. 플랜이 이를 자동으로 처리합니다. 마운트가 자오선을 지나 얼마나 더 추적할 수 있는지 한 번 알려주세요.",
+        "flipNotSure": "잘 모르시나요? 마운트 설명서에 보통 자오선을 지나 얼마나 추적할 수 있는지 나와 있습니다. 확실히 알기 전에는 \"아슬아슬하게\"가 망원경을 안전하게 지키며, 대신 몇 분간 촬영하지 못합니다.",
+        "flipCurrentValues": "프로필에 이미 자체 시간이 있습니다: {values}.",
+        "flipKeepValues": "이 시간 유지",
+        "flipTimingWindow": "자오선 통과 {min}–{max}분 후 Flip",
+        "flipTimingFixed": "자오선 통과 {min}분 후 Flip",
+        "flipTimingPause": "자오선 {pause}분 전 일시정지, 통과 {min}분 후 Flip",
+        "blockedPolar": "극축 정렬을 아직 할 수 없습니다. 위의 \"첫 밤 전에\"를 확인하세요.",
+        "blockedTarget": "센터링을 아직 할 수 없습니다. 설치된 별 지도가 없습니다. 위의 \"첫 밤 전에\"를 확인하세요."
+      },
+      "backToNight": "오늘 밤으로 돌아가기",
+      "cockpit": {
+        "title": "촬영 중",
+        "noTargetName": "내 플랜",
+        "doneAt": "완료 시각",
+        "remaining": "{time} 남음",
+        "activity": {
+          "autofocus": "포커스 맞추는 중(오토포커스)",
+          "slewing": "망원경 이동 중",
+          "centering": "대상 센터링 중",
+          "startingGuiding": "가이딩 시작 중",
+          "closing": "플랜 마무리 중(파킹, 승온)",
+          "calibrating": "가이더 캘리브레이션 중",
+          "settling": "가이딩 안정화 대기 중",
+          "exposing": "노출 중",
+          "busy": "다음 이미지 준비 중",
+          "flipping": "Meridian Flip - 망원경이 반대편으로 회전합니다",
+          "waitingForDark": "어두워질 때까지 기다리는 중"
+        },
+        "exposing": "{seconds}초 노출 중",
+        "frame": "{frames}장 중 {frame}번째",
+        "check": "확인",
+        "hfr": "HFR",
+        "noFrame": "아직 이미지 없음",
+        "hfrChange": "이전 대비 {change} %",
+        "guidingLevel": {
+          "good": "매우 좋음",
+          "ok": "보통",
+          "poor": "너무 높음",
+          "unknown": "기준 알 수 없음"
+        },
+        "alerts": {
+          "devices": "장치 {count}개의 연결이 끊어졌습니다. | 장치 {count}개의 연결이 끊어졌습니다.",
+          "starLost": "가이더가 별을 놓쳤습니다. 지금 촬영하는 이미지에는 별이 길게 나타납니다.",
+          "notGuiding": "플랜이 가이딩 없이 실행 중입니다.",
+          "guidingPoor": "가이딩({rms}″)이 이미지 한 픽셀({scale}″)보다 큽니다. 별이 흐려집니다. 바람, 밸런스, 헐거운 케이블이 흔한 원인입니다.",
+          "hfrRising": "별이 이전 이미지보다 {change} % 큽니다. 포커스가 흐트러졌거나 이슬이나 구름이 끼고 있을 수 있습니다.",
+          "cooling": "센서가 {target} °C 대신 {temp} °C입니다."
+        },
+        "hfrNoBaseline": "첫 이미지들",
+        "lastPicture": "마지막 이미지",
+        "verdict": {
+          "good": "모두 잘 진행되고 있습니다",
+          "warn": "진행 중 - 한 가지 확인이 필요합니다",
+          "danger": "확인해 주세요 - 이미지가 위험합니다",
+          "waiting": "진행 중 - 첫 이미지로 상태를 알 수 있습니다"
+        },
+        "showDetails": "상세 보기",
+        "hideDetails": "상세 숨기기",
+        "focus": "포커스",
+        "focusLevel": {
+          "good": "선명함",
+          "ok": "약간 흐림",
+          "poor": "흐림"
+        },
+        "explain": {
+          "guiding": {
+            "title": "가이딩",
+            "what": "마운트가 별을 얼마나 정확히 따라가는지입니다. 가이드 별의 흔들림을 이미지 한 픽셀의 크기와 비교합니다.",
+            "now": "현재: 흔들림 {rms}″, 즉 {ratio} 픽셀(1 픽셀 = {scale}″).",
+            "nowNoScale": "현재: 흔들림 {rms}″. 평가하려면 프로필에 초점 거리와 픽셀 크기가 필요합니다.",
+            "nowOff": "가이딩이 현재 실행 중이 아닙니다.",
+            "nowPaused": "망원경이 포커스를 맞추거나 이동하는 동안 일시정지됩니다.",
+            "limits": "{good} 픽셀까지 녹색, {ok} 픽셀까지 노란색, 그 이상은 빨간색입니다. 이때 별이 짧은 선이 됩니다.",
+            "fix": "빨간색이 되면 바람, 밸런스, 헐거운 케이블이 보통 원인입니다."
+          },
+          "focus": {
+            "title": "포커스",
+            "what": "같은 필터의 이전 이미지와 비교한 최신 이미지의 별 크기입니다. 별이 커지면 포커스가 흐트러지고 있거나 이슬이나 옅은 구름이 끼고 있다는 뜻입니다.",
+            "now": "현재: 별 크기(HFR) {hfr}, 이전({baseline}) 대비 {change} %.",
+            "nowFirst": "한 필터로 {count}장이 모이면 평가됩니다.",
+            "nowNone": "아직 이미지가 없습니다.",
+            "limits": "{good} % 커질 때까지 녹색, {ok} %까지 노란색, 그 이상은 빨간색입니다.",
+            "fix": "빨간색이 되면 다시 포커스를 맞추세요(오토포커스). 그래도 안 되면 망원경 앞쪽에 이슬이 맺혔는지 확인하세요."
+          },
+          "cooling": {
+            "title": "냉각",
+            "what": "카메라 센서의 온도입니다. 센서가 차가우면 노이즈가 적은 이미지를 얻습니다.",
+            "now": "현재: {temp} °C, 목표 {target} °C.",
+            "limits": "목표에서 {good} °C 이내면 녹색, 벗어나면 빨간색입니다.",
+            "fix": "계속 빨간색이면 이 날씨에서는 냉각기가 목표에 도달할 수 없습니다. 몇 도 더 높은 목표를 선택하세요."
+          }
+        },
+        "statusBarHint": "가이딩, 포커스, 냉각은 아래 상태 표시줄에서 평가됩니다. 하나를 누르면 의미를 볼 수 있습니다.",
+        "stop": "중지",
+        "waitingUntil": "어두워질 때까지 기다리는 중(약 {time})"
+      },
+      "summary": {
+        "finished": {
+          "title": "플랜 완료",
+          "text": "플랜의 모든 이미지를 촬영했습니다. 밤을 종료하면 망원경을 파킹하고 카메라를 승온합니다.",
+          "textFlats": "플랜의 모든 이미지를 촬영했습니다. 아무것도 바뀌기 전에 지금 Flat을 촬영한 다음 밤을 종료하세요.",
+          "cutOffTitle": "오늘 밤은 끝",
+          "cutOff": "밝아졌거나 대상이 너무 낮아졌습니다: {planned}장 중 {taken}장을 촬영했습니다. 다른 밤에 플랜을 다시 시작하면 나머지를 촬영합니다."
+        },
+        "ended": {
+          "title": "밤 종료됨",
+          "text": "맑은 하늘을 기원합니다! 오늘 밤의 결과입니다.",
+          "notParked": "망원경이 아직 파킹되지 않았습니다",
+          "shutdown": "리그 종료",
+          "shutdownWait": "종료하기 전에 카메라가 승온되고 망원경이 파킹될 때까지 기다리세요.",
+          "resume": "밤 계속하기"
+        },
+        "frames": "이미지",
+        "integration": "노출",
+        "medianHfr": "중앙값 HFR"
+      },
+      "addToPlan": "플랜에 추가",
+      "slewOptional": "플랜이 대상으로 이동해 센터링하고 자동으로 가이딩을 시작합니다. 지금 이동하는 것은 먼저 Framing을 확인하려는 경우에만 필요합니다.",
+      "coachHint": {
+        "text": "어젯밤 가이딩이 불안정했습니다. Guiding Coach가 가이드 카메라, 하늘, 마운트를 측정해 무엇이 도움이 되는지 알려줍니다. 별 아래에서 약 15분 걸리며, 촬영을 시작하기 전에 하는 것이 가장 좋습니다.",
+        "open": "Guiding Coach 열기",
+        "dismiss": "나중에"
+      },
+      "camera": {
+        "title": "카메라",
+        "hint": "테스트 사진과 플랜의 모든 사진은 이 값을 사용합니다. 플랜의 노출에 별도 값을 지정한 경우는 예외입니다. 권장 게인과 오프셋은 카메라 설명서에 나와 있습니다."
+      },
+      "expert": {
+        "show": "전문가 설정 표시",
+        "hide": "전문가 설정 숨기기"
+      },
+      "window": {
+        "waits": "플랜은 어두워질 때까지 기다립니다(약 {time}).",
+        "tooMany": "이 밤에는 {left}장 중 약 {fit}장만 촬영할 수 있습니다. 나머지는 다른 밤에 촬영할 수 있습니다.",
+        "noDarkness": "오늘 밤은 이만큼 어두워지지 않아 플랜이 끝없이 기다립니다. 플랜의 \"밤\"에서 더 밝은 하늘을 고르세요.",
+        "limit": {
+          "light": "밝아지기 때문에 늦어도 {time}에 멈춥니다.",
+          "low": "대상이 너무 낮아지기 때문에 늦어도 {time}에 멈춥니다."
+        },
+        "nothing": {
+          "light": "지금은 너무 밝아 플랜이 사진 없이 바로 끝납니다. 플랜에서 \"어두워질 때까지 기다리기\"를 켜세요. 그러면 약 {time}에 시작합니다.",
+          "low": "대상이 지평선 위로 너무 낮고 내려가는 중이라 플랜이 사진 없이 끝납니다. 다른 대상이나 더 낮은 고도를 고르세요.",
+          "other": "이대로 시작하면 플랜이 사진 없이 바로 끝납니다."
+        }
+      }
     },
     "secureObservatory": {
       "title": "관측 종료",
@@ -5679,6 +6447,17 @@
       "cameraCold": "카메라 쿨러가 켜져 있습니다({temperature} °C).",
       "domeOpen": "돔이 닫혀 있지 않습니다.",
       "coverOpen": "플랫 패널 커버가 열려 있습니다."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "어떤 브랜드인가요?",
+      "otherBrand": "다른 브랜드",
+      "focuserLabel": "어떤 포커서인가요?",
+      "otherFocuser": "다른 포커서",
+      "disconnectFirst": "드라이버를 바꾸기 전에 장치 연결을 해제하세요.",
+      "applied": "완료: \"{device}\"이(가) 선택되었습니다. 케이블을 꽂고 전원을 켠 뒤 \"연결\"을(를) 누르세요.",
+      "appliedSeveral": "드라이버가 설정되었고 여러 장치를 찾았습니다. 장치 목록에서 사용할 장치를 선택하고 \"연결\"을 누르세요.",
+      "appliedNoDevice": "드라이버가 설정되었지만 아직 장치를 찾지 못했습니다. 케이블을 꽂고 전원을 켠 뒤 장치 목록을 새로고침하고 선택한 다음 \"연결\"을 누르세요.",
+      "openButton": "드라이버 찾기: {device}"
     }
   },
   "plugins": {
@@ -5904,12 +6683,22 @@
       "dryRun": "드라이 런 모드",
       "sambaTitle": "Samba 공유",
       "sambaDescription": "네트워크 파일 공유 활성화 또는 비활성화",
+      "samba": {
+        "firstEnable": "켜면 같은 네트워크의 컴퓨터로 사진을 복사할 수 있습니다. 처음에는 리그가 소프트웨어를 내려받아야 할 수 있으며 이때 인터넷이 필요합니다.",
+        "howTo": "리그와 같은 네트워크의 컴퓨터에서 이 주소를 입력하세요:",
+        "windows": "Windows: 탐색기 주소 표시줄",
+        "mac": "Mac: Finder, 이동, 서버에 연결",
+        "login": "로그인을 요청하면: 사용자 \"{user}\", 비밀번호 \"{password}\"(변경하지 않은 경우).",
+        "outside": "사진은 {folder}에 저장됩니다. 공유 폴더는 {share}이므로 거기에 나타나지 않을 수 있습니다.",
+        "openAccess": "켜져 있는 동안 이 네트워크의 누구나 비밀번호 없이 이 파일을 열고 변경하고 삭제할 수 있습니다."
+      },
       "phd2Title": "PHD2 자동 시작",
       "phd2Running": "서비스가 실행 중입니다",
       "phd2Stopped": "서비스가 정지되어 있습니다",
       "tabs": {
         "network": "네트워크",
         "services": "서비스",
+        "pictures": "사진",
         "system": "시스템",
         "indi": "INDI",
         "software": "소프트웨어",
@@ -6342,7 +7131,7 @@
         "optionsLoadFailed": "진단 옵션을 불러오지 못했습니다. 기본값을 사용합니다.",
         "startFailed": "진단 아카이브를 시작하지 못했습니다.",
         "pollFailed": "진단 상태를 조회하지 못했습니다.",
-        "stillPreparing": "아카이브가 아직 준비 중입니다. 잠시 후 다시 다운로드해 주세요.",
+        "stillPreparing": "기기에서 아카이브를 아직 준비하고 있습니다.",
         "downloadFailed": "진단 아카이브를 다운로드하지 못했습니다.",
         "validationSections": "섹션을 하나 이상 선택하세요.",
         "validationJournalLines": "저널 줄 수는 100에서 50000 사이여야 합니다.",
@@ -8940,6 +9729,7 @@
         "errors": {
           "tppaUnavailable": "TPPA 연결을 열 수 없습니다.",
           "tppaNoResponse": "TPPA가 시작 요청에 응답하지 않았습니다.",
+          "tppaStartSlewFailed": "망원경이 극축 정렬 시작 위치로 이동하지 못했습니다.",
           "tppaError": "TPPA가 오류를 보고했습니다. 카메라, 마운트, plate solver를 확인하세요.",
           "tppaSilent": "TPPA가 2분 동안 아무것도 보내지 않았습니다. TPPA와 Auto-Pilot을 정지했습니다.",
           "autoPilotNotStarted": "Auto-Pilot이 시작되지 않았습니다. AAPA 로그를 확인하세요. 여기서 시작한 TPPA는 정지되었습니다.",
@@ -9623,7 +10413,7 @@
     "config": {
       "connectionMode": "연결 모드",
       "serial": "시리얼",
-      "network": "네트워크",
+      "network": "네트워크 (TCP)",
       "devicePort": "장치 포트",
       "baudRate": "보드레이트",
       "autoDetect": "자동 검색",
@@ -9653,7 +10443,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "설정",
-    "about": "정보"
+    "about": "정보",
+    "home": "시작",
+    "plan": "플랜",
+    "target": "대상"
   },
   "perihelion": {
     "title": "Perihelion",
@@ -9814,7 +10607,7 @@
       "eqmodToggleDescription": "EQMOD는 @:{'general.backendName'}가 보내는 값 대신 적경 속도를 원시 초각/초 단위로 읽어들여, 보정하지 않으면 추적 속도가 약 15배 느려집니다. 마운트가 EQMOD를 사용하는 경우에만 활성화하세요.",
       "eqmodDetectedHint": "{name}은(는) EQMOD 드라이버로 보입니다 — 이 옵션을 켜는 것이 좋습니다.",
       "reapplyIntervalTitle": "재적용 간격",
-      "reapplyIntervalDescription": "Quick Track이 추적 속도를 다시 계산하고 재전송하는 빈도입니다. 기본값 900초(15분)는 혜성과 소행성에 적합합니다.",
+      "reapplyIntervalDescription": "Quick Track이 추적 속도를 다시 계산하고 재전송하는 빈도입니다. 기본값 900초(15분)는 혜성과 소행성에 적합합니다. 유난히 빠르게 움직이는 천체에는 최소 5초까지 줄일 수 있습니다.",
       "secondsUnit": "초",
       "addToSequenceDescriptionRest": "슬루 + 추적 + 촬영 대상을 PINS 시퀀서에 이미 로드된 시퀀스에 추가합니다. 검토 후 시작하세요 -- 기존 대상은 그대로 유지됩니다.",
       "downloadSequence": "시퀀스 다운로드",

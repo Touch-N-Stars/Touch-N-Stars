@@ -127,6 +127,8 @@ import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useFramingStore } from '@/store/framingStore';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useToastStore } from '@/store/toastStore';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 import { useI18n } from 'vue-i18n';
 import { wait } from '@/utils/utils';
 import toggleButton from '@/components/helpers/toggleButton.vue';
@@ -137,6 +139,7 @@ import { StopCircleIcon } from '@heroicons/vue/24/outline';
 const store = apiStore();
 const framingStore = useFramingStore();
 const settingsStore = useSettingsStore();
+const toastStore = useToastStore();
 const { t } = useI18n();
 const showSettingsModal = ref(false);
 
@@ -171,6 +174,8 @@ const props = defineProps({
   decAngle: Number,
   label: String,
   disabled: Boolean,
+  // Name of the target, remembered with the slew so the plan can pick it up
+  name: { type: String, default: '' },
 });
 const emit = defineEmits(['finished']);
 
@@ -192,12 +197,37 @@ async function slew() {
     await unparkMount(); // Überprüfen und Entparken, falls erforderlich
     const center = settingsStore.mount.useCenter;
     const rotate = settingsStore.mount.useRotate && store.rotatorInfo.Connected;
+    let response;
     if (center || rotate) {
       if (framingStore.slewIsStopt) return;
-      await framingStore.slewAndCenterRotate(props.raAngle, props.decAngle, center, rotate);
+      response = await framingStore.slewAndCenterRotate(
+        props.raAngle,
+        props.decAngle,
+        center,
+        rotate,
+        props.name
+      );
     } else {
       console.log('Slew without centering or rotating');
-      await framingStore.slewAndCenterRotate(props.raAngle, props.decAngle, false, false);
+      response = await framingStore.slewAndCenterRotate(
+        props.raAngle,
+        props.decAngle,
+        false,
+        false,
+        props.name
+      );
+    }
+    // A failed centering (no star database, wrong focal length) used to end without a word,
+    // and a successful one too - the user could not tell the two apart.
+    if (reportBackendRefusal(response, 'components.slewAndCenter.failed')) return;
+    if (center && response?.Success === true) {
+      toastStore.showToast({
+        type: 'success',
+        title: t('components.slewAndCenter.centeredTitle'),
+        message: props.name
+          ? t('components.slewAndCenter.centeredNamed', { name: props.name })
+          : t('components.slewAndCenter.centered'),
+      });
     }
     emit('finished'); // Emit Event nach Erfolg
   } catch (error) {

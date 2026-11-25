@@ -20,7 +20,8 @@
     "expand": "Rozbalit",
     "collapse": "Sbalit",
     "drag": "Přetáhnout",
-    "showImage": "Zobrazit snímek"
+    "showImage": "Zobrazit snímek",
+    "onOff": "Zap/Vyp"
   },
   "general": {
     "cancel": "Zrušit",
@@ -153,21 +154,19 @@
     "gpsConfiguration": "Konfigurace GPS",
     "completeSetup": "Dokončit nastavení",
     "instanceConfiguration": "Podrobnosti o připojení @:{'general.backendName'}",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Podrobné pokyny najdete na naší wiki",
     "coordAlt": "Alt",
     "coordLat": "lat",
     "coordLon": "Dél.",
     "coordUnit": "m",
     "coordsNotSupported": "Není podporováno ovladačem",
     "currentMountCoords": "Umístění montáže",
+    "syncDirection": "Když se montáž připojí",
+    "syncDirectionNosync": "Nesynchronizovat polohu",
+    "syncDirectionToApplication": "Převzít polohu z montáže",
+    "syncDirectionToTelescope": "Poslat mou polohu do montáže",
     "currentNinaCoords": "Umístění profilu",
     "loadingCoords": "Načítání…",
-    "mountNotConnected": "Montáž není připojena",
-    "syncDirection": "Směr synchronizace polohy",
-    "syncDirectionNosync": "Žádná synchronizace",
-    "syncDirectionToApplication": "Synchronizace z Mount do profilu",
-    "syncDirectionToTelescope": "Synchronizace z profilu do montáže"
+    "mountNotConnected": "Montáž není připojena"
   },
   "components": {
     "instanceDetection": {
@@ -181,6 +180,8 @@
       "instanceNamePlaceholder": "Moje instance",
       "ipLabel": "IP adresa / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Adresa sestavy",
+      "advanced": "Pokročilé: název a port",
       "portLabel": "Přístav",
       "portPlaceholder": "5000",
       "modalTitle": "Nalezené instance",
@@ -194,6 +195,7 @@
       "discoveringMessage": "Probíhá detekce instancí Touch-N-Stars…",
       "noFoundMessage": "Nebyla nalezena žádná instance Touch-N-Stars prostřednictvím mDNS.",
       "selectionSuccess": "Vybráno {label} ({ip}:{port}).",
+      "hotspotFound": "Sestava nalezena na vlastní Wi-Fi: {name}",
       "foundSingle": "Nalezena 1 instance Touch-N-Stars.",
       "foundMultiple": "Nalezeno {count} instancí Touch-N-Stars.",
       "discoveryFailedStatus": "Vyhledávání selhalo: {message}",
@@ -206,7 +208,7 @@
       "confirmSetTargetTitle": "Potvrzení Výběru Cíle",
       "confirmSetTargetMessage": "Jste si jisti, že chcete tento cíl nastavit jako součást sekvence?",
       "useNinaCache": "Využití mezipaměti @:{'general.backendName'} pro cílový obraz",
-      "setSequnceTarget": "nastavit tento cíl jako součást sekvence",
+      "setSequnceTarget": "Nastavit jako cíl sekvence",
       "sequenceTargetPicker": {
         "title": "Cíl sekvence",
         "hint": "Vyberte, který cíl načtené sekvence obdrží souřadnice snímkování.",
@@ -283,38 +285,105 @@
       "next": "Další",
       "skip": "Přeskočit Tutoriál"
     },
+    "mountDriverFinder": {
+      "searchLabel": "Jakou máte montáž?",
+      "searchPlaceholder": "např. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Zadejte model nebo začněte značkou:",
+      "noMatch": "Žádná odpovídající montáž. Zkontrolujte pravopis nebo použijte níže „Montáž není v seznamu?“.",
+      "otherMount": "Jiná montáž",
+      "howConnected": "Jak je připojena k PINS?",
+      "recommended": "Doporučeno",
+      "driverName": "Ovladač: {name}",
+      "checking": "Kontroluji nainstalované ovladače…",
+      "driverListFailed": "Seznam ovladačů se nepodařilo načíst.",
+      "retry": "Zkusit znovu",
+      "alreadySet": "Tento ovladač je již nastaven.",
+      "useDriver": "Použít tento ovladač",
+      "needsInstall": "{name} zatím není na PINS nainstalován.",
+      "installAndUse": "Nainstalovat a použít",
+      "installConfirm": "PINS stáhne {name} z internetu a nainstaluje ho. Trvá to asi minutu. Pokračovat?",
+      "installConfirmYes": "Nainstalovat",
+      "cancel": "Zrušit",
+      "unavailable": "{name} není na tomto PINS dostupný. Vyberte ho z úplného seznamu níže nebo aktualizujte PINS.",
+      "installing": "Stahuji a instaluji {name}…",
+      "applying": "Nastavuji {name}…",
+      "applied": "Hotovo: {name} je nastaven a je vybrána „{device}“. Připojte montáž, zapněte ji a klepněte na Připojit.",
+      "appliedPickDevice": "Hotovo: {name} je nastaven. Vyberte montáž v seznamu zařízení a klepněte na Připojit.",
+      "applyFailed": "Ovladač se nepodařilo nastavit: {message}",
+      "noInternet": "PINS potřebuje k instalaci ovladače připojení k internetu. Připojte PINS k Wi-Fi s internetem a zkuste to znovu.",
+      "packageMissing": "Balíček ovladače {name} teď není k dispozici ke stažení.",
+      "installedButMissing": "{name} byl nainstalován, ale není v seznamu ovladačů. Restartujte PINS a zkuste to znovu.",
+      "installFailed": "Instalace selhala: {message}",
+      "disconnectFirst": "Před změnou ovladače montáž odpojte.",
+      "notListed": "Montáž není v seznamu?",
+      "openButton": "Najít ovladač montáže",
+      "title": "Najděte ovladač své montáže",
+      "connections": {
+        "swDirect": {
+          "title": "USB kabel přímo do montáže",
+          "hint": "Do USB zdířky montáže nebo kabel EQDIR do portu ručního ovladače. Ruční ovladač není potřeba."
+        },
+        "swHandController": {
+          "title": "Přes ruční ovladač SynScan",
+          "hint": "Kabel z PINS do ručního ovladače (USB zdířka nebo sériový kabel). Zapněte ruční ovladač a nejdřív projděte jeho úvodní menu."
+        },
+        "celestronUsb": {
+          "title": "USB zdířka na montáži",
+          "hint": "USB kabel do zdířky na hlavě montáže."
+        },
+        "celestronHandController": {
+          "title": "Přes ruční ovladač NexStar",
+          "hint": "USB nebo sériový kabel do spodní strany ručního ovladače. Nejdřív dokončete úvodní zarovnání ručního ovladače."
+        },
+        "meadeHandController": {
+          "title": "Přes ruční ovladač AutoStar",
+          "hint": "Sériový nebo USB kabel do portu ručního ovladače."
+        },
+        "usb": {
+          "title": "USB kabel k montáži",
+          "hint": "USB kabel z montáže do PINS."
+        },
+        "network": {
+          "title": "Síťový kabel (LAN)",
+          "hint": "Montáž je ve stejné síti jako PINS. Poté zadejte její IP adresu v nastavení připojení montáže."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Průvodce nastavením",
       "restart": "Spustit průvodce nastavením",
       "stepCounter": "Krok {current} z {total}",
-      "next": "Next",
-      "back": "Back",
-      "finish": "Finish",
+      "next": "Další",
+      "back": "Zpět",
+      "finish": "Dokončit",
       "remindLater": "Připomenout později",
       "steps": {
-        "welcome": "Welcome",
-        "language": "Language",
+        "welcome": "Vítejte",
+        "language": "Jazyk",
         "info": "Začínáme",
-        "instance": "Connection",
+        "instance": "Připojení",
         "wifi": "Wi-Fi",
-        "updates": "Updates",
-        "mount": "Mount",
+        "updates": "Aktualizace",
+        "mount": "Montáž",
         "slewRate": "Rychlost přejezdu",
-        "location": "Location",
-        "telescope": "Telescope",
-        "camera": "Camera",
-        "focuser": "Focuser",
+        "location": "Poloha",
+        "telescope": "Teleskop",
+        "camera": "Kamera",
+        "focuser": "Fokusér",
         "filterWheel": "Filtrové kolo",
-        "guider": "Guiding",
+        "guider": "Pointace",
         "dither": "Dither",
-        "done": "Done",
-        "localization": "Místní nastavení"
+        "done": "Hotovo",
+        "localization": "Místní nastavení",
+        "starDatabase": "Hvězdná mapa"
       },
       "driver": {
         "loading": "Načítání ovladačů…",
         "applying": "Používání ovladače…",
         "listFailed": "Ovladače se nepodařilo načíst: {message}",
-        "changeFailed": "Ovladač se nepodařilo použít: {message}"
+        "changeFailed": "Ovladač se nepodařilo použít: {message}",
+        "none": "Žádný ovladač",
+        "installMissing": "Ovladač není v seznamu?"
       },
       "welcome": {
         "title": "Nastavme Touch'N'Stars",
@@ -325,12 +394,17 @@
         "description": "Jazyk aplikace. Později ho můžeš změnit v nastavení."
       },
       "info": {
-        "openWiki": "Otevřít wiki"
+        "pointDevices": "Další kroky postupně připojí montáž, kameru a další zařízení a zeptají se na údaje o dalekohledu.",
+        "pointPowered": "Před pokračováním zapněte všechna zařízení a připojte je k sestavě.",
+        "pointLater": "Nejste si jistí hodnotou? Přeskočte ji tlačítkem Další. Vše lze později změnit v nastavení."
       },
       "instance": {
-        "description": "Adresa počítače, na kterém běží @:{'general.backendName'} Ve stejné síti ho aplikace obvykle najde sama.",
+        "title": "Připoj se ke své sestavě",
+        "description": "Telefon komunikuje se sestavou přes Wi-Fi.",
+        "hotspotHint": "Nejdřív připoj telefon k Wi-Fi sestavy. Nová sestava otevře vlastní hotspot „pins-…“, heslo je „touchnstars“.",
+        "homeNetworkHint": "Je sestava už ve tvé domácí síti? Tak v ní zůstaň. Aplikace hledá sama; když nic nenajde, zadej níže adresu sestavy.",
         "connect": "Uložit a připojit",
-        "connecting": "Connecting…",
+        "connecting": "Připojování…",
         "connected": "Připojeno k {name}",
         "connectFailed": "Připojení selhalo: {message}"
       },
@@ -340,15 +414,16 @@
         "loadingStatus": "Načítání stavu Wi-Fi…",
         "connectedTo": "Připojeno k {ssid}",
         "notConnected": "Sestava není připojena k žádné síti Wi-Fi.",
+        "notConnectedHint": "Bez sítě otevře vlastní hotspot. Pro aktualizace a stažení hvězdné mapy potřebuje tvou domácí síť: klepni na „Hledat sítě“.",
         "chooseOtherNetwork": "Vybrat jinou síť",
         "scan": "Hledat sítě",
-        "scanning": "Scanning…",
+        "scanning": "Vyhledávání…",
         "selectNetwork": "Vybrat síť",
-        "password": "Password",
+        "password": "Heslo",
         "passwordPlaceholder": "Heslo sítě",
         "autoConnect": "K této síti se připojovat automaticky",
-        "connect": "Connect",
-        "connecting": "Connecting…",
+        "connect": "Připojit",
+        "connecting": "Připojování…",
         "noNetworks": "Nebyly nalezeny žádné sítě. Přesuň sestavu blíž k routeru a hledej znovu.",
         "transitionHint": "Sestava při změně sítě mění adresu. Hledám ji znovu…",
         "retryFind": "Znovu najít sestavu",
@@ -372,34 +447,47 @@
         "title": "Nastavit montáž",
         "description": "Vyber ovladač INDI pro svou montáž a pak ji připoj.",
         "selectDriver": "Ovladač INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Zařízení",
         "connected": "Montáž připojena: {name}",
         "notFound": "Montáž není v seznamu?",
         "notFoundHint": "Pokud tvá montáž chybí, její ovladač možná ještě není nainstalován. Vyhledej ho mezi ovladači INDI třetích stran a nainstaluj ten správný.",
-        "installing": "Installing {label}…",
+        "installing": "Instaluje se {label}…",
         "installSuccess": "{label} nainstalován. Vyber ho v seznamu ovladačů výše.",
-        "installFailed": "Instalace selhala: {message}"
+        "installFailed": "Instalace selhala: {message}",
+        "descriptionDeviceFirst": "Vyberte montáž ze seznamu a připojte ji. Ovladač je potřeba, jen pokud se v seznamu neobjeví."
       },
       "slewRate": {
         "title": "Rychlost přejezdu",
-        "description": "Nastav, jak rychle smí ovladač montáží pohybovat. Příliš rychle a montáž může ztrácet kroky, příliš pomalu a každý přejezd trvá věčnost.",
         "maxSlewRate": "Max. rychlost přejezdu (°/s)",
-        "maxSlewRateHint": "Jde o limit ovladače, ne o ruční rychlost na obrazovce montáže – ta vychází přímo z možností ovladače.",
-        "saveFailed": "Nepodařilo se uložit: {message}"
+        "saveFailed": "Nepodařilo se uložit: {message}",
+        "whatFor": "PINS potřebuje znát maximální rychlost montáže, aby správně načasoval pohyby, například při polárním zarovnání. Rychlost přejezdu to neomezuje.",
+        "reading": "Čtu rychlosti z ovladače montáže…",
+        "derived": "Přečteno z ovladače: nejvyšší rychlost je {label}, tedy {value} °/s. Uloženo – nemusíte nic dělat.",
+        "notNeeded": "Tento ovladač hlásí rychlosti sám v °/s, takže zde není nic k nastavení.",
+        "unknown": "Tento ovladač pojmenovává rychlosti bez čísel (např. „Max“), takže maximální rychlost nelze přečíst. Ponechte výchozích {value} °/s, pokud maximální rychlost své montáže neznáte.",
+        "notConnected": "Připojte montáž v předchozím kroku, rychlost se pak přečte automaticky. Bez toho se použije výchozích {value} °/s, což sedí většině montáží.",
+        "readFailed": "Rychlosti se z montáže nepodařilo přečíst. Zůstává současná hodnota {value} °/s.",
+        "readAgain": "Přečíst z montáže",
+        "setManually": "Nastavit ručně",
+        "manualHint": "Maximální rychlost přejezdu montáže ve stupních za sekundu podle jejího návodu. Zadanou hodnotu už nic automaticky nepřepíše."
       },
       "location": {
         "title": "Nastavit polohu",
         "description": "Tvé souřadnice slouží k výpočtům času, meridian flipu, horizontu a kompozice. Převezmi je ze zařízení nebo je zadej ručně.",
         "profileCoords": "Poloha v profilu",
         "mountCoords": "Poloha montáže",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "altitude": "Altitude",
+        "latitude": "Zeměpisná šířka",
+        "longitude": "Zeměpisná délka",
+        "altitude": "Nadmořská výška",
         "useCurrentLocation": "Použít aktuální polohu",
-        "syncDirection": "Směr synchronizace polohy",
+        "locating": "Zjišťuji vaši polohu…",
+        "syncDirection": "Když se montáž připojí",
         "save": "Uložit polohu",
-        "saving": "Saving…",
-        "saveFailed": "Polohu se nepodařilo uložit: {message}"
+        "saving": "Ukládání…",
+        "saveFailed": "Polohu se nepodařilo uložit: {message}",
+        "unsavedHint": "Zatím neuloženo. Po klepnutí na Další se uloží automaticky.",
+        "savedHint": "Poloha uložena.",
+        "missingHint": "Poloha zatím není nastavena. Polární zarovnání a atlas oblohy ji potřebují."
       },
       "telescope": {
         "title": "Tvůj dalekohled",
@@ -411,13 +499,13 @@
       "camera": {
         "title": "Nastavit kameru",
         "description": "Mnoho kamer je podporováno přímo. Vyber svou ze seznamu níže – ovladač INDI je potřeba jen tehdy, když tam není.",
-        "connectDevice": "Device",
+        "connectDevice": "Zařízení",
         "connected": "Kamera připojena: {name}",
         "notFound": "Kamera není v seznamu?",
         "notFoundHint": "Pokud tvá kamera není podporována přímo, vyber zde ovladač INDI. Poté se objeví v seznamu zařízení výše.",
         "thirdPartyHint": "Pokud ovladač úplně chybí, vyhledej ho mezi ovladači INDI třetích stran a nainstaluj ten správný.",
         "selectDriver": "Ovladač INDI",
-        "installing": "Installing {label}…",
+        "installing": "Instaluje se {label}…",
         "installSuccess": "{label} nainstalován. Vyber ho v seznamu ovladačů výše.",
         "installFailed": "Instalace selhala: {message}",
         "sensorTitle": "Parametry čipu",
@@ -430,34 +518,43 @@
         "chipHeight": "Výška čipu (px)",
         "pixelSize": "Velikost pixelu (µm)",
         "pixelSizeHint": "Ovladač velikost pixelu nehlásí. Najdeš ji v návodu ke kameře.",
+        "pixelSizeReported": "Hlášeno kamerou: {size} µm.",
+        "pixelSizeReportedDiffers": "Kamera hlásí {size} µm, v profilu je jiná hodnota.",
         "imageScale": "Výsledné měřítko snímku: {scale} arcsec/px",
-        "applyFailed": "Nepodařilo se uložit: {message}"
+        "applyFailed": "Nepodařilo se uložit: {message}",
+        "chipSizeNotConnectedHint": "Připojte výše kameru a velikost senzoru se doplní sama. Hodnoty níže potřebuje jen kamera, která ji nehlásí (typicky DSLR)."
       },
       "focuser": {
         "title": "Nastavit zaostřovač",
         "description": "Vyber ovladač INDI pro zaostřovač a pak ho připoj. Parametry autofokusu zůstávají na stránce ostření – tento krok jen zprovozní komunikaci.",
         "selectDriver": "Ovladač INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Zařízení",
         "connected": "Zaostřovač připojen: {name}",
         "notFound": "Zaostřovač není v seznamu?",
         "notFoundHint": "Pokud tvůj zaostřovač chybí, jeho ovladač možná ještě není nainstalován. Vyhledej ho mezi ovladači INDI třetích stran a nainstaluj ten správný.",
-        "installing": "Installing {label}…",
+        "installing": "Instaluje se {label}…",
         "installSuccess": "{label} nainstalován. Vyber ho v seznamu ovladačů výše.",
-        "installFailed": "Instalace selhala: {message}"
+        "installFailed": "Instalace selhala: {message}",
+        "descriptionDeviceFirst": "Vyberte zaostřovač ze seznamu a připojte ho. Ovladač je potřeba, jen pokud se v seznamu neobjeví. Parametry autofokusu zůstávají na stránce ostření.",
+        "notFoundDriverHint": "Pokud váš zaostřovač v seznamu chybí, vyberte zde jeho ovladač INDI. Poté se objeví v seznamu výše."
       },
       "filterWheel": {
         "title": "Nastavit filtrové kolo",
         "description": "Vyber ovladač INDI pro filtrové kolo, připoj ho a pojmenuj pozice tak, jak je používáš v sekvencích.",
         "selectDriver": "Ovladač INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Zařízení",
         "connected": "Filtrové kolo připojeno: {name}",
         "filterNames": "Názvy filtrů",
         "filterNamesHint": "Název každé pozice v pořadí, v jakém jsou v kole. Pouze písmena a číslice.",
         "notFound": "Filtrové kolo není v seznamu?",
         "notFoundHint": "Pokud tvé filtrové kolo chybí, jeho ovladač možná ještě není nainstalován. Vyhledej ho mezi ovladači INDI třetích stran a nainstaluj ten správný.",
-        "installing": "Installing {label}…",
+        "installing": "Instaluje se {label}…",
         "installSuccess": "{label} nainstalován. Vyber ho v seznamu ovladačů výše.",
-        "installFailed": "Instalace selhala: {message}"
+        "installFailed": "Instalace selhala: {message}",
+        "descriptionDeviceFirst": "Vyberte filtrové kolo ze seznamu, připojte ho a pojmenujte pozice tak, jak je používáte. Ovladač je potřeba, jen pokud se v seznamu neobjeví.",
+        "notFoundDriverHint": "Pokud vaše filtrové kolo v seznamu chybí, vyberte zde jeho ovladač INDI. Poté se objeví v seznamu výše.",
+        "noneHint": "Nemáte filtrové kolo? Klepněte na Další.",
+        "addFilter": "Přidat filtr"
       },
       "guider": {
         "title": "Nastavit pointaci",
@@ -481,36 +578,80 @@
         "ditherResult": "Nastavení ditheringu: {pixels} pixelů pointace",
         "ditherCurrent": "Nyní v profilu: {pixels} pixelů pointace ({mainPixels} pixelů hlavní kamery).",
         "ditherApply": "Použít v profilu",
-        "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherApplied": "Použito",
+        "ditherMissingData": "Pro výpočet ditheru je potřeba velikost pixelu a ohnisková vzdálenost snímací i pointační sestavy. Vyplň kroky kamery a teleskopu a v kroku pointace zadej ohnisko pointačního dalekohledu.",
         "applyFailed": "Nepodařilo se uložit: {message}",
-        "nativeCamera": "Naváděcí kamera (PINS Native Guider)",
-        "nativeCameraHint": "Nativní guider ovládá naváděcí kameru přímo. Vyberte její ovladač a zařízení INDI a zadejte ohniskovou vzdálenost naváděcího dalekohledu."
+        "guideScope": "Pointační dalekohled",
+        "nativeCameraHint": "Zadejte ohniskovou vzdálenost pointačního dalekohledu. Guider ji potřebuje k posouzení, jak se hvězdy pohybují.",
+        "descriptionBuiltIn": "PINS má vestavěný guider, který při snímání drží hvězdy na místě, bez dalšího programu. Vyber pointační kameru a zadej ohniskovou vzdálenost pointačního dalekohledu.",
+        "nativeRecommended": "Tip: PINS má vlastní guider („Native Guider“ v seznamu výše). Byl vyvinut speciálně pro PINS, běží přímo v sestavě bez samostatného programu a často pointuje stabilněji než PHD2. Nastavení z PHD2 se přenesou a kdykoli se můžete vrátit výběrem PHD2.",
+        "nativeFocalLengthMissing": "Ohnisková vzdálenost pointačního dalekohledu je stále 0. Pointace funguje i bez ní, ale Dither a chyba pointace v obloukových vteřinách ji potřebují.",
+        "guidePixelSizeHintNative": "Slouží jen k tomuto výpočtu. Guider přečte velikost pixelu z pointační kamery, jakmile je připojena; do té doby ji převezměte z návodu ke kameře.",
+        "ditherMissingDataNative": "K výpočtu Ditheru je potřeba velikost pixelu a ohnisková vzdálenost snímací i pointační sestavy. Vyplňte kroky kamery a dalekohledu a ohniskovou vzdálenost pointačního dalekohledu v kroku pointace.",
+        "guideCameraNotFound": "Pointační kamera není v seznamu?",
+        "guideCameraNotFoundHint": "Pokud vaše pointační kamera nemá nativní podporu, vyberte zde její ovladač INDI. Poté se objeví v seznamu zařízení výše.",
+        "ditherIntro": "Dither mezi expozicemi lehce posune snímek, což odstraňuje šumové vzory ve výsledném stacku. Bez pointace můžete tento krok přeskočit.",
+        "ditherReadyHint": "Obvyklá hodnota je už vyplněná: klepněte na „{button}“ a je hotovo."
       },
       "done": {
         "title": "Tvé vybavení je připraveno",
         "description": "Tvá sestava je připojená a aktuální a montáž, kamera, zaostřovač, filtrové kolo i pointace jsou nastavené.",
         "descriptionPlain": "Montáž, kamera, zaostřovač, filtrové kolo i tvá poloha jsou nastavené.",
         "moreDevicesHint": "Flatový panel, počasí a ostatní zařízení se nastavují na vlastních stránkách.",
-        "noConnectionHint": "Zatím není připojena žádná sestava. Připojení můžeš kdykoli přidat v Nastavení → Připojení."
+        "noConnectionHint": "Zatím není připojena žádná sestava. Připojení můžeš kdykoli přidat v Nastavení → Připojení.",
+        "summaryIntro": "Zde je vidět, co je nyní nastaveno. Klepnutím na položku se vrátíte k jejímu kroku.",
+        "status": {
+          "ok": {
+            "mount": "Vybráno",
+            "location": "Uloženo",
+            "telescope": "Ohnisková vzdálenost nastavena",
+            "camera": "Vybráno",
+            "focuser": "Vybráno",
+            "filterWheel": "Vybráno",
+            "guider": "Vybráno",
+            "starDatabase": "Nainstalováno"
+          },
+          "warn": {
+            "mount": "Není vybrána montáž",
+            "location": "Chybí: polární zarovnání a atlas oblohy ji potřebují",
+            "telescope": "Chybí ohnisková vzdálenost: plate solving ji potřebuje",
+            "camera": "Není vybrána kamera",
+            "starDatabase": "Není nainstalováno: plate solving nemůže fungovat"
+          },
+          "none": {
+            "focuser": "Žádný, ostřete ručně",
+            "filterWheel": "Žádné, to nevadí",
+            "guider": "Bez pointace"
+          }
+        }
       },
       "cancel": "Zrušit nastavení",
       "localization": {
         "title": "Nastavit místní nastavení sestavy",
-        "description": "Nastavte tyto hodnoty před Wi-Fi, aby umístění hotspotu, čas a vzdálené zadávání z klávesnice odpovídaly místu použití sestavy."
+        "description": "Nastavte tyto hodnoty před Wi-Fi, aby umístění hotspotu, čas a vzdálené zadávání z klávesnice odpovídaly místu použití sestavy.",
+        "localeHint": "Jazyk a formát čísel samotné sestavy, např. en_US.UTF-8 nebo de_DE.UTF-8. C.UTF-8 je neutrální výchozí hodnota a funguje také.",
+        "unappliedHint": "Zatím neuplatněno: před Další klepněte na „{button}“, jinak se změny ztratí.",
+        "nothingToDoHint": "Není co měnit? Klepněte na Další.",
+        "rigLanguage": "Jazyk a klávesnice sestavy"
+      },
+      "starDatabase": {
+        "title": "Hvězdná mapa pro plate solving",
+        "description": "Aby zjistila, kam dalekohled míří, sestava porovnává snímek s hvězdnou mapou („plate solving“). Polární zarovnání a centrování cíle ji potřebují. PINS obsahuje hvězdnou mapu D80; pro velmi široká pole zde můžete přidat další.",
+        "otherSolver": "Váš profil používá jiný plate solver než ASTAP, takže zde není co instalovat.",
+        "hint": "Stahování je velké a může trvat několik minut. Mezitím můžete klepnout na Další; instalace pokračuje v sestavě."
       }
     },
     "fileBrowser": {
-      "title": "Browse",
+      "title": "Procházet",
       "goUp": "O úroveň výš",
-      "loading": "Loading...",
+      "loading": "Načítání...",
       "empty": "Prázdná složka",
       "dblClickHint": "Otevřeš dvojklikem",
       "deleteDir": "Smazat složku",
       "folderPlaceholder": "Název složky…",
       "newFolder": "+ Nová složka",
-      "create": "Create",
-      "selectedPath": "Selected:",
+      "create": "Vytvořit",
+      "selectedPath": "Vybráno:",
       "loadError": "Složku se nepodařilo načíst.",
       "createError": "Složku se nepodařilo vytvořit.",
       "deleteDirTitle": "Smazat složku",
@@ -654,7 +795,9 @@
         "restartInfoTitle": "Systém se restartuje",
         "restartInfoMessage": "Systém se restartuje.",
         "shutdownInfoTitle": "Systém se vypíná",
-        "shutdownInfoMessage": "Systém se vypíná. Tato stránka již nebude dostupná."
+        "shutdownInfoMessage": "Systém se vypíná. Tato stránka již nebude dostupná.",
+        "shutdownPowerHint": "Počkej asi minutu, pak můžeš vypnout napájení.",
+        "shutdownFailed": "Vypnutí se nepovedlo: {reason}"
       },
       "plate_solver": {
         "title": "Plate Solver",
@@ -690,22 +833,35 @@
         "FilterHint": "Filtr používaný při plate solvingu (přepíše aktuální filtr)",
         "astapDatabaseAllInstalled": "Všechny hvězdné databáze ASTAP jsou už nainstalované.",
         "astapDatabaseDescription": "Nainstaluj chybějící hvězdné databáze ASTAP přímo do zařízení PINS.",
-        "astapDatabaseInstall": "Install",
-        "astapDatabaseInstallFailed": "Instalace hvězdné databáze ASTAP selhala{exitCode}.",
+        "astapDatabaseInstall": "Instalovat",
         "astapDatabaseInstallSuccess": "Hvězdná databáze ASTAP {databaseId} úspěšně nainstalována.",
-        "astapDatabaseInstalling": "Installing...",
+        "astapDatabaseDownloadFailed": "Instalace {databaseId} se nezdařila. Sestava stahuje hvězdnou mapu z internetu: je v síti s přístupem k internetu? Pak to zkus znovu.",
+        "astapDatabaseLastAttemptFailed": "Poslední pokus o instalaci {databaseId} se nezdařil ({time}). Sestava stahuje hvězdnou mapu z internetu: je v síti s přístupem k internetu? Pak to zkus znovu.",
+        "astapDatabaseRetry": "Znovu nainstalovat {databaseId}",
+        "astapDatabasePhase": {
+          "downloading": "Stahování",
+          "installing": "Instalace",
+          "finalizing": "Dokončování",
+          "complete": "Hotovo"
+        },
+        "astapDatabaseInstalling": "Instaluje se...",
         "astapDatabaseProgressStalled": "Stahování se 30 sekund neposunulo. Úloha je nadále sledována.",
-        "astapDatabaseJobStarted": "started",
+        "astapDatabaseJobStarted": "spuštěno",
         "astapDatabaseJobStartedMessage": "Instalace {databaseId} zahájena.",
-        "astapDatabaseJobStatus": "Job {jobId}: {status}",
+        "astapDatabaseJobStatus": "Úloha {jobId}: {status}",
         "astapDatabaseLastChecked": "Naposledy zkontrolováno: {value}",
         "astapDatabaseLoadFailed": "Databáze se nepodařilo načíst: {detail}",
         "astapDatabaseMissingJobId": "Požadavek na instalaci uspěl, ale nevrátil jobId.",
         "astapDatabaseNoInstallable": "Nejsou k dispozici žádné instalovatelné hvězdné databáze ASTAP",
-        "astapDatabaseSelectPlaceholder": "Select a database",
+        "astapDatabaseSelectPlaceholder": "Vyberte databázi",
         "astapDatabaseStartFailed": "Instalaci se nepodařilo spustit: {detail}",
+        "astapDatabaseInstalledList": "Nainstalováno: {list}",
+        "astapDatabaseNoneInstalled": "Zatím není nainstalována žádná hvězdná databáze. Bez ní plate solving (polární zarovnání, centrování cíle) nefunguje.",
+        "astapDatabaseRecommendedTag": "doporučeno",
+        "astapDatabaseRecommendedFov": "Doporučeno pro váš dalekohled a kameru (zorné pole {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Doporučeno: {id}. Zadejte ohniskovou vzdálenost, velikost pixelu a velikost senzoru pro doporučení, které sedí vašemu dalekohledu.",
         "astapDatabaseStartInstall": "Spouštím instalaci {databaseId}…",
-        "astapDatabaseStarting": "Starting...",
+        "astapDatabaseStarting": "Spouští se...",
         "astapDatabaseStatusCheckFailedRetrying": "Kontrola stavu selhala: {detail}. Zkouším znovu…",
         "astapDatabaseTitle": "Hvězdná databáze ASTAP (PINS)",
         "astapDatabaseUnauthorizedStart": "Při spuštění instalace hvězdné databáze ASTAP chybí oprávnění.",
@@ -812,20 +968,31 @@
         "loading": "Načítání konfigurace swapu…",
         "current": "Aktivní systémový swap: {size} GB",
         "size": "Nastavená velikost swapu",
-        "choose": "Choose a size",
+        "choose": "Vyberte velikost",
         "defaultSize": "2 GB (výchozí hodnota obrazu)",
         "recommendedSize": "8 GB (doporučeno)",
         "freeSpace": "Volné úložiště: {size} GB",
         "pending": "Je nastaveno {size} GB. Po skončení snímání restartuj Pi, aby se změna projevila.",
         "saved": "Konfigurace swapu uložena.",
-        "saving": "Saving…",
+        "saving": "Ukládání…",
         "save": "Uložit velikost swapu",
-        "refresh": "Refresh",
+        "refresh": "Obnovit",
         "unsupported": "Tento systém nemá podporovanou konfiguraci swapu na disku.",
         "unavailable": "Konfigurace swapu není dostupná. Aktualizuj pinsdaemon na Pi.",
         "loadError": "Konfiguraci swapu se nepodařilo načíst: {message}",
         "saveError": "Konfiguraci swapu se nepodařilo uložit: {message}",
         "missingJob": "Démon nevrátil žádnou úlohu swapu."
+      },
+      "instances": {
+        "discovery": "Hledat sestavy v síti",
+        "add": "Přidat sestavu",
+        "edit": "Upravit sestavu",
+        "configured": "Uložené sestavy",
+        "none": "Zatím není uložena žádná sestava",
+        "noneHint": "Použij hledání výše nebo zadej adresu ručně.",
+        "active": "Aktivní",
+        "setActive": "Použít tuto sestavu",
+        "delete": "Odebrat sestavu"
       }
     },
     "alpacaDirect": {
@@ -834,9 +1001,9 @@
       "port": "Port",
       "deviceNumber": "Číslo zařízení",
       "serviceType": "Typ služby",
-      "save": "Save",
-      "connect": "Connect",
-      "disconnect": "Disconnect",
+      "save": "Uložit",
+      "connect": "Připojit",
+      "disconnect": "Odpojit",
       "sharedGuidWarning": "Rotátor a bezpečnostní monitor sdílejí v @:{'general.backendName'} jedno úložné místo – změna jednoho mění i druhý.",
       "noReconnectHint": "Nová nastavení se projeví při příštím připojení.",
       "cameraNoSettings": "Tato kamera nemá žádná nastavení."
@@ -844,7 +1011,12 @@
     "selectDevices": {
       "deviceNotFound": "Zařízení nenalezeno",
       "deviceNotFoundMessage": "Ovladač INDI byl znovu načten, ale „{device}“ se neobjevil. Zkontrolujte napájení a vyberte zařízení znovu.",
-      "reloadingDriver": "Znovu se načítá ovladač INDI…"
+      "reloadingDriver": "Znovu se načítá ovladač INDI…",
+      "configure": "Nastavení zařízení",
+      "rescan": "Vyhledat zařízení znovu",
+      "connect": "Připojit",
+      "disconnect": "Odpojit",
+      "whyNotConnect": "Proč se zatím nemůže připojit?"
     },
     "connectEquipment": {
       "camera": {
@@ -875,7 +1047,7 @@
         "guideCamRequired": "Musí být vybrána platná guide kamera."
       },
       "guiderCam": {
-        "name": "Guide kamera",
+        "name": "Kamera PHD2",
         "manualVnc": "Ručně přes VNC"
       },
       "safety": {
@@ -919,7 +1091,7 @@
           "mount": "Montáž",
           "flip": "Flip",
           "guide": "Guiding",
-          "align": "Align",
+          "align": "Zarovnání",
           "focus": "Ostření",
           "capture": "Expozice"
         },
@@ -1000,8 +1172,8 @@
       "resetConfirmationTitle": "Potvrzení resetu",
       "resetConfirmationMessage": "Jste si jisti, že chcete resetovat sekvenci? Tuto akci nelze vrátit zpět.",
       "clearSequence": "Smazat vše",
-      "clearConfirmationTitle": "Potvrzení smazání",
-      "clearConfirmationMessage": "Jste si jisti, že chcete smazat celou sekvenci? Tuto akci nelze vrátit zpět.",
+      "clearConfirmationTitle": "Vymazat vše",
+      "clearConfirmationMessage": "Odebrat ze sekvence všechny položky? Tuto akci nelze vrátit zpět.",
       "load_sequence": "Načíst Sekvenci",
       "choose_sequence": "Vyberte sekvenci...",
       "saved_sequences": "TNS Sequence-Creator",
@@ -1223,13 +1395,13 @@
         },
         "polarAlignment": {
           "searchRadius": "Radius vyhledávání",
-          "alignmentTolerance": "Tolerance zarovnání (oblouková sekunda)",
+          "alignmentTolerance": "Tolerance zarovnání (obl. minuty)",
           "moveRate": "Rychlost pohybu (°/s)",
           "targetDistance": "Vzdálenost cíle",
           "eastDirection": "Východní směr",
           "manualMode": "Manuální mód",
           "startFromCurrentPosition": "Začít od aktuální pozice",
-          "manual": "Manual"
+          "manual": "Ručně"
         },
         "skyFlat": {
           "shouldDither": "Dither",
@@ -1248,12 +1420,12 @@
         },
         "setTracking": {
           "trackingMode": "Režim sledování",
-          "sidereal": "Sidereal",
-          "lunar": "Lunar",
-          "solar": "Solar",
+          "sidereal": "Hvězdné",
+          "lunar": "Měsíční",
+          "solar": "Sluneční",
           "king": "King",
-          "custom": "Custom",
-          "stopped": "Stopped"
+          "custom": "Vlastní",
+          "stopped": "Zastaveno"
         },
         "expressionVariable": {
           "identifier": "Jméno",
@@ -1362,21 +1534,21 @@
         "orbuculum": {
           "hourAngle": "Hodinový úhel (h)",
           "nextTarget": "Další cíl:",
-          "current": "Current:"
+          "current": "Aktuální:"
         },
         "autoBalancingExposure": {
-          "timeSeconds": "Time (s)",
+          "timeSeconds": "Čas (s)",
           "noEntries": "Žádné položky",
           "addRow": "Přidat řádek",
-          "progress": "Progress",
-          "ratio": "Ratio",
+          "progress": "Průběh",
+          "ratio": "Poměr",
           "bin": "Bin"
         },
         "setReadoutMode": {
-          "mode": "Mode"
+          "mode": "Režim"
         },
         "loopWhile": {
-          "expression": "Expression"
+          "expression": "Výraz"
         },
         "slewScopeToAltAz": {
           "azimuth": "Az",
@@ -1401,9 +1573,9 @@
           "dec": "Dec",
           "haOffset": "Posun hodinového úhlu",
           "side": "Strana mířění",
-          "sideEast": "East",
-          "sideStay": "Stay",
-          "sideWest": "West"
+          "sideEast": "Východ",
+          "sideStay": "Zůstat",
+          "sideWest": "Západ"
         }
       },
       "emptyContainer": "Prázdné — kliknutím na + přidáte položky",
@@ -1424,17 +1596,29 @@
       "resetStatus": "Resetovat stav",
       "delete": "Smazat",
       "runningLocked": "Tato položka právě běží a nelze ji změnit",
+      "plan": {
+        "title": "Plán",
+        "startSequence": "Spustit plán",
+        "resetSequence": "Resetovat plán",
+        "resetConfirmationMessage": "Resetovat plán, aby začal znovu od začátku? Nelze vrátit zpět.",
+        "clearConfirmationMessage": "Odstranit z plánu všechno? Nelze vrátit zpět.",
+        "manageSequences": "Načíst / uložit plány",
+        "saveSequenceAs": "Uložit aktuální plán jako",
+        "sequenceFolder": "Složka plánů",
+        "sequenceFolderSaveError": "Složku plánů se nepodařilo změnit.",
+        "controlsLockedMessage": "Ovládání plánu je během běhu plánu zamčeno."
+      },
       "controlsLockedMessage": "Ovládání sekvence je během jejího běhu uzamčené.",
-      "lockControls": "Lock",
-      "unlockControls": "Unlock",
+      "lockControls": "Zamknout",
+      "unlockControls": "Odemknout",
       "simple": {
         "viewMode": "Zobrazení sekvence",
-        "viewModeHint": "Jednoduché zobrazí jednu kartu na cíl s nejběžnějšími volbami. Expert zobrazí celý strom sekvence.",
+        "viewModeHint": "Jednoduché zobrazí jednu kartu na cíl s nejběžnějšími volbami. Úplné zobrazí celý strom sekvence.",
         "mode": {
           "simple": "Jednoduché",
-          "full": "Expert"
+          "full": "Úplné"
         },
-        "openExpert": "Upravit v editoru pro experty",
+        "openFull": "Upravit v úplném editoru",
         "targets": "Cíle",
         "remaining": "Zbývá",
         "total": "Celkem",
@@ -1450,6 +1634,8 @@
         "dither": "Dithering",
         "ditherHint": "Mezi snímky mírně posunout pozici pointace. Vyžaduje běžící pointaci.",
         "ditherEvery": "Dither každých N snímků",
+        "ditherInExposures": "Každá řádka expozic dělá Dither po každém snímku. | Každá řádka expozic dělá Dither po každých {count} snímcích.",
+        "ditherInExposuresMixed": "Řádky expozic dělají Dither v různých intervalech.",
         "coolCamera": "Chladit kameru",
         "coolCameraHint": "Před prvním cílem vychladit kameru na cílovou teplotu.",
         "unparkMount": "Odparkovat montáž",
@@ -1474,7 +1660,6 @@
         "afAfterHfr": "Po nárůstu HFR",
         "coordinates": "Souřadnice",
         "exposureEnabled": "Pořídit tuto expozici",
-        "cameraDefault": "kamera",
         "gainShort": "Gain",
         "offsetShort": "Offset",
         "empty": "Tato sekvence zatím nemá žádné cíle.",
@@ -1486,6 +1671,7 @@
         "favorites": "Oblíbené",
         "framing": "Framing",
         "noFilter": "Bez změny filtru",
+        "chooseFilter": "Vyber filtr",
         "exposureTime": "Expozice (s)",
         "count": "Počet",
         "noExposures": "Tento cíl zatím nemá žádné expozice.",
@@ -1498,7 +1684,50 @@
         "deleteTarget": "Smazat cíl",
         "deleteTargetConfirm": "Smazat {name} a všechny jeho expozice ze sekvence?",
         "deleteExposure": "Smazat expozici",
-        "deleteExposureConfirm": "Smazat tento řádek expozice ze sekvence?"
+        "deleteExposureConfirm": "Smazat tento řádek expozice ze sekvence?",
+        "addTargetNamed": "Přidat {name} jako cíl",
+        "limits": {
+          "title": "Noc",
+          "wait": "Počkat, až bude tma",
+          "waitHint": "Plán se spustí, jakmile je tma. Během čekání montáž nesleduje oblohu.",
+          "dawn": "Skončit za svítání",
+          "dawnHint": "Ukončí plán, když se rozednívá, i když snímky chybí. Zbytek lze pořídit příští noc.",
+          "from": "od {time}",
+          "notTonight": "dnes v noci ne",
+          "low": "Skončit, když je cíl příliš nízko",
+          "lowHint": "Blízko obzoru vzduch rozmazává hvězdy a v cestě jsou stromy nebo domy. Plán pak pokračuje dalším cílem.",
+          "minAltitude": "Nejmenší výška nad obzorem (°)",
+          "noTarget": "Nejdřív přidej do plánu cíl. Toto se pak zapne samo.",
+          "targetRunning": "Nelze změnit během snímání cíle.",
+          "sunBelow": "slunce {degrees}° pod obzorem",
+          "darknessName": {
+            "bright": "ještě světlo",
+            "dusky": "téměř tma",
+            "usual": "obvyklé",
+            "dark": "tmavší",
+            "darkest": "úplná tma"
+          },
+          "minAltitudeHint": "0° je obzor, 90° je přímo nad hlavou. Dvě pěsti nad sebou v natažené paži jsou asi 20°.",
+          "startAt": "Začátek noci",
+          "endAt": "Konec noci",
+          "until": "do {time}"
+        },
+        "refocus": {
+          "title": "Zaostření",
+          "label": "Pravidelně přeostřovat",
+          "hint": "Jak se noc ochlazuje, zaostření se posouvá. Plán pak mezi dvěma snímky znovu zaostří; pokaždé to trvá několik minut.",
+          "howOften": "Jak často",
+          "every": {
+            "minutes": "každou minutu | každých {count} min",
+            "hours": "každou hodinu | každé {count} h"
+          }
+        },
+        "budget": {
+          "question": "Jak dlouho chceš tento cíl snímat? (hodiny)",
+          "pictures": "{count} snímek po {seconds} s | {count} snímků po {seconds} s",
+          "apply": "Použít tento počet snímků",
+          "wholeNight": "Dokud to noc dovolí ({time})"
+        }
       }
     },
     "mount": {
@@ -1509,17 +1738,19 @@
         "parked": "Montáž je zaparkovaná, takže není co zobrazit."
       },
       "location_sync": {
-        "title": "Předvolby synchronizace polohy",
-        "confirmationMessage": "Pokud je v aplikaci @:{'general.backendName'} nastavena možnost „Synchronizace polohy“ na „Vyžádat potvrzení“, může se před odesláním souřadnic do dalekohledu zobrazit potvrzovací okno. Abyste tomu zabránili a umožnili aplikaci TNS automaticky nastavit souřadnice, doporučujeme změnit nastavení na „Synchronizovat s dalekohledem“.",
+        "title": "Poloha montáže",
+        "confirmationMessage": "Při připojení může aplikace do montáže poslat vaši polohu, aby mířila na správné místo na obloze. Vyberte, co se má stát; později to můžete změnit v nastavení polohy.",
         "toTelescope": {
-          "label": "Synchronizace s dalekohledem"
+          "label": "Poslat mou polohu do montáže"
         },
         "toApplication": {
-          "label": "Synchronizovat s aplikací"
+          "label": "Převzít polohu z montáže"
         },
         "noSync": {
-          "label": "Nesynchronivat"
-        }
+          "label": "Nesynchronizovat polohu"
+        },
+        "recommended": "Doporučeno",
+        "noLocationHint": "Vaše poloha zatím není nastavena. „Poslat mou polohu do montáže“ by poslalo 0° / 0° a přepsalo polohu, kterou montáž zná. Zatím zvolte „Nesynchronizovat polohu“: jakmile polohu nastavíte, aplikace ji do montáže pošle."
       },
       "control": {
         "park": "Park",
@@ -1535,7 +1766,7 @@
           "unpark": "Chyba při odparkování montáže",
           "tracking": "Chyba při nastavování režimu sledování"
         },
-        "setLocationSyncToMount": "Nastavit 'Synchronizovat s dalekohledem'",
+        "setLocationSyncToMount": "Vždy posílat mou polohu do montáže",
         "slewRateINDI": "Rychlost pohybu",
         "reverse_axis": "Směr os",
         "slewRateDriverControlled": "Rychlost přejezdu řídí ovladač",
@@ -2032,15 +2263,15 @@
           "hide": "Skrýt hvězdné komponenty",
           "show": "Zobrazit hvězdné komponenty"
         },
-        "applyStep": "Apply",
+        "applyStep": "Použít",
         "calculatedStep": "Vypočtený krok",
-        "calibDistance": "Distance",
+        "calibDistance": "Vzdálenost",
         "calibStepCalc": "Kalkulačka velikosti kroku",
-        "declination": "Declination",
+        "declination": "Deklinace",
         "desiredSteps": "Požadovaný počet kroků",
         "guideSpeed": "Rychlost pointace",
         "imageScale": "Měřítko snímku",
-        "optimal": "Optimal",
+        "optimal": "Optimální",
         "pixelSize": "Velikost pixelu",
         "assumeDecOrthogonal": "Předpokládat Dec kolmou na RA",
         "useDecCompensation": "Použít kompenzaci Dec",
@@ -2747,7 +2978,7 @@
           "loading": "Načítání nastavení…",
           "loadFailed": "Nastavení se nepodařilo načíst",
           "empty": "Žádná dostupná nastavení.",
-          "notConnectedHint": "Nativní guider není připojen. Změny se ukládají do profilu; změny kamery se projeví při dalším připojení.",
+          "notConnectedHint": "Vestavěný guider není připojen. Změny se ukládají do profilu; změny kamery se projeví při dalším připojení.",
           "requiresReconnect": "Platí po opětovném připojení",
           "valueInUse": "Používá se: {value} {unit}, upraveno během navádění.",
           "range": "{min} – {max}",
@@ -2884,14 +3115,14 @@
           "descriptions": {
             "GuideSource": "Odkud pocházejí pointační snímky. Pointační kamera: kamera ve slotu pointační kamery ve vybavení. Simulátor: vestavěná simulace montáže, oblohy a kamery, pro vyzkoušení pointace bez hardwaru nebo za denního světla.",
             "ExposureSeconds": "Doba expozice každého naváděcího snímku. Kratší expozice reagují rychleji na vítr a chyby montáže; min. pohyb jim brání honit seeing. 1 s vyhovuje většině montáží; delší expozice použijte, když je naváděcí hvězda příliš slabá.",
-            "Gain": "-1 ponechá aktuální zesílení nastavené v ovladači. (Zesílení v PHD2 je v procentech, proto se nepřebírá.)",
-            "Offset": "-1 ponechá aktuální offset nastavený v ovladači.",
+            "Gain": "Gain pointační kamery pro pointační snímky. -1 (výchozí) použije gain z nastavení pointační kamery. Vyšší gain zesvětlí slabé hvězdy, ale přidá šum. Gain v PHD2 je procentuální, proto se nepřebírá.",
+            "Offset": "Offset (úroveň černé) pointační kamery. -1 (výchozí) použije offset z nastavení pointační kamery. Zvyšte ho jen tehdy, když je pozadí pointačních snímků oříznuté do černé.",
             "Binning": "Hardwarový binning pointačních snímků. 2×2 zvýší citlivost kamery a zrychlí přenos snímků za cenu rozlišení; užitečné s malými pixely nebo dlouhou ohniskovou vzdáleností pointace. Po změně znovu kalibrujte.",
-            "FocalLengthMm": "Ohnisková vzdálenost naváděcího dalekohledu (nebo hlavního dalekohledu při OAG). Potřebná pro hodnoty v obloukových vteřinách a pro krok kalibrace.",
-            "PixelSizeUm": "0 použije velikost pixelu z ovladače kamery.",
+            "FocalLengthMm": "Ohnisková vzdálenost pointačního dalekohledu v milimetrech, nebo hlavního dalekohledu při pointaci přes OAG. Spolu s velikostí pixelu určuje měřítko obrazu, podle kterého guider udává obloukové vteřiny a volí krok kalibrace a min. pohyb, proto ji zadejte správně.",
+            "PixelSizeUm": "Velikost pixelu pointační kamery v mikrometrech, používá se pro měřítko obrazu. 0 (výchozí) ji převezme z ovladače kamery; nastavte ji jen tehdy, když ovladač žádnou nebo chybnou hodnotu hlásí.",
             "NoiseReduction": "Vyhladí každý pointační snímek před měřením hvězd. Mean 2×2 průměruje sousední pixely, Median 3×3 navíc odstraní jednotlivé horké pixely. Pomáhá u velmi zašuměných snímků, např. z nechlazených kamer; u čistých snímků dává None nejpřesnější polohy hvězd.",
-            "UseDarkLibrary": "Odečítá darky: z nativní knihovny, pokud je vytvořená, jinak z knihovny darků PHD2 pro tuto velikost čipu.",
-            "PulseOutput": "Mount: pulzní navádění přes připojený ovladač montáže. CameraST4: přes port ST4 naváděcí kamery.",
+            "UseDarkLibrary": "Od každého pointačního snímku odečte dark, čímž odstraní horké pixely a záři zesilovače, aby se nezaměnily za hvězdy. Použije nativní knihovnu darků, jakmile je vytvořena, jinak knihovnu PHD2 pro tuto velikost kamery.",
+            "PulseOutput": "Kam se posílají naváděcí pulzy. Montáž: přes ovladač připojené montáže (pulse guiding), obvyklá volba. ST4 kamery: přes port ST4 pointační kamery do vstupu ST4 montáže (jen kamery INDI).",
             "MultiStar": "Měří několik hvězd najednou a pointuje na jejich společnou polohu místo na jedinou hvězdu. Tím vyprůměruje velkou část seeingu a udrží pointaci, když jedna hvězda zeslábne. Nejlépe nechat zapnuté.",
             "MaxStars": "Nejvyšší počet hvězd pro vícehvězdnou pointaci. Více hvězd vyprůměruje více seeingu; s malým počtem použitelných hvězd v poli použije pointace ty, které najde. 1 pointuje na jedinou hvězdu.",
             "MinSnr": "Poměr signálu k šumu, který hvězda potřebuje, aby byla vybrána jako pointační. Příliš vysoká hodnota znamená, že se žádná hvězda nenajde; místo snížení zkuste delší expozici, vyšší gain nebo novou knihovnu darků.",
@@ -2900,46 +3131,46 @@
             "MaxHfd": "Největší velikost (průměr polovičního toku, v pixelech), kterou může pointační hvězda mít. Nafouklé nebo rozostřené skvrny nad ní se při výběru hvězd ignorují.",
             "MassChangeEnabled": "Sleduje jas (hmotu) pointační hvězdy a náhlou změnu bere jako ztrátu hvězdy, aby pointace při přechodu mraků nepřeskočila na sousední hvězdu nebo nepointovala na horký pixel.",
             "MassChangeThreshold": "Jak moc se smí hmota hvězdy změnit, než se hvězda považuje za ztracenou: 0,5 povoluje změnu o polovinu oproti posledním snímkům. Zvyšte, pokud přicházejí alarmy ztráty hvězdy, i když je hvězda jasně viditelná, např. při proměnlivé průzračnosti.",
-            "PrimaryDropoutFallback": "Když hlavní hvězda v jednom snímku vypadne, odhadne se její poloha z ≥3 shodujících se vedlejších hvězd.",
-            "SaturationAdu": "0 = rozpoznat přesycení z profilu hvězdy.",
-            "RaAlgorithm": "Predictive (experimentální) se z naváděcích snímků učí seeing a vlastní pohyb montáže a koriguje chybu, kterou předpovídá pro další snímek; agresivita, hystereze a min. pohyb se na něj proto nevztahují.",
-            "RaAggression": "Podíl chyby korigovaný v každém snímku (0..1).",
+            "PrimaryDropoutFallback": "Když hlavní hvězda v jednom snímku vypadne (procházející mrak, družice), guider odhadne její polohu z nejméně 3 shodujících se vedlejších hvězd a pokračuje v pointaci bez přerušení. Vyžaduje pointaci na více hvězd.",
+            "SaturationAdu": "Hodnota pixelu, od které se hvězda považuje za saturovanou; saturované hvězdy se nepoužívají, protože jejich střed nelze přesně změřit. 0 (výchozí) rozpozná saturaci z tvaru hvězdy. Jinak zadejte maximální hodnotu kamery, např. 65535 pro 16 bitů.",
+            "RaAlgorithm": "Jak se z naměřené chyby RA stane korekce. Hysteresis (výchozí) koriguje část chyby a vyhlazuje ji předchozími korekcemi. Lowpass2 a Lowpass reagují jemněji, vhodné pro montáže s dobrým sledováním. None neposílá žádné korekce RA. Predictive (experimentální) se z pointačních snímků učí seeing a vlastní pohyb montáže a koriguje chybu, kterou předpovídá pro další snímek; agresivita, hystereze a min. pohyb pro něj neplatí.",
+            "RaAggression": "Podíl naměřené chyby RA korigovaný v každém snímku: 0,7 koriguje 70 %. Nižší hodnoty brání překmitu a honění seeingu, vyšší vrátí hvězdu rychleji. Snižte ji, když hvězda kmitá ze strany na stranu, zvyšte ji, když se hvězda opožďuje.",
             "RaHysteresis": "Váha předchozí korekce RA vůči nejnovější chybě: 0,1 přimíchá 10 % poslední korekce. Vyšší hodnoty korekce vyhlazují, ale reagují pomaleji na skutečnou změnu směru.",
             "RaLowpass2Aggressiveness": "Lowpass2 proloží přímku posledními chybami RA a koriguje tento trend místo jednotlivých snímků. Je to podíl trendu korigovaný za snímek, v procentech; snižte, pokud korekce přestřelují.",
-            "RaMinMove": "0 = automaticky z měřítka snímku.",
+            "RaMinMove": "Nejmenší chyba RA v pixelech, která dostane korekci; menší chyby se ignorují, aby pointace nehonila seeing. 0 (výchozí) vypočte hodnotu z měřítka obrazu. Nastavení, které se nejvíce vyplatí přizpůsobit seeingu dané noci.",
             "RaCorrectionPace": "Podíl zbývající chyby, který algoritmus Predictive koriguje za snímek: 0,5 odstraní posun během 2–3 snímků bez překmitnutí přes nulu, 1 koriguje vše najednou. Drift a periodická chyba se vždy korigují celé.",
             "PeriodicErrorPrediction": "Učí se periodickou chybu šneku v RA a koriguje ji dřív, než se projeví. Naučená křivka se ukládá pro profil a montáž.",
             "WormPeriodUnit": "Zadejte šnek RA počtem zubů šnekového kola nebo jeho periodou v sekundách, např. z návodu k montáži nebo z nástroje PEC. Sekundy se hodí i pro pohon, jehož perioda neodpovídá celému počtu zubů (vlnový převod, řemen). Použije se jen zvolená hodnota.",
-            "WormTeeth": "Počet zubů šnekového kola RA (např. 180 u EQ6-R, 135 u HEQ5); dává přesnou periodu šneku. 0 = zjistit periodu z naváděcích snímků.",
+            "WormTeeth": "Počet zubů šnekového kola RA (např. 180 u EQ6-R, 135 u HEQ5); udává přesnou periodu šneku. 0 (výchozí) zjistí periodu z pointačních snímků.",
             "WormPeriodSeconds": "Perioda šneku RA v sekundách (např. 478,7 pro 180 zubů); pak se nezjišťuje. Po otočení přes poledník se její fáze učí znovu, jako bez počtu zubů. 0 (výchozí) = zjistit periodu z naváděcích snímků; naváděč přijímá 180 až 1200 s.",
             "ForgetPeriodicError": "Zapomene periodickou chybu naučenou pro tuto montáž, např. po seřízení šneku; poté se naučí znovu.",
-            "DecAlgorithm": "Predictive (experimentální) se z naváděcích snímků učí seeing a vlastní pohyb montáže a koriguje chybu, kterou předpovídá pro další snímek; agresivita, hystereze a min. pohyb se na něj proto nevztahují.",
+            "DecAlgorithm": "Jak se z naměřené chyby Dec stane korekce. ResistSwitch (výchozí) obrátí směr Dec jen tehdy, když to chyba jasně vyžaduje, aby vůle v Dec nerozkmitala pointaci. Hysteresis, Lowpass2 a Lowpass fungují jako u RA, None neposílá žádné korekce Dec. Predictive (experimentální) se z pointačních snímků učí seeing a vlastní pohyb montáže a koriguje chybu, kterou předpovídá pro další snímek; agresivita, hystereze a min. pohyb pro něj neplatí.",
             "DecAggression": "Podíl změřené chyby Dec korigovaný v každém snímku: 1,0 koriguje vše. Snižte, pokud Dec přestřeluje.",
             "DecHysteresis": "Váha předchozí korekce Dec vůči nejnovější chybě: 0,1 přimíchá 10 % poslední korekce. Vyšší hodnoty korekce vyhlazují, ale reagují pomaleji na skutečnou změnu směru.",
             "DecLowpass2Aggressiveness": "Lowpass2 proloží přímku posledními chybami Dec a koriguje tento trend místo jednotlivých snímků. Je to podíl trendu korigovaný za snímek, v procentech; snižte, pokud korekce přestřelují.",
             "DecFastSwitch": "S ResistSwitch: umožní Dec okamžitě obrátit směr, když je chyba velká (více než 3 × min move), místo čekání, až se shodne několik snímků. Rychle vrátí velkou chybu Dec.",
-            "DecMinMove": "0 = automaticky z měřítka snímku.",
+            "DecMinMove": "Nejmenší chyba Dec v pixelech, která dostane korekci; menší chyby se ignorují, aby pointace nehonila seeing. 0 (výchozí) vypočte hodnotu z měřítka obrazu. Nastavení, které se nejvíce vyplatí přizpůsobit seeingu dané noci.",
             "DecCorrectionPace": "Podíl zbývající chyby, který algoritmus Predictive koriguje za snímek: 0,5 odstraní posun během 2–3 snímků bez překmitnutí přes nulu, 1 koriguje vše najednou. Drift a periodická chyba se vždy korigují celé.",
             "DecGuideMode": "Auto navádí Dec oběma směry, Jen sever a Jen jih jedním směrem, Vypnuto vůbec. Drift sleduje drift: během navádění měří drift v Dec a navádí jen proti němu, takže se převody Dec nikdy neobrátí a na vůli přestane záležet; když se drift obrátí, přepne směr, a oběma směry navádí, dokud drift není znám, během ustálení a k vrácení velké chyby.",
             "MaxRaDurationMs": "Nejdelší jednotlivý pointační pulz RA. Omezuje korekci, když je měření daleko mimo (špatná hvězda, poryv větru), aby montáž nebyla odhozena daleko. Zvyšte jen tehdy, když korekce velkých chyb trvá mnoho snímků.",
             "MaxDecDurationMs": "Nejdelší jednotlivý pointační pulz Dec. Omezuje korekci, když je měření daleko mimo (špatná hvězda, poryv větru), aby montáž nebyla odhozena daleko. Zvyšte jen tehdy, když korekce velkých chyb trvá mnoho snímků.",
-            "MinPulseMs": "Kratší naváděcí pulzy se zaokrouhlí na 0 nebo na tuto délku: některé montáže velmi krátké pulzy nezpracují správně. 0 = libovolná délka.",
+            "MinPulseMs": "Kratší naváděcí pulzy se zaokrouhlí na 0 nebo na tuto délku, protože některé montáže velmi krátké pulzy nezpracují správně. 0 posílá pulzy libovolné délky.",
             "SimultaneousPulses": "Posílá pulzy RA a Dec jednoho snímku současně místo za sebou, což zkracuje pointační cyklus. Jen u montáží, které časují obě osy odděleně (nativní ovladač OnStepX v pins); ostatní montáže dál pulzují postupně.",
             "BacklashCompensation": "Přidá další pulz, když Dec obrací směr, aby vymezil vůli v převodech Dec. Užitečné při znatelné vůli Dec; nechte vypnuté, pokud Dec pointuje čistě. Režim pointace Dec Drift se obratům zcela vyhýbá.",
             "BacklashPulseMs": "Délka dalšího pulzu při obratu Dec. Z ní vychází pointace a sama upravuje pulz mezi 20 ms a 1,5 × touto hodnotou podle reakce hvězdy. S modelem vůle je hodnota jen prvním odhadem vůle, kterou se model pak sám učí.",
             "PulseModel": "Učí se z ditherů, jak daleko pointační pulz skutečně posune hvězdu v každé ose, a podle toho dimenzuje pulzy, takže nepřesná kalibrace už nezpůsobuje pře- ani podkorekci. Začíná s kalibrací, mění jen to, co dithery jasně ukážou, a naučené si drží pro profil a montáž až do další kalibrace.",
-            "CalibrationStepMs": "0 = automaticky z optiky, rychlosti navádění a deklinace.",
-            "ReuseCalibration": "Zachová kalibraci mezi relacemi a přizpůsobí ji deklinaci a straně sloupu.",
+            "CalibrationStepMs": "Délka každého pulzu při kalibraci. 0 (výchozí) ji vypočte z ohniskové vzdálenosti, velikosti pixelu, rychlosti pointace a deklinace. Nastavte ji sami jen tehdy, když kalibrace provádí příliš málo nebo příliš mnoho kroků.",
+            "ReuseCalibration": "Zachová poslední kalibraci mezi relacemi a přizpůsobí ji deklinaci a straně sloupu, takže není nutné kalibrovat každou noc. Po ručním otočení pointační kamery nebo výměně pointačního dalekohledu kalibrujte znovu.",
             "AssumeOrthogonal": "Kalibrace běžně měří směry RA a Dec nezávisle. Tato volba vynutí, aby Dec byla přesně kolmá na RA, což pomáhá, když velká periodická chyba, vůle Dec nebo špatný seeing zkreslí kalibraci Dec.",
             "DecCompensation": "Přizpůsobí korekce RA aktuální deklinaci, takže kalibrace provedená na jedné deklinaci funguje i na jiné. Připojená montáž musí hlásit svou polohu; nechte zapnuté. Není totéž co kompenzace vůle Dec.",
-            "DecFlipRequired": "Nastavení pro každou montáž zvlášť; automaticky ho opraví samokontrola Dec po flipu.",
+            "DecFlipRequired": "Zda se po meridian flipu musí korekce Dec obrátit. Závisí na montáži a ukládá se pro každou montáž zvlášť; pokud je nastavení špatně, samokontrola Dec po flipu ho automaticky opraví.",
             "VerifyDecAfterFlip": "Po flipu přes poledník zkontroluje první korekce Dec: pokud hvězdu odtlačují dál místo zpět, pointace sama obrátí Dec a opraví „Otočit Dec po flipu přes poledník“ pro tuto montáž.",
             "RotatorTurnsGuideCamera": "Zda připojený rotátor otáčí i naváděcí kamerou: Ano, když je rotátor mezi dalekohledem a OAG, Ne u naváděcího dalekohledu nebo u rotátoru mezi OAG a snímací kamerou. S volbou Ano pointace čeká, dokud se rotátor otáčí, pak začne s novou naváděcí hvězdou a uloženou kalibrací otočenou s rotátorem, takže po otočení není nutné znovu kalibrovat. Pokud s volbou Ano pointace po pohybu rotátoru odtlačuje hvězdu, zvolte „Ano, obráceně“ a kalibrujte ještě jednou. Ruční rotátor NINA se nesleduje.",
             "DitherMode": "Jak se volí každý dither. Random: náhodná vzdálenost a směr. Spiral: kroky po spirále kolem výchozí polohy, užitečné proti šumu s pevným vzorem snímací kamery.",
             "DitherScale": "Násobí vzdálenost ditheru, kterou žádá snímací software: 2 dituje dvakrát dál, 0,5 o polovinu blíž.",
             "FastRecenter": "Po ditheru přesune hvězdu do nové zamčené polohy velkými přímými pulzy místo běžných pointačních kroků, takže se dither ustálí dříve. Nejlépe nechat zapnuté.",
             "ReacquireTimeoutSec": "Jak dlouho pointace hledá ztracenou hvězdu, než vyhlásí alarm. Potom hledá dál a obnoví pointaci, jakmile se hvězda vrátí.",
-            "MaxPulseDutyPercent": "Navádění se zastaví, když osa dostává pulzy déle než tento podíl minuty (ochrana proti útěku).",
+            "MaxPulseDutyPercent": "Pointace se zastaví, když je osa pulzována déle než tento podíl minuty. Chrání před rozběhnutím, např. po chybné kalibraci nebo při obrácené Dec.",
             "PauseWhenSlewing": "Pozastaví korekce, dokud montáž hlásí přesun/zaparkování. Vypněte jen tehdy, když ovladač montáže trvale hlásí 'přesouvá se'.",
             "PauseWhenTrackingOff": "Pozastaví korekce, dokud montáž hlásí vypnuté sledování. Vypněte, pokud ovladač montáže neumí hlásit stav sledování.",
             "SaveGuideLog": "Log navádění kompatibilní s PHD2 v ~/.local/share/NINA/InternalGuider/Logs. Plugin Logy navádění ho zobrazí v aplikaci.",
@@ -3886,7 +4117,7 @@
         "hyperbolicTrendline": "Hyperbolická spojnice trendu",
         "quadraticMin": "Kvadratické minimum",
         "hyperbolicMin": "Hyperbolické minimum",
-        "value": "Value",
+        "value": "Hodnota",
         "invalidDate": "Neplatné datum"
       },
       "settings": {
@@ -4249,22 +4480,22 @@
           "autoFromDriver": "Automaticky: {value} µm/krok z ovladače fokuséru",
           "noDriverStepSize": "Ovladač fokuséru neudává velikost kroku, proto jsou údaje v mikronech skryté. Zadejte velikost kroku svého fokuséru, abyste je zobrazili.",
           "stepSizeMismatch": "⚠ liší se od ovladače fokuséru",
-          "centerFocuserBeforeRun": "Center Focuser Before Run",
-          "detailedAnalysisExposureSeconds": "Detailed Analysis Exposure Time (seconds)",
-          "framesPerPoint": "Frames Per Point",
-          "numRegionsWide": "Number of Regions Wide",
+          "centerFocuserBeforeRun": "Nejprve vycentrovat fokusér",
+          "detailedAnalysisExposureSeconds": "Expozice autofokusu",
+          "framesPerPoint": "Expozice na bod",
+          "numRegionsWide": "Šířka mřížky excentricity",
           "eccentricityColorMapEnabled": "Barevná excentricita",
           "interpolationEnabled": "Interpolace zapnuta",
           "interpolationAlgo": "Algoritmus interpolace",
           "interpolationAmount": "Vyhlazení interpolace",
-          "sensorCurveModelEnabled": "Sensor Curve Model",
+          "sensorCurveModelEnabled": "Model zakřivení senzoru zapnut",
           "showSensorModel": "Zobrazit model senzoru",
           "frameReviewEnabled": "Ponechat snímky ke kontrole",
-          "signalAmplification": "Signal Amplification",
-          "simpleExposureSeconds": "Exposure Time (seconds)",
-          "stepCount": "Step Count",
-          "stepSize": "Step Size",
-          "timeoutSeconds": "Timeout (seconds)"
+          "signalAmplification": "Zesílení signálu",
+          "simpleExposureSeconds": "Expozice jednoduché analýzy",
+          "stepCount": "Počet kroků",
+          "stepSize": "Velikost kroku",
+          "timeoutSeconds": "Časový limit autofokusu"
         },
         "autoFocusOptions": {
           "loading": "Načítání možností automatického zaostření...",
@@ -4456,7 +4687,7 @@
           "noiseLevel": "Úroveň hluku",
           "pixelScale": "Měřítko Pixelu",
           "focusRange": "Rozsah ostření",
-          "useOptimizedSettings": "Use Optimized Settings"
+          "useOptimizedSettings": "Použít optimalizovaná nastavení"
         },
         "binningHint": {
           "none": "Spusť automatické zaostřování a získáš doporučení",
@@ -4486,22 +4717,22 @@
           "configuration": "Konfigurace",
           "sensorWidth": "Šířka snímače",
           "sensorHeight": "Výška snímače",
-          "sensorRotation": "Sensor Rotation (CW facing back of camera)",
+          "sensorRotation": "Otočení senzoru",
           "sensorRotationDescription": "Po směru hodinových ručiček při pohledu na zadní stranu fotoaparátu",
           "manualTilterConfiguration": "Manuální konfigurace 3bodového náklonu (beta – používejte opatrně)",
           "tilterOuterRadius": "Vnější poloměr naklonění",
           "tilterThreadPitch": "Rozteč závitu naklonění",
-          "tilterScrewCount": "Tilter Screws",
-          "tilterScrewCountDescription": "3-screw plates use an equilateral layout, 4-screw plates one screw per sensor corner",
-          "screwCountThree": "3 screws (equilateral)",
-          "screwCountFour": "4 screws (one per corner)",
-          "fourScrewHint": "Adjust opposing screws as a pair (loosen one, tighten the other) so the plate cannot bind",
+          "tilterScrewCount": "Šrouby tilteru",
+          "tilterScrewCountDescription": "Desky se 3 šrouby mají rovnostranné rozložení, desky se 4 šrouby jeden šroub na každý roh senzoru",
+          "screwCountThree": "3 šrouby (rovnostranně)",
+          "screwCountFour": "4 šrouby (jeden na roh)",
+          "fourScrewHint": "Protilehlé šrouby nastavujte v páru (jeden povolte, druhý utáhněte), aby se deska nezasekla",
           "fourScrewApplyUnsupported": "Použití na zařízení je podporováno pouze u tilterů se 3 šrouby",
           "positiveTurnDirection": "Kladné hodnoty znamenají",
           "positiveTurnInward": "Otočit šroub dovnitř",
           "positiveTurnOutward": "Otočit šroub ven",
           "positiveTurnDirectionDescription": "Kterým směrem kladná vypočtená hodnota otáčí šroubem na tvém adaptéru",
-          "shiftToNonNegative": "Screws start fully seated",
+          "shiftToNonNegative": "Šrouby začínají zcela zašroubované",
           "startFromSeatedDescription": "Zcela dotažený šroub lze otáčet jen dovnitř, proto se všechny hodnoty posunou tak, aby jeden šroub nepotřeboval otočit a ostatní se otáčely dovnitř. Mění se tím jen backfocus, ne náklon. Odškrtni pro zobrazení znaménkových úprav z aktuální polohy.",
           "inward": "dovnitř",
           "outward": "ven",
@@ -4623,7 +4854,7 @@
         "steps": {
           "check": {
             "title": "Předpoklady",
-            "description": "Hocus Focus potřebuje připojenou kameru a ostřič."
+            "description": "Autofokus potřebuje připojenou kameru a zaostřovač."
           },
           "optics": {
             "title": "Optika",
@@ -4631,15 +4862,15 @@
           },
           "rig": {
             "title": "Vaše sestava",
-            "description": "Několik otázek k vašemu vybavení. Odpovědi nastaví předvolby Hocus Focus."
+            "description": "Pár otázek k vašemu vybavení. Odpovědi nastaví vhodné předvolby autofokusu."
           },
           "rough": {
             "title": "Hrubé zaostření",
-            "description": "Pořizujte snímky a pohybujte ostřičem, dokud nejsou hvězdy malé a kulaté a HFR co nejnižší."
+            "description": "Pořizujte snímky a posouvejte zaostřovač, dokud nejsou hvězdy malé a kulaté. HFR je velikost hvězdy: čím menší, tím ostřejší."
           },
           "measure": {
             "title": "Velikost kroku a vůle",
-            "description": "Měří, jak rychle hvězdy rostou při pohybu ostřiče a kolik kroků ostřič ztratí při změně směru, a navrhne velikost kroku pro automatické zaostřování a kompenzaci vůle v NINA. Ostřič nejdřív couvne o pořádný kus, aby každou polohu najel ze stejné strany, pak jede vpřed přes ohnisko a nakonec se vrátí do výchozí polohy."
+            "description": "Změří, jak rychle hvězdy rostou při pohybu zaostřovače a kolik kroků se ztratí při změně směru, a navrhne velikost kroku pro autofokus a kompenzaci vůle. Zaostřovač nejprve ujede dlouhou cestu zpět, aby se každé poloze dosáhlo ze stejné strany, pak vpřed přes ohnisko a nakonec se vrátí do výchozí polohy."
           },
           "run": {
             "title": "Zkušební běh",
@@ -4651,14 +4882,13 @@
           },
           "optimize": {
             "title": "Optimalizace",
-            "description": "Volitelné: optimalizátor doladí detekci hvězd na uloženém autofokusu."
+            "description": "Volitelné: optimalizátor doladí detekci hvězd na novém průběhu autofokusu nebo na uloženém běhu."
           }
         },
         "checks": {
           "camera": "Kamera připojena",
           "focuser": "Ostřič připojen",
-          "hocusFocus": "Hocus Focus dostupný",
-          "engineHint": "V @:{'general.backendName'} musí být 'Auto Focus' i 'Star Detector' nastaveny na Hocus Focus. Krok výsledku vám řekne, pokud tomu tak není."
+          "hocusFocus": "Plugin autofokusu nainstalován"
         },
         "focalLength": "Ohnisková vzdálenost (mm)",
         "pixelSize": "Velikost pixelu (µm)",
@@ -4674,7 +4904,7 @@
         "startRun": "Spustit autofokus",
         "stopRun": "Zastavit autofokus",
         "runFailed": "Autofokus se nepodařilo spustit.",
-        "noResult": "Zatím není k vyhodnocení žádný dokončený autofokus Hocus Focus.",
+        "noResult": "Zatím není dokončen žádný běh autofokusu k posouzení.",
         "runAgain": "Opakovat",
         "openOptimizer": "Otevřít optimalizátor",
         "useOptimized": "Použít optimalizované nastavení",
@@ -4832,9 +5062,9 @@
       "warm_up": "Zahřát",
       "cooler_status": "Stav chlazení",
       "cooler_status_off": "VYPNUTO",
-      "cooler_status_cooling": "Aktivní - Chlazení na",
-      "cooler_status_holding": "Aktivní - Při cílové teplotě",
-      "cooler_status_warming": "Aktivní - Ohřev na",
+      "cooler_status_cooling": "Chlazení na",
+      "cooler_status_holding": "Na cílové teplotě",
+      "cooler_status_warming": "Ohřívání",
       "set_save_snapshot": "Uložit snímky",
       "snapshotTargetName": "Název cíle",
       "set_use_solve_sync_to_mount": "Synchronizovat s montáží",
@@ -4881,6 +5111,7 @@
       "up": "Nahoru",
       "not_available": "Není k dispozici",
       "running": "PROBÍHÁ",
+      "movingToStart": "Přejíždím na začátek…",
       "plate_solve_start": "Zahájit řešení",
       "plate_solve_ok": "Řešení úspěšné",
       "plate_solve_error": "Chyba řešení",
@@ -4937,6 +5168,41 @@
       },
       "error_modal": {},
       "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "Polární zarovnání nelze spustit",
+        "refused": "Sestava odmítla spustit polární zarovnání",
+        "noLocation": "Sestava nezná svou polohu. Nejdřív nastavte zeměpisnou šířku a délku, výpočet na nich závisí.",
+        "noDatabase": "Není nainstalována žádná hvězdná mapa, takže nelze plate solvovat snímky. Nainstalujte ji a spusťte znovu.",
+        "notSent": "Start nedorazil do sestavy. Zkontrolujte připojení a klepněte znovu na Start.",
+        "startSlewFailed": "Dalekohled nemohl přejet do výchozí polohy. Zkontrolujte montáž a klepněte znovu na Start."
+      },
+      "trackingOffAfterStop": "Polární zarovnání při zastavení vypnulo sledování.",
+      "resumeTracking": "Znovu zapnout sledování",
+      "goodEnoughHint": "Celková chyba pod 1′ (jedna oblouková minuta) je dobrá. Po jejím dosažení zarovnání zastavte.",
+      "tabSimple": "Polární zarovnání",
+      "simpleIntroMove": "Nejdřív montáž sama najede do výchozí polohy u nebeského pólu, pak se dvakrát kousek otočí kolem své osy a pořizuje snímky. Zkontroluj, že kabely jsou dost dlouhé a nic nepřekáží.",
+      "simpleIntroAdjust": "Potom tato stránka ukáže, kterým směrem točit šrouby výšky a azimutu. Hodnoty se po každém snímku aktualizují. Dolaďuj, dokud celková chyba neklesne pod 1′ (jednu obloukovou minutu), a pak zarovnání ručně zastav.",
+      "adjustHint": "Toč šrouby výšky a azimutu po malých krocích ve směru šipek. Hodnoty se po každém snímku aktualizují.",
+      "lastMeasurement": "Poslední měření",
+      "markedDone": "Polární ustavení je pro dnešní noc označeno jako hotové.",
+      "confirmStartTitle": "Spustit polární ustavení?",
+      "confirmStartMessage": "Montáž teď najede do výchozí polohy u nebeského pólu a během měření se otáčí. Zkontroluj, že kabely jsou dost dlouhé a nic nepřekáží.",
+      "status": {
+        "capturing": "Pořizuje snímek…",
+        "solving": "Plate solving snímku…",
+        "captureRetry": "Snímek se nezdařil, nový pokus…",
+        "solveRetry": "Plate solving se nezdařil, nový pokus…",
+        "nextPoint": "Najíždí na další bod",
+        "firstPoint": "Měří první bod",
+        "secondPoint": "Měří druhý bod",
+        "finalPoint": "Měří třetí bod",
+        "waitMount": "Čeká, až se montáž zastaví",
+        "waitDome": "Čeká na kopuli",
+        "settling": "Montáž se uklidňuje",
+        "slewInitial": "Najíždí do výchozí polohy",
+        "movingAxis": "Otáčí osou",
+        "solveAttempt": "Plate solving snímku…"
+      },
       "warn_dec_spread_body": "Deklinace hlášená montáží se mezi měřeními změnila o {arcsec}\". To může ovlivnit přesnost polárního vyrovnání – zajisti, aby se během měření pohybovala jen osa RA.",
       "warn_dec_spread_title": "Zjištěn rozptyl deklinace",
       "warn_east_west_body": "Aktuální pole leží do 5° od přesného východu nebo západu. Pokud je živé řešení nestabilní, přejeď na pole dál od východu/západu a spusť měření znovu.",
@@ -4969,7 +5235,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "Odchylka od cíle:"
-      }
+      },
+      "failed": "Přejezd nebo centrování selhalo",
+      "centeredTitle": "Cíl vycentrován",
+      "centered": "Cíl je uprostřed snímku.",
+      "centeredNamed": "{name} je uprostřed snímku."
     },
     "filterwheel": {
       "title": "Filtrační Kolo",
@@ -5081,7 +5351,7 @@
       "set_target_name": "Nastavit název cíle",
       "target_name": "Název cíle",
       "target_name_from_favorites": "Převzít název z oblíbených",
-      "count": "Počet",
+      "count": "Počet flatů",
       "exposure_time": "Expoziční čas",
       "min_exposure_time": "Min expozice",
       "max_exposure_time": "Max expozice",
@@ -5129,14 +5399,14 @@
       "status_stopped_flats": "Zastaveno předčasně – pořízeno {completed} z {total} flatů",
       "status_success_darks": "Hotovo – pořízeno {count} darků",
       "status_success_flats": "Hotovo – pořízeno {count} flatů",
-      "filter_label": "Filter",
+      "filter_label": "Filtr",
       "result_bright": "příliš světlé",
       "result_dim": "příliš tmavé",
-      "status_completed_flats": "Completed",
+      "status_completed_flats": "Dokončeno",
       "status_failed_flats_multi": "Pro žádný filtr se nepodařilo určit platnou expozici",
       "status_partial_flats_multi": "Neúspěšné filtry: {filters}",
-      "status_running_unknown": "Determining…",
-      "target": "Target"
+      "status_running_unknown": "Zjišťování…",
+      "target": "Cíl"
     },
     "weatherModal": {
       "weatherInformation": "Informace o Počasí",
@@ -5176,7 +5446,7 @@
         "toggle": "Zapnout/vypnout míření na oblohu",
         "hint": "Míření na oblohu je aktivní. Miř přes zadní stranu displeje. Tažením ho zastavíš, sevřením prstů přiblížíš.",
         "low_accuracy": "Přesnost kompasu je nízká. Vzdal se od kovů a magnetů a zkalibruj kompas pohybem ve tvaru osmičky.",
-        "unavailable": "Sky pointing requires a supported native app and a north-referenced motion sensor. Manual browsing is available.",
+        "unavailable": "Senzory pro míření na oblohu nejsou k dispozici. Použij nativní aplikaci na zařízení s podporovanými senzory nebo procházej ručně.",
         "permission_denied": "Přístup k pohybovým senzorům byl zamítnut. Povol ho v nastavení systému nebo procházej ručně.",
         "location_required": "Míření na oblohu potřebuje stanoviště. Nastav své stanoviště nebo povol přístup k poloze.",
         "sensor_error": "Míření na oblohu se zastavilo, protože data senzorů nejsou k dispozici. Zkus to znovu nebo procházej ručně."
@@ -5245,7 +5515,7 @@
         "landscape_source_guereins": "Guéreins (vesnice)",
         "landscape_source_neutral": "Neutrální horizont (šedý)",
         "landscape_source_custom": "Vlastní zdroj dat",
-        "landscape_option_label": "Landscape: {title}",
+        "landscape_option_label": "Krajina: {title}",
         "custom_landscape_url": "URL vlastního zdroje",
         "custom_landscape_url_placeholder": "např. /celestia-atlas-data/landscapes/custom",
         "custom_landscape_key": "Klíč vlastního zdroje",
@@ -5257,7 +5527,7 @@
         "no_allsky": "Bez allsky",
         "folder_name_label": "folderName",
         "service_url_label": "serviceUrl",
-        "landscape_list_load_failed": "Failed to load landscapes.",
+        "landscape_list_load_failed": "Krajiny se nepodařilo načíst.",
         "comet_data_title": "Data komet",
         "comet_data_hint": "Stáhne nejnovější dráhové elementy z vydání Celestia Atlas.",
         "refresh_comet_data": "Aktualizovat",
@@ -5368,6 +5638,22 @@
         "camera_field": "Zorné pole kamery",
         "actions": "Akce",
         "more": "Více"
+      },
+      "tonight": {
+        "title": "Dnes v noci viditelné",
+        "intro": "Nejlepší cíle pro dnešní noc na vaší poloze, nejlepší první. Klepnutím cíl vyberete v atlasu.",
+        "noSite": "Nejprve nastavte svou polohu v profilu, pak se tu zobrazí nejlepší cíle pro dnešní noc.",
+        "noDarkNight": "Dnes v noci nebude na vaší poloze dost tma.",
+        "nothing": "Dnes v noci nevystoupí žádný cíl dostatečně vysoko na oblohu.",
+        "maxAlt": "až {alt}° vysoko",
+        "types": {
+          "galaxy": "Galaxie",
+          "nebula": "Mlhovina",
+          "planetary_nebula": "Planetární mlhovina",
+          "cluster": "Hvězdokupa",
+          "dark_nebula": "Temná mlhovina",
+          "widefield": "Široké pole"
+        }
       }
     },
     "profile": {
@@ -5502,7 +5788,7 @@
       "decPlaceholder": "DD:MM:SS",
       "error": "Plate solve selhal",
       "errorLoadParams": "Parametry FITS se nepodařilo načíst",
-      "file": "File",
+      "file": "Soubor",
       "focalLength": "Ohnisková vzdálenost",
       "loadingParams": "Načítání hlavičky FITS…",
       "pixelScale": "Měřítko pixelu",
@@ -5510,9 +5796,9 @@
       "plateSolve": "Plate Solve",
       "ra": "RA",
       "raPlaceholder": "HH:MM:SS",
-      "rotation": "Rotation",
+      "rotation": "Rotace",
       "solveFailed": "Plate solve selhal",
-      "solving": "Solving…",
+      "solving": "Řešení…",
       "solvingHint": "Plate solving může podle solveru a poloměru hledání trvat 10–60 sekund.",
       "success": "Plate solve úspěšný",
       "targetApplied": "Cíl nastaven",
@@ -5611,6 +5897,7 @@
       "sequenceStart": "Sekvenci nelze spustit",
       "guidingStart": "Guiding nelze spustit",
       "autofocusStart": "Autofokus nelze spustit",
+      "autofocusStop": "Autofokus nelze zrušit",
       "binning": "Binning nelze změnit",
       "readout": "Režim vyčítání nelze změnit",
       "switchSet": "Spínač nelze nastavit"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "Vývojářský aktualizační kanál skryt.",
       "specialEnabled": "Značkovač bolesti očí zapnut.",
       "specialDisabled": "Konec legrace."
+    },
+    "simpleMode": {
+      "title": "Dnes v noci",
+      "subtitle": "Vaše noc krok za krokem: klepněte na zvýrazněný krok a postupujte shora dolů.",
+      "pinsOnly": "Jednoduchý režim je dostupný, jen když je Touch'N'Stars připojen k zařízení PINS.",
+      "offHint": "Jednoduchý režim je vypnutý, proto navigace zobrazuje všechny stránky.",
+      "turnOn": "Použít jednoduchý režim",
+      "showAll": "Zobrazit všechny funkce (vypnout jednoduchý režim)",
+      "status": {
+        "done": "Hotovo",
+        "running": "Běží",
+        "open": "K udělání",
+        "skipped": "Přeskočeno"
+      },
+      "markDone": "Označit jako hotové",
+      "skip": "Přeskočit dnes",
+      "undoMark": "Zpět",
+      "needsCamera": "Nejdřív připojte kameru.",
+      "needsMount": "Nejdřív připojte montáž.",
+      "needsGuider": "Guider ještě není připojen. Klepněte nahoře na „Připojit vše“.",
+      "needsCameraAndMount": "Vyžaduje připojenou kameru a montáž.",
+      "rig": {
+        "title": "Vaše vybavení",
+        "changeDevices": "Změnit zařízení",
+        "empty": "Zatím nejsou nastavena žádná zařízení. Průvodce nastavením vás provede kamerou, montáží a zbytkem.",
+        "openWizard": "Otevřít průvodce nastavením",
+        "noMountHint": "Ještě nemáte nastavenou montáž? Najděte pro ni správný ovladač zde.",
+        "devicesFailedHint": "Nepřipojeno: {devices}. Nejprve zkontroluj napájení a kabel; pokud je obojí v pořádku, může být potřeba jiný ovladač.",
+        "mountFailedHint": "Montáž se nepřipojila. Často potřebuje jiný ovladač.",
+        "connecting": "Připojuji…",
+        "allConnected": "Vše připojeno",
+        "connectAll": "Připojit vše",
+        "exposing": "Pořizuji snímek",
+        "coolingTo": "chlazení na {temp}",
+        "parked": "Zaparkováno",
+        "slewing": "Přejíždí",
+        "tracking": "Sleduje oblohu",
+        "notTracking": "Nesleduje",
+        "autofocusRunning": "Autofokus běží",
+        "position": "Poloha {position}",
+        "connected": "Připojeno",
+        "notConnected": "Nepřipojeno"
+      },
+      "guiderState": {
+        "Guiding": "Pointace",
+        "Calibrating": "Kalibrace",
+        "Looping": "Hledá hvězdu",
+        "LostLock": "Hvězda ztracena",
+        "Idle": "Zastaveno",
+        "Paused": "Pozastaveno",
+        "Reacquiring": "Znovu hledá hvězdu"
+      },
+      "night": {
+        "title": "Vaše noc",
+        "progress": "{done} z {total} hotovo"
+      },
+      "steps": {
+        "connect": {
+          "title": "Připojte své vybavení",
+          "description": "Zapněte napájení sestavy a pak připojte všechna zařízení jedním klepnutím.",
+          "hint": "Pokud se zařízení nepřipojí, zkontrolujte jeho kabel a napájení a znovu klepněte na „Připojit vše“.",
+          "summary": "{connected} z {total} připojeno"
+        },
+        "cool": {
+          "title": "Zchlaďte kameru",
+          "description": "Chlazený senzor dává čistší snímky. Chlazení trvá několik minut, začněte brzy – mezitím můžete pokračovat dalšími kroky.",
+          "targetTemp": "Cílová teplota (°C)",
+          "start": "Chladit na {temp} °C",
+          "failed": "Chlazení se nepodařilo spustit",
+          "warmingSummary": "Ohřev · {temp}",
+          "setup": {
+            "question": "Jak rychle smí vaše kamera chladnout?",
+            "text": "Ptáme se jednou pro profil. Příliš rychlé chlazení nebo ohřev zatěžuje některé senzory a příliš rychle ohřátý senzor může zamlžit. Ohřev proběhne při ukončení noci.",
+            "presets": {
+              "fast": {
+                "title": "Rychle",
+                "description": "Chladí hned, ohřívá se {warm} min. Vhodné pro většinu současných chlazených CMOS kamer – ty si chladič omezují samy."
+              },
+              "gentle": {
+                "title": "Šetrně",
+                "description": "Chladí {cool} min, ohřívá se {warm} min."
+              },
+              "veryGentle": {
+                "title": "Velmi šetrně",
+                "description": "Chladí {cool} min, ohřívá se {warm} min. Pro starší kamery a CCD senzory."
+              }
+            },
+            "notSure": "Nejste si jistí? Návod ke kameře říká, zda potřebuje pomalé chlazení. Do doby, než to budete vědět, je „Šetrně“ bezpečná volba. Později to můžete změnit na stránce kamery.",
+            "currentValues": "Váš profil už má vlastní časování: chladí {cool} min, ohřívá se {warm} min.",
+            "keepValues": "Ponechat toto časování",
+            "applyFailed": "Časování se nepodařilo uložit do profilu."
+          }
+        },
+        "mount": {
+          "title": "Připravte montáž",
+          "description": "Montáž musí být odparkovaná a sledovat oblohu (tracking), než může mířit na cíl.",
+          "action": "Odparkovat a spustit sledování",
+          "trackingFailed": "Sledování se nepodařilo zapnout",
+          "trackingOffAfterPolar": "Polární zarovnání vypnulo sledování. Klepnutím na tlačítko ho znovu zapněte."
+        },
+        "polar": {
+          "title": "Polární zarovnání",
+          "description": "Zarovná montáž s nebeským pólem. Aplikace pořídí tři snímky, mezi nimi montáž otočí a ukáže, o kolik otočit seřizovacími šrouby. Stačí jednou na sestavení.",
+          "action": "Otevřít polární zarovnání"
+        },
+        "target": {
+          "title": "Vyberte cíl",
+          "description": "Vyberte objekt v atlasu oblohy a přidejte ho do plánu. Po zahájení snímání plán přejede k cíli, vycentruje ho snímkem a spustí pointaci – nemusíte nic dělat ručně.",
+          "action": "Vybrat cíl v atlasu oblohy",
+          "another": "Přidat další cíl",
+          "how": "Klepněte na svůj objekt v atlasu oblohy (nebo ho vyhledejte) a pak na „{button}“.",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} a {count} dalších",
+          "calibrationRisk": {
+            "nearPole": "Váš cíl je blízko nebeského pólu, kde guider nemůže kalibrovat. Nejdřív proveďte jednorázovou kalibraci v „Nastavit pointaci“.",
+            "low": "Váš cíl je nízko na obloze, kde guider kalibruje špatně. Nejdřív proveďte jednorázovou kalibraci v „Nastavit pointaci“."
+          }
+        },
+        "focus": {
+          "title": "Zaostření",
+          "description": "Ostré hvězdy rozhodují o noci – a potřebují je i další kroky: polární zarovnání a centrování cíle zjišťují polohu ze snímku. Zamiřte dalekohled na část oblohy s hvězdami. S motorovým zaostřovačem to udělá autofokus; bez něj zaostřete ručně podle živých snímků.",
+          "autofocus": "Spustit autofokus",
+          "watch": "Sledovat křivku ostření",
+          "manualHint": "Není připojen motorový zaostřovač: otevřete kameru, pořizujte snímky ve smyčce a otáčejte zaostřovačem, dokud nejsou hvězdy co nejmenší.",
+          "manual": "Otevřít kameru",
+          "lastRun": "Poslední autofokus v {time}",
+          "lastFailed": "Poslední autofokus v {time} selhal – zkontrolujte, zda jsou vidět hvězdy, a zkuste to znovu",
+          "pointAtStars": "Zamiřte dalekohled na hvězdy (atlas oblohy)",
+          "setupFirst": "Před prvním autofokusem s tímto dalekohledem ho jednou nastavte: asistent změří váš zaostřovač a kameru a najde funkční nastavení. Bez toho autofokus často selže.",
+          "cancelled": "Autofokus zrušen. Fokuser se vrací tam, kde byl předtím.",
+          "setup": "Nastavit autofokus"
+        },
+        "guide": {
+          "title": "Nastavte pointaci",
+          "description": "Pointační kamera sleduje jednu hvězdu a opravuje montáž, aby dlouhé expozice zůstaly ostré. PINS má vlastní guider vyvinutý speciálně pro něj: běží přímo v sestavě bez dalšího programu a často pointuje stabilněji než PHD2. Svou montáž se musí jednou naučit (kalibrace); poté váš plán spouští pointaci na každém cíli sám.",
+          "details": "Podrobnosti a graf pointace",
+          "useNativeHint": "Váš profil teď používá jiný guider. Jednoduchý režim pointuje guiderem vestavěným v PINS: byl vyvinut speciálně pro PINS, běží přímo v sestavě a často pointuje stabilněji než PHD2 – učí se periodickou chybu převodů vaší montáže a uchovává kalibraci z noci na noc. Nastavení z PHD2 se přenesou.",
+          "useNative": "Použít vestavěný guider",
+          "nativeMissing": "Tato verze PINS zatím nemá vestavěný guider. Aktualizujte PINS v",
+          "chooseCamera": "Vestavěný guider potřebuje vědět, která kamera je vaše pointační. Vyberte ji zde – poté ji „Připojit vše“ připojí také.",
+          "chooseCameraAction": "Vybrat pointační kameru…",
+          "noGuideCamera": "Nenalezena žádná pointační kamera – připojte ji a zkontrolujte „Všechna zařízení“",
+          "calibrate": "Jednorázově zkalibrovat (asi 3 min)",
+          "calibrateHint": "Dalekohled přejede na místo blízko nebeského rovníku, kde je kalibrace nejpřesnější, a tam se naučí, jak ho guider pohybuje. Stačí jednou: kalibrace se uchová pro všechny další noci.",
+          "confirmCalibrateTitle": "Zkalibrovat guider?",
+          "confirmCalibrateMessage": "Dalekohled přejede na místo kalibrace a guider tam několik minut kalibruje. Poté se pointace zase zastaví – váš plán ji spustí na cíli.",
+          "calibrating": "Kalibruji – trvá to několik minut.",
+          "slewingToCalibration": "Dalekohled přejíždí na místo kalibrace…",
+          "calibratedHint": "Zkalibrováno. Kalibrace se uchová i pro další noci; váš plán spouští pointaci na každém cíli sám.",
+          "calibratedSummary": "Zkalibrováno",
+          "unparkFirst": "Nejdřív připravte dalekohled (krok „{step}“)."
+        },
+        "capture": {
+          "title": "Pořizování snímků",
+          "description": "Váš plán říká, které cíle snímat s jakým filtrem, expoziční dobou a počtem snímků. Spusťte ho a aplikace se postará o zbytek: přejezd k cíli, centrování, pointaci i snímky.",
+          "targets": "Cíle",
+          "remaining": "Zbývající čas",
+          "noPlan": "Zatím není žádný plán. Vytvořte ho s cílem, filtrem, expoziční dobou a počtem snímků.",
+          "nothingLeft": "V plánu už nezbývají žádné snímky. Vyber nový cíl, nebo pořiď snímky tohoto plánu znovu.",
+          "repeat": "Pořídit snímky znovu",
+          "repeatFailed": "Plán se nepodařilo resetovat",
+          "editPlan": "Upravit plán",
+          "createPlan": "Vytvořit plán",
+          "watch": "Sledovat příchozí snímky",
+          "start": "Začít pořizovat snímky",
+          "stop": "Zastavit pořizování snímků",
+          "summary": "{targets} cíl, hotovo kolem {time} | {targets} cílů, hotovo kolem {time}",
+          "summaryDone": "{targets} cíl, všechny snímky pořízeny | {targets} cílů, všechny snímky pořízeny",
+          "confirmStartTitle": "Začít pořizovat snímky?",
+          "confirmStartPlan": "Plán se nyní spustí s {targets} cílem a potrvá asi {remaining}. | Plán se nyní spustí s {targets} cíli a potrvá asi {remaining}.",
+          "confirmStartApproach": {
+            "center": "Dalekohled přejede k cíli a vycentruje ho. | Dalekohled přejede ke každému cíli a vycentruje ho.",
+            "slew": "Dalekohled přejede k cíli, ale nevycentruje ho. | Dalekohled přejede ke každému cíli, ale nevycentruje ho.",
+            "off": "Dalekohled k cíli nepřejede, snímá tam, kam právě míří. | Dalekohled k cílům nepřejede, snímá tam, kam právě míří.",
+            "mixed": "Ne ke každému cíli se přejede a vycentruje ho, viz plán."
+          },
+          "confirmStartGuiding": {
+            "all": "Pointace se spustí před prvním snímkem.",
+            "none": "Plán běží bez pointace.",
+            "mixed": "Ne každý cíl má pointaci, viz plán."
+          },
+          "confirmStopTitle": "Zastavit pořizování snímků?",
+          "confirmStopMessage": "Aktuální snímek se zruší. Plán můžete později spustit znovu.",
+          "noExposures": "Váš plán má cíl, ale zatím žádné snímky. Otevřete plán a klepnutím na „Přidat expozici“ vyberte filtr, expoziční dobu a počet snímků.",
+          "summaryEmpty": "{targets} cíl, zatím žádné snímky | {targets} cílů, zatím žádné snímky",
+          "confirmStartFocus": "Po každé výměně filtru se znovu zaostří.",
+          "confirmStartRefocus": "Znovu zaostřuje {interval}.",
+          "confirmStartEnd": {
+            "both": "Na konci montáž zaparkuje a kamera se zahřeje.",
+            "park": "Na konci montáž zaparkuje.",
+            "warm": "Na konci se kamera zahřeje. Montáž dál sleduje, dokud noc neukončíš.",
+            "none": "Na konci montáž dál sleduje, dokud noc neukončíš."
+          },
+          "missingSteps": "{count} cíl ve vašem plánu to zatím nedělá automaticky: {steps}. | {count} cílů ve vašem plánu to zatím nedělá automaticky: {steps}.",
+          "missingStepParts": {
+            "slew": "najet na cíl",
+            "guide": "guidovat",
+            "focus": "po výměně filtru znovu zaostřit"
+          },
+          "fixSteps": "Přidat chybějící kroky",
+          "flipMissing": "Váš plán neotáčí dalekohled na meridiánu. Sledoval by dál za něj a mohl by narazit do stativu nebo sloupu.",
+          "addFlip": "Zapnout Meridian Flip",
+          "endMissing": {
+            "park": "Až plán skončí, montáž dál sleduje. Za poledníkem může narazit do stativu nebo sloupu, pokud noc nikdo neukončí.",
+            "warm": "Až plán skončí, kamera zůstane studená, dokud noc neukončíš.",
+            "both": "Až plán skončí, montáž dál sleduje a kamera zůstane studená. Za poledníkem může dalekohled narazit do stativu nebo sloupu, pokud noc nikdo neukončí."
+          },
+          "addEnd": {
+            "park": "Po plánu zaparkovat montáž",
+            "warm": "Po plánu zahřát kameru",
+            "both": "Po plánu zaparkovat a zahřát"
+          },
+          "flipWindow": "{target} dosáhne meridiánu kolem {meridian}; plán otočí dalekohled mezi {earliest} a {latest}.",
+          "flipFixed": "{target} dosáhne meridiánu kolem {meridian}; plán otočí dalekohled v {earliest}.",
+          "flipPause": "{target} dosáhne meridiánu kolem {meridian}; plán se v {pause} pozastaví a otočí dalekohled v {earliest}.",
+          "flipNone": "S tímto plánem není Meridian Flip potřeba.",
+          "flipYourTarget": "Váš cíl",
+          "flipSettings": "Nastavení flipu a test za denního světla",
+          "summaryCutOff": "Pořízeno {taken} z {planned} snímků",
+          "confirmStartWait": "Čeká, až bude tma, asi v {time}."
+        },
+        "flats": {
+          "title": "Flaty",
+          "description": "Flaty odstraňují stíny prachu a tmavé rohy ze snímků. Pořiďte je hned, dokud se nic nezměnilo: ostření, otočení kamery i poloha kamery musí zůstat jako při snímání. Dnes je nepotřebujete? Tento krok přeskočte.",
+          "lightSource": "Zdroj světla",
+          "panel": "Flat panel",
+          "panelHint": "Sestava nastaví jas panelu sama.",
+          "panelMissing": "Není připojen žádný stmívatelný flat panel.",
+          "tablet": "Tablet nebo světelná fólie",
+          "tabletHint": "Dejte ji rovnoměrně osvětlenou před dalekohled; sestava najde expoziční dobu.",
+          "filters": "Filtry",
+          "count": "Flatů na filtr",
+          "countNoWheel": "Počet flatů",
+          "darks": "Pořídit také dark flaty",
+          "darksHint": "Potřeba jen při kalibraci dark flaty. Dalekohled musí být pro ně zakrytý; aplikace vám řekne kdy.",
+          "start": "Pořídit flaty",
+          "stop": "Zastavit flaty",
+          "allSettings": "Všechna nastavení flatů",
+          "needsPlugin": "Flaty na této stránce potřebují novější plugin Touch'N'Stars v sestavě. Aktualizujte ho, nebo pořiďte flaty pomocí asistenta flatů níže.",
+          "planRunning": "Plán stále běží. Flaty lze pořídit po jeho dokončení nebo zastavení.",
+          "noFilterSelected": "Zaškrtněte alespoň jeden filtr.",
+          "noFilter": "Flaty",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flaty",
+          "endBlocked": "Flaty stále běží. Noc ukončete, až budou hotové nebo zastavené.",
+          "runningSummary": "Pořizuji flaty",
+          "doneSummary": "Flaty pořízeny dnes v noci",
+          "result": {
+            "success": "Pořízen jeden flat | Pořízeno {count} flatů",
+            "dim": "Příliš tmavé: použijte jasnější světlo nebo v nastavení flatů povolte delší expozici.",
+            "bright": "Příliš světlé: ztlumte světlo nebo v nastavení flatů povolte kratší expozici.",
+            "failed": "Flaty se nepodařilo pořídit.",
+            "stopped": "Zastaveno"
+          }
+        },
+        "end": {
+          "title": "Ukončit noc",
+          "description": "Zastaví vše ve správném pořadí, zaparkuje montáž a pomalu ohřeje kameru, aby se na senzoru netvořila vlhkost.",
+          "action": "Ukončit noc"
+        }
+      },
+      "more": {
+        "title": "Více",
+        "pictures": "Snímky z této noci",
+        "equipment": "Všechna zařízení",
+        "mount": "Montáž",
+        "focus": "Zaostření",
+        "guider": "Pointace",
+        "system": "Wi-Fi, aktualizace a systém",
+        "settings": "Nastavení"
+      },
+      "endNight": {
+        "title": "Ukončit noc",
+        "intro": "Tyto kroky běží jeden po druhém. Odškrtněte, co má dál běžet.",
+        "nothingToDo": "Nic neběží a montáž je zaparkovaná – není co dělat.",
+        "nothingToDoNoMount": "Nic neběží. Montáž není připojena, proto zkontroluj, že je zaparkovaná.",
+        "someFailed": "Ne všechno se povedlo, důvod je u kroku. Zkontrolujte montáž, než vypnete napájení.",
+        "doneWarming": "Hotovo. Jakmile se kamera ohřeje, vypni sestavu na úvodní stránce, než vypneš napájení.",
+        "confirm": "Ukončit noc nyní",
+        "actions": {
+          "stopSequence": "Zastavit pořizování snímků",
+          "stopGuiding": "Zastavit pointaci",
+          "parkMount": "Zaparkovat montáž",
+          "warmCamera": "Ohřát kameru ({minutes} min)"
+        },
+        "parkTimeout": "Montáž do 3 minut nehlásila „zaparkováno“. Zkontrolujte ji, než vypnete napájení.",
+        "doneShutdown": "Hotovo. Vypni sestavu, než vypneš napájení."
+      },
+      "settings": {
+        "title": "Jednoduchý režim",
+        "description": "Úvodní stránka, která vás provede nocí, a navigace jen se stránkami, které k tomu potřebujete. Vypnutím znovu uvidíte všechny funkce.",
+        "navbarHint": "Dokud je jednoduchý režim zapnutý, přizpůsobení navigace níže nemá účinek. Po vypnutí režimu se vrátí beze změny."
+      },
+      "wizard": {
+        "title": "Jak chcete aplikaci používat?",
+        "simpleTitle": "Jednoduše (doporučeno pro začátek)",
+        "simpleText": "Úvodní stránka vás provede nocí krok za krokem, jen se stránkami, které potřebujete.",
+        "fullTitle": "Všechny funkce",
+        "fullText": "Každá stránka a nastavení v navigaci, pro zkušené uživatele."
+      },
+      "focusFirst": "Nejdřív zaostřete: tento krok zjišťuje polohu ze snímku a ten potřebuje ostré hvězdy.",
+      "live": {
+        "lastPicture": "Poslední snímek",
+        "openFull": "Zobrazit snímek na celou obrazovku",
+        "noPicture": "Zatím žádný snímek. Pořiďte testovací snímek a uvidíte, co kamera vidí.",
+        "preview": "Testovací snímek",
+        "hfr": "Ostrost (HFR)",
+        "stars": "Hvězdy",
+        "guiding": "Pointace",
+        "sensor": "Senzor",
+        "trendTitle": "Ostrost posledních {count} snímků",
+        "trendHint": "Ostřejší hvězdy jsou kresleny výše. Pokud čára během noci klesá, zaostřete znovu.",
+        "exposure": "Expoziční doba",
+        "testPicture": "Pořídit testovací snímek",
+        "abort": "Zastavit expozici",
+        "planRunning": "Váš plán pořizuje snímky – nové se tu objevují, jakmile přijdou.",
+        "justNow": "právě teď",
+        "minutesAgo": "před {minutes} min",
+        "histogram": "Histogram",
+        "min": "Min",
+        "max": "Max",
+        "pixels": "{count} pixel | {count} pixelů",
+        "pixelsSaturated": "{count} pixel saturován | {count} pixelů saturováno",
+        "histogramHint": "Nenatažená data senzoru celého snímku. Zobrazen je jen rozsah kolem pozadí oblohy; hvězdy a saturované pixely leží dále vpravo a počítají se pod Max.",
+        "firstPlanPicture": "První snímek vašeho plánu se objeví zde."
+      },
+      "setupChecks": {
+        "title": "Před první nocí",
+        "locationTitle": "Chybí vaše poloha",
+        "locationText": "Sestava neví, kde stojí. Polární zarovnání a atlas oblohy bez toho nemohou fungovat.",
+        "locationAction": "Nastavit polohu",
+        "databaseTitle": "Není nainstalována hvězdná mapa",
+        "databaseText": "Polární zarovnání a centrování cíle porovnávají snímek s hvězdnou mapou. Sestava zatím žádnou nemá.",
+        "databaseAction": "Nainstalovat hvězdnou mapu",
+        "flipTitle": "Meridian Flip zatím není nastaven",
+        "flipText": "Když cíl překročí meridián (severojižní čáru přes zenit), musí se dalekohled otočit na druhou stranu montáže – jinak by brzy narazil do stativu nebo sloupu. Váš plán to dělá sám. Řekněte mu jednou, jak daleko za meridián může vaše montáž sledovat.",
+        "flipNotSure": "Nejste si jistí? Návod k montáži obvykle říká, jak daleko za meridián může sledovat. Do doby, než to budete vědět, drží dalekohled v bezpečí „Sotva“, za cenu několika minut bez snímků.",
+        "flipCurrentValues": "Váš profil už má vlastní časování: {values}.",
+        "flipKeepValues": "Ponechat toto časování",
+        "flipTimingWindow": "flip {min}–{max} min po meridiánu",
+        "flipTimingFixed": "flip {min} min po meridiánu",
+        "flipTimingPause": "pauza {pause} min před, flip {min} min po meridiánu",
+        "blockedPolar": "Polární zarovnání zatím nemůže fungovat, viz „Před první nocí“ výše.",
+        "blockedTarget": "Centrování zatím nemůže fungovat: není nainstalována hvězdná mapa, viz „Před první nocí“ výše."
+      },
+      "backToNight": "Zpět k vaší noci",
+      "cockpit": {
+        "title": "Pořizování snímků",
+        "noTargetName": "Váš plán",
+        "doneAt": "Hotovo v",
+        "remaining": "zbývá {time}",
+        "activity": {
+          "autofocus": "Zaostřuji (autofokus)",
+          "slewing": "Dalekohled přejíždí",
+          "centering": "Centruje se cíl",
+          "startingGuiding": "Spouští se pointace",
+          "closing": "Plán se dokončuje (parkování, ohřev)",
+          "calibrating": "Guider kalibruje",
+          "settling": "Čekám na ustálení pointace",
+          "exposing": "Exponuje",
+          "busy": "Připravuji další snímek",
+          "flipping": "Meridian Flip – dalekohled se otáčí na druhou stranu",
+          "waitingForDark": "Čeká se na tmu"
+        },
+        "exposing": "Expozice {seconds} s",
+        "frame": "snímek {frame} z {frames}",
+        "check": "Kontrola",
+        "hfr": "HFR",
+        "noFrame": "zatím žádný snímek",
+        "hfrChange": "{change} % oproti dřívějšku",
+        "guidingLevel": {
+          "good": "výborná",
+          "ok": "v pořádku",
+          "poor": "příliš vysoká",
+          "unknown": "měřítko neznámé"
+        },
+        "alerts": {
+          "devices": "{count} zařízení už není připojeno. | {count} zařízení už není připojeno.",
+          "starLost": "Guider ztratil hvězdu. Snímky pořízené nyní budou mít stopy.",
+          "notGuiding": "Plán běží bez pointace.",
+          "guidingPoor": "Pointace ({rms}″) je větší než jeden pixel snímku ({scale}″) – hvězdy měknou. Častou příčinou je vítr, vyvážení nebo uvolněný kabel.",
+          "hfrRising": "Hvězdy jsou o {change} % větší než na dřívějších snímcích. Mohlo ujet ostření, nebo přicházejí rosa či mraky.",
+          "cooling": "Senzor má {temp} °C místo {target} °C."
+        },
+        "hfrNoBaseline": "první snímky",
+        "lastPicture": "poslední snímek",
+        "verdict": {
+          "good": "Vše běží dobře",
+          "warn": "Běží – jedna věc vyžaduje pozornost",
+          "danger": "Zkontrolujte prosím – snímky jsou ohroženy",
+          "waiting": "Běží – první snímky ukážou, jak dobře"
+        },
+        "showDetails": "Zobrazit podrobnosti",
+        "hideDetails": "Skrýt podrobnosti",
+        "focus": "Zaostření",
+        "focusLevel": {
+          "good": "ostré",
+          "ok": "mírně měkké",
+          "poor": "měkké"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Pointace",
+            "what": "Jak těsně montáž sleduje hvězdy: rozkmit pointační hvězdy v porovnání s velikostí jednoho pixelu na vašich snímcích.",
+            "now": "Nyní: rozkmit {rms}″, tedy {ratio} pixelu (jeden pixel = {scale}″).",
+            "nowNoScale": "Nyní: rozkmit {rms}″. K posouzení profil potřebuje ohniskovou vzdálenost a velikost pixelu.",
+            "nowOff": "Pointace teď neběží.",
+            "nowPaused": "Pozastaveno, dokud dalekohled zaostřuje nebo přejíždí.",
+            "limits": "Zelená do {good} pixelu, žlutá do {ok} pixelu, nad tím červená – pak se z hvězd stanou krátké čárky.",
+            "fix": "Když zčervená: obvyklou příčinou je vítr, vyvážení nebo uvolněný kabel."
+          },
+          "focus": {
+            "title": "Zaostření",
+            "what": "Jak velké jsou hvězdy na nejnovějším snímku oproti dřívějším snímkům stejného filtru. Rostoucí hvězdy znamenají, že ostření ujíždí – nebo přicházejí rosa či tenké mraky.",
+            "now": "Nyní: velikost hvězd (HFR) {hfr}, {change} % oproti dřívějšku ({baseline}).",
+            "nowFirst": "Ohodnoceno, jakmile je k dispozici {count} snímků jednoho filtru.",
+            "nowNone": "Zatím žádný snímek.",
+            "limits": "Zelená do {good} % větší, žlutá do {ok} %, nad tím červená.",
+            "fix": "Když zčervená: zaostřete znovu (autofokus). Pokud to nepomůže, zkontrolujte přední část dalekohledu, zda není orosená."
+          },
+          "cooling": {
+            "title": "Chlazení",
+            "what": "Teplota senzoru kamery. Studený senzor dává snímky s menším šumem.",
+            "now": "Nyní: {temp} °C, cíl {target} °C.",
+            "limits": "Zelená do {good} °C od cíle, červená za tím.",
+            "fix": "Pokud zůstává červená: chladič nedosáhne cíle při tomto teple – zvolte cíl o pár stupňů teplejší."
+          }
+        },
+        "statusBarHint": "Pointace, ostření a chlazení jsou hodnoceny ve stavovém řádku níže – klepnutím na jednu zjistíte, co znamená.",
+        "stop": "Zastavit",
+        "waitingUntil": "Čeká se na tmu, asi v {time}"
+      },
+      "summary": {
+        "finished": {
+          "title": "Plán dokončen",
+          "text": "Všechny snímky vašeho plánu jsou pořízeny. Ukončete noc, aby se dalekohled zaparkoval a kamera ohřála.",
+          "textFlats": "Všechny snímky vašeho plánu jsou pořízeny. Pořiďte teď flaty, dokud se nic nezměnilo, a pak ukončete noc.",
+          "cutOffTitle": "Pro dnešní noc hotovo",
+          "cutOff": "Rozednilo se nebo byl cíl příliš nízko: pořízeno {taken} z {planned} snímků. Spusť plán jinou noc znovu a pořiď zbytek."
+        },
+        "ended": {
+          "title": "Noc ukončena",
+          "text": "Čisté nebe! Zde je, co dnešní noc přinesla.",
+          "notParked": "Dalekohled zatím není zaparkován",
+          "shutdown": "Vypnout sestavu",
+          "shutdownWait": "Před vypnutím počkej, až bude kamera ohřátá a dalekohled zaparkovaný.",
+          "resume": "Pokračovat v noci"
+        },
+        "frames": "Snímky",
+        "integration": "Expozice",
+        "medianHfr": "Medián HFR"
+      },
+      "addToPlan": "Přidat do plánu",
+      "slewOptional": "Váš plán přejede k cíli, vycentruje ho a spustí pointaci sám. Přejet tam teď je potřeba jen ke kontrole kompozice (Framing).",
+      "coachHint": {
+        "text": "Vaše pointace byla minulou noc neklidná. Guiding Coach změří vaši pointační kameru, oblohu a montáž a poradí, co pomůže. Zabere asi 15 minut pod hvězdami – nejlépe před zahájením snímání.",
+        "open": "Otevřít Guiding Coach",
+        "dismiss": "Teď ne"
+      },
+      "camera": {
+        "title": "Kamera",
+        "hint": "Testovací snímek a každý snímek tvého plánu používají tyto hodnoty, pokud expozici v plánu nedáš vlastní. Doporučený gain a offset najdeš v návodu ke kameře."
+      },
+      "expert": {
+        "show": "Zobrazit expertní nastavení",
+        "hide": "Skrýt expertní nastavení"
+      },
+      "window": {
+        "waits": "Plán čeká, až bude tma, asi v {time}.",
+        "tooMany": "Do této noci se vejde jen asi {fit} z {left} snímků. Zbytek lze pořídit jinou noc.",
+        "noDarkness": "Dnes v noci taková tma nebude, plán by čekal bez konce. Vyber v plánu v části „Noc“ světlejší oblohu.",
+        "limit": {
+          "light": "Skončí nejpozději v {time}, protože se pak rozednívá.",
+          "low": "Skončí nejpozději v {time}, protože cíl je pak příliš nízko."
+        },
+        "nothing": {
+          "light": "Teď je příliš světlo, plán by hned skončil bez snímku. Zapni v plánu „Počkat, až bude tma“: pak se spustí asi v {time}.",
+          "low": "Cíl je příliš nízko nad obzorem a klesá, plán by skončil bez snímku. Vyber jiný cíl nebo menší výšku.",
+          "other": "Takto spuštěný plán by hned skončil bez snímku."
+        }
+      }
     },
     "secureObservatory": {
       "title": "Ukončit noc",
@@ -5679,6 +6447,17 @@
       "cameraCold": "Chlazení kamery je zapnuté ({temperature} °C).",
       "domeOpen": "Kopule není zavřená.",
       "coverOpen": "Kryt flat panelu je otevřený."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Jaká je to značka?",
+      "otherBrand": "Jiná značka",
+      "focuserLabel": "Jaký je to fokusér?",
+      "otherFocuser": "Jiný fokusér",
+      "disconnectFirst": "Před změnou ovladače zařízení odpoj.",
+      "applied": "Hotovo: je vybráno „{device}“. Připoj ho kabelem, zapni a klepni na „Připojit“.",
+      "appliedSeveral": "Ovladač je nastaven a našel více zařízení. Vyber to své v seznamu zařízení a klepni na „Připojit“.",
+      "appliedNoDevice": "Ovladač je nastaven, ale zatím nebylo nalezeno žádné zařízení. Připoj ho kabelem, zapni, obnov seznam zařízení, vyber ho a klepni na „Připojit“.",
+      "openButton": "Najít ovladač: {device}"
     }
   },
   "plugins": {
@@ -5904,6 +6683,15 @@
       "dryRun": "Simulační režim",
       "sambaTitle": "Sdílení Samba",
       "sambaDescription": "Povolit nebo zakázat sdílení souborů v síti",
+      "samba": {
+        "firstEnable": "Zapni, abys mohl kopírovat snímky do počítače ve stejné síti. Poprvé možná sestava musí stáhnout software a potřebuje k tomu internet.",
+        "howTo": "Na počítači ve stejné síti jako sestava zadej tuto adresu:",
+        "windows": "Windows: adresní řádek Průzkumníka",
+        "mac": "Mac: Finder, Otevřít, Připojit k serveru",
+        "login": "Pokud se zobrazí přihlášení: uživatel „{user}“, heslo „{password}“, pokud nebylo změněno.",
+        "outside": "Tvé snímky se ukládají do {folder}. Sdílení ukazuje {share}, proto se tam možná neobjeví.",
+        "openAccess": "Dokud je zapnuté, může kdokoli v této síti tyto soubory bez hesla otevřít, změnit a smazat."
+      },
       "phd2Title": "Automatické spuštění PHD2",
       "phd2Running": "Služba aktuálně běží",
       "phd2Stopped": "Služba je momentálně zastavena",
@@ -6087,6 +6875,7 @@
       "tabs": {
         "network": "Network",
         "services": "Services",
+        "pictures": "Snímky",
         "system": "Systém",
         "indi": "INDI",
         "software": "Software",
@@ -8940,6 +9729,7 @@
         "errors": {
           "tppaUnavailable": "Spojení s TPPA se nepodařilo otevřít.",
           "tppaNoResponse": "TPPA neodpovědělo na požadavek ke spuštění.",
+          "tppaStartSlewFailed": "Dalekohled nemohl přejet do výchozí polohy polárního zarovnání.",
           "tppaError": "TPPA ohlásilo chybu. Zkontroluj kameru, montáž a plate solver.",
           "tppaSilent": "TPPA už dvě minuty nic neposlalo. TPPA a Auto-Pilot byly zastaveny.",
           "autoPilotNotStarted": "Auto-Pilot se nespustil. Zkontroluj log AAPA; TPPA bylo zastaveno, pokud bylo spuštěno zde.",
@@ -9521,7 +10311,7 @@
     "config": {
       "connectionMode": "Režim připojení",
       "serial": "Sériový",
-      "network": "Síť",
+      "network": "Síť (TCP)",
       "devicePort": "Port zařízení",
       "baudRate": "Přenosová rychlost",
       "autoDetect": "Auto Detect",
@@ -9551,7 +10341,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Nastav.",
-    "about": "Info"
+    "about": "Info",
+    "home": "Start",
+    "plan": "Plán",
+    "target": "Cíl"
   },
   "nightsummary": {
     "tnsPluginToOld": "Plugin Touch N Stars je příliš starý pro tuto funkci. Aktualizujte na verzi 1.2.8.0 nebo novější.",
@@ -9814,7 +10607,7 @@
       "eqmodToggleDescription": "EQMOD čte rychlost RA jako surové obloukové sekundy/s místo hodnoty odesílané @:{'general.backendName'}, což bez korekce zpomalí sledování ~15×. Zapněte pouze pokud montáž používá EQMOD.",
       "eqmodDetectedHint": "{name} vypadá jako ovladač EQMOD — pravděpodobně to budete chtít zapnout.",
       "reapplyIntervalTitle": "Interval opětovného použití",
-      "reapplyIntervalDescription": "Jak často Quick Track přepočítá a znovu odešle rychlost sledování. Výchozí hodnota 900 s (15 min) vyhovuje kometyám a planetkám.",
+      "reapplyIntervalDescription": "Jak často Quick Track přepočítá a znovu odešle rychlost sledování. Výchozí hodnota 900 s (15 min) vyhovuje kometám a planetkám; pro neobvykle rychlý objekt ji zkrať až na minimum 5 sekund.",
       "secondsUnit": "s",
       "addToSequenceDescriptionRest": "přidá cíl typu najet + sledovat + snímat do sekvence již načtené v sekvenceru PINS, ke kontrole a spuštění -- stávající cíle zůstávají beze změny.",
       "downloadSequence": "Stáhnout sekvenci",

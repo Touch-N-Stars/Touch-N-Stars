@@ -13,6 +13,12 @@ export function readProfilePath(profileInfo, settingKey) {
   return settingKey.split('-').reduce((obj, key) => obj?.[key], profileInfo);
 }
 
+// NINA serializes an unset double (e.g. the focal length of a fresh profile) as the string
+// "NaN". It is truthy, so `v || fallback` let it through into number fields.
+function isUnset(raw) {
+  return raw === undefined || raw === null || raw === 'NaN' || Number.isNaN(raw);
+}
+
 /**
  * One NINA profile setting as an editable value.
  *
@@ -52,7 +58,7 @@ export function useProfileSetting(settingKey, options = {}) {
 
   const profileValue = computed(() => {
     const raw = source ? source() : readProfilePath(store.profileInfo, key.value);
-    return raw === undefined || raw === null ? fallback : fromProfile(raw);
+    return isUnset(raw) ? fallback : fromProfile(raw);
   });
 
   const value = ref(profileValue.value);

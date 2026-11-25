@@ -9,6 +9,9 @@ export const usePickerStore = defineStore('pickerStore', {
     maxValue: 100,
     callback: null,
     decimalPlaces: 0,
+    // The shown start value is replaced by the first digit typed, like on a calculator.
+    // Appending to it turned 500 + "200" into 500200 (and "NaN" + "480" into "NaN480").
+    freshInput: false,
   }),
 
   getters: {
@@ -33,7 +36,12 @@ export const usePickerStore = defineStore('pickerStore', {
       this.maxValue = max;
       this.callback = callback;
       this.decimalPlaces = decimalPlaces;
-      this.inputString = String(value);
+      // No usable start value (null, "NaN") starts empty, so typed digits are the value.
+      this.inputString =
+        value === null || value === undefined || value === '' || !Number.isFinite(Number(value))
+          ? ''
+          : String(value);
+      this.freshInput = this.inputString !== '';
       this.isOpen = true;
     },
 
@@ -58,10 +66,19 @@ export const usePickerStore = defineStore('pickerStore', {
 
     _reset() {
       this.inputString = '';
+      this.freshInput = false;
       this.label = 'Select Value';
     },
 
+    // First keystroke after opening: start over, keeping a sign the user already chose.
+    _startFresh() {
+      if (!this.freshInput) return;
+      this.freshInput = false;
+      this.inputString = '';
+    },
+
     appendDigit(digit) {
+      this._startFresh();
       if (this.inputString.includes('.')) {
         const decPart = this.inputString.split('.')[1];
         if (decPart.length >= this.decimalPlaces) return;
@@ -77,6 +94,7 @@ export const usePickerStore = defineStore('pickerStore', {
 
     appendDecimal() {
       if (this.decimalPlaces === 0) return;
+      this._startFresh();
       if (this.inputString.includes('.')) return;
       if (this.inputString === '' || this.inputString === '-') {
         this.inputString += '0.';
@@ -86,11 +104,14 @@ export const usePickerStore = defineStore('pickerStore', {
     },
 
     backspace() {
+      // Correcting the shown value keeps it
+      this.freshInput = false;
       if (this.inputString.length <= 0) return;
       this.inputString = this.inputString.slice(0, -1);
     },
 
     setPositive() {
+      this.freshInput = false;
       if (this.inputString.startsWith('-')) {
         this.inputString = this.inputString.slice(1);
       }
@@ -98,6 +119,12 @@ export const usePickerStore = defineStore('pickerStore', {
 
     setNegative() {
       if (!this.isNegativeAllowed) return;
+      // "−" as the first key starts a new negative number
+      if (this.freshInput) {
+        this.freshInput = false;
+        this.inputString = '-';
+        return;
+      }
       if (!this.inputString.startsWith('-')) {
         this.inputString = '-' + this.inputString;
       }

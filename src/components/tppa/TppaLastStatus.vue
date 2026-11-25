@@ -9,13 +9,19 @@
 </template>
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useTppaStore } from '@/store/tppaStore';
+import { tppaStatusKey } from '@/utils/tppaStatus';
 
+const { t } = useI18n();
 const tppaStore = useTppaStore();
 
+// The plugin speaks English; the known lines are translated, new ones shown as they come.
 const statusText = computed(() => {
-  if (!tppaStore.currentMessage?.message?.Response?.Status) return;
-  return tppaStore.currentMessage.message.Response.Status;
+  const status = tppaStore.currentMessage?.message?.Response?.Status;
+  if (!status) return;
+  const key = tppaStatusKey(status);
+  return key ? t(`components.tppa.status.${key}`) : status;
 });
 
 const progressPercent = computed(() => {

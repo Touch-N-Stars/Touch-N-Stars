@@ -6,8 +6,13 @@ installBrowserGlobals();
 
 const { apiStore } = await import('@/store/store');
 const { useToastStore } = await import('@/store/toastStore');
-const { autofocusStartRefusal, describeFailureEvent, isBackendRefusal, reportBackendRefusal } =
-  await import('@/utils/backendErrors');
+const {
+  autofocusStartRefusal,
+  autofocusStopRefusal,
+  describeFailureEvent,
+  isBackendRefusal,
+  reportBackendRefusal,
+} = await import('@/utils/backendErrors');
 
 test('a park failure event raises an error toast that stays until dismissed', async () => {
   freshPinia();
@@ -85,4 +90,16 @@ test('the plugin autofocus start refusal is read from its message', () => {
     'Autofocus already running'
   );
   assert.equal(autofocusStartRefusal({ message: 'Autofokus gestartet', Success: true }), null);
+});
+
+test('a refused autofocus cancel is told apart from a stopped one', () => {
+  assert.equal(autofocusStopRefusal({ message: 'Autofokus gestoppt' }), null);
+  assert.equal(
+    autofocusStopRefusal({ message: 'Fehler beim Stoppen des Autofokus: Focuser not connected' }),
+    'Focuser not connected'
+  );
+  assert.equal(
+    autofocusStopRefusal({ Success: false, StatusCode: 500, Error: 'GET request failed' }),
+    'GET request failed'
+  );
 });

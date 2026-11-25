@@ -4,13 +4,15 @@
     <select
       v-model="selectedDriver"
       class="tns-select"
-      :disabled="loading || saving"
+      :disabled="loading || saving || connected"
       @change="applyDriver"
     >
-      <option value="None">None</option>
+      <option value="None">{{ t('components.setupWizard.driver.none') }}</option>
       <option v-for="driver in drivers" :key="driver.Name" :value="driver.Name">
         {{ driverLabel(driver) }}
       </option>
+      <!-- Set by the brand finder, but filed under another type in PINS' driver list -->
+      <option v-if="unlistedDriver" :value="unlistedDriver">{{ unlistedDriver }}</option>
     </select>
     <span v-if="loading" class="text-xs text-content-faint">
       {{ t('components.setupWizard.driver.loading') }}
@@ -18,6 +20,10 @@
     <span v-else-if="saving" class="text-xs text-content-faint">
       {{ t('components.setupWizard.driver.applying') }}
     </span>
+    <span v-else-if="connected" class="text-xs text-content-faint">
+      {{ t('components.deviceDriverFinder.disconnectFirst') }}
+    </span>
+    <span v-else-if="resultText" class="text-xs text-status-ok break-words">{{ resultText }}</span>
     <span v-if="errorMessage" class="text-xs text-status-danger break-words">{{
       errorMessage
     }}</span>
@@ -25,13 +31,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import apiPinsService from '@/services/apiPinsService';
-import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
-import { useEquipmentStore } from '@/store/equipmentStore';
-import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
+import {
+  applyIndiDriver,
+  isHiddenIndiDriver,
+  isUnlistedIndiDriver,
+} from '@/utils/equipmentDevices';
 
 /**
  * Single-device INDI driver picker. Mirrors the per-device blocks of
@@ -41,28 +49,32 @@ import { isHiddenIndiDriver } from '@/utils/equipmentDevices';
 const props = defineProps({
   // INDI device type for getINDIDeviceList (e.g. 'telescope', 'filterwheel')
   deviceType: { type: String, required: true },
-  // Profile setting path, e.g. 'TelescopeSettings-IndiDriver'
-  settingPath: { type: String, required: true },
-  // apiService method used to refresh the device list, e.g. 'mountAction'
+  // Key of DEVICE_MAP, e.g. 'mountAction'
   listAction: { type: String, required: true },
-  // equipmentStore.rescanTrigger key, e.g. 'mount'
-  rescanKey: { type: String, required: true },
   // Profile section holding the current driver, e.g. 'TelescopeSettings'
   profileSection: { type: String, required: true },
   label: { type: String, required: true },
+  // Changing the driver restarts it, which would cut a live connection
+  connected: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['driver-applied']);
 
 const { t } = useI18n();
 const store = apiStore();
-const equipmentStore = useEquipmentStore();
 
 const drivers = ref([]);
 const selectedDriver = ref('None');
 const loading = ref(false);
 const saving = ref(false);
 const errorMessage = ref('');
+const resultText = ref('');
+
+const unlistedDriver = computed(() => {
+  const name = selectedDriver.value;
+  if (loading.value) return '';
+  return isUnlistedIndiDriver(props.deviceType, name, drivers.value) ? name : '';
+});
 
 // selectIndi.vue renames this one driver because its INDI label is unhelpful.
 function driverLabel(driver) {
@@ -72,6 +84,8 @@ function driverLabel(driver) {
 async function loadDrivers() {
   loading.value = true;
   errorMessage.value = '';
+  // A driver set elsewhere (brand or mount finder) makes the last result outdated
+  resultText.value = '';
   try {
     const response = await apiPinsService.getINDIDeviceList(props.deviceType);
     const list = Array.isArray(response?.Response) ? response.Response : [];
@@ -92,11 +106,14 @@ async function loadDrivers() {
 async function applyDriver() {
   saving.value = true;
   errorMessage.value = '';
+  resultText.value = '';
   try {
-    await apiService.profileChangeValue(props.settingPath, selectedDriver.value);
-    await apiService[props.listAction]('list-devices');
-    equipmentStore.triggerRescan(props.rescanKey);
-    await store.fetchProfilInfos();
+    // Also selects the driver's device in the list above: before, it only showed up there and
+    // a beginner had to notice and pick it.
+    const { deviceId } = await applyIndiDriver(props.listAction, selectedDriver.value);
+    if (deviceId && selectedDriver.value !== 'None') {
+      resultText.value = t('components.deviceDriverFinder.applied', { device: deviceId });
+    }
     emit('driver-applied', selectedDriver.value);
   } catch (error) {
     console.error('[PinsWizard] INDI driver change failed:', error);

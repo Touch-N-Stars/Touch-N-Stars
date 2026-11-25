@@ -271,7 +271,7 @@ const {
 });
 
 const {
-  isLoupeActive,
+  isLoupeActive: isLoupeToggled,
   loupePreview,
   loupeZoomFactor,
   toggleLoupe,
@@ -283,6 +283,9 @@ const {
   imageRef: image,
   imageRotationRef: imageRotation,
 });
+// The loupe state is stored app-wide; an image without the loupe button must ignore it, or a
+// loupe left on elsewhere (camera page) disables zoom here with no way to switch it off.
+const isLoupeActive = computed(() => props.showLoupe && isLoupeToggled.value);
 
 // Initialize Panzoom when image loads
 const onImageLoad = () => {

@@ -11,6 +11,7 @@ const apiService = (await import('@/services/apiService')).default;
 const {
   DEVICE_MAP,
   apiActionForApiName,
+  applyIndiDriver,
   getIndiDriver,
   isHiddenIndiDriver,
   isOfflineDevice,
@@ -18,6 +19,7 @@ const {
   redirectManualFilterWheel,
   reloadIndiDriver,
   resolveReloadedDevice,
+  isUnlistedIndiDriver,
   setProfileDevice,
   MANUAL_FILTER_WHEEL_ID,
 } = await import('@/utils/equipmentDevices');
@@ -331,4 +333,94 @@ test('PHD2 in PINS waits for the mount and a validated guide camera, nothing els
     }),
     []
   );
+});
+
+// applyIndiDriver: the rescan answer as PINS gave it on the Pi after switching the driver -
+// the old profile device turns OFFLINE, the new driver's device shows up as INDI.
+function stubMountApi(calls, rescanDevices) {
+  const original = {
+    profileChangeValue: apiService.profileChangeValue,
+    mountAction: apiService.mountAction,
+  };
+  apiService.profileChangeValue = async (path, value) => {
+    calls.push(`profileChangeValue:${path}=${value}`);
+    return { Success: true };
+  };
+  apiService.mountAction = async (action) => {
+    calls.push(`mountAction:${action}`);
+    return { Response: rescanDevices, Success: true };
+  };
+  return () => Object.assign(apiService, original);
+}
+
+async function runApply(rescanDevices) {
+  const calls = [];
+  const restore = stubMountApi(calls, rescanDevices);
+  freshPinia();
+  const store = apiStore();
+  store.fetchProfilInfos = async () => {
+    calls.push('fetchProfilInfos');
+  };
+  const { useEquipmentStore } = await import('@/store/equipmentStore');
+  const equipmentStore = useEquipmentStore();
+  try {
+    const result = await applyIndiDriver('mountAction', 'indi_synscan_telescope');
+    return { result, calls, rescanned: equipmentStore.rescanTrigger.mount };
+  } finally {
+    restore();
+  }
+}
+
+test('applyIndiDriver starts the driver with rescan and selects its device', async () => {
+  const { result, calls, rescanned } = await runApply([
+    {
+      Id: 'Telescope Simulator',
+      DisplayName: 'Telescope Simulator (INDI) (OFFLINE)',
+      Category: 'OFFLINE',
+    },
+    { Id: 'No_Device', DisplayName: 'No Mount', Category: '' },
+    { Id: 'SynScan', DisplayName: 'SynScan (INDI)', Category: 'INDI' },
+    { Id: 'OnStepX', DisplayName: 'OnStepX (serial)', Category: 'OnStepX' },
+  ]);
+
+  assert.deepEqual(result, { deviceId: 'SynScan', deviceCount: 1 });
+  assert.deepEqual(calls, [
+    'profileChangeValue:TelescopeSettings-IndiDriver=indi_synscan_telescope',
+    'mountAction:rescan',
+    'profileChangeValue:TelescopeSettings-Id=SynScan',
+    'fetchProfilInfos',
+  ]);
+  assert.ok(rescanned > 0, 'open device lists are told to rescan');
+});
+
+test('applyIndiDriver leaves the device choice to the user when it is ambiguous', async () => {
+  const { result, calls } = await runApply([
+    { Id: 'A', DisplayName: 'A (INDI)', Category: 'INDI' },
+    { Id: 'B', DisplayName: 'B (INDI)', Category: 'INDI' },
+  ]);
+  assert.deepEqual(result, { deviceId: null, deviceCount: 2 });
+  assert.ok(!calls.some((c) => c.startsWith('profileChangeValue:TelescopeSettings-Id')));
+  assert.equal(calls.at(-1), 'fetchProfilInfos');
+});
+
+test('applyIndiDriver stops when the profile rejects the driver', async () => {
+  const original = apiService.profileChangeValue;
+  apiService.profileChangeValue = async () => ({ Success: false, Error: 'nope' });
+  freshPinia();
+  try {
+    await assert.rejects(applyIndiDriver('mountAction', 'indi_x'), /nope/);
+  } finally {
+    apiService.profileChangeValue = original;
+  }
+  await assert.rejects(applyIndiDriver('guiderAction', 'indi_x'), /No INDI device type/);
+});
+
+test('isUnlistedIndiDriver finds a configured driver its own list does not have', () => {
+  const list = [{ Name: 'indi_ieaf_focus' }];
+  assert.equal(isUnlistedIndiDriver('focuser', 'indi_asi_focuser', list), true);
+  assert.equal(isUnlistedIndiDriver('focuser', 'indi_ieaf_focus', list), false);
+  assert.equal(isUnlistedIndiDriver('focuser', 'None', list), false);
+  assert.equal(isUnlistedIndiDriver('focuser', undefined, list), false);
+  // Hidden on purpose, so not brought back either
+  assert.equal(isUnlistedIndiDriver('filterwheel', 'indi_manual_wheel', []), false);
 });

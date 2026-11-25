@@ -20,17 +20,26 @@ entries — read them before reordering. The load-bearing ones:
 
 - **Localization before Wi-Fi**, so the regulatory country, timezone, locale and
   remote keyboard layout are set before networking is configured.
-- **Mount before location**, because the location sync needs a connected mount.
+- **Location before mount**, because NINA syncs the location when the mount connects.
+  The other way round the first connect sent the empty profile location (0°/0°) to the
+  mount and overwrote the location it already knew. On PINS the step's dropdown shows
+  `PROMPT` as "sync to telescope" (`syncDirectionForSelect`), so the connect in the next
+  step pushes the new location without the sync dialog. Without a profile location the
+  dialog (`LocationSyncModal`) recommends "no sync" instead; while the profile still has no
+  location the dropdown shows that NOSYNC as "sync to telescope" too, so saving the first
+  location reconnects a connected mount and NINA pushes it (NINA syncs only on connect).
 - **Telescope before camera**, because the camera step's image-scale readout
   needs `TelescopeSettings.FocalLength`.
 - **Guiding after mount and before camera**, because PHD2 needs a connected
   mount, and once the imaging camera is connected PHD2 can no longer scan for
   the guide camera.
+- **Star database after the camera** (PINS only), because its recommendation
+  (`src/utils/astapDatabases.js`) needs focal length, pixel size and sensor size.
 - **Dither last**, as its own step, because the calculator needs the imaging
   camera and telescope values as well as the guide setup.
 
 PINS-only steps (`localization`, `wifi`, `updates`, `slewRate`, `guider`,
-`dither`) are
+`starDatabase`, `dither`) are
 spliced in conditionally, which is why **steps are tracked by id, not by index**
 (`currentStepId`): the list grows underneath the user when `isPINS` flips.
 A persisted id that no longer exists falls back to index 0 rather than rendering
@@ -49,6 +58,12 @@ a profile added in the profile manager. Criteria live in
 `src/utils/setupWizardProfile.js`. Equipment is read from `profileInfo`, not
 `existingEquipmentList`: `clearAllStates()` empties that list on every
 transient connection loss while the profile stays.
+
+## Leaving a step saves
+
+The location step writes pending coordinates in `onBeforeUnmount` (steps unmount on
+Next/Back), so "Next" without "Save location" no longer leaves the profile at 0/0.
+A new step with an edit buffer should do the same rather than rely on a save button.
 
 ## z-index staffing
 

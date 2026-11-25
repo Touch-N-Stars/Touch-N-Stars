@@ -1,7 +1,18 @@
 <template>
   <div>
-    <button @click="setSequenceTarget" class="tns-btn-secondary">
-      <span>{{ $t('components.framing.setSequnceTarget') }}</span>
+    <!-- Simple mode: the plan slews, centers and guides, so this is the main action -->
+    <button
+      type="button"
+      :class="simple ? 'tns-btn-primary' : 'tns-btn-secondary'"
+      :disabled="busy"
+      @click="setSequenceTarget"
+    >
+      <Spinner v-if="busy" size="sm" />
+      <span>
+        {{
+          simple ? $t('components.simpleMode.addToPlan') : $t('components.framing.setSequnceTarget')
+        }}
+      </span>
     </button>
 
     <SequenceTargetPickerModal
@@ -14,8 +25,12 @@
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import apiService from '@/services/apiService';
+import Spinner from '@/components/helpers/Spinner.vue';
+import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import SequenceTargetPickerModal from '@/components/framing/SequenceTargetPickerModal.vue';
 import { useFramingStore } from '@/store/framingStore';
 import { useSequenceStore } from '@/store/sequenceStore';
@@ -24,12 +39,14 @@ import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
 import {
   collectDsoContainers,
+  findTargetAreaContainer,
   dsoContainerRaString,
   dsoContainerDecString,
 } from '@/utils/sequenceTargets';
 import { degreesToHMS, degreesToDMS } from '@/utils/utils';
 import { useI18n } from 'vue-i18n';
 
+const { seqT } = usePlanTerms();
 const props = defineProps({
   raAngle: Number,
   decAngle: Number,
@@ -42,6 +59,9 @@ const sequenceV2Store = useSequenceV2Store();
 const store = apiStore();
 const toastStore = useToastStore();
 const { t } = useI18n();
+const router = useRouter();
+const { active: simple, applyToTarget } = useSimplePlanTargets();
+const busy = ref(false);
 
 const showPicker = ref(false);
 const pickerTargets = ref([]);
@@ -63,7 +83,7 @@ function buildCoordinateName(ra, dec) {
 function showError(message) {
   toastStore.showToast({
     type: 'error',
-    title: t('components.fav_target.modal_sequence.titel'),
+    title: seqT('title'),
     message,
   });
 }
@@ -71,7 +91,7 @@ function showError(message) {
 function showSuccess() {
   toastStore.showToast({
     type: 'success',
-    title: t('components.fav_target.modal_sequence.titel'),
+    title: seqT('title'),
     message: t('components.fav_target.modal_sequence_ok.message'),
   });
 }
@@ -81,10 +101,15 @@ function showSuccess() {
 function reportResult(result, fallbackMessage) {
   if (result?.ok) {
     showSuccess();
+    // Simple mode: the target is in the plan, the night goes on on the home page
+    if (simple.value) {
+      store.showSkyAtlas = false;
+      router.push('/start');
+    }
     return;
   }
   if (result?.locked) {
-    showError(t('components.sequence.controlsLockedMessage'));
+    showError(seqT('controlsLockedMessage'));
     return;
   }
   showError(result?.error || fallbackMessage);
@@ -108,12 +133,6 @@ async function setSequenceTarget() {
     buildCoordinateName(framingStore.RAangle, framingStore.DECangle);
   const rotation = framingStore.rotationAngle;
 
-  if (!hasSequenceLoaded.value) {
-    console.error('No sequence loaded');
-    showError(t('components.fav_target.modal_sequence_error.message'));
-    return;
-  }
-
   pendingTarget.value = {
     name,
     ra: framingStore.RAangle,
@@ -124,6 +143,11 @@ async function setSequenceTarget() {
   // Without the plugin's sequence editor there is nothing to pick a target in -- legacy
   // behaviour: the first target of the sequence is overwritten.
   if (!store.sequenceEditorAvailable) {
+    if (!hasSequenceLoaded.value) {
+      console.error('No sequence loaded');
+      showError(t('components.fav_target.modal_sequence_error.message'));
+      return;
+    }
     try {
       await apiService.sequnceTargetSet(
         name,
@@ -147,8 +171,14 @@ async function setSequenceTarget() {
   await sequenceV2Store.loadCurrent();
   const containers = collectDsoContainers(sequenceV2Store.data);
 
-  // Nothing to pick from -- create the sequence's first target without asking.
+  // Nothing to pick from -- create the sequence's first target without asking. This is also
+  // the fresh rig, whose plan is NINA's empty default sequence: the legacy sequence info says
+  // "No sequence loaded" there, but the editor's tree has a target area to fill.
   if (containers.length === 0) {
+    if (!findTargetAreaContainer(sequenceV2Store.data)) {
+      showError(t('components.fav_target.modal_sequence_error.message'));
+      return;
+    }
     await applyToNewTarget(null);
     return;
   }
@@ -183,14 +213,21 @@ async function onPickerConfirm(choice) {
 async function applyToExistingTarget(id) {
   const target = pendingTarget.value;
   if (!target) return;
-  const result = await sequenceV2Store.setDsoTarget(
-    id,
-    target.name,
-    target.ra,
-    target.dec,
-    target.rotation
-  );
-  reportResult(result, t('components.fav_target.modal_sequence_error.message'));
+  busy.value = true;
+  try {
+    let result = await sequenceV2Store.setDsoTarget(
+      id,
+      target.name,
+      target.ra,
+      target.dec,
+      target.rotation
+    );
+    // Simple mode: the plan slews to the target, centers it and starts guiding there
+    if (result.ok && simple.value) result = await applyToTarget(id, { addExposure: true });
+    reportResult(result, t('components.fav_target.modal_sequence_error.message'));
+  } finally {
+    busy.value = false;
+  }
 }
 
 async function applyToNewTarget(afterId) {

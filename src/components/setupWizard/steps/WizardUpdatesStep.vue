@@ -116,7 +116,18 @@ async function checkUpdates() {
   isChecking.value = true;
   errorMessage.value = '';
   try {
-    updatesResult.value = (await apiPinsService.getPinsUpdatesCheck()) || null;
+    const result = await apiPinsService.getPinsUpdatesCheck();
+    // The global axios interceptor turns a failed request (e.g. 502 while the daemon cannot
+    // reach the package mirror) into { Success: false, StatusCode } instead of throwing. Read
+    // as an empty package list, that showed "up to date" - only a real list counts.
+    if (!Array.isArray(result?.packages)) {
+      updatesResult.value = null;
+      errorMessage.value = t('components.setupWizard.updates.checkFailed', {
+        message: result?.Error || (result?.StatusCode ? `HTTP ${result.StatusCode}` : '—'),
+      });
+      return;
+    }
+    updatesResult.value = result;
   } catch (error) {
     console.error('[PinsWizard] Update check failed:', error);
     errorMessage.value = t('components.setupWizard.updates.checkFailed', {

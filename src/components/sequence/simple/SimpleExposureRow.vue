@@ -9,36 +9,17 @@
           : 'border-line bg-surface-2'
     "
   >
-    <!-- Enabled + filter + progress + delete -->
+    <!-- Enabled + progress + delete. The filter has a line of its own below: nested in the
+         target card the row is too narrow on a phone to show its name next to these. -->
     <div class="flex items-center gap-2">
       <ToggleButton
         :statusValue="row.enabled"
         :disabled="isRunning"
         :title="$t('components.sequence.simple.exposureEnabled')"
+        :label="$t('components.sequence.simple.exposureEnabled')"
         @update:statusValue="store.enable(row.id, $event)"
       />
-      <select
-        v-if="row.filterItem"
-        :id="`simple-filter-${row.id}`"
-        class="tns-select w-auto! min-w-0 flex-1 text-sm"
-        :value="row.filterName"
-        :disabled="isRunning"
-        :aria-label="$t('components.sequence.items.switchFilter.filter')"
-        @change="saveFilter($event.target.value)"
-      >
-        <option
-          v-if="row.filterName && !filterNames.includes(row.filterName)"
-          :value="row.filterName"
-        >
-          {{ row.filterName }}
-        </option>
-        <option v-for="(name, i) in filterNames" :key="i" :value="name">{{ name }}</option>
-      </select>
-      <span v-else class="flex-1 min-w-0 truncate text-sm text-content-faint">
-        {{ $t('components.sequence.simple.noFilter') }}
-      </span>
-
-      <span class="shrink-0 text-xs font-mono tabular-nums text-content-faint">
+      <span class="flex-1 min-w-0 text-xs font-mono tabular-nums text-content-faint">
         {{ row.completed }} / {{ row.iterations }}
       </span>
       <button
@@ -58,6 +39,38 @@
       <div class="h-full bg-accent transition-all duration-300" :style="{ width: progressWidth }" />
     </div>
 
+    <!-- Without a filter wheel (and no filter in the item) the select would be empty -->
+    <div v-if="row.filterItem && (filterNames.length || row.filterName)" class="space-y-1">
+      <label :for="`simple-filter-${row.id}`" class="tns-label">
+        {{ $t('components.sequence.items.switchFilter.filter') }}
+      </label>
+      <select
+        :id="`simple-filter-${row.id}`"
+        class="tns-select"
+        :value="filterChoice"
+        :disabled="isRunning"
+        @change="saveFilter($event.target.value)"
+      >
+        <option v-if="!filterChoice" value="" disabled>
+          {{ $t('components.sequence.simple.chooseFilter') }}
+        </option>
+        <option
+          v-if="filterChoice === KEEP_CURRENT || canKeepCurrentFilter(row.filterItem)"
+          :value="KEEP_CURRENT"
+        >
+          {{ currentFilterLabel }}
+        </option>
+        <option v-if="filterName && !filterNames.includes(filterName)" :value="filterName">
+          {{ filterName }}
+        </option>
+        <option v-for="(name, i) in filterNames" :key="i" :value="name">{{ name }}</option>
+      </select>
+    </div>
+    <!-- Only worth a line with a filter wheel: a colour camera has nothing to choose here -->
+    <p v-else-if="filterNames.length" class="text-sm text-content-faint">
+      {{ $t('components.sequence.simple.noFilter') }}
+    </p>
+
     <template v-if="row.exposureItem && row.loopCondition">
       <div
         class="space-y-2"
@@ -68,7 +81,7 @@
           <NumberInputPicker
             :modelValue="row.exposureTime"
             :label="$t('components.sequence.simple.exposureTime')"
-            :labelKey="`simple-exposure-${row.id}`"
+            :labelKey="'components.sequence.simple.exposureTime'"
             :inputId="`simple-exposure-${row.id}`"
             :min="0"
             :max="3600"
@@ -82,7 +95,7 @@
           <NumberInputPicker
             :modelValue="row.iterations"
             :label="$t('components.sequence.simple.count')"
-            :labelKey="`simple-count-${row.id}`"
+            :labelKey="'components.sequence.simple.count'"
             :inputId="`simple-count-${row.id}`"
             :min="1"
             :max="9999"
@@ -95,7 +108,19 @@
           />
         </div>
 
-        <!-- Gain, offset, type, binning: collapsed to one summary line -->
+        <!-- Gain stays in view: it changes with the target and the filter. -1 means the
+             camera's default, set on the home page. -->
+        <GainInput
+          v-if="typeof row.gain === 'number'"
+          :modelValue="row.gain"
+          labelKey="components.sequence.items.takeExposure.gain"
+          :min="-1"
+          :max="1000"
+          :defaultValue="profileGain"
+          :inputId="`simple-gain-${row.id}`"
+          @change="saveExposure('Gain', $event)"
+        />
+        <!-- Offset (set once per camera), type and binning: collapsed to one summary line -->
         <button
           type="button"
           class="w-full min-h-touch flex items-center gap-2 text-left text-xs text-content-faint hover:text-content-muted"
@@ -110,23 +135,17 @@
         </button>
 
         <div v-if="showDetails" class="space-y-2">
-          <GainInput
-            v-if="typeof row.gain === 'number'"
-            :modelValue="row.gain"
-            :labelKey="`simple-gain-${row.id}`"
-            :min="0"
-            :max="1000"
-            @change="saveExposure('Gain', $event)"
-          />
           <NumberInputPicker
             v-if="typeof row.offset === 'number'"
             :modelValue="row.offset"
             :label="$t('components.sequence.items.takeExposure.offset')"
-            :labelKey="`simple-offset-${row.id}`"
+            :labelKey="'components.sequence.items.takeExposure.offset'"
             :inputId="`simple-offset-${row.id}`"
             :min="-1"
             :max="1000"
             :step="1"
+            :decimalPlaces="0"
+            :defaultValue="profileOffset"
             @change="saveExposure('Offset', $event)"
           />
           <div class="flex items-center gap-3">
@@ -172,7 +191,13 @@ import GainInput from '@/components/helpers/GainInput.vue';
 import ToggleButton from '@/components/helpers/toggleButton.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { apiStore } from '@/store/store';
-import { switchFilterUpdate } from '@/utils/sequenceFilter';
+import {
+  canKeepCurrentFilter,
+  filterNameChoices,
+  isFilterUnset,
+  matchFilterName,
+  switchFilterUpdate,
+} from '@/utils/sequenceFilter';
 
 // row: an entry from exposureRow() in src/utils/sequenceSimple.js. Every edit is written to
 // the raw child item it came from, exactly like SmartExposureItem / TakeManyExposuresItem.
@@ -199,40 +224,48 @@ const progressWidth = computed(() => {
   return `${Math.min(100, (completed / iterations) * 100)}%`;
 });
 
-// -1 means "whatever the camera is set to", like in the full editor.
-function cameraValue(value) {
-  return value === -1 || value === undefined || value === null
-    ? t('components.sequence.simple.cameraDefault')
-    : value;
-}
-
 const detailSummary = computed(() => {
-  const { gain, offset, binning, imageType } = props.row;
-  return [
-    `${t('components.sequence.simple.gainShort')} ${cameraValue(gain)}`,
-    `${t('components.sequence.simple.offsetShort')} ${cameraValue(offset)}`,
-    binning,
-    imageType,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  const { offset, binning, imageType } = props.row;
+  const offsetText =
+    typeof offset === 'number'
+      ? `${t('components.sequence.simple.offsetShort')} ${offset === -1 ? (profileOffset.value ?? '–') : offset}`
+      : '';
+  return [offsetText, imageType, binning].filter(Boolean).join(' · ');
 });
 
-// Sources in order: the item itself, the connected filter wheel, then the active profile. The
-// profile keeps the list available while the wheel is disconnected, e.g. when planning the
-// sequence during the day. All three use the wheel's slot order, so the index stays valid.
-const filterNames = computed(() => {
-  const fw = props.row.filterItem;
-  if (fw?.FilterNames?.length) return fw.FilterNames;
-  const wheel = mainStore.filterInfo?.AvailableFilters?.map((f) => f.Name) ?? [];
-  if (wheel.length) return wheel;
-  return mainStore.profileInfo?.FilterWheelSettings?.FilterWheelFilters?.map((f) => f.Name) ?? [];
+// What -1 stands for: the profile default the home page sets
+const profileGain = computed(() => finiteOrNull(mainStore.profileInfo?.CameraSettings?.Gain));
+const profileOffset = computed(() => finiteOrNull(mainStore.profileInfo?.CameraSettings?.Offset));
+
+function finiteOrNull(value) {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+// All sources use the wheel's slot order, so the index stays valid.
+const filterNames = computed(() =>
+  filterNameChoices(props.row.filterItem, mainStore.filterInfo, mainStore.profileInfo)
+);
+
+const filterName = computed(() => matchFilterName(filterNames.value, props.row.filterName));
+
+// Value of the "current filter" option; '' is a row nothing was chosen for yet.
+const KEEP_CURRENT = '(current)';
+const filterChoice = computed(
+  () => filterName.value || (isFilterUnset(props.row.filterItem) ? '' : KEEP_CURRENT)
+);
+
+// NINA takes the pictures with whatever filter is in the light path then
+const currentFilterLabel = computed(() => {
+  const label = t('components.filterwheel.currentFilter');
+  const name = mainStore.filterInfo?.Connected && mainStore.filterInfo.SelectedFilter?.Name;
+  return name ? `${label} (${name})` : label;
 });
 
 // Same convention as SmartExposureItem.vue
-function saveFilter(name) {
+function saveFilter(choice) {
   const item = props.row.filterItem;
   if (!item?.Id) return;
+  const name = choice === KEEP_CURRENT ? '' : choice;
   const { property, value } = switchFilterUpdate(item, filterNames.value, name);
   store.setProperty(item.Id, property, value);
 }

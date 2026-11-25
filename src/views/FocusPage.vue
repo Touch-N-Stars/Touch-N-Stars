@@ -65,6 +65,7 @@
     <HfSetupAssistant
       v-if="hfStore.available"
       :show="showAssistant"
+      @finished="settingsStore.markAutofocusSetUp(store.profileInfo?.Id)"
       @close="showAssistant = false"
     />
   </div>
@@ -84,6 +85,7 @@ import { useImagetStore } from '@/store/imageStore';
 import { useFocuserStore } from '@/store/focuserStore';
 import { usePolling } from '@/composables/usePolling';
 import { useHocusFocusStore } from '@/store/hocusFocusStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import HfRunAdvice from '@/components/focuser/hocus/HfRunAdvice.vue';
 import HfSetupAssistant from '@/components/focuser/hocus/HfSetupAssistant.vue';
 import HfInspectorPanel from '@/components/focuser/hocus/HfInspectorPanel.vue';
@@ -94,6 +96,7 @@ const store = apiStore();
 const imageStore = useImagetStore();
 const focuserStore = useFocuserStore();
 const hfStore = useHocusFocusStore();
+const settingsStore = useSettingsStore();
 // Without a focuser the focus tab has nothing to offer: start on the settings instead
 const currentTab = ref(store.focuserInfo.Connected ? 'showFocus' : 'showSettings');
 const delayShowGraph = ref(false);

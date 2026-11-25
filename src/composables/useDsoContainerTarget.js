@@ -9,6 +9,7 @@ import {
   dsoContainerCoordinates,
   dsoContainerRaString,
   dsoContainerDecString,
+  DEFAULT_CONTAINER_NAMES,
 } from '@/utils/sequenceTargets';
 
 /**
@@ -41,9 +42,12 @@ export function useDsoContainerTarget(getItem) {
   );
   const displayPositionAngle = computed(() => Number(positionAngle.value).toFixed(2));
 
-  const targetName = computed(
-    () => parsedTarget.value?.TargetName || getItem().Target?.TargetName || getItem().Name || ''
-  );
+  // A container without a target carries NINA's type name ("Deep Sky Object Instruction Set");
+  // shown as a target name it reads like one, so the caller's "unnamed" text is used instead.
+  const targetName = computed(() => {
+    const name = parsedTarget.value?.TargetName || getItem().Target?.TargetName || getItem().Name;
+    return name && !DEFAULT_CONTAINER_NAMES.includes(name) ? name : '';
+  });
 
   const currentRaDeg = computed(() => {
     const c = coords.value;

@@ -5,42 +5,42 @@
     <template #header>
       <h2 class="text-xl font-bold">{{ $t('components.mount.location_sync.title') }}</h2>
     </template>
+
     <template #body>
       <div class="text-center">
-        <p class="text-content mb-6">
+        <p v-if="profileHasLocation" class="text-content mb-6">
           {{ $t('components.mount.location_sync.confirmationMessage') }}
+        </p>
+        <!-- Without a location in the profile "sync to telescope" would send 0°/0° and overwrite
+             a location the mount already knows, so the recommendation moves to "no sync". -->
+        <p v-else class="text-content mb-6">
+          {{ $t('components.mount.location_sync.noLocationHint') }}
         </p>
 
         <!-- Sync Options -->
         <div class="space-y-3 mb-6">
-          <!-- Sync to Telescope -->
-          <button @click="selectOption(2)" class="tns-btn-secondary justify-start! text-left!">
+          <button
+            v-for="option in options"
+            :key="option.value"
+            @click="selectOption(option.value)"
+            :class="[
+              option.value === recommended ? 'tns-btn-primary' : 'tns-btn-secondary',
+              'justify-start! text-left!',
+            ]"
+          >
             <span
-              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-status-ok/20 text-status-ok"
+              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
+              :class="option.value === recommended ? 'bg-white/20 text-white' : option.iconClass"
             >
-              <ArrowUpIcon class="w-3.5 h-3.5" />
+              <component :is="option.icon" class="w-3.5 h-3.5" />
             </span>
-            {{ $t('components.mount.location_sync.toTelescope.label') }}
-          </button>
-
-          <!-- Sync to Application -->
-          <button @click="selectOption(1)" class="tns-btn-secondary justify-start! text-left!">
+            <span class="flex-1">{{ $t(option.labelKey) }}</span>
             <span
-              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-accent/20 text-accent"
+              v-if="option.value === recommended"
+              class="text-xs font-semibold uppercase opacity-90"
             >
-              <ArrowDownIcon class="w-3.5 h-3.5" />
+              {{ $t('components.mount.location_sync.recommended') }}
             </span>
-            {{ $t('components.mount.location_sync.toApplication.label') }}
-          </button>
-
-          <!-- No Sync -->
-          <button @click="selectOption(3)" class="tns-btn-secondary justify-start! text-left!">
-            <span
-              class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 bg-surface-1 text-content-muted"
-            >
-              <XMarkIcon class="w-3.5 h-3.5" />
-            </span>
-            {{ $t('components.mount.location_sync.noSync.label') }}
           </button>
         </div>
 
@@ -54,13 +54,46 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import Modal from '@/components/helpers/Modal.vue';
 import { ArrowUpIcon, ArrowDownIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { apiStore } from '@/store/store';
+import { hasProfileLocation } from '@/utils/profileLocation';
 import {
   showLocationSyncModal,
   selectLocationSyncOption,
   cancelLocationSync,
 } from '@/utils/locationSyncUtils';
+
+// NINA's TelescopeLocationSyncDirection values.
+const TO_APPLICATION = 1;
+const TO_TELESCOPE = 2;
+const NO_SYNC = 3;
+
+const store = apiStore();
+const profileHasLocation = computed(() => hasProfileLocation(store.profileInfo));
+const recommended = computed(() => (profileHasLocation.value ? TO_TELESCOPE : NO_SYNC));
+
+const options = [
+  {
+    value: TO_TELESCOPE,
+    labelKey: 'components.mount.location_sync.toTelescope.label',
+    icon: ArrowUpIcon,
+    iconClass: 'bg-accent/20 text-accent',
+  },
+  {
+    value: TO_APPLICATION,
+    labelKey: 'components.mount.location_sync.toApplication.label',
+    icon: ArrowDownIcon,
+    iconClass: 'bg-accent/20 text-accent',
+  },
+  {
+    value: NO_SYNC,
+    labelKey: 'components.mount.location_sync.noSync.label',
+    icon: XMarkIcon,
+    iconClass: 'bg-surface-1 text-content-muted',
+  },
+];
 
 function selectOption(value) {
   selectLocationSyncOption(value);

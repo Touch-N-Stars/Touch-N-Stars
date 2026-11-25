@@ -20,7 +20,8 @@
     "expand": "Expand",
     "collapse": "Collapse",
     "drag": "Drag",
-    "showImage": "Show image"
+    "showImage": "Show image",
+    "onOff": "On/Off"
   },
   "general": {
     "cancel": "Cancel",
@@ -153,10 +154,10 @@
     "gpsConfiguration": "GPS Configuration",
     "currentNinaCoords": "Profile Location",
     "currentMountCoords": "Mount Location",
-    "syncDirection": "Location Sync Direction",
-    "syncDirectionNosync": "No Sync",
-    "syncDirectionToApplication": "Sync from Mount to Profile",
-    "syncDirectionToTelescope": "Sync from Profile to Mount",
+    "syncDirection": "When the mount connects",
+    "syncDirectionNosync": "Don’t sync the location",
+    "syncDirectionToApplication": "Take the location from the mount",
+    "syncDirectionToTelescope": "Send my location to the mount",
     "mountNotConnected": "Mount not connected",
     "coordsNotSupported": "Not supported by driver",
     "loadingCoords": "Loading…",
@@ -165,9 +166,7 @@
     "coordAlt": "Alt",
     "coordUnit": "m",
     "completeSetup": "Complete Setup",
-    "instanceConfiguration": "@:{'general.backendName'} connection details",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "You can find detailed instructions in our wiki"
+    "instanceConfiguration": "@:{'general.backendName'} connection details"
   },
   "components": {
     "fitsPlatesolve": {
@@ -222,6 +221,8 @@
       "instanceNamePlaceholder": "My Instance",
       "ipLabel": "IP Address / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Address of the rig",
+      "advanced": "Advanced: name and port",
       "portLabel": "Port",
       "portPlaceholder": "5000",
       "modalTitle": "Discovered Instances",
@@ -235,6 +236,7 @@
       "discoveringMessage": "Discovering Touch-N-Stars instances...",
       "noFoundMessage": "No Touch-N-Stars instances found via mDNS.",
       "selectionSuccess": "Selected {label} ({ip}:{port}).",
+      "hotspotFound": "Found the rig on its own Wi-Fi: {name}",
       "foundSingle": "Found 1 Touch-N-Stars instance.",
       "foundMultiple": "Found {count} Touch-N-Stars instances.",
       "discoveryFailedStatus": "Discovery failed: {message}",
@@ -247,7 +249,7 @@
       "confirmSetTargetTitle": "Confirm Target Selection",
       "confirmSetTargetMessage": "Are you sure you want to set this target as the sequence target?",
       "useNinaCache": "Use @:{'general.backendName'} cache for the target image",
-      "setSequnceTarget": "set to sequence target",
+      "setSequnceTarget": "Set to sequence target",
       "sequenceTargetPicker": {
         "title": "Sequence target",
         "hint": "Choose which target of the loaded sequence receives the framing coordinates.",
@@ -324,6 +326,70 @@
       "next": "Next",
       "skip": "Skip Tutorial"
     },
+    "mountDriverFinder": {
+      "searchLabel": "Which mount do you have?",
+      "searchPlaceholder": "e.g. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Type the model, or start with the brand:",
+      "noMatch": "No matching mount. Check the spelling or use \"Mount not in this list?\" below.",
+      "otherMount": "Other mount",
+      "howConnected": "How is it connected to PINS?",
+      "recommended": "Recommended",
+      "driverName": "Driver: {name}",
+      "checking": "Checking the installed drivers…",
+      "driverListFailed": "The driver list could not be loaded.",
+      "retry": "Try again",
+      "alreadySet": "This driver is already set.",
+      "useDriver": "Use this driver",
+      "needsInstall": "{name} is not installed on PINS yet.",
+      "installAndUse": "Install and use",
+      "installConfirm": "PINS downloads {name} from the internet and installs it. This takes about a minute. Continue?",
+      "installConfirmYes": "Install",
+      "cancel": "Cancel",
+      "unavailable": "{name} is not available on this PINS. Choose it from the full list below, or update PINS.",
+      "installing": "Downloading and installing {name}…",
+      "applying": "Setting up {name}…",
+      "applied": "Done: {name} is set and \"{device}\" is selected. Plug the mount in, switch it on and tap Connect.",
+      "appliedPickDevice": "Done: {name} is set. Choose your mount in the device list and tap Connect.",
+      "applyFailed": "The driver could not be set: {message}",
+      "noInternet": "PINS needs an internet connection to install the driver. Connect PINS to a Wi-Fi network with internet and try again.",
+      "packageMissing": "The driver package {name} is not available for download right now.",
+      "installedButMissing": "{name} was installed but does not show up in the driver list. Restart PINS and try again.",
+      "installFailed": "Installation failed: {message}",
+      "disconnectFirst": "Disconnect the mount before changing its driver.",
+      "notListed": "Mount not in this list?",
+      "openButton": "Find mount driver",
+      "title": "Find the driver for your mount",
+      "connections": {
+        "swDirect": {
+          "title": "USB cable directly to the mount",
+          "hint": "Into the mount's USB socket, or an EQDIR cable in the hand controller port. The hand controller is not needed."
+        },
+        "swHandController": {
+          "title": "Through the SynScan hand controller",
+          "hint": "Cable from PINS to the hand controller (USB socket or serial cable). Switch the hand controller on and go through its start menu first."
+        },
+        "celestronUsb": {
+          "title": "USB socket on the mount",
+          "hint": "USB cable into the socket on the mount head."
+        },
+        "celestronHandController": {
+          "title": "Through the NexStar hand controller",
+          "hint": "USB or serial cable into the bottom of the hand controller. Complete the hand controller's alignment start first."
+        },
+        "meadeHandController": {
+          "title": "Through the AutoStar hand controller",
+          "hint": "Serial or USB cable into the hand controller's port."
+        },
+        "usb": {
+          "title": "USB cable to the mount",
+          "hint": "USB cable from the mount to PINS."
+        },
+        "network": {
+          "title": "Network cable (LAN)",
+          "hint": "The mount is on the same network as PINS. Afterwards enter its IP address in the mount's connection settings."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Setup Assistant",
       "restart": "Start setup assistant",
@@ -349,13 +415,16 @@
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Done",
-        "localization": "Regional settings"
+        "localization": "Regional settings",
+        "starDatabase": "Star map"
       },
       "driver": {
         "loading": "Loading drivers…",
         "applying": "Applying driver…",
         "listFailed": "Could not load drivers: {message}",
-        "changeFailed": "Could not apply the driver: {message}"
+        "changeFailed": "Could not apply the driver: {message}",
+        "none": "No driver",
+        "installMissing": "Driver not in the list?"
       },
       "welcome": {
         "title": "Let's set up Touch'N'Stars",
@@ -366,10 +435,15 @@
         "description": "The language of the app. You can change it later in the settings."
       },
       "info": {
-        "openWiki": "Open the wiki"
+        "pointDevices": "The next steps connect your mount, camera and the other devices one by one and ask for your telescope data.",
+        "pointPowered": "Switch all devices on and plug them into the rig before you continue.",
+        "pointLater": "Not sure about a value? Skip it with Next. Everything can be changed later in the settings."
       },
       "instance": {
-        "description": "Address of the machine running @:{'general.backendName'}. On the same network the app can usually find it by itself.",
+        "title": "Connect to your rig",
+        "description": "Your phone talks to the rig over Wi-Fi.",
+        "hotspotHint": "First connect your phone to the rig’s Wi-Fi. A new rig opens its own hotspot named “pins-…”, the password is “touchnstars”.",
+        "homeNetworkHint": "Is the rig already on your home network? Then stay on it. The app searches by itself; if it finds nothing, enter the rig’s address below.",
         "connect": "Save and connect",
         "connecting": "Connecting…",
         "connected": "Connected to {name}",
@@ -381,6 +455,7 @@
         "loadingStatus": "Reading Wi-Fi status…",
         "connectedTo": "Connected to {ssid}",
         "notConnected": "The rig is not connected to a Wi-Fi network.",
+        "notConnectedHint": "Without a network it opens its own hotspot. For updates and the star map download it needs your home network: tap “Scan for networks”.",
         "chooseOtherNetwork": "Choose a different network",
         "scan": "Scan for networks",
         "scanning": "Scanning…",
@@ -419,14 +494,23 @@
         "notFoundHint": "If your mount is missing, its driver may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
-        "installFailed": "Installation failed: {message}"
+        "installFailed": "Installation failed: {message}",
+        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there."
       },
       "slewRate": {
         "title": "Slew speed",
-        "description": "Set how fast the driver may move your mount. Too high and the mount can lose steps, too low and every slew takes forever.",
         "maxSlewRate": "Max slew speed (°/s)",
-        "maxSlewRateHint": "This is the driver limit, not the manual slew speed on the mount screen — that one comes straight from the driver's own capabilities.",
-        "saveFailed": "Could not save: {message}"
+        "saveFailed": "Could not save: {message}",
+        "whatFor": "PINS needs your mount's top speed to time movements correctly, for example during polar alignment. It does not limit how fast the mount slews.",
+        "reading": "Reading the speeds from the mount driver…",
+        "derived": "Read from the driver: the fastest speed is {label}, that is {value} °/s. Saved — nothing to do here.",
+        "notNeeded": "This driver reports its speeds in °/s itself, so nothing needs to be set here.",
+        "unknown": "This driver names its speeds without numbers (e.g. \"Max\"), so the top speed cannot be read. Leave the default of {value} °/s unless you know your mount's top speed.",
+        "notConnected": "Connect the mount in the previous step, then the speed is read from it automatically. Without that the default of {value} °/s is used, which fits most mounts.",
+        "readFailed": "The speeds could not be read from the mount. The current value of {value} °/s stays.",
+        "readAgain": "Read from the mount",
+        "setManually": "Set by hand",
+        "manualHint": "Your mount's top slew speed in degrees per second, as given in its manual. A value you enter here is never replaced automatically."
       },
       "location": {
         "title": "Set your location",
@@ -437,10 +521,14 @@
         "longitude": "Longitude",
         "altitude": "Altitude",
         "useCurrentLocation": "Use current location",
-        "syncDirection": "Location sync direction",
+        "locating": "Getting your location…",
+        "syncDirection": "When the mount connects",
         "save": "Save location",
         "saving": "Saving…",
-        "saveFailed": "Could not save the location: {message}"
+        "saveFailed": "Could not save the location: {message}",
+        "unsavedHint": "Not saved yet. It is saved automatically when you tap Next.",
+        "savedHint": "Location saved.",
+        "missingHint": "No location set yet. Polar alignment and the sky atlas need it."
       },
       "telescope": {
         "title": "Your telescope",
@@ -471,8 +559,11 @@
         "chipHeight": "Chip height (px)",
         "pixelSize": "Pixel size (µm)",
         "pixelSizeHint": "The pixel size is not reported by the driver. You will find it in your camera's manual.",
+        "pixelSizeReported": "Reported by the camera: {size} µm.",
+        "pixelSizeReportedDiffers": "The camera reports {size} µm, the profile holds a different value.",
         "imageScale": "Resulting image scale: {scale} arcsec/px",
-        "applyFailed": "Could not save: {message}"
+        "applyFailed": "Could not save: {message}",
+        "chipSizeNotConnectedHint": "Connect the camera above and the sensor size is filled in by itself. Only a camera that does not report it (typical for DSLRs) needs the values below."
       },
       "focuser": {
         "title": "Set up your focuser",
@@ -484,7 +575,9 @@
         "notFoundHint": "If your focuser is missing, its driver may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
-        "installFailed": "Installation failed: {message}"
+        "installFailed": "Installation failed: {message}",
+        "descriptionDeviceFirst": "Pick your focuser from the list and connect it. A driver is only needed if it does not show up there. Autofocus parameters stay on the focus page.",
+        "notFoundDriverHint": "If your focuser is not in the list, select its INDI driver here. Afterwards it appears in the list above."
       },
       "filterWheel": {
         "title": "Set up your filter wheel",
@@ -498,7 +591,11 @@
         "notFoundHint": "If your filter wheel is missing, its driver may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
-        "installFailed": "Installation failed: {message}"
+        "installFailed": "Installation failed: {message}",
+        "descriptionDeviceFirst": "Pick your filter wheel from the list, connect it and give the slots the names you use. A driver is only needed if it does not show up there.",
+        "notFoundDriverHint": "If your filter wheel is not in the list, select its INDI driver here. Afterwards it appears in the list above.",
+        "noneHint": "No filter wheel? Just tap Next.",
+        "addFilter": "Add filter"
       },
       "guider": {
         "title": "Set up guiding",
@@ -525,20 +622,64 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length in the guiding step.",
         "applyFailed": "Could not save: {message}",
-        "nativeCamera": "PINS Native Guider",
-        "nativeCameraHint": "The native guider guides with the guide camera above, or with its built-in simulator for testing. Enter the focal length of the guide scope."
+        "guideScope": "Guide scope",
+        "nativeCameraHint": "Enter the focal length of the guide scope. The guider needs it to judge how far the stars move.",
+        "descriptionBuiltIn": "PINS has a built-in guider that keeps the stars in place while pictures are taken, with no extra program. Pick the guide camera and enter the focal length of the guide scope.",
+        "nativeRecommended": "Tip: PINS has its own guider (“Native Guider” in the list above). It was developed especially for PINS, runs directly on the rig without a separate program and often guides more steadily than PHD2. Settings you made in PHD2 carry over, and you can switch back any time by picking PHD2 again.",
+        "nativeFocalLengthMissing": "The guide scope focal length is still 0. Guiding works without it, but dithering and the guiding error in arc-seconds need it.",
+        "guidePixelSizeHintNative": "Used for this calculation only. The guider reads the pixel size from the guide camera once it is connected; until then, take it from the camera manual.",
+        "ditherMissingDataNative": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and the guide scope focal length in the guiding step.",
+        "guideCameraNotFound": "Guide camera not listed?",
+        "guideCameraNotFoundHint": "If your guide camera is not natively supported, select an INDI driver for it here. Afterwards it appears in the device list above.",
+        "ditherIntro": "Dithering shifts the picture a little between exposures, which removes noise patterns from the stacked result. Without guiding you can skip this step.",
+        "ditherReadyHint": "The usual value is already filled in: tap “{button}” and you are done."
       },
       "done": {
         "title": "Your equipment is ready",
         "description": "Your rig is connected, up to date, and mount, camera, focuser, filter wheel and guiding are configured.",
         "descriptionPlain": "Mount, camera, focuser, filter wheel and your location are configured.",
         "moreDevicesHint": "Flat panel, weather and the remaining devices are configured on their own pages.",
-        "noConnectionHint": "No connection to a rig yet. You can add one under Settings → Connection at any time."
+        "noConnectionHint": "No connection to a rig yet. You can add one under Settings → Connection at any time.",
+        "summaryIntro": "This is what is set up now. Tap an entry to go back to its step.",
+        "status": {
+          "ok": {
+            "mount": "Selected",
+            "location": "Saved",
+            "telescope": "Focal length set",
+            "camera": "Selected",
+            "focuser": "Selected",
+            "filterWheel": "Selected",
+            "guider": "Selected",
+            "starDatabase": "Installed"
+          },
+          "warn": {
+            "mount": "No mount selected",
+            "location": "Missing: polar alignment and the sky atlas need it",
+            "telescope": "Focal length missing: plate solving needs it",
+            "camera": "No camera selected",
+            "starDatabase": "Not installed: plate solving cannot work"
+          },
+          "none": {
+            "focuser": "None, focus by hand",
+            "filterWheel": "None, that is fine",
+            "guider": "No guiding"
+          }
+        }
       },
       "cancel": "Cancel setup",
       "localization": {
         "title": "Set the rig regional settings",
-        "description": "Set these values before Wi-Fi so hotspot location, time and remote keyboard input match where the rig is used."
+        "description": "Set these values before Wi-Fi so hotspot location, time and remote keyboard input match where the rig is used.",
+        "localeHint": "Language and number format of the rig itself, e.g. en_US.UTF-8 or de_DE.UTF-8. C.UTF-8 is a neutral default and works too.",
+        "unappliedHint": "Not applied yet: tap \"{button}\" before Next, otherwise the changes are lost.",
+        "nothingToDoHint": "Nothing to change? Just tap Next.",
+        "rigLanguage": "Language and keyboard of the rig"
+      },
+      "starDatabase": {
+        "title": "Star map for plate solving",
+        "description": "To find out where the telescope points, the rig compares a picture with a star map (\"plate solving\"). Polar alignment and centering a target need it. PINS comes with the D80 star map; for very wide fields you can add another one here.",
+        "otherSolver": "Your profile uses another plate solver than ASTAP, so there is nothing to install here.",
+        "hint": "The download is large and can take a few minutes. You can tap Next meanwhile; the installation keeps running on the rig."
       }
     },
     "fileBrowser": {
@@ -737,7 +878,9 @@
         "restartInfoTitle": "System is restarting",
         "restartInfoMessage": "The system is restarting.",
         "shutdownInfoTitle": "System is shutting down",
-        "shutdownInfoMessage": "The system is shutting down. This page will no longer be reachable."
+        "shutdownInfoMessage": "The system is shutting down. This page will no longer be reachable.",
+        "shutdownPowerHint": "Wait about a minute, then you can switch off the power.",
+        "shutdownFailed": "The shutdown did not work: {reason}"
       },
       "plate_solver": {
         "title": "Plate Solver",
@@ -786,14 +929,27 @@
         "astapDatabaseAllInstalled": "All ASTAP star databases are already installed.",
         "astapDatabaseLoadFailed": "Failed to load databases: {detail}",
         "astapDatabaseInstallSuccess": "ASTAP star database {databaseId} installed successfully.",
-        "astapDatabaseInstallFailed": "ASTAP star database install failed{exitCode}.",
+        "astapDatabaseDownloadFailed": "Installing {databaseId} failed. The rig downloads the star map from the internet: is it on a network with internet access? Then try again.",
+        "astapDatabaseLastAttemptFailed": "The last attempt to install {databaseId} failed ({time}). The rig downloads the star map from the internet: is it on a network with internet access? Then try again.",
+        "astapDatabaseRetry": "Install {databaseId} again",
+        "astapDatabasePhase": {
+          "downloading": "Downloading",
+          "installing": "Installing",
+          "finalizing": "Finishing",
+          "complete": "Done"
+        },
         "astapDatabaseUnauthorizedStatus": "Unauthorized while checking install status.",
         "astapDatabaseStatusCheckFailedRetrying": "Status check failed: {detail}. Retrying...",
         "astapDatabaseStartInstall": "Starting installation for {databaseId}...",
         "astapDatabaseMissingJobId": "Install request succeeded but no jobId was returned.",
         "astapDatabaseJobStartedMessage": "Install job started for {databaseId}.",
         "astapDatabaseUnauthorizedStart": "Unauthorized while starting ASTAP star database install.",
-        "astapDatabaseStartFailed": "Failed to start install: {detail}"
+        "astapDatabaseStartFailed": "Failed to start install: {detail}",
+        "astapDatabaseInstalledList": "Installed: {list}",
+        "astapDatabaseNoneInstalled": "No star database is installed yet. Without one, plate solving (polar alignment, centering a target) cannot work.",
+        "astapDatabaseRecommendedTag": "recommended",
+        "astapDatabaseRecommendedFov": "Recommended for your telescope and camera (field of view {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Recommended: {id}. Enter focal length, pixel size and sensor size for a recommendation that fits your telescope."
       },
       "equipment": {
         "title": "Equipment",
@@ -867,6 +1023,17 @@
         "loadError": "Could not read swap configuration: {message}",
         "saveError": "Could not save swap configuration: {message}",
         "missingJob": "The daemon did not return a swap job."
+      },
+      "instances": {
+        "discovery": "Find rigs in the network",
+        "add": "Add a rig",
+        "edit": "Edit rig",
+        "configured": "Saved rigs",
+        "none": "No rig saved yet",
+        "noneHint": "Use the search above or enter the address yourself.",
+        "active": "Active",
+        "setActive": "Use this rig",
+        "delete": "Remove rig"
       }
     },
     "alpacaDirect": {
@@ -885,7 +1052,12 @@
     "selectDevices": {
       "deviceNotFound": "Device not found",
       "deviceNotFoundMessage": "The INDI driver was reloaded, but '{device}' did not appear. Check the power supply and select the device again.",
-      "reloadingDriver": "Reloading INDI driver…"
+      "reloadingDriver": "Reloading INDI driver…",
+      "configure": "Device settings",
+      "rescan": "Search for devices again",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "whyNotConnect": "Why can it not connect yet?"
     },
     "connectEquipment": {
       "camera": {
@@ -1056,12 +1228,12 @@
       "targetNotFound": "Target not found in the sequence. Please try again.",
       "simple": {
         "viewMode": "Sequence view",
-        "viewModeHint": "Simple shows one card per target with the most common options. Expert shows the complete sequence tree.",
+        "viewModeHint": "Simple shows one card per target with the most common options. Full shows the complete sequence tree.",
         "mode": {
           "simple": "Simple",
-          "full": "Expert"
+          "full": "Full"
         },
-        "openExpert": "Edit in expert editor",
+        "openFull": "Edit in full editor",
         "targets": "Targets",
         "remaining": "Remaining",
         "total": "Total",
@@ -1077,6 +1249,8 @@
         "dither": "Dithering",
         "ditherHint": "Move the guiding position slightly between frames. Needs a running guider.",
         "ditherEvery": "Dither every N frames",
+        "ditherInExposures": "Each exposure row dithers after every picture. | Each exposure row dithers after every {count} pictures.",
+        "ditherInExposuresMixed": "The exposure rows dither at their own intervals.",
         "coolCamera": "Cool camera",
         "coolCameraHint": "Cool the camera to the target temperature before the first target.",
         "unparkMount": "Unpark mount",
@@ -1101,7 +1275,6 @@
         "afAfterHfr": "After HFR increase",
         "coordinates": "Coordinates",
         "exposureEnabled": "Take this exposure",
-        "cameraDefault": "camera",
         "gainShort": "Gain",
         "offsetShort": "Offset",
         "empty": "This sequence has no targets yet.",
@@ -1113,6 +1286,7 @@
         "favorites": "Favorites",
         "framing": "Framing",
         "noFilter": "No filter change",
+        "chooseFilter": "Choose a filter",
         "exposureTime": "Exposure (s)",
         "count": "Count",
         "noExposures": "No exposures for this target yet.",
@@ -1125,7 +1299,50 @@
         "deleteTarget": "Delete target",
         "deleteTargetConfirm": "Delete {name} and all its exposures from the sequence?",
         "deleteExposure": "Delete exposure",
-        "deleteExposureConfirm": "Delete this exposure row from the sequence?"
+        "deleteExposureConfirm": "Delete this exposure row from the sequence?",
+        "addTargetNamed": "Add {name} as target",
+        "limits": {
+          "title": "Night",
+          "wait": "Wait until it is dark",
+          "waitHint": "The plan starts as soon as it is dark. The mount does not track while it waits.",
+          "dawn": "Stop at dawn",
+          "dawnHint": "Ends the plan when it gets light, even if pictures are missing. The rest can be taken the next night.",
+          "from": "from {time}",
+          "notTonight": "not tonight",
+          "low": "Stop when the target stands too low",
+          "lowHint": "Close to the horizon the air blurs the stars, and trees or houses get in the way. The plan then goes on with the next target.",
+          "minAltitude": "Lowest height above the horizon (°)",
+          "noTarget": "Add a target to the plan first. This is then switched on by itself.",
+          "targetRunning": "Cannot be changed while a target is being imaged.",
+          "sunBelow": "sun {degrees}° below the horizon",
+          "darknessName": {
+            "bright": "still bright",
+            "dusky": "almost dark",
+            "usual": "usual",
+            "dark": "darker",
+            "darkest": "fully dark"
+          },
+          "minAltitudeHint": "0° is the horizon, 90° is straight overhead. Two fists on top of each other at arm’s length are about 20°.",
+          "startAt": "Start of the night",
+          "endAt": "End of the night",
+          "until": "until {time}"
+        },
+        "refocus": {
+          "title": "Focus",
+          "label": "Focus again regularly",
+          "hint": "The focus drifts as the night gets colder. The plan then focuses again between two pictures; that takes a few minutes each time.",
+          "howOften": "How often",
+          "every": {
+            "minutes": "every minute | every {count} minutes",
+            "hours": "every hour | every {count} hours"
+          }
+        },
+        "budget": {
+          "question": "How long do you want to image this target? (hours)",
+          "pictures": "{count} picture of {seconds} s | {count} pictures of {seconds} s",
+          "apply": "Use this number of pictures",
+          "wholeNight": "As long as the night allows ({time})"
+        }
       },
       "filter": "Filter",
       "triggers": "Triggers",
@@ -1349,7 +1566,7 @@
         },
         "polarAlignment": {
           "searchRadius": "Search Radius (°)",
-          "alignmentTolerance": "Alignment Tolerance (arcsec)",
+          "alignmentTolerance": "Alignment Tolerance (arcmin)",
           "moveRate": "Move Rate (°/s)",
           "targetDistance": "Target Distance (°)",
           "eastDirection": "East Direction",
@@ -1540,7 +1757,19 @@
       "disable": "Disable",
       "resetStatus": "Reset status",
       "delete": "Delete",
-      "runningLocked": "This item is running and cannot be changed"
+      "runningLocked": "This item is running and cannot be changed",
+      "plan": {
+        "title": "Plan",
+        "startSequence": "Start plan",
+        "resetSequence": "Reset plan",
+        "resetConfirmationMessage": "Reset the plan so it starts from the beginning again? This cannot be undone.",
+        "clearConfirmationMessage": "Remove everything from the plan? This cannot be undone.",
+        "manageSequences": "Load / save plans",
+        "saveSequenceAs": "Save current plan as",
+        "sequenceFolder": "Plan folder",
+        "sequenceFolderSaveError": "Could not change the plan folder.",
+        "controlsLockedMessage": "The plan controls are locked while the plan is running."
+      }
     },
     "mount": {
       "title": "Mount",
@@ -1550,17 +1779,19 @@
         "parked": "The mount is parked, so there is no position to chart."
       },
       "location_sync": {
-        "title": "Location sync settings",
-        "confirmationMessage": "If 'Location Sync' in @:{'general.backendName'} is set to 'Prompt', a confirmation window may appear before coordinates are sent to the telescope. To avoid this and allow TNS to automatically set the coordinates, we recommend changing the setting to 'Sync to Telescope'",
+        "title": "Location of the mount",
+        "confirmationMessage": "When the mount connects, the app can send your location to it, so it points to the right spot in the sky. Choose what should happen; you can change it later in the location settings.",
         "toTelescope": {
-          "label": "Sync to telescope"
+          "label": "Send my location to the mount"
         },
         "toApplication": {
-          "label": "Sync to application"
+          "label": "Take the location from the mount"
         },
         "noSync": {
-          "label": "No sync"
-        }
+          "label": "Don’t sync the location"
+        },
+        "recommended": "Recommended",
+        "noLocationHint": "Your location is not set yet. “Send my location to the mount” would send 0° / 0° and overwrite the location the mount knows. Choose “Don’t sync the location” for now: once you set your location, the app sends it to the mount."
       },
       "control": {
         "park": "Park",
@@ -1581,7 +1812,7 @@
           "unpark": "Error unparking mount",
           "tracking": "Error setting tracking mode"
         },
-        "setLocationSyncToMount": "Set \"Sync to telescope\"",
+        "setLocationSyncToMount": "Always send my location to the mount",
         "slewRateINDI": "Slewspeed",
         "reverse_axis": "Axis direction",
         "confirmParkTitle": "Park mount",
@@ -2788,7 +3019,7 @@
           "loading": "Loading settings…",
           "loadFailed": "Settings could not be loaded",
           "empty": "No settings available.",
-          "notConnectedHint": "The native guider is not connected. Changes are saved to the profile; camera changes take effect on the next connect.",
+          "notConnectedHint": "The built-in guider is not connected. Changes are saved to the profile; camera changes take effect on the next connect.",
           "requiresReconnect": "Applies after reconnect",
           "valueInUse": "In use: {value} {unit}, adjusted while guiding.",
           "range": "{min} – {max}",
@@ -4664,7 +4895,7 @@
         "steps": {
           "check": {
             "title": "Requirements",
-            "description": "Hocus Focus needs a connected camera and focuser."
+            "description": "The autofocus needs a connected camera and focuser."
           },
           "optics": {
             "title": "Optics",
@@ -4672,15 +4903,15 @@
           },
           "rig": {
             "title": "Your setup",
-            "description": "A few questions about your equipment. Your answers set the Hocus Focus presets."
+            "description": "A few questions about your equipment. Your answers set suitable autofocus presets."
           },
           "rough": {
             "title": "Rough focus",
-            "description": "Take images and move the focuser until the stars are small and round and the HFR is as low as possible."
+            "description": "Take images and move the focuser until the stars are small and round. The HFR is the star size: the smaller, the sharper."
           },
           "measure": {
             "title": "Step size and backlash",
-            "description": "Measures how quickly the stars grow when the focuser moves and how many steps it loses when it changes direction, and suggests a step size for the autofocus and NINA's backlash compensation. The focuser first moves back a long way so that every position is reached from the same side, then forward through focus, and returns to its start position at the end."
+            "description": "Measures how quickly the stars grow when the focuser moves and how many steps it loses when it changes direction, and suggests a step size for the autofocus and the backlash compensation. The focuser first moves back a long way so that every position is reached from the same side, then forward through focus, and returns to its start position at the end."
           },
           "run": {
             "title": "Test run",
@@ -4698,8 +4929,7 @@
         "checks": {
           "camera": "Camera connected",
           "focuser": "Focuser connected",
-          "hocusFocus": "Hocus Focus available",
-          "engineHint": "In @:{'general.backendName'}, 'Auto Focus' and 'Star Detector' must both be set to Hocus Focus. The result step tells you if that is not the case."
+          "hocusFocus": "Autofocus plugin installed"
         },
         "focalLength": "Focal length (mm)",
         "pixelSize": "Pixel size (µm)",
@@ -4715,7 +4945,7 @@
         "startRun": "Start autofocus",
         "stopRun": "Stop autofocus",
         "runFailed": "The autofocus could not be started.",
-        "noResult": "There is no finished Hocus Focus run to judge yet.",
+        "noResult": "There is no finished autofocus run to judge yet.",
         "runAgain": "Run again",
         "openOptimizer": "Open optimizer",
         "useOptimized": "Use optimized settings",
@@ -4935,6 +5165,7 @@
       "warn_east_west_title": "Correction field within {deg}° of East/West",
       "warn_east_west_body": "The current field is within 5° of exact East or West. If the live solution is unstable, slew to a field farther from East/West and rerun.",
       "running": "RUNNING",
+      "movingToStart": "Moving to the start…",
       "plate_solve_start": "Platesolve start",
       "plate_solve_ok": "Platesolve successful",
       "plate_solve_error": "Platesolve error",
@@ -4990,7 +5221,42 @@
         "help_log_error": "When enabled, a log file will be created with the polar alignment error adjustments and continuous errors after each adjustment."
       },
       "error_modal": {},
-      "tppa": "TPPA"
+      "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "Polar alignment cannot start",
+        "refused": "The rig refused to start the polar alignment",
+        "noLocation": "The rig does not know its location. Set latitude and longitude first, the calculation depends on them.",
+        "noDatabase": "No star map is installed, so no picture can be plate solved. Install one and start again.",
+        "notSent": "The start did not reach the rig. Check the connection and tap Start again.",
+        "startSlewFailed": "The telescope could not move to the start position. Check the mount and tap Start again."
+      },
+      "trackingOffAfterStop": "Polar alignment switched tracking off when it stopped.",
+      "resumeTracking": "Turn tracking back on",
+      "goodEnoughHint": "A total error below 1′ (one arc minute) is good. Once it is reached, stop the alignment.",
+      "tabSimple": "Polar alignment",
+      "simpleIntroMove": "First the mount moves by itself to a start position near the celestial pole, then it turns twice a little around its axis while it takes pictures. Check that the cables are long enough and nothing is in the way.",
+      "simpleIntroAdjust": "Then this page shows which way to turn the altitude and azimuth knobs. The numbers update after every picture. Keep adjusting until the total error is below 1′ (one arc minute), then stop the alignment yourself.",
+      "adjustHint": "Turn the altitude and azimuth knobs a little at a time the way the arrows point. The numbers update after every picture.",
+      "lastMeasurement": "Last measurement",
+      "markedDone": "Polar alignment is marked as done for tonight.",
+      "confirmStartTitle": "Start polar alignment?",
+      "confirmStartMessage": "The mount now moves to the start position near the celestial pole and turns during the measurement. Check that the cables are long enough and nothing is in the way.",
+      "status": {
+        "capturing": "Taking a picture…",
+        "solving": "Plate solving the picture…",
+        "captureRetry": "The picture failed, trying again…",
+        "solveRetry": "Plate solving failed, trying again…",
+        "nextPoint": "Moving to the next point",
+        "firstPoint": "Measuring the first point",
+        "secondPoint": "Measuring the second point",
+        "finalPoint": "Measuring the third point",
+        "waitMount": "Waiting for the mount to stop",
+        "waitDome": "Waiting for the dome",
+        "settling": "Letting the mount settle",
+        "slewInitial": "Moving to the start position",
+        "movingAxis": "Turning the axis",
+        "solveAttempt": "Plate solving the picture…"
+      }
     },
     "slewAndCenter": {
       "title": "Slew and Center",
@@ -5015,7 +5281,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "Deviation to the target:"
-      }
+      },
+      "failed": "Slew or centering failed",
+      "centeredTitle": "Target centered",
+      "centered": "The target is in the middle of the picture.",
+      "centeredNamed": "{name} is in the middle of the picture."
     },
     "filterwheel": {
       "title": "Filter Wheel",
@@ -5414,6 +5684,22 @@
         "camera_field": "Camera field",
         "actions": "Actions",
         "more": "More"
+      },
+      "tonight": {
+        "title": "Visible tonight",
+        "intro": "The best targets for tonight at your location, best first. Tap one to select it in the atlas.",
+        "noSite": "Set your location in the profile first, then the best targets for tonight show up here.",
+        "noDarkNight": "It does not get dark enough tonight at your location.",
+        "nothing": "No target gets high enough in the sky tonight.",
+        "maxAlt": "up to {alt}° high",
+        "types": {
+          "galaxy": "Galaxy",
+          "nebula": "Nebula",
+          "planetary_nebula": "Planetary nebula",
+          "cluster": "Star cluster",
+          "dark_nebula": "Dark nebula",
+          "widefield": "Wide field"
+        }
       }
     },
     "profile": {
@@ -5611,6 +5897,7 @@
       "sequenceStart": "Sequence could not be started",
       "guidingStart": "Guiding could not be started",
       "autofocusStart": "Autofocus could not be started",
+      "autofocusStop": "Autofocus could not be cancelled",
       "binning": "Binning could not be changed",
       "readout": "Readout mode could not be changed",
       "switchSet": "Switch could not be set"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "Dev update channel hidden.",
       "specialEnabled": "Eyesore marker enabled.",
       "specialDisabled": "The fun is over."
+    },
+    "simpleMode": {
+      "title": "Tonight",
+      "subtitle": "Your night step by step: tap the highlighted step and follow it from top to bottom.",
+      "pinsOnly": "The simple mode is only available when Touch'N'Stars is connected to a PINS device.",
+      "offHint": "The simple mode is switched off, so the navigation shows every page.",
+      "turnOn": "Use simple mode",
+      "showAll": "Show all functions (switch simple mode off)",
+      "status": {
+        "done": "Done",
+        "running": "Running",
+        "open": "To do",
+        "skipped": "Skipped"
+      },
+      "markDone": "Mark as done",
+      "skip": "Skip tonight",
+      "undoMark": "Undo",
+      "needsCamera": "Connect the camera first.",
+      "needsMount": "Connect the mount first.",
+      "needsGuider": "The guider is not connected yet. Tap “Connect everything” above.",
+      "needsCameraAndMount": "Needs a connected camera and mount.",
+      "rig": {
+        "title": "Your equipment",
+        "changeDevices": "Change devices",
+        "empty": "No devices are set up yet. The setup assistant walks you through camera, mount and the rest.",
+        "openWizard": "Open the setup assistant",
+        "noMountHint": "No mount set up yet? Find the right driver for it here.",
+        "devicesFailedHint": "Not connected: {devices}. Check power and cable first; if both are fine, a different driver may be needed.",
+        "mountFailedHint": "The mount did not connect. Often it needs a different driver.",
+        "connecting": "Connecting…",
+        "allConnected": "Everything connected",
+        "connectAll": "Connect everything",
+        "exposing": "Taking a picture",
+        "coolingTo": "cooling to {temp}",
+        "parked": "Parked",
+        "slewing": "Moving",
+        "tracking": "Tracking the sky",
+        "notTracking": "Not tracking",
+        "autofocusRunning": "Autofocus running",
+        "position": "Position {position}",
+        "connected": "Connected",
+        "notConnected": "Not connected"
+      },
+      "guiderState": {
+        "Guiding": "Guiding",
+        "Calibrating": "Calibrating",
+        "Looping": "Looking for a star",
+        "LostLock": "Star lost",
+        "Idle": "Stopped",
+        "Paused": "Paused",
+        "Reacquiring": "Searching the star again"
+      },
+      "night": {
+        "title": "Your night",
+        "progress": "{done} of {total} done"
+      },
+      "steps": {
+        "connect": {
+          "title": "Connect your equipment",
+          "description": "Switch on the power of your rig, then connect all devices with one tap.",
+          "hint": "If a device does not connect, check its cable and power, then tap “Connect everything” again.",
+          "summary": "{connected} of {total} connected"
+        },
+        "cool": {
+          "title": "Cool the camera",
+          "description": "A cooled sensor gives cleaner pictures. Cooling takes a few minutes, so start it early – you can carry on with the next steps meanwhile.",
+          "targetTemp": "Target temperature (°C)",
+          "start": "Cool to {temp} °C",
+          "failed": "Cooling could not be started",
+          "warmingSummary": "Warming up · {temp}",
+          "setup": {
+            "question": "How fast may your camera cool down?",
+            "text": "Asked once for this profile. Cooling too fast or warming up too fast stresses some sensors, and a sensor that warms up too quickly can fog up. The warm-up runs when you end the night.",
+            "presets": {
+              "fast": {
+                "title": "Fast",
+                "description": "Cools straight away, warms up in {warm} min. Fine for most current cooled CMOS cameras – they limit their cooler themselves."
+              },
+              "gentle": {
+                "title": "Gentle",
+                "description": "Cools in {cool} min, warms up in {warm} min."
+              },
+              "veryGentle": {
+                "title": "Very gentle",
+                "description": "Cools in {cool} min, warms up in {warm} min. For older cameras and CCD sensors."
+              }
+            },
+            "notSure": "Not sure? Your camera's manual says whether it needs a slow cool-down. Until you know, “Gentle” is a safe choice. You can change it later on the camera page.",
+            "currentValues": "Your profile already has its own timing: cools in {cool} min, warms up in {warm} min.",
+            "keepValues": "Keep this timing",
+            "applyFailed": "The timing could not be saved to the profile."
+          }
+        },
+        "mount": {
+          "title": "Get the mount ready",
+          "description": "The mount has to be unparked and follow the sky (tracking) before it can point at a target.",
+          "action": "Unpark and start tracking",
+          "trackingFailed": "Tracking could not be switched on",
+          "trackingOffAfterPolar": "Polar alignment switched tracking off. Tap the button to turn it back on."
+        },
+        "polar": {
+          "title": "Polar alignment",
+          "description": "Aligns the mount with the celestial pole. The app takes three pictures, rotates the mount between them and shows you how far to turn the adjustment knobs. Once per setup is enough.",
+          "action": "Open polar alignment"
+        },
+        "target": {
+          "title": "Choose a target",
+          "description": "Pick your object in the sky atlas and add it to your plan. When the pictures start, the plan goes there, centers the target with a picture and starts guiding – you don't have to do any of it by hand.",
+          "action": "Choose a target in the sky atlas",
+          "another": "Add another target",
+          "how": "Tap your object in the sky atlas (or search for it), then tap “{button}”.",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} and {count} more",
+          "calibrationRisk": {
+            "nearPole": "Your target is close to the celestial pole, where the guider cannot calibrate. Do the one-time calibration in “Set up guiding” first.",
+            "low": "Your target is low in the sky, where the guider calibrates badly. Do the one-time calibration in “Set up guiding” first."
+          }
+        },
+        "focus": {
+          "title": "Focus",
+          "description": "Sharp stars make or break the night – and the next steps need them too: polar alignment and centering the target work out the position from a picture. Point the telescope at a part of the sky with stars. With a motor focuser the autofocus does the work; without one, focus by hand using live pictures.",
+          "autofocus": "Start autofocus",
+          "watch": "Watch the focus curve",
+          "manualHint": "No motor focuser connected: open the camera, take pictures in a loop and turn the focuser until the stars are as small as possible.",
+          "manual": "Open the camera",
+          "lastRun": "Last autofocus at {time}",
+          "lastFailed": "Last autofocus at {time} failed – check that stars are visible and try again",
+          "pointAtStars": "Point the telescope at stars (sky atlas)",
+          "setupFirst": "Before the first autofocus with this telescope, set it up once: the assistant measures your focuser and camera and finds settings that work. Without it the autofocus often fails.",
+          "cancelled": "Autofocus cancelled. The focuser goes back to where it was before.",
+          "setup": "Set up autofocus"
+        },
+        "guide": {
+          "title": "Set up guiding",
+          "description": "The guide camera watches one star and corrects the mount, so long exposures stay sharp. PINS has its own guider, developed especially for it: it runs directly on the rig with no extra program and often guides more steadily than PHD2. It has to learn your mount once (calibration); after that your plan starts guiding at every target by itself.",
+          "details": "Guiding details and graph",
+          "useNativeHint": "Your profile uses a different guider right now. The simple mode guides with the guider built into PINS: it was developed especially for PINS, runs directly on the rig and often guides more steadily than PHD2 – it learns the recurring error of your mount's gears and keeps its calibration from night to night. Settings you made in PHD2 carry over.",
+          "useNative": "Use the built-in guider",
+          "nativeMissing": "This PINS version has no built-in guider yet. Update PINS under",
+          "chooseCamera": "The built-in guider needs to know which camera is your guide camera. Pick it here – after that, “Connect everything” connects it too.",
+          "chooseCameraAction": "Choose the guide camera…",
+          "noGuideCamera": "No guide camera found – plug it in and check “All devices”",
+          "calibrate": "Calibrate once (about 3 min)",
+          "calibrateHint": "The telescope moves to a spot close to the celestial equator, where the calibration is most accurate, and learns there how the guider moves it. This is needed only once: the calibration is kept for all later nights.",
+          "confirmCalibrateTitle": "Calibrate the guider?",
+          "confirmCalibrateMessage": "The telescope moves to the calibration spot and the guider calibrates there for a few minutes. Afterwards guiding stops again – your plan starts it at the target.",
+          "calibrating": "Calibrating – this takes a few minutes.",
+          "slewingToCalibration": "The telescope is moving to the calibration spot…",
+          "calibratedHint": "Calibrated. The calibration is kept for later nights too; your plan starts guiding at every target by itself.",
+          "calibratedSummary": "Calibrated",
+          "unparkFirst": "Make the telescope ready first (step “{step}”)."
+        },
+        "capture": {
+          "title": "Take pictures",
+          "description": "Your plan says which targets to shoot with which filter, exposure time and number of pictures. Start it and the app takes care of the rest: going to the target, centering, guiding and the pictures.",
+          "targets": "Targets",
+          "remaining": "Time left",
+          "noPlan": "There is no plan yet. Create one with your target, filter, exposure time and number of pictures.",
+          "nothingLeft": "Your plan has no pictures left to take. Choose a new target, or take the pictures of this plan again.",
+          "repeat": "Take the pictures again",
+          "repeatFailed": "The plan could not be reset",
+          "editPlan": "Edit plan",
+          "createPlan": "Create a plan",
+          "watch": "Watch the pictures come in",
+          "start": "Start taking pictures",
+          "stop": "Stop taking pictures",
+          "summary": "{targets} target, done at about {time} | {targets} targets, done at about {time}",
+          "summaryDone": "{targets} target, all pictures taken | {targets} targets, all pictures taken",
+          "confirmStartTitle": "Start taking pictures?",
+          "confirmStartPlan": "The plan starts now with {targets} target and takes about {remaining}. | The plan starts now with {targets} targets and takes about {remaining}.",
+          "confirmStartApproach": {
+            "center": "The telescope goes to the target and centers it. | The telescope goes to each target and centers it.",
+            "slew": "The telescope goes to the target but does not center it. | The telescope goes to each target but does not center it.",
+            "off": "The telescope does not go to the target, it takes the pictures where it points now. | The telescope does not go to the targets, it takes the pictures where it points now.",
+            "mixed": "Not every target is approached and centered, see the plan."
+          },
+          "confirmStartGuiding": {
+            "all": "Guiding starts before the first picture.",
+            "none": "The plan runs without guiding.",
+            "mixed": "Not every target is guided, see the plan."
+          },
+          "confirmStopTitle": "Stop taking pictures?",
+          "confirmStopMessage": "The current picture is cancelled. You can start the plan again later.",
+          "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
+          "summaryEmpty": "{targets} target, no pictures planned yet | {targets} targets, no pictures planned yet",
+          "confirmStartFocus": "After every filter change it focuses again.",
+          "confirmStartRefocus": "It focuses again {interval}.",
+          "confirmStartEnd": {
+            "both": "When it is done, the mount parks and the camera warms up.",
+            "park": "When it is done, the mount parks.",
+            "warm": "When it is done, the camera warms up. The mount keeps tracking until you end the night.",
+            "none": "When it is done, the mount keeps tracking until you end the night."
+          },
+          "missingSteps": "{count} target in your plan does not yet do this by itself: {steps}. | {count} targets in your plan do not yet do this by themselves: {steps}.",
+          "missingStepParts": {
+            "slew": "go there",
+            "guide": "guide",
+            "focus": "focus again after a filter change"
+          },
+          "fixSteps": "Add the missing steps",
+          "flipMissing": "Your plan does not turn the telescope at the meridian. It would keep tracking past it and could hit the tripod or pier.",
+          "addFlip": "Turn the meridian flip on",
+          "endMissing": {
+            "park": "When your plan is done, the mount keeps tracking. Past the meridian it can hit the tripod or pier if nobody ends the night.",
+            "warm": "When your plan is done, the camera stays cold until you end the night.",
+            "both": "When your plan is done, the mount keeps tracking and the camera stays cold. Past the meridian the telescope can hit the tripod or pier if nobody ends the night."
+          },
+          "addEnd": {
+            "park": "Park the mount when the plan is done",
+            "warm": "Warm the camera up when the plan is done",
+            "both": "Park and warm up when the plan is done"
+          },
+          "flipWindow": "{target} reaches the meridian at about {meridian}; the plan turns the telescope between {earliest} and {latest}.",
+          "flipFixed": "{target} reaches the meridian at about {meridian}; the plan turns the telescope at {earliest}.",
+          "flipPause": "{target} reaches the meridian at about {meridian}; the plan pauses at {pause} and turns the telescope at {earliest}.",
+          "flipNone": "No meridian flip needed with this plan.",
+          "flipYourTarget": "Your target",
+          "flipSettings": "Flip settings and daylight test",
+          "summaryCutOff": "{taken} of {planned} pictures taken",
+          "confirmStartWait": "It waits until it is dark, at about {time}."
+        },
+        "flats": {
+          "title": "Flats",
+          "description": "Flats remove dust shadows and dark corners from your pictures. Take them now, before anything changes: focus, camera rotation and the camera's position must stay as they were for the pictures. Not needed tonight? Skip this step.",
+          "lightSource": "Light source",
+          "panel": "Flat panel",
+          "panelHint": "The rig sets the panel's brightness by itself.",
+          "panelMissing": "No dimmable flat panel connected.",
+          "tablet": "Tablet or light foil",
+          "tabletHint": "Put it evenly lit in front of the telescope; the rig finds the exposure time.",
+          "filters": "Filters",
+          "count": "Flats per filter",
+          "countNoWheel": "Number of flats",
+          "darks": "Also take dark flats",
+          "darksHint": "Needed only if you calibrate with dark flats. The telescope has to be covered for them; the app tells you when.",
+          "start": "Take flats",
+          "stop": "Stop flats",
+          "allSettings": "All flat settings",
+          "needsPlugin": "Flats on this page need a newer Touch'N'Stars plugin on the rig. Update it, or take the flats with the flat assistant below.",
+          "planRunning": "The plan is still running. Flats can be taken once it is done or stopped.",
+          "noFilterSelected": "Tick at least one filter.",
+          "noFilter": "Flats",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flats",
+          "endBlocked": "Flats are still running. End the night once they are done or stopped.",
+          "runningSummary": "Taking flats",
+          "doneSummary": "Flats taken tonight",
+          "result": {
+            "success": "One flat taken | {count} flats taken",
+            "dim": "Too dim: use a brighter light, or allow a longer exposure in the flat settings.",
+            "bright": "Too bright: dim the light, or allow a shorter exposure in the flat settings.",
+            "failed": "Could not take the flats.",
+            "stopped": "Stopped"
+          }
+        },
+        "end": {
+          "title": "End the night",
+          "description": "Stops everything in the right order, parks the mount and warms up the camera slowly so no moisture forms on the sensor.",
+          "action": "End the night"
+        }
+      },
+      "more": {
+        "title": "More",
+        "pictures": "Pictures of the night",
+        "equipment": "All devices",
+        "mount": "Mount",
+        "focus": "Focus",
+        "guider": "Guiding",
+        "system": "Wi-Fi, updates & system",
+        "settings": "Settings"
+      },
+      "endNight": {
+        "title": "End the night",
+        "intro": "These steps run one after the other. Untick anything you want to keep running.",
+        "nothingToDo": "Nothing is running and the mount is parked – there is nothing left to do.",
+        "nothingToDoNoMount": "Nothing is running. The mount is not connected, so check for yourself that it is parked.",
+        "someFailed": "Not everything worked, the reason is under the step. Check the mount before you switch off the power.",
+        "doneWarming": "All done. Once the camera has warmed up, shut the rig down on the start page before you switch off the power.",
+        "confirm": "End the night now",
+        "actions": {
+          "stopSequence": "Stop taking pictures",
+          "stopGuiding": "Stop guiding",
+          "parkMount": "Park the mount",
+          "warmCamera": "Warm up the camera ({minutes} min)"
+        },
+        "parkTimeout": "The mount did not report “parked” within 3 minutes. Check it before you switch off the power.",
+        "doneShutdown": "All done. Shut the rig down before you switch off the power."
+      },
+      "settings": {
+        "title": "Simple mode",
+        "description": "A start page that guides you through the night, and a navigation with only the pages you need for it. Switch it off to see every function again.",
+        "navbarHint": "While the simple mode is on, the navigation customization below has no effect. It comes back unchanged when you switch the mode off."
+      },
+      "wizard": {
+        "title": "How do you want to use the app?",
+        "simpleTitle": "Simple (recommended to get started)",
+        "simpleText": "A start page leads you through the night step by step, with only the pages you need.",
+        "fullTitle": "All functions",
+        "fullText": "Every page and setting in the navigation, for experienced users."
+      },
+      "focusFirst": "Focus first: this step works out the position from a picture, and that needs sharp stars.",
+      "live": {
+        "lastPicture": "Last picture",
+        "openFull": "Show the picture full screen",
+        "noPicture": "No picture yet. Take a test picture to see what the camera sees.",
+        "preview": "Test picture",
+        "hfr": "Sharpness (HFR)",
+        "stars": "Stars",
+        "guiding": "Guiding",
+        "sensor": "Sensor",
+        "trendTitle": "Sharpness of the last {count} pictures",
+        "trendHint": "Sharper stars are drawn higher up. If the line sinks during the night, focus again.",
+        "exposure": "Exposure time",
+        "testPicture": "Take a test picture",
+        "abort": "Stop exposure",
+        "planRunning": "Your plan is taking pictures – new ones appear here as they come in.",
+        "justNow": "just now",
+        "minutesAgo": "{minutes} min ago",
+        "histogram": "Histogram",
+        "min": "Min",
+        "max": "Max",
+        "pixels": "{count} pixel | {count} pixels",
+        "pixelsSaturated": "{count} pixel saturated | {count} pixels saturated",
+        "histogramHint": "Unstretched sensor data of the whole picture. Only the range around the sky background is shown; stars and saturated pixels lie further right and are counted under Max.",
+        "firstPlanPicture": "The first picture of your plan appears here."
+      },
+      "setupChecks": {
+        "title": "Before your first night",
+        "locationTitle": "Your location is missing",
+        "locationText": "The rig does not know where it stands. Polar alignment and the sky atlas cannot work without it.",
+        "locationAction": "Set location",
+        "databaseTitle": "No star map installed",
+        "databaseText": "Polar alignment and centering a target compare a picture with a star map. The rig has none yet.",
+        "databaseAction": "Install star map",
+        "flipTitle": "Meridian flip not set up yet",
+        "flipText": "When a target crosses the meridian (the north–south line through the zenith), the telescope has to turn to the other side of the mount – otherwise it would soon hit the tripod or pier. Your plan does this by itself. Tell it once how far your mount can keep tracking past the meridian.",
+        "flipNotSure": "Not sure? Your mount's manual usually says how far it can track past the meridian. Until you know, “Barely” keeps the telescope safe, at the cost of a few minutes without pictures.",
+        "flipCurrentValues": "Your profile already has its own timing: {values}.",
+        "flipKeepValues": "Keep this timing",
+        "flipTimingWindow": "flip {min}–{max} min after the meridian",
+        "flipTimingFixed": "flip {min} min after the meridian",
+        "flipTimingPause": "pause {pause} min before, flip {min} min after the meridian",
+        "blockedPolar": "Polar alignment cannot work yet, see \"Before your first night\" above.",
+        "blockedTarget": "Centering cannot work yet: no star map is installed, see \"Before your first night\" above."
+      },
+      "backToNight": "Back to your night",
+      "cockpit": {
+        "title": "Taking pictures",
+        "noTargetName": "Your plan",
+        "doneAt": "Done at",
+        "remaining": "{time} left",
+        "activity": {
+          "autofocus": "Focusing (autofocus)",
+          "slewing": "Telescope is moving",
+          "centering": "Centering the target",
+          "startingGuiding": "Starting guiding",
+          "closing": "Finishing the plan (parking, warming up)",
+          "calibrating": "Guider is calibrating",
+          "settling": "Waiting for the guiding to settle",
+          "exposing": "Exposing",
+          "busy": "Getting the next picture ready",
+          "flipping": "Meridian flip – the telescope turns to the other side",
+          "waitingForDark": "Waiting until it is dark"
+        },
+        "exposing": "Exposing {seconds} s",
+        "frame": "picture {frame} of {frames}",
+        "check": "Check",
+        "hfr": "HFR",
+        "noFrame": "no picture yet",
+        "hfrChange": "{change} % vs. before",
+        "guidingLevel": {
+          "good": "excellent",
+          "ok": "okay",
+          "poor": "too high",
+          "unknown": "scale unknown"
+        },
+        "alerts": {
+          "devices": "{count} device is no longer connected. | {count} devices are no longer connected.",
+          "starLost": "The guider lost its star. Pictures taken now will show trails.",
+          "notGuiding": "The plan is running without guiding.",
+          "guidingPoor": "Guiding ({rms}″) is larger than one image pixel ({scale}″) – stars get soft. Wind, balance or a loose cable are common causes.",
+          "hfrRising": "Stars are {change} % larger than in the earlier pictures. Focus may have drifted, or dew or clouds are coming in.",
+          "cooling": "Sensor is at {temp} °C instead of {target} °C."
+        },
+        "hfrNoBaseline": "first pictures",
+        "lastPicture": "last picture",
+        "verdict": {
+          "good": "Everything is running well",
+          "warn": "Running – one thing needs a look",
+          "danger": "Please check – the pictures are at risk",
+          "waiting": "Running – the first pictures will tell how well"
+        },
+        "showDetails": "Show details",
+        "hideDetails": "Hide details",
+        "focus": "Focus",
+        "focusLevel": {
+          "good": "sharp",
+          "ok": "slightly soft",
+          "poor": "soft"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Guiding",
+            "what": "How closely the mount follows the stars: the wobble of the guide star, compared with the size of one pixel in your pictures.",
+            "now": "Now: {rms}″ wobble, that is {ratio} pixel (one pixel = {scale}″).",
+            "nowNoScale": "Now: {rms}″ wobble. To rate it, the profile needs the focal length and the pixel size.",
+            "nowOff": "Guiding is not running right now.",
+            "nowPaused": "Paused while the telescope focuses or moves.",
+            "limits": "Green up to {good} pixel, yellow up to {ok} pixel, red above – then stars turn into short lines.",
+            "fix": "If it turns red: wind, balance or a loose cable are the usual causes."
+          },
+          "focus": {
+            "title": "Focus",
+            "what": "How large the stars are in the newest picture compared with the earlier pictures of the same filter. Growing stars mean the focus is drifting – or dew or thin clouds are coming in.",
+            "now": "Now: star size (HFR) {hfr}, {change} % compared with before ({baseline}).",
+            "nowFirst": "Rated as soon as {count} pictures of one filter are there.",
+            "nowNone": "No picture yet.",
+            "limits": "Green up to {good} % larger, yellow up to {ok} %, red above.",
+            "fix": "If it turns red: focus again (autofocus). If that does not help, check the front of the telescope for dew."
+          },
+          "cooling": {
+            "title": "Cooling",
+            "what": "The temperature of the camera sensor. A cold sensor gives pictures with less noise.",
+            "now": "Now: {temp} °C, target {target} °C.",
+            "limits": "Green within {good} °C of the target, red beyond.",
+            "fix": "If it stays red: the cooler cannot reach the target in this warmth – choose a target a few degrees warmer."
+          }
+        },
+        "statusBarHint": "Guiding, focus and cooling are rated in the status bar below – tap one to see what it means.",
+        "stop": "Stop",
+        "waitingUntil": "Waiting until it is dark, at about {time}"
+      },
+      "summary": {
+        "finished": {
+          "title": "Plan finished",
+          "text": "All pictures of your plan are taken. End the night to park the telescope and warm up the camera.",
+          "textFlats": "All pictures of your plan are taken. Take your flats now, while nothing has changed, then end the night.",
+          "cutOffTitle": "Done for tonight",
+          "cutOff": "It got light or your target got too low: {taken} of {planned} pictures are taken. Start the plan again another night to take the rest."
+        },
+        "ended": {
+          "title": "Night ended",
+          "text": "Clear skies! Here is what tonight brought.",
+          "notParked": "Telescope not parked yet",
+          "shutdown": "Shut down the rig",
+          "shutdownWait": "Before you shut down, wait until the camera is warm and the telescope is parked.",
+          "resume": "Continue the night"
+        },
+        "frames": "Pictures",
+        "integration": "Exposure",
+        "medianHfr": "Median HFR"
+      },
+      "addToPlan": "Add to plan",
+      "slewOptional": "Your plan goes to the target, centers it and starts guiding by itself. Going there now is only needed to check the framing first.",
+      "coachHint": {
+        "text": "Your guiding was restless last night. The Guiding Coach measures your guide camera, the sky and the mount and tells you what helps. It takes about 15 minutes under the stars – best before you start your pictures.",
+        "open": "Open the Guiding Coach",
+        "dismiss": "Not now"
+      },
+      "camera": {
+        "title": "Camera",
+        "hint": "The test picture and every picture of your plan use these values, unless you give an exposure in the plan its own. Your camera's manual lists the recommended gain and offset."
+      },
+      "expert": {
+        "show": "Show expert settings",
+        "hide": "Hide expert settings"
+      },
+      "window": {
+        "waits": "The plan waits until it is dark, at about {time}.",
+        "tooMany": "Only about {fit} of {left} pictures fit into this night. The rest can be taken another night.",
+        "noDarkness": "It does not get this dark tonight, the plan would wait without end. Choose a brighter sky under “Night” in the plan.",
+        "limit": {
+          "light": "It stops at {time} at the latest, because it gets light then.",
+          "low": "It stops at {time} at the latest, because your target stands too low then."
+        },
+        "nothing": {
+          "light": "It is too light now, the plan would end at once without a picture. Switch on “Wait until it is dark” in the plan: then it starts at about {time}.",
+          "low": "Your target stands too low above the horizon and is sinking, the plan would end without a picture. Choose another target or a lower height.",
+          "other": "Started like this, the plan would end at once without a picture."
+        }
+      }
     },
     "secureObservatory": {
       "title": "End the night",
@@ -5679,6 +6447,17 @@
       "cameraCold": "The camera cooler is on ({temperature} °C).",
       "domeOpen": "The dome is not closed.",
       "coverOpen": "The flat panel cover is open."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Which brand is it?",
+      "otherBrand": "Other brand",
+      "focuserLabel": "Which focuser is it?",
+      "otherFocuser": "Other focuser",
+      "disconnectFirst": "Disconnect the device before changing its driver.",
+      "applied": "Done: “{device}” is selected. Plug it in, switch it on and tap Connect.",
+      "appliedSeveral": "The driver is set and found several devices. Choose yours in the device list and tap Connect.",
+      "appliedNoDevice": "The driver is set, but no device was found yet. Plug it in, switch it on, refresh the device list, choose it and tap Connect.",
+      "openButton": "Find driver: {device}"
     }
   },
   "plugins": {
@@ -5941,6 +6720,7 @@
         "errors": {
           "tppaUnavailable": "The TPPA connection could not be opened.",
           "tppaNoResponse": "TPPA did not respond to the start request.",
+          "tppaStartSlewFailed": "The telescope could not move to the start position of the polar alignment.",
           "tppaError": "TPPA reported an error. Check camera, mount and plate solver.",
           "tppaSilent": "TPPA has not sent anything for two minutes. TPPA and the Auto-Pilot were stopped.",
           "autoPilotNotStarted": "The Auto-Pilot did not start. Check the AAPA log; TPPA was stopped if it was started here.",
@@ -6062,12 +6842,22 @@
       "dryRun": "Dry Run Mode",
       "sambaTitle": "Samba Share",
       "sambaDescription": "Enable or disable network file sharing",
+      "samba": {
+        "firstEnable": "Switch this on to copy the pictures to a computer in the same network. The first time the rig may have to download software for it and then needs internet access.",
+        "howTo": "On a computer in the same network as the rig, enter this address:",
+        "windows": "Windows: address bar of the Explorer",
+        "mac": "Mac: Finder, Go, Connect to Server",
+        "login": "If it asks for a login: user “{user}”, password “{password}” unless it was changed.",
+        "outside": "Your pictures are saved in {folder}. The share shows {share}, so they may not appear there.",
+        "openAccess": "While it is on, anyone in this network can open, change and delete these files without a password."
+      },
       "phd2Title": "PHD2 Autostart",
       "phd2Running": "Service is currently running",
       "phd2Stopped": "Service is currently stopped",
       "tabs": {
         "network": "Network",
         "services": "Services",
+        "pictures": "Pictures",
         "software": "Software",
         "upgrade": "Upgrade",
         "system": "System",
@@ -9888,7 +10678,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Settings",
-    "about": "About"
+    "about": "About",
+    "home": "Start",
+    "plan": "Plan",
+    "target": "Target"
   },
   "luckycapture": {
     "noCamera": "No connected camera",

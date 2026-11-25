@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col space-y-6">
     <PinsWifiCard
+      :simple="simple"
       :stationary-mode="stationaryMode"
       :allow-concurrent-mode="allowConcurrentWifiAndHotspot"
       :is-scanning="isScanning"
@@ -60,7 +61,7 @@
     />
 
     <PinsDhcpClientsCard
-      v-if="!stationaryMode || allowConcurrentWifiAndHotspot"
+      v-if="!simple && (!stationaryMode || allowConcurrentWifiAndHotspot)"
       :clients="dhcpClients"
       :loading="isDhcpClientsLoading"
       @refresh="loadDhcpClients"
@@ -105,6 +106,11 @@ import PinsSavedNetworksCard from '../PinsSavedNetworksCard.vue';
 import { usePinsJobRunner } from '../composables/usePinsJobRunner';
 import { usePinsWifi } from '../composables/usePinsWifi';
 import { usePinsHotspot } from '../composables/usePinsHotspot';
+
+defineProps({
+  // Simple mode: without adapter assignment, radio channels and the client list
+  simple: { type: Boolean, default: false },
+});
 
 const { t } = useI18n();
 const runner = usePinsJobRunner({ t });

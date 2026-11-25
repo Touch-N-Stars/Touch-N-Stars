@@ -11,18 +11,40 @@ import {
   DSO_CONTAINER_TYPE,
 } from '@/utils/sequenceTargets';
 import {
+  canKeepCurrentFilter,
+  filterNameChoices,
+  matchFilterName,
+  nextUnusedFilter,
+  switchFilterUpdate,
+} from '@/utils/sequenceFilter';
+import {
   collectSmartExposureDithers,
+  darknessWait,
   findAreaContainer,
   findByType,
   insertionPoint,
   isActive,
+  itemsToRearm,
+  loopsToRestart,
+  needsSingleRun,
+  stepsToReopen,
+  summarizeDsoContainer,
+  AF_AFTER_FILTER_CHANGE_TYPE,
+  AF_AFTER_TIME_TYPE,
   DITHER_AFTER_EXPOSURES_TYPE,
   END_AREA_TYPE,
   END_ORDER,
+  LOOP_CONDITION_TYPE,
+  SET_TRACKING_TYPE,
   SLEW_MODE_TYPES,
+  SMART_EXPOSURE_TYPE,
   START_AREA_TYPE,
+  START_GUIDING_TYPE,
   START_ORDER,
+  TAKE_MANY_EXPOSURES_TYPE,
   TARGET_ORDER,
+  UNPARK_SCOPE_TYPE,
+  WAIT_FOR_SUN_TYPE,
 } from '@/utils/sequenceSimple';
 
 const RUNTIME_FIELDS = [
@@ -442,6 +464,40 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.refresh();
     },
 
+    // Before a plan that ran to its end or was stopped starts again, see itemsToRearm(),
+    // stepsToReopen() and loopsToRestart(). Not bound to the controls lock: it belongs to the start, not to editing.
+    // Returns whether the plan is ready; on false it must not start, it would take pictures
+    // without its slew and guiding, or not park.
+    async rearmPlan() {
+      await this.loadCurrent();
+      const rearm = itemsToRearm(this.data);
+      const reopen = stepsToReopen(this.data, { start: rearm.length === 0 });
+      const loops = loopsToRestart(this.data);
+      if (!rearm.length && !reopen.length && !loops.length) return true;
+      const accepted = (res) => {
+        if (res?.Success === false) throw new Error(res.Error || 'refused');
+      };
+      let ok = true;
+      try {
+        for (const id of rearm) accepted(await apiService.sequenceResetStatus(id));
+        // reset-status can take the following items along and drop the progress of the
+        // exposures (it depends on the plugin), so these are switched off and on: the plugin only sets a disabled item
+        // back to CREATED, and nothing around it changes.
+        for (const id of reopen) {
+          accepted(await apiService.sequenceEnable(id, false));
+          accepted(await apiService.sequenceEnable(id, true));
+        }
+        for (const id of loops) {
+          accepted(await apiService.sequenceSetProperty(id, 'CompletedIterations', 0));
+        }
+      } catch (e) {
+        console.error('rearmPlan:', e);
+        ok = false;
+      }
+      await this.refresh();
+      return ok;
+    },
+
     async fetchAvailableItems() {
       if (this.availableItems.length) return;
       try {
@@ -500,6 +556,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
         console.error('sequenceAddItem:', e);
       }
       await this.refresh();
+      // A new Smart Exposure comes with its own dither trigger; with the global one on it
+      // would dither every frame twice.
+      if (itemType === SMART_EXPOSURE_TYPE && this._globalDitherActive()) {
+        await this._zeroSmartExposureDithers();
+      }
     },
 
     async addTrigger(itemId, triggerType, insertAfter = true) {
@@ -640,6 +701,16 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.addTrigger(targetId, fullTypeName, last ? true : null);
     },
 
+    // Simple mode: the plan refocuses every `minutes`, at all targets. A trigger that was only
+    // switched off comes back with its own interval.
+    async setRegularRefocus(enabled, minutes) {
+      const existed = Boolean(findByType(this.globalTriggers, AF_AFTER_TIME_TYPE));
+      await this.setGlobalTriggerEnabled(AF_AFTER_TIME_TYPE, enabled);
+      if (!enabled || existed) return;
+      const added = findByType(this.globalTriggers, AF_AFTER_TIME_TYPE);
+      if (added) await this.setProperty(added.Id, 'Amount', minutes);
+    },
+
     // Switches an optional item of a container on or off, like setGlobalTriggerEnabled():
     // off disables, on re-enables or adds one. A new item is placed by insertionPoint() with
     // `order` and `fallback` (see src/utils/sequenceSimple.js).
@@ -675,6 +746,94 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.setContainerItemEnabled(end.Id, fullTypeName, enabled, END_ORDER, 'bottom');
     },
 
+    // Simple mode: the plan waits until the sun is at or below sunAltitude before it unparks. The
+    // mount does not track meanwhile, or a plan started in daylight would run it into the tripod.
+    // Off disables the items, so a plan remembers that the user does not want to wait.
+    async setDarknessWait(enabled, sunAltitude) {
+      if (this._isControlsLocked()) return;
+      const start = findAreaContainer(this.data, START_AREA_TYPE);
+      if (!start) return;
+
+      const parts = () => darknessWait(this.data);
+      if (!enabled) {
+        for (const item of Object.values(parts())) {
+          if (isActive(item)) await this.enable(item.Id, false);
+        }
+        return;
+      }
+      if (this._isItemRunning(parts().wait?.Id)) return;
+
+      // NINA's default (30 degrees) never waits, so the wait only counts once its value is set.
+      await this.setStartItemEnabled(WAIT_FOR_SUN_TYPE, true);
+      const { wait } = parts();
+      if (!wait || !(await this.setProperty(wait.Id, 'Offset', sunAltitude))) return;
+
+      if (!parts().stop) {
+        const known = new Set(this.findById(start.Id).Items.map((i) => i.Id));
+        await this.addItem(wait.Id, SET_TRACKING_TYPE, false);
+        const added = this.findById(start.Id).Items.find((i) => !known.has(i.Id));
+        // 5 = stopped. Left on sidereal it would be one more "tracking on", so it goes again.
+        if (added && !(await this.setProperty(added.Id, 'TrackingMode', 5))) {
+          await this.remove(added.Id);
+        }
+      }
+      // Without the "off" nothing has to be switched back on
+      if (parts().stop && !parts().resume) {
+        const unpark = findByType(this.findById(start.Id).Items, UNPARK_SCOPE_TYPE);
+        // A new one is sidereal. Behind the unparking: a parked mount refuses to track.
+        await this.addItem(unpark?.Id ?? wait.Id, SET_TRACKING_TYPE, true);
+      }
+      const { stop, resume } = parts();
+      for (const item of [resume, stop]) {
+        if (item && !isActive(item)) await this.enable(item.Id, true);
+      }
+    },
+
+    // Simple mode: a target ends when `conditionType` (sun or altitude condition) cuts it off, with
+    // the pictures it has by then. See needsSingleRun() for the loop that comes with it. Returns
+    // whether the limit is as asked for.
+    async setTargetLimit(containerId, conditionType, enabled, offset) {
+      if (this._isControlsLocked()) return false;
+      const container = () => this.findById(containerId);
+      if (!container()) return false;
+      const existing = findByType(container().Conditions, conditionType);
+
+      if (!enabled) {
+        if (isActive(existing)) await this.enable(existing.Id, false);
+        return true;
+      }
+      if (existing) {
+        if (existing.Offset !== offset && !(await this.setProperty(existing.Id, 'Offset', offset)))
+          return false;
+        if (isActive(existing)) return true;
+        if (!(await this._ensureSingleRun(containerId))) return false;
+        await this.enable(existing.Id, true);
+        return true;
+      }
+      if (!(await this._ensureSingleRun(containerId))) return false;
+      await this.addCondition(containerId, conditionType, null);
+      const added = findByType(container()?.Conditions, conditionType);
+      if (!added) return false;
+      if (await this.setProperty(added.Id, 'Offset', offset)) return true;
+      // At its default (sun 0 degrees, target 30 degrees) it would cut off at the wrong moment
+      await this.remove(added.Id);
+      return false;
+    },
+
+    // The "loop once" a limited target needs. NINA creates the condition with 2 repetitions: it
+    // must not stay when setting it to 1 fails, the target would be taken twice.
+    async _ensureSingleRun(containerId) {
+      const conditions = () => this.findById(containerId)?.Conditions ?? [];
+      if (!needsSingleRun(this.findById(containerId))) return true;
+      const known = new Set(conditions().map((c) => c.Id));
+      await this.addCondition(containerId, LOOP_CONDITION_TYPE, null);
+      const added = conditions().find((c) => !known.has(c.Id));
+      if (!added) return false;
+      if (await this.setProperty(added.Id, 'Iterations', 1)) return true;
+      await this.remove(added.Id);
+      return false;
+    },
+
     // Optional step of a target (start guiding, autofocus at the start), placed before its
     // exposures.
     async setTargetItemEnabled(containerId, fullTypeName, enabled) {
@@ -693,6 +852,85 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       }
       const type = SLEW_MODE_TYPES[mode];
       if (type) await this.setTargetItemEnabled(containerId, type, true);
+    },
+
+    // Simple mode: the plan slews to the target, starts guiding there and refocuses after a
+    // filter change, so the user never does any of it by hand. `steps` comes from
+    // simpleTargetSteps(). With `addExposure` a target without pictures also gets an exposure
+    // row, filled in with `exposure` (see addExposureRow()).
+    async applySimpleTargetSteps(
+      containerId,
+      steps,
+      { addExposure = false, exposure = null } = {}
+    ) {
+      if (this._isControlsLocked()) return { ok: false, locked: true };
+      if (!this.findById(containerId)) return { ok: false };
+
+      await this.setTargetSlewMode(containerId, steps.slewMode);
+      await this.setTargetItemEnabled(containerId, START_GUIDING_TYPE, steps.startGuiding);
+      // Only ever switched on: without a filter wheel the trigger never fires, so a trigger
+      // the user added by hand stays.
+      if (steps.afOnFilterChange) {
+        await this.setContainerTriggerEnabled(containerId, AF_AFTER_FILTER_CHANGE_TYPE, true);
+      }
+
+      const container = this.findById(containerId);
+      const hasExposure = (container?.Items ?? []).some((i) =>
+        [SMART_EXPOSURE_TYPE, TAKE_MANY_EXPOSURES_TYPE].includes(i?.FullTypeName)
+      );
+      if (addExposure && container && !hasExposure) {
+        await this.addExposureRow(containerId, exposure);
+      }
+      return { ok: true };
+    },
+
+    // New rows go behind the last exposure row, or behind the target's steps when there is
+    // none. With a filter wheel a new row starts with the next filter the target does not use
+    // yet, the usual way to build an LRGB or narrowband plan. Without a filter left it is told
+    // to keep the current one: untouched, PINS would move the wheel to its first slot.
+    // `exposure` = { exposureTime, iterations } replaces NINA's values for a new row.
+    async addExposureRow(containerId, exposure = null) {
+      if (this._isControlsLocked()) return;
+      const container = this.findById(containerId);
+      if (!container) return;
+
+      const before = summarizeDsoContainer(container).rows;
+      const { targetId, insertAfter } = insertionPoint(
+        container,
+        SMART_EXPOSURE_TYPE,
+        TARGET_ORDER,
+        'bottom'
+      );
+      await this.addItem(targetId, SMART_EXPOSURE_TYPE, insertAfter);
+
+      const knownIds = new Set(before.map((r) => r.id));
+      const row = summarizeDsoContainer(this.findById(containerId)).rows.find(
+        (r) => !knownIds.has(r.id)
+      );
+      if (row && exposure) {
+        await this.setProperties(
+          [
+            {
+              id: row.exposureItem?.Id,
+              propertyName: 'ExposureTime',
+              value: exposure.exposureTime,
+            },
+            {
+              id: row.loopCondition?.Id,
+              propertyName: 'Iterations',
+              value: exposure.iterations,
+            },
+          ].filter((change) => change.id)
+        );
+      }
+      if (!row?.filterItem?.Id || row.filterName) return;
+      const { filterInfo, profileInfo } = apiStore();
+      const names = filterNameChoices(row.filterItem, filterInfo, profileInfo);
+      const used = before.map((r) => matchFilterName(names, r.filterName));
+      const next = nextUnusedFilter(names, used);
+      if (!next && !canKeepCurrentFilter(row.filterItem)) return;
+      const { property, value } = switchFilterUpdate(row.filterItem, names, next ?? '');
+      await this.setProperty(row.filterItem.Id, property, value);
     },
 
     // Optional trigger of a container (the autofocus triggers of a target). Off disables,
@@ -714,22 +952,30 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       await this.addTrigger(last?.Id ?? container.Id, fullTypeName, last ? true : null);
     },
 
-    // Global dithering. Switching it on also zeroes the dither triggers built into Smart
-    // Exposures -- otherwise those frames would be dithered by both. They are not restored
-    // when it is switched off again.
+    // Dithering of the whole plan. Every Smart Exposure brings its own dither trigger (NINA
+    // creates it with "after 1 exposure"), so a plan dithers even without the global one.
+    // On: the global trigger takes over and the built-in ones are zeroed -- otherwise those
+    // frames would be dithered twice. Off: the built-in ones are zeroed too, or "off" would
+    // change nothing. They are not restored when it is switched on again.
     async setGlobalDither(enabled) {
       if (this._isControlsLocked()) return;
 
       await this.setGlobalTriggerEnabled(DITHER_AFTER_EXPOSURES_TYPE, enabled);
-      if (!enabled) return;
       // Only when the global trigger really is active now -- after a rejected add the Smart
       // Exposures must keep dithering themselves.
-      if (!isActive(findByType(this.globalTriggers, DITHER_AFTER_EXPOSURES_TYPE))) return;
+      if (enabled && !this._globalDitherActive()) return;
+      await this._zeroSmartExposureDithers();
+    },
 
+    _globalDitherActive() {
+      return isActive(findByType(this.globalTriggers, DITHER_AFTER_EXPOSURES_TYPE));
+    },
+
+    _zeroSmartExposureDithers() {
       const changes = collectSmartExposureDithers(this.data)
         .filter((trigger) => !this._isItemRunning(trigger.Id))
         .map((trigger) => ({ id: trigger.Id, propertyName: 'AfterExposures', value: 0 }));
-      await this.setProperties(changes);
+      return this.setProperties(changes);
     },
 
     // Like setProperty() for several values, with one refresh at the end instead of one per

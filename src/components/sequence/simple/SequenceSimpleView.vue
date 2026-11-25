@@ -27,8 +27,19 @@
     </p>
 
     <!-- Switches for the global triggers and the start area -->
-    <SimpleGlobalSection @show-full="$emit('show-full')" />
+    <SimpleGlobalSection
+      :shownElsewhere="showRefocus ? [AF_AFTER_TIME_TYPE] : []"
+      @show-full="$emit('show-full')"
+    />
     <SimpleStartSection @show-full="$emit('show-full')" />
+    <SimpleRefocusSection v-if="showRefocus" :refocus="refocus" />
+    <SimpleNightLimits
+      v-if="simpleMode"
+      :planSummary="summary"
+      :planTimes="planTimes"
+      :site="site"
+      :nowMs="nowMs"
+    />
 
     <!-- Targets -->
     <SimpleTargetCard
@@ -48,7 +59,11 @@
         @click="addFirstTarget"
       >
         <PlusIcon class="w-4 h-4" />
-        {{ $t('components.sequence.simple.addTarget') }}
+        {{
+          prefillName
+            ? $t('components.sequence.simple.addTargetNamed', { name: prefillName })
+            : $t('components.sequence.simple.addTarget')
+        }}
       </button>
     </div>
 
@@ -57,27 +72,33 @@
 </template>
 
 <script setup>
+import { usePlanSummary } from '@/composables/usePlanSummary';
+import { usePlanTerms } from '@/composables/usePlanTerms';
+import { useSimplePlanTargets } from '@/composables/useSimplePlanTargets';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { PlusIcon } from '@heroicons/vue/24/outline';
 import SimpleEndSection from './SimpleEndSection.vue';
 import SimpleGlobalSection from './SimpleGlobalSection.vue';
+import SimpleNightLimits from './SimpleNightLimits.vue';
+import SimpleRefocusSection from './SimpleRefocusSection.vue';
 import SimpleStartSection from './SimpleStartSection.vue';
 import SimpleTargetCard from './SimpleTargetCard.vue';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
+import { useFramingStore } from '@/store/framingStore';
 import { useToastStore } from '@/store/toastStore';
 import { findTargetAreaContainer } from '@/utils/sequenceTargets';
-import {
-  FRAME_OVERHEAD_SECONDS,
-  summarizeTargets,
-  formatClock,
-  formatDuration,
-} from '@/utils/sequenceSimple';
+import { degreesToDMS, degreesToHMS } from '@/utils/utils';
+import { AF_AFTER_TIME_TYPE, formatClock, formatDuration } from '@/utils/sequenceSimple';
 
+const { seqT } = usePlanTerms();
 defineEmits(['show-full']);
 
 const { t } = useI18n();
 const store = useSequenceV2Store();
+const { active: simpleMode, applyToTarget, focuserInProfile, refocus } = useSimplePlanTargets();
+const showRefocus = computed(() => simpleMode.value && focuserInProfile.value);
+const framingStore = useFramingStore();
 const toastStore = useToastStore();
 const adding = ref(false);
 
@@ -90,25 +111,43 @@ onMounted(() => {
 });
 onUnmounted(() => clearInterval(clockTimer));
 
-const summary = computed(() =>
-  summarizeTargets(store.data, {
-    overheadSeconds: FRAME_OVERHEAD_SECONDS,
-    nowMs: nowMs.value,
-  })
-);
+const { planSummary: summary, planTimes, site } = usePlanSummary(nowMs);
 
 const hasTargetArea = computed(() => findTargetAreaContainer(store.data) !== null);
+
+// The target the mount was last sent to from the app (sky atlas, framing). A new target starts
+// with it - before, it came up as NINA's "Deep Sky Object Instruction Set" at 00:00:00 / +00°
+// and the user had to search the object they had just centered once more.
+const prefill = computed(() => {
+  const last = framingStore.lastTarget;
+  if (!last || !Number.isFinite(last.ra) || !Number.isFinite(last.dec)) return null;
+  return {
+    ...last,
+    name: last.name || `RA ${degreesToHMS(last.ra)} Dec ${degreesToDMS(last.dec)}`,
+  };
+});
+const prefillName = computed(() => prefill.value?.name ?? '');
 
 async function addFirstTarget() {
   adding.value = true;
   try {
-    const result = await store.addDsoTarget(null);
+    let result = await store.addDsoTarget(null);
+    if (result.ok && prefill.value) {
+      const { name, ra, dec } = prefill.value;
+      const id = result.id;
+      result = await store.setDsoTarget(id, name, ra, dec, framingStore.rotationAngle);
+      result.id = id;
+    }
+    // Same steps and limits as a target added from the atlas
+    if (result.ok && simpleMode.value) {
+      result = await applyToTarget(result.id, { addExposure: true });
+    }
     if (result.ok) return;
     toastStore.showToast({
       type: 'error',
       title: t('components.sequence.editFailed'),
       message: result.locked
-        ? t('components.sequence.controlsLockedMessage')
+        ? seqT('controlsLockedMessage')
         : result.error || t('components.framing.sequenceTargetPicker.addFailed'),
       autoClose: true,
     });

@@ -1,6 +1,7 @@
 // src/utils/equipmentDevices.js
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { useEquipmentStore } from '@/store/equipmentStore';
 
 /**
  * Everything that maps an equipment apiAction onto the device behind it: where its
@@ -171,6 +172,48 @@ export async function reloadIndiDriver(apiAction) {
   return true;
 }
 
+/**
+ * Switches a device to another INDI driver and selects the device that driver brings.
+ *
+ * Only `rescan` starts the new driver - `list-devices` keeps answering with the cached list
+ * of the old one (checked on PINS 2026-11). After the rescan the profile still points at the
+ * old driver's device, which PINS then lists as OFFLINE; so the new driver's device is
+ * written into the profile here. Only when exactly one live INDI device shows up: PINS runs
+ * one INDI driver per device type, so that one is the new driver's. With several, guessing
+ * could pick something the user never chose, so the selection is left to them.
+ *
+ * Unlike reloadIndiDriver this does trigger the rescan signal: the caller is not a
+ * selectDevices instance, and any open device list has to show the new device.
+ *
+ * @returns {Promise<{ deviceId: string|null, deviceCount: number }>} the device written into the
+ *   profile, if any, and how many live INDI devices the rescan found
+ */
+export async function applyIndiDriver(apiAction, driverName) {
+  const mapping = DEVICE_MAP[apiAction];
+  if (!mapping || !mapping.indi) throw new Error(`No INDI device type for ${apiAction}`);
+
+  const changed = await apiService.profileChangeValue(`${mapping.section}-IndiDriver`, driverName);
+  if (changed && changed.Success === false) {
+    throw new Error(changed.Error || 'Profile change failed');
+  }
+
+  const scan = await apiService[apiAction]('rescan');
+  const devices = Array.isArray(scan?.Response) ? scan.Response : [];
+  const indiDevices = devices.filter((d) => d?.Category === 'INDI' && !isOfflineDevice(d));
+
+  let deviceId = null;
+  if (indiDevices.length === 1) {
+    deviceId = String(indiDevices[0].Id);
+    // setProfileDevice also refreshes the profile.
+    await setProfileDevice(apiAction, deviceId);
+  } else {
+    await apiStore().fetchProfilInfos();
+  }
+
+  useEquipmentStore().triggerRescan(mapping.rescanKey);
+  return { deviceId, deviceCount: indiDevices.length };
+}
+
 // NINA's built-in manual filter wheel. It prompts through MyMessageBox, which PINS forwards
 // to the app's message box modal — so this is the one manual wheel that actually asks the
 // user to swap the filter.
@@ -191,6 +234,18 @@ const HIDDEN_INDI_DRIVERS = {
 
 export function isHiddenIndiDriver(deviceType, driverName) {
   return (HIDDEN_INDI_DRIVERS[deviceType] || []).includes(driverName);
+}
+
+/**
+ * Whether a dropdown has to add the configured driver itself: the pinsdaemon files some drivers
+ * under another type (see driverListTypes in deviceDriverCatalog.js), and a select without the
+ * matching option would look as if no driver was set.
+ */
+export function isUnlistedIndiDriver(deviceType, driverName, drivers) {
+  if (!driverName || driverName === 'None' || isHiddenIndiDriver(deviceType, driverName)) {
+    return false;
+  }
+  return !(drivers ?? []).some((driver) => driver.Name === driverName);
 }
 
 /**

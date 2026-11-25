@@ -53,6 +53,11 @@ export const useTppaStore = defineStore('tppaStore', {
     nearEastWest: false,
     distanceToEastWest: null,
     settings: defaultSettings(),
+    // Why the alignment does not get anywhere ({ key, detail }), shown on the TPPA page. The
+    // socket itself never reports an error, see utils/tppaProblems.js.
+    problem: null,
+    // The alignment ran and was stopped: NINA switches tracking off at that point.
+    stoppedAfterRun: false,
     // Guards the save watcher in TppaPage.vue: must stay false until
     // loadTppaSettings() has applied either backend or migrated values, so the
     // watcher never writes the pre-load defaults back to the backend.

@@ -20,7 +20,8 @@
     "expand": "Uitvouwen",
     "collapse": "Inklappen",
     "drag": "Sleep",
-    "showImage": "Toon beeld"
+    "showImage": "Toon beeld",
+    "onOff": "Aan/Uit"
   },
   "general": {
     "cancel": "Annuleer",
@@ -130,7 +131,7 @@
     "downgradeDescription": "Schakel terug naar Stabiele versie ({version}). Deze vervangt uw beta versie.",
     "releaseNotes": "Release-opmerkingen",
     "whatsNew": "Wat is Nieuw",
-    "downloading": "Downloading update… {progress}%",
+    "downloading": "Update downloaden… {progress}%",
     "preparing": "Update voorbereiden… houdt de app open.",
     "error": "Update fout. Probeer later nogmaals.",
     "later": "Later",
@@ -153,21 +154,19 @@
     "gpsConfiguration": "GPS Configuratie",
     "completeSetup": "Afronden Setup",
     "instanceConfiguration": "@:{'general.backendName'} connectie details",
-    "InfoAppsTitel": "Wiki",
-    "check_wki": "Gedetailleerde instructies vind je in de wiki",
     "coordAlt": "Alt",
     "coordLat": "Lat",
     "coordLon": "Lengte",
     "coordUnit": "M",
     "coordsNotSupported": "Niet ondersteund door stuurprogramma",
     "currentMountCoords": "Locatie montering",
+    "syncDirection": "Wanneer de mount verbindt",
+    "syncDirectionNosync": "Locatie niet synchroniseren",
+    "syncDirectionToApplication": "Locatie van de mount overnemen",
+    "syncDirectionToTelescope": "Mijn locatie naar de mount sturen",
     "currentNinaCoords": "Profiel Locatie",
     "loadingCoords": "Laden…",
-    "mountNotConnected": "Mount niet aangesloten",
-    "syncDirection": "Locatiesynchronisatierichting",
-    "syncDirectionNosync": "Geen synchronisatie",
-    "syncDirectionToApplication": "Synchroniseer van montering naar profiel",
-    "syncDirectionToTelescope": "Synchroniseer van profiel naar montering"
+    "mountNotConnected": "Mount niet aangesloten"
   },
   "components": {
     "instanceDetection": {
@@ -181,6 +180,8 @@
       "instanceNamePlaceholder": "Mijn Installatie",
       "ipLabel": "IP-adres/FQDN",
       "ipPlaceholder": "192.168.xx",
+      "rigAddressLabel": "Adres van de rig",
+      "advanced": "Geavanceerd: naam en poort",
       "portLabel": "Poort",
       "portPlaceholder": "5000",
       "modalTitle": "Gevonden Installaties",
@@ -194,6 +195,7 @@
       "discoveringMessage": "Zoeken naar Touch-N-Stars instanties...",
       "noFoundMessage": "Geen Touch-N-Stars instanties gevonden via mDNS.",
       "selectionSuccess": "Selecteer {label} ({ip}:{port}).",
+      "hotspotFound": "Rig gevonden op zijn eigen wifi: {name}",
       "foundSingle": "1 Touch-N-Stars instantie gevonden.",
       "foundMultiple": "{count} Touch-N-Stars instanties gevonden.",
       "discoveryFailedStatus": "Zoeken mislukt: {message}",
@@ -206,7 +208,7 @@
       "confirmSetTargetTitle": "Bevestig Doel Selectie",
       "confirmSetTargetMessage": "Weet u zeker dat u dit Doel wilt instellen als het sequentie Doel?",
       "useNinaCache": "Gebruik @:{'general.backendName'} cache voor het Doel beeld",
-      "setSequnceTarget": "gebruik als sequentie Doel",
+      "setSequnceTarget": "Als sequentiedoel instellen",
       "sequenceTargetPicker": {
         "title": "Sequentiedoel",
         "hint": "Kies welk doel van de geladen sequentie de framing-coördinaten ontvangt.",
@@ -283,38 +285,105 @@
       "next": "Volgende",
       "skip": "Sla Tutorial over"
     },
+    "mountDriverFinder": {
+      "searchLabel": "Welke mount heb je?",
+      "searchPlaceholder": "bijv. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Typ het model, of begin met het merk:",
+      "noMatch": "Geen passende mount. Controleer de spelling of gebruik hieronder \"Mount niet in deze lijst?\".",
+      "otherMount": "Andere mount",
+      "howConnected": "Hoe is hij met PINS verbonden?",
+      "recommended": "Aanbevolen",
+      "driverName": "Driver: {name}",
+      "checking": "Geïnstalleerde drivers controleren…",
+      "driverListFailed": "De driverlijst kon niet worden geladen.",
+      "retry": "Opnieuw proberen",
+      "alreadySet": "Deze driver is al ingesteld.",
+      "useDriver": "Deze driver gebruiken",
+      "needsInstall": "{name} is nog niet geïnstalleerd op PINS.",
+      "installAndUse": "Installeren en gebruiken",
+      "installConfirm": "PINS downloadt {name} van internet en installeert het. Dit duurt ongeveer een minuut. Doorgaan?",
+      "installConfirmYes": "Installeren",
+      "cancel": "Annuleren",
+      "unavailable": "{name} is niet beschikbaar op deze PINS. Kies het uit de volledige lijst hieronder, of update PINS.",
+      "installing": "{name} downloaden en installeren…",
+      "applying": "{name} instellen…",
+      "applied": "Klaar: {name} is ingesteld en \"{device}\" is geselecteerd. Sluit de mount aan, zet hem aan en tik op Verbinden.",
+      "appliedPickDevice": "Klaar: {name} is ingesteld. Kies je mount in de apparatenlijst en tik op Verbinden.",
+      "applyFailed": "De driver kon niet worden ingesteld: {message}",
+      "noInternet": "PINS heeft een internetverbinding nodig om de driver te installeren. Verbind PINS met een wifi-netwerk met internet en probeer het opnieuw.",
+      "packageMissing": "Het driverpakket {name} is op dit moment niet beschikbaar voor download.",
+      "installedButMissing": "{name} is geïnstalleerd maar staat niet in de driverlijst. Herstart PINS en probeer het opnieuw.",
+      "installFailed": "Installatie mislukt: {message}",
+      "disconnectFirst": "Verbreek de verbinding met de mount voordat je de driver wijzigt.",
+      "notListed": "Mount niet in deze lijst?",
+      "openButton": "Mountdriver zoeken",
+      "title": "Zoek de driver voor je mount",
+      "connections": {
+        "swDirect": {
+          "title": "USB-kabel direct naar de mount",
+          "hint": "In de USB-poort van de mount, of een EQDIR-kabel in de poort van de handcontroller. De handcontroller is niet nodig."
+        },
+        "swHandController": {
+          "title": "Via de SynScan-handcontroller",
+          "hint": "Kabel van PINS naar de handcontroller (USB-poort of seriële kabel). Zet de handcontroller aan en doorloop eerst het startmenu."
+        },
+        "celestronUsb": {
+          "title": "USB-poort op de mount",
+          "hint": "USB-kabel in de poort op de mountkop."
+        },
+        "celestronHandController": {
+          "title": "Via de NexStar-handcontroller",
+          "hint": "USB- of seriële kabel in de onderkant van de handcontroller. Voltooi eerst de uitlijning van de handcontroller."
+        },
+        "meadeHandController": {
+          "title": "Via de AutoStar-handcontroller",
+          "hint": "Seriële of USB-kabel in de poort van de handcontroller."
+        },
+        "usb": {
+          "title": "USB-kabel naar de mount",
+          "hint": "USB-kabel van de mount naar PINS."
+        },
+        "network": {
+          "title": "Netwerkkabel (LAN)",
+          "hint": "De mount zit op hetzelfde netwerk als PINS. Voer daarna het IP-adres in bij de verbindingsinstellingen van de mount."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Installatie-assistent",
       "restart": "Installatie-assistent starten",
       "stepCounter": "Stap {current} van {total}",
-      "next": "Next",
-      "back": "Back",
-      "finish": "Finish",
+      "next": "Volgende",
+      "back": "Terug",
+      "finish": "Klaar",
       "remindLater": "Later herinneren",
       "steps": {
-        "welcome": "Welcome",
-        "language": "Language",
+        "welcome": "Welkom",
+        "language": "Taal",
         "info": "Aan de slag",
-        "instance": "Connection",
+        "instance": "Verbinding",
         "wifi": "Wifi",
         "updates": "Updates",
-        "mount": "Mount",
+        "mount": "Montering",
         "slewRate": "Zwenksnelheid",
-        "location": "Location",
-        "telescope": "Telescope",
+        "location": "Locatie",
+        "telescope": "Telescoop",
         "camera": "Camera",
         "focuser": "Focuser",
         "filterWheel": "Filterwiel",
         "guider": "Guiding",
         "dither": "Dither",
-        "done": "Done",
-        "localization": "Regionale instellingen"
+        "done": "Klaar",
+        "localization": "Regionale instellingen",
+        "starDatabase": "Sterrenkaart"
       },
       "driver": {
         "loading": "Stuurprogramma's laden…",
         "applying": "Stuurprogramma toepassen…",
         "listFailed": "Stuurprogramma's konden niet worden geladen: {message}",
-        "changeFailed": "Het stuurprogramma kon niet worden toegepast: {message}"
+        "changeFailed": "Het stuurprogramma kon niet worden toegepast: {message}",
+        "none": "Geen driver",
+        "installMissing": "Staat de driver niet in de lijst?"
       },
       "welcome": {
         "title": "Laten we Touch'N'Stars instellen",
@@ -325,12 +394,17 @@
         "description": "De taal van de app. Je kunt die later in de instellingen wijzigen."
       },
       "info": {
-        "openWiki": "Wiki openen"
+        "pointDevices": "De volgende stappen verbinden je mount, camera en de andere apparaten een voor een en vragen om je telescoopgegevens.",
+        "pointPowered": "Zet alle apparaten aan en sluit ze aan op de setup voordat je doorgaat.",
+        "pointLater": "Waarde niet zeker? Sla over met Volgende. Alles kan later in de instellingen worden gewijzigd."
       },
       "instance": {
-        "description": "Adres van de computer waarop @:{'general.backendName'} draait. Op hetzelfde netwerk vindt de app hem meestal zelf.",
+        "title": "Verbinden met je rig",
+        "description": "Je telefoon praat via wifi met de rig.",
+        "hotspotHint": "Verbind je telefoon eerst met de wifi van de rig. Een nieuwe rig opent een eigen hotspot ‘pins-…’, het wachtwoord is ‘touchnstars’.",
+        "homeNetworkHint": "Zit de rig al in je thuisnetwerk? Blijf daar dan. De app zoekt zelf; vindt hij niets, vul dan hieronder het adres van de rig in.",
         "connect": "Opslaan en verbinden",
-        "connecting": "Connecting…",
+        "connecting": "Verbinden…",
         "connected": "Verbonden met {name}",
         "connectFailed": "Verbinding mislukt: {message}"
       },
@@ -340,15 +414,16 @@
         "loadingStatus": "Wifi-status uitlezen…",
         "connectedTo": "Verbonden met {ssid}",
         "notConnected": "De opstelling is niet met een wifinetwerk verbonden.",
+        "notConnectedHint": "Zonder netwerk opent hij zijn eigen hotspot. Voor updates en het downloaden van de sterrenkaart heeft hij je thuisnetwerk nodig: tik op ‘Netwerken zoeken’.",
         "chooseOtherNetwork": "Ander netwerk kiezen",
         "scan": "Netwerken zoeken",
-        "scanning": "Scanning…",
+        "scanning": "Scannen…",
         "selectNetwork": "Netwerk kiezen",
-        "password": "Password",
+        "password": "Wachtwoord",
         "passwordPlaceholder": "Netwerkwachtwoord",
         "autoConnect": "Automatisch met dit netwerk verbinden",
-        "connect": "Connect",
-        "connecting": "Connecting…",
+        "connect": "Verbinden",
+        "connecting": "Verbinden…",
         "noNetworks": "Geen netwerken gevonden. Zet de opstelling dichter bij je router en zoek opnieuw.",
         "transitionHint": "De opstelling krijgt bij het wisselen van netwerk een ander adres. Opnieuw zoeken…",
         "retryFind": "Opstelling opnieuw zoeken",
@@ -372,34 +447,47 @@
         "title": "Montering instellen",
         "description": "Kies het INDI-stuurprogramma van je montering en verbind haar daarna.",
         "selectDriver": "INDI-stuurprogramma",
-        "connectDevice": "Device",
+        "connectDevice": "Apparaat",
         "connected": "Montering verbonden: {name}",
         "notFound": "Montering staat er niet bij?",
         "notFoundHint": "Ontbreekt je montering, dan is het stuurprogramma misschien nog niet geïnstalleerd. Zoek in de INDI-stuurprogramma's van derden en installeer het juiste.",
-        "installing": "Installing {label}…",
+        "installing": "{label} installeren…",
         "installSuccess": "{label} geïnstalleerd. Kies het in de lijst met stuurprogramma's hierboven.",
-        "installFailed": "Installatie mislukt: {message}"
+        "installFailed": "Installatie mislukt: {message}",
+        "descriptionDeviceFirst": "Kies je mount uit de lijst en verbind hem. Een driver is alleen nodig als hij daar niet in staat."
       },
       "slewRate": {
         "title": "Zwenksnelheid",
-        "description": "Stel in hoe snel het stuurprogramma je montering mag bewegen. Te hoog en de montering kan stappen verliezen, te laag en elke zwenk duurt eindeloos.",
         "maxSlewRate": "Max. zwenksnelheid (°/s)",
-        "maxSlewRateHint": "Dit is de limiet van het stuurprogramma, niet de handmatige zwenksnelheid op het monteringsscherm – die komt rechtstreeks uit de mogelijkheden van het stuurprogramma.",
-        "saveFailed": "Opslaan mislukt: {message}"
+        "saveFailed": "Opslaan mislukt: {message}",
+        "whatFor": "PINS heeft de topsnelheid van je mount nodig om bewegingen goed te timen, bijvoorbeeld bij pooluitlijning. Het beperkt niet hoe snel de mount slewt.",
+        "reading": "Snelheden uit de mountdriver lezen…",
+        "derived": "Uit de driver gelezen: de hoogste snelheid is {label}, dat is {value} °/s. Opgeslagen – hier hoef je niets te doen.",
+        "notNeeded": "Deze driver meldt zijn snelheden zelf in °/s, dus hier hoeft niets te worden ingesteld.",
+        "unknown": "Deze driver benoemt zijn snelheden zonder getallen (bijv. \"Max\"), dus de topsnelheid kan niet worden gelezen. Laat de standaard van {value} °/s staan tenzij je de topsnelheid van je mount kent.",
+        "notConnected": "Verbind de mount in de vorige stap, dan wordt de snelheid er automatisch uit gelezen. Zonder dat geldt de standaard van {value} °/s, die bij de meeste mounts past.",
+        "readFailed": "De snelheden konden niet uit de mount worden gelezen. De huidige waarde van {value} °/s blijft.",
+        "readAgain": "Uit de mount lezen",
+        "setManually": "Handmatig instellen",
+        "manualHint": "De topsnelheid van je mount in graden per seconde, zoals in de handleiding. Een waarde die je hier invoert wordt nooit automatisch vervangen."
       },
       "location": {
         "title": "Locatie instellen",
         "description": "Je coördinaten worden gebruikt voor tijdberekeningen, meridiaan flip, horizon en framing. Neem ze over van je apparaat of voer ze handmatig in.",
         "profileCoords": "Profiellocatie",
         "mountCoords": "Monteringslocatie",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "altitude": "Altitude",
+        "latitude": "Breedtegraad",
+        "longitude": "Lengtegraad",
+        "altitude": "Hoogte",
         "useCurrentLocation": "Huidige locatie gebruiken",
-        "syncDirection": "Synchronisatierichting van de locatie",
+        "locating": "Je locatie bepalen…",
+        "syncDirection": "Wanneer de mount verbindt",
         "save": "Locatie opslaan",
-        "saving": "Saving…",
-        "saveFailed": "De locatie kon niet worden opgeslagen: {message}"
+        "saving": "Opslaan…",
+        "saveFailed": "De locatie kon niet worden opgeslagen: {message}",
+        "unsavedHint": "Nog niet opgeslagen. Wordt automatisch opgeslagen als je op Volgende tikt.",
+        "savedHint": "Locatie opgeslagen.",
+        "missingHint": "Nog geen locatie ingesteld. Pooluitlijning en de sterrenatlas hebben die nodig."
       },
       "telescope": {
         "title": "Je telescoop",
@@ -411,13 +499,13 @@
       "camera": {
         "title": "Camera instellen",
         "description": "Veel camera's worden direct ondersteund. Kies de jouwe uit de lijst hieronder – een INDI-stuurprogramma is alleen nodig als hij daar niet tussen staat.",
-        "connectDevice": "Device",
+        "connectDevice": "Apparaat",
         "connected": "Camera verbonden: {name}",
         "notFound": "Camera staat er niet bij?",
         "notFoundHint": "Wordt je camera niet direct ondersteund, kies dan hier een INDI-stuurprogramma. Daarna verschijnt hij in de apparatenlijst hierboven.",
         "thirdPartyHint": "Ontbreekt het stuurprogramma helemaal, zoek dan in de INDI-stuurprogramma's van derden en installeer het juiste.",
         "selectDriver": "INDI-stuurprogramma",
-        "installing": "Installing {label}…",
+        "installing": "{label} installeren…",
         "installSuccess": "{label} geïnstalleerd. Kies het in de lijst met stuurprogramma's hierboven.",
         "installFailed": "Installatie mislukt: {message}",
         "sensorTitle": "Sensorparameters",
@@ -430,34 +518,43 @@
         "chipHeight": "Sensorhoogte (px)",
         "pixelSize": "Pixelgrootte (µm)",
         "pixelSizeHint": "Het stuurprogramma meldt de pixelgrootte niet. Die vind je in de handleiding van je camera.",
+        "pixelSizeReported": "Door de camera gemeld: {size} µm.",
+        "pixelSizeReportedDiffers": "De camera meldt {size} µm, in het profiel staat een andere waarde.",
         "imageScale": "Resulterende beeldschaal: {scale} arcsec/px",
-        "applyFailed": "Opslaan mislukt: {message}"
+        "applyFailed": "Opslaan mislukt: {message}",
+        "chipSizeNotConnectedHint": "Verbind hierboven de camera en de sensorgrootte wordt vanzelf ingevuld. Alleen een camera die dit niet meldt (typisch voor DSLR's) heeft de waarden hieronder nodig."
       },
       "focuser": {
         "title": "Focuser instellen",
         "description": "Kies het INDI-stuurprogramma van je focuser en verbind hem daarna. Autofocus-instellingen blijven op de focuspagina – deze stap zorgt alleen dat het apparaat communiceert.",
         "selectDriver": "INDI-stuurprogramma",
-        "connectDevice": "Device",
+        "connectDevice": "Apparaat",
         "connected": "Focuser verbonden: {name}",
         "notFound": "Focuser staat er niet bij?",
         "notFoundHint": "Ontbreekt je focuser, dan is het stuurprogramma misschien nog niet geïnstalleerd. Zoek in de INDI-stuurprogramma's van derden en installeer het juiste.",
-        "installing": "Installing {label}…",
+        "installing": "{label} installeren…",
         "installSuccess": "{label} geïnstalleerd. Kies het in de lijst met stuurprogramma's hierboven.",
-        "installFailed": "Installatie mislukt: {message}"
+        "installFailed": "Installatie mislukt: {message}",
+        "descriptionDeviceFirst": "Kies je focuser uit de lijst en verbind hem. Een driver is alleen nodig als hij daar niet in staat. Autofocus-parameters blijven op de focuspagina.",
+        "notFoundDriverHint": "Als je focuser niet in de lijst staat, selecteer hier zijn INDI-driver. Daarna verschijnt hij in de lijst hierboven."
       },
       "filterWheel": {
         "title": "Filterwiel instellen",
         "description": "Kies het INDI-stuurprogramma van je filterwiel, verbind het en geef de posities de namen die je in je sequenties gebruikt.",
         "selectDriver": "INDI-stuurprogramma",
-        "connectDevice": "Device",
+        "connectDevice": "Apparaat",
         "connected": "Filterwiel verbonden: {name}",
         "filterNames": "Filternamen",
         "filterNamesHint": "De naam van elke positie, in de volgorde waarin ze in het wiel zitten. Alleen letters en cijfers.",
         "notFound": "Filterwiel staat er niet bij?",
         "notFoundHint": "Ontbreekt je filterwiel, dan is het stuurprogramma misschien nog niet geïnstalleerd. Zoek in de INDI-stuurprogramma's van derden en installeer het juiste.",
-        "installing": "Installing {label}…",
+        "installing": "{label} installeren…",
         "installSuccess": "{label} geïnstalleerd. Kies het in de lijst met stuurprogramma's hierboven.",
-        "installFailed": "Installatie mislukt: {message}"
+        "installFailed": "Installatie mislukt: {message}",
+        "descriptionDeviceFirst": "Kies je filterwiel uit de lijst, verbind het en geef de slots de namen die je gebruikt. Een driver is alleen nodig als het daar niet in staat.",
+        "notFoundDriverHint": "Als je filterwiel niet in de lijst staat, selecteer hier zijn INDI-driver. Daarna verschijnt het in de lijst hierboven.",
+        "noneHint": "Geen filterwiel? Tik gewoon op Volgende.",
+        "addFilter": "Filter toevoegen"
       },
       "guider": {
         "title": "Guiding instellen",
@@ -481,36 +578,80 @@
         "ditherResult": "Dither-instelling: {pixels} guidepixels",
         "ditherCurrent": "Nu in het profiel: {pixels} guidepixels ({mainPixels} opnamepixels).",
         "ditherApply": "Op profiel toepassen",
-        "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherApplied": "Toegepast",
+        "ditherMissingData": "Voor de ditherberekening zijn pixelgrootte en brandpuntsafstand van zowel de opname- als de guidekant nodig. Vul de stappen camera en telescoop in en stel in de guidingstap de brandpuntsafstand van de guidescope in.",
         "applyFailed": "Opslaan mislukt: {message}",
-        "nativeCamera": "Guide-camera (PINS Native Guider)",
-        "nativeCameraHint": "De native guider stuurt de guide-camera rechtstreeks aan. Kies het INDI-stuurprogramma en apparaat en voer de brandpuntsafstand van de guide-scoop in."
+        "guideScope": "Guidescope",
+        "nativeCameraHint": "Voer de brandpuntsafstand van de guidescope in. De guider heeft die nodig om te beoordelen hoe ver de sterren bewegen.",
+        "descriptionBuiltIn": "PINS heeft een ingebouwde guider die de sterren op hun plaats houdt terwijl er foto's worden gemaakt, zonder extra programma. Kies de guidecamera en vul de brandpuntsafstand van de guidescope in.",
+        "nativeRecommended": "Tip: PINS heeft een eigen guider (“Native Guider” in de lijst hierboven). Hij is speciaal voor PINS ontwikkeld, draait direct op de setup zonder apart programma en guidet vaak rustiger dan PHD2. Instellingen die je in PHD2 hebt gemaakt blijven behouden en je kunt altijd terugschakelen door weer PHD2 te kiezen.",
+        "nativeFocalLengthMissing": "De brandpuntsafstand van de guidescope is nog 0. Guiding werkt ook zonder, maar voor dithering en de guidingfout in boogseconden is hij nodig.",
+        "guidePixelSizeHintNative": "Alleen voor deze berekening gebruikt. De guider leest de pixelgrootte uit de guidecamera zodra die verbonden is; tot dan neem je hem uit de cameraliteratuur.",
+        "ditherMissingDataNative": "Voor de berekening van de dither zijn de pixelgrootte en brandpuntsafstand van zowel de opname- als de guidesetup nodig. Vul de camera- en telescoopstappen in, en de brandpuntsafstand van de guidescope in de guidingstap.",
+        "guideCameraNotFound": "Guidecamera niet in de lijst?",
+        "guideCameraNotFoundHint": "Als je guidecamera niet native wordt ondersteund, selecteer hier een INDI-driver ervoor. Daarna verschijnt hij in de apparatenlijst hierboven.",
+        "ditherIntro": "Dithering verschuift de opname tussen belichtingen een beetje, wat ruispatronen uit het gestackte resultaat haalt. Zonder guiding kun je deze stap overslaan.",
+        "ditherReadyHint": "De gebruikelijke waarde is al ingevuld: tik op “{button}” en je bent klaar."
       },
       "done": {
         "title": "Je apparatuur is klaar",
         "description": "Je opstelling is verbonden en up-to-date, en montering, camera, focuser, filterwiel en guiding zijn ingesteld.",
         "descriptionPlain": "Montering, camera, focuser, filterwiel en je locatie zijn ingesteld.",
         "moreDevicesHint": "Flatpaneel, weer en de overige apparaten stel je op hun eigen pagina's in.",
-        "noConnectionHint": "Nog geen verbinding met een opstelling. Je kunt er op elk moment een toevoegen onder Instellingen → Verbinding."
+        "noConnectionHint": "Nog geen verbinding met een opstelling. Je kunt er op elk moment een toevoegen onder Instellingen → Verbinding.",
+        "summaryIntro": "Dit is nu ingesteld. Tik op een item om terug te gaan naar zijn stap.",
+        "status": {
+          "ok": {
+            "mount": "Geselecteerd",
+            "location": "Opgeslagen",
+            "telescope": "Brandpuntsafstand ingesteld",
+            "camera": "Geselecteerd",
+            "focuser": "Geselecteerd",
+            "filterWheel": "Geselecteerd",
+            "guider": "Geselecteerd",
+            "starDatabase": "Geïnstalleerd"
+          },
+          "warn": {
+            "mount": "Geen mount geselecteerd",
+            "location": "Ontbreekt: pooluitlijning en de sterrenatlas hebben die nodig",
+            "telescope": "Brandpuntsafstand ontbreekt: plate solving heeft die nodig",
+            "camera": "Geen camera geselecteerd",
+            "starDatabase": "Niet geïnstalleerd: plate solving kan niet werken"
+          },
+          "none": {
+            "focuser": "Geen, handmatig focussen",
+            "filterWheel": "Geen, dat is prima",
+            "guider": "Geen guiding"
+          }
+        }
       },
       "cancel": "Installatie annuleren",
       "localization": {
         "title": "Regionale instellingen van de opstelling configureren",
-        "description": "Stel deze waarden vóór Wi-Fi in, zodat de hotspotlocatie, tijd en externe toetsenbordinvoer overeenkomen met de locatie waar de opstelling wordt gebruikt."
+        "description": "Stel deze waarden vóór Wi-Fi in, zodat de hotspotlocatie, tijd en externe toetsenbordinvoer overeenkomen met de locatie waar de opstelling wordt gebruikt.",
+        "localeHint": "Taal en getalnotatie van de setup zelf, bijv. en_US.UTF-8 of de_DE.UTF-8. C.UTF-8 is een neutrale standaard en werkt ook.",
+        "unappliedHint": "Nog niet toegepast: tik op \"{button}\" vóór Volgende, anders gaan de wijzigingen verloren.",
+        "nothingToDoHint": "Niets te wijzigen? Tik gewoon op Volgende.",
+        "rigLanguage": "Taal en toetsenbord van de setup"
+      },
+      "starDatabase": {
+        "title": "Sterrenkaart voor plate solving",
+        "description": "Om te bepalen waar de telescoop op wijst, vergelijkt de setup een opname met een sterrenkaart (\"plate solving\"). Pooluitlijning en het centreren van een doel hebben die nodig. PINS wordt geleverd met de D80-sterrenkaart; voor zeer brede velden kun je hier nog een toevoegen.",
+        "otherSolver": "Je profiel gebruikt een andere plate solver dan ASTAP, dus hier valt niets te installeren.",
+        "hint": "De download is groot en kan een paar minuten duren. Je kunt intussen op Volgende tikken; de installatie loopt door op de setup."
       }
     },
     "fileBrowser": {
-      "title": "Browse",
+      "title": "Bladeren",
       "goUp": "Eén niveau omhoog",
-      "loading": "Loading...",
+      "loading": "Laden...",
       "empty": "Lege map",
       "dblClickHint": "Dubbelklik om te openen",
       "deleteDir": "Map verwijderen",
       "folderPlaceholder": "Mapnaam…",
       "newFolder": "+ Nieuwe map",
-      "create": "Create",
-      "selectedPath": "Selected:",
+      "create": "Aanmaken",
+      "selectedPath": "Geselecteerd:",
       "loadError": "Map kon niet worden geladen.",
       "createError": "Map kon niet worden aangemaakt.",
       "deleteDirTitle": "Map verwijderen",
@@ -654,7 +795,9 @@
         "restartInfoTitle": "Systeem wordt herstart",
         "restartInfoMessage": "Het systeem wordt herstart.",
         "shutdownInfoTitle": "Systeem wordt afgesloten",
-        "shutdownInfoMessage": "Het systeem wordt afgesloten. Deze pagina zal niet meer bereikbaar zijn."
+        "shutdownInfoMessage": "Het systeem wordt afgesloten. Deze pagina zal niet meer bereikbaar zijn.",
+        "shutdownPowerHint": "Wacht ongeveer een minuut, daarna kun je de stroom uitzetten.",
+        "shutdownFailed": "Het afsluiten is niet gelukt: {reason}"
       },
       "plate_solver": {
         "title": "Plaatoplosser",
@@ -691,8 +834,16 @@
         "astapDatabaseAllInstalled": "Alle ASTAP-sterrendatabases zijn al geïnstalleerd.",
         "astapDatabaseDescription": "Installeer ontbrekende ASTAP-sterrendatabases rechtstreeks op uw PINS-apparaat.",
         "astapDatabaseInstall": "Installeren",
-        "astapDatabaseInstallFailed": "Installatie van ASTAP-sterrendatabase mislukt{exitCode}.",
         "astapDatabaseInstallSuccess": "ASTAP-sterrendatabase {databaseId} is succesvol geïnstalleerd.",
+        "astapDatabaseDownloadFailed": "Het installeren van {databaseId} is mislukt. De rig downloadt de sterrenkaart van internet: zit hij in een netwerk met internettoegang? Probeer het dan opnieuw.",
+        "astapDatabaseLastAttemptFailed": "De laatste poging om {databaseId} te installeren is mislukt ({time}). De rig downloadt de sterrenkaart van internet: zit hij in een netwerk met internettoegang? Probeer het dan opnieuw.",
+        "astapDatabaseRetry": "{databaseId} opnieuw installeren",
+        "astapDatabasePhase": {
+          "downloading": "Downloaden",
+          "installing": "Installeren",
+          "finalizing": "Afronden",
+          "complete": "Klaar"
+        },
         "astapDatabaseInstalling": "Installeren...",
         "astapDatabaseProgressStalled": "Al 30 seconden geen downloadvoortgang. De taak wordt nog steeds bewaakt.",
         "astapDatabaseJobStarted": "begonnen",
@@ -704,6 +855,11 @@
         "astapDatabaseNoInstallable": "Er zijn geen installeerbare ASTAP-sterrendatabases beschikbaar",
         "astapDatabaseSelectPlaceholder": "Selecteer een databank",
         "astapDatabaseStartFailed": "Kan de installatie niet starten: {detail}",
+        "astapDatabaseInstalledList": "Geïnstalleerd: {list}",
+        "astapDatabaseNoneInstalled": "Er is nog geen stardatabase geïnstalleerd. Zonder database kan plate solving (pooluitlijning, doel centreren) niet werken.",
+        "astapDatabaseRecommendedTag": "aanbevolen",
+        "astapDatabaseRecommendedFov": "Aanbevolen voor je telescoop en camera (beeldveld {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Aanbevolen: {id}. Voer brandpuntsafstand, pixelgrootte en sensorgrootte in voor een aanbeveling die bij je telescoop past.",
         "astapDatabaseStartInstall": "Installatie starten voor {databaseId}...",
         "astapDatabaseStarting": "Beginnen...",
         "astapDatabaseStatusCheckFailedRetrying": "Statuscontrole mislukt: {detail}. Opnieuw proberen...",
@@ -767,7 +923,7 @@
         "loading": "Laden...",
         "loadingDirs": "Mappen laden...",
         "newFolder": "Nieuwe map",
-        "noSubfolders": "Geen submappen beschikbaar",
+        "noSubfolders": "Geen zichtbare mappen (leeg of ontoegankelijk pad)",
         "placeholder": "Geen pad geselecteerd",
         "save": "Opslaan",
         "savedMsg": "Pad opgeslagen:",
@@ -812,31 +968,42 @@
         "loading": "Swapconfiguratie uitlezen…",
         "current": "Actieve systeemswap: {size} GB",
         "size": "Ingestelde swapgrootte",
-        "choose": "Choose a size",
+        "choose": "Kies een grootte",
         "defaultSize": "2 GB (standaard van de image)",
         "recommendedSize": "8 GB (aanbevolen)",
         "freeSpace": "Vrije opslag: {size} GB",
         "pending": "Er is {size} GB ingesteld. Herstart de Pi na je opnamesessie om dit toe te passen.",
         "saved": "Swapconfiguratie opgeslagen.",
-        "saving": "Saving…",
+        "saving": "Opslaan…",
         "save": "Swapgrootte opslaan",
-        "refresh": "Refresh",
+        "refresh": "Vernieuwen",
         "unsupported": "Dit systeem heeft geen ondersteunde swapconfiguratie op schijf.",
         "unavailable": "Swapconfiguratie niet beschikbaar. Werk pinsdaemon op de Pi bij.",
         "loadError": "Swapconfiguratie kon niet worden gelezen: {message}",
         "saveError": "Swapconfiguratie kon niet worden opgeslagen: {message}",
         "missingJob": "De daemon gaf geen swaptaak terug."
+      },
+      "instances": {
+        "discovery": "Rigs in het netwerk zoeken",
+        "add": "Rig toevoegen",
+        "edit": "Rig bewerken",
+        "configured": "Opgeslagen rigs",
+        "none": "Nog geen rig opgeslagen",
+        "noneHint": "Gebruik de zoekfunctie hierboven of vul het adres zelf in.",
+        "active": "Actief",
+        "setActive": "Deze rig gebruiken",
+        "delete": "Rig verwijderen"
       }
     },
     "alpacaDirect": {
       "title": "Alpaca Direct-instellingen",
       "ipAddress": "IP-adres",
-      "port": "Port",
+      "port": "Poort",
       "deviceNumber": "Apparaatnummer",
       "serviceType": "Diensttype",
-      "save": "Save",
-      "connect": "Connect",
-      "disconnect": "Disconnect",
+      "save": "Opslaan",
+      "connect": "Verbinden",
+      "disconnect": "Verbinding verbreken",
       "sharedGuidWarning": "Rotator en veiligheidsmonitor delen in @:{'general.backendName'} één opslagplek – wie de ene wijzigt, wijzigt ook de andere.",
       "noReconnectHint": "Nieuwe instellingen gelden bij de volgende verbinding.",
       "cameraNoSettings": "Deze camera heeft geen instellingen."
@@ -844,7 +1011,12 @@
     "selectDevices": {
       "deviceNotFound": "Apparaat niet gevonden",
       "deviceNotFoundMessage": "Het INDI-stuurprogramma is opnieuw geladen, maar '{device}' is niet verschenen. Controleer de voeding en selecteer het apparaat opnieuw.",
-      "reloadingDriver": "INDI-stuurprogramma wordt opnieuw geladen…"
+      "reloadingDriver": "INDI-stuurprogramma wordt opnieuw geladen…",
+      "configure": "Apparaatinstellingen",
+      "rescan": "Opnieuw naar apparaten zoeken",
+      "connect": "Verbinden",
+      "disconnect": "Verbinding verbreken",
+      "whyNotConnect": "Waarom kan het nog niet verbinden?"
     },
     "connectEquipment": {
       "camera": {
@@ -875,7 +1047,7 @@
         "guideCamRequired": "Er moet een geldige guidecamera geselecteerd zijn."
       },
       "guiderCam": {
-        "name": "Guidecamera",
+        "name": "PHD2-camera",
         "manualVnc": "Handmatig via VNC"
       },
       "safety": {
@@ -919,7 +1091,7 @@
           "mount": "Montering",
           "flip": "Flip",
           "guide": "Guiding",
-          "align": "Align",
+          "align": "Uitlijnen",
           "focus": "Focus",
           "capture": "Opname"
         },
@@ -1000,8 +1172,8 @@
       "resetConfirmationTitle": "Bevestig Reset",
       "resetConfirmationMessage": "Weet u zeker dat u de sequentie wilt resetten? Deze actie kan niet ongedaan worden gemaakt.",
       "clearSequence": "Alles wissen",
-      "clearConfirmationTitle": "Bevestig Wissen",
-      "clearConfirmationMessage": "Weet u zeker dat u de hele sequentie wilt wissen? Deze actie kan niet ongedaan worden gemaakt.",
+      "clearConfirmationTitle": "Alles wissen",
+      "clearConfirmationMessage": "Alle items uit de sequentie verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
       "load_sequence": "Laad sequentie vanuit directory",
       "choose_sequence": "Kies een sequentie",
       "saved_sequences": "TNS-reeksmaker",
@@ -1223,13 +1395,13 @@
         },
         "polarAlignment": {
           "searchRadius": "Zoekradius",
-          "alignmentTolerance": "Uitlijntolerantie (arcsec)",
+          "alignmentTolerance": "Uitlijntolerantie (arcmin)",
           "moveRate": "Verplaatsingssnelheid (°/s)",
           "targetDistance": "Afstand doel",
           "eastDirection": "Richting oost",
           "manualMode": "Handmatige modus",
           "startFromCurrentPosition": "Start vanaf huidige positie",
-          "manual": "Manual"
+          "manual": "Handmatig"
         },
         "skyFlat": {
           "shouldDither": "Ditheren",
@@ -1248,12 +1420,12 @@
         },
         "setTracking": {
           "trackingMode": "Tracking-modus",
-          "sidereal": "Sidereal",
-          "lunar": "Lunar",
-          "solar": "Solar",
+          "sidereal": "Siderisch",
+          "lunar": "Maan",
+          "solar": "Zon",
           "king": "King",
-          "custom": "Custom",
-          "stopped": "Stopped"
+          "custom": "Aangepast",
+          "stopped": "Gestopt"
         },
         "expressionVariable": {
           "identifier": "Naam",
@@ -1362,21 +1534,21 @@
         "orbuculum": {
           "hourAngle": "Uurhoek (h)",
           "nextTarget": "Volgend object:",
-          "current": "Current:"
+          "current": "Huidig:"
         },
         "autoBalancingExposure": {
-          "timeSeconds": "Time (s)",
+          "timeSeconds": "Tijd (s)",
           "noEntries": "Geen items",
           "addRow": "Rij toevoegen",
-          "progress": "Progress",
-          "ratio": "Ratio",
+          "progress": "Voortgang",
+          "ratio": "Verhouding",
           "bin": "Bin"
         },
         "setReadoutMode": {
-          "mode": "Mode"
+          "mode": "Modus"
         },
         "loopWhile": {
-          "expression": "Expression"
+          "expression": "Expressie"
         },
         "slewScopeToAltAz": {
           "azimuth": "Az",
@@ -1424,17 +1596,29 @@
       "resetStatus": "Status herstellen",
       "delete": "Verwijderen",
       "runningLocked": "Dit item wordt uitgevoerd en kan niet worden gewijzigd",
+      "plan": {
+        "title": "Plan",
+        "startSequence": "Plan starten",
+        "resetSequence": "Plan resetten",
+        "resetConfirmationMessage": "Het plan resetten zodat het weer vanaf het begin start? Dit kan niet ongedaan worden gemaakt.",
+        "clearConfirmationMessage": "Alles uit het plan verwijderen? Dit kan niet ongedaan worden gemaakt.",
+        "manageSequences": "Plannen laden / opslaan",
+        "saveSequenceAs": "Huidig plan opslaan als",
+        "sequenceFolder": "Planmap",
+        "sequenceFolderSaveError": "De planmap kon niet worden gewijzigd.",
+        "controlsLockedMessage": "De planbediening is vergrendeld terwijl het plan loopt."
+      },
       "controlsLockedMessage": "De reeksbedieningen zijn vergrendeld terwijl de reeks wordt uitgevoerd.",
       "lockControls": "Vergrendelen",
       "unlockControls": "Ontgrendelen",
       "simple": {
         "viewMode": "Sequentieweergave",
-        "viewModeHint": "Eenvoudig toont één kaart per target met de meest gebruikte opties. Expert toont de volledige sequentieboom.",
+        "viewModeHint": "Eenvoudig toont één kaart per target met de meest gebruikte opties. Volledig toont de hele sequentieboom.",
         "mode": {
           "simple": "Eenvoudig",
-          "full": "Expert"
+          "full": "Volledig"
         },
-        "openExpert": "Bewerken in expert-editor",
+        "openFull": "Bewerken in volledige editor",
         "targets": "Targets",
         "remaining": "Resterend",
         "total": "Totaal",
@@ -1450,6 +1634,8 @@
         "dither": "Ditheren",
         "ditherHint": "De guidingpositie tussen opnames licht verschuiven. Vereist een actieve guider.",
         "ditherEvery": "Ditheren elke N opnames",
+        "ditherInExposures": "Elke belichtingsrij dithert na elke foto. | Elke belichtingsrij dithert na elke {count} foto's.",
+        "ditherInExposuresMixed": "De belichtingsrijen dithern met hun eigen interval.",
         "coolCamera": "Camera koelen",
         "coolCameraHint": "De camera vóór het eerste target koelen tot de doeltemperatuur.",
         "unparkMount": "Montering unparken",
@@ -1474,7 +1660,6 @@
         "afAfterHfr": "Na HFR-toename",
         "coordinates": "Coördinaten",
         "exposureEnabled": "Deze opname maken",
-        "cameraDefault": "camera",
         "gainShort": "Gain",
         "offsetShort": "Offset",
         "empty": "Deze sequentie heeft nog geen targets.",
@@ -1486,6 +1671,7 @@
         "favorites": "Favorieten",
         "framing": "Framing",
         "noFilter": "Geen filterwissel",
+        "chooseFilter": "Kies een filter",
         "exposureTime": "Belichting (s)",
         "count": "Aantal",
         "noExposures": "Nog geen opnames voor dit target.",
@@ -1498,28 +1684,73 @@
         "deleteTarget": "Target verwijderen",
         "deleteTargetConfirm": "{name} en alle opnames uit de sequentie verwijderen?",
         "deleteExposure": "Opname verwijderen",
-        "deleteExposureConfirm": "Deze opnameregel uit de sequentie verwijderen?"
+        "deleteExposureConfirm": "Deze opnameregel uit de sequentie verwijderen?",
+        "addTargetNamed": "{name} als doel toevoegen",
+        "limits": {
+          "title": "Nacht",
+          "wait": "Wachten tot het donker is",
+          "waitHint": "Het plan start zodra het donker is. Tijdens het wachten volgt de mount niet.",
+          "dawn": "Stoppen bij zonsopkomst",
+          "dawnHint": "Beëindigt het plan als het licht wordt, ook als er foto's ontbreken. De rest kan de volgende nacht.",
+          "from": "vanaf {time}",
+          "notTonight": "vannacht niet",
+          "low": "Stoppen als het doel te laag staat",
+          "lowHint": "Dicht bij de horizon maakt de lucht de sterren onscherp en staan bomen of huizen in de weg. Het plan gaat dan verder met het volgende doel.",
+          "minAltitude": "Laagste hoogte boven de horizon (°)",
+          "noTarget": "Voeg eerst een doel toe aan het plan. Dit gaat dan vanzelf aan.",
+          "targetRunning": "Kan niet worden gewijzigd terwijl een doel wordt gefotografeerd.",
+          "sunBelow": "zon {degrees}° onder de horizon",
+          "darknessName": {
+            "bright": "nog licht",
+            "dusky": "bijna donker",
+            "usual": "gebruikelijk",
+            "dark": "donkerder",
+            "darkest": "helemaal donker"
+          },
+          "minAltitudeHint": "0° is de horizon, 90° is recht boven je. Twee vuisten op elkaar met gestrekte arm zijn ongeveer 20°.",
+          "startAt": "Begin van de nacht",
+          "endAt": "Einde van de nacht",
+          "until": "tot {time}"
+        },
+        "refocus": {
+          "title": "Focus",
+          "label": "Regelmatig opnieuw scherpstellen",
+          "hint": "De focus verloopt als de nacht kouder wordt. Het plan stelt dan tussen twee opnamen opnieuw scherp; dat duurt telkens een paar minuten.",
+          "howOften": "Hoe vaak",
+          "every": {
+            "minutes": "elke minuut | elke {count} minuten",
+            "hours": "elk uur | elke {count} uur"
+          }
+        },
+        "budget": {
+          "question": "Hoe lang wil je dit doel fotograferen? (uren)",
+          "pictures": "{count} foto van {seconds} s | {count} foto's van {seconds} s",
+          "apply": "Dit aantal foto's gebruiken",
+          "wholeNight": "Zolang de nacht het toelaat ({time})"
+        }
       }
     },
     "mount": {
       "title": "Montering",
-      "slew": "Slew",
+      "slew": "Zwenken",
       "skyChart": {
         "title": "Huidige positie van de montering",
         "parked": "De montering is geparkeerd, dus er is geen positie om weer te geven."
       },
       "location_sync": {
-        "title": "Locatie sync instellingen",
-        "confirmationMessage": "Als 'Locatie Sync' in @:{'general.backendName'} is ingesteld op 'Prompt', dan kan een bevestigingsscherm worden getoond voordat de coordinaten naar de telescoop worden gestuurd. Om dit te voorkomen moet u TNS toestaan om automatisch de coordinaten in te stellen, we adviseren om de instellingen te wijzigen naar 'Sync naar Telescoop'",
+        "title": "Locatie van de mount",
+        "confirmationMessage": "Wanneer de mount verbindt, kan de app je locatie ernaartoe sturen, zodat hij naar de juiste plek aan de hemel wijst. Kies wat er moet gebeuren; je kunt het later wijzigen in de locatie-instellingen.",
         "toTelescope": {
-          "label": "Sync naar Telescoop"
+          "label": "Mijn locatie naar de mount sturen"
         },
         "toApplication": {
-          "label": "Sync to applicatie"
+          "label": "Locatie van de mount overnemen"
         },
         "noSync": {
-          "label": "Geen sync"
-        }
+          "label": "Locatie niet synchroniseren"
+        },
+        "recommended": "Aanbevolen",
+        "noLocationHint": "Je locatie is nog niet ingesteld. “Mijn locatie naar de mount sturen” zou 0° / 0° sturen en de locatie overschrijven die de mount kent. Kies voorlopig “Locatie niet synchroniseren”: zodra je je locatie instelt, stuurt de app die naar de mount."
       },
       "control": {
         "park": "Park",
@@ -1535,7 +1766,7 @@
           "unpark": "Fout unpark montering",
           "tracking": "Fout bij instellen tracking mode"
         },
-        "setLocationSyncToMount": "Stel in \"Sync naar Telescoop\"",
+        "setLocationSyncToMount": "Mijn locatie altijd naar de mount sturen",
         "slewRateINDI": "Bewegingssnelheid",
         "reverse_axis": "Asrichting",
         "slewRateDriverControlled": "De slew-snelheid wordt geregeld door het stuurprogramma",
@@ -2747,7 +2978,7 @@
           "loading": "Instellingen laden…",
           "loadFailed": "Instellingen konden niet worden geladen",
           "empty": "Geen instellingen beschikbaar.",
-          "notConnectedHint": "De native guider is niet verbonden. Wijzigingen worden opgeslagen in het profiel; camerawijzigingen gaan in bij de volgende verbinding.",
+          "notConnectedHint": "De ingebouwde guider is niet verbonden. Wijzigingen worden opgeslagen in het profiel; camerawijzigingen gaan in bij de volgende verbinding.",
           "requiresReconnect": "Geldt na opnieuw verbinden",
           "valueInUse": "In gebruik: {value} {unit}, aangepast tijdens het guiden.",
           "range": "{min} – {max}",
@@ -2884,14 +3115,14 @@
           "descriptions": {
             "GuideSource": "Waar de guideframes vandaan komen. Guidecamera: de camera in het guidecameraslot van de apparatuur. Simulator: een ingebouwde simulatie van montering, hemel en camera, om de guider zonder hardware of bij daglicht te proberen.",
             "ExposureSeconds": "Belichtingstijd van elk guidebeeld. Kortere belichtingen reageren sneller op wind en fouten van de montering; de min-move voorkomt dat ze de seeing achternajagen. 1 s past bij de meeste monteringen; gebruik langere belichtingen als de guidester te zwak is.",
-            "Gain": "-1 behoudt de huidige gain van het stuurprogramma. (De gain van PHD2 is een percentage en wordt daarom niet overgenomen.)",
-            "Offset": "-1 behoudt de huidige offset van het stuurprogramma.",
+            "Gain": "Gain van de guidecamera voor de guidebeelden. -1 (standaard) gebruikt de gain uit de instellingen van de guidecamera. Een hogere gain maakt zwakke sterren helderder maar voegt ruis toe. De gain van PHD2 is een percentage en wordt daarom niet overgenomen.",
+            "Offset": "Offset (zwartniveau) van de guidecamera. -1 (standaard) gebruikt de offset uit de instellingen van de guidecamera. Verhoog hem alleen als de achtergrond van de guidebeelden op zwart wordt afgekapt.",
             "Binning": "Hardwarebinning van de guideframes. 2×2 maakt de camera gevoeliger en de frames sneller over te dragen, ten koste van resolutie; nuttig bij kleine pixels of een lange guidebrandpuntsafstand. Kalibreer opnieuw na een wijziging.",
-            "FocalLengthMm": "Brandpuntsafstand van de guide-scoop (of van de hoofdtelescoop bij een OAG). Nodig voor waarden in boogseconden en voor de kalibratiestap.",
-            "PixelSizeUm": "0 gebruikt de pixelgrootte van het camerastuurprogramma.",
+            "FocalLengthMm": "Brandpuntsafstand van de guidescope in millimeter, of van de hoofdtelescoop bij guiden via een off-axis guider. Samen met de pixelgrootte bepaalt die de beeldschaal, waaruit de guider boogseconden afleidt en de kalibratiestap en min-move kiest; stel hem dus correct in.",
+            "PixelSizeUm": "Pixelgrootte van de guidecamera in micrometer, gebruikt voor de beeldschaal. 0 (standaard) neemt die over van de cameradriver; stel hem alleen in als de driver geen of een verkeerde waarde meldt.",
             "NoiseReduction": "Strijkt elk guideframe glad voordat de sterren worden gemeten. Mean 2×2 middelt naburige pixels, Median 3×3 verwijdert ook losse hotpixels. Helpt bij zeer ruisige frames, bv. van ongekoelde camera's; bij schone frames geeft None de nauwkeurigste sterposities.",
-            "UseDarkLibrary": "Trekt darks af: de eigen bibliotheek als die is opgebouwd, anders de dark-bibliotheek van PHD2 voor dit cameraformaat.",
-            "PulseOutput": "Mount: pulse guiding via het verbonden stuurprogramma van de montering. CameraST4: via de ST4-poort van de guide-camera.",
+            "UseDarkLibrary": "Trekt van elk guidebeeld een dark af, wat hotpixels en amp glow verwijdert zodat ze niet voor sterren worden aangezien. Gebruikt de eigen dark-bibliotheek zodra die is gemaakt, anders die van PHD2 voor deze cameragrootte.",
+            "PulseOutput": "Waar de guidepulsen heen gaan. Montering: via het stuurprogramma van de verbonden montering (pulse guiding), de gebruikelijke keuze. Camera-ST4: via de ST4-poort van de guidecamera naar de ST4-ingang van de montering (alleen INDI-camera's).",
             "MultiStar": "Meet meerdere sterren tegelijk en guidet op hun gezamenlijke positie in plaats van op één ster. Dat middelt veel seeing uit en houdt het guiden gaande als een ster zwakker wordt. Laat dit best aan.",
             "MaxStars": "Het maximale aantal sterren voor multi-star-guiding. Meer sterren middelen meer seeing uit; met weinig bruikbare sterren in het veld gebruikt de guider de sterren die hij vindt. 1 guidet op één ster.",
             "MinSnr": "Signaal-ruisverhouding die een ster nodig heeft om als guidester gekozen te worden. Bij een te hoge waarde wordt geen ster gevonden; probeer liever een langere belichting, meer gain of een nieuwe darkbibliotheek dan de waarde te verlagen.",
@@ -2900,48 +3131,48 @@
             "MaxHfd": "Grootste grootte (half-flux-diameter, in pixels) die een guidester mag hebben. Opgeblazen of onscherpe vlekken daarboven worden bij de sterselectie genegeerd.",
             "MassChangeEnabled": "Bewaakt de helderheid (massa) van de guidester en behandelt een plotselinge verandering als een verloren ster, zodat de guider bij overtrekkende wolken niet naar een naburige ster springt of op een hotpixel guidet.",
             "MassChangeThreshold": "Hoeveel de massa van de ster mag veranderen voordat de ster als verloren geldt: 0,5 staat een verandering met de helft toe ten opzichte van de recente frames. Verhoog dit als je ster-verloren-alarmen krijgt terwijl de ster duidelijk zichtbaar is, bv. bij wisselende transparantie.",
-            "PrimaryDropoutFallback": "Valt de primaire ster in een beeld weg, dan wordt zijn positie geschat uit ≥3 overeenstemmende secundaire sterren.",
-            "SaturationAdu": "0 = verzadiging bepalen uit het sterprofiel.",
-            "RaAlgorithm": "Predictive (experimenteel) leert de seeing en de eigen beweging van de montering uit de guidebeelden en corrigeert de fout die het voor het volgende beeld voorspelt; agressie, hysterese en min-move gelden er daarom niet voor.",
-            "RaAggression": "Deel van de fout dat per beeld wordt gecorrigeerd (0..1).",
+            "PrimaryDropoutFallback": "Valt de primaire ster in een beeld weg (een voorbijtrekkende wolk, een satelliet), dan schat de guider zijn positie uit minstens 3 overeenstemmende secundaire sterren en blijft guiden in plaats van te pauzeren. Vereist multi-star guiding.",
+            "SaturationAdu": "Pixelwaarde vanaf waar een ster als verzadigd geldt; verzadigde sterren worden niet gebruikt, omdat hun middelpunt niet nauwkeurig te meten is. 0 (standaard) herkent verzadiging aan de vorm van de ster. Voer anders de maximale waarde van de camera in, bijv. 65535 bij 16 bit.",
+            "RaAlgorithm": "Hoe de gemeten RA-fout een correctie wordt. Hysteresis (standaard) corrigeert een deel van de fout en vlakt dat af met de vorige correcties. Lowpass2 en Lowpass reageren zachter, goed voor monteringen die goed volgen. None stuurt geen RA-correcties. Predictive (experimenteel) leert uit de guidebeelden de seeing en de eigen beweging van de montering en corrigeert de fout die het voor het volgende beeld voorspelt; agressie, hysterese en min-move gelten daarvoor niet.",
+            "RaAggression": "Deel van de gemeten RA-fout dat per beeld wordt gecorrigeerd: 0,7 corrigeert 70 %. Lagere waarden voorkomen doorschieten en achter de seeing aanlopen, hogere halen de ster sneller terug. Verlaag hem als de ster heen en weer slingert, verhoog hem als de ster achterblijft.",
             "RaHysteresis": "Gewicht van de vorige RA-correctie tegenover de laatste fout: 0,1 mengt 10 % van de laatste correctie bij. Hogere waarden maken de correcties gladder maar reageren trager op een echte richtingsverandering.",
             "RaLowpass2Aggressiveness": "Lowpass2 legt een lijn door de laatste RA-fouten en corrigeert die trend in plaats van losse frames. Dit is het deel van de trend dat per frame wordt gecorrigeerd, in procent; verlaag het als de correcties doorschieten.",
-            "RaMinMove": "0 = automatisch uit de beeldschaal.",
+            "RaMinMove": "Kleinste RA-fout, in pixels, die een correctie krijgt; kleinere fouten worden genegeerd zodat de guider niet achter de seeing aanloopt. 0 (standaard) berekent een waarde uit de beeldschaal. De instelling die het meest de moeite waard is om aan de seeing van de nacht aan te passen.",
             "RaCorrectionPace": "Deel van de resterende fout dat het Predictive-algoritme per frame corrigeert: 0,5 werkt een verschuiving weg over 2–3 frames zonder voorbij nul te zwaaien, 1 corrigeert alles in één keer. Drift en periodieke fout worden altijd volledig gecorrigeerd.",
             "PeriodicErrorPrediction": "Leert de periodieke fout van de RA-worm en corrigeert die voordat hij zichtbaar wordt. De geleerde curve wordt per profiel en montering bewaard.",
             "WormPeriodUnit": "Geef de RA-worm op via het aantal tanden van het wormwiel of via de periode in seconden, bijv. uit de handleiding van de montering of een PEC-tool. Seconden passen ook bij een aandrijving waarvan de periode geen geheel aantal tanden is (strain-wave-overbrenging, riem). Alleen de gekozen waarde wordt gebruikt.",
-            "WormTeeth": "Aantal tanden van het RA-wormwiel (bijv. 180 bij een EQ6-R, 135 bij een HEQ5); geeft de exacte wormperiode. 0 = periode bepalen uit de guidebeelden.",
+            "WormTeeth": "Tanden van het RA-wormwiel (bijv. 180 op een EQ6-R, 135 op een HEQ5); geeft de exacte wormperiode. 0 (standaard) bepaalt de periode uit de guidebeelden.",
             "WormPeriodSeconds": "Periode van de RA-worm in seconden (bijv. 478,7 bij 180 tanden); die wordt dan niet bepaald. Na een meridiaanflip wordt de fase opnieuw geleerd, zoals zonder aantal tanden. 0 (standaard) = periode uit de guideframes bepalen; de guider neemt 180 tot 1200 s.",
             "ForgetPeriodicError": "Vergeet de voor deze montering geleerde periodieke fout, bijv. nadat de worm is afgesteld; die wordt daarna opnieuw geleerd.",
-            "DecAlgorithm": "Predictive (experimenteel) leert de seeing en de eigen beweging van de montering uit de guidebeelden en corrigeert de fout die het voor het volgende beeld voorspelt; agressie, hysterese en min-move gelden er daarom niet voor.",
+            "DecAlgorithm": "Hoe de gemeten Dec-fout een correctie wordt. ResistSwitch (standaard) keert de Dec-richting alleen om als de fout dat duidelijk vraagt, zodat speling in Dec de guiding niet laat slingeren. Hysteresis, Lowpass2 en Lowpass werken als bij RA, None stuurt geen Dec-correcties. Predictive (experimenteel) leert uit de guidebeelden de seeing en de eigen beweging van de montering en corrigeert de fout die het voor het volgende beeld voorspelt; agressie, hysterese en min-move gelten daarvoor niet.",
             "DecAggression": "Deel van de gemeten Dec-fout dat in elk frame wordt gecorrigeerd: 1,0 corrigeert alles. Verlaag het als Dec doorschiet.",
             "DecHysteresis": "Gewicht van de vorige Dec-correctie tegenover de laatste fout: 0,1 mengt 10 % van de laatste correctie bij. Hogere waarden maken de correcties gladder maar reageren trager op een echte richtingsverandering.",
             "DecLowpass2Aggressiveness": "Lowpass2 legt een lijn door de laatste Dec-fouten en corrigeert die trend in plaats van losse frames. Dit is het deel van de trend dat per frame wordt gecorrigeerd, in procent; verlaag het als de correcties doorschieten.",
             "DecFastSwitch": "Met ResistSwitch: laat Dec direct van richting wisselen als de fout groot is (meer dan 3 × min move), in plaats van te wachten tot meerdere frames overeenkomen. Haalt een grote Dec-fout snel terug.",
-            "DecMinMove": "0 = automatisch uit de beeldschaal.",
+            "DecMinMove": "Kleinste Dec-fout, in pixels, die een correctie krijgt; kleinere fouten worden genegeerd zodat de guider niet achter de seeing aanloopt. 0 (standaard) berekent een waarde uit de beeldschaal. De instelling die het meest de moeite waard is om aan de seeing van de nacht aan te passen.",
             "DecCorrectionPace": "Deel van de resterende fout dat het Predictive-algoritme per frame corrigeert: 0,5 werkt een verschuiving weg over 2–3 frames zonder voorbij nul te zwaaien, 1 corrigeert alles in één keer. Drift en periodieke fout worden altijd volledig gecorrigeerd.",
             "DecGuideMode": "Auto guidet Dec in beide richtingen, Alleen Noord en Alleen Zuid in één richting, Uit helemaal niet. Drift volgt de drift: het meet de Dec-drift tijdens het guiden en guidet alleen daartegenin, zodat de Dec-tandwielen nooit omkeren en de speling er niet meer toe doet; het wisselt van richting als de drift omkeert, en guidet in beide richtingen zolang de drift nog onbekend is, tijdens het stabiliseren en om een grote fout terug te halen.",
             "MaxRaDurationMs": "Langste enkele RA-guidepuls. Begrenst een correctie als een meting ver ernaast zit (verkeerde ster, windvlaag), zodat de montering niet ver wordt weggeduwd. Verhoog dit alleen als grote fouten veel frames nodig hebben om gecorrigeerd te worden.",
             "MaxDecDurationMs": "Langste enkele Dec-guidepuls. Begrenst een correctie als een meting ver ernaast zit (verkeerde ster, windvlaag), zodat de montering niet ver wordt weggeduwd. Verhoog dit alleen als grote fouten veel frames nodig hebben om gecorrigeerd te worden.",
-            "MinPulseMs": "Kortere guidepulsen worden afgerond op 0 of op deze lengte: sommige monteringen gaan slecht om met heel korte pulsen. 0 = elke lengte.",
+            "MinPulseMs": "Kortere guidepulsen worden afgerond op 0 of op deze lengte, omdat sommige monteringen slecht omgaan met heel korte pulsen. 0 stuurt pulsen van elke lengte.",
             "SimultaneousPulses": "Stuurt de RA- en Dec-pulsen van een frame tegelijk in plaats van na elkaar, wat de guidecyclus verkort. Alleen bij monteringen die beide assen apart aansturen (de native OnStepX-driver van pins); andere monteringen blijven na elkaar pulsen.",
             "BacklashCompensation": "Voegt een extra puls toe wanneer Dec van richting wisselt, om de speling in de Dec-tandwielen op te vangen. Nuttig bij merkbare Dec-backlash; laat het uit als Dec netjes guidet. De Dec-guidemodus Drift vermijdt omkeringen helemaal.",
             "BacklashPulseMs": "Lengte van de extra puls bij een Dec-omkering. Vanaf deze waarde past de guider de puls automatisch aan tussen 20 ms en 1,5 × deze waarde, op basis van hoe de ster reageert. Met het spelingsmodel is de waarde alleen de eerste schatting van de speling, die het model daarna zelf leert.",
             "PulseModel": "Leert uit de dithers hoe ver een guidepuls de ster op elke as echt verplaatst, en stemt de pulsen daarop af, zodat een afwijkende kalibratie niet meer tot over- of ondercorrectie leidt. Het begint met de kalibratie, verandert alleen wat de dithers duidelijk laten zien, en bewaart wat het geleerd heeft per profiel en montering tot de volgende kalibratie.",
-            "CalibrationStepMs": "0 = automatisch uit optiek, guidesnelheid en declinatie.",
-            "ReuseCalibration": "Bewaart de kalibratie tussen sessies en past haar aan voor declinatie en pierzijde.",
+            "CalibrationStepMs": "Lengte van elke puls tijdens de kalibratie. 0 (standaard) berekent die uit brandpuntsafstand, pixelgrootte, guidesnelheid en declinatie. Stel hem alleen zelf in als de kalibratie veel te weinig of te veel stappen zet.",
+            "ReuseCalibration": "Bewaart de laatste kalibratie tussen sessies en past die aan voor declinatie en pierzijde, zodat je niet elke nacht hoeft te kalibreren. Kalibreer opnieuw nadat je de guidecamera met de hand hebt gedraaid of van guidescope bent gewisseld.",
             "AssumeOrthogonal": "De kalibratie meet de RA- en Dec-richting normaal onafhankelijk van elkaar. Dit dwingt Dec precies loodrecht op RA, wat helpt als een grote periodieke fout, Dec-backlash of slechte seeing de Dec-kalibratie vertekenen.",
             "DecCompensation": "Past de RA-correcties aan de huidige declinatie aan, zodat een kalibratie op één declinatie ook op een andere blijft werken. De verbonden montering moet haar positie melden; laat dit aan. Niet hetzelfde als Dec-backlashcompensatie.",
-            "DecFlipRequired": "Instelling per montering; wordt automatisch gecorrigeerd door de Dec-zelfcontrole na de flip.",
+            "DecFlipRequired": "Of de Dec-correcties na een meridian flip omgekeerd moeten worden. Hangt van de montering af en wordt per montering opgeslagen; de Dec-zelfcontrole na de flip corrigeert het automatisch als het niet klopt.",
             "VerifyDecAfterFlip": "Controleert na een meridiaanflip de eerste Dec-correcties: duwen ze de ster verder weg in plaats van terug, dan keert de guider Dec zelf om en corrigeert ‘Dec omkeren na meridiaanflip’ voor deze montering.",
             "RotatorTurnsGuideCamera": "Of de verbonden rotator ook de guide-camera draait: Ja als de rotator tussen de telescoop en de OAG zit, Nee bij een guide-scoop of een rotator tussen de OAG en de opnamecamera. Met Ja wacht het guiden zolang de rotator draait en start daarna met een nieuwe guide-ster en de bewaarde kalibratie meegedraaid met de rotator, zodat je na een draaiing niet opnieuw hoeft te kalibreren. Duwt het guiden met Ja de ster weg na een rotatorbeweging, kies dan ‘Ja, omgekeerd’ en kalibreer nog een keer. De handmatige rotator van NINA wordt niet gevolgd.",
             "DitherMode": "Hoe elke dither gekozen wordt. Random: een willekeurige afstand en richting. Spiral: stappen langs een spiraal rond de startpositie, nuttig tegen fixed-pattern-ruis van de opnamecamera.",
             "DitherScale": "Vermenigvuldigt de ditherafstand die de opnamesoftware vraagt: 2 dithert twee keer zo ver, 0,5 half zo ver.",
             "FastRecenter": "Brengt de ster na een dither met grote directe pulsen naar de nieuwe lockpositie in plaats van met normale guidestappen, zodat de dither sneller tot rust komt. Laat dit best aan.",
             "ReacquireTimeoutSec": "Hoe lang de guider een verloren ster zoekt voordat hij alarm slaat. Daarna blijft hij zoeken en hervat het guiden zodra de ster terug is.",
-            "MaxPulseDutyPercent": "De guiding stopt als een as meer dan dit deel van een minuut pulsen krijgt (bescherming tegen weglopen).",
+            "MaxPulseDutyPercent": "De guiding stopt als een as langer dan dit deel van een minuut pulsen krijgt. Beschermt tegen weglopen, bijv. na een verkeerde kalibratie of met omgekeerde Dec.",
             "PauseWhenSlewing": "Pauzeert correcties zolang de montering zwenken/geparkeerd meldt. Zet dit alleen uit als het stuurprogramma van de montering permanent 'zwenkt' meldt.",
-            "PauseWhenTrackingOff": "Pauzeert correcties zolang de montering meldt dat volgen uit staat. Zet dit uit als het stuurprogramma van de montering de volgstatus niet kan melden.",
+            "PauseWhenTrackingOff": "Pauzeert de correcties zolang de montering meldt dat het volgen uit staat. Zet dit uit als het stuurprogramma van de montering de volgstatus niet kan melden.",
             "SaveGuideLog": "PHD2-compatibel guidelog in ~/.local/share/NINA/InternalGuider/Logs. De plugin Guidelogs toont het in de app.",
             "IncidentRecorder": "Houdt de guidebeelden van de laatste minuten in het geheugen en slaat ze op rond sterverlies, weglopen, problemen met montering en camera en foutpieken, om af te spelen en te downloaden.",
             "IncidentBudgetMb": "Schijfruimte voor opgenomen incidenten; de oudste niet-bewaarde worden het eerst verwijderd. Simulatorincidenten hebben hun eigen 200 MB.",
@@ -3886,7 +4117,7 @@
         "hyperbolicTrendline": "Hyperbolische trendlijn",
         "quadraticMin": "Kwadratisch minimum",
         "hyperbolicMin": "Hyperbolisch minimum",
-        "value": "Value",
+        "value": "Waarde",
         "invalidDate": "Ongeldige datum"
       },
       "settings": {
@@ -4623,7 +4854,7 @@
         "steps": {
           "check": {
             "title": "Vereisten",
-            "description": "Hocus Focus heeft een verbonden camera en focuser nodig."
+            "description": "De autofocus heeft een verbonden camera en focuser nodig."
           },
           "optics": {
             "title": "Optiek",
@@ -4631,15 +4862,15 @@
           },
           "rig": {
             "title": "Jouw opstelling",
-            "description": "Een paar vragen over je apparatuur. Je antwoorden zetten de voorinstellingen van Hocus Focus."
+            "description": "Een paar vragen over je apparatuur. Je antwoorden bepalen geschikte autofocus-presets."
           },
           "rough": {
             "title": "Grof scherpstellen",
-            "description": "Maak opnames en beweeg de focuser tot de sterren klein en rond zijn en de HFR zo laag mogelijk is."
+            "description": "Maak opnames en verplaats de focuser tot de sterren klein en rond zijn. De HFR is de sterrengrootte: hoe kleiner, hoe scherper."
           },
           "measure": {
             "title": "Stapgrootte en backlash",
-            "description": "Meet hoe snel de sterren groeien wanneer de focuser beweegt en hoeveel stappen hij verliest bij een richtingswissel, en stelt een stapgrootte voor de autofocus en de backlash-compensatie van NINA voor. De focuser gaat eerst een flink stuk terug, zodat elke positie van dezelfde kant wordt benaderd, dan vooruit door de focus en keert aan het eind terug naar de startpositie."
+            "description": "Meet hoe snel de sterren groeien als de focuser beweegt en hoeveel stappen hij verliest bij een richtingswisseling, en stelt een stapgrootte voor de autofocus en de backlash-compensatie voor. De focuser beweegt eerst ver terug zodat elke positie van dezelfde kant wordt bereikt, dan vooruit door de focus, en keert aan het eind terug naar zijn startpositie."
           },
           "run": {
             "title": "Testrun",
@@ -4651,14 +4882,13 @@
           },
           "optimize": {
             "title": "Optimaliseren",
-            "description": "Optioneel: de optimalisator stemt de sterdetectie af op een opgeslagen autofocus."
+            "description": "Optioneel: de optimalisator stemt de sterdetectie af op een nieuwe autofocusrun of op een opgeslagen run."
           }
         },
         "checks": {
           "camera": "Camera verbonden",
           "focuser": "Focuser verbonden",
-          "hocusFocus": "Hocus Focus beschikbaar",
-          "engineHint": "In @:{'general.backendName'} moeten 'Auto Focus' en 'Star Detector' allebei op Hocus Focus staan. De resultaatstap meldt het als dat niet zo is."
+          "hocusFocus": "Autofocus-plugin geïnstalleerd"
         },
         "focalLength": "Brandpuntsafstand (mm)",
         "pixelSize": "Pixelgrootte (µm)",
@@ -4674,7 +4904,7 @@
         "startRun": "Autofocus starten",
         "stopRun": "Autofocus stoppen",
         "runFailed": "De autofocus kon niet worden gestart.",
-        "noResult": "Er is nog geen voltooide Hocus Focus-autofocus om te beoordelen.",
+        "noResult": "Er is nog geen voltooide autofocus-run om te beoordelen.",
         "runAgain": "Opnieuw",
         "openOptimizer": "Optimalisator openen",
         "useOptimized": "Geoptimaliseerde instellingen gebruiken",
@@ -4776,7 +5006,7 @@
           "home": "Fout home",
           "follow": "Fout bij volgen Telescoop"
         },
-        "slew": "Slew",
+        "slew": "Zwenken",
         "slew_label": "Slew naar graden",
         "follow": "Dome volgt telescoop",
         "sync": "Sync met telescoop",
@@ -4832,9 +5062,9 @@
       "warm_up": "Opwarmen",
       "cooler_status": "Koeler Status",
       "cooler_status_off": "UIT",
-      "cooler_status_cooling": "Actief - Koelen naar",
-      "cooler_status_holding": "Actief - Op temperatuur",
-      "cooler_status_warming": "Actief - Opwarmen",
+      "cooler_status_cooling": "Koelen naar",
+      "cooler_status_holding": "Op temperatuur",
+      "cooler_status_warming": "Opwarmen",
       "set_save_snapshot": "Bewaar snapshots",
       "snapshotTargetName": "Doel naam",
       "set_use_solve_sync_to_mount": "Sync naar Montering",
@@ -4881,6 +5111,7 @@
       "up": "Omhoog",
       "not_available": "Niet beschikbaar",
       "running": "IN WERKING",
+      "movingToStart": "Naar de start bewegen…",
       "plate_solve_start": "Platesolve Start",
       "plate_solve_ok": "Platesolve succes",
       "plate_solve_error": "Platesolve fout",
@@ -4937,6 +5168,41 @@
       },
       "error_modal": {},
       "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "Pooluitlijning kan niet starten",
+        "refused": "De setup weigerde de pooluitlijning te starten",
+        "noLocation": "De setup kent zijn locatie niet. Stel eerst breedte- en lengtegraad in, de berekening hangt ervan af.",
+        "noDatabase": "Er is geen sterrenkaart geïnstalleerd, dus er kan geen opname worden geplate-solved. Installeer er een en start opnieuw.",
+        "notSent": "De start bereikte de setup niet. Controleer de verbinding en tik opnieuw op Start.",
+        "startSlewFailed": "De telescoop kon niet naar de startpositie bewegen. Controleer de mount en tik opnieuw op Start."
+      },
+      "trackingOffAfterStop": "Pooluitlijning heeft tracking uitgezet toen hij stopte.",
+      "resumeTracking": "Tracking weer aanzetten",
+      "goodEnoughHint": "Een totale fout onder 1′ (één boogminuut) is goed. Stop de uitlijning zodra die is bereikt.",
+      "tabSimple": "Pooluitlijning",
+      "simpleIntroMove": "Eerst rijdt de montering zelf naar een startpositie bij de hemelpool, daarna draait hij twee keer een stukje om zijn as en maakt daarbij opnamen. Controleer of de kabels lang genoeg zijn en niets in de weg zit.",
+      "simpleIntroAdjust": "Daarna toont deze pagina in welke richting je de hoogte- en azimutschroeven draait. De waarden worden na elke opname bijgewerkt. Stel bij tot de totale fout onder 1′ (één boogminuut) ligt en stop de uitlijning dan zelf.",
+      "adjustHint": "Draai de hoogte- en azimutschroeven in kleine stappen in de richting van de pijlen. De waarden worden na elke opname bijgewerkt.",
+      "lastMeasurement": "Laatste meting",
+      "markedDone": "De pooluitlijning is voor vannacht als klaar gemarkeerd.",
+      "confirmStartTitle": "Pooluitlijning starten?",
+      "confirmStartMessage": "De montering rijdt nu naar de startpositie bij de hemelpool en draait tijdens de meting. Controleer of de kabels lang genoeg zijn en niets in de weg zit.",
+      "status": {
+        "capturing": "Maakt een opname…",
+        "solving": "Plate solving van de opname…",
+        "captureRetry": "Opname mislukt, nieuwe poging…",
+        "solveRetry": "Plate solving mislukt, nieuwe poging…",
+        "nextPoint": "Rijdt naar het volgende punt",
+        "firstPoint": "Meet het eerste punt",
+        "secondPoint": "Meet het tweede punt",
+        "finalPoint": "Meet het derde punt",
+        "waitMount": "Wacht tot de montering stilstaat",
+        "waitDome": "Wacht op de koepel",
+        "settling": "Montering komt tot rust",
+        "slewInitial": "Rijdt naar de startpositie",
+        "movingAxis": "Draait de as",
+        "solveAttempt": "Plate solving van de opname…"
+      },
       "warn_dec_spread_body": "De gerapporteerde declinatie van de montering is tussen metingen met {arcsec}\" veranderd. Dit kan de nauwkeurigheid van de polaire uitlijning beïnvloeden - zorg ervoor dat alleen de RA-as beweegt tijdens de meting.",
       "warn_dec_spread_title": "Declinatiespreiding gedetecteerd",
       "warn_east_west_body": "Het huidige veld bevindt zich binnen 5° van het exacte oosten of westen. Als de live-oplossing onstabiel is, zwenk dan naar een veld verder van Oost/West en voer het spel opnieuw uit.",
@@ -4953,7 +5219,7 @@
       "dec": "Dec:",
       "ra_placeholder": "RA 03:47:28.2",
       "dec_placeholder": "Dec +24:06:19",
-      "slew": "Slew",
+      "slew": "Zwenken",
       "slew_and_center": "Slew en Centreer",
       "errors": {
         "invalidRAInput": "Ongeldige RA input.",
@@ -4969,7 +5235,11 @@
       "az": "Az:",
       "slew_modal": {
         "deviation_target": "Afwijking tot doel:"
-      }
+      },
+      "failed": "Slew of centreren mislukt",
+      "centeredTitle": "Doel gecentreerd",
+      "centered": "Het doel staat in het midden van de opname.",
+      "centeredNamed": "{name} staat in het midden van de opname."
     },
     "filterwheel": {
       "title": "Filter Wiel",
@@ -5081,7 +5351,7 @@
       "set_target_name": "Doelnaam instellen",
       "target_name": "Doelnaam",
       "target_name_from_favorites": "Naam uit favorieten overnemen",
-      "count": "Aantal",
+      "count": "Aantal flats",
       "exposure_time": "Belichtingstijd",
       "min_exposure_time": "Min belichtingstijd",
       "max_exposure_time": "Max belichtingstijd",
@@ -5176,7 +5446,7 @@
         "toggle": "Hemel aanwijzen aan/uit",
         "hint": "Hemel aanwijzen is actief. Richt door de achterkant van je scherm. Sleep om te stoppen; knijp om te zoomen.",
         "low_accuracy": "Het kompas is onnauwkeurig. Ga weg van metaal en magneten en kalibreer het kompas met een achtvormige beweging.",
-        "unavailable": "Sky pointing requires a supported native app and a north-referenced motion sensor. Manual browsing is available.",
+        "unavailable": "De sensoren voor hemelrichting zijn niet beschikbaar. Gebruik de native app op een apparaat met ondersteunde sensoren of blader handmatig.",
         "permission_denied": "Toegang tot de bewegingssensoren is geweigerd. Sta die toe in de systeeminstellingen of blader handmatig.",
         "location_required": "Hemel aanwijzen heeft een waarnemingslocatie nodig. Stel je locatie in of sta locatietoegang toe.",
         "sensor_error": "Hemel aanwijzen is gestopt omdat er geen sensorgegevens zijn. Probeer het opnieuw of blader handmatig."
@@ -5368,6 +5638,22 @@
         "camera_field": "Cameraveld",
         "actions": "Acties",
         "more": "Meer"
+      },
+      "tonight": {
+        "title": "Vannacht zichtbaar",
+        "intro": "De beste doelen voor vannacht op jouw locatie, de beste eerst. Tik op een doel om het in de atlas te selecteren.",
+        "noSite": "Stel eerst je locatie in het profiel in, dan verschijnen hier de beste doelen voor vannacht.",
+        "noDarkNight": "Vannacht wordt het op jouw locatie niet donker genoeg.",
+        "nothing": "Vannacht komt geen enkel doel hoog genoeg aan de hemel.",
+        "maxAlt": "tot {alt}° hoog",
+        "types": {
+          "galaxy": "Sterrenstelsel",
+          "nebula": "Nevel",
+          "planetary_nebula": "Planetaire nevel",
+          "cluster": "Sterrenhoop",
+          "dark_nebula": "Donkere nevel",
+          "widefield": "Groothoek"
+        }
       }
     },
     "profile": {
@@ -5611,6 +5897,7 @@
       "sequenceStart": "Sequentie kon niet worden gestart",
       "guidingStart": "Guiding kon niet worden gestart",
       "autofocusStart": "Autofocus kon niet worden gestart",
+      "autofocusStop": "Autofocus kon niet worden geannuleerd",
       "binning": "Binning kon niet worden gewijzigd",
       "readout": "Uitleesmodus kon niet worden gewijzigd",
       "switchSet": "Schakelaar kon niet worden ingesteld"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "Dev Update Kanaal verborgen.",
       "specialEnabled": "Oogpijn-markeerder ingeschakeld.",
       "specialDisabled": "De lol is voorbij."
+    },
+    "simpleMode": {
+      "title": "Vanavond",
+      "subtitle": "Je nacht stap voor stap: tik op de gemarkeerde stap en volg ze van boven naar beneden.",
+      "pinsOnly": "De eenvoudige modus is alleen beschikbaar als Touch'N'Stars met een PINS-apparaat is verbonden.",
+      "offHint": "De eenvoudige modus staat uit, dus de navigatie toont alle pagina's.",
+      "turnOn": "Eenvoudige modus gebruiken",
+      "showAll": "Alle functies tonen (eenvoudige modus uitzetten)",
+      "status": {
+        "done": "Klaar",
+        "running": "Bezig",
+        "open": "Te doen",
+        "skipped": "Overgeslagen"
+      },
+      "markDone": "Als klaar markeren",
+      "skip": "Vanavond overslaan",
+      "undoMark": "Ongedaan maken",
+      "needsCamera": "Verbind eerst de camera.",
+      "needsMount": "Verbind eerst de mount.",
+      "needsGuider": "De guider is nog niet verbonden. Tik hierboven op “Alles verbinden”.",
+      "needsCameraAndMount": "Heeft een verbonden camera en mount nodig.",
+      "rig": {
+        "title": "Je apparatuur",
+        "changeDevices": "Apparaten wijzigen",
+        "empty": "Er zijn nog geen apparaten ingesteld. De setup-assistent leidt je door camera, mount en de rest.",
+        "openWizard": "Setup-assistent openen",
+        "noMountHint": "Nog geen mount ingesteld? Zoek hier de juiste driver.",
+        "devicesFailedHint": "Niet verbonden: {devices}. Controleer eerst stroom en kabel; is beide in orde, dan is misschien een andere driver nodig.",
+        "mountFailedHint": "De mount verbond niet. Vaak is er een andere driver nodig.",
+        "connecting": "Verbinden…",
+        "allConnected": "Alles verbonden",
+        "connectAll": "Alles verbinden",
+        "exposing": "Foto maken",
+        "coolingTo": "koelen naar {temp}",
+        "parked": "Geparkeerd",
+        "slewing": "Beweegt",
+        "tracking": "Volgt de hemel",
+        "notTracking": "Volgt niet",
+        "autofocusRunning": "Autofocus bezig",
+        "position": "Positie {position}",
+        "connected": "Verbonden",
+        "notConnected": "Niet verbonden"
+      },
+      "guiderState": {
+        "Guiding": "Guiding",
+        "Calibrating": "Kalibreren",
+        "Looping": "Ster zoeken",
+        "LostLock": "Ster kwijt",
+        "Idle": "Gestopt",
+        "Paused": "Gepauzeerd",
+        "Reacquiring": "Ster opnieuw zoeken"
+      },
+      "night": {
+        "title": "Je nacht",
+        "progress": "{done} van {total} klaar"
+      },
+      "steps": {
+        "connect": {
+          "title": "Verbind je apparatuur",
+          "description": "Zet je setup aan en verbind dan alle apparaten met één tik.",
+          "hint": "Als een apparaat niet verbindt, controleer dan kabel en voeding en tik opnieuw op “Alles verbinden”.",
+          "summary": "{connected} van {total} verbonden"
+        },
+        "cool": {
+          "title": "Koel de camera",
+          "description": "Een gekoelde sensor geeft schonere foto's. Koelen duurt een paar minuten, dus begin vroeg – je kunt intussen met de volgende stappen doorgaan.",
+          "targetTemp": "Doeltemperatuur (°C)",
+          "start": "Koelen naar {temp} °C",
+          "failed": "Koelen kon niet worden gestart",
+          "warmingSummary": "Opwarmen · {temp}",
+          "setup": {
+            "question": "Hoe snel mag je camera afkoelen?",
+            "text": "Eenmalig gevraagd voor dit profiel. Te snel koelen of opwarmen belast sommige sensoren, en een sensor die te snel opwarmt kan beslaan. Het opwarmen gebeurt als je de nacht beëindigt.",
+            "presets": {
+              "fast": {
+                "title": "Snel",
+                "description": "Koelt meteen, warmt op in {warm} min. Prima voor de meeste huidige gekoelde CMOS-camera's – die begrenzen hun koeler zelf."
+              },
+              "gentle": {
+                "title": "Rustig",
+                "description": "Koelt in {cool} min, warmt op in {warm} min."
+              },
+              "veryGentle": {
+                "title": "Zeer rustig",
+                "description": "Koelt in {cool} min, warmt op in {warm} min. Voor oudere camera's en CCD-sensoren."
+              }
+            },
+            "notSure": "Niet zeker? De handleiding van je camera zegt of hij langzaam moet koelen. Tot je dat weet is “Rustig” een veilige keuze. Je kunt het later wijzigen op de camerapagina.",
+            "currentValues": "Je profiel heeft al een eigen timing: koelt in {cool} min, warmt op in {warm} min.",
+            "keepValues": "Deze timing behouden",
+            "applyFailed": "De timing kon niet in het profiel worden opgeslagen."
+          }
+        },
+        "mount": {
+          "title": "Maak de mount gereed",
+          "description": "De mount moet worden ontparkeerd en de hemel volgen (tracking) voordat hij op een doel kan wijzen.",
+          "action": "Ontparkeren en tracking starten",
+          "trackingFailed": "Tracking kon niet worden aangezet",
+          "trackingOffAfterPolar": "Pooluitlijning heeft tracking uitgezet. Tik op de knop om het weer aan te zetten."
+        },
+        "polar": {
+          "title": "Pooluitlijning",
+          "description": "Lijnt de mount uit op de hemelpool. De app maakt drie foto's, draait de mount ertussen en toont hoe ver je aan de stelknoppen moet draaien. Eén keer per opstelling is genoeg.",
+          "action": "Pooluitlijning openen"
+        },
+        "target": {
+          "title": "Kies een doel",
+          "description": "Kies je object in de sterrenatlas en voeg het toe aan je plan. Zodra de foto's beginnen, gaat het plan ernaartoe, centreert het doel met een opname en start guiding – dat hoef je niet handmatig te doen.",
+          "action": "Kies een doel in de sterrenatlas",
+          "another": "Nog een doel toevoegen",
+          "how": "Tik op je object in de sterrenatlas (of zoek het) en tik dan op “{button}”.",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} en {count} meer",
+          "calibrationRisk": {
+            "nearPole": "Je doel staat dicht bij de hemelpool, waar de guider niet kan kalibreren. Doe eerst de eenmalige kalibratie bij “Guiding instellen”.",
+            "low": "Je doel staat laag aan de hemel, waar de guider slecht kalibreert. Doe eerst de eenmalige kalibratie bij “Guiding instellen”."
+          }
+        },
+        "focus": {
+          "title": "Focus",
+          "description": "Scherpe sterren maken of breken de nacht – en de volgende stappen hebben ze ook nodig: pooluitlijning en het centreren van het doel bepalen de positie uit een opname. Richt de telescoop op een stuk hemel met sterren. Met een motorfocuser doet de autofocus het werk; zonder focus je handmatig met live-opnames.",
+          "autofocus": "Autofocus starten",
+          "watch": "De focuscurve bekijken",
+          "manualHint": "Geen motorfocuser verbonden: open de camera, maak opnames in een lus en draai de focuser tot de sterren zo klein mogelijk zijn.",
+          "manual": "De camera openen",
+          "lastRun": "Laatste autofocus om {time}",
+          "lastFailed": "Laatste autofocus om {time} mislukt – controleer of er sterren zichtbaar zijn en probeer opnieuw",
+          "pointAtStars": "Richt de telescoop op sterren (sterrenatlas)",
+          "setupFirst": "Stel vóór de eerste autofocus met deze telescoop hem eenmalig in: de assistent meet je focuser en camera en vindt werkende instellingen. Zonder dit mislukt de autofocus vaak.",
+          "cancelled": "Autofocus geannuleerd. De focuser gaat terug naar waar hij was.",
+          "setup": "Autofocus instellen"
+        },
+        "guide": {
+          "title": "Guiding instellen",
+          "description": "De guidecamera kijkt naar één ster en corrigeert de mount, zodat lange belichtingen scherp blijven. PINS heeft een eigen guider, speciaal ervoor ontwikkeld: hij draait direct op de setup zonder extra programma en guidet vaak rustiger dan PHD2. Hij moet je mount eenmalig leren kennen (kalibratie); daarna start je plan bij elk doel zelf met guiden.",
+          "details": "Guidingdetails en grafiek",
+          "useNativeHint": "Je profiel gebruikt nu een andere guider. De eenvoudige modus guidet met de in PINS ingebouwde guider: speciaal voor PINS ontwikkeld, draait direct op de setup en guidet vaak rustiger dan PHD2 – hij leert de periodieke fout van de tandwielen van je mount en behoudt zijn kalibratie van nacht tot nacht. Instellingen die je in PHD2 hebt gemaakt blijven behouden.",
+          "useNative": "Ingebouwde guider gebruiken",
+          "nativeMissing": "Deze PINS-versie heeft nog geen ingebouwde guider. Update PINS onder",
+          "chooseCamera": "De ingebouwde guider moet weten welke camera je guidecamera is. Kies hem hier – daarna verbindt “Alles verbinden” hem ook.",
+          "chooseCameraAction": "Guidecamera kiezen…",
+          "noGuideCamera": "Geen guidecamera gevonden – sluit hem aan en controleer “Alle apparaten”",
+          "calibrate": "Eenmalig kalibreren (ongeveer 3 min)",
+          "calibrateHint": "De telescoop beweegt naar een plek dicht bij de hemelequator, waar de kalibratie het nauwkeurigst is, en leert daar hoe de guider hem beweegt. Dit is maar één keer nodig: de kalibratie blijft bewaard voor alle latere nachten.",
+          "confirmCalibrateTitle": "De guider kalibreren?",
+          "confirmCalibrateMessage": "De telescoop beweegt naar de kalibratieplek en de guider kalibreert daar een paar minuten. Daarna stopt guiding weer – je plan start het bij het doel.",
+          "calibrating": "Kalibreren – dit duurt een paar minuten.",
+          "slewingToCalibration": "De telescoop beweegt naar de kalibratieplek…",
+          "calibratedHint": "Gekalibreerd. De kalibratie blijft ook voor latere nachten bewaard; je plan start bij elk doel zelf met guiden.",
+          "calibratedSummary": "Gekalibreerd",
+          "unparkFirst": "Maak eerst de telescoop gereed (stap “{step}”)."
+        },
+        "capture": {
+          "title": "Foto's maken",
+          "description": "Je plan bepaalt welke doelen je fotografeert met welk filter, welke belichtingstijd en hoeveel foto's. Start het en de app regelt de rest: naar het doel gaan, centreren, guiden en de foto's.",
+          "targets": "Doelen",
+          "remaining": "Resterende tijd",
+          "noPlan": "Er is nog geen plan. Maak er een met je doel, filter, belichtingstijd en aantal foto's.",
+          "nothingLeft": "Je plan heeft geen foto's meer te maken. Kies een nieuw doel of maak de foto's van dit plan opnieuw.",
+          "repeat": "De foto's opnieuw maken",
+          "repeatFailed": "Het plan kon niet worden gereset",
+          "editPlan": "Plan bewerken",
+          "createPlan": "Plan maken",
+          "watch": "Bekijk de foto's binnenkomen",
+          "start": "Foto's maken starten",
+          "stop": "Foto's maken stoppen",
+          "summary": "{targets} doel, klaar rond {time} | {targets} doelen, klaar rond {time}",
+          "summaryDone": "{targets} doel, alle foto's gemaakt | {targets} doelen, alle foto's gemaakt",
+          "confirmStartTitle": "Foto's maken starten?",
+          "confirmStartPlan": "Het plan start nu met {targets} doel en duurt ongeveer {remaining}. | Het plan start nu met {targets} doelen en duurt ongeveer {remaining}.",
+          "confirmStartApproach": {
+            "center": "De telescoop gaat naar het doel en centreert het. | De telescoop gaat naar elk doel en centreert het.",
+            "slew": "De telescoop gaat naar het doel maar centreert het niet. | De telescoop gaat naar elk doel maar centreert het niet.",
+            "off": "De telescoop gaat niet naar het doel en maakt de foto's waar hij nu naar wijst. | De telescoop gaat niet naar de doelen en maakt de foto's waar hij nu naar wijst.",
+            "mixed": "Niet elk doel wordt opgezocht en gecentreerd, zie het plan."
+          },
+          "confirmStartGuiding": {
+            "all": "Guiding start vóór de eerste foto.",
+            "none": "Het plan loopt zonder guiding.",
+            "mixed": "Niet elk doel krijgt guiding, zie het plan."
+          },
+          "confirmStopTitle": "Foto's maken stoppen?",
+          "confirmStopMessage": "De huidige foto wordt geannuleerd. Je kunt het plan later opnieuw starten.",
+          "noExposures": "Je plan heeft een doel maar nog geen foto's. Open het plan en tik op “Add exposure” om filter, belichtingstijd en aantal foto's te kiezen.",
+          "summaryEmpty": "{targets} doel, nog geen foto's gepland | {targets} doelen, nog geen foto's gepland",
+          "confirmStartFocus": "Na elke filterwissel wordt opnieuw scherpgesteld.",
+          "confirmStartRefocus": "Het stelt {interval} opnieuw scherp.",
+          "confirmStartEnd": {
+            "both": "Daarna parkeert de montering en warmt de camera op.",
+            "park": "Daarna parkeert de montering.",
+            "warm": "Daarna warmt de camera op. De montering blijft volgen tot je de nacht beëindigt.",
+            "none": "Daarna blijft de montering volgen tot je de nacht beëindigt."
+          },
+          "missingSteps": "{count} doel in je plan doet dit nog niet automatisch: {steps}. | {count} doelen in je plan doen dit nog niet automatisch: {steps}.",
+          "missingStepParts": {
+            "slew": "erheen gaan",
+            "guide": "guiden",
+            "focus": "opnieuw scherpstellen na een filterwissel"
+          },
+          "fixSteps": "Ontbrekende stappen toevoegen",
+          "flipMissing": "Je plan voert geen Meridian Flip uit. De telescoop zou erna blijven volgen en tegen het statief of de pier kunnen botsen.",
+          "addFlip": "Meridian Flip aanzetten",
+          "endMissing": {
+            "park": "Als je plan klaar is, blijft de montering volgen. Voorbij de meridiaan kan hij tegen het statief of de pier stoten als niemand de nacht beëindigt.",
+            "warm": "Als je plan klaar is, blijft de camera koud tot je de nacht beëindigt.",
+            "both": "Als je plan klaar is, blijft de montering volgen en blijft de camera koud. Voorbij de meridiaan kan de telescoop tegen het statief of de pier stoten als niemand de nacht beëindigt."
+          },
+          "addEnd": {
+            "park": "Montering parkeren na het plan",
+            "warm": "Camera opwarmen na het plan",
+            "both": "Parkeren en opwarmen na het plan"
+          },
+          "flipWindow": "{target} bereikt de meridiaan rond {meridian}; het plan draait de telescoop tussen {earliest} en {latest}.",
+          "flipFixed": "{target} bereikt de meridiaan rond {meridian}; het plan draait de telescoop om {earliest}.",
+          "flipPause": "{target} bereikt de meridiaan rond {meridian}; het plan pauzeert om {pause} en draait de telescoop om {earliest}.",
+          "flipNone": "Met dit plan is geen Meridian Flip nodig.",
+          "flipYourTarget": "Je doel",
+          "flipSettings": "Flip-instellingen en daglichttest",
+          "summaryCutOff": "{taken} van {planned} foto's gemaakt",
+          "confirmStartWait": "Het wacht tot het donker is, rond {time}."
+        },
+        "flats": {
+          "title": "Flats",
+          "description": "Flats verwijderen stofschaduwen en donkere hoeken uit je foto's. Maak ze nu, voordat er iets verandert: focus, camerarotatie en camerapositie moeten blijven zoals bij de foto's. Vanavond niet nodig? Sla deze stap over.",
+          "lightSource": "Lichtbron",
+          "panel": "Flatpanel",
+          "panelHint": "De setup stelt de helderheid van het paneel zelf in.",
+          "panelMissing": "Geen dimbaar flatpanel verbonden.",
+          "tablet": "Tablet of lichtfolie",
+          "tabletHint": "Plaats het gelijkmatig verlicht voor de telescoop; de setup vindt de belichtingstijd.",
+          "filters": "Filters",
+          "count": "Aantal flats per filter",
+          "countNoWheel": "Aantal flats",
+          "darks": "Ook dark flats maken",
+          "darksHint": "Alleen nodig als je met dark flats kalibreert. De telescoop moet daarvoor worden afgedekt; de app meldt wanneer.",
+          "start": "Flats maken",
+          "stop": "Flats stoppen",
+          "allSettings": "Alle flat-instellingen",
+          "needsPlugin": "Flats op deze pagina hebben een nieuwere Touch'N'Stars-plugin op de setup nodig. Update die, of maak de flats met de flat-assistent hieronder.",
+          "planRunning": "Het plan loopt nog. Flats kunnen worden gemaakt zodra het klaar of gestopt is.",
+          "noFilterSelected": "Vink minstens één filter aan.",
+          "noFilter": "Flats",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flats",
+          "endBlocked": "Flats lopen nog. Beëindig de nacht zodra ze klaar of gestopt zijn.",
+          "runningSummary": "Flats maken",
+          "doneSummary": "Flats vanavond gemaakt",
+          "result": {
+            "success": "Eén flat gemaakt | {count} flats gemaakt",
+            "dim": "Te donker: gebruik een helderder licht, of sta een langere belichting toe in de flat-instellingen.",
+            "bright": "Te helder: dim het licht, of sta een kortere belichting toe in de flat-instellingen.",
+            "failed": "De flats konden niet worden gemaakt.",
+            "stopped": "Gestopt"
+          }
+        },
+        "end": {
+          "title": "De nacht beëindigen",
+          "description": "Stopt alles in de juiste volgorde, parkeert de mount en warmt de camera langzaam op zodat er geen vocht op de sensor ontstaat.",
+          "action": "De nacht beëindigen"
+        }
+      },
+      "more": {
+        "title": "Meer",
+        "pictures": "Opnamen van de nacht",
+        "equipment": "Alle apparaten",
+        "mount": "Mount",
+        "focus": "Focus",
+        "guider": "Guiding",
+        "system": "Wifi, updates en systeem",
+        "settings": "Instellingen"
+      },
+      "endNight": {
+        "title": "De nacht beëindigen",
+        "intro": "Deze stappen worden na elkaar uitgevoerd. Vink uit wat je wilt laten doorlopen.",
+        "nothingToDo": "Er loopt niets en de mount is geparkeerd – er is niets meer te doen.",
+        "nothingToDoNoMount": "Er loopt niets. De mount is niet verbonden, controleer dus zelf of hij geparkeerd is.",
+        "someFailed": "Niet alles is gelukt, de reden staat onder de stap. Controleer de mount voordat je de stroom uitzet.",
+        "doneWarming": "Alles klaar. Zodra de camera is opgewarmd, sluit je de rig af op de startpagina voordat je de stroom uitzet.",
+        "confirm": "De nacht nu beëindigen",
+        "actions": {
+          "stopSequence": "Foto's maken stoppen",
+          "stopGuiding": "Guiding stoppen",
+          "parkMount": "De mount parkeren",
+          "warmCamera": "De camera opwarmen ({minutes} min)"
+        },
+        "parkTimeout": "De mount meldde niet “geparkeerd” binnen 3 minuten. Controleer hem voordat je de stroom uitzet.",
+        "doneShutdown": "Alles klaar. Sluit de rig af voordat je de stroom uitzet."
+      },
+      "settings": {
+        "title": "Eenvoudige modus",
+        "description": "Een startpagina die je door de nacht leidt, en een navigatie met alleen de pagina's die je daarvoor nodig hebt. Zet hem uit om weer alle functies te zien.",
+        "navbarHint": "Zolang de eenvoudige modus aan staat, heeft de navigatie-aanpassing hieronder geen effect. Ze komt ongewijzigd terug als je de modus uitzet."
+      },
+      "wizard": {
+        "title": "Hoe wil je de app gebruiken?",
+        "simpleTitle": "Eenvoudig (aanbevolen om te beginnen)",
+        "simpleText": "Een startpagina leidt je stap voor stap door de nacht, met alleen de pagina's die je nodig hebt.",
+        "fullTitle": "Alle functies",
+        "fullText": "Elke pagina en instelling in de navigatie, voor ervaren gebruikers."
+      },
+      "focusFirst": "Eerst focussen: deze stap bepaalt de positie uit een opname, en dat heeft scherpe sterren nodig.",
+      "live": {
+        "lastPicture": "Laatste foto",
+        "openFull": "De foto op volledig scherm tonen",
+        "noPicture": "Nog geen foto. Maak een testfoto om te zien wat de camera ziet.",
+        "preview": "Testfoto",
+        "hfr": "Scherpte (HFR)",
+        "stars": "Sterren",
+        "guiding": "Guiding",
+        "sensor": "Sensor",
+        "trendTitle": "Scherpte van de laatste {count} foto's",
+        "trendHint": "Scherpere sterren staan hoger getekend. Zakt de lijn in de loop van de nacht, focus dan opnieuw.",
+        "exposure": "Belichtingstijd",
+        "testPicture": "Testfoto maken",
+        "abort": "Belichting stoppen",
+        "planRunning": "Je plan maakt foto's – nieuwe verschijnen hier zodra ze binnenkomen.",
+        "justNow": "zojuist",
+        "minutesAgo": "{minutes} min geleden",
+        "histogram": "Histogram",
+        "min": "Min",
+        "max": "Max",
+        "pixels": "{count} pixel | {count} pixels",
+        "pixelsSaturated": "{count} pixel verzadigd | {count} pixels verzadigd",
+        "histogramHint": "Ongestrekte sensordata van de hele foto. Alleen het bereik rond de hemelachtergrond wordt getoond; sterren en verzadigde pixels liggen verder rechts en worden onder Max geteld.",
+        "firstPlanPicture": "De eerste foto van je plan verschijnt hier."
+      },
+      "setupChecks": {
+        "title": "Vóór je eerste nacht",
+        "locationTitle": "Je locatie ontbreekt",
+        "locationText": "De setup weet niet waar hij staat. Pooluitlijning en de sterrenatlas kunnen niet werken zonder.",
+        "locationAction": "Locatie instellen",
+        "databaseTitle": "Geen sterrenkaart geïnstalleerd",
+        "databaseText": "Pooluitlijning en het centreren van een doel vergelijken een opname met een sterrenkaart. De setup heeft er nog geen.",
+        "databaseAction": "Sterrenkaart installeren",
+        "flipTitle": "Meridian Flip nog niet ingesteld",
+        "flipText": "Als een doel de meridiaan passeert (de noord–zuidlijn door het zenit), moet de telescoop naar de andere kant van de mount draaien – anders zou hij snel tegen het statief of de pier botsen. Je plan doet dit zelf. Geef eenmalig aan hoe ver je mount na de meridiaan kan blijven volgen.",
+        "flipNotSure": "Niet zeker? De handleiding van je mount zegt meestal hoe ver hij na de meridiaan kan volgen. Tot je dat weet houdt “Nauwelijks” de telescoop veilig, ten koste van een paar minuten zonder foto's.",
+        "flipCurrentValues": "Je profiel heeft al een eigen timing: {values}.",
+        "flipKeepValues": "Deze timing behouden",
+        "flipTimingWindow": "flip {min}–{max} min na de meridiaan",
+        "flipTimingFixed": "flip {min} min na de meridiaan",
+        "flipTimingPause": "pauze {pause} min ervoor, flip {min} min na de meridiaan",
+        "blockedPolar": "Pooluitlijning kan nog niet werken, zie \"Vóór je eerste nacht\" hierboven.",
+        "blockedTarget": "Centreren kan nog niet werken: er is geen sterrenkaart geïnstalleerd, zie \"Vóór je eerste nacht\" hierboven."
+      },
+      "backToNight": "Terug naar je nacht",
+      "cockpit": {
+        "title": "Foto's maken",
+        "noTargetName": "Je plan",
+        "doneAt": "Klaar om",
+        "remaining": "{time} resterend",
+        "activity": {
+          "autofocus": "Focussen (autofocus)",
+          "slewing": "Telescoop beweegt",
+          "centering": "Doel wordt gecentreerd",
+          "startingGuiding": "Guiding wordt gestart",
+          "closing": "Plan wordt afgerond (parkeren, opwarmen)",
+          "calibrating": "Guider kalibreert",
+          "settling": "Wachten tot guiding stabiliseert",
+          "exposing": "Belichten",
+          "busy": "Volgende foto voorbereiden",
+          "flipping": "Meridian Flip – de telescoop draait naar de andere kant",
+          "waitingForDark": "Wacht tot het donker is"
+        },
+        "exposing": "Belichten {seconds} s",
+        "frame": "foto {frame} van {frames}",
+        "check": "Controle",
+        "hfr": "HFR",
+        "noFrame": "nog geen foto",
+        "hfrChange": "{change} % t.o.v. eerder",
+        "guidingLevel": {
+          "good": "uitstekend",
+          "ok": "oké",
+          "poor": "te hoog",
+          "unknown": "schaal onbekend"
+        },
+        "alerts": {
+          "devices": "{count} apparaat is niet meer verbonden. | {count} apparaten zijn niet meer verbonden.",
+          "starLost": "De guider is zijn ster kwijt. Foto's die nu worden gemaakt tonen sterstrepen.",
+          "notGuiding": "Het plan loopt zonder guiding.",
+          "guidingPoor": "Guiding ({rms}″) is groter dan één beeldpixel ({scale}″) – sterren worden zacht. Wind, balans of een losse kabel zijn veelvoorkomende oorzaken.",
+          "hfrRising": "Sterren zijn {change} % groter dan in de eerdere foto's. De focus kan zijn gedreven, of er komen dauw of wolken aan.",
+          "cooling": "Sensor staat op {temp} °C in plaats van {target} °C."
+        },
+        "hfrNoBaseline": "eerste foto's",
+        "lastPicture": "laatste foto",
+        "verdict": {
+          "good": "Alles loopt goed",
+          "warn": "Loopt – één ding vraagt aandacht",
+          "danger": "Controleer even – de foto's lopen gevaar",
+          "waiting": "Loopt – de eerste foto's laten zien hoe goed"
+        },
+        "showDetails": "Details tonen",
+        "hideDetails": "Details verbergen",
+        "focus": "Focus",
+        "focusLevel": {
+          "good": "scherp",
+          "ok": "iets zacht",
+          "poor": "zacht"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Guiding",
+            "what": "Hoe nauwkeurig de mount de sterren volgt: het wiebelen van de guidester, vergeleken met de grootte van één pixel in je foto's.",
+            "now": "Nu: {rms}″ wiebel, dat is {ratio} pixel (één pixel = {scale}″).",
+            "nowNoScale": "Nu: {rms}″ wiebel. Om het te beoordelen heeft het profiel de brandpuntsafstand en de pixelgrootte nodig.",
+            "nowOff": "Guiding loopt nu niet.",
+            "nowPaused": "Gepauzeerd terwijl de telescoop focust of beweegt.",
+            "limits": "Groen tot {good} pixel, geel tot {ok} pixel, rood erboven – dan worden sterren korte streepjes.",
+            "fix": "Wordt het rood: wind, balans of een losse kabel zijn de gebruikelijke oorzaken."
+          },
+          "focus": {
+            "title": "Focus",
+            "what": "Hoe groot de sterren in de nieuwste foto zijn vergeleken met de eerdere foto's met hetzelfde filter. Groeiende sterren betekenen dat de focus drijft – of dat er dauw of dunne wolken aankomen.",
+            "now": "Nu: sterrengrootte (HFR) {hfr}, {change} % vergeleken met eerder ({baseline}).",
+            "nowFirst": "Wordt beoordeeld zodra er {count} foto's van één filter zijn.",
+            "nowNone": "Nog geen foto.",
+            "limits": "Groen tot {good} % groter, geel tot {ok} %, rood erboven.",
+            "fix": "Wordt het rood: focus opnieuw (autofocus). Helpt dat niet, controleer dan de voorkant van de telescoop op dauw."
+          },
+          "cooling": {
+            "title": "Koeling",
+            "what": "De temperatuur van de camerasensor. Een koude sensor geeft foto's met minder ruis.",
+            "now": "Nu: {temp} °C, doel {target} °C.",
+            "limits": "Groen binnen {good} °C van het doel, rood erbuiten.",
+            "fix": "Blijft het rood: de koeler kan het doel in deze warmte niet halen – kies een doel een paar graden warmer."
+          }
+        },
+        "statusBarHint": "Guiding, focus en koeling worden beoordeeld in de statusbalk hieronder – tik op een item om te zien wat het betekent.",
+        "stop": "Stoppen",
+        "waitingUntil": "Wacht tot het donker is, rond {time}"
+      },
+      "summary": {
+        "finished": {
+          "title": "Plan voltooid",
+          "text": "Alle foto's van je plan zijn gemaakt. Beëindig de nacht om de telescoop te parkeren en de camera op te warmen.",
+          "textFlats": "Alle foto's van je plan zijn gemaakt. Maak nu je flats, zolang er niets is veranderd, en beëindig dan de nacht.",
+          "cutOffTitle": "Klaar voor vannacht",
+          "cutOff": "Het werd licht of je doel stond te laag: {taken} van {planned} foto's zijn gemaakt. Start het plan een andere nacht opnieuw voor de rest."
+        },
+        "ended": {
+          "title": "Nacht beëindigd",
+          "text": "Heldere luchten! Dit bracht vanavond op.",
+          "notParked": "Telescoop nog niet geparkeerd",
+          "shutdown": "Rig afsluiten",
+          "shutdownWait": "Wacht met afsluiten tot de camera warm is en de telescoop geparkeerd.",
+          "resume": "De nacht voortzetten"
+        },
+        "frames": "Foto's",
+        "integration": "Belichting",
+        "medianHfr": "Mediane HFR"
+      },
+      "addToPlan": "Aan plan toevoegen",
+      "slewOptional": "Je plan gaat naar het doel, centreert het en start zelf met guiden. Er nu naartoe gaan is alleen nodig om eerst de framing te controleren.",
+      "coachHint": {
+        "text": "Je guiding was gisteravond onrustig. De Guiding Coach meet je guidecamera, de hemel en de mount en vertelt wat helpt. Het duurt ongeveer 15 minuten onder de sterren – het best voordat je met je foto's begint.",
+        "open": "De Guiding Coach openen",
+        "dismiss": "Nu niet"
+      },
+      "camera": {
+        "title": "Camera",
+        "hint": "De testopname en elke opname van je plan gebruiken deze waarden, tenzij je een belichting in het plan eigen waarden geeft. De handleiding van je camera noemt de aanbevolen gain en offset."
+      },
+      "expert": {
+        "show": "Expertinstellingen tonen",
+        "hide": "Expertinstellingen verbergen"
+      },
+      "window": {
+        "waits": "Het plan wacht tot het donker is, rond {time}.",
+        "tooMany": "Slechts ongeveer {fit} van {left} foto's passen in deze nacht. De rest kan een andere nacht.",
+        "noDarkness": "Zo donker wordt het vannacht niet, het plan zou eindeloos wachten. Kies in het plan onder “Nacht” een lichtere hemel.",
+        "limit": {
+          "light": "Het stopt uiterlijk om {time}, omdat het dan licht wordt.",
+          "low": "Het stopt uiterlijk om {time}, omdat je doel dan te laag staat."
+        },
+        "nothing": {
+          "light": "Het is nu te licht, het plan zou meteen zonder foto eindigen. Zet in het plan “Wachten tot het donker is” aan: dan start het rond {time}.",
+          "low": "Je doel staat te laag boven de horizon en daalt, het plan zou zonder foto eindigen. Kies een ander doel of een lagere hoogte.",
+          "other": "Zo gestart zou het plan meteen zonder foto eindigen."
+        }
+      }
     },
     "secureObservatory": {
       "title": "Nacht afsluiten",
@@ -5679,6 +6447,17 @@
       "cameraCold": "De camerakoeling staat aan ({temperature} °C).",
       "domeOpen": "De koepel is niet gesloten.",
       "coverOpen": "De klep van het flatpanel is open."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Welk merk is het?",
+      "otherBrand": "Ander merk",
+      "focuserLabel": "Welke focuser is het?",
+      "otherFocuser": "Andere focuser",
+      "disconnectFirst": "Verbreek de verbinding met het apparaat voordat je de driver wijzigt.",
+      "applied": "Klaar: “{device}” is gekozen. Sluit het aan, zet het aan en tik op “Verbinden”.",
+      "appliedSeveral": "De driver is ingesteld en vond meerdere apparaten. Kies het jouwe in de apparatenlijst en tik op “Verbinden”.",
+      "appliedNoDevice": "De driver is ingesteld, maar er is nog geen apparaat gevonden. Sluit het aan, zet het aan, vernieuw de apparatenlijst, kies het en tik op “Verbinden”.",
+      "openButton": "Driver zoeken: {device}"
     }
   },
   "plugins": {
@@ -5904,6 +6683,15 @@
       "dryRun": "Simulatiemodus",
       "sambaTitle": "Samba-share",
       "sambaDescription": "Netwerkbestandsdeling in- of uitschakelen",
+      "samba": {
+        "firstEnable": "Zet dit aan om de opnamen naar een computer in hetzelfde netwerk te kopiëren. De eerste keer moet de rig misschien software downloaden en heeft dan internet nodig.",
+        "howTo": "Vul op een computer in hetzelfde netwerk als de rig dit adres in:",
+        "windows": "Windows: adresbalk van de Verkenner",
+        "mac": "Mac: Finder, Ga, Verbind met server",
+        "login": "Als om inloggen wordt gevraagd: gebruiker ‘{user}’, wachtwoord ‘{password}’, tenzij het is gewijzigd.",
+        "outside": "Je opnamen worden opgeslagen in {folder}. De share toont {share}, dus misschien verschijnen ze daar niet.",
+        "openAccess": "Zolang dit aanstaat, kan iedereen in dit netwerk deze bestanden zonder wachtwoord openen, wijzigen en verwijderen."
+      },
       "phd2Title": "PHD2 automatisch starten",
       "phd2Running": "De service is momenteel actief",
       "phd2Stopped": "De service is momenteel gestopt",
@@ -6087,6 +6875,7 @@
       "tabs": {
         "network": "Netwerk",
         "services": "Diensten",
+        "pictures": "Foto's",
         "system": "Systeem",
         "indi": "INDI",
         "software": "Software",
@@ -6378,7 +7167,7 @@
         "statusRunning": "Actief",
         "statusSuccess": "Succes",
         "statusTimeout": "Time-out",
-        "stillPreparing": "Het archief is nog in voorbereiding. Probeer het binnenkort opnieuw te downloaden.",
+        "stillPreparing": "Het archief wordt nog voorbereid op het apparaat.",
         "title": "PINS-systeemdiagnose",
         "validationDmesgLines": "dmesg-regels moeten tussen 100 en 50000 liggen.",
         "validationJournalLines": "Journaalregels moeten tussen 100 en 50.000 liggen.",
@@ -8940,6 +9729,7 @@
         "errors": {
           "tppaUnavailable": "De TPPA-verbinding kon niet worden geopend.",
           "tppaNoResponse": "TPPA reageerde niet op het startverzoek.",
+          "tppaStartSlewFailed": "De telescoop kon niet naar de startpositie van de pooluitlijning bewegen.",
           "tppaError": "TPPA meldde een fout. Controleer camera, montering en plate solver.",
           "tppaSilent": "TPPA heeft al twee minuten niets verzonden. TPPA en de Auto-Pilot zijn gestopt.",
           "autoPilotNotStarted": "De Auto-Pilot is niet gestart. Controleer het AAPA-logboek; TPPA is gestopt als het hier was gestart.",
@@ -9437,7 +10227,7 @@
     "buttons": {
       "refresh": "Vernieuwen",
       "reload": "Herladen",
-      "slew": "Slew",
+      "slew": "Zwenken",
       "center": "Centreren",
       "slewNoCenter": "Slew (zonder centrering)",
       "slewCenter": "Slew + Centreren",
@@ -9521,7 +10311,7 @@
     "config": {
       "connectionMode": "Verbindingsmodus",
       "serial": "Serieel",
-      "network": "Netwerk",
+      "network": "Netwerk (TCP)",
       "devicePort": "Apparaatpoort",
       "baudRate": "Baudrate",
       "autoDetect": "Automatische detectie",
@@ -9551,7 +10341,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Instell.",
-    "about": "Info"
+    "about": "Info",
+    "home": "Start",
+    "plan": "Plan",
+    "target": "Doel"
   },
   "nightsummary": {
     "tnsPluginToOld": "De Touch N Stars plugin is te oud voor deze functie. Werk bij naar versie 1.2.8.0 of nieuwer.",
@@ -9814,7 +10607,7 @@
       "eqmodToggleDescription": "EQMOD leest de RA-snelheid als ruwe boogseconden/sec in plaats van wat @:{'general.backendName'} verstuurt, waardoor het volgen ~15× te traag wordt zonder correctie. Alleen inschakelen als de montering EQMOD gebruikt.",
       "eqmodDetectedHint": "{name} lijkt een EQMOD-driver te zijn — je wilt dit waarschijnlijk inschakelen.",
       "reapplyIntervalTitle": "Herhalingsinterval",
-      "reapplyIntervalDescription": "Hoe vaak Quick Track de volgsnelheid herberekent en opnieuw verstuurt. De standaardwaarde van 900 s (15 min) is geschikt voor kometen en asteroïden.",
+      "reapplyIntervalDescription": "Hoe vaak Quick Track de volgsnelheid herberekent en opnieuw verstuurt. De standaardwaarde van 900 s (15 min) is geschikt voor kometen en asteroïden; verkort die tot minimaal 5 seconden voor een ongewoon snel object.",
       "secondsUnit": "sec",
       "addToSequenceDescriptionRest": "voegt een doel van aansturen + volgen + opname toe aan de sequentie die al in de PINS-sequencer is geladen, zodat je die kunt controleren en starten -- je bestaande doelen blijven ongewijzigd.",
       "downloadSequence": "Sequentie downloaden",

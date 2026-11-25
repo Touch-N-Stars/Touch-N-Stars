@@ -53,13 +53,21 @@ import {
   presetProfileChanges,
 } from '@/utils/meridianFlipPresets';
 
-const emit = defineEmits(['custom']);
+const props = defineProps({
+  // The simple mode has no "Advanced" section to send custom values to
+  showCustom: { type: Boolean, default: true },
+});
+// applied: a preset was written to the profile (its id)
+const emit = defineEmits(['custom', 'applied']);
 
 const { t } = useI18n();
 const store = apiStore();
 const toastStore = useToastStore();
 
-const options = [...MERIDIAN_FLIP_PRESETS.map((p) => ({ id: p.id })), { id: CUSTOM_PRESET_ID }];
+const options = [
+  ...MERIDIAN_FLIP_PRESETS.map((p) => ({ id: p.id })),
+  ...(props.showCustom ? [{ id: CUSTOM_PRESET_ID }] : []),
+];
 
 const isApplying = ref(false);
 // Shown while the writes are in flight and until the next profile poll confirms them.
@@ -91,6 +99,7 @@ async function choose(presetId) {
       if (!response?.Success) throw new Error(response?.Error || key);
     }
     await store.fetchProfilInfos();
+    emit('applied', presetId);
   } catch (error) {
     console.error('Error applying meridian flip preset:', error);
     toastStore.showToast({

@@ -41,8 +41,26 @@
     >
       <span class="chip-label">{{ t('components.statusBar.labels.camera') }}</span>
       <span class="chip-value-line">
-        <span v-if="showDot(cameraState)" class="tns-dot" :class="dotClass(cameraState)"></span>
+        <span
+          v-if="ratedDot.camera || showDot(cameraState)"
+          class="tns-dot"
+          :class="dotClass(ratedDot.camera ?? cameraState)"
+        ></span>
         <span class="chip-value">{{ cameraValue }}</span>
+      </span>
+    </button>
+    <!-- Focus (simple mode only): the HFR of the newest pictures against the earlier ones -->
+    <button
+      v-if="simpleModeActive && store.cameraInfo.Connected && !isStatusItemHidden('focus')"
+      class="tns-status-seg"
+      :class="segClass('idle', statusBarStore.isPanelOpen('focus'))"
+      :style="{ order: getStatusOrder('focus') }"
+      @click="statusBarStore.togglePanel('focus')"
+    >
+      <span class="chip-label">{{ t('components.simpleMode.cockpit.focus') }}</span>
+      <span class="chip-value-line">
+        <span class="tns-dot" :class="dotClass(ratedDot.focus)"></span>
+        <span class="chip-value">{{ focusValue }}</span>
       </span>
     </button>
     <!--Filter-->
@@ -103,7 +121,11 @@
     >
       <span class="chip-label">{{ t('components.statusBar.labels.guiding') }}</span>
       <span class="chip-value-line">
-        <span v-if="showDot(guiderState)" class="tns-dot" :class="dotClass(guiderState)"></span>
+        <span
+          v-if="ratedDot.guider || showDot(guiderState)"
+          class="tns-dot"
+          :class="dotClass(ratedDot.guider ?? guiderState)"
+        ></span>
         <span class="chip-value">{{ guiderValue }}</span>
       </span>
     </button>
@@ -145,7 +167,7 @@
       v-if="store.isPINS && !isStatusItemHidden('power')"
       class="tns-status-seg"
       :style="{ order: getStatusOrder('power') }"
-      @click.stop.prevent="showPowerModal = true"
+      @click.stop.prevent="statusBarStore.openPowerDialog()"
     >
       <PowerIcon class="w-4 h-4" />
       <span class="chip-value">{{ t('components.statusBar.labels.power') }}</span>
@@ -178,24 +200,35 @@
     <!-- Log modal -->
     <LogModal v-if="showLogModal" @close="showLogModal = false" />
 
-    <!-- Power modal -->
-    <SystemPowerModal v-if="showPowerModal" @close="showPowerModal = false" />
     <!-- Docked panels. All stay mounted (v-show): the guider graph keeps its
          chart instance, the others are cheap and switch without a flash. -->
     <div ref="panelRef" :class="statusPanelClasses" v-show="statusBarStore.activePanel">
       <div v-show="statusBarStore.isPanelOpen('guider')">
+        <SimpleQualityInfo v-if="simpleModeActive" :quality="guidingQuality" class="px-5 pt-4" />
         <GuiderGraph />
         <div class="flex gap-2 ml-6 mb-2 overflow-x-auto scrollbar-hide">
           <GuiderStats v-if="store.guiderInfo.Connected" />
         </div>
       </div>
       <div v-show="statusBarStore.isPanelOpen('camera')" class="p-5 flex flex-col gap-3">
+        <SimpleQualityInfo
+          v-if="simpleModeActive && coolingQuality.level"
+          :quality="coolingQuality"
+        />
         <infoCamera />
         <settingsCameraCooler
           v-if="store.cameraInfo.CanSetTemperature || store.cameraInfo.HasDewHeater"
           compact
           class="sm:max-w-sm"
         />
+      </div>
+      <div
+        v-if="simpleModeActive"
+        v-show="statusBarStore.isPanelOpen('focus')"
+        class="p-5 flex flex-col gap-3 max-h-[50vh] overflow-y-auto"
+      >
+        <SimpleQualityInfo :quality="focusQuality" />
+        <SimpleHfrTrend />
       </div>
       <div v-show="statusBarStore.isPanelOpen('mount')">
         <infoMount class="p-5" />
@@ -233,7 +266,6 @@ import { useI18n } from 'vue-i18n';
 import WeatherModal from '../WeatherModal.vue';
 import LogModal from './LogModal.vue';
 import InstanceSwitcherModal from './InstanceSwitcherModal.vue';
-import SystemPowerModal from '../system/SystemPowerModal.vue';
 import GuiderGraph from '../guider/GuiderGraph.vue';
 import GuiderStats from '../guider/GuiderStats.vue';
 import { useGuiderStore } from '@/store/guiderStore';
@@ -251,13 +283,16 @@ import ControlSwitch from '../switch/ControlSwitch.vue';
 import InfoSwitch from '../switch/InfoSwitch.vue';
 import { usePluginStore } from '@/store/pluginStore';
 import { LockOpenIcon, PowerIcon } from '@heroicons/vue/24/outline';
+import SimpleQualityInfo from '../simpleMode/SimpleQualityInfo.vue';
+import SimpleHfrTrend from '../simpleMode/SimpleHfrTrend.vue';
+import { useSimpleMode } from '@/composables/useSimpleMode';
+import { fmt, LEVEL_STATE, useImagingQuality } from '@/composables/useImagingQuality';
 
 const { t } = useI18n();
 const store = apiStore();
 const showWeatherModal = ref(false);
 const showLogModal = ref(false);
 const showInstanceSwitcher = ref(false);
-const showPowerModal = ref(false);
 const guiderStore = useGuiderStore();
 const settingsStore = useSettingsStore();
 const cameraStore = useCameraStore();
@@ -344,7 +379,27 @@ function showDot(state) {
 
 // Chip position and visibility are user-configurable (see
 // StatusBarCustomizationSettings.vue). Unknown ids sort to the end.
+// Simple mode: a fixed, short bar. What decides the night's pictures (camera with its cooling,
+// focus, guiding, mount) plus what keeps the rig safe; the expert segments (progress, log,
+// instance, filter, switch) come back with the full mode. The user's own order and hidden
+// items stay stored for that.
+const { active: simpleModeActive } = useSimpleMode();
+const SIMPLE_MODE_ORDER = [
+  'screenlock',
+  'safety',
+  'camera',
+  'focus',
+  'guider',
+  'mount',
+  'weather',
+  'power',
+];
+
 function getStatusOrder(id) {
+  if (simpleModeActive.value) {
+    const idx = SIMPLE_MODE_ORDER.indexOf(id);
+    return idx === -1 ? 99 : idx;
+  }
   const order = settingsStore.statusbar?.itemOrder;
   if (!order) return 99;
   const idx = order.indexOf(id);
@@ -352,8 +407,25 @@ function getStatusOrder(id) {
 }
 
 function isStatusItemHidden(id) {
+  if (simpleModeActive.value) return !SIMPLE_MODE_ORDER.includes(id);
   return settingsStore.statusbar?.hiddenItems?.includes(id) ?? false;
 }
+
+// Simple mode rates guiding, focus and cooling the same way as the imaging cockpit. A rating
+// only colours the segment's dot (green, yellow, red); the value stays the number and the
+// docked panel explains the rating. The top edge is left to real alarms (star lost, parked).
+const { coolingQuality, focusQuality, guideRms, guidingQuality, hfr } = useImagingQuality();
+const ratedDot = computed(() =>
+  simpleModeActive.value
+    ? {
+        // Cooling on target leaves the camera's own dot (cooler on, exposing)
+        camera: coolingQuality.value.level === 'poor' ? 'warn' : null,
+        focus: LEVEL_STATE[focusQuality.value.level] ?? 'idle',
+        guider: LEVEL_STATE[guidingQuality.value.level] ?? null,
+      }
+    : {}
+);
+const focusValue = computed(() => (hfr.value ? fmt(hfr.value.hfr) : '–'));
 
 function formatNumber(value, digits) {
   const num = Number(value);
@@ -392,6 +464,13 @@ const guiderState = computed(() => {
 
 const guiderValue = computed(() => {
   if (guiderStore.phd2StarLost) return t('components.statusBar.guiding.starLost');
+  // Simple mode: the RMS the rating uses, and none while not guiding - NINA keeps the last
+  // RMS after a stop, which would read as current.
+  if (simpleModeActive.value) {
+    return guideRms.value
+      ? `${fmt(guideRms.value.total)}″`
+      : t('components.statusBar.guiding.idle');
+  }
   const rms = store.guiderInfo.RMSError?.Total;
   if (!rms) return t('components.statusBar.guiding.idle');
   if (store.profileInfo?.GuiderSettings?.PHD2GuiderScale === 'ARCSECONDS') {

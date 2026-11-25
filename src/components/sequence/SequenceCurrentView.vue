@@ -27,7 +27,7 @@
         class="w-full min-h-touch flex items-center justify-center gap-1 text-sm text-content-faint hover:text-content-muted"
         @click="settingsStore.setSequenceViewMode('full')"
       >
-        {{ $t('components.sequence.simple.openExpert') }}
+        {{ $t('components.sequence.simple.openFull') }}
         <ChevronRightIcon class="w-4 h-4" />
       </button>
 
@@ -161,13 +161,14 @@
         v-if="sequenceStore.sequenceControlsLocked"
         class="text-xs text-status-warn bg-status-warn/10 border border-status-warn/40 rounded-md px-3 py-2"
       >
-        {{ $t('components.sequence.controlsLockedMessage') }}
+        {{ seqT('controlsLockedMessage') }}
       </div>
     </template>
   </div>
 </template>
 
 <script setup>
+import { usePlanTerms } from '@/composables/usePlanTerms';
 import { computed, reactive, ref, watch, onMounted, onUnmounted } from 'vue';
 import draggable from 'vuedraggable';
 import { ChevronRightIcon } from '@heroicons/vue/24/outline';
@@ -181,6 +182,7 @@ import ControlSequence from './controlSequence.vue';
 import SequenceSimpleView from './simple/SequenceSimpleView.vue';
 import Spinner from '@/components/helpers/Spinner.vue';
 
+const { seqT } = usePlanTerms();
 const store = useSequenceV2Store();
 const sequenceStore = useSequenceStore();
 const settingsStore = useSettingsStore();

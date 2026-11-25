@@ -69,6 +69,16 @@ test('value starts at the profile value and falls back while it is missing', asy
   assert.equal(env.use('CameraSettings-Offset', { fallback: 7 }).value.value, 7);
 });
 
+test('an unset NINA double ("NaN") falls back instead of reaching the field', async (t) => {
+  const env = setup(t, { TelescopeSettings: { FocalLength: 'NaN', FocalRatio: Number.NaN } });
+  const fromProfile = (v) => v || 1; // the old pattern: "NaN" is truthy
+  assert.equal(
+    env.use('TelescopeSettings-FocalLength', { fallback: 500, fromProfile }).value.value,
+    500
+  );
+  assert.equal(env.use('TelescopeSettings-FocalRatio', { fallback: 5 }).value.value, 5);
+});
+
 test('value follows profile changes from elsewhere', async (t) => {
   const env = setup(t, {});
   const { value } = env.use('CameraSettings-Gain', { fallback: 0 });

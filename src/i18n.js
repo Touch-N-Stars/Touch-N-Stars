@@ -105,9 +105,17 @@ export async function loadLocaleMessages(locale) {
   return normalizedLocale;
 }
 
+// The app's locale ids are not all BCP 47 language tags.
+const HTML_LANG = { cn: 'zh', cz: 'cs' };
+
 export async function setLocaleLanguage(locale) {
   const normalizedLocale = await loadLocaleMessages(locale);
   i18n.global.locale.value = normalizedLocale;
+  // Browsers format number fields (decimal comma or point) by the document language where they
+  // support it; without it an English UI showed "4,0" on a German system.
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = HTML_LANG[normalizedLocale] ?? normalizedLocale;
+  }
   if (settingsStore) {
     settingsStore.setLanguage(normalizedLocale);
   }

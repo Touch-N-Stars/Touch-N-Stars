@@ -1,6 +1,18 @@
 <template>
   <div class="flex flex-col gap-3">
+    <!-- Only needed when the driver is missing: closed until asked for, so nobody meets
+         packages and registries on the way to a driver that is already there. -->
+    <button
+      type="button"
+      class="tns-btn-ghost justify-start! px-0! text-sm!"
+      :aria-expanded="open"
+      @click="toggle"
+    >
+      <ChevronDownIcon class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" />
+      {{ t('components.setupWizard.driver.installMissing') }}
+    </button>
     <PinsIndi3rdpartyCard
+      v-if="open"
       :drivers="drivers"
       :loading="isLoadingDrivers"
       :installing="isInstalling"
@@ -37,8 +49,9 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import apiPinsService from '@/services/apiPinsService';
 import PinsIndi3rdpartyCard from '@/components/pins/PinsIndi3rdpartyCard.vue';
 import PinsIndiInstallConfirmModal from '@/components/pins/PinsIndiInstallConfirmModal.vue';
@@ -159,10 +172,12 @@ async function installDriver(formInput) {
   }
 }
 
-// Only rendered inside the expanded "not listed?" panel, so mounting is the
-// moment the user asks for the list.
-onMounted(() => {
+// Opening the panel is the moment the user asks for the list.
+const open = ref(false);
+function toggle() {
+  open.value = !open.value;
+  if (!open.value || drivers.value.length) return;
   if (props.searchSeed) searchQuery.value = props.searchSeed;
   loadDrivers();
-});
+}
 </script>

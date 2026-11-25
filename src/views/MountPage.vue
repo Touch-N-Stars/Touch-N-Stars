@@ -108,12 +108,14 @@ import { useTppaStore } from '@/store/tppaStore';
 import { useImagetStore } from '@/store/imageStore';
 import SubNav from '@/components/SubNav.vue';
 import { useI18n } from 'vue-i18n';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 const showTppa = ref(false); // eslint-disable-line no-unused-vars
 const { t } = useI18n();
 
 const store = apiStore();
 const tppaStore = useTppaStore();
 const imageStore = useImagetStore();
+const { active: simpleModeActive } = useSimpleMode();
 
 // pins' native OnStepX driver: its controller settings get their own tab
 const isNativeOnStepX = computed(
@@ -123,7 +125,11 @@ const isNativeOnStepX = computed(
 const subNavItems = computed(() => [
   { name: t('components.mount.title'), value: 'showMount' },
   { name: t('components.mount.slew'), value: 'showSlew' },
-  { name: t('components.tppa.tppa'), value: 'showTppa' },
+  // Simple mode avoids the acronym; the full app keeps the name NINA users know.
+  {
+    name: simpleModeActive.value ? t('components.tppa.tabSimple') : t('components.tppa.tppa'),
+    value: 'showTppa',
+  },
   { name: t('components.mount.settings.meridian_flip_settings'), value: 'showSettings' },
   ...(isNativeOnStepX.value
     ? [{ name: t('components.mount.onstepx.title'), value: 'showOnStepX' }]

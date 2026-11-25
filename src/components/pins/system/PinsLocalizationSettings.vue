@@ -20,25 +20,6 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <label class="flex flex-col gap-1">
           <span class="text-xs font-semibold uppercase text-content-muted">
-            {{ t('components.settings.localization.systemLocale') }}
-          </span>
-          <input
-            v-model.trim="filters.locale"
-            type="search"
-            class="tns-input"
-            autocomplete="off"
-            :disabled="saving"
-            :placeholder="t('components.settings.localization.searchPlaceholder')"
-          />
-          <select v-model="form.locale" class="tns-select" :disabled="saving">
-            <option v-for="value in localeChoices" :key="value" :value="value">
-              {{ value }}
-            </option>
-          </select>
-        </label>
-
-        <label class="flex flex-col gap-1">
-          <span class="text-xs font-semibold uppercase text-content-muted">
             {{ t('components.settings.localization.wifiCountry') }}
           </span>
           <select v-model="form.wifiCountry" class="tns-select" :disabled="saving">
@@ -71,7 +52,44 @@
           </select>
         </label>
 
-        <label class="flex flex-col gap-1">
+        <!-- Setup assistant: country and time zone are what a beginner has to check. The
+             rig's own language and keyboard only matter on its desktop, so they wait behind
+             a toggle. -->
+        <button
+          v-if="embedded"
+          type="button"
+          class="tns-btn-secondary sm:col-span-2"
+          @click="rigLanguageOpen = !rigLanguageOpen"
+        >
+          <ChevronDownIcon
+            class="w-5 h-5 transition-transform"
+            :class="{ 'rotate-180': rigLanguageOpen }"
+          />
+          {{ t('components.setupWizard.localization.rigLanguage') }}
+        </button>
+        <label v-if="showRigLanguage" class="flex flex-col gap-1">
+          <span class="text-xs font-semibold uppercase text-content-muted">
+            {{ t('components.settings.localization.systemLocale') }}
+          </span>
+          <input
+            v-model.trim="filters.locale"
+            type="search"
+            class="tns-input"
+            autocomplete="off"
+            :disabled="saving"
+            :placeholder="t('components.settings.localization.searchPlaceholder')"
+          />
+          <select v-model="form.locale" class="tns-select" :disabled="saving">
+            <option v-for="value in localeChoices" :key="value" :value="value">
+              {{ value }}
+            </option>
+          </select>
+          <span v-if="embedded" class="text-xs text-content-faint">
+            {{ t('components.setupWizard.localization.localeHint') }}
+          </span>
+        </label>
+
+        <label v-if="showRigLanguage" class="flex flex-col gap-1">
           <span class="text-xs font-semibold uppercase text-content-muted">
             {{ t('components.settings.localization.keyboardLayout') }}
           </span>
@@ -110,6 +128,21 @@
           {{ t('components.settings.localization.saved') }}
         </span>
       </div>
+
+      <!-- Setup assistant: say whether "Next" alone is enough. Unapplied changes are lost. -->
+      <p
+        v-if="embedded"
+        class="text-xs"
+        :class="isDirty ? 'text-status-warn' : 'text-content-faint'"
+      >
+        {{
+          isDirty
+            ? t('components.setupWizard.localization.unappliedHint', {
+                button: t('components.settings.localization.save'),
+              })
+            : t('components.setupWizard.localization.nothingToDoHint')
+        }}
+      </p>
     </template>
 
     <p v-if="errorMessage" class="text-sm text-status-danger break-words">
@@ -121,6 +154,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import apiPinsService from '@/services/apiPinsService';
 import { apiStore } from '@/store/store';
 import { useToastStore } from '@/store/toastStore';
@@ -129,7 +163,7 @@ import {
   pollJobUntilFinished,
 } from '@/components/pins/composables/pinsJobPolling';
 
-defineProps({
+const props = defineProps({
   embedded: { type: Boolean, default: false },
 });
 
@@ -137,6 +171,8 @@ const { t } = useI18n();
 const store = apiStore();
 const toastStore = useToastStore();
 const loading = ref(false);
+const rigLanguageOpen = ref(false);
+const showRigLanguage = computed(() => !props.embedded || rigLanguageOpen.value);
 const saving = ref(false);
 const confirming = ref(false);
 const saved = ref(false);

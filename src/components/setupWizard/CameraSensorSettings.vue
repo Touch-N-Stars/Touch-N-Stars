@@ -39,8 +39,14 @@
     </template>
 
     <template v-else>
+      <!-- Without a connected camera nothing is known yet; "does not report its sensor size -
+           typical for DSLRs" read like a verdict on a camera nobody had picked. -->
       <p class="text-sm text-content-muted">
-        {{ t('components.setupWizard.camera.chipSizeManualHint') }}
+        {{
+          store.cameraInfo?.Connected
+            ? t('components.setupWizard.camera.chipSizeManualHint')
+            : t('components.setupWizard.camera.chipSizeNotConnectedHint')
+        }}
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <NumberInputPicker
@@ -68,7 +74,7 @@
       </div>
     </template>
 
-    <!-- Pixel size: never reported by NINA, always entered by hand -->
+    <!-- Pixel size: from the connected camera when it reports one, otherwise by hand -->
     <NumberInputPicker
       v-model="pixelSize"
       :label="t('components.setupWizard.camera.pixelSize')"
@@ -80,7 +86,25 @@
       inputId="wizard-pixel-size"
       @change="updatePixelSize"
     />
-    <p class="text-xs text-content-faint">
+    <template v-if="reportedPixelSize">
+      <p v-if="pixelSizeMatchesProfile" class="flex items-center gap-2 text-xs text-status-ok">
+        <span class="tns-dot bg-status-ok"></span>
+        {{ t('components.setupWizard.camera.pixelSizeReported', { size: reportedPixelSizeText }) }}
+      </p>
+      <template v-else>
+        <p class="text-xs text-content-muted">
+          {{
+            t('components.setupWizard.camera.pixelSizeReportedDiffers', {
+              size: reportedPixelSizeText,
+            })
+          }}
+        </p>
+        <button class="tns-btn-secondary" :disabled="isApplying" @click="applyReportedPixelSize">
+          {{ t('components.setupWizard.camera.chipSizeApply') }}
+        </button>
+      </template>
+    </template>
+    <p v-else class="text-xs text-content-faint">
       {{ t('components.setupWizard.camera.pixelSizeHint') }}
     </p>
 
@@ -99,13 +123,15 @@ import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import { arcsecPerPixel } from '@/utils/imageScale';
+import { localDecimal } from '@/utils/localeNumber';
 
 /**
  * Sensor geometry for the wizard's camera step.
  *
  * Chip size in pixels lives in the profile under FramingAssistantSettings, not
  * CameraSettings - same keys as components/settings/camera/settingsSensor.vue.
- * Pixel size is never part of cameraInfo, so it is always a manual entry.
+ * Pixel size comes from cameraInfo.PixelSize when the driver reports it (0 otherwise, e.g.
+ * many DSLRs); then it is only checked against the profile instead of asked for.
  */
 const { t } = useI18n();
 const store = apiStore();
@@ -132,6 +158,16 @@ const chipSizeReadable = computed(
 const profileWidth = computed(() => store.profileInfo?.FramingAssistantSettings?.CameraWidth);
 const profileHeight = computed(() => store.profileInfo?.FramingAssistantSettings?.CameraHeight);
 
+const reportedPixelSize = computed(() => {
+  const size = Number(store.cameraInfo?.PixelSize);
+  return store.cameraInfo?.Connected && Number.isFinite(size) && size > 0 ? size : 0;
+});
+const reportedPixelSizeText = computed(() => localDecimal(reportedPixelSize.value, 2));
+// The field shows two decimals, so a difference below that is not one.
+const pixelSizeMatchesProfile = computed(
+  () => Math.abs(Number(pixelSize.value) - reportedPixelSize.value) < 0.005
+);
+
 const chipSizeMatchesProfile = computed(
   () => profileWidth.value === reportedWidth.value && profileHeight.value === reportedHeight.value
 );
@@ -139,7 +175,7 @@ const chipSizeMatchesProfile = computed(
 // Sanity readout so a mistyped pixel size is visible immediately.
 const imageScale = computed(() => {
   const scale = arcsecPerPixel(pixelSize.value, store.profileInfo?.TelescopeSettings?.FocalLength);
-  return scale === null ? '' : scale.toFixed(2);
+  return scale === null ? '' : localDecimal(scale, 2);
 });
 
 // settingsSensor.vue seeds from the profile in onMounted only, so it keeps showing
@@ -182,6 +218,14 @@ function updateChipWidth() {
 
 function updateChipHeight() {
   return writeProfileValue('chipHeight', 'FramingAssistantSettings-CameraHeight', chipHeight.value);
+}
+
+async function applyReportedPixelSize() {
+  if (isApplying.value) return;
+  isApplying.value = true;
+  pixelSize.value = Number(reportedPixelSize.value.toFixed(2));
+  await updatePixelSize();
+  isApplying.value = false;
 }
 
 async function applyReportedChipSize() {

@@ -32,6 +32,7 @@ const ROUTES = [
   '/sequence',
   '/framing',
   '/pins',
+  '/start',
 ];
 
 const VIEWPORTS = {

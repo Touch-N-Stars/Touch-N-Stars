@@ -13,23 +13,30 @@
 
     <!-- Header: search and settings. Everything else lives in the toolbar below. -->
     <div v-if="ready" class="celestia-atlas-header">
-      <div class="celestia-atlas-search">
-        <MagnifyingGlassIcon class="celestia-atlas-search-icon" aria-hidden="true" />
-        <input
-          id="atlas-search"
-          v-model="searchQuery"
-          class="tns-input celestia-atlas-search-input"
-          type="search"
-          :placeholder="t('components.framing.search.placeholder')"
-          @input="runSearch"
-        />
-        <ul v-if="searchResults.length" class="celestia-atlas-results">
-          <li v-for="result in searchResults" :key="result.catalogId || result.id">
-            <button class="celestia-atlas-result" type="button" @click="selectSearchResult(result)">
-              {{ result.displayName || result.name || result.id }}
-            </button>
-          </li>
-        </ul>
+      <div class="celestia-atlas-search-column">
+        <div class="celestia-atlas-search">
+          <MagnifyingGlassIcon class="celestia-atlas-search-icon" aria-hidden="true" />
+          <input
+            id="atlas-search"
+            v-model="searchQuery"
+            class="tns-input celestia-atlas-search-input"
+            type="search"
+            :placeholder="t('components.framing.search.placeholder')"
+            @input="runSearch"
+          />
+          <ul v-if="searchResults.length" class="celestia-atlas-results">
+            <li v-for="result in searchResults" :key="result.catalogId || result.id">
+              <button
+                class="celestia-atlas-result"
+                type="button"
+                @click="selectSearchResult(result)"
+              >
+                {{ result.displayName || result.name || result.id }}
+              </button>
+            </li>
+          </ul>
+        </div>
+        <AtlasTonightPicks @select="selectTonightPick" />
       </div>
       <CelestiaAtlasSettings
         :catalog-object-types="catalogFacets.objectTypes"
@@ -304,6 +311,7 @@ import {
 import AtlasLayersPanel from '@/components/celestiaAtlas/AtlasLayersPanel.vue';
 import AtlasSheet from '@/components/celestiaAtlas/AtlasSheet.vue';
 import AtlasTargetPanel from '@/components/celestiaAtlas/AtlasTargetPanel.vue';
+import AtlasTonightPicks from '@/components/celestiaAtlas/AtlasTonightPicks.vue';
 import AtlasToolbar from '@/components/celestiaAtlas/AtlasToolbar.vue';
 import CelestiaAtlasSettings from '@/components/celestiaAtlas/CelestiaAtlasSettings.vue';
 import { MagnifyingGlassIcon, PauseIcon, PlayIcon } from '@heroicons/vue/24/outline';
@@ -908,6 +916,33 @@ function selectSearchResult(result) {
   viewer.select(target);
 }
 
+// A tonight pick behaves like a search hit: the catalogue entry when the atlas knows it (full
+// object card), otherwise a bare target at the pick's coordinates.
+function selectTonightPick(pick) {
+  const hit = pick.catalog ? viewer?.search(pick.catalog)?.[0] : null;
+  if (hit) {
+    selectSearchResult(hit);
+    return;
+  }
+  void skyOrientation.disable();
+  try {
+    const target = atlasSearchResultToTarget({
+      id: pick.catalog || pick.name,
+      name: pick.name,
+      coordinates: {
+        raDeg: pick.raDeg,
+        decDeg: pick.decDeg,
+        frame: 'J2000',
+        epochJulianYear: 2000,
+      },
+    });
+    viewer.focusTarget(target);
+    viewer.select(target);
+  } catch (error) {
+    console.warn('[Celestia Atlas] Ignored invalid tonight pick:', error.message);
+  }
+}
+
 function hideSelectedTargetDetails() {
   selectedTarget.value = null;
 }
@@ -1340,11 +1375,13 @@ onBeforeUnmount(() => {
 .celestia-atlas-header > * {
   pointer-events: auto;
 }
-.celestia-atlas-search {
-  position: relative;
+.celestia-atlas-search-column {
   flex: 1 1 auto;
   min-width: 0;
   max-width: 24rem;
+}
+.celestia-atlas-search {
+  position: relative;
 }
 .celestia-atlas-search-icon {
   position: absolute;

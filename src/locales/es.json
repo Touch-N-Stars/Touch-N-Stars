@@ -20,7 +20,8 @@
     "expand": "Expandir",
     "collapse": "Contraer",
     "drag": "Arrastrar",
-    "showImage": "Mostrar imagen"
+    "showImage": "Mostrar imagen",
+    "onOff": "Encendido/Apagado"
   },
   "general": {
     "cancel": "Cancelar",
@@ -153,21 +154,19 @@
     "gpsConfiguration": "Configurción GPS",
     "completeSetup": "Configuración Completada",
     "instanceConfiguration": "Detalles de conexión @:{'general.backendName'}",
-    "InfoAppsTitel": "wiki",
-    "check_wki": "Puedes encontrar instrucciones detalladas en nuestra wiki",
     "coordAlt": "Altitud",
     "coordLat": "Latitud",
     "coordLon": "Longitud",
     "coordUnit": "metro",
     "coordsNotSupported": "No soportado por el controlador",
     "currentMountCoords": "Ubicación de la montura",
+    "syncDirection": "Cuando la montura se conecta",
+    "syncDirectionNosync": "No sincronizar la ubicación",
+    "syncDirectionToApplication": "Tomar la ubicación de la montura",
+    "syncDirectionToTelescope": "Enviar mi ubicación a la montura",
     "currentNinaCoords": "Ubicación del perfil",
     "loadingCoords": "Cargando…",
-    "mountNotConnected": "Montura no conectada",
-    "syncDirection": "Dirección de sincronización de ubicación",
-    "syncDirectionNosync": "Sin sincronización",
-    "syncDirectionToApplication": "Sincronización desde la montura al perfil",
-    "syncDirectionToTelescope": "Sincronizar desde el perfil a la montura"
+    "mountNotConnected": "Montura no conectada"
   },
   "components": {
     "instanceDetection": {
@@ -181,6 +180,8 @@
       "instanceNamePlaceholder": "Mi instancia",
       "ipLabel": "Dirección IP / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "Dirección del equipo",
+      "advanced": "Avanzado: nombre y puerto",
       "portLabel": "Puerto",
       "portPlaceholder": "5000",
       "modalTitle": "Instancias detectadas",
@@ -194,6 +195,7 @@
       "discoveringMessage": "Descubriendo instancias de Touch-N-Stars…",
       "noFoundMessage": "No se encontraron instancias de Touch-N-Stars mediante mDNS.",
       "selectionSuccess": "Se seleccionó {label} ({ip}:{port}).",
+      "hotspotFound": "Equipo encontrado en su propio wifi: {name}",
       "foundSingle": "Se encontró 1 instancia de Touch-N-Stars.",
       "foundMultiple": "Se encontraron {count} instancias de Touch-N-Stars.",
       "discoveryFailedStatus": "Error en la detección: {message}",
@@ -206,7 +208,7 @@
       "confirmSetTargetTitle": "Confirmar Selección Objetivo",
       "confirmSetTargetMessage": "¿Estás seguro cambiar este objetivo en el sequenciador?",
       "useNinaCache": "Utilizar cache de @:{'general.backendName'} para imagen objetivo",
-      "setSequnceTarget": "establecer como objetivo de la secuencia",
+      "setSequnceTarget": "Establecer como objetivo de la secuencia",
       "sequenceTargetPicker": {
         "title": "Objetivo de la secuencia",
         "hint": "Elige qué objetivo de la secuencia cargada recibirá las coordenadas de encuadre.",
@@ -283,38 +285,105 @@
       "next": "Siguiente",
       "skip": "Saltar tutorial"
     },
+    "mountDriverFinder": {
+      "searchLabel": "¿Qué montura tienes?",
+      "searchPlaceholder": "p. ej. EQ6, HEQ5, AM5, CEM40",
+      "vendorHint": "Escribe el modelo o empieza por la marca:",
+      "noMatch": "Ninguna montura coincide. Revisa la ortografía o usa \"¿Montura que no está en la lista?\" más abajo.",
+      "otherMount": "Otra montura",
+      "howConnected": "¿Cómo está conectada a PINS?",
+      "recommended": "Recomendado",
+      "driverName": "Driver: {name}",
+      "checking": "Comprobando los drivers instalados…",
+      "driverListFailed": "No se pudo cargar la lista de drivers.",
+      "retry": "Reintentar",
+      "alreadySet": "Este driver ya está configurado.",
+      "useDriver": "Usar este driver",
+      "needsInstall": "{name} aún no está instalado en PINS.",
+      "installAndUse": "Instalar y usar",
+      "installConfirm": "PINS descarga {name} de internet y lo instala. Tarda aproximadamente un minuto. ¿Continuar?",
+      "installConfirmYes": "Instalar",
+      "cancel": "Cancelar",
+      "unavailable": "{name} no está disponible en este PINS. Elígelo en la lista completa de abajo o actualiza PINS.",
+      "installing": "Descargando e instalando {name}…",
+      "applying": "Configurando {name}…",
+      "applied": "Listo: {name} está configurado y \"{device}\" seleccionado. Conecta la montura, enciéndela y pulsa Conectar.",
+      "appliedPickDevice": "Listo: {name} está configurado. Elige tu montura en la lista de dispositivos y pulsa Conectar.",
+      "applyFailed": "No se pudo configurar el driver: {message}",
+      "noInternet": "PINS necesita conexión a internet para instalar el driver. Conecta PINS a una red Wi-Fi con internet e inténtalo de nuevo.",
+      "packageMissing": "El paquete de driver {name} no está disponible para descargar ahora mismo.",
+      "installedButMissing": "{name} se instaló, pero no aparece en la lista de drivers. Reinicia PINS e inténtalo de nuevo.",
+      "installFailed": "La instalación falló: {message}",
+      "disconnectFirst": "Desconecta la montura antes de cambiar su driver.",
+      "notListed": "¿Montura que no está en la lista?",
+      "openButton": "Buscar driver de montura",
+      "title": "Encuentra el driver de tu montura",
+      "connections": {
+        "swDirect": {
+          "title": "Cable USB directo a la montura",
+          "hint": "Al puerto USB de la montura, o un cable EQDIR en el puerto del mando. El mando no es necesario."
+        },
+        "swHandController": {
+          "title": "A través del mando SynScan",
+          "hint": "Cable de PINS al mando (puerto USB o cable serie). Enciende el mando y completa primero su menú de inicio."
+        },
+        "celestronUsb": {
+          "title": "Puerto USB de la montura",
+          "hint": "Cable USB al puerto del cabezal de la montura."
+        },
+        "celestronHandController": {
+          "title": "A través del mando NexStar",
+          "hint": "Cable USB o serie a la parte inferior del mando. Completa antes el inicio de alineación del mando."
+        },
+        "meadeHandController": {
+          "title": "A través del mando AutoStar",
+          "hint": "Cable serie o USB al puerto del mando."
+        },
+        "usb": {
+          "title": "Cable USB a la montura",
+          "hint": "Cable USB de la montura a PINS."
+        },
+        "network": {
+          "title": "Cable de red (LAN)",
+          "hint": "La montura está en la misma red que PINS. Después introduce su dirección IP en los ajustes de conexión de la montura."
+        }
+      }
+    },
     "setupWizard": {
       "title": "Asistente de configuración",
       "restart": "Iniciar el asistente de configuración",
       "stepCounter": "Paso {current} de {total}",
-      "next": "Next",
-      "back": "Back",
-      "finish": "Finish",
+      "next": "Siguiente",
+      "back": "Atrás",
+      "finish": "Finalizar",
       "remindLater": "Recordármelo más tarde",
       "steps": {
-        "welcome": "Welcome",
-        "language": "Language",
+        "welcome": "Bienvenida",
+        "language": "Idioma",
         "info": "Primeros pasos",
-        "instance": "Connection",
+        "instance": "Conexión",
         "wifi": "Wi-Fi",
-        "updates": "Updates",
-        "mount": "Mount",
+        "updates": "Actualizaciones",
+        "mount": "Montura",
         "slewRate": "Velocidad de giro",
-        "location": "Location",
-        "telescope": "Telescope",
-        "camera": "Camera",
-        "focuser": "Focuser",
+        "location": "Ubicación",
+        "telescope": "Telescopio",
+        "camera": "Cámara",
+        "focuser": "Enfocador",
         "filterWheel": "Rueda de filtros",
-        "guider": "Guiding",
+        "guider": "Guiado",
         "dither": "Dither",
-        "done": "Done",
-        "localization": "Ajustes regionales"
+        "done": "Hecho",
+        "localization": "Ajustes regionales",
+        "starDatabase": "Mapa estelar"
       },
       "driver": {
         "loading": "Cargando controladores…",
         "applying": "Aplicando el controlador…",
         "listFailed": "No se pudieron cargar los controladores: {message}",
-        "changeFailed": "No se pudo aplicar el controlador: {message}"
+        "changeFailed": "No se pudo aplicar el controlador: {message}",
+        "none": "Sin driver",
+        "installMissing": "¿El driver no está en la lista?"
       },
       "welcome": {
         "title": "Vamos a configurar Touch'N'Stars",
@@ -325,12 +394,17 @@
         "description": "El idioma de la app. Puedes cambiarlo más tarde en los ajustes."
       },
       "info": {
-        "openWiki": "Abrir la wiki"
+        "pointDevices": "Los siguientes pasos conectan tu montura, cámara y demás dispositivos uno a uno y piden los datos de tu telescopio.",
+        "pointPowered": "Enciende todos los dispositivos y conéctalos al equipo antes de continuar.",
+        "pointLater": "¿No estás seguro de un valor? Omítelo con Siguiente. Todo se puede cambiar después en los ajustes."
       },
       "instance": {
-        "description": "Dirección del equipo en el que se ejecuta @:{'general.backendName'} En la misma red, la app suele encontrarlo sola.",
+        "title": "Conéctate a tu equipo",
+        "description": "Tu teléfono se comunica con el equipo por wifi.",
+        "hotspotHint": "Conecta primero tu teléfono al wifi del equipo. Un equipo nuevo abre su propio punto de acceso «pins-…», la contraseña es «touchnstars».",
+        "homeNetworkHint": "¿El equipo ya está en tu red doméstica? Entonces quédate en ella. La app busca sola; si no encuentra nada, introduce abajo la dirección del equipo.",
         "connect": "Guardar y conectar",
-        "connecting": "Connecting…",
+        "connecting": "Conectando…",
         "connected": "Conectado a {name}",
         "connectFailed": "Fallo de conexión: {message}"
       },
@@ -340,15 +414,16 @@
         "loadingStatus": "Leyendo el estado del Wi-Fi…",
         "connectedTo": "Conectado a {ssid}",
         "notConnected": "El equipo no está conectado a ninguna red Wi-Fi.",
+        "notConnectedHint": "Sin red abre su propio punto de acceso. Para las actualizaciones y la descarga del mapa estelar necesita tu red doméstica: toca «Buscar redes».",
         "chooseOtherNetwork": "Elegir otra red",
         "scan": "Buscar redes",
-        "scanning": "Scanning…",
+        "scanning": "Buscando…",
         "selectNetwork": "Seleccionar red",
-        "password": "Password",
+        "password": "Contraseña",
         "passwordPlaceholder": "Contraseña de la red",
         "autoConnect": "Conectarse automáticamente a esta red",
-        "connect": "Connect",
-        "connecting": "Connecting…",
+        "connect": "Conectar",
+        "connecting": "Conectando…",
         "noNetworks": "No se encontraron redes. Acerca el equipo al router y vuelve a buscar.",
         "transitionHint": "El equipo cambia de dirección al cambiar de red. Buscándolo de nuevo…",
         "retryFind": "Buscar el equipo de nuevo",
@@ -372,34 +447,47 @@
         "title": "Configurar tu montura",
         "description": "Elige el controlador INDI de tu montura y conéctala.",
         "selectDriver": "Controlador INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositivo",
         "connected": "Montura conectada: {name}",
         "notFound": "¿Tu montura no aparece?",
         "notFoundHint": "Si tu montura no aparece, puede que su controlador aún no esté instalado. Busca entre los controladores INDI de terceros e instala el adecuado.",
-        "installing": "Installing {label}…",
+        "installing": "Instalando {label}…",
         "installSuccess": "{label} instalado. Selecciónalo en la lista de controladores de arriba.",
-        "installFailed": "Fallo en la instalación: {message}"
+        "installFailed": "Fallo en la instalación: {message}",
+        "descriptionDeviceFirst": "Elige tu montura en la lista y conéctala. Solo necesitas un driver si no aparece ahí."
       },
       "slewRate": {
         "title": "Velocidad de giro",
-        "description": "Define a qué velocidad puede mover el controlador tu montura. Demasiado alta y la montura puede perder pasos; demasiado baja y cada movimiento tarda una eternidad.",
         "maxSlewRate": "Velocidad de giro máx. (°/s)",
-        "maxSlewRateHint": "Es el límite del controlador, no la velocidad manual de la pantalla de la montura – esa viene directamente de las capacidades del propio controlador.",
-        "saveFailed": "No se pudo guardar: {message}"
+        "saveFailed": "No se pudo guardar: {message}",
+        "whatFor": "PINS necesita la velocidad máxima de tu montura para calcular bien los movimientos, por ejemplo en la alineación polar. No limita la velocidad de slew de la montura.",
+        "reading": "Leyendo las velocidades del driver de la montura…",
+        "derived": "Leído del driver: la velocidad máxima es {label}, es decir {value} °/s. Guardado, no hay nada que hacer aquí.",
+        "notNeeded": "Este driver ya indica sus velocidades en °/s, así que no hay que configurar nada aquí.",
+        "unknown": "Este driver nombra sus velocidades sin números (p. ej. \"Max\"), por lo que no se puede leer la velocidad máxima. Deja el valor por defecto de {value} °/s salvo que conozcas la velocidad máxima de tu montura.",
+        "notConnected": "Conecta la montura en el paso anterior y la velocidad se leerá automáticamente. Si no, se usa el valor por defecto de {value} °/s, que sirve para la mayoría de las monturas.",
+        "readFailed": "No se pudieron leer las velocidades de la montura. Se mantiene el valor actual de {value} °/s.",
+        "readAgain": "Leer de la montura",
+        "setManually": "Ajustar a mano",
+        "manualHint": "Velocidad máxima de slew de tu montura en grados por segundo, según su manual. Un valor que introduzcas aquí nunca se sustituye automáticamente."
       },
       "location": {
         "title": "Definir tu ubicación",
         "description": "Tus coordenadas se usan para los cálculos de hora, el giro de meridiano, el horizonte y el encuadre. Tómalas de tu dispositivo o introdúcelas a mano.",
         "profileCoords": "Ubicación del perfil",
         "mountCoords": "Ubicación de la montura",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "altitude": "Altitude",
+        "latitude": "Latitud",
+        "longitude": "Longitud",
+        "altitude": "Altitud",
         "useCurrentLocation": "Usar la ubicación actual",
-        "syncDirection": "Dirección de sincronización de la ubicación",
+        "locating": "Obteniendo tu ubicación…",
+        "syncDirection": "Cuando la montura se conecta",
         "save": "Guardar ubicación",
-        "saving": "Saving…",
-        "saveFailed": "No se pudo guardar la ubicación: {message}"
+        "saving": "Guardando…",
+        "saveFailed": "No se pudo guardar la ubicación: {message}",
+        "unsavedHint": "Aún sin guardar. Se guarda automáticamente al pulsar Siguiente.",
+        "savedHint": "Ubicación guardada.",
+        "missingHint": "Aún no hay ubicación. La alineación polar y el atlas del cielo la necesitan."
       },
       "telescope": {
         "title": "Tu telescopio",
@@ -411,13 +499,13 @@
       "camera": {
         "title": "Configurar tu cámara",
         "description": "Muchas cámaras son compatibles de forma nativa. Elige la tuya en la lista de abajo – solo necesitas un controlador INDI si no aparece ahí.",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositivo",
         "connected": "Cámara conectada: {name}",
         "notFound": "¿Tu cámara no aparece?",
         "notFoundHint": "Si tu cámara no es compatible de forma nativa, elige aquí un controlador INDI. Después aparecerá en la lista de dispositivos de arriba.",
         "thirdPartyHint": "Si falta el controlador por completo, busca entre los controladores INDI de terceros e instala el adecuado.",
         "selectDriver": "Controlador INDI",
-        "installing": "Installing {label}…",
+        "installing": "Instalando {label}…",
         "installSuccess": "{label} instalado. Selecciónalo en la lista de controladores de arriba.",
         "installFailed": "Fallo en la instalación: {message}",
         "sensorTitle": "Parámetros del sensor",
@@ -430,41 +518,50 @@
         "chipHeight": "Alto del sensor (px)",
         "pixelSize": "Tamaño de píxel (µm)",
         "pixelSizeHint": "El controlador no informa del tamaño de píxel. Lo encontrarás en el manual de tu cámara.",
+        "pixelSizeReported": "Informado por la cámara: {size} µm.",
+        "pixelSizeReportedDiffers": "La cámara informa {size} µm, el perfil tiene otro valor.",
         "imageScale": "Escala de imagen resultante: {scale} arcsec/px",
-        "applyFailed": "No se pudo guardar: {message}"
+        "applyFailed": "No se pudo guardar: {message}",
+        "chipSizeNotConnectedHint": "Conecta arriba la cámara y el tamaño del sensor se rellena solo. Solo una cámara que no lo informa (típico de las DSLR) necesita los valores de abajo."
       },
       "focuser": {
         "title": "Configurar tu enfocador",
         "description": "Elige el controlador INDI de tu enfocador y conéctalo. Los parámetros de autoenfoque siguen en la página de enfoque – este paso solo establece la comunicación.",
         "selectDriver": "Controlador INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositivo",
         "connected": "Enfocador conectado: {name}",
         "notFound": "¿Tu enfocador no aparece?",
         "notFoundHint": "Si tu enfocador no aparece, puede que su controlador aún no esté instalado. Busca entre los controladores INDI de terceros e instala el adecuado.",
-        "installing": "Installing {label}…",
+        "installing": "Instalando {label}…",
         "installSuccess": "{label} instalado. Selecciónalo en la lista de controladores de arriba.",
-        "installFailed": "Fallo en la instalación: {message}"
+        "installFailed": "Fallo en la instalación: {message}",
+        "descriptionDeviceFirst": "Elige tu enfocador en la lista y conéctalo. Solo necesitas un driver si no aparece ahí. Los parámetros de autoenfoque están en la página de enfoque.",
+        "notFoundDriverHint": "Si tu enfocador no está en la lista, selecciona aquí su driver INDI. Después aparecerá en la lista de arriba."
       },
       "filterWheel": {
         "title": "Configurar tu rueda de filtros",
         "description": "Elige el controlador INDI de tu rueda de filtros, conéctala y pon a las posiciones los nombres que usas en tus secuencias.",
         "selectDriver": "Controlador INDI",
-        "connectDevice": "Device",
+        "connectDevice": "Dispositivo",
         "connected": "Rueda de filtros conectada: {name}",
         "filterNames": "Nombres de los filtros",
         "filterNamesHint": "El nombre de cada posición, en el orden que tienen en la rueda. Solo letras y números.",
         "notFound": "¿Tu rueda de filtros no aparece?",
         "notFoundHint": "Si tu rueda de filtros no aparece, puede que su controlador aún no esté instalado. Busca entre los controladores INDI de terceros e instala el adecuado.",
-        "installing": "Installing {label}…",
+        "installing": "Instalando {label}…",
         "installSuccess": "{label} instalado. Selecciónalo en la lista de controladores de arriba.",
-        "installFailed": "Fallo en la instalación: {message}"
+        "installFailed": "Fallo en la instalación: {message}",
+        "descriptionDeviceFirst": "Elige tu rueda de filtros en la lista, conéctala y da a las posiciones los nombres que uses. Solo necesitas un driver si no aparece ahí.",
+        "notFoundDriverHint": "Si tu rueda de filtros no está en la lista, selecciona aquí su driver INDI. Después aparecerá en la lista de arriba.",
+        "noneHint": "¿Sin rueda de filtros? Pulsa Siguiente.",
+        "addFilter": "Añadir filtro"
       },
       "guider": {
         "title": "Configurar el guiado",
         "description": "El guiado funciona con PHD2. Elige la cámara de guiado, conecta el guiado e indica a PHD2 tu telescopio guía.",
         "guideCamera": "Cámara de guiado",
         "guideCameraHint": "PHD2 trae sus propios controladores, así que aquí no hay que elegir un controlador INDI. Si la lista está vacía, usa el botón de actualizar – la cámara debe estar encendida y libre, no en uso como cámara de imagen.",
-        "connectDevice": "Guider",
+        "connectDevice": "Guiador",
         "connected": "Guiado conectado: {name}",
         "focalLength": "Focal del telescopio guía",
         "focalLengthHint": "Focal del telescopio guía en mm. Se guarda en el perfil de PHD2, aparte de tu telescopio principal, y permite a PHD2 mostrar el guiado en segundos de arco.",
@@ -481,36 +578,80 @@
         "ditherResult": "Ajuste de dithering: {pixels} píxeles de guiado",
         "ditherCurrent": "Ahora en el perfil: {pixels} píxeles de guiado ({mainPixels} píxeles de imagen).",
         "ditherApply": "Aplicar al perfil",
-        "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherApplied": "Aplicado",
+        "ditherMissingData": "Para calcular el dither se necesitan el tamaño de píxel y la focal tanto del equipo de imagen como del de guiado. Completa los pasos de cámara y telescopio e indica la focal del telescopio guía en el paso de guiado.",
         "applyFailed": "No se pudo guardar: {message}",
-        "nativeCamera": "Cámara guía (PINS Native Guider)",
-        "nativeCameraHint": "El guiador nativo controla la cámara guía directamente. Elige su controlador INDI y dispositivo e introduce la distancia focal del telescopio guía."
+        "guideScope": "Telescopio guía",
+        "nativeCameraHint": "Introduce la distancia focal del telescopio guía. El guiado la necesita para valorar cuánto se mueven las estrellas.",
+        "descriptionBuiltIn": "PINS tiene un guiado integrado que mantiene las estrellas en su sitio mientras se toman las imágenes, sin otro programa. Elige la cámara de guiado e introduce la distancia focal del telescopio guía.",
+        "nativeRecommended": "Consejo: PINS tiene su propio guiado (“Native Guider” en la lista de arriba). Fue desarrollado especialmente para PINS, funciona directamente en el equipo sin programa aparte y suele guiar con más estabilidad que PHD2. Los ajustes que hiciste en PHD2 se mantienen y puedes volver cuando quieras eligiendo PHD2 de nuevo.",
+        "nativeFocalLengthMissing": "La distancia focal del telescopio guía sigue en 0. El guiado funciona sin ella, pero el dithering y el error de guiado en segundos de arco la necesitan.",
+        "guidePixelSizeHintNative": "Se usa solo para este cálculo. El guiado lee el tamaño de píxel de la cámara de guiado una vez conectada; hasta entonces, tómalo del manual de la cámara.",
+        "ditherMissingDataNative": "Para calcular el dithering se necesitan el tamaño de píxel y la distancia focal tanto de la imagen como del guiado. Rellena los pasos de cámara y telescopio y la distancia focal del telescopio guía en el paso de guiado.",
+        "guideCameraNotFound": "¿Cámara de guiado sin listar?",
+        "guideCameraNotFoundHint": "Si tu cámara de guiado no tiene soporte nativo, selecciona aquí un driver INDI para ella. Después aparecerá en la lista de dispositivos de arriba.",
+        "ditherIntro": "El dithering desplaza un poco la imagen entre exposiciones, lo que elimina patrones de ruido en el apilado. Sin guiado puedes omitir este paso.",
+        "ditherReadyHint": "El valor habitual ya está rellenado: pulsa “{button}” y listo."
       },
       "done": {
         "title": "Tu equipo está listo",
         "description": "Tu equipo está conectado y actualizado, y la montura, la cámara, el enfocador, la rueda de filtros y el guiado están configurados.",
         "descriptionPlain": "La montura, la cámara, el enfocador, la rueda de filtros y tu ubicación están configurados.",
         "moreDevicesHint": "El panel de flats, el tiempo y los demás dispositivos se configuran en sus propias páginas.",
-        "noConnectionHint": "Todavía no hay conexión con un equipo. Puedes añadir una en cualquier momento en Ajustes → Conexión."
+        "noConnectionHint": "Todavía no hay conexión con un equipo. Puedes añadir una en cualquier momento en Ajustes → Conexión.",
+        "summaryIntro": "Esto es lo que está configurado ahora. Pulsa una entrada para volver a su paso.",
+        "status": {
+          "ok": {
+            "mount": "Seleccionado",
+            "location": "Guardada",
+            "telescope": "Distancia focal definida",
+            "camera": "Seleccionada",
+            "focuser": "Seleccionado",
+            "filterWheel": "Seleccionada",
+            "guider": "Seleccionado",
+            "starDatabase": "Instalado"
+          },
+          "warn": {
+            "mount": "Ninguna montura seleccionada",
+            "location": "Falta: la alineación polar y el atlas del cielo la necesitan",
+            "telescope": "Falta la distancia focal: el plate solving la necesita",
+            "camera": "Ninguna cámara seleccionada",
+            "starDatabase": "No instalado: el plate solving no puede funcionar"
+          },
+          "none": {
+            "focuser": "Ninguno, enfoque manual",
+            "filterWheel": "Ninguna, no pasa nada",
+            "guider": "Sin guiado"
+          }
+        }
       },
       "cancel": "Cancelar la configuración",
       "localization": {
         "title": "Configurar los ajustes regionales del equipo",
-        "description": "Configura estos valores antes del Wi-Fi para que la ubicación del punto de acceso, la hora y la entrada del teclado remoto coincidan con el lugar donde se utiliza el equipo."
+        "description": "Configura estos valores antes del Wi-Fi para que la ubicación del punto de acceso, la hora y la entrada del teclado remoto coincidan con el lugar donde se utiliza el equipo.",
+        "localeHint": "Idioma y formato numérico del propio equipo, p. ej. en_US.UTF-8 o de_DE.UTF-8. C.UTF-8 es un valor neutro y también sirve.",
+        "unappliedHint": "Aún no aplicado: pulsa \"{button}\" antes de Siguiente, o se perderán los cambios.",
+        "nothingToDoHint": "¿Nada que cambiar? Pulsa Siguiente.",
+        "rigLanguage": "Idioma y teclado del equipo"
+      },
+      "starDatabase": {
+        "title": "Mapa estelar para plate solving",
+        "description": "Para saber hacia dónde apunta el telescopio, el equipo compara una imagen con un mapa estelar (\"plate solving\"). La alineación polar y el centrado de un objetivo lo necesitan. PINS incluye el mapa estelar D80; para campos muy amplios puedes añadir otro aquí.",
+        "otherSolver": "Tu perfil usa un plate solver distinto de ASTAP, así que aquí no hay nada que instalar.",
+        "hint": "La descarga es grande y puede tardar unos minutos. Mientras tanto puedes pulsar Siguiente; la instalación continúa en el equipo."
       }
     },
     "fileBrowser": {
-      "title": "Browse",
+      "title": "Explorar",
       "goUp": "Subir un nivel",
-      "loading": "Loading...",
+      "loading": "Cargando...",
       "empty": "Carpeta vacía",
       "dblClickHint": "Doble clic para abrir",
       "deleteDir": "Eliminar carpeta",
       "folderPlaceholder": "Nombre de la carpeta…",
       "newFolder": "+ Nueva carpeta",
-      "create": "Create",
-      "selectedPath": "Selected:",
+      "create": "Crear",
+      "selectedPath": "Seleccionado:",
       "loadError": "No se pudo cargar la carpeta.",
       "createError": "No se pudo crear la carpeta.",
       "deleteDirTitle": "Eliminar carpeta",
@@ -654,7 +795,9 @@
         "restartInfoTitle": "Sistema reiniciándose",
         "restartInfoMessage": "El sistema se está reiniciando.",
         "shutdownInfoTitle": "Sistema apagándose",
-        "shutdownInfoMessage": "El sistema se está apagando. Esta página ya no será accesible."
+        "shutdownInfoMessage": "El sistema se está apagando. Esta página ya no será accesible.",
+        "shutdownPowerHint": "Espera alrededor de un minuto; después puedes apagar la alimentación.",
+        "shutdownFailed": "El apagado no funcionó: {reason}"
       },
       "plate_solver": {
         "title": "Solucionador de placas",
@@ -691,8 +834,16 @@
         "astapDatabaseAllInstalled": "Todas las bases de datos estrella de ASTAP ya están instaladas.",
         "astapDatabaseDescription": "Instale las bases de datos de estrellas ASTAP que faltan directamente en su dispositivo PINS.",
         "astapDatabaseInstall": "Instalar",
-        "astapDatabaseInstallFailed": "La instalación de la base de datos ASTAP Star falló {exitCode}.",
         "astapDatabaseInstallSuccess": "La base de datos estrella ASTAP {databaseId} se instaló correctamente.",
+        "astapDatabaseDownloadFailed": "La instalación de {databaseId} ha fallado. El equipo descarga el mapa estelar de internet: ¿está en una red con acceso a internet? Entonces inténtalo de nuevo.",
+        "astapDatabaseLastAttemptFailed": "El último intento de instalar {databaseId} ha fallado ({time}). El equipo descarga el mapa estelar de internet: ¿está en una red con acceso a internet? Entonces inténtalo de nuevo.",
+        "astapDatabaseRetry": "Instalar {databaseId} de nuevo",
+        "astapDatabasePhase": {
+          "downloading": "Descargando",
+          "installing": "Instalando",
+          "finalizing": "Finalizando",
+          "complete": "Hecho"
+        },
         "astapDatabaseInstalling": "Instalando...",
         "astapDatabaseProgressStalled": "No hay progreso de descarga desde hace 30 segundos. La tarea sigue bajo supervisión.",
         "astapDatabaseJobStarted": "comenzó",
@@ -704,6 +855,11 @@
         "astapDatabaseNoInstallable": "No hay bases de datos de estrellas ASTAP instalables disponibles",
         "astapDatabaseSelectPlaceholder": "Seleccione una base de datos",
         "astapDatabaseStartFailed": "No se pudo iniciar la instalación: {detail}",
+        "astapDatabaseInstalledList": "Instalados: {list}",
+        "astapDatabaseNoneInstalled": "Aún no hay ninguna base de datos de estrellas instalada. Sin ella, el plate solving (alineación polar, centrado de un objetivo) no puede funcionar.",
+        "astapDatabaseRecommendedTag": "recomendado",
+        "astapDatabaseRecommendedFov": "Recomendado para tu telescopio y cámara (campo de visión {fov}°): {id}",
+        "astapDatabaseRecommendedDefault": "Recomendado: {id}. Introduce distancia focal, tamaño de píxel y tamaño del sensor para una recomendación adecuada a tu telescopio.",
         "astapDatabaseStartInstall": "Iniciando la instalación de {databaseId}....",
         "astapDatabaseStarting": "Iniciando...",
         "astapDatabaseStatusCheckFailedRetrying": "Error en la verificación de estado: {detail}. Reintentando...",
@@ -767,7 +923,7 @@
         "loading": "Cargando...",
         "loadingDirs": "Cargando directorios...",
         "newFolder": "Nueva carpeta",
-        "noSubfolders": "No hay subcarpetas disponibles",
+        "noSubfolders": "No hay carpetas visibles (ruta vacía o inaccesible)",
         "placeholder": "Ninguna ruta seleccionada",
         "save": "Guardar",
         "savedMsg": "Ruta guardada:",
@@ -812,20 +968,31 @@
         "loading": "Leyendo la configuración del swap…",
         "current": "Swap del sistema activo: {size} GB",
         "size": "Tamaño de swap configurado",
-        "choose": "Choose a size",
+        "choose": "Elige un tamaño",
         "defaultSize": "2 GB (valor por defecto de la imagen)",
         "recommendedSize": "8 GB (recomendado)",
         "freeSpace": "Almacenamiento libre: {size} GB",
         "pending": "Hay {size} GB configurados. Reinicia la Pi cuando termine tu sesión de captura para aplicarlo.",
         "saved": "Configuración del swap guardada.",
-        "saving": "Saving…",
+        "saving": "Guardando…",
         "save": "Guardar tamaño de swap",
-        "refresh": "Refresh",
+        "refresh": "Actualizar",
         "unsupported": "Este sistema no tiene una configuración de swap en disco compatible.",
         "unavailable": "La configuración del swap no está disponible. Actualiza pinsdaemon en la Pi.",
         "loadError": "No se pudo leer la configuración del swap: {message}",
         "saveError": "No se pudo guardar la configuración del swap: {message}",
         "missingJob": "El daemon no devolvió ninguna tarea de swap."
+      },
+      "instances": {
+        "discovery": "Buscar equipos en la red",
+        "add": "Añadir un equipo",
+        "edit": "Editar equipo",
+        "configured": "Equipos guardados",
+        "none": "Aún no hay equipos guardados",
+        "noneHint": "Usa la búsqueda de arriba o introduce la dirección tú mismo.",
+        "active": "Activo",
+        "setActive": "Usar este equipo",
+        "delete": "Quitar equipo"
       }
     },
     "alpacaDirect": {
@@ -844,7 +1011,12 @@
     "selectDevices": {
       "deviceNotFound": "Dispositivo no encontrado",
       "deviceNotFoundMessage": "Se recargó el controlador INDI, pero «{device}» no apareció. Comprueba la alimentación y vuelve a seleccionar el dispositivo.",
-      "reloadingDriver": "Recargando el controlador INDI…"
+      "reloadingDriver": "Recargando el controlador INDI…",
+      "configure": "Ajustes del dispositivo",
+      "rescan": "Buscar dispositivos de nuevo",
+      "connect": "Conectar",
+      "disconnect": "Desconectar",
+      "whyNotConnect": "¿Por qué aún no puede conectarse?"
     },
     "connectEquipment": {
       "camera": {
@@ -875,7 +1047,7 @@
         "guideCamRequired": "Se debe seleccionar una cámara guía válida."
       },
       "guiderCam": {
-        "name": "Cámara guía",
+        "name": "Cámara PHD2",
         "manualVnc": "Manual mediante VNC"
       },
       "safety": {
@@ -919,7 +1091,7 @@
           "mount": "Montura",
           "flip": "Flip",
           "guide": "Guiado",
-          "align": "Align",
+          "align": "Alineación",
           "focus": "Enfoque",
           "capture": "Captura"
         },
@@ -1000,8 +1172,8 @@
       "resetConfirmationTitle": "Confirmar reiniciar",
       "resetConfirmationMessage": "¿Estás seguro de reiniciar la sequencia? Ésta acción no se puede deshacer.",
       "clearSequence": "Borrar todo",
-      "clearConfirmationTitle": "Confirmar borrado",
-      "clearConfirmationMessage": "¿Estás seguro de que deseas borrar la secuencia completa? Esta acción no se puede deshacer.",
+      "clearConfirmationTitle": "Borrar todo",
+      "clearConfirmationMessage": "¿Quitar todos los elementos de la secuencia? Esta acción no se puede deshacer.",
       "load_sequence": "Cargar Secuencia",
       "choose_sequence": "Elegir secuencia...",
       "saved_sequences": "Creador de secuencias TNS",
@@ -1223,7 +1395,7 @@
         },
         "polarAlignment": {
           "searchRadius": "Radio de búsqueda",
-          "alignmentTolerance": "Tolerancia de alineación (segundos de arco)",
+          "alignmentTolerance": "Tolerancia de alineación (minutos de arco)",
           "moveRate": "Velocidad de movimiento (°/s)",
           "targetDistance": "Distancia objetivo",
           "eastDirection": "Dirección Este",
@@ -1248,7 +1420,7 @@
         },
         "setTracking": {
           "trackingMode": "Modo de seguimiento",
-          "sidereal": "Sidereal",
+          "sidereal": "Sideral",
           "lunar": "Lunar",
           "solar": "Solar",
           "king": "King",
@@ -1362,18 +1534,18 @@
         "orbuculum": {
           "hourAngle": "Ángulo horario (h)",
           "nextTarget": "Siguiente objetivo:",
-          "current": "Current:"
+          "current": "Actual:"
         },
         "autoBalancingExposure": {
-          "timeSeconds": "Time (s)",
+          "timeSeconds": "Tiempo (s)",
           "noEntries": "Sin entradas",
           "addRow": "Añadir fila",
-          "progress": "Progress",
-          "ratio": "Ratio",
+          "progress": "Progreso",
+          "ratio": "Proporción",
           "bin": "Bin"
         },
         "setReadoutMode": {
-          "mode": "Mode"
+          "mode": "Modo"
         },
         "loopWhile": {
           "expression": "Expresión"
@@ -1424,17 +1596,29 @@
       "resetStatus": "Restablecer estado",
       "delete": "Eliminar",
       "runningLocked": "Este elemento se está ejecutando y no se puede modificar",
+      "plan": {
+        "title": "Plan",
+        "startSequence": "Iniciar plan",
+        "resetSequence": "Reiniciar plan",
+        "resetConfirmationMessage": "¿Reiniciar el plan para que empiece de nuevo desde el principio? No se puede deshacer.",
+        "clearConfirmationMessage": "¿Quitar todo del plan? No se puede deshacer.",
+        "manageSequences": "Cargar / guardar planes",
+        "saveSequenceAs": "Guardar el plan actual como",
+        "sequenceFolder": "Carpeta de planes",
+        "sequenceFolderSaveError": "No se pudo cambiar la carpeta de planes.",
+        "controlsLockedMessage": "Los controles del plan están bloqueados mientras el plan se ejecuta."
+      },
       "controlsLockedMessage": "Los controles de secuencia están bloqueados mientras la secuencia se está ejecutando.",
       "lockControls": "Bloquear",
       "unlockControls": "Desbloquear",
       "simple": {
         "viewMode": "Vista de la secuencia",
-        "viewModeHint": "Simple muestra una tarjeta por objetivo con las opciones más comunes. Experto muestra el árbol completo de la secuencia.",
+        "viewModeHint": "Simple muestra una tarjeta por objetivo con las opciones más comunes. Completa muestra todo el árbol de la secuencia.",
         "mode": {
           "simple": "Simple",
-          "full": "Experto"
+          "full": "Completa"
         },
-        "openExpert": "Editar en el editor experto",
+        "openFull": "Editar en el editor completo",
         "targets": "Objetivos",
         "remaining": "Restante",
         "total": "Total",
@@ -1450,6 +1634,8 @@
         "dither": "Dithering",
         "ditherHint": "Desplazar ligeramente la posición de guiado entre imágenes. Requiere un guiado activo.",
         "ditherEvery": "Dither cada N imágenes",
+        "ditherInExposures": "Cada fila de exposición hace dither tras cada imagen. | Cada fila de exposición hace dither tras cada {count} imágenes.",
+        "ditherInExposuresMixed": "Las filas de exposición hacen dither a sus propios intervalos.",
         "coolCamera": "Enfriar cámara",
         "coolCameraHint": "Enfriar la cámara a la temperatura objetivo antes del primer objetivo.",
         "unparkMount": "Desaparcar montura",
@@ -1474,7 +1660,6 @@
         "afAfterHfr": "Tras un aumento de HFR",
         "coordinates": "Coordenadas",
         "exposureEnabled": "Tomar esta exposición",
-        "cameraDefault": "cámara",
         "gainShort": "Ganancia",
         "offsetShort": "Offset",
         "empty": "Esta secuencia aún no tiene objetivos.",
@@ -1486,6 +1671,7 @@
         "favorites": "Favoritos",
         "framing": "Framing",
         "noFilter": "Sin cambio de filtro",
+        "chooseFilter": "Elegir un filtro",
         "exposureTime": "Exposición (s)",
         "count": "Cantidad",
         "noExposures": "Este objetivo aún no tiene exposiciones.",
@@ -1498,7 +1684,50 @@
         "deleteTarget": "Eliminar objetivo",
         "deleteTargetConfirm": "¿Eliminar {name} y todas sus exposiciones de la secuencia?",
         "deleteExposure": "Eliminar exposición",
-        "deleteExposureConfirm": "¿Eliminar esta fila de exposición de la secuencia?"
+        "deleteExposureConfirm": "¿Eliminar esta fila de exposición de la secuencia?",
+        "addTargetNamed": "Añadir {name} como objetivo",
+        "limits": {
+          "title": "Noche",
+          "wait": "Esperar a que oscurezca",
+          "waitHint": "El plan empieza en cuanto oscurece. La montura no hace seguimiento mientras espera.",
+          "dawn": "Parar al amanecer",
+          "dawnHint": "Termina el plan cuando clarea, aunque falten imágenes. El resto se puede tomar la noche siguiente.",
+          "from": "desde las {time}",
+          "notTonight": "esta noche no",
+          "low": "Parar cuando el objetivo esté demasiado bajo",
+          "lowHint": "Cerca del horizonte el aire difumina las estrellas, y árboles o casas estorban. El plan sigue entonces con el siguiente objetivo.",
+          "minAltitude": "Altura mínima sobre el horizonte (°)",
+          "noTarget": "Añade primero un objetivo al plan. Esto se activa después solo.",
+          "targetRunning": "No se puede cambiar mientras se toman imágenes de un objetivo.",
+          "sunBelow": "sol {degrees}° bajo el horizonte",
+          "darknessName": {
+            "bright": "aún claro",
+            "dusky": "casi oscuro",
+            "usual": "habitual",
+            "dark": "más oscuro",
+            "darkest": "totalmente oscuro"
+          },
+          "minAltitudeHint": "0° es el horizonte, 90° es justo encima de ti. Dos puños uno sobre otro con el brazo estirado son unos 20°.",
+          "startAt": "Inicio de la noche",
+          "endAt": "Fin de la noche",
+          "until": "hasta las {time}"
+        },
+        "refocus": {
+          "title": "Enfoque",
+          "label": "Reenfocar con regularidad",
+          "hint": "El enfoque se desplaza a medida que la noche se enfría. El plan vuelve a enfocar entre dos imágenes; cada vez tarda unos minutos.",
+          "howOften": "Con qué frecuencia",
+          "every": {
+            "minutes": "cada minuto | cada {count} minutos",
+            "hours": "cada hora | cada {count} horas"
+          }
+        },
+        "budget": {
+          "question": "¿Cuánto tiempo quieres fotografiar este objetivo? (horas)",
+          "pictures": "{count} imagen de {seconds} s | {count} imágenes de {seconds} s",
+          "apply": "Usar este número de imágenes",
+          "wholeNight": "Lo que permita la noche ({time})"
+        }
       }
     },
     "mount": {
@@ -1509,17 +1738,19 @@
         "parked": "La montura está aparcada, así que no hay ninguna posición que mostrar."
       },
       "location_sync": {
-        "title": "Configuración de sincronización de ubicación",
-        "confirmationMessage": "Si la 'Sincronización de ubicación' en @:{'general.backendName'} se establece en 'Aviso', puede aparecer una ventana de confirmación antes de que se envíen coordenadas al telescopio. Para evitar esto y permitir que TNS establezca automáticamente las coordenadas, recomendamos cambiar la configuración a 'sincronizar al telescopio'",
+        "title": "Ubicación de la montura",
+        "confirmationMessage": "Cuando la montura se conecta, la app puede enviarle tu ubicación para que apunte al lugar correcto del cielo. Elige qué debe ocurrir; puedes cambiarlo después en los ajustes de ubicación.",
         "toTelescope": {
-          "label": "Sincronizar al telescopio"
+          "label": "Enviar mi ubicación a la montura"
         },
         "toApplication": {
-          "label": "Sincronizar a la aplicación"
+          "label": "Tomar la ubicación de la montura"
         },
         "noSync": {
-          "label": "Sin sincronización"
-        }
+          "label": "No sincronizar la ubicación"
+        },
+        "recommended": "Recomendado",
+        "noLocationHint": "Aún no has definido tu ubicación. “Enviar mi ubicación a la montura” enviaría 0° / 0° y sobrescribiría la ubicación que conoce la montura. Elige por ahora “No sincronizar la ubicación”: cuando definas tu ubicación, la app la enviará a la montura."
       },
       "control": {
         "park": "Aparcar",
@@ -1535,7 +1766,7 @@
           "unpark": "Error desaparcando montura",
           "tracking": "Error al configurar modo seguimiento"
         },
-        "setLocationSyncToMount": "Establecer \"Sincronizar al telescopio\"",
+        "setLocationSyncToMount": "Enviar siempre mi ubicación a la montura",
         "slewRateINDI": "Velocidad de desolazamiento",
         "reverse_axis": "Dirección de ejes",
         "slewRateDriverControlled": "La velocidad de giro la controla el controlador",
@@ -2747,7 +2978,7 @@
           "loading": "Cargando ajustes…",
           "loadFailed": "No se pudieron cargar los ajustes",
           "empty": "No hay ajustes disponibles.",
-          "notConnectedHint": "El guiador nativo no está conectado. Los cambios se guardan en el perfil; los cambios de cámara se aplican en la próxima conexión.",
+          "notConnectedHint": "El guiador integrado no está conectado. Los cambios se guardan en el perfil; los cambios de cámara se aplican en la próxima conexión.",
           "requiresReconnect": "Se aplica tras reconectar",
           "valueInUse": "En uso: {value} {unit}, ajustado durante el guiado.",
           "range": "{min} – {max}",
@@ -2884,14 +3115,14 @@
           "descriptions": {
             "GuideSource": "De dónde vienen las imágenes de guiado. Cámara de guiado: la cámara de la ranura de cámara de guiado del equipo. Simulador: una simulación integrada de montura, cielo y cámara, para probar el guiado sin hardware o de día.",
             "ExposureSeconds": "Tiempo de exposición de cada imagen de guiado. Las exposiciones más cortas reaccionan más rápido al viento y a los errores de la montura; el movimiento mínimo evita que persigan el seeing. 1 s va bien para la mayoría de las monturas; usa exposiciones más largas cuando la estrella guía sea demasiado débil.",
-            "Gain": "-1 mantiene la ganancia actual del controlador. (La ganancia de PHD2 es un porcentaje, por eso no se traslada.)",
-            "Offset": "-1 mantiene el offset actual del controlador.",
+            "Gain": "Ganancia de la cámara de guiado para los cuadros de guiado. -1 (predeterminado) usa la ganancia de los ajustes de la cámara de guiado. Una ganancia mayor aclara las estrellas débiles, pero añade ruido. La ganancia de PHD2 es un porcentaje, así que no se traslada.",
+            "Offset": "Offset (nivel de negro) de la cámara de guiado. -1 (predeterminado) usa el offset de los ajustes de la cámara de guiado. Súbelo solo si el fondo de los cuadros de guiado queda recortado a negro.",
             "Binning": "Binning por hardware de las imágenes de guiado. 2×2 hace la cámara más sensible y la transferencia más rápida, a costa de resolución; útil con píxeles pequeños o una focal de guiado larga. Vuelve a calibrar tras un cambio.",
-            "FocalLengthMm": "Distancia focal del telescopio guía (o del telescopio principal con un OAG). Necesaria para los valores en segundos de arco y el paso de calibración.",
-            "PixelSizeUm": "0 usa el tamaño de píxel del controlador de la cámara.",
+            "FocalLengthMm": "Distancia focal del telescopio guía en milímetros, o del telescopio principal si guías con un guiador fuera de eje. Junto con el tamaño de píxel determina la escala de imagen, con la que el guiador indica segundos de arco y elige el paso de calibración y el movimiento mínimo, así que indícala correctamente.",
+            "PixelSizeUm": "Tamaño de píxel de la cámara de guiado en micrómetros, usado para la escala de imagen. 0 (predeterminado) lo toma del controlador de la cámara; indícalo solo si el controlador no informa ninguno o informa uno erróneo.",
             "NoiseReduction": "Suaviza cada imagen de guiado antes de medir las estrellas. Mean 2×2 promedia píxeles vecinos, Median 3×3 elimina además píxeles calientes sueltos. Ayuda con imágenes muy ruidosas, p. ej. de cámaras sin refrigeración; en imágenes limpias, None da las posiciones de estrella más precisas.",
-            "UseDarkLibrary": "Resta darks: la biblioteca nativa si se ha creado; si no, la biblioteca de darks de PHD2 para las dimensiones de esta cámara.",
-            "PulseOutput": "Mount: guiado por pulsos a través del controlador de la montura conectada. CameraST4: a través del puerto ST4 de la cámara guía.",
+            "UseDarkLibrary": "Resta un dark de cada cuadro de guiado, lo que elimina los píxeles calientes y el brillo del amplificador para que no se confundan con estrellas. Usa la biblioteca de darks nativa una vez creada; si no, la de PHD2 para este tamaño de cámara.",
+            "PulseOutput": "Adónde van los pulsos de guiado. Montura: a través del controlador de la montura conectada (pulse guiding), la opción habitual. ST4 de la cámara: por el puerto ST4 de la cámara de guiado a la entrada ST4 de la montura (solo cámaras INDI).",
             "MultiStar": "Mide varias estrellas a la vez y guía sobre su posición combinada en lugar de sobre una sola estrella. Así se promedia gran parte del seeing y el guiado continúa cuando una estrella se debilita. Mejor dejarlo activado.",
             "MaxStars": "Número máximo de estrellas para el guiado multiestrella. Más estrellas promedian más seeing; con pocas estrellas útiles en el campo, el guiado usa las que encuentra. 1 guía sobre una sola estrella.",
             "MinSnr": "Relación señal/ruido que necesita una estrella para ser elegida como estrella guía. Un valor demasiado alto hace que no se encuentre ninguna; en vez de bajarlo, prueba una exposición más larga, más ganancia o una biblioteca de darks nueva.",
@@ -2900,48 +3131,48 @@
             "MaxHfd": "Tamaño máximo (diámetro de medio flujo, en píxeles) de una estrella guía. Las manchas hinchadas o desenfocadas por encima se ignoran al seleccionar estrellas.",
             "MassChangeEnabled": "Vigila el brillo (masa) de la estrella guía y trata un cambio brusco como estrella perdida, para que el guiado no salte a una estrella vecina ni guíe sobre un píxel caliente cuando pasan nubes.",
             "MassChangeThreshold": "Cuánto puede cambiar la masa de la estrella antes de que se considere perdida: 0,5 permite un cambio de la mitad respecto a las imágenes recientes. Súbelo si aparecen alarmas de estrella perdida aunque la estrella se vea claramente, p. ej. con transparencia cambiante.",
-            "PrimaryDropoutFallback": "Cuando la estrella principal falta en un cuadro, estima su posición a partir de ≥3 estrellas secundarias concordantes.",
-            "SaturationAdu": "0 = detectar la saturación a partir del perfil de la estrella.",
-            "RaAlgorithm": "Predictive (experimental) aprende el seeing y el movimiento propio de la montura a partir de los cuadros de guiado y corrige el error que predice para el siguiente cuadro, por lo que la agresividad, la histéresis y el movimiento mínimo no se le aplican.",
-            "RaAggression": "Fracción del error que se corrige en cada cuadro (0..1).",
+            "PrimaryDropoutFallback": "Cuando la estrella principal falta en un cuadro (una nube que pasa, un satélite), el guiador estima su posición a partir de al menos 3 estrellas secundarias concordantes y sigue guiando en lugar de pausar. Necesita el guiado multiestrella.",
+            "SaturationAdu": "Valor de píxel a partir del cual una estrella se considera saturada; las estrellas saturadas no se usan porque su centro no se puede medir con precisión. 0 (predeterminado) detecta la saturación por la forma de la estrella. Si no, introduce el valor máximo de la cámara, p. ej. 65535 para 16 bits.",
+            "RaAlgorithm": "Cómo el error RA medido se convierte en corrección. Hysteresis (predeterminado) corrige una parte del error y la suaviza con las correcciones anteriores. Lowpass2 y Lowpass reaccionan con más suavidad, bien para monturas que siguen bien. None no envía correcciones RA. Predictive (experimental) aprende el seeing y el movimiento propio de la montura a partir de los cuadros de guiado y corrige el error que predice para el siguiente; la agresividad, la histéresis y el movimiento mínimo no se le aplican.",
+            "RaAggression": "Parte del error RA medido que se corrige en cada cuadro: 0,7 corrige el 70 %. Los valores bajos evitan pasarse y perseguir el seeing, los altos devuelven la estrella más rápido. Bájalo si la estrella oscila de un lado a otro, súbelo si la estrella se queda atrás.",
             "RaHysteresis": "Peso de la corrección RA anterior frente al último error: 0,1 mezcla un 10 % de la última corrección. Valores más altos suavizan las correcciones pero reaccionan más despacio a un cambio real de dirección.",
             "RaLowpass2Aggressiveness": "Lowpass2 ajusta una recta a los últimos errores RA y corrige esa tendencia en lugar de imágenes sueltas. Es la parte de la tendencia corregida por imagen, en porcentaje; bájalo si las correcciones se pasan.",
-            "RaMinMove": "0 = automático según la escala de imagen.",
+            "RaMinMove": "Error RA más pequeño, en píxeles, que recibe una corrección; los errores menores se ignoran para que el guiador no persiga el seeing. 0 (predeterminado) calcula un valor a partir de la escala de imagen. Es el ajuste que más merece la pena adaptar al seeing de la noche.",
             "RaCorrectionPace": "Parte del error restante que el algoritmo Predictive corrige por imagen: 0,5 elimina un desplazamiento en 2–3 imágenes sin pasarse de cero, 1 lo corrige todo de una vez. La deriva y el error periódico se corrigen siempre por completo.",
             "PeriodicErrorPrediction": "Aprende el error periódico del tornillo sin fin de RA y lo corrige antes de que se note. La curva aprendida se guarda por perfil y montura.",
             "WormPeriodUnit": "Indica el tornillo sin fin de RA por los dientes de su corona o por su período en segundos, p. ej. del manual de la montura o de una herramienta PEC. Los segundos también sirven para una transmisión cuyo período no es un número entero de dientes (reductora armónica, correa). Solo se usa el valor elegido.",
-            "WormTeeth": "Dientes de la corona de RA (p. ej. 180 en una EQ6-R, 135 en una HEQ5); da el periodo exacto del tornillo sin fin. 0 = detectar el periodo a partir de los cuadros de guiado.",
+            "WormTeeth": "Dientes de la corona del sinfín de RA (p. ej. 180 en una EQ6-R, 135 en una HEQ5); da el período exacto del sinfín. 0 (predeterminado) detecta el período a partir de los cuadros de guiado.",
             "WormPeriodSeconds": "Período del tornillo sin fin de RA en segundos (p. ej. 478,7 para 180 dientes); entonces no se detecta. Tras un giro de meridiano su fase se vuelve a aprender, como sin número de dientes. 0 (predeterminado) = detectar el período a partir de las imágenes de guiado; el guiador acepta de 180 a 1200 s.",
             "ForgetPeriodicError": "Olvida el error periódico aprendido para esta montura, p. ej. después de ajustar el tornillo sin fin; luego se aprende de nuevo.",
-            "DecAlgorithm": "Predictive (experimental) aprende el seeing y el movimiento propio de la montura a partir de los cuadros de guiado y corrige el error que predice para el siguiente cuadro, por lo que la agresividad, la histéresis y el movimiento mínimo no se le aplican.",
+            "DecAlgorithm": "Cómo el error Dec medido se convierte en corrección. ResistSwitch (predeterminado) solo invierte el sentido de Dec cuando el error lo pide claramente, para que la holgura de Dec no haga oscilar el guiado. Hysteresis, Lowpass2 y Lowpass funcionan como en RA; None no envía correcciones Dec. Predictive (experimental) aprende el seeing y el movimiento propio de la montura a partir de los cuadros de guiado y corrige el error que predice para el siguiente; la agresividad, la histéresis y el movimiento mínimo no se le aplican.",
             "DecAggression": "Parte del error Dec medido que se corrige en cada imagen: 1,0 lo corrige todo. Bájalo si Dec se pasa.",
             "DecHysteresis": "Peso de la corrección Dec anterior frente al último error: 0,1 mezcla un 10 % de la última corrección. Valores más altos suavizan las correcciones pero reaccionan más despacio a un cambio real de dirección.",
             "DecLowpass2Aggressiveness": "Lowpass2 ajusta una recta a los últimos errores Dec y corrige esa tendencia en lugar de imágenes sueltas. Es la parte de la tendencia corregida por imagen, en porcentaje; bájalo si las correcciones se pasan.",
             "DecFastSwitch": "Con ResistSwitch: deja que Dec invierta su dirección enseguida cuando el error es grande (más de 3 × min move), en lugar de esperar a que varias imágenes coincidan. Recupera rápido un error Dec grande.",
-            "DecMinMove": "0 = automático según la escala de imagen.",
+            "DecMinMove": "Error Dec más pequeño, en píxeles, que recibe una corrección; los errores menores se ignoran para que el guiador no persiga el seeing. 0 (predeterminado) calcula un valor a partir de la escala de imagen. Es el ajuste que más merece la pena adaptar al seeing de la noche.",
             "DecCorrectionPace": "Parte del error restante que el algoritmo Predictive corrige por imagen: 0,5 elimina un desplazamiento en 2–3 imágenes sin pasarse de cero, 1 lo corrige todo de una vez. La deriva y el error periódico se corrigen siempre por completo.",
             "DecGuideMode": "Auto guía Dec en ambas direcciones; Solo Norte o Solo Sur, en una sola; Desactivado, en ninguna. Drift sigue la deriva: mide la deriva en Dec mientras guía y solo guía en su contra, así que los engranajes de Dec nunca invierten y la holgura deja de importar; cambia de dirección cuando la deriva se invierte y guía en ambas direcciones hasta conocer la deriva, durante la estabilización y para recuperar un error grande.",
             "MaxRaDurationMs": "Pulso de guiado RA individual más largo. Limita una corrección cuando una medida está muy desviada (estrella equivocada, ráfaga de viento), para que la montura no salga despedida lejos. Súbelo solo si los errores grandes tardan muchas imágenes en corregirse.",
             "MaxDecDurationMs": "Pulso de guiado Dec individual más largo. Limita una corrección cuando una medida está muy desviada (estrella equivocada, ráfaga de viento), para que la montura no salga despedida lejos. Súbelo solo si los errores grandes tardan muchas imágenes en corregirse.",
-            "MinPulseMs": "Los pulsos de guiado más cortos se redondean a 0 o a esta duración: algunas monturas gestionan mal los pulsos muy cortos. 0 = cualquier duración.",
+            "MinPulseMs": "Los pulsos de guiado más cortos se redondean a 0 o a esta duración, porque algunas monturas gestionan mal los pulsos muy cortos. 0 envía pulsos de cualquier duración.",
             "SimultaneousPulses": "Envía los pulsos RA y Dec de una imagen a la vez en lugar de uno tras otro, lo que acorta el ciclo de guiado. Solo con monturas que temporizan ambos ejes por separado (el driver OnStepX nativo de pins); las demás monturas siguen pulsando uno tras otro.",
             "BacklashCompensation": "Añade un pulso extra cuando Dec invierte su dirección, para absorber la holgura de los engranajes Dec. Útil con backlash Dec apreciable; déjalo desactivado si Dec guía bien. El modo de guiado Dec Drift evita las inversiones por completo.",
             "BacklashPulseMs": "Duración del pulso extra en una inversión de Dec. A partir de ella, el guiado ajusta el pulso automáticamente entre 20 ms y 1,5 × este valor, según cómo responda la estrella. Con el modelo de holgura, el valor es solo la primera estimación de la holgura, que luego aprende el modelo.",
             "PulseModel": "Aprende de los dithers cuánto mueve realmente un pulso la estrella en cada eje y dimensiona los pulsos según eso, para que una calibración inexacta ya no haga que el guiado corrija de más o de menos. Empieza con los valores de calibración, cambia solo lo que los dithers muestran con claridad y conserva lo aprendido por perfil y montura hasta la próxima calibración.",
-            "CalibrationStepMs": "0 = automático según la óptica, la velocidad de guiado y la declinación.",
+            "CalibrationStepMs": "Duración de cada pulso durante la calibración. 0 (predeterminado) la calcula a partir de la distancia focal, el tamaño de píxel, la velocidad de guiado y la declinación. Ajústala tú solo si la calibración da demasiado pocos o demasiados pasos.",
             "ReuseCalibration": "Conserva la última calibración entre sesiones y la adapta a la declinación y al lado del pilar, para que no tengas que calibrar cada noche. Vuelve a calibrar después de girar a mano la cámara de guiado o cambiar el telescopio guía.",
             "AssumeOrthogonal": "La calibración normalmente mide las direcciones RA y Dec por separado. Esto fuerza a que Dec sea exactamente perpendicular a RA, lo que ayuda cuando un gran error periódico, el backlash Dec o un mal seeing distorsionan la calibración Dec.",
             "DecCompensation": "Adapta las correcciones RA a la declinación actual, para que una calibración hecha en una declinación siga sirviendo en otra. La montura conectada debe informar su posición; déjalo activado. No es lo mismo que la compensación de backlash Dec.",
-            "DecFlipRequired": "Ajuste por montura; lo corrige automáticamente la autocomprobación de Dec tras el giro.",
+            "DecFlipRequired": "Si las correcciones Dec deben invertirse tras un giro de meridiano. Depende de la montura y se guarda por montura; la autocomprobación de Dec tras el giro lo corrige automáticamente si es incorrecto.",
             "VerifyDecAfterFlip": "Tras un giro de meridiano, comprueba las primeras correcciones Dec: si alejan la estrella en lugar de acercarla, el guiado invierte Dec por sí mismo y corrige «Invertir Dec tras el giro de meridiano» para esta montura.",
             "RotatorTurnsGuideCamera": "Si el rotador conectado gira también la cámara de guiado: Sí cuando el rotador está entre el telescopio y el OAG, No con un telescopio guía o con un rotador entre el OAG y la cámara de imagen. Con Sí, el guiado espera mientras gira el rotador y después empieza con una nueva estrella guía y la calibración guardada girada con el rotador, así que no hace falta volver a calibrar tras un giro. Si con Sí el guiado aleja la estrella después de mover el rotador, elige «Sí, invertido» y calibra otra vez. El rotador manual de NINA no se sigue.",
             "DitherMode": "Cómo se elige cada dither. Random: una distancia y dirección aleatorias. Spiral: pasos a lo largo de una espiral alrededor de la posición inicial, útil contra el ruido de patrón fijo de la cámara de captura.",
             "DitherScale": "Multiplica la distancia de dither que pide el software de captura: 2 hace el dither el doble de lejos, 0,5 la mitad.",
             "FastRecenter": "Tras un dither, lleva la estrella a la nueva posición de bloqueo con grandes pulsos directos en lugar de pasos de guiado normales, para que el dither se estabilice antes. Mejor dejarlo activado.",
             "ReacquireTimeoutSec": "Cuánto tiempo busca el guiado una estrella perdida antes de dar la alarma. Después sigue buscando y reanuda el guiado en cuanto la estrella vuelve.",
-            "MaxPulseDutyPercent": "El guiado se detiene cuando un eje recibe pulsos durante más de esta fracción de un minuto (protección contra el guiado descontrolado).",
+            "MaxPulseDutyPercent": "El guiado se detiene cuando un eje recibe pulsos durante más de esta fracción de un minuto. Protege de un movimiento descontrolado, p. ej. tras una calibración errónea o con Dec invertida.",
             "PauseWhenSlewing": "Pausa las correcciones mientras la montura indica que se está desplazando o que está aparcada. Desactívalo solo si el controlador de la montura indica «desplazándose» de forma permanente.",
-            "PauseWhenTrackingOff": "Pausa las correcciones mientras la montura indica que el seguimiento está desactivado. Desactívalo si el controlador de la montura no puede informar de su estado de seguimiento.",
+            "PauseWhenTrackingOff": "Pausa las correcciones mientras la montura indica que el seguimiento está desactivado. Desactívalo si el controlador de la montura no puede informar del estado del seguimiento.",
             "SaveGuideLog": "Registro de guiado compatible con PHD2 en ~/.local/share/NINA/InternalGuider/Logs. El plugin Registros de guiado lo muestra en la app.",
             "IncidentRecorder": "Mantiene en memoria los cuadros de guiado de los últimos minutos y los guarda en torno a pérdidas de estrella, guiado descontrolado, problemas de montura y cámara y picos de error, para verlos de nuevo y descargarlos.",
             "IncidentBudgetMb": "Espacio en disco para las incidencias registradas; primero se borran las más antiguas no conservadas. Las incidencias del simulador tienen sus propios 200 MB.",
@@ -4623,7 +4854,7 @@
         "steps": {
           "check": {
             "title": "Requisitos",
-            "description": "Hocus Focus necesita una cámara y un enfocador conectados."
+            "description": "El autoenfoque necesita una cámara y un enfocador conectados."
           },
           "optics": {
             "title": "Óptica",
@@ -4631,15 +4862,15 @@
           },
           "rig": {
             "title": "Tu equipo",
-            "description": "Algunas preguntas sobre tu equipo. Tus respuestas definen los preajustes de Hocus Focus."
+            "description": "Unas preguntas sobre tu equipo. Tus respuestas definen ajustes de autoenfoque adecuados."
           },
           "rough": {
             "title": "Enfoque aproximado",
-            "description": "Toma imágenes y mueve el enfocador hasta que las estrellas sean pequeñas y redondas y el HFR sea lo más bajo posible."
+            "description": "Toma imágenes y mueve el enfocador hasta que las estrellas sean pequeñas y redondas. El HFR es el tamaño de la estrella: cuanto menor, más nítida."
           },
           "measure": {
             "title": "Tamaño del paso y backlash",
-            "description": "Mide lo rápido que crecen las estrellas al mover el enfocador y cuántos pasos pierde al cambiar de sentido, y sugiere un tamaño del paso para el autoenfoque y la compensación de backlash de NINA. El enfocador primero retrocede bastante para que cada posición se alcance desde el mismo lado, luego avanza a través del foco y al final vuelve a la posición inicial."
+            "description": "Mide qué rápido crecen las estrellas al mover el enfocador y cuántos pasos pierde al cambiar de sentido, y sugiere un tamaño de paso para el autoenfoque y la compensación de backlash. Primero el enfocador retrocede bastante para que cada posición se alcance desde el mismo lado, luego avanza pasando por el foco y vuelve a su posición inicial al final."
           },
           "run": {
             "title": "Prueba",
@@ -4651,14 +4882,13 @@
           },
           "optimize": {
             "title": "Optimizar",
-            "description": "Opcional: el optimizador ajusta la detección de estrellas con un autoenfoque guardado."
+            "description": "Opcional: el optimizador ajusta la detección de estrellas con un barrido de autoenfoque nuevo o con uno guardado."
           }
         },
         "checks": {
           "camera": "Cámara conectada",
           "focuser": "Enfocador conectado",
-          "hocusFocus": "Hocus Focus disponible",
-          "engineHint": "En @:{'general.backendName'}, 'Auto Focus' y 'Star Detector' deben estar ambos en Hocus Focus. El paso Resultado te avisa si no es así."
+          "hocusFocus": "Plugin de autoenfoque instalado"
         },
         "focalLength": "Distancia focal (mm)",
         "pixelSize": "Tamaño de píxel (µm)",
@@ -4674,7 +4904,7 @@
         "startRun": "Iniciar autoenfoque",
         "stopRun": "Detener autoenfoque",
         "runFailed": "No se pudo iniciar el autoenfoque.",
-        "noResult": "Todavía no hay un autoenfoque de Hocus Focus terminado para evaluar.",
+        "noResult": "Aún no hay ninguna ejecución de autoenfoque terminada que valorar.",
         "runAgain": "Repetir",
         "openOptimizer": "Abrir optimizador",
         "useOptimized": "Usar ajustes optimizados",
@@ -4832,9 +5062,9 @@
       "warm_up": "Calentar",
       "cooler_status": "Estado del enfriador",
       "cooler_status_off": "APAGADO",
-      "cooler_status_cooling": "Activo - Enfriando a",
-      "cooler_status_holding": "Activo - A temperatura objetivo",
-      "cooler_status_warming": "Activo - Calentando a",
+      "cooler_status_cooling": "Enfriando a",
+      "cooler_status_holding": "A temperatura objetivo",
+      "cooler_status_warming": "Calentando",
       "set_save_snapshot": "Guardar captura",
       "snapshotTargetName": "Nombre del objetivo",
       "set_use_solve_sync_to_mount": "Sincronizar a la montura",
@@ -4881,6 +5111,7 @@
       "up": "Arriba",
       "not_available": "No disponible",
       "running": "PROCESANDO",
+      "movingToStart": "Moviendo al inicio…",
       "plate_solve_start": "Iniciar resolución de placa",
       "plate_solve_ok": "Platesove exitoso",
       "plate_solve_error": "Error de platesolve",
@@ -4937,6 +5168,41 @@
       },
       "error_modal": {},
       "tppa": "TPPA",
+      "problem": {
+        "cannotStart": "La alineación polar no puede empezar",
+        "refused": "El equipo rechazó iniciar la alineación polar",
+        "noLocation": "El equipo no conoce su ubicación. Define primero latitud y longitud, el cálculo depende de ellas.",
+        "noDatabase": "No hay ningún mapa estelar instalado, así que no se puede resolver ninguna imagen. Instala uno y empieza de nuevo.",
+        "notSent": "El inicio no llegó al equipo. Revisa la conexión y pulsa Iniciar de nuevo.",
+        "startSlewFailed": "El telescopio no pudo moverse a la posición inicial. Revisa la montura y pulsa Iniciar de nuevo."
+      },
+      "trackingOffAfterStop": "La alineación polar desactivó el seguimiento al detenerse.",
+      "resumeTracking": "Reactivar el seguimiento",
+      "goodEnoughHint": "Un error total por debajo de 1′ (un minuto de arco) es bueno. Cuando lo alcances, detén la alineación.",
+      "tabSimple": "Alineación polar",
+      "simpleIntroMove": "Primero la montura va sola a una posición inicial cerca del polo celeste y luego gira dos veces un poco sobre su eje mientras toma imágenes. Comprueba que los cables sean lo bastante largos y que nada estorbe.",
+      "simpleIntroAdjust": "Después esta página muestra hacia dónde girar los tornillos de altura y azimut. Los valores se actualizan tras cada imagen. Sigue ajustando hasta que el error total esté por debajo de 1′ (un minuto de arco) y entonces detén tú la alineación.",
+      "adjustHint": "Gira los tornillos de altura y azimut poco a poco en la dirección de las flechas. Los valores se actualizan tras cada imagen.",
+      "lastMeasurement": "Última medición",
+      "markedDone": "La alineación polar está marcada como hecha para esta noche.",
+      "confirmStartTitle": "¿Iniciar la alineación polar?",
+      "confirmStartMessage": "La montura va ahora a la posición inicial cerca del polo celeste y gira durante la medición. Comprueba que los cables sean lo bastante largos y que nada estorbe.",
+      "status": {
+        "capturing": "Tomando una imagen…",
+        "solving": "Resolviendo la imagen (plate solving)…",
+        "captureRetry": "La imagen falló, nuevo intento…",
+        "solveRetry": "El plate solving falló, nuevo intento…",
+        "nextPoint": "Yendo al siguiente punto",
+        "firstPoint": "Midiendo el primer punto",
+        "secondPoint": "Midiendo el segundo punto",
+        "finalPoint": "Midiendo el tercer punto",
+        "waitMount": "Esperando a que la montura se detenga",
+        "waitDome": "Esperando a la cúpula",
+        "settling": "La montura se estabiliza",
+        "slewInitial": "Yendo a la posición inicial",
+        "movingAxis": "Girando el eje",
+        "solveAttempt": "Resolviendo la imagen (plate solving)…"
+      },
       "warn_dec_spread_body": "La declinación informada de la montura cambió en {arcsec}\" entre mediciones. Esto puede afectar la precisión de la alineación polar; asegúrese de que solo el eje RA se mueva durante la medición.",
       "warn_dec_spread_title": "Se ha detectado un diferencial de declinación",
       "warn_east_west_body": "El campo actual está dentro de los 5° exactos del Este u Oeste. Si la solución activa es inestable, diríjase a un campo más alejado del Este/Oeste y vuelva a ejecutar.",
@@ -4969,7 +5235,11 @@
       "az": "Acimut:",
       "slew_modal": {
         "deviation_target": "Desviación al objetivo:"
-      }
+      },
+      "failed": "Falló el slew o el centrado",
+      "centeredTitle": "Objetivo centrado",
+      "centered": "El objetivo está en el centro de la imagen.",
+      "centeredNamed": "{name} está en el centro de la imagen."
     },
     "filterwheel": {
       "title": "Rueda portafiltros",
@@ -5122,7 +5392,7 @@
       "status_darks_incomplete": "Darks: {completed} de {total} capturados.",
       "status_darks_skipped": "Darks omitidos.",
       "status_waiting_cover": "Esperando a que se cubra el telescopio antes de los darks",
-      "status_failed_flats": "No se capturaron flats; no se pudo determinar una exposición válida",
+      "status_failed_flats": "No se pudo determinar una exposición válida",
       "status_running_darks": "En ejecución: {completed} / {total} darks",
       "status_running_flats": "En ejecución: {completed} / {total} flats",
       "status_stopped_darks": "Detenido antes de tiempo: {completed} de {total} darks capturados",
@@ -5176,7 +5446,7 @@
         "toggle": "Activar/desactivar apuntado al cielo",
         "hint": "Apuntado al cielo activo. Apunta a través de la parte trasera de la pantalla. Arrastra para detenerlo; pellizca para hacer zoom.",
         "low_accuracy": "La precisión de la brújula es baja. Aléjate de metales e imanes y calibra la brújula moviendo el dispositivo en forma de ocho.",
-        "unavailable": "Sky pointing requires a supported native app and a north-referenced motion sensor. Manual browsing is available.",
+        "unavailable": "Los sensores de orientación no están disponibles. Usa la app nativa en un dispositivo con sensores compatibles o navega manualmente.",
         "permission_denied": "Se denegó el acceso a los sensores de movimiento. Permítelo en los ajustes del sistema o navega manualmente.",
         "location_required": "El apuntado al cielo necesita una ubicación de observación. Define tu lugar o permite el acceso a la ubicación.",
         "sensor_error": "El apuntado al cielo se detuvo porque no hay datos de los sensores. Inténtalo de nuevo o navega manualmente."
@@ -5368,6 +5638,22 @@
         "camera_field": "Campo de la cámara",
         "actions": "Acciones",
         "more": "Más"
+      },
+      "tonight": {
+        "title": "Visible esta noche",
+        "intro": "Los mejores objetivos de esta noche en tu ubicación, los mejores primero. Toca uno para seleccionarlo en el atlas.",
+        "noSite": "Primero define tu ubicación en el perfil y aquí aparecerán los mejores objetivos de esta noche.",
+        "noDarkNight": "Esta noche no oscurece lo suficiente en tu ubicación.",
+        "nothing": "Ningún objetivo sube lo bastante alto en el cielo esta noche.",
+        "maxAlt": "hasta {alt}° de altura",
+        "types": {
+          "galaxy": "Galaxia",
+          "nebula": "Nebulosa",
+          "planetary_nebula": "Nebulosa planetaria",
+          "cluster": "Cúmulo estelar",
+          "dark_nebula": "Nebulosa oscura",
+          "widefield": "Campo amplio"
+        }
       }
     },
     "profile": {
@@ -5611,6 +5897,7 @@
       "sequenceStart": "No se pudo iniciar la secuencia",
       "guidingStart": "No se pudo iniciar el guiado",
       "autofocusStart": "No se pudo iniciar el autoenfoque",
+      "autofocusStop": "No se pudo cancelar el autoenfoque",
       "binning": "No se pudo cambiar el binning",
       "readout": "No se pudo cambiar el modo de lectura",
       "switchSet": "No se pudo ajustar el interruptor"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "Canal de actualización dev oculto.",
       "specialEnabled": "Marcador de dolor de ojos activado.",
       "specialDisabled": "Se acabó la diversión."
+    },
+    "simpleMode": {
+      "title": "Esta noche",
+      "subtitle": "Tu noche paso a paso: pulsa el paso resaltado y sigue de arriba abajo.",
+      "pinsOnly": "El modo simple solo está disponible cuando Touch'N'Stars está conectado a un dispositivo PINS.",
+      "offHint": "El modo simple está desactivado, así que la navegación muestra todas las páginas.",
+      "turnOn": "Usar modo simple",
+      "showAll": "Mostrar todas las funciones (desactivar el modo simple)",
+      "status": {
+        "done": "Hecho",
+        "running": "En curso",
+        "open": "Pendiente",
+        "skipped": "Omitido"
+      },
+      "markDone": "Marcar como hecho",
+      "skip": "Omitir esta noche",
+      "undoMark": "Deshacer",
+      "needsCamera": "Conecta primero la cámara.",
+      "needsMount": "Conecta primero la montura.",
+      "needsGuider": "El guiado aún no está conectado. Pulsa “Conectar todo” arriba.",
+      "needsCameraAndMount": "Necesita una cámara y una montura conectadas.",
+      "rig": {
+        "title": "Tu equipo",
+        "changeDevices": "Cambiar dispositivos",
+        "empty": "Aún no hay dispositivos configurados. El asistente de configuración te guía por la cámara, la montura y el resto.",
+        "openWizard": "Abrir el asistente de configuración",
+        "noMountHint": "¿Aún sin montura configurada? Encuentra aquí el driver adecuado.",
+        "devicesFailedHint": "Sin conexión: {devices}. Comprueba primero la alimentación y el cable; si ambos están bien, puede hacer falta otro driver.",
+        "mountFailedHint": "La montura no se conectó. A menudo necesita otro driver.",
+        "connecting": "Conectando…",
+        "allConnected": "Todo conectado",
+        "connectAll": "Conectar todo",
+        "exposing": "Tomando una imagen",
+        "coolingTo": "enfriando a {temp}",
+        "parked": "Aparcada",
+        "slewing": "Moviéndose",
+        "tracking": "Siguiendo el cielo",
+        "notTracking": "Sin seguimiento",
+        "autofocusRunning": "Autoenfoque en curso",
+        "position": "Posición {position}",
+        "connected": "Conectado",
+        "notConnected": "No conectado"
+      },
+      "guiderState": {
+        "Guiding": "Guiando",
+        "Calibrating": "Calibrando",
+        "Looping": "Buscando una estrella",
+        "LostLock": "Estrella perdida",
+        "Idle": "Detenido",
+        "Paused": "En pausa",
+        "Reacquiring": "Buscando de nuevo la estrella"
+      },
+      "night": {
+        "title": "Tu noche",
+        "progress": "{done} de {total} hechos"
+      },
+      "steps": {
+        "connect": {
+          "title": "Conecta tu equipo",
+          "description": "Enciende la alimentación de tu equipo y conecta todos los dispositivos con un toque.",
+          "hint": "Si un dispositivo no se conecta, revisa su cable y alimentación y pulsa “Conectar todo” de nuevo.",
+          "summary": "{connected} de {total} conectados"
+        },
+        "cool": {
+          "title": "Enfriar la cámara",
+          "description": "Un sensor enfriado da imágenes más limpias. El enfriamiento tarda unos minutos, así que empieza pronto: mientras tanto puedes seguir con los siguientes pasos.",
+          "targetTemp": "Temperatura objetivo (°C)",
+          "start": "Enfriar a {temp} °C",
+          "failed": "No se pudo iniciar el enfriamiento",
+          "warmingSummary": "Calentando · {temp}",
+          "setup": {
+            "question": "¿Qué tan rápido puede enfriarse tu cámara?",
+            "text": "Se pregunta una vez por perfil. Enfriar o calentar demasiado rápido estresa algunos sensores, y un sensor que se calienta muy deprisa puede empañarse. El calentamiento se ejecuta al terminar la noche.",
+            "presets": {
+              "fast": {
+                "title": "Rápido",
+                "description": "Enfría de inmediato, se calienta en {warm} min. Válido para la mayoría de cámaras CMOS refrigeradas actuales: ellas mismas limitan su refrigerador."
+              },
+              "gentle": {
+                "title": "Suave",
+                "description": "Se enfría en {cool} min, se calienta en {warm} min."
+              },
+              "veryGentle": {
+                "title": "Muy suave",
+                "description": "Se enfría en {cool} min, se calienta en {warm} min. Para cámaras antiguas y sensores CCD."
+              }
+            },
+            "notSure": "¿No estás seguro? El manual de tu cámara indica si necesita un enfriamiento lento. Hasta que lo sepas, “Suave” es una opción segura. Puedes cambiarlo después en la página de la cámara.",
+            "currentValues": "Tu perfil ya tiene sus propios tiempos: se enfría en {cool} min, se calienta en {warm} min.",
+            "keepValues": "Mantener estos tiempos",
+            "applyFailed": "No se pudieron guardar los tiempos en el perfil."
+          }
+        },
+        "mount": {
+          "title": "Preparar la montura",
+          "description": "La montura debe estar desaparcada y seguir el cielo (seguimiento) antes de poder apuntar a un objetivo.",
+          "action": "Desaparcar e iniciar seguimiento",
+          "trackingFailed": "No se pudo activar el seguimiento",
+          "trackingOffAfterPolar": "La alineación polar desactivó el seguimiento. Pulsa el botón para reactivarlo."
+        },
+        "polar": {
+          "title": "Alineación polar",
+          "description": "Alinea la montura con el polo celeste. La app toma tres imágenes, gira la montura entre ellas y te muestra cuánto girar los tornillos de ajuste. Basta una vez por montaje.",
+          "action": "Abrir alineación polar"
+        },
+        "target": {
+          "title": "Elegir un objetivo",
+          "description": "Elige tu objeto en el atlas del cielo y añádelo a tu plan. Al empezar las imágenes, el plan va allí, centra el objetivo con una imagen e inicia el guiado: no tienes que hacer nada a mano.",
+          "action": "Elegir un objetivo en el atlas del cielo",
+          "another": "Añadir otro objetivo",
+          "how": "Pulsa tu objeto en el atlas del cielo (o búscalo) y luego pulsa “{button}”.",
+          "coordinates": "AR {ra}° · Dec {dec}°",
+          "summaryMany": "{name} y {count} más",
+          "calibrationRisk": {
+            "nearPole": "Tu objetivo está cerca del polo celeste, donde el guiado no puede calibrar. Haz antes la calibración única en “Configurar guiado”.",
+            "low": "Tu objetivo está bajo en el cielo, donde el guiado calibra mal. Haz antes la calibración única en “Configurar guiado”."
+          }
+        },
+        "focus": {
+          "title": "Enfoque",
+          "description": "Unas estrellas nítidas deciden la noche, y los siguientes pasos también las necesitan: la alineación polar y el centrado del objetivo calculan la posición a partir de una imagen. Apunta el telescopio a una zona del cielo con estrellas. Con un enfocador motorizado el autoenfoque hace el trabajo; sin él, enfoca a mano con imágenes en vivo.",
+          "autofocus": "Iniciar autoenfoque",
+          "watch": "Ver la curva de enfoque",
+          "manualHint": "Sin enfocador motorizado conectado: abre la cámara, toma imágenes en bucle y gira el enfocador hasta que las estrellas sean lo más pequeñas posible.",
+          "manual": "Abrir la cámara",
+          "lastRun": "Último autoenfoque a las {time}",
+          "lastFailed": "El último autoenfoque a las {time} falló: comprueba que se ven estrellas e inténtalo de nuevo",
+          "pointAtStars": "Apuntar el telescopio a estrellas (atlas del cielo)",
+          "setupFirst": "Antes del primer autoenfoque con este telescopio, configúralo una vez: el asistente mide tu enfocador y cámara y encuentra ajustes que funcionan. Sin él, el autoenfoque suele fallar.",
+          "cancelled": "Autoenfoque cancelado. El enfocador vuelve a donde estaba antes.",
+          "setup": "Configurar autoenfoque"
+        },
+        "guide": {
+          "title": "Configurar guiado",
+          "description": "La cámara de guiado observa una estrella y corrige la montura, para que las exposiciones largas sigan nítidas. PINS tiene su propio guiado, desarrollado especialmente para él: funciona directamente en el equipo sin programa adicional y suele guiar con más estabilidad que PHD2. Debe aprender tu montura una vez (calibración); después tu plan inicia el guiado en cada objetivo por sí solo.",
+          "details": "Detalles y gráfica del guiado",
+          "useNativeHint": "Tu perfil usa ahora otro guiado. El modo simple guía con el guiado integrado en PINS: fue desarrollado especialmente para PINS, funciona directamente en el equipo y suele guiar con más estabilidad que PHD2; aprende el error periódico de los engranajes de tu montura y conserva su calibración de una noche a otra. Los ajustes que hiciste en PHD2 se mantienen.",
+          "useNative": "Usar el guiado integrado",
+          "nativeMissing": "Esta versión de PINS aún no tiene guiado integrado. Actualiza PINS en",
+          "chooseCamera": "El guiado integrado necesita saber cuál es tu cámara de guiado. Elígela aquí: después, “Conectar todo” también la conecta.",
+          "chooseCameraAction": "Elegir la cámara de guiado…",
+          "noGuideCamera": "No se encontró cámara de guiado: conéctala y revisa “Todos los dispositivos”",
+          "calibrate": "Calibrar una vez (unos 3 min)",
+          "calibrateHint": "El telescopio se mueve a un punto cercano al ecuador celeste, donde la calibración es más precisa, y allí aprende cómo lo mueve el guiado. Solo hace falta una vez: la calibración se conserva para todas las noches siguientes.",
+          "confirmCalibrateTitle": "¿Calibrar el guiado?",
+          "confirmCalibrateMessage": "El telescopio se mueve al punto de calibración y el guiado calibra allí durante unos minutos. Después el guiado se detiene de nuevo: tu plan lo inicia en el objetivo.",
+          "calibrating": "Calibrando: tarda unos minutos.",
+          "slewingToCalibration": "El telescopio se mueve al punto de calibración…",
+          "calibratedHint": "Calibrado. La calibración se conserva también para las próximas noches; tu plan inicia el guiado en cada objetivo por sí solo.",
+          "calibratedSummary": "Calibrado",
+          "unparkFirst": "Prepara primero el telescopio (paso “{step}”)."
+        },
+        "capture": {
+          "title": "Tomar imágenes",
+          "description": "Tu plan indica qué objetivos fotografiar con qué filtro, tiempo de exposición y número de imágenes. Inícialo y la app se encarga del resto: ir al objetivo, centrar, guiar y tomar las imágenes.",
+          "targets": "Objetivos",
+          "remaining": "Tiempo restante",
+          "noPlan": "Aún no hay plan. Crea uno con tu objetivo, filtro, tiempo de exposición y número de imágenes.",
+          "nothingLeft": "A tu plan no le quedan imágenes por tomar. Elige un nuevo objetivo o vuelve a tomar las imágenes de este plan.",
+          "repeat": "Volver a tomar las imágenes",
+          "repeatFailed": "No se pudo restablecer el plan",
+          "editPlan": "Editar plan",
+          "createPlan": "Crear un plan",
+          "watch": "Ver cómo llegan las imágenes",
+          "start": "Empezar a tomar imágenes",
+          "stop": "Dejar de tomar imágenes",
+          "summary": "{targets} objetivo, listo hacia las {time} | {targets} objetivos, listo hacia las {time}",
+          "summaryDone": "{targets} objetivo, todas las imágenes tomadas | {targets} objetivos, todas las imágenes tomadas",
+          "confirmStartTitle": "¿Empezar a tomar imágenes?",
+          "confirmStartPlan": "El plan empieza ahora con {targets} objetivo y dura unos {remaining}. | El plan empieza ahora con {targets} objetivos y dura unos {remaining}.",
+          "confirmStartApproach": {
+            "center": "El telescopio va al objetivo y lo centra. | El telescopio va a cada objetivo y lo centra.",
+            "slew": "El telescopio va al objetivo, pero no lo centra. | El telescopio va a cada objetivo, pero no lo centra.",
+            "off": "El telescopio no va al objetivo, toma las imágenes donde apunta ahora. | El telescopio no va a los objetivos, toma las imágenes donde apunta ahora.",
+            "mixed": "No todos los objetivos se buscan y centran, mira el plan."
+          },
+          "confirmStartGuiding": {
+            "all": "El guiado empieza antes de la primera imagen.",
+            "none": "El plan se ejecuta sin guiado.",
+            "mixed": "No todos los objetivos tienen guiado, mira el plan."
+          },
+          "confirmStopTitle": "¿Dejar de tomar imágenes?",
+          "confirmStopMessage": "La imagen actual se cancela. Puedes iniciar el plan de nuevo más tarde.",
+          "noExposures": "Tu plan tiene un objetivo pero aún ninguna imagen. Abre el plan y pulsa “Añadir exposición” para elegir filtro, tiempo de exposición y número de imágenes.",
+          "summaryEmpty": "{targets} objetivo, aún sin imágenes planificadas | {targets} objetivos, aún sin imágenes planificadas",
+          "confirmStartFocus": "Después de cada cambio de filtro vuelve a enfocar.",
+          "confirmStartRefocus": "Reenfoca {interval}.",
+          "confirmStartEnd": {
+            "both": "Al terminar, la montura se aparca y la cámara se calienta.",
+            "park": "Al terminar, la montura se aparca.",
+            "warm": "Al terminar, la cámara se calienta. La montura sigue con el seguimiento hasta que termines la noche.",
+            "none": "Al terminar, la montura sigue con el seguimiento hasta que termines la noche."
+          },
+          "missingSteps": "{count} objetivo de tu plan aún no lo hace automáticamente: {steps}. | {count} objetivos de tu plan aún no lo hacen automáticamente: {steps}.",
+          "missingStepParts": {
+            "slew": "ir hasta allí",
+            "guide": "guiar",
+            "focus": "volver a enfocar tras un cambio de filtro"
+          },
+          "fixSteps": "Añadir los pasos que faltan",
+          "flipMissing": "Tu plan no gira el telescopio en el meridiano. Seguiría el seguimiento más allá y podría chocar con el trípode o el pilar.",
+          "addFlip": "Activar el Meridian Flip",
+          "endMissing": {
+            "park": "Cuando tu plan termine, la montura seguirá con el seguimiento. Pasado el meridiano puede chocar con el trípode o la columna si nadie termina la noche.",
+            "warm": "Cuando tu plan termine, la cámara seguirá fría hasta que termines la noche.",
+            "both": "Cuando tu plan termine, la montura seguirá con el seguimiento y la cámara seguirá fría. Pasado el meridiano el telescopio puede chocar con el trípode o la columna si nadie termina la noche."
+          },
+          "addEnd": {
+            "park": "Aparcar la montura al terminar el plan",
+            "warm": "Calentar la cámara al terminar el plan",
+            "both": "Aparcar y calentar al terminar el plan"
+          },
+          "flipWindow": "{target} llega al meridiano hacia las {meridian}; el plan gira el telescopio entre {earliest} y {latest}.",
+          "flipFixed": "{target} llega al meridiano hacia las {meridian}; el plan gira el telescopio a las {earliest}.",
+          "flipPause": "{target} llega al meridiano hacia las {meridian}; el plan hace una pausa a las {pause} y gira el telescopio a las {earliest}.",
+          "flipNone": "Este plan no necesita Meridian Flip.",
+          "flipYourTarget": "Tu objetivo",
+          "flipSettings": "Ajustes del flip y prueba de luz diurna",
+          "summaryCutOff": "{taken} de {planned} imágenes tomadas",
+          "confirmStartWait": "Espera a que oscurezca, hacia las {time}."
+        },
+        "flats": {
+          "title": "Flats",
+          "description": "Los flats eliminan sombras de polvo y esquinas oscuras de tus imágenes. Tómalos ahora, antes de que cambie nada: el enfoque, la rotación de la cámara y su posición deben seguir como en las imágenes. ¿No hacen falta esta noche? Omite este paso.",
+          "lightSource": "Fuente de luz",
+          "panel": "Panel de flat",
+          "panelHint": "El equipo ajusta solo el brillo del panel.",
+          "panelMissing": "No hay ningún panel de flat regulable conectado.",
+          "tablet": "Tablet o lámina de luz",
+          "tabletHint": "Colócala bien iluminada delante del telescopio; el equipo encuentra el tiempo de exposición.",
+          "filters": "Filtros",
+          "count": "Flats por filtro",
+          "countNoWheel": "Número de flats",
+          "darks": "Tomar también dark flats",
+          "darksHint": "Solo hace falta si calibras con dark flats. El telescopio debe estar tapado; la app te avisa cuándo.",
+          "start": "Tomar flats",
+          "stop": "Detener flats",
+          "allSettings": "Todos los ajustes de flat",
+          "needsPlugin": "Los flats en esta página necesitan un plugin Touch'N'Stars más reciente en el equipo. Actualízalo o toma los flats con el asistente de flat de abajo.",
+          "planRunning": "El plan sigue en ejecución. Los flats se pueden tomar cuando termine o se detenga.",
+          "noFilterSelected": "Marca al menos un filtro.",
+          "noFilter": "Flats",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark flats",
+          "endBlocked": "Los flats siguen en curso. Termina la noche cuando acaben o se detengan.",
+          "runningSummary": "Tomando flats",
+          "doneSummary": "Flats tomados esta noche",
+          "result": {
+            "success": "Un flat tomado | {count} flats tomados",
+            "dim": "Demasiado oscuro: usa una luz más brillante o permite una exposición más larga en los ajustes de flat.",
+            "bright": "Demasiado brillante: atenúa la luz o permite una exposición más corta en los ajustes de flat.",
+            "failed": "No se pudieron tomar los flats.",
+            "stopped": "Detenido"
+          }
+        },
+        "end": {
+          "title": "Terminar la noche",
+          "description": "Detiene todo en el orden correcto, aparca la montura y calienta la cámara lentamente para que no se forme humedad en el sensor.",
+          "action": "Terminar la noche"
+        }
+      },
+      "more": {
+        "title": "Más",
+        "pictures": "Imágenes de la noche",
+        "equipment": "Todos los dispositivos",
+        "mount": "Montura",
+        "focus": "Enfoque",
+        "guider": "Guiado",
+        "system": "Wi-Fi, actualizaciones y sistema",
+        "settings": "Ajustes"
+      },
+      "endNight": {
+        "title": "Terminar la noche",
+        "intro": "Estos pasos se ejecutan uno tras otro. Desmarca lo que quieras mantener en marcha.",
+        "nothingToDo": "No hay nada en marcha y la montura está aparcada: no queda nada por hacer.",
+        "nothingToDoNoMount": "No hay nada en marcha. La montura no está conectada, así que comprueba tú mismo que esté aparcada.",
+        "someFailed": "No todo funcionó; el motivo está bajo el paso. Revisa la montura antes de apagar la alimentación.",
+        "doneWarming": "Todo listo. Cuando la cámara se haya calentado, apaga el equipo en la página de inicio antes de cortar la alimentación.",
+        "confirm": "Terminar la noche ahora",
+        "actions": {
+          "stopSequence": "Dejar de tomar imágenes",
+          "stopGuiding": "Detener el guiado",
+          "parkMount": "Aparcar la montura",
+          "warmCamera": "Calentar la cámara ({minutes} min)"
+        },
+        "parkTimeout": "La montura no indicó “aparcada” en 3 minutos. Revísala antes de apagar la alimentación.",
+        "doneShutdown": "Todo listo. Apaga el equipo antes de cortar la alimentación."
+      },
+      "settings": {
+        "title": "Modo simple",
+        "description": "Una página de inicio que te guía por la noche y una navegación solo con las páginas que necesitas. Desactívalo para ver de nuevo todas las funciones.",
+        "navbarHint": "Mientras el modo simple está activo, la personalización de navegación de abajo no tiene efecto. Vuelve sin cambios al desactivar el modo."
+      },
+      "wizard": {
+        "title": "¿Cómo quieres usar la app?",
+        "simpleTitle": "Simple (recomendado para empezar)",
+        "simpleText": "Una página de inicio te guía por la noche paso a paso, con solo las páginas que necesitas.",
+        "fullTitle": "Todas las funciones",
+        "fullText": "Todas las páginas y ajustes en la navegación, para usuarios con experiencia."
+      },
+      "focusFirst": "Enfoca primero: este paso calcula la posición a partir de una imagen, y para ello necesita estrellas nítidas.",
+      "live": {
+        "lastPicture": "Última imagen",
+        "openFull": "Mostrar la imagen a pantalla completa",
+        "noPicture": "Aún no hay imagen. Toma una imagen de prueba para ver lo que ve la cámara.",
+        "preview": "Imagen de prueba",
+        "hfr": "Nitidez (HFR)",
+        "stars": "Estrellas",
+        "guiding": "Guiado",
+        "sensor": "Sensor",
+        "trendTitle": "Nitidez de las últimas {count} imágenes",
+        "trendHint": "Las estrellas más nítidas se dibujan más arriba. Si la línea baja durante la noche, enfoca de nuevo.",
+        "exposure": "Tiempo de exposición",
+        "testPicture": "Tomar imagen de prueba",
+        "abort": "Detener exposición",
+        "planRunning": "Tu plan está tomando imágenes: las nuevas aparecen aquí según llegan.",
+        "justNow": "ahora mismo",
+        "minutesAgo": "hace {minutes} min",
+        "histogram": "Histograma",
+        "min": "Mín",
+        "max": "Máx",
+        "pixels": "{count} píxel | {count} píxeles",
+        "pixelsSaturated": "{count} píxel saturado | {count} píxeles saturados",
+        "histogramHint": "Datos del sensor sin estirar de toda la imagen. Solo se muestra el rango alrededor del fondo del cielo; las estrellas y los píxeles saturados quedan más a la derecha y se cuentan en Máx.",
+        "firstPlanPicture": "La primera imagen de tu plan aparece aquí."
+      },
+      "setupChecks": {
+        "title": "Antes de tu primera noche",
+        "locationTitle": "Falta tu ubicación",
+        "locationText": "El equipo no sabe dónde está. La alineación polar y el atlas del cielo no pueden funcionar sin ella.",
+        "locationAction": "Definir ubicación",
+        "databaseTitle": "Ningún mapa estelar instalado",
+        "databaseText": "La alineación polar y el centrado de un objetivo comparan una imagen con un mapa estelar. El equipo aún no tiene ninguno.",
+        "databaseAction": "Instalar mapa estelar",
+        "flipTitle": "Meridian Flip aún sin configurar",
+        "flipText": "Cuando un objetivo cruza el meridiano (la línea norte-sur que pasa por el cénit), el telescopio tiene que girar al otro lado de la montura; si no, pronto chocaría con el trípode o el pilar. Tu plan lo hace solo. Indícale una vez hasta dónde puede seguir tu montura más allá del meridiano.",
+        "flipNotSure": "¿No estás seguro? El manual de tu montura suele indicar hasta dónde puede seguir más allá del meridiano. Hasta que lo sepas, “Apenas” protege el telescopio, a costa de unos minutos sin imágenes.",
+        "flipCurrentValues": "Tu perfil ya tiene sus propios tiempos: {values}.",
+        "flipKeepValues": "Mantener estos tiempos",
+        "flipTimingWindow": "flip {min}–{max} min después del meridiano",
+        "flipTimingFixed": "flip {min} min después del meridiano",
+        "flipTimingPause": "pausa {pause} min antes, flip {min} min después del meridiano",
+        "blockedPolar": "La alineación polar aún no puede funcionar, mira \"Antes de tu primera noche\" arriba.",
+        "blockedTarget": "El centrado aún no puede funcionar: no hay ningún mapa estelar instalado, mira \"Antes de tu primera noche\" arriba."
+      },
+      "backToNight": "Volver a tu noche",
+      "cockpit": {
+        "title": "Tomando imágenes",
+        "noTargetName": "Tu plan",
+        "doneAt": "Listo a las",
+        "remaining": "faltan {time}",
+        "activity": {
+          "autofocus": "Enfocando (autoenfoque)",
+          "slewing": "El telescopio se mueve",
+          "centering": "Centrando el objetivo",
+          "startingGuiding": "Iniciando el guiado",
+          "closing": "Terminando el plan (aparcar, calentar)",
+          "calibrating": "El guiado está calibrando",
+          "settling": "Esperando a que se estabilice el guiado",
+          "exposing": "Exponiendo",
+          "busy": "Preparando la siguiente imagen",
+          "flipping": "Meridian Flip: el telescopio gira al otro lado",
+          "waitingForDark": "Esperando a que oscurezca"
+        },
+        "exposing": "Exponiendo {seconds} s",
+        "frame": "imagen {frame} de {frames}",
+        "check": "Comprobar",
+        "hfr": "HFR",
+        "noFrame": "aún sin imagen",
+        "hfrChange": "{change} % respecto a antes",
+        "guidingLevel": {
+          "good": "excelente",
+          "ok": "correcto",
+          "poor": "demasiado alto",
+          "unknown": "escala desconocida"
+        },
+        "alerts": {
+          "devices": "{count} dispositivo ya no está conectado. | {count} dispositivos ya no están conectados.",
+          "starLost": "El guiado perdió su estrella. Las imágenes tomadas ahora mostrarán trazos.",
+          "notGuiding": "El plan se ejecuta sin guiado.",
+          "guidingPoor": "El guiado ({rms}″) es mayor que un píxel de imagen ({scale}″): las estrellas se ven blandas. Viento, balance o un cable suelto son causas habituales.",
+          "hfrRising": "Las estrellas son un {change} % más grandes que en las imágenes anteriores. El foco puede haberse desplazado, o llegan rocío o nubes.",
+          "cooling": "El sensor está a {temp} °C en lugar de {target} °C."
+        },
+        "hfrNoBaseline": "primeras imágenes",
+        "lastPicture": "última imagen",
+        "verdict": {
+          "good": "Todo funciona bien",
+          "warn": "En marcha: algo requiere atención",
+          "danger": "Revisa, por favor: las imágenes están en riesgo",
+          "waiting": "En marcha: las primeras imágenes dirán cómo va"
+        },
+        "showDetails": "Mostrar detalles",
+        "hideDetails": "Ocultar detalles",
+        "focus": "Enfoque",
+        "focusLevel": {
+          "good": "nítido",
+          "ok": "algo blando",
+          "poor": "blando"
+        },
+        "explain": {
+          "guiding": {
+            "title": "Guiado",
+            "what": "Con qué precisión sigue la montura a las estrellas: la oscilación de la estrella guía, comparada con el tamaño de un píxel en tus imágenes.",
+            "now": "Ahora: oscilación de {rms}″, es decir {ratio} píxel (un píxel = {scale}″).",
+            "nowNoScale": "Ahora: oscilación de {rms}″. Para valorarla, el perfil necesita la distancia focal y el tamaño de píxel.",
+            "nowOff": "El guiado no está activo ahora mismo.",
+            "nowPaused": "En pausa mientras el telescopio enfoca o se mueve.",
+            "limits": "Verde hasta {good} píxel, amarillo hasta {ok} píxel, rojo por encima: entonces las estrellas se vuelven líneas cortas.",
+            "fix": "Si se pone en rojo: viento, balance o un cable suelto son las causas habituales."
+          },
+          "focus": {
+            "title": "Enfoque",
+            "what": "Qué tan grandes son las estrellas en la imagen más reciente comparadas con las anteriores del mismo filtro. Estrellas que crecen indican que el foco se desplaza, o que llegan rocío o nubes finas.",
+            "now": "Ahora: tamaño de estrella (HFR) {hfr}, {change} % respecto a antes ({baseline}).",
+            "nowFirst": "Se valora en cuanto haya {count} imágenes de un filtro.",
+            "nowNone": "Aún sin imagen.",
+            "limits": "Verde hasta un {good} % más grandes, amarillo hasta {ok} %, rojo por encima.",
+            "fix": "Si se pone en rojo: enfoca de nuevo (autoenfoque). Si no ayuda, revisa si hay rocío en la parte delantera del telescopio."
+          },
+          "cooling": {
+            "title": "Enfriamiento",
+            "what": "La temperatura del sensor de la cámara. Un sensor frío da imágenes con menos ruido.",
+            "now": "Ahora: {temp} °C, objetivo {target} °C.",
+            "limits": "Verde a menos de {good} °C del objetivo, rojo más allá.",
+            "fix": "Si sigue en rojo: el refrigerador no alcanza el objetivo con este calor; elige un objetivo unos grados más cálido."
+          }
+        },
+        "statusBarHint": "El guiado, el enfoque y el enfriamiento se valoran en la barra de estado de abajo: pulsa uno para ver qué significa.",
+        "stop": "Detener",
+        "waitingUntil": "Esperando a que oscurezca, hacia las {time}"
+      },
+      "summary": {
+        "finished": {
+          "title": "Plan terminado",
+          "text": "Todas las imágenes de tu plan están tomadas. Termina la noche para aparcar el telescopio y calentar la cámara.",
+          "textFlats": "Todas las imágenes de tu plan están tomadas. Toma ahora tus flats, mientras nada ha cambiado, y luego termina la noche.",
+          "cutOffTitle": "Listo por esta noche",
+          "cutOff": "Amaneció o tu objetivo estaba demasiado bajo: se han tomado {taken} de {planned} imágenes. Inicia el plan otra noche para tomar el resto."
+        },
+        "ended": {
+          "title": "Noche terminada",
+          "text": "¡Cielos despejados! Esto es lo que dio la noche.",
+          "notParked": "Telescopio aún sin aparcar",
+          "shutdown": "Apagar el equipo",
+          "shutdownWait": "Antes de apagar, espera a que la cámara se caliente y el telescopio esté aparcado.",
+          "resume": "Continuar la noche"
+        },
+        "frames": "Imágenes",
+        "integration": "Exposición",
+        "medianHfr": "HFR mediano"
+      },
+      "addToPlan": "Añadir al plan",
+      "slewOptional": "Tu plan va al objetivo, lo centra e inicia el guiado por sí solo. Ir allí ahora solo hace falta para comprobar antes el encuadre.",
+      "coachHint": {
+        "text": "Tu guiado estuvo inquieto anoche. El Guiding Coach mide tu cámara de guiado, el cielo y la montura y te dice qué ayuda. Tarda unos 15 minutos bajo las estrellas, mejor antes de empezar tus imágenes.",
+        "open": "Abrir el Guiding Coach",
+        "dismiss": "Ahora no"
+      },
+      "camera": {
+        "title": "Cámara",
+        "hint": "La imagen de prueba y cada imagen de tu plan usan estos valores, salvo que des valores propios a una exposición del plan. El manual de tu cámara indica la ganancia y el offset recomendados."
+      },
+      "expert": {
+        "show": "Mostrar ajustes de experto",
+        "hide": "Ocultar ajustes de experto"
+      },
+      "window": {
+        "waits": "El plan espera a que oscurezca, hacia las {time}.",
+        "tooMany": "Solo caben unas {fit} de {left} imágenes en esta noche. El resto se puede tomar otra noche.",
+        "noDarkness": "Esta noche no oscurece tanto, el plan esperaría sin fin. Elige un cielo más claro en “Noche” dentro del plan.",
+        "limit": {
+          "light": "Para como muy tarde a las {time}, porque entonces amanece.",
+          "low": "Para como muy tarde a las {time}, porque entonces tu objetivo está demasiado bajo."
+        },
+        "nothing": {
+          "light": "Ahora hay demasiada luz, el plan terminaría enseguida sin ninguna imagen. Activa “Esperar a que oscurezca” en el plan: entonces empieza hacia las {time}.",
+          "low": "Tu objetivo está demasiado bajo sobre el horizonte y sigue bajando, el plan terminaría sin ninguna imagen. Elige otro objetivo o una altura menor.",
+          "other": "Así, el plan terminaría enseguida sin ninguna imagen."
+        }
+      }
     },
     "secureObservatory": {
       "title": "Terminar la noche",
@@ -5679,6 +6447,17 @@
       "cameraCold": "La refrigeración de la cámara está encendida ({temperature} °C).",
       "domeOpen": "La cúpula no está cerrada.",
       "coverOpen": "La tapa del panel de flats está abierta."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "¿De qué marca es?",
+      "otherBrand": "Otra marca",
+      "focuserLabel": "¿Qué enfocador es?",
+      "otherFocuser": "Otro enfocador",
+      "disconnectFirst": "Desconecta el dispositivo antes de cambiar su driver.",
+      "applied": "Listo: “{device}” está seleccionado. Enchúfalo, enciéndelo y toca “Conectar”.",
+      "appliedSeveral": "El driver está configurado y encontró varios dispositivos. Elige el tuyo en la lista de dispositivos y toca “Conectar”.",
+      "appliedNoDevice": "El driver está configurado, pero aún no se encontró ningún dispositivo. Enchúfalo, enciéndelo, actualiza la lista de dispositivos, elígelo y toca “Conectar”.",
+      "openButton": "Buscar driver: {device}"
     }
   },
   "plugins": {
@@ -5904,6 +6683,15 @@
       "dryRun": "Modo simulación",
       "sambaTitle": "Recurso compartido Samba",
       "sambaDescription": "Habilitar o deshabilitar el uso compartido de archivos en red",
+      "samba": {
+        "firstEnable": "Actívalo para copiar las imágenes a un ordenador de la misma red. La primera vez el equipo puede tener que descargar software y entonces necesita internet.",
+        "howTo": "En un ordenador de la misma red que el equipo, introduce esta dirección:",
+        "windows": "Windows: barra de direcciones del Explorador",
+        "mac": "Mac: Finder, Ir, Conectarse al servidor",
+        "login": "Si pide iniciar sesión: usuario «{user}», contraseña «{password}», salvo que se haya cambiado.",
+        "outside": "Tus imágenes se guardan en {folder}. El recurso compartido muestra {share}, así que puede que no aparezcan ahí.",
+        "openAccess": "Mientras esté activado, cualquiera en esta red puede abrir, cambiar y borrar estos archivos sin contraseña."
+      },
       "phd2Title": "Inicio automático de PHD2",
       "phd2Running": "El servicio está actualmente funcionando.",
       "phd2Stopped": "El servicio está actualmente detenido.",
@@ -6087,6 +6875,7 @@
       "tabs": {
         "network": "Red",
         "services": "Servicios",
+        "pictures": "Imágenes",
         "system": "Sistema",
         "indi": "INDI",
         "software": "Software",
@@ -6378,7 +7167,7 @@
         "statusRunning": "En ejecución",
         "statusSuccess": "Éxito",
         "statusTimeout": "Tiempo agotado",
-        "stillPreparing": "El archivo todavía se está preparando. Intente descargar nuevamente en breve.",
+        "stillPreparing": "El archivo todavía se está preparando en el dispositivo.",
         "title": "Diagnóstico del sistema PINS",
         "validationDmesgLines": "Las líneas dmesg deben estar entre 100 y 50000.",
         "validationJournalLines": "Las líneas del diario deben tener entre 100 y 50000.",
@@ -8940,6 +9729,7 @@
         "errors": {
           "tppaUnavailable": "No se pudo abrir la conexión con TPPA.",
           "tppaNoResponse": "TPPA no respondió a la solicitud de inicio.",
+          "tppaStartSlewFailed": "El telescopio no pudo moverse a la posición inicial de la alineación polar.",
           "tppaError": "TPPA informó de un error. Comprueba la cámara, la montura y el plate solver.",
           "tppaSilent": "TPPA no ha enviado nada en dos minutos. TPPA y el Auto-Pilot se han detenido.",
           "autoPilotNotStarted": "El Auto-Pilot no se inició. Revisa el registro de AAPA; TPPA se detuvo si se había iniciado aquí.",
@@ -9521,7 +10311,7 @@
     "config": {
       "connectionMode": "Modo de conexión",
       "serial": "Serie",
-      "network": "Red",
+      "network": "Red (TCP)",
       "devicePort": "Puerto del dispositivo",
       "baudRate": "Velocidad en baudios",
       "autoDetect": "Detección automática",
@@ -9540,7 +10330,7 @@
     "mount": "Montura",
     "dome": "Domo",
     "flatDevice": "Flat",
-    "switch": "Switch",
+    "switch": "Interruptor",
     "filterWheel": "Filtro",
     "rotator": "Rotador",
     "guider": "Guía",
@@ -9551,7 +10341,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "Ajustes",
-    "about": "Info"
+    "about": "Info",
+    "home": "Inicio",
+    "plan": "Plan",
+    "target": "Objetivo"
   },
   "nightsummary": {
     "tnsPluginToOld": "El complemento Touch N Stars es demasiado antiguo para esta función. Actualice a la versión 1.2.8.0 o superior.",
@@ -9814,7 +10607,7 @@
       "eqmodToggleDescription": "EQMOD lee la tasa de AR como arcosegundos/seg. en bruto en lugar de lo que envía @:{'general.backendName'}, lo que hace que el seguimiento sea ~15× demasiado lento si no se corrige. Actívalo solo si tu montura usa EQMOD.",
       "eqmodDetectedHint": "{name} parece un controlador EQMOD — probablemente quieras activarlo.",
       "reapplyIntervalTitle": "Intervalo de reaplicación",
-      "reapplyIntervalDescription": "Con qué frecuencia Quick Track recalcula y reenvía la tasa de seguimiento. El valor predeterminado de 900 s (15 min) es adecuado para cometas y asteroides.",
+      "reapplyIntervalDescription": "Con qué frecuencia Quick Track recalcula y reenvía la tasa de seguimiento. El valor predeterminado de 900 s (15 min) es adecuado para cometas y asteroides; acórtalo hasta un mínimo de 5 segundos para un objeto que se mueva inusualmente rápido.",
       "secondsUnit": "s",
       "addToSequenceDescriptionRest": "añade un objetivo de apuntado + seguimiento + captura a la secuencia ya cargada en el secuenciador de PINS, para que la revises y la inicies -- tus objetivos existentes no se modifican.",
       "downloadSequence": "Descargar secuencia",

@@ -173,7 +173,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowPathIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
@@ -255,4 +255,13 @@ function groupLabel(group) {
 onMounted(() => {
   store.loadSettings();
 });
+
+// settingsConnected comes with the settings, so a connect or disconnect after they loaded left
+// "Guider connected" and "the native guider is not connected" on screen together (wizard).
+watch(
+  () => mainStore.guiderInfo?.Connected,
+  (connected, wasConnected) => {
+    if (wasConnected !== undefined && connected !== wasConnected) store.loadSettings();
+  }
+);
 </script>

@@ -16,6 +16,7 @@
         {{ t('components.setupWizard.camera.connectDevice') }}
       </span>
       <selectDevices
+        labeledConnect
         apiAction="cameraAction"
         :deviceName="$t('components.connectEquipment.camera.name')"
         :default-device-id="store.profileInfo?.CameraSettings?.Id"
@@ -50,14 +51,20 @@
         {{ t('components.setupWizard.camera.notFoundHint') }}
       </p>
 
+      <BrandDriverFinder
+        deviceType="camera"
+        apiAction="cameraAction"
+        :connected="Boolean(store.cameraInfo?.Connected)"
+        @applied="driverSelect?.loadDrivers()"
+      />
+
       <IndiDriverSelect
         ref="driverSelect"
         deviceType="camera"
-        settingPath="CameraSettings-IndiDriver"
         listAction="cameraAction"
-        rescanKey="camera"
         profileSection="CameraSettings"
         :label="t('components.setupWizard.camera.selectDriver')"
+        :connected="Boolean(store.cameraInfo?.Connected)"
       />
 
       <p class="text-sm text-content-muted">
@@ -105,6 +112,7 @@ import { useEquipmentStore } from '@/store/equipmentStore';
 import Modal from '@/components/helpers/Modal.vue';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
 import CameraSensorSettings from '../CameraSensorSettings.vue';

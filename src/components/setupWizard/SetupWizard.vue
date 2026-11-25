@@ -99,6 +99,8 @@
 
               <WizardGuiderStep v-else-if="currentStep.id === 'guider'" />
 
+              <WizardStarDatabaseStep v-else-if="currentStep.id === 'starDatabase'" />
+
               <WizardDitherStep v-else-if="currentStep.id === 'dither'" />
 
               <!-- Done -->
@@ -107,15 +109,35 @@
                   {{ t('components.setupWizard.done.title') }}
                 </h2>
                 <p class="text-sm text-content-muted">
-                  {{
-                    store.isPINS
-                      ? t('components.setupWizard.done.description')
-                      : t('components.setupWizard.done.descriptionPlain')
-                  }}
+                  {{ t('components.setupWizard.done.summaryIntro') }}
                 </p>
+                <WizardDoneSummary v-if="store.isBackendReachable" @go="goToStep" />
                 <p class="text-sm text-content-faint">
                   {{ t('components.setupWizard.done.moreDevicesHint') }}
                 </p>
+                <!-- PINS: how the app should look from now on. Same switch as in
+                     Settings -> Interface, so it can be changed any time. -->
+                <div v-if="store.isPINS" class="flex flex-col gap-2">
+                  <h3 class="tns-section-title">
+                    {{ t('components.simpleMode.wizard.title') }}
+                  </h3>
+                  <button
+                    v-for="option in uiModeOptions"
+                    :key="option.value"
+                    type="button"
+                    class="text-left rounded-card border p-3 min-h-touch transition-colors"
+                    :class="
+                      simpleModeChoice === option.value
+                        ? 'border-accent bg-accent/10'
+                        : 'border-line bg-surface-2'
+                    "
+                    :aria-pressed="simpleModeChoice === option.value"
+                    @click="settingsStore.setSimpleModeEnabled(option.value)"
+                  >
+                    <span class="block font-semibold text-content">{{ t(option.titleKey) }}</span>
+                    <span class="block text-xs text-content-muted">{{ t(option.textKey) }}</span>
+                  </button>
+                </div>
                 <!-- Anyone who skipped the instance step lands on the connection
                      splash afterwards; say where to fix that. -->
                 <p v-if="!store.isBackendReachable" class="text-sm text-status-warn">
@@ -152,6 +174,7 @@ import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { XMarkIcon } from '@heroicons/vue/24/outline';
 import { Capacitor } from '@capacitor/core';
+import { useRouter } from 'vue-router';
 import { useSettingsStore } from '@/store/settingsStore';
 import { apiStore } from '@/store/store';
 import { usePinsStore } from '@/store/pinsStore';
@@ -170,12 +193,15 @@ import WizardFocuserStep from './steps/WizardFocuserStep.vue';
 import WizardFilterWheelStep from './steps/WizardFilterWheelStep.vue';
 import WizardGuiderStep from './steps/WizardGuiderStep.vue';
 import WizardDitherStep from './steps/WizardDitherStep.vue';
+import WizardStarDatabaseStep from './steps/WizardStarDatabaseStep.vue';
+import WizardDoneSummary from './WizardDoneSummary.vue';
 
 const emit = defineEmits(['close']);
 
 const { t } = useI18n();
 const settingsStore = useSettingsStore();
 const store = apiStore();
+const router = useRouter();
 const pinsStore = usePinsStore();
 
 const isMobile = ['android', 'ios'].includes(Capacitor.getPlatform());
@@ -202,21 +228,26 @@ const steps = computed(() => [
   // Set the rig's regional defaults before Wi-Fi regulatory settings are used.
   // These steps talk to the PINS daemon on port 8000.
   ...(store.isPINS ? [step('localization'), step('wifi'), step('updates')] : []),
-  // Mount before location: the location sync needs a connected mount.
+  // Location before mount: NINA syncs the location when the mount connects. The other way
+  // round the first connect sent the still empty profile location (0°/0°) to the mount and
+  // overwrote the location it already knew (e.g. from an ASIAIR).
+  step('location'),
   step('mount'),
   // IndiMaxSlewRateDps is an INDI driver limit and meaningless without it.
   ...(store.isPINS ? [step('slewRate')] : []),
-  step('location'),
   // Telescope before camera on purpose: the camera step's image-scale readout
   // needs TelescopeSettings.FocalLength to be set.
   step('telescope'),
-  // Guiding runs through PHD2, which is only reachable on PINS. It needs a
+  // Guiding (PINS' built-in guider, or PHD2) is only reachable on PINS. It needs a
   // connected mount, and it has to come before the camera step: once the imaging
   // camera is connected, PHD2 can no longer scan for the guide camera.
   ...(store.isPINS ? [step('guider')] : []),
   step('camera'),
   step('focuser'),
   step('filterWheel'),
+  // The star database the rig plate-solves with: after the camera, so the recommendation can
+  // use focal length and sensor geometry. Installed through the PINS daemon.
+  ...(store.isPINS ? [step('starDatabase')] : []),
   // Dither last: the calculator needs the imaging camera and telescope values as
   // well as the guide setup from the steps above.
   ...(store.isPINS ? [step('dither')] : []),
@@ -238,9 +269,26 @@ const isLastStep = computed(() => currentStepIndex.value === steps.value.length 
 
 watch(currentStepId, (id) => settingsStore.setSetupWizardStep(id));
 
+// First run on PINS: the done step recommends the simple mode, so it starts selected. Before,
+// "All functions" was marked and a plain "Finish" landed a beginner in the full app. Later
+// runs (a new profile) keep whatever the user runs with.
+const isFirstRun = !settingsStore.setupWizard.completed;
+watch(
+  () => currentStep.value.id === 'done' && store.isPINS,
+  (atDone) => {
+    if (atDone && isFirstRun) settingsStore.preselectSimpleMode();
+  },
+  { immediate: true }
+);
+
 function goToIndex(index) {
   const target = steps.value[index];
   if (target) currentStepId.value = target.id;
+}
+
+// From the closing summary straight back to a step with a gap.
+function goToStep(id) {
+  if (steps.value.some((entry) => entry.id === id)) currentStepId.value = id;
 }
 
 function nextStep() {
@@ -260,9 +308,26 @@ function cancel() {
 }
 
 function finish() {
+  // Finishing with the preselection shown is a choice too.
+  if (store.isPINS) settingsStore.setSimpleModeEnabled(simpleModeChoice.value);
   settingsStore.completeSetupWizard(store.profileInfo?.Id);
+  if (store.isPINS && simpleModeChoice.value) router.push('/start');
   emit('close');
 }
+
+const simpleModeChoice = computed(() => settingsStore.simpleMode?.enabled === true);
+const uiModeOptions = [
+  {
+    value: true,
+    titleKey: 'components.simpleMode.wizard.simpleTitle',
+    textKey: 'components.simpleMode.wizard.simpleText',
+  },
+  {
+    value: false,
+    titleKey: 'components.simpleMode.wizard.fullTitle',
+    textKey: 'components.simpleMode.wizard.fullText',
+  },
+];
 </script>
 
 <style scoped>

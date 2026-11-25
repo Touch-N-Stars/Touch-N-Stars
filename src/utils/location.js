@@ -4,11 +4,21 @@ import { Geolocation } from '@capacitor/geolocation';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
+import { hasProfileLocation, syncDirectionForSelect } from '@/utils/profileLocation';
+
+// Pure, so code without stores (and its tests) can use it too.
+export {
+  hasProfileLocation,
+  mountSiteDiffers,
+  syncDirectionForSelect,
+} from '@/utils/profileLocation';
 
 export const latitude = ref(0);
 export const longitude = ref(0);
 export const altitude = ref(0);
 export const gpsError = ref(null);
+// True while the device is asked for its position; a high-accuracy fix can take up to 10 s.
+export const gpsLoading = ref(false);
 
 // Sync direction: NOSYNC | TOAPPLICATION | TOTELESCOPE  (PROMPT is excluded)
 export const syncDirection = ref('NOSYNC');
@@ -48,6 +58,9 @@ const SYNC_DIRECTION_VALUES = {
 };
 
 export async function getCurrentLocation() {
+  // A second tap while the first fix is pending would only start a parallel request.
+  if (gpsLoading.value) return;
+  gpsLoading.value = true;
   try {
     // Check for location permission
     if (Capacitor.getPlatform() !== 'web') {
@@ -73,22 +86,22 @@ export async function getCurrentLocation() {
     return pos;
   } catch (error) {
     gpsError.value = error.message || 'Failed to get GPS location';
+  } finally {
+    gpsLoading.value = false;
   }
+}
+
+/** A coordinate field as a number (accepts a decimal comma), or null when it holds none. */
+export function parseCoordinate(input) {
+  if (typeof input === 'string') {
+    const parsed = parseFloat(input.trim().replace(',', '.'));
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+  return Number.isFinite(input) ? input : null;
 }
 
 export function useLocationStore() {
   const store = apiStore();
-
-  function sanitizeCoordinate(input) {
-    if (typeof input === 'string') {
-      const cleaned = input.trim().replace(',', '.');
-      const parsed = parseFloat(cleaned);
-      return isNaN(parsed) ? null : parsed;
-    } else if (typeof input === 'number') {
-      return input;
-    }
-    return null;
-  }
 
   // Right after a save the store's polled mountInfo still predates the mount
   // reconnect, so read the mount info directly and use the store only as fallback.
@@ -130,9 +143,12 @@ export function useLocationStore() {
         elevation: settings.Elevation ?? null,
       };
 
-      // Load current sync direction; normalise PROMPT → NOSYNC for the dropdown
       const raw = store.profileInfo?.TelescopeSettings?.TelescopeLocationSyncDirection;
-      syncDirection.value = raw && raw !== 'PROMPT' ? raw : 'NOSYNC';
+      syncDirection.value = syncDirectionForSelect(
+        raw,
+        store.isPINS,
+        hasProfileLocation(store.profileInfo)
+      );
     },
 
     /**
@@ -178,9 +194,9 @@ export function useLocationStore() {
           altitude.value = mountCoords.value.elevation;
         }
 
-        latitude.value = sanitizeCoordinate(latitude.value);
-        longitude.value = sanitizeCoordinate(longitude.value);
-        altitude.value = sanitizeCoordinate(altitude.value);
+        latitude.value = parseCoordinate(latitude.value);
+        longitude.value = parseCoordinate(longitude.value);
+        altitude.value = parseCoordinate(altitude.value);
 
         if (store.isBackendReachable) {
           // Always save coordinates to the profile

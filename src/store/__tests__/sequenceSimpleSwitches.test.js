@@ -22,9 +22,24 @@ const {
   CENTER_AND_ROTATE_TYPE,
   START_GUIDING_TYPE,
   AF_AFTER_TIME_TYPE,
+  AF_AFTER_FILTER_CHANGE_TYPE,
+  ALTITUDE_CONDITION_TYPE,
+  LOOP_CONDITION_TYPE,
+  SET_TRACKING_TYPE,
+  SUN_CONDITION_TYPE,
+  UNPARK_SCOPE_TYPE,
+  WAIT_FOR_SUN_TYPE,
 } = await import('@/utils/sequenceSimple');
 
-const STUBBED = ['sequenceEnable', 'sequenceAddTrigger', 'sequenceAddItem', 'sequenceSetProperty'];
+const STUBBED = [
+  'sequenceEnable',
+  'sequenceAddTrigger',
+  'sequenceAddItem',
+  'sequenceAddCondition',
+  'sequenceRemove',
+  'sequenceSetProperty',
+  'sequenceResetStatus',
+];
 
 function smartExposure(id, ditherAfter) {
   return {
@@ -85,6 +100,99 @@ function setup(treeOptions) {
   const restore = () => Object.assign(apiService, original);
   return { store, calls, restore };
 }
+
+const ran = (Id, FullTypeName, Status = 'FINISHED') => ({ Id, FullTypeName, Status });
+
+// A Smart Exposure with pictures left
+const row = (Id, { iterations }) => ({
+  Id,
+  FullTypeName: SMART_EXPOSURE_TYPE,
+  Status: 'CREATED',
+  Items: [
+    {
+      Id: `${Id}-take`,
+      FullTypeName: 'NINA.Sequencer.SequenceItem.Imaging.TakeExposure',
+      Status: 'CREATED',
+      ExposureTime: 60,
+    },
+  ],
+  Conditions: [
+    {
+      FullTypeName: 'NINA.Sequencer.Conditions.LoopCondition',
+      Iterations: iterations,
+      CompletedIterations: 2,
+    },
+  ],
+});
+
+test('a plan that ran to its end prepares and parks again on the next start', async (t) => {
+  const { store, calls, restore } = setup({
+    startItems: [ran('cool', COOL_CAMERA_TYPE), ran('unpark', UNPARK_SCOPE_TYPE)],
+    endItems: [
+      ran('off', SLEW_TYPE, 'DISABLED'),
+      ran('park', PARK_SCOPE_TYPE),
+      ran('warm', WARM_CAMERA_TYPE),
+    ],
+  });
+  t.after(restore);
+  assert.equal(await store.rearmPlan(), true);
+  assert.deepEqual(
+    calls.map((c) => [c.name, c.args[0]]),
+    [
+      ['sequenceResetStatus', 'cool'],
+      ['sequenceResetStatus', 'unpark'],
+      ['sequenceResetStatus', 'park'],
+      ['sequenceResetStatus', 'warm'],
+    ]
+  );
+});
+
+test('a stopped plan reopens its steps one by one, without resetting what follows', async (t) => {
+  const { store, calls, restore } = setup({
+    startItems: [ran('cool', COOL_CAMERA_TYPE)],
+    dsoSteps: [row('row', { iterations: 5 }), ran('center', CENTER_TYPE)],
+    endItems: [ran('park', PARK_SCOPE_TYPE, 'CREATED')],
+  });
+  t.after(restore);
+  assert.equal(await store.rearmPlan(), true);
+  assert.deepEqual(
+    calls.map((c) => [c.name, ...c.args]),
+    ['cool', 'center'].flatMap((id) => [
+      ['sequenceEnable', id, false],
+      ['sequenceEnable', id, true],
+    ])
+  );
+});
+
+test('a fresh plan is left alone', async (t) => {
+  const { store, calls, restore } = setup({
+    startItems: [ran('cool', COOL_CAMERA_TYPE, 'CREATED')],
+    dsoSteps: [row('row', { iterations: 5 }), ran('center', CENTER_TYPE, 'CREATED')],
+  });
+  t.after(restore);
+  assert.equal(await store.rearmPlan(), true);
+  assert.deepEqual(calls, []);
+});
+
+test('a step that cannot be reopened keeps the plan from starting', async (t) => {
+  const { store, restore } = setup({
+    dsoSteps: [row('row', { iterations: 5 }), ran('center', CENTER_TYPE)],
+  });
+  t.after(restore);
+  apiService.sequenceEnable = async (id, enabled) => ({ Success: !enabled });
+  assert.equal(await store.rearmPlan(), false);
+});
+
+test('a refused reset keeps the plan from starting without its park', async (t) => {
+  const { store, restore } = setup({ endItems: [ran('park', PARK_SCOPE_TYPE)] });
+  t.after(restore);
+  apiService.sequenceResetStatus = async () => ({ Success: false });
+  assert.equal(await store.rearmPlan(), false);
+  apiService.sequenceResetStatus = async () => {
+    throw new Error('offline');
+  };
+  assert.equal(await store.rearmPlan(), false);
+});
 
 test('switching on a missing global trigger appends it to the global triggers', async (t) => {
   const { store, calls, restore } = setup({
@@ -192,7 +300,7 @@ test('a rejected global dither trigger leaves the Smart Exposures dithering', as
   );
 });
 
-test('switching global dithering off leaves the Smart Exposures alone', async (t) => {
+test('switching dithering off stops the exposure rows dithering too', async (t) => {
   const { store, calls, restore } = setup({
     globalTriggers: [{ Id: 'd', FullTypeName: DITHER_AFTER_EXPOSURES_TYPE, Status: 'CREATED' }],
   });
@@ -200,10 +308,51 @@ test('switching global dithering off leaves the Smart Exposures alone', async (t
 
   await store.setGlobalDither(false);
 
-  assert.deepEqual(calls, [{ name: 'sequenceEnable', args: ['d', false] }]);
+  assert.deepEqual(calls, [
+    { name: 'sequenceEnable', args: ['d', false] },
+    { name: 'sequenceSetProperty', args: ['l-dither', 'AfterExposures', 0] },
+    { name: 'sequenceSetProperty', args: ['g-dither', 'AfterExposures', 0] },
+  ]);
 });
 
-test('park goes after warm camera at the end, warm camera before park', async (t) => {
+test('without a global trigger, off still stops the exposure rows', async (t) => {
+  // A fresh plan: only the dither triggers built into the Smart Exposures.
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  await store.setGlobalDither(false);
+
+  assert.deepEqual(calls, [
+    { name: 'sequenceSetProperty', args: ['l-dither', 'AfterExposures', 0] },
+    { name: 'sequenceSetProperty', args: ['g-dither', 'AfterExposures', 0] },
+  ]);
+});
+
+test('a new Smart Exposure does not dither twice while global dithering is on', async (t) => {
+  const { store, calls, restore } = setup({
+    globalTriggers: [{ Id: 'd', FullTypeName: DITHER_AFTER_EXPOSURES_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+
+  await store.addItem('dso', SMART_EXPOSURE_TYPE, true);
+
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddItem', args: ['dso', SMART_EXPOSURE_TYPE, true] },
+    { name: 'sequenceSetProperty', args: ['l-dither', 'AfterExposures', 0] },
+    { name: 'sequenceSetProperty', args: ['g-dither', 'AfterExposures', 0] },
+  ]);
+});
+
+test('without global dithering a new Smart Exposure keeps its own dither', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  await store.addItem('dso', SMART_EXPOSURE_TYPE, true);
+
+  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['dso', SMART_EXPOSURE_TYPE, true] }]);
+});
+
+test('the end parks before it warms up: a new park goes before the warm-up', async (t) => {
   const { store, calls, restore } = setup({
     endItems: [{ Id: 'warm', FullTypeName: WARM_CAMERA_TYPE, Status: 'CREATED' }],
   });
@@ -211,7 +360,18 @@ test('park goes after warm camera at the end, warm camera before park', async (t
 
   await store.setEndItemEnabled(PARK_SCOPE_TYPE, true);
 
-  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['warm', PARK_SCOPE_TYPE, true] }]);
+  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['warm', PARK_SCOPE_TYPE, false] }]);
+});
+
+test('a new warm-up goes after the park', async (t) => {
+  const { store, calls, restore } = setup({
+    endItems: [{ Id: 'park', FullTypeName: PARK_SCOPE_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+
+  await store.setEndItemEnabled(WARM_CAMERA_TYPE, true);
+
+  assert.deepEqual(calls, [{ name: 'sequenceAddItem', args: ['park', WARM_CAMERA_TYPE, true] }]);
 });
 
 test('a new target step goes before the first exposure', async (t) => {
@@ -270,4 +430,347 @@ test('an autofocus trigger is appended to the target or re-enabled', async (t) =
     { name: 'sequenceAddTrigger', args: ['other', AF_AFTER_TIME_TYPE, true] },
     { name: 'sequenceEnable', args: ['aft', true] },
   ]);
+});
+
+test('regular refocusing adds a global trigger with its interval and keeps an old one', async (t) => {
+  const { store, calls, restore } = setup({
+    globalTriggers: [{ Id: 'flip', FullTypeName: MERIDIAN_FLIP_TRIGGER_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+  const add = apiService.sequenceAddTrigger;
+  apiService.sequenceAddTrigger = async (...args) => {
+    store.data[0].GlobalTriggers.push({
+      Id: 'aft',
+      FullTypeName: AF_AFTER_TIME_TYPE,
+      Status: 'CREATED',
+      Amount: 30,
+    });
+    return add(...args);
+  };
+
+  await store.setRegularRefocus(true, 60);
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddTrigger', args: ['flip', AF_AFTER_TIME_TYPE, true] },
+    { name: 'sequenceSetProperty', args: ['aft', 'Amount', 60] },
+  ]);
+
+  calls.length = 0;
+  await store.setRegularRefocus(false, 60);
+  store.data[0].GlobalTriggers[1].Status = 'DISABLED';
+  await store.setRegularRefocus(true, 60);
+  assert.deepEqual(calls, [
+    { name: 'sequenceEnable', args: ['aft', false] },
+    { name: 'sequenceEnable', args: ['aft', true] },
+  ]);
+});
+
+test('simple target steps switch on centering and guiding before the exposures', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+
+  await store.applySimpleTargetSteps(
+    'dso',
+    { slewMode: 'center', startGuiding: true },
+    { addExposure: true }
+  );
+
+  // The target already has exposures: none is added
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddItem', args: ['l', CENTER_TYPE, false] },
+    { name: 'sequenceAddItem', args: ['l', START_GUIDING_TYPE, false] },
+  ]);
+});
+
+test('simple target steps leave a complete target alone and switch guiding off when skipped', async (t) => {
+  const { store, calls, restore } = setup({
+    dsoSteps: [
+      { Id: 'center', FullTypeName: CENTER_TYPE, Status: 'CREATED' },
+      { Id: 'guide', FullTypeName: START_GUIDING_TYPE, Status: 'CREATED' },
+    ],
+  });
+  t.after(restore);
+
+  await store.applySimpleTargetSteps('dso', { slewMode: 'center', startGuiding: true });
+  assert.deepEqual(calls, []);
+
+  await store.applySimpleTargetSteps('dso', { slewMode: 'center', startGuiding: false });
+  assert.deepEqual(calls, [{ name: 'sequenceEnable', args: ['guide', false] }]);
+});
+
+test('simple target steps switch on autofocus after a filter change, and never off', async (t) => {
+  const { store, calls, restore } = setup({
+    dsoSteps: [
+      { Id: 'center', FullTypeName: CENTER_TYPE, Status: 'CREATED' },
+      { Id: 'guide', FullTypeName: START_GUIDING_TYPE, Status: 'CREATED' },
+    ],
+    dsoTriggers: [{ Id: 'aft', FullTypeName: AF_AFTER_TIME_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+
+  const steps = { slewMode: 'center', startGuiding: true };
+  await store.applySimpleTargetSteps('dso', { ...steps, afOnFilterChange: true });
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddTrigger', args: ['aft', AF_AFTER_FILTER_CHANGE_TYPE, true] },
+  ]);
+
+  // A trigger the user added stays when the rig has no filter wheel
+  calls.length = 0;
+  store.data[2].Items[0].Triggers.push({
+    Id: 'afc',
+    FullTypeName: AF_AFTER_FILTER_CHANGE_TYPE,
+    Status: 'CREATED',
+  });
+  await store.applySimpleTargetSteps('dso', { ...steps, afOnFilterChange: false });
+  assert.deepEqual(calls, []);
+});
+
+test('a simple target without pictures gets an exposure row', async (t) => {
+  const { store, calls, restore } = setup({
+    dsoSteps: [{ Id: 'center', FullTypeName: CENTER_TYPE, Status: 'CREATED' }],
+  });
+  t.after(restore);
+  // Only the approach, no exposures
+  store.data[2].Items[0].Items = store.data[2].Items[0].Items.slice(0, 1);
+
+  await store.applySimpleTargetSteps(
+    'dso',
+    { slewMode: 'center', startGuiding: false },
+    { addExposure: true }
+  );
+
+  assert.deepEqual(calls, [
+    { name: 'sequenceAddItem', args: ['center', SMART_EXPOSURE_TYPE, true] },
+  ]);
+});
+
+// The backend adds the row with an untouched filter, which PINS runs as "first slot".
+function exposureWithFilter(id, switchFilter) {
+  return {
+    ...smartExposure(id, 1),
+    Items: [
+      {
+        Id: `${id}-filter`,
+        FullTypeName: 'NINA.Sequencer.SequenceItem.FilterWheel.SwitchFilter',
+        ...switchFilter,
+      },
+    ],
+  };
+}
+
+test('a new exposure row starts with the next filter, or is told to keep the current one', async (t) => {
+  const { store, calls, restore } = setup();
+  t.after(restore);
+  const names = ['L', 'R'];
+  const dso = store.data[2].Items[0];
+  const unset = { SelectedFilter: 0, ComboBoxText: null, FilterNames: names };
+  const added = ['a', 'b', 'c'];
+  apiService.sequenceAddItem = async () => {
+    dso.Items = [...dso.Items, exposureWithFilter(added.shift(), { ...unset })];
+    return { Success: true };
+  };
+  apiService.sequenceSetProperty = async (id, property, value) => {
+    calls.push([id, property, value]);
+    const filter = dso.Items.flatMap((i) => i.Items ?? []).find((i) => i.Id === id);
+    filter.ComboBoxText = value === 0 ? '(Current)' : names[value - 1];
+    return { Success: true };
+  };
+
+  for (let i = 0; i < 3; i += 1) await store.addExposureRow('dso');
+
+  assert.deepEqual(calls, [
+    ['a-filter', 'SelectedFilter', 1],
+    ['b-filter', 'SelectedFilter', 2],
+    ['c-filter', 'SelectedFilter', 0],
+  ]);
+});
+
+// Lets the stubbed calls change the held tree as the plugin would, with N.I.N.A.'s defaults.
+function simulatePlugin(store, { refuse = () => false } = {}) {
+  let next = 1;
+  const defaults = (type) => {
+    if (type === LOOP_CONDITION_TYPE) return { Iterations: 2, CompletedIterations: 0 };
+    if (type === SET_TRACKING_TYPE) return { TrackingMode: 'Sidereal' };
+    if (type === WAIT_FOR_SUN_TYPE || type === ALTITUDE_CONDITION_TYPE) return { Offset: 30 };
+    return { Offset: 0 };
+  };
+  const create = (type) => ({
+    Id: `new${next++}`,
+    FullTypeName: type,
+    Status: 'CREATED',
+    ...defaults(type),
+  });
+  const everywhere = (id, visit) => {
+    for (const area of store.data) {
+      for (const list of [area.Items, ...(area.Items ?? []).map((c) => c.Conditions)]) {
+        const index = list?.findIndex((i) => i.Id === id) ?? -1;
+        if (index >= 0) visit(list, index);
+      }
+    }
+  };
+  Object.assign(apiService, {
+    sequenceAddItem: async (targetId, type, insertAfter) => {
+      const container = store.findById(targetId);
+      if (insertAfter === null) container.Items.push(create(type));
+      else {
+        everywhere(targetId, (list, i) => list.splice(insertAfter ? i + 1 : i, 0, create(type)));
+      }
+      return { Success: true };
+    },
+    sequenceAddCondition: async (id, type) => {
+      const container = store.findById(id);
+      container.Conditions = [...(container.Conditions ?? []), create(type)];
+      return { Success: true };
+    },
+    sequenceSetProperty: async (id, name, value) => {
+      if (refuse(id, name)) return { Success: false, Error: 'refused' };
+      store.findById(id)[name] = name === 'TrackingMode' && value === 5 ? 'Stopped' : value;
+      return { Success: true };
+    },
+    sequenceEnable: async (id, enabled) => {
+      store.findById(id).Status = enabled ? 'CREATED' : 'DISABLED';
+      return { Success: true };
+    },
+    sequenceRemove: async (id) => {
+      everywhere(id, (list, i) => list.splice(i, 1));
+      return { Success: true };
+    },
+  });
+}
+
+const startItems = (store) =>
+  store.data[1].Items.map((i) =>
+    [i.FullTypeName.split('.').at(-1), i.TrackingMode ?? i.Offset, i.Status].filter(
+      (part) => part !== undefined
+    )
+  );
+const conditions = (store) =>
+  store
+    .findById('dso')
+    .Conditions.map((c) => [c.FullTypeName.split('.').at(-1), c.Iterations ?? c.Offset, c.Status]);
+
+test('the wait for darkness comes before the unparking, with the tracking off meanwhile', async (t) => {
+  const { store, restore } = setup({
+    startItems: [
+      ran('cool', COOL_CAMERA_TYPE, 'CREATED'),
+      ran('unpark', UNPARK_SCOPE_TYPE, 'CREATED'),
+    ],
+  });
+  t.after(restore);
+  simulatePlugin(store);
+
+  await store.setDarknessWait(true, -12);
+  const on = [
+    ['CoolCamera', 'CREATED'],
+    ['SetTracking', 'Stopped', 'CREATED'],
+    ['WaitForSunAltitude', -12, 'CREATED'],
+    ['UnparkScope', 'CREATED'],
+    ['SetTracking', 'Sidereal', 'CREATED'],
+  ];
+  assert.deepEqual(startItems(store), on);
+
+  // Off keeps the items, so the plan remembers it; on again adds nothing
+  await store.setDarknessWait(false);
+  assert.deepEqual(
+    startItems(store).map((parts) => parts.at(-1)),
+    ['CREATED', 'DISABLED', 'DISABLED', 'CREATED', 'DISABLED']
+  );
+  await store.setDarknessWait(true, -12);
+  assert.deepEqual(startItems(store), on);
+});
+
+test('a refused tracking stop leaves no second tracking item behind', async (t) => {
+  const { store, restore } = setup({ startItems: [] });
+  t.after(restore);
+  simulatePlugin(store, { refuse: (id, name) => name === 'TrackingMode' });
+  await store.setDarknessWait(true, -12);
+  assert.deepEqual(startItems(store), [['WaitForSunAltitude', -12, 'CREATED']]);
+});
+
+test('a limit comes with a loop of one, so the pictures are not repeated until dawn', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store);
+
+  assert.equal(await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12), true);
+  assert.equal(await store.setTargetLimit('dso', ALTITUDE_CONDITION_TYPE, true, 20), true);
+  assert.deepEqual(conditions(store), [
+    ['LoopCondition', 1, 'CREATED'],
+    ['SunAltitudeCondition', -12, 'CREATED'],
+    ['AltitudeCondition', 20, 'CREATED'],
+  ]);
+
+  await store.setTargetLimit('dso', SUN_CONDITION_TYPE, false);
+  await store.setTargetLimit('dso', ALTITUDE_CONDITION_TYPE, true, 25);
+  assert.deepEqual(conditions(store), [
+    ['LoopCondition', 1, 'CREATED'],
+    ['SunAltitudeCondition', -12, 'DISABLED'],
+    ['AltitudeCondition', 25, 'CREATED'],
+  ]);
+});
+
+test('a target with conditions of its own keeps its loop', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store);
+  store.findById('dso').Conditions = [
+    { Id: 'own', FullTypeName: LOOP_CONDITION_TYPE, Status: 'CREATED', Iterations: 3 },
+  ];
+  await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12);
+  assert.deepEqual(conditions(store), [
+    ['LoopCondition', 3, 'CREATED'],
+    ['SunAltitudeCondition', -12, 'CREATED'],
+  ]);
+});
+
+test('a loop that cannot be set to one goes again, and the limit is not added', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store, { refuse: (id, name) => name === 'Iterations' });
+  assert.equal(await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12), false);
+  assert.deepEqual(conditions(store), []);
+});
+
+test('a limit that cannot be set does not stay at its default', async (t) => {
+  const { store, restore } = setup();
+  t.after(restore);
+  simulatePlugin(store, { refuse: (id, name) => name === 'Offset' });
+  assert.equal(await store.setTargetLimit('dso', SUN_CONDITION_TYPE, true, -12), false);
+  assert.deepEqual(conditions(store), [['LoopCondition', 1, 'CREATED']]);
+});
+
+test('the loop of a target with pictures left starts over with the plan', async (t) => {
+  const { store, calls, restore } = setup({ dsoSteps: [row('row', { iterations: 5 })] });
+  t.after(restore);
+  store.findById('dso').Conditions = [
+    {
+      Id: 'once',
+      FullTypeName: LOOP_CONDITION_TYPE,
+      Status: 'FINISHED',
+      Iterations: 1,
+      CompletedIterations: 1,
+    },
+  ];
+  assert.equal(await store.rearmPlan(), true);
+  assert.deepEqual(calls, [
+    { name: 'sequenceSetProperty', args: ['once', 'CompletedIterations', 0] },
+  ]);
+});
+
+test('a new exposure row takes the suggested exposure', async (t) => {
+  const { store, calls, restore } = setup({ dsoSteps: [] });
+  t.after(restore);
+  const added = row('added', { iterations: 2 });
+  added.Conditions[0].Id = 'added-loop';
+  apiService.sequenceAddItem = async () => {
+    store.findById('dso').Items.push(added);
+    return { Success: true };
+  };
+  await store.addExposureRow('dso', { exposureTime: 120, iterations: 28 });
+  assert.deepEqual(
+    calls.filter((c) => c.name === 'sequenceSetProperty').map((c) => c.args),
+    [
+      ['added-take', 'ExposureTime', 120],
+      ['added-loop', 'Iterations', 28],
+    ]
+  );
 });

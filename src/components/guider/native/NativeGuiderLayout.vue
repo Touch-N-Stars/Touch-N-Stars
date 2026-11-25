@@ -96,6 +96,7 @@
 <script setup>
 import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import { AcademicCapIcon } from '@heroicons/vue/24/outline';
 import SubNav from '@/components/SubNav.vue';
 import { useOrientation } from '@/composables/useOrientation';
@@ -133,6 +134,9 @@ const { orientation } = useOrientation();
 
 const isWide = computed(() => orientation.value.width >= WIDE_MIN_WIDTH);
 const pageVisible = computed(() => !isAppBackgrounded.value);
+// Declared before the tabs: the incidents tab's badge reads it, and picking the first tab
+// below reads the tabs. Its value is set once the tabs exist.
+const currentTab = ref(null);
 
 // Incidents saved since the tab was last opened (none while it is open).
 const incidentsTab = computed(() => ({
@@ -161,7 +165,12 @@ const tabs = computed(() =>
       ]
 );
 
-const currentTab = ref(isWide.value ? lastWideTab : lastPhoneTab);
+// Another page can open a tab directly (/guider?tab=coach, e.g. from the simple mode).
+const route = useRoute();
+const requestedTab = tabs.value.some((tab) => tab.value === route?.query?.tab)
+  ? route.query.tab
+  : null;
+currentTab.value = requestedTab ?? (isWide.value ? lastWideTab : lastPhoneTab);
 // Shared by the guide graph and the target plot.
 const graphWindow = ref(lastGraphWindow);
 const graphUnit = ref(lastGraphUnit);

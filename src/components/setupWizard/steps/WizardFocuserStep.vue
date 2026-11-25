@@ -5,29 +5,19 @@
         {{ t('components.setupWizard.focuser.title') }}
       </h2>
       <p class="text-sm text-content-muted mt-1">
-        {{ t('components.setupWizard.focuser.description') }}
+        {{ t('components.setupWizard.focuser.descriptionDeviceFirst') }}
       </p>
     </div>
 
-    <!-- 1. INDI driver. PINS only: the driver list comes from the plugin's
-         indi/* routes, which a plain NINA backend does not serve. -->
-    <IndiDriverSelect
-      v-if="store.isPINS"
-      ref="driverSelect"
-      deviceType="focuser"
-      settingPath="FocuserSettings-IndiDriver"
-      listAction="focusAction"
-      rescanKey="focus"
-      profileSection="FocuserSettings"
-      :label="t('components.setupWizard.focuser.selectDriver')"
-    />
-
-    <!-- 2. Device + connect -->
+    <!-- 1. Device + connect. Alpaca and natively supported devices show up without an
+         INDI driver; the driver is behind "not listed?" (like the camera step), so a
+         beginner is not met with "INDI DRIVER" first. -->
     <div class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.focuser.connectDevice') }}
       </span>
       <selectDevices
+        labeledConnect
         apiAction="focusAction"
         :deviceName="$t('components.connectEquipment.focuser.name')"
         :default-device-id="store.profileInfo?.FocuserSettings?.Id"
@@ -46,7 +36,7 @@
       </p>
     </div>
 
-    <!-- 3. Focuser not found -> 3rd party driver. PINS only: the packages come
+    <!-- 2. Focuser not listed -> INDI driver or a 3rd party driver. PINS only: the packages come
          from the daemon on port 8000. -->
     <button v-if="store.isPINS" class="tns-btn-secondary" @click="toggleNotFound">
       <ChevronDownIcon
@@ -57,6 +47,26 @@
     </button>
 
     <div v-if="store.isPINS && showNotFound" class="flex flex-col gap-3">
+      <p class="text-sm text-content-muted">
+        {{ t('components.setupWizard.focuser.notFoundDriverHint') }}
+      </p>
+
+      <BrandDriverFinder
+        deviceType="focuser"
+        apiAction="focusAction"
+        :connected="Boolean(store.focuserInfo?.Connected)"
+        @applied="driverSelect?.loadDrivers()"
+      />
+
+      <IndiDriverSelect
+        ref="driverSelect"
+        deviceType="focuser"
+        listAction="focusAction"
+        profileSection="FocuserSettings"
+        :label="t('components.setupWizard.focuser.selectDriver')"
+        :connected="Boolean(store.focuserInfo?.Connected)"
+      />
+
       <p class="text-sm text-content-muted">
         {{ t('components.setupWizard.focuser.notFoundHint') }}
       </p>
@@ -106,6 +116,7 @@ import Modal from '@/components/helpers/Modal.vue';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
+import BrandDriverFinder from '@/components/equipment/BrandDriverFinder.vue';
 import IndiDriverSelect from '../IndiDriverSelect.vue';
 import Indi3rdpartyInstallPanel from '../Indi3rdpartyInstallPanel.vue';
 
@@ -118,7 +129,10 @@ const showFocuserSettings = ref(false);
 const selectedFocuserDevice = ref('');
 const selectedFocuserObj = ref(null);
 
-const showNotFound = ref(false);
+// Open from the start when the profile already uses an INDI driver, so it stays visible.
+const showNotFound = ref(
+  !['', 'None', undefined, null].includes(store.profileInfo?.FocuserSettings?.IndiDriver)
+);
 
 const isAlpacaDirect = (device) => device?.Category === 'ASCOM Alpaca';
 

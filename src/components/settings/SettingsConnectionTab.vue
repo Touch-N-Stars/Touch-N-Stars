@@ -15,7 +15,9 @@
         </h3>
         <div class="grid grid-cols-2 md:flex md:gap-4 md:items-end gap-2">
           <div class="flex flex-col min-w-0 md:flex-1">
-            <label class="text-xs md:text-sm text-content mb-1">Latitude</label>
+            <label class="text-xs md:text-sm text-content mb-1">{{
+              $t('components.setupWizard.location.latitude')
+            }}</label>
             <NumberInputPicker
               v-model="latitude"
               :label="``"
@@ -24,13 +26,15 @@
               :max="90"
               :step="0.001"
               :decimalPlaces="3"
-              placeholder="Latitude"
+              :placeholder="$t('components.setupWizard.location.latitude')"
               inputId="latitude"
               wrapperClass="w-full"
             />
           </div>
           <div class="flex flex-col min-w-0 md:flex-1">
-            <label class="text-xs md:text-sm text-content mb-1">Longitude</label>
+            <label class="text-xs md:text-sm text-content mb-1">{{
+              $t('components.setupWizard.location.longitude')
+            }}</label>
             <NumberInputPicker
               v-model="longitude"
               :label="``"
@@ -39,13 +43,15 @@
               :max="180"
               :step="0.001"
               :decimalPlaces="3"
-              placeholder="Longitude"
+              :placeholder="$t('components.setupWizard.location.longitude')"
               inputId="longitude"
               wrapperClass="w-full"
             />
           </div>
           <div class="flex flex-col min-w-0 md:flex-1">
-            <label class="text-xs md:text-sm text-content mb-1">Altitude</label>
+            <label class="text-xs md:text-sm text-content mb-1">{{
+              $t('components.setupWizard.location.altitude')
+            }}</label>
             <NumberInputPicker
               v-model="altitude"
               :label="``"
@@ -54,36 +60,25 @@
               :max="9000"
               :step="1"
               :decimalPlaces="0"
-              placeholder="Altitude"
+              :placeholder="$t('components.setupWizard.location.altitude')"
               inputId="altitude"
               wrapperClass="w-full"
             />
           </div>
+          <!-- Spelled out like in the setup assistant: a bare pin icon was not recognised as
+               "take the location from this device". -->
           <button
             @click="getCurrentLocation"
-            class="tns-btn-secondary md:w-10 md:h-10 md:shrink-0 col-span-2 md:col-span-1 md:self-end"
-            title="Get current location"
+            :disabled="gpsLoading"
+            class="tns-btn-secondary w-auto! md:shrink-0 col-span-2 md:self-end whitespace-nowrap"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-content"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
+            <Spinner v-if="gpsLoading" size="sm" />
+            <MapPinIcon v-else class="h-5 w-5" />
+            {{
+              gpsLoading
+                ? $t('components.setupWizard.location.locating')
+                : $t('components.setupWizard.location.useCurrentLocation')
+            }}
           </button>
         </div>
         <div v-if="gpsError" class="mt-2 text-sm text-status-danger">
@@ -129,6 +124,8 @@
 </template>
 
 <script setup>
+import { MapPinIcon } from '@heroicons/vue/24/outline';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { onMounted } from 'vue';
 import { apiStore } from '@/store/store';
 import {
@@ -136,6 +133,7 @@ import {
   longitude,
   altitude,
   gpsError,
+  gpsLoading,
   getCurrentLocation,
   useLocationStore,
 } from '@/utils/location';

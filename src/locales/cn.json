@@ -20,7 +20,8 @@
     "expand": "展开",
     "collapse": "收起",
     "drag": "拖拽",
-    "showImage": "显示图像"
+    "showImage": "显示图像",
+    "onOff": "开/关"
   },
   "general": {
     "cancel": "取消",
@@ -153,21 +154,19 @@
     "gpsConfiguration": "GPS 配置",
     "completeSetup": "完成设置",
     "instanceConfiguration": "@:{'general.backendName'} 连接详情",
-    "InfoAppsTitel": "维基",
-    "check_wki": "您可以在我们的维基中找到详细说明",
     "coordAlt": "海拔",
     "coordLat": "纬度",
     "coordLon": "经度",
     "coordUnit": "米",
     "coordsNotSupported": "驱动程序不支持",
     "currentMountCoords": "赤道仪位置",
+    "syncDirection": "赤道仪连接时",
+    "syncDirectionNosync": "不同步位置",
+    "syncDirectionToApplication": "从赤道仪获取位置",
+    "syncDirectionToTelescope": "将我的位置发送到赤道仪",
     "currentNinaCoords": "个人资料位置",
     "loadingCoords": "加载中…",
-    "mountNotConnected": "赤道仪未连接",
-    "syncDirection": "位置同步方向",
-    "syncDirectionNosync": "无同步",
-    "syncDirectionToApplication": "从赤道仪同步到配置文件",
-    "syncDirectionToTelescope": "从配置文件同步到赤道仪"
+    "mountNotConnected": "赤道仪未连接"
   },
   "components": {
     "instanceDetection": {
@@ -181,6 +180,8 @@
       "instanceNamePlaceholder": "我的实例",
       "ipLabel": "IP 地址 / FQDN",
       "ipPlaceholder": "192.168.x.x",
+      "rigAddressLabel": "设备地址",
+      "advanced": "高级：名称和端口",
       "portLabel": "端口",
       "portPlaceholder": "5000",
       "modalTitle": "已发现的实例",
@@ -194,6 +195,7 @@
       "discoveringMessage": "正在发现 Touch-N-Stars 实例…",
       "noFoundMessage": "通过 mDNS 未找到 Touch-N-Stars 实例。",
       "selectionSuccess": "已选择 {label}（{ip}:{port}）。",
+      "hotspotFound": "在设备自己的 Wi-Fi 上找到：{name}",
       "foundSingle": "找到 1 个 Touch-N-Stars 实例。",
       "foundMultiple": "找到 {count} 个 Touch-N-Stars 实例。",
       "discoveryFailedStatus": "发现失败：{message}",
@@ -283,38 +285,105 @@
       "next": "下一步",
       "skip": "跳过教程"
     },
+    "mountDriverFinder": {
+      "searchLabel": "你用的是哪款赤道仪？",
+      "searchPlaceholder": "例如 EQ6、HEQ5、AM5、CEM40",
+      "vendorHint": "输入型号，或先输入品牌：",
+      "noMatch": "没有匹配的赤道仪。请检查拼写，或使用下方的“赤道仪不在列表中？”。",
+      "otherMount": "其他赤道仪",
+      "howConnected": "它如何连接到 PINS？",
+      "recommended": "推荐",
+      "driverName": "驱动：{name}",
+      "checking": "正在检查已安装的驱动…",
+      "driverListFailed": "无法加载驱动列表。",
+      "retry": "重试",
+      "alreadySet": "已设置此驱动。",
+      "useDriver": "使用此驱动",
+      "needsInstall": "PINS 尚未安装 {name}。",
+      "installAndUse": "安装并使用",
+      "installConfirm": "PINS 将从互联网下载并安装 {name}，大约需要一分钟。是否继续？",
+      "installConfirmYes": "安装",
+      "cancel": "取消",
+      "unavailable": "此 PINS 上没有 {name}。请从下方完整列表中选择，或更新 PINS。",
+      "installing": "正在下载并安装 {name}…",
+      "applying": "正在设置 {name}…",
+      "applied": "完成：已设置 {name}，并选择了“{device}”。请接好赤道仪、开机，然后点击连接。",
+      "appliedPickDevice": "完成：已设置 {name}。请在设备列表中选择你的赤道仪，然后点击连接。",
+      "applyFailed": "无法设置驱动：{message}",
+      "noInternet": "PINS 需要互联网连接才能安装驱动。请将 PINS 连接到可上网的 Wi-Fi 后重试。",
+      "packageMissing": "驱动包 {name} 目前无法下载。",
+      "installedButMissing": "{name} 已安装，但未出现在驱动列表中。请重启 PINS 后重试。",
+      "installFailed": "安装失败：{message}",
+      "disconnectFirst": "更改驱动前请先断开赤道仪。",
+      "notListed": "赤道仪不在列表中？",
+      "openButton": "查找赤道仪驱动",
+      "title": "查找你的赤道仪驱动",
+      "connections": {
+        "swDirect": {
+          "title": "USB 线直连赤道仪",
+          "hint": "接到赤道仪的 USB 口，或手控器接口上的 EQDIR 线。不需要手控器。"
+        },
+        "swHandController": {
+          "title": "通过 SynScan 手控器",
+          "hint": "从 PINS 连线到手控器（USB 口或串口线）。手控器开机后先完成其启动菜单。"
+        },
+        "celestronUsb": {
+          "title": "赤道仪上的 USB 口",
+          "hint": "USB 线接到赤道仪机头的接口。"
+        },
+        "celestronHandController": {
+          "title": "通过 NexStar 手控器",
+          "hint": "USB 或串口线接到手控器底部。请先完成手控器的校准启动。"
+        },
+        "meadeHandController": {
+          "title": "通过 AutoStar 手控器",
+          "hint": "串口或 USB 线接到手控器的接口。"
+        },
+        "usb": {
+          "title": "USB 线连接赤道仪",
+          "hint": "USB 线从赤道仪连接到 PINS。"
+        },
+        "network": {
+          "title": "网线 (LAN)",
+          "hint": "赤道仪与 PINS 在同一网络中。之后请在赤道仪的连接设置中输入其 IP 地址。"
+        }
+      }
+    },
     "setupWizard": {
       "title": "设置向导",
       "restart": "启动设置向导",
       "stepCounter": "第 {current} 步，共 {total} 步",
-      "next": "Next",
-      "back": "Back",
-      "finish": "Finish",
+      "next": "下一步",
+      "back": "返回",
+      "finish": "完成",
       "remindLater": "稍后提醒我",
       "steps": {
-        "welcome": "Welcome",
-        "language": "Language",
+        "welcome": "欢迎",
+        "language": "语言",
         "info": "入门",
-        "instance": "Connection",
+        "instance": "连接",
         "wifi": "Wi-Fi",
-        "updates": "Updates",
-        "mount": "Mount",
+        "updates": "更新",
+        "mount": "赤道仪",
         "slewRate": "转动速度",
-        "location": "Location",
-        "telescope": "Telescope",
-        "camera": "Camera",
-        "focuser": "Focuser",
+        "location": "位置",
+        "telescope": "望远镜",
+        "camera": "相机",
+        "focuser": "调焦器",
         "filterWheel": "滤镜轮",
-        "guider": "Guiding",
+        "guider": "导星",
         "dither": "抖动",
-        "done": "Done",
-        "localization": "区域设置"
+        "done": "完成",
+        "localization": "区域设置",
+        "starDatabase": "星图"
       },
       "driver": {
         "loading": "正在加载驱动 …",
         "applying": "正在应用驱动 …",
         "listFailed": "无法加载驱动：{message}",
-        "changeFailed": "无法应用驱动：{message}"
+        "changeFailed": "无法应用驱动：{message}",
+        "none": "无驱动",
+        "installMissing": "列表中没有驱动？"
       },
       "welcome": {
         "title": "开始设置 Touch'N'Stars",
@@ -325,12 +394,17 @@
         "description": "应用的语言。之后可以在设置中更改。"
       },
       "info": {
-        "openWiki": "打开 Wiki"
+        "pointDevices": "接下来的步骤会逐个连接赤道仪、相机和其他设备，并询问你的望远镜数据。",
+        "pointPowered": "继续之前，请打开所有设备电源并接入设备。",
+        "pointLater": "不确定某个值？点击下一步跳过。以后都可以在设置中更改。"
       },
       "instance": {
-        "description": "运行 @:{'general.backendName'} 的电脑地址。在同一网络中，应用通常能自动找到它。",
+        "title": "连接到你的设备",
+        "description": "你的手机通过 Wi-Fi 与设备通信。",
+        "hotspotHint": "先把手机连接到设备的 Wi-Fi。新设备会开启名为“pins-…”的热点，密码是“touchnstars”。",
+        "homeNetworkHint": "设备已经在你的家庭网络中？那就留在该网络。应用会自动搜索；如果找不到，请在下方输入设备地址。",
         "connect": "保存并连接",
-        "connecting": "Connecting…",
+        "connecting": "正在连接…",
         "connected": "已连接到 {name}",
         "connectFailed": "连接失败：{message}"
       },
@@ -340,15 +414,16 @@
         "loadingStatus": "正在读取 Wi-Fi 状态 …",
         "connectedTo": "已连接到 {ssid}",
         "notConnected": "设备未连接到任何 Wi-Fi 网络。",
+        "notConnectedHint": "没有网络时，它会开启自己的热点。更新和下载星图需要你的家庭网络：点按“搜索网络”。",
         "chooseOtherNetwork": "选择其他网络",
         "scan": "搜索网络",
-        "scanning": "Scanning…",
+        "scanning": "正在扫描…",
         "selectNetwork": "选择网络",
-        "password": "Password",
+        "password": "密码",
         "passwordPlaceholder": "网络密码",
         "autoConnect": "自动连接到此网络",
-        "connect": "Connect",
-        "connecting": "Connecting…",
+        "connect": "连接",
+        "connecting": "正在连接…",
         "noNetworks": "未找到网络。请将设备移近路由器后重新搜索。",
         "transitionHint": "切换网络时设备地址会改变。正在重新查找 …",
         "retryFind": "重新查找设备",
@@ -372,34 +447,47 @@
         "title": "设置赤道仪",
         "description": "为你的赤道仪选择 INDI 驱动，然后连接。",
         "selectDriver": "INDI 驱动",
-        "connectDevice": "Device",
+        "connectDevice": "设备",
         "connected": "赤道仪已连接：{name}",
         "notFound": "列表中没有你的赤道仪？",
         "notFoundHint": "如果找不到你的赤道仪，可能是其驱动尚未安装。请在第三方 INDI 驱动中搜索并安装对应的驱动。",
-        "installing": "Installing {label}…",
+        "installing": "正在安装 {label}…",
         "installSuccess": "{label} 已安装。请在上方驱动列表中选择它。",
-        "installFailed": "安装失败：{message}"
+        "installFailed": "安装失败：{message}",
+        "descriptionDeviceFirst": "从列表中选择你的赤道仪并连接。只有它没有出现在列表中时才需要驱动。"
       },
       "slewRate": {
         "title": "转动速度",
-        "description": "设置驱动可以多快地移动赤道仪。太快可能丢步，太慢则每次转动都很漫长。",
         "maxSlewRate": "最大转动速度 (°/s)",
-        "maxSlewRateHint": "这是驱动的上限，而不是赤道仪页面上的手动转动速度——后者直接来自驱动自身的能力。",
-        "saveFailed": "无法保存：{message}"
+        "saveFailed": "无法保存：{message}",
+        "whatFor": "PINS 需要赤道仪的最高速度来正确计时动作，例如极轴校准时。它不会限制赤道仪的转动速度。",
+        "reading": "正在从赤道仪驱动读取速度…",
+        "derived": "已从驱动读取：最高速度为 {label}，即 {value} °/s。已保存，无需操作。",
+        "notNeeded": "此驱动自行报告以 °/s 为单位的速度，因此无需设置。",
+        "unknown": "此驱动用不带数字的名称（如“Max”）表示速度，因此无法读取最高速度。除非你知道赤道仪的最高速度，否则请保留默认值 {value} °/s。",
+        "notConnected": "请在上一步连接赤道仪，之后会自动读取速度。否则使用默认值 {value} °/s，适合大多数赤道仪。",
+        "readFailed": "无法从赤道仪读取速度。保留当前值 {value} °/s。",
+        "readAgain": "从赤道仪读取",
+        "setManually": "手动设置",
+        "manualHint": "赤道仪的最高转动速度（度/秒），见其说明书。你在此输入的值不会被自动替换。"
       },
       "location": {
         "title": "设置你的位置",
         "description": "你的坐标用于时间计算、中天翻转、地平线和构图。可从设备获取，也可手动输入。",
         "profileCoords": "配置文件中的位置",
         "mountCoords": "赤道仪中的位置",
-        "latitude": "Latitude",
-        "longitude": "Longitude",
-        "altitude": "Altitude",
+        "latitude": "纬度",
+        "longitude": "经度",
+        "altitude": "海拔",
         "useCurrentLocation": "使用当前位置",
-        "syncDirection": "位置同步方向",
+        "locating": "正在获取你的位置…",
+        "syncDirection": "赤道仪连接时",
         "save": "保存位置",
-        "saving": "Saving…",
-        "saveFailed": "无法保存位置：{message}"
+        "saving": "正在保存…",
+        "saveFailed": "无法保存位置：{message}",
+        "unsavedHint": "尚未保存。点击下一步时会自动保存。",
+        "savedHint": "位置已保存。",
+        "missingHint": "尚未设置位置。极轴校准和星图需要它。"
       },
       "telescope": {
         "title": "你的望远镜",
@@ -411,13 +499,13 @@
       "camera": {
         "title": "设置相机",
         "description": "许多相机有原生支持。请在下方列表中选择你的相机——只有列表中没有时才需要 INDI 驱动。",
-        "connectDevice": "Device",
+        "connectDevice": "设备",
         "connected": "相机已连接：{name}",
         "notFound": "列表中没有你的相机？",
         "notFoundHint": "如果你的相机没有原生支持，请在这里为它选择 INDI 驱动。之后它会出现在上方设备列表中。",
         "thirdPartyHint": "如果完全没有驱动，请在第三方 INDI 驱动中搜索并安装对应的驱动。",
         "selectDriver": "INDI 驱动",
-        "installing": "Installing {label}…",
+        "installing": "正在安装 {label}…",
         "installSuccess": "{label} 已安装。请在上方驱动列表中选择它。",
         "installFailed": "安装失败：{message}",
         "sensorTitle": "传感器参数",
@@ -430,45 +518,54 @@
         "chipHeight": "传感器高度 (px)",
         "pixelSize": "像素尺寸 (µm)",
         "pixelSizeHint": "驱动不报告像素尺寸。可在相机说明书中查到。",
+        "pixelSizeReported": "相机报告：{size} µm。",
+        "pixelSizeReportedDiffers": "相机报告 {size} µm，配置文件中的值不同。",
         "imageScale": "得到的成像比例：{scale} arcsec/px",
-        "applyFailed": "无法保存：{message}"
+        "applyFailed": "无法保存：{message}",
+        "chipSizeNotConnectedHint": "在上方连接相机后，传感器尺寸会自动填入。只有不报告尺寸的相机（常见于单反）才需要下方的值。"
       },
       "focuser": {
         "title": "设置调焦器",
         "description": "为调焦器选择 INDI 驱动，然后连接。自动对焦参数仍在对焦页面——此步骤只负责让设备通信。",
         "selectDriver": "INDI 驱动",
-        "connectDevice": "Device",
+        "connectDevice": "设备",
         "connected": "调焦器已连接：{name}",
         "notFound": "列表中没有你的调焦器？",
         "notFoundHint": "如果找不到你的调焦器，可能是其驱动尚未安装。请在第三方 INDI 驱动中搜索并安装对应的驱动。",
-        "installing": "Installing {label}…",
+        "installing": "正在安装 {label}…",
         "installSuccess": "{label} 已安装。请在上方驱动列表中选择它。",
-        "installFailed": "安装失败：{message}"
+        "installFailed": "安装失败：{message}",
+        "descriptionDeviceFirst": "从列表中选择你的调焦器并连接。只有它没有出现在列表中时才需要驱动。自动对焦参数在对焦页面中。",
+        "notFoundDriverHint": "如果你的调焦器不在列表中，请在此选择其 INDI 驱动。之后它会出现在上方列表中。"
       },
       "filterWheel": {
         "title": "设置滤镜轮",
         "description": "为滤镜轮选择 INDI 驱动并连接，然后为各个孔位填写你在序列中使用的名称。",
         "selectDriver": "INDI 驱动",
-        "connectDevice": "Device",
+        "connectDevice": "设备",
         "connected": "滤镜轮已连接：{name}",
         "filterNames": "滤镜名称",
         "filterNamesHint": "按滤镜轮中的顺序填写每个孔位的名称。仅限字母和数字。",
         "notFound": "列表中没有你的滤镜轮？",
         "notFoundHint": "如果找不到你的滤镜轮，可能是其驱动尚未安装。请在第三方 INDI 驱动中搜索并安装对应的驱动。",
-        "installing": "Installing {label}…",
+        "installing": "正在安装 {label}…",
         "installSuccess": "{label} 已安装。请在上方驱动列表中选择它。",
-        "installFailed": "安装失败：{message}"
+        "installFailed": "安装失败：{message}",
+        "descriptionDeviceFirst": "从列表中选择你的滤镜轮，连接后为各插槽命名。只有它没有出现在列表中时才需要驱动。",
+        "notFoundDriverHint": "如果你的滤镜轮不在列表中，请在此选择其 INDI 驱动。之后它会出现在上方列表中。",
+        "noneHint": "没有滤镜轮？直接点击下一步。",
+        "addFilter": "添加滤镜"
       },
       "guider": {
         "title": "设置导星",
         "description": "导星通过 PHD2 进行。选择导星相机，连接导星，并把导星镜信息告诉 PHD2。",
         "guideCamera": "导星相机",
         "guideCameraHint": "PHD2 自带驱动，因此这里无需选择 INDI 驱动。如果列表为空，请点击刷新按钮——相机必须已通电且空闲，不能正被主相机占用。",
-        "connectDevice": "Guider",
+        "connectDevice": "导星器",
         "connected": "导星已连接：{name}",
         "focalLength": "导星镜焦距",
         "focalLengthHint": "导星镜的焦距（mm）。它保存在 PHD2 配置文件中，与主望远镜分开，PHD2 靠它以角秒显示导星数据。",
-        "ditherTitle": "Dither",
+        "ditherTitle": "抖动",
         "ditherDescription": "@:{'general.backendName'} 以导星相机像素设置抖动，而常见建议使用主相机像素。这里在两者之间换算。",
         "ditherMainPixels": "抖动（主相机像素）",
         "ditherMainPixelsHint": "每次抖动应使目标在主相机传感器上移动多少。10 到 15 像素是不错的起点。",
@@ -481,36 +578,80 @@
         "ditherResult": "抖动设置：{pixels} 个导星像素",
         "ditherCurrent": "配置文件当前：{pixels} 个导星像素（{mainPixels} 个主相机像素）。",
         "ditherApply": "应用到配置文件",
-        "ditherApplied": "Applied",
-        "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
+        "ditherApplied": "已应用",
+        "ditherMissingData": "计算抖动需要成像和导星两套设备的像元尺寸和焦距。请填写相机和望远镜步骤，并在导星步骤中设置导星镜焦距。",
         "applyFailed": "无法保存：{message}",
-        "nativeCamera": "导星相机（PINS 原生导星仪）",
-        "nativeCameraHint": "原生导星仪直接驱动导星相机。请选择其 INDI 驱动和设备，并输入导星镜焦距。"
+        "guideScope": "导星镜",
+        "nativeCameraHint": "输入导星镜的焦距。导星器需要它来判断星点移动的幅度。",
+        "descriptionBuiltIn": "PINS 内置导星器，拍摄时让星点保持在原位，无需其他程序。请选择导星相机并输入导星镜的焦距。",
+        "nativeRecommended": "提示：PINS 有自己的导星器（上方列表中的“Native Guider”）。它专为 PINS 开发，直接在设备上运行，无需单独程序，导星通常比 PHD2 更稳定。你在 PHD2 中的设置会沿用，也可随时重新选择 PHD2 切换回去。",
+        "nativeFocalLengthMissing": "导星镜焦距仍为 0。没有它也能导星，但抖动和以角秒表示的导星误差需要它。",
+        "guidePixelSizeHintNative": "仅用于此计算。导星相机连接后，导星器会从中读取像素尺寸；在此之前请参考相机说明书。",
+        "ditherMissingDataNative": "计算抖动需要成像和导星两套设备的像素尺寸与焦距。请填写相机和望远镜步骤，以及导星步骤中的导星镜焦距。",
+        "guideCameraNotFound": "导星相机不在列表中？",
+        "guideCameraNotFoundHint": "如果你的导星相机没有原生支持，请在此为它选择 INDI 驱动。之后它会出现在上方设备列表中。",
+        "ditherIntro": "Dither 会在曝光之间轻微移动画面，从而消除叠加结果中的噪点图案。不导星时可以跳过此步骤。",
+        "ditherReadyHint": "常用值已填好：点击“{button}”即可完成。"
       },
       "done": {
         "title": "你的器材已就绪",
         "description": "设备已连接并更新，赤道仪、相机、调焦器、滤镜轮和导星均已配置。",
         "descriptionPlain": "赤道仪、相机、调焦器、滤镜轮和你的位置均已配置。",
         "moreDevicesHint": "平场板、天气和其余设备在各自的页面中配置。",
-        "noConnectionHint": "尚未连接到设备。你可以随时在 设置 → 连接 中添加。"
+        "noConnectionHint": "尚未连接到设备。你可以随时在 设置 → 连接 中添加。",
+        "summaryIntro": "这是目前的设置。点击某一项可返回对应步骤。",
+        "status": {
+          "ok": {
+            "mount": "已选择",
+            "location": "已保存",
+            "telescope": "已设置焦距",
+            "camera": "已选择",
+            "focuser": "已选择",
+            "filterWheel": "已选择",
+            "guider": "已选择",
+            "starDatabase": "已安装"
+          },
+          "warn": {
+            "mount": "未选择赤道仪",
+            "location": "缺失：极轴校准和星图需要它",
+            "telescope": "缺少焦距：板解算需要它",
+            "camera": "未选择相机",
+            "starDatabase": "未安装：板解算无法工作"
+          },
+          "none": {
+            "focuser": "无，手动对焦",
+            "filterWheel": "无，没问题",
+            "guider": "不导星"
+          }
+        }
       },
       "cancel": "取消设置",
       "localization": {
         "title": "设置设备的区域设置",
-        "description": "请在设置 Wi-Fi 前配置这些值，以便热点位置、时间和远程键盘输入与设备使用地点一致。"
+        "description": "请在设置 Wi-Fi 前配置这些值，以便热点位置、时间和远程键盘输入与设备使用地点一致。",
+        "localeHint": "设备本身的语言和数字格式，例如 en_US.UTF-8 或 de_DE.UTF-8。C.UTF-8 是中性默认值，同样可用。",
+        "unappliedHint": "尚未应用：请在点击下一步前点击“{button}”，否则更改会丢失。",
+        "nothingToDoHint": "无需更改？直接点击下一步。",
+        "rigLanguage": "设备的语言和键盘"
+      },
+      "starDatabase": {
+        "title": "用于板解算的星图",
+        "description": "为了确定望远镜指向哪里，设备会将图像与星图比对（“板解算”）。极轴校准和目标居中都需要它。PINS 自带 D80 星图；对于很宽的视场，可在此再添加一个。",
+        "otherSolver": "你的配置文件使用的不是 ASTAP 板解算器，因此这里无需安装任何内容。",
+        "hint": "下载文件很大，可能需要几分钟。你可以先点击下一步；安装会继续在设备上运行。"
       }
     },
     "fileBrowser": {
-      "title": "Browse",
+      "title": "浏览",
       "goUp": "返回上一级",
-      "loading": "Loading...",
+      "loading": "正在加载...",
       "empty": "空文件夹",
       "dblClickHint": "双击打开",
       "deleteDir": "删除文件夹",
       "folderPlaceholder": "文件夹名称…",
       "newFolder": "+ 新建文件夹",
-      "create": "Create",
-      "selectedPath": "Selected:",
+      "create": "创建",
+      "selectedPath": "已选择：",
       "loadError": "无法加载文件夹。",
       "createError": "无法创建文件夹。",
       "deleteDirTitle": "删除文件夹",
@@ -654,7 +795,9 @@
         "restartInfoTitle": "系统正在重启",
         "restartInfoMessage": "系统正在重启。",
         "shutdownInfoTitle": "系统正在关机",
-        "shutdownInfoMessage": "系统正在关机，此页面将无法再访问。"
+        "shutdownInfoMessage": "系统正在关机，此页面将无法再访问。",
+        "shutdownPowerHint": "请等待约一分钟，然后即可关闭电源。",
+        "shutdownFailed": "关机失败：{reason}"
       },
       "plate_solver": {
         "title": "天文定位解算器",
@@ -690,22 +833,35 @@
         "FilterHint": "用于天文定位的滤镜（覆盖当前滤镜）",
         "astapDatabaseAllInstalled": "所有 ASTAP 星表数据库均已安装。",
         "astapDatabaseDescription": "直接在 PINS 设备上安装缺少的 ASTAP 星表数据库。",
-        "astapDatabaseInstall": "Install",
-        "astapDatabaseInstallFailed": "ASTAP 星表数据库安装失败{exitCode}。",
+        "astapDatabaseInstall": "安装",
         "astapDatabaseInstallSuccess": "ASTAP 星表数据库 {databaseId} 安装成功。",
-        "astapDatabaseInstalling": "Installing...",
+        "astapDatabaseDownloadFailed": "安装 {databaseId} 失败。设备会从互联网下载星图：它所在的网络能上网吗？如果能，请重试。",
+        "astapDatabaseLastAttemptFailed": "上次安装 {databaseId} 失败（{time}）。设备会从互联网下载星图：它所在的网络能上网吗？如果能，请重试。",
+        "astapDatabaseRetry": "重新安装 {databaseId}",
+        "astapDatabasePhase": {
+          "downloading": "正在下载",
+          "installing": "正在安装",
+          "finalizing": "正在完成",
+          "complete": "完成"
+        },
+        "astapDatabaseInstalling": "正在安装...",
         "astapDatabaseProgressStalled": "下载已 30 秒没有进展。仍在监控任务。",
-        "astapDatabaseJobStarted": "started",
+        "astapDatabaseJobStarted": "已启动",
         "astapDatabaseJobStartedMessage": "{databaseId} 的安装任务已启动。",
-        "astapDatabaseJobStatus": "Job {jobId}: {status}",
+        "astapDatabaseJobStatus": "任务 {jobId}：{status}",
         "astapDatabaseLastChecked": "上次检查：{value}",
         "astapDatabaseLoadFailed": "无法加载数据库：{detail}",
         "astapDatabaseMissingJobId": "安装请求成功，但未返回 jobId。",
         "astapDatabaseNoInstallable": "没有可安装的 ASTAP 星表数据库",
-        "astapDatabaseSelectPlaceholder": "Select a database",
+        "astapDatabaseSelectPlaceholder": "选择数据库",
         "astapDatabaseStartFailed": "无法启动安装：{detail}",
+        "astapDatabaseInstalledList": "已安装：{list}",
+        "astapDatabaseNoneInstalled": "尚未安装星库。没有星库，板解算（极轴校准、目标居中）无法工作。",
+        "astapDatabaseRecommendedTag": "推荐",
+        "astapDatabaseRecommendedFov": "适合你的望远镜和相机（视场 {fov}°）：{id}",
+        "astapDatabaseRecommendedDefault": "推荐：{id}。输入焦距、像素尺寸和传感器尺寸可获得适合你望远镜的推荐。",
         "astapDatabaseStartInstall": "正在开始安装 {databaseId}…",
-        "astapDatabaseStarting": "Starting...",
+        "astapDatabaseStarting": "正在启动...",
         "astapDatabaseStatusCheckFailedRetrying": "状态检查失败：{detail}。正在重试…",
         "astapDatabaseTitle": "ASTAP 星表数据库（PINS）",
         "astapDatabaseUnauthorizedStart": "启动 ASTAP 星表数据库安装时未获授权。",
@@ -812,31 +968,42 @@
         "loading": "正在读取交换空间配置…",
         "current": "当前系统交换空间：{size} GB",
         "size": "已配置的交换空间大小",
-        "choose": "Choose a size",
+        "choose": "选择大小",
         "defaultSize": "2 GB（镜像默认值）",
         "recommendedSize": "8 GB (推荐)",
         "freeSpace": "可用存储：{size} GB",
         "pending": "已配置 {size} GB。拍摄结束后重启 Pi 即可生效。",
         "saved": "交换空间配置已保存。",
-        "saving": "Saving…",
+        "saving": "正在保存…",
         "save": "保存交换空间大小",
-        "refresh": "Refresh",
+        "refresh": "刷新",
         "unsupported": "此系统没有受支持的磁盘交换空间配置。",
         "unavailable": "交换空间配置不可用。请更新 Pi 上的 pinsdaemon。",
         "loadError": "无法读取交换空间配置：{message}",
         "saveError": "无法保存交换空间配置：{message}",
         "missingJob": "守护进程未返回交换空间任务。"
+      },
+      "instances": {
+        "discovery": "在网络中查找设备",
+        "add": "添加设备",
+        "edit": "编辑设备",
+        "configured": "已保存的设备",
+        "none": "尚未保存设备",
+        "noneHint": "请使用上方的搜索，或自行输入地址。",
+        "active": "使用中",
+        "setActive": "使用此设备",
+        "delete": "移除设备"
       }
     },
     "alpacaDirect": {
       "title": "Alpaca Direct 设置",
       "ipAddress": "IP 地址",
-      "port": "Port",
+      "port": "端口",
       "deviceNumber": "设备编号",
       "serviceType": "服务类型",
-      "save": "Save",
-      "connect": "Connect",
-      "disconnect": "Disconnect",
+      "save": "保存",
+      "connect": "连接",
+      "disconnect": "断开连接",
       "sharedGuidWarning": "旋转器和安全监视器在 @:{'general.backendName'} 中共用一个存储位置——修改其中一个也会改变另一个。",
       "noReconnectHint": "新设置将在下次连接时生效。",
       "cameraNoSettings": "此相机没有可配置的设置。"
@@ -844,7 +1011,12 @@
     "selectDevices": {
       "deviceNotFound": "未找到设备",
       "deviceNotFoundMessage": "已重新加载 INDI 驱动，但未出现“{device}”。请检查供电并重新选择设备。",
-      "reloadingDriver": "正在重新加载 INDI 驱动…"
+      "reloadingDriver": "正在重新加载 INDI 驱动…",
+      "configure": "设备设置",
+      "rescan": "重新搜索设备",
+      "connect": "连接",
+      "disconnect": "断开连接",
+      "whyNotConnect": "为什么还不能连接？"
     },
     "connectEquipment": {
       "camera": {
@@ -875,7 +1047,7 @@
         "guideCamRequired": "必须选择一个有效的导星相机。"
       },
       "guiderCam": {
-        "name": "导星相机",
+        "name": "PHD2 相机",
         "manualVnc": "通过VNC手动"
       },
       "safety": {
@@ -1000,8 +1172,8 @@
       "resetConfirmationTitle": "确认重置",
       "resetConfirmationMessage": "您确定要重置序列吗？此操作无法撤销。",
       "clearSequence": "清除全部",
-      "clearConfirmationTitle": "确认清除",
-      "clearConfirmationMessage": "您确定要清除整个序列吗？此操作无法撤销。",
+      "clearConfirmationTitle": "全部清除",
+      "clearConfirmationMessage": "要从序列中移除所有项目吗？此操作无法撤销。",
       "load_sequence": "从目录加载序列",
       "choose_sequence": "选择序列",
       "saved_sequences": "TNS 序列创建器",
@@ -1223,13 +1395,13 @@
         },
         "polarAlignment": {
           "searchRadius": "搜索半径",
-          "alignmentTolerance": "对中公差(arcsec)",
+          "alignmentTolerance": "对准容差（角分）",
           "moveRate": "移动速率(°/s)",
           "targetDistance": "目标行程",
           "eastDirection": "东方向",
           "manualMode": "手动模式",
           "startFromCurrentPosition": "从当前位置开始",
-          "manual": "Manual"
+          "manual": "手动"
         },
         "skyFlat": {
           "shouldDither": "抖动",
@@ -1248,12 +1420,12 @@
         },
         "setTracking": {
           "trackingMode": "跟踪模式",
-          "sidereal": "Sidereal",
-          "lunar": "Lunar",
-          "solar": "Solar",
+          "sidereal": "恒星",
+          "lunar": "月球",
+          "solar": "太阳",
           "king": "King",
-          "custom": "Custom",
-          "stopped": "Stopped"
+          "custom": "自定义",
+          "stopped": "已停止"
         },
         "expressionVariable": {
           "identifier": "名称",
@@ -1362,21 +1534,21 @@
         "orbuculum": {
           "hourAngle": "时角 (h)",
           "nextTarget": "下一个目标：",
-          "current": "Current:"
+          "current": "当前："
         },
         "autoBalancingExposure": {
-          "timeSeconds": "Time (s)",
+          "timeSeconds": "时间（秒）",
           "noEntries": "没有条目",
           "addRow": "添加行",
-          "progress": "Progress",
-          "ratio": "Ratio",
+          "progress": "进度",
+          "ratio": "比例",
           "bin": "Bin"
         },
         "setReadoutMode": {
-          "mode": "Mode"
+          "mode": "模式"
         },
         "loopWhile": {
-          "expression": "Expression"
+          "expression": "表达式"
         },
         "slewScopeToAltAz": {
           "azimuth": "Az",
@@ -1401,9 +1573,9 @@
           "dec": "Dec",
           "haOffset": "时角偏移",
           "side": "指向侧",
-          "sideEast": "East",
-          "sideStay": "Stay",
-          "sideWest": "West"
+          "sideEast": "东",
+          "sideStay": "保持",
+          "sideWest": "西"
         }
       },
       "emptyContainer": "空—单击+以添加项目",
@@ -1424,17 +1596,29 @@
       "resetStatus": "重置状态",
       "delete": "删除",
       "runningLocked": "该项目正在运行，无法修改",
+      "plan": {
+        "title": "计划",
+        "startSequence": "开始计划",
+        "resetSequence": "重置计划",
+        "resetConfirmationMessage": "重置计划使其从头开始？此操作无法撤销。",
+        "clearConfirmationMessage": "清除计划中的所有内容？此操作无法撤销。",
+        "manageSequences": "加载 / 保存计划",
+        "saveSequenceAs": "将当前计划另存为",
+        "sequenceFolder": "计划文件夹",
+        "sequenceFolderSaveError": "无法更改计划文件夹。",
+        "controlsLockedMessage": "计划运行期间，计划控件已锁定。"
+      },
       "controlsLockedMessage": "序列运行期间，序列控制已锁定。",
-      "lockControls": "Lock",
-      "unlockControls": "Unlock",
+      "lockControls": "锁定",
+      "unlockControls": "解锁",
       "simple": {
         "viewMode": "序列视图",
-        "viewModeHint": "简单模式为每个目标显示一张卡片，包含最常用的选项。专家模式显示完整的序列树。",
+        "viewModeHint": "简单视图为每个目标显示一张卡片，包含最常用的选项。完整视图显示整个序列树。",
         "mode": {
           "simple": "简单",
-          "full": "专家"
+          "full": "完整"
         },
-        "openExpert": "在专家编辑器中编辑",
+        "openFull": "在完整编辑器中编辑",
         "targets": "目标",
         "remaining": "剩余",
         "total": "总计",
@@ -1450,6 +1634,8 @@
         "dither": "抖动",
         "ditherHint": "在帧之间轻微移动导星位置。需要导星正在运行。",
         "ditherEvery": "每 N 帧抖动一次",
+        "ditherInExposures": "每个曝光行在每张照片后 Dither。 | 每个曝光行每 {count} 张照片 Dither 一次。",
+        "ditherInExposuresMixed": "各曝光行按各自的间隔 Dither。",
         "coolCamera": "相机制冷",
         "coolCameraHint": "在第一个目标之前将相机冷却到目标温度。",
         "unparkMount": "赤道仪解除归位",
@@ -1474,7 +1660,6 @@
         "afAfterHfr": "HFR 增大后",
         "coordinates": "坐标",
         "exposureEnabled": "拍摄此曝光",
-        "cameraDefault": "相机",
         "gainShort": "增益",
         "offsetShort": "偏置",
         "empty": "此序列还没有目标。",
@@ -1486,6 +1671,7 @@
         "favorites": "收藏",
         "framing": "构图",
         "noFilter": "不更换滤镜",
+        "chooseFilter": "选择滤镜",
         "exposureTime": "曝光（秒）",
         "count": "数量",
         "noExposures": "此目标还没有曝光。",
@@ -1498,7 +1684,50 @@
         "deleteTarget": "删除目标",
         "deleteTargetConfirm": "要从序列中删除 {name} 及其所有曝光吗？",
         "deleteExposure": "删除曝光",
-        "deleteExposureConfirm": "要从序列中删除此曝光行吗？"
+        "deleteExposureConfirm": "要从序列中删除此曝光行吗？",
+        "addTargetNamed": "添加 {name} 为目标",
+        "limits": {
+          "title": "夜晚",
+          "wait": "等到天黑",
+          "waitHint": "天一黑计划就会开始。等待期间赤道仪不跟踪。",
+          "dawn": "黎明时停止",
+          "dawnHint": "天亮时结束计划，即使照片还没拍完。其余的可以在下一晚拍摄。",
+          "from": "从 {time} 起",
+          "notTonight": "今晚没有",
+          "low": "目标过低时停止",
+          "lowHint": "靠近地平线时，大气会使星点模糊，树木或房屋也会遮挡。届时计划会继续拍摄下一个目标。",
+          "minAltitude": "地平线以上的最低高度（°）",
+          "noTarget": "请先在计划中添加目标，之后此项会自动开启。",
+          "targetRunning": "拍摄目标期间无法更改。",
+          "sunBelow": "太阳在地平线下 {degrees}°",
+          "darknessName": {
+            "bright": "还亮",
+            "dusky": "快黑了",
+            "usual": "通常",
+            "dark": "更暗",
+            "darkest": "完全黑暗"
+          },
+          "minAltitudeHint": "0° 是地平线，90° 是头顶正上方。伸直手臂，两个拳头上下叠放约为 20°。",
+          "startAt": "夜晚开始",
+          "endAt": "夜晚结束",
+          "until": "到 {time}"
+        },
+        "refocus": {
+          "title": "对焦",
+          "label": "定期重新对焦",
+          "hint": "夜间降温会使焦点漂移。计划会在两张图像之间重新对焦，每次需要几分钟。",
+          "howOften": "频率",
+          "every": {
+            "minutes": "每分钟 | 每 {count} 分钟",
+            "hours": "每小时 | 每 {count} 小时"
+          }
+        },
+        "budget": {
+          "question": "你想拍摄这个目标多久？（小时）",
+          "pictures": "{count} 张，每张 {seconds} 秒 | {count} 张，每张 {seconds} 秒",
+          "apply": "使用这个照片数量",
+          "wholeNight": "整晚可拍的时间（{time}）"
+        }
       }
     },
     "mount": {
@@ -1509,17 +1738,19 @@
         "parked": "赤道仪已停靠，没有可显示的位置。"
       },
       "location_sync": {
-        "title": "位置同步设置",
-        "confirmationMessage": "如果@:{'general.backendName'}中的\"位置同步\"设置为\"提示\"，在坐标发送到望远镜之前可能会出现确认窗口。为了避免这种情况并允许TNS自动设置坐标，我们建议将设置更改为\"与望远镜同步\"",
+        "title": "赤道仪位置",
+        "confirmationMessage": "赤道仪连接时，应用可以将你的位置发送给它，使其指向正确的天区。请选择处理方式；之后可在位置设置中更改。",
         "toTelescope": {
-          "label": "与望远镜同步"
+          "label": "将我的位置发送到赤道仪"
         },
         "toApplication": {
-          "label": "与应用同步"
+          "label": "从赤道仪获取位置"
         },
         "noSync": {
-          "label": "不同步"
-        }
+          "label": "不同步位置"
+        },
+        "recommended": "推荐",
+        "noLocationHint": "尚未设置你的位置。“将我的位置发送到赤道仪”会发送 0° / 0°，并覆盖赤道仪已知的位置。请先选择“不同步位置”：设置位置后，应用会将其发送给赤道仪。"
       },
       "control": {
         "park": "停靠",
@@ -1535,7 +1766,7 @@
           "unpark": "解除停靠赤道仪时出错",
           "tracking": "设置跟踪模式时出错"
         },
-        "setLocationSyncToMount": "设置\"与望远镜同步\"",
+        "setLocationSyncToMount": "始终将我的位置发送到赤道仪",
         "slewRateINDI": "运动速度",
         "reverse_axis": "轴向方向",
         "slewRateDriverControlled": "转动速度由驱动控制",
@@ -2032,15 +2263,15 @@
           "hide": "隐藏星形组件",
           "show": "显示星型组件"
         },
-        "applyStep": "Apply",
+        "applyStep": "应用",
         "calculatedStep": "计算出的步长",
-        "calibDistance": "Distance",
+        "calibDistance": "距离",
         "calibStepCalc": "步长计算器",
-        "declination": "Declination",
+        "declination": "赤纬",
         "desiredSteps": "期望步数",
         "guideSpeed": "导星速度",
         "imageScale": "成像比例",
-        "optimal": "Optimal",
+        "optimal": "最佳",
         "pixelSize": "像素尺寸",
         "assumeDecOrthogonal": "假定赤纬与赤经正交",
         "useDecCompensation": "使用赤纬补偿",
@@ -2747,7 +2978,7 @@
           "loading": "正在加载设置…",
           "loadFailed": "无法加载设置",
           "empty": "暂无可用设置。",
-          "notConnectedHint": "原生导星仪未连接。更改将保存到配置文件；相机更改将在下次连接时生效。",
+          "notConnectedHint": "内置导星未连接。更改将保存到配置文件；相机更改将在下次连接时生效。",
           "requiresReconnect": "重新连接后生效",
           "valueInUse": "当前使用：{value} {unit}，导星时已调整。",
           "range": "{min} – {max}",
@@ -2884,14 +3115,14 @@
           "descriptions": {
             "GuideSource": "导星帧的来源。导星相机：设备中导星相机槽位里的相机。模拟器：内置的赤道仪、天空和相机模拟，可在没有硬件或白天时试用导星。",
             "ExposureSeconds": "每张导星图像的曝光时间。较短的曝光对风和赤道仪误差反应更快；最小移动量能防止它们追逐视宁度。1 s 适合大多数赤道仪；导星太暗时请使用更长的曝光。",
-            "Gain": "-1 保持驱动当前的增益。（PHD2 的增益是百分比，因此不会沿用。）",
-            "Offset": "-1 保持驱动当前的偏移。",
+            "Gain": "导星相机拍摄导星帧所用的增益。-1（默认）使用导星相机设置中的增益。更高的增益使暗星更亮，但会增加噪声。PHD2 的增益是百分比，因此不会沿用。",
+            "Offset": "导星相机的偏置（黑电平）。-1（默认）使用导星相机设置中的偏置。仅当导星帧背景被截断为黑色时才调高。",
             "Binning": "导星帧的硬件合并。2×2 让相机更灵敏、帧传输更快，但会降低分辨率；适合小像素或长导星焦距。更改后请重新校准。",
-            "FocalLengthMm": "导星镜的焦距（使用 OAG 时为主镜焦距）。角秒数值和校准步长需要用到。",
-            "PixelSizeUm": "0 表示使用相机驱动报告的像素尺寸。",
+            "FocalLengthMm": "导星镜的焦距（毫米），使用离轴导星时为主镜焦距。它与像元尺寸共同决定图像比例，导星据此显示角秒并选择校准步长和最小移动量，因此请正确设置。",
+            "PixelSizeUm": "导星相机的像元尺寸（微米），用于计算图像比例。0（默认）取自相机驱动；仅当驱动未提供或提供错误时才设置。",
             "NoiseReduction": "在测量星点前平滑每个导星帧。Mean 2×2 对相邻像素取平均，Median 3×3 还会去除单个热像素。对噪声很大的帧有帮助，例如来自非制冷相机的帧；对干净的帧，None 给出最精确的星点位置。",
-            "UseDarkLibrary": "减去暗场：若已构建原生暗场库则使用它，否则使用 PHD2 针对此相机尺寸的暗场库。",
-            "PulseOutput": "Mount：通过已连接的赤道仪驱动进行脉冲导星。CameraST4：通过导星相机的 ST4 接口导星。",
+            "UseDarkLibrary": "从每个导星帧中减去暗场，消除热像素和辉光，避免被误认为星点。已建立原生暗场库时使用该库，否则使用 PHD2 对应此相机尺寸的暗场库。",
+            "PulseOutput": "导星脉冲的发送途径。赤道仪：通过已连接的赤道仪驱动（脉冲导星），通常的选择。相机 ST4：通过导星相机的 ST4 接口到赤道仪的 ST4 输入（仅 INDI 相机）。",
             "MultiStar": "同时测量多颗星，并按它们的综合位置导星，而不是只用一颗星。这能平均掉大部分视宁度，并在某颗星变暗时保持导星。建议保持开启。",
             "MaxStars": "多星导星使用的最多星数。星越多，平均掉的视宁度越多；视场中可用星较少时，导星使用找到的星。1 表示只用一颗星导星。",
             "MinSnr": "星点被选为导星星所需的信噪比。数值过高会找不到星；与其降低它，不如尝试更长的曝光、更高的增益或重新建立暗场库。",
@@ -2900,48 +3131,48 @@
             "MaxHfd": "导星星允许的最大尺寸（半通量直径，像素）。超过此值的膨胀或失焦光斑在选星时会被忽略。",
             "MassChangeEnabled": "监视导星星的亮度（质量），并把突然的变化视为丢星，以免云层经过时导星跳到邻近的星上或在热像素上导星。",
             "MassChangeThreshold": "星点质量在被视为丢失前允许变化的幅度：0.5 允许相对最近几帧变化一半。若星点清晰可见却出现丢星警报（例如透明度变化时），就调大。",
-            "PrimaryDropoutFallback": "主星在某一帧中丢失时，根据 ≥3 颗结果一致的副星估算其位置。",
-            "SaturationAdu": "0 = 根据星点轮廓检测饱和。",
-            "RaAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
-            "RaAggression": "每帧校正的误差比例（0..1）。",
+            "PrimaryDropoutFallback": "主星在某一帧中丢失时（飘过的云、卫星），导星会根据至少 3 颗结果一致的副星估算其位置，继续导星而不暂停。需要多星导星。",
+            "SaturationAdu": "星点被视为饱和的像素值；饱和星不会被使用，因为无法精确测量其中心。0（默认）根据星点形状检测饱和。否则请输入相机的最大值，例如 16 位为 65535。",
+            "RaAlgorithm": "决定如何将测得的 RA 误差转换为修正。Hysteresis（默认）修正误差的一部分，并用之前的修正进行平滑。Lowpass2 和 Lowpass 反应更柔和，适合跟踪良好的赤道仪。None 不发送 RA 修正。Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并修正其对下一帧预测的误差；激进度、迟滞和最小移动量对它不适用。",
+            "RaAggression": "每帧修正测得 RA 误差的比例：0.7 修正 70%。较低的值可避免过冲和追逐视宁度，较高的值使星点更快回位。星点来回摆动时调低，星点滞后时调高。",
             "RaHysteresis": "上一次 RA 校正相对于最新误差的权重：0.1 混入上一次校正的 10%。数值越高，校正越平滑，但对真实的方向变化反应越慢。",
             "RaLowpass2Aggressiveness": "Lowpass2 对最近的 RA 误差拟合一条直线，并校正这一趋势而非单帧。这是每帧校正的趋势比例（百分比）；若校正过冲就调小。",
-            "RaMinMove": "0 = 根据像素比例自动设定。",
+            "RaMinMove": "触发修正的最小 RA 误差（像素）；更小的误差会被忽略，以免导星追逐视宁度。0（默认）根据图像比例计算。这是最值得按当晚视宁度调整的设置。",
             "RaCorrectionPace": "Predictive 算法每帧校正的剩余误差比例：0.5 在 2–3 帧内消除偏移且不越过零点，1 一次全部校正。漂移和周期误差始终完全校正。",
             "PeriodicErrorPrediction": "学习 RA 蜗杆的周期误差，并在其显现之前加以校正。学得的曲线按配置文件和赤道仪保存。",
             "WormPeriodUnit": "用蜗轮齿数或以秒为单位的周期来指定 RA 蜗杆，例如来自赤道仪说明书或 PEC 工具。秒也适用于周期不是整数齿数的传动（谐波减速器、皮带）。只使用所选的那一项。",
-            "WormTeeth": "RA 蜗轮的齿数（例如 EQ6-R 为 180，HEQ5 为 135），可得出精确的蜗杆周期。0 = 从导星帧中检测周期。",
+            "WormTeeth": "RA 蜗轮的齿数（例如 EQ6-R 为 180，HEQ5 为 135）；可得到准确的蜗杆周期。0（默认）从导星帧中检测周期。",
             "WormPeriodSeconds": "RA 蜗杆的周期，单位为秒（例如 180 齿为 478.7）；此时不再检测周期。中天翻转后会重新学习其相位，与不知道齿数时相同。0（默认）= 从导星帧中检测周期；导星接受 180 到 1200 秒。",
             "ForgetPeriodicError": "忘记为此赤道仪学得的周期误差，例如在调整蜗杆之后；之后会重新学习。",
-            "DecAlgorithm": "Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并校正其预测的下一帧误差，因此激进度、滞后和最小移动量对它不适用。",
+            "DecAlgorithm": "决定如何将测得的 Dec 误差转换为修正。ResistSwitch（默认）只有在误差明确需要时才反转 Dec 方向，避免 Dec 齿隙使导星来回摆动。Hysteresis、Lowpass2 和 Lowpass 与 RA 上相同；None 不发送 Dec 修正。Predictive（实验性）从导星帧中学习视宁度和赤道仪自身的运动，并修正其对下一帧预测的误差；激进度、迟滞和最小移动量对它不适用。",
             "DecAggression": "每帧校正的已测 Dec 误差比例：1.0 全部校正。若 Dec 过冲就调小。",
             "DecHysteresis": "上一次 Dec 校正相对于最新误差的权重：0.1 混入上一次校正的 10%。数值越高，校正越平滑，但对真实的方向变化反应越慢。",
             "DecLowpass2Aggressiveness": "Lowpass2 对最近的 Dec 误差拟合一条直线，并校正这一趋势而非单帧。这是每帧校正的趋势比例（百分比）；若校正过冲就调小。",
             "DecFastSwitch": "配合 ResistSwitch：误差较大（超过 3 × 最小移动量）时让 Dec 立即反向，而不是等待多帧一致。可快速拉回较大的 Dec 误差。",
-            "DecMinMove": "0 = 根据像素比例自动设定。",
+            "DecMinMove": "触发修正的最小 Dec 误差（像素）；更小的误差会被忽略，以免导星追逐视宁度。0（默认）根据图像比例计算。这是最值得按当晚视宁度调整的设置。",
             "DecCorrectionPace": "Predictive 算法每帧校正的剩余误差比例：0.5 在 2–3 帧内消除偏移且不越过零点，1 一次全部校正。漂移和周期误差始终完全校正。",
             "DecGuideMode": "Auto 双向导星 Dec，仅北或仅南只朝一个方向，关闭则完全不导星。Drift 跟随漂移：它在导星时测量 Dec 漂移，只朝与之相反的方向导星，因此赤纬齿轮从不反转，回差便不再有影响；漂移反向时它会切换方向，在漂移确定之前、稳定过程中以及需要拉回较大误差时会双向导星。",
             "MaxRaDurationMs": "单个 RA 导星脉冲的最长时长。当测量严重偏离时（错误的星、阵风）它会限制校正，以免赤道仪被推得很远。仅当大误差需要很多帧才能校正时才调大。",
             "MaxDecDurationMs": "单个 Dec 导星脉冲的最长时长。当测量严重偏离时（错误的星、阵风）它会限制校正，以免赤道仪被推得很远。仅当大误差需要很多帧才能校正时才调大。",
-            "MinPulseMs": "更短的导星脉冲会被舍入为 0 或此长度：有些赤道仪无法正确处理极短的脉冲。0 = 不限长度。",
+            "MinPulseMs": "更短的导星脉冲会被舍入为 0 或此长度，因为有些赤道仪无法正确处理极短的脉冲。0 表示发送任意长度的脉冲。",
             "SimultaneousPulses": "同时发送一帧的 RA 和 Dec 脉冲，而不是先后发送，从而缩短导星周期。仅适用于能分别为两个轴计时的赤道仪（pins 的原生 OnStepX 驱动）；其他赤道仪仍按先后顺序发送脉冲。",
             "BacklashCompensation": "在 Dec 反向时额外发送一个脉冲，以消除 Dec 齿轮的间隙。Dec 回差明显时有帮助；若 Dec 导星平稳就保持关闭。Dec 导星模式 Drift 可完全避免反向。",
             "BacklashPulseMs": "Dec 反向时额外脉冲的长度。导星以此为起点，根据星点的响应在 20 毫秒和该值的 1.5 倍之间自动调整脉冲。使用间隙模型时，该值只是对间隙的初始估计，之后由模型自行学习。",
             "PulseModel": "从抖动中学习导星脉冲在每个轴上实际移动星点的距离，并据此确定脉冲大小，使偏差的校准不再导致过度或不足校正。它从校准值开始，只改变抖动明确显示的部分，并按配置文件和赤道仪保存所学内容，直到下一次校准。",
-            "CalibrationStepMs": "0 = 根据光学参数、导星速率和赤纬自动设定。",
-            "ReuseCalibration": "跨会话保留校准，并根据赤纬和立柱侧进行调整。",
+            "CalibrationStepMs": "校准时每个脉冲的长度。0（默认）根据焦距、像元尺寸、导星速率和赤纬计算。仅当校准步数过少或过多时才手动设置。",
+            "ReuseCalibration": "跨会话保留上次校准，并根据赤纬和立柱侧进行调整，因此无需每晚校准。手动旋转导星相机或更换导星镜后请重新校准。",
             "AssumeOrthogonal": "校准通常独立测量 RA 和 Dec 方向。此选项强制 Dec 与 RA 严格垂直，在较大的周期误差、Dec 回差或较差的视宁度扭曲 Dec 校准时有帮助。",
             "DecCompensation": "根据当前赤纬调整 RA 校正，使在某一赤纬做的校准在其他赤纬也能使用。需要已连接的赤道仪报告其位置；请保持开启。与 Dec 回差补偿不是一回事。",
-            "DecFlipRequired": "每台赤道仪单独设置；由“翻转后 Dec 自检”自动纠正。",
+            "DecFlipRequired": "中天翻转后是否必须反转 Dec 修正。取决于赤道仪，并按赤道仪分别保存；设置有误时，“翻转后 Dec 自检”会自动纠正。",
             "VerifyDecAfterFlip": "中天翻转后检查最初的 Dec 校正：若它们把星推得更远而不是拉回，导星会自行反转 Dec，并为该赤道仪更正“中天翻转后反转 Dec”。",
             "RotatorTurnsGuideCamera": "连接的旋转器是否也会转动导星相机：旋转器位于望远镜和 OAG 之间时选“是”；使用导星镜，或旋转器位于 OAG 和主相机之间时选“否”。选“是”后，旋转器转动期间导星会暂停，之后用新的导星星点和随旋转器旋转后的已保存校准重新开始，因此旋转后无需重新校准。如果选“是”时旋转器转动后导星把星推远，请选择“是，反向”并重新校准一次。不跟随 NINA 的手动旋转器。",
             "DitherMode": "每次抖动的选取方式。Random：随机的距离和方向。Spiral：沿起始位置周围的螺旋逐步移动，有助于对抗主相机的固定模式噪声。",
             "DitherScale": "放大拍摄软件请求的抖动距离：2 表示抖动两倍远，0.5 表示一半远。",
             "FastRecenter": "抖动后用较大的直接脉冲而非普通导星步骤把星移到新的锁定位置，使抖动更快稳定。建议保持开启。",
             "ReacquireTimeoutSec": "导星在发出警报前搜索丢失星点的时间。之后它会继续搜索，并在星点重新出现后立即恢复导星。",
-            "MaxPulseDutyPercent": "某一轴在一分钟内的脉冲时间超过此比例时停止导星（失控保护）。",
+            "MaxPulseDutyPercent": "当某一轴的脉冲时间超过一分钟的这一比例时，导星停止。可防止失控，例如校准错误或 Dec 反向之后。",
             "PauseWhenSlewing": "赤道仪报告转动中/已停放时暂停修正。仅当赤道仪驱动一直报告“转动中”时才关闭此项。",
-            "PauseWhenTrackingOff": "赤道仪报告跟踪关闭时暂停修正。若赤道仪驱动无法报告跟踪状态，请关闭此项。",
+            "PauseWhenTrackingOff": "赤道仪报告跟踪关闭时暂停修正。如果赤道仪驱动无法报告跟踪状态，请关闭此项。",
             "SaveGuideLog": "将兼容 PHD2 的导星日志写入 ~/.local/share/NINA/InternalGuider/Logs。在应用中可用导星日志插件查看。",
             "IncidentRecorder": "在内存中保留最近几分钟的导星画面，并在丢失导星、导星失控、赤道仪和相机问题以及误差尖峰前后保存这些画面，供回放和下载。",
             "IncidentBudgetMb": "已记录异常事件可用的磁盘空间；最早的未保留异常事件会被优先删除。模拟器异常事件另有独立的 200 MB。",
@@ -3886,7 +4117,7 @@
         "hyperbolicTrendline": "双曲趋势线",
         "quadraticMin": "二次最小值",
         "hyperbolicMin": "双曲最小值",
-        "value": "Value",
+        "value": "值",
         "invalidDate": "无效日期"
       },
       "settings": {
@@ -4249,22 +4480,22 @@
           "autoFromDriver": "自动：{value} µm/步（来自调焦器驱动）",
           "noDriverStepSize": "调焦器驱动未报告步长，因此隐藏微米读数。请输入调焦器的步长以启用它们。",
           "stepSizeMismatch": "⚠ 与调焦器驱动不一致",
-          "centerFocuserBeforeRun": "Center Focuser Before Run",
-          "detailedAnalysisExposureSeconds": "Detailed Analysis Exposure Time (seconds)",
-          "framesPerPoint": "Frames Per Point",
-          "numRegionsWide": "Number of Regions Wide",
+          "centerFocuserBeforeRun": "先将调焦器居中",
+          "detailedAnalysisExposureSeconds": "自动对焦曝光",
+          "framesPerPoint": "每点曝光数",
+          "numRegionsWide": "偏心率网格宽度",
           "eccentricityColorMapEnabled": "偏心率着色",
           "interpolationEnabled": "启用插值",
           "interpolationAlgo": "插值算法",
           "interpolationAmount": "插值平滑",
-          "sensorCurveModelEnabled": "Sensor Curve Model",
+          "sensorCurveModelEnabled": "启用传感器曲面模型",
           "showSensorModel": "显示传感器模型",
           "frameReviewEnabled": "保留帧以供查看",
-          "signalAmplification": "Signal Amplification",
-          "simpleExposureSeconds": "Exposure Time (seconds)",
-          "stepCount": "Step Count",
-          "stepSize": "Step Size",
-          "timeoutSeconds": "Timeout (seconds)"
+          "signalAmplification": "信号放大",
+          "simpleExposureSeconds": "简单分析曝光",
+          "stepCount": "步数",
+          "stepSize": "步长",
+          "timeoutSeconds": "自动对焦超时"
         },
         "autoFocusOptions": {
           "loading": "正在加载自动对焦选项...",
@@ -4456,7 +4687,7 @@
           "noiseLevel": "噪声级别",
           "pixelScale": "像素比例",
           "focusRange": "对焦范围",
-          "useOptimizedSettings": "Use Optimized Settings"
+          "useOptimizedSettings": "使用优化设置"
         },
         "binningHint": {
           "none": "运行一次自动对焦以获取建议",
@@ -4486,22 +4717,22 @@
           "configuration": "配置",
           "sensorWidth": "传感器宽度",
           "sensorHeight": "传感器高度",
-          "sensorRotation": "Sensor Rotation (CW facing back of camera)",
+          "sensorRotation": "传感器旋转",
           "sensorRotationDescription": "面向相机背面时顺时针旋转",
           "manualTilterConfiguration": "手动 3 点倾斜配置（测试版 - 小心使用）",
           "tilterOuterRadius": "倾斜外半径",
           "tilterThreadPitch": "倾斜螺纹螺距",
-          "tilterScrewCount": "Tilter Screws",
-          "tilterScrewCountDescription": "3-screw plates use an equilateral layout, 4-screw plates one screw per sensor corner",
-          "screwCountThree": "3 screws (equilateral)",
-          "screwCountFour": "4 screws (one per corner)",
-          "fourScrewHint": "Adjust opposing screws as a pair (loosen one, tighten the other) so the plate cannot bind",
+          "tilterScrewCount": "倾斜板螺丝",
+          "tilterScrewCountDescription": "3 螺丝板采用等边布局，4 螺丝板在传感器每个角各有一颗螺丝",
+          "screwCountThree": "3 颗螺丝（等边）",
+          "screwCountFour": "4 颗螺丝（每角一颗）",
+          "fourScrewHint": "请成对调节相对的螺丝（一松一紧），以免板卡住",
           "fourScrewApplyUnsupported": "仅 3 螺丝倾斜器支持应用到设备",
           "positiveTurnDirection": "正值表示",
           "positiveTurnInward": "向内旋转螺丝",
           "positiveTurnOutward": "向外旋转螺丝",
           "positiveTurnDirectionDescription": "计算出的正值使适配器上的螺丝朝哪个方向旋转",
-          "shiftToNonNegative": "Screws start fully seated",
+          "shiftToNonNegative": "螺丝初始为完全拧紧",
           "startFromSeatedDescription": "完全拧紧的螺丝只能向内旋转，因此所有数值会被平移，直到有一颗螺丝无需旋转、其余螺丝向内旋转。这只改变后截距，不改变倾斜。取消勾选可显示相对当前位置的带符号调整量。",
           "inward": "向内",
           "outward": "向外",
@@ -4623,7 +4854,7 @@
         "steps": {
           "check": {
             "title": "前提条件",
-            "description": "Hocus Focus 需要已连接的相机和调焦器。"
+            "description": "自动对焦需要已连接的相机和调焦器。"
           },
           "optics": {
             "title": "光学系统",
@@ -4631,15 +4862,15 @@
           },
           "rig": {
             "title": "你的设备",
-            "description": "关于你设备的几个问题。你的回答将设置 Hocus Focus 的预设。"
+            "description": "关于你设备的几个问题。你的回答会设置合适的自动对焦预设。"
           },
           "rough": {
             "title": "粗调对焦",
-            "description": "拍摄图像并移动调焦器，直到星点又小又圆、HFR 尽可能低。"
+            "description": "拍摄图像并移动调焦器，直到星点又小又圆。HFR 是星点大小：越小越清晰。"
           },
           "measure": {
             "title": "步长与间隙",
-            "description": "测量调焦器移动时星点变大的速度，以及调焦器换向时丢失的步数，并为自动对焦建议步长和 NINA 的间隙补偿。调焦器先大幅后退，使每个位置都从同一侧到达，然后向前穿过焦点，最后返回起始位置。"
+            "description": "测量调焦器移动时星点增大的速度，以及换向时丢失的步数，并为自动对焦和回差补偿建议步长。调焦器先大幅后退，使每个位置都从同一侧到达，然后向前经过焦点，最后回到起始位置。"
           },
           "run": {
             "title": "测试运行",
@@ -4651,14 +4882,13 @@
           },
           "optimize": {
             "title": "优化",
-            "description": "可选：优化器根据已保存的结果调整星点检测。"
+            "description": "可选：优化器根据新的自动对焦扫描或已保存的运行调整星点检测。"
           }
         },
         "checks": {
           "camera": "相机已连接",
           "focuser": "调焦器已连接",
-          "hocusFocus": "Hocus Focus 可用",
-          "engineHint": "在 @:{'general.backendName'} 中，'Auto Focus' 和 'Star Detector' 都必须设置为 Hocus Focus。如果没有，结果步骤会提示你。"
+          "hocusFocus": "已安装自动对焦插件"
         },
         "focalLength": "焦距 (mm)",
         "pixelSize": "像素尺寸 (µm)",
@@ -4674,7 +4904,7 @@
         "startRun": "启动自动对焦",
         "stopRun": "停止自动对焦",
         "runFailed": "无法启动自动对焦。",
-        "noResult": "目前还没有可评估的已完成 Hocus Focus 结果。",
+        "noResult": "还没有可评判的已完成自动对焦。",
         "runAgain": "再次运行",
         "openOptimizer": "打开优化器",
         "useOptimized": "使用优化设置",
@@ -4832,9 +5062,9 @@
       "warm_up": "预热",
       "cooler_status": "冷却器状态",
       "cooler_status_off": "关闭",
-      "cooler_status_cooling": "活跃 - 冷却至",
-      "cooler_status_holding": "活跃 - 达到目标温度",
-      "cooler_status_warming": "活跃 - 加热至",
+      "cooler_status_cooling": "冷却至",
+      "cooler_status_holding": "已达目标温度",
+      "cooler_status_warming": "回温中",
       "set_save_snapshot": "保存快照",
       "snapshotTargetName": "目标名称",
       "set_use_solve_sync_to_mount": "与赤道仪同步",
@@ -4881,6 +5111,7 @@
       "up": "上",
       "not_available": "不可用",
       "running": "运行中",
+      "movingToStart": "正在移动到起点…",
       "plate_solve_start": "天文定位开始",
       "plate_solve_ok": "天文定位成功",
       "plate_solve_error": "天文定位错误",
@@ -4937,6 +5168,41 @@
       },
       "error_modal": {},
       "tppa": "极轴对准 (TPPA)",
+      "problem": {
+        "cannotStart": "无法开始极轴校准",
+        "refused": "设备拒绝开始极轴校准",
+        "noLocation": "设备不知道其位置。请先设置纬度和经度，计算依赖于它们。",
+        "noDatabase": "未安装星图，无法对任何图像进行板解算。请安装后重新开始。",
+        "notSent": "开始指令未到达设备。请检查连接后再次点击开始。",
+        "startSlewFailed": "望远镜无法移动到起始位置。请检查赤道仪后再次点击开始。"
+      },
+      "trackingOffAfterStop": "极轴校准停止时关闭了跟踪。",
+      "resumeTracking": "重新打开跟踪",
+      "goodEnoughHint": "总误差低于 1′（一角分）即为良好。达到后请停止校准。",
+      "tabSimple": "极轴校准",
+      "simpleIntroMove": "赤道仪会先自行移动到天极附近的起始位置，然后一边拍摄一边绕轴转动两次。请确认线缆足够长，且没有东西阻挡。",
+      "simpleIntroAdjust": "之后此页面会显示高度和方位螺丝该往哪个方向拧。每拍一张图数值都会更新。请继续调整，直到总误差低于 1′（一角分），然后手动停止校准。",
+      "adjustHint": "按箭头方向一点点地拧高度和方位螺丝。每拍一张图数值都会更新。",
+      "lastMeasurement": "上次测量",
+      "markedDone": "今晚的极轴校准已标记为完成。",
+      "confirmStartTitle": "开始极轴校准？",
+      "confirmStartMessage": "赤道仪现在会移动到天极附近的起始位置，并在测量过程中转动。请确认线缆足够长，且没有东西阻挡。",
+      "status": {
+        "capturing": "正在拍摄图像…",
+        "solving": "正在解析图像…",
+        "captureRetry": "拍摄失败，正在重试…",
+        "solveRetry": "解析失败，正在重试…",
+        "nextPoint": "正在前往下一个点",
+        "firstPoint": "正在测量第一个点",
+        "secondPoint": "正在测量第二个点",
+        "finalPoint": "正在测量第三个点",
+        "waitMount": "正在等待赤道仪停止",
+        "waitDome": "正在等待圆顶",
+        "settling": "赤道仪正在稳定",
+        "slewInitial": "正在前往起始位置",
+        "movingAxis": "正在转动轴",
+        "solveAttempt": "正在解析图像…"
+      },
       "warn_dec_spread_body": "赤道仪报告的赤纬在两次测量之间变化了 {arcsec}\"。这可能影响极轴对准精度——请确保测量期间只有赤经轴在移动。",
       "warn_dec_spread_title": "检测到赤纬偏差",
       "warn_east_west_body": "当前视场距正东或正西不足 5°。如果实时解算不稳定，请转到离东/西更远的视场后重新运行。",
@@ -4969,7 +5235,11 @@
       "az": "方位角：",
       "slew_modal": {
         "deviation_target": "与目标偏差："
-      }
+      },
+      "failed": "转动或居中失败",
+      "centeredTitle": "目标已居中",
+      "centered": "目标位于画面中央。",
+      "centeredNamed": "{name} 位于画面中央。"
     },
     "filterwheel": {
       "title": "滤镜轮",
@@ -5081,7 +5351,7 @@
       "set_target_name": "设置目标名称",
       "target_name": "目标名称",
       "target_name_from_favorites": "从收藏夹获取名称",
-      "count": "数量",
+      "count": "要拍摄的平场数",
       "exposure_time": "曝光时间",
       "min_exposure_time": "最小曝光时间",
       "max_exposure_time": "最大曝光时间",
@@ -5129,14 +5399,14 @@
       "status_stopped_flats": "提前停止——已拍摄 {completed} / {total} 张平场",
       "status_success_darks": "完成——已拍摄 {count} 张暗场",
       "status_success_flats": "完成——已拍摄 {count} 张平场",
-      "filter_label": "Filter",
+      "filter_label": "滤镜",
       "result_bright": "太亮",
       "result_dim": "太暗",
-      "status_completed_flats": "Completed",
+      "status_completed_flats": "已完成",
       "status_failed_flats_multi": "所有滤镜都无法确定有效曝光",
       "status_partial_flats_multi": "失败的滤镜：{filters}",
-      "status_running_unknown": "Determining…",
-      "target": "Target"
+      "status_running_unknown": "正在确定…",
+      "target": "目标"
     },
     "weatherModal": {
       "weatherInformation": "天气信息",
@@ -5176,7 +5446,7 @@
         "toggle": "开关指天模式",
         "hint": "指天模式已开启。透过屏幕背面对准天空。拖动可停止，双指缩放可放大缩小。",
         "low_accuracy": "指南针精度较低。请远离金属和磁铁，并以“8”字形移动设备校准指南针。",
-        "unavailable": "Sky pointing requires a supported native app and a north-referenced motion sensor. Manual browsing is available.",
+        "unavailable": "天空指向传感器不可用。请在带有受支持传感器的设备上使用原生应用，或手动浏览。",
         "permission_denied": "运动传感器访问被拒绝。请在系统设置中允许，或手动浏览。",
         "location_required": "指天模式需要观测地点。请设置观测地或允许访问位置。",
         "sensor_error": "由于无法获取传感器数据，指天模式已停止。请重试或手动浏览。"
@@ -5245,7 +5515,7 @@
         "landscape_source_guereins": "Guéreins（村庄）",
         "landscape_source_neutral": "中性地平线（灰色）",
         "landscape_source_custom": "自定义数据源",
-        "landscape_option_label": "Landscape: {title}",
+        "landscape_option_label": "地景：{title}",
         "custom_landscape_url": "自定义来源 URL",
         "custom_landscape_url_placeholder": "例如 /celestia-atlas-data/landscapes/custom",
         "custom_landscape_key": "自定义来源键",
@@ -5257,7 +5527,7 @@
         "no_allsky": "无全天图",
         "folder_name_label": "folderName",
         "service_url_label": "serviceUrl",
-        "landscape_list_load_failed": "Failed to load landscapes.",
+        "landscape_list_load_failed": "加载地景失败。",
         "comet_data_title": "彗星数据",
         "comet_data_hint": "从 Celestia Atlas 版本下载最新轨道根数。",
         "refresh_comet_data": "刷新",
@@ -5368,6 +5638,22 @@
         "camera_field": "相机视场",
         "actions": "操作",
         "more": "更多"
+      },
+      "tonight": {
+        "title": "今晚可见",
+        "intro": "你所在位置今晚最适合的目标，最佳的排在最前。点按一个即可在星图中选中它。",
+        "noSite": "请先在配置文件中设置你的位置，这里就会显示今晚最适合的目标。",
+        "noDarkNight": "今晚你所在的位置天不够黑。",
+        "nothing": "今晚没有目标升到足够高。",
+        "maxAlt": "最高 {alt}°",
+        "types": {
+          "galaxy": "星系",
+          "nebula": "星云",
+          "planetary_nebula": "行星状星云",
+          "cluster": "星团",
+          "dark_nebula": "暗星云",
+          "widefield": "广角"
+        }
       }
     },
     "profile": {
@@ -5502,7 +5788,7 @@
       "decPlaceholder": "DD:MM:SS",
       "error": "天文定位失败",
       "errorLoadParams": "无法读取 FITS 参数",
-      "file": "File",
+      "file": "文件",
       "focalLength": "焦距",
       "loadingParams": "正在读取 FITS 头…",
       "pixelScale": "像素比例",
@@ -5510,9 +5796,9 @@
       "plateSolve": "天文定位",
       "ra": "RA",
       "raPlaceholder": "HH:MM:SS",
-      "rotation": "Rotation",
+      "rotation": "旋转",
       "solveFailed": "天文定位失败",
-      "solving": "Solving…",
+      "solving": "解析中…",
       "solvingHint": "根据解算器和搜索半径不同，天文定位可能需要 10–60 秒。",
       "success": "天文定位成功",
       "targetApplied": "已设为目标",
@@ -5611,6 +5897,7 @@
       "sequenceStart": "无法启动序列",
       "guidingStart": "无法启动导星",
       "autofocusStart": "无法启动自动对焦",
+      "autofocusStop": "无法取消自动对焦",
       "binning": "无法更改像素合并",
       "readout": "无法更改读出模式",
       "switchSet": "无法设置开关"
@@ -5620,6 +5907,487 @@
       "devChannelHidden": "开发版更新通道已隐藏。",
       "specialEnabled": "辣眼睛标记已启用。",
       "specialDisabled": "好戏结束了。"
+    },
+    "simpleMode": {
+      "title": "今晚",
+      "subtitle": "一步步完成你的夜晚：点击高亮的步骤，从上到下依次进行。",
+      "pinsOnly": "简易模式仅在 Touch'N'Stars 连接到 PINS 设备时可用。",
+      "offHint": "简易模式已关闭，因此导航显示所有页面。",
+      "turnOn": "使用简易模式",
+      "showAll": "显示所有功能（关闭简易模式）",
+      "status": {
+        "done": "已完成",
+        "running": "运行中",
+        "open": "待办",
+        "skipped": "已跳过"
+      },
+      "markDone": "标记为已完成",
+      "skip": "今晚跳过",
+      "undoMark": "撤销",
+      "needsCamera": "请先连接相机。",
+      "needsMount": "请先连接赤道仪。",
+      "needsGuider": "导星器尚未连接。请点击上方的“全部连接”。",
+      "needsCameraAndMount": "需要已连接的相机和赤道仪。",
+      "rig": {
+        "title": "你的设备",
+        "changeDevices": "更改设备",
+        "empty": "尚未设置任何设备。设置助手会引导你完成相机、赤道仪等的设置。",
+        "openWizard": "打开设置助手",
+        "noMountHint": "还没设置赤道仪？在这里查找合适的驱动。",
+        "devicesFailedHint": "未连接：{devices}。请先检查电源和线缆；如果都正常，可能需要换一个驱动。",
+        "mountFailedHint": "赤道仪未能连接。通常需要换一个驱动。",
+        "connecting": "正在连接…",
+        "allConnected": "全部已连接",
+        "connectAll": "全部连接",
+        "exposing": "正在拍摄",
+        "coolingTo": "正在降温至 {temp}",
+        "parked": "已归位",
+        "slewing": "移动中",
+        "tracking": "正在跟踪星空",
+        "notTracking": "未跟踪",
+        "autofocusRunning": "自动对焦运行中",
+        "position": "位置 {position}",
+        "connected": "已连接",
+        "notConnected": "未连接"
+      },
+      "guiderState": {
+        "Guiding": "导星中",
+        "Calibrating": "校准中",
+        "Looping": "正在寻找星点",
+        "LostLock": "星点丢失",
+        "Idle": "已停止",
+        "Paused": "已暂停",
+        "Reacquiring": "正在重新寻找星点"
+      },
+      "night": {
+        "title": "你的夜晚",
+        "progress": "已完成 {done} / {total}"
+      },
+      "steps": {
+        "connect": {
+          "title": "连接你的设备",
+          "description": "打开设备电源，然后一键连接所有设备。",
+          "hint": "如果某个设备未连接，请检查其线缆和电源，然后再次点击“全部连接”。",
+          "summary": "已连接 {connected} / {total}"
+        },
+        "cool": {
+          "title": "相机降温",
+          "description": "降温后的传感器能拍出更干净的照片。降温需要几分钟，请尽早开始，期间可以继续后面的步骤。",
+          "targetTemp": "目标温度 (°C)",
+          "start": "降温至 {temp} °C",
+          "failed": "无法开始降温",
+          "warmingSummary": "升温中 · {temp}",
+          "setup": {
+            "question": "你的相机可以多快降温？",
+            "text": "每个配置文件只问一次。降温或升温过快会损伤某些传感器，升温过快的传感器还可能起雾。升温会在你结束夜晚时进行。",
+            "presets": {
+              "fast": {
+                "title": "快速",
+                "description": "立即降温，{warm} 分钟内升温。适合大多数现代制冷 CMOS 相机，它们自己会限制制冷。"
+              },
+              "gentle": {
+                "title": "温和",
+                "description": "{cool} 分钟降温，{warm} 分钟升温。"
+              },
+              "veryGentle": {
+                "title": "非常温和",
+                "description": "{cool} 分钟降温，{warm} 分钟升温。适用于较旧的相机和 CCD 传感器。"
+              }
+            },
+            "notSure": "不确定？相机说明书会说明是否需要缓慢降温。在弄清楚之前，“温和”是安全的选择。以后可在相机页面更改。",
+            "currentValues": "你的配置文件已有自己的时间设置：{cool} 分钟降温，{warm} 分钟升温。",
+            "keepValues": "保留此时间设置",
+            "applyFailed": "无法将时间设置保存到配置文件。"
+          }
+        },
+        "mount": {
+          "title": "准备赤道仪",
+          "description": "赤道仪必须解除归位并跟踪星空（tracking），才能指向目标。",
+          "action": "解除归位并开始跟踪",
+          "trackingFailed": "无法打开跟踪",
+          "trackingOffAfterPolar": "极轴校准关闭了跟踪。点击按钮重新打开。"
+        },
+        "polar": {
+          "title": "极轴校准",
+          "description": "使赤道仪对准天极。应用拍摄三张照片，在其间转动赤道仪，并告诉你调节旋钮要转多少。每次架设做一次即可。",
+          "action": "打开极轴校准"
+        },
+        "target": {
+          "title": "选择目标",
+          "description": "在星图中选择你的天体并加入计划。开始拍摄时，计划会转到那里，用一张照片将目标居中并开始导星，这些都不需要你手动操作。",
+          "action": "在星图中选择目标",
+          "another": "添加另一个目标",
+          "how": "在星图中点击你的天体（或搜索它），然后点击“{button}”。",
+          "coordinates": "RA {ra}° · Dec {dec}°",
+          "summaryMany": "{name} 等另外 {count} 个",
+          "calibrationRisk": {
+            "nearPole": "你的目标靠近天极，导星器无法在那里校准。请先在“设置导星”中完成一次性校准。",
+            "low": "你的目标位置较低，导星器在那里校准效果不佳。请先在“设置导星”中完成一次性校准。"
+          }
+        },
+        "focus": {
+          "title": "对焦",
+          "description": "清晰的星点决定整晚的成败，后面的步骤也需要它：极轴校准和目标居中都要从照片中算出位置。请将望远镜指向有星星的天区。有电动调焦器时由自动对焦完成；没有时，请借助实时图像手动对焦。",
+          "autofocus": "开始自动对焦",
+          "watch": "查看对焦曲线",
+          "manualHint": "未连接电动调焦器：请打开相机，循环拍摄，并转动调焦器直到星点尽可能小。",
+          "manual": "打开相机",
+          "lastRun": "上次自动对焦：{time}",
+          "lastFailed": "上次自动对焦（{time}）失败，请确认能看到星星后重试",
+          "pointAtStars": "将望远镜指向星星（星图）",
+          "setupFirst": "在此望远镜首次自动对焦前，请先设置一次：助手会测量你的调焦器和相机，并找到可用的设置。否则自动对焦常会失败。",
+          "cancelled": "自动对焦已取消。调焦器会回到之前的位置。",
+          "setup": "设置自动对焦"
+        },
+        "guide": {
+          "title": "设置导星",
+          "description": "导星相机盯着一颗星并修正赤道仪，使长曝光保持清晰。PINS 有专为它开发的导星器：直接在设备上运行，无需额外程序，导星通常比 PHD2 更稳定。它需要学习一次你的赤道仪（校准）；之后你的计划会在每个目标自动开始导星。",
+          "details": "导星详情和图表",
+          "useNativeHint": "你的配置文件目前使用另一个导星器。简易模式使用 PINS 内置的导星器：它专为 PINS 开发，直接在设备上运行，导星通常比 PHD2 更稳定，会学习赤道仪齿轮的周期误差，并在夜与夜之间保留校准。你在 PHD2 中的设置会沿用。",
+          "useNative": "使用内置导星器",
+          "nativeMissing": "此 PINS 版本还没有内置导星器。请在以下位置更新 PINS",
+          "chooseCamera": "内置导星器需要知道哪个是你的导星相机。请在此选择，之后“全部连接”也会连接它。",
+          "chooseCameraAction": "选择导星相机…",
+          "noGuideCamera": "未找到导星相机，请接好并检查“所有设备”",
+          "calibrate": "校准一次（约 3 分钟）",
+          "calibrateHint": "望远镜会移动到靠近天赤道的位置（校准在那里最准确），并在那里学习导星器如何移动它。只需做一次：校准会保留给之后的所有夜晚。",
+          "confirmCalibrateTitle": "校准导星器？",
+          "confirmCalibrateMessage": "望远镜会移动到校准位置，导星器在那里校准几分钟。之后导星会再次停止，你的计划会在目标处启动它。",
+          "calibrating": "校准中，需要几分钟。",
+          "slewingToCalibration": "望远镜正在移动到校准位置…",
+          "calibratedHint": "已校准。校准会保留给之后的夜晚；你的计划会在每个目标自动开始导星。",
+          "calibratedSummary": "已校准",
+          "unparkFirst": "请先让望远镜就绪（“{step}”步骤）。"
+        },
+        "capture": {
+          "title": "拍摄照片",
+          "description": "你的计划规定了用哪种滤镜、曝光时间和张数拍摄哪些目标。开始后，其余交给应用：前往目标、居中、导星和拍摄。",
+          "targets": "目标",
+          "remaining": "剩余时间",
+          "noPlan": "还没有计划。请用你的目标、滤镜、曝光时间和张数创建一个。",
+          "nothingLeft": "计划中已没有要拍的照片。请选择新目标，或重新拍摄此计划的照片。",
+          "repeat": "重新拍摄",
+          "repeatFailed": "无法重置计划",
+          "editPlan": "编辑计划",
+          "createPlan": "创建计划",
+          "watch": "查看新拍的照片",
+          "start": "开始拍摄",
+          "stop": "停止拍摄",
+          "summary": "{targets} 个目标，约 {time} 完成 | {targets} 个目标，约 {time} 完成",
+          "summaryDone": "{targets} 个目标，所有照片已拍完 | {targets} 个目标，所有照片已拍完",
+          "confirmStartTitle": "开始拍摄？",
+          "confirmStartPlan": "计划现在开始，共 {targets} 个目标，大约需要 {remaining}。 | 计划现在开始，共 {targets} 个目标，大约需要 {remaining}。",
+          "confirmStartApproach": {
+            "center": "望远镜会前往目标并居中。 | 望远镜会依次前往每个目标并居中。",
+            "slew": "望远镜会前往目标，但不会居中。 | 望远镜会依次前往每个目标，但不会居中。",
+            "off": "望远镜不会前往目标，而是在当前指向的位置拍摄。 | 望远镜不会前往这些目标，而是在当前指向的位置拍摄。",
+            "mixed": "并非每个目标都会前往并居中，请查看计划。"
+          },
+          "confirmStartGuiding": {
+            "all": "第一张照片之前会开始导星。",
+            "none": "计划在不导星的情况下运行。",
+            "mixed": "并非每个目标都会导星，请查看计划。"
+          },
+          "confirmStopTitle": "停止拍摄？",
+          "confirmStopMessage": "当前这张照片会被取消。你可以稍后重新开始计划。",
+          "noExposures": "你的计划有目标但还没有照片。请打开计划并点击“添加曝光”，选择滤镜、曝光时间和张数。",
+          "summaryEmpty": "{targets} 个目标，尚未规划照片 | {targets} 个目标，尚未规划照片",
+          "confirmStartFocus": "每次更换滤镜后都会重新对焦。",
+          "confirmStartRefocus": "它会{interval}重新对焦。",
+          "confirmStartEnd": {
+            "both": "完成后，赤道仪归位停放，相机回温。",
+            "park": "完成后，赤道仪归位停放。",
+            "warm": "完成后，相机回温。赤道仪会继续跟踪，直到你结束今晚。",
+            "none": "完成后，赤道仪会继续跟踪，直到你结束今晚。"
+          },
+          "missingSteps": "计划中有 {count} 个目标还不会自动完成以下操作：{steps}。 | 计划中有 {count} 个目标还不会自动完成以下操作：{steps}。",
+          "missingStepParts": {
+            "slew": "前往目标",
+            "guide": "导星",
+            "focus": "更换滤镜后重新对焦"
+          },
+          "fixSteps": "添加缺少的步骤",
+          "flipMissing": "你的计划不会在子午线处翻转望远镜。它会继续跟踪越过子午线，可能撞到三脚架或立柱。",
+          "addFlip": "打开 Meridian Flip",
+          "endMissing": {
+            "park": "计划完成后，赤道仪会继续跟踪。如果没人结束今晚，过了子午线后它可能撞到三脚架或立柱。",
+            "warm": "计划完成后，相机会一直保持低温，直到你结束今晚。",
+            "both": "计划完成后，赤道仪会继续跟踪，相机保持低温。如果没人结束今晚，过了子午线后望远镜可能撞到三脚架或立柱。"
+          },
+          "addEnd": {
+            "park": "计划完成后停放赤道仪",
+            "warm": "计划完成后相机回温",
+            "both": "计划完成后停放并回温"
+          },
+          "flipWindow": "{target} 约在 {meridian} 到达子午线；计划会在 {earliest} 到 {latest} 之间翻转望远镜。",
+          "flipFixed": "{target} 约在 {meridian} 到达子午线；计划会在 {earliest} 翻转望远镜。",
+          "flipPause": "{target} 约在 {meridian} 到达子午线；计划会在 {pause} 暂停，并在 {earliest} 翻转望远镜。",
+          "flipNone": "此计划不需要 Meridian Flip。",
+          "flipYourTarget": "你的目标",
+          "flipSettings": "翻转设置和白天测试",
+          "summaryCutOff": "已拍 {taken} / {planned} 张",
+          "confirmStartWait": "计划会等到天黑，大约 {time}。"
+        },
+        "flats": {
+          "title": "Flats",
+          "description": "Flat 可以消除照片中的灰尘阴影和暗角。请现在就拍，在任何改动之前：调焦、相机旋转角度和相机位置必须与拍摄照片时保持一致。今晚不需要？跳过此步骤。",
+          "lightSource": "光源",
+          "panel": "Flat 面板",
+          "panelHint": "设备会自动设置面板亮度。",
+          "panelMissing": "未连接可调光的 Flat 面板。",
+          "tablet": "平板或光膜",
+          "tabletHint": "将它均匀发光地放在望远镜前；设备会找到曝光时间。",
+          "filters": "滤镜",
+          "count": "每个滤镜的 Flat 数",
+          "countNoWheel": "Flat 数量",
+          "darks": "同时拍摄 Dark Flat",
+          "darksHint": "仅在使用 Dark Flat 校准时需要。拍摄时需要盖住望远镜；应用会提示你。",
+          "start": "拍摄 Flat",
+          "stop": "停止 Flat",
+          "allSettings": "所有 Flat 设置",
+          "needsPlugin": "此页面的 Flat 需要设备上更新版本的 Touch'N'Stars 插件。请更新它，或使用下方的 Flat 助手拍摄。",
+          "planRunning": "计划仍在运行。计划完成或停止后才能拍摄 Flat。",
+          "noFilterSelected": "请至少勾选一个滤镜。",
+          "noFilter": "Flats",
+          "progress": "{done} / {total}",
+          "darksLabel": "Dark Flats",
+          "endBlocked": "Flat 仍在运行。请在完成或停止后再结束夜晚。",
+          "runningSummary": "正在拍摄 Flat",
+          "doneSummary": "今晚已拍 Flat",
+          "result": {
+            "success": "已拍摄 1 张 Flat | 已拍摄 {count} 张 Flat",
+            "dim": "太暗：请使用更亮的光源，或在 Flat 设置中允许更长的曝光。",
+            "bright": "太亮：请调暗光源，或在 Flat 设置中允许更短的曝光。",
+            "failed": "无法拍摄 Flat。",
+            "stopped": "已停止"
+          }
+        },
+        "end": {
+          "title": "结束夜晚",
+          "description": "按正确顺序停止一切，将赤道仪归位，并缓慢升温相机，避免传感器上形成水汽。",
+          "action": "结束夜晚"
+        }
+      },
+      "more": {
+        "title": "更多",
+        "pictures": "今晚的照片",
+        "equipment": "所有设备",
+        "mount": "赤道仪",
+        "focus": "对焦",
+        "guider": "导星",
+        "system": "Wi-Fi、更新和系统",
+        "settings": "设置"
+      },
+      "endNight": {
+        "title": "结束夜晚",
+        "intro": "这些步骤依次执行。取消勾选你想继续运行的项目。",
+        "nothingToDo": "没有任何运行中的内容，赤道仪也已归位，无需再做什么。",
+        "nothingToDoNoMount": "没有任何运行中的内容。赤道仪未连接，请自行确认它已归位。",
+        "someFailed": "并非一切顺利，原因见对应步骤下方。关闭电源前请检查赤道仪。",
+        "doneWarming": "全部完成。相机升温后，请先在起始页关闭设备，再关闭电源。",
+        "confirm": "立即结束夜晚",
+        "actions": {
+          "stopSequence": "停止拍摄",
+          "stopGuiding": "停止导星",
+          "parkMount": "赤道仪归位",
+          "warmCamera": "相机升温（{minutes} 分钟）"
+        },
+        "parkTimeout": "赤道仪在 3 分钟内未报告“已归位”。关闭电源前请检查它。",
+        "doneShutdown": "全部完成。关闭电源前请先关闭设备。"
+      },
+      "settings": {
+        "title": "简易模式",
+        "description": "一个引导你度过夜晚的起始页，以及只含所需页面的导航。关闭后即可再次看到所有功能。",
+        "navbarHint": "简易模式开启时，下方的导航自定义不起作用。关闭该模式后会原样恢复。"
+      },
+      "wizard": {
+        "title": "你想如何使用此应用？",
+        "simpleTitle": "简易（推荐入门使用）",
+        "simpleText": "起始页逐步引导你度过夜晚，只显示你需要的页面。",
+        "fullTitle": "全部功能",
+        "fullText": "导航中显示所有页面和设置，适合有经验的用户。"
+      },
+      "focusFirst": "请先对焦：此步骤要从照片中算出位置，这需要清晰的星点。",
+      "live": {
+        "lastPicture": "最新照片",
+        "openFull": "全屏显示照片",
+        "noPicture": "还没有照片。拍一张测试照片，看看相机拍到了什么。",
+        "preview": "测试照片",
+        "hfr": "清晰度 (HFR)",
+        "stars": "星点",
+        "guiding": "导星",
+        "sensor": "传感器",
+        "trendTitle": "最近 {count} 张照片的清晰度",
+        "trendHint": "星点越清晰，线条越高。如果夜里曲线下降，请重新对焦。",
+        "exposure": "曝光时间",
+        "testPicture": "拍摄测试照片",
+        "abort": "停止曝光",
+        "planRunning": "你的计划正在拍摄，新照片会在这里显示。",
+        "justNow": "刚刚",
+        "minutesAgo": "{minutes} 分钟前",
+        "histogram": "直方图",
+        "min": "最小",
+        "max": "最大",
+        "pixels": "{count} 像素 | {count} 像素",
+        "pixelsSaturated": "{count} 像素饱和 | {count} 像素饱和",
+        "histogramHint": "整张照片未拉伸的传感器数据。只显示天空背景附近的范围；星点和饱和像素位于更右侧，计入“最大”。",
+        "firstPlanPicture": "你的计划的第一张照片会显示在这里。"
+      },
+      "setupChecks": {
+        "title": "第一晚之前",
+        "locationTitle": "缺少你的位置",
+        "locationText": "设备不知道自己在哪里。没有位置，极轴校准和星图无法工作。",
+        "locationAction": "设置位置",
+        "databaseTitle": "未安装星图",
+        "databaseText": "极轴校准和目标居中需要将照片与星图比对。设备目前还没有星图。",
+        "databaseAction": "安装星图",
+        "flipTitle": "尚未设置 Meridian Flip",
+        "flipText": "当目标越过子午线（经过天顶的南北线）时，望远镜必须转到赤道仪的另一侧，否则很快会撞到三脚架或立柱。你的计划会自动完成。请告诉它一次：你的赤道仪越过子午线后最多还能跟踪多远。",
+        "flipNotSure": "不确定？赤道仪说明书通常会写明越过子午线后能跟踪多远。在弄清楚之前，选“勉强”可保证望远镜安全，代价是几分钟无法拍摄。",
+        "flipCurrentValues": "你的配置文件已有自己的时间设置：{values}。",
+        "flipKeepValues": "保留此时间设置",
+        "flipTimingWindow": "过子午线后 {min}–{max} 分钟翻转",
+        "flipTimingFixed": "过子午线后 {min} 分钟翻转",
+        "flipTimingPause": "子午线前暂停 {pause} 分钟，过子午线后 {min} 分钟翻转",
+        "blockedPolar": "极轴校准暂时无法工作，请见上方的“第一晚之前”。",
+        "blockedTarget": "居中暂时无法工作：未安装星图，请见上方的“第一晚之前”。"
+      },
+      "backToNight": "返回你的夜晚",
+      "cockpit": {
+        "title": "正在拍摄",
+        "noTargetName": "你的计划",
+        "doneAt": "完成于",
+        "remaining": "剩余 {time}",
+        "activity": {
+          "autofocus": "正在对焦（自动对焦）",
+          "slewing": "望远镜正在移动",
+          "centering": "正在将目标居中",
+          "startingGuiding": "正在开始导星",
+          "closing": "正在结束计划（归位、升温）",
+          "calibrating": "导星器正在校准",
+          "settling": "等待导星稳定",
+          "exposing": "正在曝光",
+          "busy": "正在准备下一张照片",
+          "flipping": "Meridian Flip：望远镜正转到另一侧",
+          "waitingForDark": "正在等待天黑"
+        },
+        "exposing": "曝光 {seconds} 秒",
+        "frame": "第 {frame} / {frames} 张",
+        "check": "检查",
+        "hfr": "HFR",
+        "noFrame": "还没有照片",
+        "hfrChange": "较之前 {change} %",
+        "guidingLevel": {
+          "good": "优秀",
+          "ok": "尚可",
+          "poor": "偏高",
+          "unknown": "刻度未知"
+        },
+        "alerts": {
+          "devices": "{count} 个设备已断开连接。 | {count} 个设备已断开连接。",
+          "starLost": "导星器丢失了星点。现在拍的照片会出现拖尾。",
+          "notGuiding": "计划正在不导星的情况下运行。",
+          "guidingPoor": "导星误差（{rms}″）大于一个图像像素（{scale}″），星点会变软。常见原因是风、配重平衡或线缆松动。",
+          "hfrRising": "星点比之前的照片大 {change} %。可能是焦点漂移，或有露水或云层靠近。",
+          "cooling": "传感器温度为 {temp} °C，目标为 {target} °C。"
+        },
+        "hfrNoBaseline": "最初几张照片",
+        "lastPicture": "最新照片",
+        "verdict": {
+          "good": "一切运行良好",
+          "warn": "运行中：有一项需要留意",
+          "danger": "请检查：照片面临风险",
+          "waiting": "运行中：最初几张照片会显示效果"
+        },
+        "showDetails": "显示详情",
+        "hideDetails": "隐藏详情",
+        "focus": "对焦",
+        "focusLevel": {
+          "good": "清晰",
+          "ok": "略软",
+          "poor": "偏软"
+        },
+        "explain": {
+          "guiding": {
+            "title": "导星",
+            "what": "赤道仪跟踪星点的紧密程度：导星星点的抖动，与照片中一个像素的大小相比。",
+            "now": "当前：抖动 {rms}″，即 {ratio} 像素（一个像素 = {scale}″）。",
+            "nowNoScale": "当前：抖动 {rms}″。要评估它，配置文件需要焦距和像素尺寸。",
+            "nowOff": "导星目前未运行。",
+            "nowPaused": "望远镜对焦或移动时已暂停。",
+            "limits": "最高 {good} 像素为绿色，最高 {ok} 像素为黄色，更高为红色：星点会变成短线。",
+            "fix": "如果变红：常见原因是风、配重平衡或线缆松动。"
+          },
+          "focus": {
+            "title": "对焦",
+            "what": "最新照片中的星点与同一滤镜较早照片相比有多大。星点变大意味着焦点在漂移，或有露水或薄云靠近。",
+            "now": "当前：星点大小 (HFR) {hfr}，较之前（{baseline}）{change} %。",
+            "nowFirst": "同一滤镜拍满 {count} 张照片后开始评估。",
+            "nowNone": "还没有照片。",
+            "limits": "变大最多 {good} % 为绿色，最多 {ok} % 为黄色，更多为红色。",
+            "fix": "如果变红：重新对焦（自动对焦）。如果没有帮助，请检查望远镜前端是否有露水。"
+          },
+          "cooling": {
+            "title": "制冷",
+            "what": "相机传感器的温度。传感器越冷，照片噪点越少。",
+            "now": "当前：{temp} °C，目标 {target} °C。",
+            "limits": "与目标相差 {good} °C 以内为绿色，超出为红色。",
+            "fix": "如果一直是红色：在这样的气温下制冷器达不到目标，请选择高几度的目标温度。"
+          }
+        },
+        "statusBarHint": "导星、对焦和制冷在下方状态栏中评级，点击某一项可了解其含义。",
+        "stop": "停止",
+        "waitingUntil": "正在等待天黑，大约 {time}"
+      },
+      "summary": {
+        "finished": {
+          "title": "计划已完成",
+          "text": "计划中的所有照片都已拍完。请结束夜晚，让望远镜归位并给相机升温。",
+          "textFlats": "计划中的所有照片都已拍完。请趁一切未变动，现在拍摄 Flat，然后结束夜晚。",
+          "cutOffTitle": "今晚结束",
+          "cutOff": "天亮了或目标过低：已拍 {taken} / {planned} 张照片。改天晚上再次启动计划即可拍完其余照片。"
+        },
+        "ended": {
+          "title": "夜晚已结束",
+          "text": "晴朗的天空！这是今晚的成果。",
+          "notParked": "望远镜尚未归位",
+          "shutdown": "关闭设备",
+          "shutdownWait": "关机前，请等待相机升温且望远镜归位。",
+          "resume": "继续夜晚"
+        },
+        "frames": "照片",
+        "integration": "曝光",
+        "medianHfr": "HFR 中位数"
+      },
+      "addToPlan": "加入计划",
+      "slewOptional": "你的计划会自动前往目标、居中并开始导星。现在前往只是为了先检查 Framing。",
+      "coachHint": {
+        "text": "昨晚你的导星不稳。Guiding Coach 会测量你的导星相机、天空和赤道仪，并告诉你怎么改善。在星空下大约需要 15 分钟，最好在开始拍摄前进行。",
+        "open": "打开 Guiding Coach",
+        "dismiss": "暂不"
+      },
+      "camera": {
+        "title": "相机",
+        "hint": "测试图像和计划中的每张图像都使用这些值，除非你为计划中的某个曝光单独设置。推荐的增益和偏置见相机说明书。"
+      },
+      "expert": {
+        "show": "显示专家设置",
+        "hide": "隐藏专家设置"
+      },
+      "window": {
+        "waits": "计划会等到天黑，大约 {time}。",
+        "tooMany": "今晚大约只能拍 {fit} / {left} 张照片。其余的可以改天晚上拍摄。",
+        "noDarkness": "今晚不会这么黑，计划会一直等待。请在计划的“夜晚”中选择较亮的天空。",
+        "limit": {
+          "light": "最晚在 {time} 停止，因为届时天亮。",
+          "low": "最晚在 {time} 停止，因为届时目标过低。"
+        },
+        "nothing": {
+          "light": "现在太亮，计划会立即结束而拍不到照片。请在计划中打开“等到天黑”，这样会在大约 {time} 开始。",
+          "low": "目标离地平线太低且正在下降，计划会结束而拍不到照片。请选择其他目标或更低的高度。",
+          "other": "这样启动，计划会立即结束而拍不到照片。"
+        }
+      }
     },
     "secureObservatory": {
       "title": "结束观测",
@@ -5679,6 +6447,17 @@
       "cameraCold": "相机冷却已开启（{temperature} °C）。",
       "domeOpen": "穹顶未关闭。",
       "coverOpen": "平场板盖已打开。"
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "是什么品牌？",
+      "otherBrand": "其他品牌",
+      "focuserLabel": "是哪款调焦器？",
+      "otherFocuser": "其他调焦器",
+      "disconnectFirst": "更换驱动前请先断开设备。",
+      "applied": "完成：已选择“{device}”。请插好设备、打开电源，然后点按“连接”。",
+      "appliedSeveral": "驱动已设置，并找到多个设备。请在设备列表中选择你的设备，然后点按“连接”。",
+      "appliedNoDevice": "驱动已设置，但尚未找到设备。请插好设备、打开电源，刷新设备列表，选择设备，然后点按“连接”。",
+      "openButton": "查找驱动：{device}"
     }
   },
   "plugins": {
@@ -5904,6 +6683,15 @@
       "dryRun": "模拟模式",
       "sambaTitle": "Samba 共享",
       "sambaDescription": "启用或禁用网络文件共享",
+      "samba": {
+        "firstEnable": "开启后可将照片复制到同一网络中的电脑。首次开启时设备可能需要下载软件，因此需要联网。",
+        "howTo": "在与设备同一网络的电脑上输入此地址：",
+        "windows": "Windows：资源管理器地址栏",
+        "mac": "Mac：访达、前往、连接服务器",
+        "login": "如果要求登录：用户“{user}”，密码“{password}”（未更改的情况下）。",
+        "outside": "你的照片保存在 {folder}。共享的是 {share}，因此可能不会显示在那里。",
+        "openAccess": "开启期间，此网络中的任何人都可以无需密码打开、更改和删除这些文件。"
+      },
       "phd2Title": "PHD2 自动启动",
       "phd2Running": "服务当前正在运行",
       "phd2Stopped": "目前服务已停止",
@@ -6087,6 +6875,7 @@
       "tabs": {
         "network": "Network",
         "services": "Services",
+        "pictures": "照片",
         "system": "系统",
         "indi": "INDI",
         "software": "Software",
@@ -8940,6 +9729,7 @@
         "errors": {
           "tppaUnavailable": "无法打开 TPPA 连接。",
           "tppaNoResponse": "TPPA 未响应启动请求。",
+          "tppaStartSlewFailed": "望远镜无法移动到极轴校准的起始位置。",
           "tppaError": "TPPA 报告了错误。请检查相机、赤道仪和 plate solver。",
           "tppaSilent": "TPPA 已有两分钟未发送任何数据。TPPA 和 Auto-Pilot 已停止。",
           "autoPilotNotStarted": "Auto-Pilot 未启动。请检查 AAPA 日志；如果 TPPA 是在此处启动的，它已被停止。",
@@ -9521,7 +10311,7 @@
     "config": {
       "connectionMode": "连接模式",
       "serial": "串行",
-      "network": "网络",
+      "network": "网络 (TCP)",
       "devicePort": "设备端口",
       "baudRate": "波特率",
       "autoDetect": "自动搜索",
@@ -9551,7 +10341,10 @@
     "skyView": "Celestia Atlas",
     "pins": "PINS",
     "settings": "设置",
-    "about": "关于"
+    "about": "关于",
+    "home": "开始",
+    "plan": "计划",
+    "target": "目标"
   },
   "nightsummary": {
     "tnsPluginToOld": "Touch N Stars 插件版本过旧，不支持此功能。请更新至 1.2.8.0 或更新版本。",
@@ -9814,7 +10607,7 @@
       "eqmodToggleDescription": "EQMOD 将赤经速率读取为原始角秒/秒，而不是 @:{'general.backendName'} 发送的值，若不校正会导致跟踪速度慢约 15 倍。仅当赤道仪使用 EQMOD 时才启用。",
       "eqmodDetectedHint": "{name} 看起来是 EQMOD 驱动 — 您可能需要启用此项。",
       "reapplyIntervalTitle": "重新应用间隔",
-      "reapplyIntervalDescription": "Quick Track 重新计算并重新发送跟踪速率的频率。默认值 900 秒（15 分钟）适用于彗星和小行星。",
+      "reapplyIntervalDescription": "Quick Track 重新计算并重新发送跟踪速率的频率。默认值 900 秒（15 分钟）适用于彗星和小行星；对于移动异常快的天体可缩短，最低 5 秒。",
       "secondsUnit": "秒",
       "addToSequenceDescriptionRest": "会将一个「定位+跟踪+拍摄」目标追加到 PINS 序列器中已加载的序列里，供你查看并启动 -- 现有目标不受影响。",
       "downloadSequence": "下载序列",

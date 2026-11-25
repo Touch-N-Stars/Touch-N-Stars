@@ -35,7 +35,8 @@
         </p>
       </div>
 
-      <div class="rounded-control bg-surface-2 p-3">
+      <!-- The mount is connected in the next step; until then this card has nothing to show. -->
+      <div v-if="mountCoords.connected" class="rounded-control bg-surface-2 p-3">
         <div class="flex items-center justify-between mb-2 gap-2">
           <p class="text-xs font-medium text-content-muted">
             {{ t('components.setupWizard.location.mountCoords') }}
@@ -99,9 +100,18 @@
       </label>
     </div>
 
-    <button class="tns-btn-secondary" :disabled="isSaving" @click="getCurrentLocation">
-      <MapPinIcon class="w-5 h-5" />
-      {{ t('components.setupWizard.location.useCurrentLocation') }}
+    <button
+      class="tns-btn-secondary"
+      :disabled="isSaving || gpsLoading"
+      @click="useCurrentLocation"
+    >
+      <Spinner v-if="gpsLoading" size="sm" />
+      <MapPinIcon v-else class="w-5 h-5" />
+      {{
+        gpsLoading
+          ? t('components.setupWizard.location.locating')
+          : t('components.setupWizard.location.useCurrentLocation')
+      }}
     </button>
     <p v-if="gpsError" class="text-sm text-status-danger break-words">{{ gpsError }}</p>
 
@@ -137,21 +147,37 @@
       }}
     </button>
 
+    <!-- Whether the profile holds what the fields show. Leaving the step saves pending
+         changes, so "Next" alone is enough - the hint says so. -->
+    <p v-if="isDirty" class="text-xs text-content-faint">
+      {{ t('components.setupWizard.location.unsavedHint') }}
+    </p>
+    <p v-else-if="hasLocation" class="flex items-center gap-2 text-xs text-status-ok">
+      <span class="tns-dot bg-status-ok"></span>
+      {{ t('components.setupWizard.location.savedHint') }}
+    </p>
+    <p v-else class="text-xs text-status-warn">
+      {{ t('components.setupWizard.location.missingHint') }}
+    </p>
+
     <p v-if="errorMessage" class="text-sm text-status-danger break-words">{{ errorMessage }}</p>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ArrowPathIcon, MapPinIcon } from '@heroicons/vue/24/outline';
+import Spinner from '@/components/helpers/Spinner.vue';
 import { apiStore } from '@/store/store';
+import { useToastStore } from '@/store/toastStore';
 import ButtonSetLocationSyncToMount from '@/components/mount/ButtonSetLocationSyncToMount.vue';
 import {
   latitude,
   longitude,
   altitude,
   gpsError,
+  gpsLoading,
   getCurrentLocation,
   useLocationStore,
   syncDirection,
@@ -159,14 +185,16 @@ import {
   mountCoords,
   mountCoordsLoading,
   formatCoord,
+  hasProfileLocation,
+  mountSiteDiffers,
+  parseCoordinate,
+  syncDirectionForSelect,
 } from '@/utils/location';
 
 const { t } = useI18n();
 const store = apiStore();
+const toastStore = useToastStore();
 const locationStore = useLocationStore();
-
-// ~100 m, same threshold LocationSettingsPins.vue uses.
-const COORD_TOLERANCE = 0.001;
 
 const isSaving = ref(false);
 const errorMessage = ref('');
@@ -178,14 +206,37 @@ const showCoordCards = computed(
 
 const coordsMismatch = computed(() => {
   if (!mountCoords.value.connected || !mountCoords.value.siteLocationSupported) return false;
-  const pairs = [
-    [ninaCoords.value.latitude, mountCoords.value.latitude],
-    [ninaCoords.value.longitude, mountCoords.value.longitude],
-  ];
-  return pairs.some(
-    ([a, b]) => a !== null && b !== null && Math.abs(Number(a) - Number(b)) > COORD_TOLERANCE
-  );
+  return mountSiteDiffers(ninaCoords.value, mountCoords.value);
 });
+
+// The profile is the source of truth; the fields are only an edit buffer.
+const hasLocation = computed(() => hasProfileLocation(store.profileInfo));
+
+// Fields that differ from the profile, so leaving the step has something to save.
+const isDirty = computed(() => {
+  const pairs = [
+    [latitude.value, ninaCoords.value.latitude],
+    [longitude.value, ninaCoords.value.longitude],
+    [altitude.value, ninaCoords.value.elevation],
+  ];
+  const fieldsDiffer = pairs.some(([field, saved]) => {
+    const value = parseCoordinate(field);
+    if (value === null) return false;
+    return saved === null || Math.abs(value - Number(saved)) > COORD_TOLERANCE / 10;
+  });
+  // Compared through the same mapping that filled the dropdown: its default for PROMPT is not
+  // a change. Otherwise skipping the step would save 0/0 together with "sync to telescope".
+  const raw = store.profileInfo?.TelescopeSettings?.TelescopeLocationSyncDirection;
+  const savedDirection = syncDirectionForSelect(raw, store.isPINS, hasLocation.value);
+  return fieldsDiffer || (store.isPINS && syncDirection.value !== savedDirection);
+});
+
+// A user who just took the device's location expects it to be used - without a second tap
+// on "Save location" it was silently lost before.
+async function useCurrentLocation() {
+  const position = await getCurrentLocation();
+  if (position) await save();
+}
 
 async function save() {
   if (isSaving.value) return;
@@ -206,6 +257,21 @@ async function save() {
     isSaving.value = false;
   }
 }
+
+// "Next" without "Save location" used to drop the coordinates and leave the profile at 0/0,
+// which only surfaced much later as a failing polar alignment. The step unmounts on
+// Next/Back, so pending changes are written here; a failure still reaches the user.
+onBeforeUnmount(() => {
+  if (isSaving.value || !isDirty.value) return;
+  locationStore.saveCoordinates().catch((error) => {
+    console.error('[PinsWizard] Saving coordinates on leave failed:', error);
+    toastStore.showToast({
+      type: 'error',
+      title: t('components.setupWizard.location.title'),
+      message: t('components.setupWizard.location.saveFailed', { message: error.message }),
+    });
+  });
+});
 
 onMounted(async () => {
   // The refs in utils/location.js are module singletons shared with

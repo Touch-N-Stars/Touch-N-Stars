@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <!-- Layout of the sequence tab: simple cards or the expert tree -->
+    <!-- Layout of the sequence tab: simple cards or the full tree -->
     <div class="flex flex-col gap-2 sm:gap-3">
       <h3 class="tns-section-title">
         {{ $t('components.sequence.simple.viewMode') }}
@@ -60,7 +60,7 @@ const VIEW_MODES = ['simple', 'full'];
 
 const sequenceStore = useSequenceStore();
 const settingsStore = useSettingsStore();
-// Older persisted settings have no `sequence` block yet; they get the expert view.
+// Older persisted settings have no `sequence` block yet; they get the full view.
 const viewMode = computed(() =>
   settingsStore.sequence?.viewMode === 'simple' ? 'simple' : 'full'
 );

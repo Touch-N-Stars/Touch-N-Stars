@@ -1,13 +1,24 @@
 <template>
   <div class="flex flex-col gap-4">
     <div>
-      <h2 class="text-xl font-semibold text-content">{{ t('setup.instanceConfiguration') }}</h2>
+      <h2 class="text-xl font-semibold text-content">
+        {{ t('components.setupWizard.instance.title') }}
+      </h2>
       <p class="text-sm text-content-muted mt-1">
         {{ t('components.setupWizard.instance.description') }}
       </p>
     </div>
 
-    <InstanceDetection v-model="instanceData" />
+    <!-- The first thing ASIAIR users do: join the rig's Wi-Fi. Name and password are the
+         PINS defaults (hotspot = rig name, password set by the pinsdaemon). -->
+    <div class="flex flex-col gap-1 rounded-control bg-surface-2 p-3">
+      <p class="text-sm text-content">{{ t('components.setupWizard.instance.hotspotHint') }}</p>
+      <p class="text-xs text-content-muted">
+        {{ t('components.setupWizard.instance.homeNetworkHint') }}
+      </p>
+    </div>
+
+    <InstanceDetection v-model="instanceData" auto-detect beginner />
 
     <div
       v-if="isConnected"
@@ -67,10 +78,13 @@ const isConnected = ref(false);
 const connectedName = ref('');
 const errorMessage = ref('');
 
+// The name is only a label in the instance list; a beginner should not have to invent one.
+function instanceName() {
+  const data = instanceData.value;
+  return data.name?.trim() || data.rigId || String(data.ip ?? '').trim();
+}
+
 function validate() {
-  if (!instanceData.value.name?.trim()) {
-    return t('components.settings.errors.instanceNameRequired');
-  }
   if (!instanceData.value.ip) {
     return t('components.settings.errors.invalidIPFormat');
   }
@@ -97,7 +111,7 @@ async function saveInstance() {
   try {
     settingsStore.addInstance(
       {
-        name: instanceData.value.name,
+        name: instanceName(),
         ip: instanceData.value.ip,
         port: instanceData.value.port,
         // Both come from the mDNS discovery in InstanceDetection and are what
@@ -129,7 +143,7 @@ async function saveInstance() {
     await wait(2500);
 
     isConnected.value = true;
-    connectedName.value = instanceData.value.name;
+    connectedName.value = instanceName();
 
     await locationStore.loadFromAstrometrySettings();
     locationStore.loadMountCoords(); // fire-and-forget, mountCoordsLoading tracks it
