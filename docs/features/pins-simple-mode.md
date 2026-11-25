@@ -70,7 +70,9 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    Sterne sieht man im Bild. Darunter der RA/Dec-Verlauf des eingebauten Guiders (nur bei
    verbundenem Feed, sonst NINAs RMS aus dem 2-s-Polling) und Warnungen: Gerät
    getrennt, Stern verloren, Plan ohne Guiding, Guiding zu groß, HFR steigt, Sensor > 2 °C
-   neben dem Kühlziel. Das Bild steht daneben (Tablet) bzw. darunter (Telefon), die Schritte
+   neben dem Kühlziel. Was ein Ziel vor seinen Bildern tut (anfahren, zentrieren, Guiding
+   starten) und das Parken und Aufwärmen am Ende nennt das Cockpit aus den Schritten des Plans;
+   „ohne Guiding“ warnt es erst danach, nicht beim Zentrieren. Das Bild steht daneben (Tablet) bzw. darunter (Telefon), die Schritte
    sind zugeklappt, die Ausrüstung erscheint nur, wenn ein Gerät fehlt. **Plan fertig** und
    **Nacht beendet** – Bilanz der Nacht (Lights, Belichtungszeit, Median-HFR), bei „fertig“
    mit „Nacht beenden“ vorn, bei „beendet“ mit Park- und Aufwärmstatus.
@@ -135,7 +137,9 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    Kühlkamera nicht aufwärmt), then warnt „Aufnahme“, dass die Montierung nach dem Plan weiter
    nachführt und ohne Aufsicht gegen Stativ oder Säule laufen kann, mit einem Knopf, der die
    fehlenden Schritte einschaltet. Die Rückfrage vor dem Start nennt, was nach dem letzten Bild
-   passiert (parken, aufwärmen, beides oder weiter nachführen).
+   passiert (parken, aufwärmen, beides oder weiter nachführen). Anfahren, Zentrieren und Guiding
+   nennt sie so, wie sie im Plan stehen, auch wenn sie dort (bei einem oder allen Zielen)
+   abgeschaltet sind.
    8a. Given der Schritt „Guiding“ und ein anderer Guider im Profil (PHD2, keiner), then bietet
    er „Eingebauten Guider verwenden“ an, wenn PINS ihn als Gerät führt (`InternalGuider`),
    sonst einen Update-Hinweis. Ohne Guidekamera im Profil zeigt er die Auswahl der Kameras

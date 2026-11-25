@@ -321,7 +321,9 @@
         "loading": "Stuurprogramma's laden…",
         "applying": "Stuurprogramma toepassen…",
         "listFailed": "Stuurprogramma's konden niet worden geladen: {message}",
-        "changeFailed": "Het stuurprogramma kon niet worden toegepast: {message}"
+        "changeFailed": "Het stuurprogramma kon niet worden toegepast: {message}",
+        "none": "Geen driver",
+        "installMissing": "Staat de driver niet in de lijst?"
       },
       "welcome": {
         "title": "Laten we Touch'N'Stars instellen",
@@ -519,7 +521,9 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Opslaan mislukt: {message}",
+        "guideScope": "Guidescope",
         "nativeCameraHint": "Voer de brandpuntsafstand van de guidescope in. De guider heeft die nodig om te beoordelen hoe ver de sterren bewegen.",
+        "descriptionBuiltIn": "PINS heeft een ingebouwde guider die de sterren op hun plaats houdt terwijl er foto's worden gemaakt, zonder extra programma. Kies de guidecamera en vul de brandpuntsafstand van de guidescope in.",
         "nativeRecommended": "Tip: PINS heeft een eigen guider (“Native Guider” in de lijst hierboven). Hij is speciaal voor PINS ontwikkeld, draait direct op de setup zonder apart programma en guidet vaak rustiger dan PHD2. Instellingen die je in PHD2 hebt gemaakt blijven behouden en je kunt altijd terugschakelen door weer PHD2 te kiezen.",
         "nativeFocalLengthMissing": "De brandpuntsafstand van de guidescope is nog 0. Guiding werkt ook zonder, maar voor dithering en de guidingfout in boogseconden is hij nodig.",
         "guidePixelSizeHintNative": "Alleen voor deze berekening gebruikt. De guider leest de pixelgrootte uit de guidecamera zodra die verbonden is; tot dan neem je hem uit de cameraliteratuur.",
@@ -731,7 +735,9 @@
         "restartInfoTitle": "Systeem wordt herstart",
         "restartInfoMessage": "Het systeem wordt herstart.",
         "shutdownInfoTitle": "Systeem wordt afgesloten",
-        "shutdownInfoMessage": "Het systeem wordt afgesloten. Deze pagina zal niet meer bereikbaar zijn."
+        "shutdownInfoMessage": "Het systeem wordt afgesloten. Deze pagina zal niet meer bereikbaar zijn.",
+        "shutdownPowerHint": "Wacht ongeveer een minuut, daarna kun je de stroom uitzetten.",
+        "shutdownFailed": "Het afsluiten is niet gelukt: {reason}"
       },
       "plate_solver": {
         "title": "Plaatoplosser",
@@ -914,6 +920,17 @@
         "loadError": "Swapconfiguratie kon niet worden gelezen: {message}",
         "saveError": "Swapconfiguratie kon niet worden opgeslagen: {message}",
         "missingJob": "De daemon gaf geen swaptaak terug."
+      },
+      "instances": {
+        "discovery": "Rigs in het netwerk zoeken",
+        "add": "Rig toevoegen",
+        "edit": "Rig bewerken",
+        "configured": "Opgeslagen rigs",
+        "none": "Nog geen rig opgeslagen",
+        "noneHint": "Gebruik de zoekfunctie hierboven of vul het adres zelf in.",
+        "active": "Actief",
+        "setActive": "Deze rig gebruiken",
+        "delete": "Rig verwijderen"
       }
     },
     "alpacaDirect": {
@@ -1592,6 +1609,7 @@
         "favorites": "Favorieten",
         "framing": "Framing",
         "noFilter": "Geen filterwissel",
+        "chooseFilter": "Kies een filter",
         "exposureTime": "Belichting (s)",
         "count": "Aantal",
         "noExposures": "Nog geen opnames voor dit target.",
@@ -1605,7 +1623,39 @@
         "deleteTargetConfirm": "{name} en alle opnames uit de sequentie verwijderen?",
         "deleteExposure": "Opname verwijderen",
         "deleteExposureConfirm": "Deze opnameregel uit de sequentie verwijderen?",
-        "addTargetNamed": "{name} als doel toevoegen"
+        "addTargetNamed": "{name} als doel toevoegen",
+        "limits": {
+          "title": "Nacht",
+          "wait": "Wachten tot het donker is",
+          "waitHint": "Het plan start zodra het donker is. Tijdens het wachten volgt de mount niet.",
+          "dawn": "Stoppen bij zonsopkomst",
+          "dawnHint": "Beëindigt het plan als het licht wordt, ook als er foto's ontbreken. De rest kan de volgende nacht.",
+          "from": "vanaf {time}",
+          "notTonight": "vannacht niet",
+          "low": "Stoppen als het doel te laag staat",
+          "lowHint": "Dicht bij de horizon maakt de lucht de sterren onscherp en staan bomen of huizen in de weg. Het plan gaat dan verder met het volgende doel.",
+          "minAltitude": "Laagste hoogte boven de horizon (°)",
+          "noTarget": "Voeg eerst een doel toe aan het plan. Dit gaat dan vanzelf aan.",
+          "targetRunning": "Kan niet worden gewijzigd terwijl een doel wordt gefotografeerd.",
+          "sunBelow": "zon {degrees}° onder de horizon",
+          "darknessName": {
+            "bright": "nog licht",
+            "dusky": "bijna donker",
+            "usual": "gebruikelijk",
+            "dark": "donkerder",
+            "darkest": "helemaal donker"
+          },
+          "minAltitudeHint": "0° is de horizon, 90° is recht boven je. Twee vuisten op elkaar met gestrekte arm zijn ongeveer 20°.",
+          "startAt": "Begin van de nacht",
+          "endAt": "Einde van de nacht",
+          "until": "tot {time}"
+        },
+        "budget": {
+          "question": "Hoe lang wil je dit doel fotograferen? (uren)",
+          "pictures": "{count} foto van {seconds} s | {count} foto's van {seconds} s",
+          "apply": "Dit aantal foto's gebruiken",
+          "wholeNight": "Zolang de nacht het toelaat ({time})"
+        }
       }
     },
     "mount": {
@@ -5775,6 +5825,7 @@
       "sequenceStart": "Sequentie kon niet worden gestart",
       "guidingStart": "Guiding kon niet worden gestart",
       "autofocusStart": "Autofocus kon niet worden gestart",
+      "autofocusStop": "Autofocus kon niet worden geannuleerd",
       "binning": "Binning kon niet worden gewijzigd",
       "readout": "Uitleesmodus kon niet worden gewijzigd",
       "switchSet": "Schakelaar kon niet worden ingesteld"
@@ -5912,6 +5963,7 @@
           "lastFailed": "Laatste autofocus om {time} mislukt – controleer of er sterren zichtbaar zijn en probeer opnieuw",
           "pointAtStars": "Richt de telescoop op sterren (sterrenatlas)",
           "setupFirst": "Stel vóór de eerste autofocus met deze telescoop hem eenmalig in: de assistent meet je focuser en camera en vindt werkende instellingen. Zonder dit mislukt de autofocus vaak.",
+          "cancelled": "Autofocus geannuleerd. De focuser gaat terug naar waar hij was.",
           "setup": "Autofocus instellen"
         },
         "guide": {
@@ -5932,7 +5984,7 @@
           "slewingToCalibration": "De telescoop beweegt naar de kalibratieplek…",
           "calibratedHint": "Gekalibreerd. De kalibratie blijft ook voor latere nachten bewaard; je plan start bij elk doel zelf met guiden.",
           "calibratedSummary": "Gekalibreerd",
-          "unparkFirst": "Maak eerst de telescoop gereed (stap “Telescoop gereed”)."
+          "unparkFirst": "Maak eerst de telescoop gereed (stap “{step}”)."
         },
         "capture": {
           "title": "Foto's maken",
@@ -5940,6 +5992,9 @@
           "targets": "Doelen",
           "remaining": "Resterende tijd",
           "noPlan": "Er is nog geen plan. Maak er een met je doel, filter, belichtingstijd en aantal foto's.",
+          "nothingLeft": "Je plan heeft geen foto's meer te maken. Kies een nieuw doel of maak de foto's van dit plan opnieuw.",
+          "repeat": "De foto's opnieuw maken",
+          "repeatFailed": "Het plan kon niet worden gereset",
           "editPlan": "Plan bewerken",
           "createPlan": "Plan maken",
           "watch": "Bekijk de foto's binnenkomen",
@@ -5948,7 +6003,18 @@
           "summary": "{targets} doel, klaar rond {time} | {targets} doelen, klaar rond {time}",
           "summaryDone": "{targets} doel, alle foto's gemaakt | {targets} doelen, alle foto's gemaakt",
           "confirmStartTitle": "Foto's maken starten?",
-          "confirmStartMessage": "Het plan met {targets} doel start nu en duurt ongeveer {remaining}. De telescoop gaat naar het doel, centreert het en start guiding vóór de eerste foto. | Het plan met {targets} doelen start nu en duurt ongeveer {remaining}. De telescoop gaat naar elk doel, centreert het en start guiding vóór de eerste foto.",
+          "confirmStartPlan": "Het plan start nu met {targets} doel en duurt ongeveer {remaining}. | Het plan start nu met {targets} doelen en duurt ongeveer {remaining}.",
+          "confirmStartApproach": {
+            "center": "De telescoop gaat naar het doel en centreert het. | De telescoop gaat naar elk doel en centreert het.",
+            "slew": "De telescoop gaat naar het doel maar centreert het niet. | De telescoop gaat naar elk doel maar centreert het niet.",
+            "off": "De telescoop gaat niet naar het doel en maakt de foto's waar hij nu naar wijst. | De telescoop gaat niet naar de doelen en maakt de foto's waar hij nu naar wijst.",
+            "mixed": "Niet elk doel wordt opgezocht en gecentreerd, zie het plan."
+          },
+          "confirmStartGuiding": {
+            "all": "Guiding start vóór de eerste foto.",
+            "none": "Het plan loopt zonder guiding.",
+            "mixed": "Niet elk doel krijgt guiding, zie het plan."
+          },
           "confirmStopTitle": "Foto's maken stoppen?",
           "confirmStopMessage": "De huidige foto wordt geannuleerd. Je kunt het plan later opnieuw starten.",
           "noExposures": "Je plan heeft een doel maar nog geen foto's. Open het plan en tik op “Add exposure” om filter, belichtingstijd en aantal foto's te kiezen.",
@@ -5960,7 +6026,6 @@
             "warm": "Daarna warmt de camera op. De montering blijft volgen tot je de nacht beëindigt.",
             "none": "Daarna blijft de montering volgen tot je de nacht beëindigt."
           },
-          "confirmStartMessageNoGuiding": "Het plan met {targets} doel start nu en duurt ongeveer {remaining}. De telescoop gaat naar het doel en centreert het vóór de eerste foto. | Het plan met {targets} doelen start nu en duurt ongeveer {remaining}. De telescoop gaat naar elk doel en centreert het vóór de eerste foto.",
           "missingSteps": "{count} doel in je plan doet dit nog niet automatisch: {steps}. | {count} doelen in je plan doen dit nog niet automatisch: {steps}.",
           "missingStepParts": {
             "slew": "erheen gaan",
@@ -5985,7 +6050,9 @@
           "flipPause": "{target} bereikt de meridiaan rond {meridian}; het plan pauzeert om {pause} en draait de telescoop om {earliest}.",
           "flipNone": "Met dit plan is geen Meridian Flip nodig.",
           "flipYourTarget": "Je doel",
-          "flipSettings": "Flip-instellingen en daglichttest"
+          "flipSettings": "Flip-instellingen en daglichttest",
+          "summaryCutOff": "{taken} van {planned} foto's gemaakt",
+          "confirmStartWait": "Het wacht tot het donker is, rond {time}."
         },
         "flats": {
           "title": "Flats",
@@ -6041,7 +6108,9 @@
         "title": "De nacht beëindigen",
         "intro": "Deze stappen worden na elkaar uitgevoerd. Vink uit wat je wilt laten doorlopen.",
         "nothingToDo": "Er loopt niets en de mount is geparkeerd – er is niets meer te doen.",
+        "nothingToDoNoMount": "Er loopt niets. De mount is niet verbonden, controleer dus zelf of hij geparkeerd is.",
         "someFailed": "Niet alles is gelukt, de reden staat onder de stap. Controleer de mount voordat je de stroom uitzet.",
+        "doneWarming": "Alles klaar. Zodra de camera is opgewarmd, sluit je de rig af op de startpagina voordat je de stroom uitzet.",
         "confirm": "De nacht nu beëindigen",
         "actions": {
           "stopSequence": "Foto's maken stoppen",
@@ -6049,7 +6118,8 @@
           "parkMount": "De mount parkeren",
           "warmCamera": "De camera opwarmen ({minutes} min)"
         },
-        "parkTimeout": "De mount meldde niet “geparkeerd” binnen 3 minuten. Controleer hem voordat je de stroom uitzet."
+        "parkTimeout": "De mount meldde niet “geparkeerd” binnen 3 minuten. Controleer hem voordat je de stroom uitzet.",
+        "doneShutdown": "Alles klaar. Sluit de rig af voordat je de stroom uitzet."
       },
       "settings": {
         "title": "Eenvoudige modus",
@@ -6116,12 +6186,16 @@
         "remaining": "{time} resterend",
         "activity": {
           "autofocus": "Focussen (autofocus)",
-          "slewing": "Telescoop beweegt (centreren of Meridian Flip)",
+          "slewing": "Telescoop beweegt",
+          "centering": "Doel wordt gecentreerd",
+          "startingGuiding": "Guiding wordt gestart",
+          "closing": "Plan wordt afgerond (parkeren, opwarmen)",
           "calibrating": "Guider kalibreert",
           "settling": "Wachten tot guiding stabiliseert",
           "exposing": "Belichten",
           "busy": "Volgende foto voorbereiden",
-          "flipping": "Meridian Flip – de telescoop draait naar de andere kant"
+          "flipping": "Meridian Flip – de telescoop draait naar de andere kant",
+          "waitingForDark": "Wacht tot het donker is"
         },
         "exposing": "Belichten {seconds} s",
         "frame": "foto {frame} van {frames}",
@@ -6188,18 +6262,23 @@
           }
         },
         "statusBarHint": "Guiding, focus en koeling worden beoordeeld in de statusbalk hieronder – tik op een item om te zien wat het betekent.",
-        "stop": "Stoppen"
+        "stop": "Stoppen",
+        "waitingUntil": "Wacht tot het donker is, rond {time}"
       },
       "summary": {
         "finished": {
           "title": "Plan voltooid",
           "text": "Alle foto's van je plan zijn gemaakt. Beëindig de nacht om de telescoop te parkeren en de camera op te warmen.",
-          "textFlats": "Alle foto's van je plan zijn gemaakt. Maak nu je flats, zolang er niets is veranderd, en beëindig dan de nacht."
+          "textFlats": "Alle foto's van je plan zijn gemaakt. Maak nu je flats, zolang er niets is veranderd, en beëindig dan de nacht.",
+          "cutOffTitle": "Klaar voor vannacht",
+          "cutOff": "Het werd licht of je doel stond te laag: {taken} van {planned} foto's zijn gemaakt. Start het plan een andere nacht opnieuw voor de rest."
         },
         "ended": {
           "title": "Nacht beëindigd",
           "text": "Heldere luchten! Dit bracht vanavond op.",
           "notParked": "Telescoop nog niet geparkeerd",
+          "shutdown": "Rig afsluiten",
+          "shutdownWait": "Wacht met afsluiten tot de camera warm is en de telescoop geparkeerd.",
           "resume": "De nacht voortzetten"
         },
         "frames": "Foto's",
@@ -6216,6 +6295,24 @@
       "camera": {
         "title": "Camera",
         "hint": "De testopname en elke opname van je plan gebruiken deze waarden, tenzij je een belichting in het plan eigen waarden geeft. De handleiding van je camera noemt de aanbevolen gain en offset."
+      },
+      "expert": {
+        "show": "Expertinstellingen tonen",
+        "hide": "Expertinstellingen verbergen"
+      },
+      "window": {
+        "waits": "Het plan wacht tot het donker is, rond {time}.",
+        "tooMany": "Slechts ongeveer {fit} van {left} foto's passen in deze nacht. De rest kan een andere nacht.",
+        "noDarkness": "Zo donker wordt het vannacht niet, het plan zou eindeloos wachten. Kies in het plan onder “Nacht” een lichtere hemel.",
+        "limit": {
+          "light": "Het stopt uiterlijk om {time}, omdat het dan licht wordt.",
+          "low": "Het stopt uiterlijk om {time}, omdat je doel dan te laag staat."
+        },
+        "nothing": {
+          "light": "Het is nu te licht, het plan zou meteen zonder foto eindigen. Zet in het plan “Wachten tot het donker is” aan: dan start het rond {time}.",
+          "low": "Je doel staat te laag boven de horizon en daalt, het plan zou zonder foto eindigen. Kies een ander doel of een lagere hoogte.",
+          "other": "Zo gestart zou het plan meteen zonder foto eindigen."
+        }
       }
     },
     "secureObservatory": {
@@ -6276,6 +6373,13 @@
       "cameraCold": "De camerakoeling staat aan ({temperature} °C).",
       "domeOpen": "De koepel is niet gesloten.",
       "coverOpen": "De klep van het flatpanel is open."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Welk merk is het?",
+      "otherBrand": "Ander merk",
+      "disconnectFirst": "Verbreek de verbinding met het apparaat voordat je de driver wijzigt.",
+      "applied": "Klaar: “{device}” is gekozen. Sluit het aan, zet het aan en tik op “Verbinden”.",
+      "appliedPickDevice": "De driver is ingesteld, maar er is nog geen apparaat gevonden. Sluit het aan, zet het aan, ververs de lijst hierboven, kies het en tik op “Verbinden”."
     }
   },
   "plugins": {
@@ -6693,6 +6797,7 @@
       "tabs": {
         "network": "Netwerk",
         "services": "Diensten",
+        "pictures": "Foto's",
         "system": "Systeem",
         "indi": "INDI",
         "software": "Software",

@@ -6,6 +6,10 @@ import { COACH_POSITION } from '@/utils/nativeGuiderCoach';
 import {
   AF_AFTER_FILTER_CHANGE_TYPE,
   AF_AFTER_TIME_TYPE,
+  CENTER_AND_ROTATE_TYPE,
+  CENTER_TYPE,
+  RUN_AUTOFOCUS_TYPE,
+  SLEW_TYPE,
   START_GUIDING_TYPE,
   findByType,
   isActive,
@@ -363,6 +367,36 @@ export function imagingActivity({ afRunning, slewing, guiderState, settling, exp
   return 'busy';
 }
 
+const STEP_ACTIVITIES = {
+  [SLEW_TYPE]: 'slewing',
+  [CENTER_TYPE]: 'centering',
+  [CENTER_AND_ROTATE_TYPE]: 'centering',
+  [START_GUIDING_TYPE]: 'startingGuiding',
+  [RUN_AUTOFOCUS_TYPE]: 'autofocus',
+};
+
+/**
+ * What a target does before its pictures: the approach, guiding or focus step that runs right
+ * now, or null. The devices alone cannot tell: centering exposes like a picture and stands idle
+ * while the plate solve runs.
+ * @returns {'slewing'|'centering'|'startingGuiding'|'autofocus'|null}
+ */
+export function targetStepActivity(container) {
+  const step = (container?.Items ?? []).find(
+    (item) => item?.Status === 'RUNNING' && STEP_ACTIVITIES[item.FullTypeName]
+  );
+  return step ? STEP_ACTIVITIES[step.FullTypeName] : null;
+}
+
+/**
+ * Whether the guider has to guide by now: not before the plan reached a target, nor while that
+ * target is approached or its "start guiding" is still to come, nor after the last target.
+ */
+export function guidingExpected(container) {
+  if (container?.Status !== 'RUNNING' || targetStepActivity(container)) return false;
+  return findByType(container.Items, START_GUIDING_TYPE)?.Status !== 'CREATED';
+}
+
 /**
  * One verdict on the running plan for the line under the picture, so nobody has to read the
  * numbers to know whether to act. A problem the cockpit lists always wins; "waiting" until
@@ -684,6 +718,32 @@ export function refocusInterval(minutes) {
   return minutes >= 60 && minutes % 60 === 0
     ? { unit: 'hours', count: minutes / 60 }
     : { unit: 'minutes', count: minutes };
+}
+
+/**
+ * What the plan really does at the targets with pictures left, for the question before its start.
+ *
+ * @param {object} summary summarizeTargets()
+ * @returns {{ targets: number, approach: 'center'|'slew'|'off'|'mixed',
+ *   guiding: 'all'|'none'|'mixed', focus: boolean }} focus: every target focuses again after a
+ *   filter change
+ */
+export function planStartSteps(summary) {
+  const containers = (summary?.targets ?? [])
+    .filter((t) => t.remainingSeconds > 0)
+    .map((t) => t.container);
+  const approaches = new Set(
+    containers.map((c) => slewMode(c).replace('centerAndRotate', 'center'))
+  );
+  const guided = containers.filter((c) => isActive(findByType(c.Items, START_GUIDING_TYPE)));
+  return {
+    targets: containers.length,
+    approach: approaches.size > 1 ? 'mixed' : ([...approaches][0] ?? 'off'),
+    guiding: !guided.length ? 'none' : guided.length < containers.length ? 'mixed' : 'all',
+    focus:
+      containers.length > 0 &&
+      containers.every((c) => isActive(findByType(c.Triggers, AF_AFTER_FILTER_CHANGE_TYPE))),
+  };
 }
 
 /**

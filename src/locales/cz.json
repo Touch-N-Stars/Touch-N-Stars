@@ -321,7 +321,9 @@
         "loading": "Načítání ovladačů…",
         "applying": "Používání ovladače…",
         "listFailed": "Ovladače se nepodařilo načíst: {message}",
-        "changeFailed": "Ovladač se nepodařilo použít: {message}"
+        "changeFailed": "Ovladač se nepodařilo použít: {message}",
+        "none": "Žádný ovladač",
+        "installMissing": "Ovladač není v seznamu?"
       },
       "welcome": {
         "title": "Nastavme Touch'N'Stars",
@@ -519,7 +521,9 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Nepodařilo se uložit: {message}",
+        "guideScope": "Pointační dalekohled",
         "nativeCameraHint": "Zadejte ohniskovou vzdálenost pointačního dalekohledu. Guider ji potřebuje k posouzení, jak se hvězdy pohybují.",
+        "descriptionBuiltIn": "PINS má vestavěný guider, který při snímání drží hvězdy na místě, bez dalšího programu. Vyber pointační kameru a zadej ohniskovou vzdálenost pointačního dalekohledu.",
         "nativeRecommended": "Tip: PINS má vlastní guider („Native Guider“ v seznamu výše). Byl vyvinut speciálně pro PINS, běží přímo v sestavě bez samostatného programu a často pointuje stabilněji než PHD2. Nastavení z PHD2 se přenesou a kdykoli se můžete vrátit výběrem PHD2.",
         "nativeFocalLengthMissing": "Ohnisková vzdálenost pointačního dalekohledu je stále 0. Pointace funguje i bez ní, ale Dither a chyba pointace v obloukových vteřinách ji potřebují.",
         "guidePixelSizeHintNative": "Slouží jen k tomuto výpočtu. Guider přečte velikost pixelu z pointační kamery, jakmile je připojena; do té doby ji převezměte z návodu ke kameře.",
@@ -731,7 +735,9 @@
         "restartInfoTitle": "Systém se restartuje",
         "restartInfoMessage": "Systém se restartuje.",
         "shutdownInfoTitle": "Systém se vypíná",
-        "shutdownInfoMessage": "Systém se vypíná. Tato stránka již nebude dostupná."
+        "shutdownInfoMessage": "Systém se vypíná. Tato stránka již nebude dostupná.",
+        "shutdownPowerHint": "Počkej asi minutu, pak můžeš vypnout napájení.",
+        "shutdownFailed": "Vypnutí se nepovedlo: {reason}"
       },
       "plate_solver": {
         "title": "Plate Solver",
@@ -914,6 +920,17 @@
         "loadError": "Konfiguraci swapu se nepodařilo načíst: {message}",
         "saveError": "Konfiguraci swapu se nepodařilo uložit: {message}",
         "missingJob": "Démon nevrátil žádnou úlohu swapu."
+      },
+      "instances": {
+        "discovery": "Hledat sestavy v síti",
+        "add": "Přidat sestavu",
+        "edit": "Upravit sestavu",
+        "configured": "Uložené sestavy",
+        "none": "Zatím není uložena žádná sestava",
+        "noneHint": "Použij hledání výše nebo zadej adresu ručně.",
+        "active": "Aktivní",
+        "setActive": "Použít tuto sestavu",
+        "delete": "Odebrat sestavu"
       }
     },
     "alpacaDirect": {
@@ -1592,6 +1609,7 @@
         "favorites": "Oblíbené",
         "framing": "Framing",
         "noFilter": "Bez změny filtru",
+        "chooseFilter": "Vyber filtr",
         "exposureTime": "Expozice (s)",
         "count": "Počet",
         "noExposures": "Tento cíl zatím nemá žádné expozice.",
@@ -1605,7 +1623,39 @@
         "deleteTargetConfirm": "Smazat {name} a všechny jeho expozice ze sekvence?",
         "deleteExposure": "Smazat expozici",
         "deleteExposureConfirm": "Smazat tento řádek expozice ze sekvence?",
-        "addTargetNamed": "Přidat {name} jako cíl"
+        "addTargetNamed": "Přidat {name} jako cíl",
+        "limits": {
+          "title": "Noc",
+          "wait": "Počkat, až bude tma",
+          "waitHint": "Plán se spustí, jakmile je tma. Během čekání montáž nesleduje oblohu.",
+          "dawn": "Skončit za svítání",
+          "dawnHint": "Ukončí plán, když se rozednívá, i když snímky chybí. Zbytek lze pořídit příští noc.",
+          "from": "od {time}",
+          "notTonight": "dnes v noci ne",
+          "low": "Skončit, když je cíl příliš nízko",
+          "lowHint": "Blízko obzoru vzduch rozmazává hvězdy a v cestě jsou stromy nebo domy. Plán pak pokračuje dalším cílem.",
+          "minAltitude": "Nejmenší výška nad obzorem (°)",
+          "noTarget": "Nejdřív přidej do plánu cíl. Toto se pak zapne samo.",
+          "targetRunning": "Nelze změnit během snímání cíle.",
+          "sunBelow": "slunce {degrees}° pod obzorem",
+          "darknessName": {
+            "bright": "ještě světlo",
+            "dusky": "téměř tma",
+            "usual": "obvyklé",
+            "dark": "tmavší",
+            "darkest": "úplná tma"
+          },
+          "minAltitudeHint": "0° je obzor, 90° je přímo nad hlavou. Dvě pěsti nad sebou v natažené paži jsou asi 20°.",
+          "startAt": "Začátek noci",
+          "endAt": "Konec noci",
+          "until": "do {time}"
+        },
+        "budget": {
+          "question": "Jak dlouho chceš tento cíl snímat? (hodiny)",
+          "pictures": "{count} snímek po {seconds} s | {count} snímků po {seconds} s",
+          "apply": "Použít tento počet snímků",
+          "wholeNight": "Dokud to noc dovolí ({time})"
+        }
       }
     },
     "mount": {
@@ -5775,6 +5825,7 @@
       "sequenceStart": "Sekvenci nelze spustit",
       "guidingStart": "Guiding nelze spustit",
       "autofocusStart": "Autofokus nelze spustit",
+      "autofocusStop": "Autofokus nelze zrušit",
       "binning": "Binning nelze změnit",
       "readout": "Režim vyčítání nelze změnit",
       "switchSet": "Spínač nelze nastavit"
@@ -5912,6 +5963,7 @@
           "lastFailed": "Poslední autofokus v {time} selhal – zkontrolujte, zda jsou vidět hvězdy, a zkuste to znovu",
           "pointAtStars": "Zamiřte dalekohled na hvězdy (atlas oblohy)",
           "setupFirst": "Před prvním autofokusem s tímto dalekohledem ho jednou nastavte: asistent změří váš zaostřovač a kameru a najde funkční nastavení. Bez toho autofokus často selže.",
+          "cancelled": "Autofokus zrušen. Fokuser se vrací tam, kde byl předtím.",
           "setup": "Nastavit autofokus"
         },
         "guide": {
@@ -5932,7 +5984,7 @@
           "slewingToCalibration": "Dalekohled přejíždí na místo kalibrace…",
           "calibratedHint": "Zkalibrováno. Kalibrace se uchová i pro další noci; váš plán spouští pointaci na každém cíli sám.",
           "calibratedSummary": "Zkalibrováno",
-          "unparkFirst": "Nejdřív připravte dalekohled (krok „Dalekohled připraven“)."
+          "unparkFirst": "Nejdřív připravte dalekohled (krok „{step}“)."
         },
         "capture": {
           "title": "Pořizování snímků",
@@ -5940,6 +5992,9 @@
           "targets": "Cíle",
           "remaining": "Zbývající čas",
           "noPlan": "Zatím není žádný plán. Vytvořte ho s cílem, filtrem, expoziční dobou a počtem snímků.",
+          "nothingLeft": "V plánu už nezbývají žádné snímky. Vyber nový cíl, nebo pořiď snímky tohoto plánu znovu.",
+          "repeat": "Pořídit snímky znovu",
+          "repeatFailed": "Plán se nepodařilo resetovat",
           "editPlan": "Upravit plán",
           "createPlan": "Vytvořit plán",
           "watch": "Sledovat příchozí snímky",
@@ -5948,7 +6003,18 @@
           "summary": "{targets} cíl, hotovo kolem {time} | {targets} cílů, hotovo kolem {time}",
           "summaryDone": "{targets} cíl, všechny snímky pořízeny | {targets} cílů, všechny snímky pořízeny",
           "confirmStartTitle": "Začít pořizovat snímky?",
-          "confirmStartMessage": "Plán s {targets} cílem se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede k cíli, vycentruje ho a spustí pointaci. | Plán s {targets} cíli se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede ke každému cíli, vycentruje ho a spustí pointaci.",
+          "confirmStartPlan": "Plán se nyní spustí s {targets} cílem a potrvá asi {remaining}. | Plán se nyní spustí s {targets} cíli a potrvá asi {remaining}.",
+          "confirmStartApproach": {
+            "center": "Dalekohled přejede k cíli a vycentruje ho. | Dalekohled přejede ke každému cíli a vycentruje ho.",
+            "slew": "Dalekohled přejede k cíli, ale nevycentruje ho. | Dalekohled přejede ke každému cíli, ale nevycentruje ho.",
+            "off": "Dalekohled k cíli nepřejede, snímá tam, kam právě míří. | Dalekohled k cílům nepřejede, snímá tam, kam právě míří.",
+            "mixed": "Ne ke každému cíli se přejede a vycentruje ho, viz plán."
+          },
+          "confirmStartGuiding": {
+            "all": "Pointace se spustí před prvním snímkem.",
+            "none": "Plán běží bez pointace.",
+            "mixed": "Ne každý cíl má pointaci, viz plán."
+          },
           "confirmStopTitle": "Zastavit pořizování snímků?",
           "confirmStopMessage": "Aktuální snímek se zruší. Plán můžete později spustit znovu.",
           "noExposures": "Váš plán má cíl, ale zatím žádné snímky. Otevřete plán a klepnutím na „Přidat expozici“ vyberte filtr, expoziční dobu a počet snímků.",
@@ -5960,7 +6026,6 @@
             "warm": "Na konci se kamera zahřeje. Montáž dál sleduje, dokud noc neukončíš.",
             "none": "Na konci montáž dál sleduje, dokud noc neukončíš."
           },
-          "confirmStartMessageNoGuiding": "Plán s {targets} cílem se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede k cíli a vycentruje ho. | Plán s {targets} cíli se nyní spustí a potrvá asi {remaining}. Dalekohled před prvním snímkem přejede ke každému cíli a vycentruje ho.",
           "missingSteps": "{count} cíl ve vašem plánu to zatím nedělá automaticky: {steps}. | {count} cílů ve vašem plánu to zatím nedělá automaticky: {steps}.",
           "missingStepParts": {
             "slew": "najet na cíl",
@@ -5985,7 +6050,9 @@
           "flipPause": "{target} dosáhne meridiánu kolem {meridian}; plán se v {pause} pozastaví a otočí dalekohled v {earliest}.",
           "flipNone": "S tímto plánem není Meridian Flip potřeba.",
           "flipYourTarget": "Váš cíl",
-          "flipSettings": "Nastavení flipu a test za denního světla"
+          "flipSettings": "Nastavení flipu a test za denního světla",
+          "summaryCutOff": "Pořízeno {taken} z {planned} snímků",
+          "confirmStartWait": "Čeká, až bude tma, asi v {time}."
         },
         "flats": {
           "title": "Flaty",
@@ -6041,7 +6108,9 @@
         "title": "Ukončit noc",
         "intro": "Tyto kroky běží jeden po druhém. Odškrtněte, co má dál běžet.",
         "nothingToDo": "Nic neběží a montáž je zaparkovaná – není co dělat.",
+        "nothingToDoNoMount": "Nic neběží. Montáž není připojena, proto zkontroluj, že je zaparkovaná.",
         "someFailed": "Ne všechno se povedlo, důvod je u kroku. Zkontrolujte montáž, než vypnete napájení.",
+        "doneWarming": "Hotovo. Jakmile se kamera ohřeje, vypni sestavu na úvodní stránce, než vypneš napájení.",
         "confirm": "Ukončit noc nyní",
         "actions": {
           "stopSequence": "Zastavit pořizování snímků",
@@ -6049,7 +6118,8 @@
           "parkMount": "Zaparkovat montáž",
           "warmCamera": "Ohřát kameru ({minutes} min)"
         },
-        "parkTimeout": "Montáž do 3 minut nehlásila „zaparkováno“. Zkontrolujte ji, než vypnete napájení."
+        "parkTimeout": "Montáž do 3 minut nehlásila „zaparkováno“. Zkontrolujte ji, než vypnete napájení.",
+        "doneShutdown": "Hotovo. Vypni sestavu, než vypneš napájení."
       },
       "settings": {
         "title": "Jednoduchý režim",
@@ -6116,12 +6186,16 @@
         "remaining": "zbývá {time}",
         "activity": {
           "autofocus": "Zaostřuji (autofokus)",
-          "slewing": "Dalekohled přejíždí (centrování nebo Meridian Flip)",
+          "slewing": "Dalekohled přejíždí",
+          "centering": "Centruje se cíl",
+          "startingGuiding": "Spouští se pointace",
+          "closing": "Plán se dokončuje (parkování, ohřev)",
           "calibrating": "Guider kalibruje",
           "settling": "Čekám na ustálení pointace",
           "exposing": "Exponuje",
           "busy": "Připravuji další snímek",
-          "flipping": "Meridian Flip – dalekohled se otáčí na druhou stranu"
+          "flipping": "Meridian Flip – dalekohled se otáčí na druhou stranu",
+          "waitingForDark": "Čeká se na tmu"
         },
         "exposing": "Expozice {seconds} s",
         "frame": "snímek {frame} z {frames}",
@@ -6188,18 +6262,23 @@
           }
         },
         "statusBarHint": "Pointace, ostření a chlazení jsou hodnoceny ve stavovém řádku níže – klepnutím na jednu zjistíte, co znamená.",
-        "stop": "Zastavit"
+        "stop": "Zastavit",
+        "waitingUntil": "Čeká se na tmu, asi v {time}"
       },
       "summary": {
         "finished": {
           "title": "Plán dokončen",
           "text": "Všechny snímky vašeho plánu jsou pořízeny. Ukončete noc, aby se dalekohled zaparkoval a kamera ohřála.",
-          "textFlats": "Všechny snímky vašeho plánu jsou pořízeny. Pořiďte teď flaty, dokud se nic nezměnilo, a pak ukončete noc."
+          "textFlats": "Všechny snímky vašeho plánu jsou pořízeny. Pořiďte teď flaty, dokud se nic nezměnilo, a pak ukončete noc.",
+          "cutOffTitle": "Pro dnešní noc hotovo",
+          "cutOff": "Rozednilo se nebo byl cíl příliš nízko: pořízeno {taken} z {planned} snímků. Spusť plán jinou noc znovu a pořiď zbytek."
         },
         "ended": {
           "title": "Noc ukončena",
           "text": "Čisté nebe! Zde je, co dnešní noc přinesla.",
           "notParked": "Dalekohled zatím není zaparkován",
+          "shutdown": "Vypnout sestavu",
+          "shutdownWait": "Před vypnutím počkej, až bude kamera ohřátá a dalekohled zaparkovaný.",
           "resume": "Pokračovat v noci"
         },
         "frames": "Snímky",
@@ -6216,6 +6295,24 @@
       "camera": {
         "title": "Kamera",
         "hint": "Testovací snímek a každý snímek tvého plánu používají tyto hodnoty, pokud expozici v plánu nedáš vlastní. Doporučený gain a offset najdeš v návodu ke kameře."
+      },
+      "expert": {
+        "show": "Zobrazit expertní nastavení",
+        "hide": "Skrýt expertní nastavení"
+      },
+      "window": {
+        "waits": "Plán čeká, až bude tma, asi v {time}.",
+        "tooMany": "Do této noci se vejde jen asi {fit} z {left} snímků. Zbytek lze pořídit jinou noc.",
+        "noDarkness": "Dnes v noci taková tma nebude, plán by čekal bez konce. Vyber v plánu v části „Noc“ světlejší oblohu.",
+        "limit": {
+          "light": "Skončí nejpozději v {time}, protože se pak rozednívá.",
+          "low": "Skončí nejpozději v {time}, protože cíl je pak příliš nízko."
+        },
+        "nothing": {
+          "light": "Teď je příliš světlo, plán by hned skončil bez snímku. Zapni v plánu „Počkat, až bude tma“: pak se spustí asi v {time}.",
+          "low": "Cíl je příliš nízko nad obzorem a klesá, plán by skončil bez snímku. Vyber jiný cíl nebo menší výšku.",
+          "other": "Takto spuštěný plán by hned skončil bez snímku."
+        }
       }
     },
     "secureObservatory": {
@@ -6276,6 +6373,13 @@
       "cameraCold": "Chlazení kamery je zapnuté ({temperature} °C).",
       "domeOpen": "Kopule není zavřená.",
       "coverOpen": "Kryt flat panelu je otevřený."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Jaká je to značka?",
+      "otherBrand": "Jiná značka",
+      "disconnectFirst": "Před změnou ovladače zařízení odpoj.",
+      "applied": "Hotovo: je vybráno „{device}“. Připoj ho kabelem, zapni a klepni na „Připojit“.",
+      "appliedPickDevice": "Ovladač je nastaven, ale zatím nebylo nalezeno žádné zařízení. Připoj ho kabelem, zapni, obnov seznam výše, vyber ho a klepni na „Připojit“."
     }
   },
   "plugins": {
@@ -6693,6 +6797,7 @@
       "tabs": {
         "network": "Network",
         "services": "Services",
+        "pictures": "Snímky",
         "system": "Systém",
         "indi": "INDI",
         "software": "Software",

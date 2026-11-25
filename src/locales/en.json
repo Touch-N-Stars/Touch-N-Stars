@@ -5994,7 +5994,7 @@
           "slewingToCalibration": "The telescope is moving to the calibration spot…",
           "calibratedHint": "Calibrated. The calibration is kept for later nights too; your plan starts guiding at every target by itself.",
           "calibratedSummary": "Calibrated",
-          "unparkFirst": "Make the telescope ready first (step “Telescope ready”)."
+          "unparkFirst": "Make the telescope ready first (step “{step}”)."
         },
         "capture": {
           "title": "Take pictures",
@@ -6013,7 +6013,18 @@
           "summary": "{targets} target, done at about {time} | {targets} targets, done at about {time}",
           "summaryDone": "{targets} target, all pictures taken | {targets} targets, all pictures taken",
           "confirmStartTitle": "Start taking pictures?",
-          "confirmStartMessage": "The plan with {targets} target starts now and takes about {remaining}. The telescope goes to the target, centers it and starts guiding before the first picture. | The plan with {targets} targets starts now and takes about {remaining}. The telescope goes to each target, centers it and starts guiding before the first picture.",
+          "confirmStartPlan": "The plan starts now with {targets} target and takes about {remaining}. | The plan starts now with {targets} targets and takes about {remaining}.",
+          "confirmStartApproach": {
+            "center": "The telescope goes to the target and centers it. | The telescope goes to each target and centers it.",
+            "slew": "The telescope goes to the target but does not center it. | The telescope goes to each target but does not center it.",
+            "off": "The telescope does not go to the target, it takes the pictures where it points now. | The telescope does not go to the targets, it takes the pictures where it points now.",
+            "mixed": "Not every target is approached and centered, see the plan."
+          },
+          "confirmStartGuiding": {
+            "all": "Guiding starts before the first picture.",
+            "none": "The plan runs without guiding.",
+            "mixed": "Not every target is guided, see the plan."
+          },
           "confirmStopTitle": "Stop taking pictures?",
           "confirmStopMessage": "The current picture is cancelled. You can start the plan again later.",
           "noExposures": "Your plan has a target but no pictures yet. Open the plan and tap “Add exposure” to choose filter, exposure time and number of pictures.",
@@ -6026,7 +6037,6 @@
             "warm": "When it is done, the camera warms up. The mount keeps tracking until you end the night.",
             "none": "When it is done, the mount keeps tracking until you end the night."
           },
-          "confirmStartMessageNoGuiding": "The plan with {targets} target starts now and takes about {remaining}. The telescope goes to the target and centers it before the first picture. | The plan with {targets} targets starts now and takes about {remaining}. The telescope goes to each target and centers it before the first picture.",
           "missingSteps": "{count} target in your plan does not yet do this by itself: {steps}. | {count} targets in your plan do not yet do this by themselves: {steps}.",
           "missingStepParts": {
             "slew": "go there",
@@ -6187,7 +6197,10 @@
         "remaining": "{time} left",
         "activity": {
           "autofocus": "Focusing (autofocus)",
-          "slewing": "Telescope is moving (centering or meridian flip)",
+          "slewing": "Telescope is moving",
+          "centering": "Centering the target",
+          "startingGuiding": "Starting guiding",
+          "closing": "Finishing the plan (parking, warming up)",
           "calibrating": "Guider is calibrating",
           "settling": "Waiting for the guiding to settle",
           "exposing": "Exposing",

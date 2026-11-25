@@ -362,7 +362,9 @@
         "loading": "드라이버 불러오는 중 …",
         "applying": "드라이버 적용 중 …",
         "listFailed": "드라이버를 불러오지 못했습니다: {message}",
-        "changeFailed": "드라이버를 적용하지 못했습니다: {message}"
+        "changeFailed": "드라이버를 적용하지 못했습니다: {message}",
+        "none": "드라이버 없음",
+        "installMissing": "드라이버가 목록에 없나요?"
       },
       "welcome": {
         "title": "Touch'N'Stars를 설정해 봅시다",
@@ -560,7 +562,9 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "저장하지 못했습니다: {message}",
+        "guideScope": "가이드 망원경",
         "nativeCameraHint": "가이드 스코프의 초점 거리를 입력하세요. 가이더가 별의 이동량을 판단하는 데 필요합니다.",
+        "descriptionBuiltIn": "PINS에는 촬영 중 별을 제자리에 유지하는 가이더가 내장되어 있어 다른 프로그램이 필요 없습니다. 가이드 카메라를 고르고 가이드 망원경의 초점 거리를 입력하세요.",
         "nativeRecommended": "팁: PINS에는 자체 가이더(위 목록의 \"Native Guider\")가 있습니다. PINS를 위해 특별히 개발되었고 별도 프로그램 없이 장비에서 직접 실행되며 PHD2보다 더 안정적으로 가이딩하는 경우가 많습니다. PHD2에서 설정한 값은 그대로 이어지며, PHD2를 다시 선택하면 언제든 되돌릴 수 있습니다.",
         "nativeFocalLengthMissing": "가이드 스코프 초점 거리가 아직 0입니다. 가이딩은 그 없이도 작동하지만 Dither와 초 단위 가이딩 오차에는 필요합니다.",
         "guidePixelSizeHintNative": "이 계산에만 사용됩니다. 가이더는 가이드 카메라가 연결되면 픽셀 크기를 직접 읽으며, 그 전까지는 카메라 설명서의 값을 사용하세요.",
@@ -814,7 +818,9 @@
         "restartInfoTitle": "시스템 재시작 중",
         "restartInfoMessage": "시스템을 재시작하고 있습니다.",
         "shutdownInfoTitle": "시스템 종료 중",
-        "shutdownInfoMessage": "시스템을 종료하고 있습니다. 이 페이지에는 더 이상 접속할 수 없습니다."
+        "shutdownInfoMessage": "시스템을 종료하고 있습니다. 이 페이지에는 더 이상 접속할 수 없습니다.",
+        "shutdownPowerHint": "1분 정도 기다린 뒤 전원을 꺼도 됩니다.",
+        "shutdownFailed": "종료하지 못했습니다: {reason}"
       },
       "plate_solver": {
         "title": "플레이트 솔버",
@@ -955,6 +961,17 @@
         "loadError": "스왑 설정을 읽지 못했습니다: {message}",
         "saveError": "스왑 설정을 저장하지 못했습니다: {message}",
         "missingJob": "데몬이 스왑 작업을 반환하지 않았습니다."
+      },
+      "instances": {
+        "discovery": "네트워크에서 리그 찾기",
+        "add": "리그 추가",
+        "edit": "리그 편집",
+        "configured": "저장된 리그",
+        "none": "저장된 리그가 아직 없습니다",
+        "noneHint": "위의 검색을 사용하거나 주소를 직접 입력하세요.",
+        "active": "사용 중",
+        "setActive": "이 리그 사용",
+        "delete": "리그 제거"
       }
     },
     "alpacaDirect": {
@@ -1633,6 +1650,7 @@
         "favorites": "즐겨찾기",
         "framing": "프레이밍",
         "noFilter": "필터 변경 없음",
+        "chooseFilter": "필터 선택",
         "exposureTime": "노출 (초)",
         "count": "수량",
         "noExposures": "이 대상에는 아직 노출이 없습니다.",
@@ -1646,7 +1664,39 @@
         "deleteTargetConfirm": "{name} 및 모든 노출을 시퀀스에서 삭제할까요?",
         "deleteExposure": "노출 삭제",
         "deleteExposureConfirm": "이 노출 행을 시퀀스에서 삭제할까요?",
-        "addTargetNamed": "{name}을(를) 대상으로 추가"
+        "addTargetNamed": "{name}을(를) 대상으로 추가",
+        "limits": {
+          "title": "밤",
+          "wait": "어두워질 때까지 기다리기",
+          "waitHint": "어두워지면 바로 플랜이 시작됩니다. 기다리는 동안 마운트는 추적하지 않습니다.",
+          "dawn": "새벽에 멈추기",
+          "dawnHint": "사진이 남아 있어도 밝아지면 플랜을 끝냅니다. 나머지는 다음 밤에 찍을 수 있습니다.",
+          "from": "{time}부터",
+          "notTonight": "오늘 밤 없음",
+          "low": "대상이 너무 낮아지면 멈추기",
+          "lowHint": "지평선 근처에서는 대기 때문에 별이 흐려지고 나무나 집이 가립니다. 그러면 플랜은 다음 대상으로 넘어갑니다.",
+          "minAltitude": "지평선 위 최저 고도(°)",
+          "noTarget": "먼저 플랜에 대상을 추가하세요. 그러면 자동으로 켜집니다.",
+          "targetRunning": "대상을 촬영하는 동안에는 바꿀 수 없습니다.",
+          "sunBelow": "태양이 지평선 아래 {degrees}°",
+          "darknessName": {
+            "bright": "아직 밝음",
+            "dusky": "거의 어두움",
+            "usual": "보통",
+            "dark": "더 어두움",
+            "darkest": "완전히 어두움"
+          },
+          "minAltitudeHint": "0°는 지평선, 90°는 바로 머리 위입니다. 팔을 뻗어 주먹 두 개를 겹치면 약 20°입니다.",
+          "startAt": "밤의 시작",
+          "endAt": "밤의 끝",
+          "until": "{time}까지"
+        },
+        "budget": {
+          "question": "이 대상을 얼마나 오래 촬영할까요? (시간)",
+          "pictures": "{seconds}초 사진 {count}장 | {seconds}초 사진 {count}장",
+          "apply": "이 사진 수 사용",
+          "wholeNight": "밤이 허락하는 만큼 ({time})"
+        }
       }
     },
     "mount": {
@@ -5775,6 +5825,7 @@
       "sequenceStart": "시퀀스를 시작할 수 없습니다",
       "guidingStart": "가이딩을 시작할 수 없습니다",
       "autofocusStart": "오토포커스를 시작할 수 없습니다",
+      "autofocusStop": "오토포커스를 취소할 수 없습니다",
       "binning": "비닝을 변경할 수 없습니다",
       "readout": "읽기 모드를 변경할 수 없습니다",
       "switchSet": "스위치를 설정할 수 없습니다"
@@ -5912,6 +5963,7 @@
           "lastFailed": "마지막 오토포커스({time}) 실패 - 별이 보이는지 확인하고 다시 시도하세요",
           "pointAtStars": "망원경을 별로 향하게 하기(스카이 아틀라스)",
           "setupFirst": "이 망원경으로 첫 오토포커스를 하기 전에 한 번 설정하세요. 도우미가 포커서와 카메라를 측정해 작동하는 설정을 찾습니다. 그렇지 않으면 오토포커스가 실패하는 경우가 많습니다.",
+          "cancelled": "오토포커스를 취소했습니다. 포커서가 이전 위치로 돌아갑니다.",
           "setup": "오토포커스 설정"
         },
         "guide": {
@@ -5932,7 +5984,7 @@
           "slewingToCalibration": "망원경이 캘리브레이션 위치로 이동 중…",
           "calibratedHint": "캘리브레이션 완료. 캘리브레이션은 이후 밤에도 유지되며, 플랜이 모든 대상에서 자동으로 가이딩을 시작합니다.",
           "calibratedSummary": "캘리브레이션 완료",
-          "unparkFirst": "먼저 망원경을 준비하세요(\"망원경 준비\" 단계)."
+          "unparkFirst": "먼저 망원경을 준비하세요(\"{step}\" 단계)."
         },
         "capture": {
           "title": "촬영",
@@ -5940,6 +5992,9 @@
           "targets": "대상",
           "remaining": "남은 시간",
           "noPlan": "아직 플랜이 없습니다. 대상, 필터, 노출 시간, 장수로 플랜을 만드세요.",
+          "nothingLeft": "플랜에 촬영할 사진이 남아 있지 않습니다. 새 대상을 고르거나 이 플랜의 사진을 다시 촬영하세요.",
+          "repeat": "다시 촬영",
+          "repeatFailed": "플랜을 초기화할 수 없습니다",
           "editPlan": "플랜 편집",
           "createPlan": "플랜 만들기",
           "watch": "이미지가 들어오는 것 보기",
@@ -5948,7 +6003,18 @@
           "summary": "대상 {targets}개, 약 {time}에 완료 | 대상 {targets}개, 약 {time}에 완료",
           "summaryDone": "대상 {targets}개, 모든 이미지 촬영 완료 | 대상 {targets}개, 모든 이미지 촬영 완료",
           "confirmStartTitle": "촬영을 시작할까요?",
-          "confirmStartMessage": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 대상으로 이동해 센터링하고 가이딩을 시작합니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 각 대상으로 이동해 센터링하고 가이딩을 시작합니다.",
+          "confirmStartPlan": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다.",
+          "confirmStartApproach": {
+            "center": "망원경이 대상으로 이동해 센터링합니다. | 망원경이 각 대상으로 이동해 센터링합니다.",
+            "slew": "망원경이 대상으로 이동하지만 센터링하지 않습니다. | 망원경이 각 대상으로 이동하지만 센터링하지 않습니다.",
+            "off": "망원경이 대상으로 이동하지 않고 지금 향한 곳을 촬영합니다. | 망원경이 대상들로 이동하지 않고 지금 향한 곳을 촬영합니다.",
+            "mixed": "일부 대상은 이동과 센터링을 하지 않습니다. 플랜을 확인하세요."
+          },
+          "confirmStartGuiding": {
+            "all": "첫 사진을 찍기 전에 가이딩을 시작합니다.",
+            "none": "플랜이 가이딩 없이 실행됩니다.",
+            "mixed": "일부 대상은 가이딩하지 않습니다. 플랜을 확인하세요."
+          },
           "confirmStopTitle": "촬영을 중지할까요?",
           "confirmStopMessage": "현재 이미지는 취소됩니다. 플랜은 나중에 다시 시작할 수 있습니다.",
           "noExposures": "플랜에 대상은 있지만 아직 촬영 설정이 없습니다. 플랜을 열고 \"노출 추가\"를 눌러 필터, 노출 시간, 장수를 선택하세요.",
@@ -5960,7 +6026,6 @@
             "warm": "끝나면 카메라가 예열됩니다. 마운트는 밤을 종료할 때까지 추적을 계속합니다.",
             "none": "끝나도 마운트는 밤을 종료할 때까지 추적을 계속합니다."
           },
-          "confirmStartMessageNoGuiding": "대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 대상으로 이동해 센터링합니다. | 대상 {targets}개의 플랜이 지금 시작되며 약 {remaining} 걸립니다. 첫 이미지를 찍기 전에 망원경이 각 대상으로 이동해 센터링합니다.",
           "missingSteps": "플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}. | 플랜의 대상 {count}개가 아직 자동으로 하지 않습니다: {steps}.",
           "missingStepParts": {
             "slew": "이동",
@@ -5985,7 +6050,9 @@
           "flipPause": "{target}은(는) 약 {meridian}에 자오선에 도달하며, 플랜은 {pause}에 일시정지하고 {earliest}에 망원경을 돌립니다.",
           "flipNone": "이 플랜에는 Meridian Flip이 필요하지 않습니다.",
           "flipYourTarget": "내 대상",
-          "flipSettings": "Flip 설정 및 주간 테스트"
+          "flipSettings": "Flip 설정 및 주간 테스트",
+          "summaryCutOff": "{planned}장 중 {taken}장 촬영됨",
+          "confirmStartWait": "어두워질 때까지 기다립니다(약 {time})."
         },
         "flats": {
           "title": "Flat",
@@ -6041,7 +6108,9 @@
         "title": "밤 종료",
         "intro": "이 단계들은 차례로 실행됩니다. 계속 실행하려는 항목은 체크를 해제하세요.",
         "nothingToDo": "실행 중인 것이 없고 마운트가 파킹되어 있습니다. 할 일이 남아 있지 않습니다.",
+        "nothingToDoNoMount": "실행 중인 것이 없습니다. 마운트가 연결되어 있지 않으니 파킹되어 있는지 직접 확인하세요.",
         "someFailed": "모두 성공하지는 않았으며 이유는 해당 단계 아래에 있습니다. 전원을 끄기 전에 마운트를 확인하세요.",
+        "doneWarming": "모두 끝났습니다. 카메라가 승온되면 전원을 끄기 전에 시작 페이지에서 리그를 종료하세요.",
         "confirm": "지금 밤 종료",
         "actions": {
           "stopSequence": "촬영 중지",
@@ -6049,7 +6118,8 @@
           "parkMount": "마운트 파킹",
           "warmCamera": "카메라 승온({minutes}분)"
         },
-        "parkTimeout": "마운트가 3분 안에 \"파킹됨\"을 보고하지 않았습니다. 전원을 끄기 전에 확인하세요."
+        "parkTimeout": "마운트가 3분 안에 \"파킹됨\"을 보고하지 않았습니다. 전원을 끄기 전에 확인하세요.",
+        "doneShutdown": "모두 끝났습니다. 전원을 끄기 전에 리그를 종료하세요."
       },
       "settings": {
         "title": "간단 모드",
@@ -6116,12 +6186,16 @@
         "remaining": "{time} 남음",
         "activity": {
           "autofocus": "포커스 맞추는 중(오토포커스)",
-          "slewing": "망원경 이동 중(센터링 또는 Meridian Flip)",
+          "slewing": "망원경 이동 중",
+          "centering": "대상 센터링 중",
+          "startingGuiding": "가이딩 시작 중",
+          "closing": "플랜 마무리 중(파킹, 승온)",
           "calibrating": "가이더 캘리브레이션 중",
           "settling": "가이딩 안정화 대기 중",
           "exposing": "노출 중",
           "busy": "다음 이미지 준비 중",
-          "flipping": "Meridian Flip - 망원경이 반대편으로 회전합니다"
+          "flipping": "Meridian Flip - 망원경이 반대편으로 회전합니다",
+          "waitingForDark": "어두워질 때까지 기다리는 중"
         },
         "exposing": "{seconds}초 노출 중",
         "frame": "{frames}장 중 {frame}번째",
@@ -6188,18 +6262,23 @@
           }
         },
         "statusBarHint": "가이딩, 포커스, 냉각은 아래 상태 표시줄에서 평가됩니다. 하나를 누르면 의미를 볼 수 있습니다.",
-        "stop": "중지"
+        "stop": "중지",
+        "waitingUntil": "어두워질 때까지 기다리는 중(약 {time})"
       },
       "summary": {
         "finished": {
           "title": "플랜 완료",
           "text": "플랜의 모든 이미지를 촬영했습니다. 밤을 종료하면 망원경을 파킹하고 카메라를 승온합니다.",
-          "textFlats": "플랜의 모든 이미지를 촬영했습니다. 아무것도 바뀌기 전에 지금 Flat을 촬영한 다음 밤을 종료하세요."
+          "textFlats": "플랜의 모든 이미지를 촬영했습니다. 아무것도 바뀌기 전에 지금 Flat을 촬영한 다음 밤을 종료하세요.",
+          "cutOffTitle": "오늘 밤은 끝",
+          "cutOff": "밝아졌거나 대상이 너무 낮아졌습니다: {planned}장 중 {taken}장을 촬영했습니다. 다른 밤에 플랜을 다시 시작하면 나머지를 촬영합니다."
         },
         "ended": {
           "title": "밤 종료됨",
           "text": "맑은 하늘을 기원합니다! 오늘 밤의 결과입니다.",
           "notParked": "망원경이 아직 파킹되지 않았습니다",
+          "shutdown": "리그 종료",
+          "shutdownWait": "종료하기 전에 카메라가 승온되고 망원경이 파킹될 때까지 기다리세요.",
           "resume": "밤 계속하기"
         },
         "frames": "이미지",
@@ -6216,6 +6295,24 @@
       "camera": {
         "title": "카메라",
         "hint": "테스트 사진과 플랜의 모든 사진은 이 값을 사용합니다. 플랜의 노출에 별도 값을 지정한 경우는 예외입니다. 권장 게인과 오프셋은 카메라 설명서에 나와 있습니다."
+      },
+      "expert": {
+        "show": "전문가 설정 표시",
+        "hide": "전문가 설정 숨기기"
+      },
+      "window": {
+        "waits": "플랜은 어두워질 때까지 기다립니다(약 {time}).",
+        "tooMany": "이 밤에는 {left}장 중 약 {fit}장만 촬영할 수 있습니다. 나머지는 다른 밤에 촬영할 수 있습니다.",
+        "noDarkness": "오늘 밤은 이만큼 어두워지지 않아 플랜이 끝없이 기다립니다. 플랜의 \"밤\"에서 더 밝은 하늘을 고르세요.",
+        "limit": {
+          "light": "밝아지기 때문에 늦어도 {time}에 멈춥니다.",
+          "low": "대상이 너무 낮아지기 때문에 늦어도 {time}에 멈춥니다."
+        },
+        "nothing": {
+          "light": "지금은 너무 밝아 플랜이 사진 없이 바로 끝납니다. 플랜에서 \"어두워질 때까지 기다리기\"를 켜세요. 그러면 약 {time}에 시작합니다.",
+          "low": "대상이 지평선 위로 너무 낮고 내려가는 중이라 플랜이 사진 없이 끝납니다. 다른 대상이나 더 낮은 고도를 고르세요.",
+          "other": "이대로 시작하면 플랜이 사진 없이 바로 끝납니다."
+        }
       }
     },
     "secureObservatory": {
@@ -6276,6 +6373,13 @@
       "cameraCold": "카메라 쿨러가 켜져 있습니다({temperature} °C).",
       "domeOpen": "돔이 닫혀 있지 않습니다.",
       "coverOpen": "플랫 패널 커버가 열려 있습니다."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "어떤 브랜드인가요?",
+      "otherBrand": "다른 브랜드",
+      "disconnectFirst": "드라이버를 바꾸기 전에 장치 연결을 해제하세요.",
+      "applied": "완료: \"{device}\"이(가) 선택되었습니다. 케이블을 꽂고 전원을 켠 뒤 \"연결\"을(를) 누르세요.",
+      "appliedPickDevice": "드라이버는 설정되었지만 아직 장치를 찾지 못했습니다. 케이블을 꽂고 전원을 켠 뒤 위 목록을 새로 고쳐 장치를 고르고 \"연결\"을(를) 누르세요."
     }
   },
   "plugins": {
@@ -6516,6 +6620,7 @@
       "tabs": {
         "network": "네트워크",
         "services": "서비스",
+        "pictures": "사진",
         "system": "시스템",
         "indi": "INDI",
         "software": "소프트웨어",
