@@ -6042,7 +6042,6 @@
         "intro": "Diese Schritte laufen nacheinander. Entferne den Haken bei allem, was weiterlaufen soll.",
         "nothingToDo": "Nichts läuft und die Montierung ist geparkt – es gibt nichts mehr zu tun.",
         "someFailed": "Nicht alles hat geklappt, der Grund steht beim Schritt. Prüfe die Montierung, bevor du den Strom abschaltest.",
-        "done": "Alles erledigt. Warte, bis die Kamera aufgewärmt ist, bevor du den Strom abschaltest.",
         "confirm": "Nacht jetzt beenden",
         "actions": {
           "stopSequence": "Aufnahme stoppen",
@@ -6050,8 +6049,7 @@
           "parkMount": "Montierung parken",
           "warmCamera": "Kamera aufwärmen ({minutes} Min.)"
         },
-        "parkTimeout": "Die Montierung hat nicht innerhalb von 3 Minuten „geparkt“ gemeldet. Prüfe sie, bevor du den Strom abschaltest.",
-        "doneNoWarmUp": "Alles erledigt. Du kannst den Strom jetzt abschalten."
+        "parkTimeout": "Die Montierung hat nicht innerhalb von 3 Minuten „geparkt“ gemeldet. Prüfe sie, bevor du den Strom abschaltest."
       },
       "settings": {
         "title": "Einfacher Modus",

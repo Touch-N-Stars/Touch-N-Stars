@@ -65,8 +65,8 @@
             anyFailed
               ? $t('components.simpleMode.endNight.someFailed')
               : results.warmCamera === 'ok'
-                ? $t('components.simpleMode.endNight.done')
-                : $t('components.simpleMode.endNight.doneNoWarmUp')
+                ? $t('components.simpleMode.endNight.doneWarming')
+                : $t('components.simpleMode.endNight.doneShutdown')
           }}
         </p>
         <div class="flex gap-2 w-full">
@@ -87,6 +87,14 @@
           >
             <Spinner v-if="running" size="sm" />
             {{ $t('components.simpleMode.endNight.confirm') }}
+          </button>
+          <button
+            v-else-if="finished && !anyFailed && results.warmCamera !== 'ok'"
+            type="button"
+            class="tns-btn-primary"
+            @click="$emit('shutdown')"
+          >
+            {{ $t('components.simpleMode.summary.ended.shutdown') }}
           </button>
           <!-- The plan already parked and warmed up by itself: the night still has to end here,
                or the start page keeps asking for it. -->
@@ -122,7 +130,7 @@ import { isBackendRefusal } from '@/utils/backendErrors';
 const props = defineProps({
   show: { type: Boolean, default: false },
 });
-const emit = defineEmits(['close', 'finished']);
+const emit = defineEmits(['close', 'finished', 'shutdown']);
 
 const { t } = useI18n();
 const store = apiStore();

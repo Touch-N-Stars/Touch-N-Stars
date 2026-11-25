@@ -244,6 +244,14 @@
     <!-- End of night shutdown: app level, its progress outlives the page it was started on -->
     <SecureObservatoryDialog />
 
+    <!-- Restart / shutdown: app level, because pages and status bar make way for the connection
+         screen once the box is down, and its last message is when to cut the power -->
+    <SystemPowerModal
+      v-if="statusBarStore.powerDialog"
+      :initialAction="statusBarStore.powerDialog === 'choose' ? null : statusBarStore.powerDialog"
+      @close="statusBarStore.closePowerDialog()"
+    />
+
     <!-- Dialog Modal -->
     <DialogModal />
 
@@ -368,6 +376,7 @@ import { useSimpleMode } from '@/composables/useSimpleMode';
 import { useRoute } from 'vue-router';
 import DialogModal from '@/components/app/DialogModal.vue';
 import SecureObservatoryDialog from '@/components/system/SecureObservatoryDialog.vue';
+import SystemPowerModal from '@/components/system/SystemPowerModal.vue';
 import MessageBoxModal from '@/components/app/MessageBoxModal.vue';
 import PickerOverlay from '@/components/helpers/PickerOverlay.vue';
 import Modal from '@/components/helpers/Modal.vue';
@@ -402,6 +411,7 @@ import apiPinsService from '@/services/apiPinsService';
 import { createUnderVoltageNotifier } from '@/plugins/systemmetrics/services/underVoltageNotifier';
 import { usePluginStore } from '@/store/pluginStore';
 import { useMeridianFlipTestStore } from '@/store/meridianFlipTestStore';
+import { useStatusBarStore } from '@/store/statusBarStore';
 
 const SkyAtlasView = defineAsyncComponent(() => import('./views/CelestiaAtlasView.vue'));
 const TutorialModal = defineAsyncComponent(() => import('@/components/TutorialModal.vue'));
@@ -428,6 +438,7 @@ const toastStore = useToastStore();
 const pinsStore = usePinsStore();
 const nightSummaryStore = useNightSummaryStore();
 const flipTestStore = useMeridianFlipTestStore();
+const statusBarStore = useStatusBarStore();
 const route = useRoute();
 useSimpleModeLanding();
 const { active: simpleModeActive } = useSimpleMode();

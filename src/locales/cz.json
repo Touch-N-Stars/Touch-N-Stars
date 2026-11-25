@@ -6042,7 +6042,6 @@
         "intro": "Tyto kroky běží jeden po druhém. Odškrtněte, co má dál běžet.",
         "nothingToDo": "Nic neběží a montáž je zaparkovaná – není co dělat.",
         "someFailed": "Ne všechno se povedlo, důvod je u kroku. Zkontrolujte montáž, než vypnete napájení.",
-        "done": "Vše hotovo. Než vypnete napájení, počkejte, až se kamera ohřeje.",
         "confirm": "Ukončit noc nyní",
         "actions": {
           "stopSequence": "Zastavit pořizování snímků",
@@ -6050,8 +6049,7 @@
           "parkMount": "Zaparkovat montáž",
           "warmCamera": "Ohřát kameru ({minutes} min)"
         },
-        "parkTimeout": "Montáž do 3 minut nehlásila „zaparkováno“. Zkontrolujte ji, než vypnete napájení.",
-        "doneNoWarmUp": "Vše hotovo. Napájení můžete nyní vypnout."
+        "parkTimeout": "Montáž do 3 minut nehlásila „zaparkováno“. Zkontrolujte ji, než vypnete napájení."
       },
       "settings": {
         "title": "Jednoduchý režim",

@@ -2,10 +2,13 @@ import { defineStore } from 'pinia';
 
 // Runtime state of the status bar: which docked panel (camera, guider graph,
 // mount, filter, progress, switch) is open. Only one can be open at a time,
-// so a single id replaces the per-device show* flags. Not persisted.
+// so a single id replaces the per-device show* flags. Also which
+// restart/shutdown dialog App.vue shows. Not persisted.
 export const useStatusBarStore = defineStore('statusBarStore', {
   state: () => ({
     activePanel: null,
+    // null | 'choose' | 'restart' | 'shutdown'
+    powerDialog: null,
   }),
   getters: {
     isPanelOpen: (state) => (id) => state.activePanel === id,
@@ -19,6 +22,12 @@ export const useStatusBarStore = defineStore('statusBarStore', {
     },
     closePanel() {
       this.activePanel = null;
+    },
+    openPowerDialog(action = 'choose') {
+      this.powerDialog = action;
+    },
+    closePowerDialog() {
+      this.powerDialog = null;
     },
   },
 });

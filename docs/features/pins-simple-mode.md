@@ -192,6 +192,12 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
    8h. Given ein Plan, der schon geparkt und aufgewärmt hat, then lässt sich die Nacht trotzdem
    beenden: der Dialog hat ohne Aktionen nur die Bestätigung. Ist die Montierung nicht verbunden,
    behauptet er nicht, sie sei geparkt.
+   8o. Given eine beendete Nacht, then bietet die Bilanz „Rig herunterfahren“ an, ebenso der Dialog
+   „Nacht beenden“ nach vollem Erfolg ohne Aufwärmen. Solange die Kamera aufwärmt oder die
+   Montierung nicht geparkt ist, tritt der Knopf zurück und ein Hinweis sagt, worauf zu warten
+   ist; laufende Flats sperren ihn. Der Knopf öffnet die vorhandene Rückfrage mit ihrer
+   Rig-Prüfung. Nimmt die Box das Herunterfahren an, sagt der Dialog, wann der Strom weg darf, und
+   bleibt stehen, auch wenn die Verbindung abreißt. Lehnt sie ab, steht der Grund im Dialog.
    8b. Given eine Nacht, in der der Plan mindestens 15 min geguidet hat und davon mindestens 30 %
    mit roter Guiding-Ampel, then empfehlen die Bilanz und die nächste Vorbereitung den
    Guiding-Coach (≈ 15 min) mit Knopf zum Coach-Tab (`/guider?tab=coach`). Öffnen oder
@@ -273,6 +279,13 @@ auf, danach 12 → 15 Bilder mit drittem Lauf. Über die API mit drei Zielen: Da
 übersprungen, die anderen laufen. Nicht geprüft: echte Dämmerung über Nacht, mehrere Filter,
 Meridian-Flip und Guiding zusammen mit den Grenzen, der Weg über den Atlas, echte Geräte. Bewusst
 nicht abgefangen: ein noch tiefes, aber aufgehendes Ziel (NINAs Höhenbedingung lässt es laufen).
+
+## Verification (2026-11-25, Herunterfahren)
+
+Gebaute App gegen das Schein-Backend, Telefongröße: Nacht beenden mit Parken → Knopf im Dialog →
+Rückfrage; Ablehnung zeigt den Grund und kehrt zur Rückfrage zurück; nicht geparkte Montierung
+warnt; Annahme zeigt den Hinweis zum Strom, der nach Wegfall des Backends stehen bleibt. Nicht
+geprüft: das wirkliche Herunterfahren einer Box, eine aufwärmende Kamera.
 
 ## Open questions
 

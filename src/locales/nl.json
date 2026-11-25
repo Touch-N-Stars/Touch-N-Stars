@@ -6042,7 +6042,6 @@
         "intro": "Deze stappen worden na elkaar uitgevoerd. Vink uit wat je wilt laten doorlopen.",
         "nothingToDo": "Er loopt niets en de mount is geparkeerd – er is niets meer te doen.",
         "someFailed": "Niet alles is gelukt, de reden staat onder de stap. Controleer de mount voordat je de stroom uitzet.",
-        "done": "Alles klaar. Wacht tot de camera is opgewarmd voordat je de stroom uitzet.",
         "confirm": "De nacht nu beëindigen",
         "actions": {
           "stopSequence": "Foto's maken stoppen",
@@ -6050,8 +6049,7 @@
           "parkMount": "De mount parkeren",
           "warmCamera": "De camera opwarmen ({minutes} min)"
         },
-        "parkTimeout": "De mount meldde niet “geparkeerd” binnen 3 minuten. Controleer hem voordat je de stroom uitzet.",
-        "doneNoWarmUp": "Alles klaar. Je kunt de stroom nu uitzetten."
+        "parkTimeout": "De mount meldde niet “geparkeerd” binnen 3 minuten. Controleer hem voordat je de stroom uitzet."
       },
       "settings": {
         "title": "Eenvoudige modus",

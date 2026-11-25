@@ -818,7 +818,9 @@
         "restartInfoTitle": "System is restarting",
         "restartInfoMessage": "The system is restarting.",
         "shutdownInfoTitle": "System is shutting down",
-        "shutdownInfoMessage": "The system is shutting down. This page will no longer be reachable."
+        "shutdownInfoMessage": "The system is shutting down. This page will no longer be reachable.",
+        "shutdownPowerHint": "Wait about a minute, then you can switch off the power.",
+        "shutdownFailed": "The shutdown did not work: {reason}"
       },
       "plate_solver": {
         "title": "Plate Solver",
@@ -6098,7 +6100,7 @@
         "nothingToDo": "Nothing is running and the mount is parked – there is nothing left to do.",
         "nothingToDoNoMount": "Nothing is running. The mount is not connected, so check for yourself that it is parked.",
         "someFailed": "Not everything worked, the reason is under the step. Check the mount before you switch off the power.",
-        "done": "All done. Wait until the camera has warmed up before you switch off the power.",
+        "doneWarming": "All done. Once the camera has warmed up, shut the rig down on the start page before you switch off the power.",
         "confirm": "End the night now",
         "actions": {
           "stopSequence": "Stop taking pictures",
@@ -6107,7 +6109,7 @@
           "warmCamera": "Warm up the camera ({minutes} min)"
         },
         "parkTimeout": "The mount did not report “parked” within 3 minutes. Check it before you switch off the power.",
-        "doneNoWarmUp": "All done. You can switch off the power now."
+        "doneShutdown": "All done. Shut the rig down before you switch off the power."
       },
       "settings": {
         "title": "Simple mode",
@@ -6262,6 +6264,8 @@
           "title": "Night ended",
           "text": "Clear skies! Here is what tonight brought.",
           "notParked": "Telescope not parked yet",
+          "shutdown": "Shut down the rig",
+          "shutdownWait": "Before you shut down, wait until the camera is warm and the telescope is parked.",
           "resume": "Continue the night"
         },
         "frames": "Pictures",

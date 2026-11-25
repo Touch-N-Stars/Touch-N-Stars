@@ -78,6 +78,21 @@
         {{ $t('components.simpleMode.steps.end.action') }}
       </button>
     </template>
+    <template v-if="phase === 'ended'">
+      <p v-if="!secured" class="text-xs text-content-muted">
+        {{ $t('components.simpleMode.summary.ended.shutdownWait') }}
+      </p>
+      <!-- Pulling the plug on a running box can damage its SD card. The dialog warns when the
+           rig is not secured. -->
+      <button
+        type="button"
+        :class="secured ? 'tns-btn-primary' : 'tns-btn-secondary'"
+        :disabled="endBlocked"
+        @click="$emit('shutdown')"
+      >
+        {{ $t('components.simpleMode.summary.ended.shutdown') }}
+      </button>
+    </template>
     <!-- Ended by mistake, or the sky cleared again: back to the night -->
     <button
       v-if="phase === 'ended'"
@@ -120,10 +135,15 @@ const props = defineProps({
   // { taken, planned } when dawn or the targets' altitude ended the plan before its last picture
   cutOff: { type: Object, default: null },
 });
-defineEmits(['end', 'resume']);
+defineEmits(['end', 'resume', 'shutdown']);
 
 const store = apiStore();
 const imageStore = useImagetStore();
+
+// Camera warm and mount parked: nothing left to wait for
+const secured = computed(
+  () => !props.warming && (!store.mountInfo.Connected || store.mountIsParked)
+);
 
 const isDeleted = (entry, index) =>
   isHistoryEntryDeleted(entry, historyEntryKey(index, entry), imageStore.deletedHistoryKeys);

@@ -6042,7 +6042,6 @@
         "intro": "Estes passos rodam um após o outro. Desmarque o que você quiser manter em execução.",
         "nothingToDo": "Nada está em execução e a montagem está estacionada – não há mais nada a fazer.",
         "someFailed": "Nem tudo funcionou, o motivo está sob o passo. Verifique a montagem antes de desligar a alimentação.",
-        "done": "Tudo pronto. Aguarde a câmera aquecer antes de desligar a alimentação.",
         "confirm": "Encerrar a noite agora",
         "actions": {
           "stopSequence": "Parar captura de imagens",
@@ -6050,8 +6049,7 @@
           "parkMount": "Estacionar a montagem",
           "warmCamera": "Aquecer a câmera ({minutes} min)"
         },
-        "parkTimeout": "A montagem não informou “estacionada” em 3 minutos. Verifique-a antes de desligar a alimentação.",
-        "doneNoWarmUp": "Tudo pronto. Você já pode desligar a alimentação."
+        "parkTimeout": "A montagem não informou “estacionada” em 3 minutos. Verifique-a antes de desligar a alimentação."
       },
       "settings": {
         "title": "Modo simples",

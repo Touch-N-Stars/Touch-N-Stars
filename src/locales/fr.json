@@ -6042,7 +6042,6 @@
         "intro": "Ces étapes s'exécutent l'une après l'autre. Décochez ce que vous voulez laisser en cours.",
         "nothingToDo": "Rien n'est en cours et la monture est parquée : il n'y a plus rien à faire.",
         "someFailed": "Tout n'a pas fonctionné, la raison figure sous l'étape. Vérifiez la monture avant de couper l'alimentation.",
-        "done": "Terminé. Attendez que la caméra soit réchauffée avant de couper l'alimentation.",
         "confirm": "Terminer la nuit maintenant",
         "actions": {
           "stopSequence": "Arrêter les prises de vue",
@@ -6050,8 +6049,7 @@
           "parkMount": "Parquer la monture",
           "warmCamera": "Réchauffer la caméra ({minutes} min)"
         },
-        "parkTimeout": "La monture n'a pas signalé « parquée » en 3 minutes. Vérifiez-la avant de couper l'alimentation.",
-        "doneNoWarmUp": "Terminé. Vous pouvez couper l'alimentation."
+        "parkTimeout": "La monture n'a pas signalé « parquée » en 3 minutes. Vérifiez-la avant de couper l'alimentation."
       },
       "settings": {
         "title": "Mode simple",

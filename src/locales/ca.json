@@ -6042,7 +6042,6 @@
         "intro": "Aquests passos s'executen un darrere l'altre. Desmarca el que vulguis mantenir en marxa.",
         "nothingToDo": "No hi ha res en marxa i la muntura està aparcada: no queda res per fer.",
         "someFailed": "No tot ha funcionat, el motiu és sota el pas. Revisa la muntura abans d'apagar l'alimentació.",
-        "done": "Tot fet. Espera que la càmera s'hagi escalfat abans d'apagar l'alimentació.",
         "confirm": "Acaba la nit ara",
         "actions": {
           "stopSequence": "Atura les imatges",
@@ -6050,8 +6049,7 @@
           "parkMount": "Aparca la muntura",
           "warmCamera": "Escalfa la càmera ({minutes} min)"
         },
-        "parkTimeout": "La muntura no ha informat \"aparcada\" en 3 minuts. Revisa-la abans d'apagar l'alimentació.",
-        "doneNoWarmUp": "Tot fet. Ja pots apagar l'alimentació."
+        "parkTimeout": "La muntura no ha informat \"aparcada\" en 3 minuts. Revisa-la abans d'apagar l'alimentació."
       },
       "settings": {
         "title": "Mode simple",

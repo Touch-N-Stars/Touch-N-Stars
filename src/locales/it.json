@@ -6042,7 +6042,6 @@
         "intro": "Questi passaggi vengono eseguiti uno dopo l'altro. Deseleziona ciò che vuoi lasciare in esecuzione.",
         "nothingToDo": "Niente è in esecuzione e la montatura è parcheggiata: non resta nulla da fare.",
         "someFailed": "Non tutto ha funzionato, il motivo è sotto il passaggio. Controlla la montatura prima di spegnere l'alimentazione.",
-        "done": "Tutto fatto. Attendi che la camera si sia riscaldata prima di spegnere l'alimentazione.",
         "confirm": "Termina la notte ora",
         "actions": {
           "stopSequence": "Ferma le riprese",
@@ -6050,8 +6049,7 @@
           "parkMount": "Parcheggia la montatura",
           "warmCamera": "Riscalda la camera ({minutes} min)"
         },
-        "parkTimeout": "La montatura non ha segnalato “parcheggiata” entro 3 minuti. Controllala prima di spegnere l'alimentazione.",
-        "doneNoWarmUp": "Tutto fatto. Ora puoi spegnere l'alimentazione."
+        "parkTimeout": "La montatura non ha segnalato “parcheggiata” entro 3 minuti. Controllala prima di spegnere l'alimentazione."
       },
       "settings": {
         "title": "Modalità semplice",

@@ -60,6 +60,7 @@
             :cutOff="cutOffTonight ? planProgress : null"
             @end="showEndNight = true"
             @resume="setMark('end', null)"
+            @shutdown="shutDown"
           />
           <!-- After the plan the steps fold away; the flats are what comes next. -->
           <SimpleStepCard
@@ -646,6 +647,7 @@
       :show="showEndNight"
       @close="showEndNight = false"
       @finished="(ok) => ok && setMark('end', 'done')"
+      @shutdown="shutDown"
     />
   </div>
 </template>
@@ -663,6 +665,7 @@ import { useSequenceStore } from '@/store/sequenceStore';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 import { useTppaStore } from '@/store/tppaStore';
 import { useToastStore } from '@/store/toastStore';
+import { useStatusBarStore } from '@/store/statusBarStore';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
 import { useEquipmentStore } from '@/store/equipmentStore';
 import { NATIVE_GUIDER_ID, isNativeGuiderInUse } from '@/utils/nativeGuider';
@@ -1173,6 +1176,12 @@ const busy = reactive({
   capture: false,
 });
 const showEndNight = ref(false);
+const statusBarStore = useStatusBarStore();
+
+function shutDown() {
+  showEndNight.value = false;
+  statusBarStore.openPowerDialog('shutdown');
+}
 
 async function withBusy(key, action) {
   if (busy[key]) return;

@@ -6042,7 +6042,6 @@
         "intro": "Te kroki wykonują się jeden po drugim. Odznacz to, co ma dalej działać.",
         "nothingToDo": "Nic nie działa, a montaż jest zaparkowany – nie ma nic do zrobienia.",
         "someFailed": "Nie wszystko się udało, powód jest pod krokiem. Sprawdź montaż, zanim wyłączysz zasilanie.",
-        "done": "Gotowe. Poczekaj, aż kamera się ogrzeje, zanim wyłączysz zasilanie.",
         "confirm": "Zakończ noc teraz",
         "actions": {
           "stopSequence": "Zatrzymaj zdjęcia",
@@ -6050,8 +6049,7 @@
           "parkMount": "Zaparkuj montaż",
           "warmCamera": "Ogrzej kamerę ({minutes} min)"
         },
-        "parkTimeout": "Montaż nie zgłosił stanu „zaparkowany” w ciągu 3 minut. Sprawdź go, zanim wyłączysz zasilanie.",
-        "doneNoWarmUp": "Gotowe. Możesz teraz wyłączyć zasilanie."
+        "parkTimeout": "Montaż nie zgłosił stanu „zaparkowany” w ciągu 3 minut. Sprawdź go, zanim wyłączysz zasilanie."
       },
       "settings": {
         "title": "Tryb prosty",

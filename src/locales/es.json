@@ -6042,7 +6042,6 @@
         "intro": "Estos pasos se ejecutan uno tras otro. Desmarca lo que quieras mantener en marcha.",
         "nothingToDo": "No hay nada en marcha y la montura está aparcada: no queda nada por hacer.",
         "someFailed": "No todo funcionó; el motivo está bajo el paso. Revisa la montura antes de apagar la alimentación.",
-        "done": "Todo listo. Espera a que la cámara se haya calentado antes de apagar la alimentación.",
         "confirm": "Terminar la noche ahora",
         "actions": {
           "stopSequence": "Dejar de tomar imágenes",
@@ -6050,8 +6049,7 @@
           "parkMount": "Aparcar la montura",
           "warmCamera": "Calentar la cámara ({minutes} min)"
         },
-        "parkTimeout": "La montura no indicó “aparcada” en 3 minutos. Revísala antes de apagar la alimentación.",
-        "doneNoWarmUp": "Todo listo. Ya puedes apagar la alimentación."
+        "parkTimeout": "La montura no indicó “aparcada” en 3 minutos. Revísala antes de apagar la alimentación."
       },
       "settings": {
         "title": "Modo simple",

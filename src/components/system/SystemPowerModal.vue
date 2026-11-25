@@ -50,6 +50,10 @@
           }}
         </p>
 
+        <p v-if="shutdownError" class="text-sm text-status-danger wrap-break-word">
+          {{ $t('components.settings.system.shutdownFailed', { reason: shutdownError }) }}
+        </p>
+
         <!-- What the shutdown would leave as it is -->
         <div
           v-if="rigWarnings.length"
@@ -94,6 +98,9 @@
       <div v-else class="text-center space-y-4">
         <PowerIcon class="h-12 w-12 mx-auto text-status-danger" />
         <p class="text-content">{{ $t('components.settings.system.shutdownInfoMessage') }}</p>
+        <p v-if="shutdownConfirmed && isPins" class="text-content">
+          {{ $t('components.settings.system.shutdownPowerHint') }}
+        </p>
         <div class="flex justify-center mt-4">
           <button @click="emit('close')" class="tns-btn-secondary w-auto!">
             {{ $t('common.close') }}
@@ -137,6 +144,12 @@ secureObservatory.checkSupport();
 
 const action = ref(props.initialAction);
 
+// Read once: the flag may be gone as soon as the box no longer answers.
+const isPins = store.isPINS;
+// The box has answered that it goes down. Only then may the user be told to cut the power.
+const shutdownConfirmed = ref(false);
+const shutdownError = ref('');
+
 // Shutting the host down under a running sequence, an unparked mount or a cold camera leaves
 // the rig like that until someone gets to it.
 const rigWarnings = computed(() =>
@@ -176,6 +189,7 @@ const title = computed(() => {
 
 function requestAction(next) {
   action.value = next;
+  shutdownError.value = '';
   step.value = 'confirm';
 }
 
@@ -189,16 +203,25 @@ function cancel() {
   step.value = 'choose';
 }
 
-function execute() {
+async function execute() {
   if (action.value === 'restart') {
     apiService.restart();
     console.log('[SystemPowerModal] System restarting...');
     step.value = 'restarting';
     reloadTimer = setTimeout(() => location.reload(), RESTART_RELOAD_DELAY_MS);
   } else {
-    apiService.shutdown();
+    shutdownError.value = '';
+    shutdownConfirmed.value = false;
     console.log('[SystemPowerModal] System shutting down...');
     step.value = 'shutdown';
+    // Without an answer (connection cut off by the shutdown itself) neither flag is set.
+    const response = await apiService.shutdown();
+    if (response?.success === true) {
+      shutdownConfirmed.value = true;
+    } else if (response?.success === false) {
+      shutdownError.value = response.error || t('components.backendErrors.noReason');
+      step.value = 'confirm';
+    }
   }
 }
 
