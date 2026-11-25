@@ -667,9 +667,11 @@
         "Threshold": "Tolérance de pointage (arcmin)",
         "RotationTolerance": "Tolérance de rotation (°)",
         "MaxObjects": "Nombre maximum d'objets",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Temps de pose, en secondes, utilisé pour les images prises par le solveur de plaques. Des poses plus longues captent plus d'étoiles, ce qui aide à résoudre des champs faibles ou peu étoilés, mais ralentit chaque tentative de résolution.",
           "Gain": "Gain de la caméra utilisé pour les poses de résolution de plaques. Laissez vide pour utiliser le gain par défaut de la caméra.",
+          "Binning": "Binning utilisé pour les images prises par le solveur de plaques, par exemple lors du centrage d'une cible ou après un Meridian Flip. Un binning plus élevé raccourcit les téléchargements et rend les étoiles plus brillantes, ce qui aide sur les champs faibles, au prix de la résolution.",
           "ASTAPLocation": "Chemin vers l'exécutable ASTAP (astap.exe) sur le système exécutant @:{'general.backendName'}. Requis pour la résolution de plaques locale avec ASTAP.",
           "SearchRadius": "Rayon en degrés autour des coordonnées cibles dans lequel le solveur cherche lors d'une tentative de résolution à l'aveugle (blind solve). Un rayon plus grand augmente le temps de résolution mais aide lorsque la position initiale de la monture est moins précise.",
           "Threshold": "Écart maximal autorisé, en minutes d'arc, entre la position résolue et la cible pendant Slew & Center. Si l'écart de résolution dépasse cette valeur, un nouveau cycle de slew-and-solve est déclenché.",

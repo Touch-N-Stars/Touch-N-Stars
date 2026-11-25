@@ -737,9 +737,11 @@
         "Threshold": "Zentrierungstoleranz (Bogenminuten)",
         "RotationTolerance": "Drehungstoleranz (°)",
         "MaxObjects": "Max. Objekte",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Belichtungszeit in Sekunden für die Aufnahmen des Plate Solvers. Längere Belichtungen erfassen mehr Sterne, was bei schwachen oder sternarmen Feldern hilft, verlangsamt aber jeden Solve-Versuch.",
           "Gain": "Kamera-Gain für die Plate-Solving-Aufnahmen. Leer lassen, um den Standard-Gain der Kamera zu verwenden.",
+          "Binning": "Binning für die Aufnahmen des Plate Solvers, etwa beim Zentrieren eines Ziels oder nach einem Meridian Flip. Höheres Binning verkürzt den Download und macht Sterne heller, was bei schwachen Feldern hilft, kostet aber Auflösung.",
           "ASTAPLocation": "Pfad zur ASTAP-Programmdatei (astap.exe) auf dem System, auf dem @:{'general.backendName'} läuft. Erforderlich für lokales Plate Solving mit ASTAP.",
           "SearchRadius": "Radius in Grad um die Zielkoordinaten, in dem beim Blind-Solve gesucht wird. Ein größerer Radius erhöht die Solve-Zeit, hilft aber, wenn die Startposition der Montierung ungenauer ist.",
           "Threshold": "Maximal erlaubte Abweichung in Bogenminuten zwischen gelöster Position und Zielposition bei Slew & Center. Wird dieser Wert überschritten, erfolgt ein weiterer Slew-and-Solve-Durchlauf.",

@@ -21,6 +21,7 @@
         :min="0"
         :max="600"
       />
+      <SetPlateSolverBinning />
       <div class="flex flex-row items-center justify-between w-full">
         <span class="flex items-center gap-1">
           <label for="astapLocation" class="text-xs sm:text-sm text-content">
@@ -121,6 +122,7 @@ import SettingInput from '@/components/helpers/settings/UpdateProfileNumber.vue'
 import ProfileToggle from '@/components/helpers/settings/ProfileToggle.vue';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import SetPlateSolverFilterPins from './SetPlateSolverFilterPins.vue';
+import SetPlateSolverBinning from './SetPlateSolverBinning.vue';
 import SetPlateSolverAstapDatabasePins from './SetPlateSolverAstapDatabasePins.vue';
 import { useProfileSetting } from '@/composables/useProfileSetting';
 

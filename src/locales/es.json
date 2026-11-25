@@ -667,9 +667,11 @@
         "Threshold": "Tolerancia de apuntado (arcmin)",
         "RotationTolerance": "Tolerancia de rotación (°)",
         "MaxObjects": "Máximo núm de objetos",
+        "Binning": "Binning",
         "help": {
           "ExposureTime": "Tiempo de exposición, en segundos, usado para las imágenes tomadas por el resolutor de placas. Exposiciones más largas capturan más estrellas, lo que ayuda a resolver campos débiles o con pocas estrellas, pero ralentiza cada intento de resolución.",
           "Gain": "Ganancia de la cámara usada para las exposiciones de resolución de placas. Déjalo vacío para usar la ganancia predeterminada de la cámara.",
+          "Binning": "Binning usado para las imágenes tomadas por el resolutor de placas, por ejemplo al centrar un objetivo o tras un Meridian Flip. Un binning mayor acorta las descargas y da estrellas más brillantes, lo que ayuda en campos débiles, a costa de la resolución.",
           "ASTAPLocation": "Ruta al ejecutable de ASTAP (astap.exe) en el sistema donde se ejecuta @:{'general.backendName'}. Necesario para la resolución de placas local con ASTAP.",
           "SearchRadius": "Radio en grados alrededor de las coordenadas objetivo en el que el resolutor busca al intentar una resolución ciega (blind solve). Un radio mayor aumenta el tiempo de resolución, pero ayuda cuando la posición inicial de la montura es menos precisa.",
           "Threshold": "Desviación máxima permitida, en minutos de arco, entre la posición resuelta y el objetivo durante Slew & Center. Si la resolución se desvía más que esto, se activa otro ciclo de slew-and-solve.",
