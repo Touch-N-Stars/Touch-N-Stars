@@ -321,7 +321,9 @@
         "loading": "正在加载驱动 …",
         "applying": "正在应用驱动 …",
         "listFailed": "无法加载驱动：{message}",
-        "changeFailed": "无法应用驱动：{message}"
+        "changeFailed": "无法应用驱动：{message}",
+        "none": "无驱动",
+        "installMissing": "列表中没有驱动？"
       },
       "welcome": {
         "title": "开始设置 Touch'N'Stars",
@@ -519,7 +521,9 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "无法保存：{message}",
+        "guideScope": "导星镜",
         "nativeCameraHint": "输入导星镜的焦距。导星器需要它来判断星点移动的幅度。",
+        "descriptionBuiltIn": "PINS 内置导星器，拍摄时让星点保持在原位，无需其他程序。请选择导星相机并输入导星镜的焦距。",
         "nativeRecommended": "提示：PINS 有自己的导星器（上方列表中的“Native Guider”）。它专为 PINS 开发，直接在设备上运行，无需单独程序，导星通常比 PHD2 更稳定。你在 PHD2 中的设置会沿用，也可随时重新选择 PHD2 切换回去。",
         "nativeFocalLengthMissing": "导星镜焦距仍为 0。没有它也能导星，但抖动和以角秒表示的导星误差需要它。",
         "guidePixelSizeHintNative": "仅用于此计算。导星相机连接后，导星器会从中读取像素尺寸；在此之前请参考相机说明书。",
@@ -731,7 +735,9 @@
         "restartInfoTitle": "系统正在重启",
         "restartInfoMessage": "系统正在重启。",
         "shutdownInfoTitle": "系统正在关机",
-        "shutdownInfoMessage": "系统正在关机，此页面将无法再访问。"
+        "shutdownInfoMessage": "系统正在关机，此页面将无法再访问。",
+        "shutdownPowerHint": "请等待约一分钟，然后即可关闭电源。",
+        "shutdownFailed": "关机失败：{reason}"
       },
       "plate_solver": {
         "title": "天文定位解算器",
@@ -914,6 +920,17 @@
         "loadError": "无法读取交换空间配置：{message}",
         "saveError": "无法保存交换空间配置：{message}",
         "missingJob": "守护进程未返回交换空间任务。"
+      },
+      "instances": {
+        "discovery": "在网络中查找设备",
+        "add": "添加设备",
+        "edit": "编辑设备",
+        "configured": "已保存的设备",
+        "none": "尚未保存设备",
+        "noneHint": "请使用上方的搜索，或自行输入地址。",
+        "active": "使用中",
+        "setActive": "使用此设备",
+        "delete": "移除设备"
       }
     },
     "alpacaDirect": {
@@ -1592,6 +1609,7 @@
         "favorites": "收藏",
         "framing": "构图",
         "noFilter": "不更换滤镜",
+        "chooseFilter": "选择滤镜",
         "exposureTime": "曝光（秒）",
         "count": "数量",
         "noExposures": "此目标还没有曝光。",
@@ -1605,7 +1623,39 @@
         "deleteTargetConfirm": "要从序列中删除 {name} 及其所有曝光吗？",
         "deleteExposure": "删除曝光",
         "deleteExposureConfirm": "要从序列中删除此曝光行吗？",
-        "addTargetNamed": "添加 {name} 为目标"
+        "addTargetNamed": "添加 {name} 为目标",
+        "limits": {
+          "title": "夜晚",
+          "wait": "等到天黑",
+          "waitHint": "天一黑计划就会开始。等待期间赤道仪不跟踪。",
+          "dawn": "黎明时停止",
+          "dawnHint": "天亮时结束计划，即使照片还没拍完。其余的可以在下一晚拍摄。",
+          "from": "从 {time} 起",
+          "notTonight": "今晚没有",
+          "low": "目标过低时停止",
+          "lowHint": "靠近地平线时，大气会使星点模糊，树木或房屋也会遮挡。届时计划会继续拍摄下一个目标。",
+          "minAltitude": "地平线以上的最低高度（°）",
+          "noTarget": "请先在计划中添加目标，之后此项会自动开启。",
+          "targetRunning": "拍摄目标期间无法更改。",
+          "sunBelow": "太阳在地平线下 {degrees}°",
+          "darknessName": {
+            "bright": "还亮",
+            "dusky": "快黑了",
+            "usual": "通常",
+            "dark": "更暗",
+            "darkest": "完全黑暗"
+          },
+          "minAltitudeHint": "0° 是地平线，90° 是头顶正上方。伸直手臂，两个拳头上下叠放约为 20°。",
+          "startAt": "夜晚开始",
+          "endAt": "夜晚结束",
+          "until": "到 {time}"
+        },
+        "budget": {
+          "question": "你想拍摄这个目标多久？（小时）",
+          "pictures": "{count} 张，每张 {seconds} 秒 | {count} 张，每张 {seconds} 秒",
+          "apply": "使用这个照片数量",
+          "wholeNight": "整晚可拍的时间（{time}）"
+        }
       }
     },
     "mount": {
@@ -5775,6 +5825,7 @@
       "sequenceStart": "无法启动序列",
       "guidingStart": "无法启动导星",
       "autofocusStart": "无法启动自动对焦",
+      "autofocusStop": "无法取消自动对焦",
       "binning": "无法更改像素合并",
       "readout": "无法更改读出模式",
       "switchSet": "无法设置开关"
@@ -5912,6 +5963,7 @@
           "lastFailed": "上次自动对焦（{time}）失败，请确认能看到星星后重试",
           "pointAtStars": "将望远镜指向星星（星图）",
           "setupFirst": "在此望远镜首次自动对焦前，请先设置一次：助手会测量你的调焦器和相机，并找到可用的设置。否则自动对焦常会失败。",
+          "cancelled": "自动对焦已取消。调焦器会回到之前的位置。",
           "setup": "设置自动对焦"
         },
         "guide": {
@@ -5932,7 +5984,7 @@
           "slewingToCalibration": "望远镜正在移动到校准位置…",
           "calibratedHint": "已校准。校准会保留给之后的夜晚；你的计划会在每个目标自动开始导星。",
           "calibratedSummary": "已校准",
-          "unparkFirst": "请先让望远镜就绪（“望远镜就绪”步骤）。"
+          "unparkFirst": "请先让望远镜就绪（“{step}”步骤）。"
         },
         "capture": {
           "title": "拍摄照片",
@@ -5940,6 +5992,9 @@
           "targets": "目标",
           "remaining": "剩余时间",
           "noPlan": "还没有计划。请用你的目标、滤镜、曝光时间和张数创建一个。",
+          "nothingLeft": "计划中已没有要拍的照片。请选择新目标，或重新拍摄此计划的照片。",
+          "repeat": "重新拍摄",
+          "repeatFailed": "无法重置计划",
           "editPlan": "编辑计划",
           "createPlan": "创建计划",
           "watch": "查看新拍的照片",
@@ -5948,7 +6003,18 @@
           "summary": "{targets} 个目标，约 {time} 完成 | {targets} 个目标，约 {time} 完成",
           "summaryDone": "{targets} 个目标，所有照片已拍完 | {targets} 个目标，所有照片已拍完",
           "confirmStartTitle": "开始拍摄？",
-          "confirmStartMessage": "包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会前往目标、居中并在第一张照片前开始导星。 | 包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会依次前往每个目标、居中并在第一张照片前开始导星。",
+          "confirmStartPlan": "计划现在开始，共 {targets} 个目标，大约需要 {remaining}。 | 计划现在开始，共 {targets} 个目标，大约需要 {remaining}。",
+          "confirmStartApproach": {
+            "center": "望远镜会前往目标并居中。 | 望远镜会依次前往每个目标并居中。",
+            "slew": "望远镜会前往目标，但不会居中。 | 望远镜会依次前往每个目标，但不会居中。",
+            "off": "望远镜不会前往目标，而是在当前指向的位置拍摄。 | 望远镜不会前往这些目标，而是在当前指向的位置拍摄。",
+            "mixed": "并非每个目标都会前往并居中，请查看计划。"
+          },
+          "confirmStartGuiding": {
+            "all": "第一张照片之前会开始导星。",
+            "none": "计划在不导星的情况下运行。",
+            "mixed": "并非每个目标都会导星，请查看计划。"
+          },
           "confirmStopTitle": "停止拍摄？",
           "confirmStopMessage": "当前这张照片会被取消。你可以稍后重新开始计划。",
           "noExposures": "你的计划有目标但还没有照片。请打开计划并点击“添加曝光”，选择滤镜、曝光时间和张数。",
@@ -5960,7 +6026,6 @@
             "warm": "完成后，相机回温。赤道仪会继续跟踪，直到你结束今晚。",
             "none": "完成后，赤道仪会继续跟踪，直到你结束今晚。"
           },
-          "confirmStartMessageNoGuiding": "包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会前往目标并在第一张照片前居中。 | 包含 {targets} 个目标的计划现在开始，大约需要 {remaining}。望远镜会依次前往每个目标并在第一张照片前居中。",
           "missingSteps": "计划中有 {count} 个目标还不会自动完成以下操作：{steps}。 | 计划中有 {count} 个目标还不会自动完成以下操作：{steps}。",
           "missingStepParts": {
             "slew": "前往目标",
@@ -5985,7 +6050,9 @@
           "flipPause": "{target} 约在 {meridian} 到达子午线；计划会在 {pause} 暂停，并在 {earliest} 翻转望远镜。",
           "flipNone": "此计划不需要 Meridian Flip。",
           "flipYourTarget": "你的目标",
-          "flipSettings": "翻转设置和白天测试"
+          "flipSettings": "翻转设置和白天测试",
+          "summaryCutOff": "已拍 {taken} / {planned} 张",
+          "confirmStartWait": "计划会等到天黑，大约 {time}。"
         },
         "flats": {
           "title": "Flats",
@@ -6041,7 +6108,9 @@
         "title": "结束夜晚",
         "intro": "这些步骤依次执行。取消勾选你想继续运行的项目。",
         "nothingToDo": "没有任何运行中的内容，赤道仪也已归位，无需再做什么。",
+        "nothingToDoNoMount": "没有任何运行中的内容。赤道仪未连接，请自行确认它已归位。",
         "someFailed": "并非一切顺利，原因见对应步骤下方。关闭电源前请检查赤道仪。",
+        "doneWarming": "全部完成。相机升温后，请先在起始页关闭设备，再关闭电源。",
         "confirm": "立即结束夜晚",
         "actions": {
           "stopSequence": "停止拍摄",
@@ -6049,7 +6118,8 @@
           "parkMount": "赤道仪归位",
           "warmCamera": "相机升温（{minutes} 分钟）"
         },
-        "parkTimeout": "赤道仪在 3 分钟内未报告“已归位”。关闭电源前请检查它。"
+        "parkTimeout": "赤道仪在 3 分钟内未报告“已归位”。关闭电源前请检查它。",
+        "doneShutdown": "全部完成。关闭电源前请先关闭设备。"
       },
       "settings": {
         "title": "简易模式",
@@ -6116,12 +6186,16 @@
         "remaining": "剩余 {time}",
         "activity": {
           "autofocus": "正在对焦（自动对焦）",
-          "slewing": "望远镜正在移动（居中或 Meridian Flip）",
+          "slewing": "望远镜正在移动",
+          "centering": "正在将目标居中",
+          "startingGuiding": "正在开始导星",
+          "closing": "正在结束计划（归位、升温）",
           "calibrating": "导星器正在校准",
           "settling": "等待导星稳定",
           "exposing": "正在曝光",
           "busy": "正在准备下一张照片",
-          "flipping": "Meridian Flip：望远镜正转到另一侧"
+          "flipping": "Meridian Flip：望远镜正转到另一侧",
+          "waitingForDark": "正在等待天黑"
         },
         "exposing": "曝光 {seconds} 秒",
         "frame": "第 {frame} / {frames} 张",
@@ -6188,18 +6262,23 @@
           }
         },
         "statusBarHint": "导星、对焦和制冷在下方状态栏中评级，点击某一项可了解其含义。",
-        "stop": "停止"
+        "stop": "停止",
+        "waitingUntil": "正在等待天黑，大约 {time}"
       },
       "summary": {
         "finished": {
           "title": "计划已完成",
           "text": "计划中的所有照片都已拍完。请结束夜晚，让望远镜归位并给相机升温。",
-          "textFlats": "计划中的所有照片都已拍完。请趁一切未变动，现在拍摄 Flat，然后结束夜晚。"
+          "textFlats": "计划中的所有照片都已拍完。请趁一切未变动，现在拍摄 Flat，然后结束夜晚。",
+          "cutOffTitle": "今晚结束",
+          "cutOff": "天亮了或目标过低：已拍 {taken} / {planned} 张照片。改天晚上再次启动计划即可拍完其余照片。"
         },
         "ended": {
           "title": "夜晚已结束",
           "text": "晴朗的天空！这是今晚的成果。",
           "notParked": "望远镜尚未归位",
+          "shutdown": "关闭设备",
+          "shutdownWait": "关机前，请等待相机升温且望远镜归位。",
           "resume": "继续夜晚"
         },
         "frames": "照片",
@@ -6216,6 +6295,24 @@
       "camera": {
         "title": "相机",
         "hint": "测试图像和计划中的每张图像都使用这些值，除非你为计划中的某个曝光单独设置。推荐的增益和偏置见相机说明书。"
+      },
+      "expert": {
+        "show": "显示专家设置",
+        "hide": "隐藏专家设置"
+      },
+      "window": {
+        "waits": "计划会等到天黑，大约 {time}。",
+        "tooMany": "今晚大约只能拍 {fit} / {left} 张照片。其余的可以改天晚上拍摄。",
+        "noDarkness": "今晚不会这么黑，计划会一直等待。请在计划的“夜晚”中选择较亮的天空。",
+        "limit": {
+          "light": "最晚在 {time} 停止，因为届时天亮。",
+          "low": "最晚在 {time} 停止，因为届时目标过低。"
+        },
+        "nothing": {
+          "light": "现在太亮，计划会立即结束而拍不到照片。请在计划中打开“等到天黑”，这样会在大约 {time} 开始。",
+          "low": "目标离地平线太低且正在下降，计划会结束而拍不到照片。请选择其他目标或更低的高度。",
+          "other": "这样启动，计划会立即结束而拍不到照片。"
+        }
       }
     },
     "secureObservatory": {
@@ -6276,6 +6373,13 @@
       "cameraCold": "相机冷却已开启（{temperature} °C）。",
       "domeOpen": "穹顶未关闭。",
       "coverOpen": "平场板盖已打开。"
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "是什么品牌？",
+      "otherBrand": "其他品牌",
+      "disconnectFirst": "更换驱动前请先断开设备。",
+      "applied": "完成：已选择“{device}”。请插好设备、打开电源，然后点按“连接”。",
+      "appliedPickDevice": "驱动已设置，但尚未找到设备。请插好设备、打开电源，刷新上方列表，选择设备，然后点按“连接”。"
     }
   },
   "plugins": {
@@ -6693,6 +6797,7 @@
       "tabs": {
         "network": "Network",
         "services": "Services",
+        "pictures": "照片",
         "system": "系统",
         "indi": "INDI",
         "software": "Software",

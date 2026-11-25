@@ -330,7 +330,9 @@
         "loading": "ドライバーを読み込み中 …",
         "applying": "ドライバーを適用中 …",
         "listFailed": "ドライバーを読み込めませんでした：{message}",
-        "changeFailed": "ドライバーを適用できませんでした：{message}"
+        "changeFailed": "ドライバーを適用できませんでした：{message}",
+        "none": "ドライバーなし",
+        "installMissing": "ドライバーが一覧にありませんか？"
       },
       "welcome": {
         "title": "Touch'N'Stars をセットアップしましょう",
@@ -528,7 +530,9 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "保存できませんでした：{message}",
+        "guideScope": "ガイド鏡",
         "nativeCameraHint": "ガイドスコープの焦点距離を入力してください。ガイダーは星がどれだけ動いたかを判断するために必要とします。",
+        "descriptionBuiltIn": "PINSには、撮影中に星を同じ位置に保つガイダーが内蔵されており、ほかのプログラムは不要です。ガイドカメラを選び、ガイド鏡の焦点距離を入力してください。",
         "nativeRecommended": "ヒント: PINSには独自のガイダー(上の一覧の「Native Guider」)があります。PINS専用に開発され、別のプログラムなしで機材上で直接動作し、PHD2より安定してガイドできることが多くあります。PHD2での設定は引き継がれ、PHD2を選び直すといつでも戻せます。",
         "nativeFocalLengthMissing": "ガイドスコープの焦点距離がまだ0です。ガイドは動作しますが、Ditherと秒角単位のガイド誤差には必要です。",
         "guidePixelSizeHintNative": "この計算にのみ使用します。ガイダーは接続後にガイドカメラからピクセルサイズを読み取ります。それまではカメラの取扱説明書の値を使ってください。",
@@ -782,7 +786,9 @@
         "restartInfoTitle": "システムを再起動中",
         "restartInfoMessage": "システムが再起動しています。",
         "shutdownInfoTitle": "システムをシャットダウン中",
-        "shutdownInfoMessage": "システムがシャットダウンしています。このページは使用できなくなります。"
+        "shutdownInfoMessage": "システムがシャットダウンしています。このページは使用できなくなります。",
+        "shutdownPowerHint": "1分ほど待てば、電源を切ることができます。",
+        "shutdownFailed": "シャットダウンできませんでした: {reason}"
       },
       "plate_solver": {
         "title": "プレートソルバー",
@@ -923,6 +929,17 @@
         "loadError": "スワップ設定を読み込めませんでした：{message}",
         "saveError": "スワップ設定を保存できませんでした：{message}",
         "missingJob": "デーモンからスワップのジョブが返されませんでした。"
+      },
+      "instances": {
+        "discovery": "ネットワークでリグを探す",
+        "add": "リグを追加",
+        "edit": "リグを編集",
+        "configured": "保存したリグ",
+        "none": "保存したリグはまだありません",
+        "noneHint": "上の検索を使うか、アドレスを入力してください。",
+        "active": "使用中",
+        "setActive": "このリグを使う",
+        "delete": "リグを削除"
       }
     },
     "alpacaDirect": {
@@ -1601,6 +1618,7 @@
         "favorites": "お気に入り",
         "framing": "フレーミング",
         "noFilter": "フィルター変更なし",
+        "chooseFilter": "フィルターを選択",
         "exposureTime": "露出（秒）",
         "count": "枚数",
         "noExposures": "このターゲットにはまだ露出がありません。",
@@ -1614,7 +1632,39 @@
         "deleteTargetConfirm": "{name} とそのすべての露出をシーケンスから削除しますか？",
         "deleteExposure": "露出を削除",
         "deleteExposureConfirm": "この露出行をシーケンスから削除しますか？",
-        "addTargetNamed": "{name}をターゲットに追加"
+        "addTargetNamed": "{name}をターゲットに追加",
+        "limits": {
+          "title": "夜",
+          "wait": "暗くなるまで待つ",
+          "waitHint": "暗くなりしだいプランが始まります。待っている間、架台は追尾しません。",
+          "dawn": "夜明けに終了",
+          "dawnHint": "明るくなると、画像が足りなくてもプランを終了します。残りは次の夜に撮影できます。",
+          "from": "{time}から",
+          "notTonight": "今夜はなし",
+          "low": "ターゲットが低くなりすぎたら終了",
+          "lowHint": "地平線の近くでは大気で星がぼやけ、木や建物もじゃまになります。その場合、プランは次のターゲットに進みます。",
+          "minAltitude": "地平線からの最低高度(°)",
+          "noTarget": "先にプランへターゲットを追加してください。その後、自動でオンになります。",
+          "targetRunning": "ターゲットの撮影中は変更できません。",
+          "sunBelow": "太陽が地平線下{degrees}°",
+          "darknessName": {
+            "bright": "まだ明るい",
+            "dusky": "ほぼ暗い",
+            "usual": "標準",
+            "dark": "より暗い",
+            "darkest": "完全に暗い"
+          },
+          "minAltitudeHint": "0°は地平線、90°は真上です。腕を伸ばしてこぶしを2つ重ねると約20°です。",
+          "startAt": "夜の始まり",
+          "endAt": "夜の終わり",
+          "until": "{time}まで"
+        },
+        "budget": {
+          "question": "このターゲットをどのくらい撮影しますか？(時間)",
+          "pictures": "{seconds}秒を{count}枚 | {seconds}秒を{count}枚",
+          "apply": "この枚数を使う",
+          "wholeNight": "夜の間できるだけ長く({time})"
+        }
       }
     },
     "mount": {
@@ -5775,6 +5825,7 @@
       "sequenceStart": "シーケンスを開始できませんでした",
       "guidingStart": "ガイドを開始できませんでした",
       "autofocusStart": "オートフォーカスを開始できませんでした",
+      "autofocusStop": "オートフォーカスを中止できませんでした",
       "binning": "ビニングを変更できませんでした",
       "readout": "読み出しモードを変更できませんでした",
       "switchSet": "スイッチを設定できませんでした"
@@ -5912,6 +5963,7 @@
           "lastFailed": "前回のオートフォーカス({time})は失敗しました。星が写っているか確認して、もう一度お試しください",
           "pointAtStars": "望遠鏡を星に向ける(星空アトラス)",
           "setupFirst": "この望遠鏡で最初のオートフォーカスを行う前に、1回セットアップしてください。アシスタントがフォーカサーとカメラを測定し、適切な設定を見つけます。これがないとオートフォーカスは失敗しがちです。",
+          "cancelled": "オートフォーカスを中止しました。フォーカサーは元の位置に戻ります。",
           "setup": "オートフォーカスを設定"
         },
         "guide": {
@@ -5932,7 +5984,7 @@
           "slewingToCalibration": "望遠鏡がキャリブレーション位置へ移動中…",
           "calibratedHint": "キャリブレーション済みです。以降の夜も保持され、プランが各ターゲットで自動的にガイドを開始します。",
           "calibratedSummary": "キャリブレーション済み",
-          "unparkFirst": "先に望遠鏡を準備してください(「望遠鏡の準備」のステップ)。"
+          "unparkFirst": "先に望遠鏡を準備してください(「{step}」のステップ)。"
         },
         "capture": {
           "title": "撮影",
@@ -5940,6 +5992,9 @@
           "targets": "ターゲット",
           "remaining": "残り時間",
           "noPlan": "プランがまだありません。ターゲット、フィルター、露出時間、枚数を指定して作成してください。",
+          "nothingLeft": "プランに撮影する画像が残っていません。新しいターゲットを選ぶか、このプランの画像をもう一度撮影してください。",
+          "repeat": "もう一度撮影",
+          "repeatFailed": "プランをリセットできませんでした",
           "editPlan": "プランを編集",
           "createPlan": "プランを作成",
           "watch": "届く画像を見る",
@@ -5948,7 +6003,18 @@
           "summary": "{targets}ターゲット、{time}頃に完了 | {targets}ターゲット、{time}頃に完了",
           "summaryDone": "{targets}ターゲット、全画像を撮影済み | {targets}ターゲット、全画像を撮影済み",
           "confirmStartTitle": "撮影を開始しますか？",
-          "confirmStartMessage": "{targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡がターゲットへ移動し、センタリングしてガイドを開始します。 | {targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡が各ターゲットへ移動し、センタリングしてガイドを開始します。",
+          "confirmStartPlan": "{targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。 | {targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。",
+          "confirmStartApproach": {
+            "center": "望遠鏡がターゲットへ移動し、センタリングします。 | 望遠鏡が各ターゲットへ移動し、センタリングします。",
+            "slew": "望遠鏡はターゲットへ移動しますが、センタリングはしません。 | 望遠鏡は各ターゲットへ移動しますが、センタリングはしません。",
+            "off": "望遠鏡はターゲットへ移動せず、今向いている方向を撮影します。 | 望遠鏡は各ターゲットへ移動せず、今向いている方向を撮影します。",
+            "mixed": "移動とセンタリングをしないターゲットがあります。プランを確認してください。"
+          },
+          "confirmStartGuiding": {
+            "all": "最初の画像の前にガイドを開始します。",
+            "none": "プランはガイドなしで実行されます。",
+            "mixed": "ガイドしないターゲットがあります。プランを確認してください。"
+          },
           "confirmStopTitle": "撮影を停止しますか？",
           "confirmStopMessage": "現在の撮影はキャンセルされます。プランは後からもう一度開始できます。",
           "noExposures": "プランにはターゲットがありますが、まだ撮影内容がありません。プランを開き、「露出を追加」をタップして、フィルター、露出時間、枚数を選んでください。",
@@ -5960,7 +6026,6 @@
             "warm": "終了後、カメラは昇温します。架台は夜を終了するまで追尾を続けます。",
             "none": "終了後も、架台は夜を終了するまで追尾を続けます。"
           },
-          "confirmStartMessageNoGuiding": "{targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡がターゲットへ移動してセンタリングします。 | {targets}ターゲットのプランを今すぐ開始します。所要時間は約{remaining}です。最初の画像の前に、望遠鏡が各ターゲットへ移動してセンタリングします。",
           "missingSteps": "プラン内の{count}ターゲットは、まだ自動では行いません：{steps}。 | プラン内の{count}ターゲットは、まだ自動では行いません：{steps}。",
           "missingStepParts": {
             "slew": "移動する",
@@ -5985,7 +6050,9 @@
           "flipPause": "{target}は{meridian}頃にメリディアンに達し、プランは{pause}に一時停止して{earliest}に望遠鏡を反転します。",
           "flipNone": "このプランではMeridian Flipは不要です。",
           "flipYourTarget": "ターゲット",
-          "flipSettings": "Flip設定とテスト"
+          "flipSettings": "Flip設定とテスト",
+          "summaryCutOff": "{planned}枚中{taken}枚を撮影",
+          "confirmStartWait": "暗くなるまで待ちます({time}頃)。"
         },
         "flats": {
           "title": "Flat",
@@ -6041,7 +6108,9 @@
         "title": "夜を終了",
         "intro": "これらのステップは順番に実行されます。そのまま続けたいものはチェックを外してください。",
         "nothingToDo": "実行中のものはなく、マウントもパーク済みです。やることは残っていません。",
+        "nothingToDoNoMount": "実行中のものはありません。架台が接続されていないため、パークされているかご自身で確認してください。",
         "someFailed": "すべてが成功したわけではありません。理由は各ステップの下に表示されます。電源を切る前にマウントを確認してください。",
+        "doneWarming": "すべて完了しました。カメラの温度が戻ったら、電源を切る前にスタートページでリグをシャットダウンしてください。",
         "confirm": "今すぐ夜を終了",
         "actions": {
           "stopSequence": "撮影を停止",
@@ -6049,7 +6118,8 @@
           "parkMount": "マウントをパーク",
           "warmCamera": "カメラを昇温({minutes}分)"
         },
-        "parkTimeout": "マウントが3分以内に「パーク済み」を報告しませんでした。電源を切る前に確認してください。"
+        "parkTimeout": "マウントが3分以内に「パーク済み」を報告しませんでした。電源を切る前に確認してください。",
+        "doneShutdown": "すべて完了しました。電源を切る前にリグをシャットダウンしてください。"
       },
       "settings": {
         "title": "シンプルモード",
@@ -6116,12 +6186,16 @@
         "remaining": "残り{time}",
         "activity": {
           "autofocus": "フォーカス中(オートフォーカス)",
-          "slewing": "望遠鏡が移動中(センタリングまたはMeridian Flip)",
+          "slewing": "望遠鏡が移動中",
+          "centering": "ターゲットをセンタリング中",
+          "startingGuiding": "ガイドを開始中",
+          "closing": "プランを終了中(パーク、昇温)",
           "calibrating": "ガイダーがキャリブレーション中",
           "settling": "ガイドの安定を待っています",
           "exposing": "露出中",
           "busy": "次の撮影を準備中",
-          "flipping": "Meridian Flip: 望遠鏡が反対側へ反転します"
+          "flipping": "Meridian Flip: 望遠鏡が反対側へ反転します",
+          "waitingForDark": "暗くなるまで待機中"
         },
         "exposing": "露出中 {seconds} 秒",
         "frame": "{frames}枚中{frame}枚目",
@@ -6188,18 +6262,23 @@
           }
         },
         "statusBarHint": "ガイド、フォーカス、冷却は下のステータスバーで評価されます。タップすると意味が分かります。",
-        "stop": "停止"
+        "stop": "停止",
+        "waitingUntil": "暗くなるまで待機中({time}頃)"
       },
       "summary": {
         "finished": {
           "title": "プラン完了",
           "text": "プランのすべての画像を撮影しました。夜を終了して、望遠鏡をパークしカメラを昇温してください。",
-          "textFlats": "プランのすべての画像を撮影しました。何も変わらないうちにFlatを撮影してから、夜を終了してください。"
+          "textFlats": "プランのすべての画像を撮影しました。何も変わらないうちにFlatを撮影してから、夜を終了してください。",
+          "cutOffTitle": "今夜は終了",
+          "cutOff": "明るくなったか、ターゲットが低くなりすぎました: {planned}枚中{taken}枚を撮影しました。別の夜にもう一度プランを開始すると、残りを撮影できます。"
         },
         "ended": {
           "title": "夜を終了しました",
           "text": "お疲れさまでした。今夜の成果です。",
           "notParked": "望遠鏡がまだパークされていません",
+          "shutdown": "リグをシャットダウン",
+          "shutdownWait": "シャットダウンする前に、カメラの温度が戻り、望遠鏡がパークされるまで待ってください。",
           "resume": "夜を再開"
         },
         "frames": "画像",
@@ -6216,6 +6295,24 @@
       "camera": {
         "title": "カメラ",
         "hint": "テスト撮影とプランのすべての画像はこの値を使います。プラン内の露出に個別の値を設定した場合を除きます。推奨ゲインとオフセットはカメラのマニュアルに記載されています。"
+      },
+      "expert": {
+        "show": "詳細設定を表示",
+        "hide": "詳細設定を隠す"
+      },
+      "window": {
+        "waits": "プランは暗くなるまで待ちます({time}頃)。",
+        "tooMany": "今夜撮影できるのは{left}枚中約{fit}枚だけです。残りは別の夜に撮影できます。",
+        "noDarkness": "今夜はここまで暗くならないため、プランは待ち続けます。プランの「夜」でより明るい空を選んでください。",
+        "limit": {
+          "light": "明るくなるため、遅くとも{time}に終了します。",
+          "low": "ターゲットが低くなりすぎるため、遅くとも{time}に終了します。"
+        },
+        "nothing": {
+          "light": "今は明るすぎるため、プランは画像を撮らずにすぐ終了します。プランで「暗くなるまで待つ」をオンにすると、{time}頃に始まります。",
+          "low": "ターゲットが地平線に近すぎ、さらに沈んでいるため、プランは画像を撮らずに終了します。別のターゲットか、より低い高度を選んでください。",
+          "other": "このまま開始すると、プランは画像を撮らずにすぐ終了します。"
+        }
       }
     },
     "secureObservatory": {
@@ -6276,6 +6373,13 @@
       "cameraCold": "カメラの冷却がオンです（{temperature} °C）。",
       "domeOpen": "ドームが閉じていません。",
       "coverOpen": "フラットパネルのカバーが開いています。"
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "どのメーカーですか？",
+      "otherBrand": "その他のメーカー",
+      "disconnectFirst": "ドライバーを変更する前に、デバイスを切断してください。",
+      "applied": "完了: 「{device}」を選択しました。接続して電源を入れ、「接続」をタップしてください。",
+      "appliedPickDevice": "ドライバーは設定されましたが、デバイスはまだ見つかっていません。接続して電源を入れ、上の一覧を更新して選択し、「接続」をタップしてください。"
     }
   },
   "plugins": {
@@ -6693,6 +6797,7 @@
       "tabs": {
         "network": "ネットワーク",
         "services": "サービス",
+        "pictures": "画像",
         "system": "システム",
         "indi": "INDI",
         "software": "ソフトウェア",

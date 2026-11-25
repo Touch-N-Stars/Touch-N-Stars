@@ -20,8 +20,13 @@ const {
   addGuidingTime,
   guidingWasPoor,
 } = await import('@/utils/simpleMode');
-const { START_GUIDING_TYPE, CENTER_TYPE, SLEW_TYPE, AF_AFTER_FILTER_CHANGE_TYPE } =
-  await import('@/utils/sequenceSimple');
+const {
+  START_GUIDING_TYPE,
+  CENTER_TYPE,
+  CENTER_AND_ROTATE_TYPE,
+  SLEW_TYPE,
+  AF_AFTER_FILTER_CHANGE_TYPE,
+} = await import('@/utils/sequenceSimple');
 
 function snapshot(overrides = {}) {
   return {
@@ -443,6 +448,9 @@ test('the HFR trend keeps the last pictures with a usable HFR, oldest first', ()
 
 const {
   nightPhase,
+  targetStepActivity,
+  guidingExpected,
+  planStartSteps,
   imagingActivity,
   imagingVerdict,
   QUALITY_SCALES,
@@ -466,6 +474,31 @@ test('nightPhase follows the capture and end steps', () => {
   assert.equal(nightPhase(steps('done')), 'finished');
   // An ended night stays ended even if a plan is started again by mistake elsewhere
   assert.equal(nightPhase(steps('running', 'done')), 'ended');
+});
+
+test('targetStepActivity and guidingExpected follow the steps of the running target', () => {
+  const step = (FullTypeName, Status) => ({ FullTypeName, Status });
+  const target = (center, guide, Status = 'RUNNING') => ({
+    Status,
+    Items: [step(CENTER_TYPE, center), step(START_GUIDING_TYPE, guide)],
+  });
+  const centering = target('RUNNING', 'CREATED');
+  assert.equal(targetStepActivity(centering), 'centering');
+  assert.equal(guidingExpected(centering), false);
+  const starting = target('FINISHED', 'RUNNING');
+  assert.equal(targetStepActivity(starting), 'startingGuiding');
+  assert.equal(guidingExpected(starting), false);
+  // Between two steps "start guiding" is still to come
+  assert.equal(guidingExpected(target('FINISHED', 'CREATED')), false);
+  assert.equal(targetStepActivity(target('FINISHED', 'FINISHED')), null);
+  for (const guide of ['FINISHED', 'FAILED', 'DISABLED']) {
+    assert.equal(guidingExpected(target('FINISHED', guide)), true);
+  }
+  assert.equal(guidingExpected({ Status: 'RUNNING', Items: [] }), true);
+  // Before the first target (cooling) and after the last one (parking)
+  assert.equal(guidingExpected(target('FINISHED', 'FINISHED', 'FINISHED')), false);
+  assert.equal(guidingExpected(null), false);
+  assert.equal(targetStepActivity(null), null);
 });
 
 test('imagingActivity puts what pauses the pictures first', () => {
@@ -630,6 +663,41 @@ test('simple targets are centered, turned with a rotator and guided unless guidi
       afOnFilterChange: true,
     }
   );
+});
+
+test('planStartSteps names what the plan does at the targets with pictures left', () => {
+  const step = (FullTypeName, Status = 'CREATED') => ({ FullTypeName, Status });
+  const target = (items, { remaining = 100, triggers = [] } = {}) => ({
+    container: { Items: items, Triggers: triggers },
+    remainingSeconds: remaining,
+  });
+  const full = target([step(CENTER_TYPE), step(START_GUIDING_TYPE)], {
+    triggers: [step(AF_AFTER_FILTER_CHANGE_TYPE)],
+  });
+  const rotated = target([step(CENTER_AND_ROTATE_TYPE), step(START_GUIDING_TYPE)]);
+  const bare = target([step(SLEW_TYPE), step(START_GUIDING_TYPE, 'DISABLED')]);
+  const done = target([], { remaining: 0 });
+
+  const all = { targets: 1, approach: 'center', guiding: 'all', focus: true };
+  assert.deepEqual(planStartSteps({ targets: [full, done] }), all);
+  assert.deepEqual(planStartSteps({ targets: [full, rotated] }), {
+    ...all,
+    targets: 2,
+    focus: false,
+  });
+  const none = { targets: 1, approach: 'slew', guiding: 'none', focus: false };
+  assert.deepEqual(planStartSteps({ targets: [bare] }), none);
+  assert.deepEqual(planStartSteps({ targets: [full, bare] }), {
+    targets: 2,
+    approach: 'mixed',
+    guiding: 'mixed',
+    focus: false,
+  });
+  assert.equal(
+    planStartSteps({ targets: [target([step(CENTER_TYPE, 'DISABLED')])] }).approach,
+    'off'
+  );
+  assert.deepEqual(planStartSteps(null), { ...none, targets: 0, approach: 'off' });
 });
 
 test('targetsMissingSteps lists targets with pictures left that are not slewed to or guided', () => {

@@ -321,7 +321,9 @@
         "loading": "Chargement des pilotes…",
         "applying": "Application du pilote…",
         "listFailed": "Impossible de charger les pilotes : {message}",
-        "changeFailed": "Impossible d'appliquer le pilote : {message}"
+        "changeFailed": "Impossible d'appliquer le pilote : {message}",
+        "none": "Aucun pilote",
+        "installMissing": "Le pilote n’est pas dans la liste ?"
       },
       "welcome": {
         "title": "Configurons Touch'N'Stars",
@@ -519,7 +521,9 @@
         "ditherApplied": "Applied",
         "ditherMissingData": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and set the guide scope focal length above.",
         "applyFailed": "Impossible d'enregistrer : {message}",
+        "guideScope": "Lunette de guidage",
         "nativeCameraHint": "Saisissez la focale de la lunette de guidage. Le guideur en a besoin pour estimer le déplacement des étoiles.",
+        "descriptionBuiltIn": "PINS a un guideur intégré qui maintient les étoiles en place pendant les prises de vue, sans autre programme. Choisis la caméra de guidage et saisis la focale de la lunette de guidage.",
         "nativeRecommended": "Astuce : PINS a son propre guideur (« Native Guider » dans la liste ci-dessus). Il a été développé spécialement pour PINS, tourne directement sur le montage sans programme séparé et guide souvent plus régulièrement que PHD2. Les réglages faits dans PHD2 sont repris et vous pouvez revenir à tout moment en choisissant à nouveau PHD2.",
         "nativeFocalLengthMissing": "La focale de la lunette de guidage est encore à 0. Le guidage fonctionne sans elle, mais le Dither et l'erreur de guidage en secondes d'arc en ont besoin.",
         "guidePixelSizeHintNative": "Utilisée uniquement pour ce calcul. Le guideur lit la taille de pixel de la caméra de guidage une fois connectée ; d'ici là, prenez-la dans le manuel de la caméra.",
@@ -731,7 +735,9 @@
         "restartInfoTitle": "Redémarrage du système en cours",
         "restartInfoMessage": "Le système redémarre.",
         "shutdownInfoTitle": "Arrêt du système en cours",
-        "shutdownInfoMessage": "Le système s'éteint. Cette page ne sera plus accessible."
+        "shutdownInfoMessage": "Le système s'éteint. Cette page ne sera plus accessible.",
+        "shutdownPowerHint": "Attends environ une minute, puis tu peux couper l’alimentation.",
+        "shutdownFailed": "L’arrêt n’a pas fonctionné : {reason}"
       },
       "plate_solver": {
         "title": "Solveur de plaques",
@@ -914,6 +920,17 @@
         "loadError": "Impossible de lire la configuration du swap : {message}",
         "saveError": "Impossible d'enregistrer la configuration du swap : {message}",
         "missingJob": "Le daemon n'a pas renvoyé de tâche de swap."
+      },
+      "instances": {
+        "discovery": "Chercher des rigs sur le réseau",
+        "add": "Ajouter un rig",
+        "edit": "Modifier le rig",
+        "configured": "Rigs enregistrés",
+        "none": "Aucun rig enregistré",
+        "noneHint": "Utilise la recherche ci-dessus ou saisis l’adresse toi-même.",
+        "active": "Actif",
+        "setActive": "Utiliser ce rig",
+        "delete": "Supprimer le rig"
       }
     },
     "alpacaDirect": {
@@ -1592,6 +1609,7 @@
         "favorites": "Favoris",
         "framing": "Framing",
         "noFilter": "Pas de changement de filtre",
+        "chooseFilter": "Choisir un filtre",
         "exposureTime": "Pose (s)",
         "count": "Nombre",
         "noExposures": "Aucune pose pour cette cible.",
@@ -1605,7 +1623,39 @@
         "deleteTargetConfirm": "Supprimer {name} et toutes ses poses de la séquence ?",
         "deleteExposure": "Supprimer la pose",
         "deleteExposureConfirm": "Supprimer cette ligne de pose de la séquence ?",
-        "addTargetNamed": "Ajouter {name} comme cible"
+        "addTargetNamed": "Ajouter {name} comme cible",
+        "limits": {
+          "title": "Nuit",
+          "wait": "Attendre qu’il fasse nuit",
+          "waitHint": "Le plan démarre dès qu’il fait nuit. La monture ne suit pas pendant l’attente.",
+          "dawn": "Arrêter à l’aube",
+          "dawnHint": "Termine le plan quand il fait jour, même s’il manque des images. Le reste peut être pris la nuit suivante.",
+          "from": "à partir de {time}",
+          "notTonight": "pas cette nuit",
+          "low": "Arrêter quand la cible est trop basse",
+          "lowHint": "Près de l’horizon, l’air rend les étoiles floues, et des arbres ou des maisons gênent. Le plan continue alors avec la cible suivante.",
+          "minAltitude": "Hauteur minimale au-dessus de l’horizon (°)",
+          "noTarget": "Ajoute d’abord une cible au plan. Ceci s’active ensuite tout seul.",
+          "targetRunning": "Non modifiable pendant les prises de vue d’une cible.",
+          "sunBelow": "soleil {degrees}° sous l’horizon",
+          "darknessName": {
+            "bright": "encore clair",
+            "dusky": "presque nuit",
+            "usual": "habituel",
+            "dark": "plus sombre",
+            "darkest": "nuit complète"
+          },
+          "minAltitudeHint": "0° est l’horizon, 90° est juste au-dessus de toi. Deux poings l’un sur l’autre, bras tendu, font environ 20°.",
+          "startAt": "Début de la nuit",
+          "endAt": "Fin de la nuit",
+          "until": "jusqu’à {time}"
+        },
+        "budget": {
+          "question": "Combien de temps veux-tu photographier cette cible ? (heures)",
+          "pictures": "{count} image de {seconds} s | {count} images de {seconds} s",
+          "apply": "Utiliser ce nombre d’images",
+          "wholeNight": "Tant que la nuit le permet ({time})"
+        }
       }
     },
     "mount": {
@@ -5775,6 +5825,7 @@
       "sequenceStart": "Impossible de démarrer la séquence",
       "guidingStart": "Impossible de démarrer le guidage",
       "autofocusStart": "Impossible de démarrer l'autofocus",
+      "autofocusStop": "Impossible d’annuler l’autofocus",
       "binning": "Impossible de modifier le binning",
       "readout": "Impossible de modifier le mode de lecture",
       "switchSet": "Impossible de régler l'interrupteur"
@@ -5912,6 +5963,7 @@
           "lastFailed": "Dernier autofocus à {time} échoué : vérifiez que des étoiles sont visibles et réessayez",
           "pointAtStars": "Pointer le télescope vers des étoiles (atlas du ciel)",
           "setupFirst": "Avant le premier autofocus avec ce télescope, configurez-le une fois : l'assistant mesure votre focuser et votre caméra et trouve des réglages adaptés. Sans cela, l'autofocus échoue souvent.",
+          "cancelled": "Autofocus annulé. Le focuseur revient à sa position précédente.",
           "setup": "Configurer l'autofocus"
         },
         "guide": {
@@ -5932,7 +5984,7 @@
           "slewingToCalibration": "Le télescope se déplace vers le point de calibration…",
           "calibratedHint": "Calibré. La calibration est conservée pour les nuits suivantes ; votre plan démarre le guidage seul à chaque cible.",
           "calibratedSummary": "Calibré",
-          "unparkFirst": "Préparez d'abord le télescope (étape « Télescope prêt »)."
+          "unparkFirst": "Préparez d'abord le télescope (étape « {step} »)."
         },
         "capture": {
           "title": "Prendre des images",
@@ -5940,6 +5992,9 @@
           "targets": "Cibles",
           "remaining": "Temps restant",
           "noPlan": "Il n'y a pas encore de plan. Créez-en un avec votre cible, filtre, temps de pose et nombre d'images.",
+          "nothingLeft": "Ton plan n’a plus d’images à prendre. Choisis une nouvelle cible ou reprends les images de ce plan.",
+          "repeat": "Reprendre les images",
+          "repeatFailed": "Impossible de réinitialiser le plan",
           "editPlan": "Modifier le plan",
           "createPlan": "Créer un plan",
           "watch": "Voir arriver les images",
@@ -5948,7 +6003,18 @@
           "summary": "{targets} cible, terminé vers {time} | {targets} cibles, terminé vers {time}",
           "summaryDone": "{targets} cible, toutes les images prises | {targets} cibles, toutes les images prises",
           "confirmStartTitle": "Démarrer les prises de vue ?",
-          "confirmStartMessage": "Le plan avec {targets} cible démarre maintenant et dure environ {remaining}. Le télescope se rend à la cible, la centre et démarre le guidage avant la première image. | Le plan avec {targets} cibles démarre maintenant et dure environ {remaining}. Le télescope se rend à chaque cible, la centre et démarre le guidage avant la première image.",
+          "confirmStartPlan": "Le plan démarre maintenant avec {targets} cible et dure environ {remaining}. | Le plan démarre maintenant avec {targets} cibles et dure environ {remaining}.",
+          "confirmStartApproach": {
+            "center": "Le télescope se rend à la cible et la centre. | Le télescope se rend à chaque cible et la centre.",
+            "slew": "Le télescope se rend à la cible mais ne la centre pas. | Le télescope se rend à chaque cible mais ne la centre pas.",
+            "off": "Le télescope ne se rend pas à la cible, il prend les images là où il pointe maintenant. | Le télescope ne se rend pas aux cibles, il prend les images là où il pointe maintenant.",
+            "mixed": "Toutes les cibles ne sont pas rejointes et centrées, voir le plan."
+          },
+          "confirmStartGuiding": {
+            "all": "Le guidage démarre avant la première image.",
+            "none": "Le plan s’exécute sans guidage.",
+            "mixed": "Toutes les cibles ne sont pas guidées, voir le plan."
+          },
           "confirmStopTitle": "Arrêter les prises de vue ?",
           "confirmStopMessage": "L'image en cours est annulée. Vous pourrez redémarrer le plan plus tard.",
           "noExposures": "Votre plan a une cible mais pas encore d'images. Ouvrez le plan et appuyez sur « Ajouter une pose » pour choisir filtre, temps de pose et nombre d'images.",
@@ -5960,7 +6026,6 @@
             "warm": "Ensuite, la caméra se réchauffe. La monture continue de suivre jusqu’à ce que tu termines la nuit.",
             "none": "Ensuite, la monture continue de suivre jusqu’à ce que tu termines la nuit."
           },
-          "confirmStartMessageNoGuiding": "Le plan avec {targets} cible démarre maintenant et dure environ {remaining}. Le télescope se rend à la cible et la centre avant la première image. | Le plan avec {targets} cibles démarre maintenant et dure environ {remaining}. Le télescope se rend à chaque cible et la centre avant la première image.",
           "missingSteps": "{count} cible de votre plan ne le fait pas encore automatiquement : {steps}. | {count} cibles de votre plan ne le font pas encore automatiquement : {steps}.",
           "missingStepParts": {
             "slew": "s'y rendre",
@@ -5985,7 +6050,9 @@
           "flipPause": "{target} atteint le méridien vers {meridian} ; le plan se met en pause à {pause} et retourne le télescope à {earliest}.",
           "flipNone": "Aucun Meridian Flip nécessaire avec ce plan.",
           "flipYourTarget": "Votre cible",
-          "flipSettings": "Réglages du flip et test de jour"
+          "flipSettings": "Réglages du flip et test de jour",
+          "summaryCutOff": "{taken} images sur {planned} prises",
+          "confirmStartWait": "Il attend qu’il fasse nuit, vers {time}."
         },
         "flats": {
           "title": "Flats",
@@ -6041,7 +6108,9 @@
         "title": "Terminer la nuit",
         "intro": "Ces étapes s'exécutent l'une après l'autre. Décochez ce que vous voulez laisser en cours.",
         "nothingToDo": "Rien n'est en cours et la monture est parquée : il n'y a plus rien à faire.",
+        "nothingToDoNoMount": "Rien n’est en cours. La monture n’est pas connectée, vérifie donc toi-même qu’elle est parquée.",
         "someFailed": "Tout n'a pas fonctionné, la raison figure sous l'étape. Vérifiez la monture avant de couper l'alimentation.",
+        "doneWarming": "Tout est fait. Une fois la caméra réchauffée, éteins le rig sur la page d’accueil avant de couper l’alimentation.",
         "confirm": "Terminer la nuit maintenant",
         "actions": {
           "stopSequence": "Arrêter les prises de vue",
@@ -6049,7 +6118,8 @@
           "parkMount": "Parquer la monture",
           "warmCamera": "Réchauffer la caméra ({minutes} min)"
         },
-        "parkTimeout": "La monture n'a pas signalé « parquée » en 3 minutes. Vérifiez-la avant de couper l'alimentation."
+        "parkTimeout": "La monture n'a pas signalé « parquée » en 3 minutes. Vérifiez-la avant de couper l'alimentation.",
+        "doneShutdown": "Tout est fait. Éteins le rig avant de couper l’alimentation."
       },
       "settings": {
         "title": "Mode simple",
@@ -6116,12 +6186,16 @@
         "remaining": "{time} restant",
         "activity": {
           "autofocus": "Mise au point (autofocus)",
-          "slewing": "Le télescope se déplace (centrage ou Meridian Flip)",
+          "slewing": "Le télescope se déplace",
+          "centering": "Centrage de la cible",
+          "startingGuiding": "Démarrage du guidage",
+          "closing": "Fin du plan (parcage, réchauffement)",
           "calibrating": "Le guideur se calibre",
           "settling": "Attente de la stabilisation du guidage",
           "exposing": "Pose en cours",
           "busy": "Préparation de l'image suivante",
-          "flipping": "Meridian Flip – le télescope passe de l'autre côté"
+          "flipping": "Meridian Flip – le télescope passe de l'autre côté",
+          "waitingForDark": "Attend qu’il fasse nuit"
         },
         "exposing": "Pose de {seconds} s",
         "frame": "image {frame} sur {frames}",
@@ -6188,18 +6262,23 @@
           }
         },
         "statusBarHint": "Le guidage, la mise au point et le refroidissement sont évalués dans la barre d'état ci-dessous – appuyez sur l'un pour voir sa signification.",
-        "stop": "Arrêter"
+        "stop": "Arrêter",
+        "waitingUntil": "Attend qu’il fasse nuit, vers {time}"
       },
       "summary": {
         "finished": {
           "title": "Plan terminé",
           "text": "Toutes les images de votre plan sont prises. Terminez la nuit pour parquer le télescope et réchauffer la caméra.",
-          "textFlats": "Toutes les images de votre plan sont prises. Prenez maintenant vos Flats, tant que rien n'a changé, puis terminez la nuit."
+          "textFlats": "Toutes les images de votre plan sont prises. Prenez maintenant vos Flats, tant que rien n'a changé, puis terminez la nuit.",
+          "cutOffTitle": "Fini pour cette nuit",
+          "cutOff": "Le jour s’est levé ou ta cible était trop basse : {taken} images sur {planned} sont prises. Relance le plan une autre nuit pour prendre le reste."
         },
         "ended": {
           "title": "Nuit terminée",
           "text": "Ciel dégagé ! Voici ce que la nuit a donné.",
           "notParked": "Télescope pas encore parqué",
+          "shutdown": "Éteindre le rig",
+          "shutdownWait": "Avant d’éteindre, attends que la caméra soit réchauffée et le télescope parqué.",
           "resume": "Reprendre la nuit"
         },
         "frames": "Images",
@@ -6216,6 +6295,24 @@
       "camera": {
         "title": "Caméra",
         "hint": "L’image de test et chaque image de ton plan utilisent ces valeurs, sauf si tu donnes à une pose du plan ses propres valeurs. Le manuel de ta caméra indique le gain et l’offset recommandés."
+      },
+      "expert": {
+        "show": "Afficher les réglages experts",
+        "hide": "Masquer les réglages experts"
+      },
+      "window": {
+        "waits": "Le plan attend qu’il fasse nuit, vers {time}.",
+        "tooMany": "Seules {fit} images sur {left} environ tiennent dans cette nuit. Le reste peut être pris une autre nuit.",
+        "noDarkness": "Il ne fait pas aussi sombre cette nuit, le plan attendrait sans fin. Choisis un ciel plus clair sous « Nuit » dans le plan.",
+        "limit": {
+          "light": "Il s’arrête au plus tard à {time}, car il fait alors jour.",
+          "low": "Il s’arrête au plus tard à {time}, car ta cible est alors trop basse."
+        },
+        "nothing": {
+          "light": "Il fait trop clair maintenant, le plan se terminerait aussitôt sans image. Active « Attendre qu’il fasse nuit » dans le plan : il démarre alors vers {time}.",
+          "low": "Ta cible est trop basse sur l’horizon et descend, le plan se terminerait sans image. Choisis une autre cible ou une hauteur plus faible.",
+          "other": "Lancé ainsi, le plan se terminerait aussitôt sans image."
+        }
       }
     },
     "secureObservatory": {
@@ -6276,6 +6373,13 @@
       "cameraCold": "Le refroidissement de la caméra est actif ({temperature} °C).",
       "domeOpen": "Le dôme n'est pas fermé.",
       "coverOpen": "Le cache du panneau à flat est ouvert."
+    },
+    "deviceDriverFinder": {
+      "brandLabel": "Quelle est la marque ?",
+      "otherBrand": "Autre marque",
+      "disconnectFirst": "Déconnecte l’appareil avant de changer son pilote.",
+      "applied": "C’est fait : « {device} » est sélectionné. Branche-le, allume-le et touche « Connecter ».",
+      "appliedPickDevice": "Le pilote est réglé, mais aucun appareil n’a encore été trouvé. Branche-le, allume-le, actualise la liste ci-dessus, choisis-le et touche « Connecter »."
     }
   },
   "plugins": {
@@ -6693,6 +6797,7 @@
       "tabs": {
         "network": "Réseau",
         "services": "Services",
+        "pictures": "Images",
         "system": "Système",
         "indi": "INDI",
         "software": "Logiciel",

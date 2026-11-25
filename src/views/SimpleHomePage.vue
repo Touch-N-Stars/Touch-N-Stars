@@ -422,7 +422,11 @@
                         {{ $t('components.simpleMode.steps.guide.calibrateHint') }}
                       </p>
                       <p v-if="calibrationBlocker" class="text-xs text-status-warn">
-                        {{ $t(calibrationBlocker) }}
+                        {{
+                          $t(calibrationBlocker, {
+                            step: $t('components.simpleMode.steps.mount.title'),
+                          })
+                        }}
                       </p>
                       <button
                         type="button"
@@ -719,6 +723,7 @@ import {
   nightSteps,
   planPicturesTaken,
   planUsedUp,
+  planStartSteps,
   targetsMissingSteps,
 } from '@/utils/simpleMode';
 import { PARK_SCOPE_TYPE, endOfPlan, formatClock, formatDuration } from '@/utils/sequenceSimple';
@@ -1387,27 +1392,33 @@ function endOfPlanSentence() {
 function waitSentence() {
   const { notBeforeMs } = planTimes.value;
   if (!notBeforeMs) return '';
-  return ` ${t('components.simpleMode.steps.capture.confirmStartWait', {
+  return t('components.simpleMode.steps.capture.confirmStartWait', {
     time: formatClock(notBeforeMs),
-  })}`;
+  });
+}
+
+// What the plan does, from its steps and not from what the simple mode would set up: every one of
+// them can be switched off in the plan.
+function startMessage() {
+  const S = 'components.simpleMode.steps.capture';
+  const { targets, approach, guiding, focus } = planStartSteps(planSummary.value);
+  return [
+    t(`${S}.confirmStartPlan`, { targets, remaining: plan.value.remaining }, targets),
+    t(`${S}.confirmStartApproach.${approach}`, targets),
+    t(`${S}.confirmStartGuiding.${guiding}`),
+    focus && t(`${S}.confirmStartFocus`),
+    waitSentence(),
+    endOfPlanSentence(),
+  ]
+    .filter(Boolean)
+    .join(' ');
 }
 
 function startCapture() {
   return withBusy('capture', async () => {
     const confirmed = await toastStore.showConfirmation(
       t('components.simpleMode.steps.capture.confirmStartTitle'),
-      t(
-        wantedSteps.value.startGuiding
-          ? 'components.simpleMode.steps.capture.confirmStartMessage'
-          : 'components.simpleMode.steps.capture.confirmStartMessageNoGuiding',
-        { targets: plan.value.targets, remaining: plan.value.remaining },
-        plan.value.targets
-      ) +
-        (wantedSteps.value.afOnFilterChange
-          ? ` ${t('components.simpleMode.steps.capture.confirmStartFocus')}`
-          : '') +
-        waitSentence() +
-        ` ${endOfPlanSentence()}`,
+      startMessage(),
       t('components.simpleMode.steps.capture.start'),
       t('common.cancel')
     );

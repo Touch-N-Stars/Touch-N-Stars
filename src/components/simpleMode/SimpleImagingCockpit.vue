@@ -167,8 +167,21 @@ import SimpleLivePanel from '@/components/simpleMode/SimpleLivePanel.vue';
 import AfShowGraph from '@/components/focuser/AfShowGraph.vue';
 import { fmt, useImagingQuality } from '@/composables/useImagingQuality';
 import { dsoContainerName } from '@/utils/sequenceTargets';
-import { addGuidingTime, imagingVerdict, nightKey, runningPlanPosition } from '@/utils/simpleMode';
-import { MERIDIAN_FLIP_TRIGGER_TYPE, darknessWait, findByType } from '@/utils/sequenceSimple';
+import {
+  addGuidingTime,
+  guidingExpected,
+  imagingVerdict,
+  nightKey,
+  runningPlanPosition,
+  targetStepActivity,
+} from '@/utils/simpleMode';
+import {
+  END_AREA_TYPE,
+  MERIDIAN_FLIP_TRIGGER_TYPE,
+  darknessWait,
+  findAreaContainer,
+  findByType,
+} from '@/utils/sequenceSimple';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
 
 const props = defineProps({
@@ -223,12 +236,20 @@ const sequenceV2Store = useSequenceV2Store();
 const flipping = computed(
   () => findByType(sequenceV2Store.globalTriggers, MERIDIAN_FLIP_TRIGGER_TYPE)?.Status === 'RUNNING'
 );
-// Nothing else runs while the plan waits for darkness, and nobody has to guide yet.
 const darkness = computed(() => darknessWait(sequenceV2Store.data).wait);
 const waitingForDark = computed(() => darkness.value?.Status === 'RUNNING');
 const shownActivity = computed(() => {
   if (waitingForDark.value) return 'waitingForDark';
-  return flipping.value ? 'flipping' : activity.value;
+  if (flipping.value) return 'flipping';
+  if (findAreaContainer(sequenceV2Store.data, END_AREA_TYPE)?.Status === 'RUNNING') {
+    return 'closing';
+  }
+  const step = targetStepActivity(position.value?.container);
+  // Starting to guide often means calibrating and settling first, which the guider reports.
+  if (step === 'startingGuiding' && ['calibrating', 'settling'].includes(activity.value)) {
+    return activity.value;
+  }
+  return step ?? activity.value;
 });
 
 const activityText = computed(() => {
@@ -331,8 +352,8 @@ const alerts = computed(() => {
   } else if (
     store.guiderInfo.Connected &&
     !guiding.value &&
+    guidingExpected(position.value?.container) &&
     !guidingPaused.value &&
-    !waitingForDark.value &&
     !flipping.value
   ) {
     list.push({
