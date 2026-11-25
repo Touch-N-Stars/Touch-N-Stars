@@ -1592,12 +1592,12 @@
       },
       "simple": {
         "viewMode": "시퀀스 보기",
-        "viewModeHint": "간단은 대상마다 주요 옵션이 담긴 카드를 보여줍니다. 전문가는 전체 시퀀스 트리를 보여줍니다.",
+        "viewModeHint": "간단은 대상마다 주요 옵션이 담긴 카드를 보여줍니다. 전체는 시퀀스 트리를 모두 보여줍니다.",
         "mode": {
           "simple": "간단",
-          "full": "전문가"
+          "full": "전체"
         },
-        "openExpert": "전문가 편집기에서 편집",
+        "openFull": "전체 편집기에서 편집",
         "targets": "대상",
         "remaining": "남음",
         "total": "합계",

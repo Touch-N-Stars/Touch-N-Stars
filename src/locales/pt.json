@@ -1551,12 +1551,12 @@
       "unlockControls": "Desbloquear",
       "simple": {
         "viewMode": "Vista da sequência",
-        "viewModeHint": "Simples mostra um cartão por alvo com as opções mais comuns. Especialista mostra a árvore completa da sequência.",
+        "viewModeHint": "Simples mostra um cartão por alvo com as opções mais comuns. Completa mostra toda a árvore da sequência.",
         "mode": {
           "simple": "Simples",
-          "full": "Especialista"
+          "full": "Completa"
         },
-        "openExpert": "Editar no editor especialista",
+        "openFull": "Editar no editor completo",
         "targets": "Alvos",
         "remaining": "Restante",
         "total": "Total",

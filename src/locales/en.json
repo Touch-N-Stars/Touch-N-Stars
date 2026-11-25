@@ -1166,12 +1166,12 @@
       "targetNotFound": "Target not found in the sequence. Please try again.",
       "simple": {
         "viewMode": "Sequence view",
-        "viewModeHint": "Simple shows one card per target with the most common options. Expert shows the complete sequence tree.",
+        "viewModeHint": "Simple shows one card per target with the most common options. Full shows the complete sequence tree.",
         "mode": {
           "simple": "Simple",
-          "full": "Expert"
+          "full": "Full"
         },
-        "openExpert": "Edit in expert editor",
+        "openFull": "Edit in full editor",
         "targets": "Targets",
         "remaining": "Remaining",
         "total": "Total",

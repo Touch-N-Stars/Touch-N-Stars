@@ -1551,12 +1551,12 @@
       "unlockControls": "Déverrouiller",
       "simple": {
         "viewMode": "Vue de la séquence",
-        "viewModeHint": "Simple affiche une carte par cible avec les options courantes. Expert affiche l'arbre complet de la séquence.",
+        "viewModeHint": "Simple affiche une carte par cible avec les options courantes. Complète affiche tout l'arbre de la séquence.",
         "mode": {
           "simple": "Simple",
-          "full": "Expert"
+          "full": "Complète"
         },
-        "openExpert": "Modifier dans l'éditeur expert",
+        "openFull": "Modifier dans l'éditeur complet",
         "targets": "Cibles",
         "remaining": "Restant",
         "total": "Total",

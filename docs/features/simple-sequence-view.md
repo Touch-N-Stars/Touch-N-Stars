@@ -33,8 +33,8 @@ jederzeit umschaltbar. Anlass: wiederkehrende Discord-Anfragen nach dem NINA-Leg
 ## Acceptance criteria
 
 1. Ist eine Sequenz geladen und öffnet der Nutzer die Sequenzseite, ist die Experten-Ansicht
-   aktiv. Im Tab „Einstellungen“ wählt der Nutzer „Ansicht: Einfach / Experte“. Unter der
-   einfachen Ansicht führt der Link „Im Experten-Editor bearbeiten“, über der Experten-Ansicht
+   aktiv. Im Tab „Einstellungen“ wählt der Nutzer „Ansicht: Einfach / Vollständig“. Unter der
+   einfachen Ansicht führt der Link „Im vollständigen Editor bearbeiten“, über der Experten-Ansicht
    der Link „Einfache Ansicht“ zurück, auch bei gesperrter Steuerung. Der Wechsel verändert die
    Sequenz nicht. Die Wahl bleibt nach einem App-Neustart auf diesem Gerät erhalten.
 2. In der einfachen Ansicht erscheint jeder DSO-Container als Karte, in Sequenzreihenfolge.

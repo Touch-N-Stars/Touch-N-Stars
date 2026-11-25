@@ -1592,12 +1592,12 @@
       },
       "simple": {
         "viewMode": "Vista de la seqüència",
-        "viewModeHint": "Simple mostra una targeta per objectiu amb les opcions més habituals. Expert mostra l'arbre complet de la seqüència.",
+        "viewModeHint": "Simple mostra una targeta per objectiu amb les opcions més habituals. Completa mostra tot l'arbre de la seqüència.",
         "mode": {
           "simple": "Simple",
-          "full": "Expert"
+          "full": "Completa"
         },
-        "openExpert": "Edita a l'editor expert",
+        "openFull": "Edita a l'editor complet",
         "targets": "Objectius",
         "remaining": "Restant",
         "total": "Total",

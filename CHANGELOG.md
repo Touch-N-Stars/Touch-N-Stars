@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - PINS: The driver finder now also covers focuser and guide camera: tap the model or brand and it is set, and installed if needed. Besides the setup assistant it is in the INDI setup and, after a failed connect, on the simple mode start page.
 - PINS: After the night has ended, the simple mode has a button to shut the rig down, and the shutdown dialog says when the power can be switched off and shows the reason when the shutdown does not work.
 
+### Changed
+
+- Sequence editor: The expert view is now called full view.
+
 ### Fixed
 
 - PINS: The setup assistant can join a Wi-Fi network while the rig still runs its own hotspot.

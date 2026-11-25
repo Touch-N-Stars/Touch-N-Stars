@@ -1551,12 +1551,12 @@
       "unlockControls": "Desbloquear",
       "simple": {
         "viewMode": "Vista de la secuencia",
-        "viewModeHint": "Simple muestra una tarjeta por objetivo con las opciones más comunes. Experto muestra el árbol completo de la secuencia.",
+        "viewModeHint": "Simple muestra una tarjeta por objetivo con las opciones más comunes. Completa muestra todo el árbol de la secuencia.",
         "mode": {
           "simple": "Simple",
-          "full": "Experto"
+          "full": "Completa"
         },
-        "openExpert": "Editar en el editor experto",
+        "openFull": "Editar en el editor completo",
         "targets": "Objetivos",
         "remaining": "Restante",
         "total": "Total",

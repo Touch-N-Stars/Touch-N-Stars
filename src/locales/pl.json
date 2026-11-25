@@ -1551,12 +1551,12 @@
       "unlockControls": "Odblokować",
       "simple": {
         "viewMode": "Widok sekwencji",
-        "viewModeHint": "Prosty pokazuje jedną kartę na cel z najczęstszymi opcjami. Ekspert pokazuje pełne drzewo sekwencji.",
+        "viewModeHint": "Prosty pokazuje jedną kartę na cel z najczęstszymi opcjami. Pełny pokazuje całe drzewo sekwencji.",
         "mode": {
           "simple": "Prosty",
-          "full": "Ekspert"
+          "full": "Pełny"
         },
-        "openExpert": "Edytuj w edytorze eksperta",
+        "openFull": "Edytuj w pełnym edytorze",
         "targets": "Cele",
         "remaining": "Pozostało",
         "total": "Łącznie",

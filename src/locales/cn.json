@@ -1551,12 +1551,12 @@
       "unlockControls": "解锁",
       "simple": {
         "viewMode": "序列视图",
-        "viewModeHint": "简单模式为每个目标显示一张卡片，包含最常用的选项。专家模式显示完整的序列树。",
+        "viewModeHint": "简单视图为每个目标显示一张卡片，包含最常用的选项。完整视图显示整个序列树。",
         "mode": {
           "simple": "简单",
-          "full": "专家"
+          "full": "完整"
         },
-        "openExpert": "在专家编辑器中编辑",
+        "openFull": "在完整编辑器中编辑",
         "targets": "目标",
         "remaining": "剩余",
         "total": "总计",

@@ -1551,12 +1551,12 @@
       "unlockControls": "Odemknout",
       "simple": {
         "viewMode": "Zobrazení sekvence",
-        "viewModeHint": "Jednoduché zobrazí jednu kartu na cíl s nejběžnějšími volbami. Expert zobrazí celý strom sekvence.",
+        "viewModeHint": "Jednoduché zobrazí jednu kartu na cíl s nejběžnějšími volbami. Úplné zobrazí celý strom sekvence.",
         "mode": {
           "simple": "Jednoduché",
-          "full": "Expert"
+          "full": "Úplné"
         },
-        "openExpert": "Upravit v editoru pro experty",
+        "openFull": "Upravit v úplném editoru",
         "targets": "Cíle",
         "remaining": "Zbývá",
         "total": "Celkem",

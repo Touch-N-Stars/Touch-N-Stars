@@ -27,7 +27,7 @@
         class="w-full min-h-touch flex items-center justify-center gap-1 text-sm text-content-faint hover:text-content-muted"
         @click="settingsStore.setSequenceViewMode('full')"
       >
-        {{ $t('components.sequence.simple.openExpert') }}
+        {{ $t('components.sequence.simple.openFull') }}
         <ChevronRightIcon class="w-4 h-4" />
       </button>
 

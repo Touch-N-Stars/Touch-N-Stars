@@ -1551,12 +1551,12 @@
       "unlockControls": "Sbloccare",
       "simple": {
         "viewMode": "Vista della sequenza",
-        "viewModeHint": "Semplice mostra una scheda per target con le opzioni più comuni. Esperto mostra l'albero completo della sequenza.",
+        "viewModeHint": "Semplice mostra una scheda per target con le opzioni più comuni. Completa mostra tutto l'albero della sequenza.",
         "mode": {
           "simple": "Semplice",
-          "full": "Esperto"
+          "full": "Completa"
         },
-        "openExpert": "Modifica nell'editor esperto",
+        "openFull": "Modifica nell'editor completo",
         "targets": "Target",
         "remaining": "Rimanente",
         "total": "Totale",

@@ -1592,12 +1592,12 @@
       },
       "simple": {
         "viewMode": "Sequenzansicht",
-        "viewModeHint": "Einfach zeigt eine Karte pro Target mit den wichtigsten Optionen. Experte zeigt den vollständigen Sequenzbaum.",
+        "viewModeHint": "Einfach zeigt eine Karte pro Target mit den wichtigsten Optionen. Vollständig zeigt den ganzen Sequenzbaum.",
         "mode": {
           "simple": "Einfach",
-          "full": "Experte"
+          "full": "Vollständig"
         },
-        "openExpert": "Im Experten-Editor bearbeiten",
+        "openFull": "Im vollständigen Editor bearbeiten",
         "targets": "Targets",
         "remaining": "Verbleibend",
         "total": "Gesamt",

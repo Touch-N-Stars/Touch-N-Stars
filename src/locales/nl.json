@@ -1551,12 +1551,12 @@
       "unlockControls": "Ontgrendelen",
       "simple": {
         "viewMode": "Sequentieweergave",
-        "viewModeHint": "Eenvoudig toont één kaart per target met de meest gebruikte opties. Expert toont de volledige sequentieboom.",
+        "viewModeHint": "Eenvoudig toont één kaart per target met de meest gebruikte opties. Volledig toont de hele sequentieboom.",
         "mode": {
           "simple": "Eenvoudig",
-          "full": "Expert"
+          "full": "Volledig"
         },
-        "openExpert": "Bewerken in expert-editor",
+        "openFull": "Bewerken in volledige editor",
         "targets": "Targets",
         "remaining": "Resterend",
         "total": "Totaal",
