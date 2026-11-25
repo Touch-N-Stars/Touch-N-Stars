@@ -45,18 +45,78 @@
       "title": "Błąd połączenia",
       "message_api": "Wtyczka API jest niedostępna. Sprawdź ustawienia w @:{'general.backendName'}",
       "message_api_version": "Wtyczka API jest zbyt stara. Wykonaj aktualizację",
-      "message_tns": "Wtyczka Touch'N'Stars jest niedostępna. Sprawdź ustawienia w @:{'general.backendName'}",
+      "message_unreachable": "Brak odpowiedzi. Sprawdź, czy zestaw lub komputer z N.I.N.A. jest włączony i w tej samej sieci co to urządzenie.",
+      "message_live_updates": "Połączenie dla danych na żywo nie dochodzi do skutku. Może je blokować zapora, VPN lub proxy.",
       "message_tns_version": "Wtyczka Touch N Stars jest zbyt stara. Wykonaj aktualizację"
+    },
+    "connection_help": {
+      "searchAgain": "Szukaj ponownie",
+      "keepsTrying": "Aplikacja próbuje dalej i połączy się sama.",
+      "advanced": "Zaawansowane",
+      "changeAddress": "Zmień adres",
+      "searching": {
+        "title": "Łączenie…",
+        "titleNamed": "Łączenie z {name}…",
+        "text": "Zwykle trwa to kilka sekund."
+      },
+      "found": {
+        "title": "Znaleziono coś innego",
+        "text": "Twoje urządzenie nie odpowiada, ale w sieci znaleziono to. Jeśli to nie to, przejdź przez punkty poniżej.",
+        "connect": "Połącz z {name}"
+      },
+      "pinsStarting": {
+        "title": "Zestaw jest włączony, PINS się uruchamia",
+        "text": "To może potrwać minutę lub dwie. Aplikacja połączy się sama."
+      },
+      "pinsDown": {
+        "title": "Zestaw jest włączony, ale PINS nie odpowiada",
+        "text": "Poczekaj jeszcze minutę. Jeśli nic się nie zmieni, wyłącz zestaw i włącz go ponownie."
+      },
+      "rigSilent": {
+        "title": "Zestaw nie odpowiada",
+        "text": "Przejdź przez te punkty:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A. nie odpowiada",
+        "text": "Przejdź przez te punkty:"
+      },
+      "silent": {
+        "title": "Brak odpowiedzi",
+        "text": "Przejdź przez punkty pasujące do twojego sprzętu:"
+      },
+      "apiMissing": {
+        "title": "Brakuje Advanced API",
+        "text": "Znaleziono Touch'N'Stars, ale wtyczka „Advanced API” w N.I.N.A. nie odpowiada. Zainstaluj ją w N.I.N.A. w sekcji Plugins, włącz API w jej opcjach i uruchom N.I.N.A. ponownie."
+      },
+      "liveBlocked": {
+        "title": "Prawie połączono",
+        "text": "Połączenie dla danych na żywo nie dochodzi do skutku. Może je blokować zapora, VPN lub proxy."
+      },
+      "update": {
+        "title": "Potrzebna jest aktualizacja",
+        "text": "Wtyczka {plugin} ma wersję {current}, aplikacja potrzebuje co najmniej {minimum}. W N.I.N.A. zaktualizuj ją w sekcji Plugins i uruchom N.I.N.A. ponownie. W zestawie PINS zaktualizuj PINS."
+      },
+      "sections": {
+        "rig": "Zestaw PINS",
+        "nina": "Komputer z N.I.N.A."
+      },
+      "checks": {
+        "power": "Czy zestaw ma zasilanie? Po włączeniu potrzebuje minuty lub dwóch.",
+        "hotspot": "W terenie: połącz to urządzenie z Wi-Fi zestawu „{name}”. Hasło to „touchnstars”, jeśli go nie zmieniono. Pozostań połączony, nawet jeśli pojawi się informacja o braku internetu.",
+        "home": "W domu: to urządzenie musi być w tej samej sieci co zestaw, nie na danych komórkowych ani w Wi-Fi dla gości.",
+        "computer": "Czy komputer jest włączony, a N.I.N.A. uruchomiona?",
+        "network": "To urządzenie musi być w tej samej sieci co komputer, nie na danych komórkowych ani w Wi-Fi dla gości.",
+        "plugin": "Czy wtyczka Touch'N'Stars jest zainstalowana i włączona w N.I.N.A.?",
+        "firewall": "Czy zapora komputera zezwala N.I.N.A. na działanie w sieciach prywatnych (port {port})?",
+        "iosLocalNetwork": "iPhone i iPad: w Ustawienia, Prywatność i ochrona, Sieć lokalna opcja Touch'N'Stars musi być włączona.",
+        "nearbyDevices": "Aplikacja nie może przeszukiwać sieci. Zezwól Touch'N'Stars na „Urządzenia w pobliżu” w ustawieniach systemu.",
+        "browser": "Przeglądarka nie może szukać. Jeśli adres się zmienił, otwórz nowy."
+      }
     },
     "connection_splash": {
       "connecting": "Łączenie…",
-      "trying": "Ponowne łączenie z {instance}…",
-      "delayed": "Nadal nie można połączyć się z {instance}. Może to oznaczać problem — otwórz Ustawienia, aby zweryfikować instancję Touch-N-Stars.",
-      "retry_now": "Spróbuj teraz",
-      "show_details": "Pokaż szczegóły",
       "details": "Cel: {endpoint} · upłynęło {elapsed} s",
-      "configured_instance": "skonfigurowana instancja",
-      "default_instance_name": "wybrana instancja"
+      "configured_instance": "skonfigurowana instancja"
     }
   },
   "whatsnew": {

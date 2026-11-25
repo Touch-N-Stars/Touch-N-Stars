@@ -45,18 +45,78 @@
       "title": "연결 오류",
       "message_api": "API 플러그인을 사용할 수 없습니다. @:{'general.backendName'}에서 설정을 확인하세요",
       "message_api_version": "API 플러그인이 너무 오래되었습니다. 업데이트를 진행하세요",
-      "message_tns": "Touch'N'Stars 플러그인을 사용할 수 없습니다. @:{'general.backendName'}에서 설정을 확인하세요",
+      "message_unreachable": "응답이 없습니다. 리그 또는 N.I.N.A. 컴퓨터가 켜져 있고 이 기기와 같은 네트워크에 있는지 확인하세요.",
+      "message_live_updates": "실시간 데이터 연결이 열리지 않습니다. 방화벽, VPN 또는 프록시가 막고 있을 수 있습니다.",
       "message_tns_version": "Touch N Stars 플러그인이 너무 오래되었습니다. 업데이트를 진행하세요"
+    },
+    "connection_help": {
+      "searchAgain": "다시 찾기",
+      "keepsTrying": "앱이 계속 시도하며 자동으로 연결합니다.",
+      "advanced": "고급",
+      "changeAddress": "주소 변경",
+      "searching": {
+        "title": "연결 중…",
+        "titleNamed": "{name}에 연결 중…",
+        "text": "보통 몇 초 걸립니다."
+      },
+      "found": {
+        "title": "다른 장비를 찾았습니다",
+        "text": "사용 중인 장비는 응답하지 않지만 네트워크에서 이 장비를 찾았습니다. 맞지 않으면 아래 항목을 확인하세요.",
+        "connect": "{name}에 연결"
+      },
+      "pinsStarting": {
+        "title": "리그가 켜져 있고 PINS가 시작 중입니다",
+        "text": "1~2분 걸릴 수 있습니다. 앱이 자동으로 연결합니다."
+      },
+      "pinsDown": {
+        "title": "리그는 켜져 있지만 PINS가 응답하지 않습니다",
+        "text": "1분 더 기다리세요. 변화가 없으면 리그를 껐다가 다시 켜세요."
+      },
+      "rigSilent": {
+        "title": "리그가 응답하지 않습니다",
+        "text": "다음 항목을 확인하세요:"
+      },
+      "ninaSilent": {
+        "title": "N.I.N.A.가 응답하지 않습니다",
+        "text": "다음 항목을 확인하세요:"
+      },
+      "silent": {
+        "title": "응답 없음",
+        "text": "사용 환경에 맞는 항목을 확인하세요:"
+      },
+      "apiMissing": {
+        "title": "Advanced API가 없습니다",
+        "text": "Touch'N'Stars는 찾았지만 N.I.N.A.의 \"Advanced API\" 플러그인이 응답하지 않습니다. N.I.N.A.의 Plugins에서 설치하고 옵션에서 API를 켠 다음 N.I.N.A.를 다시 시작하세요."
+      },
+      "liveBlocked": {
+        "title": "거의 연결되었습니다",
+        "text": "실시간 데이터 연결이 열리지 않습니다. 방화벽, VPN 또는 프록시가 막고 있을 수 있습니다."
+      },
+      "update": {
+        "title": "업데이트가 필요합니다",
+        "text": "플러그인 {plugin}의 버전은 {current}이며 앱에는 {minimum} 이상이 필요합니다. N.I.N.A.에서는 Plugins에서 업데이트하고 N.I.N.A.를 다시 시작하세요. PINS 리그에서는 PINS를 업데이트하세요."
+      },
+      "sections": {
+        "rig": "PINS 리그",
+        "nina": "N.I.N.A. 컴퓨터"
+      },
+      "checks": {
+        "power": "리그에 전원이 들어와 있나요? 켠 뒤 1~2분이 필요합니다.",
+        "hotspot": "야외: 이 기기를 리그의 Wi-Fi \"{name}\"에 연결하세요. 바꾸지 않았다면 비밀번호는 \"touchnstars\"입니다. 인터넷이 없다고 표시되어도 연결을 유지하세요.",
+        "home": "집: 이 기기는 리그와 같은 네트워크에 있어야 합니다. 모바일 데이터나 게스트 Wi-Fi는 안 됩니다.",
+        "computer": "컴퓨터가 켜져 있고 N.I.N.A.가 실행 중인가요?",
+        "network": "이 기기는 컴퓨터와 같은 네트워크에 있어야 합니다. 모바일 데이터나 게스트 Wi-Fi는 안 됩니다.",
+        "plugin": "N.I.N.A.에 Touch'N'Stars 플러그인이 설치되어 켜져 있나요?",
+        "firewall": "컴퓨터 방화벽이 개인 네트워크에서 N.I.N.A.를 허용하나요(포트 {port})?",
+        "iosLocalNetwork": "iPhone 및 iPad: 설정, 개인정보 보호 및 보안, 로컬 네트워크에서 Touch'N'Stars가 켜져 있어야 합니다.",
+        "nearbyDevices": "앱이 네트워크를 검색할 수 없습니다. 시스템 설정에서 Touch'N'Stars에 \"근처 기기\"를 허용하세요.",
+        "browser": "브라우저는 검색할 수 없습니다. 주소가 바뀌었다면 새 주소를 여세요."
+      }
     },
     "connection_splash": {
       "connecting": "연결 중…",
-      "trying": "{instance}에 다시 연결 중…",
-      "delayed": "{instance}에 계속 연결할 수 없습니다. 문제가 있을 수 있습니다 — 설정을 열어 Touch-N-Stars 인스턴스를 확인하세요.",
-      "retry_now": "지금 다시 시도",
-      "show_details": "세부정보 표시",
       "details": "대상: {endpoint} · {elapsed}초 경과",
-      "configured_instance": "구성된 인스턴스",
-      "default_instance_name": "선택한 인스턴스"
+      "configured_instance": "구성된 인스턴스"
     }
   },
   "whatsnew": {
