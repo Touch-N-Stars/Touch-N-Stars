@@ -4,7 +4,7 @@
        guiding, focus and cooling are rated in the status bar below (one segment each, a tap
        explains it), so they are not shown twice. The picture's numbers (HFR, stars, histogram)
        and the ways to other pages wait until the verdict is tapped. -->
-  <SimpleLivePanel hero :details="detailsOpen">
+  <SimpleLivePanel :details="detailsOpen">
     <template v-if="alerts.length" #top>
       <ul class="flex flex-col gap-2">
         <li
@@ -151,6 +151,15 @@
         >
           {{ $t(link.labelKey) }}
         </router-link>
+        <!-- Logs for the team: the plugin navigation is hidden in the simple mode -->
+        <button
+          v-if="logCollectorAvailable"
+          type="button"
+          class="tns-btn-secondary"
+          @click="openLogCollector"
+        >
+          {{ $t('components.simpleMode.more.sendLogs') }}
+        </button>
       </div>
     </template>
   </SimpleLivePanel>
@@ -183,6 +192,7 @@ import {
   findByType,
 } from '@/utils/sequenceSimple';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
+import { useLogCollector } from '@/composables/useLogCollector';
 
 const props = defineProps({
   /** summarizeTargets() of the loaded plan */
@@ -201,6 +211,7 @@ defineEmits(['stop']);
 
 const { t } = useI18n();
 const store = apiStore();
+const { available: logCollectorAvailable, openLogCollector } = useLogCollector();
 const {
   activity,
   coolingQuality,

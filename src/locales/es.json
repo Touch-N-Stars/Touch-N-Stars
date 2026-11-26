@@ -6030,14 +6030,14 @@
           "description": "Unas estrellas nítidas deciden la noche, y los siguientes pasos también las necesitan: la alineación polar y el centrado del objetivo calculan la posición a partir de una imagen. Apunta el telescopio a una zona del cielo con estrellas. Con un enfocador motorizado el autoenfoque hace el trabajo; sin él, enfoca a mano con imágenes en vivo.",
           "autofocus": "Iniciar autoenfoque",
           "watch": "Ver la curva de enfoque",
-          "manualHint": "Sin enfocador motorizado conectado: abre la cámara, toma imágenes en bucle y gira el enfocador hasta que las estrellas sean lo más pequeñas posible.",
-          "manual": "Abrir la cámara",
           "lastRun": "Último autoenfoque a las {time}",
           "lastFailed": "El último autoenfoque a las {time} falló: comprueba que se ven estrellas e inténtalo de nuevo",
           "pointAtStars": "Apuntar el telescopio a estrellas (atlas del cielo)",
           "setupFirst": "Antes del primer autoenfoque con este telescopio, configúralo una vez: el asistente mide tu enfocador y cámara y encuentra ajustes que funcionan. Sin él, el autoenfoque suele fallar.",
           "cancelled": "Autoenfoque cancelado. El enfocador vuelve a donde estaba antes.",
-          "setup": "Configurar autoenfoque"
+          "setup": "Configurar autoenfoque",
+          "liveHint": "No hay ningún enfocador motorizado conectado: toma imágenes en bucle y gira el enfocador hasta que las estrellas sean lo más pequeñas posible y el HFR sea el más bajo.",
+          "live": "Enfocar a mano con imágenes en directo"
         },
         "guide": {
           "title": "Configurar guiado",
@@ -6176,7 +6176,8 @@
         "focus": "Enfoque",
         "guider": "Guiado",
         "system": "Wi-Fi, actualizaciones y sistema",
-        "settings": "Ajustes"
+        "settings": "Ajustes",
+        "sendLogs": "Enviar registros al equipo"
       },
       "endNight": {
         "title": "Terminar la noche",
@@ -6210,19 +6211,14 @@
       "focusFirst": "Enfoca primero: este paso calcula la posición a partir de una imagen, y para ello necesita estrellas nítidas.",
       "live": {
         "lastPicture": "Última imagen",
-        "openFull": "Mostrar la imagen a pantalla completa",
         "noPicture": "Aún no hay imagen. Toma una imagen de prueba para ver lo que ve la cámara.",
         "preview": "Imagen de prueba",
-        "hfr": "Nitidez (HFR)",
         "stars": "Estrellas",
-        "guiding": "Guiado",
-        "sensor": "Sensor",
         "trendTitle": "Nitidez de las últimas {count} imágenes",
         "trendHint": "Las estrellas más nítidas se dibujan más arriba. Si la línea baja durante la noche, enfoca de nuevo.",
         "exposure": "Tiempo de exposición",
         "testPicture": "Tomar imagen de prueba",
         "abort": "Detener exposición",
-        "planRunning": "Tu plan está tomando imágenes: las nuevas aparecen aquí según llegan.",
         "justNow": "ahora mismo",
         "minutesAgo": "hace {minutes} min",
         "histogram": "Histograma",
@@ -6231,7 +6227,11 @@
         "pixels": "{count} píxel | {count} píxeles",
         "pixelsSaturated": "{count} píxel saturado | {count} píxeles saturados",
         "histogramHint": "Datos del sensor sin estirar de toda la imagen. Solo se muestra el rango alrededor del fondo del cielo; las estrellas y los píxeles saturados quedan más a la derecha y se cuentan en Máx.",
-        "firstPlanPicture": "La primera imagen de tu plan aparece aquí."
+        "firstPlanPicture": "La primera imagen de tu plan aparece aquí.",
+        "noCamera": "Conecta la cámara para ver aquí su imagen.",
+        "loop": "Seguir tomando imágenes",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} estrella | {stars} estrellas"
       },
       "setupChecks": {
         "title": "Antes de tu primera noche",
@@ -6387,6 +6387,14 @@
           "low": "Tu objetivo está demasiado bajo sobre el horizonte y sigue bajando, el plan terminaría sin ninguna imagen. Elige otro objetivo o una altura menor.",
           "other": "Así, el plan terminaría enseguida sin ninguna imagen."
         }
+      },
+      "stage": {
+        "showAll": "Todos los pasos y más",
+        "showLess": "Mostrar menos",
+        "looping": "Imágenes en directo para enfocar",
+        "polarRunning": "Alineación polar en curso",
+        "cooling": "Enfriando a {temp} °C",
+        "warming": "La cámara se está calentando"
       }
     },
     "secureObservatory": {

@@ -52,6 +52,8 @@ test('simple navigation keeps only its own entries, in its own order', () => {
   assert.equal(isHiddenInSimpleMode('home'), false);
   assert.equal(isHiddenInSimpleMode('settings'), false);
   assert.equal(isHiddenInSimpleMode('mount'), true);
+  // The home page is the camera in the simple mode
+  assert.equal(isHiddenInSimpleMode('camera'), true);
   assert.equal(isHiddenInSimpleMode('plugin-livestack'), true);
   assert.equal(isHiddenInSimpleMode('pins'), true);
   assert.equal(isHiddenInSimpleMode('monitoring'), true);

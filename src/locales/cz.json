@@ -6030,14 +6030,14 @@
           "description": "Ostré hvězdy rozhodují o noci – a potřebují je i další kroky: polární zarovnání a centrování cíle zjišťují polohu ze snímku. Zamiřte dalekohled na část oblohy s hvězdami. S motorovým zaostřovačem to udělá autofokus; bez něj zaostřete ručně podle živých snímků.",
           "autofocus": "Spustit autofokus",
           "watch": "Sledovat křivku ostření",
-          "manualHint": "Není připojen motorový zaostřovač: otevřete kameru, pořizujte snímky ve smyčce a otáčejte zaostřovačem, dokud nejsou hvězdy co nejmenší.",
-          "manual": "Otevřít kameru",
           "lastRun": "Poslední autofokus v {time}",
           "lastFailed": "Poslední autofokus v {time} selhal – zkontrolujte, zda jsou vidět hvězdy, a zkuste to znovu",
           "pointAtStars": "Zamiřte dalekohled na hvězdy (atlas oblohy)",
           "setupFirst": "Před prvním autofokusem s tímto dalekohledem ho jednou nastavte: asistent změří váš zaostřovač a kameru a najde funkční nastavení. Bez toho autofokus často selže.",
           "cancelled": "Autofokus zrušen. Fokuser se vrací tam, kde byl předtím.",
-          "setup": "Nastavit autofokus"
+          "setup": "Nastavit autofokus",
+          "liveHint": "Není připojen motorový fokusér: pořizuj snímky ve smyčce a otáčej fokusérem, dokud nejsou hvězdy co nejmenší a HFR nejnižší.",
+          "live": "Zaostřit ručně pomocí živých snímků"
         },
         "guide": {
           "title": "Nastavte pointaci",
@@ -6176,7 +6176,8 @@
         "focus": "Zaostření",
         "guider": "Pointace",
         "system": "Wi-Fi, aktualizace a systém",
-        "settings": "Nastavení"
+        "settings": "Nastavení",
+        "sendLogs": "Odeslat logy týmu"
       },
       "endNight": {
         "title": "Ukončit noc",
@@ -6210,19 +6211,14 @@
       "focusFirst": "Nejdřív zaostřete: tento krok zjišťuje polohu ze snímku a ten potřebuje ostré hvězdy.",
       "live": {
         "lastPicture": "Poslední snímek",
-        "openFull": "Zobrazit snímek na celou obrazovku",
         "noPicture": "Zatím žádný snímek. Pořiďte testovací snímek a uvidíte, co kamera vidí.",
         "preview": "Testovací snímek",
-        "hfr": "Ostrost (HFR)",
         "stars": "Hvězdy",
-        "guiding": "Pointace",
-        "sensor": "Senzor",
         "trendTitle": "Ostrost posledních {count} snímků",
         "trendHint": "Ostřejší hvězdy jsou kresleny výše. Pokud čára během noci klesá, zaostřete znovu.",
         "exposure": "Expoziční doba",
         "testPicture": "Pořídit testovací snímek",
         "abort": "Zastavit expozici",
-        "planRunning": "Váš plán pořizuje snímky – nové se tu objevují, jakmile přijdou.",
         "justNow": "právě teď",
         "minutesAgo": "před {minutes} min",
         "histogram": "Histogram",
@@ -6231,7 +6227,11 @@
         "pixels": "{count} pixel | {count} pixelů",
         "pixelsSaturated": "{count} pixel saturován | {count} pixelů saturováno",
         "histogramHint": "Nenatažená data senzoru celého snímku. Zobrazen je jen rozsah kolem pozadí oblohy; hvězdy a saturované pixely leží dále vpravo a počítají se pod Max.",
-        "firstPlanPicture": "První snímek vašeho plánu se objeví zde."
+        "firstPlanPicture": "První snímek vašeho plánu se objeví zde.",
+        "noCamera": "Připoj kameru, pak tu uvidíš její snímek.",
+        "loop": "Snímat nepřetržitě",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} hvězda | {stars} hvězd"
       },
       "setupChecks": {
         "title": "Před první nocí",
@@ -6387,6 +6387,14 @@
           "low": "Cíl je příliš nízko nad obzorem a klesá, plán by skončil bez snímku. Vyber jiný cíl nebo menší výšku.",
           "other": "Takto spuštěný plán by hned skončil bez snímku."
         }
+      },
+      "stage": {
+        "showAll": "Všechny kroky a další",
+        "showLess": "Zobrazit méně",
+        "looping": "Živé snímky pro zaostření",
+        "polarRunning": "Probíhá polární seřízení",
+        "cooling": "Chlazení na {temp} °C",
+        "warming": "Kamera se zahřívá"
       }
     },
     "secureObservatory": {

@@ -9,6 +9,9 @@ test('a short outage shows no help', () => {
   assert.equal(diagnose({ elapsed: 14 }), 'searching');
   assert.equal(diagnose({ elapsed: 14, issue: null }), 'searching');
   assert.equal(diagnose({ elapsed: 14, issue: { type: 'api' } }), 'searching');
+  // Back from the background: the daemon answers before the app's own check is through
+  assert.equal(diagnose({ elapsed: 5, issue: null, boxAnswers: true }), 'searching');
+  assert.equal(diagnose({ elapsed: 5, kind: 'pins', issue: { type: 'api' } }), 'searching');
 });
 
 test('silence is explained for the kind of backend', () => {
@@ -18,7 +21,7 @@ test('silence is explained for the kind of backend', () => {
 });
 
 test('a rig that answers without PINS is starting, then down', () => {
-  assert.equal(diagnose({ boxAnswers: true, elapsed: 5 }), 'pinsStarting');
+  assert.equal(diagnose({ boxAnswers: true, elapsed: 15 }), 'pinsStarting');
   assert.equal(diagnose({ boxAnswers: true, elapsed: 120 }), 'pinsDown');
   assert.equal(diagnose({ kind: 'pins', issue: { type: 'api' } }), 'pinsStarting');
 });

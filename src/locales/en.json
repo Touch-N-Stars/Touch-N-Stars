@@ -6030,14 +6030,14 @@
           "description": "Sharp stars make or break the night – and the next steps need them too: polar alignment and centering the target work out the position from a picture. Point the telescope at a part of the sky with stars. With a motor focuser the autofocus does the work; without one, focus by hand using live pictures.",
           "autofocus": "Start autofocus",
           "watch": "Watch the focus curve",
-          "manualHint": "No motor focuser connected: open the camera, take pictures in a loop and turn the focuser until the stars are as small as possible.",
-          "manual": "Open the camera",
           "lastRun": "Last autofocus at {time}",
           "lastFailed": "Last autofocus at {time} failed – check that stars are visible and try again",
           "pointAtStars": "Point the telescope at stars (sky atlas)",
           "setupFirst": "Before the first autofocus with this telescope, set it up once: the assistant measures your focuser and camera and finds settings that work. Without it the autofocus often fails.",
           "cancelled": "Autofocus cancelled. The focuser goes back to where it was before.",
-          "setup": "Set up autofocus"
+          "setup": "Set up autofocus",
+          "liveHint": "No motor focuser connected: take pictures in a loop and turn the focus knob until the stars are as small as possible and the HFR is lowest.",
+          "live": "Focus by hand with live pictures"
         },
         "guide": {
           "title": "Set up guiding",
@@ -6176,7 +6176,8 @@
         "focus": "Focus",
         "guider": "Guiding",
         "system": "Wi-Fi, updates & system",
-        "settings": "Settings"
+        "settings": "Settings",
+        "sendLogs": "Send logs to the team"
       },
       "endNight": {
         "title": "End the night",
@@ -6210,19 +6211,14 @@
       "focusFirst": "Focus first: this step works out the position from a picture, and that needs sharp stars.",
       "live": {
         "lastPicture": "Last picture",
-        "openFull": "Show the picture full screen",
         "noPicture": "No picture yet. Take a test picture to see what the camera sees.",
         "preview": "Test picture",
-        "hfr": "Sharpness (HFR)",
         "stars": "Stars",
-        "guiding": "Guiding",
-        "sensor": "Sensor",
         "trendTitle": "Sharpness of the last {count} pictures",
         "trendHint": "Sharper stars are drawn higher up. If the line sinks during the night, focus again.",
         "exposure": "Exposure time",
         "testPicture": "Take a test picture",
         "abort": "Stop exposure",
-        "planRunning": "Your plan is taking pictures – new ones appear here as they come in.",
         "justNow": "just now",
         "minutesAgo": "{minutes} min ago",
         "histogram": "Histogram",
@@ -6231,7 +6227,11 @@
         "pixels": "{count} pixel | {count} pixels",
         "pixelsSaturated": "{count} pixel saturated | {count} pixels saturated",
         "histogramHint": "Unstretched sensor data of the whole picture. Only the range around the sky background is shown; stars and saturated pixels lie further right and are counted under Max.",
-        "firstPlanPicture": "The first picture of your plan appears here."
+        "firstPlanPicture": "The first picture of your plan appears here.",
+        "noCamera": "Connect the camera to see its picture here.",
+        "loop": "Keep taking pictures",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} star | {stars} stars"
       },
       "setupChecks": {
         "title": "Before your first night",
@@ -6387,6 +6387,14 @@
           "low": "Your target stands too low above the horizon and is sinking, the plan would end without a picture. Choose another target or a lower height.",
           "other": "Started like this, the plan would end at once without a picture."
         }
+      },
+      "stage": {
+        "showAll": "All steps and more",
+        "showLess": "Show less",
+        "looping": "Live pictures for focusing",
+        "polarRunning": "Polar alignment is running",
+        "cooling": "Cooling to {temp} °C",
+        "warming": "Camera is warming up"
       }
     },
     "secureObservatory": {

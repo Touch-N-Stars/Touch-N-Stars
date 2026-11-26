@@ -34,7 +34,7 @@ und verbindet sich mit dem bekannten Rig von selbst, auch unter neuer Adresse.
    WLAN des Rigs mit Namen und Standardpasswort und das gemeinsame Heimnetz; bei einem NINA-Rechner
    stattdessen Rechner/NINA, gemeinsames Netz, Plugin und Firewall; ist die Art unbekannt, beides.
    Es gibt keinen roten Toast über der Seite.
-3. Given der pinsdaemon antwortet an der Adresse, PINS aber nicht, then sagt die Seite „Rig ist an,
+3. Given der pinsdaemon antwortet an der Adresse, PINS aber nach 15 s nicht, then sagt die Seite „Rig ist an,
    PINS startet noch“ und nach 2 Minuten, dass PINS nicht antwortet, mit einem Rat.
 4. Given ein Backend mit fehlender Advanced API oder zu alter Version, then nennt die Seite genau
    das, bei der Version mit vorhandener und nötiger Nummer.
