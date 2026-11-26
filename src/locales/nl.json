@@ -6030,14 +6030,14 @@
           "description": "Scherpe sterren maken of breken de nacht – en de volgende stappen hebben ze ook nodig: pooluitlijning en het centreren van het doel bepalen de positie uit een opname. Richt de telescoop op een stuk hemel met sterren. Met een motorfocuser doet de autofocus het werk; zonder focus je handmatig met live-opnames.",
           "autofocus": "Autofocus starten",
           "watch": "De focuscurve bekijken",
-          "manualHint": "Geen motorfocuser verbonden: open de camera, maak opnames in een lus en draai de focuser tot de sterren zo klein mogelijk zijn.",
-          "manual": "De camera openen",
           "lastRun": "Laatste autofocus om {time}",
           "lastFailed": "Laatste autofocus om {time} mislukt – controleer of er sterren zichtbaar zijn en probeer opnieuw",
           "pointAtStars": "Richt de telescoop op sterren (sterrenatlas)",
           "setupFirst": "Stel vóór de eerste autofocus met deze telescoop hem eenmalig in: de assistent meet je focuser en camera en vindt werkende instellingen. Zonder dit mislukt de autofocus vaak.",
           "cancelled": "Autofocus geannuleerd. De focuser gaat terug naar waar hij was.",
-          "setup": "Autofocus instellen"
+          "setup": "Autofocus instellen",
+          "liveHint": "Geen gemotoriseerde focuser verbonden: maak doorlopend foto's en draai aan de focuser tot de sterren zo klein mogelijk zijn en de HFR het laagst is.",
+          "live": "Met de hand scherpstellen met live-beelden"
         },
         "guide": {
           "title": "Guiding instellen",
@@ -6210,19 +6210,14 @@
       "focusFirst": "Eerst focussen: deze stap bepaalt de positie uit een opname, en dat heeft scherpe sterren nodig.",
       "live": {
         "lastPicture": "Laatste foto",
-        "openFull": "De foto op volledig scherm tonen",
         "noPicture": "Nog geen foto. Maak een testfoto om te zien wat de camera ziet.",
         "preview": "Testfoto",
-        "hfr": "Scherpte (HFR)",
         "stars": "Sterren",
-        "guiding": "Guiding",
-        "sensor": "Sensor",
         "trendTitle": "Scherpte van de laatste {count} foto's",
         "trendHint": "Scherpere sterren staan hoger getekend. Zakt de lijn in de loop van de nacht, focus dan opnieuw.",
         "exposure": "Belichtingstijd",
         "testPicture": "Testfoto maken",
         "abort": "Belichting stoppen",
-        "planRunning": "Je plan maakt foto's – nieuwe verschijnen hier zodra ze binnenkomen.",
         "justNow": "zojuist",
         "minutesAgo": "{minutes} min geleden",
         "histogram": "Histogram",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} pixel | {count} pixels",
         "pixelsSaturated": "{count} pixel verzadigd | {count} pixels verzadigd",
         "histogramHint": "Ongestrekte sensordata van de hele foto. Alleen het bereik rond de hemelachtergrond wordt getoond; sterren en verzadigde pixels liggen verder rechts en worden onder Max geteld.",
-        "firstPlanPicture": "De eerste foto van je plan verschijnt hier."
+        "firstPlanPicture": "De eerste foto van je plan verschijnt hier.",
+        "noCamera": "Verbind de camera om hier het beeld te zien.",
+        "loop": "Doorlopend opnemen",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} ster | {stars} sterren"
       },
       "setupChecks": {
         "title": "Vóór je eerste nacht",
@@ -6387,6 +6386,14 @@
           "low": "Je doel staat te laag boven de horizon en daalt, het plan zou zonder foto eindigen. Kies een ander doel of een lagere hoogte.",
           "other": "Zo gestart zou het plan meteen zonder foto eindigen."
         }
+      },
+      "stage": {
+        "showAll": "Alle stappen en meer",
+        "showLess": "Minder tonen",
+        "looping": "Live-beelden om scherp te stellen",
+        "polarRunning": "Pooluitlijning loopt",
+        "cooling": "Koelen naar {temp} °C",
+        "warming": "Camera warmt op"
       }
     },
     "secureObservatory": {

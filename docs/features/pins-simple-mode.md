@@ -38,8 +38,9 @@ erreichbar, der Modus lässt sich jederzeit ausschalten.
 ## Acceptance criteria
 
 1. Given eine PINS-Verbindung, when der Nutzer unter Einstellungen → Oberfläche den
-   Einfach-Modus einschaltet, then zeigt die Navigation nur noch Start, Kamera (wenn
-   verbunden), Ziel (Himmelsatlas), Plan und Einstellungen, in dieser Reihenfolge, und die App
+   Einfach-Modus einschaltet, then zeigt die Navigation nur noch Start, Ziel (Himmelsatlas),
+   Plan und Einstellungen, in dieser Reihenfolge (die Startseite ist zugleich die Kamera, siehe
+   `simple-mode-stage.md`), und die App
    wechselt auf die Startseite. Ausschalten stellt die eigene Navbar-Anpassung unverändert
    wieder her.
 2. Given eine NINA/Windows-Verbindung, then gibt es weder den Schalter noch den Startseiten-

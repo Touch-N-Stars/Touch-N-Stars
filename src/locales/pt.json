@@ -6030,14 +6030,14 @@
           "description": "Estrelas nítidas decidem a noite – e os próximos passos também precisam delas: o alinhamento polar e a centralização do alvo calculam a posição a partir de uma imagem. Aponte o telescópio para uma parte do céu com estrelas. Com um focalizador motorizado, o autofocus faz o trabalho; sem ele, foque manualmente com imagens ao vivo.",
           "autofocus": "Iniciar autofocus",
           "watch": "Acompanhar a curva de foco",
-          "manualHint": "Nenhum focalizador motorizado conectado: abra a câmera, faça imagens em loop e gire o focalizador até as estrelas ficarem o menor possível.",
-          "manual": "Abrir a câmera",
           "lastRun": "Último autofocus às {time}",
           "lastFailed": "O último autofocus às {time} falhou – verifique se há estrelas visíveis e tente novamente",
           "pointAtStars": "Apontar o telescópio para estrelas (atlas do céu)",
           "setupFirst": "Antes do primeiro autofocus com este telescópio, configure-o uma vez: o assistente mede seu focalizador e câmera e encontra configurações que funcionam. Sem isso, o autofocus costuma falhar.",
           "cancelled": "Autofoco cancelado. O focador volta para onde estava antes.",
-          "setup": "Configurar autofocus"
+          "setup": "Configurar autofocus",
+          "liveHint": "Nenhum focador motorizado ligado: faz imagens em ciclo e roda o focador até as estrelas ficarem o mais pequenas possível e o HFR ser o mais baixo.",
+          "live": "Focar à mão com imagens em direto"
         },
         "guide": {
           "title": "Configurar guiagem",
@@ -6210,19 +6210,14 @@
       "focusFirst": "Foque primeiro: este passo calcula a posição a partir de uma imagem, e isso exige estrelas nítidas.",
       "live": {
         "lastPicture": "Última imagem",
-        "openFull": "Mostrar a imagem em tela cheia",
         "noPicture": "Nenhuma imagem ainda. Faça uma imagem de teste para ver o que a câmera vê.",
         "preview": "Imagem de teste",
-        "hfr": "Nitidez (HFR)",
         "stars": "Estrelas",
-        "guiding": "Guiagem",
-        "sensor": "Sensor",
         "trendTitle": "Nitidez das últimas {count} imagens",
         "trendHint": "Estrelas mais nítidas aparecem mais acima. Se a linha cair durante a noite, foque novamente.",
         "exposure": "Tempo de exposição",
         "testPicture": "Fazer imagem de teste",
         "abort": "Parar exposição",
-        "planRunning": "Seu plano está fazendo imagens – as novas aparecem aqui conforme chegam.",
         "justNow": "agora mesmo",
         "minutesAgo": "há {minutes} min",
         "histogram": "Histograma",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} píxel | {count} píxeis",
         "pixelsSaturated": "{count} pixel saturado | {count} pixels saturados",
         "histogramHint": "Dados brutos do sensor da imagem inteira, sem stretch. Só é mostrada a faixa em torno do fundo do céu; estrelas e pixels saturados ficam mais à direita e são contados em Máx.",
-        "firstPlanPicture": "A primeira imagem do seu plano aparece aqui."
+        "firstPlanPicture": "A primeira imagem do seu plano aparece aqui.",
+        "noCamera": "Liga a câmara para ver aqui a sua imagem.",
+        "loop": "Continuar a fazer imagens",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} estrela | {stars} estrelas"
       },
       "setupChecks": {
         "title": "Antes da sua primeira noite",
@@ -6387,6 +6386,14 @@
           "low": "O teu alvo está demasiado baixo sobre o horizonte e está a descer, o plano terminaria sem nenhuma imagem. Escolhe outro alvo ou uma altura menor.",
           "other": "Assim, o plano terminaria logo sem nenhuma imagem."
         }
+      },
+      "stage": {
+        "showAll": "Todos os passos e mais",
+        "showLess": "Mostrar menos",
+        "looping": "Imagens em direto para focar",
+        "polarRunning": "Alinhamento polar em curso",
+        "cooling": "A arrefecer para {temp} °C",
+        "warming": "A câmara está a aquecer"
       }
     },
     "secureObservatory": {

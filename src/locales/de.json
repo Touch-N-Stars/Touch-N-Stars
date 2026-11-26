@@ -6030,14 +6030,14 @@
           "description": "Scharfe Sterne entscheiden über die Nacht – und die nächsten Schritte brauchen sie auch: Polausrichtung und Zielzentrierung ermitteln die Position aus einem Bild. Richte das Teleskop auf einen Himmelsbereich mit Sternen. Mit Motorfokussierer erledigt der Autofokus die Arbeit; ohne fokussierst du von Hand anhand von Livebildern.",
           "autofocus": "Autofokus starten",
           "watch": "Fokuskurve beobachten",
-          "manualHint": "Kein Motorfokussierer verbunden: Öffne die Kamera, nimm Bilder in einer Schleife auf und drehe den Fokussierer, bis die Sterne so klein wie möglich sind.",
-          "manual": "Kamera öffnen",
           "lastRun": "Letzter Autofokus um {time}",
           "lastFailed": "Letzter Autofokus um {time} fehlgeschlagen – prüfe, ob Sterne sichtbar sind, und versuche es erneut",
           "pointAtStars": "Teleskop auf Sterne richten (Himmelsatlas)",
           "setupFirst": "Richte vor dem ersten Autofokus mit diesem Teleskop einmal alles ein: Der Assistent misst deinen Fokussierer und deine Kamera und findet passende Einstellungen. Ohne ihn scheitert der Autofokus oft.",
           "cancelled": "Autofokus abgebrochen. Der Fokussierer fährt dorthin zurück, wo er vorher war.",
-          "setup": "Autofokus einrichten"
+          "setup": "Autofokus einrichten",
+          "liveHint": "Kein Motorfokussierer verbunden: Nimm fortlaufend Bilder auf und dreh am Fokussierer, bis die Sterne so klein wie möglich sind und der HFR am niedrigsten ist.",
+          "live": "Von Hand mit Live-Bildern fokussieren"
         },
         "guide": {
           "title": "Guiding einrichten",
@@ -6210,19 +6210,14 @@
       "focusFirst": "Zuerst fokussieren: Dieser Schritt ermittelt die Position aus einem Bild, und das braucht scharfe Sterne.",
       "live": {
         "lastPicture": "Letztes Bild",
-        "openFull": "Bild im Vollbild zeigen",
         "noPicture": "Noch kein Bild. Nimm ein Testbild auf, um zu sehen, was die Kamera sieht.",
         "preview": "Testbild",
-        "hfr": "Schärfe (HFR)",
         "stars": "Sterne",
-        "guiding": "Guiding",
-        "sensor": "Sensor",
         "trendTitle": "Schärfe der letzten {count} Bilder",
         "trendHint": "Schärfere Sterne werden weiter oben gezeichnet. Wenn die Linie im Lauf der Nacht sinkt, fokussiere neu.",
         "exposure": "Belichtungszeit",
         "testPicture": "Testbild aufnehmen",
         "abort": "Belichtung stoppen",
-        "planRunning": "Dein Plan nimmt Bilder auf – neue erscheinen hier, sobald sie eintreffen.",
         "justNow": "gerade eben",
         "minutesAgo": "vor {minutes} Min.",
         "histogram": "Histogramm",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} Pixel | {count} Pixel",
         "pixelsSaturated": "{count} Pixel gesättigt | {count} Pixel gesättigt",
         "histogramHint": "Ungestreckte Sensordaten des ganzen Bildes. Gezeigt wird nur der Bereich um den Himmelshintergrund; Sterne und gesättigte Pixel liegen weiter rechts und werden unter Max gezählt.",
-        "firstPlanPicture": "Das erste Bild deines Plans erscheint hier."
+        "firstPlanPicture": "Das erste Bild deines Plans erscheint hier.",
+        "noCamera": "Verbinde die Kamera, dann siehst du hier ihr Bild.",
+        "loop": "Fortlaufend aufnehmen",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} Stern | {stars} Sterne"
       },
       "setupChecks": {
         "title": "Vor deiner ersten Nacht",
@@ -6387,6 +6386,14 @@
           "low": "Dein Ziel steht zu tief über dem Horizont und sinkt, der Plan würde ohne Bild enden. Wähle ein anderes Ziel oder eine geringere Höhe.",
           "other": "So gestartet würde der Plan sofort ohne Bild enden."
         }
+      },
+      "stage": {
+        "showAll": "Alle Schritte und mehr",
+        "showLess": "Weniger anzeigen",
+        "looping": "Live-Bilder zum Fokussieren",
+        "polarRunning": "Polausrichtung läuft",
+        "cooling": "Kühlt auf {temp} °C",
+        "warming": "Kamera wärmt auf"
       }
     },
     "secureObservatory": {

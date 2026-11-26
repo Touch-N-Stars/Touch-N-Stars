@@ -6030,14 +6030,14 @@
           "description": "Des étoiles nettes font ou défont la nuit, et les étapes suivantes en ont aussi besoin : l'alignement polaire et le centrage de la cible calculent la position à partir d'une image. Pointez le télescope vers une zone du ciel avec des étoiles. Avec un focuser motorisé, l'autofocus fait le travail ; sans, faites la mise au point à la main avec des images en direct.",
           "autofocus": "Démarrer l'autofocus",
           "watch": "Suivre la courbe de mise au point",
-          "manualHint": "Aucun focuser motorisé connecté : ouvrez la caméra, prenez des images en boucle et tournez le focuser jusqu'à ce que les étoiles soient aussi petites que possible.",
-          "manual": "Ouvrir la caméra",
           "lastRun": "Dernier autofocus à {time}",
           "lastFailed": "Dernier autofocus à {time} échoué : vérifiez que des étoiles sont visibles et réessayez",
           "pointAtStars": "Pointer le télescope vers des étoiles (atlas du ciel)",
           "setupFirst": "Avant le premier autofocus avec ce télescope, configurez-le une fois : l'assistant mesure votre focuser et votre caméra et trouve des réglages adaptés. Sans cela, l'autofocus échoue souvent.",
           "cancelled": "Autofocus annulé. Le focuseur revient à sa position précédente.",
-          "setup": "Configurer l'autofocus"
+          "setup": "Configurer l'autofocus",
+          "liveHint": "Aucun focuser motorisé connecté : prends des images en boucle et tourne le focuser jusqu'à ce que les étoiles soient les plus petites possible et la HFR la plus basse.",
+          "live": "Mettre au point à la main avec des images en direct"
         },
         "guide": {
           "title": "Configurer le guidage",
@@ -6210,19 +6210,14 @@
       "focusFirst": "D'abord la mise au point : cette étape calcule la position à partir d'une image, ce qui exige des étoiles nettes.",
       "live": {
         "lastPicture": "Dernière image",
-        "openFull": "Afficher l'image en plein écran",
         "noPicture": "Pas encore d'image. Prenez une image de test pour voir ce que voit la caméra.",
         "preview": "Image de test",
-        "hfr": "Netteté (HFR)",
         "stars": "Étoiles",
-        "guiding": "Guidage",
-        "sensor": "Capteur",
         "trendTitle": "Netteté des {count} dernières images",
         "trendHint": "Les étoiles plus nettes sont tracées plus haut. Si la ligne descend pendant la nuit, refaites la mise au point.",
         "exposure": "Temps de pose",
         "testPicture": "Prendre une image de test",
         "abort": "Arrêter la pose",
-        "planRunning": "Votre plan prend des images – les nouvelles apparaissent ici au fur et à mesure.",
         "justNow": "à l'instant",
         "minutesAgo": "il y a {minutes} min",
         "histogram": "Histogramme",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} pixel | {count} pixels",
         "pixelsSaturated": "{count} pixel saturé | {count} pixels saturés",
         "histogramHint": "Données brutes du capteur sur toute l'image. Seule la plage autour du fond de ciel est affichée ; les étoiles et pixels saturés se trouvent plus à droite et sont comptés sous Max.",
-        "firstPlanPicture": "La première image de votre plan apparaît ici."
+        "firstPlanPicture": "La première image de votre plan apparaît ici.",
+        "noCamera": "Connecte la caméra pour voir son image ici.",
+        "loop": "Prendre des images en continu",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} étoile | {stars} étoiles"
       },
       "setupChecks": {
         "title": "Avant votre première nuit",
@@ -6387,6 +6386,14 @@
           "low": "Ta cible est trop basse sur l’horizon et descend, le plan se terminerait sans image. Choisis une autre cible ou une hauteur plus faible.",
           "other": "Lancé ainsi, le plan se terminerait aussitôt sans image."
         }
+      },
+      "stage": {
+        "showAll": "Toutes les étapes et plus",
+        "showLess": "Afficher moins",
+        "looping": "Images en direct pour la mise au point",
+        "polarRunning": "Mise en station polaire en cours",
+        "cooling": "Refroidissement à {temp} °C",
+        "warming": "La caméra se réchauffe"
       }
     },
     "secureObservatory": {

@@ -1,25 +1,21 @@
 <template>
-  <!-- The newest picture with what matters about it, like the main screen of an all-in-one
-       box: sharpness (HFR), stars, guiding and sensor temperature, the sharpness trend of the
-       night, and a test picture one tap away.
-       `hero`: while the plan runs the picture fills the stage window like on the camera page
-       (pinch to zoom, the zoom survives the next picture), and everything else floats on it.
-       The imaging cockpit fills the slots: what the plan does in one chip at the top
-       (`overlay-top`, `overlay-bottom`, with the exposure progress), problems as banners below
-       it (`top`), its verdict in a floating panel like the camera page's capture panel - a
-       single line at the bottom - (default slot, `actions`). The
-       numbers here then only show with `details`. -->
+  <!-- The stage of the start page: the newest picture fills the stage window like on the camera
+       page (pinch to zoom, the zoom survives the next picture), and everything else floats on it,
+       like the main screen of an all-in-one box. The start page is the camera in the simple mode,
+       so every picture lands here: test pictures, focusing, the plan's frames.
+       Slots: a chip at the top (`overlay-top`, `overlay-bottom`, with the exposure progress),
+       banners below it (`top`), and a floating panel at the bottom (default slot, `actions`).
+       `testPicture` puts the test picture controls at the top of the panel (not while the plan
+       runs: the camera is the plan's then). The histogram, sharpness trend and camera values
+       only show with `details`. -->
   <section
-    :class="
-      hero
-        ? 'fixed z-10 overflow-hidden rounded-[var(--stage-radius)] bg-ground'
-        : 'tns-card p-0! overflow-hidden flex flex-col'
-    "
-    :style="hero ? stageWindowStyle : undefined"
+    class="fixed z-10 overflow-hidden rounded-[var(--stage-radius)] bg-ground"
+    :style="stageWindowStyle"
   >
     <!-- No own background: the stage's ground shows, darker than the bars around it, like
-         on the camera page -->
-    <div v-if="hero" class="absolute inset-0">
+         on the camera page. On a phone the chip and the panel span the stage, so the picture
+         takes the free space between them instead of hiding behind the panel. -->
+    <div class="absolute inset-x-0" :style="pictureBox">
       <ZoomableImage
         :imageData="pictureUrl"
         height="100%"
@@ -31,124 +27,115 @@
       >
         <template #placeholder>
           <div class="flex flex-col items-center gap-2 p-4 text-center text-content-muted">
-            <PhotoIcon class="w-10 h-10" />
-            <span class="text-sm">{{ $t('components.simpleMode.live.firstPlanPicture') }}</span>
+            <Spinner v-if="loadingPicture" size="lg" class="text-accent" />
+            <PhotoIcon v-else class="w-10 h-10" />
+            <span v-if="!loadingPicture" class="text-sm">{{ $t(placeholderKey) }}</span>
           </div>
         </template>
       </ZoomableImage>
+    </div>
 
-      <!-- No loading overlay: with short exposures it would cover the picture every few
-           seconds; the old picture stays until the new one is there. -->
-      <!-- On top of the picture, but let pinch and pan through except where there is
-           something to tap. A floating chip like the camera page's controls. -->
-      <div class="absolute top-0 inset-x-0 z-30 flex flex-col gap-2 p-2 pointer-events-none">
+    <!-- No loading overlay: with short exposures it would cover the picture every few
+         seconds; the old picture stays until the new one is there. -->
+    <!-- On top of the picture, but let pinch and pan through except where there is
+         something to tap. A floating chip like the camera page's controls. -->
+    <div
+      ref="topEl"
+      class="absolute top-0 inset-x-0 z-30 flex flex-col gap-2 p-2 pointer-events-none"
+    >
+      <div class="rounded-control bg-surface-1/90 shadow-lg overflow-hidden text-content text-left">
         <div
-          class="rounded-control bg-surface-1/90 shadow-lg overflow-hidden text-content text-left"
+          v-if="$slots['overlay-top']"
+          class="flex items-start justify-between gap-3 px-3 pt-2"
+          :class="$slots['overlay-bottom'] ? '' : 'pb-2'"
         >
+          <slot
+            name="overlay-top"
+            :caption="pictureUrl ? caption : ''"
+            :ago="pictureUrl ? ago : ''"
+            :numbers="pictureUrl ? numbers : ''"
+          />
+        </div>
+        <div v-if="$slots['overlay-bottom']" class="flex items-center gap-2 px-3 py-1.5">
+          <slot name="overlay-bottom" />
+        </div>
+        <div class="h-1 bg-surface-3">
           <div
-            v-if="$slots['overlay-top']"
-            class="flex items-start justify-between gap-3 px-3 pt-2"
-          >
-            <slot
-              name="overlay-top"
-              :caption="pictureUrl ? caption : ''"
-              :ago="pictureUrl ? ago : ''"
-            />
-          </div>
-          <div v-if="$slots['overlay-bottom']" class="flex items-center gap-2 px-3 py-1.5">
-            <slot name="overlay-bottom" />
-          </div>
-          <div class="h-1 bg-surface-3">
-            <div
-              v-if="store.cameraInfo.IsExposing"
-              class="h-full bg-accent transition-[width] duration-500"
-              :style="{ width: `${Math.min(100, Math.max(0, cameraStore.exposureProgress))}%` }"
-            ></div>
-          </div>
+            v-if="store.cameraInfo.IsExposing"
+            class="h-full bg-accent transition-[width] duration-500"
+            :style="{ width: `${Math.min(100, Math.max(0, cameraStore.exposureProgress))}%` }"
+          ></div>
         </div>
-        <div v-if="$slots.top" class="pointer-events-auto">
-          <slot name="top" />
-        </div>
+      </div>
+      <div v-if="$slots.top" class="pointer-events-auto">
+        <slot name="top" />
       </div>
     </div>
 
-    <button
-      v-else
-      type="button"
-      class="relative block w-full aspect-[3/2] bg-black"
-      :disabled="!pictureUrl"
-      :aria-label="$t('components.simpleMode.live.openFull')"
-      data-haptic="none"
-      @click="showFull = true"
-    >
-      <img
-        v-if="pictureUrl"
-        :src="pictureUrl"
-        :alt="$t('components.simpleMode.live.lastPicture')"
-        class="absolute inset-0 w-full h-full object-contain"
-      />
-      <div
-        v-else-if="!loadingPicture"
-        class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 text-center text-content-muted"
-      >
-        <PhotoIcon class="w-10 h-10" />
-        <span class="text-sm">{{ $t('components.simpleMode.live.noPicture') }}</span>
-      </div>
-      <div
-        v-if="loadingPicture || cameraStore.isLoadingImage"
-        class="absolute inset-0 flex items-center justify-center bg-black/30 text-accent"
-      >
-        <Spinner size="lg" />
-      </div>
-
-      <div
-        v-if="pictureUrl && caption"
-        class="absolute top-0 inset-x-0 flex justify-between gap-2 px-3 py-1.5 bg-black/55 text-xs text-content text-left"
-      >
-        <span class="truncate">{{ caption }}</span>
-        <span class="shrink-0 text-content-muted">{{ ago }}</span>
-      </div>
-      <ArrowsPointingOutIcon
-        v-if="pictureUrl"
-        class="absolute bottom-2 right-2 w-5 h-5 text-white/80 drop-shadow"
-      />
-
-      <!-- Exposure running -->
-      <div v-if="store.cameraInfo.IsExposing" class="absolute bottom-0 inset-x-0 h-1.5 bg-black/60">
-        <div
-          class="h-full bg-accent transition-[width] duration-500"
-          :style="{ width: `${Math.min(100, Math.max(0, cameraStore.exposureProgress))}%` }"
-        ></div>
-      </div>
-    </button>
-
-    <!-- Hero: the panel floats on the picture - a single line at the bottom, across the stage
-         on a phone, in the bottom right corner on a wider screen - and only grows when the
-         verdict is tapped open. It then keeps its own scroll, so the picture never scrolls
-         away. Placed by width, not orientation: a small desktop window counts as landscape,
-         and a side column took all of its width. -->
+    <!-- The panel floats on the picture - across the stage on a phone, in the bottom right
+         corner on a wider screen - and keeps its own scroll, so the picture never scrolls away.
+         `tall` lets it grow when opened. Placed by width, not orientation: a small desktop
+         window counts as landscape, and a side column took all of its width. -->
     <div
-      class="p-3 flex flex-col gap-3"
-      :class="
-        hero
-          ? 'absolute z-30 left-2 right-2 bottom-2 md:left-auto md:w-96 max-h-[65%] overflow-y-auto overscroll-contain bg-ground/70 backdrop-blur-md rounded-card border border-line shadow-lg shadow-black'
-          : ''
-      "
+      ref="panelEl"
+      class="absolute z-30 left-2 right-2 bottom-2 md:left-auto md:w-96 overflow-y-auto overscroll-contain bg-ground/70 backdrop-blur-md rounded-card border border-line shadow-lg shadow-black p-3 flex flex-col gap-3"
+      :class="tall ? 'max-h-[85%]' : 'max-h-[55%]'"
     >
-      <slot />
-
-      <!-- lg: the panel only gets half the page next to the night steps, too narrow for four
-           tiles ("SHARPNESS (HFR)" was cut off on a 1024 px tablet) -->
-      <div v-if="!hero" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2">
-        <div v-for="tile in tiles" :key="tile.key" class="tns-stat-tile">
-          <span class="tns-stat-label">{{ tile.label }}</span>
-          <span class="tns-stat-value">{{ tile.value }}</span>
-        </div>
+      <!-- Stays at the top while the panel scrolls, e.g. the way to fold it again -->
+      <div
+        v-if="$slots.header"
+        class="sticky -top-3 z-10 -mx-3 -mt-3 px-3 pt-3 pb-1 bg-ground/95 rounded-t-card"
+      >
+        <slot name="header" />
       </div>
+
+      <!-- Test picture: what the camera sees now, once or in a loop (focusing by hand) -->
+      <div v-if="showTestPicture" class="flex gap-2">
+        <label for="simple-mode-exposure" class="sr-only">
+          {{ $t('components.simpleMode.live.exposure') }}
+        </label>
+        <select
+          id="simple-mode-exposure"
+          class="tns-select w-24! shrink-0"
+          :value="exposureTime"
+          :disabled="store.cameraInfo.IsExposing"
+          @change="settingsStore.camera.exposureTime = Number($event.target.value)"
+        >
+          <option v-for="seconds in exposureChoices" :key="seconds" :value="seconds">
+            {{ seconds }} s
+          </option>
+        </select>
+        <button
+          v-if="!store.cameraInfo.IsExposing && !cameraStore.isLooping"
+          type="button"
+          class="tns-btn-primary"
+          :disabled="cameraStore.loading"
+          @click="takeTestPicture()"
+        >
+          <CameraIcon class="w-5 h-5" />
+          {{ $t('components.simpleMode.live.testPicture') }}
+        </button>
+        <button v-else type="button" class="tns-btn-danger" @click="stopTestPictures">
+          {{ $t('components.simpleMode.live.abort') }}
+        </button>
+        <button
+          type="button"
+          class="tns-btn-secondary w-auto! shrink-0 px-3!"
+          :class="cameraStore.isLooping ? 'border-accent! text-accent!' : ''"
+          :aria-pressed="cameraStore.isLooping"
+          :aria-label="$t('components.simpleMode.live.loop')"
+          :title="$t('components.simpleMode.live.loop')"
+          @click="toggleLoop"
+        >
+          <ArrowPathIcon class="w-5 h-5" />
+        </button>
+      </div>
+
+      <slot />
 
       <!-- Histogram of the shown picture: where the sky background sits, and how many pixels
            are at the darkest and brightest value (clipped background, saturated stars) -->
-      <div v-if="histogram && showNumbers" class="flex flex-col gap-1">
+      <div v-if="histogram && details" class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-2">
           <span class="tns-label">{{ $t('components.simpleMode.live.histogram') }}</span>
           <span class="text-xs text-content-faint tabular-nums">
@@ -211,69 +198,23 @@
         </div>
       </div>
 
-      <!-- Sharpness over the night. While the plan runs it lives in the status bar's focus
+      <!-- Sharpness over the night and the default gain, offset and readout mode of the test
+           picture and the plan. While the plan runs the trend lives in the status bar's focus
            panel instead. -->
-      <SimpleHfrTrend v-if="!hero" />
-
-      <!-- Test picture (not while the plan runs: the camera is the plan's) -->
-      <div v-if="store.cameraInfo.Connected && !hero" class="flex gap-2">
-        <label for="simple-mode-exposure" class="sr-only">
-          {{ $t('components.simpleMode.live.exposure') }}
-        </label>
-        <select
-          id="simple-mode-exposure"
-          class="tns-select w-28! shrink-0"
-          :value="exposureTime"
-          :disabled="store.cameraInfo.IsExposing || sequenceStore.sequenceRunning"
-          @change="settingsStore.camera.exposureTime = Number($event.target.value)"
-        >
-          <option v-for="seconds in exposureChoices" :key="seconds" :value="seconds">
-            {{ seconds }} s
-          </option>
-        </select>
-        <button
-          v-if="!store.cameraInfo.IsExposing"
-          type="button"
-          class="tns-btn-primary"
-          :disabled="cameraStore.loading || sequenceStore.sequenceRunning"
-          @click="takeTestPicture"
-        >
-          <CameraIcon class="w-5 h-5" />
-          {{ $t('components.simpleMode.live.testPicture') }}
-        </button>
-        <button
-          v-else
-          type="button"
-          class="tns-btn-danger"
-          :disabled="sequenceStore.sequenceRunning"
-          @click="cameraStore.abortExposure(apiService)"
-        >
-          {{ $t('components.simpleMode.live.abort') }}
-        </button>
-      </div>
-      <p v-if="sequenceStore.sequenceRunning && !hero" class="text-xs text-content-faint">
-        {{ $t('components.simpleMode.live.planRunning') }}
-      </p>
-      <!-- Default gain, offset and readout mode of the test picture and the plan -->
-      <SimpleCameraSettings v-if="!hero" />
+      <template v-if="testPicture && details">
+        <SimpleHfrTrend />
+        <SimpleCameraSettings v-if="store.cameraInfo.Connected" />
+      </template>
 
       <slot name="actions" />
     </div>
-
-    <ImageModal
-      v-if="!hero"
-      :showModal="showFull"
-      :imageData="pictureUrl"
-      :isLoading="false"
-      @close="showFull = false"
-    />
   </section>
 </template>
 
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ArrowsPointingOutIcon, CameraIcon, PhotoIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, CameraIcon, PhotoIcon } from '@heroicons/vue/24/outline';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -282,7 +223,6 @@ import { useSequenceStore } from '@/store/sequenceStore';
 import { useImagetStore } from '@/store/imageStore';
 import { usePolling } from '@/composables/usePolling';
 import Spinner from '@/components/helpers/Spinner.vue';
-import ImageModal from '@/components/helpers/imageModal.vue';
 import ZoomableImage from '@/components/helpers/ZoomableImage.vue';
 import SimpleHfrTrend from '@/components/simpleMode/SimpleHfrTrend.vue';
 import SimpleCameraSettings from '@/components/simpleMode/SimpleCameraSettings.vue';
@@ -297,13 +237,59 @@ import { parseRawImage } from '@/utils/rawImage/parseRawImage';
 import { localDecimal } from '@/utils/localeNumber';
 
 const props = defineProps({
-  // While the plan runs the imaging cockpit wraps the picture (see the template)
-  hero: { type: Boolean, default: false },
-  // Hero only: show the histogram
+  // The test picture controls at the top of the panel (while the night is prepared)
+  testPicture: { type: Boolean, default: false },
+  // Show the histogram (and with testPicture the sharpness trend and camera values)
   details: { type: Boolean, default: false },
+  // Let the panel take more of the stage, for a panel that was opened
+  tall: { type: Boolean, default: false },
+  // What the empty stage says
+  placeholderKey: { type: String, default: 'components.simpleMode.live.firstPlanPicture' },
 });
-const showNumbers = computed(() => !props.hero || props.details);
 const { stageWindowStyle } = useStageWindow();
+
+// --- Where the picture goes ---------------------------------------------------------------
+// Below md the chip and the panel span the stage: the picture box ends where they begin, so
+// the picture centers in the free space between them. From md on the panel sits in a corner
+// and the picture keeps the whole stage.
+const GAP_PX = 8;
+const topEl = ref(null);
+const panelEl = ref(null);
+const topHeight = ref(0);
+const panelHeight = ref(0);
+const wide = ref(false);
+let resizeObserver = null;
+let wideQuery = null;
+const onWideChange = (event) => (wide.value = event.matches);
+function measure() {
+  topHeight.value = topEl.value?.offsetHeight ?? 0;
+  panelHeight.value = panelEl.value?.offsetHeight ?? 0;
+}
+onMounted(() => {
+  wideQuery = window.matchMedia('(min-width: 768px)');
+  wide.value = wideQuery.matches;
+  wideQuery.addEventListener('change', onWideChange);
+  measure();
+  if (typeof ResizeObserver !== 'undefined') {
+    resizeObserver = new ResizeObserver(measure);
+    if (topEl.value) resizeObserver.observe(topEl.value);
+    if (panelEl.value) resizeObserver.observe(panelEl.value);
+  }
+});
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+  wideQuery?.removeEventListener('change', onWideChange);
+});
+const pictureBox = computed(() =>
+  wide.value
+    ? { top: '0px', bottom: '0px' }
+    : { top: `${topHeight.value}px`, bottom: `${panelHeight.value + 2 * GAP_PX}px` }
+);
+
+/** Shows the top of the panel, e.g. when another step comes to lead it. */
+function scrollPanelToTop() {
+  if (panelEl.value) panelEl.value.scrollTop = 0;
+}
 
 const { t, locale } = useI18n();
 const store = apiStore();
@@ -371,6 +357,8 @@ const OWN_CAPTURE_SLACK_MS = 60000;
 const previewIsOwn = computed(() => {
   const own = ownCapture.value;
   if (!own || !imageStore.imageData) return false;
+  // The camera store takes the looped pictures by itself, after the one asked for here
+  if (cameraStore.isLooping && previewAtMs.value >= own.atMs) return true;
   const delay = previewAtMs.value - own.atMs;
   return delay >= 0 && delay <= own.exposure * 1000 + OWN_CAPTURE_SLACK_MS;
 });
@@ -429,34 +417,16 @@ function num(value) {
   return Number.isFinite(n) ? n : null;
 }
 
-// Only while guiding: NINA keeps the last RMS after guiding stopped.
-const guidingRms = computed(() => {
-  if (!store.guiderInfo.Connected || store.guiderInfo.State !== 'Guiding') return null;
-  return num(store.guiderInfo.RMSError?.Total?.Arcseconds);
-});
-
-const tiles = computed(() => {
+// Sharpness and star count of the shown picture, for the chip on the stage.
+const numbers = computed(() => {
   const hfr = num(stats.value.HFR);
   const stars = num(stats.value.Stars);
-  const temp = num(stats.value.Temperature) ?? num(store.cameraInfo.Temperature);
-  return [
-    {
-      key: 'hfr',
-      label: t('components.simpleMode.live.hfr'),
-      value: hfr !== null && hfr > 0 ? localDecimal(hfr, 2) : '–',
-    },
-    { key: 'stars', label: t('components.simpleMode.live.stars'), value: stars ?? '–' },
-    {
-      key: 'guiding',
-      label: t('components.simpleMode.live.guiding'),
-      value: guidingRms.value ? `${localDecimal(guidingRms.value, 2)}″` : '–',
-    },
-    {
-      key: 'temp',
-      label: t('components.simpleMode.live.sensor'),
-      value: temp !== null ? `${localDecimal(temp, 1)} °C` : '–',
-    },
-  ];
+  const parts = [];
+  if (hfr !== null && hfr > 0) {
+    parts.push(t('components.simpleMode.live.hfrValue', { hfr: localDecimal(hfr, 2) }));
+  }
+  if (stars !== null) parts.push(t('components.simpleMode.live.starsValue', { stars }, stars));
+  return parts.join(' · ');
 });
 
 const caption = computed(() => {
@@ -466,8 +436,8 @@ const caption = computed(() => {
   if (previewIsTestPicture.value || s.ImageType === 'SNAPSHOT') {
     parts.push(t('components.simpleMode.live.preview'));
   }
-  // In the hero the cockpit names the target above the caption already
-  if (name && !props.hero) parts.push(name);
+  // The cockpit names the target above the caption already
+  if (name && props.testPicture) parts.push(name);
   // The test picture's exposure is the one picked here; any other preview only says its own
   // exposure if the statistics carry it - the picker value would be a guess.
   const exposure = previewIsTestPicture.value ? ownCapture.value.exposure : num(s.ExposureTime);
@@ -551,9 +521,14 @@ const countFormat = computed(() => new Intl.NumberFormat(locale.value));
 const formatCount = (count) => countFormat.value.format(count);
 
 // --- Actions ------------------------------------------------------------------------------
-const showFull = ref(false);
+const showTestPicture = computed(
+  () => props.testPicture && store.cameraInfo.Connected && !sequenceStore.sequenceRunning
+);
 
-function takeTestPicture() {
+/** Takes a test picture; with `loop` it goes on until stopped (focusing by hand). */
+function takeTestPicture({ loop = cameraStore.isLooping } = {}) {
+  if (store.cameraInfo.IsExposing || cameraStore.loading) return;
+  cameraStore.isLooping = loop;
   ownCapture.value = { atMs: Date.now(), exposure: exposureTime.value };
   // The camera's default gain (set below the button), the one the plan's exposures use too.
   // -1 leaves it to N.I.N.A., which falls back to the same profile default.
@@ -563,6 +538,24 @@ function takeTestPicture() {
     store.profileInfo?.CameraSettings?.Gain ?? -1
   );
 }
+
+function stopTestPictures() {
+  // Cleared first: abortExposure() leaves the loop on when the camera refuses the abort
+  cameraStore.isLooping = false;
+  cameraStore.abortExposure(apiService);
+}
+
+// Switching the loop on while idle starts it; switched off, the running picture still finishes.
+function toggleLoop() {
+  if (cameraStore.isLooping) {
+    cameraStore.isLooping = false;
+    return;
+  }
+  if (store.cameraInfo.IsExposing || cameraStore.loading) cameraStore.isLooping = true;
+  else takeTestPicture({ loop: true });
+}
+
+defineExpose({ takeTestPicture, scrollPanelToTop });
 
 onMounted(() => {
   // The preview's numbers are only fetched after a capture; fetch them once for a preview

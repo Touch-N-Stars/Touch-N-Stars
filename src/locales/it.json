@@ -6030,14 +6030,14 @@
           "description": "Stelle nitide fanno la riuscita della notte, e servono anche ai passaggi successivi: allineamento polare e centratura del target ricavano la posizione da un'immagine. Punta il telescopio su una zona di cielo con stelle. Con un focheggiatore motorizzato lavora l'autofocus; senza, metti a fuoco a mano usando le immagini live.",
           "autofocus": "Avvia autofocus",
           "watch": "Guarda la curva di fuoco",
-          "manualHint": "Nessun focheggiatore motorizzato connesso: apri la camera, scatta immagini in loop e gira il focheggiatore finché le stelle sono il più piccole possibile.",
-          "manual": "Apri la camera",
           "lastRun": "Ultimo autofocus alle {time}",
           "lastFailed": "Ultimo autofocus alle {time} non riuscito: controlla che le stelle siano visibili e riprova",
           "pointAtStars": "Punta il telescopio su stelle (atlante del cielo)",
           "setupFirst": "Prima del primo autofocus con questo telescopio, configuralo una volta: l'assistente misura focheggiatore e camera e trova impostazioni funzionanti. Senza, l'autofocus spesso fallisce.",
           "cancelled": "Autofocus annullato. Il focheggiatore torna dov’era prima.",
-          "setup": "Configura autofocus"
+          "setup": "Configura autofocus",
+          "liveHint": "Nessun focheggiatore motorizzato collegato: scatta immagini in loop e ruota il focheggiatore finché le stelle sono il più piccole possibile e l'HFR è al minimo.",
+          "live": "Metti a fuoco a mano con immagini dal vivo"
         },
         "guide": {
           "title": "Configura la guida",
@@ -6210,19 +6210,14 @@
       "focusFirst": "Prima il fuoco: questo passaggio ricava la posizione da un'immagine e servono stelle nitide.",
       "live": {
         "lastPicture": "Ultima immagine",
-        "openFull": "Mostra l'immagine a schermo intero",
         "noPicture": "Ancora nessuna immagine. Scatta un'immagine di prova per vedere cosa vede la camera.",
         "preview": "Immagine di prova",
-        "hfr": "Nitidezza (HFR)",
         "stars": "Stelle",
-        "guiding": "Guida",
-        "sensor": "Sensore",
         "trendTitle": "Nitidezza delle ultime {count} immagini",
         "trendHint": "Le stelle più nitide sono disegnate più in alto. Se la linea scende durante la notte, rimetti a fuoco.",
         "exposure": "Tempo di esposizione",
         "testPicture": "Scatta un'immagine di prova",
         "abort": "Ferma esposizione",
-        "planRunning": "Il piano sta scattando: le nuove immagini compaiono qui man mano.",
         "justNow": "adesso",
         "minutesAgo": "{minutes} min fa",
         "histogram": "Istogramma",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} pixel | {count} pixel",
         "pixelsSaturated": "{count} pixel saturato | {count} pixel saturati",
         "histogramHint": "Dati del sensore non stirati dell'intera immagine. Viene mostrato solo l'intervallo intorno al fondo cielo; stelle e pixel saturi stanno più a destra e sono contati sotto Max.",
-        "firstPlanPicture": "La prima immagine del piano compare qui."
+        "firstPlanPicture": "La prima immagine del piano compare qui.",
+        "noCamera": "Collega la camera per vederne qui l'immagine.",
+        "loop": "Continua a scattare",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} stella | {stars} stelle"
       },
       "setupChecks": {
         "title": "Prima della tua prima notte",
@@ -6387,6 +6386,14 @@
           "low": "Il target è troppo basso sull’orizzonte e sta scendendo, il piano finirebbe senza immagini. Scegli un altro target o un’altezza minore.",
           "other": "Avviato così, il piano finirebbe subito senza immagini."
         }
+      },
+      "stage": {
+        "showAll": "Tutti i passaggi e altro",
+        "showLess": "Mostra meno",
+        "looping": "Immagini dal vivo per la messa a fuoco",
+        "polarRunning": "Allineamento polare in corso",
+        "cooling": "Raffreddamento a {temp} °C",
+        "warming": "La camera si sta riscaldando"
       }
     },
     "secureObservatory": {

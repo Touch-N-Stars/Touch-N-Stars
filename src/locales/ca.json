@@ -6030,14 +6030,14 @@
           "description": "Els estels nítids fan o desfan la nit, i els passos següents també els necessiten: l'alineació polar i el centrat de l'objectiu calculen la posició a partir d'una imatge. Apunta el telescopi a una part del cel amb estels. Amb un enfocador motoritzat, l'autofocus fa la feina; sense, enfoca a mà amb imatges en directe.",
           "autofocus": "Inicia l'autofocus",
           "watch": "Mira la corba de focus",
-          "manualHint": "No hi ha cap enfocador motoritzat connectat: obre la càmera, fes imatges en bucle i gira l'enfocador fins que els estels siguin el més petits possible.",
-          "manual": "Obre la càmera",
           "lastRun": "Últim autofocus a les {time}",
           "lastFailed": "Últim autofocus a les {time} fallit: comprova que es vegin estels i torna-ho a provar",
           "pointAtStars": "Apunta el telescopi a estels (atles del cel)",
           "setupFirst": "Abans del primer autofocus amb aquest telescopi, configura'l una vegada: l'assistent mesura el teu enfocador i càmera i troba uns valors que funcionen. Sense això, l'autofocus sovint falla.",
           "cancelled": "Autoenfocament cancel·lat. L’enfocador torna on era abans.",
-          "setup": "Configura l'autofocus"
+          "setup": "Configura l'autofocus",
+          "liveHint": "No hi ha cap enfocador motoritzat connectat: fes imatges en bucle i gira l'enfocador fins que les estrelles siguin tan petites com sigui possible i l'HFR sigui el més baix.",
+          "live": "Enfoca a mà amb imatges en directe"
         },
         "guide": {
           "title": "Configura el guiatge",
@@ -6210,19 +6210,14 @@
       "focusFirst": "Primer l'enfocament: aquest pas calcula la posició a partir d'una imatge, i això necessita estels nítids.",
       "live": {
         "lastPicture": "Última imatge",
-        "openFull": "Mostra la imatge a pantalla completa",
         "noPicture": "Encara no hi ha cap imatge. Fes una imatge de prova per veure què veu la càmera.",
         "preview": "Imatge de prova",
-        "hfr": "Nitidesa (HFR)",
         "stars": "Estels",
-        "guiding": "Guiatge",
-        "sensor": "Sensor",
         "trendTitle": "Nitidesa de les últimes {count} imatges",
         "trendHint": "Els estels més nítids es dibuixen més amunt. Si la línia baixa durant la nit, torna a enfocar.",
         "exposure": "Temps d'exposició",
         "testPicture": "Fes una imatge de prova",
         "abort": "Atura l'exposició",
-        "planRunning": "El teu pla està fent imatges: les noves apareixen aquí a mesura que arriben.",
         "justNow": "ara mateix",
         "minutesAgo": "fa {minutes} min",
         "histogram": "Histograma",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} píxel | {count} píxels",
         "pixelsSaturated": "{count} píxel saturat | {count} píxels saturats",
         "histogramHint": "Dades del sensor sense estirar de tota la imatge. Només es mostra el rang al voltant del fons del cel; els estels i els píxels saturats són més a la dreta i es compten a Màx.",
-        "firstPlanPicture": "La primera imatge del teu pla apareix aquí."
+        "firstPlanPicture": "La primera imatge del teu pla apareix aquí.",
+        "noCamera": "Connecta la càmera per veure'n la imatge aquí.",
+        "loop": "Continua fent imatges",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} estrella | {stars} estrelles"
       },
       "setupChecks": {
         "title": "Abans de la primera nit",
@@ -6387,6 +6386,14 @@
           "low": "L’objectiu és massa baix sobre l’horitzó i baixa, el pla acabaria sense cap imatge. Tria un altre objectiu o una alçada menor.",
           "other": "Iniciat així, el pla acabaria de seguida sense cap imatge."
         }
+      },
+      "stage": {
+        "showAll": "Tots els passos i més",
+        "showLess": "Mostra'n menys",
+        "looping": "Imatges en directe per enfocar",
+        "polarRunning": "L'alineació polar està en curs",
+        "cooling": "Refredant a {temp} °C",
+        "warming": "La càmera s'està escalfant"
       }
     },
     "secureObservatory": {

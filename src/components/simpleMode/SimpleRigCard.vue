@@ -1,7 +1,10 @@
 <template>
-  <section class="tns-card flex flex-col gap-3">
-    <div class="flex items-center justify-between gap-2">
-      <h2 class="tns-section-title">{{ $t('components.simpleMode.rig.title') }}</h2>
+  <!-- `embedded`: inside the "connect" step, which already names it - no card, no title -->
+  <section class="flex flex-col gap-3" :class="embedded ? '' : 'tns-card'">
+    <div class="flex items-center gap-2" :class="embedded ? 'justify-end' : 'justify-between'">
+      <h2 v-if="!embedded" class="tns-section-title">
+        {{ $t('components.simpleMode.rig.title') }}
+      </h2>
       <router-link to="/equipment" class="text-xs text-accent underline shrink-0">
         {{ $t('components.simpleMode.rig.changeDevices') }}
       </router-link>
@@ -146,6 +149,10 @@ import IndiDriverSelect from '@/components/setupWizard/IndiDriverSelect.vue';
 import { useEquipmentConnection } from '@/composables/useEquipmentConnection';
 import { DEVICE_MAP, apiActionForApiName } from '@/utils/equipmentDevices';
 import { localDecimal } from '@/utils/localeNumber';
+
+defineProps({
+  embedded: { type: Boolean, default: false },
+});
 
 const { t } = useI18n();
 const store = apiStore();

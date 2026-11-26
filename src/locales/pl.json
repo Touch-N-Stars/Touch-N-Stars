@@ -6030,14 +6030,14 @@
           "description": "Ostre gwiazdy decydują o powodzeniu nocy – i potrzebują ich też kolejne kroki: ustawianie na biegun i centrowanie celu ustalają pozycję ze zdjęcia. Skieruj teleskop na fragment nieba z gwiazdami. Przy focuserze z silnikiem pracę wykonuje autofocus; bez niego ostrość ustawia się ręcznie.",
           "autofocus": "Uruchom autofocus",
           "watch": "Obserwuj krzywą ostrości",
-          "manualHint": "Brak podłączonego focusera z silnikiem: otwórz kamerę, rób zdjęcia w pętli i kręć focuserem, aż gwiazdy będą jak najmniejsze.",
-          "manual": "Otwórz kamerę",
           "lastRun": "Ostatni autofocus o {time}",
           "lastFailed": "Ostatni autofocus o {time} nie powiódł się – sprawdź, czy widać gwiazdy, i spróbuj ponownie",
           "pointAtStars": "Skieruj teleskop na gwiazdy (atlas nieba)",
           "setupFirst": "Przed pierwszym autofocusem z tym teleskopem skonfiguruj go raz: asystent zmierzy Twój focuser i kamerę i znajdzie działające ustawienia. Bez tego autofocus często zawodzi.",
           "cancelled": "Autofocus anulowany. Focuser wraca tam, gdzie był wcześniej.",
-          "setup": "Skonfiguruj autofocus"
+          "setup": "Skonfiguruj autofocus",
+          "liveHint": "Brak podłączonego zmotoryzowanego fokusera: rób zdjęcia w pętli i kręć fokuserem, aż gwiazdy będą jak najmniejsze, a HFR najniższe.",
+          "live": "Ustaw ostrość ręcznie na podglądzie na żywo"
         },
         "guide": {
           "title": "Ustaw guiding",
@@ -6210,19 +6210,14 @@
       "focusFirst": "Najpierw ostrość: ten krok ustala pozycję ze zdjęcia, a do tego potrzebne są ostre gwiazdy.",
       "live": {
         "lastPicture": "Ostatnie zdjęcie",
-        "openFull": "Pokaż zdjęcie na pełnym ekranie",
         "noPicture": "Brak zdjęcia. Zrób zdjęcie testowe, aby zobaczyć, co widzi kamera.",
         "preview": "Zdjęcie testowe",
-        "hfr": "Ostrość (HFR)",
         "stars": "Gwiazdy",
-        "guiding": "Guiding",
-        "sensor": "Matryca",
         "trendTitle": "Ostrość ostatnich {count} zdjęć",
         "trendHint": "Ostrzejsze gwiazdy są rysowane wyżej. Jeśli linia opada w ciągu nocy, ustaw ostrość ponownie.",
         "exposure": "Czas ekspozycji",
         "testPicture": "Zrób zdjęcie testowe",
         "abort": "Przerwij ekspozycję",
-        "planRunning": "Twój plan robi zdjęcia – nowe pojawiają się tu w miarę napływania.",
         "justNow": "przed chwilą",
         "minutesAgo": "{minutes} min temu",
         "histogram": "Histogram",
@@ -6231,7 +6226,11 @@
         "pixels": "{count} piksel | {count} pikseli",
         "pixelsSaturated": "{count} piksel przesycony | {count} pikseli przesyconych",
         "histogramHint": "Nierozciągnięte dane z matrycy dla całego zdjęcia. Pokazany jest tylko zakres wokół tła nieba; gwiazdy i przesycone piksele leżą dalej w prawo i są liczone w Max.",
-        "firstPlanPicture": "Pierwsze zdjęcie Twojego planu pojawi się tutaj."
+        "firstPlanPicture": "Pierwsze zdjęcie Twojego planu pojawi się tutaj.",
+        "noCamera": "Podłącz kamerę, aby zobaczyć tu jej obraz.",
+        "loop": "Rób zdjęcia w pętli",
+        "hfrValue": "HFR {hfr}",
+        "starsValue": "{stars} gwiazda | {stars} gwiazd"
       },
       "setupChecks": {
         "title": "Przed pierwszą nocą",
@@ -6387,6 +6386,14 @@
           "low": "Cel jest zbyt nisko nad horyzontem i opada, plan zakończyłby się bez zdjęcia. Wybierz inny cel lub mniejszą wysokość.",
           "other": "Tak uruchomiony plan zakończyłby się od razu bez zdjęcia."
         }
+      },
+      "stage": {
+        "showAll": "Wszystkie kroki i więcej",
+        "showLess": "Pokaż mniej",
+        "looping": "Podgląd na żywo do ustawiania ostrości",
+        "polarRunning": "Trwa ustawianie na biegun",
+        "cooling": "Chłodzenie do {temp} °C",
+        "warming": "Kamera się nagrzewa"
       }
     },
     "secureObservatory": {

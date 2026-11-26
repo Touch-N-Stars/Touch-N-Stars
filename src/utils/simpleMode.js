@@ -17,10 +17,11 @@ import {
 } from '@/utils/sequenceSimple';
 
 /** Navigation entries the simple mode keeps, in the order it shows them. */
-// Five entries fit a 390 px phone without scrolling. Targets are picked in the sky atlas
-// (`skyview`), which also slews, centers and hands the target to the plan; the framing page
-// and the monitor stay one tap away from the home page.
-export const SIMPLE_NAV_ITEMS = ['home', 'camera', 'skyview', 'sequence', 'settings'];
+// Targets are picked in the sky atlas (`skyview`), which also slews, centers and hands the
+// target to the plan; the framing page and the monitor stay one tap away from the home page.
+// No camera page: the home page is the camera here - its stage shows every picture (test
+// pictures, focusing, the plan's frames), so there is one place to look at.
+export const SIMPLE_NAV_ITEMS = ['home', 'skyview', 'sequence', 'settings'];
 
 /** Whether a nav entry (core id or `plugin-<id>`) is hidden while the simple mode is active. */
 export function isHiddenInSimpleMode(id) {
