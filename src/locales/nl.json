@@ -6176,7 +6176,8 @@
         "focus": "Focus",
         "guider": "Guiding",
         "system": "Wifi, updates en systeem",
-        "settings": "Instellingen"
+        "settings": "Instellingen",
+        "sendLogs": "Logs naar het team sturen"
       },
       "endNight": {
         "title": "De nacht beëindigen",

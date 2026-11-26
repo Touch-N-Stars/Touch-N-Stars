@@ -151,6 +151,15 @@
         >
           {{ $t(link.labelKey) }}
         </router-link>
+        <!-- Logs for the team: the plugin navigation is hidden in the simple mode -->
+        <button
+          v-if="logCollectorAvailable"
+          type="button"
+          class="tns-btn-secondary"
+          @click="openLogCollector"
+        >
+          {{ $t('components.simpleMode.more.sendLogs') }}
+        </button>
       </div>
     </template>
   </SimpleLivePanel>
@@ -183,6 +192,7 @@ import {
   findByType,
 } from '@/utils/sequenceSimple';
 import { useSequenceV2Store } from '@/store/sequenceV2Store';
+import { useLogCollector } from '@/composables/useLogCollector';
 
 const props = defineProps({
   /** summarizeTargets() of the loaded plan */
@@ -201,6 +211,7 @@ defineEmits(['stop']);
 
 const { t } = useI18n();
 const store = apiStore();
+const { available: logCollectorAvailable, openLogCollector } = useLogCollector();
 const {
   activity,
   coolingQuality,

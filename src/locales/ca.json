@@ -6176,7 +6176,8 @@
         "focus": "Enfocament",
         "guider": "Guiatge",
         "system": "Wi-Fi, actualitzacions i sistema",
-        "settings": "Configuració"
+        "settings": "Configuració",
+        "sendLogs": "Envia els registres a l'equip"
       },
       "endNight": {
         "title": "Acaba la nit",

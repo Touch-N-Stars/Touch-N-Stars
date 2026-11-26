@@ -617,6 +617,15 @@
           >
             {{ $t(link.labelKey) }}
           </router-link>
+          <!-- Logs for the team: the plugin navigation is hidden in the simple mode -->
+          <button
+            v-if="logCollectorAvailable"
+            type="button"
+            class="tns-btn-secondary"
+            @click="openLogCollector"
+          >
+            {{ $t('components.simpleMode.more.sendLogs') }}
+          </button>
         </div>
         <button
           v-if="enabled"
@@ -666,6 +675,7 @@ import { useEquipmentStore } from '@/store/equipmentStore';
 import { NATIVE_GUIDER_ID, isNativeGuiderInUse } from '@/utils/nativeGuider';
 import { setProfileDevice } from '@/utils/equipmentDevices';
 import { useSimpleMode } from '@/composables/useSimpleMode';
+import { useLogCollector } from '@/composables/useLogCollector';
 import { useEquipmentConnection } from '@/composables/useEquipmentConnection';
 import { usePolling } from '@/composables/usePolling';
 import { waitForState } from '@/utils/waitForState';
@@ -745,6 +755,7 @@ const nativeGuiderStore = useNativeGuiderStore();
 const equipmentStore = useEquipmentStore();
 const hfStore = useHocusFocusStore();
 const { available, enabled } = useSimpleMode();
+const { available: logCollectorAvailable, openLogCollector } = useLogCollector();
 const { preflightWarnings, answerPreflight, confirmPreflight } = useSequencePreflight();
 const { allConnected, equipmentToConnect, isDeviceConnected } = useEquipmentConnection();
 const { locationMissing, databaseMissing } = useSimpleSetupChecks();

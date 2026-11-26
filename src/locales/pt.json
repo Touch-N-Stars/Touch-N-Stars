@@ -6176,7 +6176,8 @@
         "focus": "Foco",
         "guider": "Guiagem",
         "system": "Wi-Fi, atualizações e sistema",
-        "settings": "Configurações"
+        "settings": "Configurações",
+        "sendLogs": "Enviar registos à equipa"
       },
       "endNight": {
         "title": "Encerrar a noite",

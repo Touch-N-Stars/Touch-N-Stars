@@ -6176,7 +6176,8 @@
         "focus": "Ostrość",
         "guider": "Guiding",
         "system": "Wi-Fi, aktualizacje i system",
-        "settings": "Ustawienia"
+        "settings": "Ustawienia",
+        "sendLogs": "Wyślij logi do zespołu"
       },
       "endNight": {
         "title": "Zakończ noc",

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [App6.7.0-beta3] - 2026-11-26
 
+### Added
+
+- PINS: In the simple mode logs can be sent to the team from the start page under More.
+
 ### Changed
 
 - PINS: In the simple mode the start page is the camera: the newest picture fills the screen in every phase of the night, the current step floats on it with a test picture button, and the camera page is no longer in the navigation.

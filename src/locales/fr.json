@@ -6176,7 +6176,8 @@
         "focus": "Mise au point",
         "guider": "Guidage",
         "system": "Wi-Fi, mises à jour et système",
-        "settings": "Paramètres"
+        "settings": "Paramètres",
+        "sendLogs": "Envoyer les journaux à l'équipe"
       },
       "endNight": {
         "title": "Terminer la nuit",

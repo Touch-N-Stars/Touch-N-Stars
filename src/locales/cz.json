@@ -6176,7 +6176,8 @@
         "focus": "Zaostření",
         "guider": "Pointace",
         "system": "Wi-Fi, aktualizace a systém",
-        "settings": "Nastavení"
+        "settings": "Nastavení",
+        "sendLogs": "Odeslat logy týmu"
       },
       "endNight": {
         "title": "Ukončit noc",

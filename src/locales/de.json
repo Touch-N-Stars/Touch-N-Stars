@@ -6176,7 +6176,8 @@
         "focus": "Fokus",
         "guider": "Guiding",
         "system": "WLAN, Updates & System",
-        "settings": "Einstellungen"
+        "settings": "Einstellungen",
+        "sendLogs": "Logs ans Team senden"
       },
       "endNight": {
         "title": "Nacht beenden",

@@ -6176,7 +6176,8 @@
         "focus": "Fuoco",
         "guider": "Guida",
         "system": "Wi-Fi, aggiornamenti e sistema",
-        "settings": "Impostazioni"
+        "settings": "Impostazioni",
+        "sendLogs": "Invia i log al team"
       },
       "endNight": {
         "title": "Termina la notte",

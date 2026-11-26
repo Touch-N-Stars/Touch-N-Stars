@@ -6176,7 +6176,8 @@
         "focus": "对焦",
         "guider": "导星",
         "system": "Wi-Fi、更新和系统",
-        "settings": "设置"
+        "settings": "设置",
+        "sendLogs": "将日志发送给团队"
       },
       "endNight": {
         "title": "结束夜晚",

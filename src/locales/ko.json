@@ -6176,7 +6176,8 @@
         "focus": "포커스",
         "guider": "가이딩",
         "system": "Wi-Fi, 업데이트 및 시스템",
-        "settings": "설정"
+        "settings": "설정",
+        "sendLogs": "팀에 로그 보내기"
       },
       "endNight": {
         "title": "밤 종료",
