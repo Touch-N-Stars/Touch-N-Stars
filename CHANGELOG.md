@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.7.0-beta3] - 2026-11-26
+
+### Changed
+
+- PINS: In the simple mode the start page is the camera: the newest picture fills the screen in every phase of the night, the current step floats on it with a test picture button, and the camera page is no longer in the navigation.
+- PINS: In the simple mode focusing by hand takes live pictures on the start page instead of opening the camera page.
+
 ## [App6.7.0-beta2] - 2026-11-25
 
 ### Added
