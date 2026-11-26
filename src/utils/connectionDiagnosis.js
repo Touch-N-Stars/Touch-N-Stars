@@ -28,12 +28,15 @@ export function diagnoseConnection({ issue, kind, elapsed, boxAnswers = false, f
   const type = issue?.type;
   if (type === 'tnsVersion' || type === 'apiVersion') return 'update';
 
+  // A short outage stays "connecting". The daemon answering says nothing yet: right after the
+  // tab or app returns from the background it answers before the app's own check is through.
+  if (found.length === 0 && elapsed < HELP_AFTER_SECONDS) return 'searching';
+
   if (type !== 'liveUpdates' && (boxAnswers || (type === 'api' && kind === 'pins'))) {
     return elapsed < PINS_START_SECONDS ? 'pinsStarting' : 'pinsDown';
   }
 
   if (found.length > 0) return 'found';
-  if (elapsed < HELP_AFTER_SECONDS) return 'searching';
   if (type === 'api') return 'apiMissing';
   if (type === 'liveUpdates') return 'liveBlocked';
   return { pins: 'rigSilent', nina: 'ninaSilent' }[kind] ?? 'silent';
