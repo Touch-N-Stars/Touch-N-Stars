@@ -38,6 +38,17 @@ test('only the listed background failures map to a toast', () => {
   });
 });
 
+test('a slew or centering that fails without waitForResult maps to a toast', () => {
+  assert.equal(
+    describeFailureEvent({ Event: 'MOUNT-SLEW-FAILED' }).titleKey,
+    'components.backendErrors.mountSlew'
+  );
+  assert.equal(
+    describeFailureEvent({ Event: 'MOUNT-CENTER-FAILED' }).titleKey,
+    'components.backendErrors.mountCenter'
+  );
+});
+
 test('the dome shutter failure names the direction', () => {
   assert.equal(
     describeFailureEvent({ Event: 'DOME-SHUTTER-FAILED', Action: 'closing' }).titleKey,

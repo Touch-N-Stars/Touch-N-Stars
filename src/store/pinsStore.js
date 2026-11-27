@@ -3,6 +3,9 @@ import { defineStore } from 'pinia';
 export const usePinsStore = defineStore('pins', {
   state: () => ({
     timeSyncEnabled: false,
+    // Set once the user switches automatic time sync on or off by hand. Until then a new
+    // PINS profile switches it on (see enableTimeSyncForNewProfile).
+    timeSyncChosen: false,
     suppressTimeWarning: false,
     stationaryMode: false,
     wifiList: [],
@@ -34,6 +37,16 @@ export const usePinsStore = defineStore('pins', {
   actions: {
     setTimeSync(enabled) {
       this.timeSyncEnabled = enabled;
+      this.timeSyncChosen = true;
+    },
+    // The Pi has no real-time clock, so PINS comes up with a wrong time after every power-up
+    // and the time warning would greet the user on each start. A new profile gets automatic
+    // sync instead; profiles set up before keep whatever the user runs with.
+    // Returns whether it switched sync on.
+    enableTimeSyncForNewProfile() {
+      if (this.timeSyncChosen || this.timeSyncEnabled) return false;
+      this.timeSyncEnabled = true;
+      return true;
     },
     setSuppressTimeWarning(value) {
       this.suppressTimeWarning = value;
@@ -79,7 +92,7 @@ export const usePinsStore = defineStore('pins', {
         // Legacy key name kept so persisted values survive the move out of the plugin.
         key: 'pins-plugin-store',
         storage: localStorage,
-        paths: ['timeSyncEnabled', 'suppressTimeWarning'],
+        paths: ['timeSyncEnabled', 'timeSyncChosen', 'suppressTimeWarning'],
       },
     ],
   },

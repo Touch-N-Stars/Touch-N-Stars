@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [App6.7.0-beta4] - 2026-11-27
+
+### Added
+
+- Setup assistant: New optional step for a flat panel.
+- Setup assistant: The OnStepX serial port can be picked right in the mount step.
+- PINS: In the simple mode the mount panel in the status bar can stop tracking, home and park the mount.
+- PINS: A new PINS profile switches on automatic time sync, so the rig without its own clock starts with the right time.
+
+### Changed
+
+- Setup assistant: On PINS the guider step sets up only the built-in guider, which connects by itself together with the guide camera.
+- Setup assistant: The choice between simple and full mode and the updates step explain more concretely what they mean.
+- Plate solving: The star database settings and the setup assistant always name the database that suits the focal length, also when an installed one already covers it.
+- PINS: In the simple mode the meridian flip setup recommends the middle preset and offers a flip test in daylight.
+- PINS: In the simple mode manual mount moves start at the fastest rate.
+- PINS: In the simple mode the empty start page shows the Touch'N'Stars logo.
+
+### Fixed
+
+- Mount, sequence editor, focuser, 10micron and lens calibration: When N.I.N.A. refuses a slew, a sequence change, a focuser stop or a calibration, the app now shows the reason instead of failing silently.
+- Flats: A failed flat run now says why it failed, and a run cancelled in N.I.N.A. or on another device is reported as stopped instead of failed.
+- Atlas: The survey download keeps the disk reserve of the rig free and no longer starts when the space would not be enough.
+
 ## [App6.7.0-beta3] - 2026-11-26
 
 ### Added

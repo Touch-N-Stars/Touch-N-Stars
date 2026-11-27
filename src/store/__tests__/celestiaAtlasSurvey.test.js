@@ -23,6 +23,7 @@ function serverStatus({
   installedOrder = null,
   present = {},
   freeBytes = 5e9,
+  reserveBytes = undefined,
   job = null,
   legacyFormat = false,
 } = {}) {
@@ -45,6 +46,7 @@ function serverStatus({
     legacyFormat,
     totalBytes: orders.reduce((sum, order) => sum + order.bytes, 0),
     freeBytes,
+    reserveBytes,
     orders,
     job,
     minOrder: 3,
@@ -146,6 +148,24 @@ test('the free-space check applies the server margin on top of the estimate', as
   // Unknown free space never blocks the button; the server still refuses when full.
   store.status.freeBytes = null;
   assert.equal(store.hasEnoughFreeSpace(7), true);
+});
+
+test('the free-space check keeps the reserve the server leaves on the drive', async (t) => {
+  const baseEstimate = 768 * 42_000 + 3072 * 55_000;
+  const reserveBytes = 5_000_000_000;
+  t.mock.method(axios, 'get', async () => ({
+    status: 200,
+    data: serverStatus({ freeBytes: baseEstimate * 1.2, reserveBytes }),
+  }));
+  const store = useCelestiaAtlasSurveyStore();
+  store.reset();
+  await store.refresh();
+
+  assert.equal(store.requiredFreeBytes(4), baseEstimate * 1.1 + reserveBytes);
+  assert.equal(store.hasEnoughFreeSpace(4), false);
+
+  store.status.freeBytes = baseEstimate * 1.2 + reserveBytes;
+  assert.equal(store.hasEnoughFreeSpace(4), true);
 });
 
 test('actions post to the plugin server and surface a refused start as actionError', async (t) => {

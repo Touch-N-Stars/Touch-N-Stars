@@ -567,10 +567,16 @@ async function startCalculation() {
 
   loading.value = true;
   try {
-    await axios.post(`${getApiUrl()}/filter-offset/start`, {
+    const { data } = await axios.post(`${getApiUrl()}/filter-offset/start`, {
       Loops: loops.value,
       FilterPositions: selectedPositions.value,
     });
+    // Refused with 409 while a sequence or another job uses the same equipment; the global
+    // interceptor resolves that without a toast.
+    if (data?.Success === false) {
+      issues.value.push(data.Error || t('components.backendErrors.noReason'));
+      return;
+    }
     result.value = null;
     applyError.value = '';
     await fetchStatus();

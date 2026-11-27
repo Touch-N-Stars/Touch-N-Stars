@@ -108,11 +108,21 @@ function defineSurveyStore(surveyId) {
         return bytes;
       },
 
+      // Free space a download of the order needs: the estimate with the server's margin, plus
+      // the reserve the server keeps free on the drive (reserveBytes, 10 % of the disk within
+      // 5-20 GB). Older plugins send no reserve.
+      requiredFreeBytes(targetOrder) {
+        const reserve = Number(this.status?.reserveBytes);
+        return (
+          this.estimateMissingBytes(targetOrder) * (1 + SURVEY_FREE_SPACE_MARGIN) +
+          (Number.isFinite(reserve) && reserve > 0 ? reserve : 0)
+        );
+      },
+
       hasEnoughFreeSpace(targetOrder) {
         const free = this.freeBytes;
         if (free === null) return true;
-        const required = this.estimateMissingBytes(targetOrder) * (1 + SURVEY_FREE_SPACE_MARGIN);
-        return free >= required;
+        return free >= this.requiredFreeBytes(targetOrder);
       },
 
       async refresh() {

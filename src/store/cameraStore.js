@@ -208,9 +208,11 @@ export const useCameraStore = defineStore('cameraStore', () => {
     if (!info.CoolerOn) return false;
     if (commandedWarmUp.value) return true;
     if (holdSetpoint.value != null && info.TemperatureSetPoint === holdSetpoint.value) return false;
-    // AtTargetTemp is not used: ninaAPI defines it as exact equality of sensor
-    // and setpoint, which also happens mid-ramp whenever the camera catches
-    // up with the current integer step.
+    // AtTargetTemp is not used: current ninaAPI reports it only with the cooler
+    // on, no ramp running and the sensor within 1°C of the setpoint, but older
+    // versions define it as exact equality of sensor and setpoint, which also
+    // happens mid-ramp whenever the camera catches up with the current integer
+    // step - and the app cannot tell the versions apart.
     const target = targetTemp.value;
     if (target == null || info.Temperature == null) return false;
     // A cooler manually switched on far from the target reads as "running",

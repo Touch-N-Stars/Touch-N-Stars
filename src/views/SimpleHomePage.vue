@@ -32,11 +32,7 @@
       testPicture
       :details="panelOpen"
       :tall="panelOpen"
-      :placeholderKey="
-        store.cameraInfo.Connected
-          ? 'components.simpleMode.live.noPicture'
-          : 'components.simpleMode.live.noCamera'
-      "
+      :placeholderKey="store.cameraInfo.Connected ? '' : 'components.simpleMode.live.noCamera'"
     >
       <template #overlay-top="{ caption, ago, numbers }">
         <div class="min-w-0">

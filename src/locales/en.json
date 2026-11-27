@@ -412,6 +412,7 @@
         "camera": "Camera",
         "focuser": "Focuser",
         "filterWheel": "Filter wheel",
+        "flatPanel": "Flat panel",
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Done",
@@ -474,12 +475,14 @@
       },
       "updates": {
         "title": "Check for updates",
-        "description": "Keep the rig software up to date before you configure your equipment.",
+        "recommendation": "Updates bring fixes and improvements for the software on the rig. Install them now, before you set up your devices.",
         "checking": "Checking for updates…",
         "upToDate": "The rig software is up to date.",
         "available": "{count} update(s) available",
         "startUpgrade": "Update now",
-        "upgradeHint": "The rig restarts services during the update. Keep the app open until it is finished.",
+        "listHint": "The list shows the programs on the rig: PINS itself, ASTAP for plate solving and the plugins. “Update now” installs all of them together.",
+        "upgradeDuration": "This takes a few minutes, depending on the internet connection. The rig restarts its services in between, so keep the app open until it has finished.",
+        "skipHint": "No internet at the rig right now, or no time? Tap “@:{'components.setupWizard.next'}” and update later under “@:{'components.simpleMode.more.system'}”.",
         "recheck": "Check again",
         "checkFailed": "Update check failed: {message}",
         "upgradeFailed": "Could not start the update: {message}"
@@ -495,7 +498,16 @@
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
         "installFailed": "Installation failed: {message}",
-        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there."
+        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there.",
+        "port": {
+          "label": "USB port of the mount",
+          "searching": "Looking for USB devices…",
+          "none": "No USB device found. Plug the mount in, switch it on and search again.",
+          "choose": "Choose a port",
+          "autoPicked": "Only one USB device is plugged in, so it was chosen: {port}",
+          "several": "Several USB devices are plugged in. Not sure which one is the mount? Unplug the mount, search again and see which entry disappears.",
+          "searchAgain": "Search again"
+        }
       },
       "slewRate": {
         "title": "Slew speed",
@@ -579,6 +591,20 @@
         "descriptionDeviceFirst": "Pick your focuser from the list and connect it. A driver is only needed if it does not show up there. Autofocus parameters stay on the focus page.",
         "notFoundDriverHint": "If your focuser is not in the list, select its INDI driver here. Afterwards it appears in the list above."
       },
+      "flatPanel": {
+        "title": "Set up your flat panel",
+        "description": "A dimmable flat panel lets the app take your flats on its own. Pick it from the list and connect it. A driver is only needed if it does not show up there.",
+        "connectDevice": "Device",
+        "connected": "Flat panel connected: {name}",
+        "noPanelHint": "No flat panel? Just go on: flats also work with a tablet or a light sheet in front of the telescope.",
+        "notFound": "Flat panel not listed?",
+        "notFoundDriverHint": "If your flat panel is not in the list, select its INDI driver here. Afterwards it appears in the list above.",
+        "selectDriver": "INDI driver",
+        "notFoundHint": "If the driver is missing, it may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
+        "installing": "Installing {label}…",
+        "installSuccess": "{label} installed. Select it in the driver list above.",
+        "installFailed": "Installation failed: {message}"
+      },
       "filterWheel": {
         "title": "Set up your filter wheel",
         "description": "Pick the INDI driver for your filter wheel, connect it, and give the slots the names you use in your sequences.",
@@ -625,8 +651,10 @@
         "guideScope": "Guide scope",
         "nativeCameraHint": "Enter the focal length of the guide scope. The guider needs it to judge how far the stars move.",
         "descriptionBuiltIn": "PINS has a built-in guider that keeps the stars in place while pictures are taken, with no extra program. Pick the guide camera and enter the focal length of the guide scope.",
-        "nativeRecommended": "Tip: PINS has its own guider (“Native Guider” in the list above). It was developed especially for PINS, runs directly on the rig without a separate program and often guides more steadily than PHD2. Settings you made in PHD2 carry over, and you can switch back any time by picking PHD2 again.",
         "nativeFocalLengthMissing": "The guide scope focal length is still 0. Guiding works without it, but dithering and the guiding error in arc-seconds need it.",
+        "nativeConnectsWithCamera": "The guider connects on its own as soon as the guide camera is connected.",
+        "nativeConnectFailed": "The guider could not be connected.",
+        "nativeConnectRetry": "Try again",
         "guidePixelSizeHintNative": "Used for this calculation only. The guider reads the pixel size from the guide camera once it is connected; until then, take it from the camera manual.",
         "ditherMissingDataNative": "To calculate the dither, the pixel size and focal length of both the imaging and the guide setup are needed. Fill in the camera and telescope steps and the guide scope focal length in the guiding step.",
         "guideCameraNotFound": "Guide camera not listed?",
@@ -638,7 +666,7 @@
         "title": "Your equipment is ready",
         "description": "Your rig is connected, up to date, and mount, camera, focuser, filter wheel and guiding are configured.",
         "descriptionPlain": "Mount, camera, focuser, filter wheel and your location are configured.",
-        "moreDevicesHint": "Flat panel, weather and the remaining devices are configured on their own pages.",
+        "otherDevicesHint": "Weather, dome and the remaining devices are set up on their own pages.",
         "noConnectionHint": "No connection to a rig yet. You can add one under Settings → Connection at any time.",
         "summaryIntro": "This is what is set up now. Tap an entry to go back to its step.",
         "status": {
@@ -649,6 +677,7 @@
             "camera": "Selected",
             "focuser": "Selected",
             "filterWheel": "Selected",
+            "flatPanel": "Selected",
             "guider": "Selected",
             "starDatabase": "Installed"
           },
@@ -662,6 +691,7 @@
           "none": {
             "focuser": "None, focus by hand",
             "filterWheel": "None, that is fine",
+            "flatPanel": "None, flats with a tablet or light sheet",
             "guider": "No guiding"
           }
         }
@@ -948,7 +978,10 @@
         "astapDatabaseInstalledList": "Installed: {list}",
         "astapDatabaseNoneInstalled": "No star database is installed yet. Without one, plate solving (polar alignment, centering a target) cannot work.",
         "astapDatabaseRecommendedTag": "recommended",
-        "astapDatabaseRecommendedFov": "Recommended for your telescope and camera (field of view {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "Your telescope ({focal} mm) and camera see a field of {fov}°. Recommended for that: {id}",
+        "astapDatabaseFitsInstalled": "Your telescope ({focal} mm) and camera see a field of {fov}°. {id} suits that and is already installed, so there is nothing to do.",
+        "astapDatabaseCoveredBy": "Your telescope ({focal} mm) and camera see a field of {fov}°. {id} would suit that; the installed {installed} covers it too, so there is nothing to do.",
+        "astapDatabaseNeedsOptics": "Enter focal length, pixel size and sensor size to see which star database suits your telescope.",
         "astapDatabaseRecommendedDefault": "Recommended: {id}. Enter focal length, pixel size and sensor size for a recommendation that fits your telescope."
       },
       "equipment": {
@@ -1868,6 +1901,7 @@
               "title": "Custom values",
               "description": "Set the minutes yourself under Advanced."
             },
+            "recommended": "Recommended",
             "sideOfPierNoMount": "Connect the mount before choosing, so the app can check whether it reports its side of pier.",
             "sideOfPierUnknown": "Your mount does not report its side of pier, so “Use side of pier” stays off. @:{'general.backendName'} then decides the flip by time.",
             "applyFailed": "The preset could not be saved completely. Check the values under Advanced."
@@ -5882,9 +5916,13 @@
       "mountPark": "Parking failed",
       "mountUnpark": "Unparking failed",
       "mountHome": "Homing failed",
+      "mountTracking": "Tracking could not be changed",
       "mountFlip": "Meridian flip failed",
+      "mountSlew": "Slew failed",
+      "mountCenter": "Centering failed",
       "filterChange": "Filter change failed",
       "focuserMove": "Focuser move failed",
+      "focuserStop": "Focuser could not be stopped",
       "rotatorMove": "Rotator move failed",
       "flatLight": "Switching the flat panel light failed",
       "flatCover": "Moving the flat panel cover failed",
@@ -6204,14 +6242,19 @@
       "wizard": {
         "title": "How do you want to use the app?",
         "simpleTitle": "Simple (recommended to get started)",
-        "simpleText": "A start page leads you through the night step by step, with only the pages you need.",
         "fullTitle": "All functions",
-        "fullText": "Every page and setting in the navigation, for experienced users."
+        "simpleDescription": "The start page \u201cTonight\u201d takes you through the night step by step, from connecting the devices to ending the night. The menu shows only Start, Target, Plan and Settings.",
+        "fullDescription": "A page for every device (camera, mount, focuser, guiding, filter wheel …) plus sequence, flats and every setting, as in N.I.N.A. For experienced users who want to adjust things themselves.",
+        "switchHint": "You can switch at any time: on the start page with \u201cShow all functions\u201d, or under Settings → Interface."
+      },
+      "mountActions": {
+        "stopTracking": "Stop tracking",
+        "startTracking": "Start tracking",
+        "allFunctions": "All mount functions"
       },
       "focusFirst": "Focus first: this step works out the position from a picture, and that needs sharp stars.",
       "live": {
         "lastPicture": "Last picture",
-        "noPicture": "No picture yet. Take a test picture to see what the camera sees.",
         "preview": "Test picture",
         "stars": "Stars",
         "trendTitle": "Sharpness of the last {count} pictures",
@@ -6243,7 +6286,7 @@
         "databaseAction": "Install star map",
         "flipTitle": "Meridian flip not set up yet",
         "flipText": "When a target crosses the meridian (the north–south line through the zenith), the telescope has to turn to the other side of the mount – otherwise it would soon hit the tripod or pier. Your plan does this by itself. Tell it once how far your mount can keep tracking past the meridian.",
-        "flipNotSure": "Not sure? Your mount's manual usually says how far it can track past the meridian. Until you know, “Barely” keeps the telescope safe, at the cost of a few minutes without pictures.",
+        "flipNotSureTest": "Not sure? Take “A few minutes”, it fits most mounts. In daylight you can let the app do a real flip and watch whether the telescope clears tripod and pier and the cables reach.",
         "flipCurrentValues": "Your profile already has its own timing: {values}.",
         "flipKeepValues": "Keep this timing",
         "flipTimingWindow": "flip {min}–{max} min after the meridian",
@@ -8623,6 +8666,7 @@
         "set": "Set",
         "calibrate": "Calibrate",
         "calibrating": "Calibrating...",
+        "calibrateFailed": "Lens calibration could not be started",
         "deviceInfo": "Device Information",
         "firmware": "Firmware",
         "driver": "SDK Version",

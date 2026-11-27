@@ -371,6 +371,7 @@
         "camera": "Camera",
         "focuser": "Focuser",
         "filterWheel": "Filterwiel",
+        "flatPanel": "Flatpanel",
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Klaar",
@@ -433,12 +434,14 @@
       },
       "updates": {
         "title": "Op updates controleren",
-        "description": "Houd de software van de opstelling up-to-date voordat je je apparatuur instelt.",
+        "recommendation": "Updates brengen oplossingen en verbeteringen voor de software van de opstelling. Installeer ze nu, voordat je je apparaten instelt.",
         "checking": "Op updates controleren…",
         "upToDate": "De software van de opstelling is up-to-date.",
         "available": "{count} update(s) beschikbaar",
         "startUpgrade": "Nu bijwerken",
-        "upgradeHint": "De opstelling herstart tijdens de update enkele diensten. Houd de app open tot het klaar is.",
+        "listHint": "De lijst toont de programma's van de opstelling: PINS zelf, ASTAP voor plate solving en de plugins. ‘Nu bijwerken’ installeert ze allemaal tegelijk.",
+        "upgradeDuration": "Dit duurt een paar minuten, afhankelijk van de internetverbinding. De opstelling herstart tussendoor haar diensten, dus laat de app open tot het klaar is.",
+        "skipHint": "Nu geen internet op de opstelling of geen tijd? Tik op ‘@:{'components.setupWizard.next'}’ en werk later bij via ‘@:{'components.simpleMode.more.system'}’.",
         "recheck": "Opnieuw controleren",
         "checkFailed": "Controle op updates mislukt: {message}",
         "upgradeFailed": "De update kon niet worden gestart: {message}"
@@ -454,7 +457,16 @@
         "installing": "{label} installeren…",
         "installSuccess": "{label} geïnstalleerd. Kies het in de lijst met stuurprogramma's hierboven.",
         "installFailed": "Installatie mislukt: {message}",
-        "descriptionDeviceFirst": "Kies je mount uit de lijst en verbind hem. Een driver is alleen nodig als hij daar niet in staat."
+        "descriptionDeviceFirst": "Kies je mount uit de lijst en verbind hem. Een driver is alleen nodig als hij daar niet in staat.",
+        "port": {
+          "label": "USB-poort van de montering",
+          "searching": "Zoeken naar USB-apparaten…",
+          "none": "Geen USB-apparaat gevonden. Sluit de montering aan, zet hem aan en zoek opnieuw.",
+          "choose": "Kies een poort",
+          "autoPicked": "Er is maar één USB-apparaat aangesloten, dus dat is gekozen: {port}",
+          "several": "Er zijn meerdere USB-apparaten aangesloten. Weet je niet welke de montering is? Koppel de montering los, zoek opnieuw en kijk welke regel verdwijnt.",
+          "searchAgain": "Opnieuw zoeken"
+        }
       },
       "slewRate": {
         "title": "Zwenksnelheid",
@@ -538,6 +550,20 @@
         "descriptionDeviceFirst": "Kies je focuser uit de lijst en verbind hem. Een driver is alleen nodig als hij daar niet in staat. Autofocus-parameters blijven op de focuspagina.",
         "notFoundDriverHint": "Als je focuser niet in de lijst staat, selecteer hier zijn INDI-driver. Daarna verschijnt hij in de lijst hierboven."
       },
+      "flatPanel": {
+        "title": "Flatpanel instellen",
+        "description": "Met een dimbaar flatpanel neemt de app je flats zelf op. Kies het uit de lijst en verbind het. Een driver is alleen nodig als het daar niet verschijnt.",
+        "connectDevice": "Apparaat",
+        "connected": "Flatpanel verbonden: {name}",
+        "noPanelHint": "Geen flatpanel? Ga gewoon verder: flats lukken ook met een tablet of lichtfolie voor de telescoop.",
+        "notFound": "Flatpanel staat er niet bij?",
+        "notFoundDriverHint": "Als je flatpanel niet in de lijst staat, selecteer hier zijn INDI-driver. Daarna verschijnt het in de lijst hierboven.",
+        "selectDriver": "INDI-stuurprogramma",
+        "notFoundHint": "Ontbreekt het stuurprogramma, dan is het misschien nog niet geïnstalleerd. Zoek in de INDI-stuurprogramma's van derden en installeer het juiste.",
+        "installing": "{label} wordt geïnstalleerd…",
+        "installSuccess": "{label} geïnstalleerd. Kies het in de lijst met stuurprogramma's hierboven.",
+        "installFailed": "Installatie mislukt: {message}"
+      },
       "filterWheel": {
         "title": "Filterwiel instellen",
         "description": "Kies het INDI-stuurprogramma van je filterwiel, verbind het en geef de posities de namen die je in je sequenties gebruikt.",
@@ -584,8 +610,10 @@
         "guideScope": "Guidescope",
         "nativeCameraHint": "Voer de brandpuntsafstand van de guidescope in. De guider heeft die nodig om te beoordelen hoe ver de sterren bewegen.",
         "descriptionBuiltIn": "PINS heeft een ingebouwde guider die de sterren op hun plaats houdt terwijl er foto's worden gemaakt, zonder extra programma. Kies de guidecamera en vul de brandpuntsafstand van de guidescope in.",
-        "nativeRecommended": "Tip: PINS heeft een eigen guider (“Native Guider” in de lijst hierboven). Hij is speciaal voor PINS ontwikkeld, draait direct op de setup zonder apart programma en guidet vaak rustiger dan PHD2. Instellingen die je in PHD2 hebt gemaakt blijven behouden en je kunt altijd terugschakelen door weer PHD2 te kiezen.",
         "nativeFocalLengthMissing": "De brandpuntsafstand van de guidescope is nog 0. Guiding werkt ook zonder, maar voor dithering en de guidingfout in boogseconden is hij nodig.",
+        "nativeConnectsWithCamera": "De guider verbindt vanzelf zodra de guidecamera verbonden is.",
+        "nativeConnectFailed": "De guider kon niet worden verbonden.",
+        "nativeConnectRetry": "Opnieuw proberen",
         "guidePixelSizeHintNative": "Alleen voor deze berekening gebruikt. De guider leest de pixelgrootte uit de guidecamera zodra die verbonden is; tot dan neem je hem uit de cameraliteratuur.",
         "ditherMissingDataNative": "Voor de berekening van de dither zijn de pixelgrootte en brandpuntsafstand van zowel de opname- als de guidesetup nodig. Vul de camera- en telescoopstappen in, en de brandpuntsafstand van de guidescope in de guidingstap.",
         "guideCameraNotFound": "Guidecamera niet in de lijst?",
@@ -597,7 +625,7 @@
         "title": "Je apparatuur is klaar",
         "description": "Je opstelling is verbonden en up-to-date, en montering, camera, focuser, filterwiel en guiding zijn ingesteld.",
         "descriptionPlain": "Montering, camera, focuser, filterwiel en je locatie zijn ingesteld.",
-        "moreDevicesHint": "Flatpaneel, weer en de overige apparaten stel je op hun eigen pagina's in.",
+        "otherDevicesHint": "Weer, koepel en de overige apparaten stel je in op hun eigen pagina's.",
         "noConnectionHint": "Nog geen verbinding met een opstelling. Je kunt er op elk moment een toevoegen onder Instellingen → Verbinding.",
         "summaryIntro": "Dit is nu ingesteld. Tik op een item om terug te gaan naar zijn stap.",
         "status": {
@@ -608,6 +636,7 @@
             "camera": "Geselecteerd",
             "focuser": "Geselecteerd",
             "filterWheel": "Geselecteerd",
+            "flatPanel": "Geselecteerd",
             "guider": "Geselecteerd",
             "starDatabase": "Geïnstalleerd"
           },
@@ -621,6 +650,7 @@
           "none": {
             "focuser": "Geen, handmatig focussen",
             "filterWheel": "Geen, dat is prima",
+            "flatPanel": "Geen, flats met tablet of lichtfolie",
             "guider": "Geen guiding"
           }
         }
@@ -858,7 +888,10 @@
         "astapDatabaseInstalledList": "Geïnstalleerd: {list}",
         "astapDatabaseNoneInstalled": "Er is nog geen stardatabase geïnstalleerd. Zonder database kan plate solving (pooluitlijning, doel centreren) niet werken.",
         "astapDatabaseRecommendedTag": "aanbevolen",
-        "astapDatabaseRecommendedFov": "Aanbevolen voor je telescoop en camera (beeldveld {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "Je telescoop ({focal} mm) en camera zien een beeldveld van {fov}°. Aanbevolen daarvoor: {id}",
+        "astapDatabaseFitsInstalled": "Je telescoop ({focal} mm) en camera zien een beeldveld van {fov}°. {id} past daarbij en is al geïnstalleerd, je hoeft niets te doen.",
+        "astapDatabaseCoveredBy": "Je telescoop ({focal} mm) en camera zien een beeldveld van {fov}°. {id} zou passen; de geïnstalleerde {installed} dekt dat ook, je hoeft niets te doen.",
+        "astapDatabaseNeedsOptics": "Vul brandpuntsafstand, pixelgrootte en sensorgrootte in om te zien welke sterrendatabase bij je telescoop past.",
         "astapDatabaseRecommendedDefault": "Aanbevolen: {id}. Voer brandpuntsafstand, pixelgrootte en sensorgrootte in voor een aanbeveling die bij je telescoop past.",
         "astapDatabaseStartInstall": "Installatie starten voor {databaseId}...",
         "astapDatabaseStarting": "Beginnen...",
@@ -1827,6 +1860,7 @@
               "title": "Eigen waarden",
               "description": "Stel de minuten zelf in onder Geavanceerd."
             },
+            "recommended": "Aanbevolen",
             "sideOfPierNoMount": "Verbind de montering voordat je kiest, zodat de app kan controleren of hij zijn pierkant doorgeeft.",
             "sideOfPierUnknown": "Je montering geeft zijn pierkant niet door, dus „Pierzijde gebruiken” blijft uit. @:{'general.backendName'} bepaalt de flip dan op tijd.",
             "applyFailed": "De voorinstelling kon niet volledig worden opgeslagen. Controleer de waarden onder Geavanceerd."
@@ -5882,9 +5916,13 @@
       "mountPark": "Parkeren mislukt",
       "mountUnpark": "Ontparkeren mislukt",
       "mountHome": "Naar home-positie gaan mislukt",
+      "mountTracking": "Volgen kon niet worden gewijzigd",
       "mountFlip": "Meridian Flip mislukt",
+      "mountSlew": "Zwenken mislukt",
+      "mountCenter": "Centreren mislukt",
       "filterChange": "Filterwissel mislukt",
       "focuserMove": "Focuserbeweging mislukt",
+      "focuserStop": "Focuser kon niet worden gestopt",
       "rotatorMove": "Rotatorbeweging mislukt",
       "flatLight": "Licht van het flatpanel kon niet worden geschakeld",
       "flatCover": "Klep van het flatpanel kon niet worden bewogen",
@@ -6204,14 +6242,19 @@
       "wizard": {
         "title": "Hoe wil je de app gebruiken?",
         "simpleTitle": "Eenvoudig (aanbevolen om te beginnen)",
-        "simpleText": "Een startpagina leidt je stap voor stap door de nacht, met alleen de pagina's die je nodig hebt.",
         "fullTitle": "Alle functies",
-        "fullText": "Elke pagina en instelling in de navigatie, voor ervaren gebruikers."
+        "simpleDescription": "De startpagina ‘Vanavond’ leidt je stap voor stap door de nacht, van het verbinden van de apparaten tot het afsluiten van de nacht. Het menu toont alleen Start, Doel, Plan en Instellingen.",
+        "fullDescription": "Een pagina voor elk apparaat (camera, montering, focuser, guiding, filterwiel …), plus sequentie, flats en alle instellingen, zoals in N.I.N.A. Voor ervaren gebruikers die alles zelf willen bijstellen.",
+        "switchHint": "Je kunt altijd wisselen: op de startpagina met ‘Alle functies tonen’, of onder Instellingen → Interface."
+      },
+      "mountActions": {
+        "stopTracking": "Volgen stoppen",
+        "startTracking": "Volgen starten",
+        "allFunctions": "Alle monteringsfuncties"
       },
       "focusFirst": "Eerst focussen: deze stap bepaalt de positie uit een opname, en dat heeft scherpe sterren nodig.",
       "live": {
         "lastPicture": "Laatste foto",
-        "noPicture": "Nog geen foto. Maak een testfoto om te zien wat de camera ziet.",
         "preview": "Testfoto",
         "stars": "Sterren",
         "trendTitle": "Scherpte van de laatste {count} foto's",
@@ -6243,7 +6286,7 @@
         "databaseAction": "Sterrenkaart installeren",
         "flipTitle": "Meridian Flip nog niet ingesteld",
         "flipText": "Als een doel de meridiaan passeert (de noord–zuidlijn door het zenit), moet de telescoop naar de andere kant van de mount draaien – anders zou hij snel tegen het statief of de pier botsen. Je plan doet dit zelf. Geef eenmalig aan hoe ver je mount na de meridiaan kan blijven volgen.",
-        "flipNotSure": "Niet zeker? De handleiding van je mount zegt meestal hoe ver hij na de meridiaan kan volgen. Tot je dat weet houdt “Nauwelijks” de telescoop veilig, ten koste van een paar minuten zonder foto's.",
+        "flipNotSureTest": "Twijfel je? Kies ‘Een paar minuten’, dat past bij de meeste monteringen. Overdag kun je de app een echte flip laten doen en kijken of de telescoop langs statief en zuil komt en de kabels lang genoeg zijn.",
         "flipCurrentValues": "Je profiel heeft al een eigen timing: {values}.",
         "flipKeepValues": "Deze timing behouden",
         "flipTimingWindow": "flip {min}–{max} min na de meridiaan",
@@ -8204,6 +8247,7 @@
         "aperture": "Opening",
         "calibrate": "Kalibreren",
         "calibrating": "Kalibreren...",
+        "calibrateFailed": "Lenskalibratie kon niet worden gestart",
         "current": "Huidig",
         "deviceInfo": "Apparaatinformatie",
         "driver": "SDK-versie",

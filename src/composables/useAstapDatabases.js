@@ -5,6 +5,7 @@ import { computed, ref } from 'vue';
 import apiPinsService from '@/services/apiPinsService';
 import { apiStore } from '@/store/store';
 import {
+  coveringDatabase,
   fieldOfViewDeg,
   hasInstalledAstapDatabase,
   isRecommendationCovered,
@@ -65,6 +66,13 @@ export function useAstapDatabases() {
       installed.value.map((pkg) => pkg.databaseId)
     )
   );
+  /** The installed database that serves the recommendation, or null. */
+  const coveringId = computed(() =>
+    coveringDatabase(
+      recommendedId.value,
+      installed.value.map((pkg) => pkg.databaseId)
+    )
+  );
 
   // The rig solves with ASTAP unless the profile says otherwise; only then does a missing
   // database block polar alignment and centering.
@@ -88,6 +96,7 @@ export function useAstapDatabases() {
     fovDeg,
     recommendedId,
     recommendationCovered,
+    coveringId,
     refresh,
   };
 }

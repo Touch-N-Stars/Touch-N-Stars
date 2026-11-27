@@ -426,6 +426,8 @@ const timeWarningDeviceTime = ref('');
 
 async function checkPinsTimeMismatch() {
   if (pinsStore.suppressTimeWarning) return;
+  // With automatic sync the store's poll sets the time itself (store.syncSystemTime).
+  if (pinsStore.timeSyncEnabled) return;
   const ip = settingsStore.connection.ip || window.location.hostname;
   if (!ip) return;
   try {
@@ -473,6 +475,16 @@ watch(
     if (isPINS) {
       setTimeout(checkPinsTimeMismatch, 3000);
     }
+  }
+);
+// A new PINS profile (no devices yet) gets automatic time sync, see
+// pinsStore.enableTimeSyncForNewProfile(). The profile may arrive after the warning
+// check, so a warning that is already open is closed - the next poll sets the time.
+watch(
+  () => [store.isPINS, store.profileInfo],
+  ([isPINS, profile]) => {
+    if (!isPINS || !profile?.Id || profileHasEquipment(profile)) return;
+    if (pinsStore.enableTimeSyncForNewProfile()) showTimeWarningModal.value = false;
   }
 );
 // Texts name the backend via @:{'general.backendName'} (see src/i18n.js)

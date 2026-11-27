@@ -371,6 +371,7 @@
         "camera": "Camera",
         "focuser": "Focheggiatore",
         "filterWheel": "Ruota portafiltri",
+        "flatPanel": "Pannello flat",
         "guider": "Guida",
         "dither": "Dither",
         "done": "Fatto",
@@ -433,12 +434,14 @@
       },
       "updates": {
         "title": "Cerca aggiornamenti",
-        "description": "Tieni aggiornato il software del setup prima di configurare l'attrezzatura.",
+        "recommendation": "Gli aggiornamenti portano correzioni e miglioramenti al software del setup. Installali ora, prima di configurare i tuoi dispositivi.",
         "checking": "Ricerca aggiornamenti…",
         "upToDate": "Il software del setup è aggiornato.",
         "available": "{count} aggiornamento/i disponibile/i",
         "startUpgrade": "Aggiorna ora",
-        "upgradeHint": "Durante l'aggiornamento il setup riavvia alcuni servizi. Tieni aperta l'app finché non ha finito.",
+        "listHint": "L'elenco mostra i programmi del setup: PINS stesso, ASTAP per il plate solving e i plugin. «Aggiorna ora» li installa tutti insieme.",
+        "upgradeDuration": "Ci vogliono alcuni minuti, a seconda della connessione Internet. Nel frattempo il setup riavvia i suoi servizi, quindi tieni aperta l'app finché non ha finito.",
+        "skipHint": "Niente Internet sul setup in questo momento o niente tempo? Tocca «@:{'components.setupWizard.next'}» e aggiorna più tardi in «@:{'components.simpleMode.more.system'}».",
         "recheck": "Controlla di nuovo",
         "checkFailed": "Ricerca aggiornamenti non riuscita: {message}",
         "upgradeFailed": "Impossibile avviare l'aggiornamento: {message}"
@@ -454,7 +457,16 @@
         "installing": "Installazione di {label}…",
         "installSuccess": "{label} installato. Selezionalo nell'elenco dei driver qui sopra.",
         "installFailed": "Installazione non riuscita: {message}",
-        "descriptionDeviceFirst": "Scegli la montatura dall'elenco e connettila. Il driver serve solo se non compare nell'elenco."
+        "descriptionDeviceFirst": "Scegli la montatura dall'elenco e connettila. Il driver serve solo se non compare nell'elenco.",
+        "port": {
+          "label": "Porta USB della montatura",
+          "searching": "Ricerca di dispositivi USB…",
+          "none": "Nessun dispositivo USB trovato. Collega la montatura, accendila e cerca di nuovo.",
+          "choose": "Scegli una porta",
+          "autoPicked": "È collegato un solo dispositivo USB, quindi è stato scelto: {port}",
+          "several": "Sono collegati più dispositivi USB. Non sai quale sia la montatura? Scollega la montatura, cerca di nuovo e guarda quale voce scompare.",
+          "searchAgain": "Cerca di nuovo"
+        }
       },
       "slewRate": {
         "title": "Velocità di puntamento",
@@ -538,6 +550,20 @@
         "descriptionDeviceFirst": "Scegli il focheggiatore dall'elenco e connettilo. Il driver serve solo se non compare nell'elenco. I parametri dell'autofocus restano nella pagina Focus.",
         "notFoundDriverHint": "Se il tuo focheggiatore non è nell'elenco, seleziona qui il suo driver INDI. Poi comparirà nell'elenco qui sopra."
       },
+      "flatPanel": {
+        "title": "Configura il pannello flat",
+        "description": "Con un pannello flat regolabile l'app riprende i flat da sola. Sceglilo dall'elenco e collegalo. Un driver serve solo se lì non compare.",
+        "connectDevice": "Dispositivo",
+        "connected": "Pannello flat collegato: {name}",
+        "noPanelHint": "Nessun pannello flat? Vai pure avanti: i flat funzionano anche con un tablet o un foglio luminoso davanti al telescopio.",
+        "notFound": "Il pannello flat non è nell'elenco?",
+        "notFoundDriverHint": "Se il tuo pannello flat non è nell'elenco, seleziona qui il suo driver INDI. Poi comparirà nell'elenco qui sopra.",
+        "selectDriver": "Driver INDI",
+        "notFoundHint": "Se il driver manca, forse non è ancora installato. Cerca tra i driver INDI di terze parti e installa quello adatto.",
+        "installing": "Installazione di {label}…",
+        "installSuccess": "{label} installato. Selezionalo nell'elenco dei driver qui sopra.",
+        "installFailed": "Installazione non riuscita: {message}"
+      },
       "filterWheel": {
         "title": "Configura la ruota portafiltri",
         "description": "Scegli il driver INDI della ruota portafiltri, collegala e dai alle posizioni i nomi che usi nelle sequenze.",
@@ -584,8 +610,10 @@
         "guideScope": "Telescopio guida",
         "nativeCameraHint": "Inserisci la focale del telescopio guida. La guida ne ha bisogno per valutare quanto si spostano le stelle.",
         "descriptionBuiltIn": "PINS ha una guida integrata che tiene ferme le stelle durante le riprese, senza altri programmi. Scegli la camera di guida e inserisci la lunghezza focale del telescopio guida.",
-        "nativeRecommended": "Suggerimento: PINS ha una guida propria (“Native Guider” nell'elenco qui sopra). È stata sviluppata appositamente per PINS, gira direttamente sull'attrezzatura senza un programma separato e spesso guida in modo più stabile di PHD2. Le impostazioni fatte in PHD2 vengono mantenute e puoi tornare indietro in qualsiasi momento scegliendo di nuovo PHD2.",
         "nativeFocalLengthMissing": "La focale del telescopio guida è ancora 0. La guida funziona anche senza, ma dithering ed errore di guida in secondi d'arco ne hanno bisogno.",
+        "nativeConnectsWithCamera": "La guida si collega da sola non appena la camera di guida è collegata.",
+        "nativeConnectFailed": "Non è stato possibile collegare la guida.",
+        "nativeConnectRetry": "Riprova",
         "guidePixelSizeHintNative": "Usata solo per questo calcolo. La guida legge la dimensione dei pixel dalla camera di guida quando è connessa; fino ad allora prendila dal manuale della camera.",
         "ditherMissingDataNative": "Per calcolare il dither servono dimensione pixel e focale sia della configurazione di ripresa sia di quella di guida. Compila i passaggi camera e telescopio e la focale del telescopio guida nel passaggio guida.",
         "guideCameraNotFound": "Camera di guida non in elenco?",
@@ -597,7 +625,7 @@
         "title": "La tua attrezzatura è pronta",
         "description": "Il tuo setup è connesso e aggiornato, e montatura, camera, focheggiatore, ruota portafiltri e guida sono configurati.",
         "descriptionPlain": "Montatura, camera, focheggiatore, ruota portafiltri e posizione sono configurati.",
-        "moreDevicesHint": "Il pannello per flat, il meteo e gli altri dispositivi si configurano nelle rispettive pagine.",
+        "otherDevicesHint": "Meteo, cupola e gli altri dispositivi si configurano nelle loro pagine.",
         "noConnectionHint": "Ancora nessuna connessione a un setup. Puoi aggiungerne una in qualsiasi momento in Impostazioni → Connessione.",
         "summaryIntro": "Ecco cosa è configurato ora. Tocca una voce per tornare al suo passaggio.",
         "status": {
@@ -608,6 +636,7 @@
             "camera": "Selezionata",
             "focuser": "Selezionato",
             "filterWheel": "Selezionata",
+            "flatPanel": "Selezionato",
             "guider": "Selezionata",
             "starDatabase": "Installata"
           },
@@ -621,6 +650,7 @@
           "none": {
             "focuser": "Nessuno, messa a fuoco manuale",
             "filterWheel": "Nessuna, va bene",
+            "flatPanel": "Nessuno, flat con tablet o foglio luminoso",
             "guider": "Nessuna guida"
           }
         }
@@ -858,7 +888,10 @@
         "astapDatabaseInstalledList": "Installate: {list}",
         "astapDatabaseNoneInstalled": "Nessun database stellare è ancora installato. Senza, il plate solving (allineamento polare, centratura di un target) non può funzionare.",
         "astapDatabaseRecommendedTag": "consigliato",
-        "astapDatabaseRecommendedFov": "Consigliato per il tuo telescopio e la tua camera (campo visivo {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "Il tuo telescopio ({focal} mm) e la tua camera vedono un campo di {fov}°. Consigliato per questo: {id}",
+        "astapDatabaseFitsInstalled": "Il tuo telescopio ({focal} mm) e la tua camera vedono un campo di {fov}°. {id} è adatto ed è già installato, non devi fare nulla.",
+        "astapDatabaseCoveredBy": "Il tuo telescopio ({focal} mm) e la tua camera vedono un campo di {fov}°. {id} sarebbe adatto; anche {installed}, già installato, lo copre, non devi fare nulla.",
+        "astapDatabaseNeedsOptics": "Inserisci focale, dimensione dei pixel e dimensione del sensore per vedere quale database stellare è adatto al tuo telescopio.",
         "astapDatabaseRecommendedDefault": "Consigliato: {id}. Inserisci focale, dimensione pixel e dimensione sensore per un consiglio adatto al tuo telescopio.",
         "astapDatabaseStartInstall": "Avvio dell'installazione per {databaseId}...",
         "astapDatabaseStarting": "Avvio...",
@@ -1827,6 +1860,7 @@
               "title": "Valori personalizzati",
               "description": "Imposta tu i minuti in Avanzate."
             },
+            "recommended": "Consigliato",
             "sideOfPierNoMount": "Collega la montatura prima di scegliere, così l'app può verificare se comunica il suo lato del pilastro.",
             "sideOfPierUnknown": "La tua montatura non comunica il lato del pilastro, quindi «Usa lato del pilastro» resta disattivato. @:{'general.backendName'} decide allora l'inversione in base all'ora.",
             "applyFailed": "Il preset non è stato salvato completamente. Controlla i valori in Avanzate."
@@ -5882,9 +5916,13 @@
       "mountPark": "Parcheggio non riuscito",
       "mountUnpark": "Sblocco del parcheggio non riuscito",
       "mountHome": "Ritorno alla posizione home non riuscito",
+      "mountTracking": "Non è stato possibile cambiare l'inseguimento",
       "mountFlip": "Meridian Flip non riuscito",
+      "mountSlew": "Puntamento non riuscito",
+      "mountCenter": "Centratura non riuscita",
       "filterChange": "Cambio filtro non riuscito",
       "focuserMove": "Movimento del focheggiatore non riuscito",
+      "focuserStop": "Impossibile fermare il focheggiatore",
       "rotatorMove": "Movimento del rotatore non riuscito",
       "flatLight": "Impossibile accendere/spegnere la luce del pannello flat",
       "flatCover": "Impossibile muovere la copertura del pannello flat",
@@ -6204,14 +6242,19 @@
       "wizard": {
         "title": "Come vuoi usare l'app?",
         "simpleTitle": "Semplice (consigliata per iniziare)",
-        "simpleText": "Una pagina iniziale ti guida nella notte passo dopo passo, con solo le pagine necessarie.",
         "fullTitle": "Tutte le funzioni",
-        "fullText": "Ogni pagina e impostazione nella navigazione, per utenti esperti."
+        "simpleDescription": "La pagina iniziale «Stasera» ti guida passo dopo passo nella notte, dal collegamento dei dispositivi alla fine della notte. Il menu mostra solo Home, Target, Piano e Impostazioni.",
+        "fullDescription": "Una pagina per ogni dispositivo (camera, montatura, focheggiatore, guida, ruota portafiltri …), più sequenza, flat e tutte le impostazioni, come in N.I.N.A. Per utenti esperti che vogliono regolare tutto da sé.",
+        "switchHint": "Puoi cambiare in qualsiasi momento: nella pagina iniziale con «Mostra tutte le funzioni», oppure in Impostazioni → Interfaccia."
+      },
+      "mountActions": {
+        "stopTracking": "Ferma l'inseguimento",
+        "startTracking": "Avvia l'inseguimento",
+        "allFunctions": "Tutte le funzioni della montatura"
       },
       "focusFirst": "Prima il fuoco: questo passaggio ricava la posizione da un'immagine e servono stelle nitide.",
       "live": {
         "lastPicture": "Ultima immagine",
-        "noPicture": "Ancora nessuna immagine. Scatta un'immagine di prova per vedere cosa vede la camera.",
         "preview": "Immagine di prova",
         "stars": "Stelle",
         "trendTitle": "Nitidezza delle ultime {count} immagini",
@@ -6243,7 +6286,7 @@
         "databaseAction": "Installa mappa stellare",
         "flipTitle": "Meridian Flip non ancora configurato",
         "flipText": "Quando un target attraversa il meridiano (la linea nord-sud passante per lo zenit), il telescopio deve passare all'altro lato della montatura, altrimenti presto urterebbe il treppiede o il pilastro. Il piano lo fa da solo. Indicagli una volta fino a dove la tua montatura può continuare a inseguire oltre il meridiano.",
-        "flipNotSure": "Non sei sicuro? Il manuale della montatura di solito indica fin dove può inseguire oltre il meridiano. Finché non lo sai, “Appena” mantiene il telescopio al sicuro, al costo di qualche minuto senza immagini.",
+        "flipNotSureTest": "Non sei sicuro? Scegli «Qualche minuto», va bene per la maggior parte delle montature. Di giorno puoi far fare all'app un vero flip e guardare se il telescopio passa il treppiede e la colonna e se i cavi arrivano.",
         "flipCurrentValues": "Il tuo profilo ha già i suoi tempi: {values}.",
         "flipKeepValues": "Mantieni questi tempi",
         "flipTimingWindow": "flip {min}–{max} min dopo il meridiano",
@@ -8204,6 +8247,7 @@
         "aperture": "Apertura",
         "calibrate": "Calibrare",
         "calibrating": "Calibrazione...",
+        "calibrateFailed": "Impossibile avviare la calibrazione dell'obiettivo",
         "current": "Attuale",
         "deviceInfo": "Informazioni sul dispositivo",
         "driver": "Versione dell'SDK",

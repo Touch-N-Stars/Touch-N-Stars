@@ -98,9 +98,10 @@ async function startAutoExposure() {
           flatsStore.offset,
           selectedFilterId.value,
           settingsStore.flats.keepClosed,
-          flatsStore.darkCount
+          // ninaAPI refuses dark flats for sky flats: the exposure time changes from frame to frame.
+          0
         ),
-      darkCount: flatsStore.darkCount,
+      darkCount: 0,
     });
   } catch (error) {
     console.log('Error startAutoExposure');

@@ -466,8 +466,9 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
             : 'components.flatassistant.status_success_flats',
           { count: run.total }
         );
-      } else if (run.completed > 0 && this.workflowStopRequested) {
-        // User explicitly stopped the run with some flats already taken
+      } else if (this.workflowStopRequested) {
+        // Stopped here or cancelled elsewhere (NINA, another device), also before the first
+        // frame: a stop, not a failed exposure search.
         type = 'warning';
         message = i18n.global.t(
           run.type === 'darks'
@@ -523,6 +524,8 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
         const closed = /[.!?。！？]$/.test(message.trim());
         message = `${message.trim()}${closed ? '' : '.'} ${note}`;
       };
+      // The reason ninaAPI gives for a failed run (State Failed), e.g. no valid exposure found.
+      if (type === 'error' && run.error) appendNote(run.error);
       if (failedFiltersNote) appendNote(failedFiltersNote);
       if (darksNote) appendNote(darksNote);
       if (stoppedByPlugin) appendNote(run.stopReason);
@@ -571,14 +574,21 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
             consecutiveNonRunning++;
           }
 
+          // Current ninaAPI ends a run that failed with Failed (reason in Error) and one that was
+          // cancelled with Cancelled; older versions report Finished for both.
+          const failed = status.State === 'Failed';
+          const cancelled = status.State === 'Cancelled';
           const isMultiMode = this.currentRunType === 'flats-multi';
           const effectiveGrace = gracePollLimit ?? (isMultiMode ? 30 : 5);
           const pastStartupGrace = seenRunning || pollCount >= effectiveGrace;
           const terminalState = isMultiMode
             ? consecutiveNonRunning >= 3
-            : status.State === 'Finished' || consecutiveNonRunning >= 5;
+            : status.State === 'Finished' || failed || cancelled || consecutiveNonRunning >= 5;
 
           if (pastStartupGrace && terminalState) {
+            // A run cancelled elsewhere (NINA, another device) ends like a stop from this app:
+            // no further filters, no darks, reported as stopped rather than failed.
+            if (cancelled) this.workflowStopRequested = true;
             let completed, total;
             if (peakRunningTotal > 0) {
               total = peakRunningTotal;
@@ -598,7 +608,8 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
               completed = Math.max(0, Number(status.CompletedIterations) || 0);
               total = Math.max(0, Number(status.TotalIterations) || 0);
             }
-            return { status, completed, total };
+            const error = failed ? status.Error?.trim() || null : null;
+            return { status, completed, total, error };
           }
         }
 
@@ -608,7 +619,7 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
       // Stopped by user — return whatever peak info we have
       const completed = peakRunningTotal > 0 ? peakRunningCompleted : 0;
       const total = peakRunningTotal > 0 ? peakRunningTotal : 0;
-      return { status: this.status, completed, total };
+      return { status: this.status, completed, total, error: null };
     },
 
     async runFlatWorkflow({
@@ -632,6 +643,7 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
         status: finalStatus,
         completed,
         total,
+        error,
       } = await this.waitForCompletion(statusLoader, 250);
 
       this.lastRun = {
@@ -640,6 +652,7 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
         total,
         success: total > 0 && completed >= total,
         lastADU: this.currentADU,
+        error,
       };
 
       if (connectedSimulator) await this.disconnectFlatDevice();
@@ -700,6 +713,7 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
       let totalCompleted = 0;
       let allSucceeded = true;
       let lastADU = this.currentADU;
+      let firstError = null;
 
       for (const job of validJobs) {
         if (this.workflowStopRequested) {
@@ -724,12 +738,14 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
           continue;
         }
 
-        const { completed: darkCompleted, total: darkTotal } = await this.waitForCompletion(
-          () => apiService.flatassistantAction('status'),
-          250
-        );
+        const {
+          completed: darkCompleted,
+          total: darkTotal,
+          error: darkError,
+        } = await this.waitForCompletion(() => apiService.flatassistantAction('status'), 250);
 
         totalCompleted += darkCompleted;
+        firstError ??= darkError;
         lastADU = this.currentADU;
 
         // Use waitForCompletion's resolved counts (handles NINA's T=-1 Finished state)
@@ -751,6 +767,7 @@ export const useFlatassistantStore = defineStore('flatassistantStore', {
           total: totalRequested,
           success: allSucceeded && totalCompleted >= totalRequested,
           lastADU,
+          error: firstError,
         };
       }
 

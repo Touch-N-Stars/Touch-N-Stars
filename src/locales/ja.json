@@ -380,6 +380,7 @@
         "camera": "カメラ",
         "focuser": "フォーカサー",
         "filterWheel": "フィルターホイール",
+        "flatPanel": "Flatパネル",
         "guider": "ガイド",
         "dither": "ディザリング",
         "done": "完了",
@@ -442,12 +443,14 @@
       },
       "updates": {
         "title": "アップデートを確認",
-        "description": "機器を設定する前に、機材のソフトウェアを最新にしてください。",
+        "recommendation": "アップデートには機材のソフトウェアの修正と改善が含まれます。デバイスを設定する前に、今インストールしてください。",
         "checking": "アップデートを確認中 …",
         "upToDate": "機材のソフトウェアは最新です。",
         "available": "{count} 件のアップデートがあります",
         "startUpgrade": "今すぐ更新",
-        "upgradeHint": "更新中、機材はサービスを再起動します。完了するまでアプリを開いたままにしてください。",
+        "listHint": "一覧には機材上のプログラムが表示されます：PINS本体、プレートソルブ用のASTAP、各プラグイン。「今すぐ更新」でまとめてインストールします。",
+        "upgradeDuration": "インターネット接続によって数分かかります。途中で機材がサービスを再起動するので、完了するまでアプリを開いたままにしてください。",
+        "skipHint": "今は機材にインターネットがない、または時間がない場合は、「@:{'components.setupWizard.next'}」をタップして、あとで「@:{'components.simpleMode.more.system'}」から更新してください。",
         "recheck": "再確認",
         "checkFailed": "アップデートの確認に失敗しました：{message}",
         "upgradeFailed": "アップデートを開始できませんでした：{message}"
@@ -463,7 +466,16 @@
         "installing": "{label} をインストール中…",
         "installSuccess": "{label} をインストールしました。上のドライバー一覧から選んでください。",
         "installFailed": "インストールに失敗しました：{message}",
-        "descriptionDeviceFirst": "一覧からマウントを選んで接続してください。ドライバーは、一覧に表示されない場合のみ必要です。"
+        "descriptionDeviceFirst": "一覧からマウントを選んで接続してください。ドライバーは、一覧に表示されない場合のみ必要です。",
+        "port": {
+          "label": "架台のUSBポート",
+          "searching": "USBデバイスを検索中…",
+          "none": "USBデバイスが見つかりません。架台を接続して電源を入れ、もう一度検索してください。",
+          "choose": "ポートを選択",
+          "autoPicked": "USBデバイスが1台だけ接続されているため、それを選択しました：{port}",
+          "several": "複数のUSBデバイスが接続されています。どれが架台かわからない場合は、架台を抜いてもう一度検索し、どの項目が消えるかを確認してください。",
+          "searchAgain": "再検索"
+        }
       },
       "slewRate": {
         "title": "導入速度",
@@ -547,6 +559,20 @@
         "descriptionDeviceFirst": "一覧からフォーカサーを選んで接続してください。ドライバーは、一覧に表示されない場合のみ必要です。オートフォーカスのパラメーターはフォーカスページにあります。",
         "notFoundDriverHint": "フォーカサーが一覧にない場合は、ここでINDIドライバーを選択してください。その後、上の一覧に表示されます。"
       },
+      "flatPanel": {
+        "title": "Flatパネルを設定",
+        "description": "調光できるFlatパネルがあれば、アプリがフラットを自動で撮影します。一覧から選んで接続してください。一覧に表示されない場合だけドライバーが必要です。",
+        "connectDevice": "デバイス",
+        "connected": "Flatパネルを接続しました：{name}",
+        "noPanelHint": "Flatパネルがない場合はそのまま進んでください。フラットは望遠鏡の前に置いたタブレットやライトフォイルでも撮影できます。",
+        "notFound": "Flatパネルがリストにない場合",
+        "notFoundDriverHint": "Flatパネルが一覧にない場合は、ここでINDIドライバーを選択してください。その後、上の一覧に表示されます。",
+        "selectDriver": "INDI ドライバー",
+        "notFoundHint": "ドライバーがない場合、まだインストールされていない可能性があります。サードパーティの INDI ドライバーを検索し、該当するものをインストールしてください。",
+        "installing": "{label} をインストール中…",
+        "installSuccess": "{label} をインストールしました。上のドライバー一覧から選んでください。",
+        "installFailed": "インストールに失敗しました：{message}"
+      },
       "filterWheel": {
         "title": "フィルターホイールを設定",
         "description": "フィルターホイールの INDI ドライバーを選んで接続し、各スロットにシーケンスで使う名前を付けてください。",
@@ -593,8 +619,10 @@
         "guideScope": "ガイド鏡",
         "nativeCameraHint": "ガイドスコープの焦点距離を入力してください。ガイダーは星がどれだけ動いたかを判断するために必要とします。",
         "descriptionBuiltIn": "PINSには、撮影中に星を同じ位置に保つガイダーが内蔵されており、ほかのプログラムは不要です。ガイドカメラを選び、ガイド鏡の焦点距離を入力してください。",
-        "nativeRecommended": "ヒント: PINSには独自のガイダー(上の一覧の「Native Guider」)があります。PINS専用に開発され、別のプログラムなしで機材上で直接動作し、PHD2より安定してガイドできることが多くあります。PHD2での設定は引き継がれ、PHD2を選び直すといつでも戻せます。",
         "nativeFocalLengthMissing": "ガイドスコープの焦点距離がまだ0です。ガイドは動作しますが、Ditherと秒角単位のガイド誤差には必要です。",
+        "nativeConnectsWithCamera": "ガイドカメラが接続されると、ガイダーが自動で接続されます。",
+        "nativeConnectFailed": "ガイダーを接続できませんでした。",
+        "nativeConnectRetry": "再試行",
         "guidePixelSizeHintNative": "この計算にのみ使用します。ガイダーは接続後にガイドカメラからピクセルサイズを読み取ります。それまではカメラの取扱説明書の値を使ってください。",
         "ditherMissingDataNative": "Ditherを計算するには、撮影側とガイド側の両方のピクセルサイズと焦点距離が必要です。カメラと望遠鏡のステップ、およびガイドのステップでガイドスコープの焦点距離を入力してください。",
         "guideCameraNotFound": "ガイドカメラが一覧にない場合",
@@ -606,7 +634,7 @@
         "title": "機材の準備ができました",
         "description": "機材は接続済みで最新です。架台、カメラ、フォーカサー、フィルターホイール、ガイドの設定も完了しました。",
         "descriptionPlain": "架台、カメラ、フォーカサー、フィルターホイール、観測地の設定が完了しました。",
-        "moreDevicesHint": "フラットパネル、気象、その他の機器はそれぞれのページで設定します。",
+        "otherDevicesHint": "気象、ドーム、その他のデバイスはそれぞれのページで設定します。",
         "noConnectionHint": "まだ機材に接続していません。設定 → 接続 からいつでも追加できます。",
         "summaryIntro": "現在の設定内容です。項目をタップすると、そのステップに戻ります。",
         "status": {
@@ -617,6 +645,7 @@
             "camera": "選択済み",
             "focuser": "選択済み",
             "filterWheel": "選択済み",
+            "flatPanel": "選択済み",
             "guider": "選択済み",
             "starDatabase": "インストール済み"
           },
@@ -630,6 +659,7 @@
           "none": {
             "focuser": "なし、手動でフォーカス",
             "filterWheel": "なし、問題ありません",
+            "flatPanel": "なし、タブレットまたはライトフォイルでフラット",
             "guider": "ガイドなし"
           }
         }
@@ -909,7 +939,10 @@
         "astapDatabaseInstalledList": "インストール済み: {list}",
         "astapDatabaseNoneInstalled": "星データベースがまだインストールされていません。ないとプレートソルブ(極軸合わせ、ターゲットの導入)は動作しません。",
         "astapDatabaseRecommendedTag": "おすすめ",
-        "astapDatabaseRecommendedFov": "お使いの望遠鏡とカメラ向けのおすすめ(視野 {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "望遠鏡（{focal} mm）とカメラの視野は {fov}° です。おすすめ：{id}",
+        "astapDatabaseFitsInstalled": "望遠鏡（{focal} mm）とカメラの視野は {fov}° です。{id} が適しており、すでにインストール済みなので何もする必要はありません。",
+        "astapDatabaseCoveredBy": "望遠鏡（{focal} mm）とカメラの視野は {fov}° です。{id} が適していますが、インストール済みの {installed} でもカバーできるので何もする必要はありません。",
+        "astapDatabaseNeedsOptics": "焦点距離、ピクセルサイズ、センサーサイズを入力すると、望遠鏡に合う星データベースがわかります。",
         "astapDatabaseRecommendedDefault": "おすすめ: {id}。望遠鏡に合ったおすすめを表示するには、焦点距離、ピクセルサイズ、センササイズを入力してください。",
         "astapDatabaseStartInstall": "{databaseId} のインストールを開始しています...",
         "astapDatabaseStarting": "起動...",
@@ -1836,6 +1869,7 @@
               "title": "カスタム値",
               "description": "「詳細設定」で分数を自分で設定します。"
             },
+            "recommended": "おすすめ",
             "sideOfPierNoMount": "選ぶ前に架台を接続してください。架台がピア側を報告するかアプリが確認できます。",
             "sideOfPierUnknown": "この架台はピア側を報告しないため、「ピア側を使用」はオフのままです。@:{'general.backendName'} は時刻で反転を判断します。",
             "applyFailed": "プリセットを完全には保存できませんでした。「詳細設定」の値を確認してください。"
@@ -5882,9 +5916,13 @@
       "mountPark": "パークに失敗しました",
       "mountUnpark": "アンパークに失敗しました",
       "mountHome": "ホーム位置への移動に失敗しました",
+      "mountTracking": "追尾を変更できませんでした",
       "mountFlip": "子午線反転に失敗しました",
+      "mountSlew": "導入に失敗しました",
+      "mountCenter": "センタリングに失敗しました",
       "filterChange": "フィルター交換に失敗しました",
       "focuserMove": "フォーカサーの移動に失敗しました",
+      "focuserStop": "フォーカサーを停止できませんでした",
       "rotatorMove": "ローテーターの移動に失敗しました",
       "flatLight": "フラットパネルのライトを切り替えられませんでした",
       "flatCover": "フラットパネルのカバーを動かせませんでした",
@@ -6204,14 +6242,19 @@
       "wizard": {
         "title": "アプリをどのように使いますか？",
         "simpleTitle": "シンプル(最初はおすすめ)",
-        "simpleText": "スタートページが夜の進行を順に案内し、必要なページだけを表示します。",
         "fullTitle": "すべての機能",
-        "fullText": "すべてのページと設定をナビゲーションに表示します。経験者向けです。"
+        "simpleDescription": "スタートページ「今夜」が、デバイスの接続から夜の終了まで、一歩ずつ案内します。メニューにはスタート、ターゲット、プラン、設定だけが表示されます。",
+        "fullDescription": "デバイスごとのページ（カメラ、架台、フォーカサー、ガイド、フィルターホイール …）に加え、シーケンス、フラット、すべての設定があります。N.I.N.A. と同じです。自分で細かく調整したい経験者向けです。",
+        "switchHint": "いつでも切り替えられます：スタートページの「すべての機能を表示」、または 設定 → インターフェース から。"
+      },
+      "mountActions": {
+        "stopTracking": "追尾を停止",
+        "startTracking": "追尾を開始",
+        "allFunctions": "架台のすべての機能"
       },
       "focusFirst": "先にフォーカス: このステップは画像から位置を割り出すため、シャープな星が必要です。",
       "live": {
         "lastPicture": "最新の画像",
-        "noPicture": "画像がまだありません。テスト撮影をして、カメラの映像を確認してください。",
         "preview": "テスト画像",
         "stars": "星",
         "trendTitle": "直近{count}枚のシャープさ",
@@ -6243,7 +6286,7 @@
         "databaseAction": "星図をインストール",
         "flipTitle": "Meridian Flipが未設定です",
         "flipText": "ターゲットがメリディアン(天頂を通る南北の線)を越えると、望遠鏡はマウントの反対側へ反転する必要があります。そうしないと、すぐに三脚やピアに衝突します。プランが自動で行います。マウントがメリディアンを越えてどこまでトラッキングを続けられるかを、1回だけ教えてください。",
-        "flipNotSure": "分からない場合は、マウントの取扱説明書にメリディアンを越えてどこまでトラッキングできるかが通常書かれています。分かるまでは「ほとんどできない」を選ぶと望遠鏡の安全が保たれますが、数分間撮影できません。",
+        "flipNotSureTest": "迷ったら「数分」を選んでください。ほとんどの架台に合います。日中にアプリに実際の反転を行わせ、望遠鏡が三脚やピラーに当たらないか、ケーブルが足りるかを確認できます。",
         "flipCurrentValues": "プロファイルには独自の設定があります: {values}。",
         "flipKeepValues": "この設定を維持",
         "flipTimingWindow": "メリディアン通過後{min}〜{max}分でFlip",
@@ -8315,6 +8358,7 @@
         "aperture": "絞り",
         "calibrate": "校正する",
         "calibrating": "校正中...",
+        "calibrateFailed": "レンズの校正を開始できませんでした",
         "current": "現在",
         "deviceInfo": "デバイス情報",
         "driver": "SDKのバージョン",

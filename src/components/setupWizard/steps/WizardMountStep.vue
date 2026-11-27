@@ -27,6 +27,8 @@
       />
     </div>
 
+    <WizardOnStepXPort v-if="isOnStepX && !store.mountInfo?.Connected" />
+
     <div
       v-if="store.mountInfo?.Connected"
       class="flex items-start gap-3 rounded-control border border-status-ok/40 bg-status-ok/10 p-3"
@@ -81,7 +83,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
@@ -92,6 +94,7 @@ import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vu
 import SettingsSerialConnection from '@/components/equipment/SettingsSerialConnection.vue';
 import SettingsOnStepXConnection from '@/components/equipment/SettingsOnStepXConnection.vue';
 import MountDriverFinder from '@/components/equipment/MountDriverFinder.vue';
+import WizardOnStepXPort from '@/components/setupWizard/WizardOnStepXPort.vue';
 
 const { t } = useI18n();
 const store = apiStore();
@@ -107,6 +110,9 @@ const showNotFound = ref(
 );
 
 const isAlpacaDirect = (device) => device?.Category === 'ASCOM Alpaca';
+
+// PINS' native OnStepX driver connects only with a serial port in the profile.
+const isOnStepX = computed(() => store.profileInfo?.TelescopeSettings?.Id === 'OnStepX');
 
 function openMountSettings(payload) {
   selectedMountDevice.value = payload?.selectedDeviceDisplayName || '';

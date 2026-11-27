@@ -97,6 +97,8 @@
 
               <WizardFilterWheelStep v-else-if="currentStep.id === 'filterWheel'" />
 
+              <WizardFlatPanelStep v-else-if="currentStep.id === 'flatPanel'" />
+
               <WizardGuiderStep v-else-if="currentStep.id === 'guider'" />
 
               <WizardStarDatabaseStep v-else-if="currentStep.id === 'starDatabase'" />
@@ -113,7 +115,7 @@
                 </p>
                 <WizardDoneSummary v-if="store.isBackendReachable" @go="goToStep" />
                 <p class="text-sm text-content-faint">
-                  {{ t('components.setupWizard.done.moreDevicesHint') }}
+                  {{ t('components.setupWizard.done.otherDevicesHint') }}
                 </p>
                 <!-- PINS: how the app should look from now on. Same switch as in
                      Settings -> Interface, so it can be changed any time. -->
@@ -137,6 +139,11 @@
                     <span class="block font-semibold text-content">{{ t(option.titleKey) }}</span>
                     <span class="block text-xs text-content-muted">{{ t(option.textKey) }}</span>
                   </button>
+                  <!-- A field-test user asked what the difference is and whether the choice is
+                       final; say where to switch later. -->
+                  <p class="text-xs text-content-faint">
+                    {{ t('components.simpleMode.wizard.switchHint') }}
+                  </p>
                 </div>
                 <!-- Anyone who skipped the instance step lands on the connection
                      splash afterwards; say where to fix that. -->
@@ -190,6 +197,7 @@ import WizardLocationStep from './steps/WizardLocationStep.vue';
 import WizardTelescopeStep from './steps/WizardTelescopeStep.vue';
 import WizardCameraStep from './steps/WizardCameraStep.vue';
 import WizardFocuserStep from './steps/WizardFocuserStep.vue';
+import WizardFlatPanelStep from './steps/WizardFlatPanelStep.vue';
 import WizardFilterWheelStep from './steps/WizardFilterWheelStep.vue';
 import WizardGuiderStep from './steps/WizardGuiderStep.vue';
 import WizardDitherStep from './steps/WizardDitherStep.vue';
@@ -245,6 +253,9 @@ const steps = computed(() => [
   step('camera'),
   step('focuser'),
   step('filterWheel'),
+  // Optional: the night's flats step works with a tablet too. Without this step a beginner
+  // learned about the panel only from "no dimmable flat panel connected" there.
+  step('flatPanel'),
   // The star database the rig plate-solves with: after the camera, so the recommendation can
   // use focal length and sensor geometry. Installed through the PINS daemon.
   ...(store.isPINS ? [step('starDatabase')] : []),
@@ -320,12 +331,12 @@ const uiModeOptions = [
   {
     value: true,
     titleKey: 'components.simpleMode.wizard.simpleTitle',
-    textKey: 'components.simpleMode.wizard.simpleText',
+    textKey: 'components.simpleMode.wizard.simpleDescription',
   },
   {
     value: false,
     titleKey: 'components.simpleMode.wizard.fullTitle',
-    textKey: 'components.simpleMode.wizard.fullText',
+    textKey: 'components.simpleMode.wizard.fullDescription',
   },
 ];
 </script>

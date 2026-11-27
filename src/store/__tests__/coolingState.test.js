@@ -145,8 +145,9 @@ test('heuristic: warm-up with stale cool-down TargetTemp -> warming', () => {
 });
 
 test('heuristic: AtTargetTemp mid-ramp does not interrupt the ramp state', () => {
-  // ninaAPI's AtTargetTemp is exact equality of sensor and setpoint, which
-  // also happens whenever the camera catches up with the current step.
+  // Older ninaAPI versions report AtTargetTemp as exact equality of sensor and
+  // setpoint, which also happens whenever the camera catches up with the
+  // current step.
   const { cameraStore } = setup(
     { CoolerOn: true, AtTargetTemp: true, TargetTemp: 0, TemperatureSetPoint: 17, Temperature: 17 },
     { Temperature: 0 }

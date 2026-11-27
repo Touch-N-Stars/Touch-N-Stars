@@ -269,8 +269,9 @@ const installedSummary = computed(() => {
   return parts.join(' · ');
 });
 
+// Includes the reserve the server keeps free, so the hint matches the server's refusal.
 const selectedRequiredBytes = computed(() =>
-  selectedOrder.value === null ? 0 : surveyStore.estimateMissingBytes(selectedOrder.value)
+  selectedOrder.value === null ? 0 : surveyStore.requiredFreeBytes(selectedOrder.value)
 );
 const hasEnoughSpace = computed(
   () => selectedOrder.value === null || surveyStore.hasEnoughFreeSpace(selectedOrder.value)

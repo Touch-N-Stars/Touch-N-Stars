@@ -371,6 +371,7 @@
         "camera": "Câmera",
         "focuser": "Focalizador",
         "filterWheel": "Roda de filtros",
+        "flatPanel": "Painel de flats",
         "guider": "Guiagem",
         "dither": "Dither",
         "done": "Concluído",
@@ -433,12 +434,14 @@
       },
       "updates": {
         "title": "Procurar atualizações",
-        "description": "Mantém o software do equipamento atualizado antes de configurar os dispositivos.",
+        "recommendation": "As atualizações trazem correções e melhorias para o software do equipamento. Instala-as agora, antes de configurares os teus dispositivos.",
         "checking": "A procurar atualizações…",
         "upToDate": "O software do equipamento está atualizado.",
         "available": "{count} atualização(ões) disponível(is)",
         "startUpgrade": "Atualizar agora",
-        "upgradeHint": "O equipamento reinicia serviços durante a atualização. Mantém a app aberta até terminar.",
+        "listHint": "A lista mostra os programas do equipamento: o próprio PINS, o ASTAP para plate solving e os plugins. “Atualizar agora” instala todos juntos.",
+        "upgradeDuration": "Demora alguns minutos, conforme a ligação à Internet. Entretanto o equipamento reinicia os seus serviços, por isso mantém a app aberta até terminar.",
+        "skipHint": "Sem Internet no equipamento agora, ou sem tempo? Toca em “@:{'components.setupWizard.next'}” e atualiza mais tarde em “@:{'components.simpleMode.more.system'}”.",
         "recheck": "Verificar de novo",
         "checkFailed": "Falha ao procurar atualizações: {message}",
         "upgradeFailed": "Não foi possível iniciar a atualização: {message}"
@@ -454,7 +457,16 @@
         "installing": "Instalando {label}…",
         "installSuccess": "{label} instalado. Seleciona-o na lista de controladores acima.",
         "installFailed": "Falha na instalação: {message}",
-        "descriptionDeviceFirst": "Escolha sua montagem na lista e conecte-a. Um driver só é necessário se ela não aparecer lá."
+        "descriptionDeviceFirst": "Escolha sua montagem na lista e conecte-a. Um driver só é necessário se ela não aparecer lá.",
+        "port": {
+          "label": "Porta USB da montagem",
+          "searching": "A procurar dispositivos USB…",
+          "none": "Nenhum dispositivo USB encontrado. Liga a montagem, acende-a e procura de novo.",
+          "choose": "Escolhe uma porta",
+          "autoPicked": "Só há um dispositivo USB ligado, por isso foi escolhido: {port}",
+          "several": "Há vários dispositivos USB ligados. Não sabes qual é a montagem? Desliga a montagem, procura de novo e vê que entrada desaparece.",
+          "searchAgain": "Procurar de novo"
+        }
       },
       "slewRate": {
         "title": "Velocidade de movimento",
@@ -538,6 +550,20 @@
         "descriptionDeviceFirst": "Escolha seu focalizador na lista e conecte-o. Um driver só é necessário se ele não aparecer lá. Os parâmetros de autofocus ficam na página de foco.",
         "notFoundDriverHint": "Se seu focalizador não está na lista, selecione aqui o driver INDI dele. Depois ele aparece na lista acima."
       },
+      "flatPanel": {
+        "title": "Configurar o painel de flats",
+        "description": "Com um painel de flats regulável, a app tira os teus flats sozinha. Escolhe-o na lista e liga-o. Só é preciso um controlador se não aparecer lá.",
+        "connectDevice": "Dispositivo",
+        "connected": "Painel de flats ligado: {name}",
+        "noPanelHint": "Sem painel de flats? Continua simplesmente: os flats também funcionam com um tablet ou uma manta de luz à frente do telescópio.",
+        "notFound": "O painel de flats não está na lista?",
+        "notFoundDriverHint": "Se o teu painel de flats não está na lista, seleciona aqui o controlador INDI dele. Depois aparece na lista acima.",
+        "selectDriver": "Controlador INDI",
+        "notFoundHint": "Se o controlador falta, talvez ainda não esteja instalado. Procura nos controladores INDI de terceiros e instala o correspondente.",
+        "installing": "A instalar {label}…",
+        "installSuccess": "{label} instalado. Seleciona-o na lista de controladores acima.",
+        "installFailed": "A instalação falhou: {message}"
+      },
       "filterWheel": {
         "title": "Configurar a roda de filtros",
         "description": "Escolhe o controlador INDI da roda de filtros, liga-a e dá às posições os nomes que usas nas sequências.",
@@ -584,8 +610,10 @@
         "guideScope": "Telescópio de guiagem",
         "nativeCameraHint": "Informe a distância focal da luneta guia. O guider precisa dela para avaliar o quanto as estrelas se movem.",
         "descriptionBuiltIn": "O PINS tem um guider integrado que mantém as estrelas no lugar enquanto as imagens são feitas, sem outro programa. Escolhe a câmara de guiagem e introduz a distância focal do telescópio de guiagem.",
-        "nativeRecommended": "Dica: o PINS tem seu próprio guider (“Native Guider” na lista acima). Foi desenvolvido especialmente para o PINS, roda direto no equipamento sem programa separado e muitas vezes guia de forma mais estável que o PHD2. As configurações feitas no PHD2 são mantidas, e você pode voltar a qualquer momento escolhendo o PHD2 novamente.",
         "nativeFocalLengthMissing": "A distância focal da luneta guia ainda é 0. A guiagem funciona sem ela, mas o dither e o erro de guiagem em segundos de arco precisam dela.",
+        "nativeConnectsWithCamera": "O guiador liga-se sozinho assim que a câmara de guiagem estiver ligada.",
+        "nativeConnectFailed": "Não foi possível ligar o guiador.",
+        "nativeConnectRetry": "Tentar de novo",
         "guidePixelSizeHintNative": "Usado apenas neste cálculo. O guider lê o tamanho do pixel da câmera de guiagem assim que ela estiver conectada; até lá, use o do manual da câmera.",
         "ditherMissingDataNative": "Para calcular o dither, são necessários o tamanho do pixel e a distância focal tanto da captura quanto da guiagem. Preencha os passos de câmera e telescópio e a distância focal da luneta guia no passo de guiagem.",
         "guideCameraNotFound": "Câmera de guiagem fora da lista?",
@@ -597,7 +625,7 @@
         "title": "O teu equipamento está pronto",
         "description": "O teu equipamento está ligado e atualizado, e a montagem, a câmara, o focalizador, a roda de filtros e a guiagem estão configurados.",
         "descriptionPlain": "A montagem, a câmara, o focalizador, a roda de filtros e a tua localização estão configurados.",
-        "moreDevicesHint": "O painel de flats, a meteorologia e os restantes dispositivos configuram-se nas suas próprias páginas.",
+        "otherDevicesHint": "A meteorologia, a cúpula e os restantes dispositivos configuram-se nas suas próprias páginas.",
         "noConnectionHint": "Ainda não há ligação a um equipamento. Podes adicionar uma a qualquer momento em Definições → Ligação.",
         "summaryIntro": "Isto é o que está configurado agora. Toque em um item para voltar ao passo dele.",
         "status": {
@@ -608,6 +636,7 @@
             "camera": "Selecionada",
             "focuser": "Selecionado",
             "filterWheel": "Selecionada",
+            "flatPanel": "Selecionado",
             "guider": "Selecionado",
             "starDatabase": "Instalado"
           },
@@ -621,6 +650,7 @@
           "none": {
             "focuser": "Nenhum, focar manualmente",
             "filterWheel": "Nenhuma, tudo bem",
+            "flatPanel": "Nenhum, flats com tablet ou manta de luz",
             "guider": "Sem guiagem"
           }
         }
@@ -858,7 +888,10 @@
         "astapDatabaseInstalledList": "Instalado: {list}",
         "astapDatabaseNoneInstalled": "Nenhum banco de estrelas instalado ainda. Sem ele, o plate solving (alinhamento polar, centralização de alvo) não funciona.",
         "astapDatabaseRecommendedTag": "recomendado",
-        "astapDatabaseRecommendedFov": "Recomendado para seu telescópio e câmera (campo de visão {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "O teu telescópio ({focal} mm) e a tua câmara veem um campo de {fov}°. Recomendada para isso: {id}",
+        "astapDatabaseFitsInstalled": "O teu telescópio ({focal} mm) e a tua câmara veem um campo de {fov}°. {id} é adequada e já está instalada, não tens de fazer nada.",
+        "astapDatabaseCoveredBy": "O teu telescópio ({focal} mm) e a tua câmara veem um campo de {fov}°. {id} seria adequada; a {installed} instalada também cobre isso, não tens de fazer nada.",
+        "astapDatabaseNeedsOptics": "Introduz a distância focal, o tamanho do píxel e o tamanho do sensor para veres que base de estrelas serve para o teu telescópio.",
         "astapDatabaseRecommendedDefault": "Recomendado: {id}. Informe distância focal, tamanho do pixel e tamanho do sensor para uma recomendação adequada ao seu telescópio.",
         "astapDatabaseStartInstall": "Iniciando a instalação de {databaseId}...",
         "astapDatabaseStarting": "Começando...",
@@ -1827,6 +1860,7 @@
               "title": "Valores próprios",
               "description": "Define tu os minutos em Avançado."
             },
+            "recommended": "Recomendado",
             "sideOfPierNoMount": "Liga a montagem antes de escolher, para a app verificar se ela indica o seu lado do pilar.",
             "sideOfPierUnknown": "A tua montagem não indica o lado do pilar, por isso «Usar lado do pilar» fica desligado. O @:{'general.backendName'} decide então o flip pela hora.",
             "applyFailed": "A predefinição não foi guardada por completo. Verifica os valores em Avançado."
@@ -5882,9 +5916,13 @@
       "mountPark": "Falha ao estacionar",
       "mountUnpark": "Falha ao desestacionar",
       "mountHome": "Falha ao ir para a posição home",
+      "mountTracking": "Não foi possível alterar o rastreamento",
       "mountFlip": "Falha no Meridian Flip",
+      "mountSlew": "Falha ao apontar",
+      "mountCenter": "Falha na centralização",
       "filterChange": "Falha na troca de filtro",
       "focuserMove": "Falha ao mover o focalizador",
+      "focuserStop": "Não foi possível parar o focalizador",
       "rotatorMove": "Falha ao mover o rotador",
       "flatLight": "Não foi possível ligar/desligar a luz do painel de flats",
       "flatCover": "Não foi possível mover a tampa do painel de flats",
@@ -6204,14 +6242,19 @@
       "wizard": {
         "title": "Como você quer usar o app?",
         "simpleTitle": "Simples (recomendado para começar)",
-        "simpleText": "Uma página inicial leva você pela noite passo a passo, só com as páginas necessárias.",
         "fullTitle": "Todas as funções",
-        "fullText": "Todas as páginas e configurações na navegação, para usuários experientes."
+        "simpleDescription": "A página inicial “Esta noite” guia-te passo a passo pela noite, desde ligar os dispositivos até terminar a noite. O menu mostra apenas Início, Alvo, Plano e Configurações.",
+        "fullDescription": "Uma página para cada dispositivo (câmara, montagem, focalizador, guiagem, roda de filtros …), mais sequência, flats e todas as configurações, como no N.I.N.A. Para utilizadores experientes que querem ajustar tudo por si.",
+        "switchHint": "Podes mudar a qualquer momento: na página inicial com “Mostrar todas as funções”, ou em Configurações → Interface."
+      },
+      "mountActions": {
+        "stopTracking": "Parar rastreamento",
+        "startTracking": "Iniciar rastreamento",
+        "allFunctions": "Todas as funções da montagem"
       },
       "focusFirst": "Foque primeiro: este passo calcula a posição a partir de uma imagem, e isso exige estrelas nítidas.",
       "live": {
         "lastPicture": "Última imagem",
-        "noPicture": "Nenhuma imagem ainda. Faça uma imagem de teste para ver o que a câmera vê.",
         "preview": "Imagem de teste",
         "stars": "Estrelas",
         "trendTitle": "Nitidez das últimas {count} imagens",
@@ -6243,7 +6286,7 @@
         "databaseAction": "Instalar mapa estelar",
         "flipTitle": "Meridian Flip ainda não configurado",
         "flipText": "Quando um alvo cruza o meridiano (a linha norte–sul que passa pelo zênite), o telescópio precisa girar para o outro lado da montagem – senão logo bateria no tripé ou no pilar. Seu plano faz isso sozinho. Informe uma vez até onde sua montagem consegue rastrear além do meridiano.",
-        "flipNotSure": "Não tem certeza? O manual da montagem costuma dizer até onde ela rastreia além do meridiano. Até saber, “Mal” mantém o telescópio seguro, ao custo de alguns minutos sem imagens.",
+        "flipNotSureTest": "Não tens a certeza? Escolhe “Alguns minutos”, serve para a maioria das montagens. De dia podes deixar a app fazer um flip real e ver se o telescópio passa pelo tripé e pela coluna e se os cabos chegam.",
         "flipCurrentValues": "Seu perfil já tem um tempo próprio: {values}.",
         "flipKeepValues": "Manter este tempo",
         "flipTimingWindow": "flip {min}–{max} min após o meridiano",
@@ -8204,6 +8247,7 @@
         "aperture": "Abertura",
         "calibrate": "Calibrar",
         "calibrating": "Calibrando...",
+        "calibrateFailed": "Não foi possível iniciar a calibração da lente",
         "current": "Atual",
         "deviceInfo": "Informações do dispositivo",
         "driver": "Versão do SDK",

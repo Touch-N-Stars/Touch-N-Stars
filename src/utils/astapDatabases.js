@@ -19,8 +19,9 @@ export const DEFAULT_ASTAP_DATABASE = 'D50';
  */
 export const PINS_IMAGE_DATABASE = 'D80';
 
-// The denser D-series databases serve every field the lighter ones are recommended for.
-const COVERED_BY = { D50: ['D80'], D05: ['D80', 'D50'] };
+// The denser D-series databases serve every field the lighter ones are recommended for,
+// nearest first.
+const COVERED_BY = { D50: ['D80'], D05: ['D50', 'D80'] };
 
 /**
  * The smaller side of the image in degrees - the value ASTAP calls its field of view.
@@ -61,10 +62,18 @@ export function withImageDatabase(packages) {
   ];
 }
 
+/**
+ * The installed database that serves the fields the recommended one is for: the recommended
+ * database itself, or a denser one of the D series. Null when none of them is installed.
+ */
+export function coveringDatabase(recommendedId, installedIds) {
+  const ids = new Set((installedIds || []).map((id) => String(id).toUpperCase()));
+  return [recommendedId, ...(COVERED_BY[recommendedId] || [])].find((id) => ids.has(id)) ?? null;
+}
+
 /** True when the recommended database or a denser one that serves the same fields is installed. */
 export function isRecommendationCovered(recommendedId, installedIds) {
-  const ids = new Set((installedIds || []).map((id) => String(id).toUpperCase()));
-  return ids.has(recommendedId) || (COVERED_BY[recommendedId] || []).some((id) => ids.has(id));
+  return coveringDatabase(recommendedId, installedIds) !== null;
 }
 
 /**

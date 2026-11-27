@@ -392,9 +392,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this._isItemRunning(id)) return;
 
       try {
-        await apiService.sequenceRemove(id);
+        const res = await apiService.sequenceRemove(id);
+        if (res?.Success === false) this._showError(res.Error);
       } catch (e) {
         console.error('sequenceRemove:', e);
+        this._showError(e?.response?.data?.Error ?? e?.message ?? String(e));
       }
       await this.refresh();
     },
@@ -403,9 +405,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this._isControlsLocked()) return;
 
       try {
-        await apiService.sequenceDuplicate(id);
+        const res = await apiService.sequenceDuplicate(id);
+        if (res?.Success === false) this._showError(res.Error);
       } catch (e) {
         console.error('sequenceDuplicate:', e);
+        this._showError(e?.response?.data?.Error ?? e?.message ?? String(e));
       }
       await this.refresh();
     },
@@ -445,9 +449,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this._isItemRunning(id)) return;
 
       try {
-        await apiService.sequenceEnable(id, enabled);
+        const res = await apiService.sequenceEnable(id, enabled);
+        if (res?.Success === false) this._showError(res.Error);
       } catch (e) {
         console.error('sequenceEnable:', e);
+        this._showError(e?.response?.data?.Error ?? e?.message ?? String(e));
       }
       await this.refresh();
     },
@@ -457,9 +463,11 @@ export const useSequenceV2Store = defineStore('sequenceV2Store', {
       if (this._isItemRunning(id)) return;
 
       try {
-        await apiService.sequenceResetStatus(id);
+        const res = await apiService.sequenceResetStatus(id);
+        if (res?.Success === false) this._showError(res.Error);
       } catch (e) {
         console.error('sequenceResetStatus:', e);
+        this._showError(e?.response?.data?.Error ?? e?.message ?? String(e));
       }
       await this.refresh();
     },

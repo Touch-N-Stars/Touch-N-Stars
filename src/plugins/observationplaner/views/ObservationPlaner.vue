@@ -484,6 +484,7 @@ import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import apiService from '../../../services/apiService';
+import { isBackendRefusal } from '@/utils/backendErrors';
 import seedTargets from '../components/astro_targets_seed.json';
 import SkyChart from '@/components/framing/SkyChart.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
@@ -885,6 +886,12 @@ async function slewOnly(t) {
   mountMsg[t._id] = 'Slewing…';
   try {
     const resp = await apiService.slewAndCenter(t.raDeg, t.decDeg, false);
+    if (isBackendRefusal(resp)) {
+      // A failed, cancelled or refused slew (409 camera/rotator not connected) also answers 200.
+      mountMsg[t._id] = '';
+      mountErr[t._id] = resp.Error || resp.Response || 'Slew failed';
+      return;
+    }
     mountMsg[t._id] = resp?.Response ?? 'Slew command sent';
   } catch (e) {
     mountMsg[t._id] = '';
@@ -898,6 +905,12 @@ async function slewAndCenter(t) {
   mountMsg[t._id] = 'Slew+Center…';
   try {
     const resp = await apiService.slewAndCenter(t.raDeg, t.decDeg, true);
+    if (isBackendRefusal(resp)) {
+      // A failed, cancelled or refused slew (409 camera/rotator not connected) also answers 200.
+      mountMsg[t._id] = '';
+      mountErr[t._id] = resp.Error || resp.Response || 'Slew+Center failed';
+      return;
+    }
     mountMsg[t._id] = resp?.Response ?? 'Slew+Center completed';
   } catch (e) {
     mountMsg[t._id] = '';

@@ -371,6 +371,7 @@
         "camera": "Kamera",
         "focuser": "Fokusér",
         "filterWheel": "Filtrové kolo",
+        "flatPanel": "Flat panel",
         "guider": "Pointace",
         "dither": "Dither",
         "done": "Hotovo",
@@ -433,12 +434,14 @@
       },
       "updates": {
         "title": "Hledat aktualizace",
-        "description": "Než nastavíš vybavení, aktualizuj software sestavy.",
+        "recommendation": "Aktualizace přinášejí opravy a vylepšení softwaru sestavy. Nainstaluj je teď, než nastavíš svá zařízení.",
         "checking": "Hledání aktualizací…",
         "upToDate": "Software sestavy je aktuální.",
         "available": "Dostupné aktualizace: {count}",
         "startUpgrade": "Aktualizovat nyní",
-        "upgradeHint": "Během aktualizace sestava restartuje služby. Nech aplikaci otevřenou, dokud neskončí.",
+        "listHint": "Seznam ukazuje programy sestavy: samotný PINS, ASTAP pro plate solving a pluginy. „Aktualizovat nyní“ je nainstaluje všechny najednou.",
+        "upgradeDuration": "Trvá to pár minut, podle připojení k internetu. Sestava mezitím restartuje své služby, nech proto aplikaci otevřenou, dokud nebude hotovo.",
+        "skipHint": "Teď nemá sestava internet nebo nemáš čas? Klepni na „@:{'components.setupWizard.next'}“ a aktualizuj později v „@:{'components.simpleMode.more.system'}“.",
         "recheck": "Zkontrolovat znovu",
         "checkFailed": "Hledání aktualizací selhalo: {message}",
         "upgradeFailed": "Aktualizaci se nepodařilo spustit: {message}"
@@ -454,7 +457,16 @@
         "installing": "Instaluje se {label}…",
         "installSuccess": "{label} nainstalován. Vyber ho v seznamu ovladačů výše.",
         "installFailed": "Instalace selhala: {message}",
-        "descriptionDeviceFirst": "Vyberte montáž ze seznamu a připojte ji. Ovladač je potřeba, jen pokud se v seznamu neobjeví."
+        "descriptionDeviceFirst": "Vyberte montáž ze seznamu a připojte ji. Ovladač je potřeba, jen pokud se v seznamu neobjeví.",
+        "port": {
+          "label": "USB port montáže",
+          "searching": "Hledání USB zařízení…",
+          "none": "Žádné USB zařízení nenalezeno. Připoj montáž, zapni ji a hledej znovu.",
+          "choose": "Vyber port",
+          "autoPicked": "Je připojeno jen jedno USB zařízení, proto bylo vybráno: {port}",
+          "several": "Je připojeno více USB zařízení. Nevíš, které je montáž? Odpoj montáž, hledej znovu a podívej se, která položka zmizí.",
+          "searchAgain": "Hledat znovu"
+        }
       },
       "slewRate": {
         "title": "Rychlost přejezdu",
@@ -538,6 +550,20 @@
         "descriptionDeviceFirst": "Vyberte zaostřovač ze seznamu a připojte ho. Ovladač je potřeba, jen pokud se v seznamu neobjeví. Parametry autofokusu zůstávají na stránce ostření.",
         "notFoundDriverHint": "Pokud váš zaostřovač v seznamu chybí, vyberte zde jeho ovladač INDI. Poté se objeví v seznamu výše."
       },
+      "flatPanel": {
+        "title": "Nastavit flat panel",
+        "description": "Se stmívatelným flat panelem pořídí aplikace tvé flaty sama. Vyber ho ze seznamu a připoj. Ovladač je potřeba jen tehdy, když se tam neobjeví.",
+        "connectDevice": "Zařízení",
+        "connected": "Flat panel připojen: {name}",
+        "noPanelHint": "Nemáš flat panel? Prostě pokračuj: flaty jdou i s tabletem nebo světelnou fólií před dalekohledem.",
+        "notFound": "Flat panel není v seznamu?",
+        "notFoundDriverHint": "Pokud tvůj flat panel v seznamu chybí, vyber zde jeho ovladač INDI. Poté se objeví v seznamu výše.",
+        "selectDriver": "Ovladač INDI",
+        "notFoundHint": "Pokud ovladač chybí, možná ještě není nainstalován. Vyhledej ho mezi ovladači INDI třetích stran a nainstaluj ten správný.",
+        "installing": "Instalace {label}…",
+        "installSuccess": "{label} nainstalován. Vyber ho v seznamu ovladačů výše.",
+        "installFailed": "Instalace selhala: {message}"
+      },
       "filterWheel": {
         "title": "Nastavit filtrové kolo",
         "description": "Vyber ovladač INDI pro filtrové kolo, připoj ho a pojmenuj pozice tak, jak je používáš v sekvencích.",
@@ -584,8 +610,10 @@
         "guideScope": "Pointační dalekohled",
         "nativeCameraHint": "Zadejte ohniskovou vzdálenost pointačního dalekohledu. Guider ji potřebuje k posouzení, jak se hvězdy pohybují.",
         "descriptionBuiltIn": "PINS má vestavěný guider, který při snímání drží hvězdy na místě, bez dalšího programu. Vyber pointační kameru a zadej ohniskovou vzdálenost pointačního dalekohledu.",
-        "nativeRecommended": "Tip: PINS má vlastní guider („Native Guider“ v seznamu výše). Byl vyvinut speciálně pro PINS, běží přímo v sestavě bez samostatného programu a často pointuje stabilněji než PHD2. Nastavení z PHD2 se přenesou a kdykoli se můžete vrátit výběrem PHD2.",
         "nativeFocalLengthMissing": "Ohnisková vzdálenost pointačního dalekohledu je stále 0. Pointace funguje i bez ní, ale Dither a chyba pointace v obloukových vteřinách ji potřebují.",
+        "nativeConnectsWithCamera": "Pointace se připojí sama, jakmile je připojena pointační kamera.",
+        "nativeConnectFailed": "Pointaci se nepodařilo připojit.",
+        "nativeConnectRetry": "Zkusit znovu",
         "guidePixelSizeHintNative": "Slouží jen k tomuto výpočtu. Guider přečte velikost pixelu z pointační kamery, jakmile je připojena; do té doby ji převezměte z návodu ke kameře.",
         "ditherMissingDataNative": "K výpočtu Ditheru je potřeba velikost pixelu a ohnisková vzdálenost snímací i pointační sestavy. Vyplňte kroky kamery a dalekohledu a ohniskovou vzdálenost pointačního dalekohledu v kroku pointace.",
         "guideCameraNotFound": "Pointační kamera není v seznamu?",
@@ -597,7 +625,7 @@
         "title": "Tvé vybavení je připraveno",
         "description": "Tvá sestava je připojená a aktuální a montáž, kamera, zaostřovač, filtrové kolo i pointace jsou nastavené.",
         "descriptionPlain": "Montáž, kamera, zaostřovač, filtrové kolo i tvá poloha jsou nastavené.",
-        "moreDevicesHint": "Flatový panel, počasí a ostatní zařízení se nastavují na vlastních stránkách.",
+        "otherDevicesHint": "Počasí, kopuli a ostatní zařízení nastavíš na jejich vlastních stránkách.",
         "noConnectionHint": "Zatím není připojena žádná sestava. Připojení můžeš kdykoli přidat v Nastavení → Připojení.",
         "summaryIntro": "Zde je vidět, co je nyní nastaveno. Klepnutím na položku se vrátíte k jejímu kroku.",
         "status": {
@@ -608,6 +636,7 @@
             "camera": "Vybráno",
             "focuser": "Vybráno",
             "filterWheel": "Vybráno",
+            "flatPanel": "Vybráno",
             "guider": "Vybráno",
             "starDatabase": "Nainstalováno"
           },
@@ -621,6 +650,7 @@
           "none": {
             "focuser": "Žádný, ostřete ručně",
             "filterWheel": "Žádné, to nevadí",
+            "flatPanel": "Žádný, flaty s tabletem nebo světelnou fólií",
             "guider": "Bez pointace"
           }
         }
@@ -858,7 +888,10 @@
         "astapDatabaseInstalledList": "Nainstalováno: {list}",
         "astapDatabaseNoneInstalled": "Zatím není nainstalována žádná hvězdná databáze. Bez ní plate solving (polární zarovnání, centrování cíle) nefunguje.",
         "astapDatabaseRecommendedTag": "doporučeno",
-        "astapDatabaseRecommendedFov": "Doporučeno pro váš dalekohled a kameru (zorné pole {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "Tvůj dalekohled ({focal} mm) a kamera vidí zorné pole {fov}°. Doporučeno pro něj: {id}",
+        "astapDatabaseFitsInstalled": "Tvůj dalekohled ({focal} mm) a kamera vidí zorné pole {fov}°. {id} se hodí a je už nainstalovaná, nemusíš nic dělat.",
+        "astapDatabaseCoveredBy": "Tvůj dalekohled ({focal} mm) a kamera vidí zorné pole {fov}°. Hodila by se {id}; nainstalovaná {installed} ho pokryje také, nemusíš nic dělat.",
+        "astapDatabaseNeedsOptics": "Zadej ohniskovou vzdálenost, velikost pixelu a velikost čipu a uvidíš, která hvězdná databáze se hodí k tvému dalekohledu.",
         "astapDatabaseRecommendedDefault": "Doporučeno: {id}. Zadejte ohniskovou vzdálenost, velikost pixelu a velikost senzoru pro doporučení, které sedí vašemu dalekohledu.",
         "astapDatabaseStartInstall": "Spouštím instalaci {databaseId}…",
         "astapDatabaseStarting": "Spouští se...",
@@ -1827,6 +1860,7 @@
               "title": "Vlastní hodnoty",
               "description": "Minuty nastav sám v části Pokročilé."
             },
+            "recommended": "Doporučeno",
             "sideOfPierNoMount": "Před výběrem připoj montáž, aby aplikace mohla ověřit, zda hlásí svou stranu sloupu.",
             "sideOfPierUnknown": "Tvoje montáž nehlásí stranu sloupu, proto zůstane „Použít stranu sloupu“ vypnuté. @:{'general.backendName'} pak o flipu rozhoduje podle času.",
             "applyFailed": "Předvolbu se nepodařilo uložit celou. Zkontroluj hodnoty v části Pokročilé."
@@ -5882,9 +5916,13 @@
       "mountPark": "Parkování selhalo",
       "mountUnpark": "Odparkování selhalo",
       "mountHome": "Návrat do výchozí polohy selhal",
+      "mountTracking": "Sledování se nepodařilo změnit",
       "mountFlip": "Meridian Flip selhal",
+      "mountSlew": "Najetí selhalo",
+      "mountCenter": "Centrování selhalo",
       "filterChange": "Výměna filtru selhala",
       "focuserMove": "Pohyb fokuséru selhal",
+      "focuserStop": "Fokusér nelze zastavit",
       "rotatorMove": "Pohyb rotátoru selhal",
       "flatLight": "Světlo flat panelu nelze přepnout",
       "flatCover": "Kryt flat panelu nelze posunout",
@@ -6204,14 +6242,19 @@
       "wizard": {
         "title": "Jak chcete aplikaci používat?",
         "simpleTitle": "Jednoduše (doporučeno pro začátek)",
-        "simpleText": "Úvodní stránka vás provede nocí krok za krokem, jen se stránkami, které potřebujete.",
         "fullTitle": "Všechny funkce",
-        "fullText": "Každá stránka a nastavení v navigaci, pro zkušené uživatele."
+        "simpleDescription": "Úvodní stránka „Dnes v noci“ tě provede nocí krok za krokem, od připojení zařízení po ukončení noci. Menu ukazuje jen Start, Cíl, Plán a Nastavení.",
+        "fullDescription": "Stránka pro každé zařízení (kamera, montáž, zaostřovač, pointace, filtrové kolo …), k tomu sekvence, flaty a všechna nastavení, jako v N.I.N.A. Pro zkušené, kteří chtějí vše doladit sami.",
+        "switchHint": "Přepnout můžeš kdykoli: na úvodní stránce tlačítkem „Zobrazit všechny funkce“ nebo v Nastavení → Rozhraní."
+      },
+      "mountActions": {
+        "stopTracking": "Zastavit sledování",
+        "startTracking": "Spustit sledování",
+        "allFunctions": "Všechny funkce montáže"
       },
       "focusFirst": "Nejdřív zaostřete: tento krok zjišťuje polohu ze snímku a ten potřebuje ostré hvězdy.",
       "live": {
         "lastPicture": "Poslední snímek",
-        "noPicture": "Zatím žádný snímek. Pořiďte testovací snímek a uvidíte, co kamera vidí.",
         "preview": "Testovací snímek",
         "stars": "Hvězdy",
         "trendTitle": "Ostrost posledních {count} snímků",
@@ -6243,7 +6286,7 @@
         "databaseAction": "Nainstalovat hvězdnou mapu",
         "flipTitle": "Meridian Flip zatím není nastaven",
         "flipText": "Když cíl překročí meridián (severojižní čáru přes zenit), musí se dalekohled otočit na druhou stranu montáže – jinak by brzy narazil do stativu nebo sloupu. Váš plán to dělá sám. Řekněte mu jednou, jak daleko za meridián může vaše montáž sledovat.",
-        "flipNotSure": "Nejste si jistí? Návod k montáži obvykle říká, jak daleko za meridián může sledovat. Do doby, než to budete vědět, drží dalekohled v bezpečí „Sotva“, za cenu několika minut bez snímků.",
+        "flipNotSureTest": "Nejsi si jistý? Vezmi „Pár minut“, to sedí většině montáží. Ve dne můžeš nechat aplikaci udělat skutečný flip a sledovat, zda dalekohled mine stativ a sloup a zda kabely stačí.",
         "flipCurrentValues": "Váš profil už má vlastní časování: {values}.",
         "flipKeepValues": "Ponechat toto časování",
         "flipTimingWindow": "flip {min}–{max} min po meridiánu",
@@ -8204,6 +8247,7 @@
         "aperture": "Aperture",
         "calibrate": "Calibrate",
         "calibrating": "Calibrating...",
+        "calibrateFailed": "Kalibraci objektivu nelze spustit",
         "current": "Current",
         "deviceInfo": "Device Information",
         "driver": "SDK Version",

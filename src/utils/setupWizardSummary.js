@@ -33,6 +33,7 @@ export function wizardSummary({ profileInfo, isPINS, databaseInstalled }) {
     { id: 'camera', stepId: 'camera', status: required(device('CameraSettings')) },
     { id: 'focuser', stepId: 'focuser', status: optional(device('FocuserSettings')) },
     { id: 'filterWheel', stepId: 'filterWheel', status: optional(device('FilterWheelSettings')) },
+    { id: 'flatPanel', stepId: 'flatPanel', status: optional(device('FlatDeviceSettings')) },
   ];
   if (isPINS) {
     items.push({
