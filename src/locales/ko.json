@@ -474,12 +474,10 @@
       },
       "updates": {
         "title": "업데이트 확인",
-        "description": "기기를 설정하기 전에 장비 소프트웨어를 최신으로 유지하세요.",
         "checking": "업데이트 확인 중 …",
         "upToDate": "장비 소프트웨어가 최신입니다.",
         "available": "업데이트 {count}개 사용 가능",
         "startUpgrade": "지금 업데이트",
-        "upgradeHint": "업데이트 중 장비가 서비스를 다시 시작합니다. 끝날 때까지 앱을 열어 두세요.",
         "recheck": "다시 확인",
         "checkFailed": "업데이트 확인 실패: {message}",
         "upgradeFailed": "업데이트를 시작하지 못했습니다: {message}"
@@ -940,7 +938,6 @@
         "astapDatabaseInstalledList": "설치됨: {list}",
         "astapDatabaseNoneInstalled": "아직 설치된 별 데이터베이스가 없습니다. 없으면 플레이트 솔빙(극축 정렬, 대상 센터링)을 할 수 없습니다.",
         "astapDatabaseRecommendedTag": "권장",
-        "astapDatabaseRecommendedFov": "사용 중인 망원경과 카메라에 권장(시야 {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "권장: {id}. 망원경에 맞는 권장 항목을 보려면 초점 거리, 픽셀 크기, 센서 크기를 입력하세요.",
         "astapDatabaseStartInstall": "{databaseId} 설치 시작 중...",
         "astapDatabaseStarting": "시작 중...",

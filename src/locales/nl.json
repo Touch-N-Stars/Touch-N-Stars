@@ -433,12 +433,10 @@
       },
       "updates": {
         "title": "Op updates controleren",
-        "description": "Houd de software van de opstelling up-to-date voordat je je apparatuur instelt.",
         "checking": "Op updates controleren…",
         "upToDate": "De software van de opstelling is up-to-date.",
         "available": "{count} update(s) beschikbaar",
         "startUpgrade": "Nu bijwerken",
-        "upgradeHint": "De opstelling herstart tijdens de update enkele diensten. Houd de app open tot het klaar is.",
         "recheck": "Opnieuw controleren",
         "checkFailed": "Controle op updates mislukt: {message}",
         "upgradeFailed": "De update kon niet worden gestart: {message}"
@@ -857,7 +855,6 @@
         "astapDatabaseInstalledList": "Geïnstalleerd: {list}",
         "astapDatabaseNoneInstalled": "Er is nog geen stardatabase geïnstalleerd. Zonder database kan plate solving (pooluitlijning, doel centreren) niet werken.",
         "astapDatabaseRecommendedTag": "aanbevolen",
-        "astapDatabaseRecommendedFov": "Aanbevolen voor je telescoop en camera (beeldveld {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Aanbevolen: {id}. Voer brandpuntsafstand, pixelgrootte en sensorgrootte in voor een aanbeveling die bij je telescoop past.",
         "astapDatabaseStartInstall": "Installatie starten voor {databaseId}...",
         "astapDatabaseStarting": "Beginnen...",

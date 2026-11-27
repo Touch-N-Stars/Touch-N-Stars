@@ -474,12 +474,10 @@
       },
       "updates": {
         "title": "Auf Updates prüfen",
-        "description": "Halte die Rig-Software aktuell, bevor du dein Equipment konfigurierst.",
         "checking": "Suche nach Updates…",
         "upToDate": "Die Rig-Software ist aktuell.",
         "available": "{count} Update(s) verfügbar",
         "startUpgrade": "Jetzt aktualisieren",
-        "upgradeHint": "Das Rig startet während des Updates Dienste neu. Lass die App geöffnet, bis es fertig ist.",
         "recheck": "Erneut prüfen",
         "checkFailed": "Update-Prüfung fehlgeschlagen: {message}",
         "upgradeFailed": "Update konnte nicht gestartet werden: {message}"
@@ -927,7 +925,6 @@
         "astapDatabaseInstalledList": "Installiert: {list}",
         "astapDatabaseNoneInstalled": "Noch keine Sterndatenbank installiert. Ohne sie funktioniert Plate Solving (Polausrichtung, Ziel zentrieren) nicht.",
         "astapDatabaseRecommendedTag": "empfohlen",
-        "astapDatabaseRecommendedFov": "Empfohlen für dein Teleskop und deine Kamera (Bildfeld {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Empfohlen: {id}. Gib Brennweite, Pixelgröße und Sensorgröße ein, um eine Empfehlung für dein Teleskop zu erhalten.",
         "astapDatabaseStartInstall": "Installation für {databaseId} wird gestartet...",
         "astapDatabaseStarting": "Beginnt...",

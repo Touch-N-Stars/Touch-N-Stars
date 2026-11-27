@@ -433,12 +433,10 @@
       },
       "updates": {
         "title": "Hledat aktualizace",
-        "description": "Než nastavíš vybavení, aktualizuj software sestavy.",
         "checking": "Hledání aktualizací…",
         "upToDate": "Software sestavy je aktuální.",
         "available": "Dostupné aktualizace: {count}",
         "startUpgrade": "Aktualizovat nyní",
-        "upgradeHint": "Během aktualizace sestava restartuje služby. Nech aplikaci otevřenou, dokud neskončí.",
         "recheck": "Zkontrolovat znovu",
         "checkFailed": "Hledání aktualizací selhalo: {message}",
         "upgradeFailed": "Aktualizaci se nepodařilo spustit: {message}"
@@ -857,7 +855,6 @@
         "astapDatabaseInstalledList": "Nainstalováno: {list}",
         "astapDatabaseNoneInstalled": "Zatím není nainstalována žádná hvězdná databáze. Bez ní plate solving (polární zarovnání, centrování cíle) nefunguje.",
         "astapDatabaseRecommendedTag": "doporučeno",
-        "astapDatabaseRecommendedFov": "Doporučeno pro váš dalekohled a kameru (zorné pole {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Doporučeno: {id}. Zadejte ohniskovou vzdálenost, velikost pixelu a velikost senzoru pro doporučení, které sedí vašemu dalekohledu.",
         "astapDatabaseStartInstall": "Spouštím instalaci {databaseId}…",
         "astapDatabaseStarting": "Spouští se...",

@@ -474,12 +474,14 @@
       },
       "updates": {
         "title": "Check for updates",
-        "description": "Keep the rig software up to date before you configure your equipment.",
+        "recommendation": "Updates bring fixes and improvements for the software on the rig. Install them now, before you set up your devices.",
         "checking": "Checking for updates…",
         "upToDate": "The rig software is up to date.",
         "available": "{count} update(s) available",
         "startUpgrade": "Update now",
-        "upgradeHint": "The rig restarts services during the update. Keep the app open until it is finished.",
+        "listHint": "The list shows the programs on the rig: PINS itself, ASTAP for plate solving and the plugins. “Update now” installs all of them together.",
+        "upgradeDuration": "This takes a few minutes, depending on the internet connection. The rig restarts its services in between, so keep the app open until it has finished.",
+        "skipHint": "No internet at the rig right now, or no time? Tap “@:{'components.setupWizard.next'}” and update later under “@:{'components.simpleMode.more.system'}”.",
         "recheck": "Check again",
         "checkFailed": "Update check failed: {message}",
         "upgradeFailed": "Could not start the update: {message}"
@@ -959,7 +961,10 @@
         "astapDatabaseInstalledList": "Installed: {list}",
         "astapDatabaseNoneInstalled": "No star database is installed yet. Without one, plate solving (polar alignment, centering a target) cannot work.",
         "astapDatabaseRecommendedTag": "recommended",
-        "astapDatabaseRecommendedFov": "Recommended for your telescope and camera (field of view {fov}°): {id}",
+        "astapDatabaseRecommendedFocal": "Your telescope ({focal} mm) and camera see a field of {fov}°. Recommended for that: {id}",
+        "astapDatabaseFitsInstalled": "Your telescope ({focal} mm) and camera see a field of {fov}°. {id} suits that and is already installed, so there is nothing to do.",
+        "astapDatabaseCoveredBy": "Your telescope ({focal} mm) and camera see a field of {fov}°. {id} would suit that; the installed {installed} covers it too, so there is nothing to do.",
+        "astapDatabaseNeedsOptics": "Enter focal length, pixel size and sensor size to see which star database suits your telescope.",
         "astapDatabaseRecommendedDefault": "Recommended: {id}. Enter focal length, pixel size and sensor size for a recommendation that fits your telescope."
       },
       "equipment": {

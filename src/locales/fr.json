@@ -433,12 +433,10 @@
       },
       "updates": {
         "title": "Rechercher des mises à jour",
-        "description": "Mets à jour le logiciel du setup avant de configurer ton équipement.",
         "checking": "Recherche de mises à jour…",
         "upToDate": "Le logiciel du setup est à jour.",
         "available": "{count} mise(s) à jour disponible(s)",
         "startUpgrade": "Mettre à jour",
-        "upgradeHint": "Le setup redémarre des services pendant la mise à jour. Garde l'application ouverte jusqu'à la fin.",
         "recheck": "Vérifier à nouveau",
         "checkFailed": "Échec de la recherche de mises à jour : {message}",
         "upgradeFailed": "Impossible de lancer la mise à jour : {message}"
@@ -857,7 +855,6 @@
         "astapDatabaseInstalledList": "Installées : {list}",
         "astapDatabaseNoneInstalled": "Aucune base d'étoiles n'est encore installée. Sans elle, le plate solving (alignement polaire, centrage d'une cible) ne peut pas fonctionner.",
         "astapDatabaseRecommendedTag": "recommandée",
-        "astapDatabaseRecommendedFov": "Recommandée pour votre télescope et votre caméra (champ de vue {fov}°) : {id}",
         "astapDatabaseRecommendedDefault": "Recommandée : {id}. Saisissez la focale, la taille de pixel et la taille du capteur pour une recommandation adaptée à votre télescope.",
         "astapDatabaseStartInstall": "Démarrage de l'installation pour {databaseId}...",
         "astapDatabaseStarting": "Départ...",

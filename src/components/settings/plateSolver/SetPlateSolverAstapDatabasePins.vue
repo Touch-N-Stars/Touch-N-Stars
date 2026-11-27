@@ -135,11 +135,14 @@ import { isAppBackgrounded } from '@/utils/appLifecycle';
 import InfoModal from '@/components/helpers/infoModal.vue';
 import { useAstapDatabases } from '@/composables/useAstapDatabases';
 import { astapJobDatabaseId } from '@/utils/astapDatabases';
+import { apiStore } from '@/store/store';
+import { localDecimal } from '@/utils/localeNumber';
 
 const { t } = useI18n();
 
 const astap = useAstapDatabases();
-const { installed, hasInstalled, recommendedId, recommendationCovered, fovDeg } = astap;
+const { installed, hasInstalled, recommendedId, recommendationCovered, coveringId, fovDeg } = astap;
+const store = apiStore();
 // The select offers what can still be installed; installed ones are listed above it.
 const packages = astap.installable;
 const selectedDatabaseId = ref('');
@@ -190,16 +193,28 @@ const isProgressStalled = computed(
     currentTime.value - progressUpdatedAt.value >= 30000
 );
 
+// Always says which database suits the rig, also when an installed one already serves it:
+// the PINS image ships D80, which covers most telescopes, and a recommendation that only
+// showed up when something was missing left users without any answer (field test).
 const recommendationText = computed(() => {
   const id = recommendedId.value;
-  if (recommendationCovered.value) return '';
+  const base = 'components.settings.plate_solver';
+  if (!fovDeg.value) {
+    if (recommendationCovered.value) return t(`${base}.astapDatabaseNeedsOptics`);
+    if (!packages.value.some((pkg) => pkg.databaseId === id)) return '';
+    return t(`${base}.astapDatabaseRecommendedDefault`, { id });
+  }
+  const values = {
+    id,
+    fov: localDecimal(fovDeg.value, 1),
+    focal: Math.round(Number(store.profileInfo?.TelescopeSettings?.FocalLength)),
+  };
+  if (coveringId.value === id) return t(`${base}.astapDatabaseFitsInstalled`, values);
+  if (coveringId.value) {
+    return t(`${base}.astapDatabaseCoveredBy`, { ...values, installed: coveringId.value });
+  }
   if (!packages.value.some((pkg) => pkg.databaseId === id)) return '';
-  return fovDeg.value
-    ? t('components.settings.plate_solver.astapDatabaseRecommendedFov', {
-        id,
-        fov: fovDeg.value.toFixed(1),
-      })
-    : t('components.settings.plate_solver.astapDatabaseRecommendedDefault', { id });
+  return t(`${base}.astapDatabaseRecommendedFocal`, values);
 });
 
 const KNOWN_PHASES = ['downloading', 'installing', 'finalizing', 'complete'];

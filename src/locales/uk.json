@@ -433,12 +433,10 @@
       },
       "updates": {
         "title": "Перевірити оновлення",
-        "description": "Онови програмне забезпечення установки, перш ніж налаштовувати обладнання.",
         "checking": "Перевірка оновлень…",
         "upToDate": "Програмне забезпечення установки актуальне.",
         "available": "Доступно оновлень: {count}",
         "startUpgrade": "Оновити зараз",
-        "upgradeHint": "Під час оновлення установка перезапускає служби. Не закривай застосунок, доки все не завершиться.",
         "recheck": "Перевірити ще раз",
         "checkFailed": "Не вдалося перевірити оновлення: {message}",
         "upgradeFailed": "Не вдалося запустити оновлення: {message}"
@@ -837,7 +835,6 @@
         "astapDatabaseInstalledList": "Встановлено: {list}",
         "astapDatabaseNoneInstalled": "Жодної зоряної бази не встановлено. Без неї plate solving (полярне вирівнювання, центрування цілі) не працюватиме.",
         "astapDatabaseRecommendedTag": "рекомендовано",
-        "astapDatabaseRecommendedFov": "Рекомендовано для вашого телескопа й камери (поле зору {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Рекомендовано: {id}. Введіть фокусну відстань, розмір пікселя й розмір сенсора для рекомендації під ваш телескоп.",
         "astapDatabaseStartInstall": "Початок встановлення для {databaseId}...",
         "astapDatabaseStarting": "Починаючи...",

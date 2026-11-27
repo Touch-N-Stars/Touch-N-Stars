@@ -433,12 +433,10 @@
       },
       "updates": {
         "title": "Buscar actualizaciones",
-        "description": "Mantén actualizado el software del equipo antes de configurar tus dispositivos.",
         "checking": "Buscando actualizaciones…",
         "upToDate": "El software del equipo está actualizado.",
         "available": "{count} actualización(es) disponible(s)",
         "startUpgrade": "Actualizar ahora",
-        "upgradeHint": "El equipo reinicia servicios durante la actualización. Mantén la app abierta hasta que termine.",
         "recheck": "Volver a comprobar",
         "checkFailed": "Fallo al buscar actualizaciones: {message}",
         "upgradeFailed": "No se pudo iniciar la actualización: {message}"
@@ -857,7 +855,6 @@
         "astapDatabaseInstalledList": "Instalados: {list}",
         "astapDatabaseNoneInstalled": "Aún no hay ninguna base de datos de estrellas instalada. Sin ella, el plate solving (alineación polar, centrado de un objetivo) no puede funcionar.",
         "astapDatabaseRecommendedTag": "recomendado",
-        "astapDatabaseRecommendedFov": "Recomendado para tu telescopio y cámara (campo de visión {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Recomendado: {id}. Introduce distancia focal, tamaño de píxel y tamaño del sensor para una recomendación adecuada a tu telescopio.",
         "astapDatabaseStartInstall": "Iniciando la instalación de {databaseId}....",
         "astapDatabaseStarting": "Iniciando...",

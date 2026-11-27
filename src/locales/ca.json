@@ -474,12 +474,10 @@
       },
       "updates": {
         "title": "Cerca actualitzacions",
-        "description": "Mantén actualitzat el programari de l'equip abans de configurar els dispositius.",
         "checking": "Cercant actualitzacions…",
         "upToDate": "El programari de l'equip està actualitzat.",
         "available": "{count} actualització(ns) disponible(s)",
         "startUpgrade": "Actualitza ara",
-        "upgradeHint": "L'equip reinicia serveis durant l'actualització. Mantén l'app oberta fins que acabi.",
         "recheck": "Torna a comprovar",
         "checkFailed": "Error en cercar actualitzacions: {message}",
         "upgradeFailed": "No s'ha pogut iniciar l'actualització: {message}"
@@ -947,7 +945,6 @@
         "astapDatabaseInstalledList": "Instal·lat: {list}",
         "astapDatabaseNoneInstalled": "Encara no hi ha cap base de dades d'estels instal·lada. Sense una, el plate solving (alineació polar, centrat d'un objectiu) no pot funcionar.",
         "astapDatabaseRecommendedTag": "recomanat",
-        "astapDatabaseRecommendedFov": "Recomanat per al teu telescopi i càmera (camp de visió {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Recomanat: {id}. Introdueix distància focal, mida del píxel i mida del sensor per obtenir una recomanació adequada al teu telescopi."
       },
       "equipment": {

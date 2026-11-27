@@ -101,6 +101,15 @@ test('a denser database covers the lighter recommendation', async () => {
   assert.equal(isRecommendationCovered('G05', ['G05']), true);
 });
 
+test('coveringDatabase names the installed database that serves the recommendation', async () => {
+  const { coveringDatabase } = await import('@/utils/astapDatabases');
+  assert.equal(coveringDatabase('D50', ['D80']), 'D80');
+  assert.equal(coveringDatabase('D05', ['D50', 'D80']), 'D50');
+  assert.equal(coveringDatabase('D05', ['d05']), 'D05', 'the recommended one itself comes first');
+  assert.equal(coveringDatabase('W08', ['D80']), null);
+  assert.equal(coveringDatabase('D50', undefined), null);
+});
+
 test('astapJobDatabaseId reads the database of a star database install job only', async () => {
   const { astapJobDatabaseId } = await import('../astapDatabases.js');
   assert.equal(

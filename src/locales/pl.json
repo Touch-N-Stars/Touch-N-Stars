@@ -433,12 +433,10 @@
       },
       "updates": {
         "title": "Sprawdź aktualizacje",
-        "description": "Zaktualizuj oprogramowanie zestawu, zanim skonfigurujesz sprzęt.",
         "checking": "Sprawdzanie aktualizacji…",
         "upToDate": "Oprogramowanie zestawu jest aktualne.",
         "available": "Dostępne aktualizacje: {count}",
         "startUpgrade": "Aktualizuj teraz",
-        "upgradeHint": "Podczas aktualizacji zestaw restartuje usługi. Nie zamykaj aplikacji, dopóki się nie skończy.",
         "recheck": "Sprawdź ponownie",
         "checkFailed": "Sprawdzanie aktualizacji nieudane: {message}",
         "upgradeFailed": "Nie udało się uruchomić aktualizacji: {message}"
@@ -857,7 +855,6 @@
         "astapDatabaseInstalledList": "Zainstalowano: {list}",
         "astapDatabaseNoneInstalled": "Nie zainstalowano jeszcze żadnej bazy gwiazd. Bez niej plate solving (ustawianie na biegun, centrowanie obiektu) nie zadziała.",
         "astapDatabaseRecommendedTag": "zalecane",
-        "astapDatabaseRecommendedFov": "Zalecane dla Twojego teleskopu i kamery (pole widzenia {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "Zalecane: {id}. Wpisz ogniskową, rozmiar piksela i rozmiar matrycy, aby uzyskać rekomendację pasującą do Twojego teleskopu.",
         "astapDatabaseStartInstall": "Rozpoczęcie instalacji dla {databaseId}...",
         "astapDatabaseStarting": "Uruchamianie...",

@@ -442,12 +442,10 @@
       },
       "updates": {
         "title": "アップデートを確認",
-        "description": "機器を設定する前に、機材のソフトウェアを最新にしてください。",
         "checking": "アップデートを確認中 …",
         "upToDate": "機材のソフトウェアは最新です。",
         "available": "{count} 件のアップデートがあります",
         "startUpgrade": "今すぐ更新",
-        "upgradeHint": "更新中、機材はサービスを再起動します。完了するまでアプリを開いたままにしてください。",
         "recheck": "再確認",
         "checkFailed": "アップデートの確認に失敗しました：{message}",
         "upgradeFailed": "アップデートを開始できませんでした：{message}"
@@ -908,7 +906,6 @@
         "astapDatabaseInstalledList": "インストール済み: {list}",
         "astapDatabaseNoneInstalled": "星データベースがまだインストールされていません。ないとプレートソルブ(極軸合わせ、ターゲットの導入)は動作しません。",
         "astapDatabaseRecommendedTag": "おすすめ",
-        "astapDatabaseRecommendedFov": "お使いの望遠鏡とカメラ向けのおすすめ(視野 {fov}°): {id}",
         "astapDatabaseRecommendedDefault": "おすすめ: {id}。望遠鏡に合ったおすすめを表示するには、焦点距離、ピクセルサイズ、センササイズを入力してください。",
         "astapDatabaseStartInstall": "{databaseId} のインストールを開始しています...",
         "astapDatabaseStarting": "起動...",

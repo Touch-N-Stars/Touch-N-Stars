@@ -5,7 +5,7 @@
         {{ t('components.setupWizard.updates.title') }}
       </h2>
       <p class="text-sm text-content-muted mt-1">
-        {{ t('components.setupWizard.updates.description') }}
+        {{ t('components.setupWizard.updates.recommendation') }}
       </p>
     </div>
 
@@ -38,11 +38,16 @@
             </span>
           </li>
         </ul>
+        <!-- A field-test user saw only "astap" in the list and did not know whether he had to
+             update it: say what the names are and that the button takes them all. -->
+        <p class="text-xs text-content-muted">
+          {{ t('components.setupWizard.updates.listHint') }}
+        </p>
         <button class="tns-btn-primary" :disabled="isUpgradeBusy" @click="startUpgrade">
           {{ t('components.setupWizard.updates.startUpgrade') }}
         </button>
         <p class="text-xs text-content-faint">
-          {{ t('components.setupWizard.updates.upgradeHint') }}
+          {{ t('components.setupWizard.updates.upgradeDuration') }}
         </p>
       </template>
     </template>
@@ -53,6 +58,14 @@
     </button>
 
     <p v-if="errorMessage" class="text-sm text-status-danger break-words">{{ errorMessage }}</p>
+
+    <!-- Updating stays the recommended way, but skipping must not feel like a mistake. -->
+    <p
+      v-if="(availablePackages.length || errorMessage) && !isUpgradeBusy"
+      class="text-sm text-content-muted"
+    >
+      {{ t('components.setupWizard.updates.skipHint') }}
+    </p>
   </div>
 </template>
 
