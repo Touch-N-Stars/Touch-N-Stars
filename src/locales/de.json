@@ -412,6 +412,7 @@
         "camera": "Kamera",
         "focuser": "Fokussierer",
         "filterWheel": "Filterrad",
+        "flatPanel": "Flat-Panel",
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Fertig",
@@ -474,10 +475,14 @@
       },
       "updates": {
         "title": "Auf Updates prüfen",
+        "recommendation": "Updates bringen Fehlerbehebungen und Verbesserungen für die Software auf dem Rig. Installiere sie jetzt, bevor du deine Geräte einrichtest.",
         "checking": "Suche nach Updates…",
         "upToDate": "Die Rig-Software ist aktuell.",
         "available": "{count} Update(s) verfügbar",
         "startUpgrade": "Jetzt aktualisieren",
+        "listHint": "Die Liste zeigt die Programme auf dem Rig: PINS selbst, ASTAP fürs Plate Solving und die Plugins. „Jetzt aktualisieren“ installiert alle zusammen.",
+        "upgradeDuration": "Das dauert ein paar Minuten, je nach Internetverbindung. Das Rig startet zwischendurch seine Dienste neu, lass die App also offen, bis es fertig ist.",
+        "skipHint": "Gerade kein Internet am Rig oder keine Zeit? Tippe auf „@:{'components.setupWizard.next'}“ und aktualisiere später unter „@:{'components.simpleMode.more.system'}“.",
         "recheck": "Erneut prüfen",
         "checkFailed": "Update-Prüfung fehlgeschlagen: {message}",
         "upgradeFailed": "Update konnte nicht gestartet werden: {message}"
@@ -493,7 +498,16 @@
         "installing": "{label} wird installiert…",
         "installSuccess": "{label} installiert. Wähle den Treiber oben in der Liste aus.",
         "installFailed": "Installation fehlgeschlagen: {message}",
-        "descriptionDeviceFirst": "Wähle deine Montierung aus der Liste und verbinde sie. Ein Treiber ist nur nötig, wenn sie dort nicht erscheint."
+        "descriptionDeviceFirst": "Wähle deine Montierung aus der Liste und verbinde sie. Ein Treiber ist nur nötig, wenn sie dort nicht erscheint.",
+        "port": {
+          "label": "USB-Anschluss der Montierung",
+          "searching": "Suche nach USB-Geräten…",
+          "none": "Kein USB-Gerät gefunden. Schließ die Montierung an, schalte sie ein und such erneut.",
+          "choose": "Anschluss wählen",
+          "autoPicked": "Es ist nur ein USB-Gerät eingesteckt, daher wurde es gewählt: {port}",
+          "several": "Es sind mehrere USB-Geräte eingesteckt. Nicht sicher, welches die Montierung ist? Zieh die Montierung ab, such erneut und schau, welcher Eintrag verschwindet.",
+          "searchAgain": "Erneut suchen"
+        }
       },
       "slewRate": {
         "title": "Schwenkgeschwindigkeit",
@@ -577,6 +591,20 @@
         "descriptionDeviceFirst": "Wähle deinen Fokussierer aus der Liste und verbinde ihn. Ein Treiber ist nur nötig, wenn er dort nicht erscheint. Die Autofokus-Parameter bleiben auf der Fokusseite.",
         "notFoundDriverHint": "Wenn dein Fokussierer nicht in der Liste ist, wähle hier seinen INDI-Treiber. Danach erscheint er in der Liste oben."
       },
+      "flatPanel": {
+        "title": "Flat-Panel einrichten",
+        "description": "Mit einem dimmbaren Flat-Panel nimmt die App deine Flats selbst auf. Wähle es aus der Liste und verbinde es. Ein Treiber ist nur nötig, wenn es dort nicht auftaucht.",
+        "connectDevice": "Gerät",
+        "connected": "Flat-Panel verbunden: {name}",
+        "noPanelHint": "Kein Flat-Panel? Einfach weiter: Flats gehen auch mit einem Tablet oder einer Lichtfolie vor dem Teleskop.",
+        "notFound": "Flat-Panel nicht in der Liste?",
+        "notFoundDriverHint": "Wenn dein Flat-Panel nicht in der Liste ist, wähle hier seinen INDI-Treiber. Danach erscheint es in der Liste oben.",
+        "selectDriver": "INDI-Treiber",
+        "notFoundHint": "Fehlt der Treiber, ist er vermutlich noch nicht installiert. Durchsuche die INDI-Treiber von Drittanbietern und installiere den passenden.",
+        "installing": "{label} wird installiert…",
+        "installSuccess": "{label} installiert. Wähle den Treiber oben in der Liste aus.",
+        "installFailed": "Installation fehlgeschlagen: {message}"
+      },
       "filterWheel": {
         "title": "Filterrad einrichten",
         "description": "Wähle den INDI-Treiber für dein Filterrad, verbinde es und gib den Positionen die Namen, die du in deinen Sequenzen verwendest.",
@@ -624,6 +652,9 @@
         "nativeCameraHint": "Gib die Brennweite des Leitrohrs ein. Der Guider braucht sie, um einzuschätzen, wie weit sich die Sterne bewegen.",
         "descriptionBuiltIn": "PINS hat einen eingebauten Guider, der die Sterne während der Aufnahmen an ihrem Platz hält, ganz ohne Zusatzprogramm. Wähle die Guiding-Kamera und gib die Brennweite des Leitrohrs ein.",
         "nativeFocalLengthMissing": "Die Leitrohr-Brennweite ist noch 0. Guiding funktioniert auch so, aber Dithering und der Guiding-Fehler in Bogensekunden brauchen sie.",
+        "nativeConnectsWithCamera": "Der Guider verbindet sich von selbst, sobald die Guiding-Kamera verbunden ist.",
+        "nativeConnectFailed": "Der Guider konnte nicht verbunden werden.",
+        "nativeConnectRetry": "Erneut versuchen",
         "guidePixelSizeHintNative": "Wird nur für diese Berechnung verwendet. Der Guider liest die Pixelgröße von der Guiding-Kamera, sobald sie verbunden ist; bis dahin nimm sie aus dem Kamerahandbuch.",
         "ditherMissingDataNative": "Für die Dither-Berechnung werden Pixelgröße und Brennweite von Aufnahme- und Guiding-Setup gebraucht. Fülle die Schritte Kamera und Teleskop sowie die Leitrohr-Brennweite im Guiding-Schritt aus.",
         "guideCameraNotFound": "Guiding-Kamera nicht aufgelistet?",
@@ -635,6 +666,7 @@
         "title": "Die Ausrüstung ist bereit",
         "description": "Dein Rig ist verbunden, aktuell, und Montierung, Kamera, Fokussierer, Filterrad und Guiding sind konfiguriert.",
         "descriptionPlain": "Montierung, Kamera, Fokussierer, Filterrad und dein Standort sind konfiguriert.",
+        "otherDevicesHint": "Wetter, Kuppel und die übrigen Geräte richtest du auf ihren eigenen Seiten ein.",
         "noConnectionHint": "Noch keine Verbindung zu einem Rig. Du kannst sie jederzeit unter Einstellungen → Verbindung nachtragen.",
         "summaryIntro": "So ist es jetzt eingerichtet. Tippe auf einen Eintrag, um zu seinem Schritt zurückzugehen.",
         "status": {
@@ -645,6 +677,7 @@
             "camera": "Ausgewählt",
             "focuser": "Ausgewählt",
             "filterWheel": "Ausgewählt",
+            "flatPanel": "Ausgewählt",
             "guider": "Ausgewählt",
             "starDatabase": "Installiert"
           },
@@ -658,6 +691,7 @@
           "none": {
             "focuser": "Keiner, manuell fokussieren",
             "filterWheel": "Keins, das ist in Ordnung",
+            "flatPanel": "Keins, Flats mit Tablet oder Lichtfolie",
             "guider": "Kein Guiding"
           }
         }
@@ -924,6 +958,10 @@
         "astapDatabaseInstalledList": "Installiert: {list}",
         "astapDatabaseNoneInstalled": "Noch keine Sterndatenbank installiert. Ohne sie funktioniert Plate Solving (Polausrichtung, Ziel zentrieren) nicht.",
         "astapDatabaseRecommendedTag": "empfohlen",
+        "astapDatabaseRecommendedFocal": "Dein Teleskop ({focal} mm) und deine Kamera sehen ein Bildfeld von {fov}°. Empfohlen dafür: {id}",
+        "astapDatabaseFitsInstalled": "Dein Teleskop ({focal} mm) und deine Kamera sehen ein Bildfeld von {fov}°. Dafür passt {id}, und sie ist schon installiert, du musst nichts tun.",
+        "astapDatabaseCoveredBy": "Dein Teleskop ({focal} mm) und deine Kamera sehen ein Bildfeld von {fov}°. Dafür würde {id} passen; das installierte {installed} deckt das auch ab, du musst nichts tun.",
+        "astapDatabaseNeedsOptics": "Gib Brennweite, Pixelgröße und Sensorgröße ein, dann siehst du, welche Sternkarte zu deinem Teleskop passt.",
         "astapDatabaseRecommendedDefault": "Empfohlen: {id}. Gib Brennweite, Pixelgröße und Sensorgröße ein, um eine Empfehlung für dein Teleskop zu erhalten.",
         "astapDatabaseStartInstall": "Installation für {databaseId} wird gestartet...",
         "astapDatabaseStarting": "Beginnt...",
@@ -1863,6 +1901,7 @@
               "title": "Eigene Werte",
               "description": "Stell die Minuten selbst unter „Erweitert“ ein."
             },
+            "recommended": "Empfohlen",
             "sideOfPierNoMount": "Verbinde vor der Auswahl die Montierung, damit die App prüfen kann, ob sie ihre Pierseite meldet.",
             "sideOfPierUnknown": "Deine Montierung meldet ihre Pierseite nicht, daher bleibt „Pierseite verwenden“ aus. @:{'general.backendName'} entscheidet den Flip dann nach der Uhrzeit.",
             "applyFailed": "Die Voreinstellung konnte nicht vollständig gespeichert werden. Prüfe die Werte unter „Erweitert“."
@@ -5832,7 +5871,7 @@
         "safety": "Sicherheit",
         "progress": "Fortschritt",
         "log": "Log",
-        "power": "Strom",
+        "power": "Ein/Aus",
         "instance": "Instanz"
       },
       "mount": {
@@ -5877,6 +5916,7 @@
       "mountPark": "Parken fehlgeschlagen",
       "mountUnpark": "Entparken fehlgeschlagen",
       "mountHome": "Home-Position fehlgeschlagen",
+      "mountTracking": "Die Nachführung konnte nicht geändert werden",
       "mountFlip": "Meridian Flip fehlgeschlagen",
       "filterChange": "Filterwechsel fehlgeschlagen",
       "focuserMove": "Fokussierer-Bewegung fehlgeschlagen",
@@ -6199,7 +6239,15 @@
       "wizard": {
         "title": "Wie möchtest du die App nutzen?",
         "simpleTitle": "Einfach (empfohlen für den Einstieg)",
-        "fullTitle": "Alle Funktionen"
+        "fullTitle": "Alle Funktionen",
+        "simpleDescription": "Die Startseite „Heute Nacht“ führt dich Schritt für Schritt durch die Nacht, vom Verbinden der Geräte bis zum Beenden der Nacht. Das Menü zeigt nur Start, Ziel, Plan und Einstellungen.",
+        "fullDescription": "Eine Seite für jedes Gerät (Kamera, Montierung, Fokussierer, Guiding, Filterrad …), dazu Sequenz, Flats und alle Einstellungen, wie in N.I.N.A. Für Erfahrene, die selbst nachjustieren wollen.",
+        "switchHint": "Du kannst jederzeit umschalten: auf der Startseite mit „Alle Funktionen anzeigen“ oder unter Einstellungen → Oberfläche."
+      },
+      "mountActions": {
+        "stopTracking": "Nachführung stoppen",
+        "startTracking": "Nachführung starten",
+        "allFunctions": "Alle Montierungs-Funktionen"
       },
       "focusFirst": "Zuerst fokussieren: Dieser Schritt ermittelt die Position aus einem Bild, und das braucht scharfe Sterne.",
       "live": {
@@ -6235,6 +6283,7 @@
         "databaseAction": "Sternkarte installieren",
         "flipTitle": "Meridian Flip noch nicht eingerichtet",
         "flipText": "Wenn ein Ziel den Meridian überquert (die Nord-Süd-Linie durch den Zenit), muss das Teleskop auf die andere Seite der Montierung wenden – sonst würde es bald gegen Stativ oder Säule stoßen. Dein Plan erledigt das von selbst. Sag ihm einmal, wie weit deine Montierung über den Meridian hinaus nachführen kann.",
+        "flipNotSureTest": "Unsicher? Nimm „Ein paar Minuten“, das passt für die meisten Montierungen. Bei Tag kannst du die App einen echten Flip machen lassen und zusehen, ob das Teleskop an Stativ und Säule vorbeikommt und die Kabel reichen.",
         "flipCurrentValues": "Dein Profil hat schon eigene Zeiten: {values}.",
         "flipKeepValues": "Diese Zeiten behalten",
         "flipTimingWindow": "Flip {min}–{max} Min. nach dem Meridian",

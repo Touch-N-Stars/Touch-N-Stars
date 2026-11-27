@@ -412,6 +412,7 @@
         "camera": "Càmera",
         "focuser": "Enfocador",
         "filterWheel": "Roda de filtres",
+        "flatPanel": "Panell de flats",
         "guider": "Guiatge",
         "dither": "Dither",
         "done": "Fet",
@@ -474,10 +475,14 @@
       },
       "updates": {
         "title": "Cerca actualitzacions",
+        "recommendation": "Les actualitzacions porten correccions i millores per al programari de l'equip. Instal·la-les ara, abans de configurar els teus dispositius.",
         "checking": "Cercant actualitzacions…",
         "upToDate": "El programari de l'equip està actualitzat.",
         "available": "{count} actualització(ns) disponible(s)",
         "startUpgrade": "Actualitza ara",
+        "listHint": "La llista mostra els programes de l'equip: el mateix PINS, ASTAP per al plate solving i els connectors. «Actualitza ara» els instal·la tots junts.",
+        "upgradeDuration": "Triga uns minuts, segons la connexió a Internet. Mentrestant l'equip reinicia els seus serveis, així que deixa l'app oberta fins que acabi.",
+        "skipHint": "Ara no hi ha Internet a l'equip o no tens temps? Toca «@:{'components.setupWizard.next'}» i actualitza més tard a «@:{'components.simpleMode.more.system'}».",
         "recheck": "Torna a comprovar",
         "checkFailed": "Error en cercar actualitzacions: {message}",
         "upgradeFailed": "No s'ha pogut iniciar l'actualització: {message}"
@@ -493,7 +498,16 @@
         "installing": "Instal·lant {label}…",
         "installSuccess": "{label} instal·lat. Selecciona'l a la llista de controladors de dalt.",
         "installFailed": "Error en la instal·lació: {message}",
-        "descriptionDeviceFirst": "Tria la teva muntura de la llista i connecta-la. Només cal un controlador si no hi apareix."
+        "descriptionDeviceFirst": "Tria la teva muntura de la llista i connecta-la. Només cal un controlador si no hi apareix.",
+        "port": {
+          "label": "Port USB de la muntura",
+          "searching": "Cercant dispositius USB…",
+          "none": "No s'ha trobat cap dispositiu USB. Connecta la muntura, engega-la i torna a cercar.",
+          "choose": "Tria un port",
+          "autoPicked": "Només hi ha un dispositiu USB connectat, així que s'ha triat: {port}",
+          "several": "Hi ha diversos dispositius USB connectats. No saps quin és la muntura? Desconnecta la muntura, torna a cercar i mira quina entrada desapareix.",
+          "searchAgain": "Torna a cercar"
+        }
       },
       "slewRate": {
         "title": "Velocitat de gir",
@@ -577,6 +591,20 @@
         "descriptionDeviceFirst": "Tria el teu enfocador de la llista i connecta'l. Només cal un controlador si no hi apareix. Els paràmetres d'autofocus es queden a la pàgina d'enfocament.",
         "notFoundDriverHint": "Si el teu enfocador no és a la llista, selecciona-hi aquí el seu controlador INDI. Després apareixerà a la llista de dalt."
       },
+      "flatPanel": {
+        "title": "Configura el panell de flats",
+        "description": "Amb un panell de flats regulable, l'app pren els teus flats tota sola. Tria'l a la llista i connecta'l. Només cal un controlador si no hi apareix.",
+        "connectDevice": "Dispositiu",
+        "connected": "Panell de flats connectat: {name}",
+        "noPanelHint": "No tens panell de flats? Continua sense més: els flats també funcionen amb una tauleta o una làmina de llum davant del telescopi.",
+        "notFound": "El panell de flats no és a la llista?",
+        "notFoundDriverHint": "Si el teu panell de flats no és a la llista, selecciona-hi aquí el seu controlador INDI. Després apareixerà a la llista de dalt.",
+        "selectDriver": "Controlador INDI",
+        "notFoundHint": "Si falta el controlador, potser encara no està instal·lat. Cerca entre els controladors INDI de tercers i instal·la el que correspongui.",
+        "installing": "Instal·lant {label}…",
+        "installSuccess": "{label} instal·lat. Selecciona'l a la llista de controladors de dalt.",
+        "installFailed": "La instal·lació ha fallat: {message}"
+      },
       "filterWheel": {
         "title": "Configura la roda de filtres",
         "description": "Tria el controlador INDI de la roda de filtres, connecta-la i posa a les posicions els noms que fas servir a les seqüències.",
@@ -624,6 +652,9 @@
         "nativeCameraHint": "Introdueix la distància focal del telescopi guia. El guiatge la necessita per jutjar quant es mouen els estels.",
         "descriptionBuiltIn": "PINS té un guiador integrat que manté els estels al seu lloc mentre es fan les imatges, sense cap altre programa. Tria la càmera de guiatge i introdueix la distància focal del telescopi guia.",
         "nativeFocalLengthMissing": "La distància focal del telescopi guia encara és 0. El guiatge funciona sense ella, però el dither i l'error de guiatge en segons d'arc la necessiten.",
+        "nativeConnectsWithCamera": "El guiatge es connecta sol tan bon punt la càmera de guiatge està connectada.",
+        "nativeConnectFailed": "No s'ha pogut connectar el guiatge.",
+        "nativeConnectRetry": "Torna-ho a provar",
         "guidePixelSizeHintNative": "Només s'usa per a aquest càlcul. El guiador llegeix la mida del píxel de la càmera de guiatge un cop connectada; fins llavors, treu-la del manual de la càmera.",
         "ditherMissingDataNative": "Per calcular el dither calen la mida del píxel i la distància focal tant de la configuració d'imatge com de la de guiatge. Omple els passos de càmera i telescopi i la distància focal del telescopi guia al pas de guiatge.",
         "guideCameraNotFound": "La càmera de guiatge no hi és?",
@@ -635,6 +666,7 @@
         "title": "El teu equip està llest",
         "description": "El teu equip està connectat i actualitzat, i la muntura, la càmera, l'enfocador, la roda de filtres i el guiatge estan configurats.",
         "descriptionPlain": "La muntura, la càmera, l'enfocador, la roda de filtres i la teva ubicació estan configurats.",
+        "otherDevicesHint": "El temps, la cúpula i la resta de dispositius es configuren a les seves pròpies pàgines.",
         "noConnectionHint": "Encara no hi ha connexió amb cap equip. En pots afegir una en qualsevol moment a Configuració → Connexió.",
         "summaryIntro": "Això és el que està configurat ara. Toca una entrada per tornar-ne al pas.",
         "status": {
@@ -645,6 +677,7 @@
             "camera": "Seleccionada",
             "focuser": "Seleccionat",
             "filterWheel": "Seleccionada",
+            "flatPanel": "Seleccionat",
             "guider": "Seleccionat",
             "starDatabase": "Instal·lat"
           },
@@ -658,6 +691,7 @@
           "none": {
             "focuser": "Cap, enfoca a mà",
             "filterWheel": "Cap, no passa res",
+            "flatPanel": "Cap, flats amb tauleta o làmina de llum",
             "guider": "Sense guiatge"
           }
         }
@@ -944,6 +978,10 @@
         "astapDatabaseInstalledList": "Instal·lat: {list}",
         "astapDatabaseNoneInstalled": "Encara no hi ha cap base de dades d'estels instal·lada. Sense una, el plate solving (alineació polar, centrat d'un objectiu) no pot funcionar.",
         "astapDatabaseRecommendedTag": "recomanat",
+        "astapDatabaseRecommendedFocal": "El teu telescopi ({focal} mm) i la teva càmera veuen un camp de {fov}°. Recomanada per a això: {id}",
+        "astapDatabaseFitsInstalled": "El teu telescopi ({focal} mm) i la teva càmera veuen un camp de {fov}°. {id} és adequada i ja està instal·lada, no has de fer res.",
+        "astapDatabaseCoveredBy": "El teu telescopi ({focal} mm) i la teva càmera veuen un camp de {fov}°. {id} seria adequada; la {installed} instal·lada també ho cobreix, no has de fer res.",
+        "astapDatabaseNeedsOptics": "Introdueix la focal, la mida de píxel i la mida del sensor per veure quina base d'estrelles encaixa amb el teu telescopi.",
         "astapDatabaseRecommendedDefault": "Recomanat: {id}. Introdueix distància focal, mida del píxel i mida del sensor per obtenir una recomanació adequada al teu telescopi."
       },
       "equipment": {
@@ -1863,6 +1901,7 @@
               "title": "Valors propis",
               "description": "Ajusta tu mateix els minuts a Avançat."
             },
+            "recommended": "Recomanat",
             "sideOfPierNoMount": "Connecta la muntura abans de triar, perquè l'app comprovi si informa del seu costat del pilar.",
             "sideOfPierUnknown": "La teva muntura no informa del costat del pilar, així que «Usa el costat del pilar» queda desactivat. @:{'general.backendName'} decideix llavors el gir per l'hora.",
             "applyFailed": "El valor predefinit no s'ha pogut desar del tot. Revisa els valors a Avançat."
@@ -5877,6 +5916,7 @@
       "mountPark": "Error en aparcar",
       "mountUnpark": "Error en desaparcar",
       "mountHome": "Error en anar a la posició home",
+      "mountTracking": "No s'ha pogut canviar el seguiment",
       "mountFlip": "Error en el Meridian Flip",
       "filterChange": "Error en canviar de filtre",
       "focuserMove": "Error en moure l'enfocador",
@@ -6199,7 +6239,15 @@
       "wizard": {
         "title": "Com vols usar l'aplicació?",
         "simpleTitle": "Simple (recomanat per començar)",
-        "fullTitle": "Totes les funcions"
+        "fullTitle": "Totes les funcions",
+        "simpleDescription": "La pàgina d'inici «Aquesta nit» et guia pas a pas per la nit, des de connectar els dispositius fins a acabar la nit. El menú només mostra Inici, Objectiu, Pla i Configuració.",
+        "fullDescription": "Una pàgina per a cada dispositiu (càmera, muntura, enfocador, guiatge, roda de filtres …), a més de seqüència, flats i tota la configuració, com a N.I.N.A. Per a usuaris amb experiència que volen ajustar-ho tot ells mateixos.",
+        "switchHint": "Pots canviar en qualsevol moment: a la pàgina d'inici amb «Mostra totes les funcions», o a Configuració → Interfície."
+      },
+      "mountActions": {
+        "stopTracking": "Atura el seguiment",
+        "startTracking": "Inicia el seguiment",
+        "allFunctions": "Totes les funcions de la muntura"
       },
       "focusFirst": "Primer l'enfocament: aquest pas calcula la posició a partir d'una imatge, i això necessita estels nítids.",
       "live": {
@@ -6235,6 +6283,7 @@
         "databaseAction": "Instal·la el mapa estel·lar",
         "flipTitle": "Meridian Flip encara no configurat",
         "flipText": "Quan un objectiu creua el meridià (la línia nord–sud que passa pel zenit), el telescopi s'ha de girar a l'altre costat de la muntura; si no, aviat xocaria amb el trípode o el pilar. El teu pla ho fa per si sol. Digues-li una vegada fins on pot seguir la teva muntura més enllà del meridià.",
+        "flipNotSureTest": "No n'estàs segur? Tria «Uns minuts», encaixa amb la majoria de muntures. De dia pots deixar que l'app faci un flip real i comprovar si el telescopi passa el trípode i la columna i si els cables hi arriben.",
         "flipCurrentValues": "El teu perfil ja té els seus propis temps: {values}.",
         "flipKeepValues": "Mantén aquests temps",
         "flipTimingWindow": "flip {min}–{max} min després del meridià",

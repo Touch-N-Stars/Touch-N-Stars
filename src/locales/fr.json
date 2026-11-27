@@ -371,6 +371,7 @@
         "camera": "Caméra",
         "focuser": "Focuseur",
         "filterWheel": "Roue à filtres",
+        "flatPanel": "Panneau de Flat",
         "guider": "Guidage",
         "dither": "Dither",
         "done": "Terminé",
@@ -433,10 +434,14 @@
       },
       "updates": {
         "title": "Rechercher des mises à jour",
+        "recommendation": "Les mises à jour apportent des corrections et des améliorations au logiciel du setup. Installe-les maintenant, avant de configurer tes appareils.",
         "checking": "Recherche de mises à jour…",
         "upToDate": "Le logiciel du setup est à jour.",
         "available": "{count} mise(s) à jour disponible(s)",
         "startUpgrade": "Mettre à jour",
+        "listHint": "La liste montre les programmes du setup : PINS lui-même, ASTAP pour le plate solving et les plugins. « Mettre à jour » les installe tous ensemble.",
+        "upgradeDuration": "Cela prend quelques minutes, selon la connexion Internet. Le setup redémarre ses services entre-temps ; garde donc l'app ouverte jusqu'à la fin.",
+        "skipHint": "Pas d'Internet sur le setup en ce moment, ou pas le temps ? Touche « @:{'components.setupWizard.next'} » et mets à jour plus tard sous « @:{'components.simpleMode.more.system'} ».",
         "recheck": "Vérifier à nouveau",
         "checkFailed": "Échec de la recherche de mises à jour : {message}",
         "upgradeFailed": "Impossible de lancer la mise à jour : {message}"
@@ -452,7 +457,16 @@
         "installing": "Installation de {label}…",
         "installSuccess": "{label} installé. Sélectionne-le dans la liste des pilotes ci-dessus.",
         "installFailed": "Échec de l'installation : {message}",
-        "descriptionDeviceFirst": "Choisissez votre monture dans la liste et connectez-la. Un pilote n'est nécessaire que si elle n'y apparaît pas."
+        "descriptionDeviceFirst": "Choisissez votre monture dans la liste et connectez-la. Un pilote n'est nécessaire que si elle n'y apparaît pas.",
+        "port": {
+          "label": "Port USB de la monture",
+          "searching": "Recherche des appareils USB…",
+          "none": "Aucun appareil USB trouvé. Branche la monture, allume-la et relance la recherche.",
+          "choose": "Choisir un port",
+          "autoPicked": "Un seul appareil USB est branché, il a donc été choisi : {port}",
+          "several": "Plusieurs appareils USB sont branchés. Tu ne sais pas lequel est la monture ? Débranche la monture, relance la recherche et regarde quelle entrée disparaît.",
+          "searchAgain": "Rechercher à nouveau"
+        }
       },
       "slewRate": {
         "title": "Vitesse de pointage",
@@ -536,6 +550,20 @@
         "descriptionDeviceFirst": "Choisissez votre focuser dans la liste et connectez-le. Un pilote n'est nécessaire que s'il n'y apparaît pas. Les paramètres d'autofocus restent sur la page de mise au point.",
         "notFoundDriverHint": "Si votre focuser n'est pas dans la liste, sélectionnez ici son pilote INDI. Il apparaîtra ensuite dans la liste ci-dessus."
       },
+      "flatPanel": {
+        "title": "Configurer ton panneau de Flat",
+        "description": "Avec un panneau de Flat réglable, l'app prend tes flats toute seule. Choisis-le dans la liste et connecte-le. Un pilote n'est nécessaire que s'il n'y apparaît pas.",
+        "connectDevice": "Appareil",
+        "connected": "Panneau de Flat connecté : {name}",
+        "noPanelHint": "Pas de panneau de Flat ? Continue simplement : les flats fonctionnent aussi avec une tablette ou une feuille lumineuse devant le télescope.",
+        "notFound": "Panneau de Flat absent de la liste ?",
+        "notFoundDriverHint": "Si ton panneau de Flat n'est pas dans la liste, sélectionne ici son pilote INDI. Il apparaîtra ensuite dans la liste ci-dessus.",
+        "selectDriver": "Pilote INDI",
+        "notFoundHint": "Si le pilote manque, il n'est peut-être pas encore installé. Cherche dans les pilotes INDI tiers et installe celui qui correspond.",
+        "installing": "Installation de {label}…",
+        "installSuccess": "{label} installé. Sélectionne-le dans la liste des pilotes ci-dessus.",
+        "installFailed": "Échec de l'installation : {message}"
+      },
       "filterWheel": {
         "title": "Configurer ta roue à filtres",
         "description": "Choisis le pilote INDI de ta roue à filtres, connecte-la et donne aux emplacements les noms que tu utilises dans tes séquences.",
@@ -583,6 +611,9 @@
         "nativeCameraHint": "Saisissez la focale de la lunette de guidage. Le guideur en a besoin pour estimer le déplacement des étoiles.",
         "descriptionBuiltIn": "PINS a un guideur intégré qui maintient les étoiles en place pendant les prises de vue, sans autre programme. Choisis la caméra de guidage et saisis la focale de la lunette de guidage.",
         "nativeFocalLengthMissing": "La focale de la lunette de guidage est encore à 0. Le guidage fonctionne sans elle, mais le Dither et l'erreur de guidage en secondes d'arc en ont besoin.",
+        "nativeConnectsWithCamera": "Le guideur se connecte tout seul dès que la caméra de guidage est connectée.",
+        "nativeConnectFailed": "Le guideur n'a pas pu être connecté.",
+        "nativeConnectRetry": "Réessayer",
         "guidePixelSizeHintNative": "Utilisée uniquement pour ce calcul. Le guideur lit la taille de pixel de la caméra de guidage une fois connectée ; d'ici là, prenez-la dans le manuel de la caméra.",
         "ditherMissingDataNative": "Pour calculer le Dither, la taille de pixel et la focale des montages d'imagerie et de guidage sont nécessaires. Renseignez les étapes caméra et télescope ainsi que la focale de la lunette de guidage dans l'étape de guidage.",
         "guideCameraNotFound": "Caméra de guidage absente de la liste ?",
@@ -594,6 +625,7 @@
         "title": "Ton équipement est prêt",
         "description": "Ton setup est connecté et à jour ; monture, caméra, focuser, roue à filtres et guidage sont configurés.",
         "descriptionPlain": "Monture, caméra, focuser, roue à filtres et lieu sont configurés.",
+        "otherDevicesHint": "La météo, la coupole et les autres appareils se configurent sur leurs propres pages.",
         "noConnectionHint": "Pas encore de connexion à un setup. Tu peux en ajouter une à tout moment sous Paramètres → Connexion.",
         "summaryIntro": "Voici ce qui est configuré. Appuyez sur une entrée pour revenir à son étape.",
         "status": {
@@ -604,6 +636,7 @@
             "camera": "Sélectionnée",
             "focuser": "Sélectionné",
             "filterWheel": "Sélectionnée",
+            "flatPanel": "Sélectionné",
             "guider": "Sélectionné",
             "starDatabase": "Installée"
           },
@@ -617,6 +650,7 @@
           "none": {
             "focuser": "Aucun, mise au point manuelle",
             "filterWheel": "Aucune, pas de souci",
+            "flatPanel": "Aucun, flats avec une tablette ou une feuille lumineuse",
             "guider": "Pas de guidage"
           }
         }
@@ -854,6 +888,10 @@
         "astapDatabaseInstalledList": "Installées : {list}",
         "astapDatabaseNoneInstalled": "Aucune base d'étoiles n'est encore installée. Sans elle, le plate solving (alignement polaire, centrage d'une cible) ne peut pas fonctionner.",
         "astapDatabaseRecommendedTag": "recommandée",
+        "astapDatabaseRecommendedFocal": "Ton télescope ({focal} mm) et ta caméra voient un champ de {fov}°. Recommandée pour cela : {id}",
+        "astapDatabaseFitsInstalled": "Ton télescope ({focal} mm) et ta caméra voient un champ de {fov}°. {id} convient et est déjà installée, il n'y a rien à faire.",
+        "astapDatabaseCoveredBy": "Ton télescope ({focal} mm) et ta caméra voient un champ de {fov}°. {id} conviendrait ; la base {installed} installée le couvre aussi, il n'y a rien à faire.",
+        "astapDatabaseNeedsOptics": "Saisis la focale, la taille des pixels et la taille du capteur pour voir quelle base d'étoiles convient à ton télescope.",
         "astapDatabaseRecommendedDefault": "Recommandée : {id}. Saisissez la focale, la taille de pixel et la taille du capteur pour une recommandation adaptée à votre télescope.",
         "astapDatabaseStartInstall": "Démarrage de l'installation pour {databaseId}...",
         "astapDatabaseStarting": "Départ...",
@@ -1822,6 +1860,7 @@
               "title": "Valeurs personnalisées",
               "description": "Règle toi-même les minutes sous « Avancé »."
             },
+            "recommended": "Recommandé",
             "sideOfPierNoMount": "Connecte la monture avant de choisir, pour que l'application vérifie si elle indique son côté du pilier.",
             "sideOfPierUnknown": "Ta monture n'indique pas son côté du pilier, « Utiliser le côté du pilier » reste donc désactivé. @:{'general.backendName'} décide alors du retournement selon l'heure.",
             "applyFailed": "Le préréglage n'a pas pu être entièrement enregistré. Vérifie les valeurs sous « Avancé »."
@@ -5877,6 +5916,7 @@
       "mountPark": "Échec du parking",
       "mountUnpark": "Échec du déparking",
       "mountHome": "Échec du retour en position home",
+      "mountTracking": "Le suivi n'a pas pu être modifié",
       "mountFlip": "Échec du Meridian Flip",
       "filterChange": "Échec du changement de filtre",
       "focuserMove": "Échec du déplacement du focuser",
@@ -6199,7 +6239,15 @@
       "wizard": {
         "title": "Comment voulez-vous utiliser l'application ?",
         "simpleTitle": "Simple (recommandé pour débuter)",
-        "fullTitle": "Toutes les fonctions"
+        "fullTitle": "Toutes les fonctions",
+        "simpleDescription": "La page d'accueil « Cette nuit » te guide pas à pas à travers la nuit, de la connexion des appareils à la fin de la nuit. Le menu n'affiche que Accueil, Cible, Plan et Réglages.",
+        "fullDescription": "Une page pour chaque appareil (caméra, monture, focuser, guidage, roue à filtres …), plus la séquence, les flats et tous les réglages, comme dans N.I.N.A. Pour les utilisateurs expérimentés qui veulent tout ajuster eux-mêmes.",
+        "switchHint": "Tu peux changer à tout moment : sur la page d'accueil avec « Afficher toutes les fonctions », ou sous Réglages → Interface."
+      },
+      "mountActions": {
+        "stopTracking": "Arrêter le suivi",
+        "startTracking": "Démarrer le suivi",
+        "allFunctions": "Toutes les fonctions de la monture"
       },
       "focusFirst": "D'abord la mise au point : cette étape calcule la position à partir d'une image, ce qui exige des étoiles nettes.",
       "live": {
@@ -6235,6 +6283,7 @@
         "databaseAction": "Installer la carte du ciel",
         "flipTitle": "Meridian Flip pas encore configuré",
         "flipText": "Quand une cible franchit le méridien (la ligne nord-sud passant par le zénith), le télescope doit passer de l'autre côté de la monture, sinon il heurterait vite le trépied ou le pilier. Votre plan le fait tout seul. Indiquez-lui une fois jusqu'où votre monture peut continuer à suivre au-delà du méridien.",
+        "flipNotSureTest": "Pas sûr ? Prends « Quelques minutes », cela convient à la plupart des montures. De jour, tu peux laisser l'app faire un vrai flip et vérifier que le télescope passe le trépied et la colonne et que les câbles suffisent.",
         "flipCurrentValues": "Votre profil a déjà son propre réglage : {values}.",
         "flipKeepValues": "Garder ce réglage",
         "flipTimingWindow": "flip {min}–{max} min après le méridien",
