@@ -32,6 +32,7 @@
 import { ref, onMounted, watch } from 'vue';
 import { StopIcon } from '@heroicons/vue/24/outline';
 import apiService from '@/services/apiService';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 import { apiStore } from '@/store/store';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 
@@ -52,7 +53,9 @@ async function moveFocuser() {
 
 async function stopFocuser() {
   try {
-    await apiService.focusAction('stop-move');
+    // Refused with 409 while an autofocus, sequence or filter offset run moves the focuser.
+    const response = await apiService.focusAction('stop-move');
+    if (reportBackendRefusal(response, 'components.backendErrors.focuserStop')) return;
     console.log('Focuser stopped');
   } catch (error) {
     console.error('Error stopping focuser:', error);

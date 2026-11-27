@@ -1290,6 +1290,7 @@ import { useI18n } from 'vue-i18n';
 import { useTenMicronStore } from '../store/tenMicronStore';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { isBackendRefusal } from '@/utils/backendErrors';
 import NumberInputPicker from '@/components/helpers/NumberInputPicker.vue';
 import toggleButton from '@/components/helpers/toggleButton.vue';
 import StatusString from '@/components/helpers/StatusString.vue';
@@ -1688,11 +1689,29 @@ async function loadBuilderOptions() {
   }
 }
 
+// The plugin server answers a refused write with Success: false and its reason (409 while a
+// model build or another job uses the mount, 400 for an invalid value, 500 when the mount did not
+// take it). The global interceptor resolves that without a toast, so it is shown here.
+function showRefusal(res) {
+  if (!isBackendRefusal(res)) return false;
+  tmStore.lastError = res.Error || t('components.backendErrors.noReason');
+  return true;
+}
+
+// Returns whether the option was stored. A refused or clamped value reloads the options, so the
+// field shows what the plugin actually keeps.
 async function setOption(key, value) {
   try {
-    await apiService.tenMicronSetBuilderOption(key, value);
+    const res = await apiService.tenMicronSetBuilderOption(key, value);
+    if (showRefusal(res)) {
+      await loadBuilderOptions();
+      return false;
+    }
+    if (res?.Value !== undefined && res.Value !== value) await loadBuilderOptions();
+    return true;
   } catch (e) {
     tmStore.lastError = e?.message;
+    return false;
   }
 }
 
@@ -1710,7 +1729,7 @@ async function resetBuilderOptions() {
 
 async function toggleOption(key, currentValue) {
   const newVal = !currentValue;
-  await setOption(key, newVal);
+  if (!(await setOption(key, newVal))) return;
   // Update the corresponding ref
   if (key === 'ShowRemovedPoints') optShowRemoved.value = newVal;
   else if (key === 'MinimizeMeridianFlips') optMinimizeMeridian.value = newVal;
@@ -1754,9 +1773,9 @@ async function generatePoints() {
   try {
     tmStore.isLoading = true;
     if (generatorType.value === 'goldenSpiral') {
-      await apiService.tenMicronGenerateGoldenSpiral(starCount.value);
+      showRefusal(await apiService.tenMicronGenerateGoldenSpiral(starCount.value));
     } else {
-      await apiService.tenMicronGenerateSiderealPath({
+      const res = await apiService.tenMicronGenerateSiderealPath({
         ra: raToDecimal(),
         dec: decToDecimal(),
         raDelta: siderealRaDelta.value,
@@ -1765,6 +1784,7 @@ async function generatePoints() {
         startOffset: siderealStartOffset.value,
         endOffset: siderealEndOffset.value,
       });
+      showRefusal(res);
     }
     await loadBuilderStatus();
   } catch (e) {
@@ -1800,7 +1820,7 @@ async function fetchCoordsFromSequence() {
 
 async function clearPoints() {
   try {
-    await apiService.tenMicronClearPoints();
+    showRefusal(await apiService.tenMicronClearPoints());
     await loadBuilderStatus();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1809,7 +1829,7 @@ async function clearPoints() {
 
 async function buildModel() {
   try {
-    await apiService.tenMicronBuildModel();
+    showRefusal(await apiService.tenMicronBuildModel());
     await fetchStatus();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1818,7 +1838,7 @@ async function buildModel() {
 
 async function cancelBuild() {
   try {
-    await apiService.tenMicronCancelBuild();
+    showRefusal(await apiService.tenMicronCancelBuild());
     await fetchStatus();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1827,7 +1847,7 @@ async function cancelBuild() {
 
 async function stopBuild() {
   try {
-    await apiService.tenMicronStopBuild();
+    showRefusal(await apiService.tenMicronStopBuild());
     await fetchStatus();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1836,7 +1856,7 @@ async function stopBuild() {
 
 async function loadModel(name) {
   try {
-    await apiService.tenMicronLoadModel(name);
+    showRefusal(await apiService.tenMicronLoadModel(name));
     await loadAlignmentModel();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1847,8 +1867,8 @@ async function saveModel() {
   if (!newModelName.value.trim()) return;
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronSaveModel(newModelName.value.trim());
-    newModelName.value = '';
+    const res = await apiService.tenMicronSaveModel(newModelName.value.trim());
+    if (!showRefusal(res)) newModelName.value = '';
     await loadModelNames();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1860,7 +1880,7 @@ async function saveModel() {
 async function deleteModel(name) {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronDeleteModel(name);
+    showRefusal(await apiService.tenMicronDeleteModel(name));
     await loadModelNames();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1872,7 +1892,7 @@ async function deleteModel(name) {
 async function deleteWorstStar() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronDeleteWorstStar();
+    showRefusal(await apiService.tenMicronDeleteWorstStar());
     await loadAlignmentModel();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1889,7 +1909,7 @@ async function clearAlignment() {
   showClearConfirm.value = false;
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronClearAlignment();
+    showRefusal(await apiService.tenMicronClearAlignment());
     await loadAlignmentModel();
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1901,8 +1921,12 @@ async function clearAlignment() {
 // ── mount tab actions ─────────────────────────────────────────────────────────
 async function toggleDualAxisTracking() {
   try {
-    await apiService.tenMicronSetDualAxisTracking(!tmStore.dualAxisTrackingEnabled);
-    tmStore.dualAxisTrackingEnabled = !tmStore.dualAxisTrackingEnabled;
+    const wanted = !tmStore.dualAxisTrackingEnabled;
+    const res = await apiService.tenMicronSetDualAxisTracking(wanted);
+    if (showRefusal(res)) return;
+    // The answer carries the state the mount actually took.
+    tmStore.dualAxisTrackingEnabled =
+      typeof res?.DualAxisTrackingEnabled === 'boolean' ? res.DualAxisTrackingEnabled : wanted;
   } catch (e) {
     tmStore.lastError = e?.message;
   }
@@ -1910,8 +1934,13 @@ async function toggleDualAxisTracking() {
 
 async function toggleRefractionCorrection() {
   try {
-    await apiService.tenMicronSetRefractionCorrection(!tmStore.refractionCorrectionEnabled);
-    tmStore.refractionCorrectionEnabled = !tmStore.refractionCorrectionEnabled;
+    const wanted = !tmStore.refractionCorrectionEnabled;
+    const res = await apiService.tenMicronSetRefractionCorrection(wanted);
+    if (showRefusal(res)) return;
+    tmStore.refractionCorrectionEnabled =
+      typeof res?.RefractionCorrectionEnabled === 'boolean'
+        ? res.RefractionCorrectionEnabled
+        : wanted;
   } catch (e) {
     tmStore.lastError = e?.message;
   }
@@ -1920,7 +1949,7 @@ async function toggleRefractionCorrection() {
 async function disableUnattendedFlip() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronDisableUnattendedFlip();
+    showRefusal(await apiService.tenMicronDisableUnattendedFlip());
     await fetchStatus(true);
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1932,7 +1961,7 @@ async function disableUnattendedFlip() {
 async function resetMeridianLimit() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronResetMeridianLimit();
+    showRefusal(await apiService.tenMicronResetMeridianLimit());
     await fetchStatus(true);
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1944,7 +1973,7 @@ async function resetMeridianLimit() {
 async function resetSlewSettle() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronResetSlewSettle();
+    showRefusal(await apiService.tenMicronResetSlewSettle());
     await fetchStatus(true);
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1956,7 +1985,7 @@ async function resetSlewSettle() {
 async function setSlewRate() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronSetSlewRate(Math.round(slewRateInput.value));
+    showRefusal(await apiService.tenMicronSetSlewRate(Math.round(slewRateInput.value)));
     await fetchStatus(true);
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1968,7 +1997,7 @@ async function setSlewRate() {
 async function setHorizonHigh() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronSetHorizonHigh(Math.round(horizonHighInput.value));
+    showRefusal(await apiService.tenMicronSetHorizonHigh(Math.round(horizonHighInput.value)));
     await fetchStatus(true);
   } catch (e) {
     tmStore.lastError = e?.message;
@@ -1980,7 +2009,7 @@ async function setHorizonHigh() {
 async function setHorizonLow() {
   tmStore.isRefreshing = true;
   try {
-    await apiService.tenMicronSetHorizonLow(Math.round(horizonLowInput.value));
+    showRefusal(await apiService.tenMicronSetHorizonLow(Math.round(horizonLowInput.value)));
     await fetchStatus(true);
   } catch (e) {
     tmStore.lastError = e?.message;

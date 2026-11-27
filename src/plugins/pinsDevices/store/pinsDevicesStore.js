@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import apiService from '@/services/apiService';
 import { createPoller } from '@/utils/poller';
+import { reportBackendRefusal } from '@/utils/backendErrors';
 
 export const usePinsDeviceStore = defineStore('pinsDevices', {
   state: () => ({
@@ -949,6 +950,10 @@ export const usePinsDeviceStore = defineStore('pinsDevices', {
     async calibrateLensControl() {
       try {
         const response = await apiService.calibrateLensControl();
+        // Refused with 409 while another job uses the lens; the lens tab shows no store.error.
+        if (reportBackendRefusal(response, 'plugins.pinsDevices.lensControl.calibrateFailed')) {
+          return false;
+        }
         return response.Success;
       } catch (error) {
         console.error('Error calibrating lenscontrol:', error);

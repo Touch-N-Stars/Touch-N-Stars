@@ -1645,6 +1645,7 @@ import { storeToRefs } from 'pinia';
 import SubNav from '@/components/SubNav.vue';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { isBackendRefusal } from '@/utils/backendErrors';
 import { raDecToAltAz, wait } from '@/utils/utils';
 import { timeSync } from '@/utils/timeSync';
 import { useBackgroundAwarePolling } from '@/utils/appLifecycle';
@@ -2895,10 +2896,16 @@ async function onSlewAndCenter() {
       settingsStore.mount.useRotate && store.rotatorInfo.Connected,
       framingStore.rotationAngle
     );
-    actionStatus.value = {
-      ok: true,
-      message: response?.Response ?? t('perihelion.track.slewAndCenterDone'),
-    };
+    // A failed, cancelled or refused slew (409 camera/rotator not connected) also answers 200.
+    actionStatus.value = isBackendRefusal(response)
+      ? {
+          ok: false,
+          message: response.Error || response.Response || t('perihelion.track.slewAndCenterFailed'),
+        }
+      : {
+          ok: true,
+          message: response?.Response ?? t('perihelion.track.slewAndCenterDone'),
+        };
   } catch (error) {
     actionStatus.value = {
       ok: false,
