@@ -61,6 +61,9 @@ const FAILURE_EVENTS = {
   'MOUNT-UNPARK-FAILED': { titleKey: 'components.backendErrors.mountUnpark', persistent: true },
   'MOUNT-HOME-FAILED': { titleKey: 'components.backendErrors.mountHome' },
   'MOUNT-FLIP-FAILED': { titleKey: 'components.backendErrors.mountFlip', persistent: true },
+  // Sent by /equipment/mount/slew without waitForResult; the app currently always waits.
+  'MOUNT-SLEW-FAILED': { titleKey: 'components.backendErrors.mountSlew' },
+  'MOUNT-CENTER-FAILED': { titleKey: 'components.backendErrors.mountCenter' },
   'FILTERWHEEL-CHANGE-FAILED': { titleKey: 'components.backendErrors.filterChange' },
   'FOCUSER-MOVE-FAILED': { titleKey: 'components.backendErrors.focuserMove' },
   'ROTATOR-MOVE-FAILED': { titleKey: 'components.backendErrors.rotatorMove' },

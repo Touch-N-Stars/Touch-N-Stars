@@ -5918,6 +5918,8 @@
       "mountHome": "Homing failed",
       "mountTracking": "Tracking could not be changed",
       "mountFlip": "Meridian flip failed",
+      "mountSlew": "Slew failed",
+      "mountCenter": "Centering failed",
       "filterChange": "Filter change failed",
       "focuserMove": "Focuser move failed",
       "focuserStop": "Focuser could not be stopped",
