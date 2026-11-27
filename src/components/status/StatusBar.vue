@@ -232,6 +232,7 @@
       </div>
       <div v-show="statusBarStore.isPanelOpen('mount')">
         <infoMount class="p-5" />
+        <SimpleMountActions v-if="simpleModeActive" class="px-5 pb-5" />
       </div>
       <div v-show="statusBarStore.isPanelOpen('filter')" class="p-5 flex flex-col gap-3">
         <InfoFilterwheel />
@@ -285,6 +286,7 @@ import { usePluginStore } from '@/store/pluginStore';
 import { LockOpenIcon, PowerIcon } from '@heroicons/vue/24/outline';
 import SimpleQualityInfo from '../simpleMode/SimpleQualityInfo.vue';
 import SimpleHfrTrend from '../simpleMode/SimpleHfrTrend.vue';
+import SimpleMountActions from '../simpleMode/SimpleMountActions.vue';
 import { useSimpleMode } from '@/composables/useSimpleMode';
 import { fmt, LEVEL_STATE, useImagingQuality } from '@/composables/useImagingQuality';
 
