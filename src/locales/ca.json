@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Com vols usar l'aplicació?",
         "simpleTitle": "Simple (recomanat per començar)",
-        "simpleText": "Una pàgina d'inici et guia durant la nit pas a pas, només amb les pàgines que necessites.",
-        "fullTitle": "Totes les funcions",
-        "fullText": "Cada pàgina i configuració a la navegació, per a usuaris experimentats."
+        "fullTitle": "Totes les funcions"
       },
       "focusFirst": "Primer l'enfocament: aquest pas calcula la posició a partir d'una imatge, i això necessita estels nítids.",
       "live": {

@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Comment voulez-vous utiliser l'application ?",
         "simpleTitle": "Simple (recommandé pour débuter)",
-        "simpleText": "Une page d'accueil vous guide pas à pas à travers la nuit, avec seulement les pages nécessaires.",
-        "fullTitle": "Toutes les fonctions",
-        "fullText": "Chaque page et paramètre dans la navigation, pour les utilisateurs expérimentés."
+        "fullTitle": "Toutes les fonctions"
       },
       "focusFirst": "D'abord la mise au point : cette étape calcule la position à partir d'une image, ce qui exige des étoiles nettes.",
       "live": {

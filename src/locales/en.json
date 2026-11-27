@@ -6215,9 +6215,10 @@
       "wizard": {
         "title": "How do you want to use the app?",
         "simpleTitle": "Simple (recommended to get started)",
-        "simpleText": "A start page leads you through the night step by step, with only the pages you need.",
         "fullTitle": "All functions",
-        "fullText": "Every page and setting in the navigation, for experienced users."
+        "simpleDescription": "The start page \u201cTonight\u201d takes you through the night step by step, from connecting the devices to ending the night. The menu shows only Start, Target, Plan and Settings.",
+        "fullDescription": "A page for every device (camera, mount, focuser, guiding, filter wheel …) plus sequence, flats and every setting, as in N.I.N.A. For experienced users who want to adjust things themselves.",
+        "switchHint": "You can switch at any time: on the start page with \u201cShow all functions\u201d, or under Settings → Interface."
       },
       "focusFirst": "Focus first: this step works out the position from a picture, and that needs sharp stars.",
       "live": {

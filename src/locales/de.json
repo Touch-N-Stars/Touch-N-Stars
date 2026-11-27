@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Wie möchtest du die App nutzen?",
         "simpleTitle": "Einfach (empfohlen für den Einstieg)",
-        "simpleText": "Eine Startseite führt dich Schritt für Schritt durch die Nacht, mit nur den Seiten, die du brauchst.",
-        "fullTitle": "Alle Funktionen",
-        "fullText": "Jede Seite und Einstellung in der Navigation, für erfahrene Nutzer."
+        "fullTitle": "Alle Funktionen"
       },
       "focusFirst": "Zuerst fokussieren: Dieser Schritt ermittelt die Position aus einem Bild, und das braucht scharfe Sterne.",
       "live": {

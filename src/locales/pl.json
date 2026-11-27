@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Jak chcesz używać aplikacji?",
         "simpleTitle": "Prosty (zalecany na początek)",
-        "simpleText": "Strona startowa prowadzi przez noc krok po kroku, tylko ze stronami, których potrzebujesz.",
-        "fullTitle": "Wszystkie funkcje",
-        "fullText": "Każda strona i ustawienie w nawigacji, dla doświadczonych użytkowników."
+        "fullTitle": "Wszystkie funkcje"
       },
       "focusFirst": "Najpierw ostrość: ten krok ustala pozycję ze zdjęcia, a do tego potrzebne są ostre gwiazdy.",
       "live": {

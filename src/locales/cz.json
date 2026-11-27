@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Jak chcete aplikaci používat?",
         "simpleTitle": "Jednoduše (doporučeno pro začátek)",
-        "simpleText": "Úvodní stránka vás provede nocí krok za krokem, jen se stránkami, které potřebujete.",
-        "fullTitle": "Všechny funkce",
-        "fullText": "Každá stránka a nastavení v navigaci, pro zkušené uživatele."
+        "fullTitle": "Všechny funkce"
       },
       "focusFirst": "Nejdřív zaostřete: tento krok zjišťuje polohu ze snímku a ten potřebuje ostré hvězdy.",
       "live": {

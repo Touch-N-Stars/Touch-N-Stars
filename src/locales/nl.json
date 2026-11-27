@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Hoe wil je de app gebruiken?",
         "simpleTitle": "Eenvoudig (aanbevolen om te beginnen)",
-        "simpleText": "Een startpagina leidt je stap voor stap door de nacht, met alleen de pagina's die je nodig hebt.",
-        "fullTitle": "Alle functies",
-        "fullText": "Elke pagina en instelling in de navigatie, voor ervaren gebruikers."
+        "fullTitle": "Alle functies"
       },
       "focusFirst": "Eerst focussen: deze stap bepaalt de positie uit een opname, en dat heeft scherpe sterren nodig.",
       "live": {

@@ -137,6 +137,11 @@
                     <span class="block font-semibold text-content">{{ t(option.titleKey) }}</span>
                     <span class="block text-xs text-content-muted">{{ t(option.textKey) }}</span>
                   </button>
+                  <!-- A field-test user asked what the difference is and whether the choice is
+                       final; say where to switch later. -->
+                  <p class="text-xs text-content-faint">
+                    {{ t('components.simpleMode.wizard.switchHint') }}
+                  </p>
                 </div>
                 <!-- Anyone who skipped the instance step lands on the connection
                      splash afterwards; say where to fix that. -->
@@ -320,12 +325,12 @@ const uiModeOptions = [
   {
     value: true,
     titleKey: 'components.simpleMode.wizard.simpleTitle',
-    textKey: 'components.simpleMode.wizard.simpleText',
+    textKey: 'components.simpleMode.wizard.simpleDescription',
   },
   {
     value: false,
     titleKey: 'components.simpleMode.wizard.fullTitle',
-    textKey: 'components.simpleMode.wizard.fullText',
+    textKey: 'components.simpleMode.wizard.fullDescription',
   },
 ];
 </script>

@@ -6203,9 +6203,7 @@
       "wizard": {
         "title": "Come vuoi usare l'app?",
         "simpleTitle": "Semplice (consigliata per iniziare)",
-        "simpleText": "Una pagina iniziale ti guida nella notte passo dopo passo, con solo le pagine necessarie.",
-        "fullTitle": "Tutte le funzioni",
-        "fullText": "Ogni pagina e impostazione nella navigazione, per utenti esperti."
+        "fullTitle": "Tutte le funzioni"
       },
       "focusFirst": "Prima il fuoco: questo passaggio ricava la posizione da un'immagine e servono stelle nitide.",
       "live": {
