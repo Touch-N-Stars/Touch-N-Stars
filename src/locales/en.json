@@ -495,7 +495,16 @@
         "installing": "Installing {label}…",
         "installSuccess": "{label} installed. Select it in the driver list above.",
         "installFailed": "Installation failed: {message}",
-        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there."
+        "descriptionDeviceFirst": "Pick your mount from the list and connect it. A driver is only needed if it does not show up there.",
+        "port": {
+          "label": "USB port of the mount",
+          "searching": "Looking for USB devices…",
+          "none": "No USB device found. Plug the mount in, switch it on and search again.",
+          "choose": "Choose a port",
+          "autoPicked": "Only one USB device is plugged in, so it was chosen: {port}",
+          "several": "Several USB devices are plugged in. Not sure which one is the mount? Unplug the mount, search again and see which entry disappears.",
+          "searchAgain": "Search again"
+        }
       },
       "slewRate": {
         "title": "Slew speed",
