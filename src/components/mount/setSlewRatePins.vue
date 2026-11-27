@@ -82,8 +82,10 @@ import { useSettingsStore } from '@/store/settingsStore';
 import { useMountStore } from '@/store/mountStore';
 import { apiStore } from '@/store/store';
 import apiService from '@/services/apiService';
+import { useSimpleMode } from '@/composables/useSimpleMode';
 
 const settingsStore = useSettingsStore();
+const { active: simpleModeActive } = useSimpleMode();
 const mountStore = useMountStore();
 const store = apiStore();
 
@@ -154,16 +156,21 @@ async function loadCapability() {
     capability.value = cap;
     kind.value = normalizeKind(cap.Kind);
 
+    // Simple mode, until the rate was picked once: the fastest step. Otherwise the controller's
+    // own rate wins, and OnStepX reports what it last used - 20x in the field test, which
+    // moved the mount so slowly that a beginner took it for stuck.
+    const preferFastest = simpleModeActive.value && !settingsStore.mount.slewRateChosen;
+
     if (kind.value === 'discrete') {
       // Prefer the driver's current selection, fall back to the persisted choice.
       const selected = cap.Options.findIndex((o) => o.IsSelected);
       const stored = settingsStore.mount.slewRateIndex;
-      const idx = selected >= 0 ? selected : stored;
+      const idx = preferFastest ? cap.Options.length - 1 : selected >= 0 ? selected : stored;
       discreteIndex.value = Math.min(Math.max(0, idx ?? 0), Math.max(0, cap.Options.length - 1));
       assertRateOnDriver({ index: discreteIndex.value });
     } else if (kind.value === 'continuous') {
       const stored = settingsStore.mount.slewRate;
-      const v = cap.CurrentValue ?? stored ?? cap.Min;
+      const v = preferFastest ? cap.Max : (cap.CurrentValue ?? stored ?? cap.Min);
       continuousValue.value = Math.min(Math.max(cap.Min, v), cap.Max);
       assertRateOnDriver({ value: continuousValue.value });
     }
@@ -179,6 +186,7 @@ function onDiscreteInput(event) {
   const idx = parseInt(event.target.value, 10);
   discreteIndex.value = idx;
   settingsStore.mount.slewRateIndex = idx;
+  settingsStore.mount.slewRateChosen = true;
   settingsStore.saveMountSettings();
   postRate({ index: idx });
 }
@@ -187,6 +195,7 @@ function onContinuousInput(event) {
   const value = parseFloat(event.target.value);
   continuousValue.value = value;
   settingsStore.mount.slewRate = value;
+  settingsStore.mount.slewRateChosen = true;
   settingsStore.saveMountSettings();
   postRate({ value });
 }

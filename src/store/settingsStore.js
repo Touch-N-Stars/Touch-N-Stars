@@ -122,6 +122,9 @@ export const useSettingsStore = defineStore('settings', {
     mount: {
       slewRate: 9,
       slewRateIndex: 0,
+      // Set once the user moves the PINS rate slider; until then the simple mode starts at the
+      // fastest rate (setSlewRatePins.vue).
+      slewRateChosen: false,
       reversePrimaryAxis: false,
       reverseSecondaryAxis: false,
       useCenter: false,
