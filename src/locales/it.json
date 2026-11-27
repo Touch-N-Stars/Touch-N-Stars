@@ -6204,7 +6204,6 @@
       "focusFirst": "Prima il fuoco: questo passaggio ricava la posizione da un'immagine e servono stelle nitide.",
       "live": {
         "lastPicture": "Ultima immagine",
-        "noPicture": "Ancora nessuna immagine. Scatta un'immagine di prova per vedere cosa vede la camera.",
         "preview": "Immagine di prova",
         "stars": "Stelle",
         "trendTitle": "Nitidezza delle ultime {count} immagini",

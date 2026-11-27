@@ -6204,7 +6204,6 @@
       "focusFirst": "Zuerst fokussieren: Dieser Schritt ermittelt die Position aus einem Bild, und das braucht scharfe Sterne.",
       "live": {
         "lastPicture": "Letztes Bild",
-        "noPicture": "Noch kein Bild. Nimm ein Testbild auf, um zu sehen, was die Kamera sieht.",
         "preview": "Testbild",
         "stars": "Sterne",
         "trendTitle": "Schärfe der letzten {count} Bilder",

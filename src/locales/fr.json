@@ -6204,7 +6204,6 @@
       "focusFirst": "D'abord la mise au point : cette étape calcule la position à partir d'une image, ce qui exige des étoiles nettes.",
       "live": {
         "lastPicture": "Dernière image",
-        "noPicture": "Pas encore d'image. Prenez une image de test pour voir ce que voit la caméra.",
         "preview": "Image de test",
         "stars": "Étoiles",
         "trendTitle": "Netteté des {count} dernières images",

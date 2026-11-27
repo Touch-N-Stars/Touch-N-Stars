@@ -6204,7 +6204,6 @@
       "focusFirst": "Eerst focussen: deze stap bepaalt de positie uit een opname, en dat heeft scherpe sterren nodig.",
       "live": {
         "lastPicture": "Laatste foto",
-        "noPicture": "Nog geen foto. Maak een testfoto om te zien wat de camera ziet.",
         "preview": "Testfoto",
         "stars": "Sterren",
         "trendTitle": "Scherpte van de laatste {count} foto's",

@@ -6204,7 +6204,6 @@
       "focusFirst": "Nejdřív zaostřete: tento krok zjišťuje polohu ze snímku a ten potřebuje ostré hvězdy.",
       "live": {
         "lastPicture": "Poslední snímek",
-        "noPicture": "Zatím žádný snímek. Pořiďte testovací snímek a uvidíte, co kamera vidí.",
         "preview": "Testovací snímek",
         "stars": "Hvězdy",
         "trendTitle": "Ostrost posledních {count} snímků",

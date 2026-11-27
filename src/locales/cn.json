@@ -6204,7 +6204,6 @@
       "focusFirst": "请先对焦：此步骤要从照片中算出位置，这需要清晰的星点。",
       "live": {
         "lastPicture": "最新照片",
-        "noPicture": "还没有照片。拍一张测试照片，看看相机拍到了什么。",
         "preview": "测试照片",
         "stars": "星点",
         "trendTitle": "最近 {count} 张照片的清晰度",

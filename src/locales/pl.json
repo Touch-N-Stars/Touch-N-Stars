@@ -6204,7 +6204,6 @@
       "focusFirst": "Najpierw ostrość: ten krok ustala pozycję ze zdjęcia, a do tego potrzebne są ostre gwiazdy.",
       "live": {
         "lastPicture": "Ostatnie zdjęcie",
-        "noPicture": "Brak zdjęcia. Zrób zdjęcie testowe, aby zobaczyć, co widzi kamera.",
         "preview": "Zdjęcie testowe",
         "stars": "Gwiazdy",
         "trendTitle": "Ostrość ostatnich {count} zdjęć",

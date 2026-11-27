@@ -6204,7 +6204,6 @@
       "focusFirst": "Primer l'enfocament: aquest pas calcula la posició a partir d'una imatge, i això necessita estels nítids.",
       "live": {
         "lastPicture": "Última imatge",
-        "noPicture": "Encara no hi ha cap imatge. Fes una imatge de prova per veure què veu la càmera.",
         "preview": "Imatge de prova",
         "stars": "Estels",
         "trendTitle": "Nitidesa de les últimes {count} imatges",

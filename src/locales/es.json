@@ -6204,7 +6204,6 @@
       "focusFirst": "Enfoca primero: este paso calcula la posición a partir de una imagen, y para ello necesita estrellas nítidas.",
       "live": {
         "lastPicture": "Última imagen",
-        "noPicture": "Aún no hay imagen. Toma una imagen de prueba para ver lo que ve la cámara.",
         "preview": "Imagen de prueba",
         "stars": "Estrellas",
         "trendTitle": "Nitidez de las últimas {count} imágenes",

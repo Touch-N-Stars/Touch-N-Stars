@@ -28,8 +28,11 @@
         <template #placeholder>
           <div class="flex flex-col items-center gap-2 p-4 text-center text-content-muted">
             <Spinner v-if="loadingPicture" size="lg" class="text-accent" />
-            <PhotoIcon v-else class="w-10 h-10" />
-            <span v-if="!loadingPicture" class="text-sm">{{ $t(placeholderKey) }}</span>
+            <!-- The app's logo on the empty stage, as on the camera page -->
+            <img v-else :src="logoUrl" alt="Touch'N'Stars" class="w-44 h-44 opacity-50" />
+            <span v-if="!loadingPicture && placeholderKey" class="text-sm">
+              {{ $t(placeholderKey) }}
+            </span>
           </div>
         </template>
       </ZoomableImage>
@@ -214,7 +217,8 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ArrowPathIcon, CameraIcon, PhotoIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, CameraIcon } from '@heroicons/vue/24/outline';
+import logoUrl from '@/assets/Logo_TouchNStars_600x600.png';
 import apiService from '@/services/apiService';
 import { apiStore } from '@/store/store';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -243,7 +247,7 @@ const props = defineProps({
   details: { type: Boolean, default: false },
   // Let the panel take more of the stage, for a panel that was opened
   tall: { type: Boolean, default: false },
-  // What the empty stage says
+  // What the empty stage says under the logo; '' for the logo alone
   placeholderKey: { type: String, default: 'components.simpleMode.live.firstPlanPicture' },
 });
 const { stageWindowStyle } = useStageWindow();

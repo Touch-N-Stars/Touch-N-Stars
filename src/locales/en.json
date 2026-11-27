@@ -6252,7 +6252,6 @@
       "focusFirst": "Focus first: this step works out the position from a picture, and that needs sharp stars.",
       "live": {
         "lastPicture": "Last picture",
-        "noPicture": "No picture yet. Take a test picture to see what the camera sees.",
         "preview": "Test picture",
         "stars": "Stars",
         "trendTitle": "Sharpness of the last {count} pictures",
