@@ -1879,6 +1879,7 @@
               "title": "Custom values",
               "description": "Set the minutes yourself under Advanced."
             },
+            "recommended": "Recommended",
             "sideOfPierNoMount": "Connect the mount before choosing, so the app can check whether it reports its side of pier.",
             "sideOfPierUnknown": "Your mount does not report its side of pier, so “Use side of pier” stays off. @:{'general.backendName'} then decides the flip by time.",
             "applyFailed": "The preset could not be saved completely. Check the values under Advanced."
@@ -6255,7 +6256,7 @@
         "databaseAction": "Install star map",
         "flipTitle": "Meridian flip not set up yet",
         "flipText": "When a target crosses the meridian (the north–south line through the zenith), the telescope has to turn to the other side of the mount – otherwise it would soon hit the tripod or pier. Your plan does this by itself. Tell it once how far your mount can keep tracking past the meridian.",
-        "flipNotSure": "Not sure? Your mount's manual usually says how far it can track past the meridian. Until you know, “Barely” keeps the telescope safe, at the cost of a few minutes without pictures.",
+        "flipNotSureTest": "Not sure? Take “A few minutes”, it fits most mounts. In daylight you can let the app do a real flip and watch whether the telescope clears tripod and pier and the cables reach.",
         "flipCurrentValues": "Your profile already has its own timing: {values}.",
         "flipKeepValues": "Keep this timing",
         "flipTimingWindow": "flip {min}–{max} min after the meridian",

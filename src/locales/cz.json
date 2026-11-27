@@ -6240,7 +6240,6 @@
         "databaseAction": "Nainstalovat hvězdnou mapu",
         "flipTitle": "Meridian Flip zatím není nastaven",
         "flipText": "Když cíl překročí meridián (severojižní čáru přes zenit), musí se dalekohled otočit na druhou stranu montáže – jinak by brzy narazil do stativu nebo sloupu. Váš plán to dělá sám. Řekněte mu jednou, jak daleko za meridián může vaše montáž sledovat.",
-        "flipNotSure": "Nejste si jistí? Návod k montáži obvykle říká, jak daleko za meridián může sledovat. Do doby, než to budete vědět, drží dalekohled v bezpečí „Sotva“, za cenu několika minut bez snímků.",
         "flipCurrentValues": "Váš profil už má vlastní časování: {values}.",
         "flipKeepValues": "Ponechat toto časování",
         "flipTimingWindow": "flip {min}–{max} min po meridiánu",

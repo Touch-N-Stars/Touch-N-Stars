@@ -6240,7 +6240,6 @@
         "databaseAction": "Installa mappa stellare",
         "flipTitle": "Meridian Flip non ancora configurato",
         "flipText": "Quando un target attraversa il meridiano (la linea nord-sud passante per lo zenit), il telescopio deve passare all'altro lato della montatura, altrimenti presto urterebbe il treppiede o il pilastro. Il piano lo fa da solo. Indicagli una volta fino a dove la tua montatura può continuare a inseguire oltre il meridiano.",
-        "flipNotSure": "Non sei sicuro? Il manuale della montatura di solito indica fin dove può inseguire oltre il meridiano. Finché non lo sai, “Appena” mantiene il telescopio al sicuro, al costo di qualche minuto senza immagini.",
         "flipCurrentValues": "Il tuo profilo ha già i suoi tempi: {values}.",
         "flipKeepValues": "Mantieni questi tempi",
         "flipTimingWindow": "flip {min}–{max} min dopo il meridiano",

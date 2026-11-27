@@ -6240,7 +6240,6 @@
         "databaseAction": "Sternkarte installieren",
         "flipTitle": "Meridian Flip noch nicht eingerichtet",
         "flipText": "Wenn ein Ziel den Meridian überquert (die Nord-Süd-Linie durch den Zenit), muss das Teleskop auf die andere Seite der Montierung wenden – sonst würde es bald gegen Stativ oder Säule stoßen. Dein Plan erledigt das von selbst. Sag ihm einmal, wie weit deine Montierung über den Meridian hinaus nachführen kann.",
-        "flipNotSure": "Unsicher? Das Handbuch deiner Montierung sagt meist, wie weit sie über den Meridian hinaus nachführen kann. Bis du es weißt, hält „Kaum“ das Teleskop sicher, auf Kosten einiger Minuten ohne Bilder.",
         "flipCurrentValues": "Dein Profil hat schon eigene Zeiten: {values}.",
         "flipKeepValues": "Diese Zeiten behalten",
         "flipTimingWindow": "Flip {min}–{max} Min. nach dem Meridian",

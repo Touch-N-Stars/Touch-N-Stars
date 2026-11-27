@@ -6240,7 +6240,6 @@
         "databaseAction": "Installer la carte du ciel",
         "flipTitle": "Meridian Flip pas encore configuré",
         "flipText": "Quand une cible franchit le méridien (la ligne nord-sud passant par le zénith), le télescope doit passer de l'autre côté de la monture, sinon il heurterait vite le trépied ou le pilier. Votre plan le fait tout seul. Indiquez-lui une fois jusqu'où votre monture peut continuer à suivre au-delà du méridien.",
-        "flipNotSure": "Pas sûr ? Le manuel de votre monture indique généralement jusqu'où elle peut suivre au-delà du méridien. En attendant, « À peine » protège le télescope, au prix de quelques minutes sans images.",
         "flipCurrentValues": "Votre profil a déjà son propre réglage : {values}.",
         "flipKeepValues": "Garder ce réglage",
         "flipTimingWindow": "flip {min}–{max} min après le méridien",

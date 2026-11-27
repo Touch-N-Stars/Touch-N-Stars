@@ -6240,7 +6240,6 @@
         "databaseAction": "Sterrenkaart installeren",
         "flipTitle": "Meridian Flip nog niet ingesteld",
         "flipText": "Als een doel de meridiaan passeert (de noord–zuidlijn door het zenit), moet de telescoop naar de andere kant van de mount draaien – anders zou hij snel tegen het statief of de pier botsen. Je plan doet dit zelf. Geef eenmalig aan hoe ver je mount na de meridiaan kan blijven volgen.",
-        "flipNotSure": "Niet zeker? De handleiding van je mount zegt meestal hoe ver hij na de meridiaan kan volgen. Tot je dat weet houdt “Nauwelijks” de telescoop veilig, ten koste van een paar minuten zonder foto's.",
         "flipCurrentValues": "Je profiel heeft al een eigen timing: {values}.",
         "flipKeepValues": "Deze timing behouden",
         "flipTimingWindow": "flip {min}–{max} min na de meridiaan",

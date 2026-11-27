@@ -6240,7 +6240,6 @@
         "databaseAction": "Instalar mapa estelar",
         "flipTitle": "Meridian Flip ainda não configurado",
         "flipText": "Quando um alvo cruza o meridiano (a linha norte–sul que passa pelo zênite), o telescópio precisa girar para o outro lado da montagem – senão logo bateria no tripé ou no pilar. Seu plano faz isso sozinho. Informe uma vez até onde sua montagem consegue rastrear além do meridiano.",
-        "flipNotSure": "Não tem certeza? O manual da montagem costuma dizer até onde ela rastreia além do meridiano. Até saber, “Mal” mantém o telescópio seguro, ao custo de alguns minutos sem imagens.",
         "flipCurrentValues": "Seu perfil já tem um tempo próprio: {values}.",
         "flipKeepValues": "Manter este tempo",
         "flipTimingWindow": "flip {min}–{max} min após o meridiano",

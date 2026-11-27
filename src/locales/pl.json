@@ -6240,7 +6240,6 @@
         "databaseAction": "Zainstaluj mapę gwiazd",
         "flipTitle": "Meridian Flip nie jest jeszcze skonfigurowany",
         "flipText": "Gdy cel przekracza meridian (linię północ–południe przez zenit), teleskop musi obrócić się na drugą stronę montażu – inaczej wkrótce uderzyłby w statyw lub kolumnę. Twój plan robi to sam. Powiedz mu raz, jak daleko Twój montaż może śledzić poza meridian.",
-        "flipNotSure": "Nie jesteś pewien? Instrukcja montażu zwykle podaje, jak daleko może śledzić poza meridian. Dopóki nie wiesz, „Ledwo” chroni teleskop kosztem kilku minut bez zdjęć.",
         "flipCurrentValues": "Twój profil ma już własne czasy: {values}.",
         "flipKeepValues": "Zachowaj te czasy",
         "flipTimingWindow": "flip {min}–{max} min po meridianie",

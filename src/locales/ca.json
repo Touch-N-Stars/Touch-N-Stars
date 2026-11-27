@@ -6240,7 +6240,6 @@
         "databaseAction": "Instal·la el mapa estel·lar",
         "flipTitle": "Meridian Flip encara no configurat",
         "flipText": "Quan un objectiu creua el meridià (la línia nord–sud que passa pel zenit), el telescopi s'ha de girar a l'altre costat de la muntura; si no, aviat xocaria amb el trípode o el pilar. El teu pla ho fa per si sol. Digues-li una vegada fins on pot seguir la teva muntura més enllà del meridià.",
-        "flipNotSure": "No n'estàs segur? El manual de la muntura sol dir fins on pot seguir més enllà del meridià. Fins que ho sàpigues, \"Just\" manté el telescopi segur, a costa d'uns minuts sense imatges.",
         "flipCurrentValues": "El teu perfil ja té els seus propis temps: {values}.",
         "flipKeepValues": "Mantén aquests temps",
         "flipTimingWindow": "flip {min}–{max} min després del meridià",

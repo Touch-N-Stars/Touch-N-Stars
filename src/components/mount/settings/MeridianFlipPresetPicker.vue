@@ -28,6 +28,12 @@
         <span class="flex flex-col gap-0.5">
           <span class="font-semibold text-content">
             {{ $t(`components.mount.settings.meridian_flip.presets.${option.id}.title`) }}
+            <span
+              v-if="option.id === RECOMMENDED_PRESET_ID"
+              class="ml-1 inline-block rounded-full bg-accent/20 px-2 py-0.5 text-xs font-semibold text-accent"
+            >
+              {{ $t('components.mount.settings.meridian_flip.presets.recommended') }}
+            </span>
           </span>
           <span class="text-sm text-content-muted">
             {{ $t(`components.mount.settings.meridian_flip.presets.${option.id}.description`) }}
@@ -48,6 +54,7 @@ import { useToastStore } from '@/store/toastStore';
 import {
   CUSTOM_PRESET_ID,
   MERIDIAN_FLIP_PRESETS,
+  RECOMMENDED_PRESET_ID,
   isPierSideKnown,
   matchPreset,
   presetProfileChanges,

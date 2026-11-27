@@ -13,6 +13,10 @@ export const MERIDIAN_FLIP_PRESETS = [
 
 export const CUSTOM_PRESET_ID = 'custom';
 
+// Marked as recommended: it fits most mounts, and a beginner who cannot answer the question
+// needs a default to go with.
+export const RECOMMENDED_PRESET_ID = 'few';
+
 // Returns the id of the preset whose minute values equal the stored settings, or 'custom'.
 export function matchPreset(settings) {
   if (!settings) return CUSTOM_PRESET_ID;

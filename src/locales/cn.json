@@ -6240,7 +6240,6 @@
         "databaseAction": "安装星图",
         "flipTitle": "尚未设置 Meridian Flip",
         "flipText": "当目标越过子午线（经过天顶的南北线）时，望远镜必须转到赤道仪的另一侧，否则很快会撞到三脚架或立柱。你的计划会自动完成。请告诉它一次：你的赤道仪越过子午线后最多还能跟踪多远。",
-        "flipNotSure": "不确定？赤道仪说明书通常会写明越过子午线后能跟踪多远。在弄清楚之前，选“勉强”可保证望远镜安全，代价是几分钟无法拍摄。",
         "flipCurrentValues": "你的配置文件已有自己的时间设置：{values}。",
         "flipKeepValues": "保留此时间设置",
         "flipTimingWindow": "过子午线后 {min}–{max} 分钟翻转",
