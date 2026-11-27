@@ -584,7 +584,6 @@
         "guideScope": "Lunette de guidage",
         "nativeCameraHint": "Saisissez la focale de la lunette de guidage. Le guideur en a besoin pour estimer le déplacement des étoiles.",
         "descriptionBuiltIn": "PINS a un guideur intégré qui maintient les étoiles en place pendant les prises de vue, sans autre programme. Choisis la caméra de guidage et saisis la focale de la lunette de guidage.",
-        "nativeRecommended": "Astuce : PINS a son propre guideur (« Native Guider » dans la liste ci-dessus). Il a été développé spécialement pour PINS, tourne directement sur le montage sans programme séparé et guide souvent plus régulièrement que PHD2. Les réglages faits dans PHD2 sont repris et vous pouvez revenir à tout moment en choisissant à nouveau PHD2.",
         "nativeFocalLengthMissing": "La focale de la lunette de guidage est encore à 0. Le guidage fonctionne sans elle, mais le Dither et l'erreur de guidage en secondes d'arc en ont besoin.",
         "guidePixelSizeHintNative": "Utilisée uniquement pour ce calcul. Le guideur lit la taille de pixel de la caméra de guidage une fois connectée ; d'ici là, prenez-la dans le manuel de la caméra.",
         "ditherMissingDataNative": "Pour calculer le Dither, la taille de pixel et la focale des montages d'imagerie et de guidage sont nécessaires. Renseignez les étapes caméra et télescope ainsi que la focale de la lunette de guidage dans l'étape de guidage.",

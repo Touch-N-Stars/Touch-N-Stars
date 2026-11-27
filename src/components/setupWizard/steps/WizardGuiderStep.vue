@@ -13,15 +13,6 @@
       </p>
     </div>
 
-    <!-- PHD2 picked on a rig that offers the built-in guider: say why the built-in one is
-         recommended, since the device list alone does not tell the difference. -->
-    <p
-      v-if="store.isPINS && !isNativeGuider && nativeGuiderOffered"
-      class="rounded-control border border-accent/40 bg-accent/10 p-3 text-sm text-content"
-    >
-      {{ t('components.setupWizard.guider.nativeRecommended') }}
-    </p>
-
     <!-- 1. Guide camera. The PINS native guider uses PINS' guide camera slot, with
          device and INDI driver picked like the imaging camera's. Its cog sets the slot's
          own Alpaca static IP. -->
@@ -81,9 +72,30 @@
       </p>
     </div>
 
-    <!-- 2. Guider device. PHD2 stays locked until the mount is connected and a
-         guide camera is picked - same gating as connectEquipment.vue. -->
-    <div class="flex flex-col gap-1">
+    <!-- The built-in guider has nothing to pick and nothing to connect by hand: it connects
+         on its own once the guide camera is (see connectNativeGuider). -->
+    <p
+      v-if="nativeGuiderOffered && !showGuiderList && !store.guiderInfo?.Connected"
+      class="text-sm text-content-muted"
+    >
+      {{ t('components.setupWizard.guider.nativeConnectsWithCamera') }}
+    </p>
+    <div
+      v-if="nativeConnectFailed && !store.guiderInfo?.Connected"
+      class="flex flex-col gap-2 rounded-control border border-status-danger/40 bg-status-danger/10 p-3"
+    >
+      <p class="text-sm text-content">
+        {{ t('components.setupWizard.guider.nativeConnectFailed') }}
+      </p>
+      <button class="tns-btn-secondary" :disabled="connectingNative" @click="connectNativeGuider">
+        {{ t('components.setupWizard.guider.nativeConnectRetry') }}
+      </button>
+    </div>
+
+    <!-- 2. Guider device, for PHD2 (NINA, PINS without the built-in guider). PHD2 stays locked
+         until the mount is connected and a guide camera is picked - same gating as
+         connectEquipment.vue. -->
+    <div v-if="showGuiderList" class="flex flex-col gap-1">
       <span class="text-xs font-semibold uppercase text-content-muted">
         {{ t('components.setupWizard.guider.connectDevice') }}
       </span>
@@ -162,15 +174,15 @@
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { apiStore } from '@/store/store';
 import { useGuiderStore } from '@/store/guiderStore';
 import { useEquipmentStore } from '@/store/equipmentStore';
 import { useNativeGuiderStore } from '@/store/nativeGuiderStore';
-import { useSettingsStore } from '@/store/settingsStore';
 import apiService from '@/services/apiService';
+import { isBackendRefusal } from '@/utils/backendErrors';
 import selectDevices from '@/components/equipment/selectDevices.vue';
 import Modal from '@/components/helpers/Modal.vue';
 import SettingsAlpacaDirect from '@/components/equipment/SettingsAlpacaDirect.vue';
@@ -192,9 +204,6 @@ const NativeSettingsSheet = defineAsyncComponent(
 );
 const GUIDE_CAMERA = DEVICE_MAP.guideCameraAction;
 const nativeGuiderStore = useNativeGuiderStore();
-const settingsStore = useSettingsStore();
-// The wizard store flag flips at the end, so read it before: true only on the first run.
-const isFirstRun = !settingsStore.setupWizard.completed;
 
 const { t } = useI18n();
 const store = apiStore();
@@ -252,28 +261,65 @@ const nativeFocalLengthMissing = computed(() => {
 });
 
 // PINS ships its own guider, and with Alpaca cameras PHD2 does not even find the guide camera
-// (its list only offers "manual via VNC"). On a first run without a deliberate guider choice
-// the built-in one starts selected. A profile that already uses PHD2 on purpose is left alone:
-// a fresh NINA profile has no guider, or the PHD2 default nobody picked yet. A fresh PINS
-// profile stores "PHD2", which PINS then lists as "PHD2 (OFFLINE)" - not a device anyone chose.
-const UNCHOSEN_GUIDERS = ['', 'No_Guider', 'PHD2', 'PHD2_Single'];
+// (its list only offers "manual via VNC"). In the field test an ASIAIR user picked PHD2 anyway,
+// because he knew the name. So on PINS the assistant sets up the built-in guider only; PHD2
+// stays selectable on the equipment page. A connected guider is left alone.
 // Whether PINS lists the built-in guider as a device (older PINS builds do not have it).
-const nativeGuiderOffered = ref(false);
+// null until the list is read, so the guider list does not flash up and vanish again.
+const nativeGuiderOffered = ref(null);
 async function preselectNativeGuider() {
-  if (!store.isPINS) return;
+  if (!store.isPINS) {
+    nativeGuiderOffered.value = false;
+    return;
+  }
   try {
     const response = await apiService.guiderAction('list-devices');
     const list = Array.isArray(response?.Response) ? response.Response : [];
     nativeGuiderOffered.value = list.some((d) => d?.Id === NATIVE_GUIDER_ID);
-    if (!nativeGuiderOffered.value || !isFirstRun || store.guiderInfo?.Connected) return;
-    const current = store.profileInfo?.GuiderSettings?.GuiderName ?? '';
-    if (!UNCHOSEN_GUIDERS.includes(current)) return;
+    if (!nativeGuiderOffered.value || store.guiderInfo?.Connected) return;
+    if (store.profileInfo?.GuiderSettings?.GuiderName === NATIVE_GUIDER_ID) return;
     await setProfileDevice('guiderAction', NATIVE_GUIDER_ID);
     await apiService.guiderAction('rescan');
   } catch (error) {
     console.warn('[PinsWizard] Preselecting the native guider failed:', error);
+    nativeGuiderOffered.value ??= false;
   }
 }
+
+// The guider list is only needed where PHD2 is set up, and to disconnect a PHD2 that is still
+// connected from before.
+const showGuiderList = computed(
+  () =>
+    nativeGuiderOffered.value === false || (store.guiderInfo?.Connected && !isNativeGuider.value)
+);
+
+const connectingNative = ref(false);
+const nativeConnectFailed = ref(false);
+async function connectNativeGuider() {
+  connectingNative.value = true;
+  nativeConnectFailed.value = false;
+  try {
+    const response = await apiService.guiderAction('connect');
+    nativeConnectFailed.value = isBackendRefusal(response);
+  } catch (error) {
+    console.warn('[PinsWizard] Connecting the native guider failed:', error);
+    nativeConnectFailed.value = true;
+  } finally {
+    connectingNative.value = false;
+  }
+}
+
+watch(
+  () =>
+    nativeGuiderOffered.value &&
+    isNativeGuider.value &&
+    Boolean(store.guideCameraInfo?.Connected) &&
+    !store.guiderInfo?.Connected,
+  (ready) => {
+    if (ready && !connectingNative.value && !nativeConnectFailed.value) connectNativeGuider();
+  },
+  { immediate: true }
+);
 
 onMounted(async () => {
   // The wizard can open over any route, so the profile may be stale or unread.

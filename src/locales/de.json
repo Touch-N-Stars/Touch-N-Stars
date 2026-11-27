@@ -625,7 +625,6 @@
         "guideScope": "Leitrohr",
         "nativeCameraHint": "Gib die Brennweite des Leitrohrs ein. Der Guider braucht sie, um einzuschätzen, wie weit sich die Sterne bewegen.",
         "descriptionBuiltIn": "PINS hat einen eingebauten Guider, der die Sterne während der Aufnahmen an ihrem Platz hält, ganz ohne Zusatzprogramm. Wähle die Guiding-Kamera und gib die Brennweite des Leitrohrs ein.",
-        "nativeRecommended": "Tipp: PINS hat einen eigenen Guider („Native Guider“ in der Liste oben). Er wurde speziell für PINS entwickelt, läuft direkt am Setup ohne separates Programm und guidet oft ruhiger als PHD2. Einstellungen aus PHD2 werden übernommen, und du kannst jederzeit zurückwechseln, indem du wieder PHD2 wählst.",
         "nativeFocalLengthMissing": "Die Leitrohr-Brennweite ist noch 0. Guiding funktioniert auch so, aber Dithering und der Guiding-Fehler in Bogensekunden brauchen sie.",
         "guidePixelSizeHintNative": "Wird nur für diese Berechnung verwendet. Der Guider liest die Pixelgröße von der Guiding-Kamera, sobald sie verbunden ist; bis dahin nimm sie aus dem Kamerahandbuch.",
         "ditherMissingDataNative": "Für die Dither-Berechnung werden Pixelgröße und Brennweite von Aufnahme- und Guiding-Setup gebraucht. Fülle die Schritte Kamera und Teleskop sowie die Leitrohr-Brennweite im Guiding-Schritt aus.",

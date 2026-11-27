@@ -625,7 +625,6 @@
         "guideScope": "Telescopi guia",
         "nativeCameraHint": "Introdueix la distància focal del telescopi guia. El guiatge la necessita per jutjar quant es mouen els estels.",
         "descriptionBuiltIn": "PINS té un guiador integrat que manté els estels al seu lloc mentre es fan les imatges, sense cap altre programa. Tria la càmera de guiatge i introdueix la distància focal del telescopi guia.",
-        "nativeRecommended": "Consell: PINS té el seu propi guiador (\"Native Guider\" a la llista de dalt). Va ser desenvolupat especialment per a PINS, funciona directament a l'equip sense cap programa a part i sovint guia amb més estabilitat que PHD2. La configuració feta a PHD2 es conserva i pots tornar-hi en qualsevol moment triant PHD2 de nou.",
         "nativeFocalLengthMissing": "La distància focal del telescopi guia encara és 0. El guiatge funciona sense ella, però el dither i l'error de guiatge en segons d'arc la necessiten.",
         "guidePixelSizeHintNative": "Només s'usa per a aquest càlcul. El guiador llegeix la mida del píxel de la càmera de guiatge un cop connectada; fins llavors, treu-la del manual de la càmera.",
         "ditherMissingDataNative": "Per calcular el dither calen la mida del píxel i la distància focal tant de la configuració d'imatge com de la de guiatge. Omple els passos de càmera i telescopi i la distància focal del telescopi guia al pas de guiatge.",

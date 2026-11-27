@@ -584,7 +584,6 @@
         "guideScope": "Telescópio de guiagem",
         "nativeCameraHint": "Informe a distância focal da luneta guia. O guider precisa dela para avaliar o quanto as estrelas se movem.",
         "descriptionBuiltIn": "O PINS tem um guider integrado que mantém as estrelas no lugar enquanto as imagens são feitas, sem outro programa. Escolhe a câmara de guiagem e introduz a distância focal do telescópio de guiagem.",
-        "nativeRecommended": "Dica: o PINS tem seu próprio guider (“Native Guider” na lista acima). Foi desenvolvido especialmente para o PINS, roda direto no equipamento sem programa separado e muitas vezes guia de forma mais estável que o PHD2. As configurações feitas no PHD2 são mantidas, e você pode voltar a qualquer momento escolhendo o PHD2 novamente.",
         "nativeFocalLengthMissing": "A distância focal da luneta guia ainda é 0. A guiagem funciona sem ela, mas o dither e o erro de guiagem em segundos de arco precisam dela.",
         "guidePixelSizeHintNative": "Usado apenas neste cálculo. O guider lê o tamanho do pixel da câmera de guiagem assim que ela estiver conectada; até lá, use o do manual da câmera.",
         "ditherMissingDataNative": "Para calcular o dither, são necessários o tamanho do pixel e a distância focal tanto da captura quanto da guiagem. Preencha os passos de câmera e telescópio e a distância focal da luneta guia no passo de guiagem.",

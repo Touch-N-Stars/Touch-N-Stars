@@ -584,7 +584,6 @@
         "guideScope": "Telescopio guida",
         "nativeCameraHint": "Inserisci la focale del telescopio guida. La guida ne ha bisogno per valutare quanto si spostano le stelle.",
         "descriptionBuiltIn": "PINS ha una guida integrata che tiene ferme le stelle durante le riprese, senza altri programmi. Scegli la camera di guida e inserisci la lunghezza focale del telescopio guida.",
-        "nativeRecommended": "Suggerimento: PINS ha una guida propria (“Native Guider” nell'elenco qui sopra). È stata sviluppata appositamente per PINS, gira direttamente sull'attrezzatura senza un programma separato e spesso guida in modo più stabile di PHD2. Le impostazioni fatte in PHD2 vengono mantenute e puoi tornare indietro in qualsiasi momento scegliendo di nuovo PHD2.",
         "nativeFocalLengthMissing": "La focale del telescopio guida è ancora 0. La guida funziona anche senza, ma dithering ed errore di guida in secondi d'arco ne hanno bisogno.",
         "guidePixelSizeHintNative": "Usata solo per questo calcolo. La guida legge la dimensione dei pixel dalla camera di guida quando è connessa; fino ad allora prendila dal manuale della camera.",
         "ditherMissingDataNative": "Per calcolare il dither servono dimensione pixel e focale sia della configurazione di ripresa sia di quella di guida. Compila i passaggi camera e telescopio e la focale del telescopio guida nel passaggio guida.",

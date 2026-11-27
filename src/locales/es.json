@@ -584,7 +584,6 @@
         "guideScope": "Telescopio guía",
         "nativeCameraHint": "Introduce la distancia focal del telescopio guía. El guiado la necesita para valorar cuánto se mueven las estrellas.",
         "descriptionBuiltIn": "PINS tiene un guiado integrado que mantiene las estrellas en su sitio mientras se toman las imágenes, sin otro programa. Elige la cámara de guiado e introduce la distancia focal del telescopio guía.",
-        "nativeRecommended": "Consejo: PINS tiene su propio guiado (“Native Guider” en la lista de arriba). Fue desarrollado especialmente para PINS, funciona directamente en el equipo sin programa aparte y suele guiar con más estabilidad que PHD2. Los ajustes que hiciste en PHD2 se mantienen y puedes volver cuando quieras eligiendo PHD2 de nuevo.",
         "nativeFocalLengthMissing": "La distancia focal del telescopio guía sigue en 0. El guiado funciona sin ella, pero el dithering y el error de guiado en segundos de arco la necesitan.",
         "guidePixelSizeHintNative": "Se usa solo para este cálculo. El guiado lee el tamaño de píxel de la cámara de guiado una vez conectada; hasta entonces, tómalo del manual de la cámara.",
         "ditherMissingDataNative": "Para calcular el dithering se necesitan el tamaño de píxel y la distancia focal tanto de la imagen como del guiado. Rellena los pasos de cámara y telescopio y la distancia focal del telescopio guía en el paso de guiado.",

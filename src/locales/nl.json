@@ -584,7 +584,6 @@
         "guideScope": "Guidescope",
         "nativeCameraHint": "Voer de brandpuntsafstand van de guidescope in. De guider heeft die nodig om te beoordelen hoe ver de sterren bewegen.",
         "descriptionBuiltIn": "PINS heeft een ingebouwde guider die de sterren op hun plaats houdt terwijl er foto's worden gemaakt, zonder extra programma. Kies de guidecamera en vul de brandpuntsafstand van de guidescope in.",
-        "nativeRecommended": "Tip: PINS heeft een eigen guider (“Native Guider” in de lijst hierboven). Hij is speciaal voor PINS ontwikkeld, draait direct op de setup zonder apart programma en guidet vaak rustiger dan PHD2. Instellingen die je in PHD2 hebt gemaakt blijven behouden en je kunt altijd terugschakelen door weer PHD2 te kiezen.",
         "nativeFocalLengthMissing": "De brandpuntsafstand van de guidescope is nog 0. Guiding werkt ook zonder, maar voor dithering en de guidingfout in boogseconden is hij nodig.",
         "guidePixelSizeHintNative": "Alleen voor deze berekening gebruikt. De guider leest de pixelgrootte uit de guidecamera zodra die verbonden is; tot dan neem je hem uit de cameraliteratuur.",
         "ditherMissingDataNative": "Voor de berekening van de dither zijn de pixelgrootte en brandpuntsafstand van zowel de opname- als de guidesetup nodig. Vul de camera- en telescoopstappen in, en de brandpuntsafstand van de guidescope in de guidingstap.",

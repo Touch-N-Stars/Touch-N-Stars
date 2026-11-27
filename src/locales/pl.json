@@ -584,7 +584,6 @@
         "guideScope": "Luneta prowadząca",
         "nativeCameraHint": "Wpisz ogniskową lunety prowadzącej. Guider potrzebuje jej, aby ocenić, jak daleko przesuwają się gwiazdy.",
         "descriptionBuiltIn": "PINS ma wbudowany guider, który utrzymuje gwiazdy na miejscu podczas robienia zdjęć, bez dodatkowego programu. Wybierz kamerę guidera i podaj ogniskową lunety prowadzącej.",
-        "nativeRecommended": "Wskazówka: PINS ma własny guider („Native Guider” na liście powyżej). Powstał specjalnie dla PINS, działa bezpośrednio na zestawie bez osobnego programu i często prowadzi stabilniej niż PHD2. Ustawienia z PHD2 zostają przeniesione, a w każdej chwili możesz wrócić, wybierając ponownie PHD2.",
         "nativeFocalLengthMissing": "Ogniskowa lunety prowadzącej wciąż wynosi 0. Guiding działa bez niej, ale dithering i błąd prowadzenia w sekundach łuku jej wymagają.",
         "guidePixelSizeHintNative": "Używane tylko do tego obliczenia. Guider odczytuje rozmiar piksela z kamery prowadzącej po jej połączeniu; do tego czasu weź go z instrukcji kamery.",
         "ditherMissingDataNative": "Do obliczenia dithera potrzebne są rozmiar piksela i ogniskowa zarówno zestawu obrazującego, jak i prowadzącego. Uzupełnij kroki kamery i teleskopu oraz ogniskową lunety prowadzącej w kroku guidingu.",

@@ -584,7 +584,6 @@
         "guideScope": "Pointační dalekohled",
         "nativeCameraHint": "Zadejte ohniskovou vzdálenost pointačního dalekohledu. Guider ji potřebuje k posouzení, jak se hvězdy pohybují.",
         "descriptionBuiltIn": "PINS má vestavěný guider, který při snímání drží hvězdy na místě, bez dalšího programu. Vyber pointační kameru a zadej ohniskovou vzdálenost pointačního dalekohledu.",
-        "nativeRecommended": "Tip: PINS má vlastní guider („Native Guider“ v seznamu výše). Byl vyvinut speciálně pro PINS, běží přímo v sestavě bez samostatného programu a často pointuje stabilněji než PHD2. Nastavení z PHD2 se přenesou a kdykoli se můžete vrátit výběrem PHD2.",
         "nativeFocalLengthMissing": "Ohnisková vzdálenost pointačního dalekohledu je stále 0. Pointace funguje i bez ní, ale Dither a chyba pointace v obloukových vteřinách ji potřebují.",
         "guidePixelSizeHintNative": "Slouží jen k tomuto výpočtu. Guider přečte velikost pixelu z pointační kamery, jakmile je připojena; do té doby ji převezměte z návodu ke kameře.",
         "ditherMissingDataNative": "K výpočtu Ditheru je potřeba velikost pixelu a ohnisková vzdálenost snímací i pointační sestavy. Vyplňte kroky kamery a dalekohledu a ohniskovou vzdálenost pointačního dalekohledu v kroku pointace.",

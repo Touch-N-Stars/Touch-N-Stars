@@ -584,7 +584,6 @@
         "guideScope": "导星镜",
         "nativeCameraHint": "输入导星镜的焦距。导星器需要它来判断星点移动的幅度。",
         "descriptionBuiltIn": "PINS 内置导星器，拍摄时让星点保持在原位，无需其他程序。请选择导星相机并输入导星镜的焦距。",
-        "nativeRecommended": "提示：PINS 有自己的导星器（上方列表中的“Native Guider”）。它专为 PINS 开发，直接在设备上运行，无需单独程序，导星通常比 PHD2 更稳定。你在 PHD2 中的设置会沿用，也可随时重新选择 PHD2 切换回去。",
         "nativeFocalLengthMissing": "导星镜焦距仍为 0。没有它也能导星，但抖动和以角秒表示的导星误差需要它。",
         "guidePixelSizeHintNative": "仅用于此计算。导星相机连接后，导星器会从中读取像素尺寸；在此之前请参考相机说明书。",
         "ditherMissingDataNative": "计算抖动需要成像和导星两套设备的像素尺寸与焦距。请填写相机和望远镜步骤，以及导星步骤中的导星镜焦距。",
