@@ -594,7 +594,6 @@
         "title": "La tua attrezzatura è pronta",
         "description": "Il tuo setup è connesso e aggiornato, e montatura, camera, focheggiatore, ruota portafiltri e guida sono configurati.",
         "descriptionPlain": "Montatura, camera, focheggiatore, ruota portafiltri e posizione sono configurati.",
-        "moreDevicesHint": "Il pannello per flat, il meteo e gli altri dispositivi si configurano nelle rispettive pagine.",
         "noConnectionHint": "Ancora nessuna connessione a un setup. Puoi aggiungerne una in qualsiasi momento in Impostazioni → Connessione.",
         "summaryIntro": "Ecco cosa è configurato ora. Tocca una voce per tornare al suo passaggio.",
         "status": {

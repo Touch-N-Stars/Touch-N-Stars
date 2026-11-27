@@ -594,7 +594,6 @@
         "title": "Tu equipo está listo",
         "description": "Tu equipo está conectado y actualizado, y la montura, la cámara, el enfocador, la rueda de filtros y el guiado están configurados.",
         "descriptionPlain": "La montura, la cámara, el enfocador, la rueda de filtros y tu ubicación están configurados.",
-        "moreDevicesHint": "El panel de flats, el tiempo y los demás dispositivos se configuran en sus propias páginas.",
         "noConnectionHint": "Todavía no hay conexión con un equipo. Puedes añadir una en cualquier momento en Ajustes → Conexión.",
         "summaryIntro": "Esto es lo que está configurado ahora. Pulsa una entrada para volver a su paso.",
         "status": {

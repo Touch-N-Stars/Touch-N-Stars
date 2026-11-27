@@ -594,7 +594,6 @@
         "title": "O teu equipamento está pronto",
         "description": "O teu equipamento está ligado e atualizado, e a montagem, a câmara, o focalizador, a roda de filtros e a guiagem estão configurados.",
         "descriptionPlain": "A montagem, a câmara, o focalizador, a roda de filtros e a tua localização estão configurados.",
-        "moreDevicesHint": "O painel de flats, a meteorologia e os restantes dispositivos configuram-se nas suas próprias páginas.",
         "noConnectionHint": "Ainda não há ligação a um equipamento. Podes adicionar uma a qualquer momento em Definições → Ligação.",
         "summaryIntro": "Isto é o que está configurado agora. Toque em um item para voltar ao passo dele.",
         "status": {

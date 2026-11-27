@@ -20,6 +20,7 @@ test('the summary reports what is really set up', () => {
   assert.equal(statusOf(items, 'mount'), 'ok');
   assert.equal(statusOf(items, 'location'), 'warn');
   assert.equal(statusOf(items, 'filterWheel'), 'none');
+  assert.equal(statusOf(items, 'flatPanel'), 'none', 'no FlatDeviceSettings at all');
   assert.equal(statusOf(items, 'guider'), 'ok');
   assert.equal(statusOf(items, 'starDatabase'), 'warn');
 });
@@ -34,6 +35,15 @@ test('an unset focal length ("NaN") is no telescope set up', () => {
   // Without PINS there is no guider step and no star database step
   assert.equal(statusOf(items, 'guider'), undefined);
   assert.equal(statusOf(items, 'starDatabase'), undefined);
+});
+
+test('a selected flat panel counts as set up', () => {
+  const items = wizardSummary({
+    profileInfo: { ...profile, FlatDeviceSettings: { Id: 'flat_simulator' } },
+    isPINS: false,
+    databaseInstalled: null,
+  });
+  assert.equal(statusOf(items, 'flatPanel'), 'ok');
 });
 
 test('an unknown star database state is left out', () => {

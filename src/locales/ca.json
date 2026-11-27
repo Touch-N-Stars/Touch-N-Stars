@@ -635,7 +635,6 @@
         "title": "El teu equip està llest",
         "description": "El teu equip està connectat i actualitzat, i la muntura, la càmera, l'enfocador, la roda de filtres i el guiatge estan configurats.",
         "descriptionPlain": "La muntura, la càmera, l'enfocador, la roda de filtres i la teva ubicació estan configurats.",
-        "moreDevicesHint": "El panell de flats, el temps i la resta de dispositius es configuren a les seves pròpies pàgines.",
         "noConnectionHint": "Encara no hi ha connexió amb cap equip. En pots afegir una en qualsevol moment a Configuració → Connexió.",
         "summaryIntro": "Això és el que està configurat ara. Toca una entrada per tornar-ne al pas.",
         "status": {

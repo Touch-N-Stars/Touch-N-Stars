@@ -594,7 +594,6 @@
         "title": "Tvé vybavení je připraveno",
         "description": "Tvá sestava je připojená a aktuální a montáž, kamera, zaostřovač, filtrové kolo i pointace jsou nastavené.",
         "descriptionPlain": "Montáž, kamera, zaostřovač, filtrové kolo i tvá poloha jsou nastavené.",
-        "moreDevicesHint": "Flatový panel, počasí a ostatní zařízení se nastavují na vlastních stránkách.",
         "noConnectionHint": "Zatím není připojena žádná sestava. Připojení můžeš kdykoli přidat v Nastavení → Připojení.",
         "summaryIntro": "Zde je vidět, co je nyní nastaveno. Klepnutím na položku se vrátíte k jejímu kroku.",
         "status": {

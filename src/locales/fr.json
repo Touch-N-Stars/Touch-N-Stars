@@ -594,7 +594,6 @@
         "title": "Ton équipement est prêt",
         "description": "Ton setup est connecté et à jour ; monture, caméra, focuser, roue à filtres et guidage sont configurés.",
         "descriptionPlain": "Monture, caméra, focuser, roue à filtres et lieu sont configurés.",
-        "moreDevicesHint": "Le panneau à flats, la météo et les autres appareils se configurent sur leurs propres pages.",
         "noConnectionHint": "Pas encore de connexion à un setup. Tu peux en ajouter une à tout moment sous Paramètres → Connexion.",
         "summaryIntro": "Voici ce qui est configuré. Appuyez sur une entrée pour revenir à son étape.",
         "status": {

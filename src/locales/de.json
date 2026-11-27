@@ -635,7 +635,6 @@
         "title": "Die Ausrüstung ist bereit",
         "description": "Dein Rig ist verbunden, aktuell, und Montierung, Kamera, Fokussierer, Filterrad und Guiding sind konfiguriert.",
         "descriptionPlain": "Montierung, Kamera, Fokussierer, Filterrad und dein Standort sind konfiguriert.",
-        "moreDevicesHint": "Flatfield-Panel, Wetter und die übrigen Geräte richtest du auf ihren eigenen Seiten ein.",
         "noConnectionHint": "Noch keine Verbindung zu einem Rig. Du kannst sie jederzeit unter Einstellungen → Verbindung nachtragen.",
         "summaryIntro": "So ist es jetzt eingerichtet. Tippe auf einen Eintrag, um zu seinem Schritt zurückzugehen.",
         "status": {

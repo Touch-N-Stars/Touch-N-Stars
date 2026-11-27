@@ -594,7 +594,6 @@
         "title": "Twój sprzęt jest gotowy",
         "description": "Twój zestaw jest połączony i aktualny, a montaż, kamera, focuser, koło filtrowe i prowadzenie są skonfigurowane.",
         "descriptionPlain": "Montaż, kamera, focuser, koło filtrowe i twoja lokalizacja są skonfigurowane.",
-        "moreDevicesHint": "Panel do flatów, pogodę i pozostałe urządzenia konfiguruje się na ich własnych stronach.",
         "noConnectionHint": "Brak jeszcze połączenia z zestawem. Możesz je dodać w każdej chwili w Ustawienia → Połączenie.",
         "summaryIntro": "Oto, co jest teraz skonfigurowane. Naciśnij pozycję, aby wrócić do jej kroku.",
         "status": {

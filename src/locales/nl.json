@@ -594,7 +594,6 @@
         "title": "Je apparatuur is klaar",
         "description": "Je opstelling is verbonden en up-to-date, en montering, camera, focuser, filterwiel en guiding zijn ingesteld.",
         "descriptionPlain": "Montering, camera, focuser, filterwiel en je locatie zijn ingesteld.",
-        "moreDevicesHint": "Flatpaneel, weer en de overige apparaten stel je op hun eigen pagina's in.",
         "noConnectionHint": "Nog geen verbinding met een opstelling. Je kunt er op elk moment een toevoegen onder Instellingen → Verbinding.",
         "summaryIntro": "Dit is nu ingesteld. Tik op een item om terug te gaan naar zijn stap.",
         "status": {

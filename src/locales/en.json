@@ -412,6 +412,7 @@
         "camera": "Camera",
         "focuser": "Focuser",
         "filterWheel": "Filter wheel",
+        "flatPanel": "Flat panel",
         "guider": "Guiding",
         "dither": "Dither",
         "done": "Done",
@@ -590,6 +591,20 @@
         "descriptionDeviceFirst": "Pick your focuser from the list and connect it. A driver is only needed if it does not show up there. Autofocus parameters stay on the focus page.",
         "notFoundDriverHint": "If your focuser is not in the list, select its INDI driver here. Afterwards it appears in the list above."
       },
+      "flatPanel": {
+        "title": "Set up your flat panel",
+        "description": "A dimmable flat panel lets the app take your flats on its own. Pick it from the list and connect it. A driver is only needed if it does not show up there.",
+        "connectDevice": "Device",
+        "connected": "Flat panel connected: {name}",
+        "noPanelHint": "No flat panel? Just go on: flats also work with a tablet or a light sheet in front of the telescope.",
+        "notFound": "Flat panel not listed?",
+        "notFoundDriverHint": "If your flat panel is not in the list, select its INDI driver here. Afterwards it appears in the list above.",
+        "selectDriver": "INDI driver",
+        "notFoundHint": "If the driver is missing, it may not be installed yet. Search the 3rd party INDI drivers and install the matching one.",
+        "installing": "Installing {label}…",
+        "installSuccess": "{label} installed. Select it in the driver list above.",
+        "installFailed": "Installation failed: {message}"
+      },
       "filterWheel": {
         "title": "Set up your filter wheel",
         "description": "Pick the INDI driver for your filter wheel, connect it, and give the slots the names you use in your sequences.",
@@ -651,7 +666,7 @@
         "title": "Your equipment is ready",
         "description": "Your rig is connected, up to date, and mount, camera, focuser, filter wheel and guiding are configured.",
         "descriptionPlain": "Mount, camera, focuser, filter wheel and your location are configured.",
-        "moreDevicesHint": "Flat panel, weather and the remaining devices are configured on their own pages.",
+        "otherDevicesHint": "Weather, dome and the remaining devices are set up on their own pages.",
         "noConnectionHint": "No connection to a rig yet. You can add one under Settings → Connection at any time.",
         "summaryIntro": "This is what is set up now. Tap an entry to go back to its step.",
         "status": {
@@ -662,6 +677,7 @@
             "camera": "Selected",
             "focuser": "Selected",
             "filterWheel": "Selected",
+            "flatPanel": "Selected",
             "guider": "Selected",
             "starDatabase": "Installed"
           },
@@ -675,6 +691,7 @@
           "none": {
             "focuser": "None, focus by hand",
             "filterWheel": "None, that is fine",
+            "flatPanel": "None, flats with a tablet or light sheet",
             "guider": "No guiding"
           }
         }

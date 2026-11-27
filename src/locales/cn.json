@@ -594,7 +594,6 @@
         "title": "你的器材已就绪",
         "description": "设备已连接并更新，赤道仪、相机、调焦器、滤镜轮和导星均已配置。",
         "descriptionPlain": "赤道仪、相机、调焦器、滤镜轮和你的位置均已配置。",
-        "moreDevicesHint": "平场板、天气和其余设备在各自的页面中配置。",
         "noConnectionHint": "尚未连接到设备。你可以随时在 设置 → 连接 中添加。",
         "summaryIntro": "这是目前的设置。点击某一项可返回对应步骤。",
         "status": {
